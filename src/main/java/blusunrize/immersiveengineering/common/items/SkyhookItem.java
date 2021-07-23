@@ -18,21 +18,21 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -49,18 +49,18 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 {
 	public SkyhookItem()
 	{
-		super(new Properties().maxStackSize(1), "SKYHOOK");
+		super(new Properties().stacksTo(1), "SKYHOOK");
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(shouldLimitSpeed(stack))
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
 		else
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
-		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"skyhook"));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
+		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"skyhook"));
 	}
 
 	private static final String LIMIT_SPEED = "limitSpeed";
@@ -77,14 +77,14 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 
 	public static boolean toggleSpeedLimit(ItemStack stack)
 	{
-		CompoundNBT nbt = stack.getOrCreateTag();
+		CompoundTag nbt = stack.getOrCreateTag();
 		boolean wasActive = nbt.getBoolean(LIMIT_SPEED);
 		nbt.putBoolean(LIMIT_SPEED, !wasActive);
 		return !wasActive;
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
+	public void inventoryTick(ItemStack stack, Level world, Entity ent, int slot, boolean inHand)
 	{
 		super.inventoryTick(stack, world, ent, slot, inHand);
 		if(getUpgrades(stack).getBoolean("fallBoost"))
@@ -108,24 +108,24 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
 
-		ItemStack stack = player.getHeldItem(hand);
-		if(player.getCooldownTracker().hasCooldown(this))
-			return new ActionResult<>(ActionResultType.PASS, stack);
-		if(player.isSneaking())
+		ItemStack stack = player.getItemInHand(hand);
+		if(player.getCooldowns().isOnCooldown(this))
+			return new InteractionResultHolder<>(InteractionResult.PASS, stack);
+		if(player.isShiftKeyDown())
 		{
 			boolean limitSpeed = toggleSpeedLimit(stack);
 			if(limitSpeed)
-				player.sendStatusMessage(new TranslationTextComponent("chat.immersiveengineering.info.skyhookLimited"), true);
+				player.displayClientMessage(new TranslatableComponent("chat.immersiveengineering.info.skyhookLimited"), true);
 			else
-				player.sendStatusMessage(new TranslationTextComponent("chat.immersiveengineering.info.skyhookUnlimited"), true);
+				player.displayClientMessage(new TranslatableComponent("chat.immersiveengineering.info.skyhookUnlimited"), true);
 		}
 		else
 		{
 			SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, Direction.UP).orElseThrow(RuntimeException::new);
-			if(data.hook!=null&&!world.isRemote)
+			if(data.hook!=null&&!world.isClientSide)
 			{
 				data.dismount();
 				IELogger.logger.info("Player left voluntarily");
@@ -133,10 +133,10 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 			else
 			{
 				data.startHolding();
-				player.setActiveHand(hand);
+				player.startUsingItem(hand);
 			}
 		}
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -146,17 +146,17 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 		SkyhookUserData data = player.getCapability(SKYHOOK_USER_DATA, Direction.UP).orElseThrow(RuntimeException::new);
 		if(data.getStatus()!=SkyhookStatus.HOLDING_CONNECTING)
 			return;
-		World world = player.world;
+		Level world = player.level;
 		Connection con = WireUtils.getConnectionMovedThrough(world, player);
 		if(con!=null)
-			SkylineHelper.spawnHook(player, con, player.getActiveHand(), shouldLimitSpeed(stack));
+			SkylineHelper.spawnHook(player, con, player.getUsedItemHand(), shouldLimitSpeed(stack));
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World worldIn, LivingEntity player, int timeLeft)
+	public void releaseUsing(ItemStack stack, Level worldIn, LivingEntity player, int timeLeft)
 	{
-		super.onPlayerStoppedUsing(stack, worldIn, player, timeLeft);
-		if(!worldIn.isRemote)
+		super.releaseUsing(stack, worldIn, player, timeLeft);
+		if(!worldIn.isClientSide)
 			player.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(SkyhookUserData::release);
 	}
 
@@ -178,7 +178,7 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		return new Slot[]

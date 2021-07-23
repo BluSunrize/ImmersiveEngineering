@@ -20,18 +20,18 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjPr
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -41,7 +41,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 {
 	public int[] offset = {0, 0};
 	public float rotation = 0;
-	private Vector3d rotationVec = null;
+	private Vec3 rotationVec = null;
 	// Indicates that the next tick should be skipped since the waterwheel is being controlled by another waterwheel
 	// attached to it
 	public boolean multiblock = false;
@@ -87,26 +87,26 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 			return;
 		}
 
-		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
+		if(level.getGameTime()%64==((getBlockPos().getX()^getBlockPos().getZ())&63))
 			rotationVec = null;
 
-		TileEntity acc = SafeChunkUtils.getSafeTE(world, getPos().offset(getFacing().getOpposite()));
+		BlockEntity acc = SafeChunkUtils.getSafeTE(level, getBlockPos().relative(getFacing().getOpposite()));
 		if(acc instanceof IRotationAcceptor)
 		{
 			double power = getPower();
 			int l = 1;
-			TileEntity tileEntity = SafeChunkUtils.getSafeTE(world, getPos().offset(getFacing(), l));
+			BlockEntity tileEntity = SafeChunkUtils.getSafeTE(level, getBlockPos().relative(getFacing(), l));
 			while(l < 3&&canUse(tileEntity))
 			{
 				power += ((WatermillTileEntity)tileEntity).getPower();
 				l++;
-				tileEntity = SafeChunkUtils.getSafeTE(world, getPos().offset(getFacing(), l));
+				tileEntity = SafeChunkUtils.getSafeTE(level, getBlockPos().relative(getFacing(), l));
 			}
 
 			setPerTickAndAdvance(1f/1440*power/l);
 			for(int l2 = 1; l2 < l; l2++)
 			{
-				tileEntity = world.getTileEntity(getPos().offset(getFacing(), l2));
+				tileEntity = level.getBlockEntity(getBlockPos().relative(getFacing(), l2));
 				if(tileEntity instanceof WatermillTileEntity)
 				{
 					WatermillTileEntity watermill = (WatermillTileEntity) tileEntity;
@@ -135,7 +135,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 		rotation %= 1;
 	}
 
-	private boolean canUse(@Nullable TileEntity tileEntity)
+	private boolean canUse(@Nullable BlockEntity tileEntity)
 	{
 		if (!(tileEntity instanceof WatermillTileEntity))
 			return false;
@@ -147,16 +147,16 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 
 	public boolean isBlocked()
 	{
-		if(world==null)
+		if(level==null)
 			return true;
 		for(Direction fdY : new Direction[]{Direction.UP, Direction.DOWN})
 			for(Direction fdW : getFacing().getAxis()==Axis.Z?new Direction[]{Direction.EAST, Direction.WEST}: new Direction[]{Direction.SOUTH, Direction.NORTH})
 			{
-				BlockPos pos = getPos().offset(fdW, 2).offset(fdY, 2);
-				BlockState state = world.getBlockState(pos);
-				if(Block.doesSideFillSquare(state.getShape(world, pos), fdW.getOpposite()))
+				BlockPos pos = getBlockPos().relative(fdW, 2).relative(fdY, 2);
+				BlockState state = level.getBlockState(pos);
+				if(Block.isFaceFull(state.getShape(level, pos), fdW.getOpposite()))
 					return true;
-				if(Block.doesSideFillSquare(state.getShape(world, pos), fdY.getOpposite()))
+				if(Block.isFaceFull(state.getShape(level, pos), fdY.getOpposite()))
 					return true;
 			}
 		return false;
@@ -167,13 +167,13 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 		return getFacing().getAxis()==Axis.Z?-getRotationVec().x: getRotationVec().z;
 	}
 
-	public Vector3d getRotationVec()
+	public Vec3 getRotationVec()
 	{
 		if(rotationVec==null)
 		{
-			rotationVec = new Vector3d(0, 0, 0);
-			Vector3d dirHoz = getHorizontalVec();
-			Vector3d dirVer = getVerticalVec();
+			rotationVec = new Vec3(0, 0, 0);
+			Vec3 dirHoz = getHorizontalVec();
+			Vec3 dirVer = getVerticalVec();
 			rotationVec = rotationVec.add(dirHoz);
 			rotationVec = rotationVec.add(dirVer);
 			//			world.addBlockEvent(xCoord, yCoord, zCoord, getBlockState(), (int)((float)rotationVec.xCoord*10000f), (int)((float)rotationVec.zCoord*10000f));
@@ -181,42 +181,42 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 		return rotationVec;
 	}
 
-	private Vector3d getHorizontalVec()
+	private Vec3 getHorizontalVec()
 	{
-		Vector3d dir = new Vector3d(0, 0, 0);
+		Vec3 dir = new Vec3(0, 0, 0);
 		boolean faceZ = getFacing().ordinal() <= 3;
-		dir = dir.add(Utils.getFlowVector(world, getPos().add(-(faceZ?1: 0), +3, -(faceZ?0: 1))));
-		dir = dir.add(Utils.getFlowVector(world, getPos().add(0, +3, 0)));
-		dir = dir.add(Utils.getFlowVector(world, getPos().add(+(faceZ?1: 0), +3, +(faceZ?0: 1))));
+		dir = dir.add(Utils.getFlowVector(level, getBlockPos().offset(-(faceZ?1: 0), +3, -(faceZ?0: 1))));
+		dir = dir.add(Utils.getFlowVector(level, getBlockPos().offset(0, +3, 0)));
+		dir = dir.add(Utils.getFlowVector(level, getBlockPos().offset(+(faceZ?1: 0), +3, +(faceZ?0: 1))));
 
-		dir = dir.add(Utils.getFlowVector(world, getPos().add(-(faceZ?2: 0), +2, -(faceZ?0: 2))));
-		dir = dir.add(Utils.getFlowVector(world, getPos().add(+(faceZ?2: 0), +2, +(faceZ?0: 2))));
+		dir = dir.add(Utils.getFlowVector(level, getBlockPos().offset(-(faceZ?2: 0), +2, -(faceZ?0: 2))));
+		dir = dir.add(Utils.getFlowVector(level, getBlockPos().offset(+(faceZ?2: 0), +2, +(faceZ?0: 2))));
 
-		dir = dir.subtract(Utils.getFlowVector(world, getPos().add(-(faceZ?2: 0), -2, -(faceZ?0: 2))));
-		dir = dir.subtract(Utils.getFlowVector(world, getPos().add(+(faceZ?2: 0), -2, +(faceZ?0: 2))));
-		dir = dir.subtract(Utils.getFlowVector(world, getPos().add(-(faceZ?1: 0), -3, -(faceZ?0: 1))));
-		dir = dir.subtract(Utils.getFlowVector(world, getPos().add(0, -3, 0)));
-		dir = dir.subtract(Utils.getFlowVector(world, getPos().add(+(faceZ?1: 0), -3, +(faceZ?0: 1))));
+		dir = dir.subtract(Utils.getFlowVector(level, getBlockPos().offset(-(faceZ?2: 0), -2, -(faceZ?0: 2))));
+		dir = dir.subtract(Utils.getFlowVector(level, getBlockPos().offset(+(faceZ?2: 0), -2, +(faceZ?0: 2))));
+		dir = dir.subtract(Utils.getFlowVector(level, getBlockPos().offset(-(faceZ?1: 0), -3, -(faceZ?0: 1))));
+		dir = dir.subtract(Utils.getFlowVector(level, getBlockPos().offset(0, -3, 0)));
+		dir = dir.subtract(Utils.getFlowVector(level, getBlockPos().offset(+(faceZ?1: 0), -3, +(faceZ?0: 1))));
 
 		return dir;
 	}
 
-	private Vector3d getVerticalVec()
+	private Vec3 getVerticalVec()
 	{
-		Vector3d dir = new Vector3d(0, 0, 0);
+		Vec3 dir = new Vec3(0, 0, 0);
 
-		Vector3d dirNeg = new Vector3d(0, 0, 0);
-		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), 2, -(getFacing().getAxis()==Axis.Z?0: 2))));
-		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 1, -(getFacing().getAxis()==Axis.Z?0: 3))));
-		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), 0, -(getFacing().getAxis()==Axis.Z?0: 3))));
-		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?3: 0), -1, -(getFacing().getAxis()==Axis.Z?0: 3))));
-		dirNeg = dirNeg.add(Utils.getFlowVector(world, getPos().add(-(getFacing().getAxis()==Axis.Z?2: 0), -2, -(getFacing().getAxis()==Axis.Z?0: 2))));
-		Vector3d dirPos = new Vector3d(0, 0, 0);
-		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), 2, (getFacing().getAxis()==Axis.Z?0: 2))));
-		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 1, (getFacing().getAxis()==Axis.Z?0: 3))));
-		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), 0, (getFacing().getAxis()==Axis.Z?0: 3))));
-		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?3: 0), -1, (getFacing().getAxis()==Axis.Z?0: 3))));
-		dirPos = dirPos.add(Utils.getFlowVector(world, getPos().add((getFacing().getAxis()==Axis.Z?2: 0), -2, (getFacing().getAxis()==Axis.Z?0: 2))));
+		Vec3 dirNeg = new Vec3(0, 0, 0);
+		dirNeg = dirNeg.add(Utils.getFlowVector(level, getBlockPos().offset(-(getFacing().getAxis()==Axis.Z?2: 0), 2, -(getFacing().getAxis()==Axis.Z?0: 2))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(level, getBlockPos().offset(-(getFacing().getAxis()==Axis.Z?3: 0), 1, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(level, getBlockPos().offset(-(getFacing().getAxis()==Axis.Z?3: 0), 0, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(level, getBlockPos().offset(-(getFacing().getAxis()==Axis.Z?3: 0), -1, -(getFacing().getAxis()==Axis.Z?0: 3))));
+		dirNeg = dirNeg.add(Utils.getFlowVector(level, getBlockPos().offset(-(getFacing().getAxis()==Axis.Z?2: 0), -2, -(getFacing().getAxis()==Axis.Z?0: 2))));
+		Vec3 dirPos = new Vec3(0, 0, 0);
+		dirPos = dirPos.add(Utils.getFlowVector(level, getBlockPos().offset((getFacing().getAxis()==Axis.Z?2: 0), 2, (getFacing().getAxis()==Axis.Z?0: 2))));
+		dirPos = dirPos.add(Utils.getFlowVector(level, getBlockPos().offset((getFacing().getAxis()==Axis.Z?3: 0), 1, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = dirPos.add(Utils.getFlowVector(level, getBlockPos().offset((getFacing().getAxis()==Axis.Z?3: 0), 0, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = dirPos.add(Utils.getFlowVector(level, getBlockPos().offset((getFacing().getAxis()==Axis.Z?3: 0), -1, (getFacing().getAxis()==Axis.Z?0: 3))));
+		dirPos = dirPos.add(Utils.getFlowVector(level, getBlockPos().offset((getFacing().getAxis()==Axis.Z?2: 0), -2, (getFacing().getAxis()==Axis.Z?0: 2))));
 		if(getFacing().getAxis()==Axis.Z)
 			dir = dir.add(dirNeg.y-dirPos.y, 0, 0);
 		else
@@ -225,14 +225,14 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
-		rotationVec = new Vector3d(id/10000f, 0, arg/10000f);
+		rotationVec = new Vec3(id/10000f, 0, arg/10000f);
 		return true;
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");
@@ -243,7 +243,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putIntArray("offset", offset);
 		nbt.putFloat("rotation", rotation);
@@ -251,24 +251,24 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
+	private AABB renderAABB;
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
 			if(offset[0]==0&&offset[1]==0)
-				renderAABB = new AxisAlignedBB(
-						getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 0),
-						getPos().getY()-2,
-						getPos().getZ()-(getFacing().getAxis()==Axis.Z?0: 2),
-						getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 1),
-						getPos().getY()+3,
-						getPos().getZ()+(getFacing().getAxis()==Axis.Z?1: 3)
+				renderAABB = new AABB(
+						getBlockPos().getX()-(getFacing().getAxis()==Axis.Z?2: 0),
+						getBlockPos().getY()-2,
+						getBlockPos().getZ()-(getFacing().getAxis()==Axis.Z?0: 2),
+						getBlockPos().getX()+(getFacing().getAxis()==Axis.Z?3: 1),
+						getBlockPos().getY()+3,
+						getBlockPos().getZ()+(getFacing().getAxis()==Axis.Z?1: 3)
 				);
 			else
-				renderAABB = new AxisAlignedBB(getPos().getX(), getPos().getY(), getPos().getZ(), getPos().getX()+1, getPos().getY()+1, getPos().getZ()+1);
+				renderAABB = new AABB(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), getBlockPos().getX()+1, getBlockPos().getY()+1, getBlockPos().getZ()+1);
 		return renderAABB;
 	}
 
@@ -291,7 +291,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -314,22 +314,22 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 	{
 		if(!isDummy())
 			return this;
-		BlockPos masterPos = getPos().add(getFacing().getAxis()==Axis.Z?-offset[0]: 0, -offset[1], getFacing().getAxis()==Axis.Z?0: -offset[0]);
-		TileEntity te = SafeChunkUtils.getSafeTE(world, masterPos);
+		BlockPos masterPos = getBlockPos().offset(getFacing().getAxis()==Axis.Z?-offset[0]: 0, -offset[1], getFacing().getAxis()==Axis.Z?0: -offset[0]);
+		BlockEntity te = SafeChunkUtils.getSafeTE(level, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
+		state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int hh = -2; hh <= 2; hh++)
 			for(int ww = -2; ww <= 2; ww++)
 				if(((hh > -2&&hh < 2)||(ww > -2&&ww < 2))&&(hh!=0||ww!=0))
 				{
-					BlockPos pos2 = pos.add(getFacing().getAxis()==Axis.Z?ww: 0, hh, getFacing().getAxis()==Axis.Z?0: ww);
-					world.setBlockState(pos2, state);
-					WatermillTileEntity dummy = (WatermillTileEntity)world.getTileEntity(pos2);
+					BlockPos pos2 = worldPosition.offset(getFacing().getAxis()==Axis.Z?ww: 0, hh, getFacing().getAxis()==Axis.Z?0: ww);
+					level.setBlockAndUpdate(pos2, state);
+					WatermillTileEntity dummy = (WatermillTileEntity)level.getBlockEntity(pos2);
 					dummy.setFacing(getFacing());
 					dummy.offset = new int[]{ww, hh};
 				}
@@ -340,17 +340,17 @@ public class WatermillTileEntity extends IEBaseTileEntity implements IETickableB
 	{
 		if(beingBroken)
 			return;
-		BlockPos initPos = pos.add(getFacing().getAxis()==Axis.Z?-offset[0]: 0, -offset[1], getFacing().getAxis()==Axis.X?-offset[0]: 0);
+		BlockPos initPos = pos.offset(getFacing().getAxis()==Axis.Z?-offset[0]: 0, -offset[1], getFacing().getAxis()==Axis.X?-offset[0]: 0);
 		for(int hh = -2; hh <= 2; hh++)
 			for(int ww = -2; ww <= 2; ww++)
 				if((hh > -2&&hh < 2)||(ww > -2&&ww < 2))
 				{
-					BlockPos pos2 = initPos.add(getFacing().getAxis()==Axis.Z?ww: 0, hh, getFacing().getAxis()==Axis.X?ww: 0);
-					TileEntity te = world.getTileEntity(pos2);
+					BlockPos pos2 = initPos.offset(getFacing().getAxis()==Axis.Z?ww: 0, hh, getFacing().getAxis()==Axis.X?ww: 0);
+					BlockEntity te = level.getBlockEntity(pos2);
 					if(te instanceof WatermillTileEntity)
 					{
 						((WatermillTileEntity)te).beingBroken = true;
-						world.removeBlock(pos2, false);
+						level.removeBlock(pos2, false);
 					}
 				}
 	}

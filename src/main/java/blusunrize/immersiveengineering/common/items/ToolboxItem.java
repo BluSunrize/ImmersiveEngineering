@@ -13,16 +13,20 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,7 +37,7 @@ public class ToolboxItem extends InternalStorageItem
 
 	public ToolboxItem()
 	{
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 		ToolboxHandler.addToolType(stack -> IEServerConfig.TOOLS.toolbox_tools.get().contains(stack.getItem().getRegistryName().toString()));
 		ToolboxHandler.addFoodType(stack -> IEServerConfig.TOOLS.toolbox_foods.get().contains(stack.getItem().getRegistryName().toString()));
 		ToolboxHandler.addWiringType((stack, world) -> IEServerConfig.TOOLS.toolbox_wiring.get().contains(stack.getItem().getRegistryName().toString()));
@@ -41,12 +45,12 @@ public class ToolboxItem extends InternalStorageItem
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
-		ItemStack stack = player.getHeldItem(hand);
-		if(!world.isRemote)
+		ItemStack stack = player.getItemInHand(hand);
+		if(!world.isClientSide)
 			openGui(player, hand);
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	@Nullable
@@ -57,37 +61,37 @@ public class ToolboxItem extends InternalStorageItem
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
+	public InteractionResult useOn(UseOnContext ctx)
 	{
-		ItemStack stack = ctx.getItem();
-		PlayerEntity player = ctx.getPlayer();
-		if(player!=null&&player.isSneaking())
+		ItemStack stack = ctx.getItemInHand();
+		Player player = ctx.getPlayer();
+		if(player!=null&&player.isShiftKeyDown())
 		{
-			World world = ctx.getWorld();
-			BlockPos pos = ctx.getPos();
-			Direction side = ctx.getFace();
+			Level world = ctx.getLevel();
+			BlockPos pos = ctx.getClickedPos();
+			Direction side = ctx.getClickedFace();
 			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
-			if(!block.isReplaceable(state, new BlockItemUseContext(ctx)))
-				pos = pos.offset(side);
+			if(!block.canBeReplaced(state, new BlockPlaceContext(ctx)))
+				pos = pos.relative(side);
 
-			if(stack.getCount()!=0&&player.canPlayerEdit(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))
+			if(stack.getCount()!=0&&player.mayUseItemAt(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))
 			{
 				BlockState toolbox = MetalDevices.toolbox.getDefaultState();
-				if(world.setBlockState(pos, toolbox, 3))
+				if(world.setBlock(pos, toolbox, 3))
 				{
-					MetalDevices.toolbox.get().onIEBlockPlacedBy(new BlockItemUseContext(ctx), toolbox);
+					MetalDevices.toolbox.get().onIEBlockPlacedBy(new BlockPlaceContext(ctx), toolbox);
 
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
-					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
+					world.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);
 				}
-				return ActionResultType.SUCCESS;
+				return InteractionResult.SUCCESS;
 			}
 			else
-				return ActionResultType.FAIL;
+				return InteractionResult.FAIL;
 		}
-		return super.onItemUse(ctx);
+		return super.useOn(ctx);
 	}
 
 	@Override

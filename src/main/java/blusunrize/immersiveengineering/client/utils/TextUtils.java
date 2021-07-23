@@ -1,38 +1,38 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.api.Lib;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.StringRepresentable;
 import net.minecraftforge.fluids.FluidStack;
 
 public class TextUtils
 {
-	public static <T extends IStringSerializable> ITextComponent[] sideConfigWithOpposite(
+	public static <T extends StringRepresentable> Component[] sideConfigWithOpposite(
 			String descBase,
 			T thisConfig,
 			T otherConfig
 	)
 	{
-		return new ITextComponent[]{
-				new TranslationTextComponent(Lib.DESC_INFO+"blockSide.facing")
-						.appendString(": ")
-						.appendSibling(new TranslationTextComponent(descBase+thisConfig.getString())),
-				new TranslationTextComponent(Lib.DESC_INFO+"blockSide.opposite")
-						.appendString(": ")
-						.appendSibling(new TranslationTextComponent(descBase+otherConfig.getString()))
+		return new Component[]{
+				new TranslatableComponent(Lib.DESC_INFO+"blockSide.facing")
+						.append(": ")
+						.append(new TranslatableComponent(descBase+thisConfig.getSerializedName())),
+				new TranslatableComponent(Lib.DESC_INFO+"blockSide.opposite")
+						.append(": ")
+						.append(new TranslatableComponent(descBase+otherConfig.getSerializedName()))
 		};
 	}
 
-	public static ITextComponent formatFluidStack(FluidStack fluid)
+	public static Component formatFluidStack(FluidStack fluid)
 	{
 		String s;
 		if(!fluid.isEmpty())
 			s = fluid.getDisplayName().getString()+": "+fluid.getAmount()+"mB";
 		else
-			s = I18n.format(Lib.GUI+"empty");
-		return new StringTextComponent(s);
+			s = I18n.get(Lib.GUI+"empty");
+		return new TextComponent(s);
 	}
 }

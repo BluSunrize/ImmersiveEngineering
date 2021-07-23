@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks.plant;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
-public enum EnumHempGrowth implements IStringSerializable
+public enum EnumHempGrowth implements StringRepresentable
 {
 	BOTTOM0,
 	BOTTOM1,
@@ -24,20 +24,20 @@ public enum EnumHempGrowth implements IStringSerializable
 	TOP0;
 
 	@Override
-	public String getString()
+	public String getSerializedName()
 	{
 		return name().toLowerCase(Locale.ENGLISH);
 	}
 
 	public ResourceLocation getTextureName()
 	{
-		return new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/"+getString());
+		return new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/"+getSerializedName());
 	}
 
 	@Override
 	public String toString()
 	{
-		return getString();
+		return getSerializedName();
 	}
 
 	public EnumHempGrowth next()

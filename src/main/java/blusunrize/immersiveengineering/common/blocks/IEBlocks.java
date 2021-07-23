@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
-import blusunrize.immersiveengineering.common.blocks.metal.LanternBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
@@ -29,15 +28,16 @@ import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.AbstractBlock.Properties;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
@@ -55,47 +55,47 @@ import java.util.function.Supplier;
 public final class IEBlocks
 {
 	public static final DeferredRegister<Block> REGISTER = DeferredRegister.create(ForgeRegistries.BLOCKS, Lib.MODID);
-	private static final Supplier<Properties> STONE_DECO_PROPS = () -> Block.Properties.create(Material.ROCK)
+	private static final Supplier<Properties> STONE_DECO_PROPS = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
-			.setRequiresTool()
+			.requiresCorrectToolForDrops()
 			.harvestTool(ToolType.PICKAXE)
-			.hardnessAndResistance(2, 10);
-	private static final Supplier<Properties> STONE_DECO_LEADED_PROPS = () -> Block.Properties.create(Material.ROCK)
+			.strength(2, 10);
+	private static final Supplier<Properties> STONE_DECO_LEADED_PROPS = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
-			.setRequiresTool()
+			.requiresCorrectToolForDrops()
 			.harvestTool(ToolType.PICKAXE)
-			.hardnessAndResistance(2, 180);
-	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.create(Material.ROCK)
+			.strength(2, 180);
+	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
-			.setRequiresTool()
+			.requiresCorrectToolForDrops()
 			.harvestTool(ToolType.PICKAXE)
-			.hardnessAndResistance(2, 10)
-			.notSolid();
-	private static final Supplier<Properties> SHEETMETAL_PROPERTIES = () -> Block.Properties.create(Material.IRON)
+			.strength(2, 10)
+			.noOcclusion();
+	private static final Supplier<Properties> SHEETMETAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
-			.hardnessAndResistance(3, 10);
-	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES = () -> Block.Properties.create(Material.WOOD)
+			.strength(3, 10);
+	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES = () -> Block.Properties.of(Material.WOOD)
 			.sound(SoundType.WOOD)
-			.hardnessAndResistance(2, 5);
+			.strength(2, 5);
 	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OVERLAY =
-			() -> Block.Properties.create(Material.WOOD)
+			() -> Block.Properties.of(Material.WOOD)
 					.sound(SoundType.WOOD)
-					.hardnessAndResistance(2, 5)
-					.setBlocksVision((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NOT_SOLID = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().notSolid();
-	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.create(Material.IRON)
+					.strength(2, 5)
+					.isViewBlocking((state, blockReader, pos) -> false);
+	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NOT_SOLID = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
-			.setRequiresTool()
+			.requiresCorrectToolForDrops()
 			.harvestTool(ToolType.PICKAXE)
-			.hardnessAndResistance(3, 15);
+			.strength(3, 15);
 	private static final Supplier<Properties> METAL_PROPERTIES_NO_OVERLAY =
-			() -> Block.Properties.create(Material.IRON)
+			() -> Block.Properties.of(Material.METAL)
 					.sound(SoundType.METAL)
-					.hardnessAndResistance(3, 15)
-					.setRequiresTool()
+					.strength(3, 15)
+					.requiresCorrectToolForDrops()
 					.harvestTool(ToolType.PICKAXE)
-					.setBlocksVision((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> METAL_PROPERTIES_NOT_SOLID = () -> METAL_PROPERTIES_NO_OVERLAY.get().notSolid();
+					.isViewBlocking((state, blockReader, pos) -> false);
+	private static final Supplier<Properties> METAL_PROPERTIES_NOT_SOLID = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
 
 	private IEBlocks()
 	{
@@ -123,9 +123,9 @@ public final class IEBlocks
 				"insulating_glass", STONE_DECO_PROPS_NOT_SOLID
 		);
 		public static BlockEntry<IEBaseBlock> concreteSprayed = BlockEntry.simple(
-				"concrete_sprayed", () -> Block.Properties.create(Material.ROCK)
-						.hardnessAndResistance(.2F, 1)
-						.notSolid(), IEBaseBlock::setHammerHarvest);
+				"concrete_sprayed", () -> Block.Properties.of(Material.STONE)
+						.strength(.2F, 1)
+						.noOcclusion(), IEBaseBlock::setHammerHarvest);
 		public static BlockEntry<IEBaseBlock> alloybrick = BlockEntry.simple("alloybrick", STONE_DECO_PROPS);
 
 		//TODO possibly merge into a single block with "arbitrary" height?
@@ -259,19 +259,19 @@ public final class IEBlocks
 				if(m.shouldAddOre())
 				{
 					ore = new BlockEntry<>(BlockEntry.simple("ore_"+name,
-							() -> Block.Properties.create(Material.ROCK)
-									.hardnessAndResistance(3, 5)
-									.setRequiresTool()
+							() -> Block.Properties.of(Material.STONE)
+									.strength(3, 5)
+									.requiresCorrectToolForDrops()
 									.harvestTool(ToolType.PICKAXE)
 									.harvestLevel(oreMiningLevels.get(m))));
 				}
 				if(!m.isVanillaMetal())
 				{
 					BlockEntry<IEBaseBlock> storageIE = BlockEntry.simple(
-							"storage_"+name, () -> Block.Properties.create(Material.IRON)
-							.sound(m==EnumMetals.STEEL?SoundType.NETHERITE: SoundType.METAL)
-							.hardnessAndResistance(5, 10)
-							.setRequiresTool()
+							"storage_"+name, () -> Block.Properties.of(Material.METAL)
+							.sound(m==EnumMetals.STEEL?SoundType.NETHERITE_BLOCK: SoundType.METAL)
+							.strength(5, 10)
+							.requiresCorrectToolForDrops()
 							.harvestTool(ToolType.PICKAXE)
 							.harvestLevel(storageMiningLevels.get(m))
 					);
@@ -305,11 +305,11 @@ public final class IEBlocks
 		public static BlockEntry<PostBlock> treatedPost = BlockEntry.post("treated_post", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
 		public static BlockEntry<SawdustBlock> sawdust = new BlockEntry<>(
 				"sawdust",
-				() -> Block.Properties.create(Material.WOOD, MaterialColor.SAND)
+				() -> Block.Properties.of(Material.WOOD, MaterialColor.SAND)
 						.sound(SoundType.SAND)
 						.harvestTool(ToolType.SHOVEL)
-						.hardnessAndResistance(0.5F)
-						.doesNotBlockMovement().notSolid(),
+						.strength(0.5F)
+						.noCollission().noOcclusion(),
 				SawdustBlock::new
 		);
 
@@ -347,7 +347,7 @@ public final class IEBlocks
 		);
 		public static BlockEntry<GenericTileBlock<WoodenCrateTileEntity>> reinforcedCrate = new BlockEntry<>(
 				"reinforced_crate",
-				() -> Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 1200000),
+				() -> Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 1200000),
 				p -> new GenericTileBlock<>(IETileTypes.WOODEN_CRATE, p)
 		);
 		public static BlockEntry<GenericTileBlock<SorterTileEntity>> sorter = new BlockEntry<>(
@@ -409,7 +409,7 @@ public final class IEBlocks
 			for(DyeColor dye : DyeColor.values())
 			{
 				BlockEntry<IEBaseBlock> sheetmetal = BlockEntry.simple(
-						"sheetmetal_colored_"+dye.getTranslationKey(), SHEETMETAL_PROPERTIES
+						"sheetmetal_colored_"+dye.getName(), SHEETMETAL_PROPERTIES
 				);
 				coloredSheetmetal.put(dye, sheetmetal);
 				registerSlab(sheetmetal);
@@ -651,7 +651,7 @@ public final class IEBlocks
 				IEItems.REGISTER.register(entry.getId().getPath(), () -> new BlockItemIE(entry.get()));
 	}
 
-	public static final class BlockEntry<T extends Block> implements Supplier<T>, IItemProvider
+	public static final class BlockEntry<T extends Block> implements Supplier<T>, ItemLike
 	{
 		public static final Collection<BlockEntry<?>> ALL_ENTRIES = new ArrayList<>();
 
@@ -699,7 +699,7 @@ public final class IEBlocks
 
 		public BlockEntry(T existing)
 		{
-			this.properties = () -> Properties.from(existing);
+			this.properties = () -> Properties.copy(existing);
 			this.regObject = RegistryObject.of(existing.getRegistryName(), ForgeRegistries.BLOCKS);
 		}
 
@@ -717,7 +717,7 @@ public final class IEBlocks
 		}
 
 		public BlockState getDefaultState() {
-			return get().getDefaultState();
+			return get().defaultBlockState();
 		}
 
 		public ResourceLocation getId() {

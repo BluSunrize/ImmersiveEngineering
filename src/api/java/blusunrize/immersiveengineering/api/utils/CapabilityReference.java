@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
@@ -29,32 +29,32 @@ public abstract class CapabilityReference<T>
 	private static final Logger LOGGER = LogManager.getLogger();
 
 	public static <T> CapabilityReference<T> forTileEntityAt(
-			TileEntity local, Supplier<DirectionalBlockPos> pos, Capability<T> cap
+			BlockEntity local, Supplier<DirectionalBlockPos> pos, Capability<T> cap
 	)
 	{
-		return new TECapReference<>(local::getWorld, pos, cap);
+		return new TECapReference<>(local::getLevel, pos, cap);
 	}
 
-	public static <T> CapabilityReference<T> forRelative(TileEntity local, Capability<T> cap, Vector3i offset, Direction side)
+	public static <T> CapabilityReference<T> forRelative(BlockEntity local, Capability<T> cap, Vec3i offset, Direction side)
 	{
-		return forTileEntityAt(local, () -> new DirectionalBlockPos(local.getPos().add(offset), side.getOpposite()), cap);
+		return forTileEntityAt(local, () -> new DirectionalBlockPos(local.getBlockPos().offset(offset), side.getOpposite()), cap);
 	}
 
-	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, NonNullSupplier<Direction> side)
+	public static <T> CapabilityReference<T> forNeighbor(BlockEntity local, Capability<T> cap, NonNullSupplier<Direction> side)
 	{
 		return forTileEntityAt(
 				local,
 				() -> {
 					Direction d = side.get();
-					return new DirectionalBlockPos(local.getPos().offset(d), d.getOpposite());
+					return new DirectionalBlockPos(local.getBlockPos().relative(d), d.getOpposite());
 				},
 				cap
 		);
 	}
 
-	public static <T> CapabilityReference<T> forNeighbor(TileEntity local, Capability<T> cap, @Nonnull Direction side)
+	public static <T> CapabilityReference<T> forNeighbor(BlockEntity local, Capability<T> cap, @Nonnull Direction side)
 	{
-		return forRelative(local, cap, BlockPos.ZERO.offset(side), side);
+		return forRelative(local, cap, BlockPos.ZERO.relative(side), side);
 	}
 
 	protected final Capability<T> cap;
@@ -77,15 +77,15 @@ public abstract class CapabilityReference<T>
 
 	private static class TECapReference<T> extends CapabilityReference<T>
 	{
-		private final Supplier<World> world;
+		private final Supplier<Level> world;
 		private final Supplier<DirectionalBlockPos> pos;
 		@Nonnull
 		private LazyOptional<T> currentCap = LazyOptional.empty();
 		private DirectionalBlockPos lastPos;
-		private World lastWorld;//TODO does this leak anywhere?
-		private TileEntity lastTE;
+		private Level lastWorld;//TODO does this leak anywhere?
+		private BlockEntity lastTE;
 
-		public TECapReference(Supplier<World> world, Supplier<DirectionalBlockPos> pos, Capability<T> cap)
+		public TECapReference(Supplier<Level> world, Supplier<DirectionalBlockPos> pos, Capability<T> cap)
 		{
 			super(cap);
 			this.world = world;
@@ -109,7 +109,7 @@ public abstract class CapabilityReference<T>
 
 		private void updateLazyOptional()
 		{
-			World currWorld = world.get();
+			Level currWorld = world.get();
 			DirectionalBlockPos currPos = pos.get();
 			if(currWorld==null||currPos==null)
 			{

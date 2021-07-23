@@ -18,21 +18,21 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.mixin.accessors.client.ModelAccess;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
@@ -43,185 +43,185 @@ import java.util.concurrent.TimeUnit;
  */
 public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 {
-	public ModelRenderer[] modelParts;
-	public ModelRenderer[] colouredParts;
+	public ModelPart[] modelParts;
+	public ModelPart[] colouredParts;
 
 	public ModelPowerpack(float modelSize, float yOffsetIn, int textureWidthIn, int textureHeightIn)
 	{
 		super(modelSize, yOffsetIn, textureWidthIn, textureHeightIn);
-		((ModelAccess)this).setRenderType(RenderType::getEntityTranslucent);
-		modelParts = new ModelRenderer[8];
-		colouredParts = new ModelRenderer[4];
+		((ModelAccess)this).setRenderType(RenderType::entityTranslucent);
+		modelParts = new ModelPart[8];
+		colouredParts = new ModelPart[4];
 
-		this.modelParts[0] = new ModelRenderer(this, 40, 0);
+		this.modelParts[0] = new ModelPart(this, 40, 0);
 		this.modelParts[0].addBox(-4f, -5f, -2f, 8, 10, 3, 0);
-		this.modelParts[0].setRotationPoint(0, 5, 4);
-		this.bipedBody.addChild(modelParts[0]);
+		this.modelParts[0].setPos(0, 5, 4);
+		this.body.addChild(modelParts[0]);
 
-		this.modelParts[1] = new ModelRenderer(this, 12, 0);
+		this.modelParts[1] = new ModelPart(this, 12, 0);
 		this.modelParts[1].addBox(-3f, -2f, -2f, 6, 4, 4, 0);
-		this.modelParts[1].setRotationPoint(0, 12, 4f);
-		this.bipedBody.addChild(modelParts[1]);
+		this.modelParts[1].setPos(0, 12, 4f);
+		this.body.addChild(modelParts[1]);
 
-		this.modelParts[2] = new ModelRenderer(this, 0, 0);
+		this.modelParts[2] = new ModelPart(this, 0, 0);
 		this.modelParts[2].addBox(-1f, -4f, -1f, 2, 8, 2, 0);
-		this.modelParts[2].setRotationPoint(-5f, 5, 3f);
-		this.bipedBody.addChild(modelParts[2]);
+		this.modelParts[2].setPos(-5f, 5, 3f);
+		this.body.addChild(modelParts[2]);
 
-		this.modelParts[3] = new ModelRenderer(this, 0, 0);
+		this.modelParts[3] = new ModelPart(this, 0, 0);
 		this.modelParts[3].addBox(-1f, -4.0f, -1f, 2, 8, 2, 0);
-		this.modelParts[3].setRotationPoint(5f, 5, 3f);
-		this.modelParts[3].rotateAngleZ = 3.14159f;
-		this.bipedBody.addChild(modelParts[3]);
+		this.modelParts[3].setPos(5f, 5, 3f);
+		this.modelParts[3].zRot = 3.14159f;
+		this.body.addChild(modelParts[3]);
 
 
-		ModelRenderer gauge = new ModelRenderer(this, 40, 13);
+		ModelPart gauge = new ModelPart(this, 40, 13);
 		gauge.addBox(-.5f, -1.5f, -.5f, 1, 3, 1, 0);
-		gauge.setRotationPoint(-3f, 5.5f, 5f);
-		this.bipedBody.addChild(gauge);
+		gauge.setPos(-3f, 5.5f, 5f);
+		this.body.addChild(gauge);
 
-		gauge = new ModelRenderer(this, 40, 13);
+		gauge = new ModelPart(this, 40, 13);
 		gauge.addBox(-.5f, -1.5f, -.5f, 1, 3, 1, 0);
-		gauge.setRotationPoint(1f, 5.5f, 5f);
-		this.bipedBody.addChild(gauge);
+		gauge.setPos(1f, 5.5f, 5f);
+		this.body.addChild(gauge);
 
-		gauge = new ModelRenderer(this, 44, 13);
+		gauge = new ModelPart(this, 44, 13);
 		gauge.addBox(-2f, -.5f, -.5f, 3, 1, 1, 0);
-		gauge.setRotationPoint(-.5f, 3.5f, 5f);
-		this.bipedBody.addChild(gauge);
+		gauge.setPos(-.5f, 3.5f, 5f);
+		this.body.addChild(gauge);
 
-		gauge = new ModelRenderer(this, 44, 13);
+		gauge = new ModelPart(this, 44, 13);
 		gauge.addBox(-2f, -.5f, -.5f, 3, 1, 1, 0);
-		gauge.setRotationPoint(-.5f, 7.5f, 5f);
-		this.bipedBody.addChild(gauge);
+		gauge.setPos(-.5f, 7.5f, 5f);
+		this.body.addChild(gauge);
 
-		this.modelParts[7] = new ModelRenderer(this, 52, 14);
+		this.modelParts[7] = new ModelPart(this, 52, 14);
 		this.modelParts[7].addBox(-.5f, -3.5f, -.5f, 1, 4, 1, -.25f);
-		this.modelParts[7].setRotationPoint(-1f, 7.625f, 5f);
-		this.modelParts[7].rotateAngleZ = 0.7853975f;
-		this.bipedBody.addChild(modelParts[7]);
+		this.modelParts[7].setPos(-1f, 7.625f, 5f);
+		this.modelParts[7].zRot = 0.7853975f;
+		this.body.addChild(modelParts[7]);
 
-		ModelRenderer connector = new ModelRenderer(this, 17, 9);
+		ModelPart connector = new ModelPart(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, 0);
-		connector.setRotationPoint(-4.5f, 0f, 0f);
+		connector.setPos(-4.5f, 0f, 0f);
 		this.modelParts[1].addChild(connector);
 
-		connector = new ModelRenderer(this, 17, 9);
+		connector = new ModelPart(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, -.375f);
-		connector.setRotationPoint(-6f, 0f, 0);
+		connector.setPos(-6f, 0f, 0);
 		this.modelParts[1].addChild(connector);
 
-		connector = new ModelRenderer(this, 29, 9);
+		connector = new ModelPart(this, 29, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 1, 3, 3, 0);
-		connector.setRotationPoint(-6.25f, 0f, 0);
+		connector.setPos(-6.25f, 0f, 0);
 		this.modelParts[1].addChild(connector);
 
-		connector = new ModelRenderer(this, 12, 8);
+		connector = new ModelPart(this, 12, 8);
 		connector.addBox(-.5f, -1f, -1f, 2, 2, 2, 0);
-		connector.setRotationPoint(-7.5f, 0f, 0f);
+		connector.setPos(-7.5f, 0f, 0f);
 		this.modelParts[1].addChild(connector);
 
 
-		connector = new ModelRenderer(this, 17, 9);
+		connector = new ModelPart(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, 0);
-		connector.setRotationPoint(4.5f, 0f, 0f);
-		connector.rotateAngleY = 3.14159f;
+		connector.setPos(4.5f, 0f, 0f);
+		connector.yRot = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
-		connector = new ModelRenderer(this, 17, 9);
+		connector = new ModelPart(this, 17, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 3, 3, 3, -.375f);
-		connector.setRotationPoint(6f, 0f, 0);
-		connector.rotateAngleY = 3.14159f;
+		connector.setPos(6f, 0f, 0);
+		connector.yRot = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
-		connector = new ModelRenderer(this, 29, 9);
+		connector = new ModelPart(this, 29, 9);
 		connector.addBox(-1f, -1.5f, -1.5f, 1, 3, 3, 0);
-		connector.setRotationPoint(6.25f, 0f, 0);
-		connector.rotateAngleY = 3.14159f;
+		connector.setPos(6.25f, 0f, 0);
+		connector.yRot = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
-		connector = new ModelRenderer(this, 12, 8);
+		connector = new ModelPart(this, 12, 8);
 		connector.addBox(-.5f, -1f, -1f, 2, 2, 2, 0);
-		connector.setRotationPoint(7.5f, 0f, 0f);
-		connector.rotateAngleY = 3.14159f;
+		connector.setPos(7.5f, 0f, 0f);
+		connector.yRot = 3.14159f;
 		this.modelParts[1].addChild(connector);
 
 		for(int i = 0; i < 3; i++)
 		{
 			float pos = 3.125f-i*2.25f;
-			ModelRenderer tube = new ModelRenderer(this, 56, 19);
+			ModelPart tube = new ModelPart(this, 56, 19);
 			tube.addBox(-1f, -1f, -1f, 2, 2, 2, -.25f);
-			tube.setRotationPoint(pos, 1, 5);
-			tube.rotateAngleX = (float)Math.toRadians(-45);
-			this.bipedBody.addChild(tube);
+			tube.setPos(pos, 1, 5);
+			tube.xRot = (float)Math.toRadians(-45);
+			this.body.addChild(tube);
 
-			ModelRenderer tube2 = new ModelRenderer(this, 52, 18);
+			ModelPart tube2 = new ModelPart(this, 52, 18);
 			tube2.addBox(-.5f, -2f, -.5f, 1, 3, 1, 0);
-			tube2.setRotationPoint(0, -.5f, 0);
+			tube2.setPos(0, -.5f, 0);
 			tube.addChild(tube2);
 
-			tube2 = new ModelRenderer(this, 56, 15);
+			tube2 = new ModelPart(this, 56, 15);
 			tube2.addBox(-1f, -2f, -1f, 2, 2, 2, 0);
-			tube2.setRotationPoint(0, -.75f, 0);
+			tube2.setPos(0, -.75f, 0);
 			tube.addChild(tube2);
 
-			tube2 = new ModelRenderer(this, 56, 13);
+			tube2 = new ModelPart(this, 56, 13);
 			tube2.addBox(-.5f, -1f, -.5f, 1, 1, 1, 0);
-			tube2.setRotationPoint(0, -2.25f, 0);
+			tube2.setPos(0, -2.25f, 0);
 			tube.addChild(tube2);
 
-			tube2 = new ModelRenderer(this, 56, 13);
+			tube2 = new ModelPart(this, 56, 13);
 			tube2.addBox(-.5f, -1f, -.5f, 1, 1, 1, -.25f);
-			tube2.setRotationPoint(0, -3f, 0);
+			tube2.setPos(0, -3f, 0);
 			tube.addChild(tube2);
 		}
 
-		this.bipedHead.showModel = false;
-		this.bipedHeadwear.showModel = false;
-		this.bipedLeftArm.showModel = false;
-		this.bipedRightArm.showModel = false;
-		this.bipedLeftLeg.showModel = false;
-		this.bipedRightLeg.showModel = false;
+		this.head.visible = false;
+		this.hat.visible = false;
+		this.leftArm.visible = false;
+		this.rightArm.visible = false;
+		this.leftLeg.visible = false;
+		this.rightLeg.visible = false;
 	}
 
 	@Override
-	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
+	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
 	{
 		if(entityTemp instanceof LivingEntity)
 		{
-			ItemStack chest = entityTemp.getItemStackFromSlot(EquipmentSlotType.CHEST);
+			ItemStack chest = entityTemp.getItemBySlot(EquipmentSlot.CHEST);
 			ItemStack powerpack = null;
 			float storage = 0;
 			if(!chest.isEmpty()&&chest.getItem() instanceof PowerpackItem)
 				powerpack = chest;
 			else if(!chest.isEmpty()&&chest.getItem() instanceof ArmorItem&&ItemNBTHelper.hasKey(chest, "IE:Powerpack"))
 				powerpack = ItemNBTHelper.getItemStack(chest, "IE:Powerpack");
-			else if(IEBipedLayerRenderer.POWERPACK_PLAYERS.containsKey(entityTemp.getUniqueID()))
-				powerpack = IEBipedLayerRenderer.POWERPACK_PLAYERS.get(entityTemp.getUniqueID()).getLeft();
+			else if(IEBipedLayerRenderer.POWERPACK_PLAYERS.containsKey(entityTemp.getUUID()))
+				powerpack = IEBipedLayerRenderer.POWERPACK_PLAYERS.get(entityTemp.getUUID()).getLeft();
 
 			if(powerpack!=null)
 			{
 				float max = EnergyHelper.getMaxEnergyStored(powerpack);
 				storage = max <= 0?0: EnergyHelper.getEnergyStored(powerpack)/max;
-				this.modelParts[7].rotateAngleZ = 0.5235987f-(1.047197f*storage);
+				this.modelParts[7].zRot = 0.5235987f-(1.047197f*storage);
 			}
 		}
 
-		super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+		super.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
 		TextureAtlasSprite wireTexture = Minecraft.getInstance()
-				.getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+				.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
 				.apply(new ResourceLocation(Lib.MODID, "textures/block/wire"));
-		for(Hand hand : Hand.values())
+		for(InteractionHand hand : InteractionHand.values())
 		{
-			ItemStack stack = entityTemp.getHeldItem(hand);
+			ItemStack stack = entityTemp.getItemInHand(hand);
 			if(!stack.isEmpty()&&EnergyHelper.isFluxRelated(stack))
 			{
-				boolean right = (hand==Hand.MAIN_HAND)==(entityTemp.getPrimaryHand()==HandSide.RIGHT);
-				float angleX = (right?bipedRightArm: bipedLeftArm).rotateAngleX;
-				float angleZ = (right?bipedRightArm: bipedLeftArm).rotateAngleZ;
+				boolean right = (hand==InteractionHand.MAIN_HAND)==(entityTemp.getMainArm()==HumanoidArm.RIGHT);
+				float angleX = (right?rightArm: leftArm).xRot;
+				float angleZ = (right?rightArm: leftArm).zRot;
 				String cacheKey = keyFormat.format(angleX)+"_"+keyFormat.format(angleZ);
-				Vector3d[] vex;
+				Vec3[] vex;
 				try
 				{
 					vex = (right?catenaryCacheRight: catenaryCacheLeft).get(cacheKey, () ->
@@ -231,7 +231,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 						double y = armLength*Math.cos(angleX);
 						double z = armLength*Math.sin(angleX);
 
-						return WireUtils.getConnectionCatenary(new Vector3d(.484375, -.75, .25), new Vector3d(x, -y, z), 1.5);
+						return WireUtils.getConnectionCatenary(new Vec3(.484375, -.75, .25), new Vec3(x, -y, z), 1.5);
 					});
 				} catch(Exception e)
 				{
@@ -245,19 +245,19 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 				builder.setColor(.93f, .63f, .27f, 1);
 				builder.setLight(packedLightIn);
 				builder.setOverlay(packedOverlayIn);
-				final float v0 = wireTexture.getMinV();
-				final float v1 = wireTexture.getMaxV();
+				final float v0 = wireTexture.getV0();
+				final float v1 = wireTexture.getV1();
 				for(int i = 1; i < vex.length; i++)
 					for(int offset = 0; offset < 2; ++offset)
 					{
 						int iHere = i-offset;
 						int iThere = i-1+offset;
-						Vector3d vecHere = vex[iHere];
-						Vector3d vecThere = vex[iThere];
+						Vec3 vecHere = vex[iHere];
+						Vec3 vecThere = vex[iThere];
 						builder.setNormal((float)(vecThere.z-vecHere.z), 0, (float)(vecHere.x-vecThere.x));
 						for(int index : new int[]{iHere, iThere})
 						{
-							Vector3d vec = vex[index];
+							Vec3 vec = vex[index];
 							double xA = scaleX*vec.x-.015625;
 							double xB = scaleX*vec.x+.015625;
 							if(index==iHere)
@@ -266,17 +266,17 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 								xA = xB;
 								xB = tmp;
 							}
-							builder.pos(xA, -vec.y, vec.z)
-									.tex(wireTexture.getInterpolatedU(vStep*index), v0)
+							builder.vertex(xA, -vec.y, vec.z)
+									.uv(wireTexture.getU(vStep*index), v0)
 									.endVertex();
-							builder.pos(xB, -vec.y, vec.z)
-									.tex(wireTexture.getInterpolatedU(vStep*index), v1)
+							builder.vertex(xB, -vec.y, vec.z)
+									.uv(wireTexture.getU(vStep*index), v1)
 									.endVertex();
 						}
 						builder.setNormal((float)(vecThere.y-vecHere.y), (float)(vecHere.x-vecThere.x), 0);
 						for(int index : new int[]{iHere, iThere})
 						{
-							Vector3d vec = vex[index];
+							Vec3 vec = vex[index];
 							double yA = -vec.y-.015625;
 							double yB = -vec.y;
 							if(index==iThere)
@@ -285,11 +285,11 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 								yA = yB;
 								yB = tmp;
 							}
-							builder.pos(scaleX*vec.x, yA, vec.z)
-									.tex(wireTexture.getInterpolatedU(vStep*index), v0)
+							builder.vertex(scaleX*vec.x, yA, vec.z)
+									.uv(wireTexture.getU(vStep*index), v0)
 									.endVertex();
-							builder.pos(scaleX*vec.x, yB, vec.z)
-									.tex(wireTexture.getInterpolatedU(vStep*index), v1)
+							builder.vertex(scaleX*vec.x, yB, vec.z)
+									.uv(wireTexture.getU(vStep*index), v1)
 									.endVertex();
 						}
 					}
@@ -298,10 +298,10 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 	}
 
 	static final DecimalFormat keyFormat = new DecimalFormat("0.0000");
-	public static final Cache<String, Vector3d[]> catenaryCacheLeft = CacheBuilder.newBuilder()
+	public static final Cache<String, Vec3[]> catenaryCacheLeft = CacheBuilder.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.build();
-	public static final Cache<String, Vector3d[]> catenaryCacheRight = CacheBuilder.newBuilder()
+	public static final Cache<String, Vec3[]> catenaryCacheRight = CacheBuilder.newBuilder()
 			.expireAfterAccess(5, TimeUnit.MINUTES)
 			.build();
 

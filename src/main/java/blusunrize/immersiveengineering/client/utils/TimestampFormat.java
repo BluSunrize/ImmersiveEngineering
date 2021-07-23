@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.api.Lib;
-import net.minecraft.client.resources.I18n;
+import net.minecraft.client.resources.language.I18n;
 
 public enum TimestampFormat
 {
@@ -46,14 +46,14 @@ public enum TimestampFormat
 		for(TimestampFormat core : TimestampFormat.coreValues)
 			if(format.containsFormat(core)&&timestamp >= core.getTickCut())
 			{
-				s.append(I18n.format(Lib.DESC_INFO+core.getLocalKey(), Long.toString(timestamp/core.getTickCut())));
+				s.append(I18n.get(Lib.DESC_INFO+core.getLocalKey(), Long.toString(timestamp/core.getTickCut())));
 				timestamp %= core.getTickCut();
 			}
 		if(s.length()==0)
 			for(int i = TimestampFormat.coreValues.length-1; i >= 0; i--)
 				if(format.containsFormat(TimestampFormat.coreValues[i]))
 				{
-					s = new StringBuilder(I18n.format(Lib.DESC_INFO+TimestampFormat.coreValues[i].getLocalKey(), 0));
+					s = new StringBuilder(I18n.get(Lib.DESC_INFO+TimestampFormat.coreValues[i].getLocalKey(), 0));
 					break;
 				}
 		return s.toString();

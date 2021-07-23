@@ -20,25 +20,25 @@ import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
@@ -49,8 +49,8 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 		IInteractionObjectIE<ToolboxTileEntity>, ITileDrop, IPlayerInteraction
 {
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(ToolboxItem.SLOT_COUNT, ItemStack.EMPTY);
-	public ITextComponent name;
-	private ListNBT enchantments;
+	public Component name;
+	private ListTag enchantments;
 
 	public ToolboxTileEntity()
 	{
@@ -58,39 +58,39 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(nbt.contains("name", NBT.TAG_STRING))
-			this.name = ITextComponent.Serializer.getComponentFromJson(nbt.getString("name"));
+			this.name = Component.Serializer.fromJson(nbt.getString("name"));
 		if(nbt.contains("enchantments", NBT.TAG_LIST))
 			this.enchantments = nbt.getList("enchantments", NBT.TAG_COMPOUND);
 		if(!descPacket)
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(this.name!=null)
-			nbt.putString("name", ITextComponent.Serializer.toJson(this.name));
+			nbt.putString("name", Component.Serializer.toJson(this.name));
 		if(this.enchantments!=null)
 			nbt.put("enchantments", this.enchantments);
 		if(!descPacket)
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(player.isSneaking())
+		if(player.isShiftKeyDown())
 		{
-			if(!world.isRemote)
+			if(!level.isClientSide)
 			{
-				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5,
-						getPos().getZ()+.5, getPickBlock(player, getBlockState(), new BlockRayTraceResult(new Vector3d(hitX, hitY, hitZ), side, pos, false)));
-				entityitem.setDefaultPickupDelay();
-				world.removeBlock(getPos(), false);
-				world.addEntity(entityitem);
+				ItemEntity entityitem = new ItemEntity(level, getBlockPos().getX()+.5, getBlockPos().getY()+.5,
+						getBlockPos().getZ()+.5, getPickBlock(player, getBlockState(), new BlockHitResult(new Vec3(hitX, hitY, hitZ), side, worldPosition, false)));
+				entityitem.setDefaultPickUpDelay();
+				level.removeBlock(getBlockPos(), false);
+				level.addFreshEntity(entityitem);
 			}
 			return true;
 		}
@@ -106,7 +106,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	//}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -144,7 +144,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 		ItemStack stack = new ItemStack(Tools.toolbox);
 		Tools.toolbox.get().setContainedItems(stack, inventory);
 		if(this.name!=null)
-			stack.setDisplayName(this.name);
+			stack.setHoverName(this.name);
 		if(enchantments!=null)
 			stack.getOrCreateTag().put("ench", enchantments);
 		return ImmutableList.of(stack);
@@ -170,9 +170,9 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 					inventory.set(i, inv.getStackInSlot(i));
 			});
 
-			if(stack.hasDisplayName())
-				this.name = stack.getDisplayName();
-			enchantments = stack.getEnchantmentTagList();
+			if(stack.hasCustomHoverName())
+				this.name = stack.getHoverName();
+			enchantments = stack.getEnchantmentTags();
 		}
 	}
 
@@ -195,7 +195,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -206,11 +206,11 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 		return true;
 	}
 
-	private static final VoxelShape boundsZ = VoxelShapes.create(.125f, 0, .25f, .875f, .625f, .75f);
-	private static final VoxelShape boundsX = VoxelShapes.create(.25f, 0, .125f, .75f, .625f, .875f);
+	private static final VoxelShape boundsZ = Shapes.box(.125f, 0, .25f, .875f, .625f, .75f);
+	private static final VoxelShape boundsX = Shapes.box(.25f, 0, .125f, .75f, .625f, .875f);
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return getFacing().getAxis()==Axis.Z?boundsZ: boundsX;
 	}

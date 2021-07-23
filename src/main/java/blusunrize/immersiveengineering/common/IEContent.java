@@ -45,13 +45,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
-import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
-import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
-import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
-import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
-import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
-import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlock;
-import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
@@ -77,25 +70,25 @@ import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ConcretePowderBlock;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.potion.Effects;
-import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ConcretePowderBlock;
+import net.minecraft.world.level.block.ShulkerBoxBlock;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -116,7 +109,7 @@ import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandle
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
 {
-	public static final Feature<OreFeatureConfig> ORE_RETROGEN = new OreRetrogenFeature(OreFeatureConfig.CODEC);
+	public static final Feature<OreConfiguration> ORE_RETROGEN = new OreRetrogenFeature(OreConfiguration.CODEC);
 
 	public static void modConstruction()
 	{
@@ -126,7 +119,7 @@ public class IEContent
 		IEWireTypes.modConstruction();
 		/*CONVEYORS*/
 		ConveyorHandler.registerMagnetSuppression((entity, iConveyorTile) -> {
-			CompoundNBT data = entity.getPersistentData();
+			CompoundTag data = entity.getPersistentData();
 			if(!data.getBoolean(Lib.MAGNET_PREVENT_NBT))
 				data.putBoolean(Lib.MAGNET_PREVENT_NBT, true);
 		}, (entity, iConveyorTile) -> {
@@ -163,7 +156,7 @@ public class IEContent
 		BulletHandler.emptyCasing = Ingredients.emptyCasing;
 		BulletHandler.emptyShell = Ingredients.emptyShell;
 		IEWireTypes.setup();
-		DataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
+		EntityDataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
 		ClocheRenderFunctions.init();
 
@@ -227,7 +220,7 @@ public class IEContent
 		//  code don't need explicit compat?
 		AssemblerHandler.registerSpecialIngredientConverter((o) ->
 		{
-			final ItemStack[] matching = o.getMatchingStacks();
+			final ItemStack[] matching = o.getItems();
 			if(!o.isVanilla()||matching.length!=1)
 				return null;
 			final Item potentialBucket = matching[0].getItem();
@@ -235,14 +228,14 @@ public class IEContent
 				return null;
 			//Explicitly check for vanilla-style non-dynamic container items
 			//noinspection deprecation
-			if(!potentialBucket.hasContainerItem()||potentialBucket.getContainerItem()!=Items.BUCKET)
+			if(!potentialBucket.hasCraftingRemainingItem()||potentialBucket.getCraftingRemainingItem()!=Items.BUCKET)
 				return null;
 			final Fluid contained = ((BucketItem)potentialBucket).getFluid();
 			return new FluidStackRecipeQuery(new FluidStack(contained, FluidAttributes.BUCKET_VOLUME));
 		});
 		// Milk is a weird special case
 		AssemblerHandler.registerSpecialIngredientConverter(o -> {
-			final ItemStack[] matching = o.getMatchingStacks();
+			final ItemStack[] matching = o.getItems();
 			if(!o.isVanilla()||matching.length!=1||matching[0].getItem()!=Items.MILK_BUCKET||!ForgeMod.MILK.isPresent())
 				return null;
 			return new FluidStackRecipeQuery(new FluidStack(ForgeMod.MILK.get(), FluidAttributes.BUCKET_VOLUME));
@@ -254,15 +247,15 @@ public class IEContent
 
 		// TODO move to IEFluids/constructors?
 		IEFluids.fluidCreosote.getBlock().setEffect(IEPotions.flammable.get(), 100, 0);
-		IEFluids.fluidEthanol.getBlock().setEffect(Effects.NAUSEA, 70, 0);
+		IEFluids.fluidEthanol.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
 		IEFluids.fluidBiodiesel.getBlock().setEffect(IEPotions.flammable.get(), 100, 1);
-		IEFluids.fluidConcrete.getBlock().setEffect(Effects.SLOWNESS, 20, 3);
+		IEFluids.fluidConcrete.getBlock().setEffect(MobEffects.MOVEMENT_SLOWDOWN, 20, 3);
 
 		ChemthrowerEffects.register();
 
 		RailgunProjectiles.register();
 
-		ExternalHeaterHandler.registerHeatableAdapter(FurnaceTileEntity.class, new DefaultFurnaceAdapter());
+		ExternalHeaterHandler.registerHeatableAdapter(FurnaceBlockEntity.class, new DefaultFurnaceAdapter());
 
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.MAGMA_BLOCK, 1300);
 		//TODO tags?
@@ -301,8 +294,8 @@ public class IEContent
 
 		/*BLOCK ITEMS FROM CRATES*/
 		IEApi.forbiddenInCrates.add(
-				stack -> stack.getItem().isIn(IETags.forbiddenInCrates)||
-						Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock
+				stack -> stack.getItem().is(IETags.forbiddenInCrates)||
+						Block.byItem(stack.getItem()) instanceof ShulkerBoxBlock
 		);
 
 		FluidPipeTileEntity.initCovers();
@@ -320,7 +313,7 @@ public class IEContent
 		ExcavatorHandler.setSetDirtyCallback(IESaveData::markInstanceDirty);
 		TemplateMultiblock.setCallbacks(
 				bs -> Utils.getPickBlock(
-						bs, new BlockRayTraceResult(Vector3d.ZERO, Direction.DOWN, BlockPos.ZERO, false),
+						bs, new BlockHitResult(Vec3.ZERO, Direction.DOWN, BlockPos.ZERO, false),
 						ImmersiveEngineering.proxy.getClientPlayer()
 				),
 				(loc, server) -> {
@@ -332,11 +325,11 @@ public class IEContent
 						throw new RuntimeException(e);
 					}
 				},
-				template -> ((TemplateAccess)template).getBlocks()
+				template -> ((TemplateAccess)template).getPalettes()
 		);
 		defaultAdapter = new DefaultAssemblerAdapter();
 		WirecoilUtils.COIL_USE.setValue(WireCoilItem::doCoilUse);
-		AssemblerHandler.registerRecipeAdapter(IRecipe.class, defaultAdapter);
+		AssemblerHandler.registerRecipeAdapter(Recipe.class, defaultAdapter);
 		BulletHandler.GET_BULLET_ITEM.setValue(b -> {
 			ItemRegObject<BulletItem> regObject = Weapons.bullets.get(b);
 			if(regObject!=null)
@@ -348,7 +341,7 @@ public class IEContent
 				(world, pos) -> {
 					Block b = world.getBlockState(pos).getBlock();
 					if(b instanceof ConcretePowderBlock)
-						world.setBlockState(pos, ((ConcretePowderBlockAccess)b).getSolidifiedState(), 3);
+						world.setBlock(pos, ((ConcretePowderBlockAccess)b).getConcrete(), 3);
 				}
 		);
 		WireDamageHandler.GET_WIRE_DAMAGE.setValue(IEDamageSources::causeWireDamage);

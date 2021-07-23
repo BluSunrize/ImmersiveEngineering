@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -24,22 +24,22 @@ import java.util.function.Supplier;
 public class MessageSpeedloaderSync implements IMessage
 {
 	private int slot;
-	private Hand hand;
+	private InteractionHand hand;
 
-	public MessageSpeedloaderSync(int slot, Hand hand)
+	public MessageSpeedloaderSync(int slot, InteractionHand hand)
 	{
 		this.slot = slot;
 		this.hand = hand;
 	}
 
-	public MessageSpeedloaderSync(PacketBuffer buf)
+	public MessageSpeedloaderSync(FriendlyByteBuf buf)
 	{
 		slot = buf.readByte();
-		hand = Hand.values()[buf.readByte()];
+		hand = InteractionHand.values()[buf.readByte()];
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeByte(slot);
 		buf.writeByte(hand.ordinal());
@@ -49,15 +49,15 @@ public class MessageSpeedloaderSync implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		context.get().enqueueWork(() -> {
-			PlayerEntity player = ImmersiveEngineering.proxy.getClientPlayer();
+			Player player = ImmersiveEngineering.proxy.getClientPlayer();
 			if(player!=null)
 			{
-				if(player.getHeldItem(hand).getItem() instanceof RevolverItem)
+				if(player.getItemInHand(hand).getItem() instanceof RevolverItem)
 				{
 					player.playSound(IESounds.revolverReload, 1f, 1f);
-					ItemNBTHelper.putInt(player.getHeldItem(hand), "reload", 60);
+					ItemNBTHelper.putInt(player.getItemInHand(hand), "reload", 60);
 				}
-				player.inventory.setInventorySlotContents(slot, new ItemStack(Weapons.speedloader));
+				player.inventory.setItem(slot, new ItemStack(Weapons.speedloader));
 			}
 		});
 	}

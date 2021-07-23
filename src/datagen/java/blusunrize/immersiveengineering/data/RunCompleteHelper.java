@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.data;
 
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
@@ -9,10 +9,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class RunCompleteHelper implements IDataProvider
+public class RunCompleteHelper implements DataProvider
 {
 	@Override
-	public void act(DirectoryCache cache) throws IOException
+	public void run(HashCache cache) throws IOException
 	{
 		Path toCreate = Paths.get("ie_data_gen_done");
 		if(!Files.exists(toCreate))

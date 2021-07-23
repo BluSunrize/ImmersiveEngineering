@@ -16,20 +16,20 @@ import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.common.network.MessageObstructedConnection;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -64,62 +64,62 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(WireType.REDSTONE_CATEGORY.equals(type.getCategory()))
 		{
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.redstone"));
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"coil.redstone"));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
 		else if(WireType.STRUCTURE_CATEGORY.equals(type.getCategory()))
 		{
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction0"));
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"coil.construction0"));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
 		if(hasWireLink(stack))
 		{
 			WireLink link = WireLink.readFromItem(stack);
-			list.add(new TranslationTextComponent(Lib.DESC_INFO+"attachedToDim", link.cp.getX(),
+			list.add(new TranslatableComponent(Lib.DESC_INFO+"attachedToDim", link.cp.getX(),
 					link.cp.getY(), link.cp.getZ(), link.dimension));
 		}
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
+	public InteractionResult useOn(UseOnContext ctx)
 	{
-		return WirecoilUtils.doCoilUse(this, ctx.getPlayer(), ctx.getWorld(), ctx.getPos(), ctx.getHand(), ctx.getFace(),
-				(float)ctx.getHitVec().x, (float)ctx.getHitVec().y, (float)ctx.getHitVec().z);
+		return WirecoilUtils.doCoilUse(this, ctx.getPlayer(), ctx.getLevel(), ctx.getClickedPos(), ctx.getHand(), ctx.getClickedFace(),
+				(float)ctx.getClickLocation().x, (float)ctx.getClickLocation().y, (float)ctx.getClickLocation().z);
 	}
 
 
-	public static ActionResultType doCoilUse(
-			IWireCoil coil, PlayerEntity player, World world, BlockPos pos, Hand hand, Direction side,
+	public static InteractionResult doCoilUse(
+			IWireCoil coil, Player player, Level world, BlockPos pos, InteractionHand hand, Direction side,
 			float hitX, float hitY, float hitZ
 	)
 	{
-		TileEntity tileEntity = world.getTileEntity(pos);
+		BlockEntity tileEntity = world.getBlockEntity(pos);
 		if(tileEntity instanceof IImmersiveConnectable&&((IImmersiveConnectable)tileEntity).canConnect())
 		{
-			ItemStack stack = player.getHeldItem(hand);
+			ItemStack stack = player.getItemInHand(hand);
 			TargetingInfo targetHere = new TargetingInfo(side, hitX-pos.getX(), hitY-pos.getY(), hitZ-pos.getZ());
 			WireType wire = coil.getWireType(stack);
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, targetHere);
 			BlockPos offsetHere = pos.subtract(masterPos);
-			tileEntity = world.getTileEntity(masterPos);
+			tileEntity = world.getBlockEntity(masterPos);
 			if(!(tileEntity instanceof IImmersiveConnectable)||!((IImmersiveConnectable)tileEntity).canConnect())
-				return ActionResultType.PASS;
+				return InteractionResult.PASS;
 			IImmersiveConnectable iicHere = (IImmersiveConnectable)tileEntity;
 			ConnectionPoint cpHere = iicHere.getTargetedPoint(targetHere, offsetHere);
 
 			if(cpHere==null||!((IImmersiveConnectable)tileEntity).canConnectCable(wire, cpHere, offsetHere)||
 					!coil.canConnectCable(stack, tileEntity))
 			{
-				if(!world.isRemote)
-					player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongCable"), true);
-				return ActionResultType.FAIL;
+				if(!world.isClientSide)
+					player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"wrongCable"), true);
+				return InteractionResult.FAIL;
 			}
 
-			if(!world.isRemote)
+			if(!world.isClientSide)
 			{
 				if(!hasWireLink(stack))
 				{
@@ -129,22 +129,22 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 				else
 				{
 					final WireLink otherLink = WireLink.readFromItem(stack);
-					TileEntity tileEntityLinkingPos = world.getTileEntity(otherLink.cp.getPosition());
-					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distanceSq(
+					BlockEntity tileEntityLinkingPos = world.getBlockEntity(otherLink.cp.getPosition());
+					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distSqr(
 							masterPos.getX(), masterPos.getY(), masterPos.getZ(), false
 					));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
-					if(!otherLink.dimension.equals(world.getDimensionKey()))
-						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"wrongDimension"), true);
+					if(!otherLink.dimension.equals(world.dimension()))
+						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"wrongDimension"), true);
 					else if(otherLink.cp.getPosition().equals(masterPos))
-						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"sameConnection"), true);
+						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"sameConnection"), true);
 					else if(distanceSq > maxLengthSq)
-						player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"tooFar"), true);
+						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"tooFar"), true);
 					else
 					{
 						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
-							player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
+							player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"invalidPoint"), true);
 						else
 						{
 							IImmersiveConnectable iicLink = (IImmersiveConnectable)tileEntityLinkingPos;
@@ -152,7 +152,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, otherLink.target).equals(otherLink.cp.getPosition())||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
-								player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"invalidPoint"), true);
+								player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"invalidPoint"), true);
 							}
 							else
 							{
@@ -169,7 +169,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 												connectionExists = true;
 								}
 								if(connectionExists)
-									player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"connectionExists"), true);
+									player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"connectionExists"), true);
 								else
 								{
 									Set<BlockPos> ignore = new HashSet<>();
@@ -186,23 +186,23 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 										iicLink.connectCable(wire, otherLink.cp, iicHere, cpHere);
 										Utils.unlockIEAdvancement(player, "main/connect_wire");
 
-										if(!player.abilities.isCreativeMode)
+										if(!player.abilities.instabuild)
 											coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
-										((TileEntity)iicHere).markDirty();
+										((BlockEntity)iicHere).setChanged();
 										//TODO is this needed with the new sync system?
-										world.addBlockEvent(masterPos, ((TileEntity)iicHere).getBlockState().getBlock(), -1, 0);
+										world.blockEvent(masterPos, ((BlockEntity)iicHere).getBlockState().getBlock(), -1, 0);
 										BlockState state = world.getBlockState(masterPos);
-										world.notifyBlockUpdate(masterPos, state, state, 3);
-										((TileEntity)iicLink).markDirty();
-										world.addBlockEvent(otherLink.cp.getPosition(), tileEntityLinkingPos.getBlockState().getBlock(), -1, 0);
+										world.sendBlockUpdated(masterPos, state, state, 3);
+										((BlockEntity)iicLink).setChanged();
+										world.blockEvent(otherLink.cp.getPosition(), tileEntityLinkingPos.getBlockState().getBlock(), -1, 0);
 										state = world.getBlockState(otherLink.cp.getPosition());
-										world.notifyBlockUpdate(otherLink.cp.getPosition(), state, state, 3);
+										world.sendBlockUpdated(otherLink.cp.getPosition(), state, state, 3);
 									}
 									else
 									{
-										player.sendStatusMessage(new TranslationTextComponent(Lib.CHAT_WARN+"cantSee"), true);
+										player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"cantSee"), true);
 										ImmersiveEngineering.packetHandler.send(
-												PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
+												PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
 												new MessageObstructedConnection(tempConn, failedReasons)
 										);
 									}
@@ -213,8 +213,8 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 					clearWireLink(stack);
 				}
 			}
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 }

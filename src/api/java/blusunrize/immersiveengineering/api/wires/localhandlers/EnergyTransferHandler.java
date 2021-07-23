@@ -17,13 +17,13 @@ import it.unimi.dsi.fastutil.objects.AbstractObject2DoubleMap.BasicEntry;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -86,7 +86,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	}
 
 	@Override
-	public void update(World w)
+	public void update(Level w)
 	{
 		transferPower();
 		transferredLastTick = transferredNextTick;
@@ -266,11 +266,11 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			if(allowedFactor < 1)
 				source.extractEnergy(available);
 			else
-				source.extractEnergy(MathHelper.ceil(maxSum));
+				source.extractEnergy(Mth.ceil(maxSum));
 		}
 	}
 
-	private void burnOverloaded(World world)
+	private void burnOverloaded(Level world)
 	{
 		Preconditions.checkNotNull(globalNet);
 		List<Pair<Connection, Double>> toBurn = new ArrayList<>();
@@ -355,18 +355,18 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			return power > getTransferRate();
 		}
 
-		default void burn(Connection c, double power, GlobalWireNetwork net, World w)
+		default void burn(Connection c, double power, GlobalWireNetwork net, Level w)
 		{
 			net.removeConnection(c);
-			if(c.hasCatenaryData()&&w instanceof ServerWorld)
+			if(c.hasCatenaryData()&&w instanceof ServerLevel)
 			{
 				final int numPoints = 16;
-				final Vector3d offset = Vector3d.copy(c.getEndA().getPosition());
+				final Vec3 offset = Vec3.atLowerCornerOf(c.getEndA().getPosition());
 				for(int i = 1; i < numPoints; ++i)
 				{
 					final double posOnWire = i/(double)numPoints;
-					final Vector3d pos = c.getPoint(posOnWire, c.getEndA()).add(offset);
-					((ServerWorld)w).spawnParticle(ParticleTypes.FLAME, pos.x, pos.y, pos.z, 0, 0, 0, 0, 1);
+					final Vec3 pos = c.getPoint(posOnWire, c.getEndA()).add(offset);
+					((ServerLevel)w).sendParticles(ParticleTypes.FLAME, pos.x, pos.y, pos.z, 0, 0, 0, 0, 1);
 				}
 			}
 		}

@@ -14,12 +14,12 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.HashMap;
@@ -29,7 +29,7 @@ import java.util.Random;
 
 public class MineralMix extends IESerializableRecipe
 {
-	public static IRecipeType<MineralMix> TYPE;
+	public static RecipeType<MineralMix> TYPE;
 	public static RegistryObject<IERecipeSerializer<MineralMix>> SERIALIZER;
 
 	public static Map<ResourceLocation, MineralMix> mineralList = new HashMap<>();
@@ -37,11 +37,11 @@ public class MineralMix extends IESerializableRecipe
 	public final StackWithChance[] outputs;
 	public final int weight;
 	public final float failChance;
-	public final ImmutableSet<RegistryKey<World>> dimensions;
+	public final ImmutableSet<ResourceKey<Level>> dimensions;
 	public final Block background;
 
 	public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance,
-					  List<RegistryKey<World>> dimensions, Block background)
+					  List<ResourceKey<Level>> dimensions, Block background)
 	{
 		super(ItemStack.EMPTY, TYPE, id);
 		this.weight = weight;
@@ -58,7 +58,7 @@ public class MineralMix extends IESerializableRecipe
 	}
 
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return ItemStack.EMPTY;
 	}
@@ -87,7 +87,7 @@ public class MineralMix extends IESerializableRecipe
 		return ItemStack.EMPTY;
 	}
 
-	public boolean validDimension(RegistryKey<World> dim)
+	public boolean validDimension(ResourceKey<Level> dim)
 	{
 		if(dimensions!=null&&!dimensions.isEmpty())
 			return dimensions.contains(dim);

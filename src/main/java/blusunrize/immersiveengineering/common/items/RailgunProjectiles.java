@@ -12,18 +12,18 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunRenderColors;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.EnderPearlEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.entity.projectile.TridentEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.ThrownEnderpearl;
+import net.minecraft.world.entity.projectile.ThrownTrident;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
 
 import javax.annotation.Nullable;
@@ -54,13 +54,13 @@ public class RailgunProjectiles
 		);
 
 		// Blaze Rod
-		RailgunHandler.registerProjectile(() -> Ingredient.fromTag(Tags.Items.RODS_BLAZE), new RailgunHandler.StandardRailgunProjectile(10, 1.05)
+		RailgunHandler.registerProjectile(() -> Ingredient.of(Tags.Items.RODS_BLAZE), new RailgunHandler.StandardRailgunProjectile(10, 1.05)
 		{
 			@Override
-			public void onHitTarget(World world, RayTraceResult target, @Nullable UUID shooter, Entity projectile)
+			public void onHitTarget(Level world, HitResult target, @Nullable UUID shooter, Entity projectile)
 			{
-				if(target instanceof EntityRayTraceResult)
-					((EntityRayTraceResult)target).getEntity().setFire(5);
+				if(target instanceof EntityHitResult)
+					((EntityHitResult)target).getEntity().setSecondsOnFire(5);
 			}
 
 			@Override
@@ -71,18 +71,18 @@ public class RailgunProjectiles
 		}.setColorMap(new RailgunRenderColors(0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300)));
 
 		// Sawblade
-		RailgunHandler.registerProjectile(() -> Ingredient.fromItems(IEItems.Tools.sawblade), new RailgunHandler.IRailgunProjectile()
+		RailgunHandler.registerProjectile(() -> Ingredient.of(IEItems.Tools.sawblade), new RailgunHandler.IRailgunProjectile()
 		{
 			@Override
-			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
+			public Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)
 			{
-				Vector3d look = shooter.getLookVec();
-				return new SawbladeEntity(shooter.getEntityWorld(), shooter, look.x*20, look.y*20, look.z*20, ammo);
+				Vec3 look = shooter.getLookAngle();
+				return new SawbladeEntity(shooter.getCommandSenderWorld(), shooter, look.x*20, look.y*20, look.z*20, ammo);
 			}
 		});
 
 		// Trident
-		RailgunHandler.registerProjectile(() -> Ingredient.fromItems(Items.TRIDENT), new RailgunHandler.IRailgunProjectile()
+		RailgunHandler.registerProjectile(() -> Ingredient.of(Items.TRIDENT), new RailgunHandler.IRailgunProjectile()
 		{
 			@Override
 			public boolean isValidForTurret()
@@ -91,15 +91,15 @@ public class RailgunProjectiles
 			}
 
 			@Override
-			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
+			public Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)
 			{
 				if(shooter!=null)
 				{
-					ammo.damageItem(1, shooter, (player) -> player.sendBreakAnimation(shooter.getActiveHand()));
-					TridentEntity trident = new TridentEntity(shooter.world, shooter, ammo);
-					trident.setDirectionAndMovement(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
-					if(shooter.abilities.isCreativeMode)
-						trident.pickupStatus = AbstractArrowEntity.PickupStatus.CREATIVE_ONLY;
+					ammo.hurtAndBreak(1, shooter, (player) -> player.broadcastBreakEvent(shooter.getUsedItemHand()));
+					ThrownTrident trident = new ThrownTrident(shooter.level, shooter, ammo);
+					trident.shootFromRotation(shooter, shooter.xRot, shooter.yRot, 0.0F, 2.5F, 1.0F);
+					if(shooter.abilities.instabuild)
+						trident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 					return trident;
 				}
 				return defaultProjectile;
@@ -107,7 +107,7 @@ public class RailgunProjectiles
 		});
 
 		// Enderpearl
-		RailgunHandler.registerProjectile(() -> Ingredient.fromItems(Items.ENDER_PEARL), new RailgunHandler.IRailgunProjectile()
+		RailgunHandler.registerProjectile(() -> Ingredient.of(Items.ENDER_PEARL), new RailgunHandler.IRailgunProjectile()
 		{
 			@Override
 			public boolean isValidForTurret()
@@ -116,13 +116,13 @@ public class RailgunProjectiles
 			}
 
 			@Override
-			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
+			public Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)
 			{
 				if(shooter!=null)
 				{
-					EnderPearlEntity pearl = new EnderPearlEntity(shooter.world, shooter);
+					ThrownEnderpearl pearl = new ThrownEnderpearl(shooter.level, shooter);
 					pearl.setItem(ammo);
-					pearl.setDirectionAndMovement(shooter, shooter.rotationPitch, shooter.rotationYaw, 0.0F, 2.5F, 1.0F);
+					pearl.shootFromRotation(shooter, shooter.xRot, shooter.yRot, 0.0F, 2.5F, 1.0F);
 					return pearl;
 				}
 				return defaultProjectile;

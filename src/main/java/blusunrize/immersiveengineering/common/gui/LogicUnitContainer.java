@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.LogicUnitTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
 public class LogicUnitContainer extends IEBaseContainer<LogicUnitTileEntity>
 {
-	public LogicUnitContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, LogicUnitTileEntity tile)
+	public LogicUnitContainer(MenuType<?> type, int id, Inventory inventoryPlayer, LogicUnitTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)

@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -34,15 +34,15 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 		ItemStack output = readOutput(json.get("result"));
 		IngredientWithSize input0 = IngredientWithSize.deserialize(json.get("input0"));
 		IngredientWithSize input1 = IngredientWithSize.deserialize(json.get("input1"));
-		int time = JSONUtils.getInt(json, "time", 200);
+		int time = GsonHelper.getAsInt(json, "time", 200);
 		return new AlloyRecipe(recipeId, output, input0, input1, time);
 	}
 
 	@Nullable
 	@Override
-	public AlloyRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public AlloyRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItemStack();
+		ItemStack output = buffer.readItem();
 		IngredientWithSize input0 = IngredientWithSize.read(buffer);
 		IngredientWithSize input1 = IngredientWithSize.read(buffer);
 		int time = buffer.readInt();
@@ -50,9 +50,9 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, AlloyRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, AlloyRecipe recipe)
 	{
-		buffer.writeItemStack(recipe.output);
+		buffer.writeItem(recipe.output);
 		recipe.input0.write(buffer);
 		recipe.input1.write(buffer);
 		buffer.writeInt(recipe.time);

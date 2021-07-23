@@ -14,20 +14,20 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,16 +52,16 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer)
+	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.metalPress);
 		transform.scale(4, 4, 4);
 		transform.translate(.375, .375, .125f);
-		transform.rotate(new Quaternion(0, -45, 0, true));
-		transform.rotate(new Quaternion(-20, 0, 0, true));
+		transform.mulPose(new Quaternion(0, -45, 0, true));
+		transform.mulPose(new Quaternion(-20, 0, 0, true));
 
-		ClientUtils.mc().getItemRenderer().renderItem(
+		ClientUtils.mc().getItemRenderer().renderStatic(
 				renderStack,
 				TransformType.GUI,
 				0xf000f0,
@@ -79,13 +79,13 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	@Override
 	public Direction transformDirection(Direction original)
 	{
-		return original.rotateY();
+		return original.getClockWise();
 	}
 
 	@Override
 	public Direction untransformDirection(Direction transformed)
 	{
-		return transformed.rotateYCCW();
+		return transformed.getCounterClockWise();
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	}
 
 	@Override
-	protected void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vector3i offsetFromMaster)
+	protected void replaceStructureBlock(StructureBlockInfo info, Level world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
 	{
 		Direction mbDirection;
 		if(mirrored)
@@ -107,10 +107,10 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 		else
 			mbDirection = transformDirection(clickDirection.getOpposite());
 		BlockState state = Multiblocks.metalPress.getDefaultState();
-		if(!offsetFromMaster.equals(Vector3i.NULL_VECTOR))
-			state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
-		world.setBlockState(actualPos, state);
-		TileEntity curr = world.getTileEntity(actualPos);
+		if(!offsetFromMaster.equals(Vec3i.ZERO))
+			state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
+		world.setBlockAndUpdate(actualPos, state);
+		BlockEntity curr = world.getBlockEntity(actualPos);
 		if(curr instanceof MetalPressTileEntity)
 		{
 			MetalPressTileEntity tile = (MetalPressTileEntity)curr;
@@ -118,8 +118,8 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
 			tile.setFacing(mbDirection);
-			tile.markDirty();
-			world.addBlockEvent(actualPos, world.getBlockState(actualPos).getBlock(), 255, 0);
+			tile.setChanged();
+			world.blockEvent(actualPos, world.getBlockState(actualPos).getBlock(), 255, 0);
 		}
 		else
 			IELogger.logger.error("Expected metal press TE at {} during placement", actualPos);

@@ -21,25 +21,25 @@ import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
@@ -67,17 +67,17 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	// stores the world time at which this block can only be disassembled by breaking the block associated with this TE.
 	// This prevents half/duplicate disassembly when working with the drill or TCon hammers
 	public long onlyLocalDissassembly = -1;
-	protected final Lazy<Vector3i> structureDimensions;
+	protected final Lazy<Vec3i> structureDimensions;
 	protected final boolean hasRedstoneControl;
 	protected boolean redstoneControlInverted = false;
 	//Absent means no controlling computers
 	public ComputerControlState computerControl = ComputerControlState.NO_COMPUTER;
 
-	protected MultiblockPartTileEntity(IETemplateMultiblock multiblockInstance, TileEntityType<? extends T> type, boolean hasRSControl)
+	protected MultiblockPartTileEntity(IETemplateMultiblock multiblockInstance, BlockEntityType<? extends T> type, boolean hasRSControl)
 	{
 		super(type);
 		this.multiblockInstance = multiblockInstance;
-		this.structureDimensions = Lazy.of(() -> multiblockInstance.getSize(world));
+		this.structureDimensions = Lazy.of(() -> multiblockInstance.getSize(level));
 		this.hasRedstoneControl = hasRSControl;
 	}
 
@@ -108,7 +108,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -124,20 +124,20 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	//		DATA MANAGEMENT
 	//	=================================
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		formed = nbt.getBoolean("formed");
-		posInMultiblock = NBTUtil.readBlockPos(nbt.getCompound("posInMultiblock"));
-		offsetToMaster = NBTUtil.readBlockPos(nbt.getCompound("offset"));
+		posInMultiblock = NbtUtils.readBlockPos(nbt.getCompound("posInMultiblock"));
+		offsetToMaster = NbtUtils.readBlockPos(nbt.getCompound("offset"));
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putBoolean("formed", formed);
-		nbt.put("posInMultiblock", NBTUtil.writeBlockPos(new BlockPos(posInMultiblock)));
-		nbt.put("offset", NBTUtil.writeBlockPos(new BlockPos(offsetToMaster)));
+		nbt.put("posInMultiblock", NbtUtils.writeBlockPos(new BlockPos(posInMultiblock)));
+		nbt.put("offset", NbtUtils.writeBlockPos(new BlockPos(offsetToMaster)));
 		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
 	}
 
@@ -306,7 +306,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Nullable
 	public T master()
 	{
-		if(offsetToMaster.equals(Vector3i.NULL_VECTOR))
+		if(offsetToMaster.equals(Vec3i.ZERO))
 			return (T)this;
 		// Used to provide tile-dependant drops after disassembly
 		if(tempMasterTE!=null)
@@ -319,7 +319,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		T master = master();
 		if(master!=null)
 		{
-			master.markDirty();
+			master.setChanged();
 			if(blockUpdate)
 				master.markContainingBlockForUpdate(state);
 		}
@@ -328,31 +328,31 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	@Override
 	public boolean isDummy()
 	{
-		return !offsetToMaster.equals(Vector3i.NULL_VECTOR);
+		return !offsetToMaster.equals(Vec3i.ZERO);
 	}
 
 	public BlockState getOriginalBlock()
 	{
-		for(BlockInfo block : multiblockInstance.getStructure(world))
+		for(StructureBlockInfo block : multiblockInstance.getStructure(level))
 			if(block.pos.equals(posInMultiblock))
 				return block.state;
-		return Blocks.AIR.getDefaultState();
+		return Blocks.AIR.defaultBlockState();
 	}
 
 	public void disassemble()
 	{
-		if(formed&&!world.isRemote)
+		if(formed&&!level.isClientSide)
 		{
 			tempMasterTE = master();
 			BlockPos startPos = getOrigin();
-			multiblockInstance.disassemble(world, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
-			world.removeBlock(pos, false);
+			multiblockInstance.disassemble(level, startPos, getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
+			level.removeBlock(worldPosition, false);
 		}
 	}
 
 	public BlockPos getOrigin()
 	{
-		return TemplateMultiblock.withSettingsAndOffset(pos, BlockPos.ZERO.subtract(posInMultiblock),
+		return TemplateMultiblock.withSettingsAndOffset(worldPosition, BlockPos.ZERO.subtract(posInMultiblock),
 				getIsMirrored(), multiblockInstance.untransformDirection(getFacing()));
 	}
 
@@ -366,8 +366,8 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	{
 		if(state.getBlock()==this.getBlockState().getBlock())
 			getWorldNonnull().removeBlock(pos, false);
-		getWorldNonnull().setBlockState(pos, state);
-		TileEntity tile = getWorldNonnull().getTileEntity(pos);
+		getWorldNonnull().setBlockAndUpdate(pos, state);
+		BlockEntity tile = getWorldNonnull().getBlockEntity(pos);
 		if(tile instanceof IReadOnPlacement)
 			((IReadOnPlacement)tile).readOnPlacement(null, stack);
 	}
@@ -391,24 +391,24 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		if(this.isRedstonePos()&&hasRedstoneControl)
 		{
-			if(!world.isRemote)
+			if(!level.isClientSide)
 			{
 				MultiblockPartTileEntity<T> master = master();
 				if(master!=null)
 				{
 					master.redstoneControlInverted = !master.redstoneControlInverted;
-					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."
+					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsControl."
 							+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
 					this.updateMasterBlock(null, true);
 				}
 			}
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	public boolean isRSDisabled()
@@ -440,7 +440,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public T getTileForPos(BlockPos targetPosInMB)
 	{
 		BlockPos target = getBlockPosForPos(targetPosInMB);
-		TileEntity tile = SafeChunkUtils.getSafeTE(getWorldNonnull(), target);
+		BlockEntity tile = SafeChunkUtils.getSafeTE(getWorldNonnull(), target);
 		if(this.getClass().isInstance(tile))
 			return (T)tile;
 		return null;
@@ -448,11 +448,11 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 
 	@Nonnull
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		BlockPos mirroredPosInMB = posInMultiblock;
 		if(size==null)
-			size = multiblockInstance.getSize(world);
+			size = multiblockInstance.getSize(level);
 		if(getIsMirrored())
 			mirroredPosInMB = new BlockPos(
 					size.getX()-mirroredPosInMB.getX()-1,

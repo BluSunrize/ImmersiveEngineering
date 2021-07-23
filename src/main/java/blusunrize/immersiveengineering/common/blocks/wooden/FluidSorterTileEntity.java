@@ -16,11 +16,11 @@ import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -64,7 +64,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	public int routeFluid(Direction inputSide, FluidStack stack, FluidAction doFill)
 	{
 		int ret = 0;
-		if(!world.isRemote&&canRoute())
+		if(!level.isClientSide&&canRoute())
 		{
 			boolean first = startRouting();
 			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
@@ -80,7 +80,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 
 	private boolean canRoute()
 	{
-		return usedRouters==null||!usedRouters.contains(pos);
+		return usedRouters==null||!usedRouters.contains(worldPosition);
 	}
 
 	private boolean startRouting()
@@ -88,7 +88,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 		boolean first = usedRouters==null;
 		if(first)
 			usedRouters = new HashSet<>();
-		usedRouters.add(pos);
+		usedRouters.add(worldPosition);
 		return first;
 	}
 
@@ -124,7 +124,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -142,7 +142,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		if(message.contains("sideConfig", NBT.TAG_BYTE_ARRAY))
 			this.sortWithNBT = message.getByteArray("sideConfig");
@@ -152,7 +152,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 			int slot = message.getInt("filter_slot");
 			this.filters[side][slot] = FluidStack.loadFluidStackFromNBT(message.getCompound("filter"));
 		}
-		this.markDirty();
+		this.setChanged();
 	}
 
 	public Direction[][] getValidOutputs(Direction inputSide, @Nullable FluidStack fluidStack)
@@ -162,7 +162,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 		ArrayList<Direction> validFilteredInvOuts = new ArrayList<>(6);
 		ArrayList<Direction> validUnfilteredInvOuts = new ArrayList<>(6);
 		for(Direction side : Direction.values())
-			if(side!=inputSide&&world.isBlockLoaded(getPos().offset(side)))
+			if(side!=inputSide&&level.hasChunkAt(getBlockPos().relative(side)))
 			{
 				boolean unmapped = true;
 				boolean allowed = false;
@@ -194,27 +194,27 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		sortWithNBT = nbt.getByteArray("sortWithNBT");
 		for(int side = 0; side < 6; side++)
 		{
-			ListNBT filterList = nbt.getList("filter_"+side, 10);
+			ListTag filterList = nbt.getList("filter_"+side, 10);
 			for(int i = 0; i < filterList.size(); i++)
 				filters[side][i] = FluidStack.loadFluidStackFromNBT(filterList.getCompound(i));
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putByteArray("sortWithNBT", sortWithNBT);
 		for(int side = 0; side < 6; side++)
 		{
-			ListNBT filterList = new ListNBT();
+			ListTag filterList = new ListTag();
 			for(int i = 0; i < filters[side].length; i++)
 			{
-				CompoundNBT tag = new CompoundNBT();
+				CompoundTag tag = new CompoundTag();
 				if(filters[side][i]!=null)
 					filters[side][i].writeToNBT(tag);
 				filterList.add(tag);

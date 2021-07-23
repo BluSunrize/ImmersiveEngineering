@@ -14,58 +14,58 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.LootPoolEntryType;
-import net.minecraft.loot.StandaloneLootEntry;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
+import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
-public class MBOriginalBlockLootEntry extends StandaloneLootEntry
+public class MBOriginalBlockLootEntry extends LootPoolSingletonContainer
 {
 	public static ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "multiblock_original_block");
 
-	protected MBOriginalBlockLootEntry(int weightIn, int qualityIn, ILootCondition[] conditionsIn, ILootFunction[] functionsIn)
+	protected MBOriginalBlockLootEntry(int weightIn, int qualityIn, LootItemCondition[] conditionsIn, LootItemFunction[] functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
 	}
 
 	@Override
-	protected void func_216154_a(@Nonnull Consumer<ItemStack> output, LootContext context)
+	protected void createItemStack(@Nonnull Consumer<ItemStack> output, LootContext context)
 	{
-		if(context.has(LootParameters.BLOCK_ENTITY))
+		if(context.hasParam(LootContextParams.BLOCK_ENTITY))
 		{
-			TileEntity te = context.get(LootParameters.BLOCK_ENTITY);
+			BlockEntity te = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
 			if(te instanceof MultiblockPartTileEntity)
 			{
 				MultiblockPartTileEntity<?> multiblockTile = (MultiblockPartTileEntity<?>)te;
 				Utils.getDrops(multiblockTile.getOriginalBlock(),
-						new LootContext.Builder(context.getWorld())
-								.withNullableParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
-								.withNullableParameter(LootParameters.ORIGIN, context.get(LootParameters.ORIGIN))
+						new LootContext.Builder(context.getLevel())
+								.withOptionalParameter(LootContextParams.TOOL, context.getParamOrNull(LootContextParams.TOOL))
+								.withOptionalParameter(LootContextParams.ORIGIN, context.getParamOrNull(LootContextParams.ORIGIN))
 				).forEach(output);
 			}
 		}
 	}
 
-	public static StandaloneLootEntry.Builder<?> builder()
+	public static LootPoolSingletonContainer.Builder<?> builder()
 	{
-		return builder(MBOriginalBlockLootEntry::new);
+		return simpleBuilder(MBOriginalBlockLootEntry::new);
 	}
 
 	@Override
-	public LootPoolEntryType func_230420_a_()
+	public LootPoolEntryType getType()
 	{
 		return IELootFunctions.multiblockOrigBlock;
 	}
 
-	public static class Serializer extends StandaloneLootEntry.Serializer<MBOriginalBlockLootEntry>
+	public static class Serializer extends LootPoolSingletonContainer.Serializer<MBOriginalBlockLootEntry>
 	{
 		@Nonnull
 		@Override
@@ -74,8 +74,8 @@ public class MBOriginalBlockLootEntry extends StandaloneLootEntry
 				@Nonnull JsonDeserializationContext context,
 				int weight,
 				int quality,
-				@Nonnull ILootCondition[] conditions,
-				@Nonnull ILootFunction[] functions
+				@Nonnull LootItemCondition[] conditions,
+				@Nonnull LootItemFunction[] functions
 		)
 		{
 			return new MBOriginalBlockLootEntry(weight, quality, conditions, functions);

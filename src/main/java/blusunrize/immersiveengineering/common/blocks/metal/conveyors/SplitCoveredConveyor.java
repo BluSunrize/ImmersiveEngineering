@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -18,7 +18,7 @@ public class SplitCoveredConveyor extends SplitConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "splittercovered");
 
-	public SplitCoveredConveyor(TileEntity tile)
+	public SplitCoveredConveyor(BlockEntity tile)
 	{
 		super(tile);
 	}

@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Load
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;

@@ -13,20 +13,20 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -34,11 +34,11 @@ import java.util.function.Supplier;
 
 public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.IRON)
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
-			.hardnessAndResistance(3, 15)
-			.setLightLevel(b -> 14)
-			.notSolid();
+			.strength(3, 15)
+			.lightLevel(b -> 14)
+			.noOcclusion();
 
 	private static final Property<Direction> FACING = IEProperties.FACING_ALL;
 
@@ -48,19 +48,19 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	private static final Map<Direction, VoxelShape> SHAPES = ImmutableMap.<Direction, VoxelShape>builder()
-			.put(Direction.DOWN, VoxelShapes.create(0.25, 0.125, 0.25, 0.75, 1, 0.75))
-			.put(Direction.UP, VoxelShapes.create(0.25, 0, 0.25, 0.75, 0.875, 0.75))
-			.put(Direction.NORTH, VoxelShapes.create(0.25, 0.0625, 0.25, 0.75, 0.875, 1))
-			.put(Direction.EAST, VoxelShapes.create(0, 0.0625, 0.25, 0.75, 0.875, 0.75))
-			.put(Direction.SOUTH, VoxelShapes.create(0.25, 0.0625, 0, 0.75, 0.875, 0.75))
-			.put(Direction.WEST, VoxelShapes.create(0.25, 0.0625, 0.25, 1, 0.875, 0.75))
+			.put(Direction.DOWN, Shapes.box(0.25, 0.125, 0.25, 0.75, 1, 0.75))
+			.put(Direction.UP, Shapes.box(0.25, 0, 0.25, 0.75, 0.875, 0.75))
+			.put(Direction.NORTH, Shapes.box(0.25, 0.0625, 0.25, 0.75, 0.875, 1))
+			.put(Direction.EAST, Shapes.box(0, 0.0625, 0.25, 0.75, 0.875, 0.75))
+			.put(Direction.SOUTH, Shapes.box(0.25, 0.0625, 0, 0.75, 0.875, 0.75))
+			.put(Direction.WEST, Shapes.box(0.25, 0.0625, 0.25, 1, 0.875, 0.75))
 			.build();
 
 	private static final Map<Direction, VisibilityList> DISPLAY_LISTS = ImmutableMap.<Direction, VisibilityList>builder()
@@ -73,21 +73,21 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 			.build();
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
 	{
-		return SHAPES.get(state.get(FACING));
+		return SHAPES.get(state.getValue(FACING));
 	}
 
 	@Override
 	public VisibilityList compileDisplayList(BlockState state)
 	{
-		return DISPLAY_LISTS.get(state.get(FACING));
+		return DISPLAY_LISTS.get(state.getValue(FACING));
 	}
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context)
+	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
-		return getDefaultState().with(FACING, context.getFace());
+		return defaultBlockState().setValue(FACING, context.getClickedFace());
 	}
 }

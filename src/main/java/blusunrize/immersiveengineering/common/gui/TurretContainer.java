@@ -13,14 +13,14 @@ import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class TurretContainer<T extends TurretTileEntity<T>> extends IEBaseContainer<T>
 {
-	public TurretContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, T tile)
+	public TurretContainer(MenuType<?> type, int id, Inventory inventoryPlayer, T tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;
@@ -31,9 +31,9 @@ public abstract class TurretContainer<T extends TurretTileEntity<T>> extends IEB
 					((TurretGunTileEntity)tile).containerHandler.orElseThrow(RuntimeException::new), 0, 134, 13, 64)
 			{
 				@Override
-				public boolean isItemValid(ItemStack itemStack)
+				public boolean mayPlace(ItemStack itemStack)
 				{
-					if(!super.isItemValid(itemStack))
+					if(!super.mayPlace(itemStack))
 						return false;
 					IBullet bullet = ((BulletItem)itemStack.getItem()).getType();
 					return bullet!=null&&bullet.isValidForTurret();
@@ -51,14 +51,14 @@ public abstract class TurretContainer<T extends TurretTileEntity<T>> extends IEB
 	}
 
 	public static class ChemTurretContainer extends TurretContainer<TurretChemTileEntity> {
-		public ChemTurretContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, TurretChemTileEntity tile)
+		public ChemTurretContainer(MenuType<?> type, int id, Inventory inventoryPlayer, TurretChemTileEntity tile)
 		{
 			super(type, id, inventoryPlayer, tile);
 		}
 	}
 
 	public static class GunTurretContainer extends TurretContainer<TurretGunTileEntity> {
-		public GunTurretContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, TurretGunTileEntity tile)
+		public GunTurretContainer(MenuType<?> type, int id, Inventory inventoryPlayer, TurretGunTileEntity tile)
 		{
 			super(type, id, inventoryPlayer, tile);
 		}

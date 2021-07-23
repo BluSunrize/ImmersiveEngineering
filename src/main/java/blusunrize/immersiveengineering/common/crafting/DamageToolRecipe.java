@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.Iterator;
@@ -38,12 +38,12 @@ public class DamageToolRecipe extends ShapelessRecipe
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
 	{
 		NonNullList<ItemStack> remains = super.getRemainingItems(inv);
 		for(int i = 0; i < remains.size(); i++)
 		{
-			ItemStack s = inv.getStackInSlot(i);
+			ItemStack s = inv.getItem(i);
 			ItemStack remain = remains.get(i);
 			ItemStack tool = ItemStack.EMPTY;
 			int toolDamageSlot = getIngredients().size()-1;
@@ -51,10 +51,10 @@ public class DamageToolRecipe extends ShapelessRecipe
 				tool = s.copy();
 			else if(!remain.isEmpty()&&getIngredients().get(toolDamageSlot).test(remain))
 				tool = remain;
-			if(!tool.isEmpty()&&tool.isDamageable())
+			if(!tool.isEmpty()&&tool.isDamageableItem())
 			{
-				tool.setDamage(tool.getDamage()+1);
-				if(tool.getDamage() > tool.getMaxDamage())
+				tool.setDamageValue(tool.getDamageValue()+1);
+				if(tool.getDamageValue() > tool.getMaxDamage())
 					tool = ItemStack.EMPTY;
 				remains.set(i, tool);
 			}
@@ -63,13 +63,13 @@ public class DamageToolRecipe extends ShapelessRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingInventory matrix, World world)
+	public boolean matches(CraftingContainer matrix, Level world)
 	{
 		List<Ingredient> required = new LinkedList<>(getIngredients());
 
-		for(int i = 0; i < matrix.getSizeInventory(); i++)
+		for(int i = 0; i < matrix.getContainerSize(); i++)
 		{
-			ItemStack slot = matrix.getStackInSlot(i);
+			ItemStack slot = matrix.getItem(i);
 			if(!slot.isEmpty())
 			{
 				boolean inRecipe = false;
@@ -93,7 +93,7 @@ public class DamageToolRecipe extends ShapelessRecipe
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.DAMAGE_TOOL_SERIALIZER.get();
 	}

@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.api.tool.assembler;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 public class ItemStackRecipeQuery extends RecipeQuery
@@ -15,7 +15,7 @@ public class ItemStackRecipeQuery extends RecipeQuery
 	@Override
 	public boolean matchesIgnoringSize(ItemStack stack)
 	{
-		return ItemStack.areItemsEqual(this.stack, stack)&&ItemStack.areItemStackTagsEqual(this.stack, stack);
+		return ItemStack.isSame(this.stack, stack)&&ItemStack.tagMatches(this.stack, stack);
 	}
 
 	@Override

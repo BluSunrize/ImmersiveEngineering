@@ -9,15 +9,15 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(Container.class)
+@Mixin(AbstractContainerMenu.class)
 public interface ContainerAccess
 {
 	@Accessor
-	NonNullList<ItemStack> getInventoryItemStacks();
+	NonNullList<ItemStack> getLastSlots();
 }

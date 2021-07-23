@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -25,17 +25,17 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 	public E[] states;
 	private int state;
 	protected final int offsetDir;
-	private final BiConsumer<List<ITextComponent>, E> tooltip;
+	private final BiConsumer<List<Component>, E> tooltip;
 	public int[] textOffset = {0, 0};
 
-	public GuiButtonState(int x, int y, int w, int h, ITextComponent name, E[] states, int initialState, ResourceLocation texture, int u,
+	public GuiButtonState(int x, int y, int w, int h, Component name, E[] states, int initialState, ResourceLocation texture, int u,
 						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler)
 	{
 		this(x, y, w, h, name, states, initialState, texture, u, v, offsetDir, handler, (a, b) -> {});
 	}
 
-	public GuiButtonState(int x, int y, int w, int h, ITextComponent name, E[] states, int initialState, ResourceLocation texture, int u,
-						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler, BiConsumer<List<ITextComponent>, E> tooltip)
+	public GuiButtonState(int x, int y, int w, int h, Component name, E[] states, int initialState, ResourceLocation texture, int u,
+						  int v, int offsetDir, IIEPressable<GuiButtonState<E>> handler, BiConsumer<List<Component>, E> tooltip)
 	{
 		super(x, y, w, h, name, texture, u, v, handler);
 		this.states = states;
@@ -70,19 +70,19 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 		return this.state;
 	}
 
-	public int[] getTextOffset(FontRenderer fontrenderer)
+	public int[] getTextOffset(Font fontrenderer)
 	{
 		return this.textOffset;
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
 		Minecraft mc = Minecraft.getInstance();
 		if(this.visible)
 		{
 			ClientUtils.bindTexture(texture);
-			FontRenderer fontrenderer = mc.fontRenderer;
+			Font fontrenderer = mc.font;
 			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
@@ -113,7 +113,7 @@ public class GuiButtonState<E> extends GuiButtonIE implements ITooltipWidget
 	}
 
 	@Override
-	public void gatherTooltip(int mouseX, int mouseY, List<ITextComponent> tooltip)
+	public void gatherTooltip(int mouseX, int mouseY, List<Component> tooltip)
 	{
 		this.tooltip.accept(tooltip, getState());
 	}

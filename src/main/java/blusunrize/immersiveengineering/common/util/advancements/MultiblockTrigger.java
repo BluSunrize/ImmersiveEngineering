@@ -14,18 +14,14 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.ICriterionTrigger;
-import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.advancements.criterion.CriterionInstance;
-import net.minecraft.advancements.criterion.EntityPredicate;
-import net.minecraft.advancements.criterion.EntityPredicate.AndPredicate;
-import net.minecraft.advancements.criterion.ItemPredicate;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.ConditionArrayParser;
-import net.minecraft.loot.ConditionArraySerializer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.advancements.CriterionTrigger;
+import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.EntityPredicate.Composite;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +30,7 @@ import java.util.Set;
 /**
  * @author BluSunrize - 04.07.2017
  */
-public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.Instance>
+public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Instance>
 {
 	private static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "multiblock_formed");
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
@@ -46,7 +42,7 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	}
 
 	@Override
-	public void addListener(PlayerAdvancements playerAdvancements, ICriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
+	public void addPlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
 	{
 		MultiblockTrigger.Listeners listeners = this.listeners.get(playerAdvancements);
 		if(listeners==null)
@@ -58,7 +54,7 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	}
 
 	@Override
-	public void removeListener(PlayerAdvancements playerAdvancements, ICriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
+	public void removePlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
 	{
 		MultiblockTrigger.Listeners listeners = this.listeners.get(playerAdvancements);
 
@@ -71,23 +67,23 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 	}
 
 	@Override
-	public void removeAllListeners(PlayerAdvancements playerAdvancements)
+	public void removePlayerListeners(PlayerAdvancements playerAdvancements)
 	{
 		this.listeners.remove(playerAdvancements);
 	}
 
 	@Override
-	public Instance deserialize(JsonObject json, ConditionArrayParser context)
+	public Instance createInstance(JsonObject json, DeserializationContext context)
 	{
-		EntityPredicate.AndPredicate and = EntityPredicate.AndPredicate.deserializeJSONObject(json, "player", context);
+		EntityPredicate.Composite and = EntityPredicate.Composite.fromJson(json, "player", context);
 		return new MultiblockTrigger.Instance(
-				new ResourceLocation(JSONUtils.getString(json, "multiblock")),
-				ItemPredicate.deserialize(json.get("item")),
+				new ResourceLocation(GsonHelper.getAsString(json, "multiblock")),
+				ItemPredicate.fromJson(json.get("item")),
 				and
 		);
 	}
 
-	public void trigger(ServerPlayerEntity player, IMultiblock multiblock, ItemStack hammer)
+	public void trigger(ServerPlayer player, IMultiblock multiblock, ItemStack hammer)
 	{
 		MultiblockTrigger.Listeners listeners = this.listeners.get(player.getAdvancements());
 		if(listeners!=null)
@@ -96,15 +92,15 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 
 	public static Instance create(ResourceLocation multiblock, ItemPredicate hammer)
 	{
-		return new Instance(multiblock, hammer, AndPredicate.ANY_AND);
+		return new Instance(multiblock, hammer, Composite.ANY);
 	}
 
-	public static class Instance extends CriterionInstance
+	public static class Instance extends AbstractCriterionTriggerInstance
 	{
 		private final ResourceLocation multiblock;
 		private final ItemPredicate hammer;
 
-		public Instance(ResourceLocation multiblock, ItemPredicate hammer, AndPredicate and)
+		public Instance(ResourceLocation multiblock, ItemPredicate hammer, Composite and)
 		{
 			super(MultiblockTrigger.ID, and);
 			this.multiblock = multiblock;
@@ -113,15 +109,15 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 
 		public boolean test(IMultiblock multiblock, ItemStack hammer)
 		{
-			return this.multiblock.equals(multiblock.getUniqueName())&&this.hammer.test(hammer);
+			return this.multiblock.equals(multiblock.getUniqueName())&&this.hammer.matches(hammer);
 		}
 
 		@Override
-		public JsonObject serialize(ConditionArraySerializer conditions)
+		public JsonObject serializeToJson(SerializationContext conditions)
 		{
-			JsonObject jsonobject = super.serialize(conditions);
+			JsonObject jsonobject = super.serializeToJson(conditions);
 			jsonobject.addProperty("multiblock", this.multiblock.toString());
-			jsonobject.add("item", this.hammer.serialize());
+			jsonobject.add("item", this.hammer.serializeToJson());
 			return jsonobject;
 		}
 	}
@@ -141,12 +137,12 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 			return this.listeners.isEmpty();
 		}
 
-		public void add(ICriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
+		public void add(CriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
 		{
 			this.listeners.add(listener);
 		}
 
-		public void remove(ICriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
+		public void remove(CriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
 		{
 			this.listeners.remove(listener);
 		}
@@ -154,8 +150,8 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 		public void trigger(IMultiblock multiblock, ItemStack hammer)
 		{
 			List<Listener<Instance>> list = null;
-			for(ICriterionTrigger.Listener<MultiblockTrigger.Instance> listener : this.listeners)
-				if(listener.getCriterionInstance().test(multiblock, hammer))
+			for(CriterionTrigger.Listener<MultiblockTrigger.Instance> listener : this.listeners)
+				if(listener.getTriggerInstance().test(multiblock, hammer))
 				{
 					if(list==null)
 						list = Lists.newArrayList();
@@ -163,8 +159,8 @@ public class MultiblockTrigger implements ICriterionTrigger<MultiblockTrigger.In
 				}
 
 			if(list!=null)
-				for(ICriterionTrigger.Listener<MultiblockTrigger.Instance> listener1 : list)
-					listener1.grantCriterion(this.playerAdvancements);
+				for(CriterionTrigger.Listener<MultiblockTrigger.Instance> listener1 : list)
+					listener1.run(this.playerAdvancements);
 		}
 	}
 }

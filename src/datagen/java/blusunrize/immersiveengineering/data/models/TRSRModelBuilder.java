@@ -2,9 +2,9 @@ package blusunrize.immersiveengineering.data.models;
 
 import com.google.common.io.CharStreams;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -22,11 +22,11 @@ public class TRSRModelBuilder extends ModelBuilder<TRSRModelBuilder>
 
 	public TRSRModelBuilder transforms(ResourceLocation source)
 	{
-		IResource transformFile;
+		Resource transformFile;
 		try
 		{
 			transformFile = existingFileHelper.getResource(
-					source, ResourcePackType.CLIENT_RESOURCES, ".json", "transformations"
+					source, PackType.CLIENT_RESOURCES, ".json", "transformations"
 			);
 			String jsonString = CharStreams.toString(new InputStreamReader(transformFile.getInputStream()));
 			transforms.addFromJson(jsonString);

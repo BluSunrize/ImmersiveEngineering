@@ -10,13 +10,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -34,7 +34,7 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 	protected WireType rightType;
 	protected Set<String> acceptableLowerWires = ImmutableSet.of(WireType.LV_CATEGORY);
 
-	public AbstractTransformerTileEntity(TileEntityType<? extends ImmersiveConnectableTileEntity> type)
+	public AbstractTransformerTileEntity(BlockEntityType<? extends ImmersiveConnectableTileEntity> type)
 	{
 		super(type);
 	}
@@ -68,13 +68,13 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		return ImmutableList.of(new ConnectionPoint(pos, RIGHT_INDEX), new ConnectionPoint(pos, LEFT_INDEX));
+		return ImmutableList.of(new ConnectionPoint(worldPosition, RIGHT_INDEX), new ConnectionPoint(worldPosition, LEFT_INDEX));
 	}
 
 	@Override
 	public Iterable<? extends Connection> getInternalConnections()
 	{
-		return ImmutableList.of(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+		return ImmutableList.of(new Connection(worldPosition, LEFT_INDEX, RIGHT_INDEX));
 	}
 
 	@Override
@@ -90,7 +90,7 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -102,9 +102,9 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		return getConnectionOffset(con, con.getEndFor(pos).getIndex()==RIGHT_INDEX);
+		return getConnectionOffset(con, con.getEndFor(worldPosition).getIndex()==RIGHT_INDEX);
 	}
 
 	@Override
@@ -143,7 +143,7 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 		updateMirrorState();
 	}
 
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		switch(target.getIndex())
 		{
@@ -155,7 +155,7 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 		return false;
 	}
 
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(leftType!=null)
@@ -165,7 +165,7 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(nbt.contains("leftType"))
@@ -184,7 +184,7 @@ public abstract class AbstractTransformerTileEntity extends ImmersiveConnectable
 		return true;
 	}
 
-	protected abstract Vector3d getConnectionOffset(Connection con, boolean right);
+	protected abstract Vec3 getConnectionOffset(Connection con, boolean right);
 
 	protected void updateMirrorState()
 	{

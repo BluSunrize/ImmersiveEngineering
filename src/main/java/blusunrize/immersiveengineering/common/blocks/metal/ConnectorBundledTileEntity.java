@@ -24,19 +24,19 @@ import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectabl
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,7 +57,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 		this(IETileTypes.CONNECTOR_BUNDLED.get());
 	}
 
-	public ConnectorBundledTileEntity(TileEntityType<? extends ConnectorBundledTileEntity> type)
+	public ConnectorBundledTileEntity(BlockEntityType<? extends ConnectorBundledTileEntity> type)
 	{
 		super(type);
 	}
@@ -69,7 +69,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 
 	private DirectionalBlockPos getAttachedFace()
 	{
-		return new DirectionalBlockPos(pos.offset(getFacing()), getFacing().getOpposite());
+		return new DirectionalBlockPos(worldPosition.relative(getFacing()), getFacing().getOpposite());
 	}
 
 	@Override
@@ -90,20 +90,20 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	private RedstoneNetworkHandler getHandler()
 	{
 		return Objects.requireNonNull(
-				globalNet.getLocalNet(pos).getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
+				globalNet.getLocalNet(worldPosition).getHandler(RedstoneNetworkHandler.ID, RedstoneNetworkHandler.class)
 		);
 	}
 
 	@Override
 	public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler)
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
 			if(attached.isPresent())
 				attached.get().onChange(cp, handler, getFacing().getOpposite());
-			BlockState stateHere = world.getBlockState(pos);
+			BlockState stateHere = level.getBlockState(worldPosition);
 			markContainingBlockForUpdate(stateHere);
-			markBlockForUpdate(pos.offset(getFacing()), world.getBlockState(pos.offset(getFacing())));
+			markBlockForUpdate(worldPosition.relative(getFacing()), level.getBlockState(worldPosition.relative(getFacing())));
 		}
 	}
 
@@ -115,7 +115,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 		DirectionalBlockPos attachedTo = getAttachedFace();
 		for(IBundledProvider source : EXTRA_SOURCES)
 		{
-			byte[] provided = source.getEmittedState(world, attachedTo.getPosition(), attachedTo.getSide());
+			byte[] provided = source.getEmittedState(level, attachedTo.getPosition(), attachedTo.getSide());
 			if(provided!=null)
 			{
 				for(int color = 0; color < 16; color++)
@@ -125,7 +125,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return REDSTONE_CATEGORY.equals(cableType.getCategory());
 	}
@@ -149,7 +149,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -162,27 +162,27 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
-		return new Vector3d(.5-conRadius*side.getXOffset(), .5-conRadius*side.getYOffset(), .5-conRadius*side.getZOffset());
+		return new Vec3(.5-conRadius*side.getStepX(), .5-conRadius*side.getStepY(), .5-conRadius*side.getStepZ());
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		float length = .625f;
 		float wMin = .3125f;
@@ -205,7 +205,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 		byte[] overrideState = null;
 		for(IBundledProvider source : EXTRA_SOURCES)
 		{
-			overrideState = source.getEmittedState(world, attachedTo.getPosition(), attachedTo.getSide());
+			overrideState = source.getEmittedState(level, attachedTo.getPosition(), attachedTo.getSide());
 			if(overrideState!=null)
 				break;
 		}
@@ -223,6 +223,6 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	public interface IBundledProvider
 	{
 		@Nullable
-		byte[] getEmittedState(World w, BlockPos emittingBlock, Direction emittingSide);
+		byte[] getEmittedState(Level w, BlockPos emittingBlock, Direction emittingSide);
 	}
 }

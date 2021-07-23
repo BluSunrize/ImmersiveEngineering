@@ -12,22 +12,22 @@ import blusunrize.immersiveengineering.api.DimensionChunkCoords;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.ColumnPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
-import net.minecraft.world.storage.WorldSavedData;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ColumnPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public class IESaveData extends WorldSavedData
+public class IESaveData extends SavedData
 {
 	private static IESaveData INSTANCE;
 	public static final String dataName = "ImmersiveEngineering-SaveData";
@@ -38,22 +38,22 @@ public class IESaveData extends WorldSavedData
 	}
 
 	@Override
-	public void read(CompoundNBT nbt)
+	public void load(CompoundTag nbt)
 	{
-		ListNBT dimensionList = nbt.getList("mineralVeins", NBT.TAG_COMPOUND);
+		ListTag dimensionList = nbt.getList("mineralVeins", NBT.TAG_COMPOUND);
 		synchronized(ExcavatorHandler.getMineralVeinList())
 		{
 			ExcavatorHandler.getMineralVeinList().clear();
 			for(int i = 0; i < dimensionList.size(); i++)
 			{
-				CompoundNBT dimTag = dimensionList.getCompound(i);
+				CompoundTag dimTag = dimensionList.getCompound(i);
 				ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
-				RegistryKey<World> dimensionType = RegistryKey.getOrCreateKey(Registry.WORLD_KEY, rl);
-				ListNBT mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
+				ResourceKey<Level> dimensionType = ResourceKey.create(Registry.DIMENSION_REGISTRY, rl);
+				ListTag mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
 
 				ExcavatorHandler.getMineralVeinList().
 						putAll(dimensionType, mineralList.stream()
-								.map(inbt -> MineralVein.readFromNBT((CompoundNBT)inbt))
+								.map(inbt -> MineralVein.readFromNBT((CompoundTag)inbt))
 								.collect(Collectors.toList()));
 			}
 			ExcavatorHandler.resetCache();
@@ -61,17 +61,17 @@ public class IESaveData extends WorldSavedData
 		// Legacy, using mineralDepletion key
 		if(nbt.contains("mineralDepletion", NBT.TAG_LIST))
 		{
-			ListNBT oldList = nbt.getList("mineralDepletion", NBT.TAG_COMPOUND);
+			ListTag oldList = nbt.getList("mineralDepletion", NBT.TAG_COMPOUND);
 			for(int i = 0; i < oldList.size(); i++)
 			{
-				CompoundNBT tag = oldList.getCompound(i);
-				CompoundNBT mineralInfo = tag.getCompound("info");
+				CompoundTag tag = oldList.getCompound(i);
+				CompoundTag mineralInfo = tag.getCompound("info");
 				if(mineralInfo.contains("mineral", NBT.TAG_STRING))
 				{
 					ResourceLocation mineral = new ResourceLocation(mineralInfo.getString("mineral"));
 					DimensionChunkCoords oldCoords = DimensionChunkCoords.readFromNBT(tag);
 					int depletion = mineralInfo.getInt("depletion");
-					ColumnPos convertedPos = new ColumnPos(oldCoords.getXStart()+8, oldCoords.getZStart()+8);
+					ColumnPos convertedPos = new ColumnPos(oldCoords.getMinBlockX()+8, oldCoords.getMinBlockZ()+8);
 					MineralVein convertedVein = new MineralVein(convertedPos, mineral, 8);
 					convertedVein.setDepletion(depletion);
 					ExcavatorHandler.getMineralVeinList().put(oldCoords.dimension, convertedVein);
@@ -79,14 +79,14 @@ public class IESaveData extends WorldSavedData
 			}
 		}
 
-		ListNBT receivedShaderList = nbt.getList("receivedShaderList", NBT.TAG_COMPOUND);
+		ListTag receivedShaderList = nbt.getList("receivedShaderList", NBT.TAG_COMPOUND);
 		for(int i = 0; i < receivedShaderList.size(); i++)
 		{
-			CompoundNBT tag = receivedShaderList.getCompound(i);
-			UUID player = tag.getUniqueId("player");
+			CompoundTag tag = receivedShaderList.getCompound(i);
+			UUID player = tag.getUUID("player");
 			ShaderRegistry.receivedShaders.get(player).clear();
 
-			ListNBT playerReceived = tag.getList("received", NBT.TAG_STRING);
+			ListTag playerReceived = tag.getList("received", NBT.TAG_STRING);
 			for(int j = 0; j < playerReceived.size(); j++)
 			{
 				String s = playerReceived.getString(j);
@@ -98,16 +98,16 @@ public class IESaveData extends WorldSavedData
 
 	@Nonnull
 	@Override
-	public CompoundNBT write(@Nonnull CompoundNBT nbt)
+	public CompoundTag save(@Nonnull CompoundTag nbt)
 	{
-		ListNBT dimensionList = new ListNBT();
+		ListTag dimensionList = new ListTag();
 		synchronized(ExcavatorHandler.getMineralVeinList())
 		{
-			for(RegistryKey<World> dimension : ExcavatorHandler.getMineralVeinList().keySet())
+			for(ResourceKey<Level> dimension : ExcavatorHandler.getMineralVeinList().keySet())
 			{
-				CompoundNBT dimTag = new CompoundNBT();
-				dimTag.putString("dimension", dimension.getLocation().toString());
-				ListNBT mineralList = new ListNBT();
+				CompoundTag dimTag = new CompoundTag();
+				dimTag.putString("dimension", dimension.location().toString());
+				ListTag mineralList = new ListTag();
 				for(MineralVein mineralVein : ExcavatorHandler.getMineralVeinList().get(dimension))
 					mineralList.add(mineralVein.writeToNBT());
 				dimTag.put("veins", mineralList);
@@ -117,15 +117,15 @@ public class IESaveData extends WorldSavedData
 		nbt.put("mineralVeins", dimensionList);
 
 
-		ListNBT receivedShaderList = new ListNBT();
+		ListTag receivedShaderList = new ListTag();
 		for(UUID player : ShaderRegistry.receivedShaders.keySet())
 		{
-			CompoundNBT tag = new CompoundNBT();
-			tag.putUniqueId("player", player);
-			ListNBT playerReceived = new ListNBT();
+			CompoundTag tag = new CompoundTag();
+			tag.putUUID("player", player);
+			ListTag playerReceived = new ListTag();
 			for(ResourceLocation shader : ShaderRegistry.receivedShaders.get(player))
 				if(shader!=null)
-					playerReceived.add(StringNBT.valueOf(shader.toString()));
+					playerReceived.add(StringTag.valueOf(shader.toString()));
 			tag.put("received", playerReceived);
 			receivedShaderList.add(tag);
 		}
@@ -138,7 +138,7 @@ public class IESaveData extends WorldSavedData
 	public static void markInstanceDirty()
 	{
 		if(INSTANCE!=null)
-			INSTANCE.markDirty();
+			INSTANCE.setDirty();
 	}
 
 	public static void setInstance(IESaveData in)

@@ -11,29 +11,29 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 
 public abstract class CrateScreen<C extends CrateContainer> extends IEContainerScreen<C>
 {
-	public CrateScreen(C container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public CrateScreen(C container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("crate"));
-		this.ySize = 168;
+		this.imageHeight = 168;
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY)
+	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
-		WoodenCrateTileEntity te = container.tile;
-		this.font.drawString(transform, te.getDisplayName().getUnformattedComponentText(), 8, 6, 0x190b06);
+		WoodenCrateTileEntity te = menu.tile;
+		this.font.draw(transform, te.getDisplayName().getContents(), 8, 6, 0x190b06);
 	}
 
 	// Unfortunately necessary to calm down the compiler wrt generics
 	public static class StandardCrate extends CrateScreen<CrateContainer>
 	{
-		public StandardCrate(CrateContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+		public StandardCrate(CrateContainer container, Inventory inventoryPlayer, Component title)
 		{
 			super(container, inventoryPlayer, title);
 		}
@@ -41,7 +41,7 @@ public abstract class CrateScreen<C extends CrateContainer> extends IEContainerS
 
 	public static class EntityCrate extends CrateScreen<CrateEntityContainer>
 	{
-		public EntityCrate(CrateEntityContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+		public EntityCrate(CrateEntityContainer container, Inventory inventoryPlayer, Component title)
 		{
 			super(container, inventoryPlayer, title);
 		}

@@ -20,24 +20,24 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.IWaterLoggable;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SimpleWaterloggedBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -94,8 +94,8 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 				else
 				{
 					BlockPos targetPos = lowestLayer.poll();
-					if(canFill(targetPos)&&tank.getFluid().getFluid().getAttributes().canBePlacedInWorld(world, targetPos, tank.getFluid()))
-						if(place(targetPos, tank, world))
+					if(canFill(targetPos)&&tank.getFluid().getFluid().getAttributes().canBePlacedInWorld(level, targetPos, tank.getFluid()))
+						if(place(targetPos, tank, level))
 						{
 							addConnectedSpaces(targetPos);
 							handleTempFluids();
@@ -106,14 +106,14 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 		tickCount++;
 	}
 
-	private static boolean place(BlockPos pos, FluidTank tank, World world)
+	private static boolean place(BlockPos pos, FluidTank tank, Level world)
 	{
 		if(tank.getFluidAmount() < FluidAttributes.BUCKET_VOLUME)
 			return false;
 		FluidStack stack = tank.getFluid();
 		BucketItem bucketitem;
 		{
-			Item bucket = stack.getFluid().getFilledBucket();
+			Item bucket = stack.getFluid().getBucket();
 			if(!(bucket instanceof BucketItem))
 				return false;
 			bucketitem = (BucketItem)bucket;
@@ -121,10 +121,10 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 		if(bucketitem==Items.AIR)
 			return false;
 		ItemStack bucketStack = new ItemStack(bucketitem);
-		if(bucketitem.tryPlaceContainedLiquid(null, world, pos, null))
+		if(bucketitem.emptyBucket(null, world, pos, null))
 		{
 			tank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
-			bucketitem.onLiquidPlaced(world, bucketStack, pos);
+			bucketitem.checkExtraContent(world, bucketStack, pos);
 			return true;
 		}
 		else
@@ -139,7 +139,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 		layeredPlacementQueue.clear();
 		tempFluids.clear();
 
-		addConnectedSpaces(getPos());
+		addConnectedSpaces(getBlockPos());
 		handleTempFluids();
 	}
 
@@ -151,15 +151,15 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 	private void addConnectedSpaces(BlockPos pos)
 	{
 		for(Direction facing : Direction.values())
-			if(facing!=Direction.UP&&(pos!=getPos()||sideConfig.get(facing)==IOSideConfig.OUTPUT))
-				addToQueue(pos.offset(facing));
+			if(facing!=Direction.UP&&(pos!=getBlockPos()||sideConfig.get(facing)==IOSideConfig.OUTPUT))
+				addToQueue(pos.relative(facing));
 	}
 
 	private void addToQueue(BlockPos pos)
 	{
-		if(!World.isOutsideBuildHeight(pos))//Within world borders
+		if(!Level.isOutsideBuildHeight(pos))//Within world borders
 			if(checkedPositions.add(pos))//Don't add checked positions
-				if(pos.distanceSq(getPos()) < 64*64)//Within max range
+				if(pos.distSqr(getBlockPos()) < 64*64)//Within max range
 				{
 					if(fluidMatches(pos))
 						tempFluids.add(pos);
@@ -170,23 +170,23 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 
 	private boolean fluidMatches(BlockPos targetPos)
 	{
-		if(!world.isAreaLoaded(targetPos, 1)||tank.getFluid().isEmpty())
+		if(!level.isAreaLoaded(targetPos, 1)||tank.getFluid().isEmpty())
 			return false;
-		BlockState state = world.getBlockState(targetPos);
-		return state.getFluidState().getFluid()==tank.getFluid().getFluid();
+		BlockState state = level.getBlockState(targetPos);
+		return state.getFluidState().getType()==tank.getFluid().getFluid();
 	}
 
 	private boolean canFill(BlockPos targetPos)
 	{
-		if(!world.isAreaLoaded(targetPos, 1))
+		if(!level.isAreaLoaded(targetPos, 1))
 			return false;
-		BlockState state = world.getBlockState(targetPos);
+		BlockState state = level.getBlockState(targetPos);
 		// Can't fill source blocks
 		if(isFullFluidBlock(targetPos, state))
 			return false;
 		boolean canFill = !state.getMaterial().isSolid();
-		if(!canFill&&state.getBlock() instanceof IWaterLoggable)
-			canFill = ((IWaterLoggable)state.getBlock()).canContainFluid(world, targetPos, state, tank.getFluid().getFluid());
+		if(!canFill&&state.getBlock() instanceof SimpleWaterloggedBlock)
+			canFill = ((SimpleWaterloggedBlock)state.getBlock()).canPlaceLiquid(level, targetPos, state, tank.getFluid().getFluid());
 		return canFill;
 	}
 
@@ -202,11 +202,11 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		CompoundNBT sideConfigNBT = nbt.getCompound("sideConfig");
+		CompoundTag sideConfigNBT = nbt.getCompound("sideConfig");
 		for(Direction d : DirectionUtils.VALUES)
-			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.getString())]);
+			sideConfig.put(d, IOSideConfig.VALUES[sideConfigNBT.getInt(d.getSerializedName())]);
 		tank.readFromNBT(nbt.getCompound("tank"));
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		if(descPacket)
@@ -214,14 +214,14 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		CompoundNBT sideConfigNBT = new CompoundNBT();
+		CompoundTag sideConfigNBT = new CompoundTag();
 		for(Direction d : DirectionUtils.VALUES)
-			sideConfigNBT.putInt(d.getString(), sideConfig.get(d).ordinal());
+			sideConfigNBT.putInt(d.getSerializedName(), sideConfig.get(d).ordinal());
 		nbt.put("sideConfig", sideConfigNBT);
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
-		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
+		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
 	}
 
 	@Override
@@ -231,27 +231,27 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 	}
 
 	@Override
-	public boolean toggleSide(Direction side, PlayerEntity p)
+	public boolean toggleSide(Direction side, Player p)
 	{
 		sideConfig.computeIfPresent(side, (s, conf) -> IOSideConfig.next(conf));
 		prepareAreaCheck();
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+		level.blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
 		return true;
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
 			redstoneControlInverted = !redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
-			markDirty();
+			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	private final LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
@@ -267,20 +267,20 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 	}
 
 	@Override
-	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
+	public Component[] getOverlayText(Player player, HitResult rtr, boolean hammer)
 	{
-		if(hammer&&IEClientConfig.showTextOverlay.get()&&rtr instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&rtr instanceof BlockHitResult)
 		{
-			BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
-			IOSideConfig here = sideConfig.get(brtr.getFace());
-			IOSideConfig opposite = sideConfig.get(brtr.getFace().getOpposite());
+			BlockHitResult brtr = (BlockHitResult)rtr;
+			IOSideConfig here = sideConfig.get(brtr.getDirection());
+			IOSideConfig opposite = sideConfig.get(brtr.getDirection().getOpposite());
 			return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectFluid.", here, opposite);
 		}
 		return null;
 	}
 
 	@Override
-	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
+	public boolean useNixieFont(Player player, HitResult mop)
 	{
 		return false;
 	}

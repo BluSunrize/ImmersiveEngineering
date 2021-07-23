@@ -13,16 +13,16 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.items.IEItems;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
@@ -31,17 +31,17 @@ import java.util.function.Supplier;
 
 public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 {
-	public CrateMinecartEntity(World world, double x, double y, double z)
+	public CrateMinecartEntity(Level world, double x, double y, double z)
 	{
 		this(IEEntityTypes.CRATE_MINECART.get(), world, x, y, z);
 	}
 
-	public CrateMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
+	public CrateMinecartEntity(EntityType<?> type, Level world, double x, double y, double z)
 	{
 		super(type, world, x, y, z);
 	}
 
-	public CrateMinecartEntity(EntityType<?> type, World world)
+	public CrateMinecartEntity(EntityType<?> type, Level world)
 	{
 		super(type, world);
 	}
@@ -55,8 +55,8 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	@Override
 	public void writeTileToItem(ItemStack itemStack)
 	{
-		CompoundNBT tag = new CompoundNBT();
-		ItemStackHelper.saveAllItems(tag, containedTileEntity.getInventory());
+		CompoundTag tag = new CompoundTag();
+		ContainerHelper.saveAllItems(tag, containedTileEntity.getInventory());
 		if(!tag.isEmpty())
 			itemStack.setTag(tag);
 	}
@@ -72,7 +72,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	{
 		return () -> {
 			WoodenCrateTileEntity tile = new WoodenCrateTileEntity();
-			tile.setOverrideState(getDisplayTile());
+			tile.setOverrideState(getDisplayBlockState());
 			return tile;
 		};
 	}
@@ -86,14 +86,14 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 
 	@Nonnull
 	@Override
-	public BlockState getDisplayTile()
+	public BlockState getDisplayBlockState()
 	{
 		return IEBlocks.WoodenDevices.crate.getDefaultState();
 	}
 
 	@Nullable
 	@Override
-	public Container createMenu(int id, @Nonnull PlayerInventory inv, @Nonnull PlayerEntity player)
+	public AbstractContainerMenu createMenu(int id, @Nonnull Inventory inv, @Nonnull Player player)
 	{
 		return IEContainerTypes.CRATE_MINECART.construct(id, inv, this);
 	}

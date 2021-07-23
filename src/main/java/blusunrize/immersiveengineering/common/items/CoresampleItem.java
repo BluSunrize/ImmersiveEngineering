@@ -20,23 +20,31 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ColumnPos;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.util.text.*;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ColumnPos;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -51,20 +59,20 @@ public class CoresampleItem extends IEBaseItem
 {
 	public CoresampleItem()
 	{
-		super(new Properties().group(ImmersiveEngineering.ITEM_GROUP));
+		super(new Properties().tab(ImmersiveEngineering.ITEM_GROUP));
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		getCoresampleInfo(stack, list, TextFormatting.GRAY, world, true, true);
+		getCoresampleInfo(stack, list, ChatFormatting.GRAY, world, true, true);
 	}
 
-	public static void getCoresampleInfo(ItemStack coresample, List<ITextComponent> list, TextFormatting baseColor, @Nullable World world, boolean showYield, boolean showTimestamp)
+	public static void getCoresampleInfo(ItemStack coresample, List<Component> list, ChatFormatting baseColor, @Nullable Level world, boolean showYield, boolean showTimestamp)
 	{
 		if(coresample.getOrCreateTag().contains("coords"))
-			list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.outdated"));
+			list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.outdated"));
 
 		ColumnPos coords = getCoords(coresample);
 		if(coords!=null)
@@ -72,45 +80,45 @@ public class CoresampleItem extends IEBaseItem
 			List<VeinSampleData> veins = getVeins(coresample);
 			if(!veins.isEmpty())
 				veins.forEach(data -> {
-					IFormattableTextComponent component = new StringTextComponent(
+					MutableComponent component = new TextComponent(
 							Utils.formatDouble(data.getPercentageInTotalSample()*100, "0.00")+"% "
 					);
 					MineralMix mineral = data.getType();
-					component.appendSibling(new TranslationTextComponent(mineral.getTranslationKey()));
-					list.add(component.mergeStyle(baseColor));
+					component.append(new TranslatableComponent(mineral.getTranslationKey()));
+					list.add(component.withStyle(baseColor));
 					if(showYield)
 					{
-						component = new StringTextComponent("  ");
-						component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.saturation",
+						component = new TextComponent("  ");
+						component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.saturation",
 								Utils.formatDouble(data.getSaturation()*100, "0.00")
 						));
-						list.add(component.mergeStyle(TextFormatting.DARK_GRAY));
+						list.add(component.withStyle(ChatFormatting.DARK_GRAY));
 
-						component = new StringTextComponent("  ");
+						component = new TextComponent("  ");
 						int yield = ExcavatorHandler.mineralVeinYield-data.getDepletion();
 						yield *= (1-mineral.failChance);
 						if(ExcavatorHandler.mineralVeinYield==0)
-							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.infinite"));
+							component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.infinite"));
 						else
-							component.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"coresample.yield",
+							component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.yield",
 									yield));
-						list.add(component.mergeStyle(TextFormatting.DARK_GRAY));
+						list.add(component.withStyle(ChatFormatting.DARK_GRAY));
 					}
 				});
 			else
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noMineral").mergeStyle(baseColor));
+				list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.noMineral").withStyle(baseColor));
 
-			RegistryKey<World> dimension = getDimension(coresample);
+			ResourceKey<Level> dimension = getDimension(coresample);
 			if(dimension!=null)
 			{
-				String s2 = dimension.getLocation().getPath();
+				String s2 = dimension.location().getPath();
 				if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 					s2 = s2.substring(4);
-				list.add(new StringTextComponent(Utils.toCamelCase(s2)).mergeStyle(baseColor));
+				list.add(new TextComponent(Utils.toCamelCase(s2)).withStyle(baseColor));
 			}
 			ColumnPos pos = getCoords(coresample);
 			if(pos!=null)
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.pos", pos.x, pos.z).mergeStyle(baseColor));
+				list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.pos", pos.x, pos.z).withStyle(baseColor));
 
 			if(showTimestamp)
 			{
@@ -120,50 +128,50 @@ public class CoresampleItem extends IEBaseItem
 					long timestamp = ItemNBTHelper.getLong(coresample, "timestamp");
 					long dist = world.getGameTime()-timestamp;
 					if(dist < 0)
-						list.add(new StringTextComponent("Somehow this sample is dated in the future...are you a time traveller?!").mergeStyle(TextFormatting.RED));
+						list.add(new TextComponent("Somehow this sample is dated in the future...are you a time traveller?!").withStyle(ChatFormatting.RED));
 					else
-						list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timestamp", TimestampFormat.formatTimestamp(dist, TimestampFormat.DHM)).mergeStyle(baseColor));
+						list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.timestamp", TimestampFormat.formatTimestamp(dist, TimestampFormat.DHM)).withStyle(baseColor));
 				}
 				else if(hasStamp)
-					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.timezone").mergeStyle(baseColor));
+					list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.timezone").withStyle(baseColor));
 				else
-					list.add(new TranslationTextComponent(Lib.DESC_INFO+"coresample.noTimestamp").mergeStyle(baseColor));
+					list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.noTimestamp").withStyle(baseColor));
 			}
 		}
 	}
 
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
+	public InteractionResult useOn(UseOnContext ctx)
 	{
-		PlayerEntity player = ctx.getPlayer();
-		ItemStack stack = ctx.getItem();
-		if(player!=null&&player.isSneaking())
+		Player player = ctx.getPlayer();
+		ItemStack stack = ctx.getItemInHand();
+		if(player!=null&&player.isShiftKeyDown())
 		{
-			World world = ctx.getWorld();
-			BlockPos pos = ctx.getPos();
-			Direction side = ctx.getFace();
+			Level world = ctx.getLevel();
+			BlockPos pos = ctx.getClickedPos();
+			Direction side = ctx.getClickedFace();
 			BlockState state = world.getBlockState(pos);
-			BlockItemUseContext blockCtx = new BlockItemUseContext(ctx);
-			if(!state.isReplaceable(blockCtx))
-				pos = pos.offset(side);
+			BlockPlaceContext blockCtx = new BlockPlaceContext(ctx);
+			if(!state.canBeReplaced(blockCtx))
+				pos = pos.relative(side);
 
-			if(!stack.isEmpty()&&player.canPlayerEdit(pos, side, stack)&&world.getBlockState(pos).isReplaceable(blockCtx))
+			if(!stack.isEmpty()&&player.mayUseItemAt(pos, side, stack)&&world.getBlockState(pos).canBeReplaced(blockCtx))
 			{
 				BlockState coresample = StoneDecoration.coresample.getDefaultState();
-				if(world.setBlockState(pos, coresample, 3))
+				if(world.setBlock(pos, coresample, 3))
 				{
 					((IEBaseBlock)StoneDecoration.coresample.get()).onIEBlockPlacedBy(blockCtx, coresample);
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
-					world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
+					world.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);
 				}
-				return ActionResultType.SUCCESS;
+				return InteractionResult.SUCCESS;
 			}
 			else
-				return ActionResultType.FAIL;
+				return InteractionResult.FAIL;
 		}
-		return super.onItemUse(ctx);
+		return super.useOn(ctx);
 	}
 
 	public static MineralMix[] getMineralMixes(ItemStack coresample)
@@ -174,14 +182,14 @@ public class CoresampleItem extends IEBaseItem
 				.toArray(MineralMix[]::new);
 	}
 
-	public static ListNBT getSimplifiedMineralList(ItemStack coresample)
+	public static ListTag getSimplifiedMineralList(ItemStack coresample)
 	{
-		ListNBT outList = new ListNBT();
+		ListTag outList = new ListTag();
 		getVeins(coresample).stream()
 				.map(VeinSampleData::getType)
 				.map(MineralMix::getId)
 				.map(ResourceLocation::toString)
-				.map(StringNBT::valueOf)
+				.map(StringTag::valueOf)
 				.forEach(outList::add);
 		return outList;
 	}
@@ -191,7 +199,7 @@ public class CoresampleItem extends IEBaseItem
 		if(info==null)
 			return;
 		List<Pair<MineralVein, Integer>> veins = info.getAllVeins();
-		ListNBT nbtList = new ListNBT();
+		ListTag nbtList = new ListTag();
 		veins.forEach(pair -> {
 			VeinSampleData sampleData = new VeinSampleData(
 					pair.getLeft().getMineral(),
@@ -209,10 +217,10 @@ public class CoresampleItem extends IEBaseItem
 		if(!ItemNBTHelper.hasKey(stack, "mineralInfo", NBT.TAG_LIST))
 			return ImmutableList.of();
 		List<VeinSampleData> veins = new ArrayList<>();
-		ListNBT mineralInfoNBT = stack.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND);
-		for(INBT vein : mineralInfoNBT)
+		ListTag mineralInfoNBT = stack.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND);
+		for(Tag vein : mineralInfoNBT)
 		{
-			VeinSampleData data = VeinSampleData.fromNBT((CompoundNBT)vein);
+			VeinSampleData data = VeinSampleData.fromNBT((CompoundTag)vein);
 			if(data!=null)
 				veins.add(data);
 		}
@@ -235,20 +243,20 @@ public class CoresampleItem extends IEBaseItem
 	}
 
 	@Nullable
-	public static RegistryKey<World> getDimension(ItemStack stack)
+	public static ResourceKey<Level> getDimension(ItemStack stack)
 	{
 		if(stack.hasTag()&&stack.getOrCreateTag().contains("dimension"))
 		{
 			ResourceLocation name = new ResourceLocation(stack.getOrCreateTag().getString("dimension"));
-			return RegistryKey.getOrCreateKey(Registry.WORLD_KEY, name);
+			return ResourceKey.create(Registry.DIMENSION_REGISTRY, name);
 		}
 		return null;
 	}
 
 
-	public static void setDimension(ItemStack stack, RegistryKey<World> dimension)
+	public static void setDimension(ItemStack stack, ResourceKey<Level> dimension)
 	{
-		stack.getOrCreateTag().putString("dimension", dimension.getLocation().toString());
+		stack.getOrCreateTag().putString("dimension", dimension.location().toString());
 	}
 
 	public static class VeinSampleData
@@ -267,7 +275,7 @@ public class CoresampleItem extends IEBaseItem
 		}
 
 		@Nullable
-		public static VeinSampleData fromNBT(CompoundNBT nbt)
+		public static VeinSampleData fromNBT(CompoundTag nbt)
 		{
 			MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(nbt.getString("mineral")));
 			if(mineral==null)
@@ -277,9 +285,9 @@ public class CoresampleItem extends IEBaseItem
 			);
 		}
 
-		public CompoundNBT toNBT()
+		public CompoundTag toNBT()
 		{
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putDouble("percentage", percentageInTotalSample);
 			tag.putString("mineral", type.getId().toString());
 			tag.putInt("depletion", depletion);

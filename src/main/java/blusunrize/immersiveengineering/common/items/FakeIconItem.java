@@ -8,24 +8,24 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
 
 public class FakeIconItem extends IEBaseItem
 {
 	public FakeIconItem()
 	{
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{
 	}
 
 	@Override
-	protected boolean isInGroup(ItemGroup group)
+	protected boolean allowdedIn(CreativeModeTab group)
 	{
 		return false;
 	}

@@ -9,11 +9,11 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -23,6 +23,6 @@ import java.util.Map;
 public interface RecipeManagerAccess
 {
 	@Invoker
-	<C extends IInventory, T extends IRecipe<C>>
-	Map<ResourceLocation, IRecipe<C>> callGetRecipes(IRecipeType<T> recipeTypeIn);
+	<C extends Container, T extends Recipe<C>>
+	Map<ResourceLocation, Recipe<C>> callByType(RecipeType<T> recipeTypeIn);
 }

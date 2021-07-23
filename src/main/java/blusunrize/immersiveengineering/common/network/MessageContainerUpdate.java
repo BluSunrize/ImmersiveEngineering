@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -19,38 +19,38 @@ import java.util.function.Supplier;
 public class MessageContainerUpdate implements IMessage
 {
 	private int windowId;
-	private CompoundNBT nbt;
+	private CompoundTag nbt;
 
 	//TODO get rid of NBT in packets (maybe?)
-	public MessageContainerUpdate(int windowId, CompoundNBT nbt)
+	public MessageContainerUpdate(int windowId, CompoundTag nbt)
 	{
 		this.windowId = windowId;
 		this.nbt = nbt;
 	}
 
-	public MessageContainerUpdate(PacketBuffer buf)
+	public MessageContainerUpdate(FriendlyByteBuf buf)
 	{
 		this.windowId = buf.readByte();
-		this.nbt = buf.readCompoundTag();
+		this.nbt = buf.readNbt();
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeByte(this.windowId);
-		buf.writeCompoundTag(this.nbt);
+		buf.writeNbt(this.nbt);
 	}
 
 	@Override
 	public void process(Supplier<Context> context)
 	{
 		Context ctx = context.get();
-		ServerPlayerEntity player = ctx.getSender();
+		ServerPlayer player = ctx.getSender();
 		assert player!=null;
 		ctx.enqueueWork(() -> {
-			player.markPlayerActive();
-			if(player.openContainer.windowId==windowId&&player.openContainer instanceof IEBaseContainer)
-				((IEBaseContainer<?>)player.openContainer).receiveMessageFromScreen(nbt);
+			player.resetLastActionTime();
+			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IEBaseContainer)
+				((IEBaseContainer<?>)player.containerMenu).receiveMessageFromScreen(nbt);
 		});
 	}
 }

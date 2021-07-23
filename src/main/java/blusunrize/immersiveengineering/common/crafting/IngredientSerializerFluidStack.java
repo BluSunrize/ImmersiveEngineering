@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import com.google.gson.JsonObject;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ public class IngredientSerializerFluidStack implements IIngredientSerializer<Ing
 
 	@Nonnull
 	@Override
-	public IngredientFluidStack parse(@Nonnull PacketBuffer buffer)
+	public IngredientFluidStack parse(@Nonnull FriendlyByteBuf buffer)
 	{
 		return new IngredientFluidStack(FluidTagInput.read(buffer));
 	}
@@ -42,7 +42,7 @@ public class IngredientSerializerFluidStack implements IIngredientSerializer<Ing
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull IngredientFluidStack ingredient)
+	public void write(@Nonnull FriendlyByteBuf buffer, @Nonnull IngredientFluidStack ingredient)
 	{
 		ingredient.getFluidTagInput().write(buffer);
 	}

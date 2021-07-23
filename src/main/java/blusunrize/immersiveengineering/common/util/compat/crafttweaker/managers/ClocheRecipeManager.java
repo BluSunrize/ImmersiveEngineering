@@ -18,11 +18,11 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.List;
@@ -41,7 +41,7 @@ public class ClocheRecipeManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<ClocheRecipe> getRecipeType()
+	public RecipeType<ClocheRecipe> getRecipeType()
 	{
 		return ClocheRecipe.TYPE;
 	}

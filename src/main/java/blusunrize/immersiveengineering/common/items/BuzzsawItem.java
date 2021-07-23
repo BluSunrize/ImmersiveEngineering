@@ -21,38 +21,38 @@ import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LeavesBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.network.play.server.SChangeBlockPacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LeavesBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
@@ -77,7 +77,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	public BuzzsawItem()
 	{
-		super(withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "BUZZSAW");
+		super(withIEOBJRender().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "BUZZSAW");
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */
@@ -88,7 +88,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
@@ -109,7 +109,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public ItemStack removeUpgrade(ItemStack stack, PlayerEntity player, ItemStack upgrade)
+	public ItemStack removeUpgrade(ItemStack stack, Player player, ItemStack upgrade)
 	{
 		if(upgrade.getItem()==Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
 			for(int i = 1; i <= 2; i++)
@@ -125,7 +125,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
+	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
@@ -135,7 +135,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
+	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
 		super.recalculateUpgrades(stack, w, player);
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
@@ -186,7 +186,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 		if(spare==0)
 		{
-			ListNBT enchants = null;
+			ListTag enchants = null;
 			if(sawblade.getItem() instanceof SawbladeItem)
 				enchants = ((SawbladeItem)sawblade.getItem()).getSawbladeEnchants();
 			if(enchants!=null)
@@ -198,24 +198,24 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
 		if(getHead(stack).isEmpty())
 			list.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade"),
-					TextFormatting.GRAY
+					new TranslatableComponent(Lib.DESC_FLAVOUR+"buzzsaw.noBlade"),
+					ChatFormatting.GRAY
 			));
 		else
 		{
 			int maxDmg = getMaxHeadDamage(stack);
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
-			TextFormatting status = (quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
-			list.add(TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage"), TextFormatting.GRAY)
-					.appendString(" ")
-					.appendSibling(TextUtils.applyFormat(
-							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
+			ChatFormatting status = (quote < .1?ChatFormatting.RED: quote < .3?ChatFormatting.GOLD: quote < .6?ChatFormatting.YELLOW: ChatFormatting.GREEN);
+			list.add(TextUtils.applyFormat(new TranslatableComponent(Lib.DESC_FLAVOUR+"buzzsaw.bladeDamage"), ChatFormatting.GRAY)
+					.append(" ")
+					.append(TextUtils.applyFormat(
+							new TranslatableComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
 							status
 					)));
 		}
@@ -234,7 +234,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public void onScrollwheel(ItemStack stack, PlayerEntity playerEntity, boolean forward)
+	public void onScrollwheel(ItemStack stack, Player playerEntity, boolean forward)
 	{
 		if(hasQuiverUpgrade(stack))
 		{
@@ -277,34 +277,34 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public int getHeadDamage(ItemStack stack)
 	{
 		ItemStack sawblade = getHead(stack);
-		return !sawblade.isEmpty()?sawblade.getDamage(): 0;
+		return !sawblade.isEmpty()?sawblade.getDamageValue(): 0;
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
+	public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity living)
 	{
 		consumeDurability(stack, world, state, pos, living);
-		if(!world.isRemote&&!living.isSneaking()&&living instanceof ServerPlayerEntity)
+		if(!world.isClientSide&&!living.isShiftKeyDown()&&living instanceof ServerPlayer)
 			if(canFellTree(stack)&&canToolBeUsed(stack, living)&&isTree(world, pos))
-				fellTree(world, pos, (ServerPlayerEntity)living, stack);
+				fellTree(world, pos, (ServerPlayer)living, stack);
 		return true;
 	}
 
 	@Override
 	protected void damageHead(ItemStack head, int amount, LivingEntity living)
 	{
-		head.damageItem(amount, living, entity -> entity.sendBreakAnimation(Hand.MAIN_HAND));
+		head.hurtAndBreak(amount, living, entity -> entity.broadcastBreakEvent(InteractionHand.MAIN_HAND));
 	}
 
 	@Override
-	protected void consumeDurability(ItemStack stack, World world, @Nullable BlockState state, @Nullable BlockPos pos, LivingEntity living)
+	protected void consumeDurability(ItemStack stack, Level world, @Nullable BlockState state, @Nullable BlockPos pos, LivingEntity living)
 	{
-		if(state==null||!state.isIn(BlockTags.LEAVES)||Utils.RAND.nextInt(10)==0)
+		if(state==null||!state.is(BlockTags.LEAVES)||Utils.RAND.nextInt(10)==0)
 			super.consumeDurability(stack, world, state, pos, living);
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable Player player, @Nullable BlockState blockState)
 	{
 		ItemStack sawblade = getHead(stack);
 		if(!sawblade.isEmpty())
@@ -356,20 +356,20 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	 * @param initialPos
 	 * @return
 	 */
-	private boolean isTree(World world, BlockPos initialPos)
+	private boolean isTree(Level world, BlockPos initialPos)
 	{
 		int logs = 0;
 		boolean leafTop = false;
 		BlockPos pos = initialPos;
 		for(int y = 0; y < 32; y++)
 		{
-			pos = pos.up();
+			pos = pos.above();
 			BlockState state = world.getBlockState(pos);
-			if(state.isIn(BlockTags.LOGS))
+			if(state.is(BlockTags.LOGS))
 				logs++;
 			else
 			{
-				if(state.isIn(BlockTags.LEAVES))
+				if(state.is(BlockTags.LEAVES))
 					leafTop = true;
 				boolean foundLog = false;
 				if(!leafTop)
@@ -379,10 +379,10 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 					for(int z = -1; z <= 1&&loop; z++)
 						for(int x = -1; x <= 1&&loop; x++)
 						{
-							state = world.getBlockState(pos.add(x, 0, z));
-							if(state.isIn(BlockTags.LOGS))
+							state = world.getBlockState(pos.offset(x, 0, z));
+							if(state.is(BlockTags.LOGS))
 							{
-								pos = pos.add(x, 0, z);
+								pos = pos.offset(x, 0, z);
 								foundLog = true;
 								logs++;
 								loop = false;
@@ -412,7 +412,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	 */
 	private static final int MAX_HORIZONTAL_DISTANCE = 7;
 
-	private boolean fellTree(World world, BlockPos initialPos, ServerPlayerEntity player, ItemStack stack)
+	private boolean fellTree(Level world, BlockPos initialPos, ServerPlayer player, ItemStack stack)
 	{
 		int logs = 0;
 		Deque<BlockPos> openList = new ArrayDeque<>();
@@ -430,7 +430,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			if(!closedList.contains(next))
 			{
 				BlockState state = world.getBlockState(next);
-				if(state.isIn(BlockTags.LOGS))
+				if(state.is(BlockTags.LOGS))
 				{
 					closedList.add(next);
 					logs++;
@@ -438,20 +438,20 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 					for(int y = 0; y <= 1; y++)
 						for(int z = -1; z <= 1; z++)
 							for(int x = -1; x <= 1; x++)
-								openList.add(next.add(x, y, z));
+								openList.add(next.offset(x, y, z));
 				}
-				else if(state.isIn(BlockTags.LEAVES))
+				else if(state.is(BlockTags.LEAVES))
 				{
 					closedList.add(next);
-					int trunkDist = state.getBlock() instanceof LeavesBlock?state.get(LeavesBlock.DISTANCE): 0;
+					int trunkDist = state.getBlock() instanceof LeavesBlock?state.getValue(LeavesBlock.DISTANCE): 0;
 					// Leaves only propagate in cardinal directions, and only to other leaves
 					for(Direction dir : new Direction[]{Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST})
 					{
-						BlockPos adj = next.offset(dir);
+						BlockPos adj = next.relative(dir);
 						BlockState adjState = world.getBlockState(adj);
-						if(adjState.isIn(BlockTags.LEAVES))
+						if(adjState.is(BlockTags.LEAVES))
 						{
-							int adjDist = adjState.getBlock() instanceof LeavesBlock?adjState.get(LeavesBlock.DISTANCE): 0;
+							int adjDist = adjState.getBlock() instanceof LeavesBlock?adjState.getValue(LeavesBlock.DISTANCE): 0;
 							if(adjDist < trunkDist) // We don't want to get closer
 								continue;
 						}
@@ -480,43 +480,43 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		return true;
 	}
 
-	private void breakFromList(Deque<BlockPos> closedList, int maxAmount, World world, ServerPlayerEntity player, ItemStack stack)
+	private void breakFromList(Deque<BlockPos> closedList, int maxAmount, Level world, ServerPlayer player, ItemStack stack)
 	{
 		int count = 0;
 		while(count++ < maxAmount&&!closedList.isEmpty())
 		{
 			BlockPos pos = closedList.pollFirst();
 
-			int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, player.interactionManager.getGameType(), player, pos);
+			int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, pos);
 			if(xpDropEvent < 0)
 				continue;
 
 			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
-			if(!block.isAir(state, world, pos)&&state.getPlayerRelativeBlockHardness(player, world, pos)!=0)
+			if(!block.isAir(state, world, pos)&&state.getDestroyProgress(player, world, pos)!=0)
 			{
-				if(player.abilities.isCreativeMode)
+				if(player.abilities.instabuild)
 				{
-					block.onBlockHarvested(world, pos, state, player);
+					block.playerWillDestroy(world, pos, state, player);
 					if(block.removedByPlayer(state, world, pos, player, false, state.getFluidState()))
-						block.onPlayerDestroy(world, pos, state);
+						block.destroy(world, pos, state);
 				}
 				else
 				{
-					block.onBlockHarvested(world, pos, state, player);
-					TileEntity te = world.getTileEntity(pos);
+					block.playerWillDestroy(world, pos, state, player);
+					BlockEntity te = world.getBlockEntity(pos);
 					consumeDurability(stack, world, state, pos, player);
 					if(block.removedByPlayer(state, world, pos, player, true, state.getFluidState()))
 					{
-						block.onPlayerDestroy(world, pos, state);
-						block.harvestBlock(world, player, pos, state, te, stack);
-						if (world instanceof ServerWorld)
-							block.dropXpOnBlockBreak((ServerWorld)world, pos, xpDropEvent);
+						block.destroy(world, pos, state);
+						block.playerDestroy(world, player, pos, state, te, stack);
+						if (world instanceof ServerLevel)
+							block.popExperience((ServerLevel)world, pos, xpDropEvent);
 					}
 				}
-				world.playEvent(2001, pos, Block.getStateId(state));
-				player.connection.sendPacket(new SChangeBlockPacket(world, pos));
+				world.levelEvent(2001, pos, Block.getId(state));
+				player.connection.send(new ClientboundBlockUpdatePacket(world, pos));
 			}
 		}
 	}
@@ -549,7 +549,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		if("blade".equals(group))
 			return !this.getHead(stack).isEmpty();
 
-		CompoundNBT upgrades = this.getUpgrades(stack);
+		CompoundTag upgrades = this.getUpgrades(stack);
 		if("upgrade_lube".equals(group))
 			return upgrades.getBoolean("oiled");
 		if("upgrade_launcher".equals(group))
@@ -565,7 +565,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TransformationMatrix applyTransformations(ItemStack stack, String group, TransformationMatrix transform)
+	public Transformation applyTransformations(ItemStack stack, String group, Transformation transform)
 	{
 //		CompoundNBT upgrades = this.getUpgrades(stack);
 //		if(group.equals("drill_sawblade")&&upgrades.getInt("damage") <= 0)
@@ -591,20 +591,20 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static TransformationMatrix MAT_FIXED;
+	private static Transformation MAT_FIXED;
 
 	@Nonnull
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
+	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
 		if(MAT_FIXED==null)
-			MAT_FIXED = new TransformationMatrix(new Vector3f(0.60945f, 0, 0), null, null, null);
+			MAT_FIXED = new Transformation(new Vector3f(0.60945f, 0, 0), null, null, null);
 		if(!shouldRotate(entity, stack, transform))
 			return MAT_FIXED;
 		float ticksPerRotation = 10f;
-		float angle = (entity.ticksExisted%ticksPerRotation+partialTicks)/ticksPerRotation*(float)(2*Math.PI);
-		return new TransformationMatrix(
+		float angle = (entity.tickCount%ticksPerRotation+partialTicks)/ticksPerRotation*(float)(2*Math.PI);
+		return new Transformation(
 				new Vector3f(0.60945f, 0, 0),
 				new Quaternion(0, angle, 0, false),
 				null, null);

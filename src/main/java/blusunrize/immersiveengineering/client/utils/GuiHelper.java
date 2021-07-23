@@ -8,18 +8,18 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.getSprite;
@@ -27,18 +27,18 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class GuiHelper
 {
-	public static void drawColouredRect(int x, int y, int w, int h, int colour, IRenderTypeBuffer buffers, MatrixStack transform)
+	public static void drawColouredRect(int x, int y, int w, int h, int colour, MultiBufferSource buffers, PoseStack transform)
 	{
-		Matrix4f mat = transform.getLast().getMatrix();
-		IVertexBuilder worldrenderer = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-		worldrenderer.pos(mat, x, y+h, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
-		worldrenderer.pos(mat, x+w, y+h, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
-		worldrenderer.pos(mat, x+w, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
-		worldrenderer.pos(mat, x, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
+		Matrix4f mat = transform.last().pose();
+		VertexConsumer worldrenderer = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
+		worldrenderer.vertex(mat, x, y+h, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
+		worldrenderer.vertex(mat, x+w, y+h, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
+		worldrenderer.vertex(mat, x+w, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
+		worldrenderer.vertex(mat, x, y, 0).color(colour >> 16&255, colour >> 8&255, colour&255, colour >> 24&255).endVertex();
 	}
 
 	public static void drawTexturedColoredRect(
-			IVertexBuilder builder, MatrixStack transform,
+			VertexConsumer builder, PoseStack transform,
 			float x, float y, float w, float h,
 			float r, float g, float b, float alpha,
 			float u0, float u1, float v0, float v1
@@ -46,29 +46,29 @@ public class GuiHelper
 	{
 		TransformingVertexBuilder innerBuilder = new TransformingVertexBuilder(builder, transform);
 		innerBuilder.setColor(r, g, b, alpha);
-		innerBuilder.setLight(LightTexture.packLight(15, 15));
+		innerBuilder.setLight(LightTexture.pack(15, 15));
 		innerBuilder.setOverlay(OverlayTexture.NO_OVERLAY);
 		innerBuilder.setNormal(1, 1, 1);
-		innerBuilder.pos(x, y+h, 0).tex(u0, v1).endVertex();
-		innerBuilder.pos(x+w, y+h, 0).tex(u1, v1).endVertex();
-		innerBuilder.pos(x+w, y, 0).tex(u1, v0).endVertex();
-		innerBuilder.pos(x, y, 0).tex(u0, v0).endVertex();
+		innerBuilder.vertex(x, y+h, 0).uv(u0, v1).endVertex();
+		innerBuilder.vertex(x+w, y+h, 0).uv(u1, v1).endVertex();
+		innerBuilder.vertex(x+w, y, 0).uv(u1, v0).endVertex();
+		innerBuilder.vertex(x, y, 0).uv(u0, v0).endVertex();
 	}
 
-	public static void drawTexturedRect(IVertexBuilder builder, MatrixStack transform, int x, int y, int w, int h, float picSize,
+	public static void drawTexturedRect(VertexConsumer builder, PoseStack transform, int x, int y, int w, int h, float picSize,
 										int u0, int u1, int v0, int v1)
 	{
 		drawTexturedColoredRect(builder, transform, x, y, w, h, 1, 1, 1, 1, u0/picSize, u1/picSize, v0/picSize, v1/picSize);
 	}
 
-	public static void drawRepeatedFluidSpriteGui(IRenderTypeBuffer buffer, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h)
+	public static void drawRepeatedFluidSpriteGui(MultiBufferSource buffer, PoseStack transform, FluidStack fluid, float x, float y, float w, float h)
 	{
-		RenderType renderType = IERenderTypes.getGui(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
-		IVertexBuilder builder = buffer.getBuffer(renderType);
+		RenderType renderType = IERenderTypes.getGui(InventoryMenu.BLOCK_ATLAS);
+		VertexConsumer builder = buffer.getBuffer(renderType);
 		drawRepeatedFluidSprite(builder, transform, fluid, x, y, w, h);
 	}
 
-	public static void drawRepeatedFluidSprite(IVertexBuilder builder, MatrixStack transform, FluidStack fluid, float x, float y, float w, float h)
+	public static void drawRepeatedFluidSprite(VertexConsumer builder, PoseStack transform, FluidStack fluid, float x, float y, float w, float h)
 	{
 		TextureAtlasSprite sprite = getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid));
 		int col = fluid.getFluid().getAttributes().getColor(fluid);
@@ -76,11 +76,11 @@ public class GuiHelper
 		int iH = sprite.getHeight();
 		if(iW > 0&&iH > 0)
 			drawRepeatedSprite(builder, transform, x, y, w, h, iW, iH,
-					sprite.getMinU(), sprite.getMaxU(), sprite.getMinV(), sprite.getMaxV(),
+					sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(),
 					(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f, 1);
 	}
 
-	public static void drawRepeatedSprite(IVertexBuilder builder, MatrixStack transform, float x, float y, float w,
+	public static void drawRepeatedSprite(VertexConsumer builder, PoseStack transform, float x, float y, float w,
 										  float h, int iconWidth, int iconHeight, float uMin, float uMax, float vMin, float vMax,
 										  float r, float g, float b, float alpha)
 	{
@@ -110,54 +110,54 @@ public class GuiHelper
 		}
 	}
 
-	public static void drawSlot(int x, int y, int w, int h, MatrixStack transform)
+	public static void drawSlot(int x, int y, int w, int h, PoseStack transform)
 	{
 		drawSlot(x, y, w, h, 0xff, transform);
 	}
 
-	public static void drawSlot(MatrixStack transform, int x, int y, int w, int h, int dark, int main, int light)
+	public static void drawSlot(PoseStack transform, int x, int y, int w, int h, int dark, int main, int light)
 	{
 		final int minX = x+8-w/2;
 		final int minY = y+8-h/2;
 		final int maxX = minX+w;
 		final int maxY = minY+h;
-		AbstractGui.fill(transform, minX, minY-1, maxX, minY, dark);
-		AbstractGui.fill(transform, minX-1, minY-1, minX, maxY, dark);
-		AbstractGui.fill(transform, minX, minY, maxX, maxY, main);
-		AbstractGui.fill(transform, minX, maxY, maxX+1, maxY+1, light);
-		AbstractGui.fill(transform, maxX, minY, maxX+1, maxY, light);
+		GuiComponent.fill(transform, minX, minY-1, maxX, minY, dark);
+		GuiComponent.fill(transform, minX-1, minY-1, minX, maxY, dark);
+		GuiComponent.fill(transform, minX, minY, maxX, maxY, main);
+		GuiComponent.fill(transform, minX, maxY, maxX+1, maxY+1, light);
+		GuiComponent.fill(transform, maxX, minY, maxX+1, maxY, light);
 	}
 
-	public static void drawSlot(int x, int y, int w, int h, int alpha, MatrixStack transform)
+	public static void drawSlot(int x, int y, int w, int h, int alpha, PoseStack transform)
 	{
 		drawSlot(transform, x, y, w, h, (alpha<<24)|0x373737, (alpha<<24)|0x8b8b8b, (alpha<<24)|0xffffff);
 	}
 
-	public static void drawDarkSlot(MatrixStack transform, int x, int y, int w, int h)
+	public static void drawDarkSlot(PoseStack transform, int x, int y, int w, int h)
 	{
 		drawSlot(transform, x, y, w, h, 0x77222222, 0x77111111, 0x77999999);
 	}
 
-	public static void renderItemWithOverlayIntoGUI(IRenderTypeBuffer buffer, MatrixStack transform,
+	public static void renderItemWithOverlayIntoGUI(MultiBufferSource buffer, PoseStack transform,
 													ItemStack stack, int x, int y)
 	{
 		buffer = IERenderTypes.disableLighting(buffer);
-		transform.push();
+		transform.pushPose();
 		transform.translate(x, y, 100);
-		transform.push();
+		transform.pushPose();
 		transform.translate(8, 8, 0);
 		transform.scale(1, -1, 1);
 		transform.scale(16, 16, 16);
 		BatchingRenderTypeBuffer batchBuffer = new BatchingRenderTypeBuffer();
-		mc().getItemRenderer().renderItem(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
+		mc().getItemRenderer().renderStatic(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
 				transform, batchBuffer);
 		batchBuffer.pipe(buffer);
-		transform.pop();
+		transform.popPose();
 		renderDurabilityBar(stack, buffer, transform);
-		transform.pop();
+		transform.popPose();
 	}
 
-	public static void renderDurabilityBar(ItemStack stack, IRenderTypeBuffer buffer, MatrixStack transform)
+	public static void renderDurabilityBar(ItemStack stack, MultiBufferSource buffer, PoseStack transform)
 	{
 		if(!stack.isEmpty()&&stack.getItem().showDurabilityBar(stack))
 		{
@@ -169,16 +169,16 @@ public class GuiHelper
 		}
 	}
 
-	private static void draw(MatrixStack transform, IRenderTypeBuffer buffer, int x, int y, int width, int height, int red, int green, int blue)
+	private static void draw(PoseStack transform, MultiBufferSource buffer, int x, int y, int width, int height, int red, int green, int blue)
 	{
-		IVertexBuilder builder = buffer.getBuffer(IERenderTypes.ITEM_DAMAGE_BAR);
-		transform.push();
+		VertexConsumer builder = buffer.getBuffer(IERenderTypes.ITEM_DAMAGE_BAR);
+		transform.pushPose();
 		transform.translate(x, y, 0);
-		Matrix4f mat = transform.getLast().getMatrix();
-		builder.pos(mat, 0, 0, 0).color(red, green, blue, 255).endVertex();
-		builder.pos(mat, 0, height, 0).color(red, green, blue, 255).endVertex();
-		builder.pos(mat, width, height, 0).color(red, green, blue, 255).endVertex();
-		builder.pos(mat, width, 0, 0).color(red, green, blue, 255).endVertex();
-		transform.pop();
+		Matrix4f mat = transform.last().pose();
+		builder.vertex(mat, 0, 0, 0).color(red, green, blue, 255).endVertex();
+		builder.vertex(mat, 0, height, 0).color(red, green, blue, 255).endVertex();
+		builder.vertex(mat, width, height, 0).color(red, green, blue, 255).endVertex();
+		builder.vertex(mat, width, 0, 0).color(red, green, blue, 255).endVertex();
+		transform.popPose();
 	}
 }

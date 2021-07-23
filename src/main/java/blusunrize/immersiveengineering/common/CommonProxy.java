@@ -27,12 +27,12 @@ package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 
 public class CommonProxy
 {
@@ -44,15 +44,15 @@ public class CommonProxy
 	{
 	}
 
-	public void handleTileSound(SoundEvent soundEvent, TileEntity tile, boolean tileActive, float volume, float pitch)
+	public void handleTileSound(SoundEvent soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch)
 	{
 	}
 
-	public void stopTileSound(String soundName, TileEntity tile)
+	public void stopTileSound(String soundName, BlockEntity tile)
 	{
 	}
 
-	public void spawnFractalFX(World world, double x, double y, double z, Vector3d direction, double scale, int prefixColour, float[][] colour)
+	public void spawnFractalFX(Level world, double x, double y, double z, Vec3 direction, double scale, int prefixColour, float[][] colour)
 	{
 		if(prefixColour >= 0)
 			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;
@@ -60,12 +60,12 @@ public class CommonProxy
 		world.addParticle(particle, x, y, z, 0, 0, 0);
 	}
 
-	public World getClientWorld()
+	public Level getClientWorld()
 	{
 		return null;
 	}
 
-	public PlayerEntity getClientPlayer()
+	public Player getClientPlayer()
 	{
 		return null;
 	}
@@ -87,7 +87,7 @@ public class CommonProxy
 
 	}
 
-	public void openTileScreen(String guiId, TileEntity tileEntity)
+	public void openTileScreen(String guiId, BlockEntity tileEntity)
 	{
 	}
 

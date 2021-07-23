@@ -9,20 +9,20 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
 
 import java.util.function.Supplier;
 
 public class CushionBlock extends IEBaseBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.create(Material.WOOL)
-			.sound(SoundType.CLOTH)
-			.hardnessAndResistance(0.8F);
+	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.WOOL)
+			.sound(SoundType.WOOL)
+			.strength(0.8F);
 
 	public CushionBlock(Properties props)
 	{
@@ -30,7 +30,7 @@ public class CushionBlock extends IEBaseBlock
 	}
 
 	@Override
-	public void onFallenUpon(World w, BlockPos pos, Entity entity, float fallStrength)
+	public void fallOn(Level w, BlockPos pos, Entity entity, float fallStrength)
 	{
 		entity.fallDistance = 0;
 	}

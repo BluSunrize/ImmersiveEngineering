@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -52,7 +52,7 @@ public class ItemNBTHelper
 		modifyInt(stack.getOrCreateTag(), key, mod);
 	}
 
-	public static void modifyInt(CompoundNBT tagCompound, String key, int mod)
+	public static void modifyInt(CompoundTag tagCompound, String key, int mod)
 	{
 		tagCompound.putInt(key, tagCompound.getInt(key)+mod);
 	}
@@ -97,7 +97,7 @@ public class ItemNBTHelper
 		stack.getOrCreateTag().putFloat(key, val);
 	}
 
-	public static void modifyFloat(CompoundNBT tagCompound, String key, float mod)
+	public static void modifyFloat(CompoundTag tagCompound, String key, float mod)
 	{
 		tagCompound.putFloat(key, tagCompound.getFloat(key)+mod);
 	}
@@ -117,21 +117,21 @@ public class ItemNBTHelper
 		return hasTag(stack)&&stack.getOrCreateTag().getBoolean(key);
 	}
 
-	public static void setTagCompound(ItemStack stack, String key, CompoundNBT val)
+	public static void setTagCompound(ItemStack stack, String key, CompoundTag val)
 	{
 		stack.getOrCreateTag().put(key, val);
 	}
 
-	public static CompoundNBT getTagCompound(ItemStack stack, String key)
+	public static CompoundTag getTagCompound(ItemStack stack, String key)
 	{
-		return hasTag(stack)?stack.getOrCreateTag().getCompound(key): new CompoundNBT();
+		return hasTag(stack)?stack.getOrCreateTag().getCompound(key): new CompoundTag();
 	}
 
 	public static void setFluidStack(ItemStack stack, String key, FluidStack val)
 	{
 		if(val!=null&&val.getFluid()!=null)
 		{
-			setTagCompound(stack, key, val.writeToNBT(new CompoundNBT()));
+			setTagCompound(stack, key, val.writeToNBT(new CompoundTag()));
 		}
 		else
 			remove(stack, key);
@@ -148,22 +148,22 @@ public class ItemNBTHelper
 
 	public static void setItemStack(ItemStack stack, String key, ItemStack val)
 	{
-		stack.getOrCreateTag().put(key, val.write(new CompoundNBT()));
+		stack.getOrCreateTag().put(key, val.save(new CompoundTag()));
 	}
 
 	public static ItemStack getItemStack(ItemStack stack, String key)
 	{
 		if(hasTag(stack)&&stack.getOrCreateTag().contains(key))
-			return ItemStack.read(getTagCompound(stack, key));
+			return ItemStack.of(getTagCompound(stack, key));
 		return ItemStack.EMPTY;
 	}
 
-	public static void setLore(ItemStack stack, ITextComponent... lore)
+	public static void setLore(ItemStack stack, Component... lore)
 	{
-		CompoundNBT displayTag = getTagCompound(stack, "display");
-		ListNBT list = new ListNBT();
-		for(ITextComponent s : lore)
-			list.add(StringNBT.valueOf(ITextComponent.Serializer.toJson(s)));
+		CompoundTag displayTag = getTagCompound(stack, "display");
+		ListTag list = new ListTag();
+		for(Component s : lore)
+			list.add(StringTag.valueOf(Component.Serializer.toJson(s)));
 		displayTag.put("Lore", list);
 		setTagCompound(stack, "display", displayTag);
 	}
@@ -216,8 +216,8 @@ public class ItemNBTHelper
 					putLong(stack, (String)key, (Long)value);
 				else if(value instanceof String)
 					putString(stack, (String)key, (String)value);
-				else if(value instanceof CompoundNBT)
-					setTagCompound(stack, (String)key, (CompoundNBT)value);
+				else if(value instanceof CompoundTag)
+					setTagCompound(stack, (String)key, (CompoundTag)value);
 				else if(value instanceof int[])
 					putIntArray(stack, (String)key, (int[])value);
 				else if(value instanceof ItemStack)
@@ -229,17 +229,17 @@ public class ItemNBTHelper
 		return stack;
 	}
 
-	public static CompoundNBT combineTags(CompoundNBT target, CompoundNBT add, Pattern pattern)
+	public static CompoundTag combineTags(CompoundTag target, CompoundTag add, Pattern pattern)
 	{
 		if(target==null||target.isEmpty())
 			return add.copy();
-		for(String key : add.keySet())
+		for(String key : add.getAllKeys())
 			if(pattern==null||pattern.matcher(key).matches())
 				if(!target.contains(key))
 					target.put(key, add.get(key));
 				else
 				{
-					switch(add.getTagId(key))
+					switch(add.getTagType(key))
 					{
 						case NBT.TAG_BYTE:
 							target.putByte(key, (byte)(target.getByte(key)+add.getByte(key)));
@@ -271,8 +271,8 @@ public class ItemNBTHelper
 							target.putString(key, (target.getString(key)+add.getString(key)));
 							break;
 						case NBT.TAG_LIST:
-							ListNBT listTarget = (ListNBT)target.get(key);
-							ListNBT listAdd = (ListNBT)add.get(key);
+							ListTag listTarget = (ListTag)target.get(key);
+							ListTag listAdd = (ListTag)add.get(key);
 							for(int i = 0; i < listAdd.size(); i++)
 								listTarget.add(listAdd.get(i));
 							target.put(key, listTarget);

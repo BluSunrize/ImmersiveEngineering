@@ -10,11 +10,11 @@
 package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 public class BlastFurnaceFuelBuilder extends IEFinishedRecipe<BlastFurnaceFuelBuilder>
 {
@@ -24,7 +24,7 @@ public class BlastFurnaceFuelBuilder extends IEFinishedRecipe<BlastFurnaceFuelBu
 		this.maxResultCount = 0;
 	}
 
-	public static BlastFurnaceFuelBuilder builder(IItemProvider input)
+	public static BlastFurnaceFuelBuilder builder(ItemLike input)
 	{
 		return new BlastFurnaceFuelBuilder().addInput(input);
 	}
@@ -34,8 +34,8 @@ public class BlastFurnaceFuelBuilder extends IEFinishedRecipe<BlastFurnaceFuelBu
 		return new BlastFurnaceFuelBuilder().addInput(input);
 	}
 
-	public static BlastFurnaceFuelBuilder builder(ITag<Item> input)
+	public static BlastFurnaceFuelBuilder builder(Tag<Item> input)
 	{
-		return new BlastFurnaceFuelBuilder().addInput(Ingredient.fromTag(input));
+		return new BlastFurnaceFuelBuilder().addInput(Ingredient.of(input));
 	}
 }

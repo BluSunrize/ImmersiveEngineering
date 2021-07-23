@@ -22,18 +22,18 @@ import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.tileentity.AbstractFurnaceTileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -52,29 +52,29 @@ import static blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEnti
 
 public abstract class IESlot extends Slot
 {
-	final Container container;
+	final AbstractContainerMenu containerMenu;
 
-	public IESlot(Container container, IInventory inv, int id, int x, int y)
+	public IESlot(AbstractContainerMenu containerMenu, Container inv, int id, int x, int y)
 	{
 		super(inv, id, x, y);
-		this.container = container;
+		this.containerMenu = containerMenu;
 	}
 
 	@Override
-	public boolean isItemValid(ItemStack itemStack)
+	public boolean mayPlace(ItemStack itemStack)
 	{
 		return true;
 	}
 
 	public static class Output extends IESlot
 	{
-		public Output(Container container, IInventory inv, int id, int x, int y)
+		public Output(AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return false;
 		}
@@ -83,19 +83,19 @@ public abstract class IESlot extends Slot
 	public static class IEFurnaceSFuelSlot extends IESlot
 	{
 
-		public IEFurnaceSFuelSlot(Container container, IInventory inv, int id, int x, int y)
+		public IEFurnaceSFuelSlot(AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
-		public boolean isItemValid(ItemStack stack)
+		public boolean mayPlace(ItemStack stack)
 		{
-			return AbstractFurnaceTileEntity.isFuel(stack)||isBucket(stack);
+			return AbstractFurnaceBlockEntity.isFuel(stack)||isBucket(stack);
 		}
 
-		public int getItemStackLimit(ItemStack stack)
+		public int getMaxStackSize(ItemStack stack)
 		{
-			return isBucket(stack)?1: super.getItemStackLimit(stack);
+			return isBucket(stack)?1: super.getMaxStackSize(stack);
 		}
 
 		public static boolean isBucket(ItemStack stack)
@@ -109,14 +109,14 @@ public abstract class IESlot extends Slot
 	{
 		int filter; //0 = any, 1 = empty, 2 = full
 
-		public FluidContainer(Container container, IInventory inv, int id, int x, int y, int filter)
+		public FluidContainer(AbstractContainerMenu container, Container inv, int id, int x, int y, int filter)
 		{
 			super(container, inv, id, x, y);
 			this.filter = filter;
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			LazyOptional<IFluidHandlerItem> handlerCap = FluidUtil.getFluidHandler(itemStack);
 			return handlerCap.map(handler -> {
@@ -134,13 +134,13 @@ public abstract class IESlot extends Slot
 
 	public static class BlastFuel extends IESlot
 	{
-		public BlastFuel(Container container, IInventory inv, int id, int x, int y)
+		public BlastFuel(AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return BlastFurnaceFuel.isValidBlastFuel(itemStack);
 		}
@@ -157,19 +157,19 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return !itemStack.isEmpty()&&itemStack.getItem() instanceof BulletItem;
 		}
 
 		@Override
-		public int getSlotStackLimit()
+		public int getMaxStackSize()
 		{
 			return limit;
 		}
 
 		@Override
-		public int getItemStackLimit(@Nonnull ItemStack stack)
+		public int getMaxStackSize(@Nonnull ItemStack stack)
 		{
 			return limit;
 		}
@@ -194,22 +194,22 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return !itemStack.isEmpty()&&this.predicate.test(itemStack);
 		}
 
 		@Override
-		public int getSlotStackLimit()
+		public int getMaxStackSize()
 		{
 			return 1;
 		}
 
 		@Override
-		public void onSlotChanged()
+		public void setChanged()
 		{
-			super.onSlotChanged();
-			onChange.accept(getStack());
+			super.setChanged();
+			onChange.accept(getItem());
 		}
 	}
 
@@ -218,12 +218,12 @@ public abstract class IESlot extends Slot
 		final ItemStack upgradeableTool;
 		final String type;
 		final boolean preventDoubles;
-		final Container container;
-		final Supplier<World> getWorld;
-		final Supplier<PlayerEntity> getPlayer;
+		final AbstractContainerMenu container;
+		final Supplier<Level> getWorld;
+		final Supplier<Player> getPlayer;
 
-		public Upgrades(Container container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool,
-						boolean preventDoubles, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
+		public Upgrades(AbstractContainerMenu container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool,
+						boolean preventDoubles, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 		{
 			super(inv, id, x, y);
 			this.container = container;
@@ -235,23 +235,23 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean isItemValid(@Nonnull ItemStack itemStack)
+		public boolean mayPlace(@Nonnull ItemStack itemStack)
 		{
 			if(preventDoubles)
-				for(Slot slot : container.inventorySlots)
-					if(this!=slot&&slot instanceof Upgrades&&ItemStack.areItemsEqual(slot.getStack(), itemStack))
+				for(Slot slot : container.slots)
+					if(this!=slot&&slot instanceof Upgrades&&ItemStack.isSame(slot.getItem(), itemStack))
 						return false;
 			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IUpgrade&&((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type)&&((IUpgrade)itemStack.getItem()).canApplyUpgrades(upgradeableTool, itemStack);
 		}
 
 		@Override
-		public int getSlotStackLimit()
+		public int getMaxStackSize()
 		{
 			return 64;
 		}
 
 		@Override
-		public ItemStack onTake(PlayerEntity thePlayer, ItemStack stack)
+		public ItemStack onTake(Player thePlayer, ItemStack stack)
 		{
 			stack = ((IUpgradeableTool)upgradeableTool.getItem()).removeUpgrade(upgradeableTool, thePlayer, stack);
 			stack = super.onTake(thePlayer, stack);
@@ -259,9 +259,9 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public void onSlotChanged()
+		public void setChanged()
 		{
-			super.onSlotChanged();
+			super.setChanged();
 			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get(), getPlayer.get());
 			if(container instanceof ModWorkbenchContainer)
 				((ModWorkbenchContainer)container).rebindSlots();
@@ -274,15 +274,15 @@ public abstract class IESlot extends Slot
 	{
 		ItemStack tool;
 
-		public Shader(Container container, IInventory inv, int id, int x, int y, ItemStack tool)
+		public Shader(AbstractContainerMenu container, Container inv, int id, int x, int y, ItemStack tool)
 		{
 			super(container, inv, id, x, y);
 			this.tool = tool;
-			this.setBackground(PlayerContainer.LOCATION_BLOCKS_TEXTURE, new ResourceLocation("immersiveengineering", "item/shader_slot"));
+			this.setBackground(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("immersiveengineering", "item/shader_slot"));
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			if(itemStack.isEmpty()||!(itemStack.getItem() instanceof IShaderItem)||tool.isEmpty())
 				return false;
@@ -292,7 +292,7 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public int getSlotStackLimit()
+		public int getMaxStackSize()
 		{
 			return 1;
 		}
@@ -302,14 +302,14 @@ public abstract class IESlot extends Slot
 	{
 		int size;
 
-		public ModWorkbench(ModWorkbenchContainer container, IInventory inv, int id, int x, int y, int size)
+		public ModWorkbench(ModWorkbenchContainer container, Container inv, int id, int x, int y, int size)
 		{
 			super(container, inv, id, x, y);
 			this.size = size;
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			if(itemStack.isEmpty())
 				return false;
@@ -323,27 +323,27 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public int getSlotStackLimit()
+		public int getMaxStackSize()
 		{
 			return size;
 		}
 
 		@Override
-		public void onSlotChanged()
+		public void setChanged()
 		{
-			super.onSlotChanged();
-			if(container instanceof ModWorkbenchContainer)
-				((ModWorkbenchContainer)container).rebindSlots();
+			super.setChanged();
+			if(containerMenu instanceof ModWorkbenchContainer)
+				((ModWorkbenchContainer)containerMenu).rebindSlots();
 		}
 
 		@Override
-		public boolean canTakeStack(PlayerEntity player)
+		public boolean mayPickup(Player player)
 		{
-			return !(!this.getStack().isEmpty()&&getStack().getItem() instanceof IUpgradeableTool&&!((IUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()));
+			return !(!this.getItem().isEmpty()&&getItem().getItem() instanceof IUpgradeableTool&&!((IUpgradeableTool)getItem().getItem()).canTakeFromWorkbench(getItem()));
 		}
 
 		@Override
-		public ItemStack onTake(PlayerEntity player, ItemStack stack)
+		public ItemStack onTake(Player player, ItemStack stack)
 		{
 			ItemStack result = super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
@@ -358,13 +358,13 @@ public abstract class IESlot extends Slot
 
 	public static class Maintenance extends IESlot
 	{
-		public Maintenance(MaintenanceKitContainer container, IInventory inv, int id, int x, int y)
+		public Maintenance(MaintenanceKitContainer container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			if(itemStack.isEmpty())
 				return false;
@@ -376,21 +376,21 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public void onSlotChanged()
+		public void setChanged()
 		{
-			super.onSlotChanged();
-			if(container instanceof MaintenanceKitContainer)
-				((MaintenanceKitContainer)container).updateSlots();
+			super.setChanged();
+			if(containerMenu instanceof MaintenanceKitContainer)
+				((MaintenanceKitContainer)containerMenu).updateSlots();
 		}
 
 		@Override
-		public boolean canTakeStack(PlayerEntity player)
+		public boolean mayPickup(Player player)
 		{
-			return !(!this.getStack().isEmpty()&&getStack().getItem() instanceof IUpgradeableTool&&!((IUpgradeableTool)getStack().getItem()).canTakeFromWorkbench(getStack()));
+			return !(!this.getItem().isEmpty()&&getItem().getItem() instanceof IUpgradeableTool&&!((IUpgradeableTool)getItem().getItem()).canTakeFromWorkbench(getItem()));
 		}
 
 		@Override
-		public ItemStack onTake(PlayerEntity player, ItemStack stack)
+		public ItemStack onTake(Player player, ItemStack stack)
 		{
 			ItemStack result = super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
@@ -401,28 +401,28 @@ public abstract class IESlot extends Slot
 
 	public static class AutoBlueprint extends IESlot
 	{
-		public AutoBlueprint(Container container, IInventory inv, int id, int x, int y)
+		public AutoBlueprint(AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return !itemStack.isEmpty()&&itemStack.getItem() instanceof EngineersBlueprintItem;
 		}
 
 		@Override
-		public int getSlotStackLimit()
+		public int getMaxStackSize()
 		{
 			return 1;
 		}
 
 		@Override
-		public void onSlotChanged()
+		public void setChanged()
 		{
-			super.onSlotChanged();
-			if(container instanceof AutoWorkbenchContainer)
+			super.setChanged();
+			if(containerMenu instanceof AutoWorkbenchContainer)
 				ImmersiveEngineering.proxy.reInitGui();
 //				((ContainerAutoWorkbench)container).rebindSlots();
 		}
@@ -437,7 +437,7 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean canTakeStack(PlayerEntity playerIn)
+		public boolean mayPickup(Player playerIn)
 		{
 			return false;
 		}
@@ -445,19 +445,19 @@ public abstract class IESlot extends Slot
 
 	public static class ItemDisplay extends IESlot
 	{
-		public ItemDisplay(Container container, IInventory inv, int id, int x, int y)
+		public ItemDisplay(AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return false;
 		}
 
 		@Override
-		public boolean canTakeStack(PlayerEntity player)
+		public boolean mayPickup(Player player)
 		{
 			return false;
 		}
@@ -467,26 +467,26 @@ public abstract class IESlot extends Slot
 	{
 		private final BlueprintInventory outputInventory;
 
-		public BlueprintInput(Container container, IInventory inv, BlueprintInventory outputInventory, int id, int x, int y)
+		public BlueprintInput(AbstractContainerMenu container, Container inv, BlueprintInventory outputInventory, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 			this.outputInventory = outputInventory;
 		}
 
 		@Override
-		public void onSlotChanged()
+		public void setChanged()
 		{
-			outputInventory.updateOutputs(this.inventory);
-			super.onSlotChanged();
+			outputInventory.updateOutputs(this.container);
+			super.setChanged();
 		}
 	}
 
 	public static class BlueprintOutput extends IESlot
 	{
-		private final IInventory inputInventory;
+		private final Container inputInventory;
 		public final BlueprintCraftingRecipe recipe;
 
-		public BlueprintOutput(Container container, BlueprintInventory inv, IInventory inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
+		public BlueprintOutput(AbstractContainerMenu container, BlueprintInventory inv, Container inputInventory, int id, int x, int y, BlueprintCraftingRecipe recipe)
 		{
 			super(container, inv, id, x, y);
 			this.inputInventory = inputInventory;
@@ -494,7 +494,7 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return false;
 		}
@@ -502,28 +502,28 @@ public abstract class IESlot extends Slot
 
 		@Override
 		@OnlyIn(Dist.CLIENT)
-		public boolean isEnabled()
+		public boolean isActive()
 		{
-			return this.getHasStack();
+			return this.hasItem();
 		}
 
 		@Override
-		public ItemStack onTake(PlayerEntity player, ItemStack stack)
+		public ItemStack onTake(Player player, ItemStack stack)
 		{
-			((BlueprintInventory)this.inventory).reduceIputs(this.inputInventory, recipe, stack);
+			((BlueprintInventory)this.container).reduceIputs(this.inputInventory, recipe, stack);
 			return super.onTake(player, stack);
 		}
 	}
 
 	public static class ArcInput extends IESlot
 	{
-		public ArcInput(Container container, IInventory inv, int id, int x, int y)
+		public ArcInput(AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return !itemStack.isEmpty()&&ArcFurnaceRecipe.isValidRecipeInput(itemStack);
 		}
@@ -531,13 +531,13 @@ public abstract class IESlot extends Slot
 
 	public static class ArcAdditive extends IESlot
 	{
-		public ArcAdditive(Container container, IInventory inv, int id, int x, int y)
+		public ArcAdditive(AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return !itemStack.isEmpty()&&ArcFurnaceRecipe.isValidRecipeAdditive(itemStack);
 		}
@@ -545,19 +545,19 @@ public abstract class IESlot extends Slot
 
 	public static class ArcElectrode extends IESlot
 	{
-		public ArcElectrode(Container container, IInventory inv, int id, int x, int y)
+		public ArcElectrode(AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 		}
 
 		@Override
-		public int getSlotStackLimit()
+		public int getMaxStackSize()
 		{
 			return 1;
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			return !itemStack.isEmpty()&&Misc.graphiteElectrode.equals(itemStack.getItem());
 		}
@@ -567,20 +567,20 @@ public abstract class IESlot extends Slot
 	{
 		int type = 0;
 
-		public Cloche(int type, Container container, IInventory inv, int id, int x, int y)
+		public Cloche(int type, AbstractContainerMenu container, Container inv, int id, int x, int y)
 		{
 			super(container, inv, id, x, y);
 			this.type = type;
 		}
 
 		@Override
-		public int getSlotStackLimit()
+		public int getMaxStackSize()
 		{
 			return type < 2?1: 64;
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			if(itemStack.isEmpty())
 				return false;
@@ -592,16 +592,16 @@ public abstract class IESlot extends Slot
 
 	public static class Tagged extends IESlot
 	{
-		private final INamedTag<Item> tag;
+		private final Named<Item> tag;
 
-		public Tagged(Container container, IInventory inv, int id, int x, int y, INamedTag<Item> tag)
+		public Tagged(AbstractContainerMenu container, Container inv, int id, int x, int y, Named<Item> tag)
 		{
 			super(container, inv, id, x, y);
 			this.tag = tag;
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			if(itemStack.isEmpty())
 				return false;
@@ -611,27 +611,27 @@ public abstract class IESlot extends Slot
 
 	public static class ContainerCallback extends SlotItemHandler
 	{
-		Container container;
+		AbstractContainerMenu container;
 
-		public ContainerCallback(Container container, IItemHandler inv, int id, int x, int y)
+		public ContainerCallback(AbstractContainerMenu container, IItemHandler inv, int id, int x, int y)
 		{
 			super(inv, id, x, y);
 			this.container = container;
 		}
 
 		@Override
-		public boolean isItemValid(ItemStack itemStack)
+		public boolean mayPlace(ItemStack itemStack)
 		{
 			if(this.container instanceof ICallbackContainer)
-				return ((ICallbackContainer)this.container).canInsert(itemStack, slotNumber, this);
+				return ((ICallbackContainer)this.container).canInsert(itemStack, getSlotIndex(), this);
 			return true;
 		}
 
 		@Override
-		public boolean canTakeStack(PlayerEntity player)
+		public boolean mayPickup(Player player)
 		{
 			if(this.container instanceof ICallbackContainer)
-				return ((ICallbackContainer)this.container).canTake(this.getStack(), slotNumber, this);
+				return ((ICallbackContainer)this.container).canTake(this.getItem(), getSlotIndex(), this);
 			return true;
 		}
 	}

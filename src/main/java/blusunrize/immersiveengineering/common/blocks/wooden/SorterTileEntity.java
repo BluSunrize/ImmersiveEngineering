@@ -18,15 +18,15 @@ import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.ints.IntIterators;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -67,7 +67,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 
 	public ItemStack routeItem(Direction inputSide, ItemStack stack, boolean simulate)
 	{
-		if(!world.isRemote&&canRoute())
+		if(!level.isClientSide&&canRoute())
 		{
 			boolean first = startRouting();
 			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
@@ -83,7 +83,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 
 	private boolean canRoute()
 	{
-		return routed==null||!routed.contains(pos);
+		return routed==null||!routed.contains(worldPosition);
 	}
 
 	private boolean startRouting()
@@ -91,7 +91,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 		boolean first = routed==null;
 		if(first)
 			routed = new HashSet<>();
-		routed.add(pos);
+		routed.add(worldPosition);
 		return first;
 	}
 
@@ -130,7 +130,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -148,7 +148,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		if(message.contains("sideConfig", NBT.TAG_INT_ARRAY))
 			this.sideFilter = message.getIntArray("sideConfig");
@@ -178,7 +178,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 
 	public ItemStack pullItem(Direction outputSide, int amount, boolean simulate)
 	{
-		if(!world.isRemote&&canRoute())
+		if(!level.isClientSide&&canRoute())
 		{
 			boolean first = startRouting();
 			for(Direction side : Direction.values())
@@ -216,11 +216,11 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 
 	private boolean compareStackToFilterstack(ItemStack stack, ItemStack filterStack, boolean fuzzy, boolean oredict, boolean nbt)
 	{
-		boolean b = ItemStack.areItemsEqual(filterStack, stack);
+		boolean b = ItemStack.isSame(filterStack, stack);
 		if(!b&&fuzzy)
-			b = ItemStack.areItemsEqualIgnoreDurability(filterStack, stack);
+			b = ItemStack.isSameIgnoreDurability(filterStack, stack);
 		if(!b&&oredict)
-			for(ResourceLocation name : ItemTags.getCollection().getOwningTags(stack.getItem()))
+			for(ResourceLocation name : ItemTags.getAllTags().getMatchingTags(stack.getItem()))
 				if(Utils.isInTag(filterStack, name))
 				{
 					b = true;
@@ -298,24 +298,24 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		sideFilter = nbt.getIntArray("sideFilter");
 		if(!descPacket)
 		{
-			ListNBT filterList = nbt.getList("filter", 10);
+			ListTag filterList = nbt.getList("filter", 10);
 			filter = new SorterInventory();
 			filter.readFromNBT(filterList);
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putIntArray("sideFilter", sideFilter);
 		if(!descPacket)
 		{
-			ListNBT filterList = new ListNBT();
+			ListTag filterList = new ListTag();
 			filter.writeToNBT(filterList);
 			nbt.put("filter", filterList);
 		}
@@ -341,7 +341,7 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		return id==0;
 	}
@@ -423,29 +423,29 @@ public class SorterTileEntity extends IEBaseTileEntity implements IInteractionOb
 			);
 		}
 
-		public void writeToNBT(ListNBT list)
+		public void writeToNBT(ListTag list)
 		{
 			for(int i = 0; i < getSlots(); ++i)
 			{
 				ItemStack slot = getStackInSlot(i);
 				if(!slot.isEmpty())
 				{
-					CompoundNBT itemTag = new CompoundNBT();
+					CompoundTag itemTag = new CompoundTag();
 					itemTag.putByte("Slot", (byte)i);
-					slot.write(itemTag);
+					slot.save(itemTag);
 					list.add(itemTag);
 				}
 			}
 		}
 
-		public void readFromNBT(ListNBT list)
+		public void readFromNBT(ListTag list)
 		{
 			for(int i = 0; i < list.size(); i++)
 			{
-				CompoundNBT itemTag = list.getCompound(i);
+				CompoundTag itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
 				if(slot < getSlots())
-					setStackInSlot(slot, ItemStack.read(itemTag));
+					setStackInSlot(slot, ItemStack.of(itemTag));
 			}
 		}
 	}

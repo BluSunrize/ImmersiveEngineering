@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.models.connection;
 
 import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Arrays;
 

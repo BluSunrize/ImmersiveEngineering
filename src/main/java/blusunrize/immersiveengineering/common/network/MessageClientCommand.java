@@ -12,9 +12,9 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.command.CommandSource;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.fml.network.PacketDistributor;
 
@@ -32,23 +32,23 @@ public class MessageClientCommand implements IMessage
 		this.type = type;
 	}
 
-	public MessageClientCommand(PacketBuffer buf)
+	public MessageClientCommand(FriendlyByteBuf buf)
 	{
 		this(Type.values()[buf.readVarInt()]);
 	}
 
-	public static void send(CommandContext<CommandSource> context, Type type) throws CommandSyntaxException
+	public static void send(CommandContext<CommandSourceStack> context, Type type) throws CommandSyntaxException
 	{
-		CommandSource source = context.getSource();
-		source.assertIsEntity();
-		ServerPlayerEntity entity = source.asPlayer();
+		CommandSourceStack source = context.getSource();
+		source.getEntityOrException();
+		ServerPlayer entity = source.getPlayerOrException();
 		ImmersiveEngineering.packetHandler.send(
 				PacketDistributor.PLAYER.with(() -> entity), new MessageClientCommand(type)
 		);
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeVarInt(type.ordinal());
 	}

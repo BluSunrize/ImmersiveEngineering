@@ -27,18 +27,18 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -70,28 +70,28 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tank.readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 		outputAll = nbt.getBoolean("outputAll");
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
+		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
 		nbt.put("tank", tankTag);
 		if(!descPacket)
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 		nbt.putBoolean("outputAll", outputAll);
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		super.receiveMessageFromClient(message);
 		if(message.contains("outputAll", NBT.TAG_BYTE))
@@ -116,14 +116,14 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 				if(fs!=null)
 				{
 					float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-					Vector3d partPos = new Vector3d(getPos().getX()+.5f+getFacing().getXOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getXOffset()*.5f, getPos().getY()-.0625f+amount, getPos().getZ()+.5f+getFacing().getZOffset()*.5f+(getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()).getZOffset()*.5f);
+					Vec3 partPos = new Vec3(getBlockPos().getX()+.5f+getFacing().getStepX()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepX()*.5f, getBlockPos().getY()-.0625f+amount, getBlockPos().getZ()+.5f+getFacing().getStepZ()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepZ()*.5f);
 					float r = Utils.RAND.nextFloat()*.8125f;
 					float angleRad = (float)Math.toRadians(animation_agitator);
 					partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
 					if(Utils.RAND.nextBoolean())
-						world.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+						level.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
 					else
-						world.addParticle(new Data(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+						level.addParticle(new Data(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
 				}
 			}
 			animation_agitator = (animation_agitator+9)%360;
@@ -171,8 +171,8 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		int fluidTypes = this.tank.getFluidTypes();
 		if(fluidTypes>0 &&(fluidTypes> 1||!foundRecipe||outputAll))
 		{
-			BlockPos outputPos = this.getPos().down().offset(getFacing().getOpposite(), 2);
-			update |= FluidUtil.getFluidHandler(world, outputPos, getFacing()).map(output ->
+			BlockPos outputPos = this.getBlockPos().below().relative(getFacing().getOpposite(), 2);
+			update |= FluidUtil.getFluidHandler(level, outputPos, getFacing()).map(output ->
 			{
 				boolean ret = false;
 				if(!outputAll)
@@ -216,7 +216,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		}
 		if(update)
 		{
-			this.markDirty();
+			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
 	}
@@ -225,58 +225,58 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 			CachedShapesWithTransform.createForMultiblock(MixerTileEntity::getShape);
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return getShape(SHAPES);
 	}
 
-	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
+	private static List<AABB> getShape(BlockPos posInMultiblock)
 	{
 		if(new BlockPos(2, 0, 2).equals(posInMultiblock))
 			return ImmutableList.of(
-					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
-					new AxisAlignedBB(0.125, .5f, 0.625, 0.25, 1, 0.875),
-					new AxisAlignedBB(0.75, .5f, 0.625, 0.875, 1, 0.875)
+					new AABB(0, 0, 0, 1, .5f, 1),
+					new AABB(0.125, .5f, 0.625, 0.25, 1, 0.875),
+					new AABB(0.75, .5f, 0.625, 0.875, 1, 0.875)
 			);
 		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 2)
 		{
-			List<AxisAlignedBB> list = Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==2,
-					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
-					new AxisAlignedBB(0.0625, .5f, 0.6875, 0.3125, 1, 0.9375)
+			List<AABB> list = Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==2,
+					new AABB(0, 0, 0, 1, .5f, 1),
+					new AABB(0.0625, .5f, 0.6875, 0.3125, 1, 0.9375)
 			);
 
 			if(new BlockPos(1, 0, 1).equals(posInMultiblock))
 			{
-				list.add(new AxisAlignedBB(0, .5f, 0.375, 1.125, .75f, 0.625));
-				list.add(new AxisAlignedBB(0.875, .5f, -0.125, 1.125, .75f, 0.375));
-				list.add(new AxisAlignedBB(0.875, .75f, -0.125, 1.125, 1, 0.125));
+				list.add(new AABB(0, .5f, 0.375, 1.125, .75f, 0.625));
+				list.add(new AABB(0.875, .5f, -0.125, 1.125, .75f, 0.375));
+				list.add(new AABB(0.875, .75f, -0.125, 1.125, 1, 0.125));
 			}
 
 			return list;
 		}
 		else if(posInMultiblock.getX() > 0&&posInMultiblock.getY()==1&&posInMultiblock.getZ() < 2)
 			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==2,
-					new AxisAlignedBB(0.1875, -.25, 0, 1, 0, 0.8125),
-					new AxisAlignedBB(0.0625, 0, 0, 0.1875, 1, 0.9375),
-					new AxisAlignedBB(0.1875, 0, 0.8125, 1, 1, 0.9375)
+					new AABB(0.1875, -.25, 0, 1, 0, 0.8125),
+					new AABB(0.0625, 0, 0, 0.1875, 1, 0.9375),
+					new AABB(0.1875, 0, 0.8125, 1, 1, 0.9375)
 			);
 		else if(new BlockPos(0, 2, 1).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0.1875, 0, 0.1875, 1, .625f, 0.6875));
+			return ImmutableList.of(new AABB(0.1875, 0, 0.1875, 1, .625f, 0.6875));
 		else if(new BlockPos(1, 2, 1).equals(posInMultiblock))
 			return ImmutableList.of(
-					new AxisAlignedBB(0.5625, .1875, -0.4375, 1.4375, 1, 0.4375),
-					new AxisAlignedBB(0, 0, 0, 0.5625, .875, 0.5)
+					new AABB(0.5625, .1875, -0.4375, 1.4375, 1, 0.4375),
+					new AABB(0, 0, 0, 0.5625, .875, 0.5)
 			);
 		else if(posInMultiblock.getY()==0&&!ImmutableSet.of(
 				new BlockPos(0, 0, 2),
 				new BlockPos(0, 0, 1),
 				new BlockPos(1, 0, 2)
 		).contains(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
+			return ImmutableList.of(new AABB(0, 0, 0, 1, .5f, 1));
 		else if(new BlockPos(2, 1, 2).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0.5, 1, 1, 1));
+			return ImmutableList.of(new AABB(0, 0, 0.5, 1, 1, 1));
 		else
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
+			return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
 	}
 
 	@Override
@@ -309,7 +309,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 
 	private DirectionalBlockPos getOutputPos()
 	{
-		return new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing());
+		return new DirectionalBlockPos(worldPosition.relative(getFacing(), 2), getFacing());
 	}
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(
@@ -321,7 +321,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	{
 		output = Utils.insertStackIntoInventory(outputCap, output, false);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, getOutputPos(), output);
+			Utils.dropStackAtPos(level, getOutputPos(), output);
 	}
 
 	@Override
@@ -394,7 +394,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	{
 		MixerTileEntity master = master();
 		if(master!=null&&((new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
-				||(new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW())))))
+				||(new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise())))))
 			return master.getInternalTanks();
 		return new FluidTank[0];
 	}
@@ -402,7 +402,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
-		return side==null||side==(getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW());
+		return side==null||side==(getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise());
 	}
 
 	@Override
@@ -414,7 +414,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
 
@@ -509,7 +509,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed;
 	}

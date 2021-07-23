@@ -20,14 +20,14 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -39,11 +39,11 @@ public class WireCollisions
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.world.isRemote&&IEServerConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity&&
+		if(!e.level.isClientSide&&IEServerConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity&&
 				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
-				!(e instanceof PlayerEntity&&((PlayerEntity)e).abilities.disableDamage))
+				!(e instanceof Player&&((Player)e).abilities.invulnerable))
 		{
-			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.world);
+			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.level);
 			WireCollisionData wireData = global.getCollisionData();
 			Collection<WireCollisionData.CollisionInfo> atBlock = wireData.getCollisionInfo(p);
 			for(CollisionInfo info : atBlock)
@@ -56,9 +56,9 @@ public class WireCollisions
 		}
 	}
 
-	public static void notifyBlockUpdate(@Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
+	public static void notifyBlockUpdate(@Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
 	{
-		if(IEServerConfig.WIRES.blocksBreakWires.get()&&!worldIn.isRemote&&(flags&1)!=0&&!newState.getCollisionShapeUncached(worldIn, pos).isEmpty())
+		if(IEServerConfig.WIRES.blocksBreakWires.get()&&!worldIn.isClientSide&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
 		{
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(worldIn);
 			Collection<CollisionInfo> data = globalNet.getCollisionData().getCollisionInfo(pos);
@@ -68,19 +68,19 @@ public class WireCollisions
 				for(CollisionInfo info : data)
 					if(info.isInBlock)
 					{
-						Vector3d vecA = info.conn.getPoint(0, info.conn.getEndA());
+						Vec3 vecA = info.conn.getPoint(0, info.conn.getEndA());
 						if(Utils.isVecInBlock(vecA, pos, info.conn.getEndA().getPosition(), 1e-3))
 							continue;
-						Vector3d vecB = info.conn.getPoint(0, info.conn.getEndB());
+						Vec3 vecB = info.conn.getPoint(0, info.conn.getEndB());
 						if(Utils.isVecInBlock(vecB, pos, info.conn.getEndB().getPosition(), 1e-3))
 							continue;
 						BlockPos dropPos = pos;
 						if(WireUtils.preventsConnection(worldIn, pos, newState, info.intersectA, info.intersectB))
 						{
 							for(Direction f : DirectionUtils.VALUES)
-								if(worldIn.isAirBlock(pos.offset(f)))
+								if(worldIn.isEmptyBlock(pos.relative(f)))
 								{
-									dropPos = dropPos.offset(f);
+									dropPos = dropPos.relative(f);
 									break;
 								}
 							toBreak.put(info.conn, dropPos);

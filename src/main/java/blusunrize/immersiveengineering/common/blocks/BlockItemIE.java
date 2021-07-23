@@ -13,20 +13,20 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -45,18 +45,18 @@ public class BlockItemIE extends BlockItem
 
 	public BlockItemIE(Block b)
 	{
-		this(b, new Item.Properties().group(ImmersiveEngineering.ITEM_GROUP));
+		this(b, new Item.Properties().tab(ImmersiveEngineering.ITEM_GROUP));
 	}
 
 	@Override
-	public String getTranslationKey(ItemStack stack)
+	public String getDescriptionId(ItemStack stack)
 	{
-		return getBlock().getTranslationKey();
+		return getBlock().getDescriptionId();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> tooltip, ITooltipFlag advanced)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced)
 	{
 		if(getBlock() instanceof IIEBlock)
 		{
@@ -64,22 +64,22 @@ public class BlockItemIE extends BlockItem
 			if(ieBlock.hasFlavour())
 			{
 				String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
-				tooltip.add(TextUtils.applyFormat(new TranslationTextComponent(flavourKey),
-						TextFormatting.GRAY));
+				tooltip.add(TextUtils.applyFormat(new TranslatableComponent(flavourKey),
+						ChatFormatting.GRAY));
 			}
 		}
-		super.addInformation(stack, world, tooltip, advanced);
+		super.appendHoverText(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			tooltip.add(TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_INFO+"energyStored",
+			tooltip.add(TextUtils.applyFormat(new TranslatableComponent(Lib.DESC_INFO+"energyStored",
 							ItemNBTHelper.getInt(stack, "energyStorage")),
-					TextFormatting.GRAY));
+					ChatFormatting.GRAY));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
 		{
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
 				tooltip.add(TextUtils.applyFormat(
-						new TranslationTextComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
-						TextFormatting.GRAY));
+						new TranslatableComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
+						ChatFormatting.GRAY));
 		}
 	}
 
@@ -97,7 +97,7 @@ public class BlockItemIE extends BlockItem
 	}
 
 	@Override
-	protected boolean placeBlock(BlockItemUseContext context, BlockState newState)
+	protected boolean placeBlock(BlockPlaceContext context, BlockState newState)
 	{
 		Block b = newState.getBlock();
 		if(b instanceof IEBaseBlock)
@@ -115,11 +115,11 @@ public class BlockItemIE extends BlockItem
 	}
 
 	@Override
-	protected boolean onBlockPlaced(BlockPos pos, World worldIn, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
+	protected boolean updateCustomBlockEntityTag(BlockPos pos, Level worldIn, @Nullable Player player, ItemStack stack, BlockState state)
 	{
 		// Skip reading the tile from NBT if the block is a (general) multiblock
 		if(!state.hasProperty(IEProperties.MULTIBLOCKSLAVE))
-			return super.onBlockPlaced(pos, worldIn, player, stack, state);
+			return super.updateCustomBlockEntityTag(pos, worldIn, player, stack, state);
 		else
 			return false;
 	}
@@ -133,9 +133,9 @@ public class BlockItemIE extends BlockItem
 
 		@Nullable
 		@Override
-		public CompoundNBT getShareTag(ItemStack stack)
+		public CompoundTag getShareTag(ItemStack stack)
 		{
-			CompoundNBT ret = super.getShareTag(stack);
+			CompoundTag ret = super.getShareTag(stack);
 			if(ret!=null)
 			{
 				ret = ret.copy();

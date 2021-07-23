@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeTileEntity;
 import blusunrize.immersiveengineering.common.gui.AlloySmelterContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 
@@ -23,7 +23,7 @@ public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 
 	private final FurnaceLikeTileEntity<?, ?>.StateView state;
 
-	public AlloySmelterScreen(AlloySmelterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public AlloySmelterScreen(AlloySmelterContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.state = container.tile.stateView;
@@ -31,17 +31,17 @@ public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
 		if(state.getLastBurnTime() > 0)
 		{
 			int h = (int)(12*(state.getBurnTime()/(float)state.getLastBurnTime()));
-			this.blit(transform, guiLeft+56, guiTop+37+12-h, 179, 1+12-h, 9, h);
+			this.blit(transform, leftPos+56, topPos+37+12-h, 179, 1+12-h, 9, h);
 		}
 		if(state.getMaxProcess() > 0)
 		{
 			int w = (int)(22*((state.getMaxProcess()-state.getProcess())/(float)state.getMaxProcess()));
-			this.blit(transform, guiLeft+84, guiTop+35, 177, 14, w, 16);
+			this.blit(transform, leftPos+84, topPos+35, 177, 14, w, 16);
 		}
 	}
 }

@@ -9,17 +9,17 @@
 package blusunrize.immersiveengineering.common.util.sound;
 
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundEventAccessor;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.client.resources.sounds.Sound;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SkyhookSound implements ITickableSound
+public class SkyhookSound implements TickableSoundInstance
 {
 	private final SkylineHookEntity hook;
 	private final ResourceLocation soundLoc;
@@ -34,27 +34,27 @@ public class SkyhookSound implements ITickableSound
 	}
 
 	@Override
-	public boolean isDonePlaying()
+	public boolean isStopped()
 	{
 		return !hook.isAlive();
 	}
 
 	@Nonnull
 	@Override
-	public ResourceLocation getSoundLocation()
+	public ResourceLocation getLocation()
 	{
 		return soundLoc;
 	}
 
 	@Nullable
 	@Override
-	public SoundEventAccessor createAccessor(@Nonnull SoundHandler handler)
+	public WeighedSoundEvents resolve(@Nonnull SoundManager handler)
 	{
-		SoundEventAccessor soundEvent = handler.getAccessor(this.soundLoc);
+		WeighedSoundEvents soundEvent = handler.getSoundEvent(this.soundLoc);
 		if(soundEvent==null)
-			this.sound = SoundHandler.MISSING_SOUND;
+			this.sound = SoundManager.EMPTY_SOUND;
 		else
-			this.sound = soundEvent.cloneEntry();
+			this.sound = soundEvent.getSound();
 		return soundEvent;
 	}
 
@@ -67,19 +67,19 @@ public class SkyhookSound implements ITickableSound
 
 	@Nonnull
 	@Override
-	public SoundCategory getCategory()
+	public SoundSource getSource()
 	{
-		return SoundCategory.NEUTRAL;
+		return SoundSource.NEUTRAL;
 	}
 
 	@Override
-	public boolean canRepeat()
+	public boolean isLooping()
 	{
 		return true;
 	}
 
 	@Override
-	public int getRepeatDelay()
+	public int getDelay()
 	{
 		return 0;
 	}
@@ -99,26 +99,26 @@ public class SkyhookSound implements ITickableSound
 	@Override
 	public double getX()
 	{
-		return (float)hook.getPosX();
+		return (float)hook.getX();
 	}
 
 	@Override
 	public double getY()
 	{
-		return (float)hook.getPosY();
+		return (float)hook.getY();
 	}
 
 	@Override
 	public double getZ()
 	{
-		return (float)hook.getPosZ();
+		return (float)hook.getZ();
 	}
 
 	@Nonnull
 	@Override
-	public AttenuationType getAttenuationType()
+	public Attenuation getAttenuation()
 	{
-		return AttenuationType.LINEAR;
+		return Attenuation.LINEAR;
 	}
 
 	@Override
@@ -130,7 +130,7 @@ public class SkyhookSound implements ITickableSound
 	}
 
 	@Override
-	public boolean isGlobal()
+	public boolean isRelative()
 	{
 		return false;
 	}

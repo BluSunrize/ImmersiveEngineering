@@ -34,23 +34,29 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -72,7 +78,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 {
 	public RailgunItem()
 	{
-		super(new Properties().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
+		super(new Properties().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
 	}
 
 	@Override
@@ -82,7 +88,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
@@ -100,7 +106,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
+	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
 		super.recalculateUpgrades(stack, w, player);
 		if(this.getEnergyStored(stack) > this.getMaxEnergyStored(stack))
@@ -123,7 +129,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
 		});
 		if(!sameShader.orElse(true))
@@ -132,7 +138,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
@@ -160,15 +166,15 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-		list.add(new TranslationTextComponent(Lib.DESC+"info.energyStored", stored));
+		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
 	}
 
 	@Nonnull
 	@Override
-	public String getTranslationKey(ItemStack stack)
+	public String getDescriptionId(ItemStack stack)
 	{
 		//		if(stack.getItemDamage()!=1)
 		//		{
@@ -176,53 +182,53 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		//			if(!tag.isEmpty())
 		//				return this.getTranslationKey()+"."+tag;
 		//		}
-		return super.getTranslationKey(stack);
+		return super.getDescriptionId(stack);
 	}
 
 	@Nonnull
 	@Override
-	public UseAction getUseAction(ItemStack stack)
+	public UseAnim getUseAnimation(ItemStack stack)
 	{
-		return UseAction.NONE;
+		return UseAnim.NONE;
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
-		ItemStack stack = player.getHeldItem(hand);
+		ItemStack stack = player.getItemInHand(hand);
 		int energy = IEServerConfig.TOOLS.railgun_consumption.get();
 		float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
 		energy = (int)(energy*energyMod);
 		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(stack, player).isEmpty())
 		{
-			player.setActiveHand(hand);
-			player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundCategory.PLAYERS, 1.5f, 1f);
-			return new ActionResult<>(ActionResultType.SUCCESS, stack);
+			player.startUsingItem(hand);
+			player.level.playSound(null, player.getX(), player.getY(), player.getZ(), getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundSource.PLAYERS, 1.5f, 1f);
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
-		return new ActionResult<>(ActionResultType.PASS, stack);
+		return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 	}
 
 	@Override
 	public void onUsingTick(ItemStack stack, LivingEntity user, int count)
 	{
 		int inUse = this.getUseDuration(stack)-count;
-		if(inUse > getChargeTime(stack)&&inUse%20==user.getRNG().nextInt(20))
+		if(inUse > getChargeTime(stack)&&inUse%20==user.getRandom().nextInt(20))
 		{
-			user.world.playSound(null, user.getPosX(), user.getPosY(), user.getPosZ(), IESounds.spark, SoundCategory.PLAYERS, .8f+(.2f*user.getRNG().nextFloat()), .5f+(.5f*user.getRNG().nextFloat()));
+			user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark, SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
-				Vector3d pos = Utils.getLivingFrontPos(user, .4375, user.getHeight()*.75, ItemUtils.getLivingHand(user, user.getActiveHand()), false, 1);
-				shader.getMiddle().getEffectFunction().execute(user.world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, null, .0625f);
+				Vec3 pos = Utils.getLivingFrontPos(user, .4375, user.getBbHeight()*.75, ItemUtils.getLivingHand(user, user.getUsedItemHand()), false, 1);
+				shader.getMiddle().getEffectFunction().execute(user.level, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity user, int timeLeft)
+	public void releaseUsing(ItemStack stack, Level world, LivingEntity user, int timeLeft)
 	{
-		if(user instanceof PlayerEntity)
+		if(user instanceof Player)
 		{
 			int inUse = this.getUseDuration(stack)-timeLeft;
 			ItemNBTHelper.remove(stack, "inUse");
@@ -233,37 +239,37 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			energy = (int)(energy*energyMod);
 			if(this.extractEnergy(stack, energy, true)==energy)
 			{
-				ItemStack ammo = findAmmo(stack, (PlayerEntity)user);
+				ItemStack ammo = findAmmo(stack, (Player)user);
 				if(!ammo.isEmpty())
 				{
 					ItemStack ammoConsumed = ammo.split(1);
 					IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammoConsumed);
-					Vector3d vec = user.getLookVec();
+					Vec3 vec = user.getLookAngle();
 					float speed = 20;
-					Entity shot = new RailgunShotEntity(user.world, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
-					shot = projectileProperties.getProjectile((PlayerEntity)user, ammoConsumed, shot);
-					user.world.playSound(null, user.getPosX(), user.getPosY(), user.getPosZ(), IESounds.railgunFire, SoundCategory.PLAYERS, 1, .5f+(.5f*user.getRNG().nextFloat()));
+					Entity shot = new RailgunShotEntity(user.level, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
+					shot = projectileProperties.getProjectile((Player)user, ammoConsumed, shot);
+					user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire, SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
 					this.extractEnergy(stack, energy, false);
-					if(!world.isRemote)
-						user.world.addEntity(shot);
+					if(!world.isClientSide)
+						user.level.addFreshEntity(shot);
 
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 					if(shader!=null)
 					{
-						HandSide handside = user.getPrimaryHand();
-						if(user.getActiveHand()!=Hand.MAIN_HAND)
-							handside = handside==HandSide.LEFT?HandSide.RIGHT: HandSide.LEFT;
-						Vector3d pos = Utils.getLivingFrontPos(user, .75, user.getHeight()*.75, handside, false, 1);
+						HumanoidArm handside = user.getMainArm();
+						if(user.getUsedItemHand()!=InteractionHand.MAIN_HAND)
+							handside = handside==HumanoidArm.LEFT?HumanoidArm.RIGHT: HumanoidArm.LEFT;
+						Vec3 pos = Utils.getLivingFrontPos(user, .75, user.getBbHeight()*.75, handside, false, 1);
 						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack,
 								shader.getRight().getShaderType().toString(), pos,
-								Vector3d.fromPitchYaw(user.getPitchYaw()), .125f);
+								Vec3.directionFromRotation(user.getRotationVector()), .125f);
 					}
 				}
 			}
 		}
 	}
 
-	public static ItemStack findAmmo(ItemStack railgun, PlayerEntity player)
+	public static ItemStack findAmmo(ItemStack railgun, Player player)
 	{
 		// Check for cached slot
 		if(ItemNBTHelper.hasKey(railgun, "ammo_slot"))
@@ -275,20 +281,20 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		}
 
 		// Find it otherwise
-		if(isAmmo(player.getHeldItem(Hand.OFF_HAND)))
+		if(isAmmo(player.getItemInHand(InteractionHand.OFF_HAND)))
 		{
 			ItemNBTHelper.putInt(railgun, "ammo_slot", 0);
-			return player.getHeldItem(Hand.OFF_HAND);
+			return player.getItemInHand(InteractionHand.OFF_HAND);
 		}
-		else if(isAmmo(player.getHeldItem(Hand.MAIN_HAND)))
+		else if(isAmmo(player.getItemInHand(InteractionHand.MAIN_HAND)))
 		{
 			ItemNBTHelper.putInt(railgun, "ammo_slot", 1);
-			return player.getHeldItem(Hand.MAIN_HAND);
+			return player.getItemInHand(InteractionHand.MAIN_HAND);
 		}
 		else
-			for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+			for(int i = 0; i < player.inventory.getContainerSize(); i++)
 			{
-				ItemStack itemstack = player.inventory.getStackInSlot(i);
+				ItemStack itemstack = player.inventory.getItem(i);
 				if(isAmmo(itemstack))
 				{
 					ItemNBTHelper.putInt(railgun, "ammo_slot", 2+i);
@@ -298,13 +304,13 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		return ItemStack.EMPTY;
 	}
 
-	public static ItemStack findAmmoInSlot(PlayerEntity player, int slot)
+	public static ItemStack findAmmoInSlot(Player player, int slot)
 	{
 		ItemStack ammo = ItemStack.EMPTY;
 		if(slot==0||slot==1)
-			ammo = player.getHeldItem(slot==0?Hand.MAIN_HAND: Hand.OFF_HAND);
-		else if(slot > 1&&slot-2 < player.inventory.getSizeInventory())
-			ammo = player.inventory.getStackInSlot(slot-2);
+			ammo = player.getItemInHand(slot==0?InteractionHand.MAIN_HAND: InteractionHand.OFF_HAND);
+		else if(slot > 1&&slot-2 < player.inventory.getContainerSize())
+			ammo = player.inventory.getItem(slot-2);
 		if(isAmmo(ammo))
 			return ammo;
 		return ItemStack.EMPTY;
@@ -318,22 +324,22 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		return prop!=null;
 	}
 
-	private boolean checkAmmoSlot(ItemStack stack, PlayerEntity player, int actualSlot)
+	private boolean checkAmmoSlot(ItemStack stack, Player player, int actualSlot)
 	{
 		if(!findAmmoInSlot(player, actualSlot).isEmpty())
 		{
 			ItemNBTHelper.putInt(stack, "ammo_slot", actualSlot);
-			player.inventory.markDirty();
+			player.inventory.setChanged();
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public void onScrollwheel(ItemStack stack, PlayerEntity player, boolean forward)
+	public void onScrollwheel(ItemStack stack, Player player, boolean forward)
 	{
 		int slot = ItemNBTHelper.getInt(stack, "ammo_slot");
-		int count = player.inventory.getSizeInventory()+2;
+		int count = player.inventory.getContainerSize()+2;
 		if(forward)
 		{
 			for(int i = 1; i < count; i++)
@@ -360,7 +366,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
+	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
@@ -385,7 +391,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		render.add("capacitors");
 		render.add("sled");
 		render.add("wires");
-		CompoundNBT upgrades = this.getUpgrades(stack);
+		CompoundTag upgrades = this.getUpgrades(stack);
 		if(upgrades.getDouble("speed") > 0)
 			render.add("upgrade_speed");
 		if(upgrades.getBoolean("scope"))
@@ -394,7 +400,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	}
 
 	@Override
-	public boolean canZoom(ItemStack stack, PlayerEntity player)
+	public boolean canZoom(ItemStack stack, Player player)
 	{
 		return this.getUpgrades(stack).getBoolean("scope");
 	}
@@ -402,7 +408,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	float[] zoomSteps = new float[]{.1f, .15625f, .2f, .25f, .3125f, .4f, .5f, .625f};
 
 	@Override
-	public float[] getZoomSteps(ItemStack stack, PlayerEntity player)
+	public float[] getZoomSteps(ItemStack stack, Player player)
 	{
 		return zoomSteps;
 	}
@@ -428,14 +434,14 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TransformationMatrix applyTransformations(ItemStack stack, String group, TransformationMatrix transform)
+	public Transformation applyTransformations(ItemStack stack, String group, Transformation transform)
 	{
 		return transform;
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void handlePerspective(ItemStack stack, TransformType cameraTransformType, MatrixStack mat, LivingEntity entity)
+	public void handlePerspective(ItemStack stack, TransformType cameraTransformType, PoseStack mat, LivingEntity entity)
 	{
 	}
 }

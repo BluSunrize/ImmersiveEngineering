@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.data;
 
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.resources.SimpleReloadableResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.datafix.DataFixesManager;
-import net.minecraft.util.datafix.DefaultTypeReferences;
-import net.minecraft.world.gen.feature.template.Template;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
+import net.minecraft.util.datafix.DataFixTypes;
+import net.minecraft.util.datafix.DataFixers;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -32,7 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
 
-public class StructureUpdater implements IDataProvider
+public class StructureUpdater implements DataProvider
 {
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -60,32 +60,32 @@ public class StructureUpdater implements IDataProvider
 	}
 
 	@Override
-	public void act(@Nonnull DirectoryCache cache) throws IOException
+	public void run(@Nonnull HashCache cache) throws IOException
 	{
-		for(ResourceLocation loc : resources.getAllResourceLocations(basePath, $ -> true))
+		for(ResourceLocation loc : resources.listResources(basePath, $ -> true))
 			if(loc.getNamespace().equals(modid))
 				process(loc, cache);
 	}
 
-	private void process(ResourceLocation loc, DirectoryCache cache) throws IOException
+	private void process(ResourceLocation loc, HashCache cache) throws IOException
 	{
-		CompoundNBT inputNBT = CompressedStreamTools.readCompressed(
+		CompoundTag inputNBT = NbtIo.readCompressed(
 				resources.getResource(loc).getInputStream()
 		);
-		CompoundNBT converted = updateNBT(inputNBT);
+		CompoundTag converted = updateNBT(inputNBT);
 		if(!converted.equals(inputNBT))
 			writeNBTTo(loc, converted, cache);
 	}
 
-	private void writeNBTTo(ResourceLocation loc, CompoundNBT data, DirectoryCache cache) throws IOException
+	private void writeNBTTo(ResourceLocation loc, CompoundTag data, HashCache cache) throws IOException
 	{
 		ByteArrayOutputStream bytearrayoutputstream = new ByteArrayOutputStream();
-		CompressedStreamTools.writeCompressed(data, bytearrayoutputstream);
+		NbtIo.writeCompressed(data, bytearrayoutputstream);
 		byte[] bytes = bytearrayoutputstream.toByteArray();
-		String hashString = HASH_FUNCTION.hashBytes(bytes).toString();
+		String hashString = SHA1.hashBytes(bytes).toString();
 		Path outputPath = gen.getOutputFolder().resolve("data/"+loc.getNamespace()+"/"+loc.getPath());
 
-		if(!Objects.equals(cache.getPreviousHash(outputPath), hashString)||!Files.exists(outputPath))
+		if(!Objects.equals(cache.getHash(outputPath), hashString)||!Files.exists(outputPath))
 		{
 			Files.createDirectories(outputPath.getParent());
 			try(OutputStream outputstream = Files.newOutputStream(outputPath))
@@ -93,17 +93,17 @@ public class StructureUpdater implements IDataProvider
 				outputstream.write(bytes);
 			}
 		}
-		cache.recordHash(outputPath, hashString);
+		cache.putNew(outputPath, hashString);
 	}
 
-	private static CompoundNBT updateNBT(CompoundNBT nbt)
+	private static CompoundTag updateNBT(CompoundTag nbt)
 	{
-		final CompoundNBT updatedNBT = NBTUtil.update(
-				DataFixesManager.getDataFixer(), DefaultTypeReferences.STRUCTURE, nbt, nbt.getInt("DataVersion")
+		final CompoundTag updatedNBT = NbtUtils.update(
+				DataFixers.getDataFixer(), DataFixTypes.STRUCTURE, nbt, nbt.getInt("DataVersion")
 		);
-		Template template = new Template();
-		template.read(updatedNBT);
-		return template.writeToNBT(new CompoundNBT());
+		StructureTemplate template = new StructureTemplate();
+		template.load(updatedNBT);
+		return template.save(new CompoundTag());
 	}
 
 	@Nonnull

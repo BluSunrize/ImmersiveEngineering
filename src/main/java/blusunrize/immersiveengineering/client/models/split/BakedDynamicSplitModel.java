@@ -15,13 +15,13 @@ import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -30,21 +30,21 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
-public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & IBakedModel> extends AbstractSplitModel<T>
+public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & BakedModel> extends AbstractSplitModel<T>
 {
 	private static final Set<BakedDynamicSplitModel<?, ?>> WEAK_INSTANCES = Collections.newSetFromMap(new WeakHashMap<>());
 	static {
 		IEApi.renderCacheClearers.add(() -> WEAK_INSTANCES.forEach(m -> m.subModelCache.invalidateAll()));
 	}
 
-	private final Set<Vector3i> parts;
-	private final IModelTransform transform;
-	private final Cache<K, Map<Vector3i, List<BakedQuad>>> subModelCache = CacheBuilder.newBuilder()
+	private final Set<Vec3i> parts;
+	private final ModelState transform;
+	private final Cache<K, Map<Vec3i, List<BakedQuad>>> subModelCache = CacheBuilder.newBuilder()
 			.maximumSize(10)
 			.expireAfterAccess(1, TimeUnit.MINUTES)
 			.build();
 
-	public BakedDynamicSplitModel(T base, Set<Vector3i> parts, IModelTransform transform, Vector3i size)
+	public BakedDynamicSplitModel(T base, Set<Vec3i> parts, ModelState transform, Vec3i size)
 	{
 		super(base, size);
 		this.parts = parts;

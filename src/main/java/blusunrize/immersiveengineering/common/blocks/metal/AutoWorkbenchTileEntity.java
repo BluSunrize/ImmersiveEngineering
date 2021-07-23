@@ -27,18 +27,18 @@ import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -64,25 +64,25 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	public int selectedRecipe = -1;
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		selectedRecipe = nbt.getInt("selectedRecipe");
 		if(!descPacket)
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("selectedRecipe", selectedRecipe);
 //		if(!descPacket) Disabled because blueprint. Have yet to see issue because of this
-		ItemStackHelper.saveAllItems(nbt, inventory);
+		ContainerHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		if(message.contains("recipe", NBT.TAG_INT))
 			this.selectedRecipe = message.getInt("recipe");
@@ -92,7 +92,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	public void tickServer()
 	{
 		super.tickServer();
-		if(isRSDisabled()||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15)||inventory.get(0).isEmpty())
+		if(isRSDisabled()||level.getGameTime()%16!=((getBlockPos().getX()^getBlockPos().getZ())&15)||inventory.get(0).isEmpty())
 			return;
 
 		BlueprintCraftingRecipe[] recipes = getAvailableRecipes();
@@ -112,7 +112,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 						this.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, 0.78f, recipe.consumeInputs(query, 1)), false);
 						for(int i = 0; i < query.size(); i++)
 							inventory.set(i+1, query.get(i));
-						this.markDirty();
+						this.setChanged();
 						this.markContainingBlockForUpdate(null);
 					}
 				}
@@ -126,14 +126,14 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		Set<BlockPos> highFullBlocks = ImmutableSet.of(
 				new BlockPos(0, 1, 2),
 				new BlockPos(0, 1, 1)
 		);
 		if(posInMultiblock.getY()==0||highFullBlocks.contains(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, 1, 1);
+			return Shapes.box(0, 0, 0, 1, 1, 1);
 		Set<BlockPos> conveyors = ImmutableSet.of(
 				new BlockPos(1, 1, 1),
 				new BlockPos(2, 1, 1),
@@ -141,7 +141,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 				new BlockPos(1, 1, 0)
 		);
 		if(conveyors.contains(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, .125f, 1);
+			return Shapes.box(0, 0, 0, 1, .125f, 1);
 		float xMin = 0;
 		float yMin = 0;
 		float zMin = 0;
@@ -205,7 +205,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 				zMax = .875f;
 			}
 		}
-		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
+		return Shapes.box(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override
@@ -238,18 +238,18 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 
 	CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> {
-				Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
-				return new DirectionalBlockPos(pos.offset(outDir, 2), outDir.getOpposite());
+				Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+				return new DirectionalBlockPos(worldPosition.relative(outDir, 2), outDir.getOpposite());
 			}
 			, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+		Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, pos, output, outDir);
+			Utils.dropStackAtPos(level, worldPosition, output, outDir);
 	}
 
 	@Override
@@ -320,7 +320,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
 
@@ -354,7 +354,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed;
 	}
@@ -393,7 +393,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 	public Direction[] sigOutputDirections()
 	{
 		if(new BlockPos(1, 1, 2).equals(posInMultiblock))
-			return new Direction[]{this.getFacing().rotateY()};
+			return new Direction[]{this.getFacing().getClockWise()};
 		return new Direction[0];
 	}
 
@@ -403,9 +403,9 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		if(state.getBlock()==ConveyorHandler.getBlock(BasicConveyor.NAME))
 		{
 			if((l==2&&w==0)||l==1)
-				state = state.with(IEProperties.FACING_ALL, getFacing().rotateY());
+				state = state.setValue(IEProperties.FACING_ALL, getFacing().getClockWise());
 			else
-				state = state.with(IEProperties.FACING_ALL, getFacing().getOpposite());
+				state = state.setValue(IEProperties.FACING_ALL, getFacing().getOpposite());
 		}
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 	}

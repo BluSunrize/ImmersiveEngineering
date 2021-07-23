@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -33,16 +33,16 @@ public class CokeOvenRecipeSerializer extends IERecipeSerializer<CokeOvenRecipe>
 	{
 		ItemStack output = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-		int time = JSONUtils.getInt(json, "time");
-		int oil = JSONUtils.getInt(json, "creosote");
+		int time = GsonHelper.getAsInt(json, "time");
+		int oil = GsonHelper.getAsInt(json, "creosote");
 		return new CokeOvenRecipe(recipeId, output, input, time, oil);
 	}
 
 	@Nullable
 	@Override
-	public CokeOvenRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public CokeOvenRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItemStack();
+		ItemStack output = buffer.readItem();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		int time = buffer.readInt();
 		int oil = buffer.readInt();
@@ -50,9 +50,9 @@ public class CokeOvenRecipeSerializer extends IERecipeSerializer<CokeOvenRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, CokeOvenRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, CokeOvenRecipe recipe)
 	{
-		buffer.writeItemStack(recipe.output);
+		buffer.writeItem(recipe.output);
 		recipe.input.write(buffer);
 		buffer.writeInt(recipe.time);
 		buffer.writeInt(recipe.creosoteOutput);

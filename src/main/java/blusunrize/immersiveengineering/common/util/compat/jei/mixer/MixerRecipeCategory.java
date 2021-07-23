@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -23,8 +23,8 @@ import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
@@ -78,7 +78,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	}
 
 	@Override
-	public void draw(MixerRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
+	public void draw(MixerRecipe recipe, PoseStack transform, double mouseX, double mouseY)
 	{
 		tankTexture.draw(transform, 40, 0);
 		arrowDrawable.draw(transform, 117, 19);

@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
@@ -21,7 +21,7 @@ import java.util.Optional;
 
 public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 {
-	public RefineryContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, RefineryTileEntity tile)
+	public RefineryContainer(MenuType<?> type, int id, Inventory inventoryPlayer, RefineryTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 
@@ -29,7 +29,7 @@ public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 		this.addSlot(new IESlot.FluidContainer(this, this.inv, 0, 37, 15, 2)
 		{
 			@Override
-			public boolean isItemValid(ItemStack itemStack)
+			public boolean mayPlace(ItemStack itemStack)
 			{
 				return itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
 						.map(h -> {
@@ -54,7 +54,7 @@ public class RefineryContainer extends IEBaseContainer<RefineryTileEntity>
 		this.addSlot(new IESlot.FluidContainer(this, this.inv, 2, 85, 15, 2)
 		{
 			@Override
-			public boolean isItemValid(ItemStack itemStack)
+			public boolean mayPlace(ItemStack itemStack)
 			{
 				return itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
 						.map(h -> {

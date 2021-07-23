@@ -9,7 +9,7 @@
 package blusunrize.lib.manual.utils;
 
 import it.unimi.dsi.fastutil.Hash;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 

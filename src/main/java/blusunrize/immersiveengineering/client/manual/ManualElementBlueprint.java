@@ -15,12 +15,12 @@ import blusunrize.lib.manual.PositionedItemStack;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -93,10 +93,10 @@ public class ManualElementBlueprint extends SpecialManualElements
 	}
 
 	@Override
-	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		RenderSystem.enableRescaleNormal();
-		RenderHelper.enableStandardItemLighting();
+		Lighting.turnBackOn();
 
 		highlighted = ItemStack.EMPTY;
 
@@ -108,7 +108,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 				{
 					if(pstack.x > maxX)
 						maxX = pstack.x;
-					AbstractGui.fill(transform, x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666);
+					GuiComponent.fill(transform, x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666);
 				}
 			ManualUtils.drawTexturedRect(manual.texture, x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 		}

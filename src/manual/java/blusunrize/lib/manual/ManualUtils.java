@@ -19,26 +19,26 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.Block;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -60,7 +60,7 @@ public class ManualUtils
 			return isInTag(stack, (ResourceLocation)o);
 		if(o instanceof ItemStack)
 		{
-			if(!ItemStack.areItemsEqual((ItemStack)o, stack))
+			if(!ItemStack.isSame((ItemStack)o, stack))
 				return false;
 			if(((ItemStack)o).hasTag())
 				return ((ItemStack)o).getTag().equals(stack.getTag());
@@ -71,27 +71,27 @@ public class ManualUtils
 
 	public static boolean isInTag(ItemStack stack, ResourceLocation tag)
 	{
-		ITag<Item> itemTag = ItemTags.getCollection().get(tag);
+		Tag<Item> itemTag = ItemTags.getAllTags().getTag(tag);
 		if(itemTag!=null&&itemTag.contains(stack.getItem()))
 			return true;
-		ITag<Block> blockTag = BlockTags.getCollection().get(tag);
-		return blockTag!=null&&blockTag.contains(Block.getBlockFromItem(stack.getItem()));
+		Tag<Block> blockTag = BlockTags.getAllTags().getTag(tag);
+		return blockTag!=null&&blockTag.contains(Block.byItem(stack.getItem()));
 	}
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
-		return isNonEmptyTag(ItemTags.getCollection(), name);
+		return isNonEmptyTag(ItemTags.getAllTags(), name);
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
-		return isNonEmptyTag(BlockTags.getCollection(), name);
+		return isNonEmptyTag(BlockTags.getAllTags(), name);
 	}
 
-	private static <T> boolean isNonEmptyTag(ITagCollection<T> collection, ResourceLocation name)
+	private static <T> boolean isNonEmptyTag(TagCollection<T> collection, ResourceLocation name)
 	{
-		ITag<T> tag = collection.get(name);
-		return tag!=null&&tag.getAllElements().size() > 0;
+		Tag<T> tag = collection.getTag(name);
+		return tag!=null&&tag.getValues().size() > 0;
 	}
 
 	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)
@@ -109,31 +109,31 @@ public class ManualUtils
 
 	public static void drawTexturedRect(ResourceLocation texture, int x, int y, int w, int h, float... uv)
 	{
-		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-		drawTexturedRect(new MatrixStack(), buffers, texture, x, y, w, h, uv);
-		buffers.finish();
+		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+		drawTexturedRect(new PoseStack(), buffers, texture, x, y, w, h, uv);
+		buffers.endBatch();
 	}
 
-	public static void drawTexturedRect(MatrixStack transform, IRenderTypeBuffer buffers, ResourceLocation texture,
+	public static void drawTexturedRect(PoseStack transform, MultiBufferSource buffers, ResourceLocation texture,
 										int x, int y, int w, int h, float... uv)
 	{
-		IVertexBuilder buffer = buffers.getBuffer(ManualRenderTypes.getGui(texture));
-		Matrix4f mat = transform.getLast().getMatrix();
-		buffer.pos(mat, x, y+h, 0)
+		VertexConsumer buffer = buffers.getBuffer(ManualRenderTypes.getGui(texture));
+		Matrix4f mat = transform.last().pose();
+		buffer.vertex(mat, x, y+h, 0)
 				.color(1F, 1F, 1F, 1F)
-				.tex(uv[0], uv[3])
+				.uv(uv[0], uv[3])
 				.endVertex();
-		buffer.pos(mat, x+w, y+h, 0)
+		buffer.vertex(mat, x+w, y+h, 0)
 				.color(1F, 1F, 1F, 1F)
-				.tex(uv[1], uv[3])
+				.uv(uv[1], uv[3])
 				.endVertex();
-		buffer.pos(mat, x+w, y, 0)
+		buffer.vertex(mat, x+w, y, 0)
 				.color(1F, 1F, 1F, 1F)
-				.tex(uv[1], uv[2])
+				.uv(uv[1], uv[2])
 				.endVertex();
-		buffer.pos(mat, x, y, 0)
+		buffer.vertex(mat, x, y, 0)
 				.color(1F, 1F, 1F, 1F)
-				.tex(uv[0], uv[2])
+				.uv(uv[0], uv[2])
 				.endVertex();
 	}
 
@@ -204,12 +204,12 @@ public class ManualUtils
 			for(Token token : line)
 			{
 				token.getContent().ifRight(linkPart -> {
-					int bx = manual.fontRenderer().getStringWidth(textUpToHere.getValue());
-					int by = lineId.intValue()*manual.fontRenderer().FONT_HEIGHT;
+					int bx = manual.fontRenderer().width(textUpToHere.getValue());
+					int by = lineId.intValue()*manual.fontRenderer().lineHeight;
 					Link link = linkPart.getParent();
 					String linkText = linkPart.getText();
 					ResourceLocation bkey = link.getTarget(entry);
-					int bw = manual.fontRenderer().getStringWidth(linkText);
+					int bw = manual.fontRenderer().width(linkText);
 					ManualInstance.ManualLink outputLink;
 					ManualEntry bEntry = manual.getEntry(bkey);
 					if(bEntry!=null&&bEntry.hasAnchor(link.getTargetAnchor()))
@@ -223,7 +223,7 @@ public class ManualUtils
 									entry.getLocation());
 						outputLink = null;
 					}
-					GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer().FONT_HEIGHT*1.5),
+					GuiButtonManualLink btn = new GuiButtonManualLink(gui, x+bx, y+by, bw, (int)(manual.fontRenderer().lineHeight*1.5),
 							outputLink, linkText);
 					partButtons.computeIfAbsent(link, l -> new ArrayList<>())
 							.add(btn);
@@ -243,7 +243,7 @@ public class ManualUtils
 	public static String attemptStringTranslation(String tranlationKey, String arg)
 	{
 		String untranslated = String.format(tranlationKey, arg);
-		String translated = I18n.format(untranslated);
+		String translated = I18n.get(untranslated);
 		if(!untranslated.equals(translated))
 			return translated;
 		return arg;
@@ -251,9 +251,9 @@ public class ManualUtils
 
 	static HashMap<String, ResourceLocation> resourceMap = new HashMap<>();
 
-	public static Tessellator tes()
+	public static Tesselator tes()
 	{
-		return Tessellator.getInstance();
+		return Tesselator.getInstance();
 	}
 
 	public static Minecraft mc()
@@ -263,7 +263,7 @@ public class ManualUtils
 
 	public static void bindTexture(ResourceLocation path)
 	{
-		mc().getTextureManager().bindTexture(path);
+		mc().getTextureManager().bind(path);
 	}
 
 	public static ResourceLocation getResource(String path)
@@ -282,12 +282,12 @@ public class ManualUtils
 	/**
 	 * Custom implementation of drawing a split string because Mojang's doesn't reset text colour between lines >___>
 	 */
-	public static void drawSplitString(MatrixStack transform, FontRenderer fontRenderer, List<String> text, int x, int y, int colour)
+	public static void drawSplitString(PoseStack transform, Font fontRenderer, List<String> text, int x, int y, int colour)
 	{
 		for(String s : text)
 		{
-			fontRenderer.drawString(transform, s, x, y, colour);
-			y += fontRenderer.FONT_HEIGHT;
+			fontRenderer.draw(transform, s, x, y, colour);
+			y += fontRenderer.lineHeight;
 		}
 	}
 
@@ -295,8 +295,8 @@ public class ManualUtils
 			JsonObject obj, String anchor, ManualInstance instance, List<SpecialElementData> out
 	)
 	{
-		String type = JSONUtils.getString(obj, "type");
-		int offset = JSONUtils.getInt(obj, "offset", 0);
+		String type = GsonHelper.getAsString(obj, "type");
+		int offset = GsonHelper.getAsInt(obj, "offset", 0);
 		ResourceLocation resLoc = getLocationForManual(type, instance);
 		Function<JsonObject, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
 		out.add(new SpecialElementData(anchor, offset, () -> createElement.apply(obj)));
@@ -334,13 +334,13 @@ public class ManualUtils
 		JsonObject json = ele.getAsJsonObject();
 		if(!isNumber(json, "x"))
 			return null;
-		int x = JSONUtils.getInt(json, "x");
+		int x = GsonHelper.getAsInt(json, "x");
 		if(!isNumber(json, "y"))
 			return null;
-		int y = JSONUtils.getInt(json, "y");
-		if(JSONUtils.isString(json, "item"))
+		int y = GsonHelper.getAsInt(json, "y");
+		if(GsonHelper.isStringValue(json, "item"))
 			return new PositionedItemStack(CraftingHelper.getItemStack(json, true), x, y);
-		else if(JSONUtils.isJsonArray(json, "stacks"))
+		else if(GsonHelper.isArrayNode(json, "stacks"))
 		{
 			JsonArray arr = json.getAsJsonArray("stacks");
 			List<ItemStack> stacks = new ArrayList<>(arr.size());
@@ -374,11 +374,11 @@ public class ManualUtils
 		if(jsonEle.isJsonObject())
 		{
 			JsonObject json = jsonEle.getAsJsonObject();
-			if(JSONUtils.isString(json, "recipe"))
-				return ManualUtils.getLocationForManual(JSONUtils.getString(json, "recipe"), m);
-			else if(JSONUtils.isString(json, "orename"))
+			if(GsonHelper.isStringValue(json, "recipe"))
+				return ManualUtils.getLocationForManual(GsonHelper.getAsString(json, "recipe"), m);
+			else if(GsonHelper.isStringValue(json, "orename"))
 				return json.get("orename").getAsString();
-			else if(JSONUtils.isString(json, "item"))
+			else if(GsonHelper.isStringValue(json, "item"))
 				return CraftingHelper.getItemStack(json, true);
 		}
 		else if(jsonEle.isJsonArray())
@@ -402,29 +402,29 @@ public class ManualUtils
 
 	public static boolean listStack(String search, ItemStack stack)
 	{
-		return stack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(search);
+		return stack.getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(search);
 	}
 
-	public static void renderItemStack(MatrixStack transform, ItemStack stack, int x, int y, boolean overlay)
+	public static void renderItemStack(PoseStack transform, ItemStack stack, int x, int y, boolean overlay)
 	{
 		if(!stack.isEmpty())
 		{
 			// Include the matrix transformation
 			RenderSystem.pushMatrix();
-			RenderSystem.multMatrix(transform.getLast().getMatrix());
+			RenderSystem.multMatrix(transform.last().pose());
 
 			// Counteract the zlevel increase, because multiplied with the matrix, it goes out of view
 			ItemRenderer itemRenderer = renderItem();
-			itemRenderer.zLevel -= 50;
-			itemRenderer.renderItemAndEffectIntoGUI(stack, x, y);
-			itemRenderer.zLevel += 50;
+			itemRenderer.blitOffset -= 50;
+			itemRenderer.renderAndDecorateItem(stack, x, y);
+			itemRenderer.blitOffset += 50;
 
 			if(overlay)
 			{
 				// Use the Item's font renderer, if available
-				FontRenderer font = stack.getItem().getFontRenderer(stack);
-				font = font!=null?font: Minecraft.getInstance().fontRenderer;
-				itemRenderer.renderItemOverlayIntoGUI(font, stack, x, y, null);
+				Font font = stack.getItem().getFontRenderer(stack);
+				font = font!=null?font: Minecraft.getInstance().font;
+				itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
 			}
 			RenderSystem.popMatrix();
 		}

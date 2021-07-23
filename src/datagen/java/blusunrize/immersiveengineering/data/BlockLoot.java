@@ -20,24 +20,31 @@ import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.*;
 import blusunrize.immersiveengineering.data.loot.LootGenerator;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.advancements.criterion.StatePropertiesPredicate;
-import net.minecraft.block.Block;
-import net.minecraft.block.SlabBlock;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.loot.*;
-import net.minecraft.loot.LootTable.Builder;
-import net.minecraft.loot.conditions.BlockStateProperty;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.conditions.SurvivesExplosion;
-import net.minecraft.loot.functions.ApplyBonus;
-import net.minecraft.loot.functions.SetCount;
-import net.minecraft.state.Property;
-import net.minecraft.state.properties.SlabType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.storage.loot.ConstantIntValue;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTable.Builder;
+import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
+import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;
@@ -65,18 +72,18 @@ public class BlockLoot extends LootGenerator
 	protected void registerTables()
 	{
 		registerHemp();
-		register(StoneDecoration.concreteSprayed, LootTable.builder());
-		register(WoodenDevices.windmill, LootTable.builder().addLootPool(
-				createPoolBuilder().addEntry(
-						ItemLootEntry.builder(WoodenDevices.windmill)
-								.acceptFunction(new WindmillLootFunction.Builder())
+		register(StoneDecoration.concreteSprayed, LootTable.lootTable());
+		register(WoodenDevices.windmill, LootTable.lootTable().withPool(
+				createPoolBuilder().add(
+						LootItem.lootTableItem(WoodenDevices.windmill)
+								.apply(new WindmillLootFunction.Builder())
 				)));
 
-		LootEntry.Builder<?> tileOrInv = AlternativesLootEntry.builder(
-				TileDropLootEntry.builder().acceptCondition(SurvivesExplosion.builder()),
+		LootPoolEntryContainer.Builder<?> tileOrInv = AlternativesEntry.alternatives(
+				TileDropLootEntry.builder().when(ExplosionCondition.survivesExplosion()),
 				DropInventoryLootEntry.builder()
 		);
-		register(WoodenDevices.crate, LootPool.builder().addEntry(tileOrInv));
+		register(WoodenDevices.crate, LootPool.lootPool().add(tileOrInv));
 		register(WoodenDevices.reinforcedCrate, tileDrop());
 		register(StoneDecoration.coresample, tileDrop());
 		register(MetalDevices.toolbox, tileDrop());
@@ -137,10 +144,10 @@ public class BlockLoot extends LootGenerator
 	{
 		for(BlockEntry<SlabBlock> slab : IEBlocks.toSlab.values())
 		{
-			LootFunction.Builder<?> doubleSlabFunction = SetCount.builder(new ConstantRange(2))
-					.acceptCondition(propertyIs(slab, SlabBlock.TYPE, SlabType.DOUBLE));
-			LootTable.Builder lootBuilder = LootTable.builder().addLootPool(
-					singleItem(slab).acceptFunction(doubleSlabFunction)
+			LootItemConditionalFunction.Builder<?> doubleSlabFunction = SetItemCountFunction.setCount(new ConstantIntValue(2))
+					.when(propertyIs(slab, SlabBlock.TYPE, SlabType.DOUBLE));
+			LootTable.Builder lootBuilder = LootTable.lootTable().withPool(
+					singleItem(slab).apply(doubleSlabFunction)
 			);
 			register(slab, lootBuilder);
 		}
@@ -161,26 +168,26 @@ public class BlockLoot extends LootGenerator
 	private LootPool.Builder dropInv()
 	{
 		return createPoolBuilder()
-				.addEntry(DropInventoryLootEntry.builder());
+				.add(DropInventoryLootEntry.builder());
 	}
 
 	private LootPool.Builder tileDrop()
 	{
 		return createPoolBuilder()
-				.addEntry(TileDropLootEntry.builder());
+				.add(TileDropLootEntry.builder());
 	}
 
 	private LootPool.Builder dropOriginalBlock()
 	{
 		return createPoolBuilder()
-				.addEntry(MBOriginalBlockLootEntry.builder());
+				.add(MBOriginalBlockLootEntry.builder());
 	}
 
 	private void register(Supplier<? extends Block> b, LootPool.Builder... pools)
 	{
-		LootTable.Builder builder = LootTable.builder();
+		LootTable.Builder builder = LootTable.lootTable();
 		for(LootPool.Builder pool : pools)
-			builder.addLootPool(pool);
+			builder.withPool(pool);
 		register(b, builder);
 	}
 
@@ -191,7 +198,7 @@ public class BlockLoot extends LootGenerator
 
 	private void register(ResourceLocation name, LootTable.Builder table)
 	{
-		if(tables.put(toTableLoc(name), table.setParameterSet(LootParameterSets.BLOCK).build())!=null)
+		if(tables.put(toTableLoc(name), table.setParamSet(LootContextParamSets.BLOCK).build())!=null)
 			throw new IllegalStateException("Duplicate loot table "+name);
 	}
 
@@ -202,36 +209,36 @@ public class BlockLoot extends LootGenerator
 		register(b, withSelf);
 	}
 
-	private Builder dropProvider(IItemProvider in)
+	private Builder dropProvider(ItemLike in)
 	{
 		return LootTable
-				.builder()
-				.addLootPool(singleItem(in)
+				.lootTable()
+				.withPool(singleItem(in)
 				);
 	}
 
-	private LootPool.Builder singleItem(IItemProvider in)
+	private LootPool.Builder singleItem(ItemLike in)
 	{
 		return createPoolBuilder()
-				.rolls(ConstantRange.of(1))
-				.addEntry(ItemLootEntry.builder(in));
+				.setRolls(ConstantIntValue.exactly(1))
+				.add(LootItem.lootTableItem(in));
 	}
 
 	private LootPool.Builder createPoolBuilder()
 	{
-		return LootPool.builder().acceptCondition(SurvivesExplosion.builder());
+		return LootPool.lootPool().when(ExplosionCondition.survivesExplosion());
 	}
 
 	private void registerHemp()
 	{
-		LootTable.Builder ret = LootTable.builder()
-				.addLootPool(singleItem(Misc.hempSeeds));
+		LootTable.Builder ret = LootTable.lootTable()
+				.withPool(singleItem(Misc.hempSeeds));
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 			if(g==HempBlock.getMaxGrowth(g))
 			{
-				ret.addLootPool(
-						binBonusLootPool(Ingredients.hempFiber, Enchantments.FORTUNE, g.ordinal()/8f, 3)
-								.acceptCondition(propertyIs(IEBlocks.Misc.hempPlant, HempBlock.GROWTH, g))
+				ret.withPool(
+						binBonusLootPool(Ingredients.hempFiber, Enchantments.BLOCK_FORTUNE, g.ordinal()/8f, 3)
+								.when(propertyIs(IEBlocks.Misc.hempPlant, HempBlock.GROWTH, g))
 				);
 			}
 		register(IEBlocks.Misc.hempPlant, ret);
@@ -239,26 +246,26 @@ public class BlockLoot extends LootGenerator
 
 	private void registerSawdust()
 	{
-		LootTable.Builder ret = LootTable.builder()
-				.addLootPool(singleItem(WoodenDecoration.sawdust))
-				.acceptFunction(new PropertyCountLootFunction.Builder(SawdustBlock.LAYERS.getName()));
+		LootTable.Builder ret = LootTable.lootTable()
+				.withPool(singleItem(WoodenDecoration.sawdust))
+				.apply(new PropertyCountLootFunction.Builder(SawdustBlock.LAYERS.getName()));
 		register(WoodenDecoration.sawdust, ret);
 	}
 
-	private LootPool.Builder binBonusLootPool(IItemProvider item, Enchantment ench, float prob, int extra)
+	private LootPool.Builder binBonusLootPool(ItemLike item, Enchantment ench, float prob, int extra)
 	{
 		return createPoolBuilder()
-				.addEntry(ItemLootEntry.builder(item))
-				.acceptFunction(ApplyBonus.binomialWithBonusCount(ench, prob, extra));
+				.add(LootItem.lootTableItem(item))
+				.apply(ApplyBonusCount.addBonusBinomialDistributionCount(ench, prob, extra));
 	}
 
-	private <T extends Comparable<T> & IStringSerializable> ILootCondition.IBuilder propertyIs(
+	private <T extends Comparable<T> & StringRepresentable> LootItemCondition.Builder propertyIs(
 			Supplier<? extends Block> b, Property<T> prop, T value
 	)
 	{
-		return BlockStateProperty.builder(b.get())
-				.fromProperties(
-						StatePropertiesPredicate.Builder.newBuilder().withProp(prop, value)
+		return LootItemBlockStatePropertyCondition.hasBlockStateProperties(b.get())
+				.setProperties(
+						StatePropertiesPredicate.Builder.properties().hasProperty(prop, value)
 				);
 	}
 }

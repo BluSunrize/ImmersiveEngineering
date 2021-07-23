@@ -28,22 +28,23 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwhee
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.*;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -68,12 +69,12 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 	public ChemthrowerItem()
 	{
-		super(new Item.Properties().setISTER(() -> () -> IEOBJItemRenderer.INSTANCE).maxStackSize(1), "CHEMTHROWER");
+		super(new Item.Properties().setISTER(() -> () -> IEOBJItemRenderer.INSTANCE).stacksTo(1), "CHEMTHROWER");
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		int cap = getCapacity(stack, CAPACITY);
 
@@ -81,40 +82,40 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 		for(int i = 0; i < numberOfTanks; i++)
 		{
-			ITextComponent add = IEItemFluidHandler.fluidItemInfoFlavor(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap);
+			Component add = IEItemFluidHandler.fluidItemInfoFlavor(ItemNBTHelper.getFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY+(i > 0?i: "")), cap);
 			if(i > 0)
 				TextUtils.applyFormat(
 						add,
-						TextFormatting.GRAY
+						ChatFormatting.GRAY
 				);
 			list.add(add);
 		}
 	}
 
-	private ITextComponent formatFluidStack(FluidStack fs, int capacity)
+	private Component formatFluidStack(FluidStack fs, int capacity)
 	{
 		if(fs!=null)
 		{
 			FluidAttributes attr = fs.getFluid().getAttributes();
-			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY:
+			ChatFormatting rarity = attr.getRarity()==Rarity.COMMON?ChatFormatting.GRAY:
 					attr.getRarity().color;
-			return TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
+			return TextUtils.applyFormat(new TranslatableComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
 					fs.getAmount(), capacity), rarity);
 		}
 		else
-			return new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty");
+			return new TranslatableComponent(Lib.DESC_FLAVOUR+"drill.empty");
 
 	}
 
 	@Nonnull
 	@Override
-	public UseAction getUseAction(ItemStack stack)
+	public UseAnim getUseAnimation(ItemStack stack)
 	{
-		return UseAction.NONE;
+		return UseAnim.NONE;
 	}
 
 	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
+	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
 //		ToDo: Make an Upgrade Advancement?
 //		if(contents[0]!=null&&contents[1]!=null&&contents[2]!=null&&contents[3]!=null)
@@ -122,17 +123,17 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
 	{
-		ItemStack stack = player.getHeldItem(hand);
-		if(player.isSneaking())
+		ItemStack stack = player.getItemInHand(hand);
+		if(player.isShiftKeyDown())
 		{
-			if(!world.isRemote)
+			if(!world.isClientSide)
 				setIgniteEnable(stack, !isIgniteEnable(stack));
 		}
 		else
-			player.setActiveHand(hand);
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+			player.startUsingItem(hand);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	@Override
@@ -145,7 +146,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			int consumed = IEServerConfig.TOOLS.chemthrower_consumption.get();
 			if(consumed*duration <= fs.getAmount())
 			{
-				Vector3d v = player.getLookVec();
+				Vec3 v = player.getLookAngle();
 				int split = 8;
 				boolean isGas = fs.getFluid().getAttributes().isGaseous();
 
@@ -160,37 +161,37 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&isIgniteEnable(stack);
 				for(int i = 0; i < split; i++)
 				{
-					Vector3d vecDir = v.add(player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter, player.getRNG().nextGaussian()*scatter);
-					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(player.world, player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
+					Vec3 vecDir = v.add(player.getRandom().nextGaussian()*scatter, player.getRandom().nextGaussian()*scatter, player.getRandom().nextGaussian()*scatter);
+					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(player.level, player, vecDir.x*0.25, vecDir.y*0.25, vecDir.z*0.25, fs);
 
 					// Apply momentum from the player.
-					chem.setMotion(player.getMotion().add(vecDir.scale(range)));
+					chem.setDeltaMovement(player.getDeltaMovement().add(vecDir.scale(range)));
 
 					// Apply a small amount of backforce.
 					if(!player.isOnGround())
-						player.setMotion(player.getMotion().subtract(vecDir.scale(0.0025*range)));
+						player.setDeltaMovement(player.getDeltaMovement().subtract(vecDir.scale(0.0025*range)));
 					if(ignite)
-						chem.setFire(10);
-					if(!player.world.isRemote)
-						player.world.addEntity(chem);
+						chem.setSecondsOnFire(10);
+					if(!player.level.isClientSide)
+						player.level.addFreshEntity(chem);
 				}
 				if(count%4==0)
 				{
 					if(ignite)
-						player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), IESounds.sprayFire, SoundCategory.PLAYERS, .5f, 1.5f);
+						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.sprayFire, SoundSource.PLAYERS, .5f, 1.5f);
 					else
-						player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), IESounds.spray, SoundCategory.PLAYERS, .5f, .75f);
+						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spray, SoundSource.PLAYERS, .5f, .75f);
 				}
 			}
 			else
-				player.stopActiveHand();
+				player.releaseUsingItem();
 		}
 		else
-			player.stopActiveHand();
+			player.releaseUsingItem();
 	}
 
 	@Override
-	public void onPlayerStoppedUsing(ItemStack stack, World world, LivingEntity player, int timeLeft)
+	public void releaseUsing(ItemStack stack, Level world, LivingEntity player, int timeLeft)
 	{
 		FluidStack fs = this.getFluid(stack);
 		if(!fs.isEmpty())
@@ -211,13 +212,13 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public void onScrollwheel(ItemStack stack, PlayerEntity playerEntity, boolean forward)
+	public void onScrollwheel(ItemStack stack, Player playerEntity, boolean forward)
 	{
 		if(getUpgrades(stack).getBoolean("multitank"))
 		{
-			CompoundNBT fluidTag = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
-			CompoundNBT fluidTag1 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1");
-			CompoundNBT fluidTag2 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"2");
+			CompoundTag fluidTag = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY);
+			CompoundTag fluidTag1 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"1");
+			CompoundTag fluidTag2 = ItemNBTHelper.getTagCompound(stack, FluidHandlerItemStack.FLUID_NBT_KEY+"2");
 
 			if(forward)
 			{
@@ -251,7 +252,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	{
 		if("base".equals(group)||"grip".equals(group)||"cage".equals(group)||"tanks".equals(group))
 			return true;
-		CompoundNBT upgrades = this.getUpgrades(stack);
+		CompoundTag upgrades = this.getUpgrades(stack);
 		if("large_tank".equals(group)&&upgrades.getInt("capacity") > 0)
 			return true;
 		else if("multi_tank".equals(group)&&upgrades.getBoolean("multitank"))
@@ -268,7 +269,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
 		});
 		if(!sameShader.orElse(true))
@@ -277,7 +278,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
@@ -319,7 +320,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 	{
 		LazyOptional<IItemHandler> inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		return new Slot[]

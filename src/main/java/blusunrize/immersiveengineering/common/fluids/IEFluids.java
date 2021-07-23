@@ -17,16 +17,16 @@ import blusunrize.immersiveengineering.common.fluids.IEFluid.FluidConstructor;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.AbstractBlock.Properties;
-import net.minecraft.block.material.Material;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.BucketItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.BucketItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -128,7 +128,7 @@ public class IEFluids
 			this.flowing = REGISTER.register(name+"_flowing", () -> IEFluid.makeFluid(
 					makeFlowing, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
 			));
-			this.block = new IEBlocks.BlockEntry<>(name+"_fluid_block", () -> Properties.create(Material.WATER), p -> new IEFluidBlock(thisMutable.getValue(), p));
+			this.block = new IEBlocks.BlockEntry<>(name+"_fluid_block", () -> Properties.of(Material.WATER), p -> new IEFluidBlock(thisMutable.getValue(), p));
 			this.bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
 			thisMutable.setValue(this);
 			ALL_FLUID_BLOCKS.add(block);
@@ -164,12 +164,12 @@ public class IEFluids
 		{
 			BucketItem result = new BucketItem(
 					still, new Item.Properties()
-					.maxStackSize(1)
-					.group(ImmersiveEngineering.ITEM_GROUP)
-					.containerItem(Items.BUCKET))
+					.stacksTo(1)
+					.tab(ImmersiveEngineering.ITEM_GROUP)
+					.craftRemainder(Items.BUCKET))
 			{
 				@Override
-				public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
+				public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
 				{
 					return new FluidBucketWrapper(stack);
 				}

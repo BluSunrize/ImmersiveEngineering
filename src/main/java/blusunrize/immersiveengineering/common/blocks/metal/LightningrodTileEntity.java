@@ -21,17 +21,17 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.effect.LightningBoltEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -60,33 +60,33 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 		super.tickServer();
 		if(energyStorage.getEnergyStored() > 0)
 		{
-			TileEntity tileEntity;
+			BlockEntity tileEntity;
 			for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
 			{
-				tileEntity = Utils.getExistingTileEntity(world, getPos().offset(f, 2));
+				tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(f, 2));
 				int output = EnergyHelper.insertFlux(tileEntity, f.getOpposite(), energyStorage.getLimitExtract(), true);
 				output = energyStorage.extractEnergy(output, false);
 				EnergyHelper.insertFlux(tileEntity, f.getOpposite(), output, false);
 			}
 		}
 
-		if(world.getGameTime()%256==((getPos().getX()^getPos().getZ())&255))
+		if(level.getGameTime()%256==((getBlockPos().getX()^getBlockPos().getZ())&255))
 			fenceNet = null;
 		if(fenceNet==null)
 			fenceNet = this.getFenceNet();
 		if(fenceNet!=null&&fenceNet.size() > 0
-				&&world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127)
-				&&(world.isThundering()||(world.isRaining()&&Utils.RAND.nextInt(10)==0)))
+				&&level.getGameTime()%128==((getBlockPos().getX()^getBlockPos().getZ())&127)
+				&&(level.isThundering()||(level.isRaining()&&Utils.RAND.nextInt(10)==0)))
 		{
 			int i = this.height+this.fenceNet.size();
-			if(Utils.RAND.nextInt(4096*world.getHeight()) < i*(getPos().getY()+i))
+			if(Utils.RAND.nextInt(4096*level.getMaxBuildHeight()) < i*(getBlockPos().getY()+i))
 			{
 				this.energyStorage.setEnergy(IEServerConfig.MACHINES.lightning_output.get());
 				BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
-				LightningBoltEntity lightningboltentity = EntityType.LIGHTNING_BOLT.create(world);
-				lightningboltentity.moveForced(Vector3d.copyCenteredHorizontally(pos));
-				lightningboltentity.setEffectOnly(true);
-				world.addEntity(lightningboltentity);
+				LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(level);
+				lightningboltentity.moveTo(Vec3.atBottomCenterOf(pos));
+				lightningboltentity.setVisualOnly(true);
+				level.addFreshEntity(lightningboltentity);
 			}
 		}
 	}
@@ -97,15 +97,15 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 		this.height = 0;
 		boolean broken = false;
 		BlockPos lastFence = null;
-		for(int i = getPos().getY()+2; i < world.getHeight()-1; i++)
+		for(int i = getBlockPos().getY()+2; i < level.getMaxBuildHeight()-1; i++)
 		{
-			BlockPos pos = new BlockPos(getPos().getX(), i, getPos().getZ());
+			BlockPos pos = new BlockPos(getBlockPos().getX(), i, getBlockPos().getZ());
 			if(!broken&&isFence(pos))
 			{
 				this.height++;
 				lastFence = pos;
 			}
-			else if(!world.isAirBlock(pos))
+			else if(!level.isEmptyBlock(pos))
 				return null;
 			else
 			{
@@ -125,11 +125,11 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 			if(!closedList.contains(next)&&isFence(next))
 			{
 				closedList.add(next);
-				openList.add(next.offset(Direction.WEST));
-				openList.add(next.offset(Direction.EAST));
-				openList.add(next.offset(Direction.NORTH));
-				openList.add(next.offset(Direction.SOUTH));
-				openList.add(next.offset(Direction.UP));
+				openList.add(next.relative(Direction.WEST));
+				openList.add(next.relative(Direction.EAST));
+				openList.add(next.relative(Direction.NORTH));
+				openList.add(next.relative(Direction.SOUTH));
+				openList.add(next.relative(Direction.UP));
 			}
 			openList.remove(0);
 		}
@@ -138,33 +138,33 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 
 	private boolean isFence(BlockPos pos)
 	{
-		return Utils.isBlockAt(world, pos, MetalDecoration.steelFence.get());
+		return Utils.isBlockAt(level, pos, MetalDecoration.steelFence.get());
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		if(new BlockPos(1, 2, 1).equals(posInMultiblock))
-			return VoxelShapes.create(-.125f, 0, -.125f, 1.125f, 1, 1.125f);
+			return Shapes.box(-.125f, 0, -.125f, 1.125f, 1, 1.125f);
 		if((posInMultiblock.getX()==1&&posInMultiblock.getZ()==1)
 				||(posInMultiblock.getY() < 2&&(posInMultiblock.getX()+posInMultiblock.getZ())%2==1))
-			return VoxelShapes.fullCube();
+			return Shapes.block();
 		if(posInMultiblock.getY()==0)
-			return VoxelShapes.create(0, 0, 0, 1, .5f, 1);
+			return Shapes.box(0, 0, 0, 1, .5f, 1);
 		float xMin = 0;
 		float xMax = 1;
 		float yMin = 0;
@@ -202,7 +202,7 @@ public class LightningrodTileEntity extends MultiblockPartTileEntity<Lightningro
 			zMin = offsetToMaster.getZ() < 0?.375f: 0;
 			zMax = offsetToMaster.getZ() > 0?.625f: 1;
 		}
-		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
+		return Shapes.box(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override

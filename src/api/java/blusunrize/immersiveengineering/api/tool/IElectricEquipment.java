@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -29,15 +29,15 @@ public interface IElectricEquipment
 	 * @param dmg      The damage source that would be used. Set the amount to 0 to prevent any damage from being done. null if no damage would be done
 	 * @param desc     A description of the specific type of electric source.
 	 */
-	void onStrike(ItemStack equipped, EquipmentSlotType eqSlot, LivingEntity owner, Map<String, Object> cache, @Nullable DamageSource dmg,
+	void onStrike(ItemStack equipped, EquipmentSlot eqSlot, LivingEntity owner, Map<String, Object> cache, @Nullable DamageSource dmg,
 				  ElectricSource desc);
 
 	static void applyToEntity(LivingEntity entity, @Nullable DamageSource dmg, ElectricSource source)
 	{
 		Map<String, Object> cache = new HashMap<>();
-		for(EquipmentSlotType slot : EquipmentSlotType.values())
+		for(EquipmentSlot slot : EquipmentSlot.values())
 		{
-			ItemStack s = entity.getItemStackFromSlot(slot);
+			ItemStack s = entity.getItemBySlot(slot);
 			if(!s.isEmpty()&&s.getItem() instanceof IElectricEquipment)
 				((IElectricEquipment)s.getItem()).onStrike(s, slot, entity, cache, dmg, source);
 		}

@@ -22,19 +22,23 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -82,40 +86,40 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			float fProcess = process.processTick;
 			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
 			if(fProcess >= transportTime&&fProcess < transportTime+1f)
-				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F, 1);
+				level.playSound(null, getBlockPos(), IESounds.metalpress_piston, SoundSource.BLOCKS, .3F, 1);
 			if(fProcess >= (transportTime+pressTime)&&fProcess < (transportTime+pressTime+1f))
-				world.playSound(null, getPos(), IESounds.metalpress_smash, SoundCategory.BLOCKS, .3F, 1);
+				level.playSound(null, getBlockPos(), IESounds.metalpress_smash, SoundSource.BLOCKS, .3F, 1);
 			if(fProcess >= (maxTicks-transportTime)&&fProcess < (maxTicks-transportTime+1f))
-				world.playSound(null, getPos(), IESounds.metalpress_piston, SoundCategory.BLOCKS, .3F, 1);
+				level.playSound(null, getBlockPos(), IESounds.metalpress_piston, SoundSource.BLOCKS, .3F, 1);
 		}
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		mold = ItemStack.read(nbt.getCompound("mold"));
+		mold = ItemStack.of(nbt.getCompound("mold"));
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!this.mold.isEmpty())
-			nbt.put("mold", this.mold.write(new CompoundNBT()));
+			nbt.put("mold", this.mold.save(new CompoundTag()));
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		MetalPressTileEntity master = master();
 		if(master!=null)
-			if(player.isSneaking()&&!master.mold.isEmpty())
+			if(player.isShiftKeyDown()&&!master.mold.isEmpty())
 			{
 				if(heldItem.isEmpty())
-					player.setHeldItem(hand, master.mold.copy());
-				else if(!world.isRemote)
-					player.entityDropItem(master.mold.copy(), 0);
+					player.setItemInHand(hand, master.mold.copy());
+				else if(!level.isClientSide)
+					player.spawnAtLocation(master.mold.copy(), 0);
 				master.mold = ItemStack.EMPTY;
 				this.updateMasterBlock(null, true);
 				return true;
@@ -128,12 +132,12 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 				if(heldItem.getCount() <= 0)
 					heldItem = ItemStack.EMPTY;
 				else
-					player.setHeldItem(hand, heldItem);
+					player.setItemInHand(hand, heldItem);
 				if(!tempMold.isEmpty())
 					if(heldItem.isEmpty())
-						player.setHeldItem(hand, tempMold);
-					else if(!world.isRemote)
-						player.entityDropItem(tempMold, 0);
+						player.setItemInHand(hand, tempMold);
+					else if(!level.isClientSide)
+						player.spawnAtLocation(tempMold, 0);
 				this.updateMasterBlock(null, true);
 				return true;
 			}
@@ -142,11 +146,11 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		if(posInMultiblock.getY()==1&&posInMultiblock.getX()%2==0)
-			return VoxelShapes.create(0, 0, 0, 1, .125f, 1);
-		return VoxelShapes.fullCube();
+			return Shapes.box(0, 0, 0, 1, .125f, 1);
+		return Shapes.block();
 	}
 
 	@Override
@@ -155,16 +159,16 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&l!=1)
 		{
-			TileEntity tile = world.getTileEntity(pos);
+			BlockEntity tile = level.getBlockEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
 				((ConveyorBeltTileEntity)tile).setFacing(this.getFacing());
 		}
 	}
 
 	@Override
-	public void onEntityCollision(World world, Entity entity)
+	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&!world.isRemote&&entity instanceof ItemEntity&&entity.isAlive()
+		if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&!world.isClientSide&&entity instanceof ItemEntity&&entity.isAlive()
 				&&!((ItemEntity)entity).getItem().isEmpty())
 		{
 			MetalPressTileEntity master = master();
@@ -222,7 +226,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 
 	private DirectionalBlockPos getOutputPos()
 	{
-		return new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing());
+		return new DirectionalBlockPos(worldPosition.relative(getFacing(), 2), getFacing());
 	}
 
 	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this,
@@ -235,7 +239,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		if(!output.isEmpty())
 		{
 			DirectionalBlockPos outPos = getOutputPos();
-			Utils.dropStackAtPos(world, outPos.getPosition(), output, outPos.getSide());
+			Utils.dropStackAtPos(level, outPos.getPosition(), output, outPos.getSide());
 		}
 	}
 
@@ -332,7 +336,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
 
@@ -359,7 +363,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	@Override
 	public MetalPressRecipe findRecipeForInsertion(ItemStack inserting)
 	{
-		return MetalPressRecipe.findRecipe(mold, inserting, world);
+		return MetalPressRecipe.findRecipe(mold, inserting, level);
 	}
 
 	@Override

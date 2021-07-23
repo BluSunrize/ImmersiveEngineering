@@ -15,11 +15,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nonnull;
@@ -37,16 +37,16 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	public CrusherRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		ItemStack output = readOutput(json.get("result"));
-		Ingredient input = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
+		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
 		JsonArray array = json.getAsJsonArray("secondaries");
-		int energy = JSONUtils.getInt(json, "energy");
+		int energy = GsonHelper.getAsInt(json, "energy");
 		CrusherRecipe recipe = IEServerConfig.MACHINES.crusherConfig.apply(new CrusherRecipe(recipeId, output, input, energy));
 		for(int i = 0; i < array.size(); i++)
 		{
 			JsonObject element = array.get(i).getAsJsonObject();
 			if(CraftingHelper.processConditions(element, "conditions"))
 			{
-				float chance = JSONUtils.getFloat(element, "chance");
+				float chance = GsonHelper.getAsFloat(element, "chance");
 				ItemStack stack = readOutput(element.get("output"));
 				recipe.addToSecondaryOutput(new StackWithChance(stack, chance));
 			}
@@ -56,10 +56,10 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 
 	@Nullable
 	@Override
-	public CrusherRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer)
+	public CrusherRecipe fromNetwork(@Nonnull ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItemStack();
-		Ingredient input = Ingredient.read(buffer);
+		ItemStack output = buffer.readItem();
+		Ingredient input = Ingredient.fromNetwork(buffer);
 		int energy = buffer.readInt();
 		int secondaryCount = buffer.readInt();
 		CrusherRecipe recipe = new CrusherRecipe(recipeId, output, input, energy);
@@ -69,10 +69,10 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, CrusherRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, CrusherRecipe recipe)
 	{
-		buffer.writeItemStack(recipe.output);
-		recipe.input.write(buffer);
+		buffer.writeItem(recipe.output);
+		recipe.input.toNetwork(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 		buffer.writeInt(recipe.secondaryOutputs.size());
 		for(StackWithChance secondaryOutput : recipe.secondaryOutputs)

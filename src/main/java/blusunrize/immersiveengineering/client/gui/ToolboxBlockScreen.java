@@ -10,43 +10,43 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.ToolboxBlockContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
 import java.util.function.Consumer;
 
 public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 {
-	public ToolboxBlockScreen(ToolboxBlockContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ToolboxBlockScreen(ToolboxBlockContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("toolbox"));
-		this.ySize = 238;
+		this.imageHeight = 238;
 	}
 
 	@Override
-	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<ITextComponent> addLine, Consumer<ITextComponent> addGray)
+	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
 		int slot = -1;
-		for(int i = 0; i < this.container.slotCount; i++)
+		for(int i = 0; i < this.menu.slotCount; i++)
 		{
-			Slot s = this.container.getSlot(i);
-			if(!s.getHasStack()&&mouseX > guiLeft+s.xPos&&mouseX < guiLeft+s.xPos+16&&mouseY > guiTop+s.yPos&&mouseY < guiTop+s.yPos+16)
+			Slot s = this.menu.getSlot(i);
+			if(!s.hasItem()&&mouseX > leftPos+s.x&&mouseX < leftPos+s.x+16&&mouseY > topPos+s.y&&mouseY < topPos+s.y+16)
 				slot = i;
 		}
 		String ss = null;
 		if(slot >= 0)
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
-			addGray.accept(new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss));
+			addGray.accept(new TranslatableComponent(Lib.DESC_INFO+"toolbox."+ss));
 	}
 
 	@Override
-	protected void drawBackgroundTexture(MatrixStack transform)
+	protected void drawBackgroundTexture(PoseStack transform)
 	{
-		blit(transform, guiLeft, guiTop - 17, 0, 0, 176, ySize + 17);
+		blit(transform, leftPos, topPos - 17, 0, 0, 176, imageHeight + 17);
 	}
 }

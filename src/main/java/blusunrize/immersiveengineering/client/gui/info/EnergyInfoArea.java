@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.client.gui.info;
 
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 
 import java.util.List;
 
@@ -22,18 +22,18 @@ public class EnergyInfoArea extends InfoArea
 
 	public EnergyInfoArea(int xMin, int yMin, IFluxProvider energy)
 	{
-		super(new Rectangle2d(xMin, yMin, 7, 46));
+		super(new Rect2i(xMin, yMin, 7, 46));
 		this.energy = energy;
 	}
 
 	@Override
-	protected void fillTooltipOverArea(int mouseX, int mouseY, List<ITextComponent> tooltip)
+	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
-		tooltip.add(new StringTextComponent(energy.getEnergyStored(null)+"/"+energy.getMaxEnergyStored(null)+" IF"));
+		tooltip.add(new TextComponent(energy.getEnergyStored(null)+"/"+energy.getMaxEnergyStored(null)+" IF"));
 	}
 
 	@Override
-	public void draw(MatrixStack transform)
+	public void draw(PoseStack transform)
 	{
 		final int height = area.getHeight();
 		int stored = (int)(height*(energy.getEnergyStored(null)/(float)energy.getMaxEnergyStored(null)));

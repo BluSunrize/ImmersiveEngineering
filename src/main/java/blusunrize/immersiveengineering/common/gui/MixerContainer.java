@@ -13,17 +13,17 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 //TODO custom subclass of ItemStackHandler for markDirty etc
 public class MixerContainer extends IEBaseContainer<MixerTileEntity> implements ICallbackContainer
 {
-	public MixerContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, MixerTileEntity tile)
+	public MixerContainer(MenuType<?> type, int id, Inventory inventoryPlayer, MixerTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 

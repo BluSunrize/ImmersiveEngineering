@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,14 +38,14 @@ public class ExternalHeaterHandler
 		int doHeatTick(int energyAvailable, boolean redstone);
 	}
 
-	public static Map<Class<? extends TileEntity>, HeatableAdapter<?>> adapterMap = new HashMap<>();
+	public static Map<Class<? extends BlockEntity>, HeatableAdapter<?>> adapterMap = new HashMap<>();
 
 	/**
 	 * @author BluSunrize - 09.12.2015
 	 * <p>
 	 * An adapter to appyl to TileEntities that can't implement the IExternalHeatable interface
 	 */
-	public abstract static class HeatableAdapter<E extends TileEntity>
+	public abstract static class HeatableAdapter<E extends BlockEntity>
 	{
 		/**
 		 * Called each tick<br>
@@ -61,7 +61,7 @@ public class ExternalHeaterHandler
 	/**
 	 * registers a HeatableAdapter to a TileEnttiy class. Should really only be used when implementing the interface is not an option
 	 */
-	public static <T extends TileEntity>
+	public static <T extends BlockEntity>
 	void registerHeatableAdapter(Class<T> c, HeatableAdapter<? super T> adapter)
 	{
 		adapterMap.put(c, adapter);
@@ -70,14 +70,14 @@ public class ExternalHeaterHandler
 	/**
 	 * @return a HeatableAdapter for the given TileEntity class
 	 */
-	public static <T extends TileEntity> HeatableAdapter<? super T> getHeatableAdapter(T tile)
+	public static <T extends BlockEntity> HeatableAdapter<? super T> getHeatableAdapter(T tile)
 	{
-		Class<? extends TileEntity> c = tile.getClass();
+		Class<? extends BlockEntity> c = tile.getClass();
 		HeatableAdapter<?> adapter = null;
-		while(adapter==null&&c!=TileEntity.class&&c.getSuperclass()!=TileEntity.class)
+		while(adapter==null&&c!=BlockEntity.class&&c.getSuperclass()!=BlockEntity.class)
 		{
 			adapter = adapterMap.get(c);
-			c = (Class<? extends TileEntity>)c.getSuperclass();
+			c = (Class<? extends BlockEntity>)c.getSuperclass();
 		}
 		adapterMap.put(tile.getClass(), adapter);
 		return (HeatableAdapter<? super T>)adapter;

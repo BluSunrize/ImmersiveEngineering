@@ -15,12 +15,12 @@ import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import java.util.List;
 
 public class ChemTurretScreen extends TurretScreen<TurretChemTileEntity, TurretContainer.ChemTurretContainer>
 {
-	public ChemTurretScreen(TurretContainer.ChemTurretContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ChemTurretScreen(TurretContainer.ChemTurretContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
 	}
@@ -39,28 +39,28 @@ public class ChemTurretScreen extends TurretScreen<TurretChemTileEntity, TurretC
 	{
 		List<InfoArea> areas = new ArrayList<>(super.makeInfoAreas());
 		areas.add(
-				new FluidInfoArea(tile.tank, new Rectangle2d(guiLeft+134, guiTop+16, 16, 47), 196, 0, 20, 51, TEXTURE)
+				new FluidInfoArea(tile.tank, new Rect2i(leftPos+134, topPos+16, 16, 47), 196, 0, 20, 51, TEXTURE)
 		);
 		areas.add(new TooltipArea(
-				new Rectangle2d(guiLeft+135, guiTop+68, 14, 14),
-				new TranslationTextComponent(Lib.GUI_CONFIG+"turret.ignite_fluid")
+				new Rect2i(leftPos+135, topPos+68, 14, 14),
+				new TranslatableComponent(Lib.GUI_CONFIG+"turret.ignite_fluid")
 		));
 		return areas;
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
 		super.drawContainerBackgroundPre(transform, f, mx, my);
-		this.blit(transform, guiLeft+132, guiTop+14, 176, 0, 20, 51);
+		this.blit(transform, leftPos+132, topPos+14, 176, 0, 20, 51);
 	}
 
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addButton(new GuiButtonBoolean(guiLeft+135, guiTop+68, 14, 14, "", tile.ignite, TEXTURE, 176, 51, 0,
+		this.addButton(new GuiButtonBoolean(leftPos+135, topPos+68, 14, 14, "", tile.ignite, TEXTURE, 176, 51, 0,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tile.ignite = !btn.getState();
 					tag.putBoolean("ignite", tile.ignite);

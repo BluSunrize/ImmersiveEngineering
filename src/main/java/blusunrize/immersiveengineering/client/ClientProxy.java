@@ -60,28 +60,28 @@ import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.IHasContainer;
-import net.minecraft.client.gui.ScreenManager;
-import net.minecraft.client.gui.ScreenManager.IScreenFactory;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
-import net.minecraft.client.renderer.entity.BipedRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.entity.PlayerRenderer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.Item;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -134,7 +134,7 @@ public class ClientProxy extends CommonProxy
 	{
 		if(IEClientConfig.stencilBufferEnabled.get())
 			ev.enqueueWork(() -> {
-				Minecraft.getInstance().getFramebuffer().enableStencil();
+				Minecraft.getInstance().getMainRenderTarget().enableStencil();
 				stencilEnabled = true;
 			});
 		registerContainersAndScreens();
@@ -146,12 +146,12 @@ public class ClientProxy extends CommonProxy
 
 		ClientEventHandler handler = new ClientEventHandler();
 		MinecraftForge.EVENT_BUS.register(handler);
-		((IReloadableResourceManager)mc().getResourceManager()).addReloadListener(handler);
+		((ReloadableResourceManager)mc().getResourceManager()).registerReloadListener(handler);
 
 		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
 
 		/*Render Layers*/
-		Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getRenderManager().getSkinMap();
+		Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap();
 		PlayerRenderer render = skinMap.get("default");
 		render.addLayer(new IEBipedLayerRenderer<>(render));
 		render = skinMap.get("slim");
@@ -170,7 +170,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPre(TextureStitchEvent.Pre event)
 	{
-		if(!event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+		if(!event.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		IELogger.info("Stitching Revolver Textures!");
 		RevolverItem.addRevolverTextures(event);
@@ -186,7 +186,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPost(TextureStitchEvent.Post event)
 	{
-		if(!event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+		if(!event.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
 		RevolverItem.retrieveRevolverTextures(event.getMap());
@@ -201,13 +201,13 @@ public class ClientProxy extends CommonProxy
 	private final Map<BlockPos, IETileSound> tileSoundMap = new HashMap<>();
 
 	@Override
-	public void handleTileSound(SoundEvent soundEvent, TileEntity tile, boolean tileActive, float volume, float pitch)
+	public void handleTileSound(SoundEvent soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch)
 	{
-		BlockPos pos = tile.getPos();
+		BlockPos pos = tile.getBlockPos();
 		IETileSound sound = tileSoundMap.get(pos);
 		if(sound==null&&tileActive)
 		{
-			if(tile instanceof ISoundTile&&mc().player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundTile)tile).getSoundRadiusSq())
+			if(tile instanceof ISoundTile&&mc().player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundTile)tile).getSoundRadiusSq())
 				return;
 			sound = ClientUtils.generatePositionedIESound(soundEvent, volume, pitch, true, 0, pos);
 			tileSoundMap.put(pos, sound);
@@ -215,17 +215,17 @@ public class ClientProxy extends CommonProxy
 		else if(sound!=null&&(sound.donePlaying||!tileActive))
 		{
 			sound.donePlaying = true;
-			mc().getSoundHandler().stop(sound);
+			mc().getSoundManager().stop(sound);
 			tileSoundMap.remove(pos);
 		}
 	}
 
 	@Override
-	public void stopTileSound(String soundName, TileEntity tile)
+	public void stopTileSound(String soundName, BlockEntity tile)
 	{
-		IETileSound sound = tileSoundMap.get(tile.getPos());
+		IETileSound sound = tileSoundMap.get(tile.getBlockPos());
 		if(sound!=null)
-			mc().getSoundHandler().stop(sound);
+			mc().getSoundManager().stop(sound);
 	}
 
 	@Override
@@ -233,35 +233,35 @@ public class ClientProxy extends CommonProxy
 	{
 		if(!ShaderMinecartRenderer.rendersReplaced)
 		{
-			EntityRendererManager rendererManager = mc().getRenderManager();
+			EntityRenderDispatcher rendererManager = mc().getEntityRenderDispatcher();
 			for(EntityType<?> type : rendererManager.renderers.keySet())
 				ShaderMinecartRenderer.overrideModelIfMinecart(type);
 			ShaderMinecartRenderer.rendersReplaced = true;
 		}
 		if(!IEBipedLayerRenderer.rendersAssigned)
 		{
-			for(Object render : mc().getRenderManager().renderers.values())
-				if(BipedRenderer.class.isAssignableFrom(render.getClass()))
-					addIELayer((BipedRenderer<?, ?>)render);
+			for(Object render : mc().getEntityRenderDispatcher().renderers.values())
+				if(HumanoidMobRenderer.class.isAssignableFrom(render.getClass()))
+					addIELayer((HumanoidMobRenderer<?, ?>)render);
 				else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
 					((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer<>((ArmorStandRenderer)render));
 			IEBipedLayerRenderer.rendersAssigned = true;
 		}
 	}
 
-	private static <T extends MobEntity, M extends BipedModel<T>> void addIELayer(BipedRenderer<T, M> render)
+	private static <T extends Mob, M extends HumanoidModel<T>> void addIELayer(HumanoidMobRenderer<T, M> render)
 	{
 		render.addLayer(new IEBipedLayerRenderer<>(render));
 	}
 
 	@Override
-	public World getClientWorld()
+	public Level getClientWorld()
 	{
-		return mc().world;
+		return mc().level;
 	}
 
 	@Override
-	public PlayerEntity getClientPlayer()
+	public Player getClientPlayer()
 	{
 		return mc().player;
 	}
@@ -269,7 +269,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void reInitGui()
 	{
-		Screen currentScreen = mc().currentScreen;
+		Screen currentScreen = mc().screen;
 		if(currentScreen instanceof IEContainerScreen)
 			currentScreen.init(mc(), currentScreen.width, currentScreen.height);
 	}
@@ -277,8 +277,8 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void resetManual()
 	{
-		if(mc().currentScreen instanceof ManualScreen)
-			mc().displayGuiScreen(null);
+		if(mc().screen instanceof ManualScreen)
+			mc().setScreen(null);
 		if(ManualHelper.getManual()!=null)
 			ManualHelper.getManual().reset();
 	}
@@ -312,24 +312,24 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void startSkyhookSound(SkylineHookEntity hook)
 	{
-		Minecraft.getInstance().getSoundHandler().play(new SkyhookSound(hook,
+		Minecraft.getInstance().getSoundManager().play(new SkyhookSound(hook,
 				new ResourceLocation(MODID, "skyhook")));
 	}
 
 	@Override
 	public void openManual()
 	{
-		Minecraft.getInstance().displayGuiScreen(ManualHelper.getManual().getGui());
+		Minecraft.getInstance().setScreen(ManualHelper.getManual().getGui());
 	}
 
 	@Override
-	public void openTileScreen(String guiId, TileEntity tileEntity)
+	public void openTileScreen(String guiId, BlockEntity tileEntity)
 	{
 		if(guiId.equals(Lib.GUIID_RedstoneConnector)&&tileEntity instanceof ConnectorRedstoneTileEntity)
-			Minecraft.getInstance().displayGuiScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getTranslatedName()));
+			Minecraft.getInstance().setScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 
 		if(guiId.equals(Lib.GUIID_RedstoneProbe)&&tileEntity instanceof ConnectorProbeTileEntity)
-			Minecraft.getInstance().displayGuiScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getTranslatedName()));
+			Minecraft.getInstance().setScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 	}
 
 	private static void registerEntityRenderers()
@@ -413,22 +413,22 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
 	}
 
-	public static <C extends Container, S extends Screen & IHasContainer<C>>
-	void registerScreen(IEContainerTypes.EntityContainerType<?, C> type, IScreenFactory<C, S> factory)
+	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
+	void registerScreen(IEContainerTypes.EntityContainerType<?, C> type, ScreenConstructor<C, S> factory)
 	{
-		ScreenManager.registerFactory(type.getType(), factory);
+		MenuScreens.register(type.getType(), factory);
 	}
 
-	public static <C extends Container, S extends Screen & IHasContainer<C>>
-	void registerScreen(IEContainerTypes.ItemContainerType<C> type, IScreenFactory<C, S> factory)
+	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
+	void registerScreen(IEContainerTypes.ItemContainerType<C> type, ScreenConstructor<C, S> factory)
 	{
-		ScreenManager.registerFactory(type.getType(), factory);
+		MenuScreens.register(type.getType(), factory);
 	}
 
-	public static <C extends IEBaseContainer<?>, S extends Screen & IHasContainer<C>>
-	void registerTileScreen(IEContainerTypes.TileContainer<?, C> type, IScreenFactory<C, S> factory)
+	public static <C extends IEBaseContainer<?>, S extends Screen & MenuAccess<C>>
+	void registerTileScreen(IEContainerTypes.TileContainer<?, C> type, ScreenConstructor<C, S> factory)
 	{
-		ScreenManager.registerFactory(type.getType(), factory);
+		MenuScreens.register(type.getType(), factory);
 	}
 
 	@Override

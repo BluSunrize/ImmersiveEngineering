@@ -18,16 +18,16 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,7 +60,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 0, 18);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getItems()));
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 
 		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
@@ -78,7 +78,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	}
 
 	@Override
-	public void draw(CrusherRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
+	public void draw(CrusherRecipe recipe, PoseStack transform, double mouseX, double mouseY)
 	{
 		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
 		int yBase = validSecondaries.isEmpty()?36: validSecondaries.size() < 2?27: 18;
@@ -86,7 +86,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		{
 			int x = 77+i/2*44;
 			int y = yBase+i%2*18;
-			ClientUtils.font().drawString(
+			ClientUtils.font().draw(
 					transform,
 					Utils.formatDouble(validSecondaries.get(i).getChance()*100, "0.##")+"%",
 					x+21,
@@ -95,10 +95,10 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 			);
 			RenderSystem.color4f(1, 1, 1, 1);
 		}
-		transform.push();
+		transform.pushPose();
 		transform.scale(3f, 3f, 1);
 		this.getIcon().draw(transform, 8, 0);
-		transform.pop();
+		transform.popPose();
 	}
 
 	private List<StackWithChance> getValidSecondaryOutputs(CrusherRecipe recipe)

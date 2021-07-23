@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import com.google.common.collect.Lists;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -27,7 +27,7 @@ import java.util.function.Predicate;
  */
 public class ArcFurnaceRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<ArcFurnaceRecipe> TYPE;
+	public static RecipeType<ArcFurnaceRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input;
@@ -184,7 +184,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	 * Add a predicate to the list of predicates determining whether an item may be recycled
 	 */
 	@Deprecated
-	public static void allowRecipeTypeForRecycling(IRecipeType<?> recipeType)
+	public static void allowRecipeTypeForRecycling(RecipeType<?> recipeType)
 	{
 		ArcRecyclingChecker.allowRecipeTypeForRecycling(recipeType);
 	}
@@ -230,7 +230,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	 * @return a predicate for IRecipes which is used to filter the list of crafting recipes for recycling
 	 */
 	@Deprecated
-	public static Predicate<IRecipe<?>> assembleRecyclingFilter()
+	public static Predicate<Recipe<?>> assembleRecyclingFilter()
 	{
 		return ArcRecyclingChecker.assembleRecyclingFilter().getLeft();
 	}

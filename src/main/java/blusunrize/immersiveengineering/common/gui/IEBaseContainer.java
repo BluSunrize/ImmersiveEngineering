@@ -9,29 +9,29 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class IEBaseContainer<T extends TileEntity> extends Container
+public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMenu
 {
 	public T tile;
 	@Nullable
-	public IInventory inv;
+	public Container inv;
 	public int slotCount;
 
-	public IEBaseContainer(ContainerType<?> type, PlayerInventory inventoryPlayer, T tile, int id)
+	public IEBaseContainer(MenuType<?> type, Inventory inventoryPlayer, T tile, int id)
 	{
 		super(type, id);
 		this.tile = tile;
@@ -40,60 +40,60 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player)
+	public boolean stillValid(@Nonnull Player player)
 	{
-		return inv!=null&&inv.isUsableByPlayer(player);//Override for TE's that don't implement IIEInventory
+		return inv!=null&&inv.stillValid(player);//Override for TE's that don't implement IIEInventory
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int id, int dragType, ClickType clickType, PlayerEntity player)
+	public ItemStack clicked(int id, int dragType, ClickType clickType, Player player)
 	{
-		Slot slot = id < 0?null: this.inventorySlots.get(id);
+		Slot slot = id < 0?null: this.slots.get(id);
 		if(!(slot instanceof IESlot.ItemHandlerGhost))
-			return super.slotClick(id, dragType, clickType, player);
+			return super.clicked(id, dragType, clickType, player);
 		//Spooky Ghost Slots!!!!
 		ItemStack stack = ItemStack.EMPTY;
-		ItemStack stackSlot = slot.getStack();
+		ItemStack stackSlot = slot.getItem();
 		if(!stackSlot.isEmpty())
 			stack = stackSlot.copy();
 
 		if(dragType==2)
-			slot.putStack(ItemStack.EMPTY);
+			slot.set(ItemStack.EMPTY);
 		else if(dragType==0||dragType==1)
 		{
-			PlayerInventory playerInv = player.inventory;
-			ItemStack stackHeld = playerInv.getItemStack();
-			int amount = Math.min(slot.getSlotStackLimit(), stackHeld.getCount());
+			Inventory playerInv = player.inventory;
+			ItemStack stackHeld = playerInv.getCarried();
+			int amount = Math.min(slot.getMaxStackSize(), stackHeld.getCount());
 			if(dragType==1)
 				amount = 1;
 			if(stackSlot.isEmpty())
 			{
-				if(!stackHeld.isEmpty()&&slot.isItemValid(stackHeld))
-					slot.putStack(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
+				if(!stackHeld.isEmpty()&&slot.mayPlace(stackHeld))
+					slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
 			else if(stackHeld.isEmpty())
 			{
-				slot.putStack(ItemStack.EMPTY);
+				slot.set(ItemStack.EMPTY);
 			}
-			else if(slot.isItemValid(stackHeld))
+			else if(slot.mayPlace(stackHeld))
 			{
-				if(ItemStack.areItemsEqual(stackSlot, stackHeld))
+				if(ItemStack.isSame(stackSlot, stackHeld))
 					stackSlot.grow(amount);
 				else
-					slot.putStack(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
+					slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
-			if(stackSlot.getCount() > slot.getSlotStackLimit())
-				stackSlot.setCount(slot.getSlotStackLimit());
+			if(stackSlot.getCount() > slot.getMaxStackSize())
+				stackSlot.setCount(slot.getMaxStackSize());
 		}
 		else if(dragType==5)
 		{
-			PlayerInventory playerInv = player.inventory;
-			ItemStack stackHeld = playerInv.getItemStack();
-			int amount = Math.min(slot.getSlotStackLimit(), stackHeld.getCount());
-			if(!slot.getHasStack())
+			Inventory playerInv = player.inventory;
+			ItemStack stackHeld = playerInv.getCarried();
+			int amount = Math.min(slot.getMaxStackSize(), stackHeld.getCount());
+			if(!slot.hasItem())
 			{
-				slot.putStack(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
+				slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
 		}
 		return stack;
@@ -101,33 +101,33 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slotObject = this.inventorySlots.get(slot);
-		if(slotObject!=null&&slotObject.getHasStack())
+		Slot slotObject = this.slots.get(slot);
+		if(slotObject!=null&&slotObject.hasItem())
 		{
-			ItemStack itemstack1 = slotObject.getStack();
+			ItemStack itemstack1 = slotObject.getItem();
 			itemstack = itemstack1.copy();
 			if(slot < slotCount)
 			{
-				if(!this.mergeItemStack(itemstack1, slotCount, this.inventorySlots.size(), true))
+				if(!this.moveItemStackTo(itemstack1, slotCount, this.slots.size(), true))
 				{
 					return ItemStack.EMPTY;
 				}
 			}
-			else if(!this.mergeItemStack(itemstack1, 0, slotCount, false))
+			else if(!this.moveItemStackTo(itemstack1, 0, slotCount, false))
 			{
 				return ItemStack.EMPTY;
 			}
 
 			if(itemstack1.isEmpty())
 			{
-				slotObject.putStack(ItemStack.EMPTY);
+				slotObject.set(ItemStack.EMPTY);
 			}
 			else
 			{
-				slotObject.onSlotChanged();
+				slotObject.setChanged();
 			}
 		}
 
@@ -135,20 +135,20 @@ public class IEBaseContainer<T extends TileEntity> extends Container
 	}
 
 	@Override
-	protected boolean mergeItemStack(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection)
+	protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection)
 	{
-		return super.mergeItemStack(stack, startIndex, endIndex, reverseDirection);
+		return super.moveItemStackTo(stack, startIndex, endIndex, reverseDirection);
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity playerIn)
+	public void removed(Player playerIn)
 	{
-		super.onContainerClosed(playerIn);
+		super.removed(playerIn);
 		if(inv!=null)
-			this.inv.closeInventory(playerIn);
+			this.inv.stopOpen(playerIn);
 	}
 
-	public void receiveMessageFromScreen(CompoundNBT nbt)
+	public void receiveMessageFromScreen(CompoundTag nbt)
 	{
 
 	}

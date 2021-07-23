@@ -22,24 +22,24 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Direction.AxisDirection;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -76,7 +76,7 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -88,48 +88,48 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public void onEntityCollision(World world, Entity entity)
+	public void onEntityCollision(Level world, Entity entity)
 	{
 		if(entity instanceof LivingEntity)
 		{
-			Vector3d motion = entity.getMotion();
-			entity.setMotion(motion.getX()/5, motion.getY(), motion.getZ()/5);
+			Vec3 motion = entity.getDeltaMovement();
+			entity.setDeltaMovement(motion.x()/5, motion.y(), motion.z()/5);
 			applyDamage((LivingEntity)entity);
 		}
 	}
 
 	public static void applyDamage(LivingEntity entity)
 	{
-		int protection = (!entity.getItemStackFromSlot(EquipmentSlotType.FEET).isEmpty()?1: 0)+(!entity.getItemStackFromSlot(EquipmentSlotType.LEGS).isEmpty()?1: 0);
+		int protection = (!entity.getItemBySlot(EquipmentSlot.FEET).isEmpty()?1: 0)+(!entity.getItemBySlot(EquipmentSlot.LEGS).isEmpty()?1: 0);
 		float dmg = protection==2?.5f: protection==1?1: 1.5f;
-		entity.attackEntityFrom(IEDamageSources.razorWire, dmg);
+		entity.hurt(IEDamageSources.razorWire, dmg);
 	}
 
 	@Override
-	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
+	public VoxelShape getSelectionShape(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	private static final CachedVoxelShapes<BoundingBoxKey> SHAPES = new CachedVoxelShapes<>(RazorWireTileEntity::getShape);
 
 	@Override
-	public VoxelShape getCollisionShape(ISelectionContext ctx)
+	public VoxelShape getCollisionShape(CollisionContext ctx)
 	{
 		return SHAPES.get(new BoundingBoxKey(this));
 	}
 
-	private static List<AxisAlignedBB> getShape(BoundingBoxKey key)
+	private static List<AABB> getShape(BoundingBoxKey key)
 	{
 		if((!key.onGround&&!key.stacked)||!(key.wallL||key.wallR))
 			return ImmutableList.of();
-		List<AxisAlignedBB> list = new ArrayList<>(key.wallL&&key.wallR?2: 1);
+		List<AABB> list = new ArrayList<>(key.wallL&&key.wallR?2: 1);
 		if(key.wallL)
-			list.add(new AxisAlignedBB(
+			list.add(new AABB(
 					key.facing==Direction.SOUTH?.8125: 0, 0, key.facing==Direction.WEST?.8125: 0,
 					key.facing==Direction.NORTH?.1875: 1, 1, key.facing==Direction.EAST?.1875: 1));
 		if(key.wallR)
-			list.add(new AxisAlignedBB(
+			list.add(new AABB(
 					key.facing==Direction.NORTH?.8125: 0, 0, key.facing==Direction.EAST?.8125: 0,
 					key.facing==Direction.SOUTH?.1875: 1, 1, key.facing==Direction.WEST?.1875: 1));
 		return list;
@@ -137,14 +137,14 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 
 	private boolean renderWall(boolean left)
 	{
-		Direction dir = left?getFacing().rotateY(): getFacing().rotateYCCW();
-		BlockPos neighbourPos = getPos().offset(dir, -1);
-		if(!world.isBlockLoaded(neighbourPos))
+		Direction dir = left?getFacing().getClockWise(): getFacing().getCounterClockWise();
+		BlockPos neighbourPos = getBlockPos().relative(dir, -1);
+		if(!level.hasChunkAt(neighbourPos))
 			return true;
-		if(world.getTileEntity(neighbourPos) instanceof RazorWireTileEntity)
+		if(level.getBlockEntity(neighbourPos) instanceof RazorWireTileEntity)
 			return false;
-		BlockState neighbour = world.getBlockState(neighbourPos);
-		return !Block.doesSideFillSquare(neighbour.getShape(world, neighbourPos), dir);
+		BlockState neighbour = level.getBlockState(neighbourPos);
+		return !Block.isFaceFull(neighbour.getShape(level, neighbourPos), dir);
 	}
 
 	private static class BoundingBoxKey
@@ -186,14 +186,14 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 
 	private boolean isOnGround()
 	{
-		BlockPos down = getPos().down();
-		return Block.doesSideFillSquare(world.getBlockState(down).getShape(world, down), Direction.UP);
+		BlockPos down = getBlockPos().below();
+		return Block.isFaceFull(level.getBlockState(down).getShape(level, down), Direction.UP);
 	}
 
 	private boolean isStacked()
 	{
-		BlockPos down = getPos().down();
-		TileEntity te = world.getTileEntity(down);
+		BlockPos down = getBlockPos().below();
+		BlockEntity te = level.getBlockEntity(down);
 		if(te instanceof RazorWireTileEntity)
 			return ((RazorWireTileEntity)te).isOnGround();
 		return false;
@@ -232,36 +232,36 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return WireType.LV_CATEGORY.equals(cableType.getCategory());//TODO only allow one connection!
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		BlockPos other = con.getOtherEnd(here).getPosition();
-		int xDif = other.getX()-pos.getX();
-		int yDif = other.getY()-pos.getY();
-		int zDif = other.getZ()-pos.getZ();
+		int xDif = other.getX()-worldPosition.getX();
+		int yDif = other.getY()-worldPosition.getY();
+		int zDif = other.getZ()-worldPosition.getZ();
 		boolean wallL = renderWall(true);
 		boolean wallR = renderWall(false);
 		if(!isOnGround()||!(wallL||wallR))
 		{
 			if(yDif > 0)
-				return new Vector3d(getFacing().getXOffset()!=0?.5: xDif < 0?.40625: .59375, .9375, getFacing().getZOffset()!=0?.5: zDif < 0?.40625: .59375);
+				return new Vec3(getFacing().getStepX()!=0?.5: xDif < 0?.40625: .59375, .9375, getFacing().getStepZ()!=0?.5: zDif < 0?.40625: .59375);
 			else
 			{
-				boolean right = getFacing().rotateY().getAxisDirection().getOffset()==Math.copySign(1, getFacing().getXOffset()!=0?zDif: xDif);
-				int faceX = getFacing().getXOffset();
-				int faceZ = getFacing().getZOffset();
-				return new Vector3d(faceX!=0?.5+(right?0: faceX*.1875): (xDif < 0?0: 1), .046875, faceZ!=0?.5+(right?0: faceZ*.1875): (zDif < 0?0: 1));
+				boolean right = getFacing().getClockWise().getAxisDirection().getStep()==Math.copySign(1, getFacing().getStepX()!=0?zDif: xDif);
+				int faceX = getFacing().getStepX();
+				int faceZ = getFacing().getStepZ();
+				return new Vec3(faceX!=0?.5+(right?0: faceX*.1875): (xDif < 0?0: 1), .046875, faceZ!=0?.5+(right?0: faceZ*.1875): (zDif < 0?0: 1));
 			}
 		}
 		else
 		{
 			boolean wallN = getFacing()==Direction.NORTH||getFacing()==Direction.EAST?wallL: wallR;
-			return new Vector3d(getFacing().getXOffset()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, getFacing().getZOffset()!=0?.5: zDif < 0&&wallN?.125: .875);
+			return new Vec3(getFacing().getStepX()!=0?.5: xDif < 0&&wallN?.125: .875, .9375, getFacing().getStepZ()!=0?.5: zDif < 0&&wallN?.125: .875);
 		}
 	}
 
@@ -291,25 +291,25 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 		boolean connectP = true;
 		int widthN = 0;
 		boolean connectN = true;
-		Direction dir = getFacing().rotateY();
+		Direction dir = getFacing().getClockWise();
 		if(dir.getAxisDirection()==AxisDirection.NEGATIVE)
 			dir = dir.getOpposite();
 		for(int i = 1; i <= maxReach; i++)
 		{
-			BlockPos posP = getPos().offset(dir, i);
-			if(connectP&&world.isBlockLoaded(posP)&&world.getTileEntity(posP) instanceof RazorWireTileEntity)
+			BlockPos posP = getBlockPos().relative(dir, i);
+			if(connectP&&level.hasChunkAt(posP)&&level.getBlockEntity(posP) instanceof RazorWireTileEntity)
 				widthP++;
 			else
 				connectP = false;
-			BlockPos posN = getPos().offset(dir, -i);
-			if(connectN&&world.isBlockLoaded(posN)&&world.getTileEntity(posN) instanceof RazorWireTileEntity)
+			BlockPos posN = getBlockPos().relative(dir, -i);
+			if(connectN&&level.hasChunkAt(posN)&&level.getBlockEntity(posN) instanceof RazorWireTileEntity)
 				widthN++;
 			else
 				connectN = false;
 		}
-		AxisAlignedBB aabb = new AxisAlignedBB(getPos().add(getFacing().getAxis()==Axis.Z?-widthN: 0, 0, getFacing().getAxis()==Axis.X?-widthN: 0), getPos().add(getFacing().getAxis()==Axis.Z?1+widthP: 1, 1, getFacing().getAxis()==Axis.X?1+widthP: 1));
-		List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, aabb);
+		AABB aabb = new AABB(getBlockPos().offset(getFacing().getAxis()==Axis.Z?-widthN: 0, 0, getFacing().getAxis()==Axis.X?-widthN: 0), getBlockPos().offset(getFacing().getAxis()==Axis.Z?1+widthP: 1, 1, getFacing().getAxis()==Axis.X?1+widthP: 1));
+		List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, aabb);
 		for(LivingEntity ent : entities)
-			ent.attackEntityFrom(IEDamageSources.razorShock, 2);
+			ent.hurt(IEDamageSources.razorShock, 2);
 	}
 }

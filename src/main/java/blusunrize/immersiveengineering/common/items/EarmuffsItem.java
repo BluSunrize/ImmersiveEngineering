@@ -17,18 +17,18 @@ import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.IDyeableArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.DyeableLeatherItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,7 +38,7 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendColoredColour;
 
-public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConfigurableTool, ITool, IColouredItem
+public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, IConfigurableTool, ITool, IColouredItem
 {
 	public EarmuffsItem()
 	{
@@ -46,13 +46,13 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 	}
 
 	@Override
-	public boolean canEquip(ItemStack stack, EquipmentSlotType armorType, Entity entity)
+	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
 	{
-		return armorType==EquipmentSlotType.HEAD;
+		return armorType==EquipmentSlot.HEAD;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
 	{
 		if("overlay".equals(type))
 			return "immersiveengineering:textures/models/earmuffs_overlay.png";
@@ -60,11 +60,11 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	BipedModel armorModel;
+	HumanoidModel armorModel;
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default)
+	public HumanoidModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default)
 	{
 		return ModelEarmuffs.getModel();
 	}
@@ -86,7 +86,7 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 	}
 
 	@Override
-	public boolean hasColor(ItemStack stack)
+	public boolean hasCustomColor(ItemStack stack)
 	{
 		return true;
 	}
@@ -100,7 +100,7 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 	}
 
 	@Override
-	public void removeColor(ItemStack stack)
+	public void clearColor(ItemStack stack)
 	{
 		if(ItemNBTHelper.hasKey(stack, Lib.NBT_EarmuffColour))
 			ItemNBTHelper.remove(stack, Lib.NBT_EarmuffColour);
@@ -114,10 +114,10 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		int color = this.getColourForIEItem(stack, 0);
-		IFormattableTextComponent mainComponent = new TranslationTextComponent(Lib.DESC_INFO+"colour");
+		MutableComponent mainComponent = new TranslatableComponent(Lib.DESC_INFO+"colour");
 		list.add(withAppendColoredColour(mainComponent, color));
 	}
 
@@ -167,8 +167,8 @@ public class EarmuffsItem extends IEBaseItem implements IDyeableArmorItem, IConf
 	public String fomatConfigName(ItemStack stack, ToolConfig config)
 	{
 		if(config instanceof ToolConfigFloat)
-			return I18n.format(Lib.GUI_CONFIG+"earmuffs.noisegate");
-		return I18n.format(Lib.GUI_CONFIG+"earmuffs.soundcategory."+config.name);
+			return I18n.get(Lib.GUI_CONFIG+"earmuffs.noisegate");
+		return I18n.get(Lib.GUI_CONFIG+"earmuffs.soundcategory."+config.name);
 	}
 
 	@Override

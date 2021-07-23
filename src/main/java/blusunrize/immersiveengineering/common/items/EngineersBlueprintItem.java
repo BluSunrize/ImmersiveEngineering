@@ -11,16 +11,16 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -32,48 +32,48 @@ public class EngineersBlueprintItem extends IEBaseItem
 {
 	public EngineersBlueprintItem()
 	{
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Nonnull
 	@Override
-	public String getTranslationKey(ItemStack stack)
+	public String getDescriptionId(ItemStack stack)
 	{
-		return this.getTranslationKey();
+		return this.getDescriptionId();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String key = getCategory(stack);
 		if(!key.isEmpty()
 				&&BlueprintCraftingRecipe.recipeCategories.contains(key))
 		{
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
-			String formatted = I18n.format(formatKey);
+			String formatted = I18n.get(formatKey);
 			if(formatKey.equals(formatted))
-				list.add(new StringTextComponent(key));
+				list.add(new TextComponent(key));
 			else
-				list.add(new TranslationTextComponent(formatKey));
+				list.add(new TranslatableComponent(formatKey));
 			if(Screen.hasShiftDown())
 			{
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates1"));
+				list.add(new TranslatableComponent(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
 				if(recipes.length > 0)
 					for(BlueprintCraftingRecipe recipe : recipes)
-						list.add(new StringTextComponent(" ").appendSibling(recipe.output.getDisplayName()));
+						list.add(new TextComponent(" ").append(recipe.output.getHoverName()));
 			}
 			else
-				list.add(new TranslationTextComponent(Lib.DESC_INFO+"blueprint.creates0"));
+				list.add(new TranslatableComponent(Lib.DESC_INFO+"blueprint.creates0"));
 		}
 	}
 
 
 	@Override
-	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> list)
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list)
 	{
-		if(this.isInGroup(tab))
+		if(this.allowdedIn(tab))
 			for(String key : BlueprintCraftingRecipe.recipeCategories)
 			{
 				ItemStack stack = new ItemStack(this);

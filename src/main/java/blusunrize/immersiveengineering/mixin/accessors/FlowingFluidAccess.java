@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.FlowingFluid;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -20,7 +20,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface FlowingFluidAccess
 {
 	@Invoker
-	boolean invokeDoesSideHaveHoles(
-			Direction side, IBlockReader world, BlockPos pos, BlockState state, BlockPos pos2, BlockState state2
+	boolean callCanPassThroughWall(
+			Direction side, BlockGetter world, BlockPos pos, BlockState state, BlockPos pos2, BlockState state2
 	);
 }

@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.util.math.ColumnPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.INoiseGenerator;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ColumnPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.synth.SurfaceNoise;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -32,41 +32,41 @@ import java.util.stream.Collectors;
  */
 public class ExcavatorHandler
 {
-	private static final Multimap<RegistryKey<World>, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
+	private static final Multimap<ResourceKey<Level>, MineralVein> MINERAL_VEIN_LIST = ArrayListMultimap.create();
 	// Only access when synchronized on MINERAL_VEIN_LIST
-	private static final Map<Pair<RegistryKey<World>, ColumnPos>, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
+	private static final Map<Pair<ResourceKey<Level>, ColumnPos>, MineralWorldInfo> MINERAL_INFO_CACHE = new HashMap<>();
 	static final SetRestrictedField<Runnable> MARK_SAVE_DATA_DIRTY = SetRestrictedField.common();
 	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
 	public static double mineralNoiseThreshold = 0;
-	public static INoiseGenerator noiseGenerator;
+	public static SurfaceNoise noiseGenerator;
 
 	@Nullable
-	public static MineralVein getRandomMineral(World world, BlockPos pos)
+	public static MineralVein getRandomMineral(Level world, BlockPos pos)
 	{
-		if(world.isRemote)
+		if(world.isClientSide)
 			return null;
 		MineralWorldInfo info = getMineralWorldInfo(world, pos);
 		return info.getMineralVein(ApiUtils.RANDOM);
 	}
 
 	// Always call "resetCache" after modifying the map returned here!
-	public static Multimap<RegistryKey<World>, MineralVein> getMineralVeinList()
+	public static Multimap<ResourceKey<Level>, MineralVein> getMineralVeinList()
 	{
 		return MINERAL_VEIN_LIST;
 	}
 
-	public static MineralWorldInfo getMineralWorldInfo(World world, BlockPos pos)
+	public static MineralWorldInfo getMineralWorldInfo(Level world, BlockPos pos)
 	{
 		return getMineralWorldInfo(world, new ColumnPos(pos));
 	}
 
-	public static MineralWorldInfo getMineralWorldInfo(World world, ColumnPos columnPos)
+	public static MineralWorldInfo getMineralWorldInfo(Level world, ColumnPos columnPos)
 	{
-		if(world.isRemote)
+		if(world.isClientSide)
 			return null;
-		RegistryKey<World> dimension = world.getDimensionKey();
-		Pair<RegistryKey<World>, ColumnPos> cacheKey = Pair.of(dimension, columnPos);
+		ResourceKey<Level> dimension = world.dimension();
+		Pair<ResourceKey<Level>, ColumnPos> cacheKey = Pair.of(dimension, columnPos);
 		synchronized(MINERAL_VEIN_LIST)
 		{
 			MineralWorldInfo worldInfo = MINERAL_INFO_CACHE.get(cacheKey);
@@ -103,10 +103,10 @@ public class ExcavatorHandler
 		}
 	}
 
-	public static void generatePotentialVein(World world, ChunkPos chunkpos, Random rand)
+	public static void generatePotentialVein(Level world, ChunkPos chunkpos, Random rand)
 	{
-		int xStart = chunkpos.getXStart();
-		int zStart = chunkpos.getZStart();
+		int xStart = chunkpos.getMinBlockX();
+		int zStart = chunkpos.getMinBlockZ();
 		double d0 = 0.0625D;
 		ColumnPos pos = null;
 		double maxNoise = 0;
@@ -115,7 +115,7 @@ public class ExcavatorHandler
 		for(int xx = 0; xx < 16; ++xx)
 			for(int zz = 0; zz < 16; ++zz)
 			{
-				double noise = noiseGenerator.noiseAt((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
+				double noise = noiseGenerator.getSurfaceNoiseValue((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
 				// Vanilla Perlin noise scales to 0.55, so we un-scale it
 				double chance = Math.abs(noise)/.55;
 				if(chance > mineralNoiseThreshold&&chance > maxNoise)
@@ -131,7 +131,7 @@ public class ExcavatorHandler
 				ColumnPos finalPos = pos;
 				int radius = 12+rand.nextInt(32);
 				int radiusSq = radius*radius;
-				boolean crossover = MINERAL_VEIN_LIST.get(world.getDimensionKey()).stream().anyMatch(vein -> {
+				boolean crossover = MINERAL_VEIN_LIST.get(world.dimension()).stream().anyMatch(vein -> {
 					// Use longs to prevent overflow
 					long dX = vein.getPos().x-finalPos.x;
 					long dZ = vein.getPos().z-finalPos.z;
@@ -141,7 +141,7 @@ public class ExcavatorHandler
 				if(!crossover)
 				{
 					MineralMix mineralMix = null;
-					MineralSelection selection = new MineralSelection(world.getDimensionKey());
+					MineralSelection selection = new MineralSelection(world.dimension());
 					if(selection.getTotalWeight() > 0)
 					{
 						int weight = selection.getRandomWeight(rand);
@@ -161,14 +161,14 @@ public class ExcavatorHandler
 						// generate initial depletion
 						if(initialVeinDepletion > 0)
 							vein.setDepletion((int)(mineralVeinYield*(rand.nextDouble()*initialVeinDepletion)));
-						addVein(world.getDimensionKey(), vein);
+						addVein(world.dimension(), vein);
 						MARK_SAVE_DATA_DIRTY.getValue().run();
 					}
 				}
 			}
 	}
 
-	public static void addVein(RegistryKey<World> dimension, MineralVein vein)
+	public static void addVein(ResourceKey<Level> dimension, MineralVein vein)
 	{
 		synchronized(MINERAL_VEIN_LIST)
 		{
@@ -194,7 +194,7 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
 
-		public MineralSelection(RegistryKey<World> dimension)
+		public MineralSelection(ResourceKey<Level> dimension)
 		{
 			int weight = 0;
 			this.validMinerals = new HashSet<>();

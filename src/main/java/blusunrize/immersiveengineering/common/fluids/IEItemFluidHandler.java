@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.fluids;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -28,20 +28,20 @@ import javax.annotation.Nullable;
  */
 public class IEItemFluidHandler extends FluidHandlerItemStack
 {
-	public static ITextComponent fluidItemInfoFlavor(@Nullable FluidStack fluid, int fluidCapacity)
+	public static Component fluidItemInfoFlavor(@Nullable FluidStack fluid, int fluidCapacity)
 	{
 		if(fluid!=null&&fluid.getAmount() > 0)
 		{
 			FluidAttributes attr = fluid.getFluid().getAttributes();
-			TextFormatting rarity = attr.getRarity()==Rarity.COMMON?TextFormatting.GRAY: attr.getRarity().color;
+			ChatFormatting rarity = attr.getRarity()==Rarity.COMMON?ChatFormatting.GRAY: attr.getRarity().color;
 			return TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity),
+					new TranslatableComponent(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity),
 					rarity
 			);
 		}
 		return TextUtils.applyFormat(
-				new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.empty"),
-				TextFormatting.GRAY
+				new TranslatableComponent(Lib.DESC_FLAVOUR+"drill.empty"),
+				ChatFormatting.GRAY
 		);
 	}
 

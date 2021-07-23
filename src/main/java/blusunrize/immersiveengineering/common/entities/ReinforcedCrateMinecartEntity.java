@@ -11,25 +11,25 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.items.IEItems;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 {
-	public ReinforcedCrateMinecartEntity(World world, double x, double y, double z)
+	public ReinforcedCrateMinecartEntity(Level world, double x, double y, double z)
 	{
 		super(IEEntityTypes.REINFORCED_CRATE_CART.get(), world, x, y, z);
 	}
 
-	public ReinforcedCrateMinecartEntity(EntityType<?> type, World world)
+	public ReinforcedCrateMinecartEntity(EntityType<?> type, Level world)
 	{
 		super(type, world);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions()
+	public boolean ignoreExplosion()
 	{
 		return true;
 	}
@@ -41,7 +41,7 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 	}
 
 	@Override
-	public BlockState getDisplayTile()
+	public BlockState getDisplayBlockState()
 	{
 		return IEBlocks.WoodenDevices.reinforcedCrate.getDefaultState();
 	}

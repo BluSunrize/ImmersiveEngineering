@@ -27,20 +27,20 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -76,7 +76,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 
 			for(int i = 0; i < 3; i++)
 			{
-				long time = world.getGameTime();
+				long time = level.getGameTime();
 				if(charge >= 1||(time%12 >= i*4&&time%12 <= i*4+2))
 				{
 					int shift = i-1;
@@ -84,7 +84,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 					double y = .25;
 					double z = .5+(getFacing()==Direction.NORTH?-.46875: getFacing()==Direction.SOUTH?.46875: getFacing()==Direction.EAST?(-.1875*shift): (.1875*shift));
 					particles.get().add(
-							new RedstoneParticleData(1-charge, charge, 0, .5f), x, y, z, .25, .25, .25, -1
+							new DustParticleOptions(1-charge, charge, 0, .5f), x, y, z, .25, .25, .25, -1
 					);
 				}
 			}
@@ -127,7 +127,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 		}
 
 
-		if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
+		if(level.getGameTime()%32==((getBlockPos().getX()^getBlockPos().getZ())&31))
 		{
 			float charge = 0;
 			if(EnergyHelper.isFluxReceiver(inventory.get(0)))
@@ -140,30 +140,30 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 			if(i!=this.comparatorOutput)
 			{
 				this.comparatorOutput = i;
-				world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+				level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
 			}
 		}
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
-		inventory.set(0, ItemStack.read(nbt.getCompound("inventory")));
+		inventory.set(0, ItemStack.of(nbt.getCompound("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 		nbt.putBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
-			nbt.put("inventory", inventory.get(0).write(new CompoundNBT()));
+			nbt.put("inventory", inventory.get(0).save(new CompoundTag()));
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 		{
@@ -229,7 +229,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -241,9 +241,9 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.create(
+		return Shapes.box(
 				getFacing().getAxis()==Axis.X?0: .125f, 0, getFacing().getAxis()==Axis.Z?0: .125f,
 				getFacing().getAxis()==Axis.X?1: .875f, 1, getFacing().getAxis()==Axis.Z?1: .875f
 		);
@@ -270,7 +270,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
 
@@ -286,23 +286,23 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements IETic
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(isStackValid(0, heldItem))
 		{
 			ItemStack stored = !inventory.get(0).isEmpty()?inventory.get(0).copy(): ItemStack.EMPTY;
 			inventory.set(0, heldItem.copy());
-			player.setHeldItem(hand, stored);
-			markDirty();
+			player.setItemInHand(hand, stored);
+			setChanged();
 			this.markContainingBlockForUpdate(null);
 			return true;
 		}
 		else if(!inventory.get(0).isEmpty())
 		{
-			if(!world.isRemote)
-				player.entityDropItem(inventory.get(0).copy(), .5f);
+			if(!level.isClientSide)
+				player.spawnAtLocation(inventory.get(0).copy(), .5f);
 			inventory.set(0, ItemStack.EMPTY);
-			markDirty();
+			setChanged();
 			this.markContainingBlockForUpdate(null);
 			return true;
 		}

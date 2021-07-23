@@ -15,15 +15,15 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.client.gui.widget.Widget;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
@@ -34,12 +34,12 @@ import java.util.function.Consumer;
 /**
  * @author BluSunrize - 05.07.2017
  */
-public abstract class IEContainerScreen<C extends Container> extends ContainerScreen<C>
+public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends AbstractContainerScreen<C>
 {
 	private final ResettableLazy<List<InfoArea>> infoAreas;
 	protected final ResourceLocation background;
 
-	public IEContainerScreen(C inventorySlotsIn, PlayerInventory inv, ITextComponent title, ResourceLocation background)
+	public IEContainerScreen(C inventorySlotsIn, Inventory inv, Component title, ResourceLocation background)
 	{
 		super(inventorySlotsIn, inv, title);
 		this.background = background;
@@ -59,36 +59,36 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 	}
 
 	@Override
-	public void render(@Nonnull MatrixStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(@Nonnull PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
-		this.playerInventoryTitleY = this.ySize-94;
+		this.inventoryLabelY = this.imageHeight-94;
 		this.renderBackground(transform);
 		super.render(transform, mouseX, mouseY, partialTicks);
-		List<ITextComponent> tooltip = new ArrayList<>();
+		List<Component> tooltip = new ArrayList<>();
 		for (InfoArea area : infoAreas.get())
 			area.fillTooltip(mouseX, mouseY, tooltip);
-		for (Widget w : buttons)
+		for (AbstractWidget w : buttons)
 			if (w.isMouseOver(mouseX, mouseY) && w instanceof ITooltipWidget)
 				((ITooltipWidget)w).gatherTooltip(mouseX, mouseY, tooltip);
 		gatherAdditionalTooltips(
-				mouseX, mouseY, tooltip::add, t -> tooltip.add(TextUtils.applyFormat(t, TextFormatting.GRAY))
+				mouseX, mouseY, tooltip::add, t -> tooltip.add(TextUtils.applyFormat(t, ChatFormatting.GRAY))
 		);
 		if (!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
 		else
-			this.renderHoveredTooltip(transform, mouseX, mouseY);
+			this.renderTooltip(transform, mouseX, mouseY);
 	}
 
 	protected boolean isMouseIn(int mouseX, int mouseY, int x, int y, int w, int h)
 	{
-		return mouseX >= guiLeft+x&&mouseY >= guiTop+y
-				&&mouseX < guiLeft+x+w&&mouseY < guiTop+y+h;
+		return mouseX >= leftPos+x&&mouseY >= topPos+y
+				&&mouseX < leftPos+x+w&&mouseY < topPos+y+h;
 	}
 
-	protected void clearIntArray(IIntArray ints)
+	protected void clearIntArray(ContainerData ints)
 	{
 		// Clear GUI ints, the sync code assumes that 0 is the initial state
-		for(int i = 0; i < ints.size(); ++i)
+		for(int i = 0; i < ints.getCount(); ++i)
 			ints.set(i, 0);
 	}
 
@@ -98,7 +98,7 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 	}
 
 	@Override
-	protected final void drawGuiContainerBackgroundLayer(@Nonnull MatrixStack transform, float partialTicks, int x, int y)
+	protected final void renderBg(@Nonnull PoseStack transform, float partialTicks, int x, int y)
 	{
 		ClientUtils.bindTexture(background);
 		drawBackgroundTexture(transform);
@@ -107,14 +107,14 @@ public abstract class IEContainerScreen<C extends Container> extends ContainerSc
 			area.draw(transform);
 	}
 
-	protected void drawBackgroundTexture(MatrixStack transform) {
-		blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+	protected void drawBackgroundTexture(PoseStack transform) {
+		blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack matrixStack, float partialTicks, int x, int y) {}
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y) {}
 
 	protected void gatherAdditionalTooltips(
-			int mouseX, int mouseY, Consumer<ITextComponent> addLine, Consumer<ITextComponent> addGray
+			int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray
 	) {}
 
 	public static ResourceLocation makeTextureLocation(String name)

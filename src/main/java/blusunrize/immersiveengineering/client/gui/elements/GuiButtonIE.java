@@ -11,15 +11,15 @@ package blusunrize.immersiveengineering.client.gui.elements;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
 import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 
 public class GuiButtonIE extends Button
 {
@@ -27,7 +27,7 @@ public class GuiButtonIE extends Button
 	protected final int texU;
 	protected final int texV;
 
-	public GuiButtonIE(int x, int y, int w, int h, ITextComponent name, ResourceLocation texture, int u, int v, IIEPressable handler)
+	public GuiButtonIE(int x, int y, int w, int h, Component name, ResourceLocation texture, int u, int v, IIEPressable handler)
 	{
 		super(x, y, w, h, name, handler);
 		this.texture = texture;
@@ -49,13 +49,13 @@ public class GuiButtonIE extends Button
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{
 			Minecraft mc = Minecraft.getInstance();
 			ClientUtils.bindTexture(texture);
-			FontRenderer fontrenderer = mc.fontRenderer;
+			Font fontrenderer = mc.font;
 			this.isHovered = isPressable(mouseX, mouseY);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA, SourceFactor.ONE, DestFactor.ZERO);
@@ -82,7 +82,7 @@ public class GuiButtonIE extends Button
 		this.onPress.onPress(this);
 	}
 
-	public interface IIEPressable<B extends GuiButtonIE> extends IPressable
+	public interface IIEPressable<B extends GuiButtonIE> extends OnPress
 	{
 		void onIEPress(B var1);
 

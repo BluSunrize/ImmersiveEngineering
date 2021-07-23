@@ -15,11 +15,11 @@ import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.gui.ClocheContainer;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -30,7 +30,7 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 
 	private final ClocheTileEntity tile;
 
-	public ClocheScreen(ClocheContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ClocheScreen(ClocheContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
@@ -41,14 +41,14 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(tile.tank, new Rectangle2d(guiLeft+8, guiTop+8, 16, 47), 176, 30, 20, 51, TEXTURE),
-				new EnergyInfoArea(guiLeft+158, guiTop+22, tile),
-				new FertilizerInfoArea(guiLeft+30, guiTop+22, tile)
+				new FluidInfoArea(tile.tank, new Rect2i(leftPos+8, topPos+8, 16, 47), 176, 30, 20, 51, TEXTURE),
+				new EnergyInfoArea(leftPos+158, topPos+22, tile),
+				new FertilizerInfoArea(leftPos+30, topPos+22, tile)
 		);
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
 	}
 }

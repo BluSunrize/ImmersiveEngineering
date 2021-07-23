@@ -1,8 +1,8 @@
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Rotation;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.level.block.Rotation;
 
 public class DirectionUtils
 {
@@ -14,13 +14,13 @@ public class DirectionUtils
 			return Rotation.NONE;
 		if(orig.getAxis()==Axis.Y||to.getAxis()==Axis.Y)
 			return null;
-		orig = orig.rotateY();
+		orig = orig.getClockWise();
 		if(orig==to)
 			return Rotation.CLOCKWISE_90;
-		orig = orig.rotateY();
+		orig = orig.getClockWise();
 		if(orig==to)
 			return Rotation.CLOCKWISE_180;
-		orig = orig.rotateY();
+		orig = orig.getClockWise();
 		if(orig==to)
 			return Rotation.COUNTERCLOCKWISE_90;
 		return null;//This shouldn't ever happen

@@ -12,8 +12,8 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.entity.MobEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.InterModComms.IMCMessage;
 
 import java.util.HashMap;
@@ -44,7 +44,7 @@ public class IEIMCHandler
 			try
 			{
 				Class clazz = Class.forName(s);
-				if(MobEntity.class.isAssignableFrom(clazz))
+				if(Mob.class.isAssignableFrom(clazz))
 					EventHandler.listOfBoringBosses.add(clazz);
 				else
 					IELogger.error("IMC Handling: "+s+" is not an instance of EntityLiving.");

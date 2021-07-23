@@ -116,17 +116,17 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.version_minecraft}"
-    mappings "de.oceanlabs.mcp:mcp_snapshot:${project.version_mcp}"
+    mappings minecraft.officialMojangMappings()
 
     forge "net.minecraftforge:forge:${project.version_minecraft}-${project.version_forge}"
 
-    compileOnly("mezz.jei:jei-1.16.5:7.6.1.75:api")
-    compileOnly("org.squiddev:cc-tweaked-1.16.4:1.94.0")
-    compileOnly("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
-    compileOnly("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
+    modImplementation("mezz.jei:jei-1.16.5:7.6.1.75:api")
+    modImplementation("org.squiddev:cc-tweaked-1.16.4:1.94.0")
+    modImplementation("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
+    modImplementation("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
     compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
-    compileOnly(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
+    modImplementation(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
 }
 
 def customGradle = rootProject.file('custom.gradle');

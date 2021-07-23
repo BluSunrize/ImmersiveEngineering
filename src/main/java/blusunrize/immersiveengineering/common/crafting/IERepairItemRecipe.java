@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.items.IEBaseItem;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -25,7 +25,7 @@ import java.util.Optional;
 
 // A modified version of RepairItemRecipe that works correctly with items with container items
 // (see BluSunrize/ImmersiveEngineering#3994)
-public class IERepairItemRecipe extends SpecialRecipe
+public class IERepairItemRecipe extends CustomRecipe
 {
 	public IERepairItemRecipe(ResourceLocation name)
 	{
@@ -33,14 +33,14 @@ public class IERepairItemRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World worldIn)
+	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level worldIn)
 	{
 		return findInputSlots(inv).isPresent();
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv)
+	public ItemStack assemble(@Nonnull CraftingContainer inv)
 	{
 		return findInputSlots(inv)
 				.map(p -> combineStacks(p.getLeft(), p.getRight()))
@@ -48,32 +48,32 @@ public class IERepairItemRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
 	{
 		return NonNullList.withSize(inv.getHeight()*inv.getWidth(), ItemStack.EMPTY);
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<IERepairItemRecipe> getSerializer()
+	public RecipeSerializer<IERepairItemRecipe> getSerializer()
 	{
 		return Objects.requireNonNull(RecipeSerializers.IE_REPAIR_SERIALIZER.get());
 	}
 
-	private Optional<Pair<ItemStack, ItemStack>> findInputSlots(CraftingInventory inv)
+	private Optional<Pair<ItemStack, ItemStack>> findInputSlots(CraftingContainer inv)
 	{
 		Optional<ItemStack> first = Optional.empty();
 		Optional<ItemStack> second = Optional.empty();
-		for(int slot = 0; slot < inv.getSizeInventory(); ++slot)
+		for(int slot = 0; slot < inv.getContainerSize(); ++slot)
 		{
-			ItemStack stack = inv.getStackInSlot(slot);
+			ItemStack stack = inv.getItem(slot);
 			if(!stack.isEmpty())
 			{
 				if(!isValidInput(stack))
@@ -105,8 +105,8 @@ public class IERepairItemRecipe extends SpecialRecipe
 	// Copy of the vanilla logic
 	private ItemStack combineStacks(ItemStack a, ItemStack b)
 	{
-		int remainingA = a.getMaxDamage()-a.getDamage();
-		int remainingB = a.getMaxDamage()-b.getDamage();
+		int remainingA = a.getMaxDamage()-a.getDamageValue();
+		int remainingB = a.getMaxDamage()-b.getDamageValue();
 		int remainingResult = remainingA+remainingB+a.getMaxDamage()*5/100;
 		int damageResult = a.getMaxDamage()-remainingResult;
 		if(damageResult < 0)
@@ -115,7 +115,7 @@ public class IERepairItemRecipe extends SpecialRecipe
 		}
 
 		ItemStack result = new ItemStack(a.getItem());
-		result.setDamage(damageResult);
+		result.setDamageValue(damageResult);
 		return result;
 	}
 }

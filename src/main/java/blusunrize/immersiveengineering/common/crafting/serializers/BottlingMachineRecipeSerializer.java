@@ -14,11 +14,11 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nullable;
 
@@ -34,8 +34,8 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	public BottlingMachineRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		ItemStack output = readOutput(json.get("result"));
-		Ingredient input = Ingredient.deserialize(JSONUtils.getJsonObject(json, "input"));
-		FluidTagInput fluidInput = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
+		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
+		FluidTagInput fluidInput = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "fluid"));
 		return IEServerConfig.MACHINES.bottlingMachineConfig.apply(
 				new BottlingMachineRecipe(recipeId, output, input, fluidInput)
 		);
@@ -43,19 +43,19 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 
 	@Nullable
 	@Override
-	public BottlingMachineRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public BottlingMachineRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItemStack();
-		Ingredient input = Ingredient.read(buffer);
+		ItemStack output = buffer.readItem();
+		Ingredient input = Ingredient.fromNetwork(buffer);
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
 		return new BottlingMachineRecipe(recipeId, output, input, fluidInput);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, BottlingMachineRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, BottlingMachineRecipe recipe)
 	{
-		buffer.writeItemStack(recipe.output);
-		recipe.input.write(buffer);
+		buffer.writeItem(recipe.output);
+		recipe.input.toNetwork(buffer);
 		recipe.fluidInput.write(buffer);
 	}
 }

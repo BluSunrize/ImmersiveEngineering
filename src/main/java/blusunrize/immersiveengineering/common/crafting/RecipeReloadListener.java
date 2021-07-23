@@ -15,18 +15,18 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -43,17 +43,17 @@ import java.util.stream.Stream;
 
 /* We can't use ISelectiveResourceReloadListener because it references a client-only class which crashes servers
  */
-public class RecipeReloadListener implements IResourceManagerReloadListener
+public class RecipeReloadListener implements ResourceManagerReloadListener
 {
-	private final DataPackRegistries dataPackRegistries;
+	private final ServerResources dataPackRegistries;
 
-	public RecipeReloadListener(DataPackRegistries dataPackRegistries)
+	public RecipeReloadListener(ServerResources dataPackRegistries)
 	{
 		this.dataPackRegistries = dataPackRegistries;
 	}
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
 		if(dataPackRegistries!=null)
 		{
@@ -62,7 +62,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if(server!=null)
 			{
-				Iterator<ServerWorld> it = server.getWorlds().iterator();
+				Iterator<ServerLevel> it = server.getAllLevels().iterator();
 				// Should only be false when no players are loaded, so the data will be synced on login
 				if(it.hasNext())
 					ApiUtils.addFutureServerTask(it.next(),
@@ -78,20 +78,20 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 	public void onTagsUpdated(TagsUpdatedEvent event)
 	{
 		if(clientRecipeManager!=null)
-			TagUtils.setTagCollectionGetters(ItemTags::getCollection, BlockTags::getCollection);
+			TagUtils.setTagCollectionGetters(ItemTags::getAllTags, BlockTags::getAllTags);
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onRecipesUpdated(RecipesUpdatedEvent event)
 	{
 		clientRecipeManager = event.getRecipeManager();
-		if(!Minecraft.getInstance().isSingleplayer())
+		if(!Minecraft.getInstance().hasSingleplayerServer())
 			buildRecipeLists(clientRecipeManager);
 	}
 
 	public static void buildRecipeLists(RecipeManager recipeManager)
 	{
-		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
+		Collection<Recipe<?>> recipes = recipeManager.getRecipes();
 		// Empty recipe list shouldn't happen, but has been known to be caused by other mods
 		if(recipes.size()==0)
 			return;
@@ -113,7 +113,7 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 		MetalPressRecipe.recipeList.put(unpackingRecipe.getId(), unpackingRecipe);
 		MetalPressRecipe.recipeList.put(packingRecipe2x2.getId(), packingRecipe2x2);
 		MetalPressRecipe.recipeList.put(packingRecipe3x3.getId(), packingRecipe3x3);
-		MetalPressPackingRecipes.CRAFTING_RECIPE_MAP = filterRecipes(recipes, ICraftingRecipe.class, IRecipeType.CRAFTING);
+		MetalPressPackingRecipes.CRAFTING_RECIPE_MAP = filterRecipes(recipes, CraftingRecipe.class, RecipeType.CRAFTING);
 		MetalPressRecipe.updateRecipesByMold();
 
 		BottlingMachineRecipe.recipeList = filterRecipes(recipes, BottlingMachineRecipe.class, BottlingMachineRecipe.TYPE);
@@ -129,11 +129,11 @@ public class RecipeReloadListener implements IResourceManagerReloadListener
 
 	private void startArcRecyclingRecipeGen(RecipeManager recipeManager)
 	{
-		Collection<IRecipe<?>> recipes = recipeManager.getRecipes();
+		Collection<Recipe<?>> recipes = recipeManager.getRecipes();
 		new ArcRecyclingCalculator(recipes).run();
 	}
 
-	static <R extends IRecipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<IRecipe<?>> recipes, Class<R> recipeClass, IRecipeType<R> recipeType)
+	static <R extends Recipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<Recipe<?>> recipes, Class<R> recipeClass, RecipeType<R> recipeType)
 	{
 		return recipes.stream()
 				.filter(iRecipe -> iRecipe.getType()==recipeType)

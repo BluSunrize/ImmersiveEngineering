@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.proxy.IICProxyProvider;
 import com.google.common.base.Preconditions;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.Collection;
 
@@ -22,14 +22,14 @@ public class DummyProxyProvider implements IICProxyProvider
 {
 
 	@Override
-	public CompoundNBT toNBT(IImmersiveConnectable proxy)
+	public CompoundTag toNBT(IImmersiveConnectable proxy)
 	{
 		Preconditions.checkArgument(proxy instanceof DummyIIC);
-		return new CompoundNBT();
+		return new CompoundTag();
 	}
 
 	@Override
-	public IImmersiveConnectable fromNBT(CompoundNBT nbt)
+	public IImmersiveConnectable fromNBT(CompoundTag nbt)
 	{
 		throw new UnsupportedOperationException();
 	}

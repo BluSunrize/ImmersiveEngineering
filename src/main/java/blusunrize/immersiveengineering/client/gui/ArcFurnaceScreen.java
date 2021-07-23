@@ -17,14 +17,14 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -38,10 +38,10 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	private final ArcFurnaceTileEntity tile;
 	private GuiButtonIE distributeButton;
 
-	public ArcFurnaceScreen(ArcFurnaceContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ArcFurnaceScreen(ArcFurnaceContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		this.ySize = 207;
+		this.imageHeight = 207;
 		this.tile = container.tile;
 	}
 
@@ -49,19 +49,19 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	@Override
 	protected List<InfoArea> makeInfoAreas()
 	{
-		return ImmutableList.of(new EnergyInfoArea(guiLeft+157, guiTop+22, tile));
+		return ImmutableList.of(new EnergyInfoArea(leftPos+157, topPos+22, tile));
 	}
 
 	@Override
-	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<ITextComponent> addLine, Consumer<ITextComponent> addGray)
+	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
 		if(distributeButton.isHovered())
-			addLine.accept(new TranslationTextComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
+			addLine.accept(new TranslatableComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
 		for(MultiblockProcess<?> process : tile.processQueue)
 			if(process instanceof MultiblockProcessInMachine)
@@ -69,7 +69,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 				float mod = process.processTick/(float)process.maxTicks;
 				int slot = ((MultiblockProcessInMachine<?>)process).getInputSlots()[0];
 				int h = (int)Math.max(1, mod*16);
-				this.blit(transform, guiLeft+27+slot%3*21, guiTop+34+slot/3*18+(16-h), 176, 16-h, 2, h);
+				this.blit(transform, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 176, 16-h, 2, h);
 			}
 	}
 
@@ -78,16 +78,16 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	{
 		super.init();
 		Minecraft mc = mc();
-		distributeButton = new GuiButtonIE(guiLeft+10, guiTop+10, 16, 16, StringTextComponent.EMPTY, TEXTURE, 179, 0,
+		distributeButton = new GuiButtonIE(leftPos+10, topPos+10, 16, 16, TextComponent.EMPTY, TEXTURE, 179, 0,
 				btn -> {
-					if(mc.player!=null&&mc.player.inventory.getItemStack().isEmpty())
+					if(mc.player!=null&&mc.player.inventory.getCarried().isEmpty())
 						autoSplitStacks();
 				})
 		{
 			@Override
 			public boolean isHovered()
 			{
-				return super.isHovered()&&mc.player!=null&&mc.player.inventory.getItemStack().isEmpty();
+				return super.isHovered()&&mc.player!=null&&mc.player.inventory.getCarried().isEmpty();
 			}
 		}.setHoverOffset(0, 16);
 		this.addButton(distributeButton);
@@ -104,9 +104,9 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 			largestSlot = -1;
 			largestCount = -1;
 			for(int i = 0; i < 12; i++)
-				if(container.getSlot(i).getHasStack())
+				if(menu.getSlot(i).hasItem())
 				{
-					int count = container.getSlot(i).getStack().getCount();
+					int count = menu.getSlot(i).getItem().getCount();
 					if(count > 1&&count > largestCount)
 					{
 						largestSlot = i;
@@ -117,8 +117,8 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 					emptySlot = i;
 			if(emptySlot >= 0&&largestSlot >= 0)
 			{
-				this.handleMouseClick(container.getSlot(largestSlot), largestSlot, 1, ClickType.PICKUP);
-				this.handleMouseClick(container.getSlot(emptySlot), emptySlot, 0, ClickType.PICKUP);
+				this.slotClicked(menu.getSlot(largestSlot), largestSlot, 1, ClickType.PICKUP);
+				this.slotClicked(menu.getSlot(emptySlot), emptySlot, 0, ClickType.PICKUP);
 			}
 			else
 				break;

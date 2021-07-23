@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -27,23 +27,23 @@ public class LogicCircuitBoardItem extends IEBaseItem
 {
 	public LogicCircuitBoardItem()
 	{
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Nonnull
 	@Override
-	public String getTranslationKey(ItemStack stack)
+	public String getDescriptionId(ItemStack stack)
 	{
-		return this.getTranslationKey();
+		return this.getDescriptionId();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		LogicCircuitInstruction instruction = getInstruction(stack);
 		if(instruction!=null)
-			list.add(TextUtils.applyFormat(instruction.getFormattedString(), TextFormatting.GRAY));
+			list.add(TextUtils.applyFormat(instruction.getFormattedString(), ChatFormatting.GRAY));
 	}
 
 	@Nullable

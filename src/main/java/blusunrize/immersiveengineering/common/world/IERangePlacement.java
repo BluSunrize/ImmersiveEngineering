@@ -14,15 +14,15 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConf
 import blusunrize.immersiveengineering.common.world.IERangePlacement.IETopSolidRangeConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.SimplePlacement;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfiguration;
+import net.minecraft.world.level.levelgen.placement.SimpleFeatureDecorator;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Stream;
 
-public class IERangePlacement extends SimplePlacement<IETopSolidRangeConfig>
+public class IERangePlacement extends SimpleFeatureDecorator<IETopSolidRangeConfig>
 {
 	public static final Codec<List<String>> STRING_LIST = Codec.list(Codec.STRING);
 
@@ -31,7 +31,8 @@ public class IERangePlacement extends SimplePlacement<IETopSolidRangeConfig>
 		super(IETopSolidRangeConfig.CODEC);
 	}
 
-	public Stream<BlockPos> getPositions(Random random, IETopSolidRangeConfig config, BlockPos pos)
+	@Override
+	public Stream<BlockPos> place(Random random, IETopSolidRangeConfig config, BlockPos pos)
 	{
 		int i = pos.getX();
 		int j = pos.getZ();
@@ -39,7 +40,7 @@ public class IERangePlacement extends SimplePlacement<IETopSolidRangeConfig>
 		return Stream.of(new BlockPos(i, k, j));
 	}
 
-	public static class IETopSolidRangeConfig implements IPlacementConfig
+	public static class IETopSolidRangeConfig implements DecoratorConfiguration
 	{
 		public static Codec<IETopSolidRangeConfig> CODEC = RecordCodecBuilder.create(
 				app -> app.group(

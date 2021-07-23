@@ -12,20 +12,20 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.fml.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Locale;
 
-public class BasicConnectorBlock<T extends TileEntity & IImmersiveConnectable> extends MiscConnectableBlock<T>
+public class BasicConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends MiscConnectableBlock<T>
 {
-	public BasicConnectorBlock(Properties props, RegistryObject<TileEntityType<T>> type)
+	public BasicConnectorBlock(Properties props, RegistryObject<BlockEntityType<T>> type)
 	{
 		super(props, type);
 	}
@@ -39,9 +39,9 @@ public class BasicConnectorBlock<T extends TileEntity & IImmersiveConnectable> e
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 	}
 }

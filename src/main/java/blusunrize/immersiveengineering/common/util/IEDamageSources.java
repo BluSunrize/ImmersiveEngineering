@@ -15,13 +15,13 @@ import blusunrize.immersiveengineering.api.wires.utils.IElectricDamageSource;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EntityDamageSource;
-import net.minecraft.util.IndirectEntityDamageSource;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.damagesource.IndirectEntityDamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 
 public class IEDamageSources
 {
@@ -59,7 +59,7 @@ public class IEDamageSources
 			super(tag);
 			this.source = source;
 			dmg = amount;
-			setDamageBypassesArmor();
+			bypassArmor();
 		}
 
 		@Override
@@ -68,7 +68,7 @@ public class IEDamageSources
 			if(e instanceof LivingEntity)
 				IElectricEquipment.applyToEntity((LivingEntity)e, this, source);
 			if(dmg > 0)
-				e.attackEntityFrom(this, dmg);
+				e.hurt(this, dmg);
 			return dmg > 0;
 		}
 
@@ -87,10 +87,10 @@ public class IEDamageSources
 		}
 
 		@Override
-		public ITextComponent getDeathMessage(LivingEntity entityLivingBaseIn)
+		public Component getLocalizedDeathMessage(LivingEntity entityLivingBaseIn)
 		{
-			String s = "death.attack."+this.damageType+".turret";
-			return new TranslationTextComponent(s, entityLivingBaseIn.getDisplayName());
+			String s = "death.attack."+this.msgId+".turret";
+			return new TranslatableComponent(s, entityLivingBaseIn.getDisplayName());
 		}
 	}
 
@@ -104,8 +104,8 @@ public class IEDamageSources
 	public static DamageSource causePiercingDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
-			return new TurretDamageSource(Lib.DMG_RevolverAP).setDamageBypassesArmor();
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverAP, shot, shooter).setDamageBypassesArmor();
+			return new TurretDamageSource(Lib.DMG_RevolverAP).bypassArmor();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverAP, shot, shooter).bypassArmor();
 	}
 
 	public static DamageSource causeBuckshotDamage(RevolvershotEntity shot, Entity shooter)
@@ -118,8 +118,8 @@ public class IEDamageSources
 	public static DamageSource causeDragonsbreathDamage(RevolvershotEntity shot, Entity shooter)
 	{
 		if(shooter==null)
-			return new TurretDamageSource(Lib.DMG_RevolverDragon).setFireDamage();
-		return new IEDamageSource_Indirect(Lib.DMG_RevolverDragon, shot, shooter).setFireDamage();
+			return new TurretDamageSource(Lib.DMG_RevolverDragon).setIsFire();
+		return new IEDamageSource_Indirect(Lib.DMG_RevolverDragon, shot, shooter).setIsFire();
 	}
 
 	public static DamageSource causeHomingDamage(RevolvershotEntity shot, Entity shooter)
@@ -180,18 +180,18 @@ public class IEDamageSources
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_Railgun);
-		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).setDamageBypassesArmor();
+		return new IEDamageSource_Indirect(Lib.DMG_Railgun, shot, shooter).bypassArmor();
 	}
 
 	public static DamageSource causeSawbladeDamage(SawbladeEntity shot, Entity shooter)
 	{
 		if(shooter==null)
 			return new TurretDamageSource(Lib.DMG_Sawblade);
-		return new IEDamageSource_Indirect(Lib.DMG_Sawblade, shot, shooter).setDamageBypassesArmor();
+		return new IEDamageSource_Indirect(Lib.DMG_Sawblade, shot, shooter).bypassArmor();
 	}
 
 	public static DamageSource causeTeslaPrimaryDamage()
 	{
-		return new IEDamageSource(Lib.DMG_Tesla_prim).setDamageBypassesArmor();
+		return new IEDamageSource(Lib.DMG_Tesla_prim).bypassArmor();
 	}
 }

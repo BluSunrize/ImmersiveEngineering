@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.wires;
 import java.util.List;
 
 /**
- * Implemented by {@link net.minecraft.world.gen.feature.template.Template} using Mixins
+ * Implemented by {@link net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate} using Mixins
  */
 public interface IConnectionTemplate
 {

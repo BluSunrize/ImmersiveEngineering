@@ -8,27 +8,27 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Material;
 
 public class SawbladeItem extends IEBaseItem
 {
-	protected static Material[] validMaterials = {Material.WOOD, Material.PLANTS, Material.TALL_PLANTS, Material.BAMBOO};
+	protected static Material[] validMaterials = {Material.WOOD, Material.PLANT, Material.REPLACEABLE_PLANT, Material.BAMBOO};
 	private final float sawbladeSpeed;
 	private final float sawbladeDamage;
 
 	public SawbladeItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage)
 	{
-		super(new Properties().defaultMaxDamage(maxDamage).setNoRepair());
+		super(new Properties().defaultDurability(maxDamage).setNoRepair());
 		this.sawbladeSpeed = sawbladeSpeed;
 		this.sawbladeDamage = sawbladeDamage;
 		BuzzsawItem.SAWBLADES.add(this);
 	}
 
 	@Override
-	public boolean isDamageable()
+	public boolean canBeDepleted()
 	{
 		return true;
 	}
@@ -65,7 +65,7 @@ public class SawbladeItem extends IEBaseItem
 		return true;
 	}
 
-	public ListNBT getSawbladeEnchants()
+	public ListTag getSawbladeEnchants()
 	{
 		return null;
 	}

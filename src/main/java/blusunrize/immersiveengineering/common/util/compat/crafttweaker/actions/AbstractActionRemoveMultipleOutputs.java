@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions;
 import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.item.MCItemStackMutable;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 
 import java.util.List;
 
-public abstract class AbstractActionRemoveMultipleOutputs<T extends IRecipe<?>> extends AbstractActionGenericRemoveRecipe<T>
+public abstract class AbstractActionRemoveMultipleOutputs<T extends Recipe<?>> extends AbstractActionGenericRemoveRecipe<T>
 {
 
 	private final IIngredient output;

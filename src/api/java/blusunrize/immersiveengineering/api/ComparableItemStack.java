@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 public class ComparableItemStack
 {
@@ -75,23 +75,23 @@ public class ComparableItemStack
 			return false;
 
 		ItemStack otherStack = ((ComparableItemStack)object).stack;
-		if(!ItemStack.areItemsEqual(stack, otherStack))
+		if(!ItemStack.isSame(stack, otherStack))
 			return false;
 		if(this.useNBT)
-			return ItemStack.areItemStackTagsEqual(stack, otherStack);
+			return ItemStack.tagMatches(stack, otherStack);
 		return true;
 	}
 
-	public CompoundNBT writeToNBT(CompoundNBT nbt)
+	public CompoundTag writeToNBT(CompoundTag nbt)
 	{
-		nbt.put("stack", stack.write(new CompoundNBT()));
+		nbt.put("stack", stack.save(new CompoundTag()));
 		nbt.putBoolean("useNBT", useNBT);
 		return nbt;
 	}
 
-	public static ComparableItemStack readFromNBT(CompoundNBT nbt)
+	public static ComparableItemStack readFromNBT(CompoundTag nbt)
 	{
-		ComparableItemStack comp = new ComparableItemStack(ItemStack.read(nbt.getCompound("stack")), false);
+		ComparableItemStack comp = new ComparableItemStack(ItemStack.of(nbt.getCompound("stack")), false);
 		comp.useNBT = nbt.getBoolean("useNBT");
 		return comp;
 	}

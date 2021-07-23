@@ -26,9 +26,9 @@ import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap.Entry;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.util.Mth;
 
 import java.util.*;
 import java.util.function.Function;
@@ -67,11 +67,11 @@ public class TextSplitter
 	public TextSplitter(ManualInstance m, Function<String, String> tokenTransform)
 	{
 		this(m.fontRenderer(), m.pageWidth, m.pageHeight, tokenTransform.andThen(s -> {
-			final String extraFormat = TextFormatting.BOLD.toString();
+			final String extraFormat = ChatFormatting.BOLD.toString();
 			if(m.improveReadability()&&s.charAt(0)!='<'&&!s.trim().isEmpty())
 			{
-				for(TextFormatting f : TextFormatting.values())
-					if(!f.isFancyStyling())
+				for(ChatFormatting f : ChatFormatting.values())
+					if(!f.isFormat())
 						s = s.replace(f.toString(), f+extraFormat);
 				s = extraFormat+s;
 			}
@@ -79,9 +79,9 @@ public class TextSplitter
 		}));
 	}
 
-	public TextSplitter(FontRenderer fontRenderer, int width, int height, Function<String, String> tokenTransform)
+	public TextSplitter(Font fontRenderer, int width, int height, Function<String, String> tokenTransform)
 	{
-		this(fontRenderer::getStringWidth, width, height, () -> fontRenderer.FONT_HEIGHT, tokenTransform);
+		this(fontRenderer::width, width, height, () -> fontRenderer.lineHeight, tokenTransform);
 	}
 
 	public void clearSpecialByAnchor()
@@ -370,7 +370,7 @@ public class TextSplitter
 		int pixels = pixelsPerPage;
 		if(elementOnPage.isPresent())
 			pixels = pixelsPerPage-elementOnPage.get().getPixelsTaken();
-		return MathHelper.floor(pixels/(double)pixelsPerLine.getAsInt());
+		return Mth.floor(pixels/(double)pixelsPerLine.getAsInt());
 	}
 
 	private List<TokenWithWidth> convertToSplitterTokens(List<Either<String, Link>> rawTokens)
@@ -436,7 +436,7 @@ public class TextSplitter
 
 		private static String getFormattingAtEnd(List<TokenWithWidth> tokens)
 		{
-			List<TextFormatting> ret = new ArrayList<>();
+			List<ChatFormatting> ret = new ArrayList<>();
 			for(TokenWithWidth token : tokens)
 			{
 				String tokenText = token.getText();
@@ -445,12 +445,12 @@ public class TextSplitter
 				while((start = tokenText.indexOf('\u00a7', start+1))!=-1)
 					if(start < tokenText.length()-1)
 					{
-						TextFormatting textformatting = TextFormatting.fromFormattingCode(tokenText.charAt(start+1));
+						ChatFormatting textformatting = ChatFormatting.getByCode(tokenText.charAt(start+1));
 						if(textformatting!=null)
 						{
-							if(!textformatting.isFancyStyling())
+							if(!textformatting.isFormat())
 								ret.clear();
-							if(textformatting!=TextFormatting.RESET)
+							if(textformatting!=ChatFormatting.RESET)
 							{
 								ret.remove(textformatting);
 								ret.add(textformatting);
@@ -460,7 +460,7 @@ public class TextSplitter
 			}
 
 			return ret.stream()
-					.map(TextFormatting::toString)
+					.map(ChatFormatting::toString)
 					.collect(Collectors.joining());
 		}
 	}

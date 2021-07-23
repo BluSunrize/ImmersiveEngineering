@@ -23,10 +23,10 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.WireCo
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -218,7 +218,7 @@ public class IEWireTypes
 		@Override
 		public double getBasicLossRate(Connection c)
 		{
-			double length = Math.sqrt(c.getEndA().getPosition().distanceSq(Vector3d.copy(c.getEndB().getPosition()), false));
+			double length = Math.sqrt(c.getEndA().getPosition().distSqr(Vec3.atLowerCornerOf(c.getEndB().getPosition()), false));
 			return getLossRatio()*length/getMaxLength();
 		}
 

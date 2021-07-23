@@ -16,25 +16,25 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessTile;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -74,7 +74,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed;
 	}
@@ -92,9 +92,9 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	@Override
@@ -170,7 +170,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 						inventory.set(FULL_CONTAINER_SLOT, filledContainer.copy());
 					Utils.modifyInvStackSize(inventory, EMPTY_CONTAINER_SLOT, -filledContainer.getCount());
 				}
-				markDirty();
+				setChanged();
 				this.markContainingBlockForUpdate(null);
 			}
 		}
@@ -178,13 +178,13 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 		final boolean activeAfterTick = getIsActive();
 		if(activeBeforeTick!=activeAfterTick)
 		{
-			this.markDirty();
+			this.setChanged();
 			for(int x = 0; x < 3; ++x)
 				for(int y = 0; y < 3; ++y)
 					for(int z = 0; z < 3; ++z)
 					{
 						BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
-						TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+						BlockEntity te = Utils.getExistingTileEntity(level, actualPos);
 						if(te instanceof CokeOvenTileEntity)
 							((CokeOvenTileEntity)te).setActive(activeAfterTick);
 					}
@@ -198,7 +198,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 		if(recipe==null)
 			return null;
 
-		if(inventory.get(OUTPUT_SLOT).isEmpty()||(ItemStack.areItemsEqual(inventory.get(OUTPUT_SLOT), recipe.output)&&
+		if(inventory.get(OUTPUT_SLOT).isEmpty()||(ItemStack.isSame(inventory.get(OUTPUT_SLOT), recipe.output)&&
 				inventory.get(OUTPUT_SLOT).getCount()+recipe.output.getCount() <= getSlotLimit(OUTPUT_SLOT)))
 			if(tank.getFluidAmount()+recipe.creosoteOutput <= tank.getCapacity())
 				return recipe;
@@ -224,41 +224,41 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 			this.formed = arg==1;
-		markDirty();
+		setChanged();
 		this.markContainingBlockForUpdate(null);
 		return true;
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 
 		tank.readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
 		{
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 			process = nbt.getInt("process");
 			processMax = nbt.getInt("processMax");
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 
-		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
+		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
 		nbt.put("tank", tankTag);
 		if(!descPacket)
 		{
 			nbt.putInt("process", process);
 			nbt.putInt("processMax", processMax);
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 		}
 	}
 
@@ -333,7 +333,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 		return super.getCapability(capability, facing);
 	}
 
-	public class CokeOvenData implements IIntArray
+	public class CokeOvenData implements ContainerData
 	{
 		public static final int MAX_BURN_TIME = 0;
 		public static final int BURN_TIME = 1;
@@ -369,7 +369,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 		}
 
 		@Override
-		public int size()
+		public int getCount()
 		{
 			return 2;
 		}

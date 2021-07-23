@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.Cap
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public class CapacitorCreativeTileEntity extends CapacitorTileEntity
 {
@@ -28,7 +28,7 @@ public class CapacitorCreativeTileEntity extends CapacitorTileEntity
 	@Override
 	public int receiveEnergy(Direction from, int maxReceive, boolean simulate)
 	{
-		if(world.isRemote||sideConfig.get(from)!=IOSideConfig.INPUT)
+		if(level.isClientSide||sideConfig.get(from)!=IOSideConfig.INPUT)
 			return 0;
 		return maxReceive;
 	}
@@ -36,7 +36,7 @@ public class CapacitorCreativeTileEntity extends CapacitorTileEntity
 	@Override
 	public int extractEnergy(Direction from, int maxExtract, boolean simulate)
 	{
-		if(world.isRemote||sideConfig.get(from)!=IOSideConfig.OUTPUT)
+		if(level.isClientSide||sideConfig.get(from)!=IOSideConfig.OUTPUT)
 			return 0;
 		return maxExtract;
 	}
@@ -58,7 +58,7 @@ public class CapacitorCreativeTileEntity extends CapacitorTileEntity
 	{
 		if(sideConfig.get(side)!=IOSideConfig.OUTPUT)
 			return;
-		TileEntity te = Utils.getExistingTileEntity(world, pos.offset(side));
+		BlockEntity te = Utils.getExistingTileEntity(level, worldPosition.relative(side));
 		EnergyHelper.insertFlux(te, side.getOpposite(), Integer.MAX_VALUE, false);
 	}
 }

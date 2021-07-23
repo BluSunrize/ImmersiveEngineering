@@ -19,18 +19,18 @@ import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectabl
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,10 +71,10 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public void remove()
+	public void setRemoved()
 	{
 		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
-		super.remove();
+		super.setRemoved();
 	}
 
 	@Override
@@ -92,21 +92,21 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage = nbt.getInt("energyStorage");
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("energyStorage", energyStorage);
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==1)
 		{
@@ -114,31 +114,31 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 			checkLight();
 			return true;
 		}
-		return super.receiveClientEvent(id, arg);
+		return super.triggerEvent(id, arg);
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return WireType.LV_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		BlockPos other = con.getOtherEnd(here).getPosition();
-		int xDif = other.getX()-pos.getX();
-		int zDif = other.getZ()-pos.getZ();
+		int xDif = other.getX()-worldPosition.getX();
+		int zDif = other.getZ()-worldPosition.getZ();
 		boolean flipped = getFacing()==Direction.UP;
 		if(Math.abs(xDif) >= Math.abs(zDif))
-			return new Vector3d(xDif < 0?.25: xDif > 0?.75: .5, flipped?.9375: .0625, .5);
-		return new Vector3d(.5, flipped?.9375: .0625, zDif < 0?.25: zDif > 0?.75: .5);
+			return new Vec3(xDif < 0?.25: xDif > 0?.75: .5, flipped?.9375: .0625, .5);
+		return new Vec3(.5, flipped?.9375: .0625, zDif < 0?.25: zDif > 0?.75: .5);
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.create(.1875f, 0, .1875f, .8125f, 1, .8125f);
+		return Shapes.box(.1875f, 0, .1875f, .8125f, 1, .8125f);
 	}
 
 
@@ -161,7 +161,7 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -173,15 +173,15 @@ public class ElectricLanternTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 			setFacing(getFacing().getOpposite());
 		for(ConnectionPoint cp : getConnectionPoints())
 			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
 				if(!c.isInternal())
-					globalNet.updateCatenaryData(c, world);
-		markDirty();
+					globalNet.updateCatenaryData(c, level);
+		setChanged();
 		markContainingBlockForUpdate(getBlockState());
 		return true;
 	}

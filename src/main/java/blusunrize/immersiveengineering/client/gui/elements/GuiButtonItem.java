@@ -9,28 +9,28 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.ItemStack;
 
 public class GuiButtonItem extends Button
 {
 	public boolean state;
 	ItemStack item;
 
-	public GuiButtonItem(int x, int y, ItemStack stack, boolean state, IPressable handler)
+	public GuiButtonItem(int x, int y, ItemStack stack, boolean state, OnPress handler)
 	{
-		super(x, y, 18, 18, StringTextComponent.EMPTY, handler);
+		super(x, y, 18, 18, TextComponent.EMPTY, handler);
 		this.state = state;
 		this.item = stack;
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
 		if(this.visible)
 		{
@@ -45,16 +45,16 @@ public class GuiButtonItem extends Button
 			if(!item.isEmpty())
 			{
 				Minecraft mc = Minecraft.getInstance();
-				mc.getItemRenderer().renderItemAndEffectIntoGUI(item, x+1, y+1);
+				mc.getItemRenderer().renderAndDecorateItem(item, x+1, y+1);
 
 				if(!state)
 				{
-					RenderHelper.enableStandardItemLighting();
+					Lighting.turnBackOn();
 					RenderSystem.disableDepthTest();
 					fill(transform, x+1, y+1, x+17, x+17, 0x77444444);
 					RenderSystem.enableDepthTest();
 				}
-				RenderHelper.disableStandardItemLighting();
+				Lighting.turnOff();
 			}
 		}
 	}

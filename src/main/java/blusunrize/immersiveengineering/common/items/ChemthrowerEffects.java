@@ -15,21 +15,25 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEf
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.util.IEPotions;
-import net.minecraft.block.*;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.FarmBlock;
+import net.minecraft.world.level.block.SnowyDirtBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -47,33 +51,33 @@ public class ChemthrowerEffects
 		ChemthrowerHandler.registerEffect(fluidPotion, new ChemthrowerEffect()
 		{
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
 			{
 				if(fluid.hasTag())
 				{
-					List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluid.getOrCreateTag());
-					for(EffectInstance e : effects)
+					List<MobEffectInstance> effects = PotionUtils.getAllEffects(fluid.getOrCreateTag());
+					for(MobEffectInstance e : effects)
 					{
-						EffectInstance newEffect = new EffectInstance(e.getPotion(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
+						MobEffectInstance newEffect = new MobEffectInstance(e.getEffect(), (int)Math.ceil(e.getDuration()*.05), e.getAmplifier());
 						newEffect.setCurativeItems(new ArrayList<>(e.getCurativeItems()));
-						target.addPotionEffect(newEffect);
+						target.addEffect(newEffect);
 					}
 				}
 			}
 
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
 			{
 
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 		});
@@ -81,81 +85,81 @@ public class ChemthrowerEffects
 		ChemthrowerHandler.registerEffect(fluidConcrete, new ChemthrowerEffect()
 		{
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
 			{
-				hit(target.world, target.getPosition(), Direction.UP);
+				hit(target.level, target.blockPosition(), Direction.UP);
 			}
 
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, FluidStack fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, FluidStack fluid)
 			{
-				if(!(mop instanceof BlockRayTraceResult))
+				if(!(mop instanceof BlockHitResult))
 					return;
-				BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
-				BlockState hit = world.getBlockState(brtr.getPos());
+				BlockHitResult brtr = (BlockHitResult)mop;
+				BlockState hit = world.getBlockState(brtr.getBlockPos());
 				if(hit.getBlock()!=StoneDecoration.concreteSprayed.get())
 				{
-					BlockPos pos = brtr.getPos().offset(brtr.getFace());
-					if(!world.isAirBlock(pos))
+					BlockPos pos = brtr.getBlockPos().relative(brtr.getDirection());
+					if(!world.isEmptyBlock(pos))
 						return;
-					AxisAlignedBB aabb = new AxisAlignedBB(pos);
-					List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesWithinAABB(ChemthrowerShotEntity.class, aabb);
+					AABB aabb = new AABB(pos);
+					List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesOfClass(ChemthrowerShotEntity.class, aabb);
 					if(otherProjectiles.size() >= 8)
-						hit(world, pos, brtr.getFace());
+						hit(world, pos, brtr.getDirection());
 				}
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 
-			private void hit(World world, BlockPos pos, Direction side)
+			private void hit(Level world, BlockPos pos, Direction side)
 			{
-				AxisAlignedBB aabb = new AxisAlignedBB(pos);
-				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesWithinAABB(ChemthrowerShotEntity.class, aabb);
+				AABB aabb = new AABB(pos);
+				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesOfClass(ChemthrowerShotEntity.class, aabb);
 				for(ChemthrowerShotEntity shot : otherProjectiles)
 					shot.remove();
-				world.setBlockState(pos, StoneDecoration.concreteSprayed.getDefaultState());
-				for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, aabb))
-					living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet.get(), Integer.MAX_VALUE));
+				world.setBlockAndUpdate(pos, StoneDecoration.concreteSprayed.getDefaultState());
+				for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, aabb))
+					living.addEffect(new MobEffectInstance(IEPotions.concreteFeet.get(), Integer.MAX_VALUE));
 			}
 		});
 
 		ChemthrowerHandler.registerEffect(fluidHerbicide, new ChemthrowerEffect()
 		{
 			@Override
-			public void applyToEntity(LivingEntity target, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
+			public void applyToEntity(LivingEntity target, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
 			{
 			}
 
 			@Override
-			public void applyToBlock(World world, RayTraceResult mop, @Nullable PlayerEntity shooter, ItemStack thrower, Fluid fluid)
+			public void applyToBlock(Level world, HitResult mop, @Nullable Player shooter, ItemStack thrower, Fluid fluid)
 			{
-				if(!(mop instanceof BlockRayTraceResult))
+				if(!(mop instanceof BlockHitResult))
 					return;
-				BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
-				BlockState hit = world.getBlockState(brtr.getPos());
+				BlockHitResult brtr = (BlockHitResult)mop;
+				BlockState hit = world.getBlockState(brtr.getBlockPos());
 				// Kill leaves
-				if(hit.isIn(BlockTags.LEAVES))
-					world.removeBlock(brtr.getPos(), false);
+				if(hit.is(BlockTags.LEAVES))
+					world.removeBlock(brtr.getBlockPos(), false);
 					// turn grass & farmland to dirt
-				else if(hit.getBlock() instanceof SnowyDirtBlock||hit.getBlock() instanceof FarmlandBlock)
+				else if(hit.getBlock() instanceof SnowyDirtBlock||hit.getBlock() instanceof FarmBlock)
 				{
-					world.setBlockState(brtr.getPos(), Blocks.DIRT.getDefaultState());
-					BlockPos above = brtr.getPos().up();
+					world.setBlockAndUpdate(brtr.getBlockPos(), Blocks.DIRT.defaultBlockState());
+					BlockPos above = brtr.getBlockPos().above();
 					if(world.getBlockState(above).getBlock() instanceof BushBlock)
 						world.removeBlock(above, false);
 				}
 
 				// Remove excess particles
-				AxisAlignedBB aabb = new AxisAlignedBB(brtr.getPos()).grow(.25);
-				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesWithinAABB(ChemthrowerShotEntity.class, aabb);
+				AABB aabb = new AABB(brtr.getBlockPos()).inflate(.25);
+				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesOfClass(ChemthrowerShotEntity.class, aabb);
 				for(ChemthrowerShotEntity shot : otherProjectiles)
 					shot.remove();
 			}

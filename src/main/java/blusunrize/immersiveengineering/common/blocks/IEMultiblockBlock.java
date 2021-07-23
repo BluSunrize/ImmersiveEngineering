@@ -11,19 +11,19 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.HitResult;
 
 public abstract class IEMultiblockBlock extends IETileProviderBlock
 {
@@ -34,42 +34,42 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		if(state.getBlock()!=newState.getBlock())
 		{
-			TileEntity tileEntity = world.getTileEntity(pos);
+			BlockEntity tileEntity = world.getBlockEntity(pos);
 			if(tileEntity instanceof IEBaseTileEntity)
 				((IEBaseTileEntity)tileEntity).setOverrideState(state);
 			if(tileEntity instanceof MultiblockPartTileEntity)
 			{
 				// Remove the BE here before disassembling: The block is already gone, so setting the block state here
 				// to a block providing a BE will produce strange results otherwise
-				world.removeTileEntity(pos);
+				world.removeBlockEntity(pos);
 				((MultiblockPartTileEntity<?>)tileEntity).disassemble();
 			}
 		}
-		super.onReplaced(state, world, pos, newState, isMoving);
+		super.onRemove(state, world, pos, newState, isMoving);
 	}
 
 	@Override
-	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+	public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player)
 	{
-		TileEntity te = world.getTileEntity(pos);
+		BlockEntity te = world.getBlockEntity(pos);
 		if(te instanceof MultiblockPartTileEntity)
 			return Utils.getPickBlock(((MultiblockPartTileEntity<?>)te).getOriginalBlock(), target, player);
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{
 		//Don't add multiblocks to the creative tab/JEI
 	}

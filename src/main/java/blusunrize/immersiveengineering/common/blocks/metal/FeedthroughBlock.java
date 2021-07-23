@@ -15,17 +15,17 @@ import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,46 +38,46 @@ public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		// TODO Axis instead of FACING_ALL?
 		builder.add(IEProperties.FACING_ALL, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
-	public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
+	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
-		TileEntity tile = world.getTileEntity(pos);
-		if(tile instanceof FeedthroughTileEntity&&!world.isRemote&&newState.getBlock()!=state.getBlock())
+		BlockEntity tile = world.getBlockEntity(pos);
+		if(tile instanceof FeedthroughTileEntity&&!world.isClientSide&&newState.getBlock()!=state.getBlock())
 		{
 			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)tile;
 			if(!feedthrough.currentlyDisassembling)
 			{
 				Direction dir = feedthrough.getFacing();
 				//TODO sign is probably wrong somewhere
-				BlockPos centerPos = pos.offset(dir, -feedthrough.offset);
+				BlockPos centerPos = pos.relative(dir, -feedthrough.offset);
 				//Middle block last, since that has the actual connections
 				for(int offset : new int[]{-1, 1, 0})
 				{
 					if(offset==feedthrough.offset)
 						continue;
-					BlockPos posForOffset = centerPos.offset(dir, offset);
-					TileEntity tileAtOffset = world.getTileEntity(posForOffset);
+					BlockPos posForOffset = centerPos.relative(dir, offset);
+					BlockEntity tileAtOffset = world.getBlockEntity(posForOffset);
 					if(tileAtOffset instanceof FeedthroughTileEntity)
 						((FeedthroughTileEntity)tileAtOffset).currentlyDisassembling = true;
 					if(offset==0)
-						world.setBlockState(posForOffset, feedthrough.stateForMiddle);
+						world.setBlockAndUpdate(posForOffset, feedthrough.stateForMiddle);
 					else
 					{
 						BlockState connector = WireApi.INFOS.get(feedthrough.reference).conn.get()
-								.with(IEProperties.FACING_ALL, offset < 0?dir: dir.getOpposite());
+								.setValue(IEProperties.FACING_ALL, offset < 0?dir: dir.getOpposite());
 						ConnectionPoint cpOnFeedthrough = new ConnectionPoint(centerPos,
 								FeedthroughTileEntity.getIndexForOffset(offset));
 						GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
 						List<Connection> removedConnections = new ArrayList<>();
 						global.removeAllConnectionsAt(cpOnFeedthrough, removedConnections::add);
-						world.setBlockState(posForOffset, connector);
+						world.setBlockAndUpdate(posForOffset, connector);
 						ConnectionPoint newEnd = new ConnectionPoint(posForOffset, 0);
 						for(Connection c : removedConnections)
 							global.addConnection(new Connection(c.type, newEnd, c.getOtherEnd(cpOnFeedthrough)));
@@ -85,11 +85,11 @@ public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity
 				}
 			}
 		}
-		super.onReplaced(state, world, pos, newState, isMoving);
+		super.onRemove(state, world, pos, newState, isMoving);
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{
 		//NOP
 	}

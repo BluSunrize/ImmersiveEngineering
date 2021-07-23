@@ -13,28 +13,28 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.Property;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
 
-public class PropertyCountLootFunction extends LootFunction
+public class PropertyCountLootFunction extends LootItemConditionalFunction
 {
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "property_count");
 
 	private final String propertyName;
 
-	protected PropertyCountLootFunction(ILootCondition[] conditionsIn, String propertyName)
+	protected PropertyCountLootFunction(LootItemCondition[] conditionsIn, String propertyName)
 	{
 		super(conditionsIn);
 		this.propertyName = propertyName;
@@ -42,9 +42,9 @@ public class PropertyCountLootFunction extends LootFunction
 
 	@Nonnull
 	@Override
-	protected ItemStack doApply(@Nonnull ItemStack stack, @Nonnull LootContext context)
+	protected ItemStack run(@Nonnull ItemStack stack, @Nonnull LootContext context)
 	{
-		BlockState blockstate = context.get(LootParameters.BLOCK_STATE);
+		BlockState blockstate = context.getParamOrNull(LootContextParams.BLOCK_STATE);
 		if(blockstate!=null)
 			stack.setCount(getPropertyValue(blockstate));
 		return stack;
@@ -54,17 +54,17 @@ public class PropertyCountLootFunction extends LootFunction
 	{
 		for(Property<?> prop : blockState.getProperties())
 			if(prop instanceof IntegerProperty&&prop.getName().equals(this.propertyName))
-				return blockState.get((IntegerProperty)prop);
+				return blockState.getValue((IntegerProperty)prop);
 		return 1;
 	}
 
 	@Override
-	public LootFunctionType getFunctionType()
+	public LootItemFunctionType getType()
 	{
 		return IELootFunctions.propertyCount;
 	}
 
-	public static class Serializer extends LootFunction.Serializer<PropertyCountLootFunction>
+	public static class Serializer extends LootItemConditionalFunction.Serializer<PropertyCountLootFunction>
 	{
 		private final static String JSON_KEY = "propery_name";
 
@@ -79,13 +79,13 @@ public class PropertyCountLootFunction extends LootFunction
 		@Override
 		public PropertyCountLootFunction deserialize(@Nonnull JsonObject object,
 													 @Nonnull JsonDeserializationContext deserializationContext,
-													 @Nonnull ILootCondition[] conditionsIn)
+													 @Nonnull LootItemCondition[] conditionsIn)
 		{
-			return new PropertyCountLootFunction(conditionsIn, JSONUtils.getString(object, JSON_KEY));
+			return new PropertyCountLootFunction(conditionsIn, GsonHelper.getAsString(object, JSON_KEY));
 		}
 	}
 
-	public static class Builder extends LootFunction.Builder<Builder>
+	public static class Builder extends LootItemConditionalFunction.Builder<blusunrize.immersiveengineering.common.util.loot.PropertyCountLootFunction.Builder>
 	{
 		private final String propertyName;
 
@@ -96,14 +96,14 @@ public class PropertyCountLootFunction extends LootFunction
 
 		@Nonnull
 		@Override
-		protected Builder doCast()
+		protected blusunrize.immersiveengineering.common.util.loot.PropertyCountLootFunction.Builder getThis()
 		{
 			return this;
 		}
 
 		@Nonnull
 		@Override
-		public ILootFunction build()
+		public LootItemFunction build()
 		{
 			return new PropertyCountLootFunction(getConditions(), propertyName);
 		}

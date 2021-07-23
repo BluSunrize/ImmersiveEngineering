@@ -10,28 +10,28 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.screens.Screen;
 
 import javax.annotation.Nullable;
 
 public class GuiSelectingList extends GuiReactiveList
 {
-	public GuiSelectingList(Screen gui, int x, int y, int w, int h, IPressable handler, String... entries)
+	public GuiSelectingList(Screen gui, int x, int y, int w, int h, OnPress handler, String... entries)
 	{
 		super(gui, x, y, w, h, handler, entries);
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partialTicks)
+	public void render(PoseStack transform, int mx, int my, float partialTicks)
 	{
 		super.render(transform, mx, my, partialTicks);
 		if(selectedOption >= offset&&selectedOption-offset < perPage)
 		{
-			FontRenderer fr = ClientUtils.mc().fontRenderer;
-			int yOff = (selectedOption-offset)*fr.FONT_HEIGHT;
-			fill(transform, x, y+yOff, x+width, y+yOff+fr.FONT_HEIGHT, Lib.COLOUR_I_ImmersiveOrange&0x88ffffff);
+			Font fr = ClientUtils.mc().font;
+			int yOff = (selectedOption-offset)*fr.lineHeight;
+			fill(transform, x, y+yOff, x+width, y+yOff+fr.lineHeight, Lib.COLOUR_I_ImmersiveOrange&0x88ffffff);
 		}
 	}
 

@@ -12,17 +12,17 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Rectangle2d;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -36,14 +36,14 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 public class FluidInfoArea extends InfoArea
 {
 	private final IFluidTank tank;
-	private final Rectangle2d area;
+	private final Rect2i area;
 	private final int overlayUMin;
 	private final int overlayVMin;
 	private final int overlayWidth;
 	private final int overlayHeight;
 	private final ResourceLocation overlayTexture;
 
-	public FluidInfoArea(IFluidTank tank, Rectangle2d area, int overlayUMin, int overlayVMin, int overlayWidth, int overlayHeight, ResourceLocation overlayTexture)
+	public FluidInfoArea(IFluidTank tank, Rect2i area, int overlayUMin, int overlayVMin, int overlayWidth, int overlayHeight, ResourceLocation overlayTexture)
 	{
 		super(area);
 		this.tank = tank;
@@ -57,12 +57,12 @@ public class FluidInfoArea extends InfoArea
 
 
 	@Override
-	public void fillTooltipOverArea(int mouseX, int mouseY, List<ITextComponent> tooltip)
+	public void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
 		fillTooltip(tank.getFluid(), tank.getCapacity(), tooltip::add);
 	}
 
-	public static void fillTooltip(FluidStack fluid, int tankCapacity, Consumer<ITextComponent> tooltip) {
+	public static void fillTooltip(FluidStack fluid, int tankCapacity, Consumer<Component> tooltip) {
 
 		if(!fluid.isEmpty())
 			tooltip.accept(applyFormat(
@@ -70,42 +70,42 @@ public class FluidInfoArea extends InfoArea
 					fluid.getFluid().getAttributes().getRarity(fluid).color
 			));
 		else
-			tooltip.accept(new TranslationTextComponent("gui.immersiveengineering.empty"));
+			tooltip.accept(new TranslatableComponent("gui.immersiveengineering.empty"));
 		if(fluid.getFluid() instanceof IEFluid)
 		{
-			List<ITextComponent> temp = new ArrayList<>();
+			List<Component> temp = new ArrayList<>();
 			((IEFluid)fluid.getFluid()).addTooltipInfo(fluid, null, temp);
 			temp.forEach(tooltip);
 		}
 
-		if(mc().gameSettings.advancedItemTooltips&&!fluid.isEmpty())
+		if(mc().options.advancedItemTooltips&&!fluid.isEmpty())
 		{
 			if(!Screen.hasShiftDown())
-				tooltip.accept(new TranslationTextComponent(Lib.DESC_INFO+"holdShiftForInfo"));
+				tooltip.accept(new TranslatableComponent(Lib.DESC_INFO+"holdShiftForInfo"));
 			else
 			{
 				//TODO translation keys
-				tooltip.accept(applyFormat(new StringTextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()), TextFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(new StringTextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)), TextFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(new StringTextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)), TextFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(new StringTextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)), TextFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(new StringTextComponent("NBT Data: "+fluid.getTag()), TextFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(new TextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(new TextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(new TextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(new TextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(new TextComponent("NBT Data: "+fluid.getTag()), ChatFormatting.DARK_GRAY));
 			}
 		}
 
 		if(tankCapacity > 0)
-			tooltip.accept(applyFormat(new StringTextComponent(fluid.getAmount()+"/"+tankCapacity+"mB"), TextFormatting.GRAY));
+			tooltip.accept(applyFormat(new TextComponent(fluid.getAmount()+"/"+tankCapacity+"mB"), ChatFormatting.GRAY));
 		else
-			tooltip.accept(applyFormat(new StringTextComponent(fluid.getAmount()+"mB"), TextFormatting.GRAY));
+			tooltip.accept(applyFormat(new TextComponent(fluid.getAmount()+"mB"), ChatFormatting.GRAY));
 	}
 
 	@Override
-	public void draw(MatrixStack transform)
+	public void draw(PoseStack transform)
 	{
 		FluidStack fluid = tank.getFluid();
 		float capacity = tank.getCapacity();
-		transform.push();
-		IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		transform.pushPose();
+		MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		if(!fluid.isEmpty())
 		{
 			int fluidHeight = (int)(area.getHeight()*(fluid.getAmount()/capacity));
@@ -119,7 +119,7 @@ public class FluidInfoArea extends InfoArea
 				area.getX()+xOff, area.getY()+yOff, overlayWidth, overlayHeight,
 				256f, overlayUMin, overlayUMin+overlayWidth, overlayVMin, overlayVMin+overlayHeight
 		);
-		buffer.finish();
-		transform.pop();
+		buffer.endBatch();
+		transform.popPose();
 	}
 }

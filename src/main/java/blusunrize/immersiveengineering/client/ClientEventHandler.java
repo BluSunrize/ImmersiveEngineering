@@ -57,45 +57,55 @@ import blusunrize.immersiveengineering.mixin.accessors.client.GPUWarningAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.Block;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.screen.VideoSettingsScreen;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.VideoSettingsScreen;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HeadedModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.renderer.entity.LivingRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
-import net.minecraft.client.renderer.entity.model.IHasHead;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.resources.IResourceManager;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ColumnPos;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.*;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.*;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -132,7 +142,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	private static final String[] BULLET_TOOLTIP = {"  IE ", "  AMMO ", "  HERE ", "  -- "};
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
 	{
 		if(resourcePredicate.test(VanillaResourceType.TEXTURES))
 			ImmersiveEngineering.proxy.clearRenderCaches();
@@ -143,19 +153,19 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent
 	public void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if(event.side==LogicalSide.CLIENT&&event.player!=null&&event.player==ClientUtils.mc().getRenderViewEntity())
+		if(event.side==LogicalSide.CLIENT&&event.player!=null&&event.player==ClientUtils.mc().getCameraEntity())
 		{
 			if(event.phase==Phase.END)
 			{
 				if(this.shieldToggleTimer > 0)
 					this.shieldToggleTimer--;
-				if(IEKeybinds.keybind_magnetEquip.isKeyDown()&&!this.shieldToggleButton)
+				if(IEKeybinds.keybind_magnetEquip.isDown()&&!this.shieldToggleButton)
 					if(this.shieldToggleTimer <= 0)
 						this.shieldToggleTimer = 7;
 					else
 					{
-						PlayerEntity player = event.player;
-						ItemStack held = player.getHeldItem(Hand.OFF_HAND);
+						Player player = event.player;
+						ItemStack held = player.getItemInHand(InteractionHand.OFF_HAND);
 						if(!held.isEmpty()&&held.getItem() instanceof IEShieldItem)
 						{
 							if(((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet")&&
@@ -164,29 +174,29 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 						else
 						{
-							for(int i = 0; i < player.inventory.mainInventory.size(); i++)
+							for(int i = 0; i < player.inventory.items.size(); i++)
 							{
-								ItemStack s = player.inventory.mainInventory.get(i);
+								ItemStack s = player.inventory.items.get(i);
 								if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
 									ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
 							}
 						}
 					}
-				if(this.shieldToggleButton!=ClientUtils.mc().gameSettings.keyBindBack.isKeyDown())
-					this.shieldToggleButton = ClientUtils.mc().gameSettings.keyBindBack.isKeyDown();
+				if(this.shieldToggleButton!=ClientUtils.mc().options.keyDown.isDown())
+					this.shieldToggleButton = ClientUtils.mc().options.keyDown.isDown();
 
 
-				if(!IEKeybinds.keybind_chemthrowerSwitch.isInvalid()&&IEKeybinds.keybind_chemthrowerSwitch.isPressed())
+				if(!IEKeybinds.keybind_chemthrowerSwitch.isUnbound()&&IEKeybinds.keybind_chemthrowerSwitch.consumeClick())
 				{
-					ItemStack held = event.player.getHeldItem(Hand.MAIN_HAND);
+					ItemStack held = event.player.getItemInHand(InteractionHand.MAIN_HAND);
 					if(held.getItem() instanceof IScrollwheel)
 						ImmersiveEngineering.packetHandler.sendToServer(new MessageScrollwheelItem(true));
 				}
 
-				if(!IEKeybinds.keybind_railgunZoom.isInvalid()&&IEKeybinds.keybind_railgunZoom.isPressed())
-					for(Hand hand : Hand.values())
+				if(!IEKeybinds.keybind_railgunZoom.isUnbound()&&IEKeybinds.keybind_railgunZoom.consumeClick())
+					for(InteractionHand hand : InteractionHand.values())
 					{
-						ItemStack held = event.player.getHeldItem(hand);
+						ItemStack held = event.player.getItemInHand(hand);
 						if(held.getItem() instanceof IZoomTool&&((IZoomTool)held.getItem()).canZoom(held, event.player))
 						{
 							ZoomHandler.isZooming = !ZoomHandler.isZooming;
@@ -218,8 +228,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			ItemStack shader = wrapper.getShaderItem();
 			if(!shader.isEmpty())
 				event.getToolTip().add(TextUtils.applyFormat(
-						shader.getDisplayName(),
-						TextFormatting.DARK_GRAY
+						shader.getHoverName(),
+						ChatFormatting.DARK_GRAY
 				));
 		});
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Earmuffs))
@@ -227,8 +237,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			ItemStack earmuffs = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Earmuffs);
 			if(!earmuffs.isEmpty())
 				event.getToolTip().add(TextUtils.applyFormat(
-						earmuffs.getDisplayName(),
-						TextFormatting.GRAY
+						earmuffs.getHoverName(),
+						ChatFormatting.GRAY
 				));
 		}
 		if(ItemNBTHelper.hasKey(event.getItemStack(), Lib.NBT_Powerpack))
@@ -237,35 +247,35 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			if(!powerpack.isEmpty())
 			{
 				event.getToolTip().add(TextUtils.applyFormat(
-						powerpack.getDisplayName(),
-						TextFormatting.GRAY
+						powerpack.getHoverName(),
+						ChatFormatting.GRAY
 				));
 				event.getToolTip().add(TextUtils.applyFormat(
-						new StringTextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
-						TextFormatting.GRAY
+						new TextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
+						ChatFormatting.GRAY
 				));
 			}
 		}
-		if(ClientUtils.mc().currentScreen!=null
-				&&ClientUtils.mc().currentScreen instanceof BlastFurnaceScreen
+		if(ClientUtils.mc().screen!=null
+				&&ClientUtils.mc().screen instanceof BlastFurnaceScreen
 				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
 			event.getToolTip().add(TextUtils.applyFormat(
-					new TranslationTextComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack())),
-					TextFormatting.GRAY
+					new TranslatableComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack())),
+					ChatFormatting.GRAY
 			));
 
 		if(IEClientConfig.tagTooltips.get()&&event.getFlags().isAdvanced())
 		{
-			for(ResourceLocation oid : ItemTags.getCollection().getOwningTags(event.getItemStack().getItem()))
+			for(ResourceLocation oid : ItemTags.getAllTags().getMatchingTags(event.getItemStack().getItem()))
 				event.getToolTip().add(TextUtils.applyFormat(
-						new StringTextComponent(oid.toString()),
-						TextFormatting.GRAY
+						new TextComponent(oid.toString()),
+						ChatFormatting.GRAY
 				));
 		}
 
 		if(event.getItemStack().getItem() instanceof IBulletContainer)
 			for(String s : BULLET_TOOLTIP)
-				event.getToolTip().add(new StringTextComponent(s));
+				event.getToolTip().add(new TextComponent(s));
 	}
 
 	@SubscribeEvent
@@ -279,15 +289,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			{
 				int bulletAmount = ((IBulletContainer)stack.getItem()).getBulletCount(stack);
 				List<String> linesString = event.getLines().stream()
-						.map(ITextProperties::getString)
+						.map(FormattedText::getString)
 						.collect(Collectors.toList());
 				int line = event.getLines().size()-Utils.findSequenceInList(linesString, BULLET_TOOLTIP, (a, b) -> b.endsWith(a));
 
 				int currentX = event.getX();
 				int currentY = line > 0?event.getY()+(event.getHeight()+1-line*10): event.getY()-42;
 
-				MatrixStack transform = new MatrixStack();
-				transform.push();
+				PoseStack transform = new PoseStack();
+				transform.pushPose();
 				transform.translate(currentX, currentY, 700);
 				transform.scale(.5f, .5f, 1);
 
@@ -305,13 +315,13 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 		else
 		{
-			event.getSound().getCategory();
+			event.getSound().getSource();
 		}
-		if(!EarmuffsItem.affectedSoundCategories.contains(event.getSound().getCategory().getName()))
+		if(!EarmuffsItem.affectedSoundCategories.contains(event.getSound().getSource().getName()))
 			return;
 		if(ClientUtils.mc().player!=null)
 		{
-			ItemStack head = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+			ItemStack head = ClientUtils.mc().player.getItemBySlot(EquipmentSlot.HEAD);
 			ItemStack earmuffs = ItemStack.EMPTY;
 			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
 				earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
@@ -319,33 +329,33 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
 
 			if(!earmuffs.isEmpty()&&
-					!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getCategory().getName()))
+					!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getSource().getName()))
 			{
 				for(String blacklist : IEClientConfig.earDefenders_SoundBlacklist.get())
-					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getSoundLocation().toString()))
+					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getLocation().toString()))
 						return;
-				if(event.getSound() instanceof ITickableSound)
-					event.setResultSound(new IEMuffledTickableSound((ITickableSound)event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
+				if(event.getSound() instanceof TickableSoundInstance)
+					event.setResultSound(new IEMuffledTickableSound((TickableSoundInstance)event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 				else
 					event.setResultSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 			}
 		}
 	}
 
-	private void renderObstructingBlocks(MatrixStack transform, IRenderTypeBuffer buffers)
+	private void renderObstructingBlocks(PoseStack transform, MultiBufferSource buffers)
 	{
-		IVertexBuilder baseBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
+		VertexConsumer baseBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
 		TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder);
 		builder.setColor(1, 0, 0, 0.5F);
 		for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 		{
 			for(BlockPos obstruction : entry.getValue().getKey())
 			{
-				transform.push();
+				transform.pushPose();
 				transform.translate(obstruction.getX(), obstruction.getY(), obstruction.getZ());
 				final float eps = 1e-3f;
 				RenderUtils.renderBox(builder, transform, -eps, -eps, -eps, 1+eps, 1+eps, 1+eps);
-				transform.pop();
+				transform.popPose();
 			}
 		}
 	}
@@ -355,7 +365,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
-			double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(event.getEntityItemFrame());
+			double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(event.getEntityItemFrame());
 
 			if(playerDistanceSq < 1000)
 			{
@@ -364,15 +374,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				{
 					int i = event.getEntityItemFrame().getRotation();
 					BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
-					BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, event.getEntityItemFrame().getEntityWorld());
+					BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, event.getEntityItemFrame().getCommandSenderWorld());
 					if(blueprint!=null)
 					{
-						MatrixStack transform = event.getMatrix();
-						transform.push();
-						IRenderTypeBuffer buffer = event.getBuffers();
-						transform.rotate(new Quaternion(0, 0, -i*45, true));
+						PoseStack transform = event.getMatrix();
+						transform.pushPose();
+						MultiBufferSource buffer = event.getBuffers();
+						transform.mulPose(new Quaternion(0, 0, -i*45, true));
 						transform.translate(-.5, .5, -.001);
-						IVertexBuilder builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
+						VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
 						GuiHelper.drawTexturedColoredRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
 						//Width depends on distance
 						float lineWidth = playerDistanceSq < 3?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
@@ -382,7 +392,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 
 						blueprint.draw(lineWidth, transform, buffer);
 
-						transform.pop();
+						transform.popPose();
 						event.setCanceled(true);
 					}
 				}
@@ -393,11 +403,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	private static void handleSubtitleOffset(boolean pre)
 	{
 		float offset = 0;
-		PlayerEntity player = ClientUtils.mc().player;
-		for(Hand hand : Hand.values())
-			if(!player.getHeldItem(hand).isEmpty())
+		Player player = ClientUtils.mc().player;
+		for(InteractionHand hand : InteractionHand.values())
+			if(!player.getItemInHand(hand).isEmpty())
 			{
-				Item equipped = player.getHeldItem(hand).getItem();
+				Item equipped = player.getItemInHand(hand).getItem();
 				if(equipped instanceof RevolverItem||equipped instanceof SpeedloaderItem)
 					offset = 50f;
 				else if(equipped instanceof DrillItem||equipped instanceof ChemthrowerItem||equipped instanceof BuzzsawItem)
@@ -409,7 +419,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		{
 			if(pre)
 				offset *= -1;
-			GlStateManager.translatef(0, offset, 0);
+			GlStateManager._translatef(0, offset, 0);
 		}
 	}
 
@@ -423,11 +433,11 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			event.setCanceled(true);
 			if(ZoomHandler.isZooming)
 			{
-				IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-				MatrixStack transform = new MatrixStack();
-				transform.push();
-				int width = ClientUtils.mc().getMainWindow().getScaledWidth();
-				int height = ClientUtils.mc().getMainWindow().getScaledHeight();
+				MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+				PoseStack transform = new PoseStack();
+				transform.pushPose();
+				int width = ClientUtils.mc().getWindow().getGuiScaledWidth();
+				int height = ClientUtils.mc().getWindow().getGuiScaledHeight();
 				int resMin = Math.min(width, height);
 				float offsetX = (width-resMin)/2f;
 				float offsetY = (height-resMin)/2f;
@@ -443,12 +453,12 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					GuiHelper.drawColouredRect((int)offsetX+resMin, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
 				}
 				transform.translate(offsetX, offsetY, 0);
-				IVertexBuilder builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/scope.png")));
+				VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/scope.png")));
 				GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, resMin, resMin, 1, 1, 1, 1, 0f, 1f, 0f, 1f);
 
 				builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 				GuiHelper.drawTexturedColoredRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 1, 1, 1, 1, 64/256f, 88/256f, 96/256f, 224/256f);
-				ItemStack equipped = ClientUtils.mc().player.getHeldItem(Hand.MAIN_HAND);
+				ItemStack equipped = ClientUtils.mc().player.getItemInHand(InteractionHand.MAIN_HAND);
 				if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool)
 				{
 					IZoomTool tool = (IZoomTool)equipped.getItem();
@@ -481,8 +491,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						{
 							transform.translate(6/256f*resMin, curStep*stepLength/256*resMin, 0);
 							GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, 8/256f*resMin, 7/256f*resMin, 1, 1, 1, 1, 88/256f, 98/256f, 103/256f, 110/256f);
-							ClientUtils.font().renderString((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff, true,
-									transform.getLast().getMatrix(), buffers, false, 0, 0xf000f0);
+							ClientUtils.font().drawInBatch((1/steps[curStep])+"x", (int)(16/256f*resMin), 0, 0xffffff, true,
+									transform.last().pose(), buffers, false, 0, 0xf000f0);
 							transform.translate(-6/256f*resMin, -curStep*stepLength/256*resMin, 0);
 						}
 						transform.translate(0, -((5+stepOffset)/256*resMin), 0);
@@ -491,7 +501,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				}
 
 				transform.translate(-offsetX, -offsetY, 0);
-				buffers.finish();
+				buffers.endBatch();
 			}
 		}
 	}
@@ -499,54 +509,54 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onRenderOverlayPost(RenderGameOverlayEvent.Post event)
 	{
-		int scaledWidth = ClientUtils.mc().getMainWindow().getScaledWidth();
-		int scaledHeight = ClientUtils.mc().getMainWindow().getScaledHeight();
+		int scaledWidth = ClientUtils.mc().getWindow().getGuiScaledWidth();
+		int scaledHeight = ClientUtils.mc().getWindow().getGuiScaledHeight();
 
 		if(event.getType()==RenderGameOverlayEvent.ElementType.SUBTITLES)
 			handleSubtitleOffset(false);
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
-			PlayerEntity player = ClientUtils.mc().player;
-			MatrixStack transform = new MatrixStack();
+			Player player = ClientUtils.mc().player;
+			PoseStack transform = new PoseStack();
 
-			for(Hand hand : Hand.values())
-				if(!player.getHeldItem(hand).isEmpty())
+			for(InteractionHand hand : InteractionHand.values())
+				if(!player.getItemInHand(hand).isEmpty())
 				{
-					IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-					ItemStack equipped = player.getHeldItem(hand);
-					if(ItemStack.areItemsEqual(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
+					MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+					ItemStack equipped = player.getItemInHand(hand);
+					if(ItemStack.isSame(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
 					{
 						if(WirecoilUtils.hasWireLink(equipped))
 						{
 							WireLink link = WireLink.readFromItem(equipped);
 							BlockPos pos = link.cp.getPosition();
-							String s = I18n.format(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
+							String s = I18n.get(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
 							int col = WireType.ELECTRUM.getColour(null);
 							if(equipped.getItem() instanceof IWireCoil)
 							{
 								//TODO use actual connection offset rather than pos
-								RayTraceResult rtr = ClientUtils.mc().objectMouseOver;
+								HitResult rtr = ClientUtils.mc().hitResult;
 								double d;
-								if(rtr instanceof BlockRayTraceResult)
-									d = ((BlockRayTraceResult)rtr).getPos().distanceSq(pos.getX(), pos.getY(), pos.getZ(), false);
+								if(rtr instanceof BlockHitResult)
+									d = ((BlockHitResult)rtr).getBlockPos().distSqr(pos.getX(), pos.getY(), pos.getZ(), false);
 								else
-									d = player.getDistanceSq(pos.getX(), pos.getY(), pos.getZ());
+									d = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
 								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();
 								if(d > max*max)
 									col = 0xdd3333;
 							}
-							ClientUtils.font().renderString(
-									s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col,
-									true, transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0);
+							ClientUtils.font().drawInBatch(
+									s, scaledWidth/2-ClientUtils.font().width(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col,
+									true, transform.last().pose(), buffer, false, 0, 0xf000f0);
 						}
 					}
 					else if(equipped.getItem()==Misc.fluorescentTube.get())
 					{
 						int color = FluorescentTubeItem.getRGBInt(equipped, 1);
-						String s = I18n.format(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
-						ClientUtils.font().renderString(s, scaledWidth/2-ClientUtils.font().getStringWidth(s)/2,
+						String s = I18n.get(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
+						ClientUtils.font().drawInBatch(s, scaledWidth/2-ClientUtils.font().width(s)/2,
 								scaledHeight-ForgeIngameGui.left_height-20, FluorescentTubeItem.getRGBInt(equipped, 1),
-								true, transform.getLast().getMatrix(), buffer, false, 0, 0xf000f0
+								true, transform.last().pose(), buffer, false, 0, 0xf000f0
 						);
 					}
 					else if(equipped.getItem() instanceof RevolverItem||equipped.getItem() instanceof SpeedloaderItem)
@@ -563,28 +573,28 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					if(equipped.getItem()==Tools.voltmeter.get())
 					{
-						RayTraceResult rrt = ClientUtils.mc().objectMouseOver;
+						HitResult rrt = ClientUtils.mc().hitResult;
 						IFluxReceiver receiver = null;
 						Direction side = null;
-						if(rrt instanceof BlockRayTraceResult)
+						if(rrt instanceof BlockHitResult)
 						{
-							BlockRayTraceResult mop = (BlockRayTraceResult)rrt;
-							TileEntity tileEntity = player.world.getTileEntity(mop.getPos());
+							BlockHitResult mop = (BlockHitResult)rrt;
+							BlockEntity tileEntity = player.level.getBlockEntity(mop.getBlockPos());
 							if(tileEntity instanceof IFluxReceiver)
 								receiver = (IFluxReceiver)tileEntity;
-							side = mop.getFace();
-							if(player.world.getGameTime()%20==0)
-								ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getPos()));
+							side = mop.getDirection();
+							if(player.level.getGameTime()%20==0)
+								ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getBlockPos()));
 						}
-						else if(rrt instanceof EntityRayTraceResult&&((EntityRayTraceResult)rrt).getEntity() instanceof IFluxReceiver)
-							receiver = (IFluxReceiver)((EntityRayTraceResult)rrt).getEntity();
+						else if(rrt instanceof EntityHitResult&&((EntityHitResult)rrt).getEntity() instanceof IFluxReceiver)
+							receiver = (IFluxReceiver)((EntityHitResult)rrt).getEntity();
 						if(receiver!=null)
 						{
 							String[] text = new String[0];
 							int maxStorage = receiver.getMaxEnergyStored(side);
 							int storage = receiver.getEnergyStored(side);
 							if(maxStorage > 0)
-								text = I18n.format(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
+								text = I18n.get(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
 							int col = 0xffffff;
 							int i = 0;
 							RenderSystem.enableBlend();
@@ -592,55 +602,55 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 								if(s!=null)
 								{
 									s = s.trim();
-									int w = ClientUtils.font().getStringWidth(s);
-									ClientUtils.font().renderString(
+									int w = ClientUtils.font().width(s);
+									ClientUtils.font().drawInBatch(
 											s, scaledWidth/2-w/2,
-											scaledHeight/2-4-text.length*(ClientUtils.font().FONT_HEIGHT+2)+
-													(i++)*(ClientUtils.font().FONT_HEIGHT+2), col,
-											false, transform.getLast().getMatrix(), buffer, false,
+											scaledHeight/2-4-text.length*(ClientUtils.font().lineHeight+2)+
+													(i++)*(ClientUtils.font().lineHeight+2), col,
+											false, transform.last().pose(), buffer, false,
 											0, 0xf000f0
 									);
 								}
 							RenderSystem.disableBlend();
 						}
 					}
-					buffer.finish();
+					buffer.endBatch();
 				}
-			if(ClientUtils.mc().objectMouseOver!=null)
+			if(ClientUtils.mc().hitResult!=null)
 			{
-				ItemStack held = player.getHeldItem(Hand.MAIN_HAND);
+				ItemStack held = player.getItemInHand(InteractionHand.MAIN_HAND);
 				boolean hammer = !held.isEmpty()&&Utils.isHammer(held);
-				RayTraceResult mop = ClientUtils.mc().objectMouseOver;
-				if(mop instanceof EntityRayTraceResult)
+				HitResult mop = ClientUtils.mc().hitResult;
+				if(mop instanceof EntityHitResult)
 				{
-					Entity entity = ((EntityRayTraceResult)mop).getEntity();
-					if(entity instanceof ItemFrameEntity)
-						BlockOverlayUtils.renderOreveinMapOverlays(transform, (ItemFrameEntity)entity, mop, scaledWidth, scaledHeight);
+					Entity entity = ((EntityHitResult)mop).getEntity();
+					if(entity instanceof ItemFrame)
+						BlockOverlayUtils.renderOreveinMapOverlays(transform, (ItemFrame)entity, mop, scaledWidth, scaledHeight);
 					else if(entity instanceof IEMinecartEntity)
 					{
 						IEBaseTileEntity containedTile = ((IEMinecartEntity<?>)entity).getContainedTileEntity();
 						if(containedTile instanceof IBlockOverlayText)
 						{
-							ITextComponent[] text = ((IBlockOverlayText)containedTile).getOverlayText(player, mop, false);
+							Component[] text = ((IBlockOverlayText)containedTile).getOverlayText(player, mop, false);
 							BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 						}
 					}
 				}
-				else if(mop instanceof BlockRayTraceResult)
+				else if(mop instanceof BlockHitResult)
 				{
-					BlockPos pos = ((BlockRayTraceResult)mop).getPos();
-					Direction face = ((BlockRayTraceResult)mop).getFace();
-					TileEntity tileEntity = player.world.getTileEntity(pos);
+					BlockPos pos = ((BlockHitResult)mop).getBlockPos();
+					Direction face = ((BlockHitResult)mop).getDirection();
+					BlockEntity tileEntity = player.level.getBlockEntity(pos);
 					if(tileEntity instanceof IBlockOverlayText)
 					{
 						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
-						ITextComponent[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
+						Component[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
 						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 					}
 					else
 					{
-						List<ItemFrameEntity> list = player.world.getEntitiesWithinAABB(ItemFrameEntity.class,
-								new AxisAlignedBB(pos.offset(face)), entity -> entity!=null&&entity.getHorizontalFacing()==face);
+						List<ItemFrame> list = player.level.getEntitiesOfClass(ItemFrame.class,
+								new AABB(pos.relative(face)), entity -> entity!=null&&entity.getDirection()==face);
 						if(list.size()==1)
 							BlockOverlayUtils.renderOreveinMapOverlays(transform, list.get(0), mop, scaledWidth, scaledHeight);
 					}
@@ -653,10 +663,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
 	{
-		Entity e = event.getInfo().getRenderViewEntity();
-		if(e instanceof LivingEntity&&((LivingEntity)e).isPotionActive(IEPotions.flashed.get()))
+		Entity e = event.getInfo().getEntity();
+		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.flashed.get()))
 		{
-			EffectInstance effect = ((LivingEntity)e).getActivePotionEffect(IEPotions.flashed.get());
+			MobEffectInstance effect = ((LivingEntity)e).getEffect(IEPotions.flashed.get());
 			int timeLeft = effect.getDuration();
 			float saturation = Math.max(0.25f, 1-timeLeft/(float)(80+40*effect.getAmplifier()));//Total Time =  4s + 2s per amplifier
 
@@ -674,8 +684,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
 	{
-		Entity e = event.getInfo().getRenderViewEntity();
-		if(e instanceof LivingEntity&&((LivingEntity)e).isPotionActive(IEPotions.flashed.get()))
+		Entity e = event.getInfo().getEntity();
+		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.flashed.get()))
 		{
 			event.setRed(1);
 			event.setGreen(1);
@@ -686,10 +696,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	@SubscribeEvent()
 	public void onFOVUpdate(FOVUpdateEvent event)
 	{
-		PlayerEntity player = ClientUtils.mc().player;
+		Player player = ClientUtils.mc().player;
 
 		// Check if player is holding a zoom-allowing item
-		ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
+		ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
 		boolean mayZoom = equipped.getItem() instanceof IZoomTool&&((IZoomTool)equipped.getItem()).canZoom(equipped, player);
 		// Set zoom if allowed, otherwise stop zooming
 		if(ZoomHandler.isZooming)
@@ -701,17 +711,17 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		}
 
 		// Concrete feet slow you, but shouldn't break FoV
-		if(player.getActivePotionEffect(IEPotions.concreteFeet.get())!=null)
+		if(player.getEffect(IEPotions.concreteFeet.get())!=null)
 			event.setNewfov(1);
 	}
 
 	@SubscribeEvent
 	public void onMouseEvent(MouseScrollEvent event)
 	{
-		PlayerEntity player = ClientUtils.mc().player;
-		if(event.getScrollDelta()!=0&&ClientUtils.mc().currentScreen==null&&player!=null)
+		Player player = ClientUtils.mc().player;
+		if(event.getScrollDelta()!=0&&ClientUtils.mc().screen==null&&player!=null)
 		{
-			ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
+			ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
 			// Handle zoom steps
 			if(equipped.getItem() instanceof IZoomTool&&((IZoomTool)equipped.getItem()).canZoom(equipped, player)&&ZoomHandler.isZooming)
 			{
@@ -727,7 +737,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			}
 
 			// Handle sneak + scrolling
-			if(player.isSneaking())
+			if(player.isShiftKeyDown())
 			{
 				if(IEServerConfig.TOOLS.chemthrower_scroll.get()&&equipped.getItem() instanceof IScrollwheel)
 				{
@@ -748,55 +758,55 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getTarget().getType()==Type.BLOCK)
 		{
-			MatrixStack transform = event.getMatrix();
-			IRenderTypeBuffer buffer = event.getBuffers();
-			BlockRayTraceResult rtr = (BlockRayTraceResult)event.getTarget();
-			BlockPos pos = rtr.getPos();
-			Vector3d renderView = event.getInfo().getProjectedView();
-			transform.push();
+			PoseStack transform = event.getMatrix();
+			MultiBufferSource buffer = event.getBuffers();
+			BlockHitResult rtr = (BlockHitResult)event.getTarget();
+			BlockPos pos = rtr.getBlockPos();
+			Vec3 renderView = event.getInfo().getPosition();
+			transform.pushPose();
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
-			Entity player = event.getInfo().getRenderViewEntity();
+			Entity player = event.getInfo().getEntity();
 			float f1 = 0.002F;
-			TileEntity tile = player.world.getTileEntity(rtr.getPos());
-			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getHeldItem(Hand.MAIN_HAND): ItemStack.EMPTY;
+			BlockEntity tile = player.level.getBlockEntity(rtr.getBlockPos());
+			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getItemInHand(InteractionHand.MAIN_HAND): ItemStack.EMPTY;
 
 			if(tile instanceof TurntableTileEntity&&Utils.isHammer(stack))
 			{
 				TurntableTileEntity turntableTile = ((TurntableTileEntity)tile);
-				Direction side = rtr.getFace();
+				Direction side = rtr.getDirection();
 				Direction facing = turntableTile.getFacing();
 				if(side.getAxis()!=facing.getAxis())
 				{
-					transform.push();
+					transform.pushPose();
 					transform.translate(0.5, 0.5, 0.5);
 					ClientUtils.toModelRotation(side).getRotation().push(transform);
-					transform.rotate(new Quaternion(-90, 0, 0, true));
+					transform.mulPose(new Quaternion(-90, 0, 0, true));
 					Rotation rotation = turntableTile.getRotationFromSide(side);
 					boolean cw180 = rotation==Rotation.CLOCKWISE_180;
 					double angle;
 					if(cw180)
-						angle = player.ticksExisted%40/20d;
+						angle = player.tickCount%40/20d;
 					else
-						angle = player.ticksExisted%80/40d;
+						angle = player.tickCount%80/40d;
 					double stepDistance = (cw180?2: 4)*Math.PI;
 					angle = -(angle-Math.sin(angle*stepDistance)/stepDistance)*Math.PI;
 					BlockOverlayUtils.drawCircularRotationArrows(buffer, transform, (float)angle, rotation==Rotation.COUNTERCLOCKWISE_90, cw180);
-					transform.pop();
-					transform.pop();
+					transform.popPose();
+					transform.popPose();
 				}
 			}
 
-			World world = player.world;
-			if(!stack.isEmpty()&&ConveyorHandler.isConveyorBlock(Block.getBlockFromItem(stack.getItem()))&&rtr.getFace().getAxis()==Axis.Y)
+			Level world = player.level;
+			if(!stack.isEmpty()&&ConveyorHandler.isConveyorBlock(Block.byItem(stack.getItem()))&&rtr.getDirection().getAxis()==Axis.Y)
 			{
-				Direction side = rtr.getFace();
-				VoxelShape shape = world.getBlockState(pos).getCollisionShape(world, pos);
-				AxisAlignedBB targetedBB = null;
+				Direction side = rtr.getDirection();
+				VoxelShape shape = world.getBlockState(pos).getBlockSupportShape(world, pos);
+				AABB targetedBB = null;
 				if(!shape.isEmpty())
-					targetedBB = shape.getBoundingBox();
+					targetedBB = shape.bounds();
 
-				IRenderTypeBuffer buffers = event.getBuffers();
+				MultiBufferSource buffers = event.getBuffers();
 				float[][] points = new float[4][];
 
 
@@ -824,38 +834,38 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					points[2] = new float[]{x, 1+f1, 0-f1};
 					points[3] = new float[]{x, 0-f1, 1+f1};
 				}
-				Matrix4f mat = transform.getLast().getMatrix();
-				IVertexBuilder lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
+				Matrix4f mat = transform.last().pose();
+				VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
 				for(float[] point : points)
-					lineBuilder.pos(mat, point[0], point[1], point[2])
+					lineBuilder.vertex(mat, point[0], point[1], point[2])
 							.color(0, 0, 0, 0.4F)
 							.endVertex();
 
-				lineBuilder.pos(mat, points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
-				lineBuilder.pos(mat, points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
-				lineBuilder.pos(mat, points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
-				lineBuilder.pos(mat, points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
-				lineBuilder.pos(mat, points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.vertex(mat, points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.vertex(mat, points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.vertex(mat, points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.vertex(mat, points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
+				lineBuilder.vertex(mat, points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
 
-				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getHitVec().x-pos.getX()-.5f;
-				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getHitVec().y-pos.getY()-.5f;
-				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getHitVec().z-pos.getZ()-.5f;
+				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getLocation().x-pos.getX()-.5f;
+				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getLocation().y-pos.getY()-.5f;
+				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getLocation().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
-				Vector3d dir = new Vector3d(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
+				Vec3 dir = new Vec3(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
 				BlockOverlayUtils.drawBlockOverlayArrow(mat, buffers, dir, side, targetedBB);
 
 			}
 
-			transform.pop();
+			transform.popPose();
 			if(!stack.isEmpty()&&stack.getItem() instanceof DrillItem&&
-					((DrillItem)stack.getItem()).isEffective(stack, world.getBlockState(rtr.getPos()).getMaterial()))
+					((DrillItem)stack.getItem()).isEffective(stack, world.getBlockState(rtr.getBlockPos()).getMaterial()))
 			{
 				ItemStack head = ((DrillItem)stack.getItem()).getHead(stack);
-				if(!head.isEmpty()&&player instanceof PlayerEntity&&!player.isSneaking())
+				if(!head.isEmpty()&&player instanceof Player&&!player.isShiftKeyDown())
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,
-							(PlayerEntity)player, event.getTarget());
-					BlockOverlayUtils.drawAdditionalBlockbreak(event, (PlayerEntity)player, blocks);
+							(Player)player, event.getTarget());
+					BlockOverlayUtils.drawAdditionalBlockbreak(event, (Player)player, blocks);
 				}
 			}
 		}
@@ -865,19 +875,19 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
 	{
 		float partial = event.getPartialTicks();
-		MatrixStack transform = event.getMatrixStack();
-		transform.push();
-		Vector3d renderView = ClientUtils.mc().gameRenderer.getActiveRenderInfo().getProjectedView();
+		PoseStack transform = event.getMatrixStack();
+		transform.pushPose();
+		Vec3 renderView = ClientUtils.mc().gameRenderer.getMainCamera().getPosition();
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);
-		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		if(!FractalParticle.PARTICLE_FRACTAL_DEQUE.isEmpty())
 		{
-			List<Pair<RenderType, List<Consumer<IVertexBuilder>>>> renders = new ArrayList<>();
+			List<Pair<RenderType, List<Consumer<VertexConsumer>>>> renders = new ArrayList<>();
 			for(FractalParticle p : FractalParticle.PARTICLE_FRACTAL_DEQUE)
-				for(Entry<RenderType, Consumer<IVertexBuilder>> r : p.render(partial, transform))
+				for(Entry<RenderType, Consumer<VertexConsumer>> r : p.render(partial, transform))
 				{
 					boolean added = false;
-					for(Entry<RenderType, List<Consumer<IVertexBuilder>>> e : renders)
+					for(Entry<RenderType, List<Consumer<VertexConsumer>>> e : renders)
 						if(e.getKey().equals(r.getKey()))
 						{
 							e.getValue().add(r.getValue());
@@ -887,10 +897,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 					if(!added)
 						renders.add(Pair.of(r.getKey(), new ArrayList<>(ImmutableList.of(r.getValue()))));
 				}
-			for(Entry<RenderType, List<Consumer<IVertexBuilder>>> entry : renders)
+			for(Entry<RenderType, List<Consumer<VertexConsumer>>> entry : renders)
 			{
-				IVertexBuilder bb = buffers.getBuffer(entry.getKey());
-				for(Consumer<IVertexBuilder> render : entry.getValue())
+				VertexConsumer bb = buffers.getBuffer(entry.getKey());
+				for(Consumer<VertexConsumer> render : entry.getValue())
 					render.accept(bb);
 			}
 			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
@@ -902,20 +912,20 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		if(show)
 		{
 			// Default <=> shift is sneak, use ctrl instead
-			if(Minecraft.getInstance().gameSettings.keyBindSneak.isDefault())
+			if(Minecraft.getInstance().options.keyShift.isDefault())
 				show = Screen.hasControlDown();
 			else
 				show = Screen.hasShiftDown();
 		}
 		if(show)
 		{
-			RegistryKey<World> dimension = ClientUtils.mc().player.getEntityWorld().getDimensionKey();
+			ResourceKey<Level> dimension = ClientUtils.mc().player.getCommandSenderWorld().dimension();
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			Multimap<RegistryKey<World>, MineralVein> minerals;
-			final ColumnPos playerCol = new ColumnPos(ClientUtils.mc().player.getPosition());
+			Multimap<ResourceKey<Level>, MineralVein> minerals;
+			final ColumnPos playerCol = new ColumnPos(ClientUtils.mc().player.blockPosition());
 			// 24: very roughly 16 * sqrt(2)
-			final long maxDistance = ClientUtils.mc().gameSettings.renderDistanceChunks*24L;
+			final long maxDistance = ClientUtils.mc().options.renderDistance*24L;
 			final long maxDistanceSq = maxDistance*maxDistance;
 			synchronized(minerals = ExcavatorHandler.getMineralVeinList())
 			{
@@ -923,7 +933,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				{
 					if(vein.getMineral()==null)
 						continue;
-					transform.push();
+					transform.pushPose();
 					ColumnPos pos = vein.getPos();
 					final long xDiff = pos.x-playerCol.x;
 					final long zDiff = pos.z-playerCol.z;
@@ -932,15 +942,15 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						continue;
 					int iC = keyList.indexOf(vein.getMineral().getId());
 					DyeColor color = DyeColor.values()[iC%16];
-					float[] rgb = color.getColorComponentValues();
+					float[] rgb = color.getTextureDiffuseColors();
 					float r = rgb[0];
 					float g = rgb[1];
 					float b = rgb[2];
 					transform.translate(pos.x, 0, pos.z);
-					IVertexBuilder bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
-					Matrix4f mat = transform.getLast().getMatrix();
-					bufferBuilder.pos(mat, 0, 0, 0).color(r, g, b, .75f).endVertex();
-					bufferBuilder.pos(mat, 0, 128, 0).color(r, g, b, .75f).endVertex();
+					VertexConsumer bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
+					Matrix4f mat = transform.last().pose();
+					bufferBuilder.vertex(mat, 0, 0, 0).color(r, g, b, .75f).endVertex();
+					bufferBuilder.vertex(mat, 0, 128, 0).color(r, g, b, .75f).endVertex();
 
 					bufferBuilder = buffers.getBuffer(IERenderTypes.VEIN_MARKER);
 					int radius = vein.getRadius();
@@ -952,41 +962,41 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						angle = 360.0f/12*p;
 						x1 = radius*Math.cos(angle*Math.PI/180);
 						z1 = radius*Math.sin(angle*Math.PI/180);
-						bufferBuilder.pos(mat, (float)x1, 70, (float)z1).color(r, g, b, .75f).endVertex();
+						bufferBuilder.vertex(mat, (float)x1, 70, (float)z1).color(r, g, b, .75f).endVertex();
 					}
-					transform.pop();
+					transform.popPose();
 				}
 			}
 		}
 
 		if(!FAILED_CONNECTIONS.isEmpty())
 		{
-			IVertexBuilder builder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
+			VertexConsumer builder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
 			for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 			{
 				Connection conn = entry.getKey();
-				transform.push();
+				transform.pushPose();
 				transform.translate(conn.getEndA().getX(), conn.getEndA().getY(), conn.getEndA().getZ());
-				Matrix4f mat = transform.getLast().getMatrix();
+				Matrix4f mat = transform.last().pose();
 				int time = entry.getValue().getValue().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
-				Vector3d prev = conn.getPoint(0, conn.getEndA());
+				Vec3 prev = conn.getPoint(0, conn.getEndA());
 				for(int i = 0; i < RenderData.POINTS_PER_WIRE; i++)
 				{
-					builder.pos(mat, (float)prev.x, (float)prev.y, (float)prev.z)
+					builder.vertex(mat, (float)prev.x, (float)prev.y, (float)prev.z)
 							.color(1, 0, 0, alpha).endVertex();
 					alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
-					Vector3d next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
-					builder.pos(mat, (float)next.x, (float)next.y, (float)next.z)
+					Vec3 next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
+					builder.vertex(mat, (float)next.x, (float)next.y, (float)next.z)
 							.color(1, 0, 0, alpha).endVertex();
 					prev = next;
 				}
-				transform.pop();
+				transform.popPose();
 			}
 			renderObstructingBlocks(transform, buffers);
 		}
-		transform.pop();
-		buffers.finish();
+		transform.popPose();
+		buffers.endBatch();
 	}
 
 	@SubscribeEvent()
@@ -1013,10 +1023,10 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		if(event.getGui() instanceof VideoSettingsScreen&&ClientProxy.stencilEnabled)
 		{
-			GPUWarningAccess gpuWarning = (GPUWarningAccess)Minecraft.getInstance().getGPUWarning();
+			GPUWarningAccess gpuWarning = (GPUWarningAccess)Minecraft.getInstance().getGpuWarnlistManager();
 			final String key = "renderer";
 			final String suffix = "tencil enabled in Immersive Engineering config";
-			Map<String, String> oldWarnings = gpuWarning.getWarningStrings();
+			Map<String, String> oldWarnings = gpuWarning.getWarnings();
 			;
 			if(!oldWarnings.containsKey(key)||!oldWarnings.get(key).endsWith(suffix))
 			{
@@ -1028,22 +1038,22 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						builder.put(e.getKey(), e.getValue());
 				if(!oldWarnings.containsKey(key))
 					builder.put(key, "S"+suffix);
-				gpuWarning.setWarningStrings(builder.build());
+				gpuWarning.setWarnings(builder.build());
 			}
 		}
 	}
 
-	private static void enableHead(LivingRenderer renderer, boolean shouldEnable)
+	private static void enableHead(LivingEntityRenderer renderer, boolean shouldEnable)
 	{
-		EntityModel m = renderer.getEntityModel();
-		if(m instanceof IHasHead)
-			((IHasHead)m).getModelHead().showModel = shouldEnable;
+		EntityModel m = renderer.getModel();
+		if(m instanceof HeadedModel)
+			((HeadedModel)m).getHead().visible = shouldEnable;
 	}
 
 	@SubscribeEvent
 	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
 	{
-		if(event.getEntity().world.isRemote&&event.getEntity() instanceof AbstractMinecartEntity&&
+		if(event.getEntity().level.isClientSide&&event.getEntity() instanceof AbstractMinecart&&
 				event.getEntity().getCapability(CapabilityShader.SHADER_CAPABILITY).isPresent())
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageMinecartShaderSync(event.getEntity(), null));
 	}

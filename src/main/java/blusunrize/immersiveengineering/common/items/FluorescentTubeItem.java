@@ -19,24 +19,24 @@ import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector4f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import com.mojang.math.Vector4f;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -52,41 +52,41 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 
 	public FluorescentTubeItem()
 	{
-		super(new Properties().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE));
+		super(new Properties().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE));
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
+	public InteractionResult useOn(UseOnContext ctx)
 	{
-		Direction side = ctx.getFace();
-		World world = ctx.getWorld();
-		PlayerEntity player = ctx.getPlayer();
+		Direction side = ctx.getClickedFace();
+		Level world = ctx.getLevel();
+		Player player = ctx.getPlayer();
 		if(side==Direction.UP&&player!=null)
 		{
-			if(!world.isRemote)
+			if(!world.isClientSide)
 			{
-				ItemStack stack = ctx.getItem();
-				Vector3d look = player.getLookVec();
+				ItemStack stack = ctx.getItemInHand();
+				Vec3 look = player.getLookAngle();
 				float angle = (float)Math.toDegrees(Math.atan2(look.x, look.z));
 				FluorescentTubeEntity tube = new FluorescentTubeEntity(world, stack.copy(), angle);
-				tube.setPosition(ctx.getHitVec().x, ctx.getHitVec().y+1.5, ctx.getHitVec().z);
-				world.addEntity(tube);
+				tube.setPos(ctx.getClickLocation().x, ctx.getClickLocation().y+1.5, ctx.getClickLocation().z);
+				world.addFreshEntity(tube);
 				stack.split(1);
 				if(stack.getCount() > 0)
-					player.setHeldItem(ctx.getHand(), stack);
+					player.setItemInHand(ctx.getHand(), stack);
 				else
-					player.setHeldItem(ctx.getHand(), ItemStack.EMPTY);
+					player.setItemInHand(ctx.getHand(), ItemStack.EMPTY);
 			}
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return super.onItemUse(ctx);
+		return super.useOn(ctx);
 	}
 
 	public static float[] getRGB(ItemStack s)
 	{
 		if(ItemNBTHelper.hasKey(s, "rgb"))
 		{
-			CompoundNBT nbt = ItemNBTHelper.getTagCompound(s, "rgb");
+			CompoundTag nbt = ItemNBTHelper.getTagCompound(s, "rgb");
 			return new float[]{nbt.getFloat("r"), nbt.getFloat("g"), nbt.getFloat("b")};
 		}
 		return new float[]{1, 1, 1};
@@ -94,7 +94,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 
 	public static void setRGB(ItemStack s, float[] rgb)
 	{
-		CompoundNBT nbt = new CompoundNBT();
+		CompoundTag nbt = new CompoundTag();
 		nbt.putFloat("r", rgb[0]);
 		nbt.putFloat("g", rgb[1]);
 		nbt.putFloat("b", rgb[2]);
@@ -147,11 +147,11 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		int color = getRGBInt(stack, 1);
 		list.add(FontUtils.withAppendColoredColour(
-				new TranslationTextComponent(Lib.DESC_INFO+"colour"),
+				new TranslatableComponent(Lib.DESC_INFO+"colour"),
 				color
 		));
 	}
@@ -193,21 +193,21 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	public static void setLit(ItemStack stack, float strength)
 	{
 		ItemNBTHelper.putInt(stack, LIT_TIME, 35);
-		ItemNBTHelper.putFloat(stack, LIT_STRENGTH, MathHelper.clamp(strength, 0, 1F));
+		ItemNBTHelper.putFloat(stack, LIT_STRENGTH, Mth.clamp(strength, 0, 1F));
 	}
 
 	@Override
-	public void onStrike(ItemStack equipped, EquipmentSlotType eqSlot, LivingEntity owner, Map<String, Object> cache, DamageSource dmg,
+	public void onStrike(ItemStack equipped, EquipmentSlot eqSlot, LivingEntity owner, Map<String, Object> cache, DamageSource dmg,
 						 ElectricSource eSource)
 	{
 		setLit(equipped, eSource.level);
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+	public void inventoryTick(ItemStack stack, Level worldIn, Entity entityIn, int itemSlot, boolean isSelected)
 	{
 		super.inventoryTick(stack, worldIn, entityIn, itemSlot, isSelected);
-		if(!worldIn.isRemote&&isLit(stack))
+		if(!worldIn.isClientSide&&isLit(stack))
 		{
 			int litTicksRemaining = ItemNBTHelper.getInt(stack, LIT_TIME);
 			litTicksRemaining--;
@@ -224,13 +224,13 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
 	{
-		return !ItemStack.areItemsEqual(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
+		return !ItemStack.isSame(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
 	}
 
 	private static final String[][] special = {{"tube"}};
 
 	@Override
-	public String[][] getSpecialGroups(ItemStack stack, ItemCameraTransforms.TransformType transform, LivingEntity entity)
+	public String[][] getSpecialGroups(ItemStack stack, ItemTransforms.TransformType transform, LivingEntity entity)
 	{
 		if(isLit(stack))
 			return special;
@@ -250,7 +250,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 		{
 			boolean lit = isLit(object);
 			float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F: 0);
-			float mult = min+(lit?Utils.RAND.nextFloat()*MathHelper.clamp(1-min, 0, .1F): 0);
+			float mult = min+(lit?Utils.RAND.nextFloat()*Mth.clamp(1-min, 0, .1F): 0);
 			float[] colors = getRGBFloat(object, mult);
 			return new Vector4f(colors[0], colors[1], colors[2], colors[3]);
 		}

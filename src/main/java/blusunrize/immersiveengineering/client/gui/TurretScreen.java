@@ -19,15 +19,15 @@ import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -40,38 +40,38 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 	protected static final ResourceLocation TEXTURE = makeTextureLocation("turret");
 
 	public T tile;
-	private TextFieldWidget nameField;
+	private EditBox nameField;
 
-	public TurretScreen(C container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public TurretScreen(C container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
-		this.ySize = 190;
+		this.imageHeight = 190;
 	}
 
 	@Nonnull
 	@Override
 	protected List<InfoArea> makeInfoAreas()
 	{
-		return ImmutableList.of(new EnergyInfoArea(guiLeft+158, guiTop+16, tile));
+		return ImmutableList.of(new EnergyInfoArea(leftPos+158, topPos+16, tile));
 	}
 
 	@Override
 	public void init()
 	{
 		super.init();
-		mc().keyboardListener.enableRepeatEvents(true);
-		this.nameField = new TextFieldWidget(this.font, guiLeft+11, guiTop+88, 58, 12, StringTextComponent.EMPTY);
+		mc().keyboardHandler.setSendRepeatsToGui(true);
+		this.nameField = new EditBox(this.font, leftPos+11, topPos+88, 58, 12, TextComponent.EMPTY);
 		this.nameField.setTextColor(-1);
-		this.nameField.setDisabledTextColour(-1);
-		this.nameField.setEnableBackgroundDrawing(false);
-		this.nameField.setMaxStringLength(30);
+		this.nameField.setTextColorUneditable(-1);
+		this.nameField.setBordered(false);
+		this.nameField.setMaxLength(30);
 
 		this.buttons.clear();
-		this.addButton(new GuiReactiveList(this, guiLeft+10, guiTop+10, 60, 72,
+		this.addButton(new GuiReactiveList(this, leftPos+10, topPos+10, 60, 72,
 				btn -> {
 					GuiReactiveList list = (GuiReactiveList)btn;
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					int rem = list.selectedOption;
 					if(rem >= 0&&tile.targetList.size() > 0)
@@ -83,47 +83,47 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 					}
 				}, tile.targetList.toArray(new String[0]))
 				.setPadding(0, 0, 2, 2));
-		this.addButton(new GuiButtonIE(guiLeft+74, guiTop+84, 24, 16, new TranslationTextComponent(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
+		this.addButton(new GuiButtonIE(leftPos+74, topPos+84, 24, 16, new TranslatableComponent(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
-					String name = nameField.getText();
+					String name = nameField.getValue();
 					if(!tile.targetList.contains(name))
 					{
 						listOffset = ((GuiReactiveList)buttons.get(0)).getMaxOffset();
 						tag.putString("add", name);
 						tile.targetList.add(name);
 					}
-					nameField.setText("");
+					nameField.setValue("");
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addButton(new GuiButtonCheckbox(guiLeft+74, guiTop+10, I18n.format(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist,
+		this.addButton(new GuiButtonCheckbox(leftPos+74, topPos+10, I18n.get(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tile.whitelist = btn.getState();
 					tag.putBoolean("whitelist", tile.whitelist);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addButton(new GuiButtonCheckbox(guiLeft+74, guiTop+26, I18n.format(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals,
+		this.addButton(new GuiButtonCheckbox(leftPos+74, topPos+26, I18n.get(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tile.attackAnimals = !btn.getState();
 					tag.putBoolean("attackAnimals", tile.attackAnimals);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addButton(new GuiButtonCheckbox(guiLeft+74, guiTop+42, I18n.format(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers,
+		this.addButton(new GuiButtonCheckbox(leftPos+74, topPos+42, I18n.get(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tile.attackPlayers = !btn.getState();
 					tag.putBoolean("attackPlayers", tile.attackPlayers);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addButton(new GuiButtonCheckbox(guiLeft+74, guiTop+58, I18n.format(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals,
+		this.addButton(new GuiButtonCheckbox(leftPos+74, topPos+58, I18n.get(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					tile.attackNeutrals = !btn.getState();
 					tag.putBoolean("attackNeutrals", tile.attackNeutrals);
@@ -135,7 +135,7 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 
 	protected abstract void addCustomButtons();
 
-	protected void handleButtonClick(CompoundNBT nbt, int listOffset)
+	protected void handleButtonClick(CompoundTag nbt, int listOffset)
 	{
 		if(!nbt.isEmpty())
 		{
@@ -147,17 +147,17 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 	}
 
 	@Override
-	public void render(@Nonnull MatrixStack transform, int mx, int my, float partial)
+	public void render(@Nonnull PoseStack transform, int mx, int my, float partial)
 	{
 		super.render(transform, mx, my, partial);
 		this.nameField.render(transform, mx, my, partial);
 	}
 
 	@Override
-	public void onClose()
+	public void removed()
 	{
-		super.onClose();
-		mc().keyboardListener.enableRepeatEvents(false);
+		super.removed();
+		mc().keyboardHandler.setSendRepeatsToGui(false);
 	}
 
 	@Override
@@ -167,10 +167,10 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 		{
 			if(key==GLFW.GLFW_KEY_ENTER)
 			{
-				String name = this.nameField.getText();
+				String name = this.nameField.getValue();
 				if(!tile.targetList.contains(name))
 				{
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					tag.putString("add", name);
 					tile.targetList.add(name);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));

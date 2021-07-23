@@ -26,17 +26,17 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -73,13 +73,13 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements IETickableB
 		for(Direction f : DirectionUtils.VALUES)
 			this.transferEnergy(f);
 
-		if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
+		if(level.getGameTime()%32==((getBlockPos().getX()^getBlockPos().getZ())&31))
 		{
 			int i = scaleStoredEnergyTo(15);
 			if(i!=this.comparatorOutput)
 			{
 				this.comparatorOutput = i;
-				world.updateComparatorOutputLevel(getPos(), getBlockState().getBlock());
+				level.updateNeighbourForOutputSignal(getBlockPos(), getBlockState().getBlock());
 			}
 		}
 	}
@@ -93,8 +93,8 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements IETickableB
 	{
 		if(this.sideConfig.get(side)!=IOSideConfig.OUTPUT)
 			return;
-		BlockPos outPos = getPos().offset(side);
-		TileEntity tileEntity = Utils.getExistingTileEntity(world, outPos);
+		BlockPos outPos = getBlockPos().relative(side);
+		BlockEntity tileEntity = Utils.getExistingTileEntity(level, outPos);
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
 		this.energyStorage.modifyEnergyStored(-EnergyHelper.insertFlux(tileEntity, side.getOpposite(), out, false));
 	}
@@ -106,17 +106,17 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public boolean toggleSide(Direction side, PlayerEntity player)
+	public boolean toggleSide(Direction side, Player player)
 	{
 		sideConfig.put(side, IOSideConfig.next(sideConfig.get(side)));
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+		level.blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
 		return true;
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 		{
@@ -142,7 +142,7 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		for(Direction f : DirectionUtils.VALUES)
 			nbt.putInt("sideConfig_"+f.ordinal(), sideConfig.get(f).ordinal());
@@ -150,7 +150,7 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		for(Direction f : DirectionUtils.VALUES)
 			sideConfig.put(f, IOSideConfig.values()[nbt.getInt("sideConfig_"+f.ordinal())]);
@@ -184,20 +184,20 @@ public class CapacitorTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
 	{
-		if(hammer&&IEClientConfig.showTextOverlay.get()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&mop instanceof BlockHitResult)
 		{
-			BlockRayTraceResult bmop = (BlockRayTraceResult)mop;
-			IOSideConfig here = sideConfig.get(bmop.getFace());
-			IOSideConfig opposite = sideConfig.get(bmop.getFace().getOpposite());
+			BlockHitResult bmop = (BlockHitResult)mop;
+			IOSideConfig here = sideConfig.get(bmop.getDirection());
+			IOSideConfig opposite = sideConfig.get(bmop.getDirection().getOpposite());
 			return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectEnergy.", here, opposite);
 		}
 		return null;
 	}
 
 	@Override
-	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
+	public boolean useNixieFont(Player player, HitResult mop)
 	{
 		return false;
 	}

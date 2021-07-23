@@ -16,24 +16,24 @@ import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
-import net.minecraft.world.gen.feature.template.Template.Palette;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.Palette;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
@@ -51,9 +51,9 @@ import java.util.function.Function;
 public abstract class TemplateMultiblock implements IMultiblock
 {
 	private static final SetRestrictedField<Function<BlockState, ItemStack>> PICK_BLOCK = SetRestrictedField.common();
-	private static final SetRestrictedField<BiFunction<ResourceLocation, MinecraftServer, Template>>
+	private static final SetRestrictedField<BiFunction<ResourceLocation, MinecraftServer, StructureTemplate>>
 			LOAD_TEMPLATE = SetRestrictedField.common();
-	private static final SetRestrictedField<Function<Template, List<Palette>>>
+	private static final SetRestrictedField<Function<StructureTemplate, List<Palette>>>
 			GET_PALETTES = SetRestrictedField.common();
 	private static final Logger LOGGER = LogManager.getLogger();
 
@@ -63,10 +63,10 @@ public abstract class TemplateMultiblock implements IMultiblock
 	protected final BlockPos size;
 	protected final List<MatcherPredicate> additionalPredicates;
 	@Nullable
-	private Template template;
+	private StructureTemplate template;
 	@Nullable
 	private ItemStack[] materials;
-	private BlockState trigger = Blocks.AIR.getDefaultState();
+	private BlockState trigger = Blocks.AIR.defaultBlockState();
 
 	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
 							  List<MatcherPredicate> additionalPredicates)
@@ -83,14 +83,14 @@ public abstract class TemplateMultiblock implements IMultiblock
 		this(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableMap.of());
 	}
 
-	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, Map<Block, ITag<Block>> tags)
+	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, Map<Block, Tag<Block>> tags)
 	{
 		this(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableList.of(
 				(expected, found, world, pos) -> {
-					ITag<Block> tag = tags.get(expected.getBlock());
+					Tag<Block> tag = tags.get(expected.getBlock());
 					if(tag!=null)
 					{
-						if(found.isIn(tag))
+						if(found.is(tag))
 							return Result.allow(2);
 						else
 							return Result.deny(2);
@@ -102,7 +102,7 @@ public abstract class TemplateMultiblock implements IMultiblock
 	}
 
 	@Nonnull
-	protected Template getTemplate(@Nullable World world)
+	protected StructureTemplate getTemplate(@Nullable Level world)
 	{
 		return getTemplate(world==null?null: world.getServer());
 	}
@@ -113,18 +113,18 @@ public abstract class TemplateMultiblock implements IMultiblock
 	}
 
 	@Nonnull
-	public Template getTemplate(@Nullable MinecraftServer server)
+	public StructureTemplate getTemplate(@Nullable MinecraftServer server)
 	{
 		if(template==null)//TODO reset on resource reload
 		{
 			template = LOAD_TEMPLATE.getValue().apply(loc, server);
-			List<BlockInfo> blocks = getStructureFromTemplate(template);
+			List<StructureBlockInfo> blocks = getStructureFromTemplate(template);
 			for(int i = 0; i < blocks.size(); i++)
 			{
-				BlockInfo info = blocks.get(i);
+				StructureBlockInfo info = blocks.get(i);
 				if(info.pos.equals(triggerFromOrigin))
 					trigger = info.state;
-				if(info.state==Blocks.AIR.getDefaultState())
+				if(info.state==Blocks.AIR.defaultBlockState())
 				{
 					blocks.remove(i);
 					i--;
@@ -150,7 +150,7 @@ public abstract class TemplateMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state, Direction d, @Nullable World world)
+	public boolean isBlockTrigger(BlockState state, Direction d, @Nullable Level world)
 	{
 		getTemplate(world);
 		Rotation rot = DirectionUtils.getRotationBetweenFacings(Direction.NORTH, d.getOpposite());
@@ -166,21 +166,21 @@ public abstract class TemplateMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
+	public boolean createStructure(Level world, BlockPos pos, Direction side, Player player)
 	{
 		Rotation rot = DirectionUtils.getRotationBetweenFacings(Direction.NORTH, side.getOpposite());
 		if(rot==null)
 			return false;
-		List<BlockInfo> structure = getStructure(world);
+		List<StructureBlockInfo> structure = getStructure(world);
 		mirrorLoop:
 		for(Mirror mirror : getPossibleMirrorStates())
 		{
-			PlacementSettings placeSet = new PlacementSettings().setMirror(mirror).setRotation(rot);
-			BlockPos origin = pos.subtract(Template.transformedBlockPos(placeSet, triggerFromOrigin));
-			for(BlockInfo info : structure)
+			StructurePlaceSettings placeSet = new StructurePlaceSettings().setMirror(mirror).setRotation(rot);
+			BlockPos origin = pos.subtract(StructureTemplate.calculateRelativePosition(placeSet, triggerFromOrigin));
+			for(StructureBlockInfo info : structure)
 			{
-				BlockPos realRelPos = Template.transformedBlockPos(placeSet, info.pos);
-				BlockPos here = origin.add(realRelPos);
+				BlockPos realRelPos = StructureTemplate.calculateRelativePosition(placeSet, info.pos);
+				BlockPos here = origin.offset(realRelPos);
 
 				BlockState expected = applyToState(info.state, mirror, rot);
 				BlockState inWorld = world.getBlockState(here);
@@ -206,10 +206,10 @@ public abstract class TemplateMultiblock implements IMultiblock
 			return ImmutableList.of(Mirror.NONE);
 	}
 
-	protected void form(World world, BlockPos pos, Rotation rot, Mirror mirror, Direction sideHit)
+	protected void form(Level world, BlockPos pos, Rotation rot, Mirror mirror, Direction sideHit)
 	{
 		BlockPos masterPos = withSettingsAndOffset(pos, masterFromOrigin, mirror, rot);
-		for(BlockInfo block : getStructure(world))
+		for(StructureBlockInfo block : getStructure(world))
 		{
 			BlockPos actualPos = withSettingsAndOffset(pos, block.pos, mirror, rot);
 			replaceStructureBlock(block, world, actualPos, mirror!=Mirror.NONE, sideHit,
@@ -222,21 +222,21 @@ public abstract class TemplateMultiblock implements IMultiblock
 		return masterFromOrigin;
 	}
 
-	protected abstract void replaceStructureBlock(BlockInfo info, World world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vector3i offsetFromMaster);
+	protected abstract void replaceStructureBlock(StructureBlockInfo info, Level world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster);
 
 	@Override
-	public List<BlockInfo> getStructure(@Nullable World world)
+	public List<StructureBlockInfo> getStructure(@Nullable Level world)
 	{
 		return getStructureFromTemplate(getTemplate(world));
 	}
 
-	private static List<BlockInfo> getStructureFromTemplate(Template template)
+	private static List<StructureBlockInfo> getStructureFromTemplate(StructureTemplate template)
 	{
-		return GET_PALETTES.getValue().apply(template).get(0).func_237157_a_();
+		return GET_PALETTES.getValue().apply(template).get(0).blocks();
 	}
 
 	@Override
-	public Vector3i getSize(@Nullable World world)
+	public Vec3i getSize(@Nullable Level world)
 	{
 		return getTemplate(world).getSize();
 	}
@@ -250,8 +250,8 @@ public abstract class TemplateMultiblock implements IMultiblock
 
 	public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, Mirror mirror, Rotation rot)
 	{
-		PlacementSettings settings = new PlacementSettings().setMirror(mirror).setRotation(rot);
-		return origin.add(Template.transformedBlockPos(settings, relative));
+		StructurePlaceSettings settings = new StructurePlaceSettings().setMirror(mirror).setRotation(rot);
+		return origin.offset(StructureTemplate.calculateRelativePosition(settings, relative));
 	}
 
 	public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, boolean mirrored, Direction facing)
@@ -268,14 +268,14 @@ public abstract class TemplateMultiblock implements IMultiblock
 	{
 		if(materials==null)
 		{
-			List<BlockInfo> structure = getStructure(null);
+			List<StructureBlockInfo> structure = getStructure(null);
 			List<ItemStack> ret = new ArrayList<>(structure.size());
-			for(BlockInfo info : structure)
+			for(StructureBlockInfo info : structure)
 			{
 				ItemStack picked = PICK_BLOCK.getValue().apply(info.state);
 				boolean added = false;
 				for(ItemStack existing : ret)
-					if(ItemStack.areItemsEqual(existing, picked))
+					if(ItemStack.isSame(existing, picked))
 					{
 						existing.grow(1);
 						added = true;
@@ -290,20 +290,20 @@ public abstract class TemplateMultiblock implements IMultiblock
 	}
 
 	@Override
-	public void disassemble(World world, BlockPos origin, boolean mirrored, Direction clickDirectionAtCreation)
+	public void disassemble(Level world, BlockPos origin, boolean mirrored, Direction clickDirectionAtCreation)
 	{
 		Mirror mirror = mirrored?Mirror.FRONT_BACK: Mirror.NONE;
 		Rotation rot = DirectionUtils.getRotationBetweenFacings(Direction.NORTH, clickDirectionAtCreation);
 		Preconditions.checkNotNull(rot);
-		for(BlockInfo block : getStructure(world))
+		for(StructureBlockInfo block : getStructure(world))
 		{
 			BlockPos actualPos = withSettingsAndOffset(origin, block.pos, mirror, rot);
 			prepareBlockForDisassembly(world, actualPos);
-			world.setBlockState(actualPos, block.state.mirror(mirror).rotate(rot));
+			world.setBlockAndUpdate(actualPos, block.state.mirror(mirror).rotate(rot));
 		}
 	}
 
-	protected void prepareBlockForDisassembly(World world, BlockPos pos)
+	protected void prepareBlockForDisassembly(Level world, BlockPos pos)
 	{
 	}
 
@@ -320,8 +320,8 @@ public abstract class TemplateMultiblock implements IMultiblock
 
 	public static void setCallbacks(
 			Function<BlockState, ItemStack> pickBlock,
-			BiFunction<ResourceLocation, MinecraftServer, Template> loadTemplate,
-			Function<Template, List<Palette>> getPalettes
+			BiFunction<ResourceLocation, MinecraftServer, StructureTemplate> loadTemplate,
+			Function<StructureTemplate, List<Palette>> getPalettes
 	)
 	{
 		PICK_BLOCK.setValue(pickBlock);

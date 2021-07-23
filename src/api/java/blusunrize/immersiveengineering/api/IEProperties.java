@@ -15,12 +15,12 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.state.DirectionProperty;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import com.mojang.math.Transformation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import java.util.*;
@@ -61,13 +61,13 @@ public class IEProperties
 		}
 
 		@Override
-		public Collection<Boolean> getAllowedValues()
+		public Collection<Boolean> getPossibleValues()
 		{
 			return ALLOWED_VALUES;
 		}
 
 		@Override
-		public Optional<Boolean> parseValue(String value)
+		public Optional<Boolean> getValue(String value)
 		{
 			return Optional.of(Boolean.parseBoolean(value));
 		}
@@ -163,14 +163,14 @@ public class IEProperties
 	public static class IEObjState
 	{
 		public final VisibilityList visibility;
-		public final TransformationMatrix transform;
+		public final Transformation transform;
 
 		public IEObjState(VisibilityList visibility)
 		{
-			this(visibility, TransformationMatrix.identity());
+			this(visibility, Transformation.identity());
 		}
 
-		public IEObjState(VisibilityList visibility, TransformationMatrix transform)
+		public IEObjState(VisibilityList visibility, Transformation transform)
 		{
 			this.visibility = visibility;
 			this.transform = transform;

@@ -22,21 +22,21 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader.White;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -53,18 +53,18 @@ import java.util.function.Function;
 public class BakedConnectionModel<T> extends BakedIEModel
 {
 	Lazy<TextureAtlasSprite> textureAtlasSprite = Lazy.of(() -> Minecraft.getInstance().getModelManager()
-			.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+			.getAtlas(InventoryMenu.BLOCK_ATLAS)
 			.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/wire")));
 	public static final Cache<ModelKey, SpecificConnectionModel> cache = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
 			.build();
 	@Nullable
-	private final IBakedModel base;
+	private final BakedModel base;
 	private final Either<ICacheKeyProvider<T>, T> extraCacheKey;
 	private final ImmutableSet<String> layers;
 
-	public BakedConnectionModel(@Nullable IBakedModel basic, Collection<String> layers, T extraCacheKey)
+	public BakedConnectionModel(@Nullable BakedModel basic, Collection<String> layers, T extraCacheKey)
 	{
 		base = basic;
 		this.layers = ImmutableSet.copyOf(layers);
@@ -72,7 +72,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 	}
 
 	public BakedConnectionModel(
-			@Nullable IBakedModel basic, Collection<String> layers, ICacheKeyProvider<T> extraCacheKey
+			@Nullable BakedModel basic, Collection<String> layers, ICacheKeyProvider<T> extraCacheKey
 	)
 	{
 		base = basic;
@@ -114,7 +114,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 	}
 
 	@Override
-	public boolean isAmbientOcclusion()
+	public boolean useAmbientOcclusion()
 	{
 		return false;
 	}
@@ -126,26 +126,26 @@ public class BakedConnectionModel<T> extends BakedIEModel
 	}
 
 	@Override
-	public boolean isBuiltInRenderer()
+	public boolean isCustomRenderer()
 	{
 		return false;
 	}
 
 	@Nonnull
 	@Override
-	public TextureAtlasSprite getParticleTexture()
+	public TextureAtlasSprite getParticleIcon()
 	{
 		if(base!=null)
-			return base.getParticleTexture();
+			return base.getParticleIcon();
 		else
 			return White.instance();
 	}
 
 	@Nonnull
 	@Override
-	public ItemOverrideList getOverrides()
+	public ItemOverrides getOverrides()
 	{
-		return ItemOverrideList.EMPTY;
+		return ItemOverrides.EMPTY;
 	}
 
 	private List<BakedQuad> getBaseQuads(RenderType currentLayer, BlockState state, Direction side, Random rand, IModelData data)
@@ -157,7 +157,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		if(base==null)
 			return EmptyModelData.INSTANCE;
@@ -170,9 +170,9 @@ public class BakedConnectionModel<T> extends BakedIEModel
 		List<BakedQuad> ret = new ArrayList<>();
 		if(data==null)
 			return ret;
-		Vector3d dir = Vector3d.ZERO;
+		Vec3 dir = Vec3.ZERO;
 
-		Vector3d up = new Vector3d(0, 1, 0);
+		Vec3 up = new Vec3(0, 1, 0);
 		for(Connection.RenderData connData : data)
 		{
 			int color = connData.color;
@@ -184,38 +184,38 @@ public class BakedConnectionModel<T> extends BakedIEModel
 			for(int segmentEndId = 1; segmentEndId <= connData.pointsToRenderSolid; segmentEndId++)
 			{
 				int segmentStartId = segmentEndId-1;
-				Vector3d segmentEnd = connData.getPoint(segmentEndId);
-				Vector3d segmentStart = connData.getPoint(segmentStartId);
+				Vec3 segmentEnd = connData.getPoint(segmentEndId);
+				Vec3 segmentStart = connData.getPoint(segmentStartId);
 				boolean vertical = segmentEnd.x==segmentStart.x&&segmentEnd.z==segmentStart.z;
-				Vector3d cross;
+				Vec3 cross;
 				if(!vertical)
 				{
 					dir = segmentEnd.subtract(segmentStart);
-					cross = up.crossProduct(dir);
+					cross = up.cross(dir);
 					cross = cross.scale(radius/cross.length());
 				}
 				else
-					cross = new Vector3d(radius, 0, 0);
-				Vector3d[] vertices = {segmentEnd.add(cross),
+					cross = new Vec3(radius, 0, 0);
+				Vec3[] vertices = {segmentEnd.add(cross),
 						segmentEnd.subtract(cross),
 						segmentStart.subtract(cross),
 						segmentStart.add(cross)};
-				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.DOWN, t, rgb, false, here));
-				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, t, rgb, true, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.DOWN, t, rgb, false, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.UP, t, rgb, true, here));
 
 				if(!vertical)
 				{
-					cross = dir.crossProduct(cross);
+					cross = dir.cross(cross);
 					cross = cross.scale(radius/cross.length());
 				}
 				else
-					cross = new Vector3d(0, 0, radius);
-				vertices = new Vector3d[]{segmentEnd.add(cross),
+					cross = new Vec3(0, 0, radius);
+				vertices = new Vec3[]{segmentEnd.add(cross),
 						segmentEnd.subtract(cross),
 						segmentStart.subtract(cross),
 						segmentStart.add(cross)};
-				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.WEST, t, rgb, false, here));
-				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.EAST, t, rgb, true, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.WEST, t, rgb, false, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.EAST, t, rgb, true, here));
 			}
 		}
 		return ret;
@@ -224,10 +224,10 @@ public class BakedConnectionModel<T> extends BakedIEModel
 	public static int getSolidVertexCountForSide(ConnectionPoint start, Connection conn, int totalPoints)
 	{
 		List<Integer> crossings = new ArrayList<>();
-		Vector3d lastPoint = conn.getPoint(0, start);
+		Vec3 lastPoint = conn.getPoint(0, start);
 		for(int i = 1; i <= totalPoints; i++)
 		{
-			Vector3d current = conn.getPoint(i/(double)totalPoints, start);
+			Vec3 current = conn.getPoint(i/(double)totalPoints, start);
 			if(crossesChunkBoundary(current, lastPoint, start.getPosition()))
 				crossings.add(i);
 			lastPoint = current;
@@ -244,7 +244,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 			return greater?totalPoints: 0;
 	}
 
-	public static boolean crossesChunkBoundary(Vector3d start, Vector3d end, BlockPos offset)
+	public static boolean crossesChunkBoundary(Vec3 start, Vec3 end, BlockPos offset)
 	{
 		if(crossesChunkBorderSingleDim(start.x, end.x, offset.getX()))
 			return true;
@@ -270,7 +270,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 		@Nonnull
 		public List<BakedQuad> getQuads(RenderType layer)
 		{
-			if(layer!=RenderType.getSolid())
+			if(layer!=RenderType.solid())
 				return ImmutableList.of();
 			else
 				return connectionQuads.get();

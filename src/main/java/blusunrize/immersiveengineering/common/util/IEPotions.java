@@ -14,18 +14,18 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.EffectType;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -35,31 +35,31 @@ import java.util.Set;
 
 public class IEPotions
 {
-	public static final DeferredRegister<Effect> REGISTER = DeferredRegister.create(ForgeRegistries.POTIONS, Lib.MODID);
+	public static final DeferredRegister<MobEffect> REGISTER = DeferredRegister.create(ForgeRegistries.POTIONS, Lib.MODID);
 
-	public static RegistryObject<Effect> flammable = REGISTER.register(
-			"flammable", () -> new IEPotion(EffectType.HARMFUL, 0x8f3f1f, 0, false, 0, true, true)
+	public static RegistryObject<MobEffect> flammable = REGISTER.register(
+			"flammable", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x8f3f1f, 0, false, 0, true, true)
 	);
-	public static RegistryObject<Effect> slippery = REGISTER.register(
-			"slippery", () -> new IEPotion(EffectType.HARMFUL, 0x171003, 0, false, 1, true, true)
+	public static RegistryObject<MobEffect> slippery = REGISTER.register(
+			"slippery", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x171003, 0, false, 1, true, true)
 	);
-	public static RegistryObject<Effect> conductive = REGISTER.register(
-			"conductive", () -> new IEPotion(EffectType.HARMFUL, 0x690000, 0, false, 2, true, true)
+	public static RegistryObject<MobEffect> conductive = REGISTER.register(
+			"conductive", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x690000, 0, false, 2, true, true)
 	);
-	public static RegistryObject<Effect> sticky = REGISTER.register(
-			"sticky", () -> new IEPotion(EffectType.HARMFUL, 0x9c6800, 0, false, 3, true, true)
-					.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL)
+	public static RegistryObject<MobEffect> sticky = REGISTER.register(
+			"sticky", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x9c6800, 0, false, 3, true, true)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL)
 	);
-	public static RegistryObject<Effect> stunned = REGISTER.register(
-			"stunned", () -> new IEPotion(EffectType.HARMFUL, 0x624a98, 0, false, 4, true, true)
+	public static RegistryObject<MobEffect> stunned = REGISTER.register(
+			"stunned", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 4, true, true)
 	);
-	public static RegistryObject<Effect> concreteFeet = REGISTER.register(
-			"concrete_feet", () -> new IEPotion(EffectType.HARMFUL, 0x624a98, 0, false, 5, true, true)
-					.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL)
+	public static RegistryObject<MobEffect> concreteFeet = REGISTER.register(
+			"concrete_feet", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 5, true, true)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL)
 	);
-	public static RegistryObject<Effect> flashed = REGISTER.register(
-			"flashed", () -> new IEPotion(EffectType.HARMFUL, 0x624a98, 0, false, 6, true, true)
-					.addAttributesModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL)
+	public static RegistryObject<MobEffect> flashed = REGISTER.register(
+			"flashed", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 6, true, true)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL)
 	);
 
 	static
@@ -67,7 +67,7 @@ public class IEPotions
 		IEApi.potions = ImmutableList.of(flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed);
 	}
 
-	public static class IEPotion extends Effect
+	public static class IEPotion extends MobEffect
 	{
 		private static final Set<Block> concrete = ImmutableSet.<Block>builder()
 				.add(StoneDecoration.concrete.get())
@@ -84,7 +84,7 @@ public class IEPotions
 		boolean showInInventory = true;
 		boolean showInHud = true;
 
-		public IEPotion(EffectType isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
+		public IEPotion(MobEffectCategory isBad, int colour, int tick, boolean halveTick, int icon, boolean showInInventory, boolean showInHud)
 		{
 			super(isBad, colour);
 			this.showInInventory = showInInventory;
@@ -94,25 +94,25 @@ public class IEPotions
 		}
 
 		@Override
-		public boolean shouldRender(EffectInstance effect)
+		public boolean shouldRender(MobEffectInstance effect)
 		{
 			return showInInventory;
 		}
 
 		@Override
-		public boolean shouldRenderInvText(EffectInstance effect)
+		public boolean shouldRenderInvText(MobEffectInstance effect)
 		{
 			return showInInventory;
 		}
 
 		@Override
-		public boolean shouldRenderHUD(EffectInstance effect)
+		public boolean shouldRenderHUD(MobEffectInstance effect)
 		{
 			return showInHud;
 		}
 
 		@Override
-		public boolean isReady(int duration, int amplifier)
+		public boolean isDurationEffectTick(int duration, int amplifier)
 		{
 			if(tickrate < 0)
 				return false;
@@ -121,23 +121,23 @@ public class IEPotions
 		}
 
 		@Override
-		public void performEffect(LivingEntity living, int amplifier)
+		public void applyEffectTick(LivingEntity living, int amplifier)
 		{
 			if(this==IEPotions.slippery.get())
 			{
 				if(living.isOnGround())
-					living.moveRelative(0, new Vector3d(0, 1, 0.005));
-				EquipmentSlotType hand = living.getRNG().nextBoolean()?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND;
-				if(!living.world.isRemote&&living.getRNG().nextInt(300)==0&&!living.getItemStackFromSlot(hand).isEmpty())
+					living.moveRelative(0, new Vec3(0, 1, 0.005));
+				EquipmentSlot hand = living.getRandom().nextBoolean()?EquipmentSlot.MAINHAND: EquipmentSlot.OFFHAND;
+				if(!living.level.isClientSide&&living.getRandom().nextInt(300)==0&&!living.getItemBySlot(hand).isEmpty())
 				{
-					ItemEntity dropped = living.entityDropItem(living.getItemStackFromSlot(hand).copy(), 1);
-					dropped.setPickupDelay(20);
-					living.setItemStackToSlot(hand, ItemStack.EMPTY);
+					ItemEntity dropped = living.spawnAtLocation(living.getItemBySlot(hand).copy(), 1);
+					dropped.setPickUpDelay(20);
+					living.setItemSlot(hand, ItemStack.EMPTY);
 				}
 			}
-			else if(this==IEPotions.concreteFeet.get()&&!living.world.isRemote)
+			else if(this==IEPotions.concreteFeet.get()&&!living.level.isClientSide)
 			{
-				BlockState state = living.world.getBlockState(living.getPosition());
+				BlockState state = living.level.getBlockState(living.blockPosition());
 				if(!concrete.contains(state.getBlock())&&
 						concrete.stream()
 								.map(Block::getRegistryName)
@@ -145,7 +145,7 @@ public class IEPotions
 								.filter(Objects::nonNull)
 								.noneMatch(b -> b.get()==state.getBlock()))
 				{
-					living.removePotionEffect(this);
+					living.removeEffect(this);
 					IELogger.logger.info("Removing concrete feet");
 				}
 			}

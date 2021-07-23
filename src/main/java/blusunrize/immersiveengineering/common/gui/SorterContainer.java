@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
@@ -21,7 +21,7 @@ public class SorterContainer extends IEBaseContainer<SorterTileEntity>
 {
 	int slotCount;
 
-	public SorterContainer(ContainerType<?> type, int windowId, PlayerInventory inventoryPlayer, SorterTileEntity tile)
+	public SorterContainer(MenuType<?> type, int windowId, Inventory inventoryPlayer, SorterTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, windowId);
 		this.tile = tile;
@@ -43,14 +43,14 @@ public class SorterContainer extends IEBaseContainer<SorterTileEntity>
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player)
+	public boolean stillValid(@Nonnull Player player)
 	{
-		return tile!=null&&tile.getWorldNonnull().getTileEntity(tile.getPos())==tile&&player.getDistanceSq(tile.getPos().getX()+.5, tile.getPos().getY()+.5, tile.getPos().getZ()+.5) <= 64;
+		return tile!=null&&tile.getWorldNonnull().getBlockEntity(tile.getBlockPos())==tile&&player.distanceToSqr(tile.getBlockPos().getX()+.5, tile.getBlockPos().getY()+.5, tile.getBlockPos().getZ()+.5) <= 64;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		return ItemStack.EMPTY;
 		//		ItemStack stack = null;

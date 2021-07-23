@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -35,15 +35,15 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 
 	public ToolUpgradeItem(ToolUpgrade type)
 	{
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 		this.type = type;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+getRegistryName().getPath()));
+		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+getRegistryName().getPath()));
 	}
 
 	@Override
@@ -68,7 +68,7 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 	}
 
 	@Override
-	public void applyUpgrades(ItemStack target, ItemStack upgrade, CompoundNBT modifications)
+	public void applyUpgrades(ItemStack target, ItemStack upgrade, CompoundTag modifications)
 	{
 		type.function.accept(upgrade, modifications);
 	}
@@ -98,19 +98,19 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 		private ImmutableSet<String> toolset;
 		private int stackSize = 1;
 		private BiPredicate<ItemStack, ItemStack> applyCheck;
-		private BiConsumer<ItemStack, CompoundNBT> function;
+		private BiConsumer<ItemStack, CompoundTag> function;
 
-		ToolUpgrade(ImmutableSet<String> toolset, BiConsumer<ItemStack, CompoundNBT> function)
+		ToolUpgrade(ImmutableSet<String> toolset, BiConsumer<ItemStack, CompoundTag> function)
 		{
 			this(toolset, 1, function);
 		}
 
-		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiConsumer<ItemStack, CompoundNBT> function)
+		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiConsumer<ItemStack, CompoundTag> function)
 		{
 			this(toolset, stackSize, null, function);
 		}
 
-		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiPredicate<ItemStack, ItemStack> applyCheck, BiConsumer<ItemStack, CompoundNBT> function)
+		ToolUpgrade(ImmutableSet<String> toolset, int stackSize, BiPredicate<ItemStack, ItemStack> applyCheck, BiConsumer<ItemStack, CompoundTag> function)
 		{
 			this.toolset = toolset;
 			this.stackSize = stackSize;

@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -17,6 +17,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ItemEntityAccess
 {
 	// There is a getter for it already, but it's client side only
+	//TODO remove in 1.17?
 	@Accessor("age")
 	int getAgeNonsided();
 

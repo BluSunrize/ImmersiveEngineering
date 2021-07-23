@@ -10,9 +10,9 @@
 package blusunrize.immersiveengineering.api.shader;
 
 import com.google.common.base.Preconditions;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

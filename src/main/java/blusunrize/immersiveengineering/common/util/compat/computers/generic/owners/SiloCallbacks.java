@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.own
 import blusunrize.immersiveengineering.common.blocks.metal.SiloTileEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 public class SiloCallbacks extends MultiblockCallbackOwner<SiloTileEntity>

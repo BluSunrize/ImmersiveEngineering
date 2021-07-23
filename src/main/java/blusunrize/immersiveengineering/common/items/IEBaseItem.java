@@ -12,18 +12,18 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -44,9 +44,9 @@ public class IEBaseItem extends Item implements IColouredItem
 		this(props, ImmersiveEngineering.ITEM_GROUP);
 	}
 
-	public IEBaseItem(Properties props, ItemGroup group)
+	public IEBaseItem(Properties props, CreativeModeTab group)
 	{
-		super(props.group(group));
+		super(props.tab(group));
 	}
 
 	public IEBaseItem setBurnTime(int burnTime)
@@ -66,27 +66,27 @@ public class IEBaseItem extends Item implements IColouredItem
 		return isHidden;
 	}
 
-	protected void openGui(PlayerEntity player, Hand hand)
+	protected void openGui(Player player, InteractionHand hand)
 	{
-		openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
+		openGui(player, hand==InteractionHand.MAIN_HAND?EquipmentSlot.MAINHAND: EquipmentSlot.OFFHAND);
 	}
 
-	protected void openGui(PlayerEntity player, EquipmentSlotType slot)
+	protected void openGui(Player player, EquipmentSlot slot)
 	{
-		ItemStack stack = player.getItemStackFromSlot(slot);
-		NetworkHooks.openGui((ServerPlayerEntity)player, new INamedContainerProvider()
+		ItemStack stack = player.getItemBySlot(slot);
+		NetworkHooks.openGui((ServerPlayer)player, new MenuProvider()
 		{
 			@Nonnull
 			@Override
-			public ITextComponent getDisplayName()
+			public Component getDisplayName()
 			{
-				return new StringTextComponent("");
+				return new TextComponent("");
 			}
 
 			@Nullable
 			@Override
-			public Container createMenu(
-					int i, @Nonnull PlayerInventory playerInventory, @Nonnull PlayerEntity playerEntity
+			public AbstractContainerMenu createMenu(
+					int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity
 			)
 			{
 				if(!(stack.getItem() instanceof IEBaseItem))
@@ -94,7 +94,7 @@ public class IEBaseItem extends Item implements IColouredItem
 				ItemContainerType<?> containerType = ((IEBaseItem)stack.getItem()).getContainerType();
 				if(containerType==null)
 					return null;
-				return containerType.create(i, playerInventory, playerEntity.world, slot, stack);
+				return containerType.create(i, playerInventory, playerEntity.level, slot, stack);
 			}
 			// Matches IEContainerTypes#register (for items)
 		}, buffer -> buffer.writeInt(slot.ordinal()));

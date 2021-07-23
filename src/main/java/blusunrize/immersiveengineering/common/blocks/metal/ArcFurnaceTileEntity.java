@@ -28,20 +28,20 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -84,10 +84,10 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
 	public int pouringMetal = 0;
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
-			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).offset(getFacing(), -1), getFacing().getOpposite()),
+			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).relative(getFacing(), -1), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 	private CapabilityReference<IItemHandler> slagOut = CapabilityReference.forTileEntityAt(this,
-			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).offset(getFacing()), getFacing().getOpposite()),
+			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).relative(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	public ArcFurnaceTileEntity()
@@ -96,11 +96,11 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 		else
 		{
 			byte electrodeStatus = nbt.getByte("electrodeStatus");
@@ -119,11 +119,11 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!descPacket)
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 		else
 		{
 			byte packed = 0;
@@ -150,16 +150,16 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			for(int i = 0; i < 4; i++)
 			{
 				if(Utils.RAND.nextInt(6)==0)
-					world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5-.25*getFacing().getXOffset(),
-							getPos().getY()+2.9, getPos().getZ()+.5-.25*getFacing().getZOffset(),
+					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5-.25*getFacing().getStepX(),
+							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5-.25*getFacing().getStepZ(),
 							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 				if(Utils.RAND.nextInt(6)==0)
-					world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5+(getFacing()==Direction.EAST?-.25: .25),
-							getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.SOUTH?.25: -.25),
+					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+(getFacing()==Direction.EAST?-.25: .25),
+							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+(getFacing()==Direction.SOUTH?.25: -.25),
 							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 				if(Utils.RAND.nextInt(6)==0)
-					world.addParticle(IEParticles.SPARKS.get(), getPos().getX()+.5+(getFacing()==Direction.WEST?.25: -.25),
-							getPos().getY()+2.9, getPos().getZ()+.5+(getFacing()==Direction.NORTH?-.25: .25),
+					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+(getFacing()==Direction.WEST?.25: -.25),
+							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+(getFacing()==Direction.NORTH?-.25: .25),
 							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
 			}
 	}
@@ -174,7 +174,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		{
 			if(this.tickedProcesses > 0)
 				for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
-					if(this.inventory.get(i).attemptDamageItem(1, Utils.RAND, null))
+					if(this.inventory.get(i).hurt(1, Utils.RAND, null))
 						this.inventory.set(i, ItemStack.EMPTY);
 
 			if(this.processQueue.size() < this.getProcessQueueMaxLength())
@@ -233,7 +233,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 					}
 			}
 
-			if(world.getGameTime()%8==0)
+			if(level.getGameTime()%8==0)
 			{
 				if(output.isPresent())
 					for(int j : OUTPUT_SLOTS)
@@ -264,19 +264,19 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int type)
+	public boolean triggerEvent(int id, int type)
 	{
 		if(id==0)
 			pouringMetal = type;
-		return super.receiveClientEvent(id, type);
+		return super.triggerEvent(id, type);
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
+	private AABB renderAABB;
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		//		if(renderAABB==null)
 		//			if(posInMultiblock==17)
@@ -284,7 +284,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		//			else
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 		//		return renderAABB;
-		return new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
+		return new AABB(getBlockPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getBlockPos().getY(), getBlockPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getBlockPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getBlockPos().getY()+3, getBlockPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
 	}
 
 	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> COLLISION_SHAPES =
@@ -292,33 +292,33 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 	@Nonnull
 	@Override
-	public VoxelShape getCollisionShape(ISelectionContext ctx)
+	public VoxelShape getCollisionShape(CollisionContext ctx)
 	{
 		return getShape(COLLISION_SHAPES);
 	}
 
-	private static List<AxisAlignedBB> getCollisionShape(BlockPos posInMultiblock)
+	private static List<AABB> getCollisionShape(BlockPos posInMultiblock)
 	{
 		if(ImmutableSet.of(
 				new BlockPos(3, 0, 4),
 				new BlockPos(1, 0, 4)
 		).contains(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, .5f, .5625f));
+			return ImmutableList.of(new AABB(0, 0, 0, 1, .5f, .5625f));
 		else if(posInMultiblock.getY()==0&&posInMultiblock.getZ() > 0&&!posInMultiblock.equals(new BlockPos(2, 0, 4)))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
+			return ImmutableList.of(new AABB(0, 0, 0, 1, .5f, 1));
 		else if(new BlockPos(0, 1, 4).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, .5f, 1, 1, 1));
-		else if(new MutableBoundingBox(1, 1, 1, 3, 1, 2)
-				.isVecInside(posInMultiblock))
+			return ImmutableList.of(new AABB(0, 0, .5f, 1, 1, 1));
+		else if(new BoundingBox(1, 1, 1, 3, 1, 2)
+				.isInside(posInMultiblock))
 		{
-			AxisAlignedBB aabb;
+			AABB aabb;
 			if(posInMultiblock.getX()==2)
-				aabb = new AxisAlignedBB(0, 0.5, 0, 1, 1, 1);
+				aabb = new AABB(0, 0.5, 0, 1, 1, 1);
 			else
 				aabb = Utils.flipBox(false, posInMultiblock.getX()==3,
-						new AxisAlignedBB(0.125, 0.5, 0.125, 1, 1, 0.875));
+						new AABB(0.125, 0.5, 0.125, 1, 1, 0.875));
 			if(posInMultiblock.getZ()==2)
-				aabb = aabb.offset(0, 0, 0.875);
+				aabb = aabb.move(0, 0, 0.875);
 			return ImmutableList.of(aabb);
 		}
 		else if(ImmutableSet.of(
@@ -326,17 +326,17 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				new BlockPos(0, 1, 1)
 		).contains(posInMultiblock))
 			return Utils.flipBoxes(false, posInMultiblock.getX()==4,
-					new AxisAlignedBB(.125f, .125f, 0, .375f, .375f, 1));
+					new AABB(.125f, .125f, 0, .375f, .375f, 1));
 		else if(posInMultiblock.getZ()==0&&posInMultiblock.getY()==1&&posInMultiblock.getX() >= 1&&posInMultiblock.getX() <= 3)
-			return ImmutableList.of(new AxisAlignedBB(0, 0, .25f, 1, 1, 1));
+			return ImmutableList.of(new AABB(0, 0, .25f, 1, 1, 1));
 		else if(new BlockPos(2, 3, 0).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, .375f, 1, 1, .625f));
+			return ImmutableList.of(new AABB(0, 0, .375f, 1, 1, .625f));
 		else if(new BlockPos(2, 4, 0).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, .3125f, 1, .9375f, 1));
+			return ImmutableList.of(new AABB(0, 0, .3125f, 1, .9375f, 1));
 		else if(new BlockPos(2, 4, 1).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, .625f, 0, 1, .9375f, 1));
+			return ImmutableList.of(new AABB(0, .625f, 0, 1, .9375f, 1));
 		else if(new BlockPos(2, 4, 2).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, .9375f, .875f));
+			return ImmutableList.of(new AABB(0, 0, 0, 1, .9375f, .875f));
 		else if(ImmutableSet.of(
 				new BlockPos(3, 2, 4),
 				new BlockPos(1, 2, 4),
@@ -346,59 +346,59 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				new BlockPos(1, 4, 0)
 		).contains(posInMultiblock))
 			return Utils.flipBoxes(false, posInMultiblock.getX()==3,
-					new AxisAlignedBB(.5f, 0, 0, 1, 1, 1));
+					new AABB(.5f, 0, 0, 1, 1, 1));
 		else
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
+			return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
 	}
 
 	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =
 			CachedShapesWithTransform.createForMultiblock(ArcFurnaceTileEntity::getShape);
 
 	@Override
-	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
+	public VoxelShape getSelectionShape(@Nullable CollisionContext ctx)
 	{
 		return getShape(SHAPES);
 	}
 
-	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
+	private static List<AABB> getShape(BlockPos posInMultiblock)
 	{
 		if(new BlockPos(0, 0, 4).equals(posInMultiblock))
 			return ImmutableList.of(
-					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
-					new AxisAlignedBB(0.125, .5f, 0.625, 0.25, 1, 0.875),
-					new AxisAlignedBB(0.75, .5f, 0.625, 0.875, 1, 0.875)
+					new AABB(0, 0, 0, 1, .5f, 1),
+					new AABB(0.125, .5f, 0.625, 0.25, 1, 0.875),
+					new AABB(0.75, .5f, 0.625, 0.875, 1, 0.875)
 			);
 		else if(posInMultiblock.getZ()==0&&posInMultiblock.getY()==1&&posInMultiblock.getX() >= 1&&posInMultiblock.getX() <= 3)
 			return ImmutableList.of(
-					new AxisAlignedBB(0, 0, 0.25, 1, 1, 1),
-					new AxisAlignedBB(0.25, .25f, 0, 0.75, .75, 0.25));
+					new AABB(0, 0, 0.25, 1, 1, 1),
+					new AABB(0.25, .25f, 0, 0.75, .75, 0.25));
 		else if(posInMultiblock.getX()%4==0&&posInMultiblock.getZ() <= 2)
 		{
-			List<AxisAlignedBB> list = posInMultiblock.getY()==0?Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1)): new ArrayList<>(2);
+			List<AABB> list = posInMultiblock.getY()==0?Lists.newArrayList(new AABB(0, 0, 0, 1, .5f, 1)): new ArrayList<>(2);
 			final boolean flip = posInMultiblock.getX()==4;
 			double minX = !flip?.5f: 0;
 			double maxX = flip?.5f: 1;
 			if(posInMultiblock.getX()!=3)
-				list.add(new AxisAlignedBB(minX, posInMultiblock.getY()==0?.5: 0, 0, maxX, 1, 1));
+				list.add(new AABB(minX, posInMultiblock.getY()==0?.5: 0, 0, maxX, 1, 1));
 			if(posInMultiblock.getY()==0)
 			{
 				int move = (4-posInMultiblock.getZ())-2;
 				minX = !flip?.125f: .625f;
 				maxX = !flip?.375f: .875f;
-				AxisAlignedBB aabb = new AxisAlignedBB(minX, .6875, -1.625f, maxX, .9375, 0.625);
-				aabb = aabb.offset(0, 0, move);
+				AABB aabb = new AABB(minX, .6875, -1.625f, maxX, .9375, 0.625);
+				aabb = aabb.move(0, 0, move);
 				list.add(aabb);
 
 				minX = !flip?.375f: .5f;
 				maxX = !flip?.5f: .625f;
-				aabb = new AxisAlignedBB(minX, .6875, 0.375, maxX, .9375, 0.625);
-				aabb = aabb.offset(0, 0, move);
+				aabb = new AABB(minX, .6875, 0.375, maxX, .9375, 0.625);
+				aabb = aabb.move(0, 0, move);
 				list.add(aabb);
 
 				minX = !flip?.375f: .5f;
 				maxX = !flip?.5f: .625f;
-				aabb = new AxisAlignedBB(minX, .6875, -1.625f, maxX, .9375, -1.375f);
-				aabb = aabb.offset(0, 0, move);
+				aabb = new AABB(minX, .6875, -1.625f, maxX, .9375, -1.375f);
+				aabb = aabb.move(0, 0, move);
 				list.add(aabb);
 			}
 			else if(posInMultiblock.getY()==1)
@@ -406,29 +406,29 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				int move = (4-posInMultiblock.getZ())-2;
 				minX = !flip?.125f: .625f;
 				maxX = !flip?.375f: .875f;
-				AxisAlignedBB aabb = new AxisAlignedBB(minX, .125, -1.625f, maxX, .375, .625f);
-				aabb = aabb.offset(0, 0, move);
+				AABB aabb = new AABB(minX, .125, -1.625f, maxX, .375, .625f);
+				aabb = aabb.move(0, 0, move);
 				list.add(aabb);
 
 				minX = !flip?.375f: .5f;
 				maxX = !flip?.5f: .625f;
-				aabb = new AxisAlignedBB(minX, .125, 0.375, maxX, .375, 0.625);
-				aabb = aabb.offset(0, 0, move);
+				aabb = new AABB(minX, .125, 0.375, maxX, .375, 0.625);
+				aabb = aabb.move(0, 0, move);
 				if(posInMultiblock.getX()==0)
-					aabb = aabb.offset(0, .6875, 0);
+					aabb = aabb.move(0, .6875, 0);
 				list.add(aabb);
 				if(posInMultiblock.getX()==0)
 				{
 					minX = !flip?.125f: .625f;
 					maxX = !flip?.375f: .875f;
-					aabb = new AxisAlignedBB(minX, .375, 0.375, maxX, 1.0625, 0.625);
-					aabb = aabb.offset(0, 0, move);
+					aabb = new AABB(minX, .375, 0.375, maxX, 1.0625, 0.625);
+					aabb = aabb.move(0, 0, move);
 					list.add(aabb);
 				}
 				minX = !flip?.375f: .5f;
 				maxX = !flip?.5f: .625f;
-				aabb = new AxisAlignedBB(minX, .125, -1.625f, maxX, .375, -1.375f);
-				aabb = aabb.offset(0, 0, move);
+				aabb = new AABB(minX, .125, -1.625f, maxX, .375, -1.375f);
+				aabb = aabb.move(0, 0, move);
 				list.add(aabb);
 			}
 			else if(ImmutableSet.of(
@@ -438,7 +438,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			{
 				minX = !flip?.375f: .5f;
 				maxX = !flip?.5f: .625f;
-				list.add(new AxisAlignedBB(minX, .25, 0.25, maxX, .75, 0.75));
+				list.add(new AABB(minX, .25, 0.25, maxX, .75, 0.75));
 			}
 			return list;
 		}
@@ -474,8 +474,8 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 				float f = 0;
 				for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 					if(!master.inventory.get(i).isEmpty())
-						f += 1-(master.inventory.get(i).getDamage()/(float)master.inventory.get(i).getMaxDamage());
-				return MathHelper.floor(Math.max(f/3f, 0)*15);
+						f += 1-(master.inventory.get(i).getDamageValue()/(float)master.inventory.get(i).getMaxDamage());
+				return Mth.floor(Math.max(f/3f, 0)*15);
 			}
 		}
 		return super.getComparatorInputOverride();
@@ -513,8 +513,8 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
 		{
-			BlockPos pos = getPos().add(0, -1, 0).offset(getFacing(), -2);
-			Utils.dropStackAtPos(world, pos, output, getFacing());
+			BlockPos pos = getBlockPos().offset(0, -1, 0).relative(getFacing(), -2);
+			Utils.dropStackAtPos(level, pos, output, getFacing());
 		}
 	}
 
@@ -702,7 +702,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 
 	@Override
 	@Nullable
-	protected MultiblockProcess<ArcFurnaceRecipe> loadProcessFromNBT(CompoundNBT tag)
+	protected MultiblockProcess<ArcFurnaceRecipe> loadProcessFromNBT(CompoundTag tag)
 	{
 		String id = tag.getString("recipe");
 		ArcFurnaceRecipe recipe = getRecipeForId(new ResourceLocation(id));
@@ -721,7 +721,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 			new BlockPos(0, 1, 4)
 	);
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed&&(specialGuiPositions.contains(posInMultiblock)||
 				(posInMultiblock.getY() > 0&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4&&posInMultiblock.getZ()==4)
@@ -767,7 +767,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		protected void processFinish(PoweredMultiblockTileEntity<?, ArcFurnaceRecipe> te)
 		{
 			super.processFinish(te);
-			te.getWorldNonnull().addBlockEvent(te.getPos(), te.getBlockState().getBlock(), 0, 40);
+			te.getWorldNonnull().blockEvent(te.getBlockPos(), te.getBlockState().getBlock(), 0, 40);
 		}
 	}
 

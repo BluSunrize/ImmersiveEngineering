@@ -11,19 +11,19 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.IMatchLocation;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import javax.annotation.Nonnull;
 
 public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
-		extends AbstractFluidAwareRecipe<MatchLocation> implements IShapedRecipe<CraftingInventory>
+		extends AbstractFluidAwareRecipe<MatchLocation> implements IShapedRecipe<CraftingContainer>
 {
 	private final int recipeWidth;
 	private final int recipeHeight;
@@ -47,21 +47,21 @@ public abstract class AbstractShapedRecipe<MatchLocation extends IMatchLocation>
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width >= this.recipeWidth&&height >= this.recipeHeight;
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.IE_SHAPED_SERIALIZER.get();
 	}
 
 	public ShapedRecipe toVanilla()
 	{
-		return new ShapedRecipe(getId(), getGroup(), getWidth(), getHeight(), getIngredients(), getRecipeOutput());
+		return new ShapedRecipe(getId(), getGroup(), getWidth(), getHeight(), getIngredients(), getResultItem());
 	}
 
 	@Override

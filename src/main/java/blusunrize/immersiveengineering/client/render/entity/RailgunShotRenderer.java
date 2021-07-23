@@ -14,14 +14,14 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler.StandardRailgunPr
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
@@ -31,16 +31,16 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 			new int[]{0x686868, 0xa4a4a4, 0xa4a4a4, 0xa4a4a4, 0x686868}
 	);
 
-	public RailgunShotRenderer(EntityRendererManager renderManager)
+	public RailgunShotRenderer(EntityRenderDispatcher renderManager)
 	{
 		super(renderManager);
 	}
 
 	@Override
-	public void render(RailgunShotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+	public void render(RailgunShotEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
-		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks-90.0F;
-		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
+		double yaw = entity.yRotO+(entity.yRot-entity.yRotO)*partialTicks-90.0F;
+		double pitch = entity.xRotO+(entity.xRot-entity.xRotO)*partialTicks;
 
 		ItemStack ammo = entity.getAmmo();
 		RailgunRenderColors colors = DEFAULT_RENDER_COLORS;
@@ -55,11 +55,11 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 	}
 
 	public static void renderRailgunProjectile(double yaw, double pitch, RailgunRenderColors colors,
-											   MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int light)
+											   PoseStack matrixStackIn, MultiBufferSource bufferIn, int light)
 	{
-		matrixStackIn.push();
-		matrixStackIn.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), (float)yaw, true));
-		matrixStackIn.rotate(new Quaternion(new Vector3f(0.0F, 0.0F, 1.0F), (float)pitch, true));
+		matrixStackIn.pushPose();
+		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), (float)yaw, true));
+		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 0.0F, 1.0F), (float)pitch, true));
 
 		matrixStackIn.scale(.25f, .25f, .25f);
 
@@ -82,53 +82,53 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 		for(int i = 0; i < colWidth; i++)
 		{
 			rgb = colors.getFrontColor(i);
-			builder.pos(0, height, -halfWidth+widthStep*i).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(0, 0, -halfWidth+widthStep*i).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(0, 0, -halfWidth+widthStep*(i+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(0, height, -halfWidth+widthStep*(i+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(0, height, -halfWidth+widthStep*i).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(0, 0, -halfWidth+widthStep*i).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(0, 0, -halfWidth+widthStep*(i+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(0, height, -halfWidth+widthStep*(i+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
 
 			rgb = colors.getBackColor(i);
-			builder.pos(length, 0, -halfWidth+widthStep*i).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(length, height, -halfWidth+widthStep*i).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(length, height, -halfWidth+widthStep*(i+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(length, 0, -halfWidth+widthStep*(i+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(length, 0, -halfWidth+widthStep*i).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(length, height, -halfWidth+widthStep*i).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(length, height, -halfWidth+widthStep*(i+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(length, 0, -halfWidth+widthStep*(i+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
 		}
 		//Sides
 		for(int i = 0; i < colLength; i++)
 		{
 			rgb = colors.getRingColor(i, 0);
-			builder.pos(lengthStep*i, 0, -halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(lengthStep*i, height, -halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(lengthStep*(i+1), height, -halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(lengthStep*(i+1), 0, -halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(lengthStep*i, 0, -halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(lengthStep*i, height, -halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(lengthStep*(i+1), height, -halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(lengthStep*(i+1), 0, -halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
 
 			rgb = colors.getRingColor(i, colWidth-1);
-			builder.pos(lengthStep*i, height, halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(lengthStep*i, 0, halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(lengthStep*(i+1), 0, halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-			builder.pos(lengthStep*(i+1), height, halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(lengthStep*i, height, halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(lengthStep*i, 0, halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(lengthStep*(i+1), 0, halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+			builder.vertex(lengthStep*(i+1), height, halfWidth).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
 		}
 		//Top&Bottom
 		for(int i = 0; i < colLength; i++)
 			for(int j = 0; j < colWidth; j++)
 			{
 				rgb = colors.getRingColor(i, j);
-				builder.pos(lengthStep*(i+1), height, -halfWidth+widthStep*j).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-				builder.pos(lengthStep*i, height, -halfWidth+widthStep*j).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-				builder.pos(lengthStep*i, height, -halfWidth+widthStep*(j+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-				builder.pos(lengthStep*(i+1), height, -halfWidth+widthStep*(j+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+				builder.vertex(lengthStep*(i+1), height, -halfWidth+widthStep*j).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+				builder.vertex(lengthStep*i, height, -halfWidth+widthStep*j).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+				builder.vertex(lengthStep*i, height, -halfWidth+widthStep*(j+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+				builder.vertex(lengthStep*(i+1), height, -halfWidth+widthStep*(j+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
 
-				builder.pos(lengthStep*i, 0, -halfWidth+widthStep*j).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-				builder.pos(lengthStep*(i+1), 0, -halfWidth+widthStep*j).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-				builder.pos(lengthStep*(i+1), 0, -halfWidth+widthStep*(j+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
-				builder.pos(lengthStep*i, 0, -halfWidth+widthStep*(j+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+				builder.vertex(lengthStep*i, 0, -halfWidth+widthStep*j).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+				builder.vertex(lengthStep*(i+1), 0, -halfWidth+widthStep*j).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+				builder.vertex(lengthStep*(i+1), 0, -halfWidth+widthStep*(j+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
+				builder.vertex(lengthStep*i, 0, -halfWidth+widthStep*(j+1)).color(rgb[0], rgb[1], rgb[2], 255).endVertex();
 			}
 
-		matrixStackIn.pop();
+		matrixStackIn.popPose();
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull RailgunShotEntity entity)
+	public ResourceLocation getTextureLocation(@Nonnull RailgunShotEntity entity)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/white.png");
 	}

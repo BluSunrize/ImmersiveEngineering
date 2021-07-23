@@ -14,20 +14,20 @@ import com.google.common.collect.Multimap;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.DirectoryCache;
-import net.minecraft.data.IDataProvider;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.LootTableManager;
-import net.minecraft.loot.ValidationTracker;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.DataProvider;
+import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.LootTables;
+import net.minecraft.world.level.storage.loot.ValidationContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Map;
 
-public abstract class LootGenerator implements IDataProvider
+public abstract class LootGenerator implements DataProvider
 {
 	private final DataGenerator dataGenerator;
 	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().disableHtmlEscaping().create();
@@ -38,20 +38,20 @@ public abstract class LootGenerator implements IDataProvider
 		dataGenerator = gen;
 	}
 
-	public void act(@Nonnull DirectoryCache outCache)
+	public void run(@Nonnull HashCache outCache)
 	{
 		tables.clear();
 		Path outFolder = this.dataGenerator.getOutputFolder();
 
 		registerTables();
 
-		ValidationTracker validator = new ValidationTracker(
-				LootParameterSets.GENERIC,
+		ValidationContext validator = new ValidationContext(
+				LootContextParamSets.ALL_PARAMS,
 				(p_229442_0_) -> null,
 				tables::get
 		);
 		tables.forEach((name, table) -> {
-			LootTableManager.validateLootTable(validator, name, table);
+			LootTables.validate(validator, name, table);
 		});
 		Multimap<String, String> problems = validator.getProblems();
 		if(!problems.isEmpty())
@@ -68,7 +68,7 @@ public abstract class LootGenerator implements IDataProvider
 
 				try
 				{
-					IDataProvider.save(GSON, outCache, LootTableManager.toJson(table), out);
+					DataProvider.save(GSON, outCache, LootTables.serialize(table), out);
 				} catch(IOException x)
 				{
 					IELogger.logger.error("Couldn't save loot table {}", out, x);

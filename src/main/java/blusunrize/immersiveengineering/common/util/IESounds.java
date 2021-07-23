@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.play.server.SPlaySoundEffectPacket;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.Entity;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -66,8 +66,8 @@ public class IESounds
 
 	public static void PlaySoundForPlayer(Entity player, SoundEvent sound, float volume, float pitch)
 	{
-		if(player instanceof ServerPlayerEntity)
-			((ServerPlayerEntity)player).connection.sendPacket(new SPlaySoundEffectPacket(sound, player.getSoundCategory(),
-					player.getPosX(), player.getPosY(), player.getPosZ(), volume, pitch));
+		if(player instanceof ServerPlayer)
+			((ServerPlayer)player).connection.send(new ClientboundSoundPacket(sound, player.getSoundSource(),
+					player.getX(), player.getY(), player.getZ(), volume, pitch));
 	}
 }

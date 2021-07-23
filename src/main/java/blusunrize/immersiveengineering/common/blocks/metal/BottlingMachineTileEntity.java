@@ -21,23 +21,23 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -77,15 +77,15 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 
-		ListNBT processNBT = nbt.getList("bottlingQueue", 10);
+		ListTag processNBT = nbt.getList("bottlingQueue", 10);
 		bottlingProcessQueue.clear();
 		for(int i = 0; i < processNBT.size(); i++)
 		{
-			CompoundNBT tag = processNBT.getCompound(i);
+			CompoundTag tag = processNBT.getCompound(i);
 			BottlingProcess process = BottlingProcess.readFromNBT(tag);
 			bottlingProcessQueue.add(process);
 		}
@@ -93,18 +93,18 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		ListNBT processNBT = new ListNBT();
+		ListTag processNBT = new ListTag();
 		for(BottlingProcess process : this.bottlingProcessQueue)
 			processNBT.add(process.writeToNBT());
 		nbt.put("bottlingQueue", processNBT);
-		nbt.put("tank", tanks[0].writeToNBT(new CompoundNBT()));
+		nbt.put("tank", tanks[0].writeToNBT(new CompoundTag()));
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 	}
 
@@ -112,12 +112,12 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@OnlyIn(Dist.CLIENT)
 	public boolean shouldRenderGroup(BlockState object, String group)
 	{
-		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent());
+		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.translucent());
 	}
 
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, () -> {
-		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
-		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(2, 1, 1)).offset(outDir), outDir.getOpposite());
+		Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(2, 1, 1)).relative(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
@@ -146,24 +146,24 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		if(new BlockPos(1, 0, 0).equals(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, .5f, 1);
+			return Shapes.box(0, 0, 0, 1, .5f, 1);
 		if(posInMultiblock.getY()==0||new BlockPos(2, 1, 0).equals(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, 1, 1);
+			return Shapes.box(0, 0, 0, 1, 1, 1);
 		if(posInMultiblock.getZ()==1&&posInMultiblock.getY()==1)
-			return VoxelShapes.create(0, 0, 0, 1, .125f, 1);
+			return Shapes.box(0, 0, 0, 1, .125f, 1);
 		if(new BlockPos(1, 1, 0).equals(posInMultiblock))
-			return VoxelShapes.create(.0625f, 0, .0625f, .9375f, 1, .9375f);
+			return Shapes.box(.0625f, 0, .0625f, .9375f, 1, .9375f);
 		if(new BlockPos(1, 1, 0).equals(posInMultiblock))
 		{
-			Direction f = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
+			Direction f = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
 			float xMin = f==Direction.EAST?-.0625f: f==Direction.WEST?.25f: getFacing()==Direction.WEST?.125f: getFacing()==Direction.EAST?.25f: 0;
 			float zMin = getFacing()==Direction.NORTH?.125f: getFacing()==Direction.SOUTH?.25f: f==Direction.SOUTH?-.0625f: f==Direction.NORTH?.25f: 0;
 			float xMax = f==Direction.EAST?.75f: f==Direction.WEST?1.0625f: getFacing()==Direction.WEST?.75f: getFacing()==Direction.EAST?.875f: 1;
 			float zMax = getFacing()==Direction.NORTH?.75f: getFacing()==Direction.SOUTH?.875f: f==Direction.SOUTH?.75f: f==Direction.NORTH?1.0625f: 1;
-			return VoxelShapes.create(xMin, .0625f, zMin, xMax, .6875f, zMax);
+			return Shapes.box(xMin, .0625f, zMin, xMax, .6875f, zMax);
 		}
 		if(new BlockPos(1, 2, 1).equals(posInMultiblock))
 		{
@@ -171,7 +171,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			float zMin = getFacing()==Direction.NORTH?0: .21875f;
 			float xMax = getFacing()==Direction.EAST?1: .78125f;
 			float zMax = getFacing()==Direction.SOUTH?1: .78125f;
-			return VoxelShapes.create(xMin, -.4375f, zMin, xMax, .5625f, zMax);
+			return Shapes.box(xMin, -.4375f, zMin, xMax, .5625f, zMax);
 		}
 		if(new BlockPos(1, 2, 0).equals(posInMultiblock))
 		{
@@ -179,9 +179,9 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			float zMin = getFacing()==Direction.NORTH?.8125f: getFacing()==Direction.SOUTH?0: .125f;
 			float xMax = getFacing()==Direction.WEST?1: getFacing()==Direction.EAST?.1875f: .875f;
 			float zMax = getFacing()==Direction.NORTH?1: getFacing()==Direction.SOUTH?.1875f: .875f;
-			return VoxelShapes.create(xMin, -1, zMin, xMax, .25f, zMax);
+			return Shapes.box(xMin, -1, zMin, xMax, .25f, zMax);
 		}
-		return VoxelShapes.create(0, 0, 0, 1, 1, 1);
+		return Shapes.box(0, 0, 0, 1, 1, 1);
 	}
 
 	@Override
@@ -207,22 +207,22 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==2&&l==1&&w==1)
 		{
-			TileEntity tile = world.getTileEntity(pos);
+			BlockEntity tile = level.getBlockEntity(pos);
 			if(tile instanceof FluidPumpTileEntity)
 				((FluidPumpTileEntity)tile).setDummy(true);
 		}
 		else if(h==1&&l==0)
 		{
-			TileEntity tile = world.getTileEntity(pos);
+			BlockEntity tile = level.getBlockEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
-				((ConveyorBeltTileEntity)tile).setFacing(this.getIsMirrored()?this.getFacing().rotateYCCW(): this.getFacing().rotateY());
+				((ConveyorBeltTileEntity)tile).setFacing(this.getIsMirrored()?this.getFacing().getCounterClockWise(): this.getFacing().getClockWise());
 		}
 	}
 
 	@Override
-	public void onEntityCollision(World world, Entity entity)
+	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&!world.isRemote&&entity!=null&&entity.isAlive()&&entity instanceof ItemEntity)
+		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&!world.isClientSide&&entity!=null&&entity.isAlive()&&entity instanceof ItemEntity)
 		{
 			BottlingMachineTileEntity master = master();
 			if(master==null)
@@ -246,7 +246,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 
 				p = new BottlingProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 				master.bottlingProcessQueue.add(p);
-				master.markDirty();
+				master.setChanged();
 				master.markContainingBlockForUpdate(null);
 				stack.shrink(1);
 				if(stack.getCount() <= 0)
@@ -273,9 +273,9 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 		output = Utils.insertStackIntoInventory(outputCap, output, false);
 		if(!output.isEmpty())
 		{
-			Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
-			BlockPos pos = getPos().offset(outDir, 2);
-			Utils.dropStackAtPos(world, pos, output, outDir);
+			Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+			BlockPos pos = getBlockPos().relative(outDir, 2);
+			Utils.dropStackAtPos(level, pos, output, outDir);
 		}
 	}
 
@@ -363,7 +363,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
 
@@ -391,7 +391,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			BottlingMachineTileEntity master = master();
 			if(master==null)
 				return LazyOptional.empty();
-			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().rotateY(): this.getFacing().rotateYCCW()))
+			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().getClockWise(): this.getFacing().getCounterClockWise()))
 				return master.insertionHandler.cast();
 			return LazyOptional.empty();
 		}
@@ -431,7 +431,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	public Direction[] sigOutputDirections()
 	{
 		if(new BlockPos(2, 1, 1).equals(posInMultiblock))
-			return new Direction[]{getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()};
+			return new Direction[]{getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()};
 		return new Direction[0];
 	}
 
@@ -492,23 +492,23 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 			return (int)(60*IEServerConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
 		}
 
-		public CompoundNBT writeToNBT()
+		public CompoundTag writeToNBT()
 		{
-			CompoundNBT nbt = new CompoundNBT();
+			CompoundTag nbt = new CompoundTag();
 			if(!items.get(0).isEmpty())
-				nbt.put("input", items.get(0).write(new CompoundNBT()));
+				nbt.put("input", items.get(0).save(new CompoundTag()));
 			if(!items.get(1).isEmpty())
-				nbt.put("output", items.get(1).write(new CompoundNBT()));
+				nbt.put("output", items.get(1).save(new CompoundTag()));
 			nbt.putInt("processTick", processTick);
 			return nbt;
 		}
 
-		public static BottlingProcess readFromNBT(CompoundNBT nbt)
+		public static BottlingProcess readFromNBT(CompoundTag nbt)
 		{
-			ItemStack input = ItemStack.read(nbt.getCompound("input"));
+			ItemStack input = ItemStack.of(nbt.getCompound("input"));
 			BottlingProcess process = new BottlingProcess(input);
 			if(nbt.contains("output", NBT.TAG_COMPOUND))
-				process.items.set(1, ItemStack.read(nbt.getCompound("output")));
+				process.items.set(1, ItemStack.of(nbt.getCompound("output")));
 			process.processTick = nbt.getInt("processTick");
 			return process;
 		}
@@ -555,7 +555,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 				{
 					p = new BottlingProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 					multiblock.bottlingProcessQueue.add(p);
-					multiblock.markDirty();
+					multiblock.setChanged();
 					multiblock.markContainingBlockForUpdate(null);
 				}
 				stack.shrink(1);

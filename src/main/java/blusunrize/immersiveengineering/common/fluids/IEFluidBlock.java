@@ -9,30 +9,30 @@
 package blusunrize.immersiveengineering.common.fluids;
 
 import blusunrize.immersiveengineering.common.fluids.IEFluids.FluidEntry;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.FlowingFluidBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.potion.Effect;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.StateHolder;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.StateHolder;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.FluidState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class IEFluidBlock extends FlowingFluidBlock
+public class IEFluidBlock extends LiquidBlock
 {
 	private static FluidEntry entryStatic;
 	private final FluidEntry entry;
 	@Nullable
-	private Effect effect;
+	private MobEffect effect;
 	private int duration;
 	private int level;
 
@@ -44,9 +44,9 @@ public class IEFluidBlock extends FlowingFluidBlock
 	}
 
 	@Override
-	protected void fillStateContainer(@Nonnull Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(@Nonnull Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		for(Property<?> p : (entry==null?entryStatic: entry).getProperties())
 			builder.add(p);
 	}
@@ -56,8 +56,8 @@ public class IEFluidBlock extends FlowingFluidBlock
 	public FluidState getFluidState(@Nonnull BlockState state)
 	{
 		FluidState baseState = super.getFluidState(state);
-		for(Property<?> prop : getFluid().getStateContainer().getProperties())
-			if(prop!=FlowingFluidBlock.LEVEL)
+		for(Property<?> prop : getFluid().getStateDefinition().getProperties())
+			if(prop!=LiquidBlock.LEVEL)
 				baseState = withCopiedValue(prop, baseState, state);
 		return baseState;
 	}
@@ -65,10 +65,10 @@ public class IEFluidBlock extends FlowingFluidBlock
 	public static <T extends StateHolder<?, T>, S extends Comparable<S>>
 	T withCopiedValue(Property<S> prop, T oldState, StateHolder<?, ?> copyFrom)
 	{
-		return oldState.with(prop, copyFrom.get(prop));
+		return oldState.setValue(prop, copyFrom.getValue(prop));
 	}
 
-	public void setEffect(@Nonnull Effect effect, int duration, int level)
+	public void setEffect(@Nonnull MobEffect effect, int duration, int level)
 	{
 		this.effect = effect;
 		this.duration = duration;
@@ -76,10 +76,10 @@ public class IEFluidBlock extends FlowingFluidBlock
 	}
 
 	@Override
-	public void onEntityCollision(@Nonnull BlockState state, @Nonnull World worldIn, @Nonnull BlockPos pos, @Nonnull Entity entityIn)
+	public void entityInside(@Nonnull BlockState state, @Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull Entity entityIn)
 	{
-		super.onEntityCollision(state, worldIn, pos, entityIn);
+		super.entityInside(state, worldIn, pos, entityIn);
 		if(effect!=null&&entityIn instanceof LivingEntity)
-			((LivingEntity)entityIn).addPotionEffect(new EffectInstance(effect, duration, level));
+			((LivingEntity)entityIn).addEffect(new MobEffectInstance(effect, duration, level));
 	}
 }

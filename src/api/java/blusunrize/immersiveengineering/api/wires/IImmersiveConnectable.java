@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProv
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,7 +44,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	/**
 	 * @return whether you can connect the given CableType to the tile
 	 */
-	boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset);
+	boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset);
 
 	/**
 	 * fired when a cable is attached, use to limit the cables attached to one type
@@ -52,7 +52,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget);
 
 	@Nullable
-	ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset);
+	ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset);
 
 	/**
 	 * used to reset the CableType limiter of the tile, provided it matches the given argument
@@ -64,7 +64,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	/**
 	 * @return Where the cable should attach
 	 */
-	Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here);
+	Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here);
 
 	/**
 	 * returns a set of Blocks to be ignored when raytracing

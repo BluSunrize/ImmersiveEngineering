@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
@@ -51,7 +51,7 @@ public class IEOBJLoader implements IModelLoader<IEOBJModel>
 	}
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
 		cache.clear();
 		errors.clear();

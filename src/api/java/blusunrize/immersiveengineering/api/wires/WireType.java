@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 

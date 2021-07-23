@@ -15,13 +15,13 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.impl.*;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
@@ -72,7 +72,7 @@ public class ShaderRegistry
 	/**
 	 * The deafault cost for replicating a shader. Prices are multiplied with 10-rarity level. Prices can be adjusted for every registry entry
 	 */
-	public static ITag<Item> defaultReplicationCost = IETags.getTagsFor(EnumMetals.SILVER).dust;
+	public static Tag<Item> defaultReplicationCost = IETags.getTagsFor(EnumMetals.SILVER).dust;
 	/**
 	 * A HashMap to set default texture bounds for the additional layers of a shadercase. Saves you the trouble of redfining them for every shader. See {@link ShaderLayer#setTextureBounds(double... bounds)}.
 	 */
@@ -102,7 +102,7 @@ public class ShaderRegistry
 		return shaderRegistry.get(name)
 				.setCrateLoot(loot)
 				.setBagLoot(bags)
-				.setReplicationCost(() -> new IngredientWithSize(Ingredient.fromTag(defaultReplicationCost), 10-rarityWeightMap.get(rarity)));
+				.setReplicationCost(() -> new IngredientWithSize(Ingredient.of(defaultReplicationCost), 10-rarityWeightMap.get(rarity)));
 	}
 
 	public static <T extends ShaderCase> T registerShaderCase(ResourceLocation name, T shader, Rarity rarity)
@@ -442,7 +442,7 @@ public class ShaderRegistry
 	}
 
 	public static Item itemShader;
-	public static Map<Rarity, ? extends IItemProvider> itemShaderBag;
+	public static Map<Rarity, ? extends ItemLike> itemShaderBag;
 	/**
 	 * List of example items for shader manual entries
 	 */

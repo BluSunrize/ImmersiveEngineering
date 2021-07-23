@@ -16,26 +16,26 @@ import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.Sky
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.network.MessageSkyhookSync;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -60,18 +60,18 @@ public class SkylineHookEntity extends Entity
 	public double horizontalSpeed;//Blocks per tick, vertical iff the connection is vertical
 	private double angle;
 	public double friction = .99;
-	public Hand hand;
+	public InteractionHand hand;
 	private boolean limitSpeed;
 	private final Set<BlockPos> ignoreCollisions = new HashSet<>();
 
 
-	public SkylineHookEntity(EntityType<SkylineHookEntity> type, World world)
+	public SkylineHookEntity(EntityType<SkylineHookEntity> type, Level world)
 	{
 		super(type, world);
 		//		this.noClip=true;
 	}
 
-	public SkylineHookEntity(World world, Connection connection, ConnectionPoint start, double linePos, Hand hand, double horSpeed,
+	public SkylineHookEntity(Level world, Connection connection, ConnectionPoint start, double linePos, InteractionHand hand, double horSpeed,
 							 boolean limitSpeed)
 	{
 		this(IEEntityTypes.SKYLINE_HOOK.get(), world);
@@ -79,33 +79,33 @@ public class SkylineHookEntity extends Entity
 		this.limitSpeed = limitSpeed;
 		setConnectionAndPos(connection, start, linePos, horSpeed);
 
-		Vector3d motion = getMotion();
-		float f1 = MathHelper.sqrt(motion.x*motion.x+motion.z*motion.z);
-		this.rotationYaw = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
-		this.rotationPitch = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
-		while(this.rotationPitch-this.prevRotationPitch < -180.0F)
-			this.prevRotationPitch -= 360.0F;
-		while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
-			this.prevRotationPitch += 360.0F;
-		while(this.rotationYaw-this.prevRotationYaw < -180.0F)
-			this.prevRotationYaw -= 360.0F;
-		while(this.rotationYaw-this.prevRotationYaw >= 180.0F)
-			this.prevRotationYaw += 360.0F;
+		Vec3 motion = getDeltaMovement();
+		float f1 = Mth.sqrt(motion.x*motion.x+motion.z*motion.z);
+		this.yRot = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
+		this.xRot = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
+		while(this.xRot-this.xRotO < -180.0F)
+			this.xRotO -= 360.0F;
+		while(this.xRot-this.xRotO >= 180.0F)
+			this.xRotO += 360.0F;
+		while(this.yRot-this.yRotO < -180.0F)
+			this.yRotO -= 360.0F;
+		while(this.yRot-this.yRotO >= 180.0F)
+			this.yRotO += 360.0F;
 	}
 
 	public void setConnectionAndPos(Connection c, ConnectionPoint start, double linePos, double speed)
 	{
-		c.generateCatenaryData(world);
+		c.generateCatenaryData(level);
 		this.linePos = linePos;
 		this.horizontalSpeed = speed;
 		this.connection = c;
 		this.start = start;
-		Vector3d pos = connection.getPoint(this.linePos, start).add(Vector3d.copy(start.getPosition()));
-		this.setLocationAndAngles(pos.x, pos.y, pos.z, this.rotationYaw, this.rotationPitch);
+		Vec3 pos = connection.getPoint(this.linePos, start).add(Vec3.atLowerCornerOf(start.getPosition()));
+		this.moveTo(pos.x, pos.y, pos.z, this.yRot, this.xRot);
 		if(!connection.getCatenaryData().isVertical())
 			this.angle = Math.atan2(connection.getCatenaryData().getDeltaZ(), connection.getCatenaryData().getDeltaX());
 		ignoreCollisions.clear();
-		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(start);
+		LocalWireNetwork net = GlobalWireNetwork.getNetwork(level).getLocalNet(start);
 		IImmersiveConnectable iicStart = net.getConnector(start);
 		IImmersiveConnectable iicEnd = net.getConnector(c.getOtherEnd(start));
 		if(iicStart!=null&&iicEnd!=null)
@@ -116,16 +116,16 @@ public class SkylineHookEntity extends Entity
 	}
 
 	@Override
-	protected void registerData()
+	protected void defineSynchedData()
 	{
 	}
 
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean isInRangeToRenderDist(double distance)
+	public boolean shouldRenderAtSqrDistance(double distance)
 	{
-		double d1 = this.getBoundingBox().getAverageEdgeLength()*4.0D;
+		double d1 = this.getBoundingBox().getSize()*4.0D;
 		d1 *= 64.0D;
 		return distance < d1*d1;
 	}
@@ -133,33 +133,33 @@ public class SkylineHookEntity extends Entity
 	@Override
 	public void tick()
 	{
-		if(ticksExisted==1)
+		if(tickCount==1)
 			ImmersiveEngineering.proxy.startSkyhookSound(this);
-		PlayerEntity player = null;
+		Player player = null;
 		List<Entity> list = this.getPassengers();
-		if(!list.isEmpty()&&list.get(0) instanceof PlayerEntity)
-			player = (PlayerEntity)list.get(0);
-		if(connection==null||player==null||(hand!=null&&player.getHeldItem(hand).getItem()!=Misc.skyhook.asItem()))
+		if(!list.isEmpty()&&list.get(0) instanceof Player)
+			player = (Player)list.get(0);
+		if(connection==null||player==null||(hand!=null&&player.getItemInHand(hand).getItem()!=Misc.skyhook.asItem()))
 		{
-			if(!world.isRemote)
+			if(!level.isClientSide)
 				remove();
 			return;
 		}
 		//TODO figure out how to get the speed keeping on dismount working with less sync packets
-		if(this.ticksExisted%5==0&&!world.isRemote)
+		if(this.tickCount%5==0&&!level.isClientSide)
 			sendUpdatePacketTo(player);
 		PlayerUtils.resetFloatingState(player);
 		boolean moved = false;
 		double inLineDirection;
 		if(connection.getCatenaryData().isVertical())
-			inLineDirection = -player.moveForward*Math.sin(Math.toRadians(player.rotationPitch))
+			inLineDirection = -player.zza*Math.sin(Math.toRadians(player.xRot))
 					*Math.signum(connection.getCatenaryData().getDeltaY())
 					*getStartSignum();
 		else
 		{
-			float forward = player.moveForward;
-			double strafing = player.moveStrafing;
-			double playerAngle = Math.toRadians(player.rotationYaw)+Math.PI/2;
+			float forward = player.zza;
+			double strafing = player.xxa;
+			double playerAngle = Math.toRadians(player.yRot)+Math.PI/2;
 			double angleToLine = playerAngle-angle;
 			inLineDirection = (Math.cos(angleToLine)*forward+Math.sin(angleToLine)*strafing)
 					*getStartSignum();
@@ -235,46 +235,46 @@ public class SkylineHookEntity extends Entity
 		}
 		horizontalSpeed *= friction;
 		linePos += horSpeedToUse/getHorizontalLength();
-		Vector3d pos = connection.getPoint(linePos, start).add(Vector3d.copy(start.getPosition()));
-		setMotion(pos.x-getPosX(), pos.z-getPosZ(), pos.y-getPosY());
+		Vec3 pos = connection.getPoint(linePos, start).add(Vec3.atLowerCornerOf(start.getPosition()));
+		setDeltaMovement(pos.x-getX(), pos.z-getZ(), pos.y-getY());
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{
 			remove();
 			return;
 		}
-		this.setPosition(pos.x, pos.y, pos.z);
+		this.setPos(pos.x, pos.y, pos.z);
 
 		super.tick();
-		Vector3d motion = getMotion();
-		float f1 = MathHelper.sqrt(motion.x*motion.x+motion.z*motion.z);
-		this.rotationYaw = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
-		this.rotationPitch = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
+		Vec3 motion = getDeltaMovement();
+		float f1 = Mth.sqrt(motion.x*motion.x+motion.z*motion.z);
+		this.yRot = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
+		this.xRot = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
 
-		this.prevRotationPitch = this.rotationPitch-MathHelper.wrapDegrees(this.rotationPitch-this.prevRotationPitch);
-		this.prevRotationYaw = this.rotationYaw-MathHelper.wrapDegrees(this.rotationYaw-this.prevRotationYaw);
+		this.xRotO = this.xRot-Mth.wrapDegrees(this.xRot-this.xRotO);
+		this.yRotO = this.yRot-Mth.wrapDegrees(this.yRot-this.yRotO);
 
-		this.rotationPitch = this.prevRotationPitch+(this.rotationPitch-this.prevRotationPitch)*0.2F;
-		this.rotationYaw = this.prevRotationYaw+(this.rotationYaw-this.prevRotationYaw)*0.2F;
+		this.xRot = this.xRotO+(this.xRot-this.xRotO)*0.2F;
+		this.yRot = this.yRotO+(this.yRot-this.yRotO)*0.2F;
 
 		if(this.isInWater())
 		{
 			for(int j = 0; j < 4; ++j)
 			{
 				float f3 = 0.25F;
-				this.world.addParticle(ParticleTypes.BUBBLE,
-						this.getPosX()-motion.x*(double)f3,
-						this.getPosY()-motion.y*(double)f3,
-						this.getPosZ()-motion.z*(double)f3,
+				this.level.addParticle(ParticleTypes.BUBBLE,
+						this.getX()-motion.x*(double)f3,
+						this.getY()-motion.y*(double)f3,
+						this.getZ()-motion.z*(double)f3,
 						motion.x,
 						motion.y,
 						motion.z);
 			}
 		}
 
-		double dx = this.getPosX()-this.prevPosX;
-		double dy = this.getPosY()-this.prevPosY;
-		double dz = this.getPosZ()-this.prevPosZ;
-		int distTrvl = Math.round(MathHelper.sqrt(dx*dx+dy*dy+dz*dz)*100.0F);
+		double dx = this.getX()-this.xo;
+		double dy = this.getY()-this.yo;
+		double dz = this.getZ()-this.zo;
+		int distTrvl = Math.round(Mth.sqrt(dx*dx+dy*dy+dz*dz)*100.0F);
 //			if(distTrvl>0)
 //				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
 
@@ -283,34 +283,34 @@ public class SkylineHookEntity extends Entity
 //				if(((EntityPlayerMP)player).getStatFile().func_150870_b(IEAchievements.statDistanceSkyhook)>100000)
 //					player.triggerAchievement(IEAchievements.skyhookPro);
 
-		this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
+		this.setPos(this.getX(), this.getY(), this.getZ());
 		if(switchingAtPos!=null)
 			switchConnection(switchingAtPos, player, horSpeedToUse);
 	}
 
-	private void sendUpdatePacketTo(PlayerEntity player)
+	private void sendUpdatePacketTo(Player player)
 	{
-		if(player instanceof ServerPlayerEntity)
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new MessageSkyhookSync(this));
+		if(player instanceof ServerPlayer)
+			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new MessageSkyhookSync(this));
 	}
 
-	public void switchConnection(ConnectionPoint posForSwitch, PlayerEntity player, double lastHorSpeed)
+	public void switchConnection(ConnectionPoint posForSwitch, Player player, double lastHorSpeed)
 	{
 		Optional<Connection> line = Optional.empty();
-		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(posForSwitch);
+		LocalWireNetwork net = GlobalWireNetwork.getNetwork(level).getLocalNet(posForSwitch);
 		Collection<Connection> possible = net.getConnections(posForSwitch);
 		if(possible!=null)
 		{
-			Vector3d look = player.getLookVec();
+			Vec3 look = player.getLookAngle();
 			line = possible.stream().filter(c -> !c.equals(connection)&&!c.isInternal())
 					.max(Comparator.comparingDouble(c -> {
-						c.generateCatenaryData(world);
+						c.generateCatenaryData(level);
 						double factor;
 						if(posForSwitch.equals(c.getEndA()))
 							factor = 1;
 						else
 							factor = -1;
-						return c.getCatenaryData().getDelta().normalize().dotProduct(look)*factor;
+						return c.getCatenaryData().getDelta().normalize().dot(look)*factor;
 					}));//Maximum dot product=>Minimum angle=>Player goes in as close to a straight line as possible
 		}
 		if (line.isPresent())
@@ -342,32 +342,32 @@ public class SkylineHookEntity extends Entity
 	public boolean isValidPosition(double x, double y, double z, @Nonnull LivingEntity player)
 	{
 		final double tolerance = connection.getCatenaryData().isVertical()?5: 10;//TODO are these values good?
-		double radius = player.getWidth()/2;
-		double height = player.getHeight();
-		double yOffset = getMountedYOffset()+player.getYOffset();
-		AxisAlignedBB playerBB = new AxisAlignedBB(x-radius, y+yOffset, z-radius, x+radius, y+yOffset+height, z+radius);
+		double radius = player.getBbWidth()/2;
+		double height = player.getBbHeight();
+		double yOffset = getPassengersRidingOffset()+player.getMyRidingOffset();
+		AABB playerBB = new AABB(x-radius, y+yOffset, z-radius, x+radius, y+yOffset+height, z+radius);
 		double playerHeight = playerBB.maxY-playerBB.minY;
-		AxisAlignedBB feet = new AxisAlignedBB(playerBB.minX, playerBB.minY, playerBB.minZ,
+		AABB feet = new AABB(playerBB.minX, playerBB.minY, playerBB.minZ,
 				playerBB.maxX, playerBB.minY+.05*playerHeight, playerBB.maxZ);
-		List<VoxelShape> shapes = SkylineHelper.getCollisionBoxes(player, playerBB, world, ignoreCollisions);
+		List<VoxelShape> shapes = SkylineHelper.getCollisionBoxes(player, playerBB, level, ignoreCollisions);
 		// Heuristic to prevent dragging players through blocks too much, but also keep most setups working
 		// Allow positions where the intersection is less than 10% of the player BB volume
 		double totalCollisionVolume = 0;
 		double totalCollisionArea = 0;
-		VoxelShape playerShape = VoxelShapes.create(playerBB);
+		VoxelShape playerShape = Shapes.create(playerBB);
 		double playerVolume = getVolume(playerShape);
 		double playerArea = playerVolume/playerHeight;
-		VoxelShape feetShape = VoxelShapes.create(feet);
+		VoxelShape feetShape = Shapes.create(feet);
 		for(VoxelShape shape : shapes)
 		{
-			VoxelShape intersection = VoxelShapes.combine(playerShape, shape, IBooleanFunction.AND);
+			VoxelShape intersection = Shapes.joinUnoptimized(playerShape, shape, BooleanOp.AND);
 			totalCollisionVolume += getVolume(intersection);
 			if(totalCollisionVolume*tolerance > playerVolume)
 				return false;
-			if(!connection.getCatenaryData().isVertical()&&VoxelShapes.compare(feetShape, shape, IBooleanFunction.AND))
+			if(!connection.getCatenaryData().isVertical()&&Shapes.joinIsNotEmpty(feetShape, shape, BooleanOp.AND))
 			{
-				VoxelShape feetIntersectShape = VoxelShapes.combine(feetShape, shape, IBooleanFunction.AND);
-				for(AxisAlignedBB feetIntersect : feetIntersectShape.toBoundingBoxList())
+				VoxelShape feetIntersectShape = Shapes.joinUnoptimized(feetShape, shape, BooleanOp.AND);
+				for(AABB feetIntersect : feetIntersectShape.toAabbs())
 					totalCollisionArea += (feetIntersect.maxX-feetIntersect.minX)*(feetIntersect.maxZ-feetIntersect.minZ);
 				if(totalCollisionArea > .5*playerArea)
 					return false;
@@ -379,7 +379,7 @@ public class SkylineHookEntity extends Entity
 	private double getVolume(VoxelShape shape)
 	{
 		return shape
-				.toBoundingBoxList()
+				.toAabbs()
 				.stream()
 				.mapToDouble(box -> (box.maxX-box.minX)*(box.maxY-box.minY)*(box.maxZ-box.minZ))
 				.sum();
@@ -406,35 +406,35 @@ public class SkylineHookEntity extends Entity
 	}
 
 	@Override
-	public boolean canRenderOnFire()
+	public boolean displayFireAnimation()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean isPushedByWater()
+	public boolean isPushedByFluid()
 	{
 		return false;
 	}
 
 	@Override
-	public double getMountedYOffset()
+	public double getPassengersRidingOffset()
 	{
 		return -2;
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT nbt)
+	protected void addAdditionalSaveData(CompoundTag nbt)
 	{
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT nbt)
+	protected void readAdditionalSaveData(CompoundTag nbt)
 	{
 	}
 
 	@Override
-	public float getCollisionBorderSize()
+	public float getPickRadius()
 	{
 		return 0.0F;
 	}
@@ -446,46 +446,46 @@ public class SkylineHookEntity extends Entity
 	}
 
 	@Override
-	public boolean canBeCollidedWith()
+	public boolean isPickable()
 	{
 		return false;
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount)
+	public boolean hurt(DamageSource source, float amount)
 	{
 		this.remove();
 		return true;
 	}
 
 	@Override
-	public boolean canPassengerSteer()
+	public boolean isControlledByLocalInstance()
 	{
 		return false;
 	}
 
 	@Nonnull
 	@Override
-	public IPacket<?> createSpawnPacket()
+	public Packet<?> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	private void handleDismount(Entity passenger)
 	{
-		passenger.setPositionAndUpdate(getPosX(), getPosY()+getMountedYOffset()+passenger.getYOffset(), getPosZ());
-		passenger.setMotion(getMotion());
-		if(getMotion().y < 0)
+		passenger.teleportTo(getX(), getY()+getPassengersRidingOffset()+passenger.getMyRidingOffset(), getZ());
+		passenger.setDeltaMovement(getDeltaMovement());
+		if(getDeltaMovement().y < 0)
 		{
-			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(getMotion().y);
+			passenger.fallDistance = SkylineHelper.fallDistanceFromSpeed(getDeltaMovement().y);
 			passenger.setOnGround(false);
 		}
 		passenger.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(SkyhookUserData::release);
-		if(hand!=null&&passenger instanceof PlayerEntity)
+		if(hand!=null&&passenger instanceof Player)
 		{
-			ItemStack held = ((PlayerEntity)passenger).getHeldItem(hand);
+			ItemStack held = ((Player)passenger).getItemInHand(hand);
 			if(held.getItem()==Misc.skyhook.asItem())
-				((PlayerEntity)passenger).getCooldownTracker().setCooldown(Misc.skyhook.asItem(), 10);
+				((Player)passenger).getCooldowns().addCooldown(Misc.skyhook.asItem(), 10);
 		}
 	}
 
@@ -493,15 +493,15 @@ public class SkylineHookEntity extends Entity
 	protected void removePassenger(Entity passenger)
 	{
 		super.removePassenger(passenger);
-		if(!world.isRemote)
-			ApiUtils.addFutureServerTask(world, () -> handleDismount(passenger));
+		if(!level.isClientSide)
+			ApiUtils.addFutureServerTask(level, () -> handleDismount(passenger));
 		else
 			//TODO is this still needed?
-			ApiUtils.addFutureServerTask(world, () -> handleDismount(passenger), true);
+			ApiUtils.addFutureServerTask(level, () -> handleDismount(passenger), true);
 	}
 
 	@Override
-	public void setPositionAndRotation(double x, double y, double z, float yaw, float pitch)
+	public void absMoveTo(double x, double y, double z, float yaw, float pitch)
 	{
 		//NOP
 	}

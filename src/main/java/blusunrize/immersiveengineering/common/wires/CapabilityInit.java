@@ -4,10 +4,10 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -24,29 +24,29 @@ public class CapabilityInit
 		CapabilityManager.INSTANCE.register(GlobalWireNetwork.class, new Capability.IStorage<GlobalWireNetwork>()
 		{
 			@Override
-			public INBT writeNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side)
+			public Tag writeNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side)
 			{
 				return instance.writeToNBT();
 			}
 
 			@Override
-			public void readNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side, INBT nbt)
+			public void readNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side, Tag nbt)
 			{
-				instance.readFromNBT((CompoundNBT)nbt);
+				instance.readFromNBT((CompoundTag)nbt);
 			}
 		}, () -> {
 			throw new IllegalStateException("Can not create global wire network without a world");
 		});
 	}
 
-	public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundNBT>
+	public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag>
 	{
 		private final GlobalWireNetwork net;
 		private final LazyOptional<GlobalWireNetwork> netOpt;
 
-		public Provider(World w)
+		public Provider(Level w)
 		{
-			net = new GlobalWireNetwork(w.isRemote, new DefaultProxyProvider(w), new WireSyncManager(w));
+			net = new GlobalWireNetwork(w.isClientSide, new DefaultProxyProvider(w), new WireSyncManager(w));
 			netOpt = CapabilityUtils.constantOptional(net);
 		}
 
@@ -60,13 +60,13 @@ public class CapabilityInit
 		}
 
 		@Override
-		public CompoundNBT serializeNBT()
+		public CompoundTag serializeNBT()
 		{
 			return net.writeToNBT();
 		}
 
 		@Override
-		public void deserializeNBT(CompoundNBT nbt)
+		public void deserializeNBT(CompoundTag nbt)
 		{
 			net.readFromNBT(nbt);
 		}

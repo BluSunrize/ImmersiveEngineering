@@ -17,12 +17,12 @@ import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -34,15 +34,15 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 
 	private final ModWorkbenchTileEntity workbench;
 
-	public ModWorkbenchScreen(ModWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ModWorkbenchScreen(ModWorkbenchContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
 		workbench = container.tile;
-		this.ySize = 168;
+		this.imageHeight = 168;
 	}
 
 	@Override
-	protected void sendMessage(CompoundNBT data)
+	protected void sendMessage(CompoundTag data)
 	{
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.workbench, data));
 	}
@@ -52,22 +52,22 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	protected List<InfoArea> makeInfoAreas()
 	{
 		List<InfoArea> areas = new ArrayList<>();
-		for(int i = 0; i < container.slotCount; i++)
+		for(int i = 0; i < menu.slotCount; i++)
 		{
-			Slot s = container.getSlot(i);
+			Slot s = menu.getSlot(i);
 			if(s instanceof IESlot.BlueprintOutput)
-				areas.add(new BlueprintOutputArea((BlueprintOutput)s, guiLeft, guiTop));
+				areas.add(new BlueprintOutputArea((BlueprintOutput)s, leftPos, topPos));
 		}
 		return areas;
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		for(int i = 0; i < container.slotCount; i++)
+		for(int i = 0; i < menu.slotCount; i++)
 		{
-			Slot s = container.getSlot(i);
-			GuiHelper.drawSlot(transform, guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x77222222, 0x77444444, 0x77999999);
+			Slot s = menu.getSlot(i);
+			GuiHelper.drawSlot(transform, leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999);
 		}
 	}
 }

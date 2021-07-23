@@ -12,12 +12,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class TeslaCoilBlock extends GenericTileBlock<TeslaCoilTileEntity>
 {
@@ -27,17 +27,17 @@ public class TeslaCoilBlock extends GenericTileBlock<TeslaCoilTileEntity>
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockPlaceContext context)
 	{
-		BlockPos start = context.getPos();
-		World w = context.getWorld();
-		return areAllReplaceable(start, start.offset(context.getFace(), 1), context);
+		BlockPos start = context.getClickedPos();
+		Level w = context.getLevel();
+		return areAllReplaceable(start, start.relative(context.getClickedFace(), 1), context);
 	}
 }

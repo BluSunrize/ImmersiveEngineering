@@ -18,17 +18,21 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.*;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -45,61 +49,61 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 		super(IETileTypes.CONNECTOR_STRUCTURAL.get());
 	}
 
-	public ConnectorStructuralTileEntity(TileEntityType<? extends ConnectorStructuralTileEntity> type)
+	public ConnectorStructuralTileEntity(BlockEntityType<? extends ConnectorStructuralTileEntity> type)
 	{
 		super(type);
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
-			rotation += player.isSneaking()?-22.5f: 22.5f;
+			rotation += player.isShiftKeyDown()?-22.5f: 22.5f;
 			rotation %= 360;
-			markDirty();
-			world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+			setChanged();
+			level.blockEvent(getBlockPos(), this.getBlockState().getBlock(), 254, 0);
 		}
 		return true;
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putFloat("rotation", rotation);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getFloat("rotation");
-		if(world!=null&&world.isRemote)
+		if(level!=null&&level.isClientSide)
 			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
 		double conRadius = .03125;
-		return new Vector3d(.5+side.getXOffset()*(-.125-conRadius),
-				.5+side.getYOffset()*(-.125-conRadius),
-				.5+side.getZOffset()*(-.125-conRadius));
+		return new Vec3(.5+side.getStepX()*(-.125-conRadius),
+				.5+side.getStepY()*(-.125-conRadius),
+				.5+side.getStepZ()*(-.125-conRadius));
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		//TODO are ropes and cables meant to be mixed?
 		return STRUCTURE_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
-	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
+	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
 	{
-		return transform.compose(new TransformationMatrix(
+		return transform.compose(new Transformation(
 				new Vector3f(0, 0, 0),
 				new Quaternion(0, rotation, 0, true),
 				null, null
@@ -113,7 +117,7 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return EnergyConnectorTileEntity.getConnectorBounds(getFacing(), .3125F, .5F);
 	}
@@ -131,7 +135,7 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}

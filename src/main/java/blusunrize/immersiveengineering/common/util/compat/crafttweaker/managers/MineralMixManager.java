@@ -17,12 +17,12 @@ import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
 import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.block.Block;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public class MineralMixManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<MineralMix> getRecipeType()
+	public RecipeType<MineralMix> getRecipeType()
 	{
 		return MineralMix.TYPE;
 	}
@@ -69,7 +69,7 @@ public class MineralMixManager implements IRecipeManager
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final StackWithChance[] stacksWithChances = Arrays.stream(outputs).map(CrTIngredientUtil::getStackWithChance).toArray(StackWithChance[]::new);
-		final List<RegistryKey<World>> dimensionKeys = Arrays.stream(dimensions).map(resourceLocation1 -> RegistryKey.getOrCreateKey(Registry.WORLD_KEY, resourceLocation1)).collect(Collectors.toList());
+		final List<ResourceKey<Level>> dimensionKeys = Arrays.stream(dimensions).map(resourceLocation1 -> ResourceKey.create(Registry.DIMENSION_REGISTRY, resourceLocation1)).collect(Collectors.toList());
 		final MineralMix mix = new MineralMix(resourceLocation, stacksWithChances, weight, failChance, dimensionKeys, background);
 		CraftTweakerAPI.apply(new ActionAddRecipe(this, mix, null));
 	}

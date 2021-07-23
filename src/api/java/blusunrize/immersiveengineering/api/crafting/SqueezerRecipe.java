@@ -9,17 +9,18 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import com.google.common.collect.Lists;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -28,7 +29,7 @@ import java.util.*;
  */
 public class SqueezerRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<SqueezerRecipe> TYPE;
+	public static RecipeType<SqueezerRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
 
 	public IngredientWithSize input;
@@ -46,7 +47,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
-		this.outputList = NonNullList.from(ItemStack.EMPTY, this.itemOutput);
+		this.outputList = NonNullList.of(ItemStack.EMPTY, this.itemOutput);
 	}
 
 	@Override
@@ -80,11 +81,11 @@ public class SqueezerRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	public static SortedMap<ITextComponent, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
+	public static SortedMap<Component, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
 	{
-		SortedMap<ITextComponent, Integer> map = new TreeMap<>(
+		SortedMap<Component, Integer> map = new TreeMap<>(
 				Comparator.comparing(
-						ITextComponent::getString,
+						(Function<Component, String>) Component::getString,
 						inverse?Comparator.reverseOrder(): Comparator.reverseOrder()
 				)
 		);
@@ -92,7 +93,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&!recipe.input.hasNoMatchingItems())
 			{
 				ItemStack is = recipe.input.getMatchingStacks()[0];
-				map.put(is.getDisplayName(), recipe.fluidOutput.getAmount());
+				map.put(is.getHoverName(), recipe.fluidOutput.getAmount());
 			}
 		return map;
 	}

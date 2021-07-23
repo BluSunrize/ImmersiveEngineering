@@ -19,27 +19,27 @@ import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 
-public abstract class ImmersiveConnectableTileEntity extends TileEntity implements IImmersiveConnectable
+public abstract class ImmersiveConnectableTileEntity extends BlockEntity implements IImmersiveConnectable
 {
 	protected GlobalWireNetwork globalNet;
 
-	public ImmersiveConnectableTileEntity(TileEntityType<?> tileEntityTypeIn)
+	public ImmersiveConnectableTileEntity(BlockEntityType<?> tileEntityTypeIn)
 	{
 		super(tileEntityTypeIn);
 	}
 
 	@Override
-	public void setWorldAndPos(@Nonnull World worldIn, @Nonnull BlockPos pos)
+	public void setLevelAndPosition(@Nonnull Level worldIn, @Nonnull BlockPos pos)
 	{
-		super.setWorldAndPos(worldIn, pos);
+		super.setLevelAndPosition(worldIn, pos);
 		globalNet = GlobalWireNetwork.getNetwork(worldIn);
 	}
 
@@ -47,7 +47,7 @@ public abstract class ImmersiveConnectableTileEntity extends TileEntity implemen
 	@Override
 	public IModelData getModelData()
 	{
-		ConnectionModelData state = ConnectorTileHelper.genConnBlockState(world, this);
+		ConnectionModelData state = ConnectorTileHelper.genConnBlockState(level, this);
 		return CombinedModelData.combine(
 				new SinglePropertyModelData<>(state, Model.CONNECTIONS), super.getModelData()
 		);
@@ -64,20 +64,20 @@ public abstract class ImmersiveConnectableTileEntity extends TileEntity implemen
 	public void onLoad()
 	{
 		super.onLoad();
-		ConnectorTileHelper.onChunkLoad(this, world);
+		ConnectorTileHelper.onChunkLoad(this, level);
 	}
 
 	@Override
-	public void remove()
+	public void setRemoved()
 	{
-		super.remove();
-		ConnectorTileHelper.remove(world, this);
+		super.setRemoved();
+		ConnectorTileHelper.remove(level, this);
 	}
 
 	private final Int2ObjectMap<LocalWireNetwork> cachedLocalNets = new Int2ObjectArrayMap<>();
 
 	protected LocalWireNetwork getLocalNet(int cpIndex)
 	{
-		return ConnectorTileHelper.getLocalNetWithCache(globalNet, getPos(), cpIndex, cachedLocalNets);
+		return ConnectorTileHelper.getLocalNetWithCache(globalNet, getBlockPos(), cpIndex, cachedLocalNets);
 	}
 }

@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -37,11 +37,11 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	@Override
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged)
 	{
-		return !ItemStack.areItemStacksEqual(oldStack, newStack);
+		return !ItemStack.matches(oldStack, newStack);
 	}
 
 	@Override
-	public CompoundNBT getUpgrades(ItemStack stack)
+	public CompoundTag getUpgrades(ItemStack stack)
 	{
 		return ItemNBTHelper.getTagCompound(stack, "upgrades");
 	}
@@ -58,15 +58,15 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	}
 
 	@Override
-	public void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player)
+	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
-		if(w.isRemote)
+		if(w.isClientSide)
 			return;
 		clearUpgrades(stack);
 		LazyOptional<IItemHandler> lazyInv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		lazyInv.ifPresent(inv->
 		{
-			CompoundNBT upgradeTag = getUpgradeBase(stack).copy();
+			CompoundTag upgradeTag = getUpgradeBase(stack).copy();
 			for(int i = 0; i < inv.getSlots(); i++)
 			{
 				ItemStack u = inv.getStackInSlot(i);
@@ -82,9 +82,9 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 		});
 	}
 
-	public CompoundNBT getUpgradeBase(ItemStack stack)
+	public CompoundTag getUpgradeBase(ItemStack stack)
 	{
-		return new CompoundNBT();
+		return new CompoundTag();
 	}
 
 	@Override
@@ -94,7 +94,7 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	}
 
 	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
+	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
 	}
 
@@ -102,5 +102,5 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	public abstract boolean canModify(ItemStack stack);
 
 	@Override
-	public abstract Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer);
+	public abstract Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer);
 }

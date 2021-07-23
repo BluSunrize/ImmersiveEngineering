@@ -9,9 +9,9 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -22,5 +22,5 @@ import javax.annotation.Nullable;
 @FunctionalInterface
 public interface IShaderEffectFunction
 {
-	void execute(@Nonnull World world, @Nonnull ItemStack shader, @Nullable ItemStack item, @Nonnull String shaderType, @Nonnull Vector3d pos, @Nullable Vector3d direction, float scale);
+	void execute(@Nonnull Level world, @Nonnull ItemStack shader, @Nullable ItemStack item, @Nonnull String shaderType, @Nonnull Vec3 pos, @Nullable Vec3 direction, float scale);
 }

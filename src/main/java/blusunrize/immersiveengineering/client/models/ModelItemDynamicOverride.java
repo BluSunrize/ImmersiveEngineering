@@ -11,20 +11,20 @@ package blusunrize.immersiveengineering.client.models;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.BakedModelWrapper;
 import net.minecraftforge.client.model.ItemLayerModel;
 import net.minecraftforge.client.model.data.IModelData;
@@ -40,18 +40,18 @@ import java.util.Random;
  */
 public class ModelItemDynamicOverride extends BakedIEModel
 {
-	IBakedModel itemModel;
+	BakedModel itemModel;
 	ImmutableList<BakedQuad> quads;
-	IBakedModel guiModel;
+	BakedModel guiModel;
 
-	public ModelItemDynamicOverride(IBakedModel itemModel, @Nullable List<ResourceLocation> textures)
+	public ModelItemDynamicOverride(BakedModel itemModel, @Nullable List<ResourceLocation> textures)
 	{
 		this.itemModel = itemModel;
 		if(textures!=null)
 		{
 			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 			for(int i = 0; i < textures.size(); i++)
-				builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), TransformationMatrix.identity()));
+				builder.addAll(ItemLayerModel.getQuadsForSprite(i, ClientUtils.getSprite(textures.get(i)), Transformation.identity()));
 			quads = builder.build();
 			guiModel = new BakedGuiItemModel(this);
 		}
@@ -71,9 +71,9 @@ public class ModelItemDynamicOverride extends BakedIEModel
 	}
 
 	@Override
-	public boolean isAmbientOcclusion()
+	public boolean useAmbientOcclusion()
 	{
-		return itemModel.isAmbientOcclusion();
+		return itemModel.useAmbientOcclusion();
 	}
 
 	@Override
@@ -83,41 +83,41 @@ public class ModelItemDynamicOverride extends BakedIEModel
 	}
 
 	@Override
-	public boolean isBuiltInRenderer()
+	public boolean isCustomRenderer()
 	{
-		return itemModel.isBuiltInRenderer();
+		return itemModel.isCustomRenderer();
 	}
 
 	@Override
-	public TextureAtlasSprite getParticleTexture()
+	public TextureAtlasSprite getParticleIcon()
 	{
-		return itemModel.getParticleTexture();
+		return itemModel.getParticleIcon();
 	}
 
 	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
+	public ItemTransforms getTransforms()
 	{
-		return itemModel.getItemCameraTransforms();
+		return itemModel.getTransforms();
 	}
 
 	@Override
-	public ItemOverrideList getOverrides()
+	public ItemOverrides getOverrides()
 	{
 		return dynamicOverrides;
 	}
 
 	@Override
-	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack matrixStack)
+	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack matrixStack)
 	{
 		return cameraTransformType==TransformType.GUI?guiModel: this;
 	}
 
-	public static final HashMap<String, IBakedModel> modelCache = new HashMap<>();
-	static ItemOverrideList dynamicOverrides = new ItemOverrideList()
+	public static final HashMap<String, BakedModel> modelCache = new HashMap<>();
+	static ItemOverrides dynamicOverrides = new ItemOverrides()
 	{
 		@Nullable
 		@Override
-		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, ItemStack stack, @Nullable ClientWorld worldIn, @Nullable LivingEntity entityIn)
+		public BakedModel resolve(@Nonnull BakedModel originalModel, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn)
 		{
 			if(!stack.isEmpty()&&stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
 			{
@@ -125,7 +125,7 @@ public class ModelItemDynamicOverride extends BakedIEModel
 				String key = texOverride.getModelCacheKey(stack);
 				if(key!=null)
 				{
-					IBakedModel model = modelCache.get(key);
+					BakedModel model = modelCache.get(key);
 					if(model==null)
 					{
 						model = new ModelItemDynamicOverride(originalModel, texOverride.getTextures(stack, key));
@@ -148,7 +148,7 @@ public class ModelItemDynamicOverride extends BakedIEModel
 			ImmutableList.Builder<BakedQuad> builder = ImmutableList.builder();
 			for(BakedQuad quad : originalModel.quads)
 			{
-				if(quad.getFace()==Direction.SOUTH)
+				if(quad.getDirection()==Direction.SOUTH)
 				{
 					builder.add(quad);
 				}
@@ -168,7 +168,7 @@ public class ModelItemDynamicOverride extends BakedIEModel
 
 		@Nonnull
 		@Override
-		public IBakedModel handlePerspective(ItemCameraTransforms.TransformType cameraTransformType, MatrixStack mat)
+		public BakedModel handlePerspective(ItemTransforms.TransformType cameraTransformType, PoseStack mat)
 		{
 			return originalModel.itemModel.handlePerspective(cameraTransformType, mat);
 		}

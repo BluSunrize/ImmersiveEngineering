@@ -15,10 +15,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -33,7 +33,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	@Override
 	public BlueprintCraftingRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		String category = JSONUtils.getString(json, "category");
+		String category = GsonHelper.getAsString(json, "category");
 		ItemStack output = readOutput(json.get("result"));
 		JsonArray inputs = json.getAsJsonArray("inputs");
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
@@ -46,10 +46,10 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 
 	@Nullable
 	@Override
-	public BlueprintCraftingRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public BlueprintCraftingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		String category = buffer.readString();
-		ItemStack output = buffer.readItemStack();
+		String category = buffer.readUtf();
+		ItemStack output = buffer.readItem();
 		int inputCount = buffer.readInt();
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputCount];
 		for(int i = 0; i < ingredients.length; i++)
@@ -58,10 +58,10 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, BlueprintCraftingRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, BlueprintCraftingRecipe recipe)
 	{
-		buffer.writeString(recipe.blueprintCategory);
-		buffer.writeItemStack(recipe.output);
+		buffer.writeUtf(recipe.blueprintCategory);
+		buffer.writeItem(recipe.output);
 		buffer.writeInt(recipe.inputs.length);
 		for(IngredientWithSize ingredient : recipe.inputs)
 			ingredient.write(buffer);

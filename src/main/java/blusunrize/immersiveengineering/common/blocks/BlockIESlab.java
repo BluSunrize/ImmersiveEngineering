@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.state.properties.SlabType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.SlabType;
 
 import java.util.function.Supplier;
 
@@ -26,15 +26,15 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 
 	public BlockIESlab(Properties props, Supplier<T> base)
 	{
-		super(props.setSuffocates(causesSuffocation(base)).setOpaque(isNormalCube(base)));
+		super(props.isSuffocating(causesSuffocation(base)).isRedstoneConductor(isNormalCube(base)));
 		this.base = base;
 	}
 
 	@Override
-	public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
+	public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity)
 	{
-		double relativeEntityPosition = entity.getPositionVec().getY()-pos.getY();
-		switch(state.get(SlabBlock.TYPE))
+		double relativeEntityPosition = entity.position().y()-pos.getY();
+		switch(state.getValue(SlabBlock.TYPE))
 		{
 			case TOP:
 				return 0.5 < relativeEntityPosition&&relativeEntityPosition < 1;
@@ -60,26 +60,26 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
+	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos)
 	{
-		return Math.min(base.get().getOpacity(state, worldIn, pos), super.getOpacity(state, worldIn, pos));
+		return Math.min(base.get().getLightBlock(state, worldIn, pos), super.getLightBlock(state, worldIn, pos));
 	}
 
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
+	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos)
 	{
 		return super.propagatesSkylightDown(state, reader, pos)||base.get().propagatesSkylightDown(state, reader, pos);
 	}
 
-	public static AbstractBlock.IPositionPredicate causesSuffocation(Supplier<? extends Block> base)
+	public static BlockBehaviour.StatePredicate causesSuffocation(Supplier<? extends Block> base)
 	{
 		return (state, world, pos) ->
-			base.get().getDefaultState().isSuffocating(world, pos) && state.get(TYPE) == SlabType.DOUBLE;
+			base.get().defaultBlockState().isSuffocating(world, pos) && state.getValue(TYPE) == SlabType.DOUBLE;
 	}
 
-	public static AbstractBlock.IPositionPredicate isNormalCube(Supplier<? extends Block> base)
+	public static BlockBehaviour.StatePredicate isNormalCube(Supplier<? extends Block> base)
 	{
 		return (state, world, pos) ->
-				base.get().getDefaultState().isNormalCube(world, pos) && state.get(TYPE) == SlabType.DOUBLE;
+				base.get().defaultBlockState().isRedstoneConductor(world, pos) && state.getValue(TYPE) == SlabType.DOUBLE;
 	}
 }

@@ -14,14 +14,13 @@ import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.vertex.VertexBuffer;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.math.vector.Matrix4f;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.math.Matrix4f;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.NonNullSupplier;
 import org.lwjgl.opengl.GL11;
@@ -32,12 +31,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import static net.minecraft.client.renderer.vertex.DefaultVertexFormats.*;
+import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
 
 public class VertexBufferHolder implements IVertexBufferHolder
 {
 	public static final VertexFormat BUFFER_FORMAT = new VertexFormat(ImmutableList.of(
-			POSITION_3F, COLOR_4UB, TEX_2F, NORMAL_3B, PADDING_1B
+			ELEMENT_POSITION, ELEMENT_COLOR, ELEMENT_UV0, ELEMENT_NORMAL, ELEMENT_PADDING
 	));
 	private static final Lazy<Boolean> HAS_OPTIFINE = Lazy.of(() -> {
 		try
@@ -64,11 +63,11 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		this.buffer = new ResettableLazy<>(
 				() -> {
 					VertexBuffer vb = new VertexBuffer(BUFFER_FORMAT);
-					Tessellator tes = Tessellator.getInstance();
-					BufferBuilder bb = tes.getBuffer();
+					Tesselator tes = Tesselator.getInstance();
+					BufferBuilder bb = tes.getBuilder();
 					bb.begin(GL11.GL_QUADS, BUFFER_FORMAT);
-					renderToBuilder(bb, new MatrixStack(), 0, 0, false);
-					bb.finishDrawing();
+					renderToBuilder(bb, new PoseStack(), 0, 0, false);
+					bb.end();
 					vb.upload(bb);
 					return vb;
 				},
@@ -82,7 +81,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 	}
 
 	@Override
-	public void render(RenderType type, int light, int overlay, IRenderTypeBuffer directOut, MatrixStack transform, boolean inverted)
+	public void render(RenderType type, int light, int overlay, MultiBufferSource directOut, PoseStack transform, boolean inverted)
 	{
 		if(IEClientConfig.enableVBOs.get()&&!HAS_OPTIFINE.get())
 			JOBS.computeIfAbsent(type, t -> new ArrayList<>())
@@ -98,12 +97,12 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		quads.reset();
 	}
 
-	private void renderToBuilder(IVertexBuilder builder, MatrixStack transform, int light, int overlay, boolean inverted)
+	private void renderToBuilder(VertexConsumer builder, PoseStack transform, int light, int overlay, boolean inverted)
 	{
 		if(inverted)
 			builder = new InvertingVertexBuffer(4, builder);
 		for(BakedQuad quad : quads.get())
-			builder.addQuad(transform.getLast(), quad, 1, 1, 1, light, overlay);
+			builder.putBulkData(transform.last(), quad, 1, 1, 1, light, overlay);
 	}
 
 	//Called from aftertesr.js
@@ -118,7 +117,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 				boolean inverted = false;
 				for(BufferedJob job : typeEntry.getValue())
 				{
-					RenderSystem.glMultiTexCoord2f(33986, 16*LightTexture.getLightBlock(job.light), 16*LightTexture.getLightSky(job.light));
+					RenderSystem.glMultiTexCoord2f(33986, 16*LightTexture.block(job.light), 16*LightTexture.sky(job.light));
 					RenderSystem.glMultiTexCoord2f(33985, job.overlay&0xffff, job.overlay >>> 16);
 					if(job.inverted&&!inverted)
 						GL11.glCullFace(GL11.GL_FRONT);
@@ -126,7 +125,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 						GL11.glCullFace(GL11.GL_BACK);
 					inverted = job.inverted;
 					VertexBuffer buffer = job.buffer.buffer.get();
-					buffer.bindBuffer();
+					buffer.bind();
 					BUFFER_FORMAT.setupBufferState(0);
 					buffer.draw(job.transform, GL11.GL_QUADS);
 				}
@@ -134,7 +133,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 					GL11.glCullFace(GL11.GL_BACK);
 				type.clearRenderState();
 			}
-			VertexBuffer.unbindBuffer();
+			VertexBuffer.unbind();
 			BUFFER_FORMAT.clearBufferState();
 			JOBS.clear();
 		}
@@ -148,12 +147,12 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		private final Matrix4f transform;
 		private final boolean inverted;
 
-		private BufferedJob(VertexBufferHolder buffer, int light, int overlay, MatrixStack transform, boolean inverted)
+		private BufferedJob(VertexBufferHolder buffer, int light, int overlay, PoseStack transform, boolean inverted)
 		{
 			this.buffer = buffer;
 			this.light = light;
 			this.overlay = overlay;
-			this.transform = transform.getLast().getMatrix();
+			this.transform = transform.last().pose();
 			this.inverted = inverted;
 		}
 	}

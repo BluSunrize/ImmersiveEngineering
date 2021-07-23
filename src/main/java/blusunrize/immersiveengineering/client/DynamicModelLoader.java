@@ -17,12 +17,13 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import com.mojang.math.Transformation;
+import net.minecraft.Util;
+import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.resources.model.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -44,24 +45,24 @@ import java.util.Set;
 @EventBusSubscriber(value = Dist.CLIENT, modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class DynamicModelLoader
 {
-	private static Set<RenderMaterial> requestedTextures = new HashSet<>();
+	private static Set<Material> requestedTextures = new HashSet<>();
 	private static Set<ResourceLocation> manualTextureRequests = new HashSet<>();
 	private static final Multimap<ModelWithTransforms, ModelResourceLocation> requestedModels = HashMultimap.create();
-	private static Map<ModelWithTransforms, IUnbakedModel> unbakedModels = new HashMap<>();
+	private static Map<ModelWithTransforms, UnbakedModel> unbakedModels = new HashMap<>();
 
 	@SubscribeEvent
 	public static void modelBake(ModelBakeEvent evt)
 	{
 		IELogger.logger.debug("Baking models");
-		for(Entry<ModelWithTransforms, IUnbakedModel> unbaked : unbakedModels.entrySet())
+		for(Entry<ModelWithTransforms, UnbakedModel> unbaked : unbakedModels.entrySet())
 		{
 			ModelRequest conf = unbaked.getKey().model;
-			IModelTransform state;
+			ModelState state;
 			if(unbaked.getKey().transforms.isEmpty())
-				state = ModelRotation.getModelRotation(conf.rotX, conf.rotY);
+				state = BlockModelRotation.by(conf.rotX, conf.rotY);
 			else
 				state = new SimpleUVModelTransform(ImmutableMap.copyOf(unbaked.getKey().transforms), conf.uvLock);
-			IBakedModel baked = unbaked.getValue().bakeModel(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
+			BakedModel baked = unbaked.getValue().bake(evt.getModelLoader(), ModelLoader.defaultTextureGetter(),
 					state, conf.name);
 			for(ModelResourceLocation mrl : requestedModels.get(unbaked.getKey()))
 				evt.getModelRegistry().put(mrl, baked);
@@ -71,7 +72,7 @@ public class DynamicModelLoader
 	@SubscribeEvent
 	public static void textureStitch(TextureStitchEvent.Pre evt)
 	{
-		if(!evt.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+		if(!evt.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		IELogger.logger.debug("Loading dynamic models");
 		try
@@ -80,7 +81,7 @@ public class DynamicModelLoader
 			{
 				BlockModel model = ExpandedBlockModelDeserializer.INSTANCE.fromJson(reqModel.model.data, BlockModel.class);
 				Set<Pair<String, String>> missingTexErrors = new HashSet<>();
-				requestedTextures.addAll(model.getTextures(DynamicModelLoader::getVanillaModel, missingTexErrors));
+				requestedTextures.addAll(model.getMaterials(DynamicModelLoader::getVanillaModel, missingTexErrors));
 				if(!missingTexErrors.isEmpty())
 					throw new RuntimeException("Missing textures: "+missingTexErrors);
 				unbakedModels.put(reqModel, model);
@@ -94,8 +95,8 @@ public class DynamicModelLoader
 		IELogger.logger.debug("Stitching textures!");
 		for(ResourceLocation rl : manualTextureRequests)
 			evt.addSprite(rl);
-		for(RenderMaterial rl : requestedTextures)
-			evt.addSprite(rl.getTextureLocation());
+		for(Material rl : requestedTextures)
+			evt.addSprite(rl.texture());
 	}
 
 	@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.FORGE)
@@ -109,10 +110,10 @@ public class DynamicModelLoader
 		}
 	}
 
-	private static IUnbakedModel getVanillaModel(ResourceLocation loc)
+	private static UnbakedModel getVanillaModel(ResourceLocation loc)
 	{
 		if(loc.getPath().equals("builtin/generated"))
-			return Util.make(BlockModel.deserialize("{}"), (p_209273_0_) -> {
+			return Util.make(BlockModel.fromString("{}"), (p_209273_0_) -> {
 				p_209273_0_.name = "generation marker";
 			});
 		else
@@ -130,7 +131,7 @@ public class DynamicModelLoader
 	}
 
 	public static void requestModel(ModelRequest reqModel, ModelResourceLocation name,
-									Map<TransformType, TransformationMatrix> transforms)
+									Map<TransformType, Transformation> transforms)
 	{
 		requestedModels.put(new ModelWithTransforms(reqModel, transforms), name);
 	}
@@ -177,9 +178,9 @@ public class DynamicModelLoader
 	private static class ModelWithTransforms
 	{
 		final ModelRequest model;
-		final Map<TransformType, TransformationMatrix> transforms;
+		final Map<TransformType, Transformation> transforms;
 
-		private ModelWithTransforms(ModelRequest model, Map<TransformType, TransformationMatrix> transforms)
+		private ModelWithTransforms(ModelRequest model, Map<TransformType, Transformation> transforms)
 		{
 			this.model = model;
 			this.transforms = transforms;

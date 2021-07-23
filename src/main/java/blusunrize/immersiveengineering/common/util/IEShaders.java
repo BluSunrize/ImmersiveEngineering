@@ -18,13 +18,13 @@ import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseDrill;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.DistExecutor;
@@ -94,21 +94,21 @@ public class IEShaders
 						{
 							RenderSystem.pushLightingAttributes();
 							GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, new float[]{.5f, .2f, 0, .5f});
-							Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
+							Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
 						}
 						else
 						{
 							RenderSystem.popAttributes();
-							Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
+							Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
 						}
 					},
 					true
 			);
 			addLayer(ikelos, "1_4", 0xff5f646a);
 			ikelos.setEffectFunction((world, shader, item, shaderType, pos, dir, scale) -> {
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vector3d(0, 1, 0), scale, 2, null);
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vector3d(0, 0, 1), scale, 2, null);
-				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vector3d(1, 0, 0), scale, 2, null);
+				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 1, 0), scale, 2, null);
+				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(0, 0, 1), scale, 2, null);
+				ImmersiveEngineering.proxy.spawnFractalFX(world, pos.x, pos.y, pos.z, dir!=null?dir: new Vec3(1, 0, 0), scale, 2, null);
 			});
 		});
 
@@ -128,9 +128,9 @@ public class IEShaders
 					(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 60, .05f, .5f),
 					pre -> {
 						if(pre)
-							Minecraft.getInstance().gameRenderer.getLightTexture().disableLightmap();
+							Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
 						else
-							Minecraft.getInstance().gameRenderer.getLightTexture().enableLightmap();
+							Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
 					},
 					true
 			);
@@ -265,7 +265,7 @@ public class IEShaders
 				return new RenderType(
 						//TODO better name?
 						"shader_"+base.toString()+func_modifyRender,
-						DefaultVertexFormats.BLOCK,
+						DefaultVertexFormat.BLOCK,
 						GL11.GL_QUADS,
 						256,
 						false,

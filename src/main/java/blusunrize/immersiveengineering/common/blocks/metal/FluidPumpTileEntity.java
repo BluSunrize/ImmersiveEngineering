@@ -29,25 +29,25 @@ import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -125,7 +125,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 		boolean hasRSSignal = isRSPowered();
 		if(!hasRSSignal)
 		{
-			TileEntity above = world.getTileEntity(getPos().up());
+			BlockEntity above = level.getBlockEntity(getBlockPos().above());
 			if(above instanceof FluidPumpTileEntity)
 				hasRSSignal = ((FluidPumpTileEntity)above).isRSPowered();
 		}
@@ -144,8 +144,8 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 						int out = this.outputFluid(drain, FluidAction.EXECUTE);
 						handler.drain(out, FluidAction.EXECUTE);
 					}
-					else if(world.getGameTime()%20==((getPos().getX()^getPos().getZ())&19)
-							&&world.getFluidState(getPos().offset(f)).getFluid().isIn(FluidTags.WATER)
+					else if(level.getGameTime()%20==((getBlockPos().getX()^getBlockPos().getZ())&19)
+							&&level.getFluidState(getBlockPos().relative(f)).getType().is(FluidTags.WATER)
 							&&IEServerConfig.MACHINES.pump_infiniteWater.get()
 							&&tank.fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), FluidAction.SIMULATE)==FluidAttributes.BUCKET_VOLUME
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
@@ -153,8 +153,8 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 						int connectedSources = 0;
 						for(Direction f2 : DirectionUtils.BY_HORIZONTAL_INDEX)
 						{
-							FluidState waterState = world.getFluidState(getPos().offset(f).offset(f2));
-							if(waterState.getFluid().isIn(FluidTags.WATER)&&waterState.isSource())
+							FluidState waterState = level.getFluidState(getBlockPos().relative(f).relative(f2));
+							if(waterState.getType().is(FluidTags.WATER)&&waterState.isSource())
 								connectedSources++;
 						}
 						if(connectedSources > 1)
@@ -164,7 +164,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 						}
 					}
 				}
-			if(world.getGameTime()%40==(((getPos().getX()^getPos().getZ()))%40+40)%40)
+			if(level.getGameTime()%40==(((getBlockPos().getX()^getBlockPos().getZ()))%40+40)%40)
 			{
 				if(closedList.isEmpty())
 					prepareAreaCheck();
@@ -172,16 +172,16 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 				{
 					int target = closedList.size()-1;
 					BlockPos pos = closedList.get(target);
-					FluidStack fs = Utils.drainFluidBlock(world, pos, FluidAction.SIMULATE);
+					FluidStack fs = Utils.drainFluidBlock(level, pos, FluidAction.SIMULATE);
 					if(fs==null)
 						closedList.remove(target);
 					else if(tank.fill(fs, FluidAction.SIMULATE)==fs.getAmount()
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						this.energyStorage.extractEnergy(consumption, false);
-						fs = Utils.drainFluidBlock(world, pos, FluidAction.EXECUTE);
+						fs = Utils.drainFluidBlock(level, pos, FluidAction.EXECUTE);
 						if(IEServerConfig.MACHINES.pump_placeCobble.get()&&placeCobble)
-							world.setBlockState(pos, Blocks.COBBLESTONE.getDefaultState());
+							level.setBlockAndUpdate(pos, Blocks.COBBLESTONE.defaultBlockState());
 						this.tank.fill(fs, FluidAction.EXECUTE);
 						closedList.remove(target);
 					}
@@ -201,7 +201,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 		for(Direction f : Direction.values())
 			if(sideConfig.get(f)==IOSideConfig.INPUT)
 			{
-				openList.add(getPos().offset(f));
+				openList.add(getBlockPos().relative(f));
 				checkingArea = true;
 			}
 	}
@@ -224,12 +224,12 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 					if(searchFluid==null)
 						searchFluid = fluid;
 
-					if(!Utils.drainFluidBlock(world, next, FluidAction.SIMULATE).isEmpty())
+					if(!Utils.drainFluidBlock(level, next, FluidAction.SIMULATE).isEmpty())
 						closedList.add(next);
 					for(Direction f : Direction.values())
 					{
-						BlockPos pos2 = next.offset(f);
-						fluid = Utils.getRelatedFluid(world, pos2);
+						BlockPos pos2 = next.relative(f);
+						fluid = Utils.getRelatedFluid(level, pos2);
 						if(fluid!=Fluids.EMPTY&&!checked.contains(pos2)&&!closedList.contains(pos2)&&!openList.contains(pos2)&&(fluid!=Fluids.WATER
 								||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 							openList.add(pos2);
@@ -262,7 +262,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 				CapabilityReference<IFluidHandler> output = neighborFluids.get(f);
 				if(output.isPresent())
 				{
-					TileEntity tile = getWorldNonnull().getTileEntity(pos.offset(f));
+					BlockEntity tile = getWorldNonnull().getBlockEntity(worldPosition.relative(f));
 					IFluidHandler handler = output.get();
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeTileEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
@@ -304,7 +304,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		int[] sideConfigArray = nbt.getIntArray("sideConfig");
 		for(Direction d : DirectionUtils.VALUES)
@@ -318,14 +318,14 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		int[] sideConfigArray = new int[6];
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfigArray[d.ordinal()] = sideConfig.get(d).ordinal();
 		nbt.putIntArray("sideConfig", sideConfigArray);
 		nbt.putBoolean("placeCobble", placeCobble);
-		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
+		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
 		energyStorage.writeToNBT(nbt);
 	}
 
@@ -336,27 +336,27 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public boolean toggleSide(Direction side, PlayerEntity p)
+	public boolean toggleSide(Direction side, Player p)
 	{
 		if(side!=Direction.UP&&!isDummy())
 		{
 			sideConfig.put(side, IOSideConfig.next(sideConfig.get(side)));
-			this.markDirty();
+			this.setChanged();
 			this.markContainingBlockForUpdate(null);
-			getWorldNonnull().addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+			getWorldNonnull().blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
 			return true;
 		}
-		else if(p.isSneaking())
+		else if(p.isShiftKeyDown())
 		{
 			FluidPumpTileEntity master = this;
 			if(isDummy())
 			{
-				TileEntity tmp = world.getTileEntity(pos.down());
+				BlockEntity tmp = level.getBlockEntity(worldPosition.below());
 				if(tmp instanceof FluidPumpTileEntity)
 					master = (FluidPumpTileEntity)tmp;
 			}
 			master.placeCobble = !master.placeCobble;
-			ChatUtils.sendServerNoSpamMessages(p, new TranslationTextComponent(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
+			ChatUtils.sendServerNoSpamMessages(p, new TranslatableComponent(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
 			return true;
 		}
 		return false;
@@ -378,20 +378,20 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	}
 
 	@Override
-	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
 	{
-		if(hammer&&IEClientConfig.showTextOverlay.get()&&!isDummy()&&mop instanceof BlockRayTraceResult)
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&!isDummy()&&mop instanceof BlockHitResult)
 		{
-			BlockRayTraceResult brtr = (BlockRayTraceResult)mop;
-			IOSideConfig i = sideConfig.get(brtr.getFace());
-			IOSideConfig j = sideConfig.get(brtr.getFace().getOpposite());
+			BlockHitResult brtr = (BlockHitResult)mop;
+			IOSideConfig i = sideConfig.get(brtr.getDirection());
+			IOSideConfig j = sideConfig.get(brtr.getDirection().getOpposite());
 			return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectFluid.", i, j);
 		}
 		return null;
 	}
 
 	@Override
-	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
+	public boolean useNixieFont(Player player, HitResult mop)
 	{
 		return false;
 	}
@@ -399,7 +399,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	public void setDummy(boolean dummy)
 	{
 		BlockState old = getBlockState();
-		BlockState newState = old.with(IEProperties.MULTIBLOCKSLAVE, dummy);
+		BlockState newState = old.setValue(IEProperties.MULTIBLOCKSLAVE, dummy);
 		setState(newState);
 	}
 
@@ -470,7 +470,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	{
 		if(isDummy())
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0, -1, 0));
+			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -1, 0));
 			if(te instanceof FluidPumpTileEntity)
 				return ((FluidPumpTileEntity)te).getFluxStorage();
 		}
@@ -497,7 +497,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	@Override
 	public boolean isDummy()
 	{
-		return getBlockState().get(IEProperties.MULTIBLOCKSLAVE);
+		return getBlockState().getValue(IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Nullable
@@ -506,19 +506,19 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	{
 		if(!isDummy())
 			return this;
-		BlockPos masterPos = getPos().down();
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		BlockPos masterPos = getBlockPos().below();
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		BlockPos dummyPos = pos.up();
-		getWorldNonnull().setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
+		BlockPos dummyPos = worldPosition.above();
+		getWorldNonnull().setBlockAndUpdate(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
 				state, getWorldNonnull(), dummyPos
 		));
-		TileEntity tile = getWorldNonnull().getTileEntity(dummyPos);
+		BlockEntity tile = getWorldNonnull().getBlockEntity(dummyPos);
 		if(tile instanceof FluidPumpTileEntity)
 			((FluidPumpTileEntity)tile).setDummy(true);
 	}
@@ -527,16 +527,16 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 1; i++)
-			if(Utils.isBlockAt(world, getPos().add(0, isDummy()?-1: 0, 0).add(0, i, 0), MetalDevices.fluidPump.get()))
-				world.removeBlock(getPos().add(0, isDummy()?-1: 0, 0).add(0, i, 0), false);
+			if(Utils.isBlockAt(level, getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), MetalDevices.fluidPump.get()))
+				level.removeBlock(getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), false);
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		if(!isDummy())
-			return VoxelShapes.fullCube();
-		return VoxelShapes.create(.1875f, 0, .1875f, .8125f, 1, .8125f);
+			return Shapes.block();
+		return Shapes.box(.1875f, 0, .1875f, .8125f, 1, .8125f);
 	}
 
 	@Override

@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.data.models;
 
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.gson.*;
-import net.minecraft.client.renderer.model.ItemTransformVec3f;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraftforge.client.model.generators.ModelBuilder.Perspective;
 import net.minecraftforge.common.model.TransformationHelper;
 
@@ -40,11 +40,11 @@ public class TransformationMap
 		}
 	}
 
-	private final Map<Perspective, TransformationMatrix> transforms = new EnumMap<>(Perspective.class);
+	private final Map<Perspective, Transformation> transforms = new EnumMap<>(Perspective.class);
 
 	public TransformationMap setTransformations(Perspective t, Matrix4 mat)
 	{
-		transforms.put(t, new TransformationMatrix(mat.toMatrix4f()));
+		transforms.put(t, new Transformation(mat.toMatrix4f()));
 		return this;
 	}
 
@@ -62,11 +62,11 @@ public class TransformationMap
 	public void addFromJson(String json)
 	{
 		Gson GSON = new GsonBuilder()
-				.registerTypeAdapter(TransformationMatrix.class, new TransformationHelper.Deserializer())
-				.registerTypeAdapter(ItemTransformVec3f.class, new ItemTransformVec3f.Deserializer())
+				.registerTypeAdapter(Transformation.class, new TransformationHelper.Deserializer())
+				.registerTypeAdapter(ItemTransform.class, new ItemTransform.Deserializer())
 				.create();
 		JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-		Map<Perspective, TransformationMatrix> transforms = new HashMap<>();
+		Map<Perspective, Transformation> transforms = new HashMap<>();
 		Optional<String> type = Optional.ofNullable(obj.remove("type")).map(JsonElement::getAsString);
 		boolean vanilla = type.map("vanilla"::equals).orElse(false);
 		for(Perspective perspective : Perspective.values())
@@ -80,12 +80,12 @@ public class TransformationMap
 				forType = obj.getAsJsonObject(key);
 				obj.remove(key);
 			}
-			TransformationMatrix transform;
+			Transformation transform;
 			if(forType!=null)
 			{
 				if(vanilla)
 				{
-					ItemTransformVec3f vanillaTransform = GSON.fromJson(forType, ItemTransformVec3f.class);
+					ItemTransform vanillaTransform = GSON.fromJson(forType, ItemTransform.class);
 					transform = TransformationHelper.toTransformation(vanillaTransform);
 				}
 				else
@@ -96,17 +96,17 @@ public class TransformationMap
 				}
 			}
 			else
-				transform = TransformationMatrix.identity();
+				transform = Transformation.identity();
 			transforms.put(perspective, transform);
 		}
-		TransformationMatrix baseTransform;
+		Transformation baseTransform;
 		if(obj.size() > 0)
 			baseTransform = readMatrix(obj, GSON);
 		else
-			baseTransform = TransformationMatrix.identity();
-		for(Entry<Perspective, TransformationMatrix> e : transforms.entrySet())
+			baseTransform = Transformation.identity();
+		for(Entry<Perspective, Transformation> e : transforms.entrySet())
 		{
-			TransformationMatrix transform = composeForgeLike(e.getValue(), baseTransform);
+			Transformation transform = composeForgeLike(e.getValue(), baseTransform);
 			this.transforms.put(e.getKey(), transform);
 		}
 	}
@@ -116,20 +116,20 @@ public class TransformationMap
 	 * principle, but calling it is rather inconsistent due to a naming conflict with official names and Forge making
 	 * an absolute mess of mappings and patches.
 	 */
-	private static TransformationMatrix composeForgeLike(TransformationMatrix a, TransformationMatrix b)
+	private static Transformation composeForgeLike(Transformation a, Transformation b)
 	{
 		if(a.isIdentity()) return b;
 		if(b.isIdentity()) return a;
 		Matrix4f m = a.getMatrix();
-		m.mul(b.getMatrix());
-		return new TransformationMatrix(m);
+		m.multiply(b.getMatrix());
+		return new Transformation(m);
 	}
 
-	private TransformationMatrix readMatrix(JsonObject json, Gson GSON)
+	private Transformation readMatrix(JsonObject json, Gson GSON)
 	{
 		if(!json.has("origin"))
 			json.addProperty("origin", "center");
-		return GSON.fromJson(json, TransformationMatrix.class);
+		return GSON.fromJson(json, Transformation.class);
 	}
 
 	private String alternateName(Perspective type)
@@ -141,16 +141,16 @@ public class TransformationMap
 	public JsonObject toJson()
 	{
 		JsonObject ret = new JsonObject();
-		for(Entry<Perspective, TransformationMatrix> entry : transforms.entrySet())
+		for(Entry<Perspective, Transformation> entry : transforms.entrySet())
 			add(ret, entry.getKey(), entry.getValue());
 		return ret;
 	}
 
-	private void add(JsonObject main, Perspective type, TransformationMatrix trsr)
+	private void add(JsonObject main, Perspective type, Transformation trsr)
 	{
 		JsonObject result = new JsonObject();
 		result.add("translation", toJson(trsr.getTranslation()));
-		result.add("rotation", toJson(trsr.getRotationLeft()));
+		result.add("rotation", toJson(trsr.getLeftRotation()));
 		result.add("scale", toJson(trsr.getScale()));
 		result.add("post-rotation", toJson(trsr.getRightRot()));
 		result.addProperty("origin", "corner");
@@ -160,19 +160,19 @@ public class TransformationMap
 	private static JsonArray toJson(Quaternion v)
 	{
 		JsonArray ret = new JsonArray();
-		ret.add(v.getX());
-		ret.add(v.getY());
-		ret.add(v.getZ());
-		ret.add(v.getW());
+		ret.add(v.i());
+		ret.add(v.j());
+		ret.add(v.k());
+		ret.add(v.r());
 		return ret;
 	}
 
 	private static JsonArray toJson(Vector3f v)
 	{
 		JsonArray ret = new JsonArray();
-		ret.add(v.getX());
-		ret.add(v.getY());
-		ret.add(v.getZ());
+		ret.add(v.x());
+		ret.add(v.y());
+		ret.add(v.z());
 		return ret;
 	}
 

@@ -16,17 +16,17 @@ import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
 import blusunrize.immersiveengineering.common.gui.SorterContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -42,23 +42,23 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 
 	private final SorterTileEntity tile;
 
-	public SorterScreen(SorterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public SorterScreen(SorterContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
-		this.ySize = 244;
+		this.imageHeight = 244;
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
 		for(int side = 0; side < 6; side++)
 		{
-			int x = guiLeft+30+(side/2)*58;
-			int y = guiTop+44+(side%2)*76;
-			String s = I18n.format("desc.immersiveengineering.info.blockSide."+Direction.byIndex(side).toString()).substring(0, 1);
+			int x = leftPos+30+(side/2)*58;
+			int y = topPos+44+(side%2)*76;
+			String s = I18n.get("desc.immersiveengineering.info.blockSide."+Direction.from3DDataValue(side).toString()).substring(0, 1);
 			RenderSystem.enableBlend();
-			ClientUtils.font().drawStringWithShadow(transform, s, x-(ClientUtils.font().getStringWidth(s)/2), y, 0xaacccccc);
+			ClientUtils.font().drawShadow(transform, s, x-(ClientUtils.font().width(s)/2), y, 0xaacccccc);
 		}
 	}
 
@@ -70,15 +70,15 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 		for(int side = 0; side < 6; side++)
 			for(int bit = 0; bit < 3; bit++)
 			{
-				int x = guiLeft+3+(side/2)*58+bit*18;
-				int y = guiTop+3+(side%2)*76;
+				int x = leftPos+3+(side/2)*58+bit*18;
+				int y = topPos+3+(side%2)*76;
 				final int bitFinal = bit;
 				final int sideFinal = side;
 				ButtonSorter b = new ButtonSorter(x, y, bit, btn -> {
 					int mask = (1<<bitFinal);
 					tile.sideFilter[sideFinal] = tile.sideFilter[sideFinal]^mask;
 
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					tag.putIntArray("sideConfig", tile.sideFilter);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 					fullInit();
@@ -93,14 +93,14 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 		int type;
 		boolean active = false;
 
-		public ButtonSorter(int x, int y, int type, IPressable handler)
+		public ButtonSorter(int x, int y, int type, OnPress handler)
 		{
-			super(x, y, 18, 18, StringTextComponent.EMPTY, handler);
+			super(x, y, 18, 18, TextComponent.EMPTY, handler);
 			this.type = type;
 		}
 
 		@Override
-		public void render(MatrixStack transform, int mx, int my, float partialTicks)
+		public void render(PoseStack transform, int mx, int my, float partialTicks)
 		{
 			if(this.visible)
 			{
@@ -113,14 +113,14 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 		}
 
 		@Override
-		public void gatherTooltip(int mouseX, int mouseY, List<ITextComponent> tooltip)
+		public void gatherTooltip(int mouseX, int mouseY, List<Component> tooltip)
 		{
-			String[] split = I18n.format(Lib.DESC_INFO+"filter."+(type==0?"tag": type==1?"nbt": "damage")).split("<br>");
+			String[] split = I18n.get(Lib.DESC_INFO+"filter."+(type==0?"tag": type==1?"nbt": "damage")).split("<br>");
 			for(int i = 0; i < split.length; i++)
 				if (i == 0)
-					tooltip.add(new StringTextComponent(split[i]));
+					tooltip.add(new TextComponent(split[i]));
 				else
-					tooltip.add(TextUtils.applyFormat(new StringTextComponent(split[i]), TextFormatting.GRAY));
+					tooltip.add(TextUtils.applyFormat(new TextComponent(split[i]), ChatFormatting.GRAY));
 		}
 	}
 }

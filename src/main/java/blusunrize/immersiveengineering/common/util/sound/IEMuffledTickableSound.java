@@ -8,22 +8,22 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
-import net.minecraft.client.audio.ITickableSound;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
 
-public class IEMuffledTickableSound extends IEMuffledSound implements ITickableSound
+public class IEMuffledTickableSound extends IEMuffledSound implements TickableSoundInstance
 {
-	final ITickableSound originalSoundTickable;
+	final TickableSoundInstance originalSoundTickable;
 
-	public IEMuffledTickableSound(ITickableSound originalSound, float volumeMod)
+	public IEMuffledTickableSound(TickableSoundInstance originalSound, float volumeMod)
 	{
 		super(originalSound, volumeMod);
 		originalSoundTickable = originalSound;
 	}
 
 	@Override
-	public boolean isDonePlaying()
+	public boolean isStopped()
 	{
-		return originalSoundTickable.isDonePlaying();
+		return originalSoundTickable.isStopped();
 	}
 
 	@Override

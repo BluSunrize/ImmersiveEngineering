@@ -23,26 +23,26 @@ import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BannerBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.WallBannerBlock;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.item.Rarity;
-import net.minecraft.tileentity.BannerTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BannerBlock;
+import net.minecraft.world.level.block.WallBannerBlock;
+import net.minecraft.world.level.block.entity.BannerBlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -58,7 +58,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 {
 	public ShaderItem()
 	{
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Override
@@ -78,16 +78,16 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 
 	@Nonnull
 	@Override
-	public ActionResultType onItemUse(ItemUseContext ctx)
+	public InteractionResult useOn(UseOnContext ctx)
 	{
-		World world = ctx.getWorld();
-		BlockPos pos = ctx.getPos();
-		ResourceLocation name = getShaderName(ctx.getItem());
+		Level world = ctx.getLevel();
+		BlockPos pos = ctx.getClickedPos();
+		ResourceLocation name = getShaderName(ctx.getItemInHand());
 		if(ShaderRegistry.shaderRegistry.containsKey(name))
 		{
 			BlockState blockState = world.getBlockState(pos);
-			TileEntity tile = world.getTileEntity(pos);
-			if(tile instanceof BannerTileEntity)
+			BlockEntity tile = world.getBlockEntity(pos);
+			if(tile instanceof BannerBlockEntity)
 			{
 				ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
 				if(sCase!=null)
@@ -95,47 +95,47 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 					boolean wall = blockState.getBlock() instanceof WallBannerBlock;
 
 					if(wall)
-						world.setBlockState(pos, Cloth.shaderBannerWall.getDefaultState()
-								.with(ShaderBannerWallBlock.FACING, blockState.get(WallBannerBlock.HORIZONTAL_FACING)));
+						world.setBlockAndUpdate(pos, Cloth.shaderBannerWall.getDefaultState()
+								.setValue(ShaderBannerWallBlock.FACING, blockState.getValue(WallBannerBlock.FACING)));
 					else
-						world.setBlockState(pos, Cloth.shaderBanner.getDefaultState()
-								.with(ShaderBannerStandingBlock.ROTATION, blockState.get(BannerBlock.ROTATION)));
-					tile = world.getTileEntity(pos);
+						world.setBlockAndUpdate(pos, Cloth.shaderBanner.getDefaultState()
+								.setValue(ShaderBannerStandingBlock.ROTATION, blockState.getValue(BannerBlock.ROTATION)));
+					tile = world.getBlockEntity(pos);
 					if(tile instanceof ShaderBannerTileEntity)
 					{
-						((ShaderBannerTileEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItem(), 1));
-						tile.markDirty();
-						return ActionResultType.SUCCESS;
+						((ShaderBannerTileEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItemInHand(), 1));
+						tile.setChanged();
+						return InteractionResult.SUCCESS;
 					}
 				}
 			}
 			else if(tile instanceof ShaderBannerTileEntity)
 			{
-				((ShaderBannerTileEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItem(), 1));
-				tile.markDirty();
-				return ActionResultType.SUCCESS;
+				((ShaderBannerTileEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItemInHand(), 1));
+				tile.setChanged();
+				return InteractionResult.SUCCESS;
 			}
 
 		}
-		return ActionResultType.FAIL;
+		return InteractionResult.FAIL;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		//TODO proper translation
-		list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.level")
-				.appendString(this.getRarity(stack).color.toString())
-				.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
+		list.add(new TranslatableComponent(Lib.DESC_INFO+"shader.level")
+				.append(this.getRarity(stack).color.toString())
+				.append(new TranslatableComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
 		);
 		if(!Screen.hasShiftDown())
-			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo")
-					.appendString(" ")
-					.appendSibling(new TranslationTextComponent(Lib.DESC_INFO+"holdShift")));
+			list.add(new TranslatableComponent(Lib.DESC_INFO+"shader.applyTo")
+					.append(" ")
+					.append(new TranslatableComponent(Lib.DESC_INFO+"holdShift")));
 		else
 		{
-			list.add(new TranslationTextComponent(Lib.DESC_INFO+"shader.applyTo"));
+			list.add(new TranslatableComponent(Lib.DESC_INFO+"shader.applyTo"));
 			ResourceLocation rl = getShaderName(stack);
 			if(rl!=null)
 			{
@@ -143,8 +143,8 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 				for(ShaderCase sCase : array)
 					if(!(sCase instanceof ShaderCaseItem))
 						list.add(TextUtils.applyFormat(
-								new TranslationTextComponent(Lib.DESC_INFO+"shader."+sCase.getShaderType()),
-								TextFormatting.DARK_GRAY
+								new TranslatableComponent(Lib.DESC_INFO+"shader."+sCase.getShaderType()),
+								ChatFormatting.DARK_GRAY
 						));
 			}
 		}
@@ -152,13 +152,13 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
+	public Component getName(@Nonnull ItemStack stack)
 	{
-		IFormattableTextComponent itc = super.getDisplayName(stack).deepCopy();
+		MutableComponent itc = super.getName(stack).copy();
 		ResourceLocation rl = getShaderName(stack);
 		if(rl!=null)
-			itc.appendString(": ")
-					.appendSibling(new TranslationTextComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
+			itc.append(": ")
+					.append(new TranslatableComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
 		return itc;
 	}
 
@@ -172,9 +172,9 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void fillItemGroup(ItemGroup tab, NonNullList<ItemStack> list)
+	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list)
 	{
-		if(this.isInGroup(tab))
+		if(this.allowdedIn(tab))
 			for(ResourceLocation key : ShaderRegistry.shaderRegistry.keySet())
 			{
 				ItemStack s = new ItemStack(this);

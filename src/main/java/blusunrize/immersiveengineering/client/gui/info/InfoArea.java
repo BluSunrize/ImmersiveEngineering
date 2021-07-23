@@ -8,28 +8,28 @@
 
 package blusunrize.immersiveengineering.client.gui.info;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public abstract class InfoArea extends AbstractGui
+public abstract class InfoArea extends GuiComponent
 {
-	protected final Rectangle2d area;
+	protected final Rect2i area;
 
-	protected InfoArea(Rectangle2d area)
+	protected InfoArea(Rect2i area)
 	{
 		this.area = area;
 	}
 
-	public final void fillTooltip(int mouseX, int mouseY, List<ITextComponent> tooltip) {
+	public final void fillTooltip(int mouseX, int mouseY, List<Component> tooltip) {
 		if (area.contains(mouseX, mouseY))
 			fillTooltipOverArea(mouseX, mouseY, tooltip);
 	}
 
-	protected abstract void fillTooltipOverArea(int mouseX, int mouseY, List<ITextComponent> tooltip);
+	protected abstract void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip);
 
-	public abstract void draw(MatrixStack transform);
+	public abstract void draw(PoseStack transform);
 }

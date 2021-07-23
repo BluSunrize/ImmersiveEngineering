@@ -9,30 +9,30 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public abstract class ItemContainer extends Container implements Supplier<World>
+public abstract class ItemContainer extends AbstractContainerMenu implements Supplier<Level>
 {
-	protected final PlayerInventory inventoryPlayer;
-	protected final World world;
+	protected final Inventory inventoryPlayer;
+	protected final Level world;
 	protected int blockedSlot;
-	protected final EquipmentSlotType equipmentSlot;
+	protected final EquipmentSlot equipmentSlot;
 	protected final ItemStack heldItem;
-	protected final PlayerEntity player;
+	protected final Player player;
 	public int internalSlots;
 
-	public ItemContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
+	public ItemContainer(MenuType<?> type, int id, Inventory inventoryPlayer, Level world, EquipmentSlot entityEquipmentSlot, ItemStack heldItem)
 	{
 		super(type, id);
 		this.inventoryPlayer = inventoryPlayer;
@@ -45,31 +45,31 @@ public abstract class ItemContainer extends Container implements Supplier<World>
 
 	protected void updateSlots(){
 		this.internalSlots = this.addSlots();
-		this.blockedSlot = (this.inventoryPlayer.currentItem+27+internalSlots);
+		this.blockedSlot = (this.inventoryPlayer.selected+27+internalSlots);
 	}
 
 	abstract int addSlots();
 
-	public EquipmentSlotType getEquipmentSlot()
+	public EquipmentSlot getEquipmentSlot()
 	{
 		return equipmentSlot;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity par1EntityPlayer, int slot)
+	public ItemStack quickMoveStack(Player par1EntityPlayer, int slot)
 	{
 		ItemStack oldStackInSlot = ItemStack.EMPTY;
-		Slot slotObject = inventorySlots.get(slot);
+		Slot slotObject = slots.get(slot);
 
-		if(slotObject!=null&&slotObject.getHasStack())
+		if(slotObject!=null&&slotObject.hasItem())
 		{
-			ItemStack stackInSlot = slotObject.getStack();
+			ItemStack stackInSlot = slotObject.getItem();
 			oldStackInSlot = stackInSlot.copy();
 
 			if(slot < internalSlots)
 			{
-				if(!this.mergeItemStack(stackInSlot, internalSlots, (internalSlots+36), true))
+				if(!this.moveItemStackTo(stackInSlot, internalSlots, (internalSlots+36), true))
 					return ItemStack.EMPTY;
 			}
 			else if(allowShiftclicking()&&!stackInSlot.isEmpty())
@@ -77,20 +77,20 @@ public abstract class ItemContainer extends Container implements Supplier<World>
 				boolean b = true;
 				for(int i = 0; i < internalSlots; i++)
 				{
-					Slot s = inventorySlots.get(i);
-					if(s!=null&&s.isItemValid(stackInSlot))
+					Slot s = slots.get(i);
+					if(s!=null&&s.mayPlace(stackInSlot))
 					{
-						if(!s.getStack().isEmpty()&&(!ItemStack.areItemsEqual(stackInSlot, s.getStack())||!Utils.compareItemNBT(stackInSlot, s.getStack())))
+						if(!s.getItem().isEmpty()&&(!ItemStack.isSame(stackInSlot, s.getItem())||!Utils.compareItemNBT(stackInSlot, s.getItem())))
 							continue;
-						int space = Math.min(s.getItemStackLimit(stackInSlot), stackInSlot.getMaxStackSize());
-						if(!s.getStack().isEmpty())
-							space -= s.getStack().getCount();
+						int space = Math.min(s.getMaxStackSize(stackInSlot), stackInSlot.getMaxStackSize());
+						if(!s.getItem().isEmpty())
+							space -= s.getItem().getCount();
 						if(space <= 0)
 							continue;
 						ItemStack insert = stackInSlot;
 						if(space < stackInSlot.getCount())
 							insert = stackInSlot.split(space);
-						if(this.mergeItemStack(insert, i, i+1, true))
+						if(this.moveItemStackTo(insert, i, i+1, true))
 						{
 							b = false;
 						}
@@ -101,17 +101,17 @@ public abstract class ItemContainer extends Container implements Supplier<World>
 			}
 
 			if(stackInSlot.getCount()==0)
-				slotObject.putStack(ItemStack.EMPTY);
+				slotObject.set(ItemStack.EMPTY);
 			else
-				slotObject.onSlotChanged();
+				slotObject.setChanged();
 
-			slotObject.inventory.markDirty();
+			slotObject.container.setChanged();
 			if(stackInSlot.getCount()==oldStackInSlot.getCount())
 				return ItemStack.EMPTY;
 			slotObject.onTake(player, oldStackInSlot);
 
 			updatePlayerItem();
-			detectAndSendChanges();
+			broadcastChanges();
 		}
 		return oldStackInSlot;
 	}
@@ -122,28 +122,28 @@ public abstract class ItemContainer extends Container implements Supplier<World>
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity entityplayer)
+	public boolean stillValid(@Nonnull Player entityplayer)
 	{
-		return ItemStack.areItemsEqual(player.getItemStackFromSlot(equipmentSlot), heldItem);
+		return ItemStack.isSame(player.getItemBySlot(equipmentSlot), heldItem);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int par1, int par2, ClickType par3, PlayerEntity par4EntityPlayer)
+	public ItemStack clicked(int par1, int par2, ClickType par3, Player par4EntityPlayer)
 	{
-		if(par1==this.blockedSlot||(par3==ClickType.SWAP&&par2==par4EntityPlayer.inventory.currentItem))
+		if(par1==this.blockedSlot||(par3==ClickType.SWAP&&par2==par4EntityPlayer.inventory.selected))
 			return ItemStack.EMPTY;
-		ItemStack ret = super.slotClick(par1, par2, par3, par4EntityPlayer);
+		ItemStack ret = super.clicked(par1, par2, par3, par4EntityPlayer);
 		updatePlayerItem();
-		detectAndSendChanges();
+		broadcastChanges();
 		return ret;
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity par1EntityPlayer)
+	public void removed(Player par1EntityPlayer)
 	{
-		super.onContainerClosed(par1EntityPlayer);
-		if(!this.world.isRemote)
+		super.removed(par1EntityPlayer);
+		if(!this.world.isClientSide)
 			updatePlayerItem();
 	}
 
@@ -152,7 +152,7 @@ public abstract class ItemContainer extends Container implements Supplier<World>
 	}
 
 	@Override
-	public World get()
+	public Level get()
 	{
 		return world;
 	}

@@ -18,20 +18,20 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.renderer.model.BakedQuad;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -52,7 +52,7 @@ public class SplitConveyor extends BasicConveyor
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "splitter");
 	boolean nextOutputLeft = true;
 
-	public SplitConveyor(TileEntity tile)
+	public SplitConveyor(BlockEntity tile)
 	{
 		super(tile);
 	}
@@ -78,13 +78,13 @@ public class SplitConveyor extends BasicConveyor
 	@Override
 	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 	{
-		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
+		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getBlockPos().hashCode());
 		if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
 		{
 			Direction redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
-			BlockPos nextPos = getTile().getPos().offset(redirect);
-			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
-			TileEntity inventoryTile = getTile().getWorld().getTileEntity(nextPos);
+			BlockPos nextPos = getTile().getBlockPos().relative(redirect);
+			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getZ(): entity.getX()));
+			BlockEntity inventoryTile = getTile().getLevel().getBlockEntity(nextPos);
 			if(distNext < .7&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 			{
 				ItemStack stack = entity.getItem();
@@ -109,17 +109,17 @@ public class SplitConveyor extends BasicConveyor
 		Direction redirect = null;
 		if(entity.isAlive())
 		{
-			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
+			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getBlockPos().hashCode());
 			if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
 				redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
 			else
 			{
 				redirect = getOutputFace();
 				entity.getPersistentData().putInt(nbtKey, redirect.ordinal());
-				BlockPos nextPos = getTile().getPos().offset(this.getOutputFace().getOpposite());
-				if(getTile().getWorld().isBlockLoaded(nextPos))
+				BlockPos nextPos = getTile().getBlockPos().relative(this.getOutputFace().getOpposite());
+				if(getTile().getLevel().hasChunkAt(nextPos))
 				{
-					TileEntity nextTile = getTile().getWorld().getTileEntity(nextPos);
+					BlockEntity nextTile = getTile().getLevel().getBlockEntity(nextPos);
 					if(!(nextTile instanceof IConveyorTile))
 						nextOutputLeft = !nextOutputLeft;
 					else if(((IConveyorTile)nextTile).getFacing()!=this.getOutputFace())
@@ -130,9 +130,9 @@ public class SplitConveyor extends BasicConveyor
 		super.onEntityCollision(entity);
 		if(redirect!=null)
 		{
-			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
-			BlockPos nextPos = getTile().getPos().offset(redirect);
-			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
+			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getBlockPos().hashCode());
+			BlockPos nextPos = getTile().getBlockPos().relative(redirect);
+			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getZ(): entity.getX()));
 			double treshold = .4;
 			boolean contact = distNext < treshold;
 			if(contact)
@@ -149,39 +149,39 @@ public class SplitConveyor extends BasicConveyor
 	@Override
 	public Direction[] sigTransportDirections()
 	{
-		return new Direction[]{getFacing().rotateY(), getFacing().rotateYCCW()};
+		return new Direction[]{getFacing().getClockWise(), getFacing().getCounterClockWise()};
 	}
 
 	@Override
-	public Vector3d getDirection(Entity entity, boolean outputBlocked)
+	public Vec3 getDirection(Entity entity, boolean outputBlocked)
 	{
-		Vector3d vec = super.getDirection(entity, outputBlocked);
-		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getPos().hashCode());
+		Vec3 vec = super.getDirection(entity, outputBlocked);
+		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getTile().getBlockPos().hashCode());
 		if(!entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
 			return vec;
-		Direction redirect = Direction.byIndex(entity.getPersistentData().getInt(nbtKey));
-		BlockPos wallPos = getTile().getPos().offset(getFacing());
-		double distNext = Math.abs((getFacing().getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
+		Direction redirect = Direction.from3DDataValue(entity.getPersistentData().getInt(nbtKey));
+		BlockPos wallPos = getTile().getBlockPos().relative(getFacing());
+		double distNext = Math.abs((getFacing().getAxis()==Axis.Z?wallPos.getZ(): wallPos.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getZ(): entity.getX()));
 		if(distNext < 1.33)
 		{
 			double sideMove = Math.pow(1+distNext, 0.1)*.2;
 			if(distNext < .8)
-				vec = new Vector3d(getFacing().getAxis()==Axis.X?0: vec.x, vec.y, getFacing().getAxis()==Axis.Z?0: vec.z);
-			vec = vec.add(redirect.getXOffset()*sideMove, 0, redirect.getZOffset()*sideMove);
+				vec = new Vec3(getFacing().getAxis()==Axis.X?0: vec.x, vec.y, getFacing().getAxis()==Axis.Z?0: vec.z);
+			vec = vec.add(redirect.getStepX()*sideMove, 0, redirect.getStepZ()*sideMove);
 		}
 		return vec;
 	}
 
 	@Override
-	public CompoundNBT writeConveyorNBT()
+	public CompoundTag writeConveyorNBT()
 	{
-		CompoundNBT nbt = super.writeConveyorNBT();
+		CompoundTag nbt = super.writeConveyorNBT();
 		nbt.putBoolean("nextLeft", nextOutputLeft);
 		return nbt;
 	}
 
 	@Override
-	public void readConveyorNBT(CompoundNBT nbt)
+	public void readConveyorNBT(CompoundTag nbt)
 	{
 		super.readConveyorNBT(nbt);
 		nextOutputLeft = nbt.getBoolean("nextLeft");
@@ -210,23 +210,23 @@ public class SplitConveyor extends BasicConveyor
 	{
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(texture_casing);
 		Matrix4 matrix = new Matrix4(getFacing());
-		TransformationMatrix tMatrix = matrix.toTransformationMatrix();
+		Transformation tMatrix = matrix.toTransformationMatrix();
 		float[] colour = {1, 1, 1, 1};
 
-		Vector3d[] vertices = {new Vector3d(.0625f, 0, 0), new Vector3d(.0625f, 0, 1), new Vector3d(.9375f, 0, 1), new Vector3d(.9375f, 0, 0)};
+		Vec3[] vertices = {new Vec3(.0625f, 0, 0), new Vec3(.0625f, 0, 1), new Vec3(.9375f, 0, 1), new Vec3(.9375f, 0, 0)};
 
 		// replace bottom with casing
-		baseModel.set(0, ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, getFacing()), ClientUtils.getSprite(ModelConveyor.rl_casing[3]), new double[]{1, 0, 15, 16}, colour, true));
+		baseModel.set(0, ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, getFacing()), ClientUtils.getSprite(ModelConveyor.rl_casing[3]), new double[]{1, 0, 15, 16}, colour, true));
 
-		vertices = new Vector3d[]{new Vector3d(.0625f, .1875f, 0), new Vector3d(.0625f, .1875f, 1), new Vector3d(.9375f, .1875f, 1), new Vector3d(.9375f, .1875f, 0)};
-		baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
+		vertices = new Vec3[]{new Vec3(.0625f, .1875f, 0), new Vec3(.0625f, .1875f, 1), new Vec3(.9375f, .1875f, 1), new Vec3(.9375f, .1875f, 0)};
+		baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
 
-		vertices = new Vector3d[]{new Vector3d(.0625f, 0, 0), new Vector3d(.0625f, .1875f, 0), new Vector3d(.9375f, .1875f, 0), new Vector3d(.9375f, 0, 0)};
-		baseModel.set(15, ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
+		vertices = new Vec3[]{new Vec3(.0625f, 0, 0), new Vec3(.0625f, .1875f, 0), new Vec3(.9375f, .1875f, 0), new Vec3(.9375f, 0, 0)};
+		baseModel.set(15, ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
 
-		vertices = new Vector3d[]{new Vector3d(.0625f, .125f, 0), new Vector3d(.0625f, .1875f, 0), new Vector3d(.9375f, .1875f, 0), new Vector3d(.9375f, .125f, 0)};
-		Vector3d[] vertices2 = new Vector3d[]{new Vector3d(.5f, .125f, 0), new Vector3d(.5f, .125f, .5f), new Vector3d(.5f, .1875f, .5f), new Vector3d(.5f, .1875f, 0)};
-		Vector3d[] vertices3 = new Vector3d[]{new Vector3d(.5f, .125f, 0), new Vector3d(.5f, .125f, .5f), new Vector3d(.5f, .1875f, .5f), new Vector3d(.5f, .1875f, 0)};
+		vertices = new Vec3[]{new Vec3(.0625f, .125f, 0), new Vec3(.0625f, .1875f, 0), new Vec3(.9375f, .1875f, 0), new Vec3(.9375f, .125f, 0)};
+		Vec3[] vertices2 = new Vec3[]{new Vec3(.5f, .125f, 0), new Vec3(.5f, .125f, .5f), new Vec3(.5f, .1875f, .5f), new Vec3(.5f, .1875f, 0)};
+		Vec3[] vertices3 = new Vec3[]{new Vec3(.5f, .125f, 0), new Vec3(.5f, .125f, .5f), new Vec3(.5f, .1875f, .5f), new Vec3(.5f, .1875f, 0)};
 		for(int i = 0; i < 8; i++)
 		{
 			for(int iv = 0; iv < vertices.length; iv++)
@@ -236,12 +236,12 @@ public class SplitConveyor extends BasicConveyor
 				vertices3[iv] = vertices3[iv].add(-.0625f, 0, 0);
 			}
 			double v = 16-i;
-			baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), tex_casing0, new double[]{1, v-1, 15, v}, colour, true));
+			baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), getFacing(), tex_casing0, new double[]{1, v-1, 15, v}, colour, true));
 			if(i < 7)
 			{
 				double u = 8-i;
-				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices2), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, true));
-				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices3), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
+				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices2), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, true));
+				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices3), getFacing(), tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
 			}
 		}
 		super.modifyQuads(baseModel);
@@ -251,10 +251,10 @@ public class SplitConveyor extends BasicConveyor
 	@Override
 	public List<BlockPos> getNextConveyorCandidates()
 	{
-		BlockPos baseOutput = getTile().getPos().offset(getOutputFace());
+		BlockPos baseOutput = getTile().getBlockPos().relative(getOutputFace());
 		return ImmutableList.of(
 				baseOutput,
-				baseOutput.down()
+				baseOutput.below()
 		);
 	}
 
@@ -263,13 +263,13 @@ public class SplitConveyor extends BasicConveyor
 	{
 		// Consider the belt blocked if at least one of the possible outputs is blocked
 		Direction outputFace = getOutputFace();
-		BlockPos here = getTile().getPos();
+		BlockPos here = getTile().getBlockPos();
 		for(BlockPos outputPos : new BlockPos[]{
-				here.offset(outputFace, 1),
-				here.offset(outputFace, -1),
+				here.relative(outputFace, 1),
+				here.relative(outputFace, -1),
 		})
 		{
-			TileEntity tile = SafeChunkUtils.getSafeTE(getTile().getWorld(), outputPos);
+			BlockEntity tile = SafeChunkUtils.getSafeTE(getTile().getLevel(), outputPos);
 			if(tile instanceof IConveyorTile&&((IConveyorTile)tile).getConveyorSubtype().isBlocked())
 				return true;
 		}
@@ -279,8 +279,8 @@ public class SplitConveyor extends BasicConveyor
 	private Direction getOutputFace()
 	{
 		if(nextOutputLeft)
-			return getFacing().rotateYCCW();
+			return getFacing().getCounterClockWise();
 		else
-			return getFacing().rotateY();
+			return getFacing().getClockWise();
 	}
 }

@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -91,14 +91,14 @@ public class WireCollisionData
 	public class CollisionInfo
 	{
 		@Nonnull
-		public final Vector3d intersectA;
+		public final Vec3 intersectA;
 		@Nonnull
-		public final Vector3d intersectB;
+		public final Vec3 intersectB;
 		@Nonnull
 		public final Connection conn;
 		public final boolean isInBlock;
 
-		public CollisionInfo(@Nonnull Vector3d intersectA, @Nonnull Vector3d intersectB, @Nonnull Connection conn,
+		public CollisionInfo(@Nonnull Vec3 intersectA, @Nonnull Vec3 intersectB, @Nonnull Connection conn,
 							 boolean isInBlock)
 		{
 			this.intersectA = intersectA;

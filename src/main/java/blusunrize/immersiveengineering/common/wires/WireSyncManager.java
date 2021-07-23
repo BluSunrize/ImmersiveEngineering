@@ -14,11 +14,11 @@ import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.network.MessageWireSync;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerChunkProvider;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerChunkCache;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -35,7 +35,7 @@ public class WireSyncManager implements IWireSyncManager
 {
 	private static final SetMultimap<UUID, ChunkPos> wireWatchedChunksByPlayer = HashMultimap.create();
 
-	private static void sendMessagesForChunk(World w, ChunkPos pos, ServerPlayerEntity player, boolean add)
+	private static void sendMessagesForChunk(Level w, ChunkPos pos, ServerPlayer player, boolean add)
 	{
 		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(w);
 		Collection<ConnectionPoint> connsInChunk = net.getAllConnectorsIn(pos);
@@ -48,7 +48,7 @@ public class WireSyncManager implements IWireSyncManager
 				}
 	}
 
-	private static boolean shouldSendConnection(Connection conn, ChunkPos pos, ServerPlayerEntity player, boolean add,
+	private static boolean shouldSendConnection(Connection conn, ChunkPos pos, ServerPlayer player, boolean add,
 												ConnectionPoint currEnd)
 	{
 		if(conn.isInternal())
@@ -58,26 +58,26 @@ public class WireSyncManager implements IWireSyncManager
 		if(otherChunk.equals(pos))
 			return conn.isPositiveEnd(currEnd);
 		else
-			return wireWatchedChunksByPlayer.containsEntry(player.getUniqueID(), otherChunk);
+			return wireWatchedChunksByPlayer.containsEntry(player.getUUID(), otherChunk);
 	}
 
-	private static void addPlayersTrackingPoint(Set<ServerPlayerEntity> receivers, int x, int z, ServerWorld world)
+	private static void addPlayersTrackingPoint(Set<ServerPlayer> receivers, int x, int z, ServerLevel world)
 	{
-		ServerChunkProvider chunkProvider = world.getChunkProvider();
-		Stream<ServerPlayerEntity> watching = chunkProvider.chunkManager.getTrackingPlayers(new ChunkPos(x >> 4, z >> 4), false);
+		ServerChunkCache chunkProvider = world.getChunkSource();
+		Stream<ServerPlayer> watching = chunkProvider.chunkMap.getPlayers(new ChunkPos(x >> 4, z >> 4), false);
 		watching.forEach(e -> {
 			WireLogger.logger.debug("Watching player for {}, {}: {}", x, z, e);
 			receivers.add(e);
 		});
 	}
 
-	private static <T> void sendToPlayersForConnection(T msg, ServerWorld world, Connection c)
+	private static <T> void sendToPlayersForConnection(T msg, ServerLevel world, Connection c)
 	{
 		ApiUtils.addFutureServerTask(world, () -> {
-			Set<ServerPlayerEntity> targets = new HashSet<>();
+			Set<ServerPlayer> targets = new HashSet<>();
 			addPlayersTrackingPoint(targets, c.getEndA().getX(), c.getEndA().getZ(), world);
 			addPlayersTrackingPoint(targets, c.getEndB().getX(), c.getEndB().getZ(), world);
-			for(ServerPlayerEntity p : targets)
+			for(ServerPlayer p : targets)
 				ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> p), msg);
 		}, true);
 	}
@@ -87,7 +87,7 @@ public class WireSyncManager implements IWireSyncManager
 	{
 		ApiUtils.addFutureServerTask(ev.getWorld(),
 				() -> {
-					if(wireWatchedChunksByPlayer.put(ev.getPlayer().getUniqueID(), ev.getPos()))
+					if(wireWatchedChunksByPlayer.put(ev.getPlayer().getUUID(), ev.getPos()))
 						sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true);
 				}, true);
 	}
@@ -97,27 +97,27 @@ public class WireSyncManager implements IWireSyncManager
 	{
 		ApiUtils.addFutureServerTask(ev.getWorld(),
 				() -> {
-					if(wireWatchedChunksByPlayer.remove(ev.getPlayer().getUniqueID(), ev.getPos()))
+					if(wireWatchedChunksByPlayer.remove(ev.getPlayer().getUUID(), ev.getPos()))
 						sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false);
 				}, true);
 	}
 
-	private final World world;
+	private final Level world;
 
-	public WireSyncManager(World world)
+	public WireSyncManager(Level world)
 	{
 		this.world = world;
 	}
 
 	public void onConnectionAdded(Connection c)
 	{
-		if(!c.isInternal()&&!world.isRemote&&world instanceof ServerWorld)
-			sendToPlayersForConnection(new MessageWireSync(c, true), (ServerWorld)world, c);
+		if(!c.isInternal()&&!world.isClientSide&&world instanceof ServerLevel)
+			sendToPlayersForConnection(new MessageWireSync(c, true), (ServerLevel)world, c);
 	}
 
 	public void onConnectionRemoved(Connection c)
 	{
-		if(!c.isInternal()&&!world.isRemote&&world instanceof ServerWorld)
-			sendToPlayersForConnection(new MessageWireSync(c, false), (ServerWorld)world, c);
+		if(!c.isInternal()&&!world.isClientSide&&world instanceof ServerLevel)
+			sendToPlayersForConnection(new MessageWireSync(c, false), (ServerLevel)world, c);
 	}
 }

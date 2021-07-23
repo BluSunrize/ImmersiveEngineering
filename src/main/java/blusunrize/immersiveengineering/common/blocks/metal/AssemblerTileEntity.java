@@ -29,24 +29,24 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
 import it.unimi.dsi.fastutil.booleans.BooleanList;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -89,7 +89,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	public boolean recursiveIngredients = false;
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank0"));
@@ -98,10 +98,10 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		recursiveIngredients = nbt.getBoolean("recursiveIngredients");
 		if(!descPacket)
 		{
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
-				ListNBT patternList = nbt.getList("pattern"+iPattern, 10);
+				ListTag patternList = nbt.getList("pattern"+iPattern, 10);
 				patterns[iPattern] = new CrafterPatternInventory(this);
 				patterns[iPattern].readFromNBT(patternList);
 			}
@@ -109,19 +109,19 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.put("tank0", tanks[0].writeToNBT(new CompoundNBT()));
-		nbt.put("tank1", tanks[1].writeToNBT(new CompoundNBT()));
-		nbt.put("tank2", tanks[2].writeToNBT(new CompoundNBT()));
+		nbt.put("tank0", tanks[0].writeToNBT(new CompoundTag()));
+		nbt.put("tank1", tanks[1].writeToNBT(new CompoundTag()));
+		nbt.put("tank2", tanks[2].writeToNBT(new CompoundTag()));
 		nbt.putBoolean("recursiveIngredients", recursiveIngredients);
 		if(!descPacket)
 		{
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 			for(int iPattern = 0; iPattern < patterns.length; iPattern++)
 			{
-				ListNBT patternList = new ListNBT();
+				ListTag patternList = new ListTag();
 				patterns[iPattern].writeToNBT(patternList);
 				nbt.put("pattern"+iPattern, patternList);
 			}
@@ -129,9 +129,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
-		Preconditions.checkState(!world.isRemote);
+		Preconditions.checkState(!level.isClientSide);
 		if(message.contains("buttonID", NBT.TAG_INT))
 		{
 			int id = message.getInt("buttonID");
@@ -149,25 +149,25 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		else if(message.contains("patternSync", NBT.TAG_INT))
 		{
 			int r = message.getInt("recipe");
-			ListNBT list = message.getList("patternSync", 10);
+			ListTag list = message.getList("patternSync", 10);
 			CrafterPatternInventory pattern = patterns[r];
 			for(int i = 0; i < list.size(); i++)
 			{
-				CompoundNBT itemTag = list.getCompound(i);
-				pattern.inv.set(itemTag.getInt("slot"), ItemStack.read(itemTag));
+				CompoundTag itemTag = list.getCompound(i);
+				pattern.inv.set(itemTag.getInt("slot"), ItemStack.of(itemTag));
 			}
 		}
 	}
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
-			() -> new DirectionalBlockPos(pos.offset(getFacing(), 2), getFacing().getOpposite()),
+			() -> new DirectionalBlockPos(worldPosition.relative(getFacing(), 2), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
 	public void tickServer()
 	{
 		super.tickServer();
-		if(isDummy()||isRSDisabled()||world.getGameTime()%16!=((getPos().getX()^getPos().getZ())&15))
+		if(isDummy()||isRSDisabled()||level.getGameTime()%16!=((getBlockPos().getX()^getBlockPos().getZ())&15))
 			return;
 		boolean update = false;
 		NonNullList<ItemStack>[] outputBuffer = new NonNullList[patterns.length];
@@ -192,7 +192,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				int consumed = IEServerConfig.MACHINES.assembler_consumption.get();
 
 				AssemblerHandler.IRecipeAdapter adapter = AssemblerHandler.findAdapter(pattern.recipe);
-				RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, world);
+				RecipeQuery[] queries = adapter.getQueriedInputs(pattern.recipe, pattern.inv, level);
 				if(queries==null)
 					continue;
 				if(this.energyStorage.extractEnergy(consumed, true)==consumed&&
@@ -203,7 +203,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 					outputList.add(output);
 
 					BooleanList providedByNonItem = new BooleanArrayList(new boolean[9]);
-					NonNullList<ItemStack> gridItems = NonNullList.from(ItemStack.EMPTY, pattern.inv.toArray(new ItemStack[0]));
+					NonNullList<ItemStack> gridItems = NonNullList.of(ItemStack.EMPTY, pattern.inv.toArray(new ItemStack[0]));
 					this.consumeIngredients(queries, availableStacks, true, gridItems, providedByNonItem);
 
 					NonNullList<ItemStack> remainingItems = pattern.recipe.getRemainingItems(Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, gridItems));
@@ -270,7 +270,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 
 		if(update)
 		{
-			this.markDirty();
+			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
 	}
@@ -361,7 +361,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				for(int i = 0; i < 9; i++)
 					if(!pattern.inv.get(i).isEmpty())
 					{
-						if(ItemStack.areItemsEqual(pattern.inv.get(i), stack))
+						if(ItemStack.isSame(pattern.inv.get(i), stack))
 							return true;
 					}
 			}
@@ -369,7 +369,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		Set<BlockPos> fullBlocks = ImmutableSet.of(
 				new BlockPos(1, 1, 2),
@@ -378,7 +378,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 				new BlockPos(1, 2, 1)
 		);
 		if(posInMultiblock.getY()==0||fullBlocks.contains(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, 1, 1);
+			return Shapes.box(0, 0, 0, 1, 1, 1);
 		float xMin = 0;
 		float yMin = 0;
 		float zMin = 0;
@@ -401,7 +401,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			xMin = .1875f;
 		else if((posInMultiblock.getX()==0&&getFacing()==Direction.SOUTH)||(posInMultiblock.getX()==2&&getFacing()==Direction.NORTH))
 			xMax = .8125f;
-		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
+		return Shapes.box(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override
@@ -427,7 +427,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&w==1&&l!=1)
 		{
-			TileEntity tile = getWorldNonnull().getTileEntity(pos);
+			BlockEntity tile = getWorldNonnull().getBlockEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
 				((ConveyorBeltTileEntity)tile).setFacing(this.getFacing());
 		}
@@ -525,7 +525,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
 
@@ -570,7 +570,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed;
 	}
@@ -619,17 +619,17 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public void setWorldAndPos(World world, BlockPos blockPos) {
-		super.setWorldAndPos(world, blockPos);
-		if(getWorld()!=null)
+	public void setLevelAndPosition(Level world, BlockPos blockPos) {
+		super.setLevelAndPosition(world, blockPos);
+		if(getLevel()!=null)
 			for(CrafterPatternInventory pattern : patterns)
 				pattern.recalculateOutput();
 	}
 
-	public static class CrafterPatternInventory implements IInventory
+	public static class CrafterPatternInventory implements Container
 	{
 		public NonNullList<ItemStack> inv = NonNullList.withSize(10, ItemStack.EMPTY);
-		public IRecipe recipe;
+		public Recipe recipe;
 		final AssemblerTileEntity tile;
 
 		public CrafterPatternInventory(AssemblerTileEntity tile)
@@ -638,7 +638,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		}
 
 		@Override
-		public int getSizeInventory()
+		public int getContainerSize()
 		{
 			return 10;
 		}
@@ -655,50 +655,50 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		}
 
 		@Override
-		public ItemStack getStackInSlot(int slot)
+		public ItemStack getItem(int slot)
 		{
 			return inv.get(slot);
 		}
 
 		@Override
-		public ItemStack decrStackSize(int slot, int amount)
+		public ItemStack removeItem(int slot, int amount)
 		{
-			ItemStack stack = getStackInSlot(slot);
+			ItemStack stack = getItem(slot);
 			if(slot < 9&&!stack.isEmpty())
 				if(stack.getCount() <= amount)
-					setInventorySlotContents(slot, ItemStack.EMPTY);
+					setItem(slot, ItemStack.EMPTY);
 				else
 				{
 					stack = stack.split(amount);
 					if(stack.getCount()==0)
-						setInventorySlotContents(slot, ItemStack.EMPTY);
+						setItem(slot, ItemStack.EMPTY);
 				}
 			return stack;
 		}
 
 		@Override
-		public ItemStack removeStackFromSlot(int slot)
+		public ItemStack removeItemNoUpdate(int slot)
 		{
-			ItemStack stack = getStackInSlot(slot);
+			ItemStack stack = getItem(slot);
 			if(!stack.isEmpty())
-				setInventorySlotContents(slot, ItemStack.EMPTY);
+				setItem(slot, ItemStack.EMPTY);
 			return stack;
 		}
 
 		@Override
-		public void setInventorySlotContents(int slot, ItemStack stack)
+		public void setItem(int slot, ItemStack stack)
 		{
 			if(slot < 9)
 			{
 				inv.set(slot, stack);
-				if(!stack.isEmpty()&&stack.getCount() > getInventoryStackLimit())
-					stack.setCount(getInventoryStackLimit());
+				if(!stack.isEmpty()&&stack.getCount() > getMaxStackSize())
+					stack.setCount(getMaxStackSize());
 			}
 			recalculateOutput();
 		}
 
 		@Override
-		public void clear()
+		public void clearContent()
 		{
 			for(int i = 0; i < this.inv.size(); i++)
 				this.inv.set(i, ItemStack.EMPTY);
@@ -706,69 +706,69 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 
 		public void recalculateOutput()
 		{
-			if(tile.getWorld()!=null)
+			if(tile.getLevel()!=null)
 			{
-				CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
+				CraftingContainer invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
 				this.recipe = Utils.findCraftingRecipe(invC, tile.getWorldNonnull()).orElse(null);
-				this.inv.set(9, recipe!=null?recipe.getCraftingResult(invC): ItemStack.EMPTY);
+				this.inv.set(9, recipe!=null?recipe.assemble(invC): ItemStack.EMPTY);
 			}
 		}
 
 
 		@Override
-		public int getInventoryStackLimit()
+		public int getMaxStackSize()
 		{
 			return 1;
 		}
 
 		@Override
-		public boolean isUsableByPlayer(PlayerEntity player)
+		public boolean stillValid(Player player)
 		{
 			return true;
 		}
 
 		@Override
-		public void openInventory(PlayerEntity player)
+		public void startOpen(Player player)
 		{
 		}
 
 		@Override
-		public void closeInventory(PlayerEntity player)
+		public void stopOpen(Player player)
 		{
 		}
 
 		@Override
-		public boolean isItemValidForSlot(int slot, ItemStack stack)
+		public boolean canPlaceItem(int slot, ItemStack stack)
 		{
 			return true;
 		}
 
 		@Override
-		public void markDirty()
+		public void setChanged()
 		{
-			this.tile.markDirty();
+			this.tile.setChanged();
 		}
 
-		public void writeToNBT(ListNBT list)
+		public void writeToNBT(ListTag list)
 		{
 			for(int i = 0; i < this.inv.size(); i++)
 				if(!this.inv.get(i).isEmpty())
 				{
-					CompoundNBT itemTag = new CompoundNBT();
+					CompoundTag itemTag = new CompoundTag();
 					itemTag.putByte("Slot", (byte)i);
-					this.inv.get(i).write(itemTag);
+					this.inv.get(i).save(itemTag);
 					list.add(itemTag);
 				}
 		}
 
-		public void readFromNBT(ListNBT list)
+		public void readFromNBT(ListTag list)
 		{
 			for(int i = 0; i < list.size(); i++)
 			{
-				CompoundNBT itemTag = list.getCompound(i);
+				CompoundTag itemTag = list.getCompound(i);
 				int slot = itemTag.getByte("Slot")&255;
-				if(slot < getSizeInventory())
-					this.inv.set(slot, ItemStack.read(itemTag));
+				if(slot < getContainerSize())
+					this.inv.set(slot, ItemStack.of(itemTag));
 			}
 			recalculateOutput();
 		}

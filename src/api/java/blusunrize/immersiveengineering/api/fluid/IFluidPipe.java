@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.fluid;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 public interface IFluidPipe
 {

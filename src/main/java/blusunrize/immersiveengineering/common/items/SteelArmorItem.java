@@ -11,37 +11,37 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
-import net.minecraft.entity.Entity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import javax.annotation.Nonnull;
 
 public class SteelArmorItem extends ArmorItem
 {
-	public static IArmorMaterial mat = new SteelArmorMaterial();
+	public static ArmorMaterial mat = new SteelArmorMaterial();
 
-	public SteelArmorItem(EquipmentSlotType type)
+	public SteelArmorItem(EquipmentSlot type)
 	{
-		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.ITEM_GROUP));
+		super(mat, type, new Properties().stacksTo(1).tab(ImmersiveEngineering.ITEM_GROUP));
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
 	{
-		return ImmersiveEngineering.MODID+":textures/models/armor_steel"+(slot==EquipmentSlotType.LEGS?"_legs": "")+".png";
+		return ImmersiveEngineering.MODID+":textures/models/armor_steel"+(slot==EquipmentSlot.LEGS?"_legs": "")+".png";
 	}
 
-	private static class SteelArmorMaterial implements IArmorMaterial
+	private static class SteelArmorMaterial implements ArmorMaterial
 	{
 
 		@Override
-		public int getDurability(@Nonnull EquipmentSlotType slotIn)
+		public int getDurabilityForSlot(@Nonnull EquipmentSlot slotIn)
 		{
 			switch(slotIn)
 			{
@@ -58,7 +58,7 @@ public class SteelArmorItem extends ArmorItem
 		}
 
 		@Override
-		public int getDamageReductionAmount(EquipmentSlotType slotIn)
+		public int getDefenseForSlot(EquipmentSlot slotIn)
 		{
 			switch(slotIn)
 			{
@@ -74,23 +74,23 @@ public class SteelArmorItem extends ArmorItem
 		}
 
 		@Override
-		public int getEnchantability()
+		public int getEnchantmentValue()
 		{
 			return 10;
 		}
 
 		@Nonnull
 		@Override
-		public SoundEvent getSoundEvent()
+		public SoundEvent getEquipSound()
 		{
-			return SoundEvents.ITEM_ARMOR_EQUIP_IRON;
+			return SoundEvents.ARMOR_EQUIP_IRON;
 		}
 
 		@Nonnull
 		@Override
-		public Ingredient getRepairMaterial()
+		public Ingredient getRepairIngredient()
 		{
-			return Ingredient.fromTag(IETags.getTagsFor(EnumMetals.STEEL).ingot);
+			return Ingredient.of(IETags.getTagsFor(EnumMetals.STEEL).ingot);
 		}
 
 		@Nonnull

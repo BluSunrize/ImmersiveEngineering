@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -33,34 +33,34 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	{
 		ItemStack output = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-		int time = JSONUtils.getInt(json, "time", 200);
+		int time = GsonHelper.getAsInt(json, "time", 200);
 		ItemStack slag = ItemStack.EMPTY;
 		if(json.has("slag"))
-			slag = readOutput(JSONUtils.getJsonObject(json, "slag"));
+			slag = readOutput(GsonHelper.getAsJsonObject(json, "slag"));
 		return new BlastFurnaceRecipe(recipeId, output, input, time, slag);
 	}
 
 	@Nullable
 	@Override
-	public BlastFurnaceRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public BlastFurnaceRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItemStack();
+		ItemStack output = buffer.readItem();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		int time = buffer.readInt();
 		ItemStack slag = ItemStack.EMPTY;
 		if(buffer.readBoolean())
-			slag = buffer.readItemStack();
+			slag = buffer.readItem();
 		return new BlastFurnaceRecipe(recipeId, output, input, time, slag);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, BlastFurnaceRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, BlastFurnaceRecipe recipe)
 	{
-		buffer.writeItemStack(recipe.output);
+		buffer.writeItem(recipe.output);
 		recipe.input.write(buffer);
 		buffer.writeInt(recipe.time);
 		buffer.writeBoolean(!recipe.slag.isEmpty());
 		if(!recipe.slag.isEmpty())
-			buffer.writeItemStack(recipe.slag);
+			buffer.writeItem(recipe.slag);
 	}
 }

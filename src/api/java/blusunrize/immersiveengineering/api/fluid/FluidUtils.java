@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.api.fluid;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -32,7 +32,7 @@ public class FluidUtils
 		FluidStack fs = new FluidStack(stack, amount);
 		if(stripPressure&&fs.hasTag()&&fs.getOrCreateTag().contains("pressurized"))
 		{
-			CompoundNBT tag = fs.getOrCreateTag();
+			CompoundTag tag = fs.getOrCreateTag();
 			tag.remove("pressurized");
 			if(tag.isEmpty())
 				fs.setTag(null);
@@ -69,7 +69,7 @@ public class FluidUtils
 		}).orElse(FluidActionResult.FAILURE);
 	}
 
-	public static boolean interactWithFluidHandler(PlayerEntity player, Hand hand, IFluidHandler handler)
+	public static boolean interactWithFluidHandler(Player player, InteractionHand hand, IFluidHandler handler)
 	{
 		Mutable<FluidStack> lastNonSimulated = new MutableObject<>();
 		MutableBoolean isInsert = new MutableBoolean();

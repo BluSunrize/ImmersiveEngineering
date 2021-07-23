@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fluids.FluidStack;
 
 public class MetalBarrelTileEntity extends WoodenBarrelTileEntity
 {
-	public MetalBarrelTileEntity(TileEntityType<? extends WoodenBarrelTileEntity> type)
+	public MetalBarrelTileEntity(BlockEntityType<? extends WoodenBarrelTileEntity> type)
 	{
 		super(type);
 	}

@@ -23,14 +23,18 @@ import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.*;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.FormattedText;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,7 +56,7 @@ public class ShaderManualElement extends SpecialManualElements
 	int example = 0;
 	boolean unlocked;
 
-	IFormattableTextComponent name, text;
+	MutableComponent name, text;
 
 	public ShaderManualElement(ManualInstance manual, ShaderRegistry.ShaderRegistryEntry shader)
 	{
@@ -69,8 +73,8 @@ public class ShaderManualElement extends SpecialManualElements
 	@Override
 	public void onOpened(ManualScreen gui, int x, int y, List<Button> buttons)
 	{
-		PlayerEntity player = mc().player;
-		UUID uuid = player.getUniqueID();
+		Player player = mc().player;
+		UUID uuid = player.getUUID();
 		unlocked = ShaderRegistry.receivedShaders.get(uuid).contains(shader.getName());
 
 		shaderItem = new ItemStack(ShaderRegistry.itemShader);
@@ -106,10 +110,10 @@ public class ShaderManualElement extends SpecialManualElements
 		else
 			exampleItems = null;
 
-		this.name = TextUtils.applyFormat(shaderItem.getDisplayName(), TextFormatting.BOLD);
-		IFormattableTextComponent textAssembly = new StringTextComponent("");
-		textAssembly.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.level"), TextFormatting.BOLD));
-		textAssembly.appendSibling(new TranslationTextComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
+		this.name = TextUtils.applyFormat(shaderItem.getHoverName(), ChatFormatting.BOLD);
+		MutableComponent textAssembly = new TextComponent("");
+		textAssembly.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.level"), ChatFormatting.BOLD));
+		textAssembly.append(new TranslatableComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
 		if(unlocked)
 		{
 			String set = shader.info_set==null||shader.info_set.isEmpty()?null: ManualUtils.attemptStringTranslation(Lib.DESC_INFO+"shader.set.%s", shader.info_set);
@@ -117,25 +121,25 @@ public class ShaderManualElement extends SpecialManualElements
 			String details = shader.info_details==null||shader.info_details.isEmpty()?null: ManualUtils.attemptStringTranslation(Lib.DESC_INFO+"shader.details.%s", shader.info_details);
 
 			if(set!=null)
-				textAssembly.appendString("\n")
-						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.set"), TextFormatting.BOLD))
-						.appendString(" "+set);
+				textAssembly.append("\n")
+						.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.set"), ChatFormatting.BOLD))
+						.append(" "+set);
 			if(reference!=null)
-				textAssembly.appendString("\n")
-						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.reference"), TextFormatting.BOLD))
-						.appendString("\n"+reference);
+				textAssembly.append("\n")
+						.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.reference"), ChatFormatting.BOLD))
+						.append("\n"+reference);
 			if(details!=null)
-				textAssembly.appendString("\n")
-						.appendSibling(TextUtils.applyFormat(new TranslationTextComponent("desc.immersiveengineering.info.shader.details"), TextFormatting.BOLD))
-						.appendString("\n"+details);
+				textAssembly.append("\n")
+						.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.details"), ChatFormatting.BOLD))
+						.append("\n"+details);
 
 			String cost = Integer.toString(replicationCost.getCount());
-			if(!IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.abilities.isCreativeMode)
-				cost = TextFormatting.RED+cost;
+			if(!IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.abilities.instabuild)
+				cost = ChatFormatting.RED+cost;
 			buttons.add(new GuiButtonManual(gui, x+50, y+120, 70, 12,
-					new StringTextComponent(I18n.format("ie.manual.entry.shaderList.order")+" "+cost+"x   ").mergeStyle(TextFormatting.BOLD),
+					new TextComponent(I18n.get("ie.manual.entry.shaderList.order")+" "+cost+"x   ").withStyle(ChatFormatting.BOLD),
 					btn -> {
-						if(IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.abilities.isCreativeMode)
+						if(IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.abilities.instabuild)
 							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN, shader.getName()));
 						gui.fullInit();
 					})
@@ -143,12 +147,12 @@ public class ShaderManualElement extends SpecialManualElements
 		}
 		else
 		{
-			textAssembly.appendString("\n\n").appendSibling(new TranslationTextComponent("ie.manual.entry.shaderList.noInfo"));
-			if(player.abilities.isCreativeMode)
+			textAssembly.append("\n\n").append(new TranslatableComponent("ie.manual.entry.shaderList.noInfo"));
+			if(player.abilities.instabuild)
 				buttons.add(new GuiButtonManual(gui, x+10, y+120, 100, 16,
-						new TranslationTextComponent("ie.manual.entry.shaderList.unlock"),
+						new TranslatableComponent("ie.manual.entry.shaderList.unlock"),
 						btn -> {
-							UUID playerId = mc().player.getUniqueID();
+							UUID playerId = mc().player.getUUID();
 							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.UNLOCK, shader.getName()));
 							ShaderRegistry.receivedShaders.put(playerId, shader.getName());
 							gui.fullInit();
@@ -160,11 +164,11 @@ public class ShaderManualElement extends SpecialManualElements
 	}
 
 	@Override
-	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		RenderHelper.enableStandardItemLighting();
+		Lighting.turnBackOn();
 		float scale = 2;
-		transform.push();
+		transform.pushPose();
 		transform.translate(x, y, 0);
 		transform.scale(scale, scale, scale);
 		boolean examples = exampleItems!=null&&exampleItems.length > 0;
@@ -175,26 +179,26 @@ public class ShaderManualElement extends SpecialManualElements
 
 		transform.scale(1/scale, 1/scale, 1/scale);
 		if(unlocked)
-			ManualUtils.renderItemStack(transform, replicationCost.getRandomizedExampleStack(mc().player.ticksExisted), 102, 118, false);
+			ManualUtils.renderItemStack(transform, replicationCost.getRandomizedExampleStack(mc().player.tickCount), 102, 118, false);
 
-		RenderHelper.disableStandardItemLighting();
+		Lighting.turnOff();
 
-		int w = manual.fontRenderer().getStringWidth(this.name.getString());
+		int w = manual.fontRenderer().width(this.name.getString());
 		drawWrappedWithTransform(transform, this.name, 60-w/2, 24);
 		if(this.text!=null&&!this.text.getString().isEmpty())
 			drawWrappedWithTransform(transform, this.text, 0, 38);
 
-		transform.pop();
+		transform.popPose();
 	}
 
 	private void drawWrappedWithTransform(
-			MatrixStack transform, ITextProperties text, int x, int y
+			PoseStack transform, FormattedText text, int x, int y
 	)
 	{
-		for(IReorderingProcessor line : manual.fontRenderer().trimStringToWidth(text, 120))
+		for(FormattedCharSequence line : manual.fontRenderer().split(text, 120))
 		{
-			manual.fontRenderer().func_238422_b_(transform, line, (float)x, (float)y, manual.getTextColour());
-			y += manual.fontRenderer().FONT_HEIGHT;
+			manual.fontRenderer().draw(transform, line, (float)x, (float)y, manual.getTextColour());
+			y += manual.fontRenderer().lineHeight;
 		}
 	}
 

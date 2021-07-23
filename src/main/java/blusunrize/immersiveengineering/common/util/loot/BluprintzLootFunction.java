@@ -13,71 +13,71 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootFunction;
-import net.minecraft.loot.LootFunctionType;
-import net.minecraft.loot.conditions.ILootCondition;
-import net.minecraft.loot.functions.ILootFunction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
+import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
 
-public class BluprintzLootFunction extends LootFunction
+public class BluprintzLootFunction extends LootItemConditionalFunction
 {
 	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "secret_bluprintz");
 
-	protected BluprintzLootFunction(ILootCondition[] conditionsIn)
+	protected BluprintzLootFunction(LootItemCondition[] conditionsIn)
 	{
 		super(conditionsIn);
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack doApply(ItemStack stack, @Nonnull LootContext context)
+	public ItemStack run(ItemStack stack, @Nonnull LootContext context)
 	{
-		stack.setDisplayName(new StringTextComponent("Super Special BluPrintz"));
-		ItemNBTHelper.setLore(stack, new StringTextComponent("Congratulations!"), new StringTextComponent("You have found an easter egg!"));
+		stack.setHoverName(new TextComponent("Super Special BluPrintz"));
+		ItemNBTHelper.setLore(stack, new TextComponent("Congratulations!"), new TextComponent("You have found an easter egg!"));
 		return stack;
 	}
 
 	@Nonnull
 	@Override
-	public LootFunctionType getFunctionType()
+	public LootItemFunctionType getType()
 	{
 		return IELootFunctions.bluprintz;
 	}
 
-	public static class Serializer extends LootFunction.Serializer<BluprintzLootFunction>
+	public static class Serializer extends LootItemConditionalFunction.Serializer<BluprintzLootFunction>
 	{
 		@Override
 		@Nonnull
-		public BluprintzLootFunction deserialize(@Nonnull JsonObject object, @Nonnull JsonDeserializationContext deserializationContext, @Nonnull ILootCondition[] conditionsIn)
+		public BluprintzLootFunction deserialize(@Nonnull JsonObject object, @Nonnull JsonDeserializationContext deserializationContext, @Nonnull LootItemCondition[] conditionsIn)
 		{
 			return new BluprintzLootFunction(conditionsIn);
 		}
 	}
 
-	public static class Builder extends LootFunction.Builder<Builder>
+	public static class Builder extends LootItemConditionalFunction.Builder<blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction.Builder>
 	{
 		@Nonnull
 		@Override
-		protected Builder doCast()
+		protected blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction.Builder getThis()
 		{
 			return this;
 		}
 
 		@Nonnull
 		@Override
-		public ILootFunction build()
+		public LootItemFunction build()
 		{
 			return new BluprintzLootFunction(getConditions());
 		}
 	}
 
-	public static Builder builder()
+	public static blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction.Builder builder()
 	{
-		return new Builder();
+		return new blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction.Builder();
 	}
 }

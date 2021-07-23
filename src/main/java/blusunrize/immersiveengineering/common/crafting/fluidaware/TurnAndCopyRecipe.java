@@ -12,13 +12,13 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -61,15 +61,15 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull CraftingInventory matrix)
+	public ItemStack assemble(@Nonnull CraftingContainer matrix)
 	{
 		if(nbtCopyTargetSlot!=null)
 		{
-			ItemStack out = getRecipeOutput().copy();
-			CompoundNBT tag = out.getOrCreateTag();
+			ItemStack out = getResultItem().copy();
+			CompoundTag tag = out.getOrCreateTag();
 			for(int targetSlot : nbtCopyTargetSlot)
 			{
-				ItemStack s = matrix.getStackInSlot(targetSlot);
+				ItemStack s = matrix.getItem(targetSlot);
 				if(!s.isEmpty()&&s.hasTag())
 					tag = ItemNBTHelper.combineTags(tag, s.getOrCreateTag(), nbtCopyPredicate);
 			}
@@ -77,12 +77,12 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 			return out;
 		}
 		else
-			return super.getCraftingResult(matrix);
+			return super.assemble(matrix);
 	}
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingInventory inv)
+	protected MatchLocation findMatch(CraftingContainer inv)
 	{
 		for(int xOffset = 0; xOffset <= inv.getWidth()-this.getWidth(); ++xOffset)
 			for(int yOffset = 0; yOffset <= inv.getHeight()-this.getHeight(); ++yOffset)
@@ -98,7 +98,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 		return null;
 	}
 
-	private boolean checkMatchDo(CraftingInventory inv, MatchLocation loc)
+	private boolean checkMatchDo(CraftingContainer inv, MatchLocation loc)
 	{
 		for(int x = 0; x < inv.getWidth(); x++)
 			for(int y = 0; y < inv.getHeight(); y++)
@@ -109,7 +109,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 				if(index >= 0)
 					target = getIngredients().get(index);
 
-				ItemStack slot = inv.getStackInSlot(x+y*inv.getWidth());
+				ItemStack slot = inv.getItem(x+y*inv.getWidth());
 				if(!target.test(slot))
 					return false;
 			}
@@ -118,7 +118,7 @@ public class TurnAndCopyRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.TURN_AND_COPY_SERIALIZER.get();
 	}

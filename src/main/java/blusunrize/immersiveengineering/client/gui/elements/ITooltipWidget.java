@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.client.gui.elements;
 
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
 public interface ITooltipWidget
 {
-	void gatherTooltip(int mouseX, int mouseY, List<ITextComponent> tooltip);
+	void gatherTooltip(int mouseX, int mouseY, List<Component> tooltip);
 }

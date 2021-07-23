@@ -19,10 +19,10 @@ import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -31,18 +31,18 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 {
 	private final AutoWorkbenchTileEntity tile;
 
-	public AutoWorkbenchScreen(AutoWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public AutoWorkbenchScreen(AutoWorkbenchContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("auto_workbench"));
 		this.tile = container.tile;
-		this.ySize = 184;
+		this.imageHeight = 184;
 	}
 
 	@Nonnull
 	@Override
 	protected List<InfoArea> makeInfoAreas()
 	{
-		return ImmutableList.of(new EnergyInfoArea(guiLeft+80, guiTop+36, tile));
+		return ImmutableList.of(new EnergyInfoArea(leftPos+80, topPos+36, tile));
 	}
 
 	@Override
@@ -50,15 +50,15 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 	{
 		this.buttons.clear();
 		super.init();
-		Slot s = container.getSlot(0);
-		if(s!=null&&s.getHasStack()&&s.getStack().getItem() instanceof EngineersBlueprintItem)
+		Slot s = menu.getSlot(0);
+		if(s!=null&&s.hasItem()&&s.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(s.getStack(), "blueprint"));
+			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(s.getItem(), "blueprint"));
 			if(recipes!=null&&recipes.length > 0)
 			{
 				int l = recipes.length;
-				int xx = guiLeft+121;
-				int yy = guiTop+(l > 6?59-(l-3)/3*18: l > 3?59: 68);
+				int xx = leftPos+121;
+				int yy = topPos+(l > 6?59-(l-3)/3*18: l > 3?59: 68);
 				for(int i = 0; i < l; i++)
 					if(recipes[i]!=null&&!recipes[i].output.isEmpty())
 					{
@@ -69,7 +69,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 										tile.selectedRecipe = -1;
 									else
 										tile.selectedRecipe = id;
-									CompoundNBT message = new CompoundNBT();
+									CompoundTag message = new CompoundTag();
 									message.putInt("recipe", tile.selectedRecipe);
 									ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, message));
 									fullInit();

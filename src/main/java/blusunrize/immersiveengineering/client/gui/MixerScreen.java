@@ -23,15 +23,15 @@ import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.MixerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -42,11 +42,11 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 
 	private final MixerTileEntity tile;
 
-	public MixerScreen(MixerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public MixerScreen(MixerContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
-		this.ySize = 167;
+		this.imageHeight = 167;
 	}
 
 	@Nonnull
@@ -54,12 +54,12 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new EnergyInfoArea(guiLeft+158, guiTop+22, tile),
+				new EnergyInfoArea(leftPos+158, topPos+22, tile),
 				new TooltipArea(
-						new Rectangle2d(guiLeft+106, guiTop+61, 30, 16),
-						() -> new TranslationTextComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single"))
+						new Rect2i(leftPos+106, topPos+61, 30, 16),
+						() -> new TranslatableComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single"))
 				),
-				new MultitankArea(new Rectangle2d(guiLeft+76, guiTop+11, 58, 47), tile.tank)
+				new MultitankArea(new Rect2i(leftPos+76, topPos+11, 58, 47), tile.tank)
 		);
 	}
 
@@ -68,9 +68,9 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	{
 		super.init();
 		this.buttons.clear();
-		this.addButton(new GuiButtonBoolean(guiLeft+106, guiTop+61, 30, 16, "", tile.outputAll, TEXTURE, 176, 82, 1,
+		this.addButton(new GuiButtonBoolean(leftPos+106, topPos+61, 30, 16, "", tile.outputAll, TEXTURE, 176, 82, 1,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					tile.outputAll = !btn.getState();
 					tag.putBoolean("outputAll", tile.outputAll);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
@@ -79,10 +79,10 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		transform.push();
-		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		transform.pushPose();
+		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
 			if(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInMachine)
@@ -91,10 +91,10 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 				for(int slot : ((MultiblockProcessInMachine<?>)process).getInputSlots())
 				{
 					int h = (int)Math.max(1, mod*16);
-					this.blit(transform, guiLeft+24+slot%2*21, guiTop+7+slot/2*18+(16-h), 176, 16-h, 2, h);
+					this.blit(transform, leftPos+24+slot%2*21, topPos+7+slot/2*18+(16-h), 176, 16-h, 2, h);
 				}
 			}
 
-		buffers.finish();
+		buffers.endBatch();
 	}
 }

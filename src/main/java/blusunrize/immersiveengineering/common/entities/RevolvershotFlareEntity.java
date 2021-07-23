@@ -10,61 +10,61 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 
 public class RevolvershotFlareEntity extends RevolvershotEntity
 {
 	public int colour = -1;
-	private static final DataParameter<Integer> dataMarker_colour = EntityDataManager.createKey(RevolvershotFlareEntity.class, DataSerializers.VARINT);
+	private static final EntityDataAccessor<Integer> dataMarker_colour = SynchedEntityData.defineId(RevolvershotFlareEntity.class, EntityDataSerializers.INT);
 	private BlockPos lightPos;
 
-	public RevolvershotFlareEntity(EntityType<RevolvershotFlareEntity> type, World world)
+	public RevolvershotFlareEntity(EntityType<RevolvershotFlareEntity> type, Level world)
 	{
 		super(type, world);
 		this.setTickLimit(400);
 	}
 
-	public RevolvershotFlareEntity(World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
+	public RevolvershotFlareEntity(Level world, double x, double y, double z, double ax, double ay, double az, IBullet type)
 	{
 		super(IEEntityTypes.FLARE_REVOLVERSHOT.get(), world, null, x, y, z, ax, ay, az, type);
 		this.setTickLimit(400);
 	}
 
-	public RevolvershotFlareEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type, ItemStack stack)
+	public RevolvershotFlareEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet type, ItemStack stack)
 	{
 		super(IEEntityTypes.FLARE_REVOLVERSHOT.get(), world, living, ax, ay, az, type);
 		this.setTickLimit(400);
 	}
 
 	@Override
-	protected void registerData()
+	protected void defineSynchedData()
 	{
-		super.registerData();
-		this.dataManager.register(dataMarker_colour, -1);
+		super.defineSynchedData();
+		this.entityData.define(dataMarker_colour, -1);
 	}
 
 	public void setColourSynced()
 	{
-		this.dataManager.set(dataMarker_colour, colour);
+		this.entityData.set(dataMarker_colour, colour);
 	}
 
 	public int getColourSynced()
 	{
-		return this.dataManager.get(dataMarker_colour);
+		return this.entityData.get(dataMarker_colour);
 	}
 
 	public int getColour()
@@ -78,53 +78,53 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		super.tick();
 		if(colour < 0)
 			colour = getColourSynced();
-		if(world.isRemote)
+		if(level.isClientSide)
 		{
 			float r = (getColour() >> 16&255)/255f;
 			float g = (getColour() >> 8&255)/255f;
 			float b = (getColour()&255)/255f;
-			world.addParticle(new RedstoneParticleData(r, g, b, 1), getPosX(), getPosY(), getPosZ(), 0, 0, 0);
-			if(ticksExisted > 40)
+			level.addParticle(new DustParticleOptions(r, g, b, 1), getX(), getY(), getZ(), 0, 0, 0);
+			if(tickCount > 40)
 				for(int i = 0; i < 20; i++)
 				{
-					Vector3d v = new Vector3d(Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5);
-					world.addParticle(new RedstoneParticleData(r, g, b, 1), getPosX()+v.x, getPosY()+v.y, getPosZ()+v.z, v.x/10, v.y/10, v.z/10);
+					Vec3 v = new Vec3(Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5);
+					level.addParticle(new DustParticleOptions(r, g, b, 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
 				}
 		}
-		if(ticksExisted==40)
+		if(tickCount==40)
 		{
-			setMotion(0, -.1, 0);
+			setDeltaMovement(0, -.1, 0);
 			spawnParticles();
-			lightPos = this.getPosition();
+			lightPos = this.blockPosition();
 			for(int i = 0; i < 128; i++)
-				if(world.isAirBlock(lightPos))
-					lightPos = lightPos.down();
+				if(level.isEmptyBlock(lightPos))
+					lightPos = lightPos.below();
 				else
 				{
-					lightPos = lightPos.up(6);
+					lightPos = lightPos.above(6);
 					break;
 				}
 		}
 	}
 
 	@Override
-	public void onImpact(RayTraceResult mop)
+	public void onHit(HitResult mop)
 	{
-		if(ticksExisted <= 40)
+		if(tickCount <= 40)
 		{
-			if(!this.world.isRemote)
-				if(mop instanceof EntityRayTraceResult)
+			if(!this.level.isClientSide)
+				if(mop instanceof EntityHitResult)
 				{
-					Entity hit = ((EntityRayTraceResult)mop).getEntity();
-					if(!hit.isImmuneToFire())
-						hit.setFire(8);
+					Entity hit = ((EntityHitResult)mop).getEntity();
+					if(!hit.fireImmune())
+						hit.setSecondsOnFire(8);
 				}
-				else if(mop instanceof BlockRayTraceResult)
+				else if(mop instanceof BlockHitResult)
 				{
-					BlockRayTraceResult blockRTR = (BlockRayTraceResult)mop;
-					BlockPos pos = blockRTR.getPos().offset(blockRTR.getFace());
-					if(this.world.isAirBlock(pos))
-						this.world.setBlockState(pos, Blocks.FIRE.getDefaultState());
+					BlockHitResult blockRTR = (BlockHitResult)mop;
+					BlockPos pos = blockRTR.getBlockPos().relative(blockRTR.getDirection());
+					if(this.level.isEmptyBlock(pos))
+						this.level.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
 				}
 			spawnParticles();
 		}
@@ -138,8 +138,8 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		float b = (getColour()&255)/255f;
 		for(int i = 0; i < 80; i++)
 		{
-			Vector3d v = new Vector3d((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
-			world.addParticle(new RedstoneParticleData(r, g, b, 1), getPosX()+v.x, getPosY()+v.y, getPosZ()+v.z, v.x/10, v.y/10, v.z/10);
+			Vec3 v = new Vec3((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
+			level.addParticle(new DustParticleOptions(r, g, b, 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
 		}
 	}
 }

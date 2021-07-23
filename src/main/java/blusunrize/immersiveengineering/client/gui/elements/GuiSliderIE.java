@@ -9,27 +9,27 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.Font;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.client.gui.widget.Slider;
 
 public class GuiSliderIE extends Slider
 {
-	public GuiSliderIE(int x, int y, int width, String name, float value, IPressable handler)
+	public GuiSliderIE(int x, int y, int width, String name, float value, OnPress handler)
 	{
-		super(x, y, width, 8, ITextComponent.getTextComponentOrEmpty(name+" "), ITextComponent.getTextComponentOrEmpty("%"), 0, 100, 100*value, false, true, handler);
+		super(x, y, width, 8, Component.nullToEmpty(name+" "), Component.nullToEmpty("%"), 0, 100, 100*value, false, true, handler);
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mouseX, int mouseY, float partial)
+	public void render(PoseStack transform, int mouseX, int mouseY, float partial)
 	{
 		if(this.visible)
 		{
 ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
-			FontRenderer fontrenderer = Minecraft.getInstance().fontRenderer;
+			Font fontrenderer = Minecraft.getInstance().font;
 			isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(770, 771, 1, 0);

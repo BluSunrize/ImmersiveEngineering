@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.RegistryObject;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -26,7 +26,7 @@ import java.util.Map;
 
 public class ClocheRecipe extends IESerializableRecipe
 {
-	public static IRecipeType<ClocheRecipe> TYPE;
+	public static RecipeType<ClocheRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<ClocheRecipe>> SERIALIZER;
 
 	public final List<ItemStack> outputs;
@@ -75,7 +75,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	}
 
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return this.outputs.get(0);
 	}

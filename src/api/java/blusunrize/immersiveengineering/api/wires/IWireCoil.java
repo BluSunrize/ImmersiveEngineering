@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * @author BluSunrize - 26.06.2015
@@ -20,7 +20,7 @@ public interface IWireCoil
 {
 	WireType getWireType(ItemStack stack);
 
-	default boolean canConnectCable(ItemStack stack, TileEntity targetEntity)
+	default boolean canConnectCable(ItemStack stack, BlockEntity targetEntity)
 	{
 		return true;
 	}

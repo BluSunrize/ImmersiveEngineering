@@ -14,10 +14,10 @@ import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
 import blusunrize.immersiveengineering.common.gui.RefineryContainer;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -28,7 +28,7 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 
 	private final RefineryTileEntity tile;
 
-	public RefineryScreen(RefineryContainer container, PlayerInventory inventoryPlayer, ITextComponent component)
+	public RefineryScreen(RefineryContainer container, Inventory inventoryPlayer, Component component)
 	{
 		super(container, inventoryPlayer, component, TEXTURE);
 		this.tile = container.tile;
@@ -39,10 +39,10 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(tile.tanks[0], new Rectangle2d(guiLeft+13, guiTop+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new FluidInfoArea(tile.tanks[1], new Rectangle2d(guiLeft+61, guiTop+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new FluidInfoArea(tile.tanks[2], new Rectangle2d(guiLeft+109, guiTop+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new EnergyInfoArea(guiLeft+157, guiTop+21, tile)
+				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+13, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(tile.tanks[1], new Rect2i(leftPos+61, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new FluidInfoArea(tile.tanks[2], new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new EnergyInfoArea(leftPos+157, topPos+21, tile)
 		);
 	}
 }

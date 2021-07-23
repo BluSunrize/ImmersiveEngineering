@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,17 +24,17 @@ public class MaintenanceKitItem extends IEBaseItem
 {
 	public MaintenanceKitItem()
 	{
-		super(new Properties().maxStackSize(1).defaultMaxDamage(50));
+		super(new Properties().stacksTo(1).defaultDurability(50));
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
-		if(!world.isRemote)
+		if(!world.isClientSide)
 			openGui(player, hand);
-		ItemStack stack = player.getHeldItem(hand);
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		ItemStack stack = player.getItemInHand(hand);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	@Nullable

@@ -8,37 +8,37 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
-import net.minecraft.client.audio.ISound;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundEventAccessor;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.client.resources.sounds.Sound;
+import net.minecraft.client.resources.sounds.SoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 
 import javax.annotation.Nullable;
 
-public class IEMuffledSound implements ISound
+public class IEMuffledSound implements SoundInstance
 {
-	ISound originalSound;
+	SoundInstance originalSound;
 	float volumeMod;
 
-	public IEMuffledSound(ISound originalSound, float volumeMod)
+	public IEMuffledSound(SoundInstance originalSound, float volumeMod)
 	{
 		this.originalSound = originalSound;
 		this.volumeMod = volumeMod;
 	}
 
 	@Override
-	public ResourceLocation getSoundLocation()
+	public ResourceLocation getLocation()
 	{
-		return originalSound.getSoundLocation();
+		return originalSound.getLocation();
 	}
 
 	@Nullable
 	@Override
-	public SoundEventAccessor createAccessor(SoundHandler handler)
+	public WeighedSoundEvents resolve(SoundManager handler)
 	{
-		return originalSound.createAccessor(handler);
+		return originalSound.resolve(handler);
 	}
 
 	@Override
@@ -48,27 +48,27 @@ public class IEMuffledSound implements ISound
 	}
 
 	@Override
-	public SoundCategory getCategory()
+	public SoundSource getSource()
 	{
-		return originalSound.getCategory();
+		return originalSound.getSource();
 	}
 
 	@Override
-	public boolean canRepeat()
+	public boolean isLooping()
 	{
-		return originalSound.canRepeat();
+		return originalSound.isLooping();
 	}
 
 	@Override
-	public boolean isGlobal()
+	public boolean isRelative()
 	{
-		return originalSound.isGlobal();
+		return originalSound.isRelative();
 	}
 
 	@Override
-	public int getRepeatDelay()
+	public int getDelay()
 	{
-		return originalSound.getRepeatDelay();
+		return originalSound.getDelay();
 	}
 
 	@Override
@@ -102,8 +102,8 @@ public class IEMuffledSound implements ISound
 	}
 
 	@Override
-	public AttenuationType getAttenuationType()
+	public Attenuation getAttenuation()
 	{
-		return originalSound.getAttenuationType();
+		return originalSound.getAttenuation();
 	}
 }

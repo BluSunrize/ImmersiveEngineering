@@ -16,14 +16,14 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -43,11 +43,11 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<Blast
 	}
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
-			() -> new DirectionalBlockPos(pos.offset(getFacing(), 2).add(0, -1, 0), getFacing().getOpposite()),
+			() -> new DirectionalBlockPos(worldPosition.relative(getFacing(), 2).offset(0, -1, 0), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 	private final CapabilityReference<IItemHandler> slag = CapabilityReference.forTileEntityAt(this,
-			() -> new DirectionalBlockPos(pos.offset(getFacing(), -2).add(0, -1, 0), getFacing().getOpposite()),
+			() -> new DirectionalBlockPos(worldPosition.relative(getFacing(), -2).offset(0, -1, 0), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 
@@ -55,7 +55,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<Blast
 	public void tickServer()
 	{
 		super.tickServer();
-		if(world.getGameTime()%8!=0||isDummy())
+		if(level.getGameTime()%8!=0||isDummy())
 			return;
 		if(!this.inventory.get(2).isEmpty())
 		{
@@ -73,7 +73,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<Blast
 
 	@Nonnull
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		if((posInMultiblock.getX()==1&&posInMultiblock.getZ()==1)
 				||ImmutableSet.of(
@@ -81,7 +81,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<Blast
 				new BlockPos(1, 1, 2),
 				new BlockPos(1, 3, 1)
 		).contains(posInMultiblock))
-			return VoxelShapes.fullCube();
+			return Shapes.block();
 
 		float xMin = 0;
 		float yMin = 0;
@@ -130,7 +130,7 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<Blast
 				zMax = indent;
 		}
 
-		return VoxelShapes.create(xMin, yMin, zMin, xMax, yMax, zMax);
+		return Shapes.box(xMin, yMin, zMin, xMax, yMax, zMax);
 	}
 
 	@Override
@@ -149,9 +149,9 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity<Blast
 
 	public Optional<BlastFurnacePreheaterTileEntity> getPreheater(boolean left)
 	{
-		Direction phf = left?getFacing().rotateY(): getFacing().rotateYCCW();
-		BlockPos pos = getPos().add(0, -1, 0).offset(phf, 2);
-		TileEntity te = Utils.getExistingTileEntity(world, pos);
+		Direction phf = left?getFacing().getClockWise(): getFacing().getCounterClockWise();
+		BlockPos pos = getBlockPos().offset(0, -1, 0).relative(phf, 2);
+		BlockEntity te = Utils.getExistingTileEntity(level, pos);
 		if(te instanceof BlastFurnacePreheaterTileEntity)
 			return Optional.of((BlastFurnacePreheaterTileEntity)te);
 		return Optional.empty();

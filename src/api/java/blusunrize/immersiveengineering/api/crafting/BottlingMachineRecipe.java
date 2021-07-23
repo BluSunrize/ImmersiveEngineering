@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import com.google.common.collect.Lists;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class BottlingMachineRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<BottlingMachineRecipe> TYPE;
+	public static RecipeType<BottlingMachineRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
 
 	public final Ingredient input;
@@ -43,7 +43,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 		setInputList(Lists.newArrayList(this.input));
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
-		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
+		this.outputList = NonNullList.of(ItemStack.EMPTY, this.output);
 	}
 
 	@Override

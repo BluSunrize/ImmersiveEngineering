@@ -20,21 +20,21 @@ import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -65,9 +65,9 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 		if (turnSpeed == 0)
 			return 0;
 		double mod = .00005;
-		if(!world.isRaining())
+		if(!level.isRaining())
 			mod *= .75;
-		if(!world.isThundering())
+		if(!level.isThundering())
 			mod *= .66;
 		mod *= getSpeedModifier();
 		return mod * turnSpeed;
@@ -76,7 +76,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	@Override
 	public void tickServer()
 	{
-		if(world.getGameTime()%128==((getPos().getX()^getPos().getZ())&127))
+		if(level.getGameTime()%128==((getBlockPos().getX()^getBlockPos().getZ())&127))
 		{
 			final float oldTurnSpeed = turnSpeed;
 			turnSpeed = computeTurnSpeed();
@@ -86,7 +86,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 		if(turnSpeed == 0)
 			return;
 
-		TileEntity tileEntity = SafeChunkUtils.getSafeTE(world, pos.offset(getFacing().getOpposite()));
+		BlockEntity tileEntity = SafeChunkUtils.getSafeTE(level, worldPosition.relative(getFacing().getOpposite()));
 		if(tileEntity instanceof IRotationAcceptor)
 		{
 			IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
@@ -111,7 +111,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 		{
 			int r = Math.abs(hh)==4?1: Math.abs(hh)==3?2: Math.abs(hh)==2?3: 4;
 			for(int ww = -r; ww <= r; ww++)
-				if((hh!=0||ww!=0)&&!world.isAirBlock(getPos().offset(facing.rotateY(), ww).up(hh)))
+				if((hh!=0||ww!=0)&&!level.isEmptyBlock(getBlockPos().relative(facing.getClockWise(), ww).above(hh)))
 					return 0;
 		}
 
@@ -123,12 +123,12 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 			{
 				for(int dd = 1; dd < 8; dd++)
 				{
-					BlockPos pos = getPos().up(hh)
-							.offset(facing, dd)
-							.offset(facing.rotateY(), ww);
-					if(!world.isAreaLoaded(pos, 1)||world.isAirBlock(pos))
+					BlockPos pos = getBlockPos().above(hh)
+							.relative(facing, dd)
+							.relative(facing.getClockWise(), ww);
+					if(!level.isAreaLoaded(pos, 1)||level.isEmptyBlock(pos))
 						turnSpeed++;
-					else if(world.getTileEntity(pos) instanceof WindmillTileEntity)
+					else if(level.getBlockEntity(pos) instanceof WindmillTileEntity)
 					{
 						blocked += 20;
 						turnSpeed -= 179;
@@ -145,7 +145,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		sails = nbt.getInt("sails");
 		rotation = nbt.getFloat("rotation");
@@ -153,7 +153,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putInt("sails", sails);
 		nbt.putFloat("rotation", rotation);
@@ -161,22 +161,22 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
+	private AABB renderAABB;
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
 		{
 			Direction facing = getFacing();
-			renderAABB = new AxisAlignedBB(
-					getPos().getX()-(facing.getAxis()==Axis.Z?6: 0),
-					getPos().getY()-6,
-					getPos().getZ()-(facing.getAxis()==Axis.Z?0: 6),
-					getPos().getX()+(facing.getAxis()==Axis.Z?7: 0),
-					getPos().getY()+7,
-					getPos().getZ()+(facing.getAxis()==Axis.Z?0: 7)
+			renderAABB = new AABB(
+					getBlockPos().getX()-(facing.getAxis()==Axis.Z?6: 0),
+					getBlockPos().getY()-6,
+					getBlockPos().getZ()-(facing.getAxis()==Axis.Z?0: 6),
+					getBlockPos().getX()+(facing.getAxis()==Axis.Z?7: 0),
+					getBlockPos().getY()+7,
+					getBlockPos().getZ()+(facing.getAxis()==Axis.Z?0: 7)
 			);
 		}
 		return renderAABB;
@@ -201,7 +201,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -219,12 +219,12 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(sails < 8&&heldItem.getItem()==Ingredients.windmillSail.asItem())
 		{
 			this.sails++;
-			if(!player.abilities.isCreativeMode)
+			if(!player.abilities.instabuild)
 				heldItem.shrink(1);
 			return true;
 		}
@@ -240,17 +240,17 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 
 	private static final CachedVoxelShapes<Direction> SHAPES = new CachedVoxelShapes<>(WindmillTileEntity::getShape);
 
-	private static List<AxisAlignedBB> getShape(Direction key)
+	private static List<AABB> getShape(Direction key)
 	{
 		return Lists.newArrayList(
-				key.getAxis()==Axis.Z?new AxisAlignedBB(.0625, .0625, 0, .9375, .9375, 1):
-						new AxisAlignedBB(0, .0625, .0625, 1, .9375, .9375)
+				key.getAxis()==Axis.Z?new AABB(.0625, .0625, 0, .9375, .9375, 1):
+						new AABB(0, .0625, .0625, 1, .9375, .9375)
 		);
 	}
 
 	@Nonnull
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return SHAPES.get(this.getFacing());
 	}

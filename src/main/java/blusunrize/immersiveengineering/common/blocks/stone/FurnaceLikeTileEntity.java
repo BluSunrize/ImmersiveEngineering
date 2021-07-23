@@ -17,18 +17,18 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -54,7 +54,7 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 	private final ToIntFunction<R> getProcessingTime;
 
 	protected FurnaceLikeTileEntity(
-			IETemplateMultiblock mb, TileEntityType<T> type, int fuelSlot, List<InputSlot<R>> inputs, List<OutputSlot<R>> outputs, ToIntFunction<R> getProcessingTime
+			IETemplateMultiblock mb, BlockEntityType<T> type, int fuelSlot, List<InputSlot<R>> inputs, List<OutputSlot<R>> outputs, ToIntFunction<R> getProcessingTime
 	)
 	{
 		super(mb, type, false);
@@ -65,7 +65,7 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed;
 	}
@@ -78,9 +78,9 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 
 	@Nonnull
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	@Override
@@ -161,8 +161,8 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 		final boolean activeAfterTick = getIsActive();
 		if(activeBeforeTick!=activeAfterTick)
 		{
-			this.markDirty();
-			for(BlockInfo info : multiblockInstance.getStructure(world))
+			this.setChanged();
+			for(StructureBlockInfo info : multiblockInstance.getStructure(level))
 			{
 				T te = getTileForPos(info.pos);
 				if(te!=null)
@@ -183,7 +183,7 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 			ItemStack outputSlot = out.get(recipe);
 			if(!currentStack.isEmpty())
 			{
-				if(!ItemStack.areItemsEqual(currentStack, outputSlot))
+				if(!ItemStack.isSame(currentStack, outputSlot))
 					return null;
 				else if(currentStack.getCount()+outputSlot.getCount() > getSlotLimit(out.slotIndex))
 					return null;
@@ -219,17 +219,17 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 			this.formed = arg==1;
-		markDirty();
+		setChanged();
 		markContainingBlockForUpdate(null);
 		return true;
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
@@ -238,12 +238,12 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 			processMax = nbt.getInt("processMax");
 			burnTime = nbt.getInt("burnTime");
 			lastBurnTime = nbt.getInt("lastBurnTime");
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!descPacket)
@@ -252,7 +252,7 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 			nbt.putInt("processMax", processMax);
 			nbt.putInt("burnTime", burnTime);
 			nbt.putInt("lastBurnTime", lastBurnTime);
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 		}
 	}
 
@@ -333,7 +333,7 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 
 	protected abstract int getBurnTimeOf(ItemStack fuel);
 
-	public class StateView implements IIntArray
+	public class StateView implements ContainerData
 	{
 		public static final int LAST_BURN_TIME = 0;
 		public static final int BURN_TIME = 1;
@@ -401,7 +401,7 @@ public abstract class FurnaceLikeTileEntity<R, T extends FurnaceLikeTileEntity<R
 		}
 
 		@Override
-		public int size()
+		public int getCount()
 		{
 			return 4;
 		}

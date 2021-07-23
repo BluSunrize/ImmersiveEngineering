@@ -1,12 +1,12 @@
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,32 +14,32 @@ import java.util.function.Consumer;
 
 public class Raytracer
 {
-	public static Set<BlockPos> rayTrace(Vector3d start, Vector3d end, World world)
+	public static Set<BlockPos> rayTrace(Vec3 start, Vec3 end, Level world)
 	{
 		return rayTrace(start, end, world, (p) -> {
 		});
 	}
 
-	public static Set<BlockPos> rayTrace(Vector3d start, Vector3d end, World world, Consumer<BlockPos> out)
+	public static Set<BlockPos> rayTrace(Vec3 start, Vec3 end, Level world, Consumer<BlockPos> out)
 	{
 		Set<BlockPos> ret = new HashSet<>();
 		Set<BlockPos> checked = new HashSet<>();
 		for(Direction.Axis axis : Direction.Axis.values())
 		{
 			// x
-			if(start.getCoordinate(axis) > end.getCoordinate(axis))
+			if(start.get(axis) > end.get(axis))
 			{
-				Vector3d tmp = start;
+				Vec3 tmp = start;
 				start = end;
 				end = tmp;
 			}
-			double min = start.getCoordinate(axis);
-			double dif = end.getCoordinate(axis)-min;
-			double lengthAdd = Math.ceil(min)-start.getCoordinate(axis);
-			Vector3d mov = start.subtract(end);
-			if(mov.getCoordinate(axis)!=0)
+			double min = start.get(axis);
+			double dif = end.get(axis)-min;
+			double lengthAdd = Math.ceil(min)-start.get(axis);
+			Vec3 mov = start.subtract(end);
+			if(mov.get(axis)!=0)
 			{
-				mov = mov.scale(1/mov.getCoordinate(axis));
+				mov = mov.scale(1/mov.get(axis));
 				ray(dif, mov, start, lengthAdd, ret, world, checked, out);
 			}
 		}
@@ -47,7 +47,7 @@ public class Raytracer
 		{
 			BlockPos pos = new BlockPos(start);
 			BlockState state = world.getBlockState(pos);
-			RayTraceResult rtr = state.getCollisionShapeUncached(world, pos).rayTrace(start, end, pos);
+			HitResult rtr = state.getCollisionShape(world, pos).clip(start, end, pos);
 			if(rtr!=null&&rtr.getType()!=Type.MISS)
 				ret.add(pos);
 			checked.add(pos);
@@ -56,22 +56,22 @@ public class Raytracer
 		return ret;
 	}
 
-	private static void ray(double dif, Vector3d mov, Vector3d start, double lengthAdd, Set<BlockPos> ret, World world, Set<BlockPos> checked, Consumer<BlockPos> out)
+	private static void ray(double dif, Vec3 mov, Vec3 start, double lengthAdd, Set<BlockPos> ret, Level world, Set<BlockPos> checked, Consumer<BlockPos> out)
 	{
 		final double standardOff = .0625;
 		for(int i = 0; i < dif; i++)
 		{
-			Vector3d pos = start.add(mov.scale(i+lengthAdd+standardOff));
-			Vector3d posNext = start.add(mov.scale(i+1+lengthAdd+standardOff));
-			Vector3d posPrev = start.add(mov.scale(i+lengthAdd-standardOff));
-			Vector3d posVeryPrev = start.add(mov.scale(i-1+lengthAdd-standardOff));
+			Vec3 pos = start.add(mov.scale(i+lengthAdd+standardOff));
+			Vec3 posNext = start.add(mov.scale(i+1+lengthAdd+standardOff));
+			Vec3 posPrev = start.add(mov.scale(i+lengthAdd-standardOff));
+			Vec3 posVeryPrev = start.add(mov.scale(i-1+lengthAdd-standardOff));
 
 			BlockPos blockPos = new BlockPos(pos);
 			BlockState state;
 			if(!checked.contains(blockPos)&&i+lengthAdd+standardOff < dif)
 			{
 				state = world.getBlockState(blockPos);
-				RayTraceResult rtr = state.getCollisionShapeUncached(world, blockPos).rayTrace(pos, posNext, blockPos);
+				HitResult rtr = state.getCollisionShape(world, blockPos).clip(pos, posNext, blockPos);
 				if(rtr!=null&&rtr.getType()!=Type.MISS)
 					ret.add(blockPos);
 				checked.add(blockPos);
@@ -81,7 +81,7 @@ public class Raytracer
 			if(!checked.contains(blockPos)&&i+lengthAdd-standardOff < dif)
 			{
 				state = world.getBlockState(blockPos);
-				RayTraceResult rtr = state.getCollisionShapeUncached(world, blockPos).rayTrace(posVeryPrev, posPrev, blockPos);
+				HitResult rtr = state.getCollisionShape(world, blockPos).clip(posVeryPrev, posPrev, blockPos);
 				if(rtr!=null&&rtr.getType()!=Type.MISS)
 					ret.add(blockPos);
 				checked.add(blockPos);

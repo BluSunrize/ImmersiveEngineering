@@ -9,15 +9,11 @@ package blusunrize.immersiveengineering.common.util.compat.top;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.IProbeInfoProvider;
-import mcjty.theoneprobe.api.NumberFormat;
-import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import mcjty.theoneprobe.api.*;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * @author Robustprogram - 26.1.2020
@@ -32,10 +28,10 @@ public class FluidInfoProvider implements IProbeInfoProvider
 	}
 
 	@Override
-	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
+	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 			BlockState blockState, IProbeHitData data)
 	{
-		TileEntity tileEntity = world.getTileEntity(data.getPos());
+		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
 		if(tileEntity instanceof SheetmetalTankTileEntity)
 		{
 			SheetmetalTankTileEntity master = ((SheetmetalTankTileEntity) tileEntity).master();

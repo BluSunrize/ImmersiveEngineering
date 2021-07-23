@@ -30,18 +30,18 @@ import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -83,27 +83,27 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements IIEInventor
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
-		return placer.isSneaking();
+		return placer.isShiftKeyDown();
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		ItemStackHelper.loadAllItems(nbt, inventory);
+		ContainerHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		ItemStackHelper.saveAllItems(nbt, inventory);
+		ContainerHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override
 	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		CompoundNBT nbt = new CompoundNBT();
-		ItemStackHelper.saveAllItems(nbt, inventory);
+		CompoundTag nbt = new CompoundTag();
+		ContainerHelper.saveAllItems(nbt, inventory);
 		if(!nbt.isEmpty())
 			stack.setTag(nbt);
 		return ImmutableList.of(stack);
@@ -117,7 +117,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements IIEInventor
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -155,7 +155,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements IIEInventor
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		redstoneCaps.values().forEach(cap -> cap.ifPresent(RedstoneBundleConnection::markDirty));
 	}
 
@@ -258,7 +258,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements IIEInventor
 	@Override
 	public VisibilityList compileDisplayList(BlockState state)
 	{
-		if(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent())
+		if(MinecraftForgeClient.getRenderLayer()==RenderType.translucent())
 			return visibilityTransparent;
 		return visibilityListMap.computeIfAbsent(getVisibilityKey(), key -> {
 			List<String> parts = Lists.newArrayList("base");

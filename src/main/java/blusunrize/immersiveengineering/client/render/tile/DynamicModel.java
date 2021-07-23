@@ -12,14 +12,14 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.client.DynamicModelLoader.ModelRequest;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ModelResourceLocation;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -32,7 +32,7 @@ public abstract class DynamicModel<T>
 {
 	private static final Random RAND = new Random();
 
-	public abstract IBakedModel get(T key);
+	public abstract BakedModel get(T key);
 
 	public static DynamicModel<Void> createSimple(ResourceLocation model, String key, ModelType type)
 	{
@@ -63,18 +63,18 @@ public abstract class DynamicModel<T>
 			ResourceLocation baseLoc = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/"+desc);
 			for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			{
-				names.put(d, new ModelResourceLocation(baseLoc, d.getString()));
+				names.put(d, new ModelResourceLocation(baseLoc, d.getSerializedName()));
 				DynamicModelLoader.requestModel(
-						DynamicModel.getRequest(type, name, (int)d.getHorizontalAngle()+180),
+						DynamicModel.getRequest(type, name, (int)d.toYRot()+180),
 						names.get(d));
 			}
 		}
 
 		@Override
-		public IBakedModel get(Direction key)
+		public BakedModel get(Direction key)
 		{
-			final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-			return blockRenderer.getBlockModelShapes().getModelManager().getModel(names.get(key));
+			final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+			return blockRenderer.getBlockModelShaper().getModelManager().getModel(names.get(key));
 		}
 	}
 
@@ -90,10 +90,10 @@ public abstract class DynamicModel<T>
 		}
 
 		@Override
-		public IBakedModel get(Void key)
+		public BakedModel get(Void key)
 		{
-			final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-			return blockRenderer.getBlockModelShapes().getModelManager().getModel(name);
+			final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+			return blockRenderer.getBlockModelShaper().getModelManager().getModel(name);
 		}
 	}
 

@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class AlloyRecipe extends IESerializableRecipe
 {
-	public static IRecipeType<AlloyRecipe> TYPE;
+	public static RecipeType<AlloyRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<AlloyRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input0;
@@ -48,7 +48,7 @@ public class AlloyRecipe extends IESerializableRecipe
 	}
 
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return this.output;
 	}

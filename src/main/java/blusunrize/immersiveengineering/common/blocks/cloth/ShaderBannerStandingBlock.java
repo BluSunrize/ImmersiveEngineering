@@ -8,17 +8,17 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.Rotation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
 
 public class ShaderBannerStandingBlock extends ShaderBannerBlock
 {
-	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_0_15;
+	public static final IntegerProperty ROTATION = BlockStateProperties.ROTATION_16;
 
 	public ShaderBannerStandingBlock(Properties props)
 	{
@@ -26,17 +26,17 @@ public class ShaderBannerStandingBlock extends ShaderBannerBlock
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(ROTATION, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
 	public BlockState rotate(BlockState state, Rotation rot)
 	{
-		int newRotation = rot.rotate(state.get(ROTATION), 16);
-		return state.with(ROTATION, newRotation);
+		int newRotation = rot.rotate(state.getValue(ROTATION), 16);
+		return state.setValue(ROTATION, newRotation);
 	}
 
 	@Override
@@ -44,7 +44,7 @@ public class ShaderBannerStandingBlock extends ShaderBannerBlock
 	{
 		if(mirrorIn==Mirror.NONE)
 			return state;
-		int newRotation = mirrorIn.mirrorRotation(state.get(ROTATION), 16);
-		return state.with(ROTATION, newRotation);
+		int newRotation = mirrorIn.mirror(state.getValue(ROTATION), 16);
+		return state.setValue(ROTATION, newRotation);
 	}
 }

@@ -13,14 +13,14 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.ISeedReader;
-import net.minecraft.world.gen.ChunkGenerator;
-import net.minecraft.world.gen.feature.Feature;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.feature.OreFeatureConfig;
-import net.minecraft.world.gen.feature.template.RuleTest;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -34,14 +34,14 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 	}
 
 	@Override
-	public boolean generate(@Nonnull ISeedReader world, @Nonnull ChunkGenerator gen, @Nonnull Random rand,
+	public boolean place(@Nonnull WorldGenLevel world, @Nonnull ChunkGenerator gen, @Nonnull Random rand,
 							@Nonnull BlockPos pos, IEOreFeatureConfig config)
 	{
-		OreFeatureConfig vanillaConfig = new OreFeatureConfig(config.target, config.state, config.getSize());
-		return Feature.ORE.generate(world, gen, rand, pos, vanillaConfig);
+		OreConfiguration vanillaConfig = new OreConfiguration(config.target, config.state, config.getSize());
+		return Feature.ORE.place(world, gen, rand, pos, vanillaConfig);
 	}
 
-	public static class IEOreFeatureConfig implements IFeatureConfig
+	public static class IEOreFeatureConfig implements FeatureConfiguration
 	{
 		public static final Codec<IEOreFeatureConfig> CODEC = RecordCodecBuilder.create(
 				app -> app.group(

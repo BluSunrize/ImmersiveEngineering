@@ -15,15 +15,15 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.items.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -32,7 +32,7 @@ import java.util.Map;
 
 public class MetalPressPackingRecipes
 {
-	public static Map<ResourceLocation, ICraftingRecipe> CRAFTING_RECIPE_MAP;
+	public static Map<ResourceLocation, CraftingRecipe> CRAFTING_RECIPE_MAP;
 	private static final HashMap<ComparableItemStack, RecipeDelegate> UNPACKING_CACHE = new HashMap<>();
 
 	public static MetalPressRecipe get2x2PackingContainer()
@@ -54,7 +54,7 @@ public class MetalPressPackingRecipes
 		return new MetalPressContainerRecipe(new ResourceLocation(Lib.MODID, "metalpress/unpacking"), Molds.moldUnpacking.asItem())
 		{
 			@Override
-			protected MetalPressRecipe getRecipeFunction(ItemStack input, World world)
+			protected MetalPressRecipe getRecipeFunction(ItemStack input, Level world)
 			{
 				return getUnpackingCached(input, world);
 			}
@@ -75,18 +75,18 @@ public class MetalPressPackingRecipes
 		}
 
 		@Override
-		public boolean matches(ItemStack mold, ItemStack input, World world)
+		public boolean matches(ItemStack mold, ItemStack input, Level world)
 		{
 			return getRecipeFunction(input, world)!=null;
 		}
 
 		@Override
-		public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input, World world)
+		public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input, Level world)
 		{
 			return getRecipeFunction(input, world);
 		}
 
-		protected abstract MetalPressRecipe getRecipeFunction(ItemStack input, World world);
+		protected abstract MetalPressRecipe getRecipeFunction(ItemStack input, Level world);
 	}
 
 	public static class MetalPressPackingRecipe extends MetalPressContainerRecipe
@@ -101,13 +101,13 @@ public class MetalPressPackingRecipes
 		}
 
 		@Override
-		public boolean matches(ItemStack mold, ItemStack input, World world)
+		public boolean matches(ItemStack mold, ItemStack input, Level world)
 		{
 			return input.getCount() >= size*size&&super.matches(mold, input, world);
 		}
 
 		@Override
-		protected MetalPressRecipe getRecipeFunction(ItemStack input, World world)
+		protected MetalPressRecipe getRecipeFunction(ItemStack input, Level world)
 		{
 			ComparableItemStack comp = new ComparableItemStack(input, false);
 			if(PACKING_CACHE.containsKey(comp))
@@ -115,7 +115,7 @@ public class MetalPressPackingRecipes
 
 			int totalSize = size*size;
 			comp.copy();
-			Pair<ICraftingRecipe, ItemStack> out = getPackedOutput(size, input, world);
+			Pair<CraftingRecipe, ItemStack> out = getPackedOutput(size, input, world);
 			if(out==null)
 				return null;
 			ItemStack outStack = out.getRight();
@@ -138,7 +138,7 @@ public class MetalPressPackingRecipes
 			super(new ResourceLocation(Lib.MODID, id), output, IngredientWithSize.of(input), new ComparableItemStack(new ItemStack(mold)), 3200);
 		}
 
-		public static RecipeDelegate getPacking(Pair<ICraftingRecipe, ItemStack> originalRecipe, ItemStack input, boolean big)
+		public static RecipeDelegate getPacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input, boolean big)
 		{
 			ItemStack output = originalRecipe.getRight();
 			ResourceLocation originalId = originalRecipe.getLeft().getId();
@@ -146,7 +146,7 @@ public class MetalPressPackingRecipes
 			return new RecipeDelegate(id, output, input, (big?Molds.moldPacking9: Molds.moldPacking4).get());
 		}
 
-		public static RecipeDelegate getUnpacking(Pair<ICraftingRecipe, ItemStack> originalRecipe, ItemStack input)
+		public static RecipeDelegate getUnpacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input)
 		{
 			ItemStack output = originalRecipe.getRight();
 			ResourceLocation originalId = originalRecipe.getLeft().getId();
@@ -175,7 +175,7 @@ public class MetalPressPackingRecipes
 		else
 			recipeId = id.toString().substring("immersiveengineering:metalpress/unpacking_".length());
 		recipeId = recipeId.replaceFirst("\\.\\.", ":");
-		ICraftingRecipe recipe = CRAFTING_RECIPE_MAP.get(new ResourceLocation(recipeId));
+		CraftingRecipe recipe = CRAFTING_RECIPE_MAP.get(new ResourceLocation(recipeId));
 		if(recipe==null)
 			return null;
 
@@ -185,31 +185,31 @@ public class MetalPressPackingRecipes
 		if(!packing&&ingredients.size()!=1)
 			return null;
 
-		ItemStack input = ingredients.get(0).getMatchingStacks()[0];
+		ItemStack input = ingredients.get(0).getItems()[0];
 		if(packing)
-			return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getRecipeOutput()), input, ingredients.size()==9);
-		return RecipeDelegate.getUnpacking(Pair.of(recipe, recipe.getRecipeOutput()), input);
+			return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getResultItem()), input, ingredients.size()==9);
+		return RecipeDelegate.getUnpacking(Pair.of(recipe, recipe.getResultItem()), input);
 	}
 
-	public static Pair<ICraftingRecipe, ItemStack> getPackedOutput(int gridSize, ItemStack stack, World world)
+	public static Pair<CraftingRecipe, ItemStack> getPackedOutput(int gridSize, ItemStack stack, Level world)
 	{
-		CraftingInventory invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(
+		CraftingContainer invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(
 				gridSize, gridSize, NonNullList.withSize(gridSize*gridSize, stack.copy())
 		);
 		return world.getRecipeManager()
-				.getRecipe(IRecipeType.CRAFTING, invC, world)
-				.map(recipe -> Pair.of(recipe, recipe.getCraftingResult(invC)))
+				.getRecipeFor(RecipeType.CRAFTING, invC, world)
+				.map(recipe -> Pair.of(recipe, recipe.assemble(invC)))
 				.orElse(null);
 	}
 
-	private static RecipeDelegate getUnpackingCached(ItemStack input, World world)
+	private static RecipeDelegate getUnpackingCached(ItemStack input, Level world)
 	{
 		ComparableItemStack comp = new ComparableItemStack(input, false);
 		if(UNPACKING_CACHE.containsKey(comp))
 			return UNPACKING_CACHE.get(comp);
 
 		comp.copy();
-		Pair<ICraftingRecipe, ItemStack> out = getPackedOutput(1, input, world);
+		Pair<CraftingRecipe, ItemStack> out = getPackedOutput(1, input, world);
 		if(out==null)
 			return null;
 		ItemStack outStack = out.getRight();
@@ -221,8 +221,8 @@ public class MetalPressPackingRecipes
 			return null;
 		}
 
-		Pair<ICraftingRecipe, ItemStack> rePacked = getPackedOutput(count==4?2: 3, outStack, world);
-		if(rePacked==null||rePacked.getRight().isEmpty()||!ItemStack.areItemStacksEqual(input, rePacked.getRight()))
+		Pair<CraftingRecipe, ItemStack> rePacked = getPackedOutput(count==4?2: 3, outStack, world);
+		if(rePacked==null||rePacked.getRight().isEmpty()||!ItemStack.matches(input, rePacked.getRight()))
 		{
 			UNPACKING_CACHE.put(comp, null);
 			return null;

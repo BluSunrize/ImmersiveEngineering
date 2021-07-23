@@ -10,23 +10,23 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class CokeOvenContainer extends IEBaseContainer<CokeOvenTileEntity>
 {
 	public CokeOvenTileEntity.CokeOvenData data;
 
-	public CokeOvenContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, CokeOvenTileEntity tile)
+	public CokeOvenContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CokeOvenTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 
 		this.addSlot(new IESlot(this, this.inv, 0, 30, 35)
 		{
 			@Override
-			public boolean isItemValid(ItemStack itemStack)
+			public boolean mayPlace(ItemStack itemStack)
 			{
 				return CokeOvenRecipe.findRecipe(itemStack)!=null;
 			}
@@ -42,6 +42,6 @@ public class CokeOvenContainer extends IEBaseContainer<CokeOvenTileEntity>
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 142));
 		data = tile.guiData;
-		trackIntArray(data);
+		addDataSlots(data);
 	}
 }

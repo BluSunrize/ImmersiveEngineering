@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.util.text.TextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.BaseComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
@@ -75,9 +75,9 @@ public class LogicCircuitHandler
 			return valueOf(name);
 		}
 
-		public TextComponent getDescription()
+		public BaseComponent getDescription()
 		{
-			return new TranslationTextComponent(Lib.DESC_INFO+"operator."+this.name().toLowerCase(Locale.ENGLISH));
+			return new TranslatableComponent(Lib.DESC_INFO+"operator."+this.name().toLowerCase(Locale.ENGLISH));
 		}
 	}
 
@@ -89,12 +89,12 @@ public class LogicCircuitHandler
 		// Plus 8 internal storages
 		R0, R1, R2, R3, R4, R5, R6, R7;
 
-		public TextComponent getDescription()
+		public BaseComponent getDescription()
 		{
 			if(this.ordinal() < 16)
-				return new TranslationTextComponent("color.minecraft."+DyeColor.byId(this.ordinal()).getTranslationKey());
+				return new TranslatableComponent("color.minecraft."+DyeColor.byId(this.ordinal()).getName());
 			else
-				return new TranslationTextComponent(Lib.DESC_INFO+"register", this.ordinal()-16);
+				return new TranslatableComponent(Lib.DESC_INFO+"register", this.ordinal()-16);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class LogicCircuitHandler
 		private final LogicCircuitRegister output;
 		private final LogicCircuitRegister[] inputs;
 
-		private final TextComponent formattedString;
+		private final BaseComponent formattedString;
 
 		public LogicCircuitInstruction(LogicCircuitOperator operator, LogicCircuitRegister output, LogicCircuitRegister[] inputs)
 		{
@@ -114,12 +114,12 @@ public class LogicCircuitHandler
 			this.inputs = inputs;
 
 			this.formattedString = this.output.getDescription();
-			this.formattedString.appendString(" = ");
-			this.formattedString.appendSibling(this.operator.getDescription());
+			this.formattedString.append(" = ");
+			this.formattedString.append(this.operator.getDescription());
 			for(int i = 0; i < inputs.length; i++)
 			{
-				this.formattedString.appendString(i!=0?", ": ": ");
-				this.formattedString.appendSibling(inputs[i].getDescription());
+				this.formattedString.append(i!=0?", ": ": ");
+				this.formattedString.append(inputs[i].getDescription());
 			}
 		}
 
@@ -146,28 +146,28 @@ public class LogicCircuitHandler
 			handler.setLogicCircuitRegister(output, operator.apply(bInputs));
 		}
 
-		public TextComponent getFormattedString()
+		public BaseComponent getFormattedString()
 		{
 			return this.formattedString;
 		}
 
-		public CompoundNBT serialize()
+		public CompoundTag serialize()
 		{
-			CompoundNBT nbt = new CompoundNBT();
+			CompoundTag nbt = new CompoundTag();
 			nbt.putString("operator", this.operator.name());
 			nbt.putString("output", this.output.name());
-			ListNBT inputList = new ListNBT();
+			ListTag inputList = new ListTag();
 			for(LogicCircuitRegister input : this.inputs)
-				inputList.add(StringNBT.valueOf(input.name()));
+				inputList.add(StringTag.valueOf(input.name()));
 			nbt.put("inputs", inputList);
 			return nbt;
 		}
 
-		public static LogicCircuitInstruction deserialize(CompoundNBT nbt)
+		public static LogicCircuitInstruction deserialize(CompoundTag nbt)
 		{
 			LogicCircuitOperator operator = LogicCircuitOperator.valueOf(nbt.getString("operator"));
 			LogicCircuitRegister output = LogicCircuitRegister.valueOf(nbt.getString("output"));
-			ListNBT inputList = nbt.getList("inputs", NBT.TAG_STRING);
+			ListTag inputList = nbt.getList("inputs", NBT.TAG_STRING);
 			LogicCircuitRegister[] inputs = new LogicCircuitRegister[inputList.size()];
 			for(int i = 0; i < inputs.length; i++)
 				inputs[i] = LogicCircuitRegister.valueOf(inputList.getString(i));

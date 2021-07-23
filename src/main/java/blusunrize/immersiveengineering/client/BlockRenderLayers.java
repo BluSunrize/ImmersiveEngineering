@@ -19,11 +19,11 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.fluids.IEFluids;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.RegistryObject;
@@ -43,64 +43,64 @@ public class BlockRenderLayers
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent ev)
 	{
-		setRenderLayer(StoneDecoration.insulatingGlass, RenderType.getTranslucent());
-		setRenderLayer(StoneDecoration.concreteSprayed, RenderType.getCutout());
-		setRenderLayer(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), RenderType.getSolid(), RenderType.getTranslucent());
-		setRenderLayer(MetalDevices.floodlight, RenderType.getSolid(), RenderType.getTranslucent());
+		setRenderLayer(StoneDecoration.insulatingGlass, RenderType.translucent());
+		setRenderLayer(StoneDecoration.concreteSprayed, RenderType.cutout());
+		setRenderLayer(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), RenderType.solid(), RenderType.translucent());
+		setRenderLayer(MetalDevices.floodlight, RenderType.solid(), RenderType.translucent());
 
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 			for (BlockEntry<?> block : ImmutableList.of(MetalDecoration.aluScaffolding.get(type), MetalDecoration.steelScaffolding.get(type)))
-				setRenderLayer(block, RenderType.getCutout());
-		setRenderLayer(WoodenDecoration.treatedScaffolding, RenderType.getCutout());
-		setRenderLayer(WoodenDevices.logicUnit, RenderType.getSolid(), RenderType.getTranslucent());
-		setRenderLayer(Connectors.ENERGY_CONNECTORS.get(ImmutablePair.of(WireType.HV_CATEGORY, true)), RenderType.getSolid(), RenderType.getTranslucent());
-		setRenderLayer(Connectors.connectorBundled, RenderType.getSolid(), RenderType.getTranslucent(), RenderType.getCutout());
-		setRenderLayer(Connectors.connectorProbe, RenderType.getSolid(), RenderType.getTranslucent(), RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(Connectors.feedthrough.get(), rt -> true);
-		setRenderLayer(MetalDevices.razorWire, RenderType.getCutout());
-		setRenderLayer(MetalDevices.fluidPlacer, RenderType.getCutout());
-		setRenderLayer(MetalDevices.furnaceHeater, RenderType.getCutout());
-		setRenderLayer(MetalDevices.fluidPipe, RenderType.getCutout());
-		setRenderLayer(MetalDevices.cloche, RenderType.getCutout());
-		setRenderLayer(MetalDevices.sampleDrill, RenderType.getCutout());
-		setRenderLayer(MetalDevices.cloche, RenderType.getSolid(), RenderType.getTranslucent());
-		setRenderLayer(MetalDecoration.slopeAlu, RenderType.getCutout());
-		setRenderLayer(MetalDecoration.slopeSteel, RenderType.getCutout());
+				setRenderLayer(block, RenderType.cutout());
+		setRenderLayer(WoodenDecoration.treatedScaffolding, RenderType.cutout());
+		setRenderLayer(WoodenDevices.logicUnit, RenderType.solid(), RenderType.translucent());
+		setRenderLayer(Connectors.ENERGY_CONNECTORS.get(ImmutablePair.of(WireType.HV_CATEGORY, true)), RenderType.solid(), RenderType.translucent());
+		setRenderLayer(Connectors.connectorBundled, RenderType.solid(), RenderType.translucent(), RenderType.cutout());
+		setRenderLayer(Connectors.connectorProbe, RenderType.solid(), RenderType.translucent(), RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(Connectors.feedthrough.get(), rt -> true);
+		setRenderLayer(MetalDevices.razorWire, RenderType.cutout());
+		setRenderLayer(MetalDevices.fluidPlacer, RenderType.cutout());
+		setRenderLayer(MetalDevices.furnaceHeater, RenderType.cutout());
+		setRenderLayer(MetalDevices.fluidPipe, RenderType.cutout());
+		setRenderLayer(MetalDevices.cloche, RenderType.cutout());
+		setRenderLayer(MetalDevices.sampleDrill, RenderType.cutout());
+		setRenderLayer(MetalDevices.cloche, RenderType.solid(), RenderType.translucent());
+		setRenderLayer(MetalDecoration.slopeAlu, RenderType.cutout());
+		setRenderLayer(MetalDecoration.slopeSteel, RenderType.cutout());
 		for(BlockEntry<ConveyorBlock> b : MetalDevices.CONVEYORS.values())
-			setRenderLayer(b, RenderType.getCutout());
-		setRenderLayer(MetalDevices.chargingStation, RenderType.getSolid(), RenderType.getTranslucent());
-		setRenderLayer(Multiblocks.tank, RenderType.getCutoutMipped());
-		setRenderLayer(Multiblocks.bottlingMachine, RenderType.getSolid(), RenderType.getTranslucent());
+			setRenderLayer(b, RenderType.cutout());
+		setRenderLayer(MetalDevices.chargingStation, RenderType.solid(), RenderType.translucent());
+		setRenderLayer(Multiblocks.tank, RenderType.cutoutMipped());
+		setRenderLayer(Multiblocks.bottlingMachine, RenderType.solid(), RenderType.translucent());
 
 		for(Map<ResourceLocation, ? extends BlockEntry<? extends Block>> map : ImmutableList.of(IEBlocks.toSlab, IEBlocks.toStairs))
 			for(Entry<ResourceLocation, ? extends BlockEntry<? extends Block>> slab : map.entrySet())
 			{
 				Supplier<Block> baseBlock = Suppliers.memoize(() -> ForgeRegistries.BLOCKS.getValue(slab.getKey()));
-				RenderTypeLookup.setRenderLayer(
+				ItemBlockRenderTypes.setRenderLayer(
 						slab.getValue().get(),
-						rt -> RenderTypeLookup.canRenderInLayer(baseBlock.get().getDefaultState(), rt)
+						rt -> ItemBlockRenderTypes.canRenderInLayer(baseBlock.get().defaultBlockState(), rt)
 				);
 			}
-		setRenderLayer(Cloth.balloon, RenderType.getSolid(), RenderType.getTranslucent());
+		setRenderLayer(Cloth.balloon, RenderType.solid(), RenderType.translucent());
 		for(CoverType cover : CoverType.values())
-			setRenderLayer(MetalDecoration.metalLadder.get(cover), RenderType.getCutout());
+			setRenderLayer(MetalDecoration.metalLadder.get(cover), RenderType.cutout());
 
-		setRenderLayer(Misc.hempPlant, RenderType.getCutout());
-		setRenderLayer(Misc.pottedHemp, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(IEFluids.fluidPotion.get(), RenderType.getTranslucent());
+		setRenderLayer(Misc.hempPlant, RenderType.cutout());
+		setRenderLayer(Misc.pottedHemp, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(IEFluids.fluidPotion.get(), RenderType.translucent());
 		for(RegistryObject<Fluid> f : IEFluids.REGISTER.getEntries())
 			if(f.get()!=IEFluids.fluidConcrete.getFlowing()&&f.get()!=IEFluids.fluidConcrete.getStill())
-				RenderTypeLookup.setRenderLayer(f.get(), RenderType.getTranslucent());
+				ItemBlockRenderTypes.setRenderLayer(f.get(), RenderType.translucent());
 	}
 
 	private static void setRenderLayer(Supplier<? extends Block> supplier, RenderType type)
 	{
-		RenderTypeLookup.setRenderLayer(supplier.get(), type);
+		ItemBlockRenderTypes.setRenderLayer(supplier.get(), type);
 	}
 
 	private static void setRenderLayer(Supplier<? extends Block> supplier, RenderType... types)
 	{
-		RenderTypeLookup.setRenderLayer(supplier.get(), t -> {
+		ItemBlockRenderTypes.setRenderLayer(supplier.get(), t -> {
 			for(RenderType allowed : types)
 				if(t==allowed)
 					return true;

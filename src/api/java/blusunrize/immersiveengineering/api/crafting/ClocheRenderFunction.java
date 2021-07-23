@@ -10,13 +10,13 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import com.google.gson.JsonObject;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import com.mojang.math.Transformation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -30,7 +30,7 @@ public interface ClocheRenderFunction
 {
 	float getScale(ItemStack seed, float growth);
 
-	Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth);
+	Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth);
 
 	/**
 	 * Method to inject quads into the Cloche's plant rendering.
@@ -89,15 +89,15 @@ public interface ClocheRenderFunction
 			return block;
 		}
 
-		public void write(PacketBuffer buffer)
+		public void write(FriendlyByteBuf buffer)
 		{
-			buffer.writeString(getType());
+			buffer.writeUtf(getType());
 			buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(getBlock()));
 		}
 
-		public static ClocheRenderReference read(PacketBuffer buffer)
+		public static ClocheRenderReference read(FriendlyByteBuf buffer)
 		{
-			String key = buffer.readString();
+			String key = buffer.readUtf();
 			ResourceLocation rl = buffer.readResourceLocation();
 			return new ClocheRenderReference(key, ForgeRegistries.BLOCKS.getValue(rl));
 		}
@@ -112,8 +112,8 @@ public interface ClocheRenderFunction
 
 		public static ClocheRenderReference deserialize(JsonObject jsonObject)
 		{
-			String key = JSONUtils.getString(jsonObject, "type");
-			ResourceLocation rl = new ResourceLocation(JSONUtils.getString(jsonObject, "block"));
+			String key = GsonHelper.getAsString(jsonObject, "type");
+			ResourceLocation rl = new ResourceLocation(GsonHelper.getAsString(jsonObject, "block"));
 			return new ClocheRenderReference(key, ForgeRegistries.BLOCKS.getValue(rl));
 		}
 	}

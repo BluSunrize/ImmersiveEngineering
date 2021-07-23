@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.ToolboxTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -25,7 +25,7 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxTileEntity> im
 {
 	private IItemHandler inv;
 
-	public ToolboxBlockContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, ToolboxTileEntity tile)
+	public ToolboxBlockContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ToolboxTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;
@@ -68,7 +68,7 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxTileEntity> im
 		else if(slotNumer < 10)
 			return ToolboxHandler.isTool(stack);
 		else if(slotNumer < 16)
-			return ToolboxHandler.isWiring(stack, this.tile.getWorld());
+			return ToolboxHandler.isWiring(stack, this.tile.getLevel());
 		else
 			return true;
 	}
@@ -80,7 +80,7 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxTileEntity> im
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity playerIn)
+	public void removed(Player playerIn)
 	{
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setTile(null);

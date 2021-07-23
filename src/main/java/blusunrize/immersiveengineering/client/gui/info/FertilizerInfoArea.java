@@ -12,10 +12,10 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 
 import java.util.List;
 
@@ -25,19 +25,19 @@ public class FertilizerInfoArea extends InfoArea
 
 	public FertilizerInfoArea(int xMin, int yMin, ClocheTileEntity tile)
 	{
-		super(new Rectangle2d(xMin, yMin, 7, 47));
+		super(new Rect2i(xMin, yMin, 7, 47));
 		this.tile = tile;
 	}
 
 	@Override
-	protected void fillTooltipOverArea(int mouseX, int mouseY, List<ITextComponent> tooltip)
+	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
-		tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get(), "0.00")));
-		tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"fertMod", Utils.formatDouble(tile.fertilizerMod, "0.00")));
+		tooltip.add(new TranslatableComponent(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get(), "0.00")));
+		tooltip.add(new TranslatableComponent(Lib.DESC_INFO+"fertMod", Utils.formatDouble(tile.fertilizerMod, "0.00")));
 	}
 
 	@Override
-	public void draw(MatrixStack transform)
+	public void draw(PoseStack transform)
 	{
 		final int height = area.getHeight();
 		int stored = (int)(height*(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get()));

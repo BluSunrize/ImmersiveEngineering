@@ -16,8 +16,8 @@ import com.blamejared.crafttweaker.api.item.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 import org.openzen.zencode.java.ZenCodeType.Method;
 
@@ -34,7 +34,7 @@ public class BlastFurnaceFuelManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<BlastFurnaceFuel> getRecipeType()
+	public RecipeType<BlastFurnaceFuel> getRecipeType()
 	{
 		return BlastFurnaceFuel.TYPE;
 	}

@@ -14,17 +14,17 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -37,9 +37,9 @@ public class PostTransformerBlock extends MiscConnectableBlock<PostTransformerTi
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
 	}
 
@@ -50,38 +50,38 @@ public class PostTransformerBlock extends MiscConnectableBlock<PostTransformerTi
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn,
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn,
 										  BlockPos currentPos, BlockPos facingPos)
 	{
-		BlockState baseState = super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
-		return stateForPos(baseState, currentPos, worldIn, Blocks.AIR.getDefaultState());
+		BlockState baseState = super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		return stateForPos(baseState, currentPos, worldIn, Blocks.AIR.defaultBlockState());
 	}
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context)
+	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
 		BlockState baseState = super.getStateForPlacement(context);
-		return stateForPos(baseState, context.getPos(), context.getWorld(), null);
+		return stateForPos(baseState, context.getClickedPos(), context.getLevel(), null);
 	}
 
-	private BlockState stateForPos(@Nullable BlockState baseState, BlockPos pos, IBlockReader world, BlockState empty)
+	private BlockState stateForPos(@Nullable BlockState baseState, BlockPos pos, BlockGetter world, BlockState empty)
 	{
 		if(baseState==null||baseState.getBlock()!=this)
 			return empty;
-		Direction preferred = baseState.get(IEProperties.FACING_HORIZONTAL);
+		Direction preferred = baseState.getValue(IEProperties.FACING_HORIZONTAL);
 		Optional<Direction> newFacing = findAttacheablePost(pos, world, preferred);
 		if(newFacing.isPresent())
-			return baseState.with(IEProperties.FACING_HORIZONTAL, newFacing.get());
+			return baseState.setValue(IEProperties.FACING_HORIZONTAL, newFacing.get());
 		else
 			return empty;
 	}
 
-	private static Optional<Direction> findAttacheablePost(BlockPos transformerPos, IBlockReader world, Direction preferred)
+	private static Optional<Direction> findAttacheablePost(BlockPos transformerPos, BlockGetter world, Direction preferred)
 	{
 		Optional<Direction> ret = Optional.empty();
 		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
-			if(isAttacheablePost(transformerPos.offset(d), world))
+			if(isAttacheablePost(transformerPos.relative(d), world))
 			{
 				ret = Optional.of(d);
 				if(d==preferred)
@@ -90,7 +90,7 @@ public class PostTransformerBlock extends MiscConnectableBlock<PostTransformerTi
 		return ret;
 	}
 
-	public static boolean isAttacheablePost(BlockPos possiblePost, IBlockReader w)
+	public static boolean isAttacheablePost(BlockPos possiblePost, BlockGetter w)
 	{
 		BlockState postState = w.getBlockState(possiblePost);
 		if(!(postState.getBlock() instanceof IPostBlock))

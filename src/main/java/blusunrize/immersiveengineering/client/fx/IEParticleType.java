@@ -9,17 +9,17 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import com.mojang.serialization.Codec;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.IParticleData.IDeserializer;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
+import net.minecraft.core.particles.ParticleType;
 
 import javax.annotation.Nonnull;
 
-public class IEParticleType<T extends IParticleData> extends ParticleType<T>
+public class IEParticleType<T extends ParticleOptions> extends ParticleType<T>
 {
 	private final Codec<T> codec;
 
-	public IEParticleType(boolean alwaysShow, IDeserializer<T> deserializer, Codec<T> codec)
+	public IEParticleType(boolean alwaysShow, Deserializer<T> deserializer, Codec<T> codec)
 	{
 		super(alwaysShow, deserializer);
 		this.codec = codec;
@@ -27,7 +27,7 @@ public class IEParticleType<T extends IParticleData> extends ParticleType<T>
 
 	@Nonnull
 	@Override
-	public Codec<T> func_230522_e_()
+	public Codec<T> codec()
 	{
 		return codec;
 	}

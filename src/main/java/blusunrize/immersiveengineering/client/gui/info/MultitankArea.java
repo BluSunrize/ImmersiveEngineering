@@ -10,12 +10,12 @@ package blusunrize.immersiveengineering.client.gui.info;
 
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -24,17 +24,17 @@ public class MultitankArea extends InfoArea
 {
 	private final MultiFluidTank tank;
 
-	public MultitankArea(Rectangle2d area, MultiFluidTank tank)
+	public MultitankArea(Rect2i area, MultiFluidTank tank)
 	{
 		super(area);
 		this.tank = tank;
 	}
 
 	@Override
-	protected void fillTooltipOverArea(int mouseX, int mouseY, List<ITextComponent> tooltip)
+	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
 		if(tank.getFluidTypes()==0)
-			tooltip.add(new TranslationTextComponent("gui.immersiveengineering.empty"));
+			tooltip.add(new TranslatableComponent("gui.immersiveengineering.empty"));
 		else
 		{
 			float capacity = tank.getCapacity();
@@ -47,13 +47,13 @@ public class MultitankArea extends InfoArea
 	}
 
 	@Override
-	public void draw(MatrixStack transform)
+	public void draw(PoseStack transform)
 	{
-		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		forEachFluid((fluid, lastY, newY) -> GuiHelper.drawRepeatedFluidSpriteGui(
 				buffers, transform, fluid, area.getX(), area.getY()+area.getHeight()-newY, area.getWidth(), newY-lastY
 		));
-		buffers.finish();
+		buffers.endBatch();
 	}
 
 	private void forEachFluid(TankVisitor visitor) {

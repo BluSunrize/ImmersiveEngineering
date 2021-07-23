@@ -11,20 +11,20 @@ package blusunrize.immersiveengineering.common.blocks.plant;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.material.Material;
 
 import java.util.function.Supplier;
 
 public class PottedHempBlock extends FlowerPotBlock
 {
-	public static final Supplier<Properties> PROPERTIES = () -> Properties.create(Material.MISCELLANEOUS)
-			.hardnessAndResistance(0.0F)
-			.notSolid();
+	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.DECORATION)
+			.strength(0.0F)
+			.noOcclusion();
 
 	public PottedHempBlock(Properties props)
 	{
@@ -33,7 +33,7 @@ public class PottedHempBlock extends FlowerPotBlock
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{
 		//NOP
 	}

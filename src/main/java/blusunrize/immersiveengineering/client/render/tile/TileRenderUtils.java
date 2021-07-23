@@ -12,16 +12,16 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.utils.InvertingVertexBuffer;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IMirrorAble;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.Direction;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.Direction;
 
 public class TileRenderUtils
 {
-	public static <T extends IMirrorAble & IDirectionalTile> IRenderTypeBuffer mirror(
+	public static <T extends IMirrorAble & IDirectionalTile> MultiBufferSource mirror(
 			T tile,
-			MatrixStack mat,
-			IRenderTypeBuffer builderIn
+			PoseStack mat,
+			MultiBufferSource builderIn
 	)
 	{
 		mirror(tile, mat);
@@ -31,12 +31,12 @@ public class TileRenderUtils
 			return type -> new InvertingVertexBuffer(4, builderIn.getBuffer(type));
 	}
 
-	public static <T extends IMirrorAble & IDirectionalTile> void mirror(T tile, MatrixStack mat)
+	public static <T extends IMirrorAble & IDirectionalTile> void mirror(T tile, PoseStack mat)
 	{
 		if(tile.getIsMirrored())
 		{
 			Direction facing = tile.getFacing();
-			mat.scale(facing.getXOffset()==0?-1: 1, 1, facing.getZOffset()==0?-1: 1);
+			mat.scale(facing.getStepX()==0?-1: 1, 1, facing.getStepZ()==0?-1: 1);
 		}
 	}
 }

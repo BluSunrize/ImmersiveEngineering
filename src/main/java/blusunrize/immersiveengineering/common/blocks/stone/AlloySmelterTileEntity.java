@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.FurnaceTileEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraftforge.common.ForgeHooks;
 
 import javax.annotation.Nullable;
@@ -60,6 +60,6 @@ public class AlloySmelterTileEntity extends FurnaceLikeTileEntity<AlloyRecipe, A
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0||slot==1||FurnaceTileEntity.isFuel(stack);
+		return slot==0||slot==1||FurnaceBlockEntity.isFuel(stack);
 	}
 }

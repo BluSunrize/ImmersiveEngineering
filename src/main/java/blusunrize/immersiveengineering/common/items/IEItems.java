@@ -18,14 +18,14 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.EquipmentSlotType.Group;
-import net.minecraft.item.*;
-import net.minecraft.item.Item.Properties;
-import net.minecraft.tileentity.BannerPattern;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.Item.Properties;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
@@ -164,7 +164,7 @@ public final class IEItems
 		public static ItemRegObject<SwordItem> steelSword = register(
 				"sword_steel", IETools.createSword(Lib.MATERIAL_Steel)
 		);
-		public static Map<EquipmentSlotType, ItemRegObject<SteelArmorItem>> steelArmor = new EnumMap<>(EquipmentSlotType.class);
+		public static Map<EquipmentSlot, ItemRegObject<SteelArmorItem>> steelArmor = new EnumMap<>(EquipmentSlot.class);
 
 		public static ItemRegObject<ToolboxItem> toolbox = register("toolbox", ToolboxItem::new);
 
@@ -188,8 +188,8 @@ public final class IEItems
 
 		private static void init()
 		{
-			for(EquipmentSlotType slot : EquipmentSlotType.values())
-				if(slot.getSlotType()==Group.ARMOR)
+			for(EquipmentSlot slot : EquipmentSlot.values())
+				if(slot.getType()==Type.ARMOR)
 					steelArmor.put(slot, register(
 							"armor_steel_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new SteelArmorItem(slot)
 					));
@@ -243,7 +243,7 @@ public final class IEItems
 						String enumName = MODID+"_"+name;
 						String fullId = "ie_"+id;
 						BannerPattern pattern = BannerPattern.create(enumName.toUpperCase(), enumName, fullId, true);
-						return new BannerPatternItem(pattern, new Properties().group(ImmersiveEngineering.ITEM_GROUP));
+						return new BannerPatternItem(pattern, new Properties().tab(ImmersiveEngineering.ITEM_GROUP));
 					}
 			);
 		}
@@ -287,7 +287,7 @@ public final class IEItems
 		public static ItemRegObject<EarmuffsItem> earmuffs = register("earmuffs", EarmuffsItem::new);
 		public static ItemRegObject<CoresampleItem> coresample = register("coresample", CoresampleItem::new);
 		public static ItemRegObject<GraphiteElectrodeItem> graphiteElectrode = register("graphite_electrode", GraphiteElectrodeItem::new);
-		public static Map<EquipmentSlotType, ItemRegObject<FaradaySuitItem>> faradaySuit = new EnumMap<>(EquipmentSlotType.class);
+		public static Map<EquipmentSlot, ItemRegObject<FaradaySuitItem>> faradaySuit = new EnumMap<>(EquipmentSlot.class);
 		public static ItemRegObject<FluorescentTubeItem> fluorescentTube = register("fluorescent_tube", FluorescentTubeItem::new);
 		public static ItemRegObject<PowerpackItem> powerpack = register("powerpack", PowerpackItem::new);
 		public static ItemRegObject<IEShieldItem> shield = register("shield", IEShieldItem::new);
@@ -316,8 +316,8 @@ public final class IEItems
 				IEItems.Misc.toolUpgrades.put(upgrade, register(
 						"toolupgrade_"+upgrade.name().toLowerCase(Locale.US), () -> new ToolUpgradeItem(upgrade)
 				));
-			for(EquipmentSlotType slot : EquipmentSlotType.values())
-				if(slot.getSlotType()==Group.ARMOR)
+			for(EquipmentSlot slot : EquipmentSlot.values())
+				if(slot.getType()==Type.ARMOR)
 					IEItems.Misc.faradaySuit.put(slot, register(
 							"armor_faraday_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
 					));
@@ -354,7 +354,7 @@ public final class IEItems
 
 	private static ItemRegObject<IEBaseItem> simpleWithStackSize(String name, int maxSize)
 	{
-		return simple(name, p -> p.maxStackSize(maxSize), i -> {
+		return simple(name, p -> p.stacksTo(maxSize), i -> {
 		});
 	}
 
@@ -384,7 +384,7 @@ public final class IEItems
 		return new ItemRegObject<>(RegistryObject.of(existing.getRegistryName(), existing::getRegistryType));
 	}
 
-	public static class ItemRegObject<T extends Item> implements Supplier<T>, IItemProvider
+	public static class ItemRegObject<T extends Item> implements Supplier<T>, ItemLike
 	{
 		private final RegistryObject<T> regObject;
 

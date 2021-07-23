@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 public interface ITeslaEntity
 {
-	void onHit(TileEntity teslaCoil, boolean lowPower);
+	void onHit(BlockEntity teslaCoil, boolean lowPower);
 }

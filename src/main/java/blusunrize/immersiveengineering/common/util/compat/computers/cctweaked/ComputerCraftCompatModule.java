@@ -18,12 +18,12 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Call
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callbacks;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.LazyValue;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.LazyLoadedValue;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -42,7 +42,7 @@ public class ComputerCraftCompatModule extends IECompatModule
 	@CapabilityInject(IPeripheral.class)
 	public static Capability<IPeripheral> PERIPHERAL_CAPABILITY;
 
-	private final Map<TileEntityType<?>, PeripheralCreator<?>> knownPeripherals = new HashMap<>();
+	private final Map<BlockEntityType<?>, PeripheralCreator<?>> knownPeripherals = new HashMap<>();
 
 	@Override
 	public void preInit()
@@ -57,7 +57,7 @@ public class ComputerCraftCompatModule extends IECompatModule
 			BlockState state = world.getBlockState(pos);
 			if(state.getBlock()!=Connectors.connectorBundled.get())
 				return doNotHandle;
-			TileEntity tile = world.getTileEntity(pos);
+			BlockEntity tile = world.getBlockEntity(pos);
 			if(!(tile instanceof ConnectorBundledTileEntity))
 				return doNotHandle;
 			int bits = 0;
@@ -79,10 +79,10 @@ public class ComputerCraftCompatModule extends IECompatModule
 			return channelValues;
 		});
 
-		MinecraftForge.EVENT_BUS.addGenericListener(TileEntity.class, this::attachPeripheral);
+		MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, this::attachPeripheral);
 		try
 		{
-			for(Entry<TileEntityType<?>, CallbackOwner<?>> entry : Callbacks.getCallbacks().entrySet())
+			for(Entry<BlockEntityType<?>, CallbackOwner<?>> entry : Callbacks.getCallbacks().entrySet())
 				knownPeripherals.put(entry.getKey(), new PeripheralCreator<>(entry.getValue()));
 		} catch(IllegalAccessException e)
 		{
@@ -97,17 +97,17 @@ public class ComputerCraftCompatModule extends IECompatModule
 
 	private static final ResourceLocation CAP_NAME = ImmersiveEngineering.rl("cc_peripheral");
 
-	private void attachPeripheral(AttachCapabilitiesEvent<TileEntity> ev)
+	private void attachPeripheral(AttachCapabilitiesEvent<BlockEntity> ev)
 	{
 		if(PERIPHERAL_CAPABILITY==null)
 			return;
-		TileEntity te = ev.getObject();
+		BlockEntity te = ev.getObject();
 		PeripheralCreator<?> creator = knownPeripherals.get(te.getType());
 		if(creator!=null)
 		{
 			ev.addCapability(CAP_NAME, new ICapabilityProvider()
 			{
-				private final LazyValue<LazyOptional<IPeripheral>> realPeripheral = new LazyValue<>(
+				private final LazyLoadedValue<LazyOptional<IPeripheral>> realPeripheral = new LazyLoadedValue<>(
 						() -> {
 							IPeripheral peripheral = creator.make(te);
 							if(peripheral!=null)
@@ -122,7 +122,7 @@ public class ComputerCraftCompatModule extends IECompatModule
 				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 				{
 					if(cap==PERIPHERAL_CAPABILITY)
-						return realPeripheral.getValue().cast();
+						return realPeripheral.get().cast();
 					else
 						return LazyOptional.empty();
 				}

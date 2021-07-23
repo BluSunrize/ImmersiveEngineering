@@ -10,54 +10,54 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ChargingStationTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 
-public class ChargingStationRenderer extends TileEntityRenderer<ChargingStationTileEntity>
+public class ChargingStationRenderer extends BlockEntityRenderer<ChargingStationTileEntity>
 {
-	public ChargingStationRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public ChargingStationRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(ChargingStationTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ChargingStationTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(te.getWorldNonnull().isBlockLoaded(te.getPos()))
+		if(te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
 		{
-			te.particles.get().render(matrixStack, te.getPos(), bufferIn, partialTicks);
-			matrixStack.push();
+			te.particles.get().render(matrixStack, te.getBlockPos(), bufferIn, partialTicks);
+			matrixStack.pushPose();
 			matrixStack.translate(.5, .3125, .5);
 			matrixStack.scale(.75f, .75f, .75f);
 			switch(te.getFacing())
 			{
 				case NORTH:
-					matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 180, true));
+					matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
 					break;
 				case SOUTH:
 					break;
 				case WEST:
-					matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), -90, true));
+					matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), -90, true));
 					break;
 				case EAST:
-					matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
+					matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 					break;
 			}
 			if(!te.inventory.get(0).isEmpty())
 			{
-				matrixStack.push();
+				matrixStack.pushPose();
 				float scale = .625f;
 				matrixStack.scale(scale, scale, 1);
-				ClientUtils.mc().getItemRenderer().renderItem(te.inventory.get(0), TransformType.FIXED, combinedLightIn,
+				ClientUtils.mc().getItemRenderer().renderStatic(te.inventory.get(0), TransformType.FIXED, combinedLightIn,
 						combinedOverlayIn, matrixStack, bufferIn);
-				matrixStack.pop();
+				matrixStack.popPose();
 			}
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
 	}
 }

@@ -9,14 +9,14 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.TNTEntity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.PrimedTnt;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(TNTEntity.class)
+@Mixin(PrimedTnt.class)
 public interface TNTEntityAccess
 {
 	@Accessor
-	void setIgniter(LivingEntity newPlacer);
+	void setOwner(LivingEntity newPlacer);
 }

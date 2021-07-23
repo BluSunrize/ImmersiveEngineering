@@ -13,23 +13,23 @@ import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -38,11 +38,11 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 {
 	public static final float TUBE_LENGTH = 1.5F;
 
-	private static final DataParameter<Boolean> dataMarker_active = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.BOOLEAN);
-	private static final DataParameter<Float> dataMarker_r = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_g = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_b = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.FLOAT);
-	private static final DataParameter<Float> dataMarker_angleHorizontal = EntityDataManager.createKey(FluorescentTubeEntity.class, DataSerializers.FLOAT);
+	private static final EntityDataAccessor<Boolean> dataMarker_active = SynchedEntityData.defineId(FluorescentTubeEntity.class, EntityDataSerializers.BOOLEAN);
+	private static final EntityDataAccessor<Float> dataMarker_r = SynchedEntityData.defineId(FluorescentTubeEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> dataMarker_g = SynchedEntityData.defineId(FluorescentTubeEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> dataMarker_b = SynchedEntityData.defineId(FluorescentTubeEntity.class, EntityDataSerializers.FLOAT);
+	private static final EntityDataAccessor<Float> dataMarker_angleHorizontal = SynchedEntityData.defineId(FluorescentTubeEntity.class, EntityDataSerializers.FLOAT);
 
 	private int timer = 0;
 	public boolean active = false;
@@ -50,14 +50,14 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	boolean firstTick = true;
 	public float angleHorizontal = 0;
 
-	public FluorescentTubeEntity(World world, ItemStack tube, float angleVert)
+	public FluorescentTubeEntity(Level world, ItemStack tube, float angleVert)
 	{
 		this(IEEntityTypes.FLUORESCENT_TUBE.get(), world);
-		rotationYaw = angleVert;
+		yRot = angleVert;
 		rgb = FluorescentTubeItem.getRGB(tube);
 	}
 
-	public FluorescentTubeEntity(EntityType<FluorescentTubeEntity> type, World world)
+	public FluorescentTubeEntity(EntityType<FluorescentTubeEntity> type, Level world)
 	{
 		super(type, world);
 	}
@@ -68,71 +68,71 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	{
 		super.tick();
 		//movement logic
-		this.prevPosX = this.getPosX();
-		this.prevPosY = this.getPosY();
-		this.prevPosZ = this.getPosZ();
-		Vector3d motion = getMotion();
+		this.xo = this.getX();
+		this.yo = this.getY();
+		this.zo = this.getZ();
+		Vec3 motion = getDeltaMovement();
 		motion = motion.add(0, -.4, 0);
 		this.move(MoverType.SELF, motion);
 		motion = motion.scale(0.98);
 
 		if(this.onGround)
-			motion = new Vector3d(motion.x*0.7, motion.y*-0.5, motion.z*0.7);
-		if(firstTick&&!world.isRemote&&rgb!=null)
+			motion = new Vec3(motion.x*0.7, motion.y*-0.5, motion.z*0.7);
+		if(firstTick&&!level.isClientSide&&rgb!=null)
 		{
-			dataManager.set(dataMarker_r, rgb[0]);
-			dataManager.set(dataMarker_g, rgb[1]);
-			dataManager.set(dataMarker_b, rgb[2]);
-			dataManager.set(dataMarker_angleHorizontal, angleHorizontal);
+			entityData.set(dataMarker_r, rgb[0]);
+			entityData.set(dataMarker_g, rgb[1]);
+			entityData.set(dataMarker_b, rgb[2]);
+			entityData.set(dataMarker_angleHorizontal, angleHorizontal);
 			firstTick = false;
 		}
 		// tube logic
-		if(timer > 0&&!world.isRemote)
+		if(timer > 0&&!level.isClientSide)
 		{
 			timer--;
 			if(timer <= 0)
-				dataManager.set(dataMarker_active, false);
+				entityData.set(dataMarker_active, false);
 		}
-		if(world.isRemote)
+		if(level.isClientSide)
 		{
-			active = dataManager.get(dataMarker_active);
-			rgb = new float[]{dataManager.get(dataMarker_r),
-					dataManager.get(dataMarker_g),
-					dataManager.get(dataMarker_b)};
-			angleHorizontal = dataManager.get(dataMarker_angleHorizontal);
+			active = entityData.get(dataMarker_active);
+			rgb = new float[]{entityData.get(dataMarker_r),
+					entityData.get(dataMarker_g),
+					entityData.get(dataMarker_b)};
+			angleHorizontal = entityData.get(dataMarker_angleHorizontal);
 		}
-		setMotion(motion);
+		setDeltaMovement(motion);
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket()
+	public Packet<?> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	@Override
-	protected void registerData()
+	protected void defineSynchedData()
 	{
-		dataManager.register(dataMarker_r, 1F);
-		dataManager.register(dataMarker_g, 1F);
-		dataManager.register(dataMarker_b, 1F);
-		dataManager.register(dataMarker_active, false);
-		dataManager.register(dataMarker_angleHorizontal, 0F);
+		entityData.define(dataMarker_r, 1F);
+		entityData.define(dataMarker_g, 1F);
+		entityData.define(dataMarker_b, 1F);
+		entityData.define(dataMarker_active, false);
+		entityData.define(dataMarker_angleHorizontal, 0F);
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT nbt)
+	protected void readAdditionalSaveData(CompoundTag nbt)
 	{
-		CompoundNBT comp = nbt.getCompound("nbt");
+		CompoundTag comp = nbt.getCompound("nbt");
 		rgb = new float[]{comp.getFloat("r"), comp.getFloat("g"), comp.getFloat("b")};
 		angleHorizontal = nbt.getFloat("angleHor");
 
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT nbt)
+	protected void addAdditionalSaveData(CompoundTag nbt)
 	{
-		CompoundNBT comp = new CompoundNBT();
+		CompoundTag comp = new CompoundTag();
 		comp.putFloat("r", rgb[0]);
 		comp.putFloat("g", rgb[1]);
 		comp.putFloat("b", rgb[2]);
@@ -141,46 +141,46 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount)
+	public boolean hurt(DamageSource source, float amount)
 	{
-		if(isAlive()&&!world.isRemote)
+		if(isAlive()&&!level.isClientSide)
 		{
 			ItemStack tube = new ItemStack(Misc.fluorescentTube);
 			FluorescentTubeItem.setRGB(tube, rgb);
-			ItemEntity ent = new ItemEntity(world, getPosX(), getPosY(), getPosZ(), tube);
-			world.addEntity(ent);
+			ItemEntity ent = new ItemEntity(level, getX(), getY(), getZ(), tube);
+			level.addFreshEntity(ent);
 			remove();
 		}
-		return super.attackEntityFrom(source, amount);
+		return super.hurt(source, amount);
 	}
 
 	@Override
-	public boolean canBeCollidedWith()
+	public boolean isPickable()
 	{
 		return isAlive();
 	}
 
 	@Override
-	public void onHit(TileEntity te, boolean lowPower)
+	public void onHit(BlockEntity te, boolean lowPower)
 	{
 		if(te instanceof TeslaCoilTileEntity&&((TeslaCoilTileEntity)te).energyStorage.extractEnergy(1, false) > 0)
 		{
 			timer = 35;
-			dataManager.set(dataMarker_active, true);
+			entityData.set(dataMarker_active, true);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResultType applyPlayerInteraction(PlayerEntity player, Vector3d targetVec3, Hand hand)
+	public InteractionResult interactAt(Player player, Vec3 targetVec3, InteractionHand hand)
 	{
-		if(Utils.isHammer(player.getHeldItem(hand)))
+		if(Utils.isHammer(player.getItemInHand(hand)))
 		{
-			angleHorizontal += (player.isSneaking()?10: 1);
+			angleHorizontal += (player.isShiftKeyDown()?10: 1);
 			angleHorizontal %= 360;
-			dataManager.set(dataMarker_angleHorizontal, angleHorizontal);
-			return ActionResultType.SUCCESS;
+			entityData.set(dataMarker_angleHorizontal, angleHorizontal);
+			return InteractionResult.SUCCESS;
 		}
-		return super.applyPlayerInteraction(player, targetVec3, hand);
+		return super.interactAt(player, targetVec3, hand);
 	}
 }

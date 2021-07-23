@@ -23,16 +23,16 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -55,7 +55,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	public final FluxStorageAdvanced energyStorage;
 
 	public PoweredMultiblockTileEntity(IETemplateMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
-									   TileEntityType<? extends T> type)
+									   BlockEntityType<? extends T> type)
 	{
 		super(multiblockInstance, type, redstoneControl);
 		this.energyStorage = new FluxStorageAdvanced(energyCapacity);
@@ -65,15 +65,15 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	//		DATA MANAGEMENT
 	//	=================================
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
-		ListNBT processNBT = nbt.getList("processQueue", 10);
+		ListTag processNBT = nbt.getList("processQueue", 10);
 		processQueue.clear();
 		for(int i = 0; i < processNBT.size(); i++)
 		{
-			CompoundNBT tag = processNBT.getCompound(i);
+			CompoundTag tag = processNBT.getCompound(i);
 			if(tag.contains("recipe"))
 			{
 				int processTick = tag.getInt("process_processTick");
@@ -88,11 +88,11 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
-		ListNBT processNBT = new ListNBT();
+		ListTag processNBT = new ListTag();
 		for(MultiblockProcess<?> process : this.processQueue)
 			processNBT.add(writeProcessToNBT(process));
 		nbt.put("processQueue", processNBT);
@@ -102,7 +102,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	protected abstract R getRecipeForId(ResourceLocation id);
 
 	@Nullable
-	protected MultiblockProcess<R> loadProcessFromNBT(CompoundNBT tag)
+	protected MultiblockProcess<R> loadProcessFromNBT(CompoundTag tag)
 	{
 		String id = tag.getString("recipe");
 		R recipe = getRecipeForId(new ResourceLocation(id));
@@ -114,9 +114,9 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		return null;
 	}
 
-	protected CompoundNBT writeProcessToNBT(MultiblockProcess process)
+	protected CompoundTag writeProcessToNBT(MultiblockProcess process)
 	{
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		tag.putString("recipe", process.recipe.getId().toString());
 		tag.putInt("process_processTick", process.processTick);
 		process.writeExtraDataToNBT(tag);
@@ -171,12 +171,12 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(!isDummy())
 		{
 			BlockPos nullPos = this.getOrigin();
-			return new AxisAlignedBB(nullPos,
+			return new AABB(nullPos,
 					TemplateMultiblock.withSettingsAndOffset(
 							nullPos, new BlockPos(structureDimensions.get()), getIsMirrored(),
 							multiblockInstance.untransformDirection(getFacing())
@@ -274,7 +274,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 					for(ItemStack old : existingProcess.inputItems)
 					{
 						for(ItemStack in : newProcess.inputItems)
-							if(ItemStack.areItemsEqual(old, in)&&Utils.compareItemNBT(old, in))
+							if(ItemStack.isSame(old, in)&&Utils.compareItemNBT(old, in))
 								if(old.getCount()+in.getCount() > old.getMaxStackSize())
 								{
 									canStack = false;
@@ -289,7 +289,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 							for(ItemStack old : existingProcess.inputItems)
 							{
 								for(ItemStack in : newProcess.inputItems)
-									if(ItemStack.areItemsEqual(old, in)&&Utils.compareItemNBT(old, in))
+									if(ItemStack.isSame(old, in)&&Utils.compareItemNBT(old, in))
 									{
 										old.grow(in.getCount());
 										break;
@@ -520,7 +520,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			this.clearProcess = true;
 		}
 
-		protected abstract void writeExtraDataToNBT(CompoundNBT nbt);
+		protected abstract void writeExtraDataToNBT(CompoundTag nbt);
 	}
 
 	public static class MultiblockProcessInMachine<R extends MultiblockRecipe> extends MultiblockProcess<R>
@@ -643,7 +643,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		}
 
 		public static <R extends MultiblockRecipe>
-		MultiblockProcessInMachine<R> load(R recipe, CompoundNBT data)
+		MultiblockProcessInMachine<R> load(R recipe, CompoundTag data)
 		{
 			return new MultiblockProcessInMachine<>(recipe, data.getIntArray("process_inputSlots"))
 					.setInputAmounts(data.getIntArray("process_inputAmounts"))
@@ -651,7 +651,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		}
 
 		@Override
-		protected void writeExtraDataToNBT(CompoundNBT nbt)
+		protected void writeExtraDataToNBT(CompoundTag nbt)
 		{
 			if(inputSlots!=null)
 				nbt.putIntArray("process_inputSlots", inputSlots);
@@ -686,18 +686,18 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		}
 
 		public static <R extends MultiblockRecipe>
-		MultiblockProcessInWorld<R> load(R recipe, CompoundNBT data)
+		MultiblockProcessInWorld<R> load(R recipe, CompoundTag data)
 		{
 			NonNullList<ItemStack> inputs = NonNullList.withSize(data.getInt("numInputs"), ItemStack.EMPTY);
-			ItemStackHelper.loadAllItems(data, inputs);
+			ContainerHelper.loadAllItems(data, inputs);
 			float transformationPoint = data.getFloat("process_transformationPoint");
 			return new MultiblockProcessInWorld<>(recipe, transformationPoint, inputs);
 		}
 
 		@Override
-		protected void writeExtraDataToNBT(CompoundNBT nbt)
+		protected void writeExtraDataToNBT(CompoundTag nbt)
 		{
-			ItemStackHelper.saveAllItems(nbt, inputItems);
+			ContainerHelper.saveAllItems(nbt, inputItems);
 			nbt.putInt("numInputs", inputItems.size());
 			nbt.putFloat("process_transformationPoint", transformationPoint);
 		}
@@ -775,7 +775,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, transformationPoint,
 					Utils.createNonNullItemStackListFromItemStack(displayStack)), simulate, doProcessStacking))
 			{
-				multiblock.markDirty();
+				multiblock.setChanged();
 				multiblock.markContainingBlockForUpdate(null);
 				stack.shrink(displayStack.getCount());
 				if(stack.getCount() <= 0)

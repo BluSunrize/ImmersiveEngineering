@@ -23,11 +23,11 @@ import blusunrize.lib.manual.Tree;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.KeyMapping;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -124,10 +124,10 @@ public class IEManualInstance extends ManualInstance
 			if(segment.length < 2)
 				break;
 			String result = "";
-			for(KeyBinding kb : ClientUtils.mc().gameSettings.keyBindings)
-				if(segment[1].equalsIgnoreCase(kb.getKeyDescription()))
+			for(KeyMapping kb : ClientUtils.mc().options.keyMappings)
+				if(segment[1].equalsIgnoreCase(kb.getName()))
 				{
-					result = kb.func_238171_j_().getString();
+					result = kb.getTranslatedKeyMessage().getString();
 					if(result.length() > 1)
 						result = Utils.toCamelCase(result);
 					break;
@@ -206,7 +206,7 @@ public class IEManualInstance extends ManualInstance
 	}*/
 
 	@Override
-	public FontRenderer fontRenderer()
+	public Font fontRenderer()
 	{
 		return /*TODO new IEItemFontRender()*/ClientUtils.unicodeFontRender();
 	}
@@ -214,20 +214,20 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String getManualName()
 	{
-		return I18n.format("item.immersiveengineering.manual");
+		return I18n.get("item.immersiveengineering.manual");
 	}
 
 	@Override
 	public String formatCategoryName(ResourceLocation s)
 	{
-		return (improveReadability()?TextFormatting.BOLD: "")+I18n.format("manual."
+		return (improveReadability()?ChatFormatting.BOLD: "")+I18n.get("manual."
 				+s.toString().replace(':', '.'));
 	}
 
 	@Override
 	public String formatEntryName(String s)
 	{
-		return (improveReadability()?TextFormatting.BOLD: "")+s;
+		return (improveReadability()?ChatFormatting.BOLD: "")+s;
 	}
 
 	@Override
@@ -263,7 +263,7 @@ public class IEManualInstance extends ManualInstance
 	@Override
 	public String formatLink(ManualLink link)
 	{
-		return TextFormatting.GOLD+"  -> "+link.getKey().getTitle()+", "+
+		return ChatFormatting.GOLD+"  -> "+link.getKey().getTitle()+", "+
 				(link.getPage()+1);
 	}
 

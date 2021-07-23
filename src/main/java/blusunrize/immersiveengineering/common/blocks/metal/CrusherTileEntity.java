@@ -24,24 +24,24 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -81,11 +81,11 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
+	private AABB renderAABB;
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		//		if(renderAABB==null)
 		//			if(pos==17)
@@ -93,7 +93,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		//			else
 		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
 		//		return renderAABB;
-		return new AxisAlignedBB(getPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getPos().getY(), getPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getPos().getY()+3, getPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
+		return new AABB(getBlockPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getBlockPos().getY(), getBlockPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getBlockPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getBlockPos().getY()+3, getBlockPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
 	}
 
 	public static VoxelShape getBasicShape(BlockPos posInMultiblock)
@@ -111,11 +111,11 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 				new BlockPos(0, 1, 1)
 		);
 		if(slabs.contains(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, .5f, 1);
+			return Shapes.box(0, 0, 0, 1, .5f, 1);
 		if(new BlockPos(2, 1, 1).equals(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, .75f, 1);
+			return Shapes.box(0, 0, 0, 1, .75f, 1);
 		if(new BlockPos(2, 2, 1).equals(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 0, 0, 0);
+			return Shapes.box(0, 0, 0, 0, 0, 0);
 
 		if(posInMultiblock.getY() > 0&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4)
 		{
@@ -140,43 +140,43 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			if(posInMultiblock.getZ()==2)
 				maxZ = .8125f;
 
-			return VoxelShapes.create(minX, 0, minZ, maxX, 1, maxZ);
+			return Shapes.box(minX, 0, minZ, maxX, 1, maxZ);
 		}
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return VoxelShapes.create(0, 0, .5f, 1, 1, 1);
+			return Shapes.box(0, 0, .5f, 1, 1, 1);
 
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES
 			= CachedShapesWithTransform.createForMultiblock(CrusherTileEntity::getShape);
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return SHAPES.get(posInMultiblock, Pair.of(getFacing(), getIsMirrored()));
 	}
 
-	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
+	private static List<AABB> getShape(BlockPos posInMultiblock)
 	{
 		if(posInMultiblock.getZ()==1&&posInMultiblock.getX()==2)
-			return getBasicShape(posInMultiblock).toBoundingBoxList();
+			return getBasicShape(posInMultiblock).toAabbs();
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			list.add(new AxisAlignedBB(.125, .5f, .625, .25, 1, .875));
-			list.add(new AxisAlignedBB(.75, .5f, .625, .875, 1, .875));
+			List<AABB> list = Lists.newArrayList(new AABB(0, 0, 0, 1, .5f, 1));
+			list.add(new AABB(.125, .5f, .625, .25, 1, .875));
+			list.add(new AABB(.75, .5f, .625, .875, 1, .875));
 			return list;
 		}
-		if(new MutableBoundingBox(1, 1, 1, 3, 2, 1)
-				.isVecInside(posInMultiblock))
+		if(new BoundingBox(1, 1, 1, 3, 2, 1)
+				.isInside(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = new ArrayList<>(3);
+			List<AABB> list = new ArrayList<>(3);
 			float minY = .5f;
 			float minX = posInMultiblock.getX()==1?.4375f: 0;
 			float maxX = posInMultiblock.getX()==3?.5625f: 1;
 			if(posInMultiblock.getY()==1)
-				list.add(new AxisAlignedBB(minX, .5f, 0, maxX, .75f, 1));
+				list.add(new AABB(minX, .5f, 0, maxX, .75f, 1));
 			else
 				minY = 0;
 
@@ -185,7 +185,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			else
 				minX = posInMultiblock.getX()==3?.5625f: 0;
 			maxX = posInMultiblock.getX()==3?.8125f: posInMultiblock.getX()==1?.4375f: 1;
-			list.add(new AxisAlignedBB(minX, minY, 0, maxX, 1, 1));
+			list.add(new AABB(minX, minY, 0, maxX, 1, 1));
 			return list;
 		}
 		if((posInMultiblock.getZ()==0||posInMultiblock.getZ()==2)&&posInMultiblock.getY() > 0&&posInMultiblock.getX() > 0&&posInMultiblock.getX() < 4)
@@ -193,14 +193,14 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			boolean front = posInMultiblock.getZ()==0;
 			boolean right = posInMultiblock.getX()==1;
 			boolean left = posInMultiblock.getX()==3;
-			List<AxisAlignedBB> list = new ArrayList<>(3);
+			List<AABB> list = new ArrayList<>(3);
 			float minY = .5f;
 			float minX = right?.4375f: 0;
 			float maxX = left?.5625f: 1;
 			float minZ = front?.4375f: 0;
 			float maxZ = !front?.5625f: 1;
 			if(posInMultiblock.getY()==1)
-				list.add(new AxisAlignedBB(minX, .5f, minZ, maxX, .75f, maxZ));
+				list.add(new AABB(minX, .5f, minZ, maxX, .75f, maxZ));
 			else
 				minY = 0;
 
@@ -208,7 +208,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			maxX = left?.8125f: (float)1;
 			minZ = front?.1875f: .5625f;
 			maxZ = !front?.8125f: .4375f;
-			list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ));
+			list.add(new AABB(minX, minY, minZ, maxX, 1, maxZ));
 			if(!ImmutableSet.of(
 					new BlockPos(2, 1, 2),
 					new BlockPos(2, 2, 2),
@@ -220,7 +220,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 				maxX = left?.8125f: .4375f;
 				minZ = front?.4375f: 0;
 				maxZ = !front?.5625f: 1;
-				list.add(new AxisAlignedBB(minX, minY, minZ, maxX, 1, maxZ));
+				list.add(new AABB(minX, minY, minZ, maxX, 1, maxZ));
 
 				if(ImmutableSet.of(
 						new BlockPos(3, 1, 2),
@@ -233,7 +233,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 				{
 					minZ = front?.25f: .5f;
 					maxZ = front?.5f: .75f;
-					list.add(new AxisAlignedBB(0.25, 0, minZ, 0.75, .5f, maxZ));
+					list.add(new AABB(0.25, 0, minZ, 0.75, .5f, maxZ));
 				}
 			}
 			return list;
@@ -245,11 +245,11 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 				new BlockPos(1, 0, 0)
 		).contains(posInMultiblock))
 			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==3,
-					new AxisAlignedBB(0.25, 0.5, 0.5, 0.5, 1, 0.75),
-					new AxisAlignedBB(0, 0, 0, 1, .5f, 1)
+					new AABB(0.25, 0.5, 0.5, 0.5, 1, 0.75),
+					new AABB(0, 0, 0, 1, .5f, 1)
 			);
 
-		return getBasicShape(posInMultiblock).toBoundingBoxList();
+		return getBasicShape(posInMultiblock).toAabbs();
 	}
 
 	private boolean isInInput(boolean allowMiddleLayer)
@@ -260,17 +260,17 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	}
 
 	@Override
-	public void onEntityCollision(World world, Entity entity)
+	public void onEntityCollision(Level world, Entity entity)
 	{
 		// Actual intersection with the input box is checked later
 		boolean bpos = isInInput(true);
-		if(bpos&&!world.isRemote&&entity.isAlive()&&!isRSDisabled())
+		if(bpos&&!world.isClientSide&&entity.isAlive()&&!isRSDisabled())
 		{
 			CrusherTileEntity master = master();
 			if(master==null)
 				return;
-			Vector3d center = Vector3d.copyCentered(master.getPos()).add(0, 0.25, 0);
-			AxisAlignedBB crusherInternal = new AxisAlignedBB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
+			Vec3 center = Vec3.atCenterOf(master.getBlockPos()).add(0, 0.25, 0);
+			AABB crusherInternal = new AABB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;
 			if(entity instanceof ItemEntity&&!((ItemEntity)entity).getItem().isEmpty())
@@ -291,14 +291,14 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 						entity.remove();
 				}
 			}
-			else if(entity instanceof LivingEntity&&(!(entity instanceof PlayerEntity)||!((PlayerEntity)entity).abilities.disableDamage))
+			else if(entity instanceof LivingEntity&&(!(entity instanceof Player)||!((Player)entity).abilities.invulnerable))
 			{
 				int consumed = master.energyStorage.extractEnergy(80, true);
 				if(consumed > 0)
 				{
 					master.energyStorage.extractEnergy(consumed, false);
-					EventHandler.crusherMap.put(entity.getUniqueID(), master);
-					entity.attackEntityFrom(IEDamageSources.crusher, consumed/20f);
+					EventHandler.crusherMap.put(entity.getUUID(), master);
+					entity.hurt(IEDamageSources.crusher, consumed/20f);
 				}
 			}
 		}
@@ -329,7 +329,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		if(master==null)
 			return 0;
 		float fill = master.processQueue.size()/(float)master.getProcessQueueMaxLength();
-		return MathHelper.floor(fill*14.0F)+(fill > 0?1: 0);
+		return Mth.floor(fill*14.0F)+(fill > 0?1: 0);
 	}
 
 	@Override
@@ -345,7 +345,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	}
 
 	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
-			() -> new DirectionalBlockPos(getPos().add(0, -1, 0).offset(getFacing(), -2), getFacing()),
+			() -> new DirectionalBlockPos(getBlockPos().offset(0, -1, 0).relative(getFacing(), -2), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
@@ -353,7 +353,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	{
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(world, getPos().add(0, -1, 0).offset(getFacing(), -2), output, getFacing().getOpposite());
+			Utils.dropStackAtPos(level, getBlockPos().offset(0, -1, 0).relative(getFacing(), -2), output, getFacing().getOpposite());
 	}
 
 	@Override

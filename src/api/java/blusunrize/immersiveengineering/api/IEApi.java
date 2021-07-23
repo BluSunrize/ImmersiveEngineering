@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.api;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import net.minecraft.item.ItemStack;
-import net.minecraft.potion.Effect;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
@@ -58,7 +58,7 @@ public class IEApi
 	 * 1: slippery, makes the target slide around and randomly drop their held item<br>
 	 * 2: conductive, increases flux damage done to the target (CoFH/RedstoneArsenal compat112)<br>
 	 */
-	public static List<Supplier<Effect>> potions;
+	public static List<Supplier<MobEffect>> potions;
 
 	/**
 	 * Each element of this list will be called once when the command "/cie resetrender" is run.
@@ -76,9 +76,9 @@ public class IEApi
 		return oreOutputPreference.computeIfAbsent(name, rl ->
 		{
 			if(TagUtils.isNonemptyItemTag(name))
-				return new ItemStack(getPreferredElementbyMod(TagUtils.getItemTag(name).getAllElements()));
+				return new ItemStack(getPreferredElementbyMod(TagUtils.getItemTag(name).getValues()));
 			else if(TagUtils.isNonemptyBlockTag(name))
-				return new ItemStack(getPreferredElementbyMod(TagUtils.getItemTag(name).getAllElements()));
+				return new ItemStack(getPreferredElementbyMod(TagUtils.getItemTag(name).getValues()));
 			else
 				return ItemStack.EMPTY;
 		}).copy();

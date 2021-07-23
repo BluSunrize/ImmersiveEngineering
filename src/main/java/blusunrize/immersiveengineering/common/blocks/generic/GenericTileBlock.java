@@ -9,20 +9,20 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class GenericTileBlock<T extends TileEntity> extends IETileProviderBlock
+public class GenericTileBlock<T extends BlockEntity> extends IETileProviderBlock
 {
-	private final RegistryObject<TileEntityType<T>> tileType;
+	private final RegistryObject<BlockEntityType<T>> tileType;
 
-	public GenericTileBlock(RegistryObject<TileEntityType<T>> tileType, Properties blockProps)
+	public GenericTileBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
 	{
 		super(blockProps);
 		this.tileType = tileType;
@@ -30,7 +30,7 @@ public class GenericTileBlock<T extends TileEntity> extends IETileProviderBlock
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
+	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
 	{
 		return tileType.get().create();
 	}

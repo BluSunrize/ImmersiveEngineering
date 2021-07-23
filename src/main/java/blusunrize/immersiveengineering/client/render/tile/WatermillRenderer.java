@@ -14,46 +14,46 @@ import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-public class WatermillRenderer extends TileEntityRenderer<WatermillTileEntity>
+public class WatermillRenderer extends BlockEntityRenderer<WatermillTileEntity>
 {
 	public static DynamicModel<Void> MODEL;
 	private static final IVertexBufferHolder MODEL_BUFFER = IVertexBufferHolder.create(() -> {
 		BlockState state = WoodenDevices.watermill.getDefaultState()
-				.with(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
+				.setValue(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
 		return MODEL.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 	});
 
-	public WatermillRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public WatermillRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(WatermillTileEntity tile, float partialTicks, MatrixStack transform, IRenderTypeBuffer bufferIn,
+	public void render(WatermillTileEntity tile, float partialTicks, PoseStack transform, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!SafeChunkUtils.isChunkSafe(tile.getWorldNonnull(), tile.getPos()))
+		if(tile.isDummy()||!SafeChunkUtils.isChunkSafe(tile.getWorldNonnull(), tile.getBlockPos()))
 			return;
-		transform.push();
+		transform.pushPose();
 		transform.translate(.5, .5, .5);
-		final float dir = (tile.getFacing().getHorizontalAngle()+180)%180;
+		final float dir = (tile.getFacing().toYRot()+180)%180;
 		float wheelRotation = 360*(tile.rotation+partialTicks*(float)tile.perTick);
-		transform.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
-		transform.rotate(new Quaternion(new Vector3f(0, 0, 1), wheelRotation, true));
+		transform.mulPose(new Quaternion(new Vector3f(0, 1, 0), dir, true));
+		transform.mulPose(new Quaternion(new Vector3f(0, 0, 1), wheelRotation, true));
 		transform.translate(-.5, -.5, -.5);
-		MODEL_BUFFER.render(RenderType.getCutoutMipped(), combinedLightIn, combinedOverlayIn, bufferIn, transform);
-		transform.pop();
+		MODEL_BUFFER.render(RenderType.cutoutMipped(), combinedLightIn, combinedOverlayIn, bufferIn, transform);
+		transform.popPose();
 	}
 
 	public static void reset()

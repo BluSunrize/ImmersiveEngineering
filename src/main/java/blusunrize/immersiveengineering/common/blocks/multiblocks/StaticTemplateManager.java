@@ -15,14 +15,14 @@ import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.network.MessageMultiblockSync;
 import blusunrize.immersiveengineering.common.network.MessageMultiblockSync.SyncedTemplate;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.ResourcePackType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtIo;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.gen.feature.template.Template;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -44,9 +44,9 @@ import java.util.*;
 public class StaticTemplateManager
 {
 	public static ExistingFileHelper EXISTING_HELPER;
-	public static Map<ResourceLocation, Template> SYNCED_CLIENT_TEMPLATES = new HashMap<>();
+	public static Map<ResourceLocation, StructureTemplate> SYNCED_CLIENT_TEMPLATES = new HashMap<>();
 
-	private static Optional<InputStream> getModResource(ResourcePackType type, ResourceLocation name, @Nullable MinecraftServer server)
+	private static Optional<InputStream> getModResource(PackType type, ResourceLocation name, @Nullable MinecraftServer server)
 	{
 		if(EXISTING_HELPER!=null)
 		{
@@ -71,7 +71,7 @@ public class StaticTemplateManager
 		{
 			try
 			{
-				IResource resource = server.getDataPackRegistries().getResourceManager().getResource(name);
+				Resource resource = server.getDataPackRegistries().getResourceManager().getResource(name);
 				return Optional.of(resource.getInputStream());
 			} catch(IOException x)
 			{
@@ -86,31 +86,31 @@ public class StaticTemplateManager
 					.map(ResourcePackLoader::getResourcePackFor)
 					.filter(Optional::isPresent)
 					.map(Optional::get)
-					.filter(mfrp -> mfrp.resourceExists(type, name))
+					.filter(mfrp -> mfrp.hasResource(type, name))
 					.map(mfrp -> getInputStreamOrThrow(type, name, mfrp))
 					.findAny();
 		}
 	}
 
-	private static InputStream getInputStreamOrThrow(ResourcePackType type, ResourceLocation name, ModFileResourcePack source)
+	private static InputStream getInputStreamOrThrow(PackType type, ResourceLocation name, ModFileResourcePack source)
 	{
 		try
 		{
-			return source.getResourceStream(type, name);
+			return source.getResource(type, name);
 		} catch(IOException e)
 		{
 			throw new RuntimeException(e);
 		}
 	}
 
-	public static Template loadStaticTemplate(ResourceLocation loc, @Nullable MinecraftServer server) throws IOException
+	public static StructureTemplate loadStaticTemplate(ResourceLocation loc, @Nullable MinecraftServer server) throws IOException
 	{
 		if(server==null&&EXISTING_HELPER==null)
 			return Objects.requireNonNull(SYNCED_CLIENT_TEMPLATES.get(loc));
 		else
 		{
 			String path = "structures/"+loc.getPath()+".nbt";
-			Optional<InputStream> optStream = getModResource(ResourcePackType.SERVER_DATA,
+			Optional<InputStream> optStream = getModResource(PackType.SERVER_DATA,
 					new ResourceLocation(loc.getNamespace(), path), server);
 			if(optStream.isPresent())
 				return loadTemplate(optStream.get());
@@ -118,11 +118,11 @@ public class StaticTemplateManager
 		}
 	}
 
-	private static Template loadTemplate(InputStream inputStreamIn) throws IOException
+	private static StructureTemplate loadTemplate(InputStream inputStreamIn) throws IOException
 	{
-		CompoundNBT compoundnbt = CompressedStreamTools.readCompressed(inputStreamIn);
-		Template template = new Template();
-		template.read(compoundnbt);
+		CompoundTag compoundnbt = NbtIo.readCompressed(inputStreamIn);
+		StructureTemplate template = new StructureTemplate();
+		template.load(compoundnbt);
 		return template;
 	}
 
@@ -135,7 +135,7 @@ public class StaticTemplateManager
 				TemplateMultiblock templateMB = (TemplateMultiblock)mb;
 				if(resetMBs)
 					templateMB.reset();
-				Template template = templateMB.getTemplate(ServerLifecycleHooks.getCurrentServer());
+				StructureTemplate template = templateMB.getTemplate(ServerLifecycleHooks.getCurrentServer());
 				ResourceLocation rl = templateMB.getTemplateLocation();
 				toSync.add(new SyncedTemplate(template, rl));
 			}
@@ -147,6 +147,6 @@ public class StaticTemplateManager
 	@SubscribeEvent
 	public static void onLogin(PlayerLoggedInEvent ev)
 	{
-		syncMultiblockTemplates(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)ev.getEntityLiving()), false);
+		syncMultiblockTemplates(PacketDistributor.PLAYER.with(() -> (ServerPlayer)ev.getEntityLiving()), false);
 	}
 }

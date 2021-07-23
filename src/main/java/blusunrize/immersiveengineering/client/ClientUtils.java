@@ -12,28 +12,28 @@ import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.mixin.accessors.client.FontResourceManagerAccess;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecraftAccess;
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
+import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.audio.ISound.AttenuationType;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.fonts.Font;
-import net.minecraft.client.gui.fonts.FontResourceManager;
-import net.minecraft.client.renderer.model.ModelRotation;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.font.FontManager;
+import net.minecraft.client.gui.font.FontSet;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.Usage;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.sounds.SoundInstance.Attenuation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.phys.Vec3;
 import org.apache.commons.compress.utils.IOUtils;
 
 import javax.imageio.ImageIO;
@@ -51,22 +51,22 @@ public class ClientUtils
 
 	public static void bindTexture(ResourceLocation texture)
 	{
-		mc().getTextureManager().bindTexture(texture);
+		mc().getTextureManager().bind(texture);
 	}
 
 	public static TextureAtlasSprite getSprite(ResourceLocation rl)
 	{
-		return mc().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE).getSprite(rl);
+		return mc().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(rl);
 	}
 
-	public static FontRenderer font()
+	public static Font font()
 	{
-		return mc().fontRenderer;
+		return mc().font;
 	}
 
 	public static float partialTicks()
 	{
-		return mc().getRenderPartialTicks();
+		return mc().getFrameTime();
 	}
 
 	public static BufferedImage readBufferedImage(InputStream imageStream) throws IOException
@@ -84,15 +84,15 @@ public class ClientUtils
 		return bufferedimage;
 	}
 
-	private static FontRenderer unicodeRenderer;
+	private static Font unicodeRenderer;
 
-	public static FontRenderer unicodeFontRender()
+	public static Font unicodeFontRender()
 	{
 		if(unicodeRenderer==null)
-			unicodeRenderer = new FontRenderer(rl -> {
-				FontResourceManager resourceManager = ((MinecraftAccess)Minecraft.getInstance()).getFontResourceMananger();
-				Map<ResourceLocation, Font> fonts = ((FontResourceManagerAccess)resourceManager).getIdToFontMap();
-				return fonts.get(Minecraft.UNIFORM_FONT_RENDERER_NAME);
+			unicodeRenderer = new Font(rl -> {
+				FontManager resourceManager = ((MinecraftAccess)Minecraft.getInstance()).getFontManager();
+				Map<ResourceLocation, FontSet> fonts = ((FontResourceManagerAccess)resourceManager).getFontSets();
+				return fonts.get(Minecraft.UNIFORM_FONT);
 			});
 		return unicodeRenderer;
 	}
@@ -107,9 +107,9 @@ public class ClientUtils
 
 	public static IETileSound generatePositionedIESound(SoundEvent soundEvent, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
 	{
-		IETileSound sound = new IETileSound(soundEvent, volume, pitch, repeat, delay, pos, AttenuationType.LINEAR, SoundCategory.BLOCKS);
+		IETileSound sound = new IETileSound(soundEvent, volume, pitch, repeat, delay, pos, Attenuation.LINEAR, SoundSource.BLOCKS);
 		sound.evaluateVolume();
-		ClientUtils.mc().getSoundHandler().play(sound);
+		ClientUtils.mc().getSoundManager().play(sound);
 		return sound;
 	}
 
@@ -122,32 +122,32 @@ public class ClientUtils
 		Quaternion qPitch = new Quaternion((float)Math.sin(x/2), 0, 0, (float)Math.cos(x/2));
 		Quaternion qRoll = new Quaternion(0, 0, (float)Math.sin(z/2), (float)Math.cos(z/2));
 
-		qYaw.multiply(qRoll);
-		qYaw.multiply(qPitch);
+		qYaw.mul(qRoll);
+		qYaw.mul(qPitch);
 		return qYaw;
 	}
 
-	public static Vector3d[] applyMatrixToVertices(TransformationMatrix matrix, Vector3d... vertices)
+	public static Vec3[] applyMatrixToVertices(Transformation matrix, Vec3... vertices)
 	{
 		if(matrix==null)
 			return vertices;
-		Vector3d[] ret = new Vector3d[vertices.length];
+		Vec3[] ret = new Vec3[vertices.length];
 		for(int i = 0; i < ret.length; i++)
 		{
 			Vector4f vec = new Vector4f((float)vertices[i].x, (float)vertices[i].y, (float)vertices[i].z, 1);
 			matrix.transformPosition(vec);
 			vec.perspectiveDivide();
-			ret[i] = new Vector3d(vec.getX(), vec.getY(), vec.getZ());
+			ret[i] = new Vec3(vec.x(), vec.y(), vec.z());
 		}
 		return ret;
 	}
 
 	public static Vector4f pulseRGBAlpha(Vector4f rgba, int tickrate, float min, float max)
 	{
-		float f_alpha = mc().player.ticksExisted%(tickrate*2)/(float)tickrate;
+		float f_alpha = mc().player.tickCount%(tickrate*2)/(float)tickrate;
 		if(f_alpha > 1)
 			f_alpha = 2-f_alpha;
-		return new Vector4f(rgba.getX(), rgba.getY(), rgba.getZ(), MathHelper.clamp(f_alpha, min, max));
+		return new Vector4f(rgba.x(), rgba.y(), rgba.z(), Mth.clamp(f_alpha, min, max));
 	}
 
 	public static int findOffset(VertexFormat vf, Usage u, Type t)
@@ -160,7 +160,7 @@ public class ClientUtils
 				Preconditions.checkState(offset%4==0);
 				return offset/4;
 			}
-			offset += element.getSize();
+			offset += element.getByteSize();
 		}
 		throw new IllegalStateException();
 	}
@@ -175,30 +175,30 @@ public class ClientUtils
 		return findOffset(vf, Usage.POSITION, Type.FLOAT);
 	}
 
-	public static TransformationMatrix rotateTo(Direction d)
+	public static Transformation rotateTo(Direction d)
 	{
-		return new TransformationMatrix(null)
+		return new Transformation(null)
 				.blockCornerToCenter()
 				.compose(toModelRotation(d).getRotation())
 				.blockCenterToCorner();
 	}
 
-	public static ModelRotation toModelRotation(Direction d)
+	public static BlockModelRotation toModelRotation(Direction d)
 	{
 		switch(d)
 		{
 			case DOWN:
-				return ModelRotation.X90_Y0;
+				return BlockModelRotation.X90_Y0;
 			case UP:
-				return ModelRotation.X270_Y0;
+				return BlockModelRotation.X270_Y0;
 			case NORTH:
-				return ModelRotation.X0_Y0;
+				return BlockModelRotation.X0_Y0;
 			case SOUTH:
-				return ModelRotation.X0_Y180;
+				return BlockModelRotation.X0_Y180;
 			case WEST:
-				return ModelRotation.X0_Y270;
+				return BlockModelRotation.X0_Y270;
 			case EAST:
-				return ModelRotation.X0_Y90;
+				return BlockModelRotation.X0_Y90;
 		}
 		throw new IllegalArgumentException(String.valueOf(d));
 	}

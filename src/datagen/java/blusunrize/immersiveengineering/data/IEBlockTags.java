@@ -18,13 +18,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.DyeColor;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -37,75 +37,75 @@ class IEBlockTags extends BlockTagsProvider
 	}
 
 	@Override
-	protected void registerTags()
+	protected void addTags()
 	{
-		getOrCreateBuilder(BlockTags.FENCES)
-				.addItemEntry(MetalDecoration.aluFence.get())
-				.addItemEntry(MetalDecoration.steelFence.get())
-				.addItemEntry(WoodenDecoration.treatedFence.get());
-		getOrCreateBuilder(BlockTags.WOODEN_FENCES)
-				.addItemEntry(WoodenDecoration.treatedFence.get());
-		getOrCreateBuilder(IETags.fencesSteel)
-				.addItemEntry(MetalDecoration.steelFence.get());
-		getOrCreateBuilder(IETags.fencesAlu)
-				.addItemEntry(MetalDecoration.aluFence.get());
-		getOrCreateBuilder(IETags.clayBlock)
-				.addItemEntry(Blocks.CLAY);
-		getOrCreateBuilder(IETags.glowstoneBlock)
-				.addItemEntry(Blocks.GLOWSTONE);
-		getOrCreateBuilder(IETags.colorlessSandstoneBlocks)
-				.addItemEntry(Blocks.SANDSTONE)
-				.addItemEntry(Blocks.CUT_SANDSTONE)
-				.addItemEntry(Blocks.CHISELED_SANDSTONE)
-				.addItemEntry(Blocks.SMOOTH_SANDSTONE);
-		getOrCreateBuilder(IETags.redSandstoneBlocks)
-				.addItemEntry(Blocks.RED_SANDSTONE)
-				.addItemEntry(Blocks.CUT_RED_SANDSTONE)
-				.addItemEntry(Blocks.CHISELED_RED_SANDSTONE)
-				.addItemEntry(Blocks.SMOOTH_RED_SANDSTONE);
+		tag(BlockTags.FENCES)
+				.add(MetalDecoration.aluFence.get())
+				.add(MetalDecoration.steelFence.get())
+				.add(WoodenDecoration.treatedFence.get());
+		tag(BlockTags.WOODEN_FENCES)
+				.add(WoodenDecoration.treatedFence.get());
+		tag(IETags.fencesSteel)
+				.add(MetalDecoration.steelFence.get());
+		tag(IETags.fencesAlu)
+				.add(MetalDecoration.aluFence.get());
+		tag(IETags.clayBlock)
+				.add(Blocks.CLAY);
+		tag(IETags.glowstoneBlock)
+				.add(Blocks.GLOWSTONE);
+		tag(IETags.colorlessSandstoneBlocks)
+				.add(Blocks.SANDSTONE)
+				.add(Blocks.CUT_SANDSTONE)
+				.add(Blocks.CHISELED_SANDSTONE)
+				.add(Blocks.SMOOTH_SANDSTONE);
+		tag(IETags.redSandstoneBlocks)
+				.add(Blocks.RED_SANDSTONE)
+				.add(Blocks.CUT_RED_SANDSTONE)
+				.add(Blocks.CHISELED_RED_SANDSTONE)
+				.add(Blocks.SMOOTH_RED_SANDSTONE);
 		for(BlockEntry<MetalLadderBlock> b : MetalDecoration.metalLadder.values())
-			getOrCreateBuilder(BlockTags.CLIMBABLE).addItemEntry(b.get());
+			tag(BlockTags.CLIMBABLE).add(b.get());
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);
 			if(!metal.isVanillaMetal())
 			{
 				Block storage = IEBlocks.Metals.storage.get(metal).get();
-				getOrCreateBuilder(tags.storage).addItemEntry(storage);
-				getOrCreateBuilder(Tags.Blocks.STORAGE_BLOCKS).addItemEntry(storage);
+				tag(tags.storage).add(storage);
+				tag(Tags.Blocks.STORAGE_BLOCKS).add(storage);
 				if(metal.shouldAddOre())
 				{
 					Block ore = IEBlocks.Metals.ores.get(metal).get();
 					assert tags.ore!=null;
-					getOrCreateBuilder(tags.ore).addItemEntry(ore);
-					getOrCreateBuilder(Tags.Blocks.ORES).addItemEntry(ore);
+					tag(tags.ore).add(ore);
+					tag(Tags.Blocks.ORES).add(ore);
 				}
 			}
 			Block sheetmetal = IEBlocks.Metals.sheetmetal.get(metal).get();
-			getOrCreateBuilder(tags.sheetmetal).addItemEntry(sheetmetal);
-			getOrCreateBuilder(IETags.sheetmetals).addItemEntry(sheetmetal);
+			tag(tags.sheetmetal).add(sheetmetal);
+			tag(IETags.sheetmetals).add(sheetmetal);
 		}
 		for(DyeColor dye : DyeColor.values())
-			getOrCreateBuilder(IETags.sheetmetals).add(MetalDecoration.coloredSheetmetal.get(dye).get());
+			tag(IETags.sheetmetals).add(MetalDecoration.coloredSheetmetal.get(dye).get());
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
-			getOrCreateBuilder(IETags.treatedWood).addItemEntry(WoodenDecoration.treatedWood.get(style).get());
-			getOrCreateBuilder(IETags.treatedWoodSlab).addItemEntry(IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style).getId()).get());
+			tag(IETags.treatedWood).add(WoodenDecoration.treatedWood.get(style).get());
+			tag(IETags.treatedWoodSlab).add(IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style).getId()).get());
 		}
 		for(MetalScaffoldingType t : MetalScaffoldingType.values())
 		{
-			getOrCreateBuilder(IETags.scaffoldingSteel).addItemEntry(MetalDecoration.steelScaffolding.get(t).get());
-			getOrCreateBuilder(IETags.scaffoldingAlu).addItemEntry(MetalDecoration.aluScaffolding.get(t).get());
+			tag(IETags.scaffoldingSteel).add(MetalDecoration.steelScaffolding.get(t).get());
+			tag(IETags.scaffoldingAlu).add(MetalDecoration.aluScaffolding.get(t).get());
 		}
-		getOrCreateBuilder(IETags.coalCokeBlock)
-				.addItemEntry(StoneDecoration.coke.get());
-		getOrCreateBuilder(BlockTags.FLOWER_POTS)
-				.addItemEntry(Misc.pottedHemp.get());
+		tag(IETags.coalCokeBlock)
+				.add(StoneDecoration.coke.get());
+		tag(BlockTags.FLOWER_POTS)
+				.add(Misc.pottedHemp.get());
 
 		/* MOD COMPAT STARTS HERE */
 
 		// TConstruct
-		getOrCreateBuilder(TagUtils.createBlockWrapper(new ResourceLocation("tconstruct:harvestable/stackable")))
-				.addItemEntry(Misc.hempPlant.get());
+		tag(TagUtils.createBlockWrapper(new ResourceLocation("tconstruct:harvestable/stackable")))
+				.add(Misc.hempPlant.get());
 	}
 }

@@ -9,27 +9,27 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 
 public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 {
-	private static final VoxelShape COLLISION_SHAPE = makeCuboidShape(1, 0, 1, 15, 16, 15);
-	private static final VoxelShape FULL_SHAPE = VoxelShapes.or(
-			makeCuboidShape(0, 0, 0, 16, 4, 16),
-			makeCuboidShape(0, 12, 0, 16, 16, 16)
+	private static final VoxelShape COLLISION_SHAPE = box(1, 0, 1, 15, 16, 15);
+	private static final VoxelShape FULL_SHAPE = Shapes.or(
+			box(0, 0, 0, 16, 4, 16),
+			box(0, 12, 0, 16, 16, 16)
 	);
-	public static final VoxelShape CHECK_SHAPE = VoxelShapes.create(0, -20, 0, 1, -19, 1);
+	public static final VoxelShape CHECK_SHAPE = Shapes.box(0, -20, 0, 1, -19, 1);
 
 	public ScaffoldingBlock(Properties material)
 	{
@@ -38,27 +38,27 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(BlockStateProperties.WATERLOGGED);
 	}
 
 	@Nonnull
 	@Override
-	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, @Nonnull ISelectionContext context)
+	public VoxelShape getShape(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, @Nonnull CollisionContext context)
 	{
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	@Nonnull
 	@Override
-	public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull IBlockReader worldIn, @Nonnull BlockPos pos, ISelectionContext context)
+	public VoxelShape getCollisionShape(@Nonnull BlockState state, @Nonnull BlockGetter worldIn, @Nonnull BlockPos pos, CollisionContext context)
 	{
 		// This checks if the entity for the context is above the given shape if the context is actually
 		// entity-related, and returns the last parameter otherwise. This is necessary to allow tracks/redstone etc to
 		// be placed on top of scaffolding while still making it climbable.
-		boolean checkForClimbing = context.func_216378_a(CHECK_SHAPE, pos, false);
+		boolean checkForClimbing = context.isAbove(CHECK_SHAPE, pos, false);
 		if(checkForClimbing)
 			return COLLISION_SHAPE;
 		else
@@ -66,9 +66,9 @@ public class ScaffoldingBlock extends IEBaseBlock.IELadderBlock
 	}
 
 	@Override
-	public boolean isSideInvisible(@Nonnull BlockState state, BlockState adjState, @Nonnull Direction side)
+	public boolean skipRendering(@Nonnull BlockState state, BlockState adjState, @Nonnull Direction side)
 	{
 		return (adjState.getBlock() instanceof ScaffoldingBlock&&adjState.getMaterial()==state.getMaterial())
-				||super.isSideInvisible(state, adjState, side);
+				||super.skipRendering(state, adjState, side);
 	}
 }

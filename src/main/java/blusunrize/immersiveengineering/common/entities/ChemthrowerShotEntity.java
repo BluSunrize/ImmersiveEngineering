@@ -12,23 +12,23 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import blusunrize.immersiveengineering.mixin.accessors.EntityAccess;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.world.World;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -38,21 +38,21 @@ import java.util.Optional;
 public class ChemthrowerShotEntity extends IEProjectileEntity
 {
 	private FluidStack fluid;
-	private static final DataParameter<Optional<FluidStack>> dataMarker_fluid = EntityDataManager.createKey(ChemthrowerShotEntity.class, IEFluid.OPTIONAL_FLUID_STACK);
+	private static final EntityDataAccessor<Optional<FluidStack>> dataMarker_fluid = SynchedEntityData.defineId(ChemthrowerShotEntity.class, IEFluid.OPTIONAL_FLUID_STACK);
 
-	public ChemthrowerShotEntity(EntityType<ChemthrowerShotEntity> type, World world)
+	public ChemthrowerShotEntity(EntityType<ChemthrowerShotEntity> type, Level world)
 	{
 		super(type, world);
 	}
 
-	public ChemthrowerShotEntity(World world, double x, double y, double z, double ax, double ay, double az, FluidStack fluid)
+	public ChemthrowerShotEntity(Level world, double x, double y, double z, double ax, double ay, double az, FluidStack fluid)
 	{
 		super(IEEntityTypes.CHEMTHROWER_SHOT.get(), world, x, y, z);
 		this.fluid = fluid;
 		this.setFluidSynced();
 	}
 
-	public ChemthrowerShotEntity(World world, LivingEntity living, double ax, double ay, double az, FluidStack fluid)
+	public ChemthrowerShotEntity(Level world, LivingEntity living, double ax, double ay, double az, FluidStack fluid)
 	{
 		super(IEEntityTypes.CHEMTHROWER_SHOT.get(), world, living, ax, ay, az);
 		this.fluid = fluid;
@@ -60,21 +60,21 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	protected void registerData()
+	protected void defineSynchedData()
 	{
-		super.registerData();
-		this.dataManager.register(dataMarker_fluid, Optional.empty());
+		super.defineSynchedData();
+		this.entityData.define(dataMarker_fluid, Optional.empty());
 	}
 
 	public void setFluidSynced()
 	{
 		if(this.getFluid()!=null)
-			this.dataManager.set(dataMarker_fluid, Optional.of(this.getFluid()));
+			this.entityData.set(dataMarker_fluid, Optional.of(this.getFluid()));
 	}
 
 	public FluidStack getFluidSynced()
 	{
-		return this.dataManager.get(dataMarker_fluid).orElse(null);
+		return this.entityData.get(dataMarker_fluid).orElse(null);
 	}
 
 	public FluidStack getFluid()
@@ -103,27 +103,27 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 	@Override
 	public void baseTick()
 	{
-		if(this.getFluid()==null&&this.world.isRemote)
+		if(this.getFluid()==null&&this.level.isClientSide)
 			this.fluid = getFluidSynced();
-		BlockState state = world.getBlockState(getPosition());
+		BlockState state = level.getBlockState(blockPosition());
 		Block b = state.getBlock();
 		if(b!=null&&this.canIgnite()&&(state.getMaterial()==Material.FIRE||state.getMaterial()==Material.LAVA))
-			this.setFire(6);
+			this.setSecondsOnFire(6);
 		super.baseTick();
 	}
 
 	@Override
-	public void setFire(int seconds)
+	public void setSecondsOnFire(int seconds)
 	{
 		if(!canIgnite())
 			return;
-		super.setFire(seconds);
+		super.setSecondsOnFire(seconds);
 	}
 
 	@Override
-	public void onImpact(RayTraceResult mop)
+	public void onHit(HitResult mop)
 	{
-		if(!this.world.isRemote&&getFluid()!=null)
+		if(!this.level.isClientSide&&getFluid()!=null)
 		{
 			FluidStack fluidStack = getFluid();
 			Fluid fluid = fluidStack.getFluid();
@@ -132,32 +132,32 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			if(effect!=null)
 			{
 				ItemStack thrower = ItemStack.EMPTY;
-				PlayerEntity shooter = (PlayerEntity)this.getShooter();
+				Player shooter = (Player)this.getOwner();
 				if(shooter!=null)
-					thrower = shooter.getHeldItem(Hand.MAIN_HAND);
+					thrower = shooter.getItemInHand(InteractionHand.MAIN_HAND);
 
-				if(mop.getType()==Type.ENTITY&&((EntityRayTraceResult)mop).getEntity() instanceof LivingEntity)
-					effect.applyToEntity((LivingEntity)((EntityRayTraceResult)mop).getEntity(), shooter, thrower, fluidStack);
+				if(mop.getType()==Type.ENTITY&&((EntityHitResult)mop).getEntity() instanceof LivingEntity)
+					effect.applyToEntity((LivingEntity)((EntityHitResult)mop).getEntity(), shooter, thrower, fluidStack);
 				else if(mop.getType()==Type.BLOCK)
-					effect.applyToBlock(world, mop, shooter, thrower, fluidStack);
+					effect.applyToBlock(level, mop, shooter, thrower, fluidStack);
 			}
 			else if(mop.getType()==Type.ENTITY&&fluid.getAttributes().getTemperature(fluidStack) > 500)
 			{
 				int tempDiff = fluid.getAttributes().getTemperature(fluidStack)-300;
 				int damage = Math.abs(tempDiff)/500;
-				Entity hit = ((EntityRayTraceResult)mop).getEntity();
-				if(hit.attackEntityFrom(DamageSource.LAVA, damage))
-					hit.hurtResistantTime = (int)(hit.hurtResistantTime*.75);
+				Entity hit = ((EntityHitResult)mop).getEntity();
+				if(hit.hurt(DamageSource.LAVA, damage))
+					hit.invulnerableTime = (int)(hit.invulnerableTime*.75);
 			}
 			if(mop.getType()==Type.ENTITY)
 			{
-				int f = this.isBurning()?((EntityAccess)this).getFire(): fire?3: 0;
+				int f = this.isOnFire()?((EntityAccess)this).getRemainingFireTicks(): fire?3: 0;
 				if(f > 0)
 				{
-					Entity hit = ((EntityRayTraceResult)mop).getEntity();
-					hit.setFire(f);
-					if(hit.attackEntityFrom(DamageSource.IN_FIRE, 2))
-						hit.hurtResistantTime = (int)(hit.hurtResistantTime*.75);
+					Entity hit = ((EntityHitResult)mop).getEntity();
+					hit.setSecondsOnFire(f);
+					if(hit.hurt(DamageSource.IN_FIRE, 2))
+						hit.invulnerableTime = (int)(hit.invulnerableTime*.75);
 				}
 			}
 		}
@@ -169,7 +169,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		FluidStack fluidStack = getFluid();
 		if(fluidStack!=null)
 		{
-			int light = this.isBurning()?15: fluidStack.getFluid().getAttributes().getLuminosity(fluidStack);
+			int light = this.isOnFire()?15: fluidStack.getFluid().getAttributes().getLuminosity(fluidStack);
 			int superBrightness = 0;
 			light = (superBrightness&(0xff<<20))|(light<<4);
 			if(light > 0)
@@ -184,7 +184,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		FluidStack fluidStack = getFluid();
 		if(fluidStack!=null)
 		{
-			int light = this.isBurning()?15: fluidStack.getFluid().getAttributes().getLuminosity(fluidStack);
+			int light = this.isOnFire()?15: fluidStack.getFluid().getAttributes().getLuminosity(fluidStack);
 			if(light > 0)
 				return Math.max(light, super.getBrightness());
 		}

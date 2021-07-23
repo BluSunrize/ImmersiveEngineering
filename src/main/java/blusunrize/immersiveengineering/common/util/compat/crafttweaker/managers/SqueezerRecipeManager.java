@@ -20,10 +20,10 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.fluid.MCFluidStackMutable;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -41,7 +41,7 @@ public class SqueezerRecipeManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<SqueezerRecipe> getRecipeType()
+	public RecipeType<SqueezerRecipe> getRecipeType()
 	{
 		return SqueezerRecipe.TYPE;
 	}
@@ -83,7 +83,7 @@ public class SqueezerRecipeManager implements IRecipeManager
 			@Override
 			public boolean shouldRemove(SqueezerRecipe recipe)
 			{
-				return fluid.isEquivalentTo(recipe.fluidOutput.getFluid());
+				return fluid.isSame(recipe.fluidOutput.getFluid());
 			}
 		};
 

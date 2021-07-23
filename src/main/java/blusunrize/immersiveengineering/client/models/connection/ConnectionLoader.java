@@ -20,11 +20,12 @@ import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoader;
@@ -41,7 +42,7 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 	public static final ResourceLocation LOADER_NAME = new ResourceLocation(ImmersiveEngineering.MODID, "connector");
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
 		BakedConnectionModel.cache.invalidateAll();
 	}
@@ -66,7 +67,7 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 			model = new UnbakedModelGeometry(ModelLoader.defaultModelGetter().apply(
 					new ResourceLocation(baseModel.getAsString())
 			));
-		List<String> layers = ImmutableList.of(RenderType.getSolid().toString());
+		List<String> layers = ImmutableList.of(RenderType.solid().toString());
 		if(modelContents.has("layers")&&modelContents.get("layers").isJsonArray())
 		{
 			JsonArray arr = modelContents.get("layers").getAsJsonArray();
@@ -97,15 +98,15 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 		}
 
 		@Override
-		public IBakedModel bake(
+		public BakedModel bake(
 				IModelConfiguration owner,
 				ModelBakery bakery,
-				Function<RenderMaterial, TextureAtlasSprite> spriteGetter,
-				IModelTransform modelTransform,
-				ItemOverrideList overrides,
+				Function<Material, TextureAtlasSprite> spriteGetter,
+				ModelState modelTransform,
+				ItemOverrides overrides,
 				ResourceLocation modelLocation)
 		{
-			IBakedModel base;
+			BakedModel base;
 			if(baseModel==null)
 				base = null;
 			else
@@ -117,15 +118,15 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 		}
 
 		@Override
-		public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 		{
-			Collection<RenderMaterial> ret;
+			Collection<Material> ret;
 			if(baseModel!=null)
 				ret = new ArrayList<>(
 						baseModel.getTextures(owner, modelGetter, missingTextureErrors));
 			else
 				ret = new ArrayList<>();
-			ret.add(new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, WIRE_LOC));
+			ret.add(new Material(InventoryMenu.BLOCK_ATLAS, WIRE_LOC));
 			return ret;
 		}
 	}

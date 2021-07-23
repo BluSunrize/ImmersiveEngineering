@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.api.wires.localhandlers;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Collection;
 

@@ -9,12 +9,12 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.core.NonNullList;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
 
@@ -56,8 +56,8 @@ public class ManualElementItem extends SpecialManualElements
 				(totalLength%combinedLen/longLineLen)+
 				(totalLength%combinedLen%longLineLen > 0?1: 0);
 		float avgPerLine = totalLength/(float)lines;
-		this.longLineLen = MathHelper.ceil(avgPerLine);
-		this.shortLineLen = MathHelper.floor(avgPerLine);
+		this.longLineLen = Mth.ceil(avgPerLine);
+		this.shortLineLen = Mth.floor(avgPerLine);
 		this.combinedLen = longLineLen+shortLineLen;
 		int itemsLastLines = totalLength%this.combinedLen;
 		if(itemsLastLines==this.longLineLen) itemsLastLine = this.longLineLen;
@@ -68,14 +68,14 @@ public class ManualElementItem extends SpecialManualElements
 	}
 
 	@Override
-	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
+	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
-		RenderHelper.enableStandardItemLighting();
+		Lighting.turnBackOn();
 		highlighted = ItemStack.EMPTY;
 		int length = stacks.size();
 		if(length > 0)
 		{
-			transform.push();
+			transform.pushPose();
 			transform.scale(scale, scale, scale);
 			for(int line = 0; line < lines; line++)
 			{
@@ -96,9 +96,9 @@ public class ManualElementItem extends SpecialManualElements
 						highlighted = stacks.get(item);
 				}
 			}
-			transform.pop();
+			transform.popPose();
 		}
-		RenderHelper.disableStandardItemLighting();
+		Lighting.turnOff();
 		RenderSystem.enableBlend();
 
 		this.renderHighlightedTooltip(transform, gui, mx, my);
@@ -108,7 +108,7 @@ public class ManualElementItem extends SpecialManualElements
 	public boolean listForSearch(String searchTag)
 	{
 		for(ItemStack stack : stacks)
-			if(stack.getDisplayName().getString().toLowerCase(Locale.ENGLISH).contains(searchTag))
+			if(stack.getHoverName().getString().toLowerCase(Locale.ENGLISH).contains(searchTag))
 				return true;
 		return false;
 	}

@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
 public class AlloySmelterContainer extends IEBaseContainer<AlloySmelterTileEntity>
 {
-	public AlloySmelterContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, AlloySmelterTileEntity tile)
+	public AlloySmelterContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AlloySmelterTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 
@@ -30,6 +30,6 @@ public class AlloySmelterContainer extends IEBaseContainer<AlloySmelterTileEntit
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 84+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 142));
-		trackIntArray(tile.stateView);
+		addDataSlots(tile.stateView);
 	}
 }

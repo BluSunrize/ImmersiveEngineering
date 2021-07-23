@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -19,5 +19,5 @@ public interface TemplateWorldCreator
 {
 	SetRestrictedField<TemplateWorldCreator> CREATOR = SetRestrictedField.common();
 
-	World makeWorld(List<BlockInfo> blocks, Predicate<BlockPos> shouldShow);
+	Level makeWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow);
 }

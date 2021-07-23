@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.DataDeserializer;
 import blusunrize.immersiveengineering.client.fx.FractalParticle.Data;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleManager;
-import net.minecraft.particles.BasicParticleType;
-import net.minecraft.particles.ParticleType;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,20 +38,20 @@ public class IEParticles
 	public static final RegistryObject<ParticleType<Data>> FRACTAL = REGISTER.register(
 			"fractal", () -> new IEParticleType<>(false, new FractalParticle.DataDeserializer(), FractalParticle.CODEC)
 	);
-	public static final RegistryObject<BasicParticleType> IE_BUBBLE = REGISTER.register(
-			"ie_bubble", () -> new BasicParticleType(false)
+	public static final RegistryObject<SimpleParticleType> IE_BUBBLE = REGISTER.register(
+			"ie_bubble", () -> new SimpleParticleType(false)
 	);
-	public static final RegistryObject<BasicParticleType> SPARKS = REGISTER.register(
-			"sparks", () -> new BasicParticleType(false)
+	public static final RegistryObject<SimpleParticleType> SPARKS = REGISTER.register(
+			"sparks", () -> new SimpleParticleType(false)
 	);
 
 	@SubscribeEvent
 	public static void registerParticleFactories(ParticleFactoryRegisterEvent event)
 	{
-		ParticleManager manager = Minecraft.getInstance().particles;
-		manager.registerFactory(IEParticles.FLUID_SPLASH.get(), new FluidSplashParticle.Factory());
-		manager.registerFactory(IEParticles.FRACTAL.get(), new FractalParticle.Factory());
-		manager.registerFactory(IEParticles.SPARKS.get(), SparksParticle.Factory::new);
-		manager.registerFactory(IEParticles.IE_BUBBLE.get(), IEBubbleParticle.Factory::new);
+		ParticleEngine manager = Minecraft.getInstance().particleEngine;
+		manager.register(IEParticles.FLUID_SPLASH.get(), new FluidSplashParticle.Factory());
+		manager.register(IEParticles.FRACTAL.get(), new FractalParticle.Factory());
+		manager.register(IEParticles.SPARKS.get(), SparksParticle.Factory::new);
+		manager.register(IEParticles.IE_BUBBLE.get(), IEBubbleParticle.Factory::new);
 	}
 }

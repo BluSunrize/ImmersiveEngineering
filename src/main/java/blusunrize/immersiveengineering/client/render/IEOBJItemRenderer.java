@@ -16,20 +16,20 @@ import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel.ShadedQuads;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector4f;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector4f;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -38,20 +38,20 @@ import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
+public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 {
-	public static final ItemStackTileEntityRenderer INSTANCE = new IEOBJItemRenderer();
+	public static final BlockEntityWithoutLevelRenderer INSTANCE = new IEOBJItemRenderer();
 
 	@Override
-	public void func_239207_a_(ItemStack stack, TransformType transformType, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn,
+	public void renderByItem(ItemStack stack, TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		float partialTicks = mc().getRenderPartialTicks();
+		float partialTicks = mc().getFrameTime();
 		if(stack.getItem() instanceof IOBJModelCallback)
 		{
 			IOBJModelCallback<ItemStack> callback = (IOBJModelCallback<ItemStack>)stack.getItem();
-			World w = IESmartObjModel.tempEntityStatic!=null?IESmartObjModel.tempEntityStatic.world: null;
-			IBakedModel model = mc().getItemRenderer().getItemModelWithOverrides(stack, w,
+			Level w = IESmartObjModel.tempEntityStatic!=null?IESmartObjModel.tempEntityStatic.level: null;
+			BakedModel model = mc().getItemRenderer().getModel(stack, w,
 					IESmartObjModel.tempEntityStatic);
 			if(model instanceof IESmartObjModel)
 			{
@@ -79,12 +79,12 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 						visible.add(g);
 				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
 				{
-					TransformationMatrix mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
+					Transformation mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
 							partialTicks);
 					mat.push(matrixStackIn);
 					renderQuadsForGroups(groups, callback, obj, stack, sCase, matrixStackIn, bufferIn, visible,
 							combinedLightIn, combinedOverlayIn);
-					matrixStackIn.pop();
+					matrixStackIn.popPose();
 				}
 				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, stack,
 						sCase, matrixStackIn, bufferIn, visible, combinedLightIn, combinedOverlayIn);
@@ -93,7 +93,7 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 	}
 
 	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
-									  ItemStack stack, ShaderCase sCase, MatrixStack matrix, IRenderTypeBuffer buffer,
+									  ItemStack stack, ShaderCase sCase, PoseStack matrix, MultiBufferSource buffer,
 									  Set<String> visible, int light, int overlay)
 	{
 		List<ShadedQuads> quadsByLayer = new ArrayList<>();
@@ -104,27 +104,27 @@ public class IEOBJItemRenderer extends ItemStackTileEntityRenderer
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);
 		}
-		matrix.push();
+		matrix.pushPose();
 		for(ShadedQuads quadsForLayer : quadsByLayer)
 		{
 			boolean bright = callback.areGroupsFullbright(stack, groups);
 			RenderType baseType;
-			ResourceLocation atlas = PlayerContainer.LOCATION_BLOCKS_TEXTURE;
+			ResourceLocation atlas = InventoryMenu.BLOCK_ATLAS;
 			if(bright)
 				baseType = IERenderTypes.getFullbrightTranslucent(atlas);
 			else if(quadsForLayer.layer.isTranslucent())
-				baseType = RenderType.getEntityTranslucent(atlas);
+				baseType = RenderType.entityTranslucent(atlas);
 			else
-				baseType = RenderType.getEntityCutout(atlas);
+				baseType = RenderType.entityCutout(atlas);
 			RenderType actualType = quadsForLayer.layer.getRenderType(baseType);
-			IVertexBuilder builder = IERenderTypes.disableCull(buffer).getBuffer(actualType);
+			VertexConsumer builder = IERenderTypes.disableCull(buffer).getBuffer(actualType);
 			Vector4f color = quadsForLayer.layer.getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer)
 				builder.addVertexData(
-						matrix.getLast(), quad, color.getX(), color.getY(), color.getZ(), color.getW(), light, overlay
+						matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay
 				);
 			matrix.scale(1.01F, 1.01F, 1.01F);
 		}
-		matrix.pop();
+		matrix.popPose();
 	}
 }

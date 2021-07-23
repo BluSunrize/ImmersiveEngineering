@@ -33,10 +33,10 @@ import blusunrize.immersiveengineering.data.models.TRSRItemModelProvider;
 import blusunrize.immersiveengineering.data.models.TRSRModelBuilder;
 import com.google.common.base.Preconditions;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.Item;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -207,11 +207,11 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private void createItemModels()
 	{
-		addItemModels("metal_", IEItems.Metals.ingots.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(IItemProvider[]::new));
-		addItemModels("metal_", IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(IItemProvider[]::new));
-		addItemModels("metal_", IEItems.Metals.dusts.values().toArray(new IItemProvider[0]));
-		addItemModels("metal_", IEItems.Metals.plates.values().toArray(new IItemProvider[0]));
-		for(IItemProvider bag : IEItems.Misc.shaderBag.values())
+		addItemModels("metal_", IEItems.Metals.ingots.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
+		addItemModels("metal_", IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
+		addItemModels("metal_", IEItems.Metals.dusts.values().toArray(new ItemLike[0]));
+		addItemModels("metal_", IEItems.Metals.plates.values().toArray(new ItemLike[0]));
+		for(ItemLike bag : IEItems.Misc.shaderBag.values())
 			addItemModel("shader_bag", bag);
 
 		addItemModels("material_", Ingredients.stickTreated, Ingredients.stickIron, Ingredients.stickSteel, Ingredients.stickAluminum,
@@ -227,9 +227,9 @@ public class ItemModels extends TRSRItemModelProvider
 				Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelHoe, Tools.steelSword
 		);
 		addItemModels("", Tools.surveyTools);
-		addItemModels("", IEItems.Misc.wireCoils.values().toArray(new IItemProvider[0]));
+		addItemModels("", IEItems.Misc.wireCoils.values().toArray(new ItemLike[0]));
 		addItemModels("", IEItems.Misc.graphiteElectrode);
-		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new IItemProvider[0]));
+		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new ItemLike[0]));
 		addItemModels("", Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
 		addItemModels("bullet_", Ingredients.emptyCasing, Ingredients.emptyShell);
 		for(Entry<IBullet, ItemRegObject<BulletItem>> bullet : Weapons.bullets.entrySet())
@@ -363,9 +363,9 @@ public class ItemModels extends TRSRItemModelProvider
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION));
 	}
 
-	private TRSRModelBuilder obj(IItemProvider item, ResourceLocation model)
+	private TRSRModelBuilder obj(ItemLike item, ResourceLocation model)
 	{
-		Preconditions.checkArgument(existingFileHelper.exists(model, ResourcePackType.CLIENT_RESOURCES, "", "models"));
+		Preconditions.checkArgument(existingFileHelper.exists(model, PackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
 				.customLoader(OBJLoaderBuilder::begin)
 				.flipV(true)
@@ -373,26 +373,26 @@ public class ItemModels extends TRSRItemModelProvider
 				.end();
 	}
 
-	private IEOBJBuilder<TRSRModelBuilder> ieObjBuilder(IItemProvider item, ResourceLocation model)
+	private IEOBJBuilder<TRSRModelBuilder> ieObjBuilder(ItemLike item, ResourceLocation model)
 	{
-		Preconditions.checkArgument(existingFileHelper.exists(model, ResourcePackType.CLIENT_RESOURCES, "", "models"));
+		Preconditions.checkArgument(existingFileHelper.exists(model, PackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
 				.customLoader(IEOBJBuilder::begin)
 				.flipV(true)
 				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()));
 	}
 
-	private TRSRModelBuilder ieObj(IItemProvider item, ResourceLocation model)
+	private TRSRModelBuilder ieObj(ItemLike item, ResourceLocation model)
 	{
 		return ieObjBuilder(item, model).end();
 	}
 
-	private TRSRModelBuilder getBuilder(IItemProvider item)
+	private TRSRModelBuilder getBuilder(ItemLike item)
 	{
 		return getBuilder(name(item));
 	}
 
-	private String name(IItemProvider item)
+	private String name(ItemLike item)
 	{
 		return item.asItem().getRegistryName().getPath();
 	}
@@ -426,33 +426,33 @@ public class ItemModels extends TRSRItemModelProvider
 
 	}
 
-	private void addItemModels(String texturePrefix, IItemProvider... items)
+	private void addItemModels(String texturePrefix, ItemLike... items)
 	{
 		addItemModels(texturePrefix, Arrays.asList(items));
 	}
 
-	private void addItemModels(String texturePrefix, ResourceLocation parent, IItemProvider... items)
+	private void addItemModels(String texturePrefix, ResourceLocation parent, ItemLike... items)
 	{
 		addItemModels(texturePrefix, parent, Arrays.asList(items));
 	}
 
-	private void addItemModels(String texturePrefix, Collection<? extends IItemProvider> items)
+	private void addItemModels(String texturePrefix, Collection<? extends ItemLike> items)
 	{
 		addItemModels(texturePrefix, mcLoc("item/generated"), items);
 	}
 
-	private void addItemModels(String texturePrefix, ResourceLocation parent, Collection<? extends IItemProvider> items)
+	private void addItemModels(String texturePrefix, ResourceLocation parent, Collection<? extends ItemLike> items)
 	{
-		for(IItemProvider item : items)
+		for(ItemLike item : items)
 			addItemModel(texturePrefix==null?null: (texturePrefix+item.asItem().getRegistryName().getPath()), item, parent);
 	}
 
-	private void addItemModel(String texture, IItemProvider item)
+	private void addItemModel(String texture, ItemLike item)
 	{
 		addItemModel(texture, item, mcLoc("item/generated"));
 	}
 
-	private void addItemModel(String texture, IItemProvider item, ResourceLocation parent)
+	private void addItemModel(String texture, ItemLike item, ResourceLocation parent)
 	{
 		String path = name(item);
 		String textureLoc = texture==null?path: ("item/"+texture);

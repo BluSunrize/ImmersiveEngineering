@@ -12,30 +12,30 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 
 public class MaintenanceKitContainer extends ItemContainer
 {
-	private final IInventory inv = new Inventory(ItemStack.EMPTY);
+	private final Container inv = new SimpleContainer(ItemStack.EMPTY);
 	private boolean wasUsed = false;
 
-	public MaintenanceKitContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack item)
+	public MaintenanceKitContainer(MenuType<?> type, int id, Inventory inventoryPlayer, Level world, EquipmentSlot slot, ItemStack item)
 	{
 		super(type, id, inventoryPlayer, world, slot, item);
 		updateSlots();
 	}
 
-	private void bindPlayerInv(PlayerInventory inventoryPlayer)
+	private void bindPlayerInv(Inventory inventoryPlayer)
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -50,17 +50,17 @@ public class MaintenanceKitContainer extends ItemContainer
 		if(this.inv==null)
 			return 0;
 		//Don't rebind if the tool didn't change
-		if(world.isRemote&&!inv.getStackInSlot(0).isEmpty())
-			for(Slot slot : inventorySlots)
+		if(world.isClientSide&&!inv.getItem(0).isEmpty())
+			for(Slot slot : slots)
 				if(slot instanceof IESlot.Upgrades)
-					if(ItemStack.areItemStacksEqual(((IESlot.Upgrades)slot).upgradeableTool, inv.getStackInSlot(0)))
+					if(ItemStack.matches(((IESlot.Upgrades)slot).upgradeableTool, inv.getItem(0)))
 						return this.internalSlots;
-		this.inventorySlots.clear();
-		((ContainerAccess)this).getInventoryItemStacks().clear();
+		this.slots.clear();
+		((ContainerAccess)this).getLastSlots().clear();
 		this.addSlot(new IESlot.Maintenance(this, this.inv, 0, 28, 10));
 		int slotCount = 1;
 
-		ItemStack tool = this.getSlot(0).getStack();
+		ItemStack tool = this.getSlot(0).getItem();
 		if(tool.getItem() instanceof IUpgradeableTool)
 		{
 			wasUsed = true;
@@ -79,31 +79,31 @@ public class MaintenanceKitContainer extends ItemContainer
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot slotObject = inventorySlots.get(slot);
+		Slot slotObject = slots.get(slot);
 
-		if(slotObject!=null&&slotObject.getHasStack())
+		if(slotObject!=null&&slotObject.hasItem())
 		{
-			ItemStack stackInSlot = slotObject.getStack();
+			ItemStack stackInSlot = slotObject.getItem();
 			stack = stackInSlot.copy();
 
 			if(slot < this.internalSlots)
 			{
-				if(!this.mergeItemStack(stackInSlot, this.internalSlots, (this.internalSlots+36), true))
+				if(!this.moveItemStackTo(stackInSlot, this.internalSlots, (this.internalSlots+36), true))
 					return ItemStack.EMPTY;
 			}
 			else if(!stackInSlot.isEmpty())
 			{
 				if(stackInSlot.getItem() instanceof IUpgradeableTool&&((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
 				{
-					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
+					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
 				else if(stackInSlot.getItem() instanceof IConfigurableTool&&((IConfigurableTool)stackInSlot.getItem()).canConfigure(stackInSlot))
 				{
-					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
+					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
 				else if(this.internalSlots > 1)
@@ -111,9 +111,9 @@ public class MaintenanceKitContainer extends ItemContainer
 					boolean b = true;
 					for(int i = 1; i < this.internalSlots; i++)
 					{
-						Slot s = inventorySlots.get(i);
-						if(s!=null&&s.isItemValid(stackInSlot))
-							if(this.mergeItemStack(stackInSlot, i, i+1, true))
+						Slot s = slots.get(i);
+						if(s!=null&&s.mayPlace(stackInSlot))
+							if(this.moveItemStackTo(stackInSlot, i, i+1, true))
 							{
 								b = false;
 								break;
@@ -127,9 +127,9 @@ public class MaintenanceKitContainer extends ItemContainer
 			}
 
 			if(stackInSlot.getCount()==0)
-				slotObject.putStack(ItemStack.EMPTY);
+				slotObject.set(ItemStack.EMPTY);
 			else
-				slotObject.onSlotChanged();
+				slotObject.setChanged();
 
 			if(stackInSlot.getCount()==stack.getCount())
 				return ItemStack.EMPTY;
@@ -139,15 +139,15 @@ public class MaintenanceKitContainer extends ItemContainer
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity par1EntityPlayer)
+	public void removed(Player par1EntityPlayer)
 	{
 		if(wasUsed)
 		{
-			this.heldItem.damageItem(1, this.player, player -> {
+			this.heldItem.hurtAndBreak(1, this.player, player -> {
 			});
-			player.setItemStackToSlot(this.equipmentSlot, this.heldItem);
+			player.setItemSlot(this.equipmentSlot, this.heldItem);
 		}
-		super.onContainerClosed(par1EntityPlayer);
+		super.removed(par1EntityPlayer);
 		this.clearContainer(par1EntityPlayer, this.world, this.inv);
 	}
 }

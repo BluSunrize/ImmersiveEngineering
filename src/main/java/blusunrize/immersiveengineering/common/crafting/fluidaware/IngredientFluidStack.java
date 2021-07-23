@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializerFluidStack;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -40,7 +40,7 @@ public class IngredientFluidStack extends Ingredient
 		this.fluidTagInput = fluidTagInput;
 	}
 
-	public IngredientFluidStack(INamedTag<Fluid> tag, int amount)
+	public IngredientFluidStack(Named<Fluid> tag, int amount)
 	{
 		this(new FluidTagInput(tag, amount, null));
 	}
@@ -54,7 +54,7 @@ public class IngredientFluidStack extends Ingredient
 
 	@Nonnull
 	@Override
-	public ItemStack[] getMatchingStacks()
+	public ItemStack[] getItems()
 	{
 		if(cachedStacks==null)
 			cachedStacks = this.fluidTagInput.getMatchingFluidStacks()
@@ -66,7 +66,7 @@ public class IngredientFluidStack extends Ingredient
 	}
 
 	@Override
-	public boolean hasNoMatchingItems()
+	public boolean isEmpty()
 	{
 		return false;
 		// todo? I don't think there is a way to do this now, because the tag isn't bound yet on world load
@@ -91,7 +91,7 @@ public class IngredientFluidStack extends Ingredient
 
 	@Nonnull
 	@Override
-	public JsonElement serialize()
+	public JsonElement toJson()
 	{
 		JsonObject ret = (JsonObject)this.fluidTagInput.serialize();
 		ret.addProperty("type", IngredientSerializerFluidStack.NAME.toString());

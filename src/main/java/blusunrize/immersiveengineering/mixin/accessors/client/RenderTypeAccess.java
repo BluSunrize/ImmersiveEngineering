@@ -9,11 +9,11 @@
 
 package blusunrize.immersiveengineering.mixin.accessors.client;
 
-import net.minecraft.client.renderer.RenderState;
+import net.minecraft.client.renderer.RenderStateShard;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(RenderState.class)
+@Mixin(RenderStateShard.class)
 public interface RenderTypeAccess
 {
 	@Accessor

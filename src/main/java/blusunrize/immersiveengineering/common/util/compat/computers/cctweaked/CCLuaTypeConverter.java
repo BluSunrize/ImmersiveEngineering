@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.LuaTypeConverter;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
@@ -40,7 +40,7 @@ public class CCLuaTypeConverter extends LuaTypeConverter
 		Map<String, Object> result = new HashMap<>();
 		result.put("name", getNameOrNull(stack.getItem()));
 		result.put("count", stack.getCount());
-		result.put("damage", stack.getDamage());
+		result.put("damage", stack.getDamageValue());
 		result.put("maxDamage", stack.getMaxDamage());
 		return result;
 	}

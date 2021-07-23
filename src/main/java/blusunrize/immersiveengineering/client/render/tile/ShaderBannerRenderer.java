@@ -17,93 +17,93 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.ModelBakery;
-import net.minecraft.client.renderer.model.ModelRenderer;
-import net.minecraft.client.renderer.tileentity.BannerTileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.blockentity.BannerRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
-public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEntity>
+public class ShaderBannerRenderer extends BlockEntityRenderer<ShaderBannerTileEntity>
 {
-	private final ModelRenderer clothModel = BannerTileEntityRenderer.getModelRender();
-	private final ModelRenderer standingModel = new ModelRenderer(64, 64, 44, 0);
-	private final ModelRenderer crossbar;
+	private final ModelPart clothModel = BannerRenderer.makeFlag();
+	private final ModelPart standingModel = new ModelPart(64, 64, 44, 0);
+	private final ModelPart crossbar;
 
-	public ShaderBannerRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public ShaderBannerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 		this.standingModel.addBox(-1.0F, -30.0F, -1.0F, 2.0F, 42.0F, 2.0F, 0.0F);
-		this.crossbar = new ModelRenderer(64, 64, 0, 42);
+		this.crossbar = new ModelPart(64, 64, 0, 42);
 		this.crossbar.addBox(-10.0F, -32.0F, -1.0F, 20.0F, 2.0F, 2.0F, 0.0F);
 
 	}
 
 	@Override
-	public void render(ShaderBannerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ShaderBannerTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		long time = te.getWorldNonnull().getGameTime();
-		matrixStack.push();
+		matrixStack.pushPose();
 
 		// Check which of the two blocks we are so we can calculate the orientation.
 		if(te.getState().getBlock() == Cloth.shaderBanner.get())
 		{
 			// Standing banner, we have 16 different rotations.
-			int orientation = te.getState().get(ShaderBannerStandingBlock.ROTATION);
+			int orientation = te.getState().getValue(ShaderBannerStandingBlock.ROTATION);
 			matrixStack.translate(0.5F, 0.5F, 0.5F);
 			float f1 = (float)(orientation*360)/16.0F;
-			matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -f1, true));
-			standingModel.showModel = true;
+			matrixStack.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -f1, true));
+			standingModel.visible = true;
 		}
 		else
 		{
 			// Must be the wall banner, attaches to the side of the block with no support pillar.
 			assert te.getState().getBlock() == Cloth.shaderBannerWall.get();
 
-			Direction facing = te.getState().get(ShaderBannerWallBlock.FACING);
-			float rotation = facing.getHorizontalAngle();
+			Direction facing = te.getState().getValue(ShaderBannerWallBlock.FACING);
+			float rotation = facing.toYRot();
 
 			matrixStack.translate(0.5F, -1/6f, 0.5F);
-			matrixStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -rotation, true));
+			matrixStack.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), -rotation, true));
 			matrixStack.translate(0.0F, -0.3125F, -0.4375F);
-			standingModel.showModel = false;
+			standingModel.visible = false;
 		}
 
-		BlockPos blockpos = te.getPos();
+		BlockPos blockpos = te.getBlockPos();
 		float f3 = (float)(blockpos.getX()*7+blockpos.getY()*9+blockpos.getZ()*13)+(float)time+partialTicks;
-		clothModel.rotateAngleX = (-0.0125F+0.01F*MathHelper.cos(f3*(float)Math.PI*0.02F))*(float)Math.PI;
-		clothModel.rotationPointY = -32.0F;
+		clothModel.xRot = (-0.0125F+0.01F*Mth.cos(f3*(float)Math.PI*0.02F))*(float)Math.PI;
+		clothModel.y = -32.0F;
 		ResourceLocation resourcelocation = this.getBannerResourceLocation(te);
 
 		if(resourcelocation!=null)
 		{
-			matrixStack.push();
+			matrixStack.pushPose();
 
 			matrixStack.scale(2f/3, -2f/3, -2f/3);
-			IVertexBuilder builder;
-			builder = bufferIn.getBuffer(RenderType.getEntitySolid(resourcelocation));
+			VertexConsumer builder;
+			builder = bufferIn.getBuffer(RenderType.entitySolid(resourcelocation));
 			this.clothModel.render(matrixStack, builder, combinedLightIn, combinedOverlayIn);
-			builder = ModelBakery.LOCATION_BANNER_BASE.getBuffer(bufferIn, RenderType::getEntitySolid);
+			builder = ModelBakery.BANNER_BASE.buffer(bufferIn, RenderType::entitySolid);
 			this.crossbar.render(matrixStack, builder, combinedLightIn, combinedOverlayIn);
 			this.standingModel.render(matrixStack, builder, combinedLightIn, combinedOverlayIn);
 
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
 
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 	private static final ResourceLocation BASE_TEXTURE = new ResourceLocation("textures/entity/banner_base.png");
@@ -128,7 +128,7 @@ public class ShaderBannerRenderer extends TileEntityRenderer<ShaderBannerTileEnt
 		{
 			ShaderLayer[] layers = sCase.getLayers();
 			ResourceLocation textureLocation = new ResourceLocation(name.getNamespace(), "bannershader/"+name.getPath());
-			ClientUtils.mc().getTextureManager().loadTexture(textureLocation, new IEShaderLayerCompositeTexture(BASE_TEXTURE, layers));
+			ClientUtils.mc().getTextureManager().register(textureLocation, new IEShaderLayerCompositeTexture(BASE_TEXTURE, layers));
 			CACHE.put(name, textureLocation);
 			return textureLocation;
 		}

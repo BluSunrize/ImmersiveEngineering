@@ -1,10 +1,10 @@
 package blusunrize.lib.manual.utils;
 
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.RecipeManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
@@ -20,7 +20,7 @@ public class PrivateAccess
 		try
 		{
 			Method reflectionMethod = ObfuscationReflectionHelper.findMethod(
-					RecipeManager.class, "func_215366_a", IRecipeType.class
+					RecipeManager.class, "func_215366_a", RecipeType.class
 			);
 			return LOOKUP.get().unreflect(reflectionMethod);
 		} catch(IllegalAccessException e)
@@ -30,12 +30,12 @@ public class PrivateAccess
 	});
 
 	@SuppressWarnings("unchecked")
-	public static <C extends IInventory, T extends IRecipe<C>>
-	Map<ResourceLocation, IRecipe<C>> getRecipes(RecipeManager manager, IRecipeType<T> recipeTypeIn)
+	public static <C extends Container, T extends Recipe<C>>
+	Map<ResourceLocation, Recipe<C>> getRecipes(RecipeManager manager, RecipeType<T> recipeTypeIn)
 	{
 		try
 		{
-			return (Map<ResourceLocation, IRecipe<C>>)GET_RECIPES_OF_TYPE.get().invokeExact(manager, recipeTypeIn);
+			return (Map<ResourceLocation, Recipe<C>>)GET_RECIPES_OF_TYPE.get().invokeExact(manager, recipeTypeIn);
 		} catch(Throwable throwable)
 		{
 			throw new RuntimeException(throwable);

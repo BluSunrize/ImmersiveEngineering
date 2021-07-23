@@ -9,14 +9,14 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public class CompositeBakedModel<T extends IBakedModel> implements IBakedModel
+public class CompositeBakedModel<T extends BakedModel> implements BakedModel
 {
 	protected final T base;
 
@@ -42,9 +42,9 @@ public class CompositeBakedModel<T extends IBakedModel> implements IBakedModel
 	}
 
 	@Override
-	public boolean isAmbientOcclusion()
+	public boolean useAmbientOcclusion()
 	{
-		return base.isAmbientOcclusion();
+		return base.useAmbientOcclusion();
 	}
 
 	@Override
@@ -54,27 +54,27 @@ public class CompositeBakedModel<T extends IBakedModel> implements IBakedModel
 	}
 
 	@Override
-	public boolean isSideLit()
+	public boolean usesBlockLight()
 	{
-		return base.isSideLit();
+		return base.usesBlockLight();
 	}
 
 	@Override
-	public boolean isBuiltInRenderer()
+	public boolean isCustomRenderer()
 	{
-		return base.isBuiltInRenderer();
+		return base.isCustomRenderer();
 	}
 
 	@Nonnull
 	@Override
-	public TextureAtlasSprite getParticleTexture()
+	public TextureAtlasSprite getParticleIcon()
 	{
 		return base.getParticleTexture(EmptyModelData.INSTANCE);
 	}
 
 	@Nonnull
 	@Override
-	public ItemOverrideList getOverrides()
+	public ItemOverrides getOverrides()
 	{
 		return base.getOverrides();
 	}
@@ -94,7 +94,7 @@ public class CompositeBakedModel<T extends IBakedModel> implements IBakedModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		return base.getModelData(world, pos, state, tileData);
 	}

@@ -16,19 +16,19 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -48,7 +48,7 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "verticalcovered");
 
-	public VerticalCoveredConveyor(TileEntity tile)
+	public VerticalCoveredConveyor(BlockEntity tile)
 	{
 		super(tile);
 	}
@@ -82,24 +82,24 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 		return out;
 	}
 
-	private static List<AxisAlignedBB> getBoxes(Byte state)
+	private static List<AABB> getBoxes(Byte state)
 	{
 		boolean bottom = (state&1)!=0;
 		boolean left = (state&2)!=0;
 		boolean right = (state&4)!=0;
 		boolean front = (state&8)!=0;
 
-		List<AxisAlignedBB> list = new ArrayList<>();
+		List<AABB> list = new ArrayList<>();
 		// back
-		list.add(new AxisAlignedBB(0, 0, 0, 1, 1, .125f));
+		list.add(new AABB(0, 0, 0, 1, 1, .125f));
 		//left
-		list.add(new AxisAlignedBB(0, left?0: .75, 0, 0.0625, 1, 1));
+		list.add(new AABB(0, left?0: .75, 0, 0.0625, 1, 1));
 		// right
-		list.add(new AxisAlignedBB(0.9375, right?0: .75, 0, 1, 1, 1));
+		list.add(new AABB(0.9375, right?0: .75, 0, 1, 1, 1));
 		// front
-		list.add(new AxisAlignedBB(0, front?0: .75, .9375, 1, 1, 1));
+		list.add(new AABB(0, front?0: .75, .9375, 1, 1, 1));
 		if(bottom||list.isEmpty())
-			list.add(conveyorBounds.getBoundingBox());
+			list.add(conveyorBounds.bounds());
 		return list;
 	}
 
@@ -122,8 +122,8 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 			walls = new boolean[]{true, true};
 
 		Block b = this.cover!=Blocks.AIR?this.cover: getDefaultCover();
-		BlockState state = b.getDefaultState();
-		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
+		BlockState state = b.defaultBlockState();
+		BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
 		if(model!=null)
 		{
 			TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
@@ -134,8 +134,8 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 					if(q!=null&&q.func_187508_a()!=null)
 						sprites.put(f, q.func_187508_a());
 			for(BakedQuad q : model.getQuads(state, null, Utils.RAND))
-				if(q!=null&&q.func_187508_a()!=null&&q.getFace()!=null)
-					sprites.put(q.getFace(), q.func_187508_a());
+				if(q!=null&&q.func_187508_a()!=null&&q.getDirection()!=null)
+					sprites.put(q.getDirection(), q.func_187508_a());
 
 			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.getOrDefault(f, sprite);
 
@@ -144,32 +144,32 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 
 			if(!renderBottom)//just vertical
 			{
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, 0, .75f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, 0, .1875f), new Vector3d(.0625f, 1, .75f), matrix, getFacing(), getSprite, colour));
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, 0, .1875f), new Vector3d(1, 1, .75f), matrix, getFacing(), getSprite, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, 0, .75f), new Vec3(1, 1, 1), matrix, getFacing(), getSprite, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, 0, .1875f), new Vec3(.0625f, 1, .75f), matrix, getFacing(), getSprite, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, 0, .1875f), new Vec3(1, 1, .75f), matrix, getFacing(), getSprite, colour));
 			}
 			else
 			{
 				boolean straightInput = getTile()!=null&&isInwardConveyor(getTile(), getFacing().getOpposite());
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .9375f, .75f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .9375f, .75f), new Vec3(1, 1, 1), matrix, getFacing(), getSprite, colour));
 				if(!straightInput)
-					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(1, 1f, 1), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, .9375f), new Vec3(1, 1f, 1), matrix, getFacing(), getSprite, colour));
 				else//has direct input, needs a cutout
 				{
-					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .75f, .9375f), new Vector3d(1, 1, 1), matrix, getFacing(), getSprite, colour));
-					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(.0625f, .75f, 1), matrix, getFacing(), getSprite, colour));
-					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, .9375f), new Vector3d(1, .75f, 1), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .75f, .9375f), new Vec3(1, 1, 1), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, .9375f), new Vec3(.0625f, .75f, 1), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, .1875f, .9375f), new Vec3(1, .75f, 1), matrix, getFacing(), getSprite, colour));
 				}
 
 				if(walls[0])//wall to the left
-					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, .1875f), new Vector3d(.0625f, 1, .9375f), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, .1875f), new Vec3(.0625f, 1, .9375f), matrix, getFacing(), getSprite, colour));
 				else//cutout to the left
-					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .75f, .1875f), new Vector3d(.0625f, 1, .9375f), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .75f, .1875f), new Vec3(.0625f, 1, .9375f), matrix, getFacing(), getSprite, colour));
 
 				if(walls[1])//wall to the right
-					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, .1875f), new Vector3d(1, 1, .9375f), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, .1875f, .1875f), new Vec3(1, 1, .9375f), matrix, getFacing(), getSprite, colour));
 				else//cutout to the right
-					baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .75f, .1875f), new Vector3d(1, 1, .9375f), matrix, getFacing(), getSprite, colour));
+					baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, .75f, .1875f), new Vec3(1, 1, .9375f), matrix, getFacing(), getSprite, colour));
 			}
 		}
 		return baseModel;

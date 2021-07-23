@@ -20,13 +20,13 @@ import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -55,14 +55,14 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	private final LayeredComparatorOutput comparatorHelper = new LayeredComparatorOutput(
 			MAX_STORAGE,
 			6,
-			() -> world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock()),
+			() -> level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock()),
 			layer -> {
-				BlockPos masterPos = pos.subtract(offsetToMaster);
+				BlockPos masterPos = worldPosition.subtract(offsetToMaster);
 				for(int x = -1; x <= 1; x++)
 					for(int z = -1; z <= 1; z++)
 					{
-						BlockPos pos = masterPos.add(x, layer+1, z);
-						world.notifyNeighborsOfStateChange(pos, world.getBlockState(pos).getBlock());
+						BlockPos pos = masterPos.offset(x, layer+1, z);
+						level.updateNeighborsAt(pos, level.getBlockState(pos).getBlock());
 					}
 			}
 	);
@@ -86,7 +86,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	public void tickServer()
 	{
 		super.tickServer();
-		if(!this.identStack.isEmpty()&&storageAmount > 0&&world.getGameTime()%8==0&&!isRSDisabled())
+		if(!this.identStack.isEmpty()&&storageAmount > 0&&level.getGameTime()%8==0&&!isRSDisabled())
 		{
 			for(CapabilityReference<IItemHandler> output : outputCaps)
 			{
@@ -97,7 +97,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 					storageAmount--;
 					if(storageAmount <= 0)
 						identStack = ItemStack.EMPTY;
-					this.markDirty();
+					this.setChanged();
 					markContainingBlockForUpdate(null);
 					if(storageAmount <= 0)
 						break;
@@ -116,13 +116,13 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(nbt.contains("identStack", NBT.TAG_COMPOUND))
 		{
-			CompoundNBT t = nbt.getCompound("identStack");
-			this.identStack = ItemStack.read(t);
+			CompoundTag t = nbt.getCompound("identStack");
+			this.identStack = ItemStack.of(t);
 		}
 		else
 			this.identStack = ItemStack.EMPTY;
@@ -131,12 +131,12 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!this.identStack.isEmpty())
 		{
-			CompoundNBT t = this.identStack.write(new CompoundNBT());
+			CompoundTag t = this.identStack.save(new CompoundTag());
 			nbt.put("identStack", t);
 		}
 		nbt.putInt("storageAmount", storageAmount);
@@ -169,30 +169,30 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 					float xMax = pos.getX()==0?.25f: 1;
 					float zMin = pos.getZ()==2?.75f: 0;
 					float zMax = pos.getZ()==0?.25f: 1;
-					return ImmutableList.of(new AxisAlignedBB(xMin, 0, zMin, xMax, 1, zMax));
+					return ImmutableList.of(new AABB(xMin, 0, zMin, xMax, 1, zMax));
 				}
-				return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
+				return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
 			}
 	);
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return BLOCK_BOUNDS.get(posInMultiblock, getFacing());
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
+	private AABB renderAABB;
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
 			if(offsetToMaster.equals(BlockPos.ZERO))
-				renderAABB = new AxisAlignedBB(getPos().add(-1, 0, -1), getPos().add(2, 7, 2));
+				renderAABB = new AABB(getBlockPos().offset(-1, 0, -1), getBlockPos().offset(2, 7, 2));
 			else
-				renderAABB = new AxisAlignedBB(getPos(), getPos());
+				renderAABB = new AABB(getBlockPos(), getBlockPos());
 		return renderAABB;
 	}
 
@@ -260,7 +260,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 				silo.storageAmount += accepted;
 				if(silo.identStack.isEmpty())
 					silo.identStack = stack.copy();
-				silo.markDirty();
+				silo.setChanged();
 				silo.markContainingBlockForUpdate(null);
 			}
 			stack.shrink(accepted);
@@ -282,8 +282,8 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 				silo.storageAmount -= out.getCount();
 				if(silo.storageAmount <= 0&&!silo.lockItem)
 					silo.identStack = ItemStack.EMPTY;
-				silo.markDirty();
-				silo.updateContainingBlockInfo();
+				silo.setChanged();
+				silo.clearCache();
 				silo.markContainingBlockForUpdate(null);
 			}
 			return out;
@@ -298,7 +298,7 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 		@Override
 		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 		{
-			return slot==0&&ItemStack.areItemsEqual(stack, silo.identStack);
+			return slot==0&&ItemStack.isSame(stack, silo.identStack);
 		}
 	}
 }

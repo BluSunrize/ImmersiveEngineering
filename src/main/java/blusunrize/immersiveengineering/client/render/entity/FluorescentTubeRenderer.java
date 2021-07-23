@@ -14,18 +14,18 @@ import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemStack;
 
 public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntity>
 {
@@ -36,53 +36,53 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	};
 	TextureAtlasSprite tex;
 
-	public FluorescentTubeRenderer(EntityRendererManager renderManager)
+	public FluorescentTubeRenderer(EntityRenderDispatcher renderManager)
 	{
 		super(renderManager);
-		shadowOpaque = 0;
-		shadowSize = 0;
+		shadowStrength = 0;
+		shadowRadius = 0;
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(FluorescentTubeEntity entity)
+	public ResourceLocation getTextureLocation(FluorescentTubeEntity entity)
 	{
 		return null;
 	}
 
 	@Override
-	public void render(FluorescentTubeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+	public void render(FluorescentTubeEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
-		matrixStackIn.push();
+		matrixStackIn.pushPose();
 		matrixStackIn.translate(0, 1, 0);
-		matrixStackIn.rotate(new Quaternion(0, entityYaw+90, 0, true));
-		matrixStackIn.push();
+		matrixStackIn.mulPose(new Quaternion(0, entityYaw+90, 0, true));
+		matrixStackIn.pushPose();
 		matrixStackIn.translate(0, 0, .03125);
-		matrixStackIn.rotate(new Quaternion(entity.angleHorizontal, 0, 0, true));
+		matrixStackIn.mulPose(new Quaternion(entity.angleHorizontal, 0, 0, true));
 		matrixStackIn.translate(0, -entity.TUBE_LENGTH/2, 0);
 		drawTube(entity.active, entity.rgb, matrixStackIn, bufferIn, packedLightIn, 0);
-		matrixStackIn.pop();
+		matrixStackIn.popPose();
 		matrixStackIn.translate(-0.25, -1, 0);
 		if(tex==null)
-			tex = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+			tex = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
 					.apply(new ResourceLocation("minecraft:block/iron_block"));
 
-		IVertexBuilder builder = bufferIn.getBuffer(IERenderTypes.getPositionTex(PlayerContainer.LOCATION_BLOCKS_TEXTURE));
+		VertexConsumer builder = bufferIn.getBuffer(IERenderTypes.getPositionTex(InventoryMenu.BLOCK_ATLAS));
 		RenderUtils.renderTexturedBox(builder, matrixStackIn,
 				0, 0, 0,
 				.0625F, 1, .0625F,
-				tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
+				tex.getU0(), tex.getV0(), tex.getU1(), tex.getV1());
 		RenderUtils.renderTexturedBox(builder, matrixStackIn,
 				.0625F, .9375F, 0,
 				.25F, 1, .0625F,
-				tex.getMinU(), tex.getMinV(), tex.getMaxU(), tex.getMaxV());
+				tex.getU0(), tex.getV0(), tex.getU1(), tex.getV1());
 
-		matrixStackIn.pop();
+		matrixStackIn.popPose();
 	}
 
 	private static ItemStack tube = ItemStack.EMPTY;
 	private static ItemStack tubeActive = ItemStack.EMPTY;
 
-	static void drawTube(boolean active, float[] rgb, MatrixStack matrixStack, IRenderTypeBuffer buffer, int light,
+	static void drawTube(boolean active, float[] rgb, PoseStack matrixStack, MultiBufferSource buffer, int light,
 						 int overlay)
 	{
 		if(tube.isEmpty())
@@ -95,6 +95,6 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		matrixStack.translate(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive: tube;
 		FluorescentTubeItem.setRGB(renderStack, rgb);
-		IEOBJItemRenderer.INSTANCE.func_239207_a_(renderStack, TransformType.FIXED, matrixStack, buffer, light, overlay);
+		IEOBJItemRenderer.INSTANCE.renderByItem(renderStack, TransformType.FIXED, matrixStack, buffer, light, overlay);
 	}
 }

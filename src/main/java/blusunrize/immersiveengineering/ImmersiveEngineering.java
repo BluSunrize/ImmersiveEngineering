@@ -40,14 +40,14 @@ import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
-import net.minecraft.item.*;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
@@ -134,10 +134,10 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("fences", new Integer[]{5, 3});
 		IECompatModule.doModulesPreInit();
 
-		ArcRecyclingChecker.allowRecipeTypeForRecycling(IRecipeType.CRAFTING);
+		ArcRecyclingChecker.allowRecipeTypeForRecycling(RecipeType.CRAFTING);
 		ArcRecyclingChecker.allowRecipeTypeForRecycling(MetalPressRecipe.TYPE);
 		// Vanilla Tools, Swords & Armor
-		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof ToolItem
+		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof DiggerItem
 				||stack instanceof ShearsItem||stack instanceof SwordItem||
 				stack instanceof ArmorItem||stack instanceof HorseArmorItem||
 				stack instanceof BucketItem);
@@ -149,7 +149,7 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire,
 				Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking
-		).map(IItemProvider::asItem));
+		).map(ItemLike::asItem));
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
 		ArcRecyclingChecker.allowItemTagForRecycling(IETags.plates);
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("rods/");
@@ -202,13 +202,13 @@ public class ImmersiveEngineering
 
 	private int messageId = 0;
 
-	private <T extends IMessage> void registerMessage(Class<T> packetType, Function<PacketBuffer, T> decoder)
+	private <T extends IMessage> void registerMessage(Class<T> packetType, Function<FriendlyByteBuf, T> decoder)
 	{
 		registerMessage(packetType, decoder, Optional.empty());
 	}
 
 	private <T extends IMessage> void registerMessage(
-			Class<T> packetType, Function<PacketBuffer, T> decoder, NetworkDirection direction
+			Class<T> packetType, Function<FriendlyByteBuf, T> decoder, NetworkDirection direction
 	)
 	{
 		registerMessage(packetType, decoder, Optional.of(direction));
@@ -217,7 +217,7 @@ public class ImmersiveEngineering
 	private final Set<Class<?>> knownPacketTypes = new HashSet<>();
 
 	private <T extends IMessage> void registerMessage(
-			Class<T> packetType, Function<PacketBuffer, T> decoder, Optional<NetworkDirection> direction
+			Class<T> packetType, Function<FriendlyByteBuf, T> decoder, Optional<NetworkDirection> direction
 	)
 	{
 		if(!knownPacketTypes.add(packetType))
@@ -241,7 +241,7 @@ public class ImmersiveEngineering
 
 	public void addReloadListeners(AddReloadListenerEvent event)
 	{
-		DataPackRegistries dataPackRegistries = event.getDataPackRegistries();
+		ServerResources dataPackRegistries = event.getDataPackRegistries();
 		event.addListener(new RecipeReloadListener(dataPackRegistries));
 	}
 
@@ -255,10 +255,10 @@ public class ImmersiveEngineering
 		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{
 			//TODO hardcoding DimensionType.OVERWORLD seems hacky/broken
-			ServerWorld world = event.getServer().getWorld(World.OVERWORLD);
-			if(!world.isRemote)
+			ServerLevel world = event.getServer().getLevel(Level.OVERWORLD);
+			if(!world.isClientSide)
 			{
-				IESaveData worldData = world.getSavedData().getOrCreate(IESaveData::new, IESaveData.dataName);
+				IESaveData worldData = world.getDataStorage().computeIfAbsent(IESaveData::new, IESaveData.dataName);
 				IESaveData.setInstance(worldData);
 			}
 		}
@@ -269,11 +269,11 @@ public class ImmersiveEngineering
 		return new ResourceLocation(MODID, path);
 	}
 
-	public static final ItemGroup ITEM_GROUP = new ItemGroup(MODID)
+	public static final CreativeModeTab ITEM_GROUP = new CreativeModeTab(MODID)
 	{
 		@Override
 		@Nonnull
-		public ItemStack createIcon()
+		public ItemStack makeIcon()
 		{
 			return new ItemStack(Misc.wireCoils.get(WireType.COPPER));
 		}

@@ -10,19 +10,14 @@ package blusunrize.immersiveengineering.common.util.compat.top;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import mcjty.theoneprobe.Tools;
-import mcjty.theoneprobe.api.ElementAlignment;
-import mcjty.theoneprobe.api.IBlockDisplayOverride;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.ProbeMode;
-import mcjty.theoneprobe.api.TextStyleClass;
+import mcjty.theoneprobe.api.*;
 import mcjty.theoneprobe.config.Config;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * @author Robustprogram - 26.1.2020
@@ -30,10 +25,10 @@ import net.minecraft.world.World;
 public class MultiblockDisplayOverride implements IBlockDisplayOverride
 {
 	@Override
-	public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
+	public boolean overrideStandardInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		TileEntity te = world.getTileEntity(data.getPos());
+		BlockEntity te = world.getBlockEntity(data.getPos());
 		if(te instanceof MultiblockPartTileEntity)
 		{
 			ItemStack stack = new ItemStack(blockState.getBlock(), 1);
@@ -43,7 +38,7 @@ public class MultiblockDisplayOverride implements IBlockDisplayOverride
 						.item(stack)
 						.vertical()
 						.itemLabel(stack)
-						.text(new StringTextComponent(TextStyleClass.MODNAME+ImmersiveEngineering.MODNAME));
+						.text(new TextComponent(TextStyleClass.MODNAME+ImmersiveEngineering.MODNAME));
 			}
 			else
 			{

@@ -12,18 +12,18 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -37,11 +37,11 @@ public class DropConveyor extends BasicConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "dropper");
 	/// Items will be spawned when this space is empty in the block below:
-	private static final VoxelShape REQUIRED_SPACE = VoxelShapes.create(0.25, 0.75, 0.25, 0.75, 1.0, 0.75);
-	private VoxelShape cachedDownShape = VoxelShapes.empty();
+	private static final VoxelShape REQUIRED_SPACE = Shapes.box(0.25, 0.75, 0.25, 0.75, 1.0, 0.75);
+	private VoxelShape cachedDownShape = Shapes.empty();
 	private boolean cachedOpenBelow = true;
 
-	public DropConveyor(TileEntity tile)
+	public DropConveyor(BlockEntity tile)
 	{
 		super(tile);
 	}
@@ -51,14 +51,14 @@ public class DropConveyor extends BasicConveyor
 	{
 		if(!isPowered())
 		{
-			BlockPos posDown = getTile().getPos().down();
-			TileEntity inventoryTile = getTile().getWorld().getTileEntity(posDown);
-			boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getPos().getZ()+.5-entity.getPosZ()):
-				(getTile().getPos().getX()+.5-entity.getPosX())) < .2;
+			BlockPos posDown = getTile().getBlockPos().below();
+			BlockEntity inventoryTile = getTile().getLevel().getBlockEntity(posDown);
+			boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getBlockPos().getZ()+.5-entity.getZ()):
+				(getTile().getBlockPos().getX()+.5-entity.getX())) < .2;
 
 		LazyOptional<IItemHandler> cap = LazyOptional.empty();
 		if(contact&&!(inventoryTile instanceof IConveyorTile))
-			cap = CapabilityUtils.findItemHandlerAtPos(getTile().getWorld(), posDown, Direction.UP, true);
+			cap = CapabilityUtils.findItemHandlerAtPos(getTile().getLevel(), posDown, Direction.UP, true);
 
 			if(cap.isPresent())
 				cap.ifPresent(itemHandler ->
@@ -74,10 +74,10 @@ public class DropConveyor extends BasicConveyor
 							entity.setItem(temp);
 					}
 				});
-			else if(contact&&isEmptySpace(getTile().getWorld(), posDown, inventoryTile))
+			else if(contact&&isEmptySpace(getTile().getLevel(), posDown, inventoryTile))
 			{
-				entity.setMotion(0, entity.getMotion().y, 0);
-				entity.setPosition(getTile().getPos().getX()+.5, getTile().getPos().getY()-.5, getTile().getPos().getZ()+.5);
+				entity.setDeltaMovement(0, entity.getDeltaMovement().y, 0);
+				entity.setPos(getTile().getBlockPos().getX()+.5, getTile().getBlockPos().getY()-.5, getTile().getBlockPos().getZ()+.5);
 				if(!(inventoryTile instanceof IConveyorTile))
 					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)getTile());
 			}
@@ -88,19 +88,19 @@ public class DropConveyor extends BasicConveyor
 			super.handleInsertion(entity, conDir, distX, distZ);
 	}
 
-	boolean isEmptySpace(World world, BlockPos pos, TileEntity tile)
+	boolean isEmptySpace(Level world, BlockPos pos, BlockEntity tile)
 	{
 		// Special case conveyors, so items can be dropped through covered ones.
 		if(tile instanceof IConveyorTile)
 			return true;
 		BlockState state = world.getBlockState(pos);
-		VoxelShape shape = state.getCollisionShapeUncached(world, pos);
+		VoxelShape shape = state.getCollisionShape(world, pos);
 		// Combining voxelshapes is a little expensive, so only calculate
 		// when the voxelshape changes. Identity compare is sufficent since they're
 		// usually precomputed.
 		if (shape != cachedDownShape)
 		{
-			cachedOpenBelow = !VoxelShapes.compare(REQUIRED_SPACE, shape, IBooleanFunction.AND);
+			cachedOpenBelow = !Shapes.joinIsNotEmpty(REQUIRED_SPACE, shape, BooleanOp.AND);
 			cachedDownShape = shape;
 		}
 		return cachedOpenBelow;

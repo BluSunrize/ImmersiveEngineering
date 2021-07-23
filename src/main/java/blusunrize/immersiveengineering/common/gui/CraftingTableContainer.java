@@ -10,20 +10,16 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableTileEntity;
 import invtweaks.api.container.ChestContainer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.CraftResultInventory;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.CraftingResultSlot;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.network.play.server.SSetSlotPacket;
-import net.minecraft.world.World;
+import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -31,21 +27,21 @@ import java.util.function.Consumer;
 @ChestContainer
 public class CraftingTableContainer extends IEBaseContainer<CraftingTableTileEntity>
 {
-	private final CraftingInventory craftingInventory = new CraftingInventory(this, 3, 3);
-	private final CraftResultInventory craftResultInventory = new CraftResultInventory();
-	private final PlayerEntity player;
+	private final CraftingContainer craftingInventory = new CraftingContainer(this, 3, 3);
+	private final ResultContainer craftResultInventory = new ResultContainer();
+	private final Player player;
 
-	public CraftingTableContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, CraftingTableTileEntity tile)
+	public CraftingTableContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CraftingTableTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.player = inventoryPlayer.player;
 
-		this.addSlot(new CraftingResultSlot(player, craftingInventory, craftResultInventory, 0, 124, 35));
+		this.addSlot(new ResultSlot(player, craftingInventory, craftResultInventory, 0, 124, 35));
 
 		for(int i = 0; i < 9; i++)
 		{
 			Slot s = this.addSlot(new Slot(craftingInventory, i, 30+(i%3)*18, 17+(i/3)*18));
-			s.putStack(this.inv.getStackInSlot(18+i));
+			s.set(this.inv.getItem(18+i));
 		}
 
 		int iSlot = 0;
@@ -62,74 +58,74 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableTileEnt
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 187));
 	}
 
-	private void doIfServerWorld(Consumer<World> consumer)
+	private void doIfServerWorld(Consumer<Level> consumer)
 	{
-		if(this.tile!=null&&this.tile.getWorld()!=null&&!this.tile.getWorld().isRemote)
+		if(this.tile!=null&&this.tile.getLevel()!=null&&!this.tile.getLevel().isClientSide)
 		{
-			consumer.accept(this.tile.getWorld());
+			consumer.accept(this.tile.getLevel());
 		}
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity playerIn)
+	public void removed(Player playerIn)
 	{
-		super.onContainerClosed(playerIn);
+		super.removed(playerIn);
 		doIfServerWorld(world -> {
 			for(int i = 0; i < 9; i++)
-				this.inv.setInventorySlotContents(18+i, this.getSlot(1+i).getStack());
+				this.inv.setItem(18+i, this.getSlot(1+i).getItem());
 		});
 	}
 
 	@Override
-	public void onCraftMatrixChanged(IInventory inventoryIn)
+	public void slotsChanged(Container inventoryIn)
 	{
 		doIfServerWorld(world -> {
-			ServerPlayerEntity serverplayerentity = (ServerPlayerEntity)this.player;
+			ServerPlayer serverplayerentity = (ServerPlayer)this.player;
 			ItemStack itemstack = ItemStack.EMPTY;
-			Optional<ICraftingRecipe> optional = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftingInventory, world);
+			Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
 			if(optional.isPresent())
 			{
-				ICraftingRecipe icraftingrecipe = optional.get();
-				if(craftResultInventory.canUseRecipe(world, serverplayerentity, icraftingrecipe))
+				CraftingRecipe icraftingrecipe = optional.get();
+				if(craftResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe))
 				{
-					itemstack = icraftingrecipe.getCraftingResult(craftingInventory);
+					itemstack = icraftingrecipe.assemble(craftingInventory);
 				}
 			}
 
-			craftResultInventory.setInventorySlotContents(0, itemstack);
-			serverplayerentity.connection.sendPacket(new SSetSlotPacket(this.windowId, 0, itemstack));
+			craftResultInventory.setItem(0, itemstack);
+			serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(this.containerId, 0, itemstack));
 		});
 	}
 
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity playerIn, int index)
+	public ItemStack quickMoveStack(Player playerIn, int index)
 	{
 		if(index!=0)
-			return super.transferStackInSlot(playerIn, index);
+			return super.quickMoveStack(playerIn, index);
 
 		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = this.inventorySlots.get(index);
-		if(slot!=null&&slot.getHasStack())
+		Slot slot = this.slots.get(index);
+		if(slot!=null&&slot.hasItem())
 		{
-			ItemStack itemstack1 = slot.getStack();
+			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
 			doIfServerWorld(world -> {
-				itemstack1.getItem().onCreated(itemstack1, world, playerIn);
+				itemstack1.getItem().onCraftedBy(itemstack1, world, playerIn);
 			});
-			if(!this.mergeItemStack(itemstack1, 10, 46, true))
+			if(!this.moveItemStackTo(itemstack1, 10, 46, true))
 				return ItemStack.EMPTY;
-			slot.onSlotChange(itemstack1, itemstack);
+			slot.onQuickCraft(itemstack1, itemstack);
 
 			if(itemstack1.isEmpty())
-				slot.putStack(ItemStack.EMPTY);
+				slot.set(ItemStack.EMPTY);
 			else
-				slot.onSlotChanged();
+				slot.setChanged();
 
 			if(itemstack1.getCount()==itemstack.getCount())
 				return ItemStack.EMPTY;
 
 			ItemStack itemstack2 = slot.onTake(playerIn, itemstack1);
-			playerIn.dropItem(itemstack2, false);
+			playerIn.drop(itemstack2, false);
 		}
 		return itemstack;
 	}

@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ import java.util.Map;
  */
 public class CrusherRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<CrusherRecipe> TYPE;
+	public static RecipeType<CrusherRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
 
 	public final Ingredient input;
@@ -46,7 +46,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		setTimeAndEnergy(50, energy);
 
 		setInputList(Lists.newArrayList(this.input));
-		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
+		this.outputList = NonNullList.of(ItemStack.EMPTY, this.output);
 	}
 
 	@Override
@@ -56,7 +56,7 @@ public class CrusherRecipe extends MultiblockRecipe
 	}
 
 	@Override
-	public NonNullList<ItemStack> getActualItemOutputs(TileEntity tile)
+	public NonNullList<ItemStack> getActualItemOutputs(BlockEntity tile)
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);

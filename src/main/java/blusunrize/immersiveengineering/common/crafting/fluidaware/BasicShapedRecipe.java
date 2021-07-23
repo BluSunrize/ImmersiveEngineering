@@ -10,12 +10,12 @@
 package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe.MatchLocation;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 
 import javax.annotation.Nullable;
 
@@ -29,10 +29,10 @@ public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 	public BasicShapedRecipe(ShapedRecipe vanillaBase)
 	{
 		this(vanillaBase.getId(), vanillaBase.getGroup(), vanillaBase.getWidth(), vanillaBase.getHeight(),
-				vanillaBase.getIngredients(), vanillaBase.getRecipeOutput());
+				vanillaBase.getIngredients(), vanillaBase.getResultItem());
 	}
 
-	protected boolean checkMatch(CraftingInventory craftingInventory, MatchLocation loc)
+	protected boolean checkMatch(CraftingContainer craftingInventory, MatchLocation loc)
 	{
 		for(int invX = 0; invX < craftingInventory.getWidth(); ++invX)
 			for(int invY = 0; invY < craftingInventory.getHeight(); ++invY)
@@ -50,7 +50,7 @@ public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 					expectedContent = getIngredients().get(recipeSlot);
 				}
 
-				if(!expectedContent.test(craftingInventory.getStackInSlot(invX+invY*craftingInventory.getWidth())))
+				if(!expectedContent.test(craftingInventory.getItem(invX+invY*craftingInventory.getWidth())))
 					return false;
 			}
 
@@ -59,7 +59,7 @@ public class BasicShapedRecipe extends AbstractShapedRecipe<MatchLocation>
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingInventory inv)
+	protected MatchLocation findMatch(CraftingContainer inv)
 	{
 		for(int xOffset = 0; xOffset <= inv.getWidth()-this.getWidth(); ++xOffset)
 			for(int yOffset = 0; yOffset <= inv.getHeight()-this.getHeight(); ++yOffset)

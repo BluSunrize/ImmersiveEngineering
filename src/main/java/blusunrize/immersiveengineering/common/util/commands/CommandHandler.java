@@ -11,15 +11,15 @@ package blusunrize.immersiveengineering.common.util.commands;
 import blusunrize.immersiveengineering.common.network.MessageClientCommand.Type;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 public class CommandHandler
 {
-	public static void registerServer(CommandDispatcher<CommandSource> dispatcher)
+	public static void registerServer(CommandDispatcher<CommandSourceStack> dispatcher)
 	{
 		//TODO do all subcommands have proper permission requirements?
-		LiteralArgumentBuilder<CommandSource> main = Commands.literal("ie");
+		LiteralArgumentBuilder<CommandSourceStack> main = Commands.literal("ie");
 		main.then(CommandMineral.create())
 				.then(CommandShaders.create())
 				.then(RemoteClientCommand.clientComamnd("resetrender", Type.RESET_SHADER_CACHES))

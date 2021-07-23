@@ -26,26 +26,26 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -68,14 +68,14 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 		super(IETileTypes.BREAKER_SWITCH.get());
 	}
 
-	public BreakerSwitchTileEntity(TileEntityType<? extends BreakerSwitchTileEntity> type)
+	public BreakerSwitchTileEntity(BlockEntityType<? extends BreakerSwitchTileEntity> type)
 	{
 		super(type);
 	}
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
 		Matrix4 mat = new Matrix4()
 				.setIdentity()
@@ -83,12 +83,12 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 				.rotate(-Math.PI/2*rotation, 0, 0, 1)
 				.translate(-.5, -.5, 0)
 				.multiply(Matrix4.inverseFacing(getFacing()));
-		Vector3d transformedHit = mat.apply(new Vector3d(info.hitX, info.hitY, info.hitZ));
-		return new ConnectionPoint(pos, transformedHit.x > 0.5?RIGHT_INDEX: LEFT_INDEX);
+		Vec3 transformedHit = mat.apply(new Vec3(info.hitX, info.hitY, info.hitZ));
+		return new ConnectionPoint(worldPosition, transformedHit.x > 0.5?RIGHT_INDEX: LEFT_INDEX);
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(HV_CATEGORY.equals(cableType.getCategory())&&!canTakeHV())
 			return false;
@@ -121,7 +121,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("rotation", rotation);
@@ -130,7 +130,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		rotation = nbt.getInt("rotation");
@@ -139,51 +139,51 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		boolean isLeft = here.getIndex()==LEFT_INDEX;
-		return mat.apply(new Vector3d(isLeft?.25: .75, .5, .125));
+		return mat.apply(new Vec3(isLeft?.25: .75, .5, .125));
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		rotation = (rotation+3)%4;
 		for(ConnectionPoint cp : getConnectionPoints())
 			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
 				if(!c.isInternal())
-					globalNet.updateCatenaryData(c, world);
-		markDirty();
+					globalNet.updateCatenaryData(c, level);
+		setChanged();
 		markContainingBlockForUpdate(getBlockState());
 		return true;
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		final boolean oldPassing = allowEnergyToPass();
 		inverted = !inverted;
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
-			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
+			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
 			notifyNeighbours();
 			if(oldPassing!=allowEnergyToPass())
 				updateConductivity();
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(!Utils.isHammer(heldItem))
 		{
 			boolean active = !getIsActive();
 			setActive(active);
-			world.playSound(null, getPos(), IESounds.direSwitch, SoundCategory.BLOCKS, 2.5F, 1);
-			world.addBlockEvent(getPos(), getBlockState().getBlock(), active?1: 0, 0);
+			level.playSound(null, getBlockPos(), IESounds.direSwitch, SoundSource.BLOCKS, 2.5F, 1);
+			level.blockEvent(getBlockPos(), getBlockState().getBlock(), active?1: 0, 0);
 			notifyNeighbours();
 			updateConductivity();
 			return true;
@@ -195,23 +195,23 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	protected void updateConductivity()
 	{
 		if(allowEnergyToPass())
-			globalNet.addConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+			globalNet.addConnection(new Connection(worldPosition, LEFT_INDEX, RIGHT_INDEX));
 		else
-			globalNet.removeConnection(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+			globalNet.removeConnection(new Connection(worldPosition, LEFT_INDEX, RIGHT_INDEX));
 	}
 
 	public void notifyNeighbours()
 	{
-		markDirty();
-		world.notifyNeighborsOfStateChange(getPos(), getBlockState().getBlock());
+		setChanged();
+		level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
 		for(Direction f : DirectionUtils.VALUES)
-			world.notifyNeighborsOfStateChange(getPos().offset(f), getBlockState().getBlock());
+			level.updateNeighborsAt(getBlockPos().relative(f), getBlockState().getBlock());
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
-		if(super.receiveClientEvent(id, arg))
+		if(super.triggerEvent(id, arg))
 			return true;
 		this.markContainingBlockForUpdate(null);
 		return true;
@@ -237,7 +237,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -249,17 +249,17 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	private static final CachedVoxelShapes<Pair<Direction, Integer>> SHAPES = new CachedVoxelShapes<>(pair -> {
-		Vector3d start = new Vector3d(.25, .1875, 0);
-		Vector3d end = new Vector3d(.75, .8125, .5);
+		Vec3 start = new Vec3(.25, .1875, 0);
+		Vec3 end = new Vec3(.75, .8125, .5);
 		Matrix4 mat = new Matrix4(pair.getLeft());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*pair.getRight(), 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
-		return ImmutableList.of(new AxisAlignedBB(start, end));
+		return ImmutableList.of(new AABB(start, end));
 	});
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return SHAPES.get(Pair.of(getFacing(), rotation));
 	}
@@ -283,9 +283,9 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	}
 
 	@Override
-	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
+	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
 	{
-		return transform.compose(new TransformationMatrix(
+		return transform.compose(new Transformation(
 				null,
 				new Quaternion(0, 90*rotation, 0, true),
 				null, null
@@ -295,7 +295,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public String getCacheKey(BlockState object)
 	{
-		return rotation+","+getFacing().getIndex();
+		return rotation+","+getFacing().get3DDataValue();
 	}
 
 	@Override
@@ -318,21 +318,21 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 				rotationSign = 1;
 			}
 		}
-		rotation = Direction.NORTH.getHorizontalIndex()+rotationSign*f.getHorizontalIndex();
+		rotation = Direction.NORTH.get2DDataValue()+rotationSign*f.get2DDataValue();
 		rotation = (rotation+4)%4;
 	}
 
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		return ImmutableList.of(new ConnectionPoint(pos, LEFT_INDEX), new ConnectionPoint(pos, RIGHT_INDEX));
+		return ImmutableList.of(new ConnectionPoint(worldPosition, LEFT_INDEX), new ConnectionPoint(worldPosition, RIGHT_INDEX));
 	}
 
 	@Override
 	public Iterable<? extends Connection> getInternalConnections()
 	{
 		if(allowEnergyToPass())
-			return ImmutableList.of(new Connection(pos, LEFT_INDEX, RIGHT_INDEX));
+			return ImmutableList.of(new Connection(worldPosition, LEFT_INDEX, RIGHT_INDEX));
 		else
 			return ImmutableList.of();
 	}

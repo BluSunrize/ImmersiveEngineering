@@ -11,29 +11,29 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.SiloTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
+public class SiloRenderer extends BlockEntityRenderer<SiloTileEntity>
 {
-	public SiloRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public SiloRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(SiloTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(SiloTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
+		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
-		matrixStack.push();
+		matrixStack.pushPose();
 
 		matrixStack.translate(.5, 0, .5);
 
@@ -47,20 +47,20 @@ public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
 			matrixStack.scale(baseScale, baseScale, baseScale);
 			ItemStack stack = ItemHandlerHelper.copyStackWithSize(tile.identStack, tile.storageAmount);
 			String s = ""+stack.getCount();
-			float w = ClientUtils.mc().fontRenderer.getStringWidth(s);
+			float w = ClientUtils.mc().font.width(s);
 
 			float zz = 1.501f;
 			zz /= baseScale;
 			w *= textScale;
 			for(int i = 0; i < 4; i++)
 			{
-				matrixStack.push();
+				matrixStack.pushPose();
 				matrixStack.translate(0, 0, zz);
 
-				matrixStack.push();
+				matrixStack.pushPose();
 				matrixStack.scale(itemScale/baseScale, itemScale/baseScale, flatScale);
 				matrixStack.translate(0, -0.75, 0);
-				ClientUtils.mc().getItemRenderer().renderItem(
+				ClientUtils.mc().getItemRenderer().renderStatic(
 						stack,
 						TransformType.GUI,
 						combinedLightIn,
@@ -68,29 +68,29 @@ public class SiloRenderer extends TileEntityRenderer<SiloTileEntity>
 						matrixStack,
 						IERenderTypes.disableLighting(bufferIn)
 				);
-				matrixStack.pop();
+				matrixStack.popPose();
 
-				matrixStack.push();
+				matrixStack.pushPose();
 				matrixStack.translate(-w/2, -11, .001f);
 				matrixStack.scale(textScale, -textScale, 1);
-				ClientUtils.font().renderString(
+				ClientUtils.font().drawInBatch(
 						""+stack.getCount(),
 						0, 0,
 						0x888888,
 						true,
-						matrixStack.getLast().getMatrix(),
+						matrixStack.last().pose(),
 						bufferIn,
 						false,
 						0,
 						combinedLightIn
 				);
-				matrixStack.pop();
+				matrixStack.popPose();
 
-				matrixStack.pop();
-				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
+				matrixStack.popPose();
+				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			}
 		}
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 }

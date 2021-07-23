@@ -14,45 +14,45 @@ import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.function.Consumer;
 
-public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
+public class ClocheRenderer extends BlockEntityRenderer<ClocheTileEntity>
 {
 	private static final Map<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
-	public ClocheRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public ClocheRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(ClocheTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ClocheTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.dummy!=0||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
+		if(tile.dummy!=0||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockPos blockPos = tile.getPos();
+		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+		BlockPos blockPos = tile.getBlockPos();
 
 		// Render particles in the TER rather than using the standard particle engine to avoid depth issues/the
 		// particles not rendering at all outside of fabulous mode
@@ -61,26 +61,26 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 		ClocheRecipe recipe = tile.cachedRecipe.get();
 		if(recipe!=null)
 		{
-			IVertexBuilder baseBuilder = bufferIn.getBuffer(RenderType.getCutout());
-			matrixStack.push();
+			VertexConsumer baseBuilder = bufferIn.getBuffer(RenderType.cutout());
+			matrixStack.pushPose();
 			matrixStack.translate(0, 1.0625, 0);
 
 			NonNullList<ItemStack> inventory = tile.getInventory();
 			ItemStack seed = inventory.get(ClocheTileEntity.SLOT_SEED);
 			ItemStack soil = inventory.get(ClocheTileEntity.SLOT_SOIL);
-			float growth = MathHelper.clamp(tile.renderGrowth/recipe.getTime(seed, soil), 0, 1);
+			float growth = Mth.clamp(tile.renderGrowth/recipe.getTime(seed, soil), 0, 1);
 			float scale = recipe.renderFunction.getScale(seed, growth);
 			matrixStack.translate((1-scale)/2, 0, (1-scale)/2);
 			matrixStack.scale(scale, scale, scale);
 
-			Collection<Pair<BlockState, TransformationMatrix>> blocks = recipe.renderFunction.getBlocks(seed, growth);
-			for(Pair<BlockState, TransformationMatrix> block : blocks)
+			Collection<Pair<BlockState, Transformation>> blocks = recipe.renderFunction.getBlocks(seed, growth);
+			for(Pair<BlockState, Transformation> block : blocks)
 			{
 				BlockState state = block.getLeft();
 				List<BakedQuad> plantQuadList = plantQuads.get(state);
 				if(plantQuadList==null)
 				{
-					IBakedModel plantModel = blockRenderer.getModelForState(state);
+					BakedModel plantModel = blockRenderer.getBlockModel(state);
 					plantQuadList = new ArrayList<>(plantModel.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE));
 					for(Direction f : Direction.values())
 						plantQuadList.addAll(plantModel.getQuads(state, f, Utils.RAND, EmptyModelData.INSTANCE));
@@ -90,7 +90,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 				block.getRight().push(matrixStack);
 				RenderUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
 						tile.getWorldNonnull(), blockPos, false, col, combinedLightIn);
-				matrixStack.pop();
+				matrixStack.popPose();
 			}
 
 			// Injection of quads from dynamic recipes
@@ -103,7 +103,7 @@ public class ClocheRenderer extends TileEntityRenderer<ClocheTileEntity>
 						tile.getWorldNonnull(), blockPos, false, -1, combinedLightIn);
 			}
 
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
 	}
 

@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 public class MetalPressRecipeBuilder extends IEFinishedRecipe<MetalPressRecipeBuilder>
 {
@@ -23,17 +23,17 @@ public class MetalPressRecipeBuilder extends IEFinishedRecipe<MetalPressRecipeBu
 		super(MetalPressRecipe.SERIALIZER.get());
 	}
 
-	public static MetalPressRecipeBuilder builder(IItemProvider mold, IItemProvider result)
+	public static MetalPressRecipeBuilder builder(ItemLike mold, ItemLike result)
 	{
 		return new MetalPressRecipeBuilder().addIngredient("mold", mold).addResult(result);
 	}
 
-	public static MetalPressRecipeBuilder builder(IItemProvider mold, ItemStack result)
+	public static MetalPressRecipeBuilder builder(ItemLike mold, ItemStack result)
 	{
 		return new MetalPressRecipeBuilder().addIngredient("mold", mold).addResult(result);
 	}
 
-	public static MetalPressRecipeBuilder builder(IItemProvider mold, ITag<Item> result, int count)
+	public static MetalPressRecipeBuilder builder(ItemLike mold, Tag<Item> result, int count)
 	{
 		return new MetalPressRecipeBuilder().addIngredient("mold", mold).addResult(new IngredientWithSize(result, count));
 	}

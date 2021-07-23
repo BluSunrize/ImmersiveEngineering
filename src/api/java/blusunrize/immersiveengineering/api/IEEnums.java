@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
 public class IEEnums
 {
-	public enum IOSideConfig implements IStringSerializable
+	public enum IOSideConfig implements StringRepresentable
 	{
 		NONE("none"),
 		INPUT("in"),
@@ -32,7 +32,7 @@ public class IEEnums
 		}
 
 		@Override
-		public String getString()
+		public String getSerializedName()
 		{
 			return this.toString().toLowerCase(Locale.ENGLISH);
 		}
@@ -42,9 +42,9 @@ public class IEEnums
 			return texture;
 		}
 
-		public ITextComponent getTextComponent()
+		public Component getTextComponent()
 		{
-			return new TranslationTextComponent(Lib.DESC_INFO+"blockSide.io."+getString());
+			return new TranslatableComponent(Lib.DESC_INFO+"blockSide.io."+getSerializedName());
 		}
 
 		public static IOSideConfig next(IOSideConfig current)

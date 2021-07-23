@@ -16,15 +16,15 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntit
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.CrateMinecartEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.fml.network.IContainerFactory;
 import net.minecraftforge.registries.DeferredRegister;
@@ -34,7 +34,7 @@ import org.apache.commons.lang3.mutable.MutableObject;
 
 public class IEContainerTypes
 {
-	public static final DeferredRegister<ContainerType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.CONTAINERS, Lib.MODID);
+	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.CONTAINERS, Lib.MODID);
 
 	public static final TileContainer<CokeOvenTileEntity, CokeOvenContainer> COKE_OVEN = register(Lib.GUIID_CokeOven, CokeOvenContainer::new);
 	public static final TileContainer<AlloySmelterTileEntity, AlloySmelterContainer> ALLOY_SMELTER = register(Lib.GUIID_AlloySmelter, AlloySmelterContainer::new);
@@ -65,16 +65,16 @@ public class IEContainerTypes
 
 	public static final EntityContainerType<CrateMinecartEntity, CrateEntityContainer> CRATE_MINECART = register(Lib.GUIID_CartCrate, CrateEntityContainer::new);
 
-	public static <T extends TileEntity, C extends IEBaseContainer<? super T>>
+	public static <T extends BlockEntity, C extends IEBaseContainer<? super T>>
 	TileContainer<T, C> register(String name, TileContainerConstructor<T, C> container)
 	{
-		RegistryObject<ContainerType<C>> typeRef = REGISTER.register(
+		RegistryObject<MenuType<C>> typeRef = REGISTER.register(
 				name, () -> {
-					Mutable<ContainerType<C>> typeBox = new MutableObject<>();
-					ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
-						World world = ImmersiveEngineering.proxy.getClientWorld();
+					Mutable<MenuType<C>> typeBox = new MutableObject<>();
+					MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
+						Level world = ImmersiveEngineering.proxy.getClientWorld();
 						BlockPos pos = data.readBlockPos();
-						TileEntity te = world.getTileEntity(pos);
+						BlockEntity te = world.getBlockEntity(pos);
 						return container.construct(typeBox.getValue(), windowId, inv, (T)te);
 					});
 					typeBox.setValue(type);
@@ -84,18 +84,18 @@ public class IEContainerTypes
 		return new TileContainer<>(typeRef, container);
 	}
 
-	public static <C extends Container>
+	public static <C extends AbstractContainerMenu>
 	ItemContainerType<C> register(String name, ItemContainerConstructor<C> container)
 	{
-		RegistryObject<ContainerType<C>> typeRef = REGISTER.register(
+		RegistryObject<MenuType<C>> typeRef = REGISTER.register(
 				name, () -> {
-					Mutable<ContainerType<C>> typeBox = new MutableObject<>();
-					ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
-						World world = ImmersiveEngineering.proxy.getClientWorld();
+					Mutable<MenuType<C>> typeBox = new MutableObject<>();
+					MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
+						Level world = ImmersiveEngineering.proxy.getClientWorld();
 						// Matches IEBaseItem#openGui
 						int slotOrdinal = data.readInt();
-						EquipmentSlotType slot = EquipmentSlotType.values()[slotOrdinal];
-						ItemStack stack = ImmersiveEngineering.proxy.getClientPlayer().getItemStackFromSlot(slot);
+						EquipmentSlot slot = EquipmentSlot.values()[slotOrdinal];
+						ItemStack stack = ImmersiveEngineering.proxy.getClientPlayer().getItemBySlot(slot);
 						return container.construct(typeBox.getValue(), windowId, inv, world, slot, stack);
 					});
 					typeBox.setValue(type);
@@ -105,15 +105,15 @@ public class IEContainerTypes
 		return new ItemContainerType<>(typeRef, container);
 	}
 
-	public static <E extends Entity, C extends Container>
+	public static <E extends Entity, C extends AbstractContainerMenu>
 	EntityContainerType<E, C> register(String name, EntityContainerConstructor<? super E, C> container)
 	{
-		RegistryObject<ContainerType<C>> typeRef = REGISTER.register(
+		RegistryObject<MenuType<C>> typeRef = REGISTER.register(
 				name, () -> {
-					Mutable<ContainerType<C>> typeBox = new MutableObject<>();
-					ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
+					Mutable<MenuType<C>> typeBox = new MutableObject<>();
+					MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
 						int entityId = data.readInt();
-						Entity entity = ImmersiveEngineering.proxy.getClientWorld().getEntityByID(entityId);
+						Entity entity = ImmersiveEngineering.proxy.getClientWorld().getEntity(entityId);
 						return container.construct(typeBox.getValue(), windowId, inv, (E)entity);
 					});
 					typeBox.setValue(type);
@@ -123,85 +123,85 @@ public class IEContainerTypes
 		return new EntityContainerType<>(typeRef, container);
 	}
 
-	public static class TileContainer<T extends TileEntity, C extends IEBaseContainer<? super T>>
+	public static class TileContainer<T extends BlockEntity, C extends IEBaseContainer<? super T>>
 	{
-		private final RegistryObject<ContainerType<C>> type;
+		private final RegistryObject<MenuType<C>> type;
 		private final TileContainerConstructor<T, C> factory;
 
-		private TileContainer(RegistryObject<ContainerType<C>> type, TileContainerConstructor<T, C> factory)
+		private TileContainer(RegistryObject<MenuType<C>> type, TileContainerConstructor<T, C> factory)
 		{
 			this.type = type;
 			this.factory = factory;
 		}
 
-		public C create(int windowId, PlayerInventory playerInv, T tile)
+		public C create(int windowId, Inventory playerInv, T tile)
 		{
 			return factory.construct(getType(), windowId, playerInv, tile);
 		}
 
-		public ContainerType<C> getType()
+		public MenuType<C> getType()
 		{
 			return type.get();
 		}
 	}
 
 
-	public static class ItemContainerType<C extends Container>
+	public static class ItemContainerType<C extends AbstractContainerMenu>
 	{
-		final RegistryObject<ContainerType<C>> type;
+		final RegistryObject<MenuType<C>> type;
 		final ItemContainerConstructor<C> factory;
 
-		private ItemContainerType(RegistryObject<ContainerType<C>> type, ItemContainerConstructor<C> factory)
+		private ItemContainerType(RegistryObject<MenuType<C>> type, ItemContainerConstructor<C> factory)
 		{
 			this.type = type;
 			this.factory = factory;
 		}
 
-		public C create(int id, PlayerInventory inv, World w, EquipmentSlotType slot, ItemStack stack)
+		public C create(int id, Inventory inv, Level w, EquipmentSlot slot, ItemStack stack)
 		{
 			return factory.construct(getType(), id, inv, w, slot, stack);
 		}
 
-		public ContainerType<C> getType()
+		public MenuType<C> getType()
 		{
 			return type.get();
 		}
 	}
 
-	public static class EntityContainerType<E extends Entity, C extends Container>
+	public static class EntityContainerType<E extends Entity, C extends AbstractContainerMenu>
 	{
-		final RegistryObject<ContainerType<C>> type;
+		final RegistryObject<MenuType<C>> type;
 		final EntityContainerConstructor<? super E, C> factory;
 
-		private EntityContainerType(RegistryObject<ContainerType<C>> type, EntityContainerConstructor<? super E, C> factory)
+		private EntityContainerType(RegistryObject<MenuType<C>> type, EntityContainerConstructor<? super E, C> factory)
 		{
 			this.type = type;
 			this.factory = factory;
 		}
 
-		public C construct(int id, PlayerInventory inv, E entity)
+		public C construct(int id, Inventory inv, E entity)
 		{
 			return factory.construct(getType(), id, inv, entity);
 		}
 
-		public ContainerType<C> getType()
+		public MenuType<C> getType()
 		{
 			return type.get();
 		}
 	}
 
-	public interface TileContainerConstructor<T extends TileEntity, C extends IEBaseContainer<? super T>>
+	public interface TileContainerConstructor<T extends BlockEntity, C extends IEBaseContainer<? super T>>
 	{
-		C construct(ContainerType<C> type, int windowId, PlayerInventory inventoryPlayer, T te);
+		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, T te);
 	}
 
-	public interface ItemContainerConstructor<C extends Container>
+	public interface ItemContainerConstructor<C extends AbstractContainerMenu>
 	{
-		C construct(ContainerType<C> type, int windowId, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack stack);
+		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, Level world, EquipmentSlot slot, ItemStack stack);
 	}
 
-	public interface EntityContainerConstructor<E extends Entity, C extends Container>
+	public interface EntityContainerConstructor<E extends Entity, C extends AbstractContainerMenu>
 	{
-		C construct(ContainerType<?> type, int windowId, PlayerInventory inventoryPlayer, E entity);
+		C construct(MenuType<?> type, int windowId, Inventory inventoryPlayer, E entity);
 	}
 }

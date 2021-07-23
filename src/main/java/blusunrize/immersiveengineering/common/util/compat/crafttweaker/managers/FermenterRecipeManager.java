@@ -21,10 +21,10 @@ import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.fluid.MCFluidStackMutable;
 import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -42,7 +42,7 @@ public class FermenterRecipeManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<FermenterRecipe> getRecipeType()
+	public RecipeType<FermenterRecipe> getRecipeType()
 	{
 		return FermenterRecipe.TYPE;
 	}
@@ -128,7 +128,7 @@ public class FermenterRecipeManager implements IRecipeManager
 			@Override
 			public boolean shouldRemove(FermenterRecipe recipe)
 			{
-				return outputFluid.isEquivalentTo(recipe.fluidOutput.getFluid());
+				return outputFluid.isSame(recipe.fluidOutput.getFluid());
 			}
 		});
 	}

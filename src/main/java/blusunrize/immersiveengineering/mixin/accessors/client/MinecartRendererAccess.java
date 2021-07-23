@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.mixin.accessors.client;
 
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
-import net.minecraft.client.renderer.entity.model.EntityModel;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -18,5 +18,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface MinecartRendererAccess
 {
 	@Accessor
-	EntityModel<?> getModelMinecart();
+	EntityModel<?> getModel();
 }

@@ -11,18 +11,18 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.AbstractFluidAwareRecipe.IMatchLocation;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocation> implements ICraftingRecipe
+public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocation> implements CraftingRecipe
 {
 	protected final static boolean[] BOOLEANS = {true, false};
 
@@ -57,7 +57,7 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 
 	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return this.recipeOutput;
 	}
@@ -70,33 +70,33 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingInventory inv, @Nonnull World worldIn)
+	public boolean matches(@Nonnull CraftingContainer inv, @Nonnull Level worldIn)
 	{
 		return findMatch(inv)!=null;
 	}
 
 	@Nullable
-	protected abstract MatchLocation findMatch(CraftingInventory inv);
+	protected abstract MatchLocation findMatch(CraftingContainer inv);
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv)
+	public ItemStack assemble(@Nonnull CraftingContainer inv)
 	{
-		return this.getRecipeOutput().copy();
+		return this.getResultItem().copy();
 	}
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(@Nonnull CraftingContainer inv)
 	{
-		NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getSizeInventory(), ItemStack.EMPTY);
+		NonNullList<ItemStack> remaining = NonNullList.withSize(inv.getContainerSize(), ItemStack.EMPTY);
 		final MatchLocation offset = findMatch(inv);
 		if(offset==null)
 		{
 			IELogger.logger.error("IRecipe#getRemainingItems was called with an inventory that does not match the recipe");
 			IELogger.logger.error("according to IRecipe#matches. This is probably a bug in some mod in the following stacktrace,");
 			IELogger.logger.error("if in doubt report it to Immersive Engineering", new IllegalArgumentException());
-			return ICraftingRecipe.super.getRemainingItems(inv);
+			return CraftingRecipe.super.getRemainingItems(inv);
 		}
 
 		for(int x = 0; x < inv.getWidth(); ++x)
@@ -107,7 +107,7 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 				if(ingrIndex >= 0&&ingrIndex < getIngredients().size())
 				{
 					Ingredient ingr = getIngredients().get(ingrIndex);
-					final ItemStack item = inv.getStackInSlot(invIndex);
+					final ItemStack item = inv.getItem(invIndex);
 					ItemStack result = ItemStack.EMPTY;
 					if(ingr instanceof IngredientFluidStack)
 						result = ((IngredientFluidStack)ingr).getExtractedStack(item.copy());
@@ -122,7 +122,7 @@ public abstract class AbstractFluidAwareRecipe<MatchLocation extends IMatchLocat
 		return remaining;
 	}
 
-	private int getInventoryIndex(CraftingInventory inv, int x, int y)
+	private int getInventoryIndex(CraftingContainer inv, int x, int y)
 	{
 		return x+y*inv.getWidth();
 	}

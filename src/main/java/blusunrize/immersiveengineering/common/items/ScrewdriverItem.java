@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.LevelReader;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
@@ -26,7 +26,7 @@ public class ScrewdriverItem extends IEBaseItem implements ITool
 
 	public ScrewdriverItem()
 	{
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Nonnull
@@ -37,7 +37,7 @@ public class ScrewdriverItem extends IEBaseItem implements ITool
 	}
 
 	@Override
-	public boolean doesSneakBypassUse(ItemStack stack, IWorldReader world, BlockPos pos, PlayerEntity player)
+	public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player)
 	{
 		return true;
 	}

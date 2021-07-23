@@ -12,10 +12,10 @@ package blusunrize.immersiveengineering.data.resources;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
 import java.util.ArrayList;
@@ -79,15 +79,15 @@ public enum RecipeMetals
 	),
 	MANYULLYN("manyullyn", false,
 			new AlloyProperties(4, new IngredientWithSize(createItemWrapper(IETags.getIngot("cobalt")), 3),
-					new IngredientWithSize(Ingredient.fromItems(Items.NETHERITE_SCRAP)))
+					new IngredientWithSize(Ingredient.of(Items.NETHERITE_SCRAP)))
 					.addConditions(getTagCondition(IETags.getIngot("cobalt")))
 	);
 
 	private final String name;
 	private final boolean isNative;
-	private final INamedTag<Item> ingot;
-	private final INamedTag<Item> dust;
-	private final INamedTag<Item> ore;
+	private final Named<Item> ingot;
+	private final Named<Item> dust;
+	private final Named<Item> ore;
 	private final AlloyProperties alloyProperties;
 	private final SecondaryOutput[] secondaryOutputs;
 
@@ -124,17 +124,17 @@ public enum RecipeMetals
 		return isNative;
 	}
 
-	public INamedTag<Item> getIngot()
+	public Named<Item> getIngot()
 	{
 		return ingot;
 	}
 
-	public INamedTag<Item> getDust()
+	public Named<Item> getDust()
 	{
 		return dust;
 	}
 
-	public INamedTag<Item> getOre()
+	public Named<Item> getOre()
 	{
 		return ore;
 	}

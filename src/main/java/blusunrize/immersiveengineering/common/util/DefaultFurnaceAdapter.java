@@ -3,48 +3,48 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.HeatableAdapter;
 import blusunrize.immersiveengineering.mixin.accessors.FurnaceTEAccess;
-import net.minecraft.block.AbstractFurnaceBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.AbstractCookingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.IIntArray;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.AbstractCookingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.AbstractFurnaceBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Optional;
 
-public class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceTileEntity>
+public class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceBlockEntity>
 {
-	boolean canCook(FurnaceTileEntity tileEntity)
+	boolean canCook(FurnaceBlockEntity tileEntity)
 	{
-		ItemStack input = tileEntity.getStackInSlot(0);
+		ItemStack input = tileEntity.getItem(0);
 		if(input.isEmpty())
 			return false;
-		IRecipeType<? extends AbstractCookingRecipe> type = ((FurnaceTEAccess)tileEntity).getRecipeType();
-		Optional<? extends AbstractCookingRecipe> output = tileEntity.getWorld().getRecipeManager().getRecipe(type, tileEntity, tileEntity.getWorld());
+		RecipeType<? extends AbstractCookingRecipe> type = ((FurnaceTEAccess)tileEntity).getRecipeType();
+		Optional<? extends AbstractCookingRecipe> output = tileEntity.getLevel().getRecipeManager().getRecipeFor(type, tileEntity, tileEntity.getLevel());
 		if(!output.isPresent())
 			return false;
-		ItemStack existingOutput = tileEntity.getStackInSlot(2);
+		ItemStack existingOutput = tileEntity.getItem(2);
 		if(existingOutput.isEmpty())
 			return true;
-		ItemStack outStack = output.get().getRecipeOutput();
-		if(!existingOutput.isItemEqual(outStack))
+		ItemStack outStack = output.get().getResultItem();
+		if(!existingOutput.sameItem(outStack))
 			return false;
 		int stackSize = existingOutput.getCount()+outStack.getCount();
-		return stackSize <= tileEntity.getInventoryStackLimit()&&stackSize <= outStack.getMaxStackSize();
+		return stackSize <= tileEntity.getMaxStackSize()&&stackSize <= outStack.getMaxStackSize();
 	}
 
 	@Override
-	public int doHeatTick(FurnaceTileEntity tileEntity, int energyAvailable, boolean redstone)
+	public int doHeatTick(FurnaceBlockEntity tileEntity, int energyAvailable, boolean redstone)
 	{
 		int energyConsumed = 0;
 		boolean canCook = canCook(tileEntity);
 		if(canCook||redstone)
 		{
-			BlockState tileState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
-			boolean burning = tileState.get(AbstractFurnaceBlock.LIT);
-			IIntArray furnaceData = ((FurnaceTEAccess)tileEntity).getFurnaceData();
+			BlockState tileState = tileEntity.getLevel().getBlockState(tileEntity.getBlockPos());
+			boolean burning = tileState.getValue(AbstractFurnaceBlock.LIT);
+			ContainerData furnaceData = ((FurnaceTEAccess)tileEntity).getDataAccess();
 			int burnTime = furnaceData.get(0);
 			if(burnTime < 200)
 			{
@@ -74,9 +74,9 @@ public class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceTileEntity>
 		return energyConsumed;
 	}
 
-	public void updateFurnace(TileEntity tileEntity, boolean active)
+	public void updateFurnace(BlockEntity tileEntity, boolean active)
 	{
-		BlockState oldState = tileEntity.getWorld().getBlockState(tileEntity.getPos());
-		tileEntity.getWorld().setBlockState(tileEntity.getPos(), oldState.with(AbstractFurnaceBlock.LIT, active));
+		BlockState oldState = tileEntity.getLevel().getBlockState(tileEntity.getBlockPos());
+		tileEntity.getLevel().setBlockAndUpdate(tileEntity.getBlockPos(), oldState.setValue(AbstractFurnaceBlock.LIT, active));
 	}
 }

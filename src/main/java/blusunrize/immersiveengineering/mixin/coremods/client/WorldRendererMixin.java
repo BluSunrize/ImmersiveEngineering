@@ -10,18 +10,18 @@
 package blusunrize.immersiveengineering.mixin.coremods.client;
 
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
+import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.util.math.vector.Matrix4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(WorldRenderer.class)
+@Mixin(LevelRenderer.class)
 public class WorldRendererMixin
 {
 	@Inject(method = "updateCameraAndRender", at = @At(
@@ -30,8 +30,8 @@ public class WorldRendererMixin
 			args = {"ldc=destroyProgress"}
 	))
 	public void afterTESRRender(
-			MatrixStack matrixStackIn, float partialTicks, long finishTimeNano, boolean drawBlockOutline,
-			ActiveRenderInfo activeRenderInfoIn, GameRenderer gameRendererIn, LightTexture lightmapIn,
+			PoseStack matrixStackIn, float partialTicks, long finishTimeNano, boolean drawBlockOutline,
+			Camera activeRenderInfoIn, GameRenderer gameRendererIn, LightTexture lightmapIn,
 			Matrix4f projectionIn, CallbackInfo ci
 	)
 	{

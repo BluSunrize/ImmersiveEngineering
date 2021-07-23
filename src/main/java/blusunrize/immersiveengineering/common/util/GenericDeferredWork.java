@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.dispenser.IDispenseItemBehavior;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.block.FlowerPotBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -46,9 +46,9 @@ public class GenericDeferredWork
 		enqueue(() -> ((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(flower, () -> fullPot));
 	}
 
-	public static void registerDispenseBehavior(IItemProvider item, IDispenseItemBehavior behavior)
+	public static void registerDispenseBehavior(ItemLike item, DispenseItemBehavior behavior)
 	{
-		enqueue(() -> DispenserBlock.registerDispenseBehavior(item, behavior));
+		enqueue(() -> DispenserBlock.registerBehavior(item, behavior));
 	}
 
 	@SubscribeEvent

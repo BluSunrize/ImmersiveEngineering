@@ -22,17 +22,17 @@ import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -65,25 +65,25 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank0"));
 		tanks[1].readFromNBT(nbt.getCompound("tank1"));
 		tanks[2].readFromNBT(nbt.getCompound("tank2"));
 		if(!descPacket)
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.put("tank0", tanks[0].writeToNBT(new CompoundNBT()));
-		nbt.put("tank1", tanks[1].writeToNBT(new CompoundNBT()));
-		nbt.put("tank2", tanks[2].writeToNBT(new CompoundNBT()));
+		nbt.put("tank0", tanks[0].writeToNBT(new CompoundTag()));
+		nbt.put("tank1", tanks[1].writeToNBT(new CompoundTag()));
+		nbt.put("tank2", tanks[2].writeToNBT(new CompoundTag()));
 		if(!descPacket)
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 	}
 
 	@Override
@@ -131,8 +131,8 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			if(this.tanks[2].getFluidAmount() > 0)
 			{
 				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[2].getFluid(), Math.min(this.tanks[2].getFluidAmount(), 80), false);
-				BlockPos outputPos = this.getPos().add(0, -1, 0).offset(getFacing().getOpposite());
-				update |= FluidUtil.getFluidHandler(world, outputPos, getFacing()).map(output -> {
+				BlockPos outputPos = this.getBlockPos().offset(0, -1, 0).relative(getFacing().getOpposite());
+				update |= FluidUtil.getFluidHandler(level, outputPos, getFacing()).map(output -> {
 					int accepted = output.fill(out, FluidAction.SIMULATE);
 					if(accepted > 0)
 					{
@@ -165,7 +165,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 
 		if(update)
 		{
-			this.markDirty();
+			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
 	}
@@ -174,30 +174,30 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 			CachedShapesWithTransform.createForMultiblock(RefineryTileEntity::getShape);
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return getShape(SHAPES);
 	}
 
-	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
+	private static List<AABB> getShape(BlockPos posInMultiblock)
 	{
 		if(posInMultiblock.getZ()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getX()%4==0)
 		{
-			List<AxisAlignedBB> list = Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==0,
-					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
-					new AxisAlignedBB(0.25, .5f, 0, 0.5, 1.375f, 0.25)
+			List<AABB> list = Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==0,
+					new AABB(0, 0, 0, 1, .5f, 1),
+					new AABB(0.25, .5f, 0, 0.5, 1.375f, 0.25)
 			);
 			if(new BlockPos(4, 0, 2).equals(posInMultiblock))
 			{
-				list.add(new AxisAlignedBB(0.125, .5f, 0.625, 0.25, 1, 0.875));
-				list.add(new AxisAlignedBB(0.75, .5f, 0.625, 0.875, 1, 0.875));
+				list.add(new AABB(0.125, .5f, 0.625, 0.25, 1, 0.875));
+				list.add(new AABB(0.75, .5f, 0.625, 0.875, 1, 0.875));
 			}
 			return list;
 		}
 		if(posInMultiblock.getZ()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getX()%2==1)
 			return Utils.flipBoxes(posInMultiblock.getZ()==0, posInMultiblock.getX()==1,
-					new AxisAlignedBB(0, 0, 0, 1, .5f, 1),
-					new AxisAlignedBB(0, .5f, 0, 0.25, 1.375f, 0.25)
+					new AABB(0, 0, 0, 1, .5f, 1),
+					new AABB(0, .5f, 0, 0.25, 1.375f, 0.25)
 			);
 
 		if(posInMultiblock.getZ() < 2&&posInMultiblock.getY() > 0&&posInMultiblock.getX()%4==0)
@@ -212,7 +212,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 				maxZ += 1;
 			}
 			return Utils.flipBoxes(false, posInMultiblock.getX()==4,
-					new AxisAlignedBB(0.5, minY, minZ, 2, maxY, maxZ)
+					new AABB(0.5, minY, minZ, 2, maxY, maxZ)
 			);
 		}
 		if(posInMultiblock.getZ() < 2&&posInMultiblock.getY() > 0&&posInMultiblock.getX()%2==1)
@@ -227,7 +227,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 				maxZ += 1;
 			}
 			return Utils.flipBoxes(false, posInMultiblock.getX()==3,
-					new AxisAlignedBB(-0.5, minY, minZ, 1, maxY, maxZ)
+					new AABB(-0.5, minY, minZ, 1, maxY, maxZ)
 			);
 		}
 		else if(ImmutableSet.of(
@@ -235,13 +235,13 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 				new BlockPos(1, 0, 2),
 				new BlockPos(3, 0, 2)
 		).contains(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
+			return ImmutableList.of(new AABB(0, 0, 0, 1, .5f, 1));
 		else if(new BlockPos(4, 1, 2).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0.5, 1, 1, 1));
+			return ImmutableList.of(new AABB(0, 0, 0.5, 1, 1, 1));
 		else if(new BlockPos(2, 1, 2).equals(posInMultiblock))
-			return ImmutableList.of(new AxisAlignedBB(.0625f, 0, .0625f, .9375f, 1, .9375f));
+			return ImmutableList.of(new AABB(.0625f, 0, .0625f, .9375f, 1, .9375f));
 		else
-			return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
+			return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
 	}
 
 	@Override
@@ -358,7 +358,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 		{
 			if(outputOffset.equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
 				return new FluidTank[]{master.tanks[2]};
-			if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().rotateYCCW().getAxis()))
+			if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().getCounterClockWise().getAxis()))
 				return new FluidTank[]{master.tanks[0], master.tanks[1]};
 		}
 		return new FluidTank[0];
@@ -367,7 +367,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
 	{
-		if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().rotateYCCW().getAxis()))
+		if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().getCounterClockWise().getAxis()))
 		{
 			RefineryTileEntity master = this.master();
 			if(master==null||master.tanks[iTank].getFluidAmount() >= master.tanks[iTank].getCapacity())
@@ -396,7 +396,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
 
@@ -413,7 +413,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed;
 	}

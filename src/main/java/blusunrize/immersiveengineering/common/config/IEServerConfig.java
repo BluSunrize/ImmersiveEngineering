@@ -21,8 +21,8 @@ import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.DimensionType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -302,7 +302,7 @@ public class IEServerConfig
 						.defineInRange("initial_depletion", .2, 0, 1);
 				excavator_dimBlacklist = builder
 						.comment("List of dimensions that can't contain minerals. Default: The End.")
-						.defineList("dimBlacklist", ImmutableList.of(DimensionType.THE_END.getLocation().toString()),
+						.defineList("dimBlacklist", ImmutableList.of(DimensionType.END_LOCATION.location().toString()),
 								obj -> true);
 				builder.pop();
 			}
@@ -336,9 +336,9 @@ public class IEServerConfig
 			public final IntSupplier storage;
 			public final IntSupplier input;
 			public final IntSupplier output;
-			public final Supplier<TileEntityType<? extends CapacitorTileEntity>> tileType;
+			public final Supplier<BlockEntityType<? extends CapacitorTileEntity>> tileType;
 
-			private CapacitorConfig(Builder builder, Supplier<TileEntityType<? extends CapacitorTileEntity>> tileType, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
+			private CapacitorConfig(Builder builder, Supplier<BlockEntityType<? extends CapacitorTileEntity>> tileType, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
 			{
 				this.tileType = tileType;
 				builder
@@ -356,7 +356,7 @@ public class IEServerConfig
 				builder.pop();
 			}
 
-			private CapacitorConfig(int storage, int input, int output, Supplier<TileEntityType<? extends CapacitorTileEntity>> type)
+			private CapacitorConfig(int storage, int input, int output, Supplier<BlockEntityType<? extends CapacitorTileEntity>> type)
 			{
 				this.storage = () -> storage;
 				this.input = () -> input;

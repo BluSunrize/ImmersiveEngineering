@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.*;
 import com.google.common.base.Preconditions;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -70,13 +70,13 @@ public class GeneratedListRecipe extends IESerializableRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public boolean isDynamic()
+	public boolean isSpecial()
 	{
 		return true;
 	}
@@ -97,9 +97,9 @@ public class GeneratedListRecipe extends IESerializableRecipe
 	{
 		private final Supplier<List<T>> generator;
 		private final ResourceLocation serialized;
-		private final IRecipeType<T> recipeType;
+		private final RecipeType<T> recipeType;
 
-		public RecipeListGenerator(Supplier<List<T>> generator, ResourceLocation serializer, IRecipeType<T> recipeType)
+		public RecipeListGenerator(Supplier<List<T>> generator, ResourceLocation serializer, RecipeType<T> recipeType)
 		{
 			this.generator = generator;
 			this.serialized = serializer;

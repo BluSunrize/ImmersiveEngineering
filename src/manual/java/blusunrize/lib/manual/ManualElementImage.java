@@ -9,11 +9,11 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.util.ResourceLocation;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.List;
 
@@ -37,7 +37,7 @@ public class ManualElementImage extends SpecialManualElements
 	}
 
 	@Override
-	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
+	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		int yOff = 0;
 		for(ManualImage image1 : images)
@@ -50,7 +50,7 @@ public class ManualElementImage extends SpecialManualElements
 			yOff += image1.vSize+5;
 		}
 		yOff = 0;
-		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		for(ManualImage image : images)
 		{
 			int xOff = 60-image.uSize/2;
@@ -58,7 +58,7 @@ public class ManualElementImage extends SpecialManualElements
 					(image.uMin+image.uSize)/256f, (image.vMin)/256f, (image.vMin+image.vSize)/256f);
 			yOff += image.vSize+5;
 		}
-		buffers.finish();
+		buffers.endBatch();
 	}
 
 	@Override

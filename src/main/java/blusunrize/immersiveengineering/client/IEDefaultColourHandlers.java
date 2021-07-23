@@ -12,14 +12,14 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColoured
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.color.IBlockColor;
-import net.minecraft.client.renderer.color.IItemColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -29,7 +29,7 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 /**
  * @author BluSunrize - 03.10.2016
  */
-public class IEDefaultColourHandlers implements IItemColor, IBlockColor
+public class IEDefaultColourHandlers implements ItemColor, BlockColor
 {
 	public static IEDefaultColourHandlers INSTANCE = new IEDefaultColourHandlers();
 
@@ -51,7 +51,7 @@ public class IEDefaultColourHandlers implements IItemColor, IBlockColor
 	}
 
 	@Override
-	public int getColor(BlockState state, @Nullable IBlockDisplayReader worldIn, @Nullable BlockPos pos, int tintIndex)
+	public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos, int tintIndex)
 	{
 		if(state.getBlock() instanceof IColouredBlock)
 			return ((IColouredBlock)state.getBlock()).getRenderColour(state, worldIn, pos, tintIndex);

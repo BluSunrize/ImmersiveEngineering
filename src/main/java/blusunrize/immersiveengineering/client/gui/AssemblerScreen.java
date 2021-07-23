@@ -21,20 +21,20 @@ import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.util.ITooltipFlag.TooltipFlags;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag.Default;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -45,12 +45,12 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	private static final ResourceLocation TEXTURE = makeTextureLocation("assembler");
 	public AssemblerTileEntity tile;
 
-	public AssemblerScreen(AssemblerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public AssemblerScreen(AssemblerContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
-		this.xSize = 230;
-		this.ySize = 218;
+		this.imageWidth = 230;
+		this.imageHeight = 218;
 	}
 
 	@Nonnull
@@ -58,37 +58,37 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		List<InfoArea> areas = Lists.newArrayList(
-				new FluidInfoArea(tile.tanks[0], new Rectangle2d(guiLeft+204, guiTop+13, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new FluidInfoArea(tile.tanks[1], new Rectangle2d(guiLeft+182, guiTop+70, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new FluidInfoArea(tile.tanks[2], new Rectangle2d(guiLeft+204, guiTop+70, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new EnergyInfoArea(guiLeft+187, guiTop+13, tile),
+				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+204, topPos+13, 16, 46), 230, 0, 20, 50, TEXTURE),
+				new FluidInfoArea(tile.tanks[1], new Rect2i(leftPos+182, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
+				new FluidInfoArea(tile.tanks[2], new Rect2i(leftPos+204, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
+				new EnergyInfoArea(leftPos+187, topPos+13, tile),
 				new TooltipArea(
-						new Rectangle2d(guiLeft+162, guiTop+69, 16, 16),
-						() -> new TranslationTextComponent(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients"))
+						new Rect2i(leftPos+162, topPos+69, 16, 16),
+						() -> new TranslatableComponent(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients"))
 				)
 		);
 		for(int i = 0; i < tile.patterns.length; i++)
 		{
 			final int offset = 58 * i;
 			areas.add(new TooltipArea(
-					new Rectangle2d(guiLeft+11 + offset, guiTop+67, 10, 10),
-					new TranslationTextComponent(Lib.GUI_CONFIG+"assembler.clearRecipe")
+					new Rect2i(leftPos+11 + offset, topPos+67, 10, 10),
+					new TranslatableComponent(Lib.GUI_CONFIG+"assembler.clearRecipe")
 			));
 			int finalI = i;
 			areas.add(new TooltipArea(
-					new Rectangle2d(guiLeft+27+offset, guiTop+64, 16, 16), l -> addRecipeOutputTooltip(finalI, l)
+					new Rect2i(leftPos+27+offset, topPos+64, 16, 16), l -> addRecipeOutputTooltip(finalI, l)
 			));
 		}
 		return areas;
 	}
 
-	private void addRecipeOutputTooltip(int i, List<ITextComponent> tooltip)
+	private void addRecipeOutputTooltip(int i, List<Component> tooltip)
 	{
 		ItemStack recipeOutput = tile.patterns[i].inv.get(9);
 		if(tile.inventory.get(18+i).isEmpty()&&!recipeOutput.isEmpty())
 		{
-			tooltip.add(tile.patterns[i].inv.get(9).getDisplayName());
-			recipeOutput.getItem().addInformation(recipeOutput, ClientUtils.mc().world, tooltip, TooltipFlags.NORMAL);
+			tooltip.add(tile.patterns[i].inv.get(9).getHoverName());
+			recipeOutput.getItem().appendHoverText(recipeOutput, ClientUtils.mc().level, tooltip, Default.NORMAL);
 		}
 	}
 
@@ -97,18 +97,18 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	{
 		super.init();
 		IntConsumer sendButtonClick = id -> {
-			CompoundNBT tag = new CompoundNBT();
+			CompoundTag tag = new CompoundTag();
 			tag.putInt("buttonID", id);
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile.master(), tag));
 		};
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.addButton(new GuiButtonIE(guiLeft+11+i*59, guiTop+67, 10, 10, StringTextComponent.EMPTY, TEXTURE, 230, 50,
+			this.addButton(new GuiButtonIE(leftPos+11+i*59, topPos+67, 10, 10, TextComponent.EMPTY, TEXTURE, 230, 50,
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
-		this.addButton(new GuiButtonBoolean(guiLeft+162, guiTop+69, 16, 16, "", tile.recursiveIngredients, TEXTURE, 240, 66, 3,
+		this.addButton(new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, "", tile.recursiveIngredients, TEXTURE, 240, 66, 3,
 				btn -> {
 					sendButtonClick.accept(3);
 					tile.recursiveIngredients = !tile.recursiveIngredients;
@@ -117,27 +117,27 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	}
 
 	@Override
-	protected void drawContainerBackgroundPre(@Nonnull MatrixStack transform, float f, int mx, int my)
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
 		for(int i = 0; i < tile.patterns.length; i++)
 			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
 			{
 				ItemStack stack = tile.patterns[i].inv.get(9);
-				transform.push();
-				FontRenderer font = null;
+				transform.pushPose();
+				Font font = null;
 				if(!stack.isEmpty())
 					font = stack.getItem().getFontRenderer(stack);
 				if(font==null)
 					font = this.font;
-				itemRenderer.renderItemAndEffectIntoGUI(stack, guiLeft+27+i*58, guiTop+64);
-				itemRenderer.renderItemOverlayIntoGUI(font, stack, guiLeft+27+i*58, guiTop+64, TextFormatting.GRAY.toString()+stack.getCount());
+				itemRenderer.renderAndDecorateItem(stack, leftPos+27+i*58, topPos+64);
+				itemRenderer.renderGuiItemDecorations(font, stack, leftPos+27+i*58, topPos+64, ChatFormatting.GRAY.toString()+stack.getCount());
 
 				RenderSystem.disableDepthTest();
-				fill(transform, guiLeft+27+i*58, guiTop+64, guiLeft+27+i*74, guiTop+80, 0x77444444);
+				fill(transform, leftPos+27+i*58, topPos+64, leftPos+27+i*74, topPos+80, 0x77444444);
 				RenderSystem.enableDepthTest();
 
-				transform.pop();
-				RenderHelper.disableStandardItemLighting();
+				transform.popPose();
+				Lighting.turnOff();
 			}
 	}
 }

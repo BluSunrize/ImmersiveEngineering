@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -26,13 +26,13 @@ public class MessageScrollwheelItem implements IMessage
 		this.forward = forward;
 	}
 
-	public MessageScrollwheelItem(PacketBuffer buf)
+	public MessageScrollwheelItem(FriendlyByteBuf buf)
 	{
 		this.forward = buf.readBoolean();
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeBoolean(this.forward);
 	}
@@ -41,10 +41,10 @@ public class MessageScrollwheelItem implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		Context ctx = context.get();
-		ServerPlayerEntity player = ctx.getSender();
+		ServerPlayer player = ctx.getSender();
 		assert player!=null;
 		ctx.enqueueWork(() -> {
-			ItemStack equipped = player.getHeldItem(Hand.MAIN_HAND);
+			ItemStack equipped = player.getItemInHand(InteractionHand.MAIN_HAND);
 			if(equipped.getItem() instanceof IScrollwheel)
 				((IScrollwheel)equipped.getItem()).onScrollwheel(equipped, player, forward);
 		});

@@ -23,18 +23,18 @@ import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -45,18 +45,18 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 {
 	public VoltmeterItem()
 	{
-		super(new Properties().maxStackSize(1));
+		super(new Properties().stacksTo(1));
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn)
 	{
-		super.addInformation(stack, worldIn, tooltip, flagIn);
+		super.appendHoverText(stack, worldIn, tooltip, flagIn);
 		if(WirecoilUtils.hasWireLink(stack))
 		{
 			WireLink link = WireLink.readFromItem(stack);
-			tooltip.add(new TranslationTextComponent(
+			tooltip.add(new TranslatableComponent(
 					Lib.DESC_INFO+"attachedToDim",
 					link.cp.getX(),
 					link.cp.getY(),
@@ -73,15 +73,15 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context)
+	public InteractionResult useOn(UseOnContext context)
 	{
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
-		Direction side = context.getFace();
-		PlayerEntity player = context.getPlayer();
-		ItemStack stack = context.getItem();
-		TileEntity tileEntity = world.getTileEntity(pos);
-		if((player==null||!player.isSneaking())&&(tileEntity instanceof IFluxReceiver||tileEntity instanceof IFluxProvider))
+		Level world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		Direction side = context.getClickedFace();
+		Player player = context.getPlayer();
+		ItemStack stack = context.getItemInHand();
+		BlockEntity tileEntity = world.getBlockEntity(pos);
+		if((player==null||!player.isShiftKeyDown())&&(tileEntity instanceof IFluxReceiver||tileEntity instanceof IFluxProvider))
 		{
 			int max;
 			int stored;
@@ -96,19 +96,19 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 				stored = ((IFluxProvider)tileEntity).getEnergyStored(side);
 			}
 			if(max > 0)
-				ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"energyStorage", stored, max));
-			return ActionResultType.SUCCESS;
+				ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"energyStorage", stored, max));
+			return InteractionResult.SUCCESS;
 		}
-		if(player!=null&&player.isSneaking()&&tileEntity instanceof IImmersiveConnectable)
+		if(player!=null&&player.isShiftKeyDown()&&tileEntity instanceof IImmersiveConnectable)
 		{
-			if(world.isRemote)
-				return ActionResultType.SUCCESS;
+			if(world.isClientSide)
+				return InteractionResult.SUCCESS;
 			TargetingInfo targetingInfo = new TargetingInfo(context);
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(null, targetingInfo);
 			BlockPos delta = pos.subtract(masterPos);
 			ConnectionPoint cp = ((IImmersiveConnectable)tileEntity).getTargetedPoint(targetingInfo, delta);
 			if(cp==null)
-				return ActionResultType.FAIL;
+				return InteractionResult.FAIL;
 			if(!WirecoilUtils.hasWireLink(stack))
 			{
 				WireLink link = WireLink.create(cp, world, delta, targetingInfo);
@@ -117,7 +117,7 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 			else
 			{
 				WireLink link = WireLink.readFromItem(stack);
-				if(link.dimension.equals(world.getDimensionKey()))
+				if(link.dimension.equals(world.dimension()))
 				{
 					GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
 					LocalWireNetwork netHere = global.getNullableLocalNet(cp);
@@ -134,17 +134,17 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 								loss = energyPath.loss;
 							else
 								loss = 1;
-							player.sendMessage(new TranslationTextComponent(
+							player.sendMessage(new TranslatableComponent(
 									Lib.CHAT_INFO+"averageLoss",
 									Utils.formatDouble(loss*100, "###.000")
-							), Util.DUMMY_UUID);
+							), Util.NIL_UUID);
 						}
 					}
 				}
 				WirecoilUtils.clearWireLink(stack);
 			}
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 }

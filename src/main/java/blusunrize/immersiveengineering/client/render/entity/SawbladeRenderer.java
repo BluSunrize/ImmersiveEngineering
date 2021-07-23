@@ -16,22 +16,22 @@ import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.AmbientOcclusionStatus;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.settings.AmbientOcclusionStatus;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 
@@ -41,53 +41,53 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 
 	public static final ResourceLocation SAWBLADE = new ResourceLocation(ImmersiveEngineering.MODID, "item/sawblade_blade");
 
-	public SawbladeRenderer(EntityRendererManager renderManager)
+	public SawbladeRenderer(EntityRenderDispatcher renderManager)
 	{
 		super(renderManager);
 	}
 
 	@Override
-	public void render(SawbladeEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+	public void render(SawbladeEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
-		IVertexBuilder builder = bufferIn.getBuffer(RenderType.getTranslucent());
+		VertexConsumer builder = bufferIn.getBuffer(RenderType.translucent());
 
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockPos blockPos = entity.getPosition();
-		BlockState state = entity.getEntityWorld().getBlockState(blockPos);
-		IBakedModel model = this.MODEL.get(null);
+		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+		BlockPos blockPos = entity.blockPosition();
+		BlockState state = entity.getCommandSenderWorld().getBlockState(blockPos);
+		BakedModel model = this.MODEL.get(null);
 		IEObjState objState = new IEObjState(VisibilityList.show("blade"));
 
-		matrixStackIn.push();
+		matrixStackIn.pushPose();
 		matrixStackIn.scale(.75f, .75f, .75f);
 
-		double yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks-90.0F;
-		double pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
-		matrixStackIn.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), (float)yaw, true));
-		matrixStackIn.rotate(new Quaternion(new Vector3f(0.0F, 0.0F, 1.0F), (float)pitch, true));
+		double yaw = entity.yRotO+(entity.yRot-entity.yRotO)*partialTicks-90.0F;
+		double pitch = entity.xRotO+(entity.xRot-entity.xRotO)*partialTicks;
+		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), (float)yaw, true));
+		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 0.0F, 1.0F), (float)pitch, true));
 
 		if(!entity.inGround)
 		{
-			float spin = ((entity.ticksExisted+partialTicks)%10)/10f*360;
-			matrixStackIn.rotate(new Quaternion(new Vector3f(0, 1, 0), spin, true));
+			float spin = ((entity.tickCount+partialTicks)%10)/10f*360;
+			matrixStackIn.mulPose(new Quaternion(new Vector3f(0, 1, 0), spin, true));
 		}
-		RenderHelper.disableStandardItemLighting();
+		Lighting.turnOff();
 
-		AmbientOcclusionStatus aoStat = ClientUtils.mc().gameSettings.ambientOcclusionStatus;
-		ClientUtils.mc().gameSettings.ambientOcclusionStatus = AmbientOcclusionStatus.OFF;
+		AmbientOcclusionStatus aoStat = ClientUtils.mc().options.ambientOcclusion;
+		ClientUtils.mc().options.ambientOcclusion = AmbientOcclusionStatus.OFF;
 
-		blockRenderer.getBlockModelRenderer().renderModel(entity.getEntityWorld(), model, state, blockPos,
+		blockRenderer.getModelRenderer().renderModel(entity.getCommandSenderWorld(), model, state, blockPos,
 				matrixStackIn, builder, true,
-				entity.getEntityWorld().rand, 0, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
+				entity.getCommandSenderWorld().random, 0, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
 
-		ClientUtils.mc().gameSettings.ambientOcclusionStatus = aoStat;
+		ClientUtils.mc().options.ambientOcclusion = aoStat;
 
-		RenderHelper.enableStandardItemLighting();
+		Lighting.turnBackOn();
 
-		matrixStackIn.pop();
+		matrixStackIn.popPose();
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(@Nonnull SawbladeEntity entity)
+	public ResourceLocation getTextureLocation(@Nonnull SawbladeEntity entity)
 	{
 		return SAWBLADE;
 	}

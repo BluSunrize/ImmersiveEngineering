@@ -17,10 +17,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -36,13 +36,13 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	@Override
 	public MixerRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		FluidStack fluidOutput = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "result"));
-		FluidTagInput fluidInput = FluidTagInput.deserialize(JSONUtils.getJsonObject(json, "fluid"));
+		FluidStack fluidOutput = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "result"));
+		FluidTagInput fluidInput = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "fluid"));
 		JsonArray inputs = json.getAsJsonArray("inputs");
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
 		for(int i = 0; i < ingredients.length; i++)
 			ingredients[i] = IngredientWithSize.deserialize(inputs.get(i));
-		int energy = JSONUtils.getInt(json, "energy");
+		int energy = GsonHelper.getAsInt(json, "energy");
 		return IEServerConfig.MACHINES.mixerConfig.apply(
 				new MixerRecipe(recipeId, fluidOutput, fluidInput, ingredients, energy)
 		);
@@ -50,7 +50,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 
 	@Nullable
 	@Override
-	public MixerRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public MixerRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
@@ -63,7 +63,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, MixerRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, MixerRecipe recipe)
 	{
 		buffer.writeFluidStack(recipe.fluidOutput);
 		recipe.fluidInput.write(buffer);

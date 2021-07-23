@@ -12,23 +12,23 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -36,17 +36,17 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends AbstractMinecartEntity implements INamedContainerProvider
+public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends AbstractMinecart implements MenuProvider
 {
 	protected T containedTileEntity;
 
-	protected IEMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
+	protected IEMinecartEntity(EntityType<?> type, Level world, double x, double y, double z)
 	{
 		super(type, world, x, y, z);
 		this.containedTileEntity = getTileProvider().get();
 	}
 
-	protected IEMinecartEntity(EntityType<?> type, World world)
+	protected IEMinecartEntity(EntityType<?> type, Level world)
 	{
 		super(type, world);
 		this.containedTileEntity = getTileProvider().get();
@@ -78,16 +78,16 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	}
 
 	@Override
-	public void killMinecart(DamageSource source)
+	public void destroy(DamageSource source)
 	{
 		this.remove();
-		if(this.world.getGameRules().getBoolean(GameRules.DO_ENTITY_DROPS))
+		if(this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
 		{
 			ItemStack itemstack = getCartItem();
 			this.writeTileToItem(itemstack);
 			if(this.hasCustomName())
-				itemstack.setDisplayName(this.getCustomName());
-			this.entityDropItem(itemstack);
+				itemstack.setHoverName(this.getCustomName());
+			this.spawnAtLocation(itemstack);
 		}
 	}
 
@@ -110,49 +110,49 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	}
 
 	@Override
-	public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
+	public InteractionResult interact(Player player, InteractionHand hand)
 	{
-		ActionResultType superResult = super.processInitialInteract(player, hand);
-		if(superResult == ActionResultType.SUCCESS)
+		InteractionResult superResult = super.interact(player, hand);
+		if(superResult == InteractionResult.SUCCESS)
 			return superResult;
-		if(!world.isRemote&&this.containedTileEntity instanceof IInteractionObjectIE)
+		if(!level.isClientSide&&this.containedTileEntity instanceof IInteractionObjectIE)
 		{
-			NetworkHooks.openGui((ServerPlayerEntity)player, this, buffer -> buffer.writeInt(this.getEntityId()));
-			return ActionResultType.SUCCESS;
+			NetworkHooks.openGui((ServerPlayer)player, this, buffer -> buffer.writeInt(this.getId()));
+			return InteractionResult.SUCCESS;
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Nullable
-	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity)
+	public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player playerEntity)
 	{
 		return null;
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT compound)
+	protected void addAdditionalSaveData(CompoundTag compound)
 	{
-		super.writeAdditional(compound);
+		super.addAdditionalSaveData(compound);
 		if(this.containedTileEntity!=null)
 			this.containedTileEntity.writeCustomNBT(compound, false);
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT compound)
+	protected void readAdditionalSaveData(CompoundTag compound)
 	{
-		super.readAdditional(compound);
+		super.readAdditionalSaveData(compound);
 		this.containedTileEntity = getTileProvider().get();
 		this.containedTileEntity.readCustomNBT(compound, false);
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket()
+	public Packet<?> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
 	public interface MinecartConstructor
 	{
-		IEMinecartEntity<?> make(World world, double x, double y, double z);
+		IEMinecartEntity<?> make(Level world, double x, double y, double z);
 	}
 }

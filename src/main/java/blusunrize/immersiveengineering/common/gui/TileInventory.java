@@ -10,21 +10,21 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 
-public class TileInventory implements IInventory
+public class TileInventory implements Container
 {
-	final TileEntity tile;
+	final BlockEntity tile;
 	final IIEInventory inv;
 	final String name;
-	final Container eventHandler;
+	final AbstractContainerMenu eventHandler;
 
-	public TileInventory(TileEntity tile, Container eventHandler)
+	public TileInventory(BlockEntity tile, AbstractContainerMenu eventHandler)
 	{
 		this.tile = tile;
 		this.inv = (IIEInventory)tile;
@@ -34,7 +34,7 @@ public class TileInventory implements IInventory
 	}
 
 	@Override
-	public int getSizeInventory()
+	public int getContainerSize()
 	{
 		return inv.getInventory().size();
 	}
@@ -53,13 +53,13 @@ public class TileInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int index)
+	public ItemStack getItem(int index)
 	{
 		return inv.getInventory().get(index);
 	}
 
 	@Override
-	public ItemStack decrStackSize(int index, int count)
+	public ItemStack removeItem(int index, int count)
 	{
 		ItemStack stack = inv.getInventory().get(index);
 		if(!stack.isEmpty())
@@ -72,13 +72,13 @@ public class TileInventory implements IInventory
 				if(stack.getCount()==0)
 					inv.getInventory().set(index, ItemStack.EMPTY);
 			}
-			eventHandler.onCraftMatrixChanged(this);
+			eventHandler.slotsChanged(this);
 		}
 		return stack;
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int index)
+	public ItemStack removeItemNoUpdate(int index)
 	{
 		ItemStack ret = inv.getInventory().get(index).copy();
 		inv.getInventory().set(index, ItemStack.EMPTY);
@@ -86,52 +86,52 @@ public class TileInventory implements IInventory
 	}
 
 	@Override
-	public void setInventorySlotContents(int index, ItemStack stack)
+	public void setItem(int index, ItemStack stack)
 	{
 		inv.getInventory().set(index, stack);
-		eventHandler.onCraftMatrixChanged(this);
+		eventHandler.slotsChanged(this);
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public int getMaxStackSize()
 	{
 		return 64;
 	}
 
 	@Override
-	public void markDirty()
+	public void setChanged()
 	{
-		tile.markDirty();
+		tile.setChanged();
 	}
 
 	@Override
-	public boolean isUsableByPlayer(PlayerEntity player)
+	public boolean stillValid(Player player)
 	{
 		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
-		return !tile.isRemoved()&&Vector3d.copy(tile.getPos()).squareDistanceTo(player.getPositionVec()) < 64;
+		return !tile.isRemoved()&&Vec3.atLowerCornerOf(tile.getBlockPos()).distanceToSqr(player.position()) < 64;
 	}
 
 	@Override
-	public void openInventory(PlayerEntity player)
+	public void startOpen(Player player)
 	{
 	}
 
 	@Override
-	public void closeInventory(PlayerEntity player)
+	public void stopOpen(Player player)
 	{
-		for(int i = 0; i < getSizeInventory(); i++)
+		for(int i = 0; i < getContainerSize(); i++)
 			inv.doGraphicalUpdates(i);
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int index, ItemStack stack)
+	public boolean canPlaceItem(int index, ItemStack stack)
 	{
 		return inv.isStackValid(index, stack);
 	}
 
 	@Override
-	public void clear()
+	public void clearContent()
 	{
 		for(int i = 0; i < inv.getInventory().size(); i++)
 			inv.getInventory().set(i, ItemStack.EMPTY);

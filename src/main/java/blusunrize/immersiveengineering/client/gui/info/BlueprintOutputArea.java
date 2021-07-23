@@ -13,14 +13,14 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.opengl.GL11;
 
@@ -35,23 +35,23 @@ public class BlueprintOutputArea extends InfoArea
 
 	public BlueprintOutputArea(BlueprintOutput slot, int guiLeft, int guiTop)
 	{
-		super(new Rectangle2d(guiLeft+slot.xPos, guiTop+slot.yPos, 16, 16));
+		super(new Rect2i(guiLeft+slot.x, guiTop+slot.y, 16, 16));
 		this.slot = slot;
 	}
 
 	@Override
-	protected void fillTooltipOverArea(int mouseX, int mouseY, List<ITextComponent> tooltip)
+	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
 		BlueprintCraftingRecipe recipe = slot.recipe;
-		if(recipe.output.isEmpty()|| slot.getHasStack())
+		if(recipe.output.isEmpty()|| slot.hasItem())
 			return;
 		tooltip.add(TextUtils.applyFormat(
-				recipe.output.getDisplayName().deepCopy(), recipe.output.getRarity().color
+				recipe.output.getHoverName().copy(), recipe.output.getRarity().color
 		));
 		List<ItemStack> inputs = new ArrayList<>();
 		for(IngredientWithSize stack : recipe.inputs)
 		{
-			ItemStack toAdd = ItemHandlerHelper.copyStackWithSize(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
+			ItemStack toAdd = ItemHandlerHelper.copyStackWithSize(stack.getRandomizedExampleStack(mc().player.tickCount), stack.getCount());
 			if(toAdd.isEmpty())
 				continue;
 			boolean isNew = true;
@@ -67,18 +67,18 @@ public class BlueprintOutputArea extends InfoArea
 		}
 		for(ItemStack ss : inputs)
 			tooltip.add(TextUtils.applyFormat(
-					new StringTextComponent(ss.getCount()+"x ").appendSibling(ss.getDisplayName()),
-					TextFormatting.GRAY
+					new TextComponent(ss.getCount()+"x ").append(ss.getHoverName()),
+					ChatFormatting.GRAY
 			));
 	}
 
 	@Override
-	public void draw(MatrixStack transform)
+	public void draw(PoseStack transform)
 	{
 		ItemStack ghostStack = slot.recipe.output;
-		if(ghostStack.isEmpty()||slot.getHasStack())
+		if(ghostStack.isEmpty()||slot.hasItem())
 			return;
-		Minecraft.getInstance().getItemRenderer().renderItemAndEffectIntoGUI(ghostStack, area.getX(), area.getY());
+		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(ghostStack, area.getX(), area.getY());
 		RenderSystem.depthFunc(GL11.GL_GREATER);
 		fill(transform, area.getX(), area.getY(), area.getX()+area.getWidth(), area.getY()+area.getHeight(), 0xbb333333);
 		RenderSystem.depthFunc(GL11.GL_LEQUAL);

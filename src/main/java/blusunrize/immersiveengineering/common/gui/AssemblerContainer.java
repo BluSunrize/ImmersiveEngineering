@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
 
@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 
 public class AssemblerContainer extends IEBaseContainer<AssemblerTileEntity>
 {
-	public AssemblerContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, AssemblerTileEntity tile)
+	public AssemblerContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AssemblerTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;
@@ -50,30 +50,30 @@ public class AssemblerContainer extends IEBaseContainer<AssemblerTileEntity>
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot slotObject = inventorySlots.get(slot);
+		Slot slotObject = slots.get(slot);
 
-		if(slotObject!=null&&slotObject.getHasStack()&&!(slotObject instanceof IESlot.ItemHandlerGhost))
+		if(slotObject!=null&&slotObject.hasItem()&&!(slotObject instanceof IESlot.ItemHandlerGhost))
 		{
-			ItemStack stackInSlot = slotObject.getStack();
+			ItemStack stackInSlot = slotObject.getItem();
 			stack = stackInSlot.copy();
 			if(slot < 48)
 			{
-				if(!this.mergeItemStack(stackInSlot, 48, (48+36), true))
+				if(!this.moveItemStackTo(stackInSlot, 48, (48+36), true))
 					return ItemStack.EMPTY;
 			}
 			else
 			{
-				if(!this.mergeItemStack(stackInSlot, 30, 48, false))
+				if(!this.moveItemStackTo(stackInSlot, 30, 48, false))
 					return ItemStack.EMPTY;
 			}
 
 			if(stackInSlot.getCount()==0)
-				slotObject.putStack(ItemStack.EMPTY);
+				slotObject.set(ItemStack.EMPTY);
 			else
-				slotObject.onSlotChanged();
+				slotObject.setChanged();
 
 			if(stackInSlot.getCount()==stack.getCount())
 				return ItemStack.EMPTY;

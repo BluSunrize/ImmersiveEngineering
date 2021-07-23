@@ -12,10 +12,10 @@ package blusunrize.immersiveengineering.api.wires;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.GameRules;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ import java.util.function.Consumer;
 
 public class ConnectorTileHelper
 {
-	public static ConnectionModelData genConnBlockState(World world, IImmersiveConnectable iic)
+	public static ConnectionModelData genConnBlockState(Level world, IImmersiveConnectable iic)
 	{
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
 		final BlockPos pos = iic.getPosition();
@@ -62,19 +62,19 @@ public class ConnectorTileHelper
 		globalNet.onConnectorUnload(iic);
 	}
 
-	public static void onChunkLoad(IImmersiveConnectable iic, World world)
+	public static void onChunkLoad(IImmersiveConnectable iic, Level world)
 	{
 		GlobalWireNetwork.getNetwork(world).onConnectorLoad(iic, world);
 	}
 
-	public static void remove(World world, IImmersiveConnectable iic)
+	public static void remove(Level world, IImmersiveConnectable iic)
 	{
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
-		if(!world.isRemote)
+		if(!world.isClientSide)
 		{
 			BlockPos pos = iic.getPosition();
 			Consumer<Connection> dropHandler;
-			if(world.getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+			if(world.getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
 				dropHandler = (c) -> {
 					if(!c.isInternal())
 					{
@@ -82,7 +82,7 @@ public class ConnectorTileHelper
 						double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
 						double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
 						double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());
-						world.addEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
+						world.addFreshEntity(new ItemEntity(world, dx, dy, dz, c.type.getWireCoil(c)));
 					}
 				};
 			else

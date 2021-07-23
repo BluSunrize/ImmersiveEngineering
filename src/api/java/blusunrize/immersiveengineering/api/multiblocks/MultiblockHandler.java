@@ -8,17 +8,17 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -71,14 +71,14 @@ public class MultiblockHandler
 		 * Check whether the given block can be used to trigger the structure creation of the multiblock.<br>
 		 * Basically, a less resource-intensive preliminary check to avoid checking every structure.
 		 */
-		boolean isBlockTrigger(BlockState state, Direction side, @Nullable World world);
+		boolean isBlockTrigger(BlockState state, Direction side, @Nullable Level world);
 
 		/**
 		 * This method checks the structure and sets the new one.
 		 *
 		 * @return if the structure was valid and transformed
 		 */
-		boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player);
+		boolean createStructure(Level world, BlockPos pos, Direction side, Player player);
 
 		/**
 		 * TODO
@@ -86,7 +86,7 @@ public class MultiblockHandler
 		 * @param world
 		 * @return
 		 */
-		List<BlockInfo> getStructure(@Nullable World world);
+		List<StructureBlockInfo> getStructure(@Nullable Level world);
 
 		/**
 		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
@@ -120,16 +120,16 @@ public class MultiblockHandler
 		 * @param buffer
 		 */
 		@OnlyIn(Dist.CLIENT)
-		void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer);
+		void renderFormedStructure(PoseStack transform, MultiBufferSource buffer);
 
-		Vector3i getSize(@Nullable World world);
+		Vec3i getSize(@Nullable Level world);
 
-		void disassemble(World world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation);
+		void disassemble(Level world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation);
 
 		BlockPos getTriggerOffset();
 	}
 
-	public static MultiblockFormEvent postMultiblockFormationEvent(PlayerEntity player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+	public static MultiblockFormEvent postMultiblockFormationEvent(Player player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
 	{
 		MultiblockFormEvent event = new MultiblockFormEvent(player, multiblock, clickedBlock, hammer);
 		MinecraftForge.EVENT_BUS.post(event);
@@ -147,7 +147,7 @@ public class MultiblockHandler
 		private final BlockPos clickedBlock;
 		private final ItemStack hammer;
 
-		public MultiblockFormEvent(PlayerEntity player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
+		public MultiblockFormEvent(Player player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)
 		{
 			super(player);
 			this.multiblock = multiblock;

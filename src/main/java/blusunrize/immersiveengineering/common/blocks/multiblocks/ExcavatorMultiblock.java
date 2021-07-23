@@ -13,18 +13,18 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ExcavatorTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -38,21 +38,21 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
+	public boolean createStructure(Level world, BlockPos pos, Direction side, Player player)
 	{
 		final boolean excavatorFormed = super.createStructure(world, pos, side, player);
 		if(excavatorFormed)
 		{
 			// Try to also form the bucket wheel
-			TileEntity clickedTE = world.getTileEntity(pos);
+			BlockEntity clickedTE = world.getBlockEntity(pos);
 			if(clickedTE instanceof ExcavatorTileEntity)
 			{
 				ExcavatorTileEntity excavator = (ExcavatorTileEntity)clickedTE;
 				BlockPos wheelCenter = excavator.getWheelCenterPos();
-				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.rotateYCCW(), player);
-				TileEntity wheel = world.getTileEntity(wheelCenter);
+				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.getCounterClockWise(), player);
+				BlockEntity wheel = world.getBlockEntity(wheelCenter);
 				if(wheel instanceof BucketWheelTileEntity)
-					((BucketWheelTileEntity)wheel).adjustStructureFacingAndMirrored(side.rotateY(), excavator.getIsMirrored());
+					((BucketWheelTileEntity)wheel).adjustStructureFacingAndMirrored(side.getClockWise(), excavator.getIsMirrored());
 			}
 		}
 		return excavatorFormed;
@@ -70,16 +70,16 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer)
+	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.excavator);
 		transform.translate(3, 1.5, 4);
-		transform.rotate(new Quaternion(0, 225, 0, true));
-		transform.rotate(new Quaternion(-20, 0, 0, true));
+		transform.mulPose(new Quaternion(0, 225, 0, true));
+		transform.mulPose(new Quaternion(-20, 0, 0, true));
 		transform.scale(5.25F, 5.25F, 5.25F);
 
-		ClientUtils.mc().getItemRenderer().renderItem(
+		ClientUtils.mc().getItemRenderer().renderStatic(
 				renderStack,
 				TransformType.GUI,
 				0xf000f0,

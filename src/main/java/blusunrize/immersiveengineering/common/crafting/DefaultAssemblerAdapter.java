@@ -4,22 +4,22 @@ import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.RecipeMatcher;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-public class DefaultAssemblerAdapter implements IRecipeAdapter<IRecipe<CraftingInventory>>
+public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingContainer>>
 {
 	@Override
-	public RecipeQuery[] getQueriedInputs(IRecipe<CraftingInventory> recipe, NonNullList<ItemStack> input, World world)
+	public RecipeQuery[] getQueriedInputs(Recipe<CraftingContainer> recipe, NonNullList<ItemStack> input, Level world)
 	{
 		NonNullList<Ingredient> ingred = recipe.getIngredients();
 		// Check that the ingredients roughly match what the recipe actually requires.
@@ -28,7 +28,7 @@ public class DefaultAssemblerAdapter implements IRecipeAdapter<IRecipe<CraftingI
 		NonNullList<Predicate<ItemStack>> ingredientsForMatching = NonNullList.create();
 		List<ItemStack> inputList = input.subList(0, input.size()-1);
 		for(Ingredient i : ingred)
-			if(!i.hasNoMatchingItems())
+			if(!i.isEmpty())
 				ingredientsForMatching.add(i);
 		final int numNonEmpty = ingredientsForMatching.size();
 		while(ingredientsForMatching.size() < inputList.size())

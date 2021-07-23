@@ -23,23 +23,27 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralTileEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.*;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector4f;
-import net.minecraft.world.World;
+import com.mojang.math.Vector4f;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -63,7 +67,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		final int oldStyle = style;
@@ -85,7 +89,7 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public void writeCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("style", style);
@@ -96,20 +100,20 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 
 	@Nonnull
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.create(.125, 0, .125, .875, .9375, .875);
+		return Shapes.box(.125, 0, .125, .875, .9375, .875);
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 		{
 			this.markContainingBlockForUpdate(null);
 			return true;
 		}
-		return super.receiveClientEvent(id, arg);
+		return super.triggerEvent(id, arg);
 	}
 
 	LazyOptional<ShaderWrapper> shaderCap;
@@ -162,26 +166,26 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		BlockPos end = con.getOtherEnd(here).getPosition();
-		int xDif = end.getX()-getPos().getX();
-		int zDif = end.getZ()-getPos().getZ();
-		int yDif = end.getY()-getPos().getY();
+		int xDif = end.getX()-getBlockPos().getX();
+		int zDif = end.getZ()-getBlockPos().getZ();
+		int yDif = end.getY()-getBlockPos().getY();
 		if(yDif < 0)
 		{
 			double dist = Math.sqrt(xDif*xDif+zDif*zDif);
 			if(dist/Math.abs(yDif) < 2.5)
-				return new Vector3d(.5, .09375, .5);
+				return new Vec3(.5, .09375, .5);
 		}
 		if(Math.abs(zDif) > Math.abs(xDif))
-			return new Vector3d(.5, .09375, zDif > 0?.78125: .21875);
+			return new Vec3(.5, .09375, zDif > 0?.78125: .21875);
 		else
-			return new Vector3d(xDif > 0?.78125: .21875, .09375, .5);
+			return new Vec3(xDif > 0?.78125: .21875, .09375, .5);
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
 		{
@@ -228,9 +232,9 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
 			style = 1-style;
 			markContainingBlockForUpdate(null);
@@ -239,14 +243,14 @@ public class BalloonTileEntity extends ConnectorStructuralTileEntity implements 
 	}
 
 	@Override
-	public void onEntityCollision(World world, Entity entity)
+	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(entity instanceof AbstractArrowEntity)
+		if(entity instanceof AbstractArrow)
 		{
-			Vector3d pos = Vector3d.copyCentered(getPos());
-			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.ENTITY_FIREWORK_ROCKET_BLAST,
-					SoundCategory.BLOCKS, 1.5f, 0.7f);
-			world.removeBlock(getPos(), false);
+			Vec3 pos = Vec3.atCenterOf(getBlockPos());
+			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.FIREWORK_ROCKET_BLAST,
+					SoundSource.BLOCKS, 1.5f, 0.7f);
+			world.removeBlock(getBlockPos(), false);
 			world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
 			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(this.shader);
 			if(shader!=null)

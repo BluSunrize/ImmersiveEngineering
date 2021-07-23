@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
 public class ArcFurnaceContainer extends IEBaseContainer<ArcFurnaceTileEntity>
 {
-	public ArcFurnaceContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, ArcFurnaceTileEntity tile)
+	public ArcFurnaceContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ArcFurnaceTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;

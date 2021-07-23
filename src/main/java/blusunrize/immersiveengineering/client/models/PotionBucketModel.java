@@ -8,18 +8,20 @@ import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.math.Transformation;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import net.minecraft.client.resources.model.*;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.*;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -43,24 +45,24 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 
 	public PotionBucketModel(int color)
 	{
-		this.recolorTransformer = new QuadTransformer(new TransformationMatrix(null), $ -> color);
+		this.recolorTransformer = new QuadTransformer(new Transformation(null), $ -> color);
 	}
 
 	@Override
-	public IBakedModel bake(
-			IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter,
-			IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation
+	public BakedModel bake(
+			IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+			ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation
 	)
 	{
-		IBakedModel baseModel = baseGeometry.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
-		ImmutableMap<TransformType, TransformationMatrix> transformMap = PerspectiveMapWrapper.getTransforms(
+		BakedModel baseModel = baseGeometry.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
+		ImmutableMap<TransformType, Transformation> transformMap = PerspectiveMapWrapper.getTransforms(
 				new ModelTransformComposition(owner.getCombinedTransform(), modelTransform)
 		);
 		ItemMultiLayerBakedModel.Builder builder = ItemMultiLayerBakedModel.builder(
 				owner, baseModel.getParticleTexture(EmptyModelData.INSTANCE), new OverrideHandler(overrides, bakery, owner), transformMap
 		);
 		ResourceLocation fluidMaskLocation = IEFluids.fluidPotion.get().getAttributes().getStillTexture();
-		for(Pair<IBakedModel, RenderType> layer : baseModel.getLayerModels(ItemStack.EMPTY, false))
+		for(Pair<BakedModel, RenderType> layer : baseModel.getLayerModels(ItemStack.EMPTY, false))
 		{
 			List<BakedQuad> baseQuads = layer.getFirst().getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
 			List<BakedQuad> newQuads = new ArrayList<>(baseQuads.size());
@@ -77,8 +79,8 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 	}
 
 	@Override
-	public Collection<RenderMaterial> getTextures(
-			IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors
+	public Collection<Material> getTextures(
+			IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors
 	)
 	{
 		return baseGeometry.getTextures(owner, modelGetter, missingTextureErrors);
@@ -89,7 +91,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 		public static final ResourceLocation LOADER_NAME = ImmersiveEngineering.rl("potion_bucket");
 
 		@Override
-		public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
+		public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 		{
 		}
 
@@ -103,14 +105,14 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 		}
 	}
 
-	private static class OverrideHandler extends ItemOverrideList
+	private static class OverrideHandler extends ItemOverrides
 	{
-		private final Int2ObjectMap<IBakedModel> coloredModels = new Int2ObjectOpenHashMap<>();
-		private final ItemOverrideList nested;
+		private final Int2ObjectMap<BakedModel> coloredModels = new Int2ObjectOpenHashMap<>();
+		private final ItemOverrides nested;
 		private final ModelBakery bakery;
 		private final IModelConfiguration owner;
 
-		private OverrideHandler(ItemOverrideList nested, ModelBakery bakery, IModelConfiguration owner)
+		private OverrideHandler(ItemOverrides nested, ModelBakery bakery, IModelConfiguration owner)
 		{
 			this.nested = nested;
 			this.bakery = bakery;
@@ -119,17 +121,17 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 
 		@Nullable
 		@Override
-		public IBakedModel getOverrideModel(
-				@Nonnull IBakedModel model, @Nonnull ItemStack stack, @Nullable ClientWorld world,
+		public BakedModel resolve(
+				@Nonnull BakedModel model, @Nonnull ItemStack stack, @Nullable ClientLevel world,
 				@Nullable LivingEntity livingEntity
 		)
 		{
 			final FluidStack fluid = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
 			if(fluid.isEmpty())
-				return nested.getOverrideModel(model, stack, world, livingEntity);
+				return nested.resolve(model, stack, world, livingEntity);
 			final int color = fluid.getFluid().getAttributes().getColor(fluid);
 			return coloredModels.computeIfAbsent(color, i -> new PotionBucketModel(i).bake(
-					owner, bakery, ModelLoader.defaultTextureGetter(), ModelRotation.X0_Y0, this, ImmersiveEngineering.rl("potion_bucket_override")
+					owner, bakery, ModelLoader.defaultTextureGetter(), BlockModelRotation.X0_Y0, this, ImmersiveEngineering.rl("potion_bucket_override")
 			));
 		}
 	}

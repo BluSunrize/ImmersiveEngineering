@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,7 +45,7 @@ public class JEIIngredientStackListBuilder
 	public JEIIngredientStackListBuilder add(Ingredient... ingredientStacks)
 	{
 		for(Ingredient ingr : ingredientStacks)
-			this.list.add(Arrays.asList(ingr.getMatchingStacks()));
+			this.list.add(Arrays.asList(ingr.getItems()));
 		return this;
 	}
 

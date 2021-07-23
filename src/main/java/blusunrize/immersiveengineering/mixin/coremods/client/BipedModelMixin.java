@@ -10,14 +10,14 @@
 package blusunrize.immersiveengineering.mixin.coremods.client;
 
 import blusunrize.immersiveengineering.client.render.IEBipedRotations;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.entity.LivingEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(BipedModel.class)
+@Mixin(HumanoidModel.class)
 public class BipedModelMixin<T extends LivingEntity>
 {
 	@Inject(method = "setRotationAngles", at = @At("RETURN"))
@@ -27,6 +27,6 @@ public class BipedModelMixin<T extends LivingEntity>
 	)
 	{
 		//noinspection ConstantConditions (IntelliJ warns about the (admittedly crazy-looking) cast)
-		IEBipedRotations.handleBipedRotations((BipedModel<?>)(Object)this, entityIn);
+		IEBipedRotations.handleBipedRotations((HumanoidModel<?>)(Object)this, entityIn);
 	}
 }

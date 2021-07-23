@@ -14,16 +14,16 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.Locale;
@@ -52,15 +52,15 @@ public class ShaderBagItem extends IEBaseItem
 	}
 
 	@Override
-	public ITextComponent getDisplayName(ItemStack stack)
+	public Component getName(ItemStack stack)
 	{
-		return new TranslationTextComponent(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
-				.appendString(" ")
-				.appendSibling(super.getDisplayName(stack));
+		return new TranslatableComponent(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
+				.append(" ")
+				.append(super.getName(stack));
 	}
 
 	@Override
-	public String getTranslationKey()
+	public String getDescriptionId()
 	{
 		return "item."+ImmersiveEngineering.MODID+".shader_bag";
 	}
@@ -72,15 +72,15 @@ public class ShaderBagItem extends IEBaseItem
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
 	{
-		ItemStack stack = player.getHeldItem(hand);
-		if(!world.isRemote)
+		ItemStack stack = player.getItemInHand(hand);
+		if(!world.isClientSide)
 			if(ShaderRegistry.totalWeight.containsKey(rarity))
 			{
-				ResourceLocation shader = ShaderRegistry.getRandomShader(player.getUniqueID(), player.getRNG(), rarity, true);
+				ResourceLocation shader = ShaderRegistry.getRandomShader(player.getUUID(), player.getRandom(), rarity, true);
 				if(shader==null)
-					return new ActionResult<>(ActionResultType.FAIL, stack);
+					return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
 				ItemStack shaderItem = new ItemStack(Misc.shader);
 				ItemNBTHelper.putString(shaderItem, "shader_name", shader.toString());
 				Rarity shaderRarity = ShaderRegistry.shaderRegistry.get(shader).getRarity();
@@ -89,10 +89,10 @@ public class ShaderBagItem extends IEBaseItem
 					Utils.unlockIEAdvancement(player, "main/secret_luckofthedraw");
 				stack.shrink(1);
 				if(stack.getCount() <= 0)
-					return new ActionResult<>(ActionResultType.SUCCESS, shaderItem);
-				if(!player.inventory.addItemStackToInventory(shaderItem))
-					player.dropItem(shaderItem, false, true);
+					return new InteractionResultHolder<>(InteractionResult.SUCCESS, shaderItem);
+				if(!player.inventory.add(shaderItem))
+					player.drop(shaderItem, false, true);
 			}
-		return new ActionResult<>(ActionResultType.PASS, stack);
+		return new InteractionResultHolder<>(InteractionResult.PASS, stack);
 	}
 }

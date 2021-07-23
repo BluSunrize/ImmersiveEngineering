@@ -17,23 +17,23 @@ import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import com.google.common.collect.Lists;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.CubeCoordinateIterator;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Cursor3D;
+import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,56 +50,56 @@ public class SkylineHelper
 {
 	private static final double LN_0_98 = Math.log(.98);
 
-	public static void spawnHook(LivingEntity player, Connection connection, Hand hand,
+	public static void spawnHook(LivingEntity player, Connection connection, InteractionHand hand,
 								 boolean limitSpeed)
 	{
-		if(!player.world.isRemote)
+		if(!player.level.isClientSide)
 		{
-			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(player.world);
+			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(player.level);
 			ConnectionPoint cpA = connection.getEndA();
 			ConnectionPoint cpB = connection.getEndB();
 			IImmersiveConnectable iicB = global.getExistingConnector(cpB);
 			IImmersiveConnectable iicA = global.getExistingConnector(cpA);
-			Vector3d vStart = Vector3d.copy(cpA.getPosition());
-			Vector3d vEnd = Vector3d.copy(cpB.getPosition());
+			Vec3 vStart = Vec3.atLowerCornerOf(cpA.getPosition());
+			Vec3 vEnd = Vec3.atLowerCornerOf(cpB.getPosition());
 
 			if(iicB!=null)
 				vStart = vStart.add(iicB.getConnectionOffset(connection, cpB));
 			if(iicA!=null)
 				vEnd = vEnd.add(iicA.getConnectionOffset(connection, cpA));
 
-			Vector3d pos = player.getEyePosition(0);
-			Vector3d across = new Vector3d(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
+			Vec3 pos = player.getEyePosition(0);
+			Vec3 across = new Vec3(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
 			double linePos = WireUtils.getCoeffForMinDistance(pos, vStart, across);
-			connection.generateCatenaryData(player.world);
+			connection.generateCatenaryData(player.level);
 			CatenaryData catData = connection.getCatenaryData();
 
-			Vector3d playerMovement = new Vector3d(player.getMotion().x, player.getMotion().y,
-					player.getMotion().z);
+			Vec3 playerMovement = new Vec3(player.getDeltaMovement().x, player.getDeltaMovement().y,
+					player.getDeltaMovement().z);
 			double slopeAtPos = connection.getSlope(linePos, cpA);
-			Vector3d extendedWire;
+			Vec3 extendedWire;
 			if(catData.isVertical())
-				extendedWire = new Vector3d(0, catData.getHorLength(), 0);
+				extendedWire = new Vec3(0, catData.getHorLength(), 0);
 			else
-				extendedWire = new Vector3d(catData.getDeltaX(), slopeAtPos*catData.getHorLength(), catData.getDeltaZ());
+				extendedWire = new Vec3(catData.getDeltaX(), slopeAtPos*catData.getHorLength(), catData.getDeltaZ());
 			extendedWire = extendedWire.normalize();
 
-			double totalSpeed = playerMovement.dotProduct(extendedWire);
+			double totalSpeed = playerMovement.dot(extendedWire);
 			double horSpeed = totalSpeed/Math.sqrt(1+slopeAtPos*slopeAtPos);
-			SkylineHookEntity hook = new SkylineHookEntity(player.world, connection, cpA, linePos, hand, horSpeed, limitSpeed);
+			SkylineHookEntity hook = new SkylineHookEntity(player.level, connection, cpA, linePos, hand, horSpeed, limitSpeed);
 			IELogger.logger.info("Speed keeping: Player {}, wire {}, Pos: {}", playerMovement, extendedWire,
-					hook.getPositionVec());
-			if(hook.isValidPosition(hook.getPosX(), hook.getPosY(), hook.getPosZ(), player))
+					hook.position());
+			if(hook.isValidPosition(hook.getX(), hook.getY(), hook.getZ(), player))
 			{
 				double vertSpeed = Math.sqrt(totalSpeed*totalSpeed-horSpeed*horSpeed);
-				double speedDiff = player.getMotion().y-vertSpeed;
+				double speedDiff = player.getDeltaMovement().y-vertSpeed;
 				if(speedDiff < 0)
 				{
-					player.onLivingFall(fallDistanceFromSpeed(speedDiff), 1.2F);
+					player.causeFallDamage(fallDistanceFromSpeed(speedDiff), 1.2F);
 					player.fallDistance = 0;
 				}
 
-				player.world.addEntity(hook);
+				player.level.addFreshEntity(hook);
 				player.getCapability(SKYHOOK_USER_DATA, Direction.UP).ifPresent(data -> {
 					data.startRiding();
 					data.hook = hook;
@@ -120,29 +120,29 @@ public class SkylineHelper
 		return -(float)(196-3.92*fallTime-194.04*Math.pow(.98, fallTime-.5));
 	}
 
-	public static List<VoxelShape> getCollisionBoxes(@Nullable Entity entityIn, AxisAlignedBB aabb, World w,
+	public static List<VoxelShape> getCollisionBoxes(@Nullable Entity entityIn, AABB aabb, Level w,
 													 Collection<BlockPos> ignored)
 	{
 		List<VoxelShape> list = Lists.newArrayList();
 		getBlockCollisionBoxes(entityIn, aabb, list, w, ignored);
-		w.getBlockCollisionShapes(entityIn, aabb).forEach(list::add);
+		w.getBlockCollisions(entityIn, aabb).forEach(list::add);
 		return list;
 	}
 
 	//Mostly taken from ICollisionReader, added the ignored parameter
-	public static void getBlockCollisionBoxes(@Nullable Entity entityIn, AxisAlignedBB aabb, @Nonnull List<VoxelShape> outList,
-											  World w, Collection<BlockPos> ignored)
+	public static void getBlockCollisionBoxes(@Nullable Entity entityIn, AABB aabb, @Nonnull List<VoxelShape> outList,
+											  Level w, Collection<BlockPos> ignored)
 	{
-		int minX = MathHelper.floor(aabb.minX-1.0E-7D)-1;
-		int maxX = MathHelper.floor(aabb.maxX+1.0E-7D)+1;
-		int minY = MathHelper.floor(aabb.minY-1.0E-7D)-1;
-		int maxY = MathHelper.floor(aabb.maxY+1.0E-7D)+1;
-		int minZ = MathHelper.floor(aabb.minZ-1.0E-7D)-1;
-		int maxZ = MathHelper.floor(aabb.maxZ+1.0E-7D)+1;
-		final ISelectionContext selectionCtx = entityIn==null?ISelectionContext.dummy(): ISelectionContext.forEntity(entityIn);
-		final CubeCoordinateIterator it = new CubeCoordinateIterator(minX, minY, minZ, maxX, maxY, maxZ);
-		final BlockPos.Mutable currPos = new BlockPos.Mutable();
-		final VoxelShape searchShape = VoxelShapes.create(aabb);
+		int minX = Mth.floor(aabb.minX-1.0E-7D)-1;
+		int maxX = Mth.floor(aabb.maxX+1.0E-7D)+1;
+		int minY = Mth.floor(aabb.minY-1.0E-7D)-1;
+		int maxY = Mth.floor(aabb.maxY+1.0E-7D)+1;
+		int minZ = Mth.floor(aabb.minZ-1.0E-7D)-1;
+		int maxZ = Mth.floor(aabb.maxZ+1.0E-7D)+1;
+		final CollisionContext selectionCtx = entityIn==null?CollisionContext.empty(): CollisionContext.of(entityIn);
+		final Cursor3D it = new Cursor3D(minX, minY, minZ, maxX, maxY, maxZ);
+		final BlockPos.MutableBlockPos currPos = new BlockPos.MutableBlockPos();
+		final VoxelShape searchShape = Shapes.create(aabb);
 		StreamSupport.stream(new AbstractSpliterator<VoxelShape>(Long.MAX_VALUE, Spliterator.NONNULL|Spliterator.IMMUTABLE)
 		{
 			boolean isEntityNull = entityIn==null;
@@ -153,9 +153,9 @@ public class SkylineHelper
 				{
 					assert (entityIn!=null);
 					this.isEntityNull = true;
-					VoxelShape worldBorder = w.getWorldBorder().getShape();
-					boolean veryOutside = VoxelShapes.compare(worldBorder, VoxelShapes.create(entityIn.getBoundingBox().shrink(1.0E-7D)), IBooleanFunction.AND);
-					boolean nearlyOutside = VoxelShapes.compare(worldBorder, VoxelShapes.create(entityIn.getBoundingBox().grow(1.0E-7D)), IBooleanFunction.AND);
+					VoxelShape worldBorder = w.getWorldBorder().getCollisionShape();
+					boolean veryOutside = Shapes.joinIsNotEmpty(worldBorder, Shapes.create(entityIn.getBoundingBox().deflate(1.0E-7D)), BooleanOp.AND);
+					boolean nearlyOutside = Shapes.joinIsNotEmpty(worldBorder, Shapes.create(entityIn.getBoundingBox().inflate(1.0E-7D)), BooleanOp.AND);
 					if(!veryOutside&&nearlyOutside)
 					{
 						add.accept(worldBorder);
@@ -165,30 +165,30 @@ public class SkylineHelper
 
 				while(true)
 				{
-					if(!it.hasNext())
+					if(!it.advance())
 						return false;
 
-					int currX = it.getX();
-					int currY = it.getY();
-					int currZ = it.getZ();
-					int numBounderies = it.numBoundariesTouched();
+					int currX = it.nextX();
+					int currY = it.nextY();
+					int currZ = it.nextZ();
+					int numBounderies = it.getNextType();
 					if(numBounderies!=3)
 					{
 						int chunkX = currX >> 4;
 						int chunkZ = currZ >> 4;
-						IBlockReader iblockreader = w.getBlockReader(chunkX, chunkZ);
+						BlockGetter iblockreader = w.getChunkForCollisions(chunkX, chunkZ);
 						if(iblockreader!=null)
 						{
-							currPos.setPos(currX, currY, currZ);
+							currPos.set(currX, currY, currZ);
 							BlockState blockstate = iblockreader.getBlockState(currPos);
-							if((numBounderies!=1||blockstate.isCollisionShapeLargerThanFullBlock())&&
+							if((numBounderies!=1||blockstate.hasLargeCollisionShape())&&
 									(numBounderies!=2||blockstate.getBlock()==Blocks.MOVING_PISTON)&&
 									!ignored.contains(currPos)
 							)
 							{
 								VoxelShape blockShape = blockstate.getCollisionShape(w, currPos, selectionCtx);
-								VoxelShape blockShapeWithOffset = blockShape.withOffset(currX, currY, currZ);
-								if(VoxelShapes.compare(searchShape, blockShapeWithOffset, IBooleanFunction.AND))
+								VoxelShape blockShapeWithOffset = blockShape.move(currX, currY, currZ);
+								if(Shapes.joinIsNotEmpty(searchShape, blockShapeWithOffset, BooleanOp.AND))
 								{
 									add.accept(blockShapeWithOffset);
 									break;

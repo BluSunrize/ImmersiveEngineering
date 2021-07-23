@@ -11,31 +11,31 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.core.Direction;
 
 import java.util.List;
 
-public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
+public class CrusherRenderer extends BlockEntityRenderer<CrusherTileEntity>
 {
 	public static DynamicModel<Direction> BARREL;
 
-	public CrusherRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public CrusherRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(CrusherTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(CrusherTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
+		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		Direction dir = te.getFacing();
@@ -43,32 +43,32 @@ public class CrusherRenderer extends TileEntityRenderer<CrusherTileEntity>
 		boolean b = te.shouldRenderAsActive();
 		float angle = te.animation_barrelRotation+(b?18*partialTicks: 0);
 
-		matrixStack.push();
+		matrixStack.pushPose();
 
 		matrixStack.translate(.5, 1.5, .5);
-		matrixStack.translate(te.getFacing().getXOffset()*.5, 0, te.getFacing().getZOffset()*.5);
+		matrixStack.translate(te.getFacing().getStepX()*.5, 0, te.getFacing().getStepZ()*.5);
 
-		matrixStack.push();
-		matrixStack.rotate(new Quaternion(new Vector3f(-te.getFacing().getZOffset(), 0, te.getFacing().getXOffset()), angle, true));
+		matrixStack.pushPose();
+		matrixStack.mulPose(new Quaternion(new Vector3f(-te.getFacing().getStepZ(), 0, te.getFacing().getStepX()), angle, true));
 		renderBarrel(matrixStack, bufferIn, dir, combinedLightIn, combinedOverlayIn);
-		matrixStack.pop();
+		matrixStack.popPose();
 
-		matrixStack.push();
-		matrixStack.translate(te.getFacing().getXOffset()*-1, 0, te.getFacing().getZOffset()*-1);
-		matrixStack.rotate(new Quaternion(new Vector3f(-te.getFacing().getZOffset(), 0, te.getFacing().getXOffset()), -angle, true));
+		matrixStack.pushPose();
+		matrixStack.translate(te.getFacing().getStepX()*-1, 0, te.getFacing().getStepZ()*-1);
+		matrixStack.mulPose(new Quaternion(new Vector3f(-te.getFacing().getStepZ(), 0, te.getFacing().getStepX()), -angle, true));
 		renderBarrel(matrixStack, bufferIn, dir, combinedLightIn, combinedOverlayIn);
-		matrixStack.pop();
+		matrixStack.popPose();
 
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
-	private void renderBarrel(MatrixStack matrix, IRenderTypeBuffer buffer, Direction facing, int light, int overlay)
+	private void renderBarrel(PoseStack matrix, MultiBufferSource buffer, Direction facing, int light, int overlay)
 	{
-		matrix.push();
+		matrix.pushPose();
 		matrix.translate(-.5, -.5, -.5);
 		List<BakedQuad> quads = BARREL.getNullQuads(facing, Multiblocks.crusher.getDefaultState());
-		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.getSolid()), matrix, light, overlay);
-		matrix.pop();
+		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.solid()), matrix, light, overlay);
+		matrix.popPose();
 	}
 
 }

@@ -12,25 +12,25 @@ package blusunrize.immersiveengineering.client.fx;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.util.IECodecs;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.client.particle.IParticleFactory;
-import net.minecraft.client.particle.IParticleRenderType;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
-import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.particle.ParticleProvider;
+import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.particles.IParticleData;
-import net.minecraft.particles.IParticleData.IDeserializer;
-import net.minecraft.particles.ParticleType;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleOptions.Deserializer;
+import net.minecraft.core.particles.ParticleType;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
@@ -65,46 +65,46 @@ public class FractalParticle extends Particle
 	public static final float[][] COLOUR_ORANGE = {{Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], .5f}, {1, .97f, .87f, .75f}};
 	public static final float[][] COLOUR_LIGHTNING = {{77/255f, 74/255f, 152/255f, .75f}, {1, 1, 1, 1}};
 
-	private Vector3d[] pointsList;
+	private Vec3[] pointsList;
 	private float[] colourOut;
 	private float[] colourIn;
 
-	public FractalParticle(ClientWorld world, double x, double y, double z, double speedX, double speedY, double speedZ, Vector3d direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
+	public FractalParticle(ClientLevel world, double x, double y, double z, double speedX, double speedY, double speedZ, Vec3 direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
 	{
 		super(world, x, y, z, speedX, speedY, speedZ);
-		this.maxAge = maxAge;
-		this.motionX *= .009f;
-		this.motionY *= .009f;
-		this.motionZ *= .009f;
+		this.lifetime = maxAge;
+		this.xd *= .009f;
+		this.yd *= .009f;
+		this.zd *= .009f;
 		this.colourOut = colourOut;
 		this.colourIn = colourIn;
 
-		this.pointsList = new Vector3d[points];
+		this.pointsList = new Vec3[points];
 		direction = direction.scale(scale);
-		Vector3d startPos = direction.scale(-.5);
-		Vector3d end = direction.scale(.5);
-		Vector3d dist = end.subtract(startPos);
+		Vec3 startPos = direction.scale(-.5);
+		Vec3 end = direction.scale(.5);
+		Vec3 dist = end.subtract(startPos);
 		for(int i = 0; i < points; i++)
 		{
-			Vector3d sub = startPos.add(dist.x/points*i, dist.y/points*i, dist.z/points*i);
+			Vec3 sub = startPos.add(dist.x/points*i, dist.y/points*i, dist.z/points*i);
 			//distance to the middle point and by that, distance from the start and end. -1 is start, 1 is end
 			double fixPointDist = (i-points/2)/(points/2);
 			//Randomization modifier, closer to start/end means smaller divergence
 			double mod = scale*1-.45*Math.abs(fixPointDist);
-			double offX = (rand.nextDouble()-.5)*mod;
-			double offY = (rand.nextDouble()-.5)*mod;
-			double offZ = (rand.nextDouble()-.5)*mod;
+			double offX = (random.nextDouble()-.5)*mod;
+			double offY = (random.nextDouble()-.5)*mod;
+			double offZ = (random.nextDouble()-.5)*mod;
 			this.pointsList[i] = sub.add(offX, offY, offZ);
 		}
 	}
 
-	public FractalParticle(ClientWorld world, double x, double y, double z, Vector3d direction, double scale, float[] colourOut, float[] colourIn)
+	public FractalParticle(ClientLevel world, double x, double y, double z, Vec3 direction, double scale, float[] colourOut, float[] colourIn)
 	{
 		this(world, x, y, z, 0, 0, 0, direction, scale, 10, 16, colourOut, colourIn);
 	}
 
 	@Override
-	public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
+	public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks)
 	{
 		// Use a custom render queue to allow the particles to use multiple render types (by default particles can only
 		// use one)
@@ -112,14 +112,14 @@ public class FractalParticle extends Particle
 	}
 
 	@Override
-	public IParticleRenderType getRenderType()
+	public ParticleRenderType getRenderType()
 	{
-		return IParticleRenderType.CUSTOM;
+		return ParticleRenderType.CUSTOM;
 	}
 
-	public List<Pair<RenderType, Consumer<IVertexBuilder>>> render(float partialTicks, MatrixStack matrixStack)
+	public List<Pair<RenderType, Consumer<VertexConsumer>>> render(float partialTicks, PoseStack matrixStack)
 	{
-		float mod = (age+partialTicks)/(float)maxAge;
+		float mod = (age+partialTicks)/(float)lifetime;
 		int iStartMut = 0;
 		int iEndMut = pointsList.length;
 		if(mod >= .76)
@@ -131,21 +131,21 @@ public class FractalParticle extends Particle
 		final int iStart = iStartMut;
 		final int iEnd = iEndMut;
 		mod = .3f+mod*mod;
-		matrixStack.push();
-		matrixStack.translate(posX, posY, posZ);
+		matrixStack.pushPose();
+		matrixStack.translate(x, y, z);
 		matrixStack.scale(mod, mod, mod);
-		matrixStack.rotate(new Quaternion(0, 180*mod, 0, true));
-		Matrix4f transform = matrixStack.getLast().getMatrix();
-		matrixStack.pop();
+		matrixStack.mulPose(new Quaternion(0, 180*mod, 0, true));
+		Matrix4f transform = matrixStack.last().pose();
+		matrixStack.popPose();
 
-		List<Pair<RenderType, Consumer<IVertexBuilder>>> ret = new ArrayList<>();
+		List<Pair<RenderType, Consumer<VertexConsumer>>> ret = new ArrayList<>();
 		LinePointProcessor putLinePoint = (buffer, i, color) -> {
 			int correctIndex = iStart+(i-iStart)%(iEnd-iStart);
-			Vector3d vecRender = pointsList[correctIndex];
-			buffer.pos(transform, (float)vecRender.x, (float)vecRender.y, (float)vecRender.z)
+			Vec3 vecRender = pointsList[correctIndex];
+			buffer.vertex(transform, (float)vecRender.x, (float)vecRender.y, (float)vecRender.z)
 					.color(color[0], color[1], color[2], color[3]).endVertex();
 			if(i!=iStart&&i!=iEnd)
-				buffer.pos(transform, (float)vecRender.x, (float)vecRender.y, (float)vecRender.z)
+				buffer.vertex(transform, (float)vecRender.x, (float)vecRender.y, (float)vecRender.z)
 						.color(color[0], color[1], color[2], color[3]).endVertex();
 		};
 		ret.add(Pair.of(IERenderTypes.getLines(4f), buffer -> {
@@ -160,14 +160,14 @@ public class FractalParticle extends Particle
 
 		ret.add(Pair.of(IERenderTypes.getPoints(8f), buffer -> {
 			for(int i = iStart; i < iEnd; i++)
-				buffer.pos(transform, (float)pointsList[i].x, (float)pointsList[i].y, (float)pointsList[i].z)
+				buffer.vertex(transform, (float)pointsList[i].x, (float)pointsList[i].y, (float)pointsList[i].z)
 						.color(colourOut[0], colourOut[1], colourOut[2], colourOut[3])
 						.endVertex();
 		}));
 
 		ret.add(Pair.of(IERenderTypes.getPoints(2f), buffer -> {
 			for(int i = iEnd-1; i >= iStart; i--)
-				buffer.pos(transform, (float)pointsList[i].x, (float)pointsList[i].y, (float)pointsList[i].z)
+				buffer.vertex(transform, (float)pointsList[i].x, (float)pointsList[i].y, (float)pointsList[i].z)
 						.color(colourIn[0], colourIn[1], colourIn[2], colourIn[3])
 						.endVertex();
 		}));
@@ -176,19 +176,19 @@ public class FractalParticle extends Particle
 
 	private interface LinePointProcessor
 	{
-		void draw(IVertexBuilder builder, int index, float[] color);
+		void draw(VertexConsumer builder, int index, float[] color);
 	}
 
-	public static class Data implements IParticleData
+	public static class Data implements ParticleOptions
 	{
-		private final Vector3d direction;
+		private final Vec3 direction;
 		private final double scale;
 		private final int maxAge;
 		private final int points;
 		private final float[] colourOut;
 		private final float[] colourIn;
 
-		public Data(Vector3d direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
+		public Data(Vec3 direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
 		{
 			this.direction = direction;
 			this.scale = scale;
@@ -205,7 +205,7 @@ public class FractalParticle extends Particle
 		}
 
 		@Override
-		public void write(PacketBuffer buffer)
+		public void writeToNetwork(FriendlyByteBuf buffer)
 		{
 			buffer.writeDouble(direction.x).writeDouble(direction.y).writeDouble(direction.z);
 			buffer.writeDouble(scale);
@@ -218,7 +218,7 @@ public class FractalParticle extends Particle
 		}
 
 		@Override
-		public String getParameters()
+		public String writeToString()
 		{
 			String ret = direction.x+" "+
 					direction.y+" "+
@@ -234,11 +234,11 @@ public class FractalParticle extends Particle
 		}
 	}
 
-	public static class DataDeserializer implements IDeserializer<Data>
+	public static class DataDeserializer implements Deserializer<Data>
 	{
 
 		@Override
-		public Data deserialize(ParticleType<Data> particleTypeIn, StringReader reader) throws CommandSyntaxException
+		public Data fromCommand(ParticleType<Data> particleTypeIn, StringReader reader) throws CommandSyntaxException
 		{
 			double dX = reader.readDouble();
 			reader.expect(' ');
@@ -265,13 +265,13 @@ public class FractalParticle extends Particle
 				reader.expect(' ');
 			}
 
-			return new Data(new Vector3d(dX, dY, dZ), scale, maxAge, points, colourOut, colourIn);
+			return new Data(new Vec3(dX, dY, dZ), scale, maxAge, points, colourOut, colourIn);
 		}
 
 		@Override
-		public Data read(ParticleType<Data> particleTypeIn, PacketBuffer buffer)
+		public Data fromNetwork(ParticleType<Data> particleTypeIn, FriendlyByteBuf buffer)
 		{
-			Vector3d dir = new Vector3d(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
+			Vec3 dir = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
 			double scale = buffer.readDouble();
 			int maxAge = buffer.readInt();
 			int points = buffer.readInt();
@@ -285,12 +285,12 @@ public class FractalParticle extends Particle
 		}
 	}
 
-	public static class Factory implements IParticleFactory<Data>
+	public static class Factory implements ParticleProvider<Data>
 	{
 
 		@Nullable
 		@Override
-		public Particle makeParticle(Data typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle createParticle(Data typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new FractalParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.direction, typeIn.scale,
 					typeIn.maxAge, typeIn.points, typeIn.colourOut, typeIn.colourIn);

@@ -9,23 +9,23 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import net.minecraft.resources.DataPackRegistries;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.resources.IResourceManagerReloadListener;
+import net.minecraft.server.ServerResources;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 
 import javax.annotation.Nonnull;
 
-public class RecipeCachingReloadListener implements IResourceManagerReloadListener
+public class RecipeCachingReloadListener implements ResourceManagerReloadListener
 {
-	private final DataPackRegistries dataPackRegistries;
+	private final ServerResources dataPackRegistries;
 
-	public RecipeCachingReloadListener(DataPackRegistries dataPackRegistries)
+	public RecipeCachingReloadListener(ServerResources dataPackRegistries)
 	{
 		this.dataPackRegistries = dataPackRegistries;
 	}
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
 		RecipeReloadListener.buildRecipeLists(dataPackRegistries.getRecipeManager());
 	}

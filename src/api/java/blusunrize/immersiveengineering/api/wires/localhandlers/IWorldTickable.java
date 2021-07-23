@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.wires.localhandlers;
 
-import net.minecraft.world.World;
+import net.minecraft.world.level.Level;
 
 public interface IWorldTickable
 {
-	void update(World w);
+	void update(Level w);
 }

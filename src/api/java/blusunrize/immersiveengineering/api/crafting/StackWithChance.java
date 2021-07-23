@@ -10,9 +10,9 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 public class StackWithChance
 {
@@ -36,33 +36,33 @@ public class StackWithChance
 		return chance;
 	}
 
-	public CompoundNBT writeToNBT()
+	public CompoundTag writeToNBT()
 	{
-		CompoundNBT compoundNBT = new CompoundNBT();
-		compoundNBT.put("stack", stack.write(new CompoundNBT()));
+		CompoundTag compoundNBT = new CompoundTag();
+		compoundNBT.put("stack", stack.save(new CompoundTag()));
 		compoundNBT.putFloat("chance", chance);
 		return compoundNBT;
 	}
 
-	public static StackWithChance readFromNBT(CompoundNBT compoundNBT)
+	public static StackWithChance readFromNBT(CompoundTag compoundNBT)
 	{
 		Preconditions.checkNotNull(compoundNBT);
 		Preconditions.checkArgument(compoundNBT.contains("chance"));
 		Preconditions.checkArgument(compoundNBT.contains("stack"));
-		final ItemStack stack = ItemStack.read(compoundNBT.getCompound("stack"));
+		final ItemStack stack = ItemStack.of(compoundNBT.getCompound("stack"));
 		final float chance = compoundNBT.getFloat("chance");
 		return new StackWithChance(stack, chance);
 	}
 
-	public void write(PacketBuffer buffer)
+	public void write(FriendlyByteBuf buffer)
 	{
-		buffer.writeItemStack(this.stack);
+		buffer.writeItem(this.stack);
 		buffer.writeFloat(this.chance);
 	}
 
-	public static StackWithChance read(PacketBuffer buffer)
+	public static StackWithChance read(FriendlyByteBuf buffer)
 	{
-		return new StackWithChance(buffer.readItemStack(), buffer.readFloat());
+		return new StackWithChance(buffer.readItem(), buffer.readFloat());
 	}
 
 	public StackWithChance recalculate(float totalChance)

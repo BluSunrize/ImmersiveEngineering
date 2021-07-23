@@ -10,9 +10,9 @@
 package blusunrize.immersiveengineering.data;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.Resource;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.io.IOUtils;
 
@@ -36,7 +36,7 @@ public class DataGenUtils
 			String prefix = "models";
 			if (obj.getPath().startsWith("models/"))
 				prefix = "";
-			IResource objResource = helper.getResource(obj, ResourcePackType.CLIENT_RESOURCES, "", prefix);
+			Resource objResource = helper.getResource(obj, PackType.CLIENT_RESOURCES, "", prefix);
 			InputStream objStream = objResource.getInputStream();
 			String fullObj = IOUtils.toString(objStream, StandardCharsets.US_ASCII);
 			String libLoc = findFirstOccurrenceGroup(MTLLIB, fullObj);
@@ -53,7 +53,7 @@ public class DataGenUtils
 	{
 		try
 		{
-			IResource mtlResource = helper.getResource(mtl, ResourcePackType.CLIENT_RESOURCES, "", "models");
+			Resource mtlResource = helper.getResource(mtl, PackType.CLIENT_RESOURCES, "", "models");
 			String fullMtl = IOUtils.toString(mtlResource.getInputStream(), StandardCharsets.US_ASCII);
 			Matcher materialMatcher = NEWMTL.matcher(fullMtl);
 			while(materialMatcher.find()&&!materialMatcher.group(1).equals(materialName)) ;

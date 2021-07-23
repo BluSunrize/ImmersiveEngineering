@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
@@ -79,6 +79,6 @@ public class IEItemInterfaces
 
 	public interface IScrollwheel
 	{
-		void onScrollwheel(ItemStack stack, PlayerEntity playerEntity, boolean forward);
+		void onScrollwheel(ItemStack stack, Player playerEntity, boolean forward);
 	}
 }

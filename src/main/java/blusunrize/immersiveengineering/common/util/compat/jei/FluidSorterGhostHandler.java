@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 import blusunrize.immersiveengineering.client.gui.FluidSorterScreen;
 import com.google.common.collect.ImmutableList;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
-import net.minecraft.client.renderer.Rectangle2d;
+import net.minecraft.client.renderer.Rect2i;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -44,7 +44,7 @@ public class FluidSorterGhostHandler implements IGhostIngredientHandler<FluidSor
 		final int side;
 		final int slot;
 		final FluidSorterScreen gui;
-		Rectangle2d area;
+		Rect2i area;
 		int lastGuiLeft, lastGuiTop;
 
 		public GhostFluidTarget(int side, int slot, FluidSorterScreen gui)
@@ -59,13 +59,13 @@ public class FluidSorterGhostHandler implements IGhostIngredientHandler<FluidSor
 		{
 			int x = 4+(side/2)*58+(slot < 3?slot*18: slot > 4?(slot-5)*18: slot==3?0: 36);
 			int y = 22+(side%2)*76+(slot < 3?0: slot > 4?36: 18);
-			area = new Rectangle2d(gui.getGuiLeft()+x, gui.getGuiTop()+y, 16, 16);
+			area = new Rect2i(gui.getGuiLeft()+x, gui.getGuiTop()+y, 16, 16);
 			lastGuiLeft = gui.getGuiLeft();
 			lastGuiTop = gui.getGuiTop();
 		}
 
 		@Override
-		public Rectangle2d getArea()
+		public Rect2i getArea()
 		{
 			if(lastGuiLeft!=gui.getGuiLeft()||lastGuiTop!=gui.getGuiTop())
 				initRectangle();

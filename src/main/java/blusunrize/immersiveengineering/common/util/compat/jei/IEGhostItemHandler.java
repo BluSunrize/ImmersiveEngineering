@@ -17,9 +17,9 @@ import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mezz.jei.api.gui.handlers.IGhostIngredientHandler;
-import net.minecraft.client.renderer.Rectangle2d;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerSc
 		if(ingredient instanceof ItemStack)
 		{
 			ImmutableList.Builder<Target<I>> builder = ImmutableList.builder();
-			for(Slot s : gui.getContainer().inventorySlots)
+			for(Slot s : gui.getMenu().slots)
 				if(s instanceof ItemHandlerGhost)
 					builder.add((Target<I>)new GhostSlotTarget((ItemHandlerGhost)s, gui));
 			return builder.build();
@@ -50,26 +50,26 @@ public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerSc
 		final ItemHandlerGhost slot;
 		final IEContainerScreen<?> gui;
 		final IEBaseContainer<?> container;
-		Rectangle2d area;
+		Rect2i area;
 		int lastGuiLeft, lastGuiTop;
 
 		public GhostSlotTarget(ItemHandlerGhost slot, IEContainerScreen<?> gui)
 		{
 			this.slot = slot;
-			this.container = (IEBaseContainer<?>)gui.getContainer();
+			this.container = (IEBaseContainer<?>)gui.getMenu();
 			this.gui = gui;
 			initRectangle();
 		}
 
 		private void initRectangle()
 		{
-			area = new Rectangle2d(gui.getGuiLeft()+slot.xPos, gui.getGuiTop()+slot.yPos, 16, 16);
+			area = new Rect2i(gui.getGuiLeft()+slot.x, gui.getGuiTop()+slot.y, 16, 16);
 			lastGuiLeft = gui.getGuiLeft();
 			lastGuiTop = gui.getGuiTop();
 		}
 
 		@Override
-		public Rectangle2d getArea()
+		public Rect2i getArea()
 		{
 			if(lastGuiLeft!=gui.getGuiLeft()||lastGuiTop!=gui.getGuiTop())
 				initRectangle();
@@ -80,7 +80,7 @@ public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerSc
 		public void accept(ItemStack ingredient)
 		{
 			Int2ObjectMap<ItemStack> change = new Int2ObjectOpenHashMap<>();
-			change.put(slot.slotNumber, ingredient);
+			change.put(slot.getSlotIndex(), ingredient);
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageSetGhostSlots(change));
 		}
 	}

@@ -11,14 +11,14 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -43,16 +43,16 @@ public class MixerMultiblock extends IETemplateMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer)
+	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
 	{
 		if(renderStack==null)
 			renderStack = new ItemStack(Multiblocks.mixer);
 		transform.translate(1.5, 1.5, 1.5);
-		transform.rotate(new Quaternion(0, 45, 0, true));
-		transform.rotate(new Quaternion(-20, 0, 0, true));
+		transform.mulPose(new Quaternion(0, 45, 0, true));
+		transform.mulPose(new Quaternion(-20, 0, 0, true));
 		transform.scale(4, 4, 4);
 
-		ClientUtils.mc().getItemRenderer().renderItem(
+		ClientUtils.mc().getItemRenderer().renderStatic(
 				renderStack,
 				TransformType.GUI,
 				0xf000f0,

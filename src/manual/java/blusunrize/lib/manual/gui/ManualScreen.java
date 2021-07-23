@@ -13,20 +13,20 @@ import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualInstance.ManualLink;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree.AbstractNode;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.MainWindow;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.widget.TextFieldWidget;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -52,7 +52,7 @@ public class ManualScreen extends Screen
 	ResourceLocation texture;
 	private double[] lastClick;
 	private double[] lastDrag;
-	private TextFieldWidget searchField;
+	private EditBox searchField;
 	private ClickableList entryList;
 	private ClickableList suggestionList;
 
@@ -65,7 +65,7 @@ public class ManualScreen extends Screen
 
 	public ManualScreen(ManualInstance manual, ResourceLocation texture, boolean setLastActive)
 	{
-		super(new StringTextComponent("manual"));
+		super(new TextComponent("manual"));
 		this.manual = manual;
 		this.currentNode = manual.getRoot();
 		this.texture = texture;
@@ -93,18 +93,18 @@ public class ManualScreen extends Screen
 	@Override
 	public void init()
 	{
-		MainWindow res = mc.getMainWindow();
-		double oldGuiScale = res.calcGuiScale(mc.gameSettings.guiScale, mc.getForceUnicodeFont());
+		Window res = mc.getWindow();
+		double oldGuiScale = res.calculateScale(mc.options.guiScale, mc.isEnforceUnicode());
 
-		int guiScaleInt = Math.min(manual.getGuiRescale(), getMinecraft().getMainWindow().calcGuiScale(0, true));
-		double newGuiScale = res.calcGuiScale(guiScaleInt, true);
+		int guiScaleInt = Math.min(manual.getGuiRescale(), getMinecraft().getWindow().calculateScale(0, true));
+		double newGuiScale = res.calculateScale(guiScaleInt, true);
 
 		if(guiScaleInt > 0&&newGuiScale!=oldGuiScale)
 		{
-			scaleFactor = (float)newGuiScale/(float)res.getGuiScaleFactor();
+			scaleFactor = (float)newGuiScale/(float)res.getGuiScale();
 			res.setGuiScale(newGuiScale);
-			width = res.getScaledWidth();
-			height = res.getScaledHeight();
+			width = res.getGuiScaledWidth();
+			height = res.getGuiScaledHeight();
 			res.setGuiScale(oldGuiScale);
 		}
 		else
@@ -159,13 +159,13 @@ public class ManualScreen extends Screen
 
 		if(textField)
 		{
-			mc.keyboardListener.enableRepeatEvents(true);
-			searchField = new TextFieldWidget(font, guiLeft+166, guiTop+78, 120, 12, StringTextComponent.EMPTY);
+			mc.keyboardHandler.setSendRepeatsToGui(true);
+			searchField = new EditBox(font, guiLeft+166, guiTop+78, 120, 12, TextComponent.EMPTY);
 			searchField.setTextColor(-1);
-			searchField.setDisabledTextColour(-1);
-			searchField.setEnableBackgroundDrawing(false);
-			searchField.setMaxStringLength(17);
-			searchField.setFocused2(true);
+			searchField.setTextColorUneditable(-1);
+			searchField.setBordered(false);
+			searchField.setMaxLength(17);
+			searchField.setFocus(true);
 			searchField.setCanLoseFocus(false);
 		}
 		else if(searchField!=null)
@@ -181,9 +181,9 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mouseX, int mouseY, float f)
+	public void render(PoseStack transform, int mouseX, int mouseY, float f)
 	{
-		transform.push();
+		transform.pushPose();
 		if(scaleFactor!=1)
 		{
 			transform.scale(scaleFactor, scaleFactor, scaleFactor);
@@ -197,7 +197,7 @@ public class ManualScreen extends Screen
 		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
 		if(this.searchField!=null)
 		{
-			int l = searchField.getText().length()*6;
+			int l = searchField.getValue().length()*6;
 			if(l > 20)
 				this.blit(transform, guiLeft+166, guiTop+74, 136+(120-l), 238, l, 18);
 			if(suggestionList.visible)
@@ -241,11 +241,11 @@ public class ManualScreen extends Screen
 
 			manual.titleRenderPre();
 			//Title
-			this.drawCenteredStringScaled(transform, manual.fontRenderer(), TextFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(transform, manual.fontRenderer(), ChatFormatting.BOLD+selectedEntry.getTitle(), guiLeft+xSize/2, guiTop+14, manual.getTitleColour(), 1, true);
 			this.drawCenteredStringScaled(transform, manual.fontRenderer(), manual.formatEntrySubtext(selectedEntry.getSubtext()), guiLeft+xSize/2,
 					guiTop+22, manual.getSubTitleColour(), 1, true);
 			//Page Number
-			this.drawCenteredStringScaled(transform, manual.fontRenderer(), TextFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
+			this.drawCenteredStringScaled(transform, manual.fontRenderer(), ChatFormatting.BOLD.toString()+(page+1), guiLeft+xSize/2, guiTop+183, manual.getPagenumberColour(), 1, false);
 			manual.titleRenderPost();
 
 			selectedEntry.renderPage(transform, this, guiLeft+32, guiTop+28, mouseX-32, mouseY-28);
@@ -257,7 +257,7 @@ public class ManualScreen extends Screen
 		{
 			String title = ManualUtils.getTitleForNode(currentNode, manual);
 			manual.titleRenderPre();
-			this.drawCenteredStringScaled(transform, manual.fontRenderer(), TextFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), 1, true);
+			this.drawCenteredStringScaled(transform, manual.fontRenderer(), ChatFormatting.BOLD+title, guiLeft+xSize/2, guiTop+12, manual.getTitleColour(), 1, true);
 			manual.titleRenderPost();
 		}
 		if(this.searchField!=null)
@@ -265,66 +265,66 @@ public class ManualScreen extends Screen
 			this.searchField.render(transform, mouseX, mouseY, f);
 			if(suggestionList.visible)
 				//TODO translation
-				manual.fontRenderer().drawString(transform, "It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
+				manual.fontRenderer().draw(transform, "It looks like you meant:", guiLeft+180, guiTop+128, manual.getTextColour());
 		}
 		for(Button btn : pageButtons)
 			btn.render(transform, mouseX, mouseY, f);
 		super.render(transform, mouseX, mouseY, f);
 		RenderSystem.enableBlend();
 		manual.entryRenderPost();
-		transform.pop();
+		transform.popPose();
 	}
 
 	@Override
-	public void onClose()
+	public void removed()
 	{
 		this.manual.closeManual();
-		super.onClose();
+		super.removed();
 	}
 
-	private void drawCenteredStringScaled(MatrixStack transform, FontRenderer fr, String s, int x, int y, int colour, float scale, boolean shadow)
+	private void drawCenteredStringScaled(PoseStack transform, Font fr, String s, int x, int y, int colour, float scale, boolean shadow)
 	{
-		int xx = (int)Math.floor(x/scale-(fr.getStringWidth(s)/2.));
-		int yy = (int)Math.floor(y/scale-(fr.FONT_HEIGHT/2.));
+		int xx = (int)Math.floor(x/scale-(fr.width(s)/2.));
+		int yy = (int)Math.floor(y/scale-(fr.lineHeight/2.));
 		if(scale!=1)
 		{
-			transform.push();
+			transform.pushPose();
 			transform.scale(scale, scale, scale);
 		}
 		if(shadow)
-			fr.drawStringWithShadow(transform, s, xx, yy, colour);
+			fr.drawShadow(transform, s, xx, yy, colour);
 		else
-			fr.drawString(transform, s, xx, yy, colour);
+			fr.draw(transform, s, xx, yy, colour);
 		if(scale!=1)
-			transform.pop();
+			transform.popPose();
 	}
 
 	@Override
-	public List<ITextComponent> getTooltipFromItem(ItemStack stack)
+	public List<Component> getTooltipFromItem(ItemStack stack)
 	{
-		List<ITextComponent> tooltip = super.getTooltipFromItem(stack);
+		List<Component> tooltip = super.getTooltipFromItem(stack);
 		if(currentNode.isLeaf())
 		{
 			if(currentNode.getLeafData().getHighlightedStack(page)==stack)
 			{
 				ManualLink link = this.manual.getManualLink(stack);
 				if(link!=null)
-					tooltip.add(new StringTextComponent(manual.formatLink(link)));
+					tooltip.add(new TextComponent(manual.formatLink(link)));
 			}
 		}
 		return tooltip;
 	}
 
 	@Override
-	public void renderToolTip(MatrixStack transform, List<? extends IReorderingProcessor> text, int x, int y, FontRenderer font)
+	public void renderToolTip(PoseStack transform, List<? extends FormattedCharSequence> text, int x, int y, Font font)
 	{
 		// Unscale the Z axis here, because otherwise the tooltip is out of view
-		transform.push();
+		transform.pushPose();
 		transform.scale(1, 1, 1/scaleFactor);
 		manual.tooltipRenderPre();
 		super.renderToolTip(transform, text, x, y, font);
 		manual.tooltipRenderPost();
-		transform.pop();
+		transform.popPose();
 	}
 
 	@Override
@@ -385,8 +385,8 @@ public class ManualScreen extends Screen
 		}
 		else if(button==1)
 		{
-			if(searchField!=null&&!searchField.getText().isEmpty())
-				searchField.setText("");
+			if(searchField!=null&&!searchField.getValue().isEmpty())
+				searchField.setValue("");
 			else if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
 				previousSelectedEntry.pop().changePage(this, false);
 			else if(currentNode.getSuperNode()!=null)
@@ -456,7 +456,7 @@ public class ManualScreen extends Screen
 
 	private void updateSearch()
 	{
-		String search = searchField.getText();
+		String search = searchField.getValue();
 		if(search.trim().isEmpty())
 		{
 			suggestionList.visible = false;
@@ -502,7 +502,7 @@ public class ManualScreen extends Screen
 
 	//Make public as a utility
 	@Override
-	public void fillGradient(MatrixStack transform, int x1, int yA, int x2, int yB, int colorA, int colorB)
+	public void fillGradient(PoseStack transform, int x1, int yA, int x2, int yB, int colorA, int colorB)
 	{
 		super.fillGradient(transform, x1, yA, x2, yB, colorA, colorB);
 	}

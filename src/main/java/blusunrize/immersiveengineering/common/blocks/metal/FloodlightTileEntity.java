@@ -28,27 +28,27 @@ import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
-import net.minecraft.block.BlockState;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -96,7 +96,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		{
 			lightsToBePlaced.clear();
 			updateFakeLights(true, activeBeforeTick);
-			markDirty();
+			setChanged();
 			this.markContainingBlockForUpdate(null);
 			shouldUpdate = false;
 		}
@@ -117,7 +117,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 
 		switchCooldown--;
 		boolean activeAfterTick = getIsActive();
-		if(activeAfterTick!=activeBeforeTick||world.getGameTime()%512==((getPos().getX()^getPos().getZ())&511))
+		if(activeAfterTick!=activeBeforeTick||level.getGameTime()%512==((getBlockPos().getX()^getBlockPos().getZ())&511))
 		{
 			this.markContainingBlockForUpdate(null);
 			updateFakeLights(true, activeAfterTick);
@@ -128,7 +128,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			if(!lightsToBePlaced.isEmpty())
 				lightsToBePlaced.clear();
 		}
-		if((!lightsToBePlaced.isEmpty()||!lightsToBeRemoved.isEmpty())&&world.getGameTime()%8==((getPos().getX()^getPos().getZ())&7))
+		if((!lightsToBePlaced.isEmpty()||!lightsToBeRemoved.isEmpty())&&level.getGameTime()%8==((getBlockPos().getX()^getBlockPos().getZ())&7))
 		{
 			Iterator<BlockPos> it = lightsToBePlaced.iterator();
 			int timeout = 0;
@@ -136,10 +136,10 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			{
 				BlockPos cc = it.next();
 				//				world.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
-				world.setBlockState(cc, Misc.fakeLight.getDefaultState(), 2);
-				TileEntity te = world.getTileEntity(cc);
+				level.setBlock(cc, Misc.fakeLight.getDefaultState(), 2);
+				BlockEntity te = level.getBlockEntity(cc);
 				if(te instanceof FakeLightTileEntity)
-					((FakeLightTileEntity)te).floodlightCoords = getPos();
+					((FakeLightTileEntity)te).floodlightCoords = getBlockPos();
 				fakeLights.add(cc);
 				it.remove();
 			}
@@ -147,8 +147,8 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			while(it.hasNext()&&timeout++ < 32)
 			{
 				BlockPos cc = it.next();
-				if(Utils.getExistingTileEntity(world, cc) instanceof FakeLightTileEntity)
-					world.removeBlock(cc, false);
+				if(Utils.getExistingTileEntity(level, cc) instanceof FakeLightTileEntity)
+					level.removeBlock(cc, false);
 				it.remove();
 			}
 		}
@@ -162,7 +162,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		while(it.hasNext())
 		{
 			BlockPos cc = it.next();
-			TileEntity te = world.getTileEntity(cc);
+			BlockEntity te = level.getBlockEntity(cc);
 			if(te instanceof FakeLightTileEntity)
 			{
 				if(deleteOld)
@@ -177,11 +177,11 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			float yRotation = rotY;
 			double angleX = Math.toRadians(rotX);
 
-			Vector3d[] rays = {
-					/*Straight*/new Vector3d(0, 0, 1),
-					/*U,D,L,R*/new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1),
-					/*Intermediate*/new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1),
-					/*Diagonal*/new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1), new Vector3d(0, 0, 1)};
+			Vec3[] rays = {
+					/*Straight*/new Vec3(0, 0, 1),
+					/*U,D,L,R*/new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1),
+					/*Intermediate*/new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1),
+					/*Diagonal*/new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1), new Vec3(0, 0, 1)};
 			Matrix4 mat = new Matrix4();
 			if(getFacing()==Direction.DOWN)
 				mat.scale(1, -1, 1);
@@ -191,7 +191,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 				if(getFacing().getAxis()==Axis.X)
 				{
 					mat.rotate(Math.PI/2, -1, 0, 0);
-					mat.rotate(Math.PI/2, 0, 0, -getFacing().getAxisDirection().getOffset());
+					mat.rotate(Math.PI/2, 0, 0, -getFacing().getAxisDirection().getStep());
 				}
 				else
 				{
@@ -245,25 +245,25 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		this.lightsToBeRemoved.addAll(tempRemove);
 	}
 
-	public void placeLightAlongVector(Vector3d vec, int offset, ArrayList<BlockPos> checklist)
+	public void placeLightAlongVector(Vec3 vec, int offset, ArrayList<BlockPos> checklist)
 	{
-		Vector3d light = Vector3d.copyCentered(getPos()).add(0, 0.25, 0);
+		Vec3 light = Vec3.atCenterOf(getBlockPos()).add(0, 0.25, 0);
 		int range = 32;
 		HashSet<BlockPos> ignore = new HashSet<BlockPos>();
-		ignore.add(getPos());
-		BlockPos hit = Utils.rayTraceForFirst(vec.add(light), light.add(vec.x*range, vec.y*range, vec.z*range), world, ignore);
-		double maxDistance = hit!=null?Vector3d.copyCentered(hit).add(0, 0.25, 0).squareDistanceTo(light): range*range;
+		ignore.add(getBlockPos());
+		BlockPos hit = Utils.rayTraceForFirst(vec.add(light), light.add(vec.x*range, vec.y*range, vec.z*range), level, ignore);
+		double maxDistance = hit!=null?Vec3.atCenterOf(hit).add(0, 0.25, 0).distanceToSqr(light): range*range;
 		for(int i = 1+offset; i <= range; i++)
 		{
-			BlockPos target = getPos().add(Math.round(vec.x*i), Math.round(vec.y*i), Math.round(vec.z*i));
+			BlockPos target = getBlockPos().offset(Math.round(vec.x*i), Math.round(vec.y*i), Math.round(vec.z*i));
 			double dist = (vec.x*i*vec.x*i)+(vec.y*i*vec.y*i)+(vec.z*i*vec.z*i);
 			if(dist > maxDistance)
 				break;
-			if(World.isOutsideBuildHeight(pos))
+			if(Level.isOutsideBuildHeight(worldPosition))
 				continue;
 			//&&world.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 
-			if(!target.equals(getPos())&&world.isAirBlock(target))
+			if(!target.equals(getBlockPos())&&level.isEmptyBlock(target))
 			{
 				if(!checklist.remove(target))
 					lightsToBePlaced.add(target);
@@ -280,10 +280,10 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public void remove()
+	public void setRemoved()
 	{
 		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
-		super.remove();
+		super.setRemoved();
 	}
 
 	@Override
@@ -301,12 +301,12 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage = nbt.getInt("energy");
 		redstoneControlInverted = nbt.getBoolean("redstoneControlInverted");
-		facing = Direction.byIndex(nbt.getInt("facing"));
+		facing = Direction.from3DDataValue(nbt.getInt("facing"));
 		rotY = nbt.getFloat("rotY");
 		rotX = nbt.getFloat("rotX");
 		int lightAmount = nbt.getInt("lightAmount");
@@ -316,7 +316,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			int[] icc = nbt.getIntArray("fakeLight_"+i);
 			fakeLights.add(new BlockPos(icc[0], icc[1], icc[2]));
 		}
-		if(world!=null&&world.isRemote)
+		if(level!=null&&level.isClientSide)
 			this.markContainingBlockForUpdate(null);
 		if(descPacket&&nbt.contains("computerOn"))
 		{
@@ -325,12 +325,12 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		}
 		else
 			computerControl = ComputerControlState.NO_COMPUTER;
-		if(world!=null&&getIsActive())
+		if(level!=null&&getIsActive())
 			checkLight();
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("energyStorage", energyStorage);
@@ -349,7 +349,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==1)
 		{
@@ -357,22 +357,22 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			checkLight();
 			return true;
 		}
-		return super.receiveClientEvent(id, arg);
+		return super.triggerEvent(id, arg);
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return WireType.LV_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		BlockPos other = con==null?pos: con.getOtherEnd(here).getPosition();
-		int xDif = other.getX()-pos.getX();
-		int yDif = other.getY()-pos.getY();
-		int zDif = other.getZ()-pos.getZ();
+		BlockPos other = con==null?worldPosition: con.getOtherEnd(here).getPosition();
+		int xDif = other.getX()-worldPosition.getX();
+		int yDif = other.getY()-worldPosition.getY();
+		int zDif = other.getZ()-worldPosition.getZ();
 		double x, y, z;
 		switch(getFacing())
 		{
@@ -396,13 +396,13 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 				z = (Math.abs(zDif) > Math.abs(yDif))?(zDif >= 0)?.9375: .0625: .5;
 				break;
 		}
-		return new Vector3d(x, y, z);
+		return new Vec3(x, y, z);
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.create(
+		return Shapes.box(
 				getFacing().getAxis()==Axis.X?0: .0625,
 				getFacing().getAxis()==Axis.Y?0: .0625,
 				getFacing().getAxis()==Axis.Z?0: .0625,
@@ -413,29 +413,29 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
 			if(side.getAxis()==this.getFacing().getAxis())
-				turnY(player.isSneaking(), false);
+				turnY(player.isShiftKeyDown(), false);
 			else
-				turnX(player.isSneaking(), false);
+				turnX(player.isShiftKeyDown(), false);
 		}
 		return true;
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
 			redstoneControlInverted = !redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
-			markDirty();
+			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -457,7 +457,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -471,9 +471,9 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	@Override
 	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
-		Direction f = Direction.fromAngle(placer.rotationYaw);
+		Direction f = Direction.fromYRot(placer.yRot);
 		if(f==side.getOpposite())
-			f = placer.rotationPitch > 0?Direction.DOWN: Direction.UP;
+			f = placer.xRot > 0?Direction.DOWN: Direction.UP;
 		facing = f;
 	}
 
@@ -482,14 +482,14 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	public boolean shouldRenderGroup(BlockState object, String group)
 	{
 		if("glass".equals(group))
-			return MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent();
+			return MinecraftForgeClient.getRenderLayer()==RenderType.translucent();
 		else
-			return MinecraftForgeClient.getRenderLayer()==RenderType.getSolid();
+			return MinecraftForgeClient.getRenderLayer()==RenderType.solid();
 	}
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
+	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
 	{
 		Vector3f transl = new Vector3f(.5f, .5f, .5f);
 
@@ -527,12 +527,12 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			if(facing==Direction.DOWN)
 				roll += 180;
 			else if(getFacing().getAxis()==Axis.X&&facing.getAxis()==Axis.Z)
-				roll += 90*facing.getAxisDirection().getOffset()*getFacing().getAxisDirection().getOffset();
+				roll += 90*facing.getAxisDirection().getStep()*getFacing().getAxisDirection().getStep();
 			else if(getFacing().getAxis()==Axis.Z&&facing.getAxis()==Axis.X)
-				roll += -90*facing.getAxisDirection().getOffset()*getFacing().getAxisDirection().getOffset();
+				roll += -90*facing.getAxisDirection().getStep()*getFacing().getAxisDirection().getStep();
 		}
 
-		transl.add(new Vector3f(getFacing().getXOffset()*.125f, getFacing().getYOffset()*.125f, getFacing().getZOffset()*.125f));
+		transl.add(new Vector3f(getFacing().getStepX()*.125f, getFacing().getStepY()*.125f, getFacing().getStepZ()*.125f));
 		if("axis".equals(group)||"light".equals(group)||"off".equals(group)||"glass".equals(group))
 		{
 			if(getFacing().getAxis()==Axis.Y)
@@ -542,7 +542,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			if("light".equals(group)||"off".equals(group)||"glass".equals(group))
 				pitch += rotX;
 		}
-		return new TransformationMatrix(
+		return new Transformation(
 				transl,
 				ClientUtils.degreeToQuaterion(pitch, yaw, roll),
 				null, null
@@ -572,7 +572,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 				return;
 		}
 		this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX+(dir?-11.25f: 11.25f)));
-		world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
+		level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 		turnCooldown = 20;
 		shouldUpdate = true;
 	}
@@ -588,7 +588,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 		}
 		this.rotY += dir?-11.25: 11.25;
 		this.rotY %= 360;
-		world.addBlockEvent(getPos(), getBlockState().getBlock(), 255, 0);
+		level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
 		turnCooldown = 20;
 		shouldUpdate = true;
 	}

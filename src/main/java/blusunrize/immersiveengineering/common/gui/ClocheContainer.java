@@ -10,15 +10,15 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.Cloche;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity.*;
 
 public class ClocheContainer extends IEBaseContainer<ClocheTileEntity>
 {
-	public ClocheContainer(ContainerType<?> type, int id, PlayerInventory inventoryPlayer, ClocheTileEntity tile)
+	public ClocheContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ClocheTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.addSlot(new Cloche(SLOT_SOIL, this, this.inv, SLOT_SOIL, 62, 54));
