@@ -49,7 +49,6 @@ public class GuiButtonManual extends Button
 		if(this.visible)
 		{
 			ManualUtils.bindTexture(gui.texture);
-			RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 			this.isHovered = mx >= this.x&&mx < (this.x+this.width)&&my >= this.y&&my < (this.y+this.height);
 			RenderSystem.enableBlend();
 			RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);

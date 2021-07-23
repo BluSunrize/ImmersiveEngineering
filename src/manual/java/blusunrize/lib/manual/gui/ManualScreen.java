@@ -121,7 +121,7 @@ public class ManualScreen extends Screen
 		{
 			currentNode.getLeafData().addButtons(this, guiLeft+32, guiTop+28, page, pageButtons);
 			for(Button b : pageButtons)
-				addButton(b);
+				addRenderableWidget(b);
 		}
 		else
 		{
@@ -139,15 +139,15 @@ public class ManualScreen extends Screen
 			};
 			entryList = new ClickableList(this, guiLeft+40, guiTop+20, 100, 168,
 					1f, children, openEntry);
-			addButton(entryList);
+			addRenderableWidget(entryList);
 			suggestionList = new ClickableList(this, guiLeft+180, guiTop+138, 100, 80, 1f,
 					new ArrayList<>(), openEntry);
 			suggestionList.visible = false;
-			addButton(suggestionList);
+			addRenderableWidget(suggestionList);
 			textField = true;
 		}
 		if(currentNode.getSuperNode()!=null)
-			addButton(new GuiButtonManualNavigation(this, guiLeft+24, guiTop+10, 10, 10, 0,
+			addRenderableWidget(new GuiButtonManualNavigation(this, guiLeft+24, guiTop+10, 10, 10, 0,
 					btn -> {
 						if(currentNode.isLeaf()&&!previousSelectedEntry.isEmpty())
 							previousSelectedEntry.pop().changePage(ManualScreen.this, false);

@@ -14,20 +14,18 @@ import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.links.Link;
-import blusunrize.lib.manual.utils.ManualRenderTypes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
@@ -109,16 +107,17 @@ public class ManualUtils
 
 	public static void drawTexturedRect(ResourceLocation texture, int x, int y, int w, int h, float... uv)
 	{
-		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-		drawTexturedRect(new PoseStack(), buffers, texture, x, y, w, h, uv);
-		buffers.endBatch();
+		drawTexturedRect(RenderSystem.getModelViewStack(), texture, x, y, w, h, uv);
 	}
 
-	public static void drawTexturedRect(PoseStack transform, MultiBufferSource buffers, ResourceLocation texture,
-										int x, int y, int w, int h, float... uv)
+	public static void drawTexturedRect(PoseStack transform, ResourceLocation texture, int x, int y, int w, int h, float... uv)
 	{
-		VertexConsumer buffer = buffers.getBuffer(ManualRenderTypes.getGui(texture));
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, texture);
 		Matrix4f mat = transform.last().pose();
+		BufferBuilder buffer = Tesselator.getInstance().getBuilder();
+		buffer.begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		buffer.vertex(mat, x, y+h, 0)
 				.color(1F, 1F, 1F, 1F)
 				.uv(uv[0], uv[3])
@@ -135,6 +134,8 @@ public class ManualUtils
 				.color(1F, 1F, 1F, 1F)
 				.uv(uv[0], uv[2])
 				.endVertex();
+		buffer.end();
+		BufferUploader.end(buffer);
 	}
 
 	public static <T> List<T> getPrimitiveSpellingCorrections
@@ -249,7 +250,7 @@ public class ManualUtils
 		return arg;
 	}
 
-	static HashMap<String, ResourceLocation> resourceMap = new HashMap<>();
+	private static final Map<String, ResourceLocation> resourceMap = new HashMap<>();
 
 	public static Tesselator tes()
 	{
@@ -261,9 +262,11 @@ public class ManualUtils
 		return Minecraft.getInstance();
 	}
 
+	//TODO properly fix usages
+	@Deprecated
 	public static void bindTexture(ResourceLocation path)
 	{
-		mc().getTextureManager().bind(path);
+		RenderSystem.setShaderTexture(0, path);
 	}
 
 	public static ResourceLocation getResource(String path)
@@ -298,8 +301,14 @@ public class ManualUtils
 		String type = GsonHelper.getAsString(obj, "type");
 		int offset = GsonHelper.getAsInt(obj, "offset", 0);
 		ResourceLocation resLoc = getLocationForManual(type, instance);
-		Function<JsonObject, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
-		out.add(new SpecialElementData(anchor, offset, () -> createElement.apply(obj)));
+		try
+		{
+			Function<JsonObject, SpecialManualElement> createElement = instance.getElementFactory(resLoc);
+			out.add(new SpecialElementData(anchor, offset, () -> createElement.apply(obj)));
+		} catch(Exception x)
+		{
+			x.printStackTrace();
+		}
 	}
 
 	public static void parseSpecials(JsonObject data, ManualInstance instance, List<SpecialElementData> out)
@@ -410,8 +419,7 @@ public class ManualUtils
 		if(!stack.isEmpty())
 		{
 			// Include the matrix transformation
-			RenderSystem.pushMatrix();
-			RenderSystem.multMatrix(transform.last().pose());
+			RenderSystem.applyModelViewMatrix();
 
 			// Counteract the zlevel increase, because multiplied with the matrix, it goes out of view
 			ItemRenderer itemRenderer = renderItem();
@@ -422,11 +430,10 @@ public class ManualUtils
 			if(overlay)
 			{
 				// Use the Item's font renderer, if available
-				Font font = stack.getItem().getFontRenderer(stack);
+				Font font = null;//TODO stack.getItem().getFontRenderer(stack);
 				font = font!=null?font: Minecraft.getInstance().font;
 				itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
 			}
-			RenderSystem.popMatrix();
 		}
 	}
 }

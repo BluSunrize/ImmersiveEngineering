@@ -11,13 +11,10 @@ package blusunrize.lib.manual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.PrivateAccess;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -196,8 +193,6 @@ public class ManualElementCrafting extends SpecialManualElements
 	@Override
 	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
-		Lighting.turnBackOn();
-
 		int totalYOff = 0;
 		highlighted = ItemStack.EMPTY;
 		for(int i = 0; i < recipeRows.length; i++)
@@ -214,11 +209,9 @@ public class ManualElementCrafting extends SpecialManualElements
 						GuiComponent.fill(transform, x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666);
 					}
 
-				MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
-				ManualUtils.drawTexturedRect(transform, buffers, manual.texture, x+maxX-17,
+				ManualUtils.drawTexturedRect(transform, manual.texture, x+maxX-17,
 						y+totalYOff+heightPixels[i]/2-5, 16, 10, 0/256f,
 						16/256f, 226/256f, 236/256f);
-				buffers.endBatch();
 
 				totalYOff += heightPixels[i]+8;
 			}

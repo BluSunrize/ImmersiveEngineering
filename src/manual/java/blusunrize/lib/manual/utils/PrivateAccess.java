@@ -6,7 +6,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
@@ -20,7 +20,7 @@ public class PrivateAccess
 		try
 		{
 			Method reflectionMethod = ObfuscationReflectionHelper.findMethod(
-					RecipeManager.class, "func_215366_a", RecipeType.class
+					RecipeManager.class, "m_44054_", RecipeType.class
 			);
 			return LOOKUP.get().unreflect(reflectionMethod);
 		} catch(IllegalAccessException e)

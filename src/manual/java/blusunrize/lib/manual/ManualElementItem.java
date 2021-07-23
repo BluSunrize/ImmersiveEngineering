@@ -9,7 +9,6 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.core.NonNullList;
@@ -70,7 +69,6 @@ public class ManualElementItem extends SpecialManualElements
 	@Override
 	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
-		Lighting.turnBackOn();
 		highlighted = ItemStack.EMPTY;
 		int length = stacks.size();
 		if(length > 0)
@@ -98,7 +96,6 @@ public class ManualElementItem extends SpecialManualElements
 			}
 			transform.popPose();
 		}
-		Lighting.turnOff();
 		RenderSystem.enableBlend();
 
 		this.renderHighlightedTooltip(transform, gui, mx, my);

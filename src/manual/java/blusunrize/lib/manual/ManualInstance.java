@@ -34,11 +34,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -50,10 +49,9 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-public abstract class ManualInstance implements ISelectiveResourceReloadListener
+public abstract class ManualInstance implements ResourceManagerReloadListener
 {
 	public ResourceLocation texture;
 	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
@@ -368,7 +366,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	}
 
 	@Override
-	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
 		reset();
 	}

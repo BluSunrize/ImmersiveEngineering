@@ -35,7 +35,6 @@ public class GuiButtonManualNavigation extends Button
 	public void renderButton(PoseStack transform, int mx, int my, float partial)
 	{
 		ManualUtils.bindTexture(gui.texture);
-		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		isHovered = mx >= this.x&&mx < (this.x+this.width)&&my >= this.y&&my < (this.y+this.height);
 		RenderSystem.enableBlend();
 		RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);

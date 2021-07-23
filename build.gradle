@@ -47,12 +47,12 @@ sourceSets {
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
     }
-    datagen {
-        compileClasspath += main.compileClasspath
-        runtimeClasspath += main.runtimeClasspath
-        compileClasspath += main.output
-        runtimeClasspath += main.output
-    }
+    //datagen {
+    //    compileClasspath += main.compileClasspath
+    //    runtimeClasspath += main.runtimeClasspath
+    //    compileClasspath += main.output
+    //    runtimeClasspath += main.output
+    //}
     test {
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
@@ -115,7 +115,7 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config="+modid+".mixins.json"
+            //arg "-mixin.config="+modid+".mixins.json"
             mods {
                 immersiveengineering {
                     source sourceSets.main
@@ -137,7 +137,7 @@ minecraft {
 
             // Disable GUI by default, the IDE console can be used to enter commands
             arg '-nogui'
-            arg "-mixin.config="+modid+".mixins.json"
+            //arg "-mixin.config="+modid+".mixins.json"
 
             mods {
                 immersiveengineering {
@@ -159,13 +159,13 @@ minecraft {
 
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]
-            arg "-mixin.config="+modid+".mixins.json"
-            ideaModule project.name+".datagen"
+            //arg "-mixin.config="+modid+".mixins.json"
+            //ideaModule project.name+".datagen"
 
             mods {
                 immersiveengineering {
                     source sourceSets.main
-                    source sourceSets.datagen
+                    //source sourceSets.datagen
                     source sourceSets.manual
                     source sourceSets.api
                 }
@@ -281,6 +281,7 @@ String buildVersionString() {
     return "${version_minecraft}-${ie_output_version}"
 }
 
+/*
 task datagenJar(type: Jar, dependsOn: datagenClasses) {
     classifier = 'datagen'
     from sourceSets.datagen.output
@@ -288,6 +289,7 @@ task datagenJar(type: Jar, dependsOn: datagenClasses) {
         attributes "FMLModType": "LIBRARY"
     }
 }
+ */
 
 task apiJar(type: Jar, dependsOn: apiClasses) {
     classifier = 'api'
@@ -300,13 +302,13 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
     from sourceSets.manual.allSource
     from sourceSets.api.allSource
-    from sourceSets.datagen.allSource
+    //from sourceSets.datagen.allSource
 }
 
 artifacts {
     archives sourcesJar
     archives shadowJar
-    archives datagenJar
+    //archives datagenJar
     archives apiJar
 }
 
