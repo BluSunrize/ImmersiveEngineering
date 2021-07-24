@@ -33,7 +33,6 @@ import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
@@ -65,9 +64,9 @@ import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.entity.ArmorStandRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
-import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -82,18 +81,17 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.client.registry.IRenderFactory;
-import net.minecraftforge.fml.client.registry.RenderingRegistry;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fmlclient.registry.RenderingRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -151,16 +149,16 @@ public class ClientProxy extends CommonProxy
 		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
 
 		/*Render Layers*/
-		Map<String, PlayerRenderer> skinMap = Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap();
-		PlayerRenderer render = skinMap.get("default");
-		render.addLayer(new IEBipedLayerRenderer<>(render));
-		render = skinMap.get("slim");
-		render.addLayer(new IEBipedLayerRenderer<>(render));
+		Map<String, EntityRenderer<? extends Player>> skinMap = Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap();
+		if (skinMap.get("default") instanceof PlayerRenderer render)
+			render.addLayer(new IEBipedLayerRenderer<>(render));
+		if (skinMap.get("slim") instanceof PlayerRenderer render)
+			render.addLayer(new IEBipedLayerRenderer<>(render));
 		IEManual.addIEManualEntries();
 	}
 
-	private static <T extends Entity> void registerEntityRenderingHandler(
-			Supplier<EntityType<T>> type, IRenderFactory<? super T> renderer
+	private static <T extends Entity, T2 extends T> void registerEntityRenderingHandler(
+			Supplier<EntityType<T2>> type, EntityRendererProvider<T> renderer
 	)
 	{
 		RenderingRegistry.registerEntityRenderingHandler(type.get(), renderer);
@@ -382,35 +380,40 @@ public class ClientProxy extends CommonProxy
 		registerScreen(IEContainerTypes.CRATE_MINECART, CrateScreen.EntityCrate::new);
 	}
 
+	private static <T extends BlockEntity>
+	void registerNoContext(BlockEntityType<? extends T> type, Supplier<BlockEntityRenderer<T>> render) {
+		BlockEntityRenderers.register(type, $ -> render.get());
+	}
+
 	private static void registerBERenders()
 	{
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.CHARGING_STATION.get(), ChargingStationRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.TESLACOIL.get(), TeslaCoilRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.CLOCHE.get(), ClocheRenderer::new);
+		registerNoContext(IETileTypes.CHARGING_STATION.get(), ChargingStationRenderer::new);
+		registerNoContext(IETileTypes.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
+		registerNoContext(IETileTypes.TESLACOIL.get(), TeslaCoilRenderer::new);
+		registerNoContext(IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
+		registerNoContext(IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
+		registerNoContext(IETileTypes.CLOCHE.get(), ClocheRenderer::new);
 		// MULTIBLOCKS
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.METAL_PRESS.get(), MetalPressRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.CRUSHER.get(), CrusherRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.SAWMILL.get(), SawmillRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.SHEETMETAL_TANK.get(), SheetmetalTankRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.SILO.get(), SiloRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.SQUEEZER.get(), SqueezerRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.DIESEL_GENERATOR.get(), DieselGeneratorRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.BUCKET_WHEEL.get(), BucketWheelRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.ARC_FURNACE.get(), ArcFurnaceRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.AUTO_WORKBENCH.get(), AutoWorkbenchRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.BOTTLING_MACHINE.get(), BottlingMachineRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.MIXER.get(), MixerRenderer::new);
+		registerNoContext(IETileTypes.METAL_PRESS.get(), MetalPressRenderer::new);
+		registerNoContext(IETileTypes.CRUSHER.get(), CrusherRenderer::new);
+		registerNoContext(IETileTypes.SAWMILL.get(), SawmillRenderer::new);
+		registerNoContext(IETileTypes.SHEETMETAL_TANK.get(), SheetmetalTankRenderer::new);
+		registerNoContext(IETileTypes.SILO.get(), SiloRenderer::new);
+		registerNoContext(IETileTypes.SQUEEZER.get(), SqueezerRenderer::new);
+		registerNoContext(IETileTypes.DIESEL_GENERATOR.get(), DieselGeneratorRenderer::new);
+		registerNoContext(IETileTypes.BUCKET_WHEEL.get(), BucketWheelRenderer::new);
+		registerNoContext(IETileTypes.ARC_FURNACE.get(), ArcFurnaceRenderer::new);
+		registerNoContext(IETileTypes.AUTO_WORKBENCH.get(), AutoWorkbenchRenderer::new);
+		registerNoContext(IETileTypes.BOTTLING_MACHINE.get(), BottlingMachineRenderer::new);
+		registerNoContext(IETileTypes.MIXER.get(), MixerRenderer::new);
 		//WOOD
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.WATERMILL.get(), WatermillRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.WINDMILL.get(), WindmillRenderer::new);
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
+		registerNoContext(IETileTypes.WATERMILL.get(), WatermillRenderer::new);
+		registerNoContext(IETileTypes.WINDMILL.get(), WindmillRenderer::new);
+		registerNoContext(IETileTypes.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
 		//STONE
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
+		registerNoContext(IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
 		//CLOTH
-		ClientRegistry.bindTileEntityRenderer(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
+		registerNoContext(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
@@ -434,7 +437,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public Item.Properties useIEOBJRenderer(Item.Properties props)
 	{
-		return super.useIEOBJRenderer(props).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE);
+		return super.useIEOBJRenderer(props);//TODO .setISTER(() -> () -> IEOBJItemRenderer.INSTANCE);
 	}
 
 	private static void requestModelsAndTextures()

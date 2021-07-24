@@ -28,7 +28,7 @@ public class CrusherMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/crusher"),
 				new BlockPos(2, 1, 1), new BlockPos(2, 1, 2), new BlockPos(5, 3, 3),
-				() -> Multiblocks.crusher.getDefaultState());
+				() -> Multiblocks.crusher.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class CrusherMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

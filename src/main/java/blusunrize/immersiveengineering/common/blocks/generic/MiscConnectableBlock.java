@@ -36,6 +36,6 @@ public class MiscConnectableBlock<T extends BlockEntity & IImmersiveConnectable>
 	@Override
 	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
-		return tileType.get().create();
+		return tileType.get().create(pos, state);
 	}
 }

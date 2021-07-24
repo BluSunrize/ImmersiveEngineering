@@ -17,8 +17,6 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,19 +24,14 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class DieselGeneratorRenderer extends BlockEntityRenderer<DieselGeneratorTileEntity>
+public class DieselGeneratorRenderer extends IEBlockEntityRenderer<DieselGeneratorTileEntity>
 {
 	public static DynamicModel<Direction> FAN;
-
-	public DieselGeneratorRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(DieselGeneratorTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		BlockPos blockPos = te.getBlockPos();

@@ -768,7 +768,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 		protected void processFinish(PoweredMultiblockTileEntity<?, ArcFurnaceRecipe> te)
 		{
 			super.processFinish(te);
-			te.getWorldNonnull().blockEvent(te.getBlockPos(), te.getBlockState().getBlock(), 0, 40);
+			te.getLevelNonnull().blockEvent(te.getBlockPos(), te.getBlockState().getBlock(), 0, 40);
 		}
 	}
 

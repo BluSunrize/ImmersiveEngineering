@@ -34,7 +34,7 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/excavator"),
 				new BlockPos(1, 1, 5), new BlockPos(1, 1, 5), new BlockPos(3, 3, 6),
-				() -> Multiblocks.excavator.getDefaultState());
+				() -> Multiblocks.excavator.defaultBlockState());
 	}
 
 	@Override
@@ -84,7 +84,8 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

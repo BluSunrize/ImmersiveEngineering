@@ -29,7 +29,7 @@ public class FermenterMultiblock extends IETemplateMultiblock
 		super(
 				new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/fermenter"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 1), new BlockPos(3, 3, 3),
-				() -> Multiblocks.fermenter.getDefaultState()
+				() -> Multiblocks.fermenter.defaultBlockState()
 		);
 	}
 
@@ -59,7 +59,8 @@ public class FermenterMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

@@ -23,6 +23,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
@@ -175,7 +176,7 @@ public class IEFluids
 				}
 
 				@Override
-				public int getBurnTime(ItemStack itemStack)
+				public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
 				{
 					return burnTime;
 				}

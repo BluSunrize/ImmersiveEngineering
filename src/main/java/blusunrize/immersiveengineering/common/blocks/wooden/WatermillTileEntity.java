@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralM
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

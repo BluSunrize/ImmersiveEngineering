@@ -191,7 +191,7 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 				master.addProcessToQueue(process, false);
 				stack.shrink(displayStack.getCount());
 				if(stack.getCount() <= 0)
-					entity.remove();
+					entity.discard();
 			}
 		}
 	}

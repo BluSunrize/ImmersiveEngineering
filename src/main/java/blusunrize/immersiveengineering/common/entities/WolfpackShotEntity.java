@@ -53,6 +53,6 @@ public class WolfpackShotEntity extends RevolvershotHomingEntity
 			hit.hurt(IEDamageSources.causeWolfpackDamage(this, shooter),
 					IEServerConfig.TOOLS.bulletDamage_WolfpackPart.get().floatValue());
 		}
-		this.remove();
+		this.discard();
 	}
 }

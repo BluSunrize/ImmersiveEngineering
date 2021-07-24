@@ -20,11 +20,13 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -40,7 +42,12 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 {
-	public static final BlockEntityWithoutLevelRenderer INSTANCE = new IEOBJItemRenderer();
+	public static final BlockEntityWithoutLevelRenderer INSTANCE = null;//TODO new IEOBJItemRenderer();
+
+	public IEOBJItemRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_)
+	{
+		super(p_172550_, p_172551_);
+	}
 
 	@Override
 	public void renderByItem(ItemStack stack, TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn,
@@ -51,8 +58,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 		{
 			IOBJModelCallback<ItemStack> callback = (IOBJModelCallback<ItemStack>)stack.getItem();
 			Level w = IESmartObjModel.tempEntityStatic!=null?IESmartObjModel.tempEntityStatic.level: null;
-			BakedModel model = mc().getItemRenderer().getModel(stack, w,
-					IESmartObjModel.tempEntityStatic);
+			BakedModel model = mc().getItemRenderer().getModel(stack, w, IESmartObjModel.tempEntityStatic, 0);
 			if(model instanceof IESmartObjModel)
 			{
 
@@ -120,7 +126,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			VertexConsumer builder = IERenderTypes.disableCull(buffer).getBuffer(actualType);
 			Vector4f color = quadsForLayer.layer.getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer)
-				builder.addVertexData(
+				builder.putBulkData(
 						matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay
 				);
 			matrix.scale(1.01F, 1.01F, 1.01F);

@@ -11,31 +11,30 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores;
+import blusunrize.immersiveengineering.common.world.IECountPlacement.IEFeatureSpreadConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.UniformInt;
 import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.SimpleFeatureDecorator;
+import net.minecraft.world.level.levelgen.placement.RepeatingDecorator;
 
+import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-public class IECountPlacement extends SimpleFeatureDecorator<IECountPlacement.IEFeatureSpreadConfig>
+public class IECountPlacement extends RepeatingDecorator<IEFeatureSpreadConfig>
 {
 	public IECountPlacement()
 	{
 		super(IEFeatureSpreadConfig.CODEC);
 	}
 
+	//TODO why is this constant? Was it constant before or did I mess up the port?
 	@Override
-	public Stream<BlockPos> place(Random random, IEFeatureSpreadConfig config, BlockPos pos)
+	protected int count(@Nonnull Random random, IEFeatureSpreadConfig config, @Nonnull BlockPos pos)
 	{
-		return IntStream.range(0, config.getSpreadFeature().sample(random))
-				.mapToObj(count -> pos);
+		return config.getCount();
 	}
 
 	public static class IEFeatureSpreadConfig implements DecoratorConfiguration, FeatureConfiguration
@@ -58,9 +57,9 @@ public class IECountPlacement extends SimpleFeatureDecorator<IECountPlacement.IE
 			count = path;
 		}
 
-		public UniformInt getSpreadFeature()
+		public int getCount()
 		{
-			return UniformInt.fixed(IEServerConfig.getRawConfig().getInt(count));
+			return IEServerConfig.getRawConfig().getInt(count);
 		}
 	}
 }

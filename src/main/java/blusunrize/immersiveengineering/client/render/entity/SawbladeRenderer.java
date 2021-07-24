@@ -26,8 +26,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -41,7 +41,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 
 	public static final ResourceLocation SAWBLADE = new ResourceLocation(ImmersiveEngineering.MODID, "item/sawblade_blade");
 
-	public SawbladeRenderer(EntityRenderDispatcher renderManager)
+	public SawbladeRenderer(Context renderManager)
 	{
 		super(renderManager);
 	}
@@ -60,8 +60,8 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		matrixStackIn.pushPose();
 		matrixStackIn.scale(.75f, .75f, .75f);
 
-		double yaw = entity.yRotO+(entity.yRot-entity.yRotO)*partialTicks-90.0F;
-		double pitch = entity.xRotO+(entity.xRot-entity.xRotO)*partialTicks;
+		double yaw = entity.yRotO+(entity.getYRot()-entity.yRotO)*partialTicks-90.0F;
+		double pitch = entity.xRotO+(entity.getXRot()-entity.xRotO)*partialTicks;
 		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), (float)yaw, true));
 		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 0.0F, 1.0F), (float)pitch, true));
 

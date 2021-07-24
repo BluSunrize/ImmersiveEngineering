@@ -22,6 +22,8 @@ import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.level.entity.LevelEntityGetter;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
@@ -68,6 +70,12 @@ public class TemplateWorld extends Level
 	{
 	}
 
+	@Override
+	public String gatherChunkSourceStats()
+	{
+		return "";
+	}
+
 	@Nullable
 	@Override
 	public Entity getEntity(int id)
@@ -83,9 +91,9 @@ public class TemplateWorld extends Level
 	}
 
 	@Override
-	public void setMapData(@Nonnull MapItemSavedData mapDataIn)
+	public void setMapData(String key, MapItemSavedData mapDataIn)
 	{
-		maps.put(mapDataIn.getId(), mapDataIn);
+		maps.put(key, mapDataIn);
 	}
 
 	@Override
@@ -120,6 +128,12 @@ public class TemplateWorld extends Level
 		return TagContainer.EMPTY;
 	}
 
+	@Override
+	protected LevelEntityGetter<Entity> getEntities()
+	{
+		return new EmptyLevelEntityGetter<>();
+	}
+
 	@Nonnull
 	@Override
 	public TickList<Block> getBlockTicks()
@@ -144,6 +158,12 @@ public class TemplateWorld extends Level
 	@Override
 	public void levelEvent(@Nullable Player player, int type, @Nonnull BlockPos pos, int data)
 	{
+	}
+
+	@Override
+	public void gameEvent(@Nullable Entity p_151549_, GameEvent p_151550_, BlockPos p_151551_)
+	{
+
 	}
 
 	@Nonnull

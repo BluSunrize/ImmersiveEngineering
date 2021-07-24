@@ -21,8 +21,6 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -32,15 +30,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO maybe replace with Forge animations?
-public class WindmillRenderer extends BlockEntityRenderer<WindmillTileEntity>
+public class WindmillRenderer extends IEBlockEntityRenderer<WindmillTileEntity>
 {
 	public static DynamicModel<Void> MODEL;
 	private static final IVertexBufferHolder[] BUFFERS = new IVertexBufferHolder[9];
-
-	public WindmillRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	private static IVertexBufferHolder getBufferHolder(int sails)
 	{
@@ -53,7 +46,7 @@ public class WindmillRenderer extends BlockEntityRenderer<WindmillTileEntity>
 					parts.add("sail_"+i);
 				IModelData data = new SinglePropertyModelData<>(
 						new IEObjState(VisibilityList.show(parts)), IEProperties.Model.IE_OBJ_STATE);
-				return model.getQuads(WoodenDevices.windmill.getDefaultState(), null, Utils.RAND, data);
+				return model.getQuads(WoodenDevices.windmill.defaultBlockState(), null, Utils.RAND, data);
 			});
 		return BUFFERS[sails];
 	}
@@ -62,7 +55,7 @@ public class WindmillRenderer extends BlockEntityRenderer<WindmillTileEntity>
 	public void render(WindmillTileEntity tile, float partialTicks, PoseStack transform, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
+		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 		transform.pushPose();
 		transform.translate(.5, .5, .5);

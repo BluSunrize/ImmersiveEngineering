@@ -273,9 +273,9 @@ public class IEFluid extends FlowingFluid
 			BucketItem bucketitem = (BucketItem)stack.getItem();
 			BlockPos blockpos = source.getPos().relative(source.getBlockState().getValue(DispenserBlock.FACING));
 			Level world = source.getLevel();
-			if(bucketitem.emptyBucket(null, world, blockpos, null))
+			if(bucketitem.emptyContents(null, world, blockpos, null))
 			{
-				bucketitem.checkExtraContent(world, stack, blockpos);
+				bucketitem.checkExtraContent(null, world, stack, blockpos);
 				return new ItemStack(Items.BUCKET);
 			}
 			else

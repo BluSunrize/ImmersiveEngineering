@@ -28,7 +28,7 @@ public class BucketWheelMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/bucket_wheel"),
 				new BlockPos(3, 3, 0), new BlockPos(3, 3, 0), new BlockPos(7, 7, 1),
-				() -> Multiblocks.bucketWheel.getDefaultState());
+				() -> Multiblocks.bucketWheel.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class BucketWheelMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

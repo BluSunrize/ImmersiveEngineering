@@ -26,8 +26,8 @@ import net.minecraft.client.model.MinecartModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
@@ -47,7 +47,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 
 	private final MinecartRenderer<T> baseRenderer;
 
-	public ShaderMinecartRenderer(MinecartRenderer<T> base, EntityRenderDispatcher manager)
+	public ShaderMinecartRenderer(MinecartRenderer<T> base, Context manager)
 	{
 		super(manager);
 		this.baseRenderer = base;
@@ -126,7 +126,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 		double d1 = Mth.lerp(partialTicks, entityIn.yOld, entityIn.getY());
 		double d2 = Mth.lerp(partialTicks, entityIn.zOld, entityIn.getZ());
 		Vec3 vec3d = entityIn.getPos(d0, d1, d2);
-		float f3 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.xRot);
+		float f3 = Mth.lerp(partialTicks, entityIn.xRotO, entityIn.getXRot());
 		if(vec3d!=null)
 		{
 			Vec3 vec3d1 = entityIn.getPosOffs(d0, d1, d2, 0.3F);
@@ -162,7 +162,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 
 	public static <T extends Entity> void overrideModelIfMinecart(EntityType<T> type)
 	{
-		EntityRenderDispatcher rendererManager = Minecraft.getInstance().getEntityRenderDispatcher();
+		Context rendererManager = Minecraft.getInstance().getContext();
 		EntityRenderer<T> render = (EntityRenderer<T>)rendererManager.renderers.get(type);
 		if(render instanceof MinecartRenderer<?>)
 			rendererManager.register(

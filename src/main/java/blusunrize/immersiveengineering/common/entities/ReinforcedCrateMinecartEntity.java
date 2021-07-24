@@ -43,7 +43,7 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 	@Override
 	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.WoodenDevices.reinforcedCrate.getDefaultState();
+		return IEBlocks.WoodenDevices.reinforcedCrate.defaultBlockState();
 	}
 
 }

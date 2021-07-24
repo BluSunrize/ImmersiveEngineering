@@ -28,7 +28,7 @@ public class MixerMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/mixer"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 1), new BlockPos(3, 3, 3),
-				() -> Multiblocks.mixer.getDefaultState());
+				() -> Multiblocks.mixer.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class MixerMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

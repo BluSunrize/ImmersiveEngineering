@@ -39,7 +39,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 	public ModWorkbenchContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ModWorkbenchTileEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
-		this.world = tile.getWorldNonnull();
+		this.world = tile.getLevelNonnull();
 		this.inventoryPlayer = inventoryPlayer;
 		rebindSlots();
 	}
@@ -186,7 +186,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 
 	@Nonnull
 	@Override
-	public ItemStack clicked(int id, int dragType, ClickType clickType, Player player)
+	public void clicked(int id, int dragType, ClickType clickType, Player player)
 	{
 		ItemStack ret = super.clicked(id, dragType, clickType, player);
 		tile.markContainingBlockForUpdate(null);

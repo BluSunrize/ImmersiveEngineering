@@ -158,7 +158,7 @@ public class CoresampleItem extends IEBaseItem
 
 			if(!stack.isEmpty()&&player.mayUseItemAt(pos, side, stack)&&world.getBlockState(pos).canBeReplaced(blockCtx))
 			{
-				BlockState coresample = StoneDecoration.coresample.getDefaultState();
+				BlockState coresample = StoneDecoration.coresample.defaultBlockState();
 				if(world.setBlock(pos, coresample, 3))
 				{
 					((IEBaseBlock)StoneDecoration.coresample.get()).onIEBlockPlacedBy(blockCtx, coresample);

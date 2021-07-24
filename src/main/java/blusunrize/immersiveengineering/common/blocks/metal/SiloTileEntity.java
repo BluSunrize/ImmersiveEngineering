@@ -284,7 +284,6 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 				if(silo.storageAmount <= 0&&!silo.lockItem)
 					silo.identStack = ItemStack.EMPTY;
 				silo.setChanged();
-				silo.clearCache();
 				silo.markContainingBlockForUpdate(null);
 			}
 			return out;

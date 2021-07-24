@@ -427,7 +427,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&w==1&&l!=1)
 		{
-			BlockEntity tile = getWorldNonnull().getBlockEntity(pos);
+			BlockEntity tile = getLevelNonnull().getBlockEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
 				((ConveyorBeltTileEntity)tile).setFacing(this.getFacing());
 		}
@@ -619,8 +619,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public void setLevelAndPosition(Level world, BlockPos blockPos) {
-		super.setLevelAndPosition(world, blockPos);
+	public void setLevel(Level world)
+	{
+		super.setLevel(world);
 		if(getLevel()!=null)
 			for(CrafterPatternInventory pattern : patterns)
 				pattern.recalculateOutput();
@@ -709,7 +710,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			if(tile.getLevel()!=null)
 			{
 				CraftingContainer invC = Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, inv);
-				this.recipe = Utils.findCraftingRecipe(invC, tile.getWorldNonnull()).orElse(null);
+				this.recipe = Utils.findCraftingRecipe(invC, tile.getLevelNonnull()).orElse(null);
 				this.inv.set(9, recipe!=null?recipe.assemble(invC): ItemStack.EMPTY);
 			}
 		}

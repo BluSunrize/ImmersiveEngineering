@@ -12,8 +12,8 @@ package blusunrize.immersiveengineering.common.config;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.fml.config.ModConfig.ModConfigEvent;
 import net.minecraftforge.fml.config.ModConfig.Type;
+import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;

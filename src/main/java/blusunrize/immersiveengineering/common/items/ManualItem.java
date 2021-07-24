@@ -46,7 +46,7 @@ public class ManualItem extends IEBaseItem
 		BlockPos blockpos = context.getClickedPos();
 		BlockState blockstate = world.getBlockState(blockpos);
 		if(blockstate.getBlock() instanceof LecternBlock)
-			return LecternBlock.tryPlaceBook(world, context.getClickedPos(), blockstate, context.getItemInHand()) ? InteractionResult.SUCCESS : InteractionResult.PASS;
+			return LecternBlock.tryPlaceBook(context.getPlayer(), world, context.getClickedPos(), blockstate, context.getItemInHand()) ? InteractionResult.SUCCESS : InteractionResult.PASS;
 		return InteractionResult.PASS;
 	}
 }

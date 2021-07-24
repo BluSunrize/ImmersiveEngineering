@@ -98,7 +98,7 @@ public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandle
 	@Override
 	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
-		return new ConveyorBeltTileEntity(typeName);
+		return new ConveyorBeltTileEntity(typeName, pos, state);
 	}
 
 	@Override

@@ -9,7 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -17,19 +18,15 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class WatermillBlock extends IETileProviderBlock
+public class WatermillBlock extends GenericTileBlock<WatermillTileEntity>
 {
 	public WatermillBlock(Properties props)
 	{
-		super(props);
+		super(IETileTypes.WATERMILL, props);
 	}
 
 	@Override
@@ -37,13 +34,6 @@ public class WatermillBlock extends IETileProviderBlock
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		return new WatermillTileEntity();
 	}
 
 	@Override

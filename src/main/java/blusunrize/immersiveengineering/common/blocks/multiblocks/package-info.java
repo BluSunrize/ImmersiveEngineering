@@ -11,6 +11,6 @@
 @MethodsReturnNonnullByDefault
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

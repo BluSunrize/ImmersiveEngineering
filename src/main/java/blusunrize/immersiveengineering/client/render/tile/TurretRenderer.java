@@ -27,8 +27,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -36,17 +34,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class TurretRenderer extends BlockEntityRenderer<TurretTileEntity>
+public class TurretRenderer extends IEBlockEntityRenderer<TurretTileEntity<?>>
 {
-	public TurretRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 	@Override
-	public void render(TurretTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(TurretTileEntity<?> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
+		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 
 		//Grab model + correct eextended state
@@ -64,7 +57,7 @@ public class TurretRenderer extends BlockEntityRenderer<TurretTileEntity>
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), tile.rotationYaw, true));
 		matrixStack.mulPose(new Quaternion(new Vector3f(tile.getFacing().getStepZ(), 0, -tile.getFacing().getStepX()), tile.rotationPitch, true));
 
-		renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getBlockPos(), true, combinedLightIn, "gun");
+		renderModelPart(bufferIn, matrixStack, tile.getLevelNonnull(), state, model, tile.getBlockPos(), true, combinedLightIn, "gun");
 		if(tile instanceof TurretGunTileEntity)
 		{
 			if(((TurretGunTileEntity)tile).cycleRender > 0)
@@ -77,7 +70,7 @@ public class TurretRenderer extends BlockEntityRenderer<TurretTileEntity>
 
 				matrixStack.translate(-tile.getFacing().getStepX()*cycle*.3125, 0, -tile.getFacing().getStepZ()*cycle*.3125);
 			}
-			renderModelPart(bufferIn, matrixStack, tile.getWorldNonnull(), state, model, tile.getBlockPos(), false, combinedLightIn, "action");
+			renderModelPart(bufferIn, matrixStack, tile.getLevelNonnull(), state, model, tile.getBlockPos(), false, combinedLightIn, "action");
 		}
 
 		matrixStack.popPose();

@@ -6,7 +6,6 @@ import blusunrize.immersiveengineering.api.wires.NetHandlerCapability;
 import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -21,22 +20,7 @@ public class CapabilityInit
 {
 	public static void register()
 	{
-		CapabilityManager.INSTANCE.register(GlobalWireNetwork.class, new Capability.IStorage<GlobalWireNetwork>()
-		{
-			@Override
-			public Tag writeNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side)
-			{
-				return instance.writeToNBT();
-			}
-
-			@Override
-			public void readNBT(Capability<GlobalWireNetwork> capability, GlobalWireNetwork instance, Direction side, Tag nbt)
-			{
-				instance.readFromNBT((CompoundTag)nbt);
-			}
-		}, () -> {
-			throw new IllegalStateException("Can not create global wire network without a world");
-		});
+		CapabilityManager.INSTANCE.register(GlobalWireNetwork.class);
 	}
 
 	public static class Provider implements ICapabilityProvider, INBTSerializable<CompoundTag>

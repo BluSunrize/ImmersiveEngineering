@@ -8,37 +8,20 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
-import net.minecraft.core.BlockPos;
+import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class BarrelBlock extends IETileProviderBlock
+public class BarrelBlock
 {
-	private final boolean metal;
-
-	public BarrelBlock(BlockBehaviour.Properties props, boolean metal)
-	{
-		super(props);
-		this.metal = metal;
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		if(metal)
-			return new MetalBarrelTileEntity();
+	public static GenericTileBlock<? extends WoodenBarrelTileEntity> make(BlockBehaviour.Properties props, boolean metal) {
+		if (metal)
+			return new GenericTileBlock<>(IETileTypes.METAL_BARREL, props);
 		else
-			return new WoodenBarrelTileEntity();
+			return new GenericTileBlock<>(IETileTypes.WOODEN_BARREL, props);
 	}
 
 	public static Block.Properties getProperties(boolean metal)

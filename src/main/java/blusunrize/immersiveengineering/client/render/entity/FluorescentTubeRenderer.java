@@ -20,8 +20,8 @@ import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -36,7 +36,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	};
 	TextureAtlasSprite tex;
 
-	public FluorescentTubeRenderer(EntityRenderDispatcher renderManager)
+	public FluorescentTubeRenderer(Context renderManager)
 	{
 		super(renderManager);
 		shadowStrength = 0;

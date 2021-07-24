@@ -196,7 +196,7 @@ public class ModelUtils
 
 	public static ResourceLocation getSideTexture(@Nonnull ItemStack stack, Direction side)
 	{
-		BakedModel model = mc().getItemRenderer().getModel(stack, null, null);
+		BakedModel model = mc().getItemRenderer().getModel(stack, null, null, 0);
 		return getSideTexture(model, side, null);
 	}
 
@@ -213,6 +213,6 @@ public class ModelUtils
 			quads = model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 		if(quads.isEmpty())//no quads at all D:
 			return null;
-		return quads.get(0).func_187508_a().getName();
+		return quads.get(0).getSprite().getName();
 	}
 }

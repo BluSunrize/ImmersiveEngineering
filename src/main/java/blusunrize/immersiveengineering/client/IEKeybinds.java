@@ -13,7 +13,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.fml.client.registry.ClientRegistry;
+import net.minecraftforge.fmlclient.registry.ClientRegistry;
 import org.lwjgl.glfw.GLFW;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;

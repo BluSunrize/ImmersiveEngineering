@@ -101,7 +101,7 @@ public class IEExplosiveEntity extends PrimedTnt
 		if(this.block!=null)
 		{
 			this.entityData.set(dataMarker_block, Optional.of(this.block));
-			this.entityData.set(dataMarker_fuse, this.getLife());
+			this.entityData.set(dataMarker_fuse, this.getFuse());
 		}
 	}
 
@@ -169,11 +169,11 @@ public class IEExplosiveEntity extends PrimedTnt
 		{
 			this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
 		}
-		int newFuse = this.getLife()-1;
+		int newFuse = this.getFuse()-1;
 		this.setFuse(newFuse);
 		if(newFuse <= 0)
 		{
-			this.remove();
+			this.discard();
 
 			Explosion explosion = new IEExplosion(level, this, getX(), getY()+(getBbHeight()/16f), getZ(), size, isFlaming, mode)
 					.setDropChance(explosionDropChance);

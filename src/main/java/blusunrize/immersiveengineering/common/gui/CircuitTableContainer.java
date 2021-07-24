@@ -44,10 +44,10 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 			}
 
 			@Override
-			public ItemStack onTake(Player player, ItemStack stack)
+			public void onTake(Player player, ItemStack stack)
 			{
 				consumeInputs();
-				return super.onTake(player, stack);
+				super.onTake(player, stack);
 			}
 		});
 		this.slotCount++;

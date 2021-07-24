@@ -35,8 +35,8 @@ public class WireTemplateHelper
 		template.getStoredConnections().clear();
 		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(worldIn);
 		BlockPos endPos = startPos.offset(size).offset(-1, -1, -1);
-		BoundingBox box = new BoundingBox(startPos, endPos);
-		Vec3i offset = new Vec3i(box.x0, box.y0, box.z0);
+		BoundingBox box = BoundingBox.fromCorners(startPos, endPos);
+		Vec3i offset = new Vec3i(box.minX(), box.minY(), box.minZ());
 		for(BlockPos pos : BlockPos.betweenClosed(startPos, endPos))
 		{
 			BlockEntity te = worldIn.getBlockEntity(pos);

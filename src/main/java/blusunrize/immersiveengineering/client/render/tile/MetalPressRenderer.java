@@ -23,8 +23,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,19 +34,14 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity.*;
 
-public class MetalPressRenderer extends BlockEntityRenderer<MetalPressTileEntity>
+public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressTileEntity>
 {
 	public static DynamicModel<Void> PISTON;
-
-	public MetalPressRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(MetalPressTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
@@ -97,7 +90,7 @@ public class MetalPressRenderer extends BlockEntityRenderer<MetalPressTileEntity
 		matrixStack.translate(0, -piston*.6875f, 0);
 		matrixStack.pushPose();
 		matrixStack.translate(-0.5, -0.5, -0.5);
-		blockRenderer.getModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
+		blockRenderer.getModelRenderer().renderModel(te.getLevelNonnull(), model, state, blockPos, matrixStack,
 				bufferIn.getBuffer(RenderType.solid()), true,
 				te.getLevel().random, 0, combinedOverlayIn, EmptyModelData.INSTANCE);
 		matrixStack.popPose();
@@ -109,7 +102,7 @@ public class MetalPressRenderer extends BlockEntityRenderer<MetalPressTileEntity
 			float scale = .75f;
 			matrixStack.scale(scale, scale, 1);
 			ClientUtils.mc().getItemRenderer().renderStatic(te.mold, TransformType.FIXED, combinedLightIn, combinedOverlayIn,
-					matrixStack, bufferIn);
+					matrixStack, bufferIn, 0);
 		}
 		matrixStack.popPose();
 		matrixStack.translate(0, -.35, 1.25);
@@ -130,7 +123,7 @@ public class MetalPressRenderer extends BlockEntityRenderer<MetalPressTileEntity
 			float scale = .625f;
 			matrixStack.scale(scale, scale, 1);
 			ClientUtils.mc().getItemRenderer().renderStatic(displays.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,
-					matrixStack, bufferIn);
+					matrixStack, bufferIn, 0);
 			matrixStack.popPose();
 		}
 		matrixStack.popPose();

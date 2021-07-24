@@ -33,7 +33,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -45,8 +44,6 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.VanillaResourceType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,7 +51,6 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.function.Predicate;
 
 import static net.minecraft.core.Direction.*;
 
@@ -260,13 +256,6 @@ public class ModelConfigurableSides extends BakedIEModel
 		public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 		{
 			modelCache.invalidateAll();
-		}
-
-		@Override
-		public void onResourceManagerReload(@Nonnull ResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
-		{
-			if(resourcePredicate.test(VanillaResourceType.MODELS)||resourcePredicate.test(VanillaResourceType.TEXTURES))
-				onResourceManagerReload(resourceManager);
 		}
 
 		@Nonnull

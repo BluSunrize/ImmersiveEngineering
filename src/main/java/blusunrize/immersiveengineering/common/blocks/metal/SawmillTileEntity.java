@@ -433,12 +433,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 					return;
 				master.insertItemToProcess(stack, false);
 				if(stack.getCount() <= 0)
-					entity.remove();
+					entity.discard();
 			}
 			else if(entity instanceof LivingEntity&&!master.sawblade.isEmpty()
 					&&CACHED_SAWBLADE_AABB.apply(master).intersects(entity.getBoundingBox()))
 			{
-				if(entity instanceof Player&&((Player)entity).abilities.invulnerable)
+				if(entity instanceof Player&&((Player)entity).getAbilities().invulnerable)
 					return;
 
 				int consumed = master.energyStorage.extractEnergy(80, true);

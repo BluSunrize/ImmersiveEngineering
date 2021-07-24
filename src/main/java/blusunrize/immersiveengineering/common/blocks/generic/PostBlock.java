@@ -117,13 +117,13 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 	public boolean canIEBlockBePlaced(@Nonnull BlockState newState, BlockPlaceContext context)
 	{
 		BlockPos startingPos = context.getClickedPos();
-		Level world = context.getLevel();
+		Level level = context.getLevel();
 		for(int hh = 1; hh <= 3; hh++)
 		{
 			BlockPos pos = startingPos.above(hh);
 			BlockPlaceContext dummyContext = BlockPlaceContext.at(context, pos, context.getClickedFace());
-			BlockState oldState = world.getBlockState(pos);
-			if(Level.isOutsideBuildHeight(pos)||!oldState.getBlock().canBeReplaced(oldState, dummyContext))
+			BlockState oldState = level.getBlockState(pos);
+			if(level.isOutsideBuildHeight(pos)||!oldState.getBlock().canBeReplaced(oldState, dummyContext))
 				return false;
 		}
 		return true;
@@ -343,7 +343,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 				ret = hasArmFor(pos, dir, world);
 			else
 			{
-				if(world.getBlockState(neighborPos).isAir(world, neighborPos)||dir.getAxis()!=Axis.Y)
+				if(world.getBlockState(neighborPos).isAir()||dir.getAxis()!=Axis.Y)
 					ret = false;
 				else
 				{

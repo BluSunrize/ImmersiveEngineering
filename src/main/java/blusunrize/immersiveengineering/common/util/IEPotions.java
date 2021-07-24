@@ -14,6 +14,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -26,12 +29,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.client.EffectRenderer;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class IEPotions
 {
@@ -94,21 +99,36 @@ public class IEPotions
 		}
 
 		@Override
-		public boolean shouldRender(MobEffectInstance effect)
+		public void initializeClient(Consumer<EffectRenderer> consumer)
 		{
-			return showInInventory;
-		}
+			consumer.accept(new EffectRenderer()
+			{
+				@Override
+				public void renderInventoryEffect(MobEffectInstance effect, EffectRenderingInventoryScreen<?> gui, PoseStack mStack, int x, int y, float z)
+				{}
 
-		@Override
-		public boolean shouldRenderInvText(MobEffectInstance effect)
-		{
-			return showInInventory;
-		}
+				@Override
+				public void renderHUDEffect(MobEffectInstance effect, GuiComponent gui, PoseStack mStack, int x, int y, float z, float alpha)
+				{}
 
-		@Override
-		public boolean shouldRenderHUD(MobEffectInstance effect)
-		{
-			return showInHud;
+				@Override
+				public boolean shouldRender(MobEffectInstance effect)
+				{
+					return showInInventory;
+				}
+
+				@Override
+				public boolean shouldRenderInvText(MobEffectInstance effect)
+				{
+					return showInInventory;
+				}
+
+				@Override
+				public boolean shouldRenderHUD(MobEffectInstance effect)
+				{
+					return showInInventory;
+				}
+			});
 		}
 
 		@Override

@@ -17,25 +17,18 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 
 import java.util.List;
 
-public class CrusherRenderer extends BlockEntityRenderer<CrusherTileEntity>
+public class CrusherRenderer extends IEBlockEntityRenderer<CrusherTileEntity>
 {
 	public static DynamicModel<Direction> BARREL;
-
-	public CrusherRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(CrusherTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		Direction dir = te.getFacing();
@@ -66,7 +59,7 @@ public class CrusherRenderer extends BlockEntityRenderer<CrusherTileEntity>
 	{
 		matrix.pushPose();
 		matrix.translate(-.5, -.5, -.5);
-		List<BakedQuad> quads = BARREL.getNullQuads(facing, Multiblocks.crusher.getDefaultState());
+		List<BakedQuad> quads = BARREL.getNullQuads(facing, Multiblocks.crusher.defaultBlockState());
 		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.solid()), matrix, light, overlay);
 		matrix.popPose();
 	}

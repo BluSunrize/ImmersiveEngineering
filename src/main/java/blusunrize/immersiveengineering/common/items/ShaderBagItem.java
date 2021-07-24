@@ -90,7 +90,7 @@ public class ShaderBagItem extends IEBaseItem
 				stack.shrink(1);
 				if(stack.getCount() <= 0)
 					return new InteractionResultHolder<>(InteractionResult.SUCCESS, shaderItem);
-				if(!player.inventory.add(shaderItem))
+				if(!player.getInventory().add(shaderItem))
 					player.drop(shaderItem, false, true);
 			}
 		return new InteractionResultHolder<>(InteractionResult.PASS, stack);

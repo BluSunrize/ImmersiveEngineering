@@ -36,7 +36,7 @@ import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.DrawHighlightEvent;
+import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Collection;
@@ -246,7 +246,7 @@ public class BlockOverlayUtils
 	/**
 	 * Draw additional block breaking texture at targeted positions
 	 */
-	public static void drawAdditionalBlockbreak(DrawHighlightEvent ev, Player player, Collection<BlockPos> blocks)
+	public static void drawAdditionalBlockbreak(DrawSelectionEvent.HighlightBlock ev, Player player, Collection<BlockPos> blocks)
 	{
 		Vec3 renderView = ev.getInfo().getPosition();
 		for(BlockPos pos : blocks)
@@ -281,7 +281,7 @@ public class BlockOverlayUtils
 			if(frameItem.getItem()==Items.FILLED_MAP&&ItemNBTHelper.hasKey(frameItem, "Decorations", 9))
 			{
 				Level world = frameEntity.getCommandSenderWorld();
-				MapItemSavedData mapData = MapItem.getOrCreateSavedData(frameItem, world);
+				MapItemSavedData mapData = MapItem.getSavedData(frameItem, world);
 				if(mapData!=null)
 				{
 					Font font = ClientUtils.font();

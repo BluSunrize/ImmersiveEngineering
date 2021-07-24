@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
@@ -77,7 +76,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	public BuzzsawItem()
 	{
-		super(withIEOBJRender().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "BUZZSAW");
+		super(withIEOBJRender().stacksTo(1), "BUZZSAW");
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */
@@ -494,9 +493,9 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
-			if(!block.isAir(state, world, pos)&&state.getDestroyProgress(player, world, pos)!=0)
+			if(!state.isAir()&&state.getDestroyProgress(player, world, pos)!=0)
 			{
-				if(player.abilities.instabuild)
+				if(player.getAbilities().instabuild)
 				{
 					block.playerWillDestroy(world, pos, state, player);
 					if(block.removedByPlayer(state, world, pos, player, false, state.getFluidState()))

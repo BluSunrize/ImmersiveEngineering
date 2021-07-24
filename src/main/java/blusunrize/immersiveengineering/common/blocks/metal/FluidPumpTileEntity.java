@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity.DirectionalFluidOutput;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -217,7 +218,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 			next = openList.get(0);
 			if(!checked.contains(next))
 			{
-				Fluid fluid = Utils.getRelatedFluid(getWorldNonnull(), next);
+				Fluid fluid = Utils.getRelatedFluid(getLevelNonnull(), next);
 				if(fluid!=Fluids.EMPTY&&(fluid!=Fluids.WATER||!infiniteWater)&&(searchFluid==null||fluid==searchFluid))
 				{
 					if(searchFluid==null)
@@ -261,7 +262,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 				CapabilityReference<IFluidHandler> output = neighborFluids.get(f);
 				if(output.isPresent())
 				{
-					BlockEntity tile = getWorldNonnull().getBlockEntity(worldPosition.relative(f));
+					BlockEntity tile = getLevelNonnull().getBlockEntity(worldPosition.relative(f));
 					IFluidHandler handler = output.get();
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeTileEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
@@ -342,7 +343,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 			sideConfig.put(side, IOSideConfig.next(sideConfig.get(side)));
 			this.setChanged();
 			this.markContainingBlockForUpdate(null);
-			getWorldNonnull().blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
+			getLevelNonnull().blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
 			return true;
 		}
 		else if(p.isShiftKeyDown())
@@ -514,10 +515,10 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements IETickableB
 	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
 		BlockPos dummyPos = worldPosition.above();
-		getWorldNonnull().setBlockAndUpdate(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
-				state, getWorldNonnull(), dummyPos
+		getLevelNonnull().setBlockAndUpdate(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
+				state, getLevelNonnull(), dummyPos
 		));
-		BlockEntity tile = getWorldNonnull().getBlockEntity(dummyPos);
+		BlockEntity tile = getLevelNonnull().getBlockEntity(dummyPos);
 		if(tile instanceof FluidPumpTileEntity)
 			((FluidPumpTileEntity)tile).setDummy(true);
 	}

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.PrivateProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -28,7 +27,6 @@ import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -51,6 +49,7 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	 */
 	protected IGeneralMultiblock tempMasterTE;
 
+	@Nullable
 	private BlockState overrideBlockState = null;
 
 	private final EnumMap<Direction, Integer> redstoneBySide = new EnumMap<>(Direction.class);
@@ -100,19 +99,6 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 		writeCustomNBT(nbt, true);
 		return nbt;
 	}
-
-	@Override
-	public void mirror(Mirror mirrorIn)
-	{
-		if(mirrorIn==Mirror.FRONT_BACK&&this instanceof IDirectionalTile)
-		{
-			((IDirectionalTile)this).setFacing(((IDirectionalTile)this).getFacing());
-			this.setChanged();
-			if(this.worldPosition!=null)
-				this.markBlockForUpdate(this.worldPosition, null);
-		}
-	}
-
 
 	public void receiveMessageFromClient(CompoundTag message)
 	{
@@ -205,13 +191,6 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	}
 
 	@Override
-	public double getViewDistance()
-	{
-		double increase = IEClientConfig.increasedTileRenderdistance.get();
-		return super.getViewDistance()*increase*increase;
-	}
-
-	@Override
 	public void setRemoved()
 	{
 		super.setRemoved();
@@ -222,7 +201,7 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	}
 
 	@Nonnull
-	public Level getWorldNonnull()
+	public Level getLevelNonnull()
 	{
 		return Objects.requireNonNull(super.getLevel());
 	}
@@ -234,10 +213,10 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 
 	protected void checkLight(BlockPos pos)
 	{
-		getWorldNonnull().getBlockTicks().scheduleTick(pos, getBlockState().getBlock(), 4);
+		getLevelNonnull().getBlockTicks().scheduleTick(pos, getBlockState().getBlock(), 4);
 	}
 
-	public void setOverrideState(BlockState state)
+	public void setOverrideState(@Nullable BlockState state)
 	{
 		overrideBlockState = state;
 	}
@@ -254,23 +233,22 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	}
 
 	@Override
-	public void clearCache()
+	@Deprecated
+	public void setBlockState(BlockState newState)
 	{
 		BlockState old = getBlockState();
-		super.clearCache();
-		BlockState newState = getBlockState();
-		if(old!=null&&
-				newState!=null&&
-				getType().isValid(old.getBlock())&&
-				!getType().isValid(newState.getBlock()))
+		super.setBlockState(newState);
+		if(getType().isValid(old)&&!getType().isValid(newState))
 			setOverrideState(old);
+		else if (getType().isValid(newState))
+			setOverrideState(null);
 	}
 
 	@Override
 	public void setState(BlockState state)
 	{
-		if(getWorldNonnull().getBlockState(worldPosition)==getState())
-			getWorldNonnull().setBlockAndUpdate(worldPosition, state);
+		if(getLevelNonnull().getBlockState(worldPosition)==getState())
+			getLevelNonnull().setBlockAndUpdate(worldPosition, state);
 	}
 
 	@Override
@@ -339,7 +317,7 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 
 	private void updateRSForSide(Direction side)
 	{
-		int rsStrength = getWorldNonnull().getSignal(worldPosition.relative(side), side);
+		int rsStrength = getLevelNonnull().getSignal(worldPosition.relative(side), side);
 		if(rsStrength==0&&this instanceof IRedstoneOutput&&((IRedstoneOutput)this).canConnectRedstone(side))
 		{
 			BlockState state = SafeChunkUtils.getBlockState(level, worldPosition.relative(side));

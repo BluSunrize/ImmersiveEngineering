@@ -93,7 +93,7 @@ public class SplitConveyor extends BasicConveyor
 					CapabilityReference<IItemHandler> insert = CapabilityReference.forNeighbor(getTile(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, redirect);
 					ItemStack ret = Utils.insertStackIntoInventory(insert, stack, false);
 					if(ret.isEmpty())
-						entity.remove();
+						entity.discard();
 					else if(ret.getCount() < stack.getCount())
 						entity.setItem(ret);
 				}

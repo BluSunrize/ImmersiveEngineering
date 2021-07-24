@@ -10,9 +10,11 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.items.IEItems;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.EntityType;
@@ -71,7 +73,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	protected Supplier<WoodenCrateTileEntity> getTileProvider()
 	{
 		return () -> {
-			WoodenCrateTileEntity tile = new WoodenCrateTileEntity();
+			WoodenCrateTileEntity tile = new WoodenCrateTileEntity(BlockPos.ZERO, WoodenDevices.crate.defaultBlockState());
 			tile.setOverrideState(getDisplayBlockState());
 			return tile;
 		};
@@ -88,7 +90,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	@Override
 	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.WoodenDevices.crate.getDefaultState();
+		return IEBlocks.WoodenDevices.crate.defaultBlockState();
 	}
 
 	@Nullable

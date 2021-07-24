@@ -10,26 +10,21 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import net.minecraft.core.BlockPos;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class StructuralArmBlock extends IETileProviderBlock
+public class StructuralArmBlock extends GenericTileBlock<StructuralArmTileEntity>
 {
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
 	public StructuralArmBlock(Properties props)
 	{
-		super(props);
+		super(IETileTypes.STRUCTURAL_ARM, props);
 	}
 
 	@Override
@@ -37,12 +32,5 @@ public class StructuralArmBlock extends IETileProviderBlock
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(FACING, BlockStateProperties.WATERLOGGED);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		return IETileTypes.STRUCTURAL_ARM.get().create();
 	}
 }

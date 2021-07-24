@@ -62,7 +62,7 @@ public class ModelCoresample extends BakedIEModel
 			.expireAfterAccess(60, TimeUnit.SECONDS)
 			.build();
 	@Nullable
-	private MineralMix[] minerals;
+	private final MineralMix[] minerals;
 	private final VertexFormat format;
 	private List<BakedQuad> bakedQuads;
 
@@ -282,11 +282,11 @@ public class ModelCoresample extends BakedIEModel
 	}
 
 
-	ItemOverrides overrideList = new ItemOverrides()
+	private final ItemOverrides overrideList = new ItemOverrides()
 	{
 		@Nullable
 		@Override
-		public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn)
+		public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int unused)
 		{
 			MineralMix[] minerals = CoresampleItem.getMineralMixes(stack);
 			if(minerals.length > 0)

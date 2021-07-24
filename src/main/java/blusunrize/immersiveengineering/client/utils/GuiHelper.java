@@ -150,7 +150,7 @@ public class GuiHelper
 		transform.scale(16, 16, 16);
 		BatchingRenderTypeBuffer batchBuffer = new BatchingRenderTypeBuffer();
 		mc().getItemRenderer().renderStatic(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
-				transform, batchBuffer);
+				transform, batchBuffer, 0);
 		batchBuffer.pipe(buffer);
 		transform.popPose();
 		renderDurabilityBar(stack, buffer, transform);

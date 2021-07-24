@@ -33,7 +33,7 @@ public class DamageToolRecipeSerializer extends ForgeRegistryEntry<RecipeSeriali
 		NonNullList<Ingredient> defIngredients = readIngredients(json.getAsJsonArray("ingredients"));
 		Ingredient tool = Ingredient.fromJson(json.get("tool"));
 		String group = json.get("group").getAsString();
-		ItemStack result = ShapedRecipe.itemFromJson(json.getAsJsonObject("result"));
+		ItemStack result = ShapedRecipe.itemStackFromJson(json.getAsJsonObject("result"));
 		return new DamageToolRecipe(recipeId, group, result, tool, defIngredients);
 	}
 

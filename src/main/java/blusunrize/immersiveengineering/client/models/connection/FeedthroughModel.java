@@ -212,15 +212,14 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		@Nonnull
 		@Override
 		public BakedModel resolve(@Nonnull BakedModel originalModel, ItemStack stack,
-											@Nullable ClientLevel world, @Nullable LivingEntity entity)
+											@Nullable ClientLevel world, @Nullable LivingEntity entity, int unused)
 		{
-			Item connItem = Item.byBlock(Connectors.feedthrough.get());
+			Item connItem = Connectors.feedthrough.get().asItem();
 			if(stack.getItem()==connItem)
 			{
 				try
 				{
-					return ITEM_MODEL_CACHE.get(stack, () ->
-							new SpecificFeedthroughModel(stack));
+					return ITEM_MODEL_CACHE.get(stack, () -> new SpecificFeedthroughModel(stack));
 				} catch(ExecutionException e)
 				{
 					e.printStackTrace();

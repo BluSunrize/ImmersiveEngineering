@@ -18,29 +18,21 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class SampleDrillRenderer extends BlockEntityRenderer<SampleDrillTileEntity>
+public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillTileEntity>
 {
 	public static DynamicModel<Void> DRILL;
-
-	public SampleDrillRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 
 	@Override
 	public void render(SampleDrillTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
+		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 
-		BlockState state = tile.getWorldNonnull().getBlockState(tile.getBlockPos());
+		BlockState state = tile.getLevelNonnull().getBlockState(tile.getBlockPos());
 		if(state.getBlock()!=MetalDevices.sampleDrill.get())
 			return;
 

@@ -283,14 +283,6 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		return state.hasProperty(BlockStateProperties.WATERLOGGED)&&SimpleWaterloggedBlock.super.placeLiquid(worldIn, pos, state, fluidStateIn);
 	}
 
-	@Override
-	public Fluid takeLiquid(LevelAccessor worldIn, BlockPos pos, BlockState state)
-	{
-		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
-			return SimpleWaterloggedBlock.super.takeLiquid(worldIn, pos, state);
-		return Fluids.EMPTY;
-	}
-
 	/* LADDERS */
 
 	public abstract static class IELadderBlock extends IEBaseBlock

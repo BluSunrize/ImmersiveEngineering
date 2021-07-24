@@ -9,22 +9,19 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class TurntableBlock extends IETileProviderBlock
+public class TurntableBlock extends GenericTileBlock<TurntableTileEntity>
 {
 	public TurntableBlock(Properties props)
 	{
-		super(props);
+		super(IETileTypes.TURNTABLE, props);
 	}
 
 	@Override
@@ -32,13 +29,6 @@ public class TurntableBlock extends IETileProviderBlock
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_ALL);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		return new TurntableTileEntity();
 	}
 
 	@Override

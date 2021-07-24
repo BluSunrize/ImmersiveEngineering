@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
@@ -31,12 +32,14 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -75,7 +78,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 				String name = type.toLowerCase(Locale.US)+"_"+(relay?"relay": "conn");
 				RegistryObject<BlockEntityType<EnergyConnectorTileEntity>> teType = event.register(
 						name, () -> new BlockEntityType<>(
-								() -> new EnergyConnectorTileEntity(type, relay),
+								(pos, state) -> new EnergyConnectorTileEntity(type, relay, pos, state),
 								ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key).get()), null)
 				);
 				SPEC_TO_TYPE.put(key, teType);
@@ -92,9 +95,9 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 
 	private CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(this, CapabilityEnergy.ENERGY, this::getFacing);
 
-	public EnergyConnectorTileEntity(BlockEntityType<? extends EnergyConnectorTileEntity> type)
+	public EnergyConnectorTileEntity(BlockEntityType<? extends EnergyConnectorTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 		Pair<String, Boolean> data = NAME_TO_SPEC.get(type.getRegistryName());
 		this.voltage = data.getKey();
 		this.relay = data.getValue();
@@ -102,9 +105,9 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 		this.storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 	}
 
-	public EnergyConnectorTileEntity(String voltage, boolean relay)
+	public EnergyConnectorTileEntity(String voltage, boolean relay, BlockPos pos, BlockState state)
 	{
-		this(SPEC_TO_TYPE.get(new ImmutablePair<>(voltage, relay)).get());
+		this(SPEC_TO_TYPE.get(new ImmutablePair<>(voltage, relay)).get(), pos, state);
 	}
 
 	@Override

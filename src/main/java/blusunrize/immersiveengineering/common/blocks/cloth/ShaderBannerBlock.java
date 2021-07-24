@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -23,10 +23,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public abstract class ShaderBannerBlock extends IETileProviderBlock
+public abstract class ShaderBannerBlock extends GenericTileBlock<ShaderBannerTileEntity>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.WOOL)
 			.strength(1.0F)
@@ -38,14 +37,7 @@ public abstract class ShaderBannerBlock extends IETileProviderBlock
 
 	public ShaderBannerBlock(Properties props)
 	{
-		super(props);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		return new ShaderBannerTileEntity();
+		super(IETileTypes.SHADER_BANNER, props);
 	}
 
 	@Override

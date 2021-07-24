@@ -15,21 +15,14 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 
-public class CoresampleRenderer extends BlockEntityRenderer<CoresampleTileEntity>
+public class CoresampleRenderer extends IEBlockEntityRenderer<CoresampleTileEntity>
 {
-	public CoresampleRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 	@Override
 	public void render(CoresampleTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos())||tile.coresample==null)
+		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos())||tile.coresample==null)
 			return;
 
 		matrixStack.pushPose();
@@ -38,7 +31,7 @@ public class CoresampleRenderer extends BlockEntityRenderer<CoresampleTileEntity
 		matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -45, true));
 		matrixStack.translate(0, .04864, .02903);
 		ClientUtils.mc().getItemRenderer().renderStatic(tile.coresample, TransformType.FIXED, combinedLightIn,
-				combinedOverlayIn, matrixStack, bufferIn);
+				combinedOverlayIn, matrixStack, bufferIn, 0);
 		matrixStack.popPose();
 	}
 }

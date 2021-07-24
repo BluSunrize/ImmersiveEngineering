@@ -16,22 +16,15 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 
-public class SiloRenderer extends BlockEntityRenderer<SiloTileEntity>
+public class SiloRenderer extends IEBlockEntityRenderer<SiloTileEntity>
 {
-	public SiloRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 	@Override
 	public void render(SiloTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
+		if(!tile.formed||tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 		matrixStack.pushPose();
 
@@ -61,12 +54,7 @@ public class SiloRenderer extends BlockEntityRenderer<SiloTileEntity>
 				matrixStack.scale(itemScale/baseScale, itemScale/baseScale, flatScale);
 				matrixStack.translate(0, -0.75, 0);
 				ClientUtils.mc().getItemRenderer().renderStatic(
-						stack,
-						TransformType.GUI,
-						combinedLightIn,
-						combinedOverlayIn,
-						matrixStack,
-						IERenderTypes.disableLighting(bufferIn)
+						stack, TransformType.GUI, combinedLightIn, combinedOverlayIn, matrixStack, IERenderTypes.disableLighting(bufferIn), 0
 				);
 				matrixStack.popPose();
 

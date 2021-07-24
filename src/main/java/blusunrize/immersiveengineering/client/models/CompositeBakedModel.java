@@ -69,7 +69,7 @@ public class CompositeBakedModel<T extends BakedModel> implements BakedModel
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
-		return base.getParticleTexture(EmptyModelData.INSTANCE);
+		return base.getParticleIcon(EmptyModelData.INSTANCE);
 	}
 
 	@Nonnull
@@ -100,8 +100,8 @@ public class CompositeBakedModel<T extends BakedModel> implements BakedModel
 	}
 
 	@Override
-	public TextureAtlasSprite getParticleTexture(@Nonnull IModelData data)
+	public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data)
 	{
-		return base.getParticleTexture(data);
+		return base.getParticleIcon(data);
 	}
 }

@@ -212,9 +212,8 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 
 		BlockPos startPos = brtr.getBlockPos();
 		BlockState state = world.getBlockState(startPos);
-		Block block = state.getBlock();
 		float maxHardness = 1;
-		if(block!=null&&!block.isAir(state, world, startPos))
+		if(state.isAir())
 			maxHardness = state.getDestroyProgress(player, world, startPos)*0.6F;
 		if(maxHardness < 0)
 			maxHardness = 0;
@@ -242,7 +241,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 					if(pos.equals(brtr.getBlockPos()))
 						continue;
 					state = world.getBlockState(pos);
-					block = state.getBlock();
+					Block block = state.getBlock();
 					float h = state.getDestroyProgress(player, world, pos);
 					boolean canHarvest = block.canHarvestBlock(world.getBlockState(pos), world, pos, player);
 					boolean drillMat = Tools.drill.get().isEffective(ItemStack.EMPTY, state.getMaterial());

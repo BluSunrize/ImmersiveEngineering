@@ -124,8 +124,8 @@ public class ChemthrowerEffects
 				AABB aabb = new AABB(pos);
 				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesOfClass(ChemthrowerShotEntity.class, aabb);
 				for(ChemthrowerShotEntity shot : otherProjectiles)
-					shot.remove();
-				world.setBlockAndUpdate(pos, StoneDecoration.concreteSprayed.getDefaultState());
+					shot.discard();
+				world.setBlockAndUpdate(pos, StoneDecoration.concreteSprayed.defaultBlockState());
 				for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, aabb))
 					living.addEffect(new MobEffectInstance(IEPotions.concreteFeet.get(), Integer.MAX_VALUE));
 			}
@@ -161,7 +161,7 @@ public class ChemthrowerEffects
 				AABB aabb = new AABB(brtr.getBlockPos()).inflate(.25);
 				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesOfClass(ChemthrowerShotEntity.class, aabb);
 				for(ChemthrowerShotEntity shot : otherProjectiles)
-					shot.remove();
+					shot.discard();
 			}
 		});
 

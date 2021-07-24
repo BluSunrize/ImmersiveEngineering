@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -21,7 +22,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -57,8 +57,8 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 		else
 		{
 			dmg.dmg *= 1.2;
-			if((!(owner instanceof Player)||!((Player)owner).abilities.instabuild)&&
-					equipped.hurt(2, Item.random, (dmg.getEntity() instanceof ServerPlayer)?(ServerPlayer)dmg.getEntity(): null))
+			if((!(owner instanceof Player)||!((Player)owner).getAbilities().instabuild)&&
+					equipped.hurt(2, Utils.RAND, (dmg.getEntity() instanceof ServerPlayer)?(ServerPlayer)dmg.getEntity(): null))
 				owner.setItemSlot(eqSlot, ItemStack.EMPTY);
 		}
 	}

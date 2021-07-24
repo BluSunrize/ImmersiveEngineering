@@ -14,6 +14,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -64,7 +65,7 @@ public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 			parts.add(fromJson(e.getAsJsonArray()));
 		BoundingBox box = pointBB(parts.get(0));
 		for(Vec3i v : parts)
-			box.expand(pointBB(v));
+			box.encapsulate(pointBB(v));
 		Vec3i size = new Vec3i(box.getXSpan(), box.getYSpan(), box.getZSpan());
 		return new UnbakedSplitModel(baseModel, parts, modelContents.get(DYNAMIC).getAsBoolean(), size);
 	}
@@ -76,6 +77,6 @@ public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 
 	private BoundingBox pointBB(Vec3i point)
 	{
-		return new BoundingBox(point, point);
+		return new BoundingBox(new BlockPos(point));
 	}
 }

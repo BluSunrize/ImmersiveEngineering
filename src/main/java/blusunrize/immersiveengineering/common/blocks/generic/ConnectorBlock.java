@@ -56,7 +56,7 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 			if(world.isEmptyBlock(pos.relative(connector.getFacing())))
 			{
 				popResource(world, pos, new ItemStack(this));
-				connector.getWorldNonnull().removeBlock(pos, false);
+				connector.getLevelNonnull().removeBlock(pos, false);
 			}
 		}
 	}

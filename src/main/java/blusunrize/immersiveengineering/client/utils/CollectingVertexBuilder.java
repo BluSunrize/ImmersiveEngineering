@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
+import com.mojang.blaze3d.vertex.DefaultedVertexConsumer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import javax.annotation.Nonnull;
@@ -16,7 +17,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class CollectingVertexBuilder implements VertexConsumer
+//TODO actually handle default color!
+public class CollectingVertexBuilder extends DefaultedVertexConsumer
 {
 	protected final List<List<Consumer<VertexConsumer>>> vertices = new ArrayList<>();
 	private List<Consumer<VertexConsumer>> nextVertex = new ArrayList<>();

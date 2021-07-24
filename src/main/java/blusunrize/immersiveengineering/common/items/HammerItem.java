@@ -145,7 +145,7 @@ public class HammerItem extends IEBaseItem implements ITool
 		}
 		final Direction multiblockSide;
 		if(side.getAxis()==Axis.Y&&player!=null)
-			multiblockSide = Direction.fromYRot(player.yRot).getOpposite();
+			multiblockSide = Direction.fromYRot(player.getYRot()).getOpposite();
 		else
 			multiblockSide = side;
 		for(MultiblockHandler.IMultiblock mb : MultiblockHandler.getMultiblocks())

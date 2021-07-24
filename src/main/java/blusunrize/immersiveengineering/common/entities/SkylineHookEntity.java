@@ -80,16 +80,16 @@ public class SkylineHookEntity extends Entity
 		setConnectionAndPos(connection, start, linePos, horSpeed);
 
 		Vec3 motion = getDeltaMovement();
-		float f1 = Mth.sqrt(motion.x*motion.x+motion.z*motion.z);
-		this.yRot = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
-		this.xRot = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
-		while(this.xRot-this.xRotO < -180.0F)
+		float f1 = Mth.sqrt((float)(motion.x*motion.x+motion.z*motion.z));
+		this.setYRot((float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F);
+		this.setXRot((float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F);
+		while(this.getXRot()-this.xRotO < -180.0F)
 			this.xRotO -= 360.0F;
-		while(this.xRot-this.xRotO >= 180.0F)
+		while(this.getXRot()-this.xRotO >= 180.0F)
 			this.xRotO += 360.0F;
-		while(this.yRot-this.yRotO < -180.0F)
+		while(this.getYRot()-this.yRotO < -180.0F)
 			this.yRotO -= 360.0F;
-		while(this.yRot-this.yRotO >= 180.0F)
+		while(this.getYRot()-this.yRotO >= 180.0F)
 			this.yRotO += 360.0F;
 	}
 
@@ -101,7 +101,7 @@ public class SkylineHookEntity extends Entity
 		this.connection = c;
 		this.start = start;
 		Vec3 pos = connection.getPoint(this.linePos, start).add(Vec3.atLowerCornerOf(start.getPosition()));
-		this.moveTo(pos.x, pos.y, pos.z, this.yRot, this.xRot);
+		this.moveTo(pos.x, pos.y, pos.z, this.getYRot(), this.getXRot());
 		if(!connection.getCatenaryData().isVertical())
 			this.angle = Math.atan2(connection.getCatenaryData().getDeltaZ(), connection.getCatenaryData().getDeltaX());
 		ignoreCollisions.clear();
@@ -142,7 +142,7 @@ public class SkylineHookEntity extends Entity
 		if(connection==null||player==null||(hand!=null&&player.getItemInHand(hand).getItem()!=Misc.skyhook.asItem()))
 		{
 			if(!level.isClientSide)
-				remove();
+				discard();
 			return;
 		}
 		//TODO figure out how to get the speed keeping on dismount working with less sync packets
@@ -152,14 +152,14 @@ public class SkylineHookEntity extends Entity
 		boolean moved = false;
 		double inLineDirection;
 		if(connection.getCatenaryData().isVertical())
-			inLineDirection = -player.zza*Math.sin(Math.toRadians(player.xRot))
+			inLineDirection = -player.zza*Math.sin(Math.toRadians(player.getXRot()))
 					*Math.signum(connection.getCatenaryData().getDeltaY())
 					*getStartSignum();
 		else
 		{
 			float forward = player.zza;
 			double strafing = player.xxa;
-			double playerAngle = Math.toRadians(player.yRot)+Math.PI/2;
+			double playerAngle = Math.toRadians(player.getYRot())+Math.PI/2;
 			double angleToLine = playerAngle-angle;
 			inLineDirection = (Math.cos(angleToLine)*forward+Math.sin(angleToLine)*strafing)
 					*getStartSignum();
@@ -239,22 +239,22 @@ public class SkylineHookEntity extends Entity
 		setDeltaMovement(pos.x-getX(), pos.z-getZ(), pos.y-getY());
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{
-			remove();
+			discard();
 			return;
 		}
 		this.setPos(pos.x, pos.y, pos.z);
 
 		super.tick();
 		Vec3 motion = getDeltaMovement();
-		float f1 = Mth.sqrt(motion.x*motion.x+motion.z*motion.z);
-		this.yRot = (float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F;
-		this.xRot = (float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F;
+		float f1 = Mth.sqrt((float)(motion.x*motion.x+motion.z*motion.z));
+		this.setYRot((float)(Math.atan2(motion.z, motion.x)*180.0D/Math.PI)+90.0F);
+		this.setXRot((float)(Math.atan2(f1, motion.y)*180.0D/Math.PI)-90.0F);
 
-		this.xRotO = this.xRot-Mth.wrapDegrees(this.xRot-this.xRotO);
-		this.yRotO = this.yRot-Mth.wrapDegrees(this.yRot-this.yRotO);
+		this.xRotO = this.getXRot()-Mth.wrapDegrees(this.getXRot()-this.xRotO);
+		this.yRotO = this.getYRot()-Mth.wrapDegrees(this.getYRot()-this.yRotO);
 
-		this.xRot = this.xRotO+(this.xRot-this.xRotO)*0.2F;
-		this.yRot = this.yRotO+(this.yRot-this.yRotO)*0.2F;
+		this.setXRot(this.xRotO+(this.getXRot()-this.xRotO)*0.2F);
+		this.setYRot(this.yRotO+(this.getYRot()-this.yRotO)*0.2F);
 
 		if(this.isInWater())
 		{
@@ -274,7 +274,7 @@ public class SkylineHookEntity extends Entity
 		double dx = this.getX()-this.xo;
 		double dy = this.getY()-this.yo;
 		double dz = this.getZ()-this.zo;
-		int distTrvl = Math.round(Mth.sqrt(dx*dx+dy*dy+dz*dz)*100.0F);
+		int distTrvl = Math.round(Mth.sqrt((float)(dx*dx+dy*dy+dz*dz))*100.0F);
 //			if(distTrvl>0)
 //				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
 
@@ -325,7 +325,7 @@ public class SkylineHookEntity extends Entity
 			sendUpdatePacketTo(player);
 		}
 		else
-			remove();
+			discard();
 	}
 
 	private static double getSpeedPerHor(Connection connection, ConnectionPoint start, double pos)
@@ -454,7 +454,7 @@ public class SkylineHookEntity extends Entity
 	@Override
 	public boolean hurt(DamageSource source, float amount)
 	{
-		this.remove();
+		this.discard();
 		return true;
 	}
 

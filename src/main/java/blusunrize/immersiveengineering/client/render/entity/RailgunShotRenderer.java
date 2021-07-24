@@ -18,8 +18,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -31,7 +31,7 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 			new int[]{0x686868, 0xa4a4a4, 0xa4a4a4, 0xa4a4a4, 0x686868}
 	);
 
-	public RailgunShotRenderer(EntityRenderDispatcher renderManager)
+	public RailgunShotRenderer(Context renderManager)
 	{
 		super(renderManager);
 	}
@@ -39,8 +39,8 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 	@Override
 	public void render(RailgunShotEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
-		double yaw = entity.yRotO+(entity.yRot-entity.yRotO)*partialTicks-90.0F;
-		double pitch = entity.xRotO+(entity.xRot-entity.xRotO)*partialTicks;
+		double yaw = entity.yRotO+(entity.getYRot()-entity.yRotO)*partialTicks-90.0F;
+		double pitch = entity.xRotO+(entity.getXRot()-entity.xRotO)*partialTicks;
 
 		ItemStack ammo = entity.getAmmo();
 		RailgunRenderColors colors = DEFAULT_RENDER_COLORS;

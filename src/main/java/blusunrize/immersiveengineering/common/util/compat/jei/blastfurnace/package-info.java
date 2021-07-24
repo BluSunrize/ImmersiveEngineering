@@ -11,6 +11,6 @@
 @MethodsReturnNonnullByDefault
 package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

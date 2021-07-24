@@ -95,10 +95,10 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 					boolean wall = blockState.getBlock() instanceof WallBannerBlock;
 
 					if(wall)
-						world.setBlockAndUpdate(pos, Cloth.shaderBannerWall.getDefaultState()
+						world.setBlockAndUpdate(pos, Cloth.shaderBannerWall.defaultBlockState()
 								.setValue(ShaderBannerWallBlock.FACING, blockState.getValue(WallBannerBlock.FACING)));
 					else
-						world.setBlockAndUpdate(pos, Cloth.shaderBanner.getDefaultState()
+						world.setBlockAndUpdate(pos, Cloth.shaderBanner.defaultBlockState()
 								.setValue(ShaderBannerStandingBlock.ROTATION, blockState.getValue(BannerBlock.ROTATION)));
 					tile = world.getBlockEntity(pos);
 					if(tile instanceof ShaderBannerTileEntity)

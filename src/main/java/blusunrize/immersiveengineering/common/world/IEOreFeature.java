@@ -13,18 +13,14 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
-import javax.annotation.Nonnull;
 import java.util.List;
-import java.util.Random;
 
 public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 {
@@ -34,11 +30,13 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 	}
 
 	@Override
-	public boolean place(@Nonnull WorldGenLevel world, @Nonnull ChunkGenerator gen, @Nonnull Random rand,
-							@Nonnull BlockPos pos, IEOreFeatureConfig config)
+	public boolean place(FeaturePlaceContext<IEOreFeatureConfig> ctx)
 	{
+		IEOreFeatureConfig config = ctx.config();
 		OreConfiguration vanillaConfig = new OreConfiguration(config.target, config.state, config.getSize());
-		return Feature.ORE.place(world, gen, rand, pos, vanillaConfig);
+		return Feature.ORE.place(new FeaturePlaceContext<>(
+				ctx.level(), ctx.chunkGenerator(), ctx.random(), ctx.origin(), vanillaConfig
+		));
 	}
 
 	public static class IEOreFeatureConfig implements FeatureConfiguration

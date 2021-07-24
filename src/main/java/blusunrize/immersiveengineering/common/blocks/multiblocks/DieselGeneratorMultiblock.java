@@ -28,7 +28,7 @@ public class DieselGeneratorMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/diesel_generator"),
 				new BlockPos(1, 1, 2), new BlockPos(1, 1, 4), new BlockPos(3, 3, 5),
-				() -> Multiblocks.dieselGenerator.getDefaultState());
+				() -> Multiblocks.dieselGenerator.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class DieselGeneratorMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

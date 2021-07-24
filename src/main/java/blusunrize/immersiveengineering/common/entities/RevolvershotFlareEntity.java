@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -83,12 +84,12 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 			float r = (getColour() >> 16&255)/255f;
 			float g = (getColour() >> 8&255)/255f;
 			float b = (getColour()&255)/255f;
-			level.addParticle(new DustParticleOptions(r, g, b, 1), getX(), getY(), getZ(), 0, 0, 0);
+			level.addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX(), getY(), getZ(), 0, 0, 0);
 			if(tickCount > 40)
 				for(int i = 0; i < 20; i++)
 				{
 					Vec3 v = new Vec3(Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5);
-					level.addParticle(new DustParticleOptions(r, g, b, 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
+					level.addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
 				}
 		}
 		if(tickCount==40)
@@ -128,7 +129,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 				}
 			spawnParticles();
 		}
-		this.remove();
+		this.discard();
 	}
 
 	private void spawnParticles()
@@ -139,7 +140,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		for(int i = 0; i < 80; i++)
 		{
 			Vec3 v = new Vec3((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
-			level.addParticle(new DustParticleOptions(r, g, b, 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
+			level.addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
 		}
 	}
 }

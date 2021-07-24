@@ -37,7 +37,7 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/metal_press"),
 				new BlockPos(1, 1, 0), new BlockPos(1, 1, 0), new BlockPos(3, 3, 1),
-				() -> Multiblocks.metalPress.getDefaultState());
+				() -> Multiblocks.metalPress.defaultBlockState());
 	}
 
 	@Override
@@ -66,7 +66,8 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 
@@ -106,7 +107,7 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 			mbDirection = transformDirection(clickDirection);
 		else
 			mbDirection = transformDirection(clickDirection.getOpposite());
-		BlockState state = Multiblocks.metalPress.getDefaultState();
+		BlockState state = Multiblocks.metalPress.defaultBlockState();
 		if(!offsetFromMaster.equals(Vec3i.ZERO))
 			state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		world.setBlockAndUpdate(actualPos, state);

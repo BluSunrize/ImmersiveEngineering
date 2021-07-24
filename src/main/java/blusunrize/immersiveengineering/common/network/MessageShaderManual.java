@@ -90,7 +90,7 @@ public class MessageShaderManual implements IMessage
 				}
 				else if(key==MessageType.SPAWN&&args.length > 0)
 				{
-					if(!player.abilities.instabuild)
+					if(!player.getAbilities().instabuild)
 						IngredientUtils.consumePlayerIngredient(player, ShaderRegistry.shaderRegistry.get(args[0]).replicationCost.get());
 					ItemStack shaderStack = new ItemStack(ShaderRegistry.itemShader);
 					ItemNBTHelper.putString(shaderStack, "shader_name", args[0].toString());

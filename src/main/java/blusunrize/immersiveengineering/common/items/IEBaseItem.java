@@ -24,6 +24,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -56,7 +57,7 @@ public class IEBaseItem extends Item implements IColouredItem
 	}
 
 	@Override
-	public int getBurnTime(ItemStack itemStack)
+	public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
 	{
 		return burnTime;
 	}

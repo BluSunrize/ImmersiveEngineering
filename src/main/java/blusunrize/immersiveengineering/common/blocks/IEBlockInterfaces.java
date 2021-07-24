@@ -147,13 +147,13 @@ public class IEBlockInterfaces
 					f = Direction.orderedByNearest(placer)[0];
 					break;
 				case HORIZONTAL:
-					f = Direction.fromYRot(placer.yRot);
+					f = Direction.fromYRot(placer.getYRot());
 					break;
 				case VERTICAL:
 					f = (side!=Direction.DOWN&&(side==Direction.UP||hitY <= .5))?Direction.UP: Direction.DOWN;
 					break;
 				case HORIZONTAL_AXIS:
-					f = Direction.fromYRot(placer.yRot);
+					f = Direction.fromYRot(placer.getYRot());
 					if(f==Direction.SOUTH||f==Direction.WEST)
 						f = f.getOpposite();
 					break;

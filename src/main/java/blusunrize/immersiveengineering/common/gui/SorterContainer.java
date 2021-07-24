@@ -45,7 +45,7 @@ public class SorterContainer extends IEBaseContainer<SorterTileEntity>
 	@Override
 	public boolean stillValid(@Nonnull Player player)
 	{
-		return tile!=null&&tile.getWorldNonnull().getBlockEntity(tile.getBlockPos())==tile&&player.distanceToSqr(tile.getBlockPos().getX()+.5, tile.getBlockPos().getY()+.5, tile.getBlockPos().getZ()+.5) <= 64;
+		return tile!=null&&tile.getLevelNonnull().getBlockEntity(tile.getBlockPos())==tile&&player.distanceToSqr(tile.getBlockPos().getX()+.5, tile.getBlockPos().getY()+.5, tile.getBlockPos().getZ()+.5) <= 64;
 	}
 
 	@Nonnull

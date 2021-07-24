@@ -69,16 +69,16 @@ public class IEWireTypes
 	{
 		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv"),
 				new float[]{0, 4, 8, 12}, .5,
-				() -> Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState());
+				() -> Connectors.getEnergyConnector(LV_CATEGORY, false).defaultBlockState());
 		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv"),
 				new float[]{0, 4, 8, 12}, .5625,
-				() -> Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState());
+				() -> Connectors.getEnergyConnector(MV_CATEGORY, false).defaultBlockState());
 		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv"),
 				new float[]{0, 4, 8, 12}, .75,
-				() -> Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState());
+				() -> Connectors.getEnergyConnector(HV_CATEGORY, false).defaultBlockState());
 		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone"),
 				new float[]{3, 8, 11, 16}, .5625, .5,
-				() -> Connectors.connectorRedstone.getDefaultState()
+				() -> Connectors.connectorRedstone.defaultBlockState()
 		);
 	}
 

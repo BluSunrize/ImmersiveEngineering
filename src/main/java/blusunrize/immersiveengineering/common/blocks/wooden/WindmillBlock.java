@@ -9,21 +9,17 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import net.minecraft.core.BlockPos;
+import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class WindmillBlock extends IETileProviderBlock
+public class WindmillBlock extends GenericTileBlock<WindmillTileEntity>
 {
 	public WindmillBlock(Properties props)
 	{
-		super(props);
+		super(IETileTypes.WINDMILL, props);
 	}
 
 	@Override
@@ -31,12 +27,5 @@ public class WindmillBlock extends IETileProviderBlock
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		return new WindmillTileEntity();
 	}
 }

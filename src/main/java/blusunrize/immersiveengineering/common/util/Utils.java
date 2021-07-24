@@ -159,9 +159,7 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return false;
-		if(stack.getItem().is(Tags.Items.DYES))
-			return true;
-		return false;
+		return Tags.Items.DYES.contains(stack.getItem());
 	}
 
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)
@@ -285,10 +283,10 @@ public class Utils
 	{
 		double offsetX = hand==HumanoidArm.LEFT?-.3125: hand==HumanoidArm.RIGHT?.3125: 0;
 
-		float yaw = entity.yRotO+(entity.yRot-entity.yRotO)*partialTicks;
+		float yaw = entity.yRotO+(entity.getYRot()-entity.yRotO)*partialTicks;
 		if(useSteppedYaw)
 			yaw = entity.yBodyRotO+(entity.yBodyRot-entity.yBodyRotO)*partialTicks;
-		float pitch = entity.xRotO+(entity.xRot-entity.xRotO)*partialTicks;
+		float pitch = entity.xRotO+(entity.getXRot()-entity.xRotO)*partialTicks;
 
 		float yawCos = Mth.cos(-yaw*(float)Math.PI/180-(float)Math.PI);
 		float yawSin = Mth.sin(-yaw*(float)Math.PI/180-(float)Math.PI);
@@ -528,10 +526,10 @@ public class Utils
 		BlockState b = world.getBlockState(pos);
 		FluidState f = b.getFluidState();
 
-		if(f.isSource()&&b.getBlock() instanceof BucketPickup)
+		if(f.isSource()&&b.getBlock() instanceof BucketPickup bucketPickup)
 		{
 			if(action.execute())
-				((BucketPickup)b.getBlock()).takeLiquid(world, pos, b);
+				bucketPickup.pickupBlock(world, pos, b);
 			return new FluidStack(f.getType(), FluidAttributes.BUCKET_VOLUME);
 		}
 		return FluidStack.EMPTY;
@@ -967,13 +965,12 @@ public class Utils
 
 	private static class SingleBlockAcess implements BlockGetter
 	{
-		BlockState state;
+		private final BlockState state;
 
 		public SingleBlockAcess(BlockState state)
 		{
 			this.state = state;
 		}
-
 
 		@Nullable
 		@Override
@@ -998,6 +995,18 @@ public class Utils
 
 		@Override
 		public int getMaxLightLevel()
+		{
+			return 0;
+		}
+
+		@Override
+		public int getHeight()
+		{
+			return 1;
+		}
+
+		@Override
+		public int getMinBuildHeight()
 		{
 			return 0;
 		}

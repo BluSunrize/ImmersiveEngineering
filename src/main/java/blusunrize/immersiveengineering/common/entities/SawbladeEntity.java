@@ -112,7 +112,7 @@ public class SawbladeEntity extends IEProjectileEntity
 			int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
 			Entity shooter = getOwner();
 			if(getAmmo().hurt(dmg, level.random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null))
-				this.remove();
+				this.discard();
 			if(mop instanceof BlockHitResult)
 				this.onHitBlock((BlockHitResult)mop);
 		}

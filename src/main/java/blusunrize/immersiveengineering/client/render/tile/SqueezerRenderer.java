@@ -16,27 +16,20 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-public class SqueezerRenderer extends BlockEntityRenderer<SqueezerTileEntity>
+public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerTileEntity>
 {
 	public static DynamicModel<Direction> PISTON;
-
-	public SqueezerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(SqueezerTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
@@ -58,7 +51,7 @@ public class SqueezerRenderer extends BlockEntityRenderer<SqueezerTileEntity>
 		matrixStack.translate(0, piston, 0);
 
 		matrixStack.translate(-.5, -.5, -.5);
-		blockRenderer.getModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
+		blockRenderer.getModelRenderer().renderModel(te.getLevelNonnull(), model, state, blockPos, matrixStack,
 				buffer, true, te.getLevel().random, 0, combinedOverlayIn,
 				EmptyModelData.INSTANCE);
 

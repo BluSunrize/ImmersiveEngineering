@@ -12,13 +12,13 @@ package blusunrize.immersiveengineering.client.models;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.math.Transformation;
 import net.minecraft.client.resources.model.ModelState;
-import net.minecraftforge.client.model.SimpleModelTransform;
+import net.minecraftforge.client.model.SimpleModelState;
 
 import javax.annotation.Nonnull;
 
 public class SimpleUVModelTransform implements ModelState
 {
-	public static final SimpleModelTransform IDENTITY = new SimpleModelTransform(Transformation.identity());
+	public static final SimpleModelState IDENTITY = new SimpleModelState(Transformation.identity());
 
 	private final ImmutableMap<?, Transformation> map;
 	private final Transformation base;

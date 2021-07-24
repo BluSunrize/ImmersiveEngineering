@@ -20,7 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import java.util.ArrayList;
 
@@ -44,7 +44,7 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 		super.init();
 		mc().keyboardHandler.setSendRepeatsToGui(true);
 
-		this.buttons.clear();
+		clearWidgets();
 
 		colorButtonsSend = new GuiButtonBoolean[16];
 		colorButtonsReceive = new GuiButtonBoolean[16];
@@ -55,13 +55,13 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 					tileEntity.redstoneChannelSending.ordinal()==i, color, btn -> {
 						sendConfig("redstoneChannelSending", color);
 					});
-			this.addButton(colorButtonsSend[i]);
+			this.addRenderableWidget(colorButtonsSend[i]);
 
 			colorButtonsReceive[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsReceive, guiLeft+136+(i%4*14), guiTop+10+(i/4*14),
 					tileEntity.redstoneChannel.ordinal()==i, color, btn -> {
 						sendConfig("redstoneChannel", color);
 					});
-			this.addButton(colorButtonsReceive[i]);
+			this.addRenderableWidget(colorButtonsReceive[i]);
 		}
 	}
 

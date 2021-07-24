@@ -19,31 +19,24 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-public class WatermillRenderer extends BlockEntityRenderer<WatermillTileEntity>
+public class WatermillRenderer extends IEBlockEntityRenderer<WatermillTileEntity>
 {
 	public static DynamicModel<Void> MODEL;
 	private static final IVertexBufferHolder MODEL_BUFFER = IVertexBufferHolder.create(() -> {
-		BlockState state = WoodenDevices.watermill.getDefaultState()
+		BlockState state = WoodenDevices.watermill.defaultBlockState()
 				.setValue(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
 		return MODEL.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 	});
-
-	public WatermillRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(WatermillTileEntity tile, float partialTicks, PoseStack transform, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!SafeChunkUtils.isChunkSafe(tile.getWorldNonnull(), tile.getBlockPos()))
+		if(tile.isDummy()||!SafeChunkUtils.isChunkSafe(tile.getLevelNonnull(), tile.getBlockPos()))
 			return;
 		transform.pushPose();
 		transform.translate(.5, .5, .5);

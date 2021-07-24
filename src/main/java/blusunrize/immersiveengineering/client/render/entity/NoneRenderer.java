@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 
@@ -20,7 +20,7 @@ import javax.annotation.Nonnull;
 //Used for the skyline hook
 public class NoneRenderer<T extends Entity> extends EntityRenderer<T>
 {
-	public NoneRenderer(EntityRenderDispatcher renderManager)
+	public NoneRenderer(Context renderManager)
 	{
 		super(renderManager);
 	}

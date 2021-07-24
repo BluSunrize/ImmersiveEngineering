@@ -61,6 +61,7 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	public TransformerTileEntity(BlockEntityType<? extends TransformerTileEntity> type, BlockPos pos, BlockState state)
 	{
 		super(type, pos, state);
+		this.dummy = state.getValue(IEProperties.MULTIBLOCKSLAVE)?1: 0;
 	}
 
 	@Override

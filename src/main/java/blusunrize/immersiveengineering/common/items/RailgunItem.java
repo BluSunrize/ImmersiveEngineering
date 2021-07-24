@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -78,7 +77,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 {
 	public RailgunItem()
 	{
-		super(new Properties().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "RAILGUN");
+		super(withIEOBJRender().stacksTo(1), "RAILGUN");
 	}
 
 	@Override
@@ -292,9 +291,9 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			return player.getItemInHand(InteractionHand.MAIN_HAND);
 		}
 		else
-			for(int i = 0; i < player.inventory.getContainerSize(); i++)
+			for(int i = 0; i < player.getInventory().getContainerSize(); i++)
 			{
-				ItemStack itemstack = player.inventory.getItem(i);
+				ItemStack itemstack = player.getInventory().getItem(i);
 				if(isAmmo(itemstack))
 				{
 					ItemNBTHelper.putInt(railgun, "ammo_slot", 2+i);
@@ -309,8 +308,8 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		ItemStack ammo = ItemStack.EMPTY;
 		if(slot==0||slot==1)
 			ammo = player.getItemInHand(slot==0?InteractionHand.MAIN_HAND: InteractionHand.OFF_HAND);
-		else if(slot > 1&&slot-2 < player.inventory.getContainerSize())
-			ammo = player.inventory.getItem(slot-2);
+		else if(slot > 1&&slot-2 < player.getInventory().getContainerSize())
+			ammo = player.getInventory().getItem(slot-2);
 		if(isAmmo(ammo))
 			return ammo;
 		return ItemStack.EMPTY;
@@ -329,7 +328,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		if(!findAmmoInSlot(player, actualSlot).isEmpty())
 		{
 			ItemNBTHelper.putInt(stack, "ammo_slot", actualSlot);
-			player.inventory.setChanged();
+			player.getInventory().setChanged();
 			return true;
 		}
 		return false;
@@ -339,7 +338,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	public void onScrollwheel(ItemStack stack, Player player, boolean forward)
 	{
 		int slot = ItemNBTHelper.getInt(stack, "ammo_slot");
-		int count = player.inventory.getContainerSize()+2;
+		int count = player.getInventory().getContainerSize()+2;
 		if(forward)
 		{
 			for(int i = 1; i < count; i++)

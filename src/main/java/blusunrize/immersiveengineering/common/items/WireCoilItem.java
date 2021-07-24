@@ -186,7 +186,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 										iicLink.connectCable(wire, otherLink.cp, iicHere, cpHere);
 										Utils.unlockIEAdvancement(player, "main/connect_wire");
 
-										if(!player.abilities.instabuild)
+										if(!player.getAbilities().instabuild)
 											coil.consumeWire(stack, (int)Math.sqrt(distanceSq));
 										((BlockEntity)iicHere).setChanged();
 										//TODO is this needed with the new sync system?

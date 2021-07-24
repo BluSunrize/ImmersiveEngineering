@@ -41,7 +41,7 @@ public class WireCollisions
 	{
 		if(!e.level.isClientSide&&IEServerConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity&&
 				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
-				!(e instanceof Player&&((Player)e).abilities.invulnerable))
+				!(e instanceof Player player&&player.getAbilities().invulnerable))
 		{
 			GlobalWireNetwork global = GlobalWireNetwork.getNetwork(e.level);
 			WireCollisionData wireData = global.getCollisionData();

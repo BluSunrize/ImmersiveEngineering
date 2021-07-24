@@ -207,7 +207,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	{
 		@Override
 		public BakedModel resolve(@Nonnull BakedModel originalModel, @Nonnull ItemStack stack,
-												 @Nullable ClientLevel world, @Nullable LivingEntity entity)
+												 @Nullable ClientLevel world, @Nullable LivingEntity entity, int unused)
 		{
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ComparableItemStack.create(stack, false, true);

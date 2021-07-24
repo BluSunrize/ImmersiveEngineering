@@ -11,6 +11,6 @@
 @MethodsReturnNonnullByDefault
 package blusunrize.immersiveengineering.common.util.compat.jei.metalpress;
 
-import mcp.MethodsReturnNonnullByDefault;
+import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

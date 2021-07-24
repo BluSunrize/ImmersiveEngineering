@@ -87,6 +87,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -106,6 +107,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.client.event.DrawSelectionEvent.HighlightBlock;
 import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
@@ -119,9 +121,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.resource.IResourceType;
-import net.minecraftforge.resource.ISelectiveResourceReloadListener;
-import net.minecraftforge.resource.VanillaResourceType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -129,12 +128,11 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
-public class ClientEventHandler implements ISelectiveResourceReloadListener
+public class ClientEventHandler implements ResourceManagerReloadListener
 {
 	private static final boolean ENABLE_VEIN_DEBUG = false;
 	private boolean shieldToggleButton = false;
@@ -142,10 +140,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	private static final String[] BULLET_TOOLTIP = {"  IE ", "  AMMO ", "  HERE ", "  -- "};
 
 	@Override
-	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager, Predicate<IResourceType> resourcePredicate)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
-		if(resourcePredicate.test(VanillaResourceType.TEXTURES))
-			ImmersiveEngineering.proxy.clearRenderCaches();
+		ImmersiveEngineering.proxy.clearRenderCaches();
 	}
 
 	public static final Map<Connection, Pair<Collection<BlockPos>, AtomicInteger>> FAILED_CONNECTIONS = new HashMap<>();
@@ -174,9 +171,9 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 						}
 						else
 						{
-							for(int i = 0; i < player.inventory.items.size(); i++)
+							for(int i = 0; i < player.getInventory().items.size(); i++)
 							{
-								ItemStack s = player.inventory.items.get(i);
+								ItemStack s = player.getInventory().items.get(i);
 								if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
 									ImmersiveEngineering.packetHandler.sendToServer(new MessageMagnetEquip(i));
 							}
@@ -346,7 +343,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	{
 		VertexConsumer baseBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
 		TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder);
-		builder.setColor(1, 0, 0, 0.5F);
+		builder.defaultColor(255, 0, 0, 128);
 		for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 		{
 			for(BlockPos obstruction : entry.getValue().getKey())
@@ -358,6 +355,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 				transform.popPose();
 			}
 		}
+		builder.unsetDefaultColor();
 	}
 
 	@SubscribeEvent
@@ -754,7 +752,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 	}
 
 	@SubscribeEvent()
-	public void renderAdditionalBlockBounds(DrawHighlightEvent event)
+	public void renderAdditionalBlockBounds(HighlightBlock event)
 	{
 		if(event.getTarget().getType()==Type.BLOCK)
 		{
@@ -771,9 +769,8 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 			BlockEntity tile = player.level.getBlockEntity(rtr.getBlockPos());
 			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getItemInHand(InteractionHand.MAIN_HAND): ItemStack.EMPTY;
 
-			if(tile instanceof TurntableTileEntity&&Utils.isHammer(stack))
+			if(tile instanceof TurntableTileEntity turntableTile&&Utils.isHammer(stack))
 			{
-				TurntableTileEntity turntableTile = ((TurntableTileEntity)tile);
 				Direction side = rtr.getDirection();
 				Direction facing = turntableTile.getFacing();
 				if(side.getAxis()!=facing.getAxis())

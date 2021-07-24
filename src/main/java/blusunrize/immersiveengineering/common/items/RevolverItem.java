@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
@@ -102,7 +101,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 {
 	public RevolverItem()
 	{
-		super(withIEOBJRender().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
+		super(withIEOBJRender().stacksTo(1), "REVOLVER");
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();
@@ -338,9 +337,9 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					NonNullList<ItemStack> bullets = getBullets(revolver, false);
 
 					if(isEmpty(revolver, false))
-						for(int i = 0; i < player.inventory.getContainerSize(); i++)
+						for(int i = 0; i < player.getInventory().getContainerSize(); i++)
 						{
-							ItemStack stack = player.inventory.getItem(i);
+							ItemStack stack = player.getInventory().getItem(i);
 							if(stack.getItem() instanceof SpeedloaderItem&&!((SpeedloaderItem)stack.getItem()).isEmpty(stack))
 							{
 								for(ItemStack b : bullets)
@@ -348,7 +347,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 										world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), b));
 								setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack), true);
 								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
-								player.inventory.setChanged();
+								player.getInventory().setChanged();
 								if(player instanceof ServerPlayer)
 									ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
 											new MessageSpeedloaderSync(i, hand));
@@ -499,7 +498,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		for(int i = 0; i < cycled.size(); i++)
 			cycled.set((i+offset+cycled.size())%cycled.size(), bullets.get(i));
 		setBullets(revolver, cycled, false);
-		player.inventory.setChanged();
+		player.getInventory().setChanged();
 	}
 
 	public void rotateCylinder(ItemStack revolver, Player player, boolean forward)

@@ -69,7 +69,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world, double x, double y, double z)
 	{
 		this(type, world);
-		this.moveTo(x, y, z, this.yRot, this.xRot);
+		this.moveTo(x, y, z, this.getYRot(), this.getXRot());
 		this.setPos(x, y, z);
 	}
 
@@ -81,8 +81,8 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
 	{
 		this(type, world);
-		float yaw = living!=null?living.yRot: 0;
-		float pitch = living!=null?living.xRot: 0;
+		float yaw = living!=null?living.getYRot(): 0;
+		float pitch = living!=null?living.getXRot(): 0;
 		this.moveTo(x, y, z, yaw, pitch);
 		this.setPos(this.getX(), this.getY(), this.getZ());
 		setDeltaMovement(ax, ay, az);
@@ -166,7 +166,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 			{
 				++this.ticksInGround;
 				if(this.ticksInGround >= getMaxTicksInGround())
-					this.remove();
+					this.discard();
 			}
 			else
 			{
@@ -182,7 +182,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 
 			if(ticksInAir >= tickLimit)
 			{
-				this.remove();
+				this.discard();
 				return;
 			}
 
@@ -268,18 +268,18 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 			);
 
 			float absMotion = (float)getDeltaMovement().length();
-			this.yRot = (float)(Math.atan2(getDeltaMovement().x, getDeltaMovement().z)*180.0D/Math.PI);
-			this.xRot = (float)(Math.atan2(getDeltaMovement().y, absMotion)*180.0D/Math.PI);
-			while(this.xRot-this.xRotO < -180.0F)
+			this.setYRot((float)(Math.atan2(getDeltaMovement().x, getDeltaMovement().z)*180.0D/Math.PI));
+			this.setXRot((float)(Math.atan2(getDeltaMovement().y, absMotion)*180.0D/Math.PI));
+			while(this.getXRot()-this.xRotO < -180.0F)
 				this.xRotO -= 360.0F;
-			while(this.xRot-this.xRotO >= 180.0F)
+			while(this.getXRot()-this.xRotO >= 180.0F)
 				this.xRotO += 360.0F;
-			while(this.yRot-this.yRotO < -180.0F)
+			while(this.getYRot()-this.yRotO < -180.0F)
 				this.yRotO -= 360.0F;
-			while(this.yRot-this.yRotO >= 180.0F)
+			while(this.getYRot()-this.yRotO >= 180.0F)
 				this.yRotO += 360.0F;
-			this.xRot = this.xRotO+(this.xRot-this.xRotO)*0.2F;
-			this.yRot = this.yRotO+(this.yRot-this.yRotO)*0.2F;
+			this.setXRot(this.xRotO+(this.getXRot()-this.xRotO)*0.2F);
+			this.setYRot(this.yRotO+(this.getYRot()-this.yRotO)*0.2F);
 
 
 			float movementDecay = getMotionDecayFactor();
@@ -312,16 +312,16 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 		if(!this.level.isClientSide&&(this.inGround||this.isNoPhysics())&&this.shakeTime <= 0)
 		{
 			boolean flag = this.pickup==AbstractArrow.Pickup.ALLOWED
-					||this.pickup==AbstractArrow.Pickup.CREATIVE_ONLY&&player.abilities.instabuild
+					||this.pickup==AbstractArrow.Pickup.CREATIVE_ONLY&&player.getAbilities().instabuild
 					||this.isNoPhysics()&&this.getOwner().getUUID()==player.getUUID();
 			if(this.pickup==AbstractArrow.Pickup.ALLOWED
-					&&!player.inventory.add(this.getPickupItem()))
+					&&!player.getInventory().add(this.getPickupItem()))
 				flag = false;
 
 			if(flag)
 			{
 				player.take(this, 1);
-				this.remove();
+				this.discard();
 			}
 
 		}
@@ -335,13 +335,13 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 				this.piercedEntities = new IntOpenHashSet(this.getPierceLevel());
 			if(this.piercedEntities.size() >= this.getPierceLevel()+1)
 			{
-				this.remove();
+				this.discard();
 				return;
 			}
 			this.piercedEntities.add(target.getId());
 		}
 		else
-			this.remove();
+			this.discard();
 	}
 
 	@OnlyIn(Dist.CLIENT)

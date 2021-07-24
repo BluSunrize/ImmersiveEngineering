@@ -28,7 +28,7 @@ public class AutoWorkbenchMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/auto_workbench"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 2, 3),
-				() -> Multiblocks.autoWorkbench.getDefaultState());
+				() -> Multiblocks.autoWorkbench.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class AutoWorkbenchMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

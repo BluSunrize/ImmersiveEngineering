@@ -18,8 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,19 +25,14 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fluids.FluidStack;
 
-public class MixerRenderer extends BlockEntityRenderer<MixerTileEntity>
+public class MixerRenderer extends IEBlockEntityRenderer<MixerTileEntity>
 {
 	public static DynamicModel<Direction> AGITATOR;
-
-	public MixerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(MixerTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
@@ -59,7 +52,7 @@ public class MixerRenderer extends BlockEntityRenderer<MixerTileEntity>
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), agitator, true));
 
 		matrixStack.translate(-0.5, -0.5, -0.5);
-		blockRenderer.getModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
+		blockRenderer.getModelRenderer().renderModel(te.getLevelNonnull(), model, state, blockPos, matrixStack,
 				bufferIn.getBuffer(RenderType.solid()), true, te.getLevel().random, 0,
 				combinedOverlayIn, EmptyModelData.INSTANCE);
 

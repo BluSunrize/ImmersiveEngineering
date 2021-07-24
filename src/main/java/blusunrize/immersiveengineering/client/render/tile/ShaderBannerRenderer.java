@@ -25,8 +25,6 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,25 +35,23 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
-public class ShaderBannerRenderer extends BlockEntityRenderer<ShaderBannerTileEntity>
+public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerTileEntity>
 {
 	private final ModelPart clothModel = BannerRenderer.makeFlag();
 	private final ModelPart standingModel = new ModelPart(64, 64, 44, 0);
 	private final ModelPart crossbar;
 
-	public ShaderBannerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
+	public ShaderBannerRenderer()
 	{
-		super(rendererDispatcherIn);
 		this.standingModel.addBox(-1.0F, -30.0F, -1.0F, 2.0F, 42.0F, 2.0F, 0.0F);
 		this.crossbar = new ModelPart(64, 64, 0, 42);
 		this.crossbar.addBox(-10.0F, -32.0F, -1.0F, 20.0F, 2.0F, 2.0F, 0.0F);
-
 	}
 
 	@Override
 	public void render(ShaderBannerTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		long time = te.getWorldNonnull().getGameTime();
+		long time = te.getLevelNonnull().getGameTime();
 		matrixStack.pushPose();
 
 		// Check which of the two blocks we are so we can calculate the orientation.

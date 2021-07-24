@@ -47,12 +47,16 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 
 	@Nonnull
 	@Override
-	public ItemStack clicked(int id, int dragType, ClickType clickType, Player player)
+	public void clicked(int id, int dragType, ClickType clickType, Player player)
 	{
 		Slot slot = id < 0?null: this.slots.get(id);
 		if(!(slot instanceof IESlot.ItemHandlerGhost))
-			return super.clicked(id, dragType, clickType, player);
+		{
+			super.clicked(id, dragType, clickType, player);
+			return;
+		}
 		//Spooky Ghost Slots!!!!
+		//TODO fix!
 		ItemStack stack = ItemStack.EMPTY;
 		ItemStack stackSlot = slot.getItem();
 		if(!stackSlot.isEmpty())
@@ -62,7 +66,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 			slot.set(ItemStack.EMPTY);
 		else if(dragType==0||dragType==1)
 		{
-			Inventory playerInv = player.inventory;
+			Inventory playerInv = player.getInventory();
 			ItemStack stackHeld = playerInv.getCarried();
 			int amount = Math.min(slot.getMaxStackSize(), stackHeld.getCount());
 			if(dragType==1)
@@ -88,7 +92,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		}
 		else if(dragType==5)
 		{
-			Inventory playerInv = player.inventory;
+			Inventory playerInv = player.getInventory();
 			ItemStack stackHeld = playerInv.getCarried();
 			int amount = Math.min(slot.getMaxStackSize(), stackHeld.getCount());
 			if(!slot.hasItem())
@@ -96,7 +100,6 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 				slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
 		}
-		return stack;
 	}
 
 	@Nonnull

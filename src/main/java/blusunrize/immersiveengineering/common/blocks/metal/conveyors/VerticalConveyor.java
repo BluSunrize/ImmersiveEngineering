@@ -282,7 +282,7 @@ public class VerticalConveyor extends BasicConveyor
 								inserter = CapabilityReference.forNeighbor(getTile(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
 							ItemStack ret = Utils.insertStackIntoInventory(inserter, stack, false);
 							if(ret.isEmpty())
-								entity.remove();
+								entity.discard();
 							else if(ret.getCount() < stack.getCount())
 								item.setItem(ret);
 						}

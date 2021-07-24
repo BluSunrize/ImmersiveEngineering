@@ -28,7 +28,7 @@ public class SqueezerMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/squeezer"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 1), new BlockPos(3, 3, 3),
-				() -> Multiblocks.squeezer.getDefaultState());
+				() -> Multiblocks.squeezer.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class SqueezerMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

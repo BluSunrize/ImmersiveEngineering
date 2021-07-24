@@ -28,8 +28,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -39,19 +37,14 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class BottlingMachineRenderer extends BlockEntityRenderer<BottlingMachineTileEntity>
+public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachineTileEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
-
-	public BottlingMachineRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(BottlingMachineTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		//Grab model
@@ -177,10 +170,10 @@ public class BottlingMachineRenderer extends BlockEntityRenderer<BottlingMachine
 
 				if(itemDisplays[i][4]==0)
 					ClientUtils.mc().getItemRenderer().renderStatic(process.items.get(0), TransformType.FIXED,
-							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 				else if(itemDisplays[i][4]==1||!ClientUtils.mc().getMainRenderTarget().isStencilEnabled())
 					ClientUtils.mc().getItemRenderer().renderStatic(display, TransformType.FIXED,
-							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 				else
 				{
 					float h0 = -.5f;
@@ -225,7 +218,7 @@ public class BottlingMachineRenderer extends BlockEntityRenderer<BottlingMachine
 		);
 		BatchingRenderTypeBuffer batchBuffer = new BatchingRenderTypeBuffer();
 		ClientUtils.mc().getItemRenderer().renderStatic(item, TransformType.FIXED,
-				combinedLightIn, combinedOverlayIn, matrix, batchBuffer);
+				combinedLightIn, combinedOverlayIn, matrix, batchBuffer, 0);
 		batchBuffer.pipe(stencilWrapper);
 	}
 }

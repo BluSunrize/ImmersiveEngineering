@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -40,7 +41,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -135,7 +135,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			{
 				BlockPos cc = it.next();
 				//				world.setBlockState(cc, Blocks.glass.getDefaultState(), 2);
-				level.setBlock(cc, Misc.fakeLight.getDefaultState(), 2);
+				level.setBlock(cc, Misc.fakeLight.defaultBlockState(), 2);
 				BlockEntity te = level.getBlockEntity(cc);
 				if(te instanceof FakeLightTileEntity)
 					((FakeLightTileEntity)te).floodlightCoords = getBlockPos();
@@ -258,7 +258,7 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 			double dist = (vec.x*i*vec.x*i)+(vec.y*i*vec.y*i)+(vec.z*i*vec.z*i);
 			if(dist > maxDistance)
 				break;
-			if(Level.isOutsideBuildHeight(worldPosition))
+			if(getLevelNonnull().isOutsideBuildHeight(worldPosition))
 				continue;
 			//&&world.getBlockLightValue(xx,yy,zz)<12 using this makes it not work in daylight .-.
 
@@ -470,9 +470,9 @@ public class FloodlightTileEntity extends ImmersiveConnectableTileEntity impleme
 	@Override
 	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
-		Direction f = Direction.fromYRot(placer.yRot);
+		Direction f = Direction.fromYRot(placer.getYRot());
 		if(f==side.getOpposite())
-			f = placer.xRot > 0?Direction.DOWN: Direction.UP;
+			f = placer.getXRot() > 0?Direction.DOWN: Direction.UP;
 		facing = f;
 	}
 

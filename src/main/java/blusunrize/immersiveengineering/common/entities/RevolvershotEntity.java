@@ -116,7 +116,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 			this.secondaryImpact(mop);
 		if(mop instanceof BlockHitResult)
 			this.onHitBlock((BlockHitResult)mop);
-		this.remove();
+		this.discard();
 	}
 
 

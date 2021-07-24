@@ -22,8 +22,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,19 +35,14 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class ClocheRenderer extends BlockEntityRenderer<ClocheTileEntity>
+public class ClocheRenderer extends IEBlockEntityRenderer<ClocheTileEntity>
 {
 	private static final Map<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
-
-	public ClocheRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(ClocheTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.dummy!=0||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
+		if(tile.dummy!=0||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = tile.getBlockPos();
@@ -89,7 +82,7 @@ public class ClocheRenderer extends BlockEntityRenderer<ClocheTileEntity>
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
 				block.getRight().push(matrixStack);
 				RenderUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
-						tile.getWorldNonnull(), blockPos, false, col, combinedLightIn);
+						tile.getLevelNonnull(), blockPos, false, col, combinedLightIn);
 				matrixStack.popPose();
 			}
 
@@ -100,7 +93,7 @@ public class ClocheRenderer extends BlockEntityRenderer<ClocheTileEntity>
 			if(injectedQuadList.size() > 0)
 			{
 				RenderUtils.renderModelTESRFancy(injectedQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
-						tile.getWorldNonnull(), blockPos, false, -1, combinedLightIn);
+						tile.getLevelNonnull(), blockPos, false, -1, combinedLightIn);
 			}
 
 			matrixStack.popPose();

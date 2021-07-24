@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -47,7 +47,7 @@ public class CapabilitySkyhookData
 			if(hook!=null)
 			{
 				IELogger.logger.debug("Dismounting");
-				hook.remove();
+				hook.discard();
 				hook = null;
 			}
 			if(status.dismount!=null)
@@ -70,10 +70,10 @@ public class CapabilitySkyhookData
 		}
 	}
 
-	public static class SimpleSkyhookProvider implements ICapabilityProvider
+	public static class SimpleSkyhookProvider implements ICapabilityProvider, INBTSerializable<IntTag>
 	{
-		SkyhookUserData data = new SkyhookUserData();
-		LazyOptional<SkyhookUserData> opt = CapabilityUtils.constantOptional(data);
+		private final SkyhookUserData data = new SkyhookUserData();
+		private final LazyOptional<SkyhookUserData> opt = CapabilityUtils.constantOptional(data);
 
 		@Nonnull
 		@Override
@@ -82,6 +82,18 @@ public class CapabilitySkyhookData
 			if(capability==SKYHOOK_USER_DATA)
 				return opt.cast();
 			return LazyOptional.empty();
+		}
+
+		@Override
+		public IntTag serializeNBT()
+		{
+			return IntTag.valueOf(data.status.ordinal());
+		}
+
+		@Override
+		public void deserializeNBT(IntTag nbt)
+		{
+			data.status = SkyhookStatus.values()[nbt.getAsInt()];
 		}
 	}
 
@@ -118,19 +130,6 @@ public class CapabilitySkyhookData
 
 	public static void register()
 	{
-		CapabilityManager.INSTANCE.register(SkyhookUserData.class, new Capability.IStorage<SkyhookUserData>()
-		{
-			@Override
-			public Tag writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side)
-			{
-				return IntTag.valueOf(instance.status.ordinal());
-			}
-
-			@Override
-			public void readNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side, Tag nbt)
-			{
-				instance.status = SkyhookStatus.values()[((IntTag)nbt).getAsInt()];
-			}
-		}, SkyhookUserData::new);
+		CapabilityManager.INSTANCE.register(SkyhookUserData.class);
 	}
 }

@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
@@ -42,7 +41,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -69,7 +71,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 
 	public ChemthrowerItem()
 	{
-		super(new Item.Properties().setISTER(() -> () -> IEOBJItemRenderer.INSTANCE).stacksTo(1), "CHEMTHROWER");
+		super(withIEOBJRender().stacksTo(1), "CHEMTHROWER");
 	}
 
 	@Override

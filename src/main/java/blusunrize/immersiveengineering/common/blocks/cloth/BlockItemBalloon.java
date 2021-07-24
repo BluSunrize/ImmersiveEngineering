@@ -51,7 +51,7 @@ public class BlockItemBalloon extends BlockItemIE
 			{
 				if(!worldIn.isClientSide)
 				{
-					worldIn.setBlockAndUpdate(bPos, Cloth.balloon.getDefaultState());
+					worldIn.setBlockAndUpdate(bPos, Cloth.balloon.defaultBlockState());
 					itemStackIn.shrink(1);
 					if(itemStackIn.getCount() <= 0)
 						playerIn.setItemInHand(hand, ItemStack.EMPTY);

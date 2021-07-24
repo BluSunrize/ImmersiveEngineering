@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
@@ -71,7 +70,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 {
 	public IEShieldItem()
 	{
-		super(new Properties().defaultDurability(1024).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
+		super(withIEOBJRender().defaultDurability(1024), "SHIELD");
 		GenericDeferredWork.registerDispenseBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
 	}
 
@@ -191,7 +190,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 			if(event.getSource().isProjectile()&&event.getSource().getDirectEntity()!=null)
 			{
 				Entity projectile = event.getSource().getDirectEntity();
-				projectile.remove();
+				projectile.discard();
 				event.setCanceled(true);
 				b = true;
 			}

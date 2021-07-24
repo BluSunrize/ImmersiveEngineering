@@ -368,9 +368,9 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
 	{
 		if(state.getBlock()==this.getBlockState().getBlock())
-			getWorldNonnull().removeBlock(pos, false);
-		getWorldNonnull().setBlockAndUpdate(pos, state);
-		BlockEntity tile = getWorldNonnull().getBlockEntity(pos);
+			getLevelNonnull().removeBlock(pos, false);
+		getLevelNonnull().setBlockAndUpdate(pos, state);
+		BlockEntity tile = getLevelNonnull().getBlockEntity(pos);
 		if(tile instanceof IReadOnPlacement)
 			((IReadOnPlacement)tile).readOnPlacement(null, stack);
 	}
@@ -443,7 +443,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public T getTileForPos(BlockPos targetPosInMB)
 	{
 		BlockPos target = getBlockPosForPos(targetPosInMB);
-		BlockEntity tile = SafeChunkUtils.getSafeTE(getWorldNonnull(), target);
+		BlockEntity tile = SafeChunkUtils.getSafeTE(getLevelNonnull(), target);
 		if(this.getClass().isInstance(tile))
 			return (T)tile;
 		return null;

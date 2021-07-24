@@ -28,12 +28,12 @@ import net.minecraftforge.event.entity.player.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.loading.moddiscovery.ModInfo;
-import net.minecraftforge.fml.packs.ModFileResourcePack;
-import net.minecraftforge.fml.packs.ResourcePackLoader;
-import net.minecraftforge.fml.server.ServerLifecycleHooks;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.fmllegacy.network.PacketDistributor.PacketTarget;
+import net.minecraftforge.fmllegacy.packs.ModFileResourcePack;
+import net.minecraftforge.fmllegacy.packs.ResourcePackLoader;
+import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
+import net.minecraftforge.forgespi.language.IModInfo;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -71,7 +71,7 @@ public class StaticTemplateManager
 		{
 			try
 			{
-				Resource resource = server.getDataPackRegistries().getResourceManager().getResource(name);
+				Resource resource = server.getResourceManager().getResource(name);
 				return Optional.of(resource.getInputStream());
 			} catch(IOException x)
 			{
@@ -82,7 +82,7 @@ public class StaticTemplateManager
 		{
 			IELogger.error("Falling back to mod resource packs for resource {}", name);
 			return ModList.get().getMods().stream()
-					.map(ModInfo::getModId)
+					.map(IModInfo::getModId)
 					.map(ResourcePackLoader::getResourcePackFor)
 					.filter(Optional::isPresent)
 					.map(Optional::get)

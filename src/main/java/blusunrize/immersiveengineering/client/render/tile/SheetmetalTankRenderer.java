@@ -18,21 +18,14 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraftforge.fluids.FluidStack;
 
-public class SheetmetalTankRenderer extends BlockEntityRenderer<SheetmetalTankTileEntity>
+public class SheetmetalTankRenderer extends IEBlockEntityRenderer<SheetmetalTankTileEntity>
 {
-	public SheetmetalTankRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 	@Override
 	public void render(SheetmetalTankTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
+		if(!tile.formed||tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 		matrixStack.pushPose();
 

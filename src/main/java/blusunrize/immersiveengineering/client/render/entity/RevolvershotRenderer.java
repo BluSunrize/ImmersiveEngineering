@@ -15,15 +15,15 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
 public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 {
-	public RevolvershotRenderer(EntityRenderDispatcher renderManager)
+	public RevolvershotRenderer(Context renderManager)
 	{
 		super(renderManager);
 	}
@@ -34,8 +34,8 @@ public class RevolvershotRenderer extends EntityRenderer<RevolvershotEntity>
 	{
 		matrixStackIn.pushPose();
 		VertexConsumer builder = bufferIn.getBuffer(IERenderTypes.getPositionTex(getTextureLocation(entity)));
-		matrixStackIn.mulPose(new Quaternion(0, entity.yRotO+(entity.yRot-entity.yRotO)*partialTicks-90.0F, 0, true));
-		matrixStackIn.mulPose(new Quaternion(0.0F, 0.0F, entity.xRotO+(entity.xRot-entity.xRotO)*partialTicks, true));
+		matrixStackIn.mulPose(new Quaternion(0, entity.yRotO+(entity.getYRot()-entity.yRotO)*partialTicks-90.0F, 0, true));
+		matrixStackIn.mulPose(new Quaternion(0.0F, 0.0F, entity.xRotO+(entity.getXRot()-entity.xRotO)*partialTicks, true));
 		matrixStackIn.scale(0.25F, 0.25F, 0.25F);
 		Matrix4f mat = matrixStackIn.last().pose();
 

@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdriverInteraction;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.core.BlockPos;
@@ -120,10 +121,10 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 		if(bucketitem==Items.AIR)
 			return false;
 		ItemStack bucketStack = new ItemStack(bucketitem);
-		if(bucketitem.emptyBucket(null, world, pos, null))
+		if(bucketitem.emptyContents(null, world, pos, null))
 		{
 			tank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
-			bucketitem.checkExtraContent(world, bucketStack, pos);
+			bucketitem.checkExtraContent(null, world, bucketStack, pos);
 			return true;
 		}
 		else
@@ -156,7 +157,7 @@ public class FluidPlacerTileEntity extends IEBaseTileEntity implements IETickabl
 
 	private void addToQueue(BlockPos pos)
 	{
-		if(!Level.isOutsideBuildHeight(pos))//Within world borders
+		if(!getLevelNonnull().isOutsideBuildHeight(pos))//Within world borders
 			if(checkedPositions.add(pos))//Don't add checked positions
 				if(pos.distSqr(getBlockPos()) < 64*64)//Within max range
 				{

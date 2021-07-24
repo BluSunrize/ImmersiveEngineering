@@ -53,7 +53,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	public FluorescentTubeEntity(Level world, ItemStack tube, float angleVert)
 	{
 		this(IEEntityTypes.FLUORESCENT_TUBE.get(), world);
-		yRot = angleVert;
+		setYRot(angleVert);
 		rgb = FluorescentTubeItem.getRGB(tube);
 	}
 
@@ -149,7 +149,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 			FluorescentTubeItem.setRGB(tube, rgb);
 			ItemEntity ent = new ItemEntity(level, getX(), getY(), getZ(), tube);
 			level.addFreshEntity(ent);
-			remove();
+			discard();
 		}
 		return super.hurt(source, amount);
 	}

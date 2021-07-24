@@ -113,11 +113,11 @@ public class ModelItemDynamicOverride extends BakedIEModel
 	}
 
 	public static final HashMap<String, BakedModel> modelCache = new HashMap<>();
-	static ItemOverrides dynamicOverrides = new ItemOverrides()
+	private static final ItemOverrides dynamicOverrides = new ItemOverrides()
 	{
 		@Nullable
 		@Override
-		public BakedModel resolve(@Nonnull BakedModel originalModel, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn)
+		public BakedModel resolve(@Nonnull BakedModel originalModel, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int unused)
 		{
 			if(!stack.isEmpty()&&stack.getItem() instanceof IEItemInterfaces.ITextureOverride)
 			{

@@ -74,7 +74,8 @@ public class MessageSetGhostSlots implements IMessage
 									"This is either a bug in IE or an attempt at cheating.");
 							return;
 						}
-						container.setItem(slot, e.getValue());
+						//TODO this is most likely broken!
+						container.setItem(slot, container.getStateId(), e.getValue());
 					}
 				}
 		});

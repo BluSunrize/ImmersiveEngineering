@@ -189,7 +189,7 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 						{
 							temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
 							if(temp.isEmpty())
-								itemEntity.remove();
+								itemEntity.discard();
 							else if(temp.getCount() < stack.getCount())
 								itemEntity.setItem(temp);
 						}
@@ -444,9 +444,9 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		{
 			if(!simulate)
 			{
-				ItemEntity entity = new ItemEntity(chute.getWorldNonnull(), chute.getBlockPos().getX()+.5, chute.getBlockPos().getY()+.5, chute.getBlockPos().getZ()+.5, stack.copy());
+				ItemEntity entity = new ItemEntity(chute.getLevelNonnull(), chute.getBlockPos().getX()+.5, chute.getBlockPos().getY()+.5, chute.getBlockPos().getZ()+.5, stack.copy());
 				entity.setDeltaMovement(Vec3.ZERO);
-				chute.getWorldNonnull().addFreshEntity(entity);
+				chute.getLevelNonnull().addFreshEntity(entity);
 				entity.setPickUpDelay(10);
 			}
 			return ItemStack.EMPTY;

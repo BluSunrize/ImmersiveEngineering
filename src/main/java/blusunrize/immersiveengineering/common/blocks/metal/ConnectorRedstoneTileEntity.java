@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.mojang.math.Vector4f;
@@ -67,12 +68,12 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 
 	public ConnectorRedstoneTileEntity(BlockPos pos, BlockState state)
 	{
-		this(IETileTypes.CONNECTOR_REDSTONE.get());
+		this(IETileTypes.CONNECTOR_REDSTONE.get(), pos, state);
 	}
 
-	public ConnectorRedstoneTileEntity(BlockEntityType<? extends ConnectorRedstoneTileEntity> type)
+	public ConnectorRedstoneTileEntity(BlockEntityType<? extends ConnectorRedstoneTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	@Override

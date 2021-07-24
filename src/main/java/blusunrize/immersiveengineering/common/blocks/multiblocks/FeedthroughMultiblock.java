@@ -32,6 +32,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -84,7 +85,8 @@ public class FeedthroughMultiblock implements IMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 
@@ -156,7 +158,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		BlockPos middlePos = pos.relative(side);
 		BlockState middle = world.getBlockState(middlePos);
 		if(!middle.getShape(world, pos).equals(Shapes.block())
-				||middle.getBlock().hasTileEntity(middle)
+				||middle.getBlock() instanceof EntityBlock
 				||middle.getRenderShape()!=RenderShape.MODEL)
 			return false;
 		BlockPos otherPos = pos.relative(side, 2);
@@ -180,7 +182,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		//Form
 		if(!world.isClientSide)
 		{
-			BlockState state = Connectors.feedthrough.getDefaultState().setValue(FACING_ALL, side);
+			BlockState state = Connectors.feedthrough.defaultBlockState().setValue(FACING_ALL, side);
 			BlockPos masterPos = pos.relative(side);
 			FeedthroughTileEntity master = setBlock(world, masterPos, state, wire, middle, 0);
 			if(master!=null)

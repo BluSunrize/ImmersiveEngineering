@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
@@ -223,7 +224,7 @@ public class WindmillTileEntity extends IEBaseTileEntity implements IETickableBl
 		if(sails < 8&&heldItem.getItem()==Ingredients.windmillSail.asItem())
 		{
 			this.sails++;
-			if(!player.abilities.instabuild)
+			if(!player.getAbilities().instabuild)
 				heldItem.shrink(1);
 			return true;
 		}

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -67,7 +66,7 @@ public class DrillItem extends DieselToolItem
 
 	public DrillItem()
 	{
-		super(withIEOBJRender().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
+		super(withIEOBJRender().stacksTo(1), "DRILL");
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */
@@ -185,7 +184,7 @@ public class DrillItem extends DieselToolItem
 			{
 				if(living instanceof Player)
 				{
-					if(((Player)living).abilities.instabuild)
+					if(((Player)living).getAbilities().instabuild)
 						return true;
 					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (Player)living);
 				}
@@ -267,7 +266,7 @@ public class DrillItem extends DieselToolItem
 			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
-			if(block!=null&&!block.isAir(state, world, pos)&&state.getDestroyProgress(player, world, pos)!=0)
+			if(!state.isAir()&&state.getDestroyProgress(player, world, pos)!=0)
 			{
 				if(!this.canBreakExtraBlock(world, block, pos, state, player, stack, head, true))
 					continue;
@@ -275,7 +274,7 @@ public class DrillItem extends DieselToolItem
 				if(xpDropEvent < 0)
 					continue;
 
-				if(player.abilities.instabuild)
+				if(player.getAbilities().instabuild)
 				{
 					block.playerWillDestroy(world, pos, state, player);
 					if(block.removedByPlayer(state, world, pos, player, false, state.getFluidState()))

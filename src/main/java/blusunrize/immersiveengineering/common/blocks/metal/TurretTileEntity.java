@@ -294,7 +294,7 @@ public abstract class TurretTileEntity<T extends TurretTileEntity<T>> extends IE
 
 	protected boolean hasOwnerRights(Player player)
 	{
-		if(player.abilities.instabuild||owner==null||owner.isEmpty())
+		if(player.getAbilities().instabuild||owner==null||owner.isEmpty())
 			return true;
 		return owner.equalsIgnoreCase(player.getName().getString());
 	}

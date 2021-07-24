@@ -250,7 +250,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 				master.markContainingBlockForUpdate(null);
 				stack.shrink(1);
 				if(stack.getCount() <= 0)
-					entity.remove();
+					entity.discard();
 			}
 		}
 	}

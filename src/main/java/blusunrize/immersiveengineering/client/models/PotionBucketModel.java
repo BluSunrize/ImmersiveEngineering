@@ -56,10 +56,10 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 	{
 		BakedModel baseModel = baseGeometry.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
 		ImmutableMap<TransformType, Transformation> transformMap = PerspectiveMapWrapper.getTransforms(
-				new ModelTransformComposition(owner.getCombinedTransform(), modelTransform)
+				new CompositeModelState(owner.getCombinedTransform(), modelTransform)
 		);
 		ItemMultiLayerBakedModel.Builder builder = ItemMultiLayerBakedModel.builder(
-				owner, baseModel.getParticleTexture(EmptyModelData.INSTANCE), new OverrideHandler(overrides, bakery, owner), transformMap
+				owner, baseModel.getParticleIcon(EmptyModelData.INSTANCE), new OverrideHandler(overrides, bakery, owner), transformMap
 		);
 		ResourceLocation fluidMaskLocation = IEFluids.fluidPotion.get().getAttributes().getStillTexture();
 		for(Pair<BakedModel, RenderType> layer : baseModel.getLayerModels(ItemStack.EMPTY, false))
@@ -68,7 +68,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 			List<BakedQuad> newQuads = new ArrayList<>(baseQuads.size());
 			for(BakedQuad baseQuad : baseQuads)
 			{
-				if(baseQuad.func_187508_a().getName().equals(fluidMaskLocation))
+				if(baseQuad.getSprite().getName().equals(fluidMaskLocation))
 					newQuads.add(recolorTransformer.apply(baseQuad));
 				else
 					newQuads.add(baseQuad);
@@ -123,12 +123,12 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 		@Override
 		public BakedModel resolve(
 				@Nonnull BakedModel model, @Nonnull ItemStack stack, @Nullable ClientLevel world,
-				@Nullable LivingEntity livingEntity
+				@Nullable LivingEntity livingEntity, int unused
 		)
 		{
 			final FluidStack fluid = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
 			if(fluid.isEmpty())
-				return nested.resolve(model, stack, world, livingEntity);
+				return nested.resolve(model, stack, world, livingEntity, unused);
 			final int color = fluid.getFluid().getAttributes().getColor(fluid);
 			return coloredModels.computeIfAbsent(color, i -> new PotionBucketModel(i).bake(
 					owner, bakery, ModelLoader.defaultTextureGetter(), BlockModelRotation.X0_Y0, this, ImmersiveEngineering.rl("potion_bucket_override")

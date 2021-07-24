@@ -137,9 +137,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 				{
 					ItemStack req = totalMaterials[ss];
 					int reqSize = req.getCount();
-					for(int slot = 0; slot < ManualUtils.mc().player.inventory.getContainerSize(); slot++)
+					for(int slot = 0; slot < ManualUtils.mc().player.getInventory().getContainerSize(); slot++)
 					{
-						ItemStack inSlot = ManualUtils.mc().player.inventory.getItem(slot);
+						ItemStack inSlot = ManualUtils.mc().player.getInventory().getItem(slot);
 						if(!inSlot.isEmpty()&&ItemStack.isSame(inSlot, req))
 							if((reqSize -= inSlot.getCount()) <= 0)
 								break;
@@ -225,7 +225,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 							{
 								BlockPos pos = new BlockPos(l, h, w);
 								BlockState state = structureWorld.getBlockState(pos);
-								if(!state.isAir(structureWorld, pos))
+								if(!state.isAir())
 								{
 									transform.pushPose();
 									transform.translate(l, h, w);
@@ -242,7 +242,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 										if(te!=null)
 											modelData = te.getModelData();
 
-										blockRender.renderBlock(state, transform,
+										// TODO batch these? Probably irrelevant for performance
+										blockRender.renderSingleBlock(state, transform,
 												IERenderTypes.disableLighting(buffer),
 												0xf000f0, overlay, modelData);
 									}

@@ -14,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
 import java.util.function.Supplier;
@@ -30,7 +31,7 @@ public class CushionBlock extends IEBaseBlock
 	}
 
 	@Override
-	public void fallOn(Level w, BlockPos pos, Entity entity, float fallStrength)
+	public void fallOn(Level w, BlockState state, BlockPos pos, Entity entity, float fallStrength)
 	{
 		entity.fallDistance = 0;
 	}

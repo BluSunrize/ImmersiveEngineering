@@ -274,8 +274,8 @@ public class IEManual
 		}
 		//Changelog from update JSON
 		CheckResult result = VersionChecker.getResult(ModLoadingContext.get().getActiveContainer().getModInfo());
-		if(result.status!=Status.PENDING&&result.status!=Status.FAILED)
-			for(Entry<ComparableVersion, String> e : result.changes.entrySet())
+		if(result.status()!=Status.PENDING&&result.status()!=Status.FAILED)
+			for(Entry<ComparableVersion, String> e : result.changes().entrySet())
 				if(!allChanges.containsKey(e.getKey()))
 					allChanges.put(e.getKey(), addVersionToManual(currIEVer, e.getKey(), e.getValue(), true));
 

@@ -80,7 +80,7 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	@Override
 	public void destroy(DamageSource source)
 	{
-		this.remove();
+		this.discard();
 		if(this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
 		{
 			ItemStack itemstack = getCartItem();

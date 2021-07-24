@@ -51,8 +51,6 @@ public class TransformerBlock extends MiscConnectableBlock<TransformerTileEntity
 	@Override
 	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
-		TransformerTileEntity te = new TransformerTileEntity();
-		te.dummy = pos.getValue(IEProperties.MULTIBLOCKSLAVE)?1: 0;
-		return te;
+		return new TransformerTileEntity(pos, state);
 	}
 }

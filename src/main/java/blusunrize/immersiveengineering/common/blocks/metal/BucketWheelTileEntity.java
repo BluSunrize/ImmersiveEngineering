@@ -119,7 +119,7 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 
 	public void spawnParticles(ItemStack stack)
 	{
-		Level w = getWorldNonnull();
+		Level w = getLevelNonnull();
 		if(w instanceof ServerLevel&&IEServerConfig.MACHINES.excavator_particles.get())
 		{
 			Direction facing = getFacing();
@@ -132,10 +132,10 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 			double fixVelOffset = .075*sign;
 			for(int i = 0; i < 16; i++)
 			{
-				double mX = (getWorldNonnull().random.nextDouble()-.5)*.01;
-				double mY = getWorldNonnull().random.nextDouble()*-0.05D;
-				double mZ = (getWorldNonnull().random.nextDouble()-.5)*.01;
-				double rndPosOffset = .2*(getWorldNonnull().random.nextDouble()-.5);
+				double mX = (getLevelNonnull().random.nextDouble()-.5)*.01;
+				double mY = getLevelNonnull().random.nextDouble()*-0.05D;
+				double mZ = (getLevelNonnull().random.nextDouble()-.5)*.01;
+				double rndPosOffset = .2*(getLevelNonnull().random.nextDouble()-.5);
 
 				if(facing.getAxis()==Axis.X)
 					mX += fixVelOffset;

@@ -9,18 +9,15 @@
 
 package blusunrize.immersiveengineering.common.util.chickenbones;
 
-import com.mojang.blaze3d.platform.MemoryTracker;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
-import java.nio.FloatBuffer;
 
 /**
  * Copyright (C) 2013 Chicken-Bones
@@ -447,34 +444,6 @@ public class Matrix4
 		temp = Double.doubleToLongBits(m33);
 		result = 31*result+(int)(temp^(temp >>> 32));
 		return result;
-	}
-
-	public FloatBuffer toFloatBuffer(@Nullable FloatBuffer in)
-	{
-		if(in==null)
-			in = MemoryTracker.createFloatBuffer(16);
-		in.clear();
-		in.put((float)m00);
-		in.put((float)m10);
-		in.put((float)m20);
-		in.put((float)m30);
-
-		in.put((float)m01);
-		in.put((float)m11);
-		in.put((float)m21);
-		in.put((float)m31);
-
-		in.put((float)m02);
-		in.put((float)m12);
-		in.put((float)m22);
-		in.put((float)m32);
-
-		in.put((float)m03);
-		in.put((float)m13);
-		in.put((float)m23);
-		in.put((float)m33);
-		in.flip();
-		return in;
 	}
 
 	public double getElement(int row, int column)

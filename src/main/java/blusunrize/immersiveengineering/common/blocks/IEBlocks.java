@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
+import blusunrize.immersiveengineering.common.blocks.metal.LanternBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
@@ -340,7 +341,7 @@ public final class IEBlocks
 		public static BlockEntry<GunpowderBarrelBlock> gunpowderBarrel = new BlockEntry<>(
 				"gunpowder_barrel", GunpowderBarrelBlock.PROPERTIES, GunpowderBarrelBlock::new
 		);
-		public static BlockEntry<BarrelBlock> woodenBarrel = BlockEntry.barrel("wooden_barrel", false);
+		public static BlockEntry<GenericTileBlock<?>> woodenBarrel = BlockEntry.barrel("wooden_barrel", false);
 		public static BlockEntry<TurntableBlock> turntable = new BlockEntry<>("turntable", STANDARD_WOOD_PROPERTIES, TurntableBlock::new);
 		public static BlockEntry<GenericTileBlock<WoodenCrateTileEntity>> crate = new BlockEntry<>(
 				"crate", STANDARD_WOOD_PROPERTIES, p -> new GenericTileBlock<>(IETileTypes.WOODEN_CRATE, p)
@@ -455,7 +456,7 @@ public final class IEBlocks
 		public static BlockEntry<GenericTileBlock<CapacitorCreativeTileEntity>> capacitorCreative = new BlockEntry<>(
 				"capacitor_creative", DEFAULT_METAL_PROPERTIES, p -> new GenericTileBlock<>(IETileTypes.CAPACITOR_CREATIVE, p)
 		);
-		public static BlockEntry<BarrelBlock> barrel = BlockEntry.barrel("metal_barrel", true);
+		public static BlockEntry<GenericTileBlock<?>> barrel = BlockEntry.barrel("metal_barrel", true);
 		public static BlockEntry<FluidPumpBlock> fluidPump = new BlockEntry<>(
 				"fluid_pump", METAL_PROPERTIES_NOT_SOLID, FluidPumpBlock::new
 		);
@@ -668,9 +669,9 @@ public final class IEBlocks
 			return simple(name, properties, $ -> {});
 		}
 
-		public static BlockEntry<BarrelBlock> barrel(String name, boolean metal)
+		public static BlockEntry<GenericTileBlock<?>> barrel(String name, boolean metal)
 		{
-			return new BlockEntry<>(name, () -> BarrelBlock.getProperties(metal), p -> new BarrelBlock(p, metal));
+			return new BlockEntry<>(name, () -> BarrelBlock.getProperties(metal), p -> BarrelBlock.make(p, metal));
 		}
 
 		public static BlockEntry<ScaffoldingBlock> scaffolding(String name, Supplier<Properties> props) {
@@ -716,7 +717,7 @@ public final class IEBlocks
 			return regObject.get();
 		}
 
-		public BlockState getDefaultState() {
+		public BlockState defaultBlockState() {
 			return get().defaultBlockState();
 		}
 

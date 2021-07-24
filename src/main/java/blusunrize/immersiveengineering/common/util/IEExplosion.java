@@ -83,7 +83,7 @@ public class IEExplosion extends Explosion
 				double d3 = d0-getPosition().x;
 				double d4 = d1-getPosition().y;
 				double d5 = d2-getPosition().z;
-				double d6 = Mth.sqrt(d3*d3+d4*d4+d5*d5);
+				double d6 = Mth.sqrt((float)(d3*d3+d4*d4+d5*d5));
 				d3 = d3/d6;
 				d4 = d4/d6;
 				d5 = d5/d6;
@@ -96,11 +96,11 @@ public class IEExplosion extends Explosion
 				this.world.addParticle(ParticleTypes.SMOKE, d0, d1, d2, d3, d4, d5);
 			}
 
-			if(!state.isAir(world, pos))
+			if(!state.isAir())
 			{
 				if(this.world instanceof ServerLevel&&state.canDropFromExplosion(this.world, pos, this))
 				{
-					BlockEntity tile = state.hasTileEntity()?this.world.getBlockEntity(pos): null;
+					BlockEntity tile = this.world.getBlockEntity(pos);
 					LootContext.Builder lootCtx = new LootContext.Builder((ServerLevel)this.world)
 							.withRandom(this.world.random)
 							.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(pos))
@@ -151,7 +151,7 @@ public class IEExplosion extends Explosion
 							BlockPos blockpos = new BlockPos(d4, d6, d8);
 							BlockState iblockstate = this.world.getBlockState(blockpos);
 							FluidState ifluidstate = this.world.getFluidState(blockpos);
-							if(!iblockstate.isAir(world, blockpos)||!ifluidstate.isEmpty())
+							if(!iblockstate.isAir()||!ifluidstate.isEmpty())
 							{
 								float f2 = Math.max(iblockstate.getExplosionResistance(world, blockpos, this), ifluidstate.getExplosionResistance(world, blockpos, this));
 								if(this.getSourceMob()!=null)
@@ -201,7 +201,7 @@ public class IEExplosion extends Explosion
 					double d5 = entity.getX()-getPosition().x;
 					double d7 = entity.getY()+(double)entity.getEyeHeight()-getPosition().y;
 					double d9 = entity.getZ()-getPosition().z;
-					double d13 = Mth.sqrt(d5*d5+d7*d7+d9*d9);
+					double d13 = Mth.sqrt((float)(d5*d5+d7*d7+d9*d9));
 					if(d13!=0.0D)
 					{
 						d5 = d5/d13;
@@ -214,7 +214,7 @@ public class IEExplosion extends Explosion
 						entity.setDeltaMovement(entity.getDeltaMovement().add(d5*d11,
 								d7*d11,
 								d9*d11));
-						if(entity instanceof Player&&!((Player)entity).abilities.invulnerable)
+						if(entity instanceof Player&&!((Player)entity).getAbilities().invulnerable)
 							this.getHitPlayers().put((Player)entity, new Vec3(d5*d10, d7*d10, d9*d10));
 					}
 				}

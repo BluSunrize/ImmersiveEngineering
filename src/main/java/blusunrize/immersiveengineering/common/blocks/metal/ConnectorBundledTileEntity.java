@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -53,12 +54,12 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 
 	public ConnectorBundledTileEntity(BlockPos pos, BlockState state)
 	{
-		this(IETileTypes.CONNECTOR_BUNDLED.get());
+		this(IETileTypes.CONNECTOR_BUNDLED.get(), pos, state);
 	}
 
-	public ConnectorBundledTileEntity(BlockEntityType<? extends ConnectorBundledTileEntity> type)
+	public ConnectorBundledTileEntity(BlockEntityType<? extends ConnectorBundledTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(type);
+		super(type, pos, state);
 	}
 
 	private final CapabilityReference<RedstoneBundleConnection> attached = CapabilityReference.forTileEntityAt(

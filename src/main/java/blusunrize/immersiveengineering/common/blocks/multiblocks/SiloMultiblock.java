@@ -28,7 +28,7 @@ public class SiloMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/silo"),
 				new BlockPos(1, 0, 1), new BlockPos(1, 1, 2), new BlockPos(3, 7, 3),
-				() -> Multiblocks.silo.getDefaultState());
+				() -> Multiblocks.silo.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class SiloMultiblock extends IETemplateMultiblock
 				TransformType.FIXED,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

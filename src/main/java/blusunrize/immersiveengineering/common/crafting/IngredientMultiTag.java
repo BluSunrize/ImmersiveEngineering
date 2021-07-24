@@ -65,7 +65,7 @@ public class IngredientMultiTag extends Ingredient
 			NonNullList<ItemStack> lst = NonNullList.create();
 			for(Tag<Item> list : tags)
 				for(Item stack : list.getValues())
-					stack.getItem().fillItemCategory(CreativeModeTab.TAB_SEARCH, lst);
+					stack.fillItemCategory(CreativeModeTab.TAB_SEARCH, lst);
 			this.array = lst.toArray(new ItemStack[0]);
 		}
 		return this.array;

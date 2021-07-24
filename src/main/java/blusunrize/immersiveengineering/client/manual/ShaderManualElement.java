@@ -134,12 +134,12 @@ public class ShaderManualElement extends SpecialManualElements
 						.append("\n"+details);
 
 			String cost = Integer.toString(replicationCost.getCount());
-			if(!IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.abilities.instabuild)
+			if(!IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.getAbilities().instabuild)
 				cost = ChatFormatting.RED+cost;
 			buttons.add(new GuiButtonManual(gui, x+50, y+120, 70, 12,
 					new TextComponent(I18n.get("ie.manual.entry.shaderList.order")+" "+cost+"x   ").withStyle(ChatFormatting.BOLD),
 					btn -> {
-						if(IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.abilities.instabuild)
+						if(IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.getAbilities().instabuild)
 							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN, shader.getName()));
 						gui.fullInit();
 					})
@@ -148,7 +148,7 @@ public class ShaderManualElement extends SpecialManualElements
 		else
 		{
 			textAssembly.append("\n\n").append(new TranslatableComponent("ie.manual.entry.shaderList.noInfo"));
-			if(player.abilities.instabuild)
+			if(player.getAbilities().instabuild)
 				buttons.add(new GuiButtonManual(gui, x+10, y+120, 100, 16,
 						new TranslatableComponent("ie.manual.entry.shaderList.unlock"),
 						btn -> {

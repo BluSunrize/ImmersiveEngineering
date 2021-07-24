@@ -75,6 +75,7 @@ import java.util.HashSet;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -111,17 +112,18 @@ public class ImmersiveEngineering
 		ModLoadingContext.get().registerConfig(Type.COMMON, IECommonConfig.CONFIG_SPEC.getBaseSpec());
 		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC.getBaseSpec());
 		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC.getBaseSpec());
-		IEContent.modConstruction();
+		DeferredWorkQueue queue = DeferredWorkQueue.lookup(Optional.of(ModLoadingStage.CONSTRUCT)).orElseThrow();
+		Consumer<Runnable> runLater = job -> queue.enqueueWork(
+				ModLoadingContext.get().getActiveContainer().getModInfo(), job
+		);
+		IEContent.modConstruction(runLater);
 		DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> ClientProxy::modConstruction);
 		IngredientSerializers.init();
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
 		IEWorldGen.init();
-		DeferredWorkQueue queue = DeferredWorkQueue.lookup(Optional.of(ModLoadingStage.CONSTRUCT)).orElseThrow();
-		queue.enqueueWork(
-				ModLoadingContext.get().getActiveContainer().getModInfo(), IERecipes::registerRecipeTypes
-		);
+		runLater.accept(IERecipes::registerRecipeTypes);
 	}
 
 	public void setup(FMLCommonSetupEvent event)

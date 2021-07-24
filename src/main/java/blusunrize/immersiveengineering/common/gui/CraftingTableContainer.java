@@ -93,7 +93,7 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableTileEnt
 			}
 
 			craftResultInventory.setItem(0, itemstack);
-			serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(this.containerId, 0, itemstack));
+			serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(this.containerId, incrementStateId(), 0, itemstack));
 		});
 	}
 
@@ -124,8 +124,9 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableTileEnt
 			if(itemstack1.getCount()==itemstack.getCount())
 				return ItemStack.EMPTY;
 
-			ItemStack itemstack2 = slot.onTake(playerIn, itemstack1);
-			playerIn.drop(itemstack2, false);
+			slot.onTake(playerIn, itemstack1);
+			//TODO
+			//playerIn.drop(itemstack2, false);
 		}
 		return itemstack;
 	}

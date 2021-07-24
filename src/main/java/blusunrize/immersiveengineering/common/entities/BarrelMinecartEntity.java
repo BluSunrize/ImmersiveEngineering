@@ -10,8 +10,10 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItems;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -82,7 +84,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	@Override
 	protected Supplier<WoodenBarrelTileEntity> getTileProvider()
 	{
-		return WoodenBarrelTileEntity::new;
+		return () -> new WoodenBarrelTileEntity(BlockPos.ZERO, WoodenDevices.woodenBarrel.defaultBlockState());
 	}
 
 	@Override
@@ -95,7 +97,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	@Override
 	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.WoodenDevices.woodenBarrel.getDefaultState();
+		return IEBlocks.WoodenDevices.woodenBarrel.defaultBlockState();
 	}
 
 }

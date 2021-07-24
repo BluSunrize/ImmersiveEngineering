@@ -10,9 +10,11 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItems;
+import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -41,13 +43,13 @@ public class MetalBarrelMinecartEntity extends BarrelMinecartEntity
 	@Override
 	protected Supplier<WoodenBarrelTileEntity> getTileProvider()
 	{
-		return MetalBarrelTileEntity::new;
+		return () -> new MetalBarrelTileEntity(BlockPos.ZERO, MetalDevices.barrel.defaultBlockState());
 	}
 
 	@Override
 	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.MetalDevices.barrel.getDefaultState();
+		return IEBlocks.MetalDevices.barrel.defaultBlockState();
 	}
 
 }

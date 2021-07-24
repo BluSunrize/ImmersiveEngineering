@@ -18,8 +18,8 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
 
 public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntity>
 {
-	public ChemthrowerShotRenderer(EntityRenderDispatcher renderManager)
+	public ChemthrowerShotRenderer(EntityRendererProvider.Context renderManager)
 	{
 		super(renderManager);
 	}

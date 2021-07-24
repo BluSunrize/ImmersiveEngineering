@@ -19,26 +19,19 @@ import com.mojang.math.Quaternion;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SawmillRenderer extends BlockEntityRenderer<SawmillTileEntity>
+public class SawmillRenderer extends IEBlockEntityRenderer<SawmillTileEntity>
 {
 	public static DynamicModel<Direction> BLADE;
-
-	public SawmillRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(SawmillTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		//Grab model
@@ -92,7 +85,7 @@ public class SawmillRenderer extends BlockEntityRenderer<SawmillTileEntity>
 		matrixStack.translate(xOffset, .375, 0);
 		matrixStack.mulPose(new Quaternion(0, 0, 90, true));
 		ClientUtils.mc().getItemRenderer().renderStatic(stack, TransformType.FIXED,
-				combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+				combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 		matrixStack.popPose();
 	}
 }

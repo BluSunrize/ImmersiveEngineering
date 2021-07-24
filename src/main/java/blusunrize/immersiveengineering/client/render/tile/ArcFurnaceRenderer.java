@@ -26,8 +26,6 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -38,7 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class ArcFurnaceRenderer extends BlockEntityRenderer<ArcFurnaceTileEntity>
+public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceTileEntity>
 {
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;
@@ -47,16 +45,11 @@ public class ArcFurnaceRenderer extends BlockEntityRenderer<ArcFurnaceTileEntity
 	public static final ResourceLocation HOT_METLA_STILL = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_still");
 	public static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
 
-	public ArcFurnaceRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 	@Override
 	public void render(ArcFurnaceTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 		List<String> renderedParts = null;
 		for(int i = 0; i < ArcFurnaceTileEntity.ELECTRODE_COUNT; i++)

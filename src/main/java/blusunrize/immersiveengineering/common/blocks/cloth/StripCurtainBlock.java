@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -22,7 +22,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -31,12 +30,11 @@ import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class StripCurtainBlock extends IETileProviderBlock
+public class StripCurtainBlock extends GenericTileBlock<StripCurtainTileEntity>
 {
 	public static BooleanProperty CEILING_ATTACHED = BooleanProperty.create("ceiling_attached");
 	public static EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
@@ -47,7 +45,7 @@ public class StripCurtainBlock extends IETileProviderBlock
 
 	public StripCurtainBlock(Properties props)
 	{
-		super(props);
+		super(IETileTypes.STRIP_CURTAIN, props);
 		setLightOpacity(0);
 		setHasColours();
 	}
@@ -57,13 +55,6 @@ public class StripCurtainBlock extends IETileProviderBlock
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(CEILING_ATTACHED, FACING);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		return new StripCurtainTileEntity();
 	}
 
 	@Override

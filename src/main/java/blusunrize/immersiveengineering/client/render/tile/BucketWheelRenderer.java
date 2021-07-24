@@ -25,8 +25,6 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +41,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("deprecation")
-public class BucketWheelRenderer extends BlockEntityRenderer<BucketWheelTileEntity>
+public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelTileEntity>
 {
 	public static DynamicModel<Void> WHEEL;
 	private static final Cache<List<String>, IVertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
@@ -52,15 +50,10 @@ public class BucketWheelRenderer extends BlockEntityRenderer<BucketWheelTileEnti
 			.<Object, IVertexBufferHolder>removalListener(rem -> rem.getValue().reset())
 			.build();
 
-	public BucketWheelRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 	@Override
 	public void render(BucketWheelTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.formed||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos())||tile.isDummy())
+		if(!tile.formed||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos())||tile.isDummy())
 			return;
 		Map<String, String> texMap = new HashMap<>();
 		List<String> textures = new ArrayList<>(8);
@@ -97,7 +90,7 @@ public class BucketWheelRenderer extends BlockEntityRenderer<BucketWheelTileEnti
 		{
 			CACHED_BUFFERS.get(textures, () -> IVertexBufferHolder.create(() -> {
 				BakedModel model = WHEEL.get(null);
-				BlockState state = Multiblocks.bucketWheel.getDefaultState();
+				BlockState state = Multiblocks.bucketWheel.defaultBlockState();
 				List<String> list = Lists.newArrayList("bucketWheel");
 				list.addAll(texMap.keySet());
 				IEObjState objState = new IEObjState(VisibilityList.show(list));

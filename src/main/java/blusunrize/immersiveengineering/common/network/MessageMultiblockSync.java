@@ -78,7 +78,7 @@ public class MessageMultiblockSync implements IMessage
 
 		public SyncedTemplate(StructureTemplate template, ResourceLocation name)
 		{
-			this.size = template.getSize();
+			this.size = new BlockPos(template.getSize());
 			this.parts = ((TemplateAccess)template).getPalettes().get(0);
 			this.name = name;
 		}

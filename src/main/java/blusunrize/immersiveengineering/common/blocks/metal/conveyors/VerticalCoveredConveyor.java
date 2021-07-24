@@ -126,16 +126,16 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 		BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
 		if(model!=null)
 		{
-			TextureAtlasSprite sprite = model.getParticleTexture(EmptyModelData.INSTANCE);
+			TextureAtlasSprite sprite = model.getParticleIcon(EmptyModelData.INSTANCE);
 			HashMap<Direction, TextureAtlasSprite> sprites = new HashMap<>();
 
 			for(Direction f : DirectionUtils.VALUES)
 				for(BakedQuad q : model.getQuads(state, f, Utils.RAND))
-					if(q!=null&&q.func_187508_a()!=null)
-						sprites.put(f, q.func_187508_a());
+					if(q!=null&&q.getSprite()!=null)
+						sprites.put(f, q.getSprite());
 			for(BakedQuad q : model.getQuads(state, null, Utils.RAND))
-				if(q!=null&&q.func_187508_a()!=null&&q.getDirection()!=null)
-					sprites.put(q.getDirection(), q.func_187508_a());
+				if(q!=null&&q.getSprite()!=null&&q.getDirection()!=null)
+					sprites.put(q.getDirection(), q.getSprite());
 
 			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.getOrDefault(f, sprite);
 

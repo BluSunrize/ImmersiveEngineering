@@ -16,23 +16,16 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class TeslaCoilRenderer extends BlockEntityRenderer<TeslaCoilTileEntity>
+public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilTileEntity>
 {
-	public TeslaCoilRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 	@Override
 	public void render(TeslaCoilTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
+		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 
 		for(LightningAnimation animation : tile.effectMap)

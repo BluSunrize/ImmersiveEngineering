@@ -14,8 +14,8 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -23,7 +23,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 
 public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 {
-	public IEExplosiveRenderer(EntityRenderDispatcher renderManager)
+	public IEExplosiveRenderer(Context renderManager)
 	{
 		super(renderManager);
 		this.shadowRadius = .5f;
@@ -37,9 +37,9 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 		BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
 		matrixStackIn.pushPose();
 		matrixStackIn.translate(0, 0.5F, 0);
-		if(entity.getLife()-partialTicks+1 < 10)
+		if(entity.getFuse()-partialTicks+1 < 10)
 		{
-			float f = 1.0F-((float)entity.getLife()-partialTicks+1.0F)/10.0F;
+			float f = 1.0F-((float)entity.getFuse()-partialTicks+1.0F)/10.0F;
 			f = Mth.clamp(f, 0.0F, 1.0F);
 			f = f*f;
 			f = f*f;
@@ -51,7 +51,7 @@ public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 
 		int overlay;
-		if(entity.getLife()/5%2==0)
+		if(entity.getFuse()/5%2==0)
 			overlay = OverlayTexture.pack(OverlayTexture.u(1.0F), 10);
 		else
 			overlay = OverlayTexture.NO_OVERLAY;

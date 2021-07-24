@@ -19,7 +19,7 @@ import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.entity.living.EnderTeleportEvent;
+import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.event.entity.living.LivingSpawnEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -34,7 +34,7 @@ public class SpawnInterdictionHandler
 	private static final Map<ResourceKey<Level>, Set<ISpawnInterdiction>> interdictionTiles = new HashMap<>();
 
 	@SubscribeEvent
-	public static void onEnderTeleport(EnderTeleportEvent event)
+	public static void onEnderTeleport(EntityTeleportEvent.EnderEntity event)
 	{
 		if(shouldCancel(event.getEntity())||event.getEntityLiving().getEffect(IEPotions.stunned.get())!=null)
 			event.setCanceled(true);

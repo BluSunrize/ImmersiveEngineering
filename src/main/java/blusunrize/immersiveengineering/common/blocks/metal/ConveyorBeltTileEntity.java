@@ -17,9 +17,11 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -32,6 +34,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -59,9 +62,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 {
 	private final IConveyorBelt conveyorBeltSubtype;
 
-	public ConveyorBeltTileEntity(ResourceLocation typeName)
+	public ConveyorBeltTileEntity(ResourceLocation typeName, BlockPos pos, BlockState state)
 	{
-		super(Preconditions.checkNotNull(ConveyorHandler.getTEType(typeName), "Not TE type for "+typeName));
+		super(Preconditions.checkNotNull(ConveyorHandler.getTEType(typeName), "Not TE type for "+typeName), pos, state);
 		conveyorBeltSubtype = ConveyorHandler.getConveyor(typeName, this);
 	}
 
@@ -241,7 +244,8 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 		{
 			RegistryObject<BlockEntityType<?>> type = IETileTypes.REGISTER.register(
 					ConveyorHandler.getRegistryNameFor(rl).getPath(), () -> new BlockEntityType<>(
-							() -> new ConveyorBeltTileEntity(rl), ImmutableSet.of(ConveyorHandler.getBlock(rl)), null
+							(pos, state) -> new ConveyorBeltTileEntity(rl, pos, state),
+							ImmutableSet.of(ConveyorHandler.getBlock(rl)), null
 					));
 			ConveyorHandler.tileEntities.put(rl, type);
 		}
@@ -276,9 +280,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 				return stack;
 			if(!simulate)
 			{
-				ItemEntity entity = new ItemEntity(conveyor.getWorldNonnull(), conveyor.getBlockPos().getX()+.5, conveyor.getBlockPos().getY()+.1875, conveyor.getBlockPos().getZ()+.5, stack.copy());
+				ItemEntity entity = new ItemEntity(conveyor.getLevelNonnull(), conveyor.getBlockPos().getX()+.5, conveyor.getBlockPos().getY()+.1875, conveyor.getBlockPos().getZ()+.5, stack.copy());
 				entity.setDeltaMovement(Vec3.ZERO);
-				conveyor.getWorldNonnull().addFreshEntity(entity);
+				conveyor.getLevelNonnull().addFreshEntity(entity);
 				if(conveyor.conveyorBeltSubtype!=null)
 					conveyor.conveyorBeltSubtype.onItemDeployed(entity);
 			}

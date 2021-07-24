@@ -77,7 +77,7 @@ public class ToolboxItem extends InternalStorageItem
 
 			if(stack.getCount()!=0&&player.mayUseItemAt(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))
 			{
-				BlockState toolbox = MetalDevices.toolbox.getDefaultState();
+				BlockState toolbox = MetalDevices.toolbox.defaultBlockState();
 				if(world.setBlock(pos, toolbox, 3))
 				{
 					MetalDevices.toolbox.get().onIEBlockPlacedBy(new BlockPlaceContext(ctx), toolbox);

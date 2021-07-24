@@ -438,7 +438,7 @@ public class ModelConveyor extends BakedIEModel
 	{
 		@Nullable
 		@Override
-		public BakedModel resolve(@Nonnull BakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity)
+		public BakedModel resolve(@Nonnull BakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int unused)
 		{
 			String key = "default";
 			if(stack.getItem() instanceof BlockItem)

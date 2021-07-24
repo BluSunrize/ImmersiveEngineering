@@ -251,6 +251,6 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements IETickab
 	public void setCeilingAttached(boolean ceilingAttached)
 	{
 		BlockState newState = getBlockState().setValue(StripCurtainBlock.CEILING_ATTACHED, ceilingAttached);
-		getWorldNonnull().setBlockAndUpdate(worldPosition, newState);
+		getLevelNonnull().setBlockAndUpdate(worldPosition, newState);
 	}
 }

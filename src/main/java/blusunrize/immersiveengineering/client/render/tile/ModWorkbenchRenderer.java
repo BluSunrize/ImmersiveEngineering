@@ -19,24 +19,17 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-public class ModWorkbenchRenderer extends BlockEntityRenderer<ModWorkbenchTileEntity>
+public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchTileEntity>
 {
-
-	public ModWorkbenchRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(ModWorkbenchTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		matrixStack.pushPose();
@@ -73,7 +66,7 @@ public class ModWorkbenchRenderer extends BlockEntityRenderer<ModWorkbenchTileEn
 					for(int i = 0; i < l; i++)
 					{
 						BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
-						BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, te.getWorldNonnull());
+						BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, te.getLevelNonnull());
 						if(blueprint!=null)
 						{
 							double dX = rendered < perRow?(.93725/scale-perRow*16.6)+rendered*16.6: (.70375/scale-rendered%perRow*16.6);
@@ -105,7 +98,7 @@ public class ModWorkbenchRenderer extends BlockEntityRenderer<ModWorkbenchTileEn
 				try
 				{
 					ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
-							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 				} catch(Exception e)
 				{
 					e.printStackTrace();
@@ -141,7 +134,7 @@ public class ModWorkbenchRenderer extends BlockEntityRenderer<ModWorkbenchTileEn
 						try
 						{
 							ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
-									combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+									combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 						} catch(Exception e)
 						{
 							e.printStackTrace();

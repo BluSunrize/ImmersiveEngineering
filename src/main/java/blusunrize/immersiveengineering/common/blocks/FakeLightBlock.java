@@ -9,15 +9,17 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -28,10 +30,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants.NBT;
 
-import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public class FakeLightBlock extends IETileProviderBlock
+public class FakeLightBlock extends GenericTileBlock<FakeLightTileEntity>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.AIR)
 			.noOcclusion()
@@ -39,11 +40,11 @@ public class FakeLightBlock extends IETileProviderBlock
 
 	public FakeLightBlock(Properties props)
 	{
-		super(props);
+		super(IETileTypes.FAKE_LIGHT, props);
 	}
 
 	@Override
-	public boolean isAir(BlockState state, BlockGetter world, BlockPos pos)
+	public boolean isAir(BlockState state)
 	{
 		return true;
 	}
@@ -61,18 +62,6 @@ public class FakeLightBlock extends IETileProviderBlock
 	}
 
 	@Override
-	public boolean canBeReplacedByLeaves(BlockState state, LevelReader world, BlockPos pos)
-	{
-		return true;
-	}
-
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		return new FakeLightTileEntity();
-	}
-
-	@Override
 	public boolean isPathfindable(BlockState state, BlockGetter worldIn, BlockPos pos, PathComputationType type)
 	{
 		return true;
@@ -84,7 +73,7 @@ public class FakeLightBlock extends IETileProviderBlock
 
 		public FakeLightTileEntity(BlockPos pos, BlockState state)
 		{
-			super(IETileTypes.FAKE_LIGHT.get());
+			super(IETileTypes.FAKE_LIGHT.get(), pos, state);
 		}
 
 		@Override

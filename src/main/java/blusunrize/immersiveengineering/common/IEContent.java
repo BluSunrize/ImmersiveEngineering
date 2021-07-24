@@ -95,13 +95,13 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.DeferredWorkQueue;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.io.IOException;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
@@ -111,7 +111,7 @@ public class IEContent
 {
 	public static final Feature<OreConfiguration> ORE_RETROGEN = new OreRetrogenFeature(OreConfiguration.CODEC);
 
-	public static void modConstruction()
+	public static void modConstruction(Consumer<Runnable> runLater)
 	{
 		/*BULLETS*/
 		BulletItem.initBullets();
@@ -160,7 +160,7 @@ public class IEContent
 
 		ClocheRenderFunctions.init();
 
-		DeferredWorkQueue.runLater(IELootFunctions::register);
+		runLater.accept(IELootFunctions::register);
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
 		BlueprintCraftingRecipe.registerDefaultCategories();
@@ -294,7 +294,7 @@ public class IEContent
 
 		/*BLOCK ITEMS FROM CRATES*/
 		IEApi.forbiddenInCrates.add(
-				stack -> stack.getItem().is(IETags.forbiddenInCrates)||
+				stack -> IETags.forbiddenInCrates.contains(stack.getItem())||
 						Block.byItem(stack.getItem()) instanceof ShulkerBoxBlock
 		);
 

@@ -15,20 +15,13 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 
-public class ChargingStationRenderer extends BlockEntityRenderer<ChargingStationTileEntity>
+public class ChargingStationRenderer extends IEBlockEntityRenderer<ChargingStationTileEntity>
 {
-	public ChargingStationRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
-
 	@Override
 	public void render(ChargingStationTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 		{
 			te.particles.get().render(matrixStack, te.getBlockPos(), bufferIn, partialTicks);
 			matrixStack.pushPose();
@@ -54,7 +47,7 @@ public class ChargingStationRenderer extends BlockEntityRenderer<ChargingStation
 				float scale = .625f;
 				matrixStack.scale(scale, scale, 1);
 				ClientUtils.mc().getItemRenderer().renderStatic(te.inventory.get(0), TransformType.FIXED, combinedLightIn,
-						combinedOverlayIn, matrixStack, bufferIn);
+						combinedOverlayIn, matrixStack, bufferIn, 0);
 				matrixStack.popPose();
 			}
 			matrixStack.popPose();

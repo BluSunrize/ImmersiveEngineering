@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;

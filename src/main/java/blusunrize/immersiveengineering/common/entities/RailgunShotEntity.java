@@ -130,7 +130,7 @@ public class RailgunShotEntity extends IEProjectileEntity
 				{
 					double breakRoll = this.random.nextDouble();
 					if(breakRoll <= getProjectileProperties().getBreakChance(shooterUuid, ammo))
-						this.remove();
+						this.discard();
 				}
 				projectileProperties.onHitTarget(this.level, mop, shooterUuid, this);
 			}

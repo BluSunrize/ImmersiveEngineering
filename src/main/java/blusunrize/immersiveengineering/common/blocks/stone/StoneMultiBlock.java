@@ -57,6 +57,6 @@ public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> exte
 	@Override
 	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
-		return type.get().create();
+		return type.get().create(pos, state);
 	}
 }

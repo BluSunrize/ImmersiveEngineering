@@ -26,7 +26,7 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import java.util.ArrayList;
 import java.util.function.Consumer;
@@ -53,13 +53,13 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 		super.init();
 		mc().keyboardHandler.setSendRepeatsToGui(true);
 
-		this.buttons.clear();
+		clearWidgets();
 
 		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, TextComponent.EMPTY, new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
 				tileEntity.ioMode.ordinal()-1, TEXTURE, 176, 0, 1,
 				btn -> sendConfig("ioMode", btn.getNextState().ordinal())
 		);
-		this.addButton(buttonInOut);
+		this.addRenderableWidget(buttonInOut);
 
 		colorButtons = new GuiButtonBoolean[16];
 		for(int i = 0; i < colorButtons.length; i++)
@@ -67,7 +67,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 			final DyeColor color = DyeColor.byId(i);
 			colorButtons[i] = buildColorButton(colorButtons, guiLeft+22+(i%4*14), guiTop+44+(i/4*14),
 					tileEntity.redstoneChannel.ordinal()==i, color, btn -> sendConfig("redstoneChannel", color.getId()));
-			this.addButton(colorButtons[i]);
+			this.addRenderableWidget(colorButtons[i]);
 		}
 	}
 
@@ -148,7 +148,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 				super.render(transform, mouseX, mouseY, partialTicks);
 				if(this.visible)
 				{
-					int col = color.getColorValue();
+					int col = color.getTextColor();
 					if(!getState())
 						col = ClientUtils.getDarkenedTextColour(col);
 					col = 0xff000000|col;

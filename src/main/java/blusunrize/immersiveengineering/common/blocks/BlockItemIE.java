@@ -24,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -91,7 +92,7 @@ public class BlockItemIE extends BlockItem
 	}
 
 	@Override
-	public int getBurnTime(ItemStack itemStack)
+	public int getBurnTime(ItemStack itemStack, RecipeType<?> type)
 	{
 		return this.burnTime;
 	}

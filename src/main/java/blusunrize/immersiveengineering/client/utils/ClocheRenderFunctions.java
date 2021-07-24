@@ -37,7 +37,7 @@ public class ClocheRenderFunctions
 	{
 		// register farmland texture
 		ClocheRecipe.registerSoilTexture(Ingredient.of(new ItemStack(Items.DIRT), new ItemStack(Items.COARSE_DIRT),
-				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.GRASS_PATH)), new ResourceLocation("block/farmland_moist"));
+				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.DIRT_PATH)), new ResourceLocation("block/farmland_moist"));
 
 		// register defaults
 		ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.put("crop", RenderFunctionCrop::new);
@@ -236,11 +236,11 @@ public class ClocheRenderFunctions
 			{
 				Transformation top = new Transformation(new Vector3f(0, 1, 0), null, null, null);
 				return ImmutableList.of(
-						Pair.of(Misc.hempPlant.getDefaultState().setValue(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new Transformation(null)),
-						Pair.of(Misc.hempPlant.getDefaultState().setValue(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
+						Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new Transformation(null)),
+						Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
 				);
 			}
-			return ImmutableList.of(Pair.of(Misc.hempPlant.getDefaultState().setValue(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new Transformation(null)));
+			return ImmutableList.of(Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new Transformation(null)));
 		}
 	}
 }

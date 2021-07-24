@@ -28,7 +28,7 @@ public class ImprovedBlastfurnaceMultiblock extends StoneMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/improved_blast_furnace"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 4, 3),
-				() -> Multiblocks.blastFurnaceAdv.getDefaultState());
+				() -> Multiblocks.blastFurnaceAdv.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class ImprovedBlastfurnaceMultiblock extends StoneMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 

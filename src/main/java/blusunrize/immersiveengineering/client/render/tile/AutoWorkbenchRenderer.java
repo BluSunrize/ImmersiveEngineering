@@ -34,8 +34,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -55,25 +53,20 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 
-public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTileEntity>
+public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTileEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
-
-	public AutoWorkbenchRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
-	{
-		super(rendererDispatcherIn);
-	}
 
 	@Override
 	public void render(AutoWorkbenchTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
+		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		//Grab model + correct eextended state
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = te.getBlockPos();
-		BlockState state = te.getWorldNonnull().getBlockState(blockPos);
+		BlockState state = te.getLevelNonnull().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.autoWorkbench.get())
 			return;
 		BakedModel model = DYNAMIC.get(te.getFacing());
@@ -182,11 +175,11 @@ public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTile
 		matrixStack.pushPose();
 		ItemStack blueprintStack = te.inventory.get(0);
 		if(!blueprintStack.isEmpty())
-			renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "blueprint");
+			renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "blueprint");
 
 
 		matrixStack.translate(0, lift, 0);
-		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "lift");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "lift");
 		matrixStack.translate(0, -lift, 0);
 
 		Direction f = te.getFacing();
@@ -195,7 +188,7 @@ public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTile
 		matrixStack.pushPose();
 		matrixStack.translate(tx, 0, tz);
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), drill, true));
-		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "drill");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "drill");
 		matrixStack.popPose();
 
 		tx = f==Direction.WEST?-.59375f: f==Direction.EAST?.59375f: 0;
@@ -203,11 +196,11 @@ public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTile
 		matrixStack.pushPose();
 		matrixStack.translate(tx, -.21875, tz);
 		matrixStack.mulPose(new Quaternion(new Vector3f(-f.getStepZ(), 0, f.getStepX()), press*90, true));
-		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "press");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "press");
 		matrixStack.popPose();
 
 		matrixStack.translate(0, liftPress, 0);
-		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getWorldNonnull(), state, model, blockPos, "pressLift");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "pressLift");
 
 		matrixStack.popPose();
 
@@ -243,7 +236,7 @@ public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTile
 						matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
 						matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), itemDisplays[i][4], true));
 						matrixStack.scale(scale, scale, .5f);
-						ClientUtils.mc().getItemRenderer().renderStatic(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+						ClientUtils.mc().getItemRenderer().renderStatic(dList.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 						matrixStack.popPose();
 					}
 					else
@@ -280,7 +273,7 @@ public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTile
 							matrixStack.translate(localItemX, localItemY, localItemZ);
 							matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), localAngle, true));
 							matrixStack.scale(scale, scale, .5f);
-							ClientUtils.mc().getItemRenderer().renderStatic(dList.get(d), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
+							ClientUtils.mc().getItemRenderer().renderStatic(dList.get(d), TransformType.FIXED, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 							matrixStack.popPose();
 						}
 					}
@@ -293,7 +286,7 @@ public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTile
 		{
 			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(blueprintStack, "blueprint"));
 			BlueprintCraftingRecipe recipe = (te.selectedRecipe < 0||te.selectedRecipe >= recipes.length)?null: recipes[te.selectedRecipe];
-			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, te.getWorldNonnull());
+			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, te.getLevelNonnull());
 			if(blueprint!=null)
 			{
 				//Width depends on distance
@@ -354,12 +347,12 @@ public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTile
 		ArrayList<BufferedImage> images = new ArrayList<>();
 		try
 		{
-			BakedModel ibakedmodel = ClientUtils.mc().getItemRenderer().getModel(stack, world, player);
+			BakedModel ibakedmodel = ClientUtils.mc().getItemRenderer().getModel(stack, world, player, 0);
 			HashSet<String> textures = new HashSet<>();
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, EmptyModelData.INSTANCE);
 			for(BakedQuad quad : quads)
-				if(quad!=null&&quad.func_187508_a()!=null)
-					textures.add(quad.func_187508_a().getName().toString());
+				if(quad!=null&&quad.getSprite()!=null)
+					textures.add(quad.getSprite().getName().toString());
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);

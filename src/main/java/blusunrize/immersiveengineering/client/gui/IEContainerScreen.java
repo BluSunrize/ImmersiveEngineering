@@ -17,14 +17,14 @@ import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraftforge.fml.client.gui.GuiUtils;
+import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -67,9 +67,9 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 		List<Component> tooltip = new ArrayList<>();
 		for (InfoArea area : infoAreas.get())
 			area.fillTooltip(mouseX, mouseY, tooltip);
-		for (AbstractWidget w : buttons)
-			if (w.isMouseOver(mouseX, mouseY) && w instanceof ITooltipWidget)
-				((ITooltipWidget)w).gatherTooltip(mouseX, mouseY, tooltip);
+		for (GuiEventListener w : children())
+			if (w.isMouseOver(mouseX, mouseY) && w instanceof ITooltipWidget ttw)
+				ttw.gatherTooltip(mouseX, mouseY, tooltip);
 		gatherAdditionalTooltips(
 				mouseX, mouseY, tooltip::add, t -> tooltip.add(TextUtils.applyFormat(t, ChatFormatting.GRAY))
 		);

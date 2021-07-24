@@ -87,10 +87,7 @@ public class RotationUtil
 	public static boolean rotateEntity(Entity entity, Player player)
 	{
 		if(entity instanceof ArmorStand)
-		{
-			((ArmorStand)entity).yRot += 22.5;
-			((ArmorStand)entity).yRot %= 360;
-		}
+			entity.setYRot((float)(entity.getYRot()+22.5) % 360);
 		return false;
 	}
 

@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.WorldMap;
@@ -367,7 +368,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				otherPos.getY()-worldPosition.getY(), otherPos.getZ()-worldPosition.getZ());
 		if(updateConnectionByte(dir))
 		{
-			Level world = getWorldNonnull();
+			Level world = getLevelNonnull();
 			world.updateNeighborsAtExceptFromFacing(worldPosition, getBlockState().getBlock(), dir);
 			markContainingBlockForUpdate(null);
 			if(!world.isClientSide)
@@ -493,7 +494,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			if(maxDrain <= 0)
 				return FluidStack.EMPTY;
 
-			Level world = pipe.getWorldNonnull();
+			Level world = pipe.getLevelNonnull();
 			List<DirectionalFluidOutput> outputList = new ArrayList<>(getConnectedFluidHandlers(pipe.getBlockPos(), world));
 			BlockPos ccFrom = new BlockPos(pipe.getBlockPos().relative(facing));
 			outputList.removeIf(output -> ccFrom.equals(output.containingTile.getBlockPos()));
@@ -632,7 +633,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 	@Override
 	public VoxelShape getSelectionShape(@Nullable CollisionContext ctx)
 	{
-		boolean hammer = ctx!=null&&ctx.getEntity() instanceof Player&&Utils.isHammer(((Player)ctx.getEntity()).getMainHandItem());
+		//TODO needs to be a more generic check!
+		boolean hammer = ctx!=null&&ctx.isHoldingItem(Tools.hammer.get());
 		return SHAPES.get(new BoundingBoxKey(hammer, this));
 	}
 

@@ -129,7 +129,7 @@ public class IEMinecartItem extends IEBaseItem
 			}
 			else
 			{
-				if(!blockstate.isAir(world, blockpos)||!world.getBlockState(blockpos.below()).is(BlockTags.RAILS))
+				if(!blockstate.isAir()||!world.getBlockState(blockpos.below()).is(BlockTags.RAILS))
 					return this.behaviourDefaultDispenseItem.dispense(source, stack);
 
 				BlockState blockstate1 = world.getBlockState(blockpos.below());

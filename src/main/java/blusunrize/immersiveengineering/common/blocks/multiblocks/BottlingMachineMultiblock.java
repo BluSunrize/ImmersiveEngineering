@@ -29,7 +29,7 @@ public class BottlingMachineMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/bottling_machine"),
 				new BlockPos(1, 1, 0), new BlockPos(1, 1, 1), new BlockPos(3, 3, 2),
-				() -> Multiblocks.bottlingMachine.getDefaultState());
+				() -> Multiblocks.bottlingMachine.defaultBlockState());
 	}
 
 	@Override
@@ -60,7 +60,8 @@ public class BottlingMachineMultiblock extends IETemplateMultiblock
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
 				transform,
-				buffer
+				buffer,
+				0
 		);
 		transform.popPose();
 	}

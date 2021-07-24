@@ -59,6 +59,14 @@ public class DummyVertexBuilder implements VertexConsumer
 
 	@Override
 	public void endVertex()
+	{ }
+
+	@Override
+	public void defaultColor(int r, int g, int b, int a)
+	{ }
+
+	@Override
+	public void unsetDefaultColor()
 	{
 
 	}

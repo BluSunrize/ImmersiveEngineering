@@ -28,7 +28,7 @@ public class ArcFurnaceMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/arcfurnace"),
 				new BlockPos(2, 1, 2), new BlockPos(2, 0, 4), new BlockPos(5, 5, 5),
-				() -> Multiblocks.arcFurnace.getDefaultState());
+				() -> Multiblocks.arcFurnace.defaultBlockState());
 	}
 
 	@Override
@@ -57,7 +57,8 @@ public class ArcFurnaceMultiblock extends IETemplateMultiblock
 				TransformType.GUI,
 				0xf000f0,
 				OverlayTexture.NO_OVERLAY,
-				transform, buffer
+				transform, buffer,
+				0
 		);
 	}
 
