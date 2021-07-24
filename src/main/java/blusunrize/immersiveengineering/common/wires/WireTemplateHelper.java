@@ -29,7 +29,7 @@ public class WireTemplateHelper
 	private static final String CONNECTIONS_KEY = Lib.MODID+":connections";
 
 	public static void fillConnectionsInArea(
-			Level worldIn, BlockPos startPos, BlockPos size, IConnectionTemplate template
+			Level worldIn, BlockPos startPos, Vec3i size, IConnectionTemplate template
 	)
 	{
 		template.getStoredConnections().clear();

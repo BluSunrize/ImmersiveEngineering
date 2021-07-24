@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.IConnectionTemplate;
 import blusunrize.immersiveengineering.common.wires.WireTemplateHelper;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -33,15 +34,15 @@ public abstract class TemplateMixin implements IConnectionTemplate
 {
 	private final List<Connection> connections = new ArrayList<>();
 
-	@Inject(method = "takeBlocksFromWorld", at = @At("HEAD"))
+	@Inject(method = "fillFromWorld", at = @At("HEAD"))
 	public void takeConnectionsFromWorld(
-			Level worldIn, BlockPos startPos, BlockPos size, boolean takeEntities, Block toIgnore, CallbackInfo ci
+			Level worldIn, BlockPos startPos, Vec3i size, boolean p_163806_, Block p_163807_, CallbackInfo ci
 	)
 	{
 		WireTemplateHelper.fillConnectionsInArea(worldIn, startPos, size, this);
 	}
 
-	@Inject(method = "func_237146_a_", at = @At("RETURN"))
+	@Inject(method = "placeInWorld", at = @At("RETURN"))
 	public void addConnectionsToWorld(
 			ServerLevelAccessor iworld,
 			BlockPos startPos, BlockPos p_237146_3_, StructurePlaceSettings orientation,
@@ -52,13 +53,13 @@ public abstract class TemplateMixin implements IConnectionTemplate
 			WireTemplateHelper.addConnectionsFromTemplate(iworld, this, orientation, startPos);
 	}
 
-	@Inject(method = "writeToNBT", at = @At("RETURN"))
+	@Inject(method = "save", at = @At("RETURN"))
 	public void writeConnectionsToNBT(CompoundTag $, CallbackInfoReturnable<CompoundTag> cir)
 	{
 		WireTemplateHelper.addConnectionsToNBT(this, cir.getReturnValue());
 	}
 
-	@Inject(method = "read", at = @At("RETURN"))
+	@Inject(method = "load", at = @At("RETURN"))
 	public void readConnectionsFromNBT(CompoundTag compound, CallbackInfo ci)
 	{
 		WireTemplateHelper.readConnectionsFromNBT(compound, this);

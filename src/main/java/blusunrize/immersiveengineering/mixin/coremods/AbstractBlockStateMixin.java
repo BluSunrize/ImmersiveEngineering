@@ -22,7 +22,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(BlockBehaviour.BlockStateBase.class)
 public class AbstractBlockStateMixin
 {
-	@Inject(method = "onEntityCollision", at = @At(value = "HEAD"))
+	@Inject(method = "entityInside", at = @At(value = "HEAD"))
 	public void onBlockCollision(Level worldIn, BlockPos pos, Entity entityIn, CallbackInfo ci)
 	{
 		WireCollisions.handleEntityCollision(pos, entityIn);

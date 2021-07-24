@@ -24,9 +24,9 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(LevelRenderer.class)
 public class WorldRendererMixin
 {
-	@Inject(method = "updateCameraAndRender", at = @At(
+	@Inject(method = "renderLevel", at = @At(
 			value = "INVOKE_STRING",
-			target = "Lnet/minecraft/profiler/IProfiler;endStartSection(Ljava/lang/String;)V",
+			target = "Lnet/minecraft/util/profiling/ProfilerFiller;popPush(Ljava/lang/String;)V",
 			args = {"ldc=destroyProgress"}
 	))
 	public void afterTESRRender(
