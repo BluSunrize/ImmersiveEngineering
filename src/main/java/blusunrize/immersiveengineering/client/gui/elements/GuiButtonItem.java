@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -49,12 +48,10 @@ public class GuiButtonItem extends Button
 
 				if(!state)
 				{
-					Lighting.turnBackOn();
 					RenderSystem.disableDepthTest();
 					fill(transform, x+1, y+1, x+17, x+17, 0x77444444);
 					RenderSystem.enableDepthTest();
 				}
-				Lighting.turnOff();
 			}
 		}
 	}

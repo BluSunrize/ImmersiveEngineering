@@ -39,13 +39,11 @@ import java.util.function.Consumer;
 public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 {
 	public final FluidSorterTileEntity tile;
-	private final Inventory playerInventory;
 
 	public FluidSorterScreen(FluidSorterContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("sorter"));
 		this.tile = container.tile;
-		this.playerInventory = inventoryPlayer;
 		this.imageHeight = 244;
 	}
 
@@ -69,7 +67,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 			{
 				if(getSlotArea(side, i).contains((int) mouseX, (int) mouseY))
 				{
-					ItemStack stack = inventory.getCarried();
+					ItemStack stack = menu.getCarried();
 					if(stack.isEmpty())
 						setFluidInSlot(side, i, FluidStack.EMPTY);
 					else
@@ -117,7 +115,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	public void init()
 	{
 		super.init();
-		this.buttons.clear();
+		this.clearWidgets();
 		for(int side = 0; side < 6; side++)
 		{
 			int x = leftPos+21+(side/2)*58;
@@ -133,7 +131,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 				fullInit();
 			});
 			b.active = this.tile.doNBT(side);
-			this.addButton(b);
+			this.addRenderableWidget(b);
 		}
 	}
 

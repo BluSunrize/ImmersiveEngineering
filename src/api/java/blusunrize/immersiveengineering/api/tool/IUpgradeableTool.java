@@ -41,13 +41,19 @@ public interface IUpgradeableTool
 	void recalculateUpgrades(ItemStack stack, Level w, Player player);
 
 	/**
-	 * Called when an upgrade is removed, BEFORE recalculateUpgrades is called
-	 *
-	 * @return the upgrade removed
+	 * Adds information that should be stored in the upgrade if it is removed to the given upgrade stack.
+	 * Note: This will be called even if the upgrade is not going to be removed!
 	 */
-	default ItemStack removeUpgrade(ItemStack stack, Player player, ItemStack upgrade)
+	default ItemStack getUpgradeAfterRemoval(ItemStack stack, ItemStack upgrade)
 	{
 		return upgrade;
+	}
+
+	/**
+	 * Called when an upgrade is removed, BEFORE recalculateUpgrades is called
+	 */
+	default void removeUpgrade(ItemStack stack, Player player, ItemStack upgrade)
+	{
 	}
 
 	/**

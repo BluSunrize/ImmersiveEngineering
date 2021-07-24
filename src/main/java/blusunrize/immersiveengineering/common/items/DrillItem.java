@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -46,6 +47,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.LazyOptional;
@@ -57,6 +59,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class DrillItem extends DieselToolItem
@@ -66,7 +69,14 @@ public class DrillItem extends DieselToolItem
 
 	public DrillItem()
 	{
-		super(withIEOBJRender().stacksTo(1), "DRILL");
+		super(new Properties().stacksTo(1), "DRILL");
+	}
+
+	@Override
+	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	{
+		super.initializeClient(consumer);
+		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */

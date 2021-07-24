@@ -67,8 +67,8 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 		this.nameField.setBordered(false);
 		this.nameField.setMaxLength(30);
 
-		this.buttons.clear();
-		this.addButton(new GuiReactiveList(this, leftPos+10, topPos+10, 60, 72,
+		this.clearWidgets();
+		this.addRenderableWidget(new GuiReactiveList(this, leftPos+10, topPos+10, 60, 72,
 				btn -> {
 					GuiReactiveList list = (GuiReactiveList)btn;
 					CompoundTag tag = new CompoundTag();
@@ -83,21 +83,21 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 					}
 				}, tile.targetList.toArray(new String[0]))
 				.setPadding(0, 0, 2, 2));
-		this.addButton(new GuiButtonIE(leftPos+74, topPos+84, 24, 16, new TranslatableComponent(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
+		this.addRenderableWidget(new GuiButtonIE(leftPos+74, topPos+84, 24, 16, new TranslatableComponent(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					String name = nameField.getValue();
 					if(!tile.targetList.contains(name))
 					{
-						listOffset = ((GuiReactiveList)buttons.get(0)).getMaxOffset();
+						listOffset = ((GuiReactiveList)children().get(0)).getMaxOffset();
 						tag.putString("add", name);
 						tile.targetList.add(name);
 					}
 					nameField.setValue("");
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addButton(new GuiButtonCheckbox(leftPos+74, topPos+10, I18n.get(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+10, I18n.get(Lib.GUI_CONFIG+"turret.blacklist"), !tile.whitelist,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
@@ -105,7 +105,7 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 					tag.putBoolean("whitelist", tile.whitelist);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addButton(new GuiButtonCheckbox(leftPos+74, topPos+26, I18n.get(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+26, I18n.get(Lib.GUI_CONFIG+"turret.animals"), tile.attackAnimals,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
@@ -113,7 +113,7 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 					tag.putBoolean("attackAnimals", tile.attackAnimals);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addButton(new GuiButtonCheckbox(leftPos+74, topPos+42, I18n.get(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+42, I18n.get(Lib.GUI_CONFIG+"turret.players"), tile.attackPlayers,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
@@ -121,7 +121,7 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 					tag.putBoolean("attackPlayers", tile.attackPlayers);
 					handleButtonClick(tag, listOffset);
 				}));
-		this.addButton(new GuiButtonCheckbox(leftPos+74, topPos+58, I18n.get(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals,
+		this.addRenderableWidget(new GuiButtonCheckbox(leftPos+74, topPos+58, I18n.get(Lib.GUI_CONFIG+"turret.neutrals"), tile.attackNeutrals,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
@@ -142,7 +142,7 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, nbt));
 			this.init();
 			if(listOffset >= 0)
-				((GuiReactiveList)this.buttons.get(0)).setOffset(listOffset);
+				((GuiReactiveList)this.children().get(0)).setOffset(listOffset);
 		}
 	}
 
@@ -176,7 +176,7 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
 
 					this.init();
-					((GuiReactiveList)this.buttons.get(0)).setOffset(((GuiReactiveList)this.buttons.get(0)).getMaxOffset());
+					((GuiReactiveList)this.children().get(0)).setOffset(((GuiReactiveList)this.children().get(0)).getMaxOffset());
 				}
 			}
 			else

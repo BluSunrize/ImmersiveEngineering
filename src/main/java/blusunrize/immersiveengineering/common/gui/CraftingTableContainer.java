@@ -21,6 +21,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -97,6 +98,7 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableTileEnt
 		});
 	}
 
+	@Nonnull
 	@Override
 	public ItemStack quickMoveStack(Player playerIn, int index)
 	{

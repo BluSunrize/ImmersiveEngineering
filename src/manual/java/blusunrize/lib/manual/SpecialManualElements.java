@@ -16,6 +16,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.locale.Language;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
@@ -66,7 +67,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	{
 		if(!highlighted.isEmpty())
 		{
-			Font font = null;//TODO highlighted.getItem().getFontRenderer(highlighted);
+			Font font = RenderProperties.get(highlighted.getItem()).getFont(highlighted);
 			GuiUtils.preItemToolTip(highlighted);
 			List<FormattedCharSequence> tooltip = Language.getInstance().getVisualOrder(
 					Collections.unmodifiableList(gui.getTooltipFromItem(highlighted))

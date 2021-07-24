@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.gui.elements;
 
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ListMultimap;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -55,11 +56,7 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 		{
 			LogicCircuitRegister state = getState();
 			if(state.ordinal() < 16)
-			{
-				DyeColor dye = DyeColor.byId(state.ordinal());
-				int col = 0xff000000|dye.getColorValue();
-				this.fillGradient(transform, x+3, y+3, x+15, y+15, col, col);
-			}
+				GuiHelper.drawColouredRect(transform, x+3, y+3, x+15, y+15, DyeColor.byId(state.ordinal()));
 		}
 	}
 

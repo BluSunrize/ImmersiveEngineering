@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryE
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseDrill;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -89,16 +89,15 @@ public class IEShaders
 			addDynamicLayer(ikelos, "circuit", 0xffefa117,
 					(layer, superColour) -> ClientUtils.pulseRGBAlpha(superColour, 40, .15f, 1f),
 					pre -> {
-						//TODO are push/pop Attributes broken?
 						if(pre)
 						{
-							RenderSystem.pushLightingAttributes();
+							//TODO fix all of this RenderSystem.pushLightingAttributes();
 							GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, new float[]{.5f, .2f, 0, .5f});
 							Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
 						}
 						else
 						{
-							RenderSystem.popAttributes();
+							//TODO fix all of this RenderSystem.popAttributes();
 							Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer();
 						}
 					},
@@ -266,7 +265,7 @@ public class IEShaders
 						//TODO better name?
 						"shader_"+base.toString()+func_modifyRender,
 						DefaultVertexFormat.BLOCK,
-						GL11.GL_QUADS,
+						Mode.QUADS,
 						256,
 						false,
 						true,

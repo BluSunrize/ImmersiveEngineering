@@ -95,6 +95,6 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		matrixStack.translate(-.5, .25, -.5);
 		ItemStack renderStack = active?tubeActive: tube;
 		FluorescentTubeItem.setRGB(renderStack, rgb);
-		IEOBJItemRenderer.INSTANCE.renderByItem(renderStack, TransformType.FIXED, matrixStack, buffer, light, overlay);
+		IEOBJItemRenderer.INSTANCE.get().renderByItem(renderStack, TransformType.FIXED, matrixStack, buffer, light, overlay);
 	}
 }

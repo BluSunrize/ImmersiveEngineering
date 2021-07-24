@@ -93,8 +93,7 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
 		transform.pushPose();
 		transform.translate(0, 0, 10);
-		RenderSystem.pushMatrix();
-		RenderSystem.multMatrix(transform.last().pose());
+		RenderSystem.applyModelViewMatrix();
 		for(int i = 0; i < bulletAmount; i++)
 		{
 			ItemStack b = bullets.get(i);
@@ -121,7 +120,6 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 				ir.renderAndDecorateItem(b, x, y);
 			}
 		}
-		RenderSystem.popMatrix();
 		transform.popPose();
 	}
 }

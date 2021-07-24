@@ -37,6 +37,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -430,7 +431,7 @@ public class ManualUtils
 			if(overlay)
 			{
 				// Use the Item's font renderer, if available
-				Font font = null;//TODO stack.getItem().getFontRenderer(stack);
+				Font font = RenderProperties.get(stack.getItem()).getFont(stack);
 				font = font!=null?font: Minecraft.getInstance().font;
 				itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
 			}

@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
@@ -28,6 +27,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -70,18 +70,18 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 			float spin = ((entity.tickCount+partialTicks)%10)/10f*360;
 			matrixStackIn.mulPose(new Quaternion(new Vector3f(0, 1, 0), spin, true));
 		}
-		Lighting.turnOff();
 
 		AmbientOcclusionStatus aoStat = ClientUtils.mc().options.ambientOcclusion;
 		ClientUtils.mc().options.ambientOcclusion = AmbientOcclusionStatus.OFF;
 
-		blockRenderer.getModelRenderer().renderModel(entity.getCommandSenderWorld(), model, state, blockPos,
-				matrixStackIn, builder, true,
-				entity.getCommandSenderWorld().random, 0, 0, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
+		blockRenderer.getModelRenderer().renderModel(
+				matrixStackIn.last(), builder, state, model,
+				// Tint color
+				1, 1, 1,
+				packedLightIn, OverlayTexture.NO_OVERLAY, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE)
+		);
 
 		ClientUtils.mc().options.ambientOcclusion = aoStat;
-
-		Lighting.turnBackOn();
 
 		matrixStackIn.popPose();
 	}

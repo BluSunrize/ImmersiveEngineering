@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui.elements;
 
+import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.DyeColor;
@@ -35,10 +36,6 @@ public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 	{
 		super.render(transform, mouseX, mouseY, partialTicks);
 		if(this.visible)
-		{
-			DyeColor dye = getState();
-			int col = 0xff000000|dye.getColorValue();
-			this.fillGradient(transform, x+2, y+2, x+6, y+6, col, col);
-		}
+			GuiHelper.drawColouredRect(transform, x+2, y+2, x+6, y+6, getState());
 	}
 }

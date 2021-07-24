@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -58,6 +59,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -71,13 +73,21 @@ import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, IScrollwheel, ITool, IOBJModelCallback<ItemStack>
 {
 	public RailgunItem()
 	{
-		super(withIEOBJRender().stacksTo(1), "RAILGUN");
+		super(new Properties().stacksTo(1), "RAILGUN");
+	}
+
+	@Override
+	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	{
+		super.initializeClient(consumer);
+		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
 	}
 
 	@Override

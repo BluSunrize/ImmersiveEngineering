@@ -11,14 +11,15 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -100,14 +101,17 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	@Override
 	protected final void renderBg(@Nonnull PoseStack transform, float partialTicks, int x, int y)
 	{
-		ClientUtils.bindTexture(background);
 		drawBackgroundTexture(transform);
 		drawContainerBackgroundPre(transform, partialTicks, x, y);
 		for (InfoArea area : infoAreas.get())
 			area.draw(transform);
 	}
 
-	protected void drawBackgroundTexture(PoseStack transform) {
+	protected void drawBackgroundTexture(PoseStack transform)
+	{
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, background);
 		blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 

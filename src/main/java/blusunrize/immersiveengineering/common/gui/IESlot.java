@@ -50,6 +50,7 @@ import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity.SLOT_FERTILIZER;
 
+// TODO test various onTake implementations. May need to move to tryRemove
 public abstract class IESlot extends Slot
 {
 	final AbstractContainerMenu containerMenu;
@@ -215,20 +216,22 @@ public abstract class IESlot extends Slot
 
 	public static class Upgrades extends SlotItemHandler
 	{
-		final ItemStack upgradeableTool;
-		final String type;
-		final boolean preventDoubles;
-		final AbstractContainerMenu container;
-		final Supplier<Level> getWorld;
-		final Supplier<Player> getPlayer;
+		final ItemStack toolStack;
+		private final IUpgradeableTool upgradeableTool;
+		private final String type;
+		private final boolean preventDoubles;
+		private final AbstractContainerMenu container;
+		private final Supplier<Level> getWorld;
+		private final Supplier<Player> getPlayer;
 
-		public Upgrades(AbstractContainerMenu container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool,
+		public Upgrades(AbstractContainerMenu container, IItemHandler inv, int id, int x, int y, String type, ItemStack toolStack,
 						boolean preventDoubles, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 		{
 			super(inv, id, x, y);
 			this.container = container;
 			this.type = type;
-			this.upgradeableTool = upgradeableTool;
+			this.toolStack = toolStack;
+			this.upgradeableTool = (IUpgradeableTool)toolStack.getItem();
 			this.preventDoubles = preventDoubles;
 			this.getWorld = getWorld;
 			this.getPlayer = getPlayer;
@@ -241,7 +244,7 @@ public abstract class IESlot extends Slot
 				for(Slot slot : container.slots)
 					if(this!=slot&&slot instanceof Upgrades&&ItemStack.isSame(slot.getItem(), itemStack))
 						return false;
-			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IUpgrade&&((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type)&&((IUpgrade)itemStack.getItem()).canApplyUpgrades(upgradeableTool, itemStack);
+			return !itemStack.isEmpty()&&itemStack.getItem() instanceof IUpgrade&&((IUpgrade)itemStack.getItem()).getUpgradeTypes(itemStack).contains(type)&&((IUpgrade)itemStack.getItem()).canApplyUpgrades(toolStack, itemStack);
 		}
 
 		@Override
@@ -250,19 +253,25 @@ public abstract class IESlot extends Slot
 			return 64;
 		}
 
+		@Nonnull
 		@Override
-		public ItemStack onTake(Player thePlayer, ItemStack stack)
+		public ItemStack getItem()
 		{
-			stack = ((IUpgradeableTool)upgradeableTool.getItem()).removeUpgrade(upgradeableTool, thePlayer, stack);
-			stack = super.onTake(thePlayer, stack);
-			return stack;
+			return upgradeableTool.getUpgradeAfterRemoval(toolStack, super.getItem());
+		}
+
+		@Override
+		public void onTake(Player thePlayer, ItemStack stack)
+		{
+			upgradeableTool.removeUpgrade(toolStack, thePlayer, stack);
+			super.onTake(thePlayer, stack);
 		}
 
 		@Override
 		public void setChanged()
 		{
 			super.setChanged();
-			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get(), getPlayer.get());
+			upgradeableTool.recalculateUpgrades(toolStack, getWorld.get(), getPlayer.get());
 			if(container instanceof ModWorkbenchContainer)
 				((ModWorkbenchContainer)container).rebindSlots();
 			else if(container instanceof MaintenanceKitContainer)
@@ -343,16 +352,15 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public ItemStack onTake(Player player, ItemStack stack)
+		public void onTake(Player player, ItemStack stack)
 		{
-			ItemStack result = super.onTake(player, stack);
+			super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
 				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
 			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler -> {
 				if(handler instanceof IEItemStackHandler)
 					((IEItemStackHandler)handler).setTile(null);
 			});
-			return result;
 		}
 	}
 
@@ -390,12 +398,11 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public ItemStack onTake(Player player, ItemStack stack)
+		public void onTake(Player player, ItemStack stack)
 		{
-			ItemStack result = super.onTake(player, stack);
+			super.onTake(player, stack);
 			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
 				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
-			return result;
 		}
 	}
 
@@ -508,10 +515,10 @@ public abstract class IESlot extends Slot
 		}
 
 		@Override
-		public ItemStack onTake(Player player, ItemStack stack)
+		public void onTake(Player player, ItemStack stack)
 		{
 			((BlueprintInventory)this.container).reduceIputs(this.inputInventory, recipe, stack);
-			return super.onTake(player, stack);
+			super.onTake(player, stack);
 		}
 	}
 

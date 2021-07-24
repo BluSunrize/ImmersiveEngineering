@@ -78,7 +78,6 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -432,12 +431,6 @@ public class ClientProxy extends CommonProxy
 	void registerTileScreen(IEContainerTypes.TileContainer<?, C> type, ScreenConstructor<C, S> factory)
 	{
 		MenuScreens.register(type.getType(), factory);
-	}
-
-	@Override
-	public Item.Properties useIEOBJRenderer(Item.Properties props)
-	{
-		return super.useIEOBJRenderer(props);//TODO .setISTER(() -> () -> IEOBJItemRenderer.INSTANCE);
 	}
 
 	private static void requestModelsAndTextures()

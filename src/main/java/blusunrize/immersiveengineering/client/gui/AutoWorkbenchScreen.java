@@ -48,7 +48,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 	@Override
 	public void init()
 	{
-		this.buttons.clear();
+		this.clearWidgets();
 		super.init();
 		Slot s = menu.getSlot(0);
 		if(s!=null&&s.hasItem()&&s.getItem().getItem() instanceof EngineersBlueprintItem)
@@ -63,7 +63,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 					if(recipes[i]!=null&&!recipes[i].output.isEmpty())
 					{
 						final int id = i;
-						this.addButton(new GuiButtonItem(xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe,
+						this.addRenderableWidget(new GuiButtonItem(xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe,
 								btn -> {
 									if(id==tile.selectedRecipe)//disable
 										tile.selectedRecipe = -1;

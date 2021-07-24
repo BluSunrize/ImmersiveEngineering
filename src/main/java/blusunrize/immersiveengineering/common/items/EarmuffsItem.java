@@ -31,10 +31,13 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendColoredColour;
 
@@ -59,14 +62,19 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 		return "immersiveengineering:textures/models/earmuffs.png";
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	HumanoidModel armorModel;
-
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public HumanoidModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default)
+	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
 	{
-		return ModelEarmuffs.getModel();
+		super.initializeClient(consumer);
+		consumer.accept(new IItemRenderProperties()
+		{
+			@Override
+			public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default)
+			{
+				//TODO fix unchecked cast
+				return (A)ModelEarmuffs.getModel();
+			}
+		});
 	}
 
 	@Override

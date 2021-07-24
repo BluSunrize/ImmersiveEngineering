@@ -16,6 +16,7 @@ public class IEMinecartRenderer extends MinecartRenderer<IEMinecartEntity>
 {
 	public IEMinecartRenderer(Context renderManagerIn)
 	{
+		//TODO net.minecraftforge.fmlclient.registry.RenderingRegistry#registerLayerDefinition
 		super(renderManagerIn);
 	}
 }

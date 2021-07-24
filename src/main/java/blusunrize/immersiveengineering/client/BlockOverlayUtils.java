@@ -298,30 +298,30 @@ public class BlockOverlayUtils
 					// Get a 0-1 cursor coordinate; this could be ternary operator, but switchcase is easier to read
 					switch(frameDir)
 					{
-						case DOWN:
+						case DOWN -> {
 							cursorH = hitVec.x;
 							cursorV = 1-hitVec.z;
-							break;
-						case UP:
+						}
+						case UP -> {
 							cursorH = hitVec.x;
 							cursorV = hitVec.z;
-							break;
-						case NORTH:
+						}
+						case NORTH -> {
 							cursorH = 1-hitVec.x;
 							cursorV = 1-hitVec.y;
-							break;
-						case SOUTH:
+						}
+						case SOUTH -> {
 							cursorH = hitVec.x;
 							cursorV = 1-hitVec.y;
-							break;
-						case WEST:
+						}
+						case WEST -> {
 							cursorH = hitVec.z;
 							cursorV = 1-hitVec.y;
-							break;
-						case EAST:
+						}
+						case EAST -> {
 							cursorH = 1-hitVec.z;
 							cursorV = 1-hitVec.y;
-							break;
+						}
 					}
 					// Multiply it to the number scale vanilla maps use
 					cursorH *= 128;

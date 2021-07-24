@@ -16,10 +16,12 @@ import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel.ShadedQuads;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -32,17 +34,31 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.IItemRenderProperties;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 {
-	public static final BlockEntityWithoutLevelRenderer INSTANCE = null;//TODO new IEOBJItemRenderer();
+	public static final Supplier<BlockEntityWithoutLevelRenderer> INSTANCE = Suppliers.memoize(
+			() -> new IEOBJItemRenderer(
+					Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()
+			)
+	);
+	public static final IItemRenderProperties USE_IEOBJ_RENDER = new IItemRenderProperties()
+	{
+		@Override
+		public BlockEntityWithoutLevelRenderer getItemStackRenderer()
+		{
+			return INSTANCE.get();
+		}
+	};
 
 	public IEOBJItemRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_)
 	{
@@ -51,7 +67,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 
 	@Override
 	public void renderByItem(ItemStack stack, TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn,
-					   int combinedLightIn, int combinedOverlayIn)
+							 int combinedLightIn, int combinedOverlayIn)
 	{
 		float partialTicks = mc().getFrameTime();
 		if(stack.getItem() instanceof IOBJModelCallback)

@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecartRendererAccess;
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
@@ -26,6 +25,7 @@ import net.minecraft.client.model.MinecartModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
@@ -39,6 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ShaderMinecartRenderer<T extends AbstractMinecart> extends MinecartRenderer<T>
 {
@@ -70,7 +71,8 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 			matrixStackIn.pushPose();
 			applyTransforms(matrixStackIn, entity, partialTicks, entityYaw);
 			MinecartModel<?> model = getModel();
-			List<ModelPart> boxList = Lists.newArrayList(model.parts());
+			List<ModelPart> boxList = model.root().getAllParts().collect(Collectors.toList());
+			//TODO check magic numbers
 			boxList.get(5).y = 4.1F;
 			for(int part = 0; part < boxList.size()-1; part++)
 				if(boxList.get(part)!=null)
@@ -162,13 +164,16 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 
 	public static <T extends Entity> void overrideModelIfMinecart(EntityType<T> type)
 	{
-		Context rendererManager = Minecraft.getInstance().getContext();
+		Minecraft mc = Minecraft.getInstance();
+		EntityRenderDispatcher rendererManager = mc.getEntityRenderDispatcher();
 		EntityRenderer<T> render = (EntityRenderer<T>)rendererManager.renderers.get(type);
 		if(render instanceof MinecartRenderer<?>)
 			rendererManager.register(
 					type,
 					// Raw types to work around generics issues
-					new ShaderMinecartRenderer((MinecartRenderer<?>)render, rendererManager)
+					new ShaderMinecartRenderer((MinecartRenderer<?>)render, new Context(
+							rendererManager, mc.getItemRenderer(), mc.getResourceManager(), mc.getEntityModels(), mc.font
+					))
 			);
 	}
 }

@@ -101,11 +101,6 @@ public class IEBaseItem extends Item implements IColouredItem
 		}, buffer -> buffer.writeInt(slot.ordinal()));
 	}
 
-	public static Item.Properties withIEOBJRender()
-	{
-		return ImmersiveEngineering.proxy.useIEOBJRenderer(new Properties());
-	}
-
 	@Override
 	public boolean isRepairable(@Nonnull ItemStack stack)
 	{

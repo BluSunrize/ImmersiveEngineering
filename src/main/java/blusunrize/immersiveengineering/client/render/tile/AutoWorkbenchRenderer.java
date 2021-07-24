@@ -175,11 +175,11 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTi
 		matrixStack.pushPose();
 		ItemStack blueprintStack = te.inventory.get(0);
 		if(!blueprintStack.isEmpty())
-			renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "blueprint");
+			renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "blueprint");
 
 
 		matrixStack.translate(0, lift, 0);
-		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "lift");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "lift");
 		matrixStack.translate(0, -lift, 0);
 
 		Direction f = te.getFacing();
@@ -188,7 +188,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTi
 		matrixStack.pushPose();
 		matrixStack.translate(tx, 0, tz);
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), drill, true));
-		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "drill");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "drill");
 		matrixStack.popPose();
 
 		tx = f==Direction.WEST?-.59375f: f==Direction.EAST?.59375f: 0;
@@ -196,11 +196,11 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTi
 		matrixStack.pushPose();
 		matrixStack.translate(tx, -.21875, tz);
 		matrixStack.mulPose(new Quaternion(new Vector3f(-f.getStepZ(), 0, f.getStepX()), press*90, true));
-		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "press");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "press");
 		matrixStack.popPose();
 
 		matrixStack.translate(0, liftPress, 0);
-		renderModelPart(matrixStack, blockRenderer, bufferIn, te.getLevelNonnull(), state, model, blockPos, "pressLift");
+		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "pressLift");
 
 		matrixStack.popPose();
 
@@ -305,22 +305,17 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTi
 	}
 
 	public static void renderModelPart(
-			PoseStack matrix,
-			final BlockRenderDispatcher blockRenderer,
-			MultiBufferSource buffers,
-			Level world,
-			BlockState state,
-			BakedModel model,
-			BlockPos pos,
-			String... parts
+			PoseStack matrix, final BlockRenderDispatcher blockRenderer, MultiBufferSource buffers, BlockState state,
+			BakedModel model, int light, int overlay, String parts
 	)
 	{
 		matrix.pushPose();
 		matrix.translate(-0.5, -0.5, -0.5);
 		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
 
-		blockRenderer.getModelRenderer().renderModel(world, model, state, pos, matrix,
-				buffers.getBuffer(RenderType.solid()), false, world.random, 0, 0, data);
+		blockRenderer.getModelRenderer().renderModel(matrix.last(), buffers.getBuffer(RenderType.solid()), state, model,
+				1, 1, 1,
+				light, overlay, data);
 		matrix.popPose();
 	}
 
@@ -506,7 +501,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTi
 			//Draw edges
 			VertexConsumer baseBuilder = buffer.getBuffer(IERenderTypes.getLines(lineWidth));
 			TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder, matrixStack);
-			builder.setColor(1, 1, 1, 1);
+			builder.defaultColor(255, 255, 255, 255);
 			for(Pair<Point, Point> line : lines)
 			{
 				builder.vertex(line.getKey().x, line.getKey().y, 0)
@@ -519,6 +514,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTi
 				for(ShadeStyle style : areas.keySet())
 					for(Point pixel : areas.get(style))
 						style.drawShading(pixel, builder);
+			builder.unsetDefaultColor();
 		}
 	}
 

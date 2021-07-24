@@ -35,7 +35,7 @@ public abstract class ToolModificationScreen<C extends AbstractContainerMenu> ex
 	@Override
 	public void init()
 	{
-		this.buttons.clear();
+		this.clearWidgets();
 		super.init();
 		Slot s = menu.getSlot(0);
 		if(s.hasItem()&&s.getItem().getItem() instanceof IConfigurableTool)
@@ -45,12 +45,12 @@ public abstract class ToolModificationScreen<C extends AbstractContainerMenu> ex
 			ToolConfigBoolean[] boolArray = tool.getBooleanOptions(stack);
 			if(boolArray!=null)
 				for(ToolConfigBoolean b : boolArray)
-					this.addButton(new GuiButtonCheckbox(leftPos+b.x, topPos+b.y, tool.fomatConfigName(stack, b), b.value,
+					this.addRenderableWidget(new GuiButtonCheckbox(leftPos+b.x, topPos+b.y, tool.fomatConfigName(stack, b), b.value,
 							btn -> dataChanged(btn, b.name)));
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)
 				for(ToolConfigFloat f : floatArray)
-					this.addButton(new GuiSliderIE(leftPos+f.x, topPos+f.y, 80, tool.fomatConfigName(stack, f), f.value,
+					this.addRenderableWidget(new GuiSliderIE(leftPos+f.x, topPos+f.y, 80, tool.fomatConfigName(stack, f), f.value,
 							btn -> dataChanged(btn, f.name)));
 		}
 	}

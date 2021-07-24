@@ -52,9 +52,11 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerTileEntity>
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), agitator, true));
 
 		matrixStack.translate(-0.5, -0.5, -0.5);
-		blockRenderer.getModelRenderer().renderModel(te.getLevelNonnull(), model, state, blockPos, matrixStack,
-				bufferIn.getBuffer(RenderType.solid()), true, te.getLevel().random, 0,
-				combinedOverlayIn, EmptyModelData.INSTANCE);
+		blockRenderer.getModelRenderer().renderModel(
+				matrixStack.last(), bufferIn.getBuffer(RenderType.solid()), state, model,
+				1, 1, 1,
+				combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE
+		);
 
 		matrixStack.popPose();
 

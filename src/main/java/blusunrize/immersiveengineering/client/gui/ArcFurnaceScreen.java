@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -29,8 +28,6 @@ import net.minecraft.world.inventory.ClickType;
 import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 {
@@ -77,20 +74,19 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	public void init()
 	{
 		super.init();
-		Minecraft mc = mc();
 		distributeButton = new GuiButtonIE(leftPos+10, topPos+10, 16, 16, TextComponent.EMPTY, TEXTURE, 179, 0,
 				btn -> {
-					if(mc.player!=null&&mc.player.inventory.getCarried().isEmpty())
+					if(menu.getCarried().isEmpty())
 						autoSplitStacks();
 				})
 		{
 			@Override
 			public boolean isHovered()
 			{
-				return super.isHovered()&&mc.player!=null&&mc.player.inventory.getCarried().isEmpty();
+				return super.isHovered()&&menu.getCarried().isEmpty();
 			}
 		}.setHoverOffset(0, 16);
-		this.addButton(distributeButton);
+		this.addRenderableWidget(distributeButton);
 	}
 
 	private void autoSplitStacks()

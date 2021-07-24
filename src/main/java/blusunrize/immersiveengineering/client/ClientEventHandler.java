@@ -50,7 +50,6 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import blusunrize.immersiveengineering.mixin.accessors.client.GPUWarningAccess;
@@ -119,7 +118,6 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -322,8 +320,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			ItemStack earmuffs = ItemStack.EMPTY;
 			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
 				earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
-			else if(ModList.get().isLoaded("curios"))
-				earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
+			//TODO
+			//else if(ModList.get().isLoaded("curios"))
+			//	earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
 
 			if(!earmuffs.isEmpty()&&
 					!ItemNBTHelper.getBoolean(earmuffs, "IE:Earmuffs:Cat_"+event.getSound().getSource().getName()))
@@ -512,6 +511,11 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 
 		if(event.getType()==RenderGameOverlayEvent.ElementType.SUBTITLES)
 			handleSubtitleOffset(false);
+		int leftHeight;
+		if(Minecraft.getInstance().gui instanceof ForgeIngameGui forgeUI)
+			leftHeight = forgeUI.left_height;
+		else
+			leftHeight = 0;
 		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
 		{
 			Player player = ClientUtils.mc().player;
@@ -544,7 +548,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 									col = 0xdd3333;
 							}
 							ClientUtils.font().drawInBatch(
-									s, scaledWidth/2-ClientUtils.font().width(s)/2, scaledHeight-ForgeIngameGui.left_height-20, col,
+									s, scaledWidth/2-ClientUtils.font().width(s)/2, scaledHeight-leftHeight-20, col,
 									true, transform.last().pose(), buffer, false, 0, 0xf000f0);
 						}
 					}
@@ -553,7 +557,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						int color = FluorescentTubeItem.getRGBInt(equipped, 1);
 						String s = I18n.get(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
 						ClientUtils.font().drawInBatch(s, scaledWidth/2-ClientUtils.font().width(s)/2,
-								scaledHeight-ForgeIngameGui.left_height-20, FluorescentTubeItem.getRGBInt(equipped, 1),
+								scaledHeight-leftHeight-20, FluorescentTubeItem.getRGBInt(equipped, 1),
 								true, transform.last().pose(), buffer, false, 0, 0xf000f0
 						);
 					}

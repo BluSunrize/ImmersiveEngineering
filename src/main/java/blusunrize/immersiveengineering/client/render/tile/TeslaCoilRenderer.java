@@ -47,7 +47,7 @@ public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilTileEntity
 	{
 		VertexConsumer base = buffers.getBuffer(IERenderTypes.getLines(lineWidth));
 		TransformingVertexBuilder builder = new TransformingVertexBuilder(base, transform);
-		builder.setColor(rgba[0], rgba[1], rgba[2], rgba[3]);
+		builder.defaultColor((int)(255*rgba[0]), (int)(255*rgba[1]), (int)(255*rgba[2]), (int)(255*rgba[3]));
 		List<Vec3> subs = animation.subPoints;
 		builder.vertex(animation.startPos.x-tileX, animation.startPos.y-tileY, animation.startPos.z-tileZ).endVertex();
 

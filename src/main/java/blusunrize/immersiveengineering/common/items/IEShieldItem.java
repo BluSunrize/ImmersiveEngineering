@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
@@ -51,6 +52,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -64,14 +66,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, IOBJModelCallback<ItemStack>
 {
 	public IEShieldItem()
 	{
-		super(withIEOBJRender().defaultDurability(1024), "SHIELD");
+		super(new Properties().defaultDurability(1024), "SHIELD");
 		GenericDeferredWork.registerDispenseBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
+	}
+
+	@Override
+	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	{
+		super.initializeClient(consumer);
+		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
 	}
 
 	@Override

@@ -29,7 +29,6 @@ import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -89,10 +88,5 @@ public class CommonProxy
 
 	public void openTileScreen(String guiId, BlockEntity tileEntity)
 	{
-	}
-
-	public Item.Properties useIEOBJRenderer(Item.Properties props)
-	{
-		return props;
 	}
 }

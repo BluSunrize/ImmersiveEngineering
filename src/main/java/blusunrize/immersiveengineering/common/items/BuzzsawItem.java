@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
@@ -54,6 +55,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.ToolType;
@@ -68,6 +70,8 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class BuzzsawItem extends DieselToolItem implements IScrollwheel
@@ -76,7 +80,14 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	public BuzzsawItem()
 	{
-		super(withIEOBJRender().stacksTo(1), "BUZZSAW");
+		super(new Properties().stacksTo(1), "BUZZSAW");
+	}
+
+	@Override
+	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	{
+		super.initializeClient(consumer);
+		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */
@@ -108,19 +119,27 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public ItemStack removeUpgrade(ItemStack stack, Player player, ItemStack upgrade)
+	public ItemStack getUpgradeAfterRemoval(ItemStack stack, ItemStack upgrade)
+	{
+		forEachSpareBlade(stack, upgrade, (i, sawblade) -> ItemNBTHelper.setItemStack(upgrade, "sawblade"+i, sawblade));
+		return upgrade;
+	}
+
+	@Override
+	public void removeUpgrade(ItemStack stack, Player player, ItemStack upgrade)
+	{
+		forEachSpareBlade(stack, upgrade, (i, $) -> setSawblade(stack, ItemStack.EMPTY, i));
+	}
+
+	private void forEachSpareBlade(ItemStack stack, ItemStack upgrade, BiConsumer<Integer, ItemStack> onBlade)
 	{
 		if(upgrade.getItem()==Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
 			for(int i = 1; i <= 2; i++)
 			{
 				ItemStack sawblade = getSawblade(stack, i);
 				if(!sawblade.isEmpty())
-				{
-					ItemNBTHelper.setItemStack(upgrade, "sawblade"+i, sawblade);
-					setSawblade(stack, ItemStack.EMPTY, i);
-				}
+					onBlade.accept(i, sawblade);
 			}
-		return upgrade;
 	}
 
 	@Override

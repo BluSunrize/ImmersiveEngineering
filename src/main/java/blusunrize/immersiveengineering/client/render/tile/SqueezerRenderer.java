@@ -51,9 +51,11 @@ public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerTileEntity>
 		matrixStack.translate(0, piston, 0);
 
 		matrixStack.translate(-.5, -.5, -.5);
-		blockRenderer.getModelRenderer().renderModel(te.getLevelNonnull(), model, state, blockPos, matrixStack,
-				buffer, true, te.getLevel().random, 0, combinedOverlayIn,
-				EmptyModelData.INSTANCE);
+		blockRenderer.getModelRenderer().renderModel(
+				matrixStack.last(), buffer, state, model,
+				1, 1, 1,
+				combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE
+		);
 
 		matrixStack.popPose();
 	}

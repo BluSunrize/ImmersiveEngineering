@@ -53,7 +53,7 @@ public class MaintenanceKitContainer extends ItemContainer
 		if(world.isClientSide&&!inv.getItem(0).isEmpty())
 			for(Slot slot : slots)
 				if(slot instanceof IESlot.Upgrades)
-					if(ItemStack.matches(((IESlot.Upgrades)slot).upgradeableTool, inv.getItem(0)))
+					if(ItemStack.matches(((IESlot.Upgrades)slot).toolStack, inv.getItem(0)))
 						return this.internalSlots;
 		this.slots.clear();
 		((ContainerAccess)this).getLastSlots().clear();
@@ -148,6 +148,6 @@ public class MaintenanceKitContainer extends ItemContainer
 			player.setItemSlot(this.equipmentSlot, this.heldItem);
 		}
 		super.removed(par1EntityPlayer);
-		this.clearContainer(par1EntityPlayer, this.world, this.inv);
+		this.clearContainer(par1EntityPlayer, this.inv);
 	}
 }

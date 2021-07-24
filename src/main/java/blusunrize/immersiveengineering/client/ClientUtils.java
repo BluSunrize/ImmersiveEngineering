@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.util.sound.IETileSound;
 import blusunrize.immersiveengineering.mixin.accessors.client.FontResourceManagerAccess;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecraftAccess;
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
@@ -51,7 +52,7 @@ public class ClientUtils
 
 	public static void bindTexture(ResourceLocation texture)
 	{
-		mc().getTextureManager().bind(texture);
+		RenderSystem.setShaderTexture(0, texture);
 	}
 
 	public static TextureAtlasSprite getSprite(ResourceLocation rl)

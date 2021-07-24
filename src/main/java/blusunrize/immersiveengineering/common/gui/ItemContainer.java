@@ -127,16 +127,14 @@ public abstract class ItemContainer extends AbstractContainerMenu implements Sup
 		return ItemStack.isSame(player.getItemBySlot(equipmentSlot), heldItem);
 	}
 
-	@Nonnull
 	@Override
-	public ItemStack clicked(int par1, int par2, ClickType par3, Player par4EntityPlayer)
+	public void clicked(int par1, int par2, ClickType par3, Player par4EntityPlayer)
 	{
-		if(par1==this.blockedSlot||(par3==ClickType.SWAP&&par2==par4EntityPlayer.inventory.selected))
-			return ItemStack.EMPTY;
-		ItemStack ret = super.clicked(par1, par2, par3, par4EntityPlayer);
+		if(par1==this.blockedSlot||(par3==ClickType.SWAP&&par2==par4EntityPlayer.getInventory().selected))
+			return;
+		super.clicked(par1, par2, par3, par4EntityPlayer);
 		updatePlayerItem();
 		broadcastChanges();
-		return ret;
 	}
 
 	@Override

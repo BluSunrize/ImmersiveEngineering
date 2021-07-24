@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
-import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
@@ -170,28 +169,23 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 				}
 			}
 
-			if(stackInSlot.getCount()==0)
-				slotObject.set(ItemStack.EMPTY);
-			else
-				slotObject.setChanged();
+			slotObject.setChanged();
 
 			if(stackInSlot.getCount()==stack.getCount())
 				return ItemStack.EMPTY;
-			ItemStack remainderStack = slotObject.onTake(player, stackInSlot);
-			if(slotObject instanceof BlueprintOutput)
-				player.drop(remainderStack, false);
+			slotObject.onTake(player, stackInSlot);
+			if(slotObject.hasItem())
+				player.drop(slotObject.getItem(), false);
 		}
 		return stack;
 	}
 
-	@Nonnull
 	@Override
 	public void clicked(int id, int dragType, ClickType clickType, Player player)
 	{
-		ItemStack ret = super.clicked(id, dragType, clickType, player);
+		super.clicked(id, dragType, clickType, player);
 		tile.markContainingBlockForUpdate(null);
 		if(!world.isClientSide)
 			broadcastChanges();
-		return ret;
 	}
 }

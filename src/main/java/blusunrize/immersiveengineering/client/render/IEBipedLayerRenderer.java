@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -24,7 +23,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
+import net.minecraftforge.client.RenderProperties;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -50,12 +49,13 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends HumanoidMode
 		ItemStack earmuffs = ItemStack.EMPTY;
 		if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
 			earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
-		else if(ModList.get().isLoaded("curios"))
-			earmuffs = CuriosCompatModule.getEarmuffs(living);
+		// TODO reenable
+		//else if(ModList.get().isLoaded("curios"))
+		//	earmuffs = CuriosCompatModule.getEarmuffs(living);
 
 		if(!earmuffs.isEmpty())
 		{
-			HumanoidModel<E> model = Misc.earmuffs.get().getArmorModel(living, earmuffs, EquipmentSlot.HEAD, null);
+			HumanoidModel<E> model = RenderProperties.get(Misc.earmuffs.get()).getArmorModel(living, earmuffs, EquipmentSlot.HEAD, null);
 			model.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			RenderType type = model.renderType(new ResourceLocation(Misc.earmuffs.get().getArmorTexture(earmuffs, living, EquipmentSlot.HEAD, "overlay")));
 			model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
@@ -71,12 +71,13 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends HumanoidMode
 			ItemStack powerpack = chest.getItem()==Misc.powerpack.asItem()?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
 			addWornPowerpack(living, powerpack);
 		}
-		else if(ModList.get().isLoaded("curios"))
-		{
-			ItemStack powerpack = CuriosCompatModule.getPowerpack(living);
-			if(!powerpack.isEmpty())
-				addWornPowerpack(living, powerpack);
-		}
+		//TODO reenable
+		//else if(ModList.get().isLoaded("curios"))
+		//{
+		//	ItemStack powerpack = CuriosCompatModule.getPowerpack(living);
+		//	if(!powerpack.isEmpty())
+		//		addWornPowerpack(living, powerpack);
+		//}
 
 		if(POWERPACK_PLAYERS.containsKey(living.getUUID()))
 		{
@@ -99,7 +100,7 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends HumanoidMode
 	{
 		if(!powerpack.isEmpty())
 		{
-			HumanoidModel<E> model = Misc.powerpack.asItem().getArmorModel(living, powerpack, EquipmentSlot.CHEST, null);
+			HumanoidModel<E> model = RenderProperties.get(Misc.powerpack.asItem()).getArmorModel(living, powerpack, EquipmentSlot.CHEST, null);
 			model.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			RenderType type = model.renderType(
 					new ResourceLocation(Misc.powerpack.asItem().getArmorTexture(powerpack, living, EquipmentSlot.CHEST, null))

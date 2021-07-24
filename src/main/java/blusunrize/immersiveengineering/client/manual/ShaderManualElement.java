@@ -166,7 +166,7 @@ public class ShaderManualElement extends SpecialManualElements
 	@Override
 	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
-		Lighting.turnBackOn();
+		Lighting.setupFor3DItems();
 		float scale = 2;
 		transform.pushPose();
 		transform.translate(x, y, 0);
@@ -181,7 +181,7 @@ public class ShaderManualElement extends SpecialManualElements
 		if(unlocked)
 			ManualUtils.renderItemStack(transform, replicationCost.getRandomizedExampleStack(mc().player.tickCount), 102, 118, false);
 
-		Lighting.turnOff();
+		Lighting.setupForFlatItems();
 
 		int w = manual.fontRenderer().width(this.name.getString());
 		drawWrappedWithTransform(transform, this.name, 60-w/2, 24);

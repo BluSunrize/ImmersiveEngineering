@@ -67,8 +67,8 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	public void init()
 	{
 		super.init();
-		this.buttons.clear();
-		this.addButton(new GuiButtonBoolean(leftPos+106, topPos+61, 30, 16, "", tile.outputAll, TEXTURE, 176, 82, 1,
+		this.clearWidgets();
+		this.addRenderableWidget(new GuiButtonBoolean(leftPos+106, topPos+61, 30, 16, "", tile.outputAll, TEXTURE, 176, 82, 1,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					tile.outputAll = !btn.getState();

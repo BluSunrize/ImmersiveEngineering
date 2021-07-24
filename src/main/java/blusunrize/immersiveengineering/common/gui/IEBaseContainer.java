@@ -45,7 +45,6 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		return inv!=null&&inv.stillValid(player);//Override for TE's that don't implement IIEInventory
 	}
 
-	@Nonnull
 	@Override
 	public void clicked(int id, int dragType, ClickType clickType, Player player)
 	{
@@ -56,18 +55,14 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 			return;
 		}
 		//Spooky Ghost Slots!!!!
-		//TODO fix!
-		ItemStack stack = ItemStack.EMPTY;
+		//TODO fix/test
 		ItemStack stackSlot = slot.getItem();
-		if(!stackSlot.isEmpty())
-			stack = stackSlot.copy();
 
 		if(dragType==2)
 			slot.set(ItemStack.EMPTY);
 		else if(dragType==0||dragType==1)
 		{
-			Inventory playerInv = player.getInventory();
-			ItemStack stackHeld = playerInv.getCarried();
+			ItemStack stackHeld = getCarried();
 			int amount = Math.min(slot.getMaxStackSize(), stackHeld.getCount());
 			if(dragType==1)
 				amount = 1;
@@ -92,8 +87,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		}
 		else if(dragType==5)
 		{
-			Inventory playerInv = player.getInventory();
-			ItemStack stackHeld = playerInv.getCarried();
+			ItemStack stackHeld = getCarried();
 			int amount = Math.min(slot.getMaxStackSize(), stackHeld.getCount());
 			if(!slot.hasItem())
 			{

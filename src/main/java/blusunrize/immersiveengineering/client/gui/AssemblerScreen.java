@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -35,6 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag.Default;
+import net.minecraftforge.client.RenderProperties;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -104,11 +104,11 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.addButton(new GuiButtonIE(leftPos+11+i*59, topPos+67, 10, 10, TextComponent.EMPTY, TEXTURE, 230, 50,
+			this.addRenderableWidget(new GuiButtonIE(leftPos+11+i*59, topPos+67, 10, 10, TextComponent.EMPTY, TEXTURE, 230, 50,
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
-		this.addButton(new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, "", tile.recursiveIngredients, TEXTURE, 240, 66, 3,
+		this.addRenderableWidget(new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, "", tile.recursiveIngredients, TEXTURE, 240, 66, 3,
 				btn -> {
 					sendButtonClick.accept(3);
 					tile.recursiveIngredients = !tile.recursiveIngredients;
@@ -126,7 +126,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				transform.pushPose();
 				Font font = null;
 				if(!stack.isEmpty())
-					font = stack.getItem().getFontRenderer(stack);
+					font = RenderProperties.get(stack.getItem()).getFont(stack);
 				if(font==null)
 					font = this.font;
 				itemRenderer.renderAndDecorateItem(stack, leftPos+27+i*58, topPos+64);
@@ -137,7 +137,6 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				RenderSystem.enableDepthTest();
 
 				transform.popPose();
-				Lighting.turnOff();
 			}
 	}
 }

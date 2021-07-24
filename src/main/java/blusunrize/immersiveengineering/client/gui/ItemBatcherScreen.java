@@ -53,7 +53,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 		super.init();
 		mc().keyboardHandler.setSendRepeatsToGui(true);
 
-		this.buttons.clear();
+		this.clearWidgets();
 		buttonBatchMode = new GuiButtonState<>(leftPos+7, topPos+92, 18, 18, TextComponent.EMPTY,
 				ItemBatcherTileEntity.BatchMode.values(), tile.batchMode.ordinal(), TEXTURE,
 				176, 36, 1,
@@ -63,7 +63,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 					tag.putByte("batchMode", (byte)tile.batchMode.ordinal());
 					handleButtonClick(tag);
 				}, ItemBatcherScreen::gatherBatchmodeTooltip);
-		this.addButton(buttonBatchMode);
+		this.addRenderableWidget(buttonBatchMode);
 
 		for(int slot = 0; slot < 9; slot++)
 		{
@@ -76,7 +76,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 						tag.putInt("redstoneColor_val", tile.redstoneColors.get(finalSlot).getId());
 						handleButtonClick(tag);
 					}, ItemBatcherScreen::gatherRedstoneTooltip);
-			this.addButton(buttonsRedstone[slot]);
+			this.addRenderableWidget(buttonsRedstone[slot]);
 		}
 
 	}

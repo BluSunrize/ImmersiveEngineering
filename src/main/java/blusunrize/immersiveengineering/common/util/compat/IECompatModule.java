@@ -11,8 +11,6 @@ package blusunrize.immersiveengineering.common.util.compat;
 import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
-import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerCompatModule;
 import net.minecraftforge.fml.ModList;
 
 import java.util.HashMap;
@@ -27,10 +25,6 @@ public abstract class IECompatModule
 
 	static
 	{
-		moduleClasses.put("computercraft", ComputerCraftCompatModule.class);
-		moduleClasses.put("crafttweaker", CraftTweakerCompatModule.class);
-		moduleClasses.put("theoneprobe", OneProbeCompatModule.class);
-		moduleClasses.put("curios", CuriosCompatModule.class);
 	}
 
 	public static void doModulesPreInit()

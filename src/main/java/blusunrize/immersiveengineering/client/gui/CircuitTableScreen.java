@@ -89,7 +89,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		return ImmutableList.of(
 				new EnergyInfoArea(leftPos+217, topPos+16, tile),
 				new TooltipArea(copyArea, l -> {
-					if(this.inventory.getCarried().getItem() instanceof LogicCircuitBoardItem)
+					if(this.menu.getCarried().getItem() instanceof LogicCircuitBoardItem)
 						l.add(TextUtils.applyFormat(
 								new TranslatableComponent(Lib.DESC_INFO+"circuit_table.copy"), ChatFormatting.GRAY
 						));
@@ -103,12 +103,12 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		super.init();
 		mc().keyboardHandler.setSendRepeatsToGui(true);
 
-		this.operatorList = (GuiSelectingList)this.addButton(new GuiSelectingList(this, leftPos+58, topPos+16, 36, 56, btn -> {
+		this.operatorList = (GuiSelectingList)this.addRenderableWidget(new GuiSelectingList(this, leftPos+58, topPos+16, 36, 56, btn -> {
 			this.minecraft.tell(this::updateButtons);
 			this.minecraft.tell(this::updateInstruction);
 		}, Arrays.stream(LogicCircuitOperator.values()).map(Enum::name).toArray(String[]::new)).setPadding(1, 1, 2, 0));
 
-		this.outputButton = this.addButton(new GuiButtonLogicCircuitRegister(
+		this.outputButton = this.addRenderableWidget(new GuiButtonLogicCircuitRegister(
 				leftPos+121, topPos+56,
 				new TextComponent("Output"), btn -> this.minecraft.tell(this::updateInstruction))
 		);
@@ -148,8 +148,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 					btn.x = leftPos+inputStart+20*i;
 					if(++i > inputCount)
 					{
-						this.buttons.remove(btn);
-						this.children.remove(btn);
+						removeWidget(btn);
 						it.remove();
 					}
 				}
@@ -161,7 +160,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 					if(i < this.inputButtons.size()) // Reposition buttons
 						this.inputButtons.get(i).x = leftPos+inputStart+20*i;
 					else // Add new ones
-						this.inputButtons.add(this.addButton(new GuiButtonLogicCircuitRegister(
+						this.inputButtons.add(this.addRenderableWidget(new GuiButtonLogicCircuitRegister(
 								leftPos+inputStart+20*i, topPos+18,
 								new TextComponent("Input "+(i+1)), btn -> this.minecraft.tell(this::updateInstruction))
 						));
@@ -184,9 +183,9 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
-		drawCenteredString(transform, this.font, "Operator:", 76, 4, DyeColor.LIGHT_GRAY.getColorValue());
-		drawCenteredString(transform, this.font, "Inputs:", 130, 8, DyeColor.LIGHT_GRAY.getColorValue());
-		drawCenteredString(transform, this.font, "Outputs:", 130, 42, DyeColor.LIGHT_GRAY.getColorValue());
+		drawCenteredString(transform, this.font, "Operator:", 76, 4, DyeColor.LIGHT_GRAY.getTextColor());
+		drawCenteredString(transform, this.font, "Inputs:", 130, 8, DyeColor.LIGHT_GRAY.getTextColor());
+		drawCenteredString(transform, this.font, "Outputs:", 130, 42, DyeColor.LIGHT_GRAY.getTextColor());
 
 		for(int i = 0; i < SLOT_TYPES.length; i++)
 		{
@@ -200,7 +199,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 				else
 					col = DyeColor.RED;
 			}
-			this.font.draw(transform, "x "+amount, 30, 18+20*i, col.getColorValue());
+			this.font.draw(transform, "x "+amount, 30, 18+20*i, col.getTextColor());
 		}
 	}
 
@@ -218,9 +217,9 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button)
 	{
-		if(isMouseIn((int)mouseX, (int)mouseY, 52, 7, 100, 70)&&this.inventory.getCarried().getItem() instanceof LogicCircuitBoardItem)
+		if(isMouseIn((int)mouseX, (int)mouseY, 52, 7, 100, 70)&&this.menu.getCarried().getItem() instanceof LogicCircuitBoardItem)
 		{
-			LogicCircuitInstruction instr = LogicCircuitBoardItem.getInstruction(this.inventory.getCarried());
+			LogicCircuitInstruction instr = LogicCircuitBoardItem.getInstruction(this.menu.getCarried());
 			if(instr!=null)
 			{
 				this.operatorList.setSelectedString(instr.getOperator().name());

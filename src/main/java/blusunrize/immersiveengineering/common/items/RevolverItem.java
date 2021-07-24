@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
 import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
@@ -77,6 +78,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -92,16 +94,20 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
-import java.util.function.DoubleBinaryOperator;
-import java.util.function.DoublePredicate;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallback<ItemStack>, ITool, IBulletContainer
 {
 	public RevolverItem()
 	{
-		super(withIEOBJRender().stacksTo(1), "REVOLVER");
+		super(new Properties().stacksTo(1), "REVOLVER");
+	}
+
+	@Override
+	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	{
+		super.initializeClient(consumer);
+		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();

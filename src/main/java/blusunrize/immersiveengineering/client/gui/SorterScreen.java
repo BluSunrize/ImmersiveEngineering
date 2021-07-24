@@ -66,7 +66,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 	public void init()
 	{
 		super.init();
-		this.buttons.clear();
+		this.clearWidgets();
 		for(int side = 0; side < 6; side++)
 			for(int bit = 0; bit < 3; bit++)
 			{
@@ -84,7 +84,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 					fullInit();
 				});
 				b.active = bit==0?this.tile.doOredict(side): bit==1?this.tile.doNBT(side): this.tile.doFuzzy(side);
-				this.addButton(b);
+				this.addRenderableWidget(b);
 			}
 	}
 

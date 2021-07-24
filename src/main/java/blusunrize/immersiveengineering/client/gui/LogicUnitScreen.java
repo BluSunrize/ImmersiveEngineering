@@ -28,6 +28,6 @@ public class LogicUnitScreen extends IEContainerScreen<LogicUnitContainer>
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
 		for(int i = 0; i < 10; i++)
-			drawCenteredString(transform, this.font, ""+(i+1), 52+(i%5)*18, 23+(i/5)*18, DyeColor.GRAY.getColorValue());
+			drawCenteredString(transform, this.font, ""+(i+1), 52+(i%5)*18, 23+(i/5)*18, DyeColor.GRAY.getTextColor());
 	}
 }
