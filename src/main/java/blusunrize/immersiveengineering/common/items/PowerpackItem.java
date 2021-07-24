@@ -10,17 +10,14 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -53,7 +50,7 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
 	{
 		super.initializeClient(consumer);
-		consumer.accept(new IItemRenderProperties()
+		/*TODO consumer.accept(new IItemRenderProperties()
 		{
 			@Override
 			public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default)
@@ -61,7 +58,7 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 				//TODO fix unchecked cast
 				return (A)ModelPowerpack.getModel();
 			}
-		});
+		});*/
 	}
 
 	@Nullable

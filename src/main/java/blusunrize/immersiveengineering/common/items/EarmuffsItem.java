@@ -13,18 +13,15 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -66,7 +63,7 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
 	{
 		super.initializeClient(consumer);
-		consumer.accept(new IItemRenderProperties()
+		/* TODO consumer.accept(new IItemRenderProperties()
 		{
 			@Override
 			public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default)
@@ -74,7 +71,7 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 				//TODO fix unchecked cast
 				return (A)ModelEarmuffs.getModel();
 			}
-		});
+		});*/
 	}
 
 	@Override

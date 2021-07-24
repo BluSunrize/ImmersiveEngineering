@@ -13,31 +13,27 @@ import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexBuffer;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.NonNullSupplier;
-import org.lwjgl.opengl.GL11;
+import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
 
 public class VertexBufferHolder implements IVertexBufferHolder
 {
-	public static final VertexFormat BUFFER_FORMAT = new VertexFormat(ImmutableList.of(
-			ELEMENT_POSITION, ELEMENT_COLOR, ELEMENT_UV0, ELEMENT_NORMAL, ELEMENT_PADDING
-	));
+	//public static final VertexFormat BUFFER_FORMAT = new VertexFormat(ImmutableList.of(
+	//		ELEMENT_POSITION, ELEMENT_COLOR, ELEMENT_UV0, ELEMENT_NORMAL, ELEMENT_PADDING
+	//));
 	private static final Lazy<Boolean> HAS_OPTIFINE = Lazy.of(() -> {
 		try
 		{
@@ -62,14 +58,16 @@ public class VertexBufferHolder implements IVertexBufferHolder
 		this.quads = new ResettableLazy<>(quads);
 		this.buffer = new ResettableLazy<>(
 				() -> {
-					VertexBuffer vb = new VertexBuffer(BUFFER_FORMAT);
-					Tesselator tes = Tesselator.getInstance();
-					BufferBuilder bb = tes.getBuilder();
-					bb.begin(GL11.GL_QUADS, BUFFER_FORMAT);
-					renderToBuilder(bb, new PoseStack(), 0, 0, false);
-					bb.end();
-					vb.upload(bb);
-					return vb;
+					//TODO
+					throw new NotImplementedException("VBO code needs to be updated to 1.17");
+					//VertexBuffer vb = new VertexBuffer(BUFFER_FORMAT);
+					//Tesselator tes = Tesselator.getInstance();
+					//BufferBuilder bb = tes.getBuilder();
+					//bb.begin(GL11.GL_QUADS, BUFFER_FORMAT);
+					//renderToBuilder(bb, new PoseStack(), 0, 0, false);
+					//bb.end();
+					//vb.upload(bb);
+					//return vb;
 				},
 				VertexBuffer::close
 		);
@@ -83,7 +81,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 	@Override
 	public void render(RenderType type, int light, int overlay, MultiBufferSource directOut, PoseStack transform, boolean inverted)
 	{
-		if(IEClientConfig.enableVBOs.get()&&!HAS_OPTIFINE.get())
+		if(false&&IEClientConfig.enableVBOs.get()&&!HAS_OPTIFINE.get())
 			JOBS.computeIfAbsent(type, t -> new ArrayList<>())
 					.add(new BufferedJob(this, light, overlay, transform, inverted));
 		else
@@ -108,7 +106,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 	//Called from aftertesr.js
 	public static void afterTERRendering()
 	{
-		if(!JOBS.isEmpty())
+		/*if(!JOBS.isEmpty())
 		{
 			for(Entry<RenderType, List<BufferedJob>> typeEntry : JOBS.entrySet())
 			{
@@ -136,7 +134,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 			VertexBuffer.unbind();
 			BUFFER_FORMAT.clearBufferState();
 			JOBS.clear();
-		}
+		}*/
 	}
 
 	private static class BufferedJob

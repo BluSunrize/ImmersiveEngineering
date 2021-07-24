@@ -66,7 +66,10 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.renderer.entity.ArmorStandRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -228,13 +231,13 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void onWorldLoad()
 	{
-		if(!ShaderMinecartRenderer.rendersReplaced)
+		/*TODO if(!ShaderMinecartRenderer.rendersReplaced)
 		{
 			EntityRenderDispatcher rendererManager = mc().getEntityRenderDispatcher();
 			for(EntityType<?> type : rendererManager.renderers.keySet())
 				ShaderMinecartRenderer.overrideModelIfMinecart(type);
 			ShaderMinecartRenderer.rendersReplaced = true;
-		}
+		}*/
 		if(!IEBipedLayerRenderer.rendersAssigned)
 		{
 			for(Object render : mc().getEntityRenderDispatcher().renderers.values())
@@ -294,8 +297,9 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(BucketWheelRenderer::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample::clearCache);
 		IEApi.renderCacheClearers.add(ModelItemDynamicOverride.modelCache::clear);
-		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
-		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
+		//TODO
+		//IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
+		//IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
 		IEApi.renderCacheClearers.add(FeedthroughModel.CACHE::invalidateAll);
 	}
 
@@ -340,10 +344,11 @@ public class ClientProxy extends CommonProxy
 		registerEntityRenderingHandler(IEEntityTypes.RAILGUN_SHOT, RailgunShotRenderer::new);
 		registerEntityRenderingHandler(IEEntityTypes.EXPLOSIVE, IEExplosiveRenderer::new);
 		registerEntityRenderingHandler(IEEntityTypes.FLUORESCENT_TUBE, FluorescentTubeRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.BARREL_MINECART, IEMinecartRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.CRATE_MINECART, IEMinecartRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer::new);
+		//TODO
+		//registerEntityRenderingHandler(IEEntityTypes.BARREL_MINECART, IEMinecartRenderer::new);
+		//registerEntityRenderingHandler(IEEntityTypes.CRATE_MINECART, IEMinecartRenderer::new);
+		//registerEntityRenderingHandler(IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer::new);
+		//registerEntityRenderingHandler(IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer::new);
 		registerEntityRenderingHandler(IEEntityTypes.SAWBLADE, SawbladeRenderer::new);
 	}
 
@@ -412,7 +417,7 @@ public class ClientProxy extends CommonProxy
 		//STONE
 		registerNoContext(IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
 		//CLOTH
-		registerNoContext(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
+		//TODO registerNoContext(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>

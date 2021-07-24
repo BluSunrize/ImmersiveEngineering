@@ -56,7 +56,6 @@ import blusunrize.immersiveengineering.mixin.accessors.client.GPUWarningAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -89,7 +88,6 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -416,16 +414,18 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		{
 			if(pre)
 				offset *= -1;
-			GlStateManager._translatef(0, offset, 0);
+			//TODO test
+			RenderSystem.getModelViewStack().translate(0, offset, 0);
+			RenderSystem.applyModelViewMatrix();
 		}
 	}
 
 	@SubscribeEvent
-	public void onRenderOverlayPre(RenderGameOverlayEvent.Pre event)
+	public void onRenderOverlayPre(RenderGameOverlayEvent.PreLayer event)
 	{
-		if(event.getType()==RenderGameOverlayEvent.ElementType.SUBTITLES)
+		if(event.getOverlay()==ForgeIngameGui.SUBTITLES_ELEMENT)
 			handleSubtitleOffset(true);
-		if(ZoomHandler.isZooming&&event.getType()==RenderGameOverlayEvent.ElementType.CROSSHAIRS)
+		if(ZoomHandler.isZooming&&event.getOverlay()==ForgeIngameGui.CROSSHAIR_ELEMENT)
 		{
 			event.setCanceled(true);
 			if(ZoomHandler.isZooming)
@@ -504,12 +504,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent()
-	public void onRenderOverlayPost(RenderGameOverlayEvent.Post event)
+	public void onRenderOverlayPost(RenderGameOverlayEvent.PostLayer event)
 	{
 		int scaledWidth = ClientUtils.mc().getWindow().getGuiScaledWidth();
 		int scaledHeight = ClientUtils.mc().getWindow().getGuiScaledHeight();
 
-		if(event.getType()==RenderGameOverlayEvent.ElementType.SUBTITLES)
+		if(event.getOverlay()==ForgeIngameGui.SUBTITLES_ELEMENT)
 			handleSubtitleOffset(false);
 		int leftHeight;
 		if(Minecraft.getInstance().gui instanceof ForgeIngameGui forgeUI)
@@ -578,9 +578,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						HitResult rrt = ClientUtils.mc().hitResult;
 						IFluxReceiver receiver = null;
 						Direction side = null;
-						if(rrt instanceof BlockHitResult)
+						if(rrt instanceof BlockHitResult mop)
 						{
-							BlockHitResult mop = (BlockHitResult)rrt;
 							BlockEntity tileEntity = player.level.getBlockEntity(mop.getBlockPos());
 							if(tileEntity instanceof IFluxReceiver)
 								receiver = (IFluxReceiver)tileEntity;
@@ -662,7 +661,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		}
 	}
 
-	@SubscribeEvent()
+	/*TODO @SubscribeEvent()
 	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
 	{
 		Entity e = event.getInfo().getEntity();
@@ -681,7 +680,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
 			RenderSystem.setupNvFogDistance();
 		}
-	}
+	}*/
 
 	@SubscribeEvent()
 	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
