@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.data;
+package blusunrize.immersiveengineering.data.loot;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
@@ -18,10 +18,8 @@ import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.*;
-import blusunrize.immersiveengineering.data.loot.LootGenerator;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
-import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -31,7 +29,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.block.state.properties.SlabType;
-import net.minecraft.world.level.storage.loot.ConstantIntValue;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTable.Builder;
@@ -45,23 +42,19 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
-import javax.annotation.Nonnull;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class BlockLoot extends LootGenerator
+public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTable.Builder>>
 {
-	public BlockLoot(DataGenerator gen)
-	{
-		super(gen);
-	}
-
-	@Nonnull
-	public String getName()
-	{
-		return "LootTablesBlock";
-	}
+	private final Set<ResourceLocation> generatedTables = new HashSet<>();
+	private BiConsumer<ResourceLocation, LootTable.Builder> out;
 
 	private ResourceLocation toTableLoc(ResourceLocation in)
 	{
@@ -69,8 +62,9 @@ public class BlockLoot extends LootGenerator
 	}
 
 	@Override
-	protected void registerTables()
+	public void accept(BiConsumer<ResourceLocation, Builder> out)
 	{
+		this.out = out;
 		registerHemp();
 		register(StoneDecoration.concreteSprayed, LootTable.lootTable());
 		register(WoodenDevices.windmill, LootTable.lootTable().withPool(
@@ -144,7 +138,7 @@ public class BlockLoot extends LootGenerator
 	{
 		for(BlockEntry<SlabBlock> slab : IEBlocks.toSlab.values())
 		{
-			LootItemConditionalFunction.Builder<?> doubleSlabFunction = SetItemCountFunction.setCount(new ConstantIntValue(2))
+			LootItemConditionalFunction.Builder<?> doubleSlabFunction = SetItemCountFunction.setCount(ConstantValue.exactly(2))
 					.when(propertyIs(slab, SlabBlock.TYPE, SlabType.DOUBLE));
 			LootTable.Builder lootBuilder = LootTable.lootTable().withPool(
 					singleItem(slab).apply(doubleSlabFunction)
@@ -156,7 +150,7 @@ public class BlockLoot extends LootGenerator
 	private void registerAllRemainingAsDefault()
 	{
 		for(BlockEntry<?> b : BlockEntry.ALL_ENTRIES)
-			if(!tables.containsKey(toTableLoc(b.getId())))
+			if(!generatedTables.contains(toTableLoc(b.getId())))
 				registerSelfDropping(b);
 	}
 
@@ -198,8 +192,10 @@ public class BlockLoot extends LootGenerator
 
 	private void register(ResourceLocation name, LootTable.Builder table)
 	{
-		if(tables.put(toTableLoc(name), table.setParamSet(LootContextParamSets.BLOCK).build())!=null)
+		ResourceLocation loc = toTableLoc(name);
+		if(!generatedTables.add(loc))
 			throw new IllegalStateException("Duplicate loot table "+name);
+		out.accept(loc, table.setParamSet(LootContextParamSets.BLOCK));
 	}
 
 	private void registerSelfDropping(Supplier<? extends Block> b, LootPool.Builder... pool)
@@ -211,16 +207,13 @@ public class BlockLoot extends LootGenerator
 
 	private Builder dropProvider(ItemLike in)
 	{
-		return LootTable
-				.lootTable()
-				.withPool(singleItem(in)
-				);
+		return LootTable.lootTable().withPool(singleItem(in));
 	}
 
 	private LootPool.Builder singleItem(ItemLike in)
 	{
 		return createPoolBuilder()
-				.setRolls(ConstantIntValue.exactly(1))
+				.setRolls(ConstantValue.exactly(1))
 				.add(LootItem.lootTableItem(in));
 	}
 

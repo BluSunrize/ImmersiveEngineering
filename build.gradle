@@ -47,12 +47,12 @@ sourceSets {
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
     }
-    //datagen {
-    //    compileClasspath += main.compileClasspath
-    //    runtimeClasspath += main.runtimeClasspath
-    //    compileClasspath += main.output
-    //    runtimeClasspath += main.output
-    //}
+    datagen {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
     test {
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
@@ -109,12 +109,13 @@ minecraft {
             workingDirectory project.file('run')
 
             // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
+            property 'forge.logging.markers', 'SCAN'
             property 'mixin.env.disableRefMap', 'true'
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            //arg "-mixin.config="+modid+".mixins.json"
+            property 'forge.logging.console.level', 'trace'
+            property 'org.lwjgl.system.SharedLibraryExtractDirectory', '/home/malte/Dokumente/Modding/IE117/lwjgl_dll'
+            arg "-mixin.config="+modid+".mixins.json"
             mods {
                 immersiveengineering {
                     source sourceSets.main
@@ -159,12 +160,12 @@ minecraft {
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]
             arg "-mixin.config="+modid+".mixins.json"
-            //ideaModule project.name+".datagen"
+            ideaModule project.name+".datagen"
 
             mods {
                 immersiveengineering {
                     source sourceSets.main
-                    //source sourceSets.datagen
+                    source sourceSets.datagen
                     source sourceSets.manual
                     source sourceSets.api
                 }
@@ -212,7 +213,7 @@ dependencies {
     testImplementation('junit:junit:4.13')
     //annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
     //TODO this is a temporary hack to make Mixins compile
-    implementation 'org.spongepowered:mixin:0.8.3'
+    //implementation 'org.spongepowered:mixin:0.8.3'
 }
 
 def customGradle = rootProject.file('custom.gradle');
@@ -282,7 +283,6 @@ String buildVersionString() {
     return "${version_minecraft}-${ie_output_version}"
 }
 
-/*
 task datagenJar(type: Jar, dependsOn: datagenClasses) {
     classifier = 'datagen'
     from sourceSets.datagen.output
@@ -290,7 +290,6 @@ task datagenJar(type: Jar, dependsOn: datagenClasses) {
         attributes "FMLModType": "LIBRARY"
     }
 }
- */
 
 task apiJar(type: Jar, dependsOn: apiClasses) {
     classifier = 'api'
@@ -303,7 +302,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     from sourceSets.main.allSource
     from sourceSets.manual.allSource
     from sourceSets.api.allSource
-    //from sourceSets.datagen.allSource
+    from sourceSets.datagen.allSource
 }
 
 artifacts {

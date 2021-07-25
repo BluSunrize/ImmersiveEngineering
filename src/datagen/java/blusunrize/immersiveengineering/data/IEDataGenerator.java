@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateM
 import blusunrize.immersiveengineering.data.blockstates.BlockStates;
 import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
+import blusunrize.immersiveengineering.data.loot.AllLoot;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -23,7 +24,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.event.lifecycle.GatherDataEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
@@ -49,8 +50,7 @@ public class IEDataGenerator
 			gen.addProvider(new FluidTags(gen, exHelper));
 			gen.addProvider(new TileTags(gen, exHelper));
 			gen.addProvider(new Recipes(gen));
-			gen.addProvider(new BlockLoot(gen));
-			gen.addProvider(new GeneralLoot(gen));
+			gen.addProvider(new AllLoot(gen));
 			gen.addProvider(new BlockStates(gen, exHelper));
 			MultiblockStates blockStates = new MultiblockStates(gen, exHelper);
 			gen.addProvider(blockStates);

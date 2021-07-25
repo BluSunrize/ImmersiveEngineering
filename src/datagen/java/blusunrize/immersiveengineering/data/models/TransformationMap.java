@@ -152,7 +152,7 @@ public class TransformationMap
 		result.add("translation", toJson(trsr.getTranslation()));
 		result.add("rotation", toJson(trsr.getLeftRotation()));
 		result.add("scale", toJson(trsr.getScale()));
-		result.add("post-rotation", toJson(trsr.getRightRot()));
+		result.add("post-rotation", toJson(trsr.getRightRotation()));
 		result.addProperty("origin", "corner");
 		main.add(getName(type), result);
 	}

@@ -66,7 +66,7 @@ public class Advancements extends AdvancementProvider
 	}
 
 	@Override
-	public void run(HashCache cache) throws IOException
+	public void run(HashCache cache)
 	{
 		Set<ResourceLocation> set = Sets.newHashSet();
 		Consumer<Advancement> consumer = (advancement) -> {

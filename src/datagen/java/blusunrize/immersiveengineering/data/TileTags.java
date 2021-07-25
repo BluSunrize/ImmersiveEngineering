@@ -14,7 +14,9 @@ import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.mixin.accessors.TileTypeAccess;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag.Named;
@@ -35,7 +37,7 @@ public class TileTags extends ForgeRegistryTagsProvider<BlockEntityType<?>>
 
 	public TileTags(DataGenerator generatorIn, @Nullable ExistingFileHelper existingFileHelper)
 	{
-		super(generatorIn, ForgeRegistries.TILE_ENTITIES, Lib.MODID, existingFileHelper);
+		super(generatorIn, ForgeRegistries.BLOCK_ENTITIES, Lib.MODID, existingFileHelper);
 	}
 
 	private static final List<Named<BlockEntityType<?>>> IMMOVABLE_TAGS = ImmutableList.of(
@@ -45,7 +47,7 @@ public class TileTags extends ForgeRegistryTagsProvider<BlockEntityType<?>>
 
 	private static Named<BlockEntityType<?>> tag(ResourceLocation name)
 	{
-		return ForgeTagHandler.makeWrapperTag(ForgeRegistries.TILE_ENTITIES, name);
+		return ForgeTagHandler.makeWrapperTag(ForgeRegistries.BLOCK_ENTITIES, name);
 	}
 
 	@Override
@@ -56,7 +58,7 @@ public class TileTags extends ForgeRegistryTagsProvider<BlockEntityType<?>>
 		IEServerConfig.refresh();
 		for(RegistryObject<BlockEntityType<?>> type : IETileTypes.REGISTER.getEntries())
 		{
-			BlockEntity instance = type.get().create();
+			BlockEntity instance = type.get().create(BlockPos.ZERO, ((TileTypeAccess)type.get()).getValidBlocks().iterator().next().defaultBlockState());
 			if(instance instanceof IImmersiveConnectable||instance instanceof IGeneralMultiblock)
 				notMovable(type);
 		}

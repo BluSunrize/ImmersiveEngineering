@@ -112,7 +112,7 @@ public class Recipes extends RecipeProvider
 	}
 
 	@Override
-	protected void buildShapelessRecipes(@Nonnull Consumer<FinishedRecipe> out)
+	protected void buildCraftingRecipes(Consumer<FinishedRecipe> out)
 	{
 		for(EnumMetals metal : EnumMetals.values())
 		{
@@ -1095,31 +1095,31 @@ public class Recipes extends RecipeProvider
 		addStairs(StoneDecoration.concreteLeaded, out);
 
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.hempcrete), IEBlocks.toSlab.get(StoneDecoration.hempcrete.getId()), 2)
-				.unlocks("has_hempcrete", has(StoneDecoration.hempcrete))
+				.unlockedBy("has_hempcrete", has(StoneDecoration.hempcrete))
 				.save(out, toRL("hempcrete_slab_from_hempcrete_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.hempcrete), IEBlocks.toStairs.get(StoneDecoration.hempcrete.getId()))
-				.unlocks("has_hempcrete", has(StoneDecoration.hempcrete))
+				.unlockedBy("has_hempcrete", has(StoneDecoration.hempcrete))
 				.save(out, toRL("hempcrete_stairs_from_hempcrete_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.concrete), IEBlocks.toSlab.get(StoneDecoration.concrete.getId()), 2)
-				.unlocks("has_concrete", has(StoneDecoration.concrete))
+				.unlockedBy("has_concrete", has(StoneDecoration.concrete))
 				.save(out, toRL("concrete_slab_from_concrete_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.concrete), IEBlocks.toStairs.get(StoneDecoration.concrete.getId()))
-				.unlocks("has_concrete", has(StoneDecoration.concrete))
+				.unlockedBy("has_concrete", has(StoneDecoration.concrete))
 				.save(out, toRL("concrete_stairs_from_concrete_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.concreteTile), IEBlocks.toSlab.get(StoneDecoration.concreteTile.getId()), 2)
-				.unlocks("has_concrete", has(StoneDecoration.concrete))
+				.unlockedBy("has_concrete", has(StoneDecoration.concrete))
 				.save(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.concreteTile), IEBlocks.toStairs.get(StoneDecoration.concreteTile.getId()))
-				.unlocks("has_concrete", has(StoneDecoration.concrete))
+				.unlockedBy("has_concrete", has(StoneDecoration.concrete))
 				.save(out, toRL("concrete_tile_stairs_from_concrete_tile_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.concreteLeaded), IEBlocks.toSlab.get(StoneDecoration.concreteLeaded.getId()), 2)
-				.unlocks("has_concrete", has(StoneDecoration.concrete))
+				.unlockedBy("has_concrete", has(StoneDecoration.concrete))
 				.save(out, toRL("concrete_leaded_slab_from_concrete_leaded_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.concreteLeaded), IEBlocks.toStairs.get(StoneDecoration.concreteLeaded.getId()))
-				.unlocks("has_concrete", has(StoneDecoration.concrete))
+				.unlockedBy("has_concrete", has(StoneDecoration.concrete))
 				.save(out, toRL("concrete_leaded_stairs_from_concrete_leaded_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.concrete), StoneDecoration.concreteTile)
-				.unlocks("has_concrete", has(StoneDecoration.concrete))
+				.unlockedBy("has_concrete", has(StoneDecoration.concrete))
 				.save(out, toRL("concrete_tile_from_concrete_stonecutting"));
 
 		ShapedRecipeBuilder.shaped(StoneDecoration.alloybrick, 2)
