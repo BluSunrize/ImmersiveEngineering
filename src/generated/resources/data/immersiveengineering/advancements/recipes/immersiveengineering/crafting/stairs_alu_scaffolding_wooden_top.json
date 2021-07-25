@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:alu_scaffolding_wooden_top"
+            "items": [
+              "immersiveengineering:alu_scaffolding_wooden_top"
+            ]
           }
         ]
       }

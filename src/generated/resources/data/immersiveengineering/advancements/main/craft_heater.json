@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:furnace_heater"
+            "items": [
+              "immersiveengineering:furnace_heater"
+            ]
           }
         ]
       }

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:metal_ladder_none"
+            "items": [
+              "immersiveengineering:metal_ladder_none"
+            ]
           }
         ]
       }

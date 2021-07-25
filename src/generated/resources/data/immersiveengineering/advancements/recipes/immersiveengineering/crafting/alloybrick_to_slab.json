@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:alloybrick"
+            "items": [
+              "immersiveengineering:alloybrick"
+            ]
           }
         ]
       }

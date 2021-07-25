@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:sheetmetal_lead"
+            "items": [
+              "immersiveengineering:sheetmetal_lead"
+            ]
           }
         ]
       }

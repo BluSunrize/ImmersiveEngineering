@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:connector_hv"
+            "items": [
+              "immersiveengineering:connector_hv"
+            ]
           }
         ]
       }

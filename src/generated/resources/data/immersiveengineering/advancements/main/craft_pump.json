@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:fluid_pump"
+            "items": [
+              "immersiveengineering:fluid_pump"
+            ]
           }
         ]
       }

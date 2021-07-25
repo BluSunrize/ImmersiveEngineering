@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:wooden_barrel"
+            "items": [
+              "immersiveengineering:wooden_barrel"
+            ]
           }
         ]
       }

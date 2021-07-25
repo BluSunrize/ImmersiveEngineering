@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.Palette;
 import org.spongepowered.asm.mixin.Mixin;
@@ -21,7 +21,7 @@ import java.util.List;
 public interface TemplateAccess
 {
 	@Accessor
-	void setSize(BlockPos size);
+	void setSize(Vec3i size);
 
 	@Accessor
 	List<Palette> getPalettes();

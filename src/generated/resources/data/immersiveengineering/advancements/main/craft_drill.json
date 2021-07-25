@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:drill"
+            "items": [
+              "immersiveengineering:drill"
+            ]
           }
         ]
       }

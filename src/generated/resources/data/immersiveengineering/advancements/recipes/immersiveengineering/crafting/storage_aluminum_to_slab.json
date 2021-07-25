@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:storage_aluminum"
+            "items": [
+              "immersiveengineering:storage_aluminum"
+            ]
           }
         ]
       }

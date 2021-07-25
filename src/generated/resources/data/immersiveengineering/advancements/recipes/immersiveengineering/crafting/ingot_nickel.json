@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:ore_nickel"
+            "items": [
+              "immersiveengineering:ore_nickel"
+            ]
           }
         ]
       }

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:nugget_uranium"
+            "items": [
+              "immersiveengineering:nugget_uranium"
+            ]
           }
         ]
       }

@@ -22,7 +22,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:hammer"
+            "items": [
+              "immersiveengineering:hammer"
+            ]
           }
         ]
       }

@@ -1,15 +1,22 @@
 {
+  "type": "minecraft:empty",
   "pools": [
     {
       "name": "rare_shader",
-      "rolls": 1,
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
           "functions": [
             {
               "function": "minecraft:set_count",
-              "count": 1.0
+              "count": {
+                "type": "minecraft:uniform",
+                "min": 1.0,
+                "max": 1.0
+              },
+              "add": false
             }
           ],
           "name": "immersiveengineering:shader_bag_rare"

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:plate_aluminum"
+            "items": [
+              "immersiveengineering:plate_aluminum"
+            ]
           }
         ]
       }

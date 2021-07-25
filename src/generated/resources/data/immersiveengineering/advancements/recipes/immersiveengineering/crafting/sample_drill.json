@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:steel_scaffolding_standard"
+            "items": [
+              "immersiveengineering:steel_scaffolding_standard"
+            ]
           }
         ]
       }
@@ -21,7 +23,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:steel_fence"
+            "items": [
+              "immersiveengineering:steel_fence"
+            ]
           }
         ]
       }
@@ -31,7 +35,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:light_engineering"
+            "items": [
+              "immersiveengineering:light_engineering"
+            ]
           }
         ]
       }

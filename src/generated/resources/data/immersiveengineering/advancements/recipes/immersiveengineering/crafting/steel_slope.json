@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:steel_scaffolding_standard"
+            "items": [
+              "immersiveengineering:steel_scaffolding_standard"
+            ]
           }
         ]
       }

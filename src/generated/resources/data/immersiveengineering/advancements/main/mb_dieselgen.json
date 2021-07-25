@@ -21,7 +21,9 @@
       "conditions": {
         "multiblock": "immersiveengineering:multiblocks/diesel_generator",
         "item": {
-          "item": "immersiveengineering:hammer"
+          "items": [
+            "immersiveengineering:hammer"
+          ]
         }
       }
     }

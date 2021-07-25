@@ -20,7 +20,7 @@ import java.util.Map;
 @Mixin(GiveGiftToHero.class)
 public interface HeroGiftsTaskAccess
 {
-	@Accessor("gifts")
+	@Accessor("GIFTS")
 	static Map<VillagerProfession, ResourceLocation> getGifts()
 	{
 		throw new UnsupportedOperationException("Replaced by Mixin");

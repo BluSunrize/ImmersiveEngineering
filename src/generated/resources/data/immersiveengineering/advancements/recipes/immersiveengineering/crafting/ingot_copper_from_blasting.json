@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:ore_copper"
+            "items": [
+              "immersiveengineering:ore_copper"
+            ]
           }
         ]
       }

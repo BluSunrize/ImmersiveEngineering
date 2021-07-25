@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:leather"
+            "items": [
+              "minecraft:leather"
+            ]
           }
         ]
       }
@@ -31,7 +33,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:capacitor_lv"
+            "items": [
+              "immersiveengineering:capacitor_lv"
+            ]
           }
         ]
       }
@@ -41,7 +45,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:connector_lv"
+            "items": [
+              "immersiveengineering:connector_lv"
+            ]
           }
         ]
       }

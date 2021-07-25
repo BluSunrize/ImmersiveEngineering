@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "minecraft:red_dye"
+            "items": [
+              "minecraft:red_dye"
+            ]
           }
         ]
       }
@@ -31,7 +33,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:crate"
+            "items": [
+              "immersiveengineering:crate"
+            ]
           }
         ]
       }

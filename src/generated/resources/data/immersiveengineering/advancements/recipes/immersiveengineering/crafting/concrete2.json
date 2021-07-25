@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:slag"
+            "items": [
+              "immersiveengineering:slag"
+            ]
           }
         ]
       }

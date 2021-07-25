@@ -3,7 +3,7 @@
   "display": {
     "icon": {
       "item": "immersiveengineering:revolver",
-      "nbt": "{upgrades:{electro:1b,bullets:6}}"
+      "nbt": "{upgrades:{bullets:6,electro:1b}}"
     },
     "title": {
       "translate": "advancement.immersiveengineering.upgrade_revolver"

@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:skyhook"
+            "items": [
+              "immersiveengineering:skyhook"
+            ]
           }
         ]
       }

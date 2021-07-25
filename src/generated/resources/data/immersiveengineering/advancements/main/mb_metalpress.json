@@ -21,7 +21,9 @@
       "conditions": {
         "multiblock": "immersiveengineering:multiblocks/metal_press",
         "item": {
-          "item": "immersiveengineering:hammer"
+          "items": [
+            "immersiveengineering:hammer"
+          ]
         }
       }
     }

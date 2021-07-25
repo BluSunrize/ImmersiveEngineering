@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:wirecoil_copper"
+            "items": [
+              "immersiveengineering:wirecoil_copper"
+            ]
           }
         ]
       }

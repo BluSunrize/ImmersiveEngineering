@@ -3,7 +3,7 @@
   "display": {
     "icon": {
       "item": "immersiveengineering:buzzsaw",
-      "nbt": "{sawblade_spare1:{id:\"immersiveengineering:sawblade\",Count:1b,tag:{Damage:0}},sawblade_spare2:{id:\"immersiveengineering:sawblade\",Count:1b,tag:{Damage:0}},sawblade:{id:\"immersiveengineering:sawblade\",Count:1b,tag:{Damage:0}},upgrades:{spareblades:1b,oiled:1b}}"
+      "nbt": "{sawblade:{Count:1b,id:\"immersiveengineering:sawblade\",tag:{Damage:0}},sawblade_spare1:{Count:1b,id:\"immersiveengineering:sawblade\",tag:{Damage:0}},sawblade_spare2:{Count:1b,id:\"immersiveengineering:sawblade\",tag:{Damage:0}},upgrades:{oiled:1b,spareblades:1b}}"
     },
     "title": {
       "translate": "advancement.immersiveengineering.upgrade_buzzsaw"

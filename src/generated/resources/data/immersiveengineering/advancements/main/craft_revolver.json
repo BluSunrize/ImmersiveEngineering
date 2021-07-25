@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:revolver"
+            "items": [
+              "immersiveengineering:revolver"
+            ]
           }
         ]
       }

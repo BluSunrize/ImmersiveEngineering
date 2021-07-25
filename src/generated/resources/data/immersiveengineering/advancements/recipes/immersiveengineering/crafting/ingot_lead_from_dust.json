@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:dust_lead"
+            "items": [
+              "immersiveengineering:dust_lead"
+            ]
           }
         ]
       }

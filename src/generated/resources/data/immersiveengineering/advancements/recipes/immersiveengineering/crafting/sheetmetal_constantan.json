@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:plate_constantan"
+            "items": [
+              "immersiveengineering:plate_constantan"
+            ]
           }
         ]
       }

@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:heavy_engineering"
+            "items": [
+              "immersiveengineering:heavy_engineering"
+            ]
           }
         ]
       }

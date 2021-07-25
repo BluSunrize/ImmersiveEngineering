@@ -3,7 +3,7 @@
   "display": {
     "icon": {
       "item": "immersiveengineering:drill",
-      "nbt": "{head:{id:\"immersiveengineering:drillhead_steel\",Count:1b},upgrades:{damage:3,waterproof:1b,oiled:1b,speed:6.0f}}"
+      "nbt": "{head:{Count:1b,id:\"immersiveengineering:drillhead_steel\"},upgrades:{damage:3,oiled:1b,speed:6.0f,waterproof:1b}}"
     },
     "title": {
       "translate": "advancement.immersiveengineering.upgrade_drill"

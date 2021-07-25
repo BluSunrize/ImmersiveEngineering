@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:sheetmetal_gold"
+            "items": [
+              "immersiveengineering:sheetmetal_gold"
+            ]
           }
         ]
       }

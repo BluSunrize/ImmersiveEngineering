@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:plate_copper"
+            "items": [
+              "immersiveengineering:plate_copper"
+            ]
           }
         ]
       }

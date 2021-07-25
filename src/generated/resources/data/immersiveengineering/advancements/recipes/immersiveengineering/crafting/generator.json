@@ -31,7 +31,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:dynamo"
+            "items": [
+              "immersiveengineering:dynamo"
+            ]
           }
         ]
       }

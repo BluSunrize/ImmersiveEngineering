@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:hempcrete"
+            "items": [
+              "immersiveengineering:hempcrete"
+            ]
           }
         ]
       }

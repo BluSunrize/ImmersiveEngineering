@@ -21,7 +21,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:ingot_steel"
+            "items": [
+              "immersiveengineering:ingot_steel"
+            ]
           }
         ]
       }

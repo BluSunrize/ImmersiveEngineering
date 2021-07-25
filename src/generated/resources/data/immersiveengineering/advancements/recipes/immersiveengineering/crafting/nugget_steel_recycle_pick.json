@@ -11,7 +11,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:pickaxe_steel"
+            "items": [
+              "immersiveengineering:pickaxe_steel"
+            ]
           }
         ]
       }

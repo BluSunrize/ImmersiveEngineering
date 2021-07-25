@@ -31,7 +31,9 @@
       "conditions": {
         "items": [
           {
-            "item": "immersiveengineering:component_iron"
+            "items": [
+              "immersiveengineering:component_iron"
+            ]
           }
         ]
       }
