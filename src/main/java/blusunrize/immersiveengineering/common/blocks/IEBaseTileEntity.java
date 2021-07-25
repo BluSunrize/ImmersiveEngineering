@@ -350,7 +350,7 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 		return false;
 	}
 
-	//TODO HACK!
+	//TODO Workaround for Forge#7926
 	@Override
 	public void clearRemoved()
 	{

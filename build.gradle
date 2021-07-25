@@ -113,7 +113,7 @@ minecraft {
             property 'mixin.env.disableRefMap', 'true'
 
             // Recommended logging level for the console
-            property 'forge.logging.console.level', 'trace'
+            property 'forge.logging.console.level', 'debug'
             arg "-mixin.config="+modid+".mixins.json"
             mods {
                 immersiveengineering {

@@ -414,7 +414,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		{
 			if(pre)
 				offset *= -1;
-			//TODO test
 			RenderSystem.getModelViewStack().translate(0, offset, 0);
 			RenderSystem.applyModelViewMatrix();
 		}
@@ -516,7 +515,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			leftHeight = forgeUI.left_height;
 		else
 			leftHeight = 0;
-		if(ClientUtils.mc().player!=null&&event.getType()==RenderGameOverlayEvent.ElementType.TEXT)
+		if(ClientUtils.mc().player!=null&&event.getOverlay()==ForgeIngameGui.HUD_TEXT_ELEMENT)
 		{
 			Player player = ClientUtils.mc().player;
 			PoseStack transform = new PoseStack();

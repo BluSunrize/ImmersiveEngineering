@@ -157,7 +157,7 @@ public class IERenderTypes extends RenderStateShard
 				Mode.QUADS,
 				RenderType.CompositeState.builder()
 						.setTextureState(new TextureStateShard(texture, false, false))
-						//TODO .setAlphaState(new AlphaStateShard(0.5F))
+						.setShaderState(POSITION_COLOR_TEX_SHADER)
 						.createCompositeState(false)
 		);
 	}
@@ -222,10 +222,12 @@ public class IERenderTypes extends RenderStateShard
 
 	public static RenderType getFullbrightTranslucent(ResourceLocation resourceLocation)
 	{
+		//TODO memoize
 		RenderType.CompositeState glState = RenderType.CompositeState.builder()
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setTextureState(new TextureStateShard(resourceLocation, false, false))
 				.setLightmapState(new LightmapStateShard(false))
+				.setShaderState(FULLBRIGHT_BLOCKS)
 				.createCompositeState(false);
 		return createDefault("immersiveengineering:fullbright_translucent_"+resourceLocation, DefaultVertexFormat.BLOCK, Mode.QUADS, glState);
 	}
