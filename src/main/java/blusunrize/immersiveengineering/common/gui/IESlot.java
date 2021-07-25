@@ -566,7 +566,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty()&&Misc.graphiteElectrode.equals(itemStack.getItem());
+			return Misc.graphiteElectrode.get().equals(itemStack.getItem());
 		}
 	}
 

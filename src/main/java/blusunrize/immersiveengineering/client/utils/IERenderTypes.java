@@ -50,6 +50,7 @@ public class IERenderTypes extends RenderStateShard
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 	}, RenderSystem::disableBlend);
+	protected static final RenderStateShard.ShaderStateShard FULLBRIGHT_BLOCKS = new RenderStateShard.ShaderStateShard(IEGLShaders::getBlockFullbrightShader);
 	protected static final RenderStateShard.TransparencyStateShard NO_TRANSPARENCY = new RenderStateShard.TransparencyStateShard(
 			"no_transparency",
 			RenderSystem::disableBlend, () -> {
@@ -59,7 +60,7 @@ public class IERenderTypes extends RenderStateShard
 	static
 	{
 		RenderType.CompositeState fullbrightSolidState = RenderType.CompositeState.builder()
-				.setShaderState(RENDERTYPE_SOLID_SHADER)
+				.setShaderState(FULLBRIGHT_BLOCKS)
 				.setLightmapState(LIGHTMAP_DISABLED)
 				.setTextureState(BLOCK_SHEET_MIPPED)
 				.createCompositeState(true);
@@ -226,12 +227,7 @@ public class IERenderTypes extends RenderStateShard
 				.setTextureState(new TextureStateShard(resourceLocation, false, false))
 				.setLightmapState(new LightmapStateShard(false))
 				.createCompositeState(false);
-		return createDefault(
-				"immersiveengineering:fullbright_translucent_"+resourceLocation,
-				DefaultVertexFormat.BLOCK,
-				Mode.QUADS,
-				glState
-		);
+		return createDefault("immersiveengineering:fullbright_translucent_"+resourceLocation, DefaultVertexFormat.BLOCK, Mode.QUADS, glState);
 	}
 
 	public static MultiBufferSource wrapWithStencil(MultiBufferSource in, Consumer<VertexConsumer> setupStencilArea, String name, int ref)

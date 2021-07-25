@@ -114,7 +114,6 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'trace'
-            property 'org.lwjgl.system.SharedLibraryExtractDirectory', '/home/malte/Dokumente/Modding/IE117/lwjgl_dll'
             arg "-mixin.config="+modid+".mixins.json"
             mods {
                 immersiveengineering {
@@ -213,7 +212,7 @@ dependencies {
     testImplementation('junit:junit:4.13')
     //annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
     //TODO this is a temporary hack to make Mixins compile
-    //implementation 'org.spongepowered:mixin:0.8.3'
+    implementation 'org.spongepowered:mixin:0.8.3'
 }
 
 def customGradle = rootProject.file('custom.gradle');

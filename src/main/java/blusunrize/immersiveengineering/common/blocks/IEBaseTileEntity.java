@@ -349,4 +349,12 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 				return true;
 		return false;
 	}
+
+	//TODO HACK!
+	@Override
+	public void clearRemoved()
+	{
+		super.clearRemoved();
+		onLoad();
+	}
 }

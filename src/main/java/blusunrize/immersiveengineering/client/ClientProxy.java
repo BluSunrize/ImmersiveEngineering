@@ -36,6 +36,7 @@ import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
+import blusunrize.immersiveengineering.client.utils.IEGLShaders;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.IETileTypes;
@@ -112,19 +113,26 @@ public class ClientProxy extends CommonProxy
 		{
 			populateAPI();
 			requestModelsAndTextures();
+
+			ClientEventHandler handler = new ClientEventHandler();
+			MinecraftForge.EVENT_BUS.register(handler);
+			ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
+			reloadableManager.registerReloadListener(handler);
+			reloadableManager.registerReloadListener(new IEGLShaders());
 		}
 	}
 
 	@SubscribeEvent
-	public static void registerModelLoaders(ModelRegistryEvent ev) {ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
-			ModelLoaderRegistry.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
-			ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
-			ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
-			ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
-			ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
-			ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
-			ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
-
+	public static void registerModelLoaders(ModelRegistryEvent ev)
+	{
+		ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
+		ModelLoaderRegistry.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
+		ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
+		ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
+		ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
+		ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
+		ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
+		ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
 	}
 
 	public static boolean stencilEnabled = false;
@@ -143,10 +151,6 @@ public class ClientProxy extends CommonProxy
 		IEKeybinds.register();
 		ShaderHelper.initShaders();
 		IEDefaultColourHandlers.register();
-
-		ClientEventHandler handler = new ClientEventHandler();
-		MinecraftForge.EVENT_BUS.register(handler);
-		((ReloadableResourceManager)mc().getResourceManager()).registerReloadListener(handler);
 
 		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
 

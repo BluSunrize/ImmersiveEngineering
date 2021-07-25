@@ -277,37 +277,9 @@ public class BakedConnectionModel<T> extends BakedIEModel
 		}
 	}
 
-	private static class ModelKey
+	private record ModelKey(Set<RenderData> connections,
+							RenderCacheKey state,
+							BlockPos here)
 	{
-		private final Set<Connection.RenderData> connections;
-		private final RenderCacheKey state;
-		private final BlockPos here;//TODO include in equals?
-
-		private ModelKey(Set<RenderData> connections, RenderCacheKey state, BlockPos here)
-		{
-			this.connections = connections;
-			this.state = state;
-			this.here = here;
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this==o) return true;
-			if(o==null||getClass()!=o.getClass()) return false;
-
-			ModelKey that = (ModelKey)o;
-
-			if(!connections.equals(that.connections)) return false;
-			return state.equals(that.state);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			int result = connections.hashCode();
-			result = 31*result+state.hashCode();
-			return result;
-		}
 	}
 }
