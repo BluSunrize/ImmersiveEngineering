@@ -196,6 +196,9 @@ repositories {
     maven { //Curious
         url "https://maven.theillusivec4.top/"
     }
+    flatDir {
+        dirs 'flatdir'
+    }
 }
 
 dependencies {
@@ -211,8 +214,8 @@ dependencies {
     implementation "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
     //annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
-    //TODO this is a temporary hack to make Mixins compile
-    implementation 'org.spongepowered:mixin:0.8.3'
+    //TODO this is a temporary hack to make Mixins work
+    implementation 'flatdir_ignored:mixin:0.8.3'
 }
 
 def customGradle = rootProject.file('custom.gradle');
