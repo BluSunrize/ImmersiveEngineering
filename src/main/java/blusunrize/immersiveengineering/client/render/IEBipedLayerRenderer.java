@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.HumanoidModel;

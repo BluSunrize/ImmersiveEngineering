@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
+import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
+import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;

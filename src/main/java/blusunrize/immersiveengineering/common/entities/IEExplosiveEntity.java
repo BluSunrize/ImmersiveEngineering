@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.IEExplosion;
 import blusunrize.immersiveengineering.mixin.accessors.TNTEntityAccess;
 import net.minecraft.core.BlockPos;

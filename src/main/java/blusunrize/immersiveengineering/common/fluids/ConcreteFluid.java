@@ -9,11 +9,12 @@
 package blusunrize.immersiveengineering.common.fluids;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
-import blusunrize.immersiveengineering.common.fluids.IEFluids.FluidEntry;
-import blusunrize.immersiveengineering.common.util.IEPotions;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
+import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
+import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEFluids.FluidEntry;
+import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.mixin.accessors.FlowingFluidAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

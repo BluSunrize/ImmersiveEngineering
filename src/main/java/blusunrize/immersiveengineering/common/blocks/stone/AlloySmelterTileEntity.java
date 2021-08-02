@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;

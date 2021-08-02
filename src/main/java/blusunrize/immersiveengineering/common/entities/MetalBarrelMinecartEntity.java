@@ -9,11 +9,12 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
-import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.register.IEEntityTypes;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;

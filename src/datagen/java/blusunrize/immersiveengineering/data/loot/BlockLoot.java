@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.data.loot;
 
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorTileEntity;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEBlocks.*;
+import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.*;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;

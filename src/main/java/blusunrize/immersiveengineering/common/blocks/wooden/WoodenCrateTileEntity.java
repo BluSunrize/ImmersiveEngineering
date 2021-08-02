@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.common.items.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;

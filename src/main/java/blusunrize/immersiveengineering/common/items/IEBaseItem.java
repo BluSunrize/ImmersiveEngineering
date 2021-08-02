@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;

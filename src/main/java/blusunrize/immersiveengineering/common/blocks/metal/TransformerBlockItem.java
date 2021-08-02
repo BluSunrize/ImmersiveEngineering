@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.BlockPlaceContext;

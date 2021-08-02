@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunRenderColors;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;

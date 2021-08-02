@@ -18,15 +18,15 @@ import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import blusunrize.immersiveengineering.common.items.BulletItem;
-import blusunrize.immersiveengineering.common.items.IEItems;
-import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.register.IEBlocks.*;
+import blusunrize.immersiveengineering.common.register.IEItems;
+import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.mixin.accessors.HeroGiftsTaskAccess;
@@ -82,8 +82,8 @@ import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
-import static blusunrize.immersiveengineering.common.items.IEItems.Misc.toolUpgrades;
-import static blusunrize.immersiveengineering.common.items.IEItems.Misc.wireCoils;
+import static blusunrize.immersiveengineering.common.register.IEItems.Misc.toolUpgrades;
+import static blusunrize.immersiveengineering.common.register.IEItems.Misc.wireCoils;
 
 public class Villages
 {

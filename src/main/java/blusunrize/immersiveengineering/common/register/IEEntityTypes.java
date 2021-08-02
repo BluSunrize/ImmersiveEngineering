@@ -6,10 +6,11 @@
  *  Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.entities;
+package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.entities.*;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EntityType.Builder;

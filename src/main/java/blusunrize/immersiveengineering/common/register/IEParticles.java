@@ -6,10 +6,11 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.client.fx;
+package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.fx.*;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.DataDeserializer;
 import blusunrize.immersiveengineering.client.fx.FractalParticle.Data;
 import net.minecraft.client.Minecraft;

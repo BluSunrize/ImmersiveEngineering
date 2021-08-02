@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;

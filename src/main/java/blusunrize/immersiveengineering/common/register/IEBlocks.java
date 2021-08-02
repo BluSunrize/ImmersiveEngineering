@@ -6,13 +6,13 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.blocks;
+package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.*;
@@ -25,8 +25,6 @@ import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity.CrudeBlastFurnaceTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.fluids.IEFluids;
-import blusunrize.immersiveengineering.common.items.IEItems;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.Util;

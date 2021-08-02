@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.mixin.accessors.TileTypeAccess;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;

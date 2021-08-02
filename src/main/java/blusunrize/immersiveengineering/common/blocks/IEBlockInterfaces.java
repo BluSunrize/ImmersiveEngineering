@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
 import com.google.common.base.Preconditions;
 import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;

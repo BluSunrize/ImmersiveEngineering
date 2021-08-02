@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;

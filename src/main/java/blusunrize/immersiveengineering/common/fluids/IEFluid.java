@@ -8,7 +8,8 @@
 
 package blusunrize.immersiveengineering.common.fluids;
 
-import blusunrize.immersiveengineering.common.fluids.IEFluids.FluidEntry;
+import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEFluids.FluidEntry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
 import net.minecraft.core.Direction;

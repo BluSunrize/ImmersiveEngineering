@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.plant;
 
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;

@@ -10,14 +10,14 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes;
-import blusunrize.immersiveengineering.common.gui.IEContainerTypes.TileContainer;
-import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.register.IEItems.Tools;
+import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;

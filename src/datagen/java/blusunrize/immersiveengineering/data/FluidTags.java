@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.fluids.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEFluids;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;

@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.client.utils.TimestampFormat;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
+import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;

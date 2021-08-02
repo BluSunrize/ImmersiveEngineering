@@ -6,15 +6,17 @@
  *  Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.fluids;
+package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
+import blusunrize.immersiveengineering.common.fluids.ConcreteFluid;
+import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.fluids.IEFluid.FluidConstructor;
-import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
+import blusunrize.immersiveengineering.common.fluids.PotionFluid;
+import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;

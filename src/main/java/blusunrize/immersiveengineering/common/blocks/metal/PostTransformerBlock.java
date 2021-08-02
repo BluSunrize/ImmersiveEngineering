@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
-import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

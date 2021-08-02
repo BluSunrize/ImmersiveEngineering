@@ -6,7 +6,7 @@
  *  Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.gui;
+package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntit
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.entities.CrateMinecartEntity;
+import blusunrize.immersiveengineering.common.gui.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;

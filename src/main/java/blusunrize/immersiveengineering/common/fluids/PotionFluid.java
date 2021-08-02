@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.fluids;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.PotionBucketItem;
+import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;

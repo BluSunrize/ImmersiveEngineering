@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
+import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;

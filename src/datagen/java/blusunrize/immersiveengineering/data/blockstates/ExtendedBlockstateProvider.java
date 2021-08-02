@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.data.blockstates;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.data.DataGenUtils;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
 import blusunrize.immersiveengineering.data.models.SplitModelBuilder;

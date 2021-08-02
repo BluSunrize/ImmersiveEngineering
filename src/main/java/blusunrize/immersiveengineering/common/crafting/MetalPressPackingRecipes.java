@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.common.items.IEItems.Molds;
+import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;

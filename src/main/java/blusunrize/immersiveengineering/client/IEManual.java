@@ -26,7 +26,7 @@ import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
 import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
-import blusunrize.immersiveengineering.common.fluids.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.lib.manual.*;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
 import blusunrize.lib.manual.ManualEntry.SpecialElementData;

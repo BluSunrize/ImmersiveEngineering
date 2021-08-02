@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
-import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.owners.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.world.level.block.entity.BlockEntity;

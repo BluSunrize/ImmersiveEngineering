@@ -7,11 +7,10 @@
  *
  */
 
-package blusunrize.immersiveengineering.common;
+package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.BalloonTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainTileEntity;
@@ -23,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;

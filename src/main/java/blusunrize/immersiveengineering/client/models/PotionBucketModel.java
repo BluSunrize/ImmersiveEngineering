@@ -2,7 +2,7 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
-import blusunrize.immersiveengineering.common.fluids.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;

@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IColouredBlock;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.items.IEItems;
+import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
