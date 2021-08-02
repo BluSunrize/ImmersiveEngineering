@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
@@ -35,6 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -65,9 +65,9 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 	public float animation_agitator = 0;
 	public boolean outputAll;
 
-	public MixerTileEntity(BlockPos pos, BlockState state)
+	public MixerTileEntity(BlockEntityType<MixerTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.MIXER, 16000, true, IETileTypes.MIXER.get(), pos, state);
+		super(IEMultiblocks.MIXER, 16000, true, type, pos, state);
 	}
 
 	@Override

@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -24,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -68,9 +68,9 @@ public class SiloTileEntity extends MultiblockPartTileEntity<SiloTileEntity> imp
 			}
 	);
 
-	public SiloTileEntity(BlockPos pos, BlockState state)
+	public SiloTileEntity(BlockEntityType<SiloTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SILO, IETileTypes.SILO.get(), true, pos, state);
+		super(IEMultiblocks.SILO, type, true, pos, state);
 		// Silos should not output by default
 		this.redstoneControlInverted = true;
 	}

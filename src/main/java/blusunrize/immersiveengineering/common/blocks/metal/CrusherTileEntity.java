@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -36,6 +35,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
@@ -63,9 +63,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 {
 	public float animation_barrelRotation = 0;
 
-	public CrusherTileEntity(BlockPos pos, BlockState state)
+	public CrusherTileEntity(BlockEntityType<CrusherTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.CRUSHER, 32000, true, IETileTypes.CRUSHER.get(), pos, state);
+		super(IEMultiblocks.CRUSHER, 32000, true, type, pos, state);
 	}
 
 	@Override

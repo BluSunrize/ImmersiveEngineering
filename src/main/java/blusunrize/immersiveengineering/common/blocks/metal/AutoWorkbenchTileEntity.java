@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableSet;
@@ -35,6 +34,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -55,9 +55,9 @@ import java.util.Set;
 public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWorkbenchTileEntity, MultiblockRecipe>
 		implements IInteractionObjectIE<AutoWorkbenchTileEntity>, IConveyorAttachable, IBlockBounds
 {
-	public AutoWorkbenchTileEntity(BlockPos pos, BlockState state)
+	public AutoWorkbenchTileEntity(BlockEntityType<AutoWorkbenchTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, IETileTypes.AUTO_WORKBENCH.get(), pos, state);
+		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, type, pos, state);
 	}
 
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);

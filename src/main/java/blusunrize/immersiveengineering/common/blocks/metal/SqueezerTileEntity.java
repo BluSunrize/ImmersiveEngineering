@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableList;
@@ -35,6 +34,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
@@ -68,9 +68,9 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
 	);
 
-	public SqueezerTileEntity(BlockPos pos, BlockState state)
+	public SqueezerTileEntity(BlockEntityType<SqueezerTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SQUEEZER, 16000, true, IETileTypes.SQUEEZER.get(), pos, state);
+		super(IEMultiblocks.SQUEEZER, 16000, true, type, pos, state);
 	}
 
 	@Override

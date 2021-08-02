@@ -406,18 +406,18 @@ public class ClientProxy extends CommonProxy
 		registerNoContext(IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
 		registerNoContext(IETileTypes.CLOCHE.get(), ClocheRenderer::new);
 		// MULTIBLOCKS
-		registerNoContext(IETileTypes.METAL_PRESS.get(), MetalPressRenderer::new);
-		registerNoContext(IETileTypes.CRUSHER.get(), CrusherRenderer::new);
-		registerNoContext(IETileTypes.SAWMILL.get(), SawmillRenderer::new);
-		registerNoContext(IETileTypes.SHEETMETAL_TANK.get(), SheetmetalTankRenderer::new);
-		registerNoContext(IETileTypes.SILO.get(), SiloRenderer::new);
-		registerNoContext(IETileTypes.SQUEEZER.get(), SqueezerRenderer::new);
-		registerNoContext(IETileTypes.DIESEL_GENERATOR.get(), DieselGeneratorRenderer::new);
-		registerNoContext(IETileTypes.BUCKET_WHEEL.get(), BucketWheelRenderer::new);
-		registerNoContext(IETileTypes.ARC_FURNACE.get(), ArcFurnaceRenderer::new);
-		registerNoContext(IETileTypes.AUTO_WORKBENCH.get(), AutoWorkbenchRenderer::new);
-		registerNoContext(IETileTypes.BOTTLING_MACHINE.get(), BottlingMachineRenderer::new);
-		registerNoContext(IETileTypes.MIXER.get(), MixerRenderer::new);
+		registerNoContext(IETileTypes.METAL_PRESS.master(), MetalPressRenderer::new);
+		registerNoContext(IETileTypes.CRUSHER.master(), CrusherRenderer::new);
+		registerNoContext(IETileTypes.SAWMILL.master(), SawmillRenderer::new);
+		registerNoContext(IETileTypes.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
+		registerNoContext(IETileTypes.SILO.master(), SiloRenderer::new);
+		registerNoContext(IETileTypes.SQUEEZER.master(), SqueezerRenderer::new);
+		registerNoContext(IETileTypes.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
+		registerNoContext(IETileTypes.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
+		registerNoContext(IETileTypes.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
+		registerNoContext(IETileTypes.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);
+		registerNoContext(IETileTypes.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
+		registerNoContext(IETileTypes.MIXER.master(), MixerRenderer::new);
 		//WOOD
 		registerNoContext(IETileTypes.WATERMILL.get(), WatermillRenderer::new);
 		registerNoContext(IETileTypes.WINDMILL.get(), WindmillRenderer::new);

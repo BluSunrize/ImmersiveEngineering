@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -43,6 +42,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -73,9 +73,9 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	// this is a temporary counter to keep track of the "same" kind of log inserted. Allows combining them into threes.
 	private int combinedLogs = 0;
 
-	public SawmillTileEntity(BlockPos pos, BlockState state)
+	public SawmillTileEntity(BlockEntityType<SawmillTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SAWMILL, 32000, true, IETileTypes.SAWMILL.get(), pos, state);
+		super(IEMultiblocks.SAWMILL, 32000, true, type, pos, state);
 	}
 
 	@Override

@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -31,6 +30,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -51,9 +51,9 @@ public class BucketWheelTileEntity extends MultiblockPartTileEntity<BucketWheelT
 	public final NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
 	public boolean active = false;
 
-	public BucketWheelTileEntity(BlockPos pos, BlockState state)
+	public BucketWheelTileEntity(BlockEntityType<BucketWheelTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.BUCKET_WHEEL, IETileTypes.BUCKET_WHEEL.get(), false, pos, state);
+		super(IEMultiblocks.BUCKET_WHEEL, type, false, pos, state);
 	}
 
 	@Override

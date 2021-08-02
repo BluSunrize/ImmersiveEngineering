@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -43,6 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -74,9 +74,9 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 			ComputerControlState.NO_COMPUTER,
 	};
 
-	public AssemblerTileEntity(BlockPos pos, BlockState state)
+	public AssemblerTileEntity(BlockEntityType<AssemblerTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.ASSEMBLER, 32000, true, IETileTypes.ASSEMBLER.get(), pos, state);
+		super(IEMultiblocks.ASSEMBLER, 32000, true, type, pos, state);
 	}
 
 	public FluidTank[] tanks = {

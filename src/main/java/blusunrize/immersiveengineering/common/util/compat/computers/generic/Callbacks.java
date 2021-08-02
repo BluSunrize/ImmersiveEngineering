@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
 import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.owners.*;
 import com.google.common.base.Preconditions;
@@ -24,10 +26,22 @@ public class Callbacks
 	private static final Map<BlockEntityType<?>, CallbackOwner<?>> CALLBACKS = new HashMap<>();
 	private static boolean initialized = false;
 
+	private static <T extends BlockEntity & IGeneralMultiblock>
+	void register(MultiblockBEType<T> type, CallbackOwner<T> owner)
+	{
+		register(type.dummy(), owner);
+		register(type.master(), owner);
+	}
+
 	private static <T extends BlockEntity> void register(RegistryObject<BlockEntityType<T>> type, CallbackOwner<T> owner)
 	{
-		Preconditions.checkState(!CALLBACKS.containsKey(type.get()));
-		CALLBACKS.put(type.get(), owner);
+		register(type.get(), owner);
+	}
+
+	private static <T extends BlockEntity> void register(BlockEntityType<T> type, CallbackOwner<T> owner)
+	{
+		Preconditions.checkState(!CALLBACKS.containsKey(type));
+		CALLBACKS.put(type, owner);
 	}
 
 	private static void ensureInitialized()

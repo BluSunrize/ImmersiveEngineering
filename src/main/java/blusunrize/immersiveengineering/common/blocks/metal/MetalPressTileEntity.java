@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -35,6 +34,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -59,18 +59,12 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 	private static final float STANDARD_PRESS_TIME = 3.75f;
 	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_PRESS_TIME+STANDARD_TRANSPORT_TIME)
 
-	public MetalPressTileEntity(BlockPos pos, BlockState state)
+	public MetalPressTileEntity(BlockEntityType<MetalPressTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.METAL_PRESS, 16000, true, IETileTypes.METAL_PRESS.get(), pos, state);
+		super(IEMultiblocks.METAL_PRESS, 16000, true, type, pos, state);
 	}
 
 	public ItemStack mold = ItemStack.EMPTY;
-
-	@Override
-	public void tickServer()
-	{
-		super.tickServer();
-	}
 
 	@Override
 	public void tick()

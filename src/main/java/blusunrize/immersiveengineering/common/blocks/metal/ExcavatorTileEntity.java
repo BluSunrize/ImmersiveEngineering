@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -42,6 +41,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootContext.Builder;
@@ -68,9 +68,9 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	private static final BlockPos wheelCenterOffset = new BlockPos(1, 1, 1);
 	public boolean active = false;
 
-	public ExcavatorTileEntity(BlockPos pos, BlockState state)
+	public ExcavatorTileEntity(BlockEntityType<ExcavatorTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.EXCAVATOR, 64000, true, IETileTypes.EXCAVATOR.get(), pos, state);
+		super(IEMultiblocks.EXCAVATOR, 64000, true, type, pos, state);
 	}
 
 

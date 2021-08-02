@@ -64,13 +64,17 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		//TODO proper implementation
 		BlockEntity tempBE = type.create(BlockPos.ZERO, state);
 		if(tempBE instanceof IETickableBlockEntity)
-		{
-			return (Level world1, BlockPos pos, BlockState state1, T be) -> ((IETickableBlockEntity)be).tick();
-		}
+			return (level, pos, state1, be) -> ((IETickableBlockEntity)be).tick();
 		else
-		{
 			return null;
-		}
+	}
+
+	@Nullable
+	public static <E extends BlockEntity, A extends BlockEntity>
+	BlockEntityTicker<A> createTickerHelper(
+			BlockEntityType<A> presentType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker
+	) {
+		return expectedType == presentType ? (BlockEntityTicker<A>)ticker : null;
 	}
 
 	@Override

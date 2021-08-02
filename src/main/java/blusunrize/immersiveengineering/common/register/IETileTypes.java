@@ -10,10 +10,13 @@
 package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
+import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
 import blusunrize.immersiveengineering.common.blocks.cloth.BalloonTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedTileEntity;
@@ -51,20 +54,20 @@ public class IETileTypes
 			"shaderbanner",
 			makeTypeMultipleBlocks(ShaderBannerTileEntity::new, ImmutableSet.of(Cloth.shaderBanner, Cloth.shaderBannerWall))
 	);
-	public static final RegistryObject<BlockEntityType<CokeOvenTileEntity>> COKE_OVEN = REGISTER.register(
-			"cokeoven", makeType(CokeOvenTileEntity::new, Multiblocks.cokeOven)
+	public static final MultiblockBEType<CokeOvenTileEntity> COKE_OVEN = makeMultiblock(
+			"cokeoven", CokeOvenTileEntity::new, Multiblocks.cokeOven
 	);
-	public static final RegistryObject<BlockEntityType<CrudeBlastFurnaceTileEntity>> BLAST_FURNACE = REGISTER.register(
-			"blastfurnace", makeType(CrudeBlastFurnaceTileEntity::new, Multiblocks.blastFurnace)
+	public static final MultiblockBEType<CrudeBlastFurnaceTileEntity> BLAST_FURNACE = makeMultiblock(
+			"blastfurnace", CrudeBlastFurnaceTileEntity::new, Multiblocks.blastFurnace
 	);
-	public static final RegistryObject<BlockEntityType<BlastFurnaceAdvancedTileEntity>> BLAST_FURNACE_ADVANCED = REGISTER.register(
-			"blastfurnaceadvanced", makeType(BlastFurnaceAdvancedTileEntity::new, Multiblocks.blastFurnaceAdv)
+	public static final MultiblockBEType<BlastFurnaceAdvancedTileEntity> BLAST_FURNACE_ADVANCED = makeMultiblock(
+			"blastfurnaceadvanced", BlastFurnaceAdvancedTileEntity::new, Multiblocks.blastFurnaceAdv
 	);
 	public static final RegistryObject<BlockEntityType<CoresampleTileEntity>> CORE_SAMPLE = REGISTER.register(
 			"coresample", makeType(CoresampleTileEntity::new, StoneDecoration.coresample)
 	);
-	public static final RegistryObject<BlockEntityType<AlloySmelterTileEntity>> ALLOY_SMELTER = REGISTER.register(
-			"alloysmelter", makeType(AlloySmelterTileEntity::new, Multiblocks.alloySmelter)
+	public static final MultiblockBEType<AlloySmelterTileEntity> ALLOY_SMELTER = makeMultiblock(
+			"alloysmelter", AlloySmelterTileEntity::new, Multiblocks.alloySmelter
 	);
 	public static final RegistryObject<BlockEntityType<CraftingTableTileEntity>> CRAFTING_TABLE = REGISTER.register(
 			"craftingtable", makeType(CraftingTableTileEntity::new, WoodenDevices.craftingTable)
@@ -208,56 +211,56 @@ public class IETileTypes
 	public static final RegistryObject<BlockEntityType<ChuteTileEntity>> CHUTE = REGISTER.register(
 			"chute", makeTypeMultipleBlocks(ChuteTileEntity::new, MetalDevices.chutes.values())
 	);
-	public static final RegistryObject<BlockEntityType<MetalPressTileEntity>> METAL_PRESS = REGISTER.register(
-			"metalpress", makeType(MetalPressTileEntity::new, Multiblocks.metalPress)
+	public static final MultiblockBEType<MetalPressTileEntity> METAL_PRESS = makeMultiblock(
+			"metalpress", MetalPressTileEntity::new, Multiblocks.metalPress
 	);
-	public static final RegistryObject<BlockEntityType<CrusherTileEntity>> CRUSHER = REGISTER.register(
-			"crusher", makeType(CrusherTileEntity::new, Multiblocks.crusher)
+	public static final MultiblockBEType<CrusherTileEntity> CRUSHER = makeMultiblock(
+			"crusher", CrusherTileEntity::new, Multiblocks.crusher
 	);
-	public static final RegistryObject<BlockEntityType<SawmillTileEntity>> SAWMILL = REGISTER.register(
-			"sawmill", makeType(SawmillTileEntity::new, Multiblocks.sawmill)
+	public static final MultiblockBEType<SawmillTileEntity> SAWMILL = makeMultiblock(
+			"sawmill", SawmillTileEntity::new, Multiblocks.sawmill
 	);
-	public static final RegistryObject<BlockEntityType<SheetmetalTankTileEntity>> SHEETMETAL_TANK = REGISTER.register(
-			"sheetmetaltank", makeType(SheetmetalTankTileEntity::new, Multiblocks.tank)
+	public static final MultiblockBEType<SheetmetalTankTileEntity> SHEETMETAL_TANK = makeMultiblock(
+			"sheetmetaltank", SheetmetalTankTileEntity::new, Multiblocks.tank
 	);
-	public static final RegistryObject<BlockEntityType<SiloTileEntity>> SILO = REGISTER.register(
-			"silo", makeType(SiloTileEntity::new, Multiblocks.silo)
+	public static final MultiblockBEType<SiloTileEntity> SILO = makeMultiblock(
+			"silo", SiloTileEntity::new, Multiblocks.silo
 	);
-	public static final RegistryObject<BlockEntityType<AssemblerTileEntity>> ASSEMBLER = REGISTER.register(
-			"assembler", makeType(AssemblerTileEntity::new, Multiblocks.assembler)
+	public static final MultiblockBEType<AssemblerTileEntity> ASSEMBLER = makeMultiblock(
+			"assembler", AssemblerTileEntity::new, Multiblocks.assembler
 	);
-	public static final RegistryObject<BlockEntityType<AutoWorkbenchTileEntity>> AUTO_WORKBENCH = REGISTER.register(
-			"autoworkbench", makeType(AutoWorkbenchTileEntity::new, Multiblocks.autoWorkbench)
+	public static final MultiblockBEType<AutoWorkbenchTileEntity> AUTO_WORKBENCH = makeMultiblock(
+			"autoworkbench", AutoWorkbenchTileEntity::new, Multiblocks.autoWorkbench
 	);
-	public static final RegistryObject<BlockEntityType<BottlingMachineTileEntity>> BOTTLING_MACHINE = REGISTER.register(
-			"bottlingmachine", makeType(BottlingMachineTileEntity::new, Multiblocks.bottlingMachine)
+	public static final MultiblockBEType<BottlingMachineTileEntity> BOTTLING_MACHINE = makeMultiblock(
+			"bottlingmachine", BottlingMachineTileEntity::new, Multiblocks.bottlingMachine
 	);
-	public static final RegistryObject<BlockEntityType<SqueezerTileEntity>> SQUEEZER = REGISTER.register(
-			"squeezer", makeType(SqueezerTileEntity::new, Multiblocks.squeezer)
+	public static final MultiblockBEType<SqueezerTileEntity> SQUEEZER = makeMultiblock(
+			"squeezer", SqueezerTileEntity::new, Multiblocks.squeezer
 	);
-	public static final RegistryObject<BlockEntityType<FermenterTileEntity>> FERMENTER = REGISTER.register(
-			"fermenter", makeType(FermenterTileEntity::new, Multiblocks.fermenter)
+	public static final MultiblockBEType<FermenterTileEntity> FERMENTER = makeMultiblock(
+			"fermenter", FermenterTileEntity::new, Multiblocks.fermenter
 	);
-	public static final RegistryObject<BlockEntityType<RefineryTileEntity>> REFINERY = REGISTER.register(
-			"refinery", makeType(RefineryTileEntity::new, Multiblocks.refinery)
+	public static final MultiblockBEType<RefineryTileEntity> REFINERY = makeMultiblock(
+			"refinery", RefineryTileEntity::new, Multiblocks.refinery
 	);
-	public static final RegistryObject<BlockEntityType<DieselGeneratorTileEntity>> DIESEL_GENERATOR = REGISTER.register(
-			"dieselgenerator", makeType(DieselGeneratorTileEntity::new, Multiblocks.dieselGenerator)
+	public static final MultiblockBEType<DieselGeneratorTileEntity> DIESEL_GENERATOR = makeMultiblock(
+			"dieselgenerator", DieselGeneratorTileEntity::new, Multiblocks.dieselGenerator
 	);
-	public static final RegistryObject<BlockEntityType<BucketWheelTileEntity>> BUCKET_WHEEL = REGISTER.register(
-			"bucketwheel", makeType(BucketWheelTileEntity::new, Multiblocks.bucketWheel)
+	public static final MultiblockBEType<BucketWheelTileEntity> BUCKET_WHEEL = makeMultiblock(
+			"bucketwheel", BucketWheelTileEntity::new, Multiblocks.bucketWheel
 	);
-	public static final RegistryObject<BlockEntityType<ExcavatorTileEntity>> EXCAVATOR = REGISTER.register(
-			"excavator", makeType(ExcavatorTileEntity::new, Multiblocks.excavator)
+	public static final MultiblockBEType<ExcavatorTileEntity> EXCAVATOR = makeMultiblock(
+			"excavator", ExcavatorTileEntity::new, Multiblocks.excavator
 	);
-	public static final RegistryObject<BlockEntityType<ArcFurnaceTileEntity>> ARC_FURNACE = REGISTER.register(
-			"arcfurnace", makeType(ArcFurnaceTileEntity::new, Multiblocks.arcFurnace)
+	public static final MultiblockBEType<ArcFurnaceTileEntity> ARC_FURNACE = makeMultiblock(
+			"arcfurnace", ArcFurnaceTileEntity::new, Multiblocks.arcFurnace
 	);
-	public static final RegistryObject<BlockEntityType<LightningrodTileEntity>> LIGHTNING_ROD = REGISTER.register(
-			"lightningrod", makeType(LightningrodTileEntity::new, Multiblocks.lightningrod)
+	public static final MultiblockBEType<LightningrodTileEntity> LIGHTNING_ROD = makeMultiblock(
+			"lightningrod", LightningrodTileEntity::new, Multiblocks.lightningrod
 	);
-	public static final RegistryObject<BlockEntityType<MixerTileEntity>> MIXER = REGISTER.register(
-			"mixer", makeType(MixerTileEntity::new, Multiblocks.mixer)
+	public static final MultiblockBEType<MixerTileEntity> MIXER = makeMultiblock(
+			"mixer", MixerTileEntity::new, Multiblocks.mixer
 	);
 	public static final RegistryObject<BlockEntityType<FakeLightTileEntity>> FAKE_LIGHT = REGISTER.register(
 			"fakelight", makeType(FakeLightTileEntity::new, Misc.fakeLight)
@@ -268,17 +271,24 @@ public class IETileTypes
 		EnergyConnectorTileEntity.registerConnectorTEs(REGISTER);
 	}
 
-	private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(BlockEntityType.BlockEntitySupplier<T> create, Supplier<? extends Block> valid)
+	public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(BlockEntityType.BlockEntitySupplier<T> create, Supplier<? extends Block> valid)
 	{
 		return makeTypeMultipleBlocks(create, ImmutableSet.of(valid));
 	}
 
-	private static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeTypeMultipleBlocks(
+	public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeTypeMultipleBlocks(
 			BlockEntityType.BlockEntitySupplier<T> create, Collection<? extends Supplier<? extends Block>> valid
 	)
 	{
 		return () -> new BlockEntityType<>(
 				create, ImmutableSet.copyOf(valid.stream().map(Supplier::get).collect(Collectors.toList())), null
+		);
+	}
+
+	private static <T extends MultiblockPartTileEntity<T>>
+	MultiblockBEType<T> makeMultiblock(String name, MultiblockBEType.BEWithTypeConstructor<T> make, Supplier<? extends Block> block) {
+		return new MultiblockBEType<>(
+				name, REGISTER, make, block, state -> state.hasProperty(IEProperties.MULTIBLOCKSLAVE) && !state.getValue(IEProperties.MULTIBLOCKSLAVE)
 		);
 	}
 }

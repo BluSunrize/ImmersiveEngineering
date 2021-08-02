@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -29,6 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
@@ -70,9 +70,9 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 	);
 	private final List<CapabilityReference<IFluidHandler>> fluidNeighbors = new ArrayList<>();
 
-	public SheetmetalTankTileEntity(BlockPos pos, BlockState state)
+	public SheetmetalTankTileEntity(BlockEntityType<SheetmetalTankTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.SHEETMETAL_TANK, IETileTypes.SHEETMETAL_TANK.get(), true, pos, state);
+		super(IEMultiblocks.SHEETMETAL_TANK, type, true, pos, state);
 		// Tanks should not output by default
 		this.redstoneControlInverted = true;
 		for(Direction f : DirectionUtils.VALUES)

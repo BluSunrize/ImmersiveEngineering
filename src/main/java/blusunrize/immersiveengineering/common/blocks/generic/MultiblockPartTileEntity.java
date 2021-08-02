@@ -163,19 +163,6 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		return super.getCapability(capability, facing);
 	}
 
-	@Override
-	public boolean canTickAny()
-	{
-		return !isDummy();
-	}
-
-	@Override
-	public void tick()
-	{
-		checkForNeedlessTicking();
-		IETickableBlockEntity.super.tick();
-	}
-
 	//	=================================
 	//		FLUID MANAGEMENT
 	//	=================================

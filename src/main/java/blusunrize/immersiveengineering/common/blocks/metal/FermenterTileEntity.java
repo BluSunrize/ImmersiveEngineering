@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableList;
@@ -31,6 +30,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
@@ -62,9 +62,9 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	public final FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 
-	public FermenterTileEntity(BlockPos pos, BlockState state)
+	public FermenterTileEntity(BlockEntityType<FermenterTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.FERMENTER, 16000, true, IETileTypes.FERMENTER.get(), pos, state);
+		super(IEMultiblocks.FERMENTER, 16000, true, type, pos, state);
 	}
 
 	@Override

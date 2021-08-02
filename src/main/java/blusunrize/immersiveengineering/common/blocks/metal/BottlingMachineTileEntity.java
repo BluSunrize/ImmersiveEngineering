@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.client.renderer.RenderType;
@@ -34,6 +33,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -71,9 +71,9 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8*FluidAttributes.BUCKET_VOLUME)};
 	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
 
-	public BottlingMachineTileEntity(BlockPos pos, BlockState state)
+	public BottlingMachineTileEntity(BlockEntityType<BottlingMachineTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.BOTTLING_MACHINE, 16000, true, IETileTypes.BOTTLING_MACHINE.get(), pos, state);
+		super(IEMultiblocks.BOTTLING_MACHINE, 16000, true, type, pos, state);
 	}
 
 	@Override

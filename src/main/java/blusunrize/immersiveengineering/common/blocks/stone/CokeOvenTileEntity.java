@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
 import blusunrize.immersiveengineering.common.register.IEFluids;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -32,6 +31,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -69,9 +69,9 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	public int processMax = 0;
 	public CokeOvenData guiData = new CokeOvenData();
 
-	public CokeOvenTileEntity(BlockPos pos, BlockState state)
+	public CokeOvenTileEntity(BlockEntityType<CokeOvenTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.COKE_OVEN, IETileTypes.COKE_OVEN.get(), false, pos, state);
+		super(IEMultiblocks.COKE_OVEN, type, false, pos, state);
 	}
 
 	@Override

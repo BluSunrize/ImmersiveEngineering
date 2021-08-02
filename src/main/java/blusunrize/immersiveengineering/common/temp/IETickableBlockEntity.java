@@ -8,7 +8,10 @@
 
 package blusunrize.immersiveengineering.common.temp;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 public interface IETickableBlockEntity extends IEClientTickableBE, IEServerTickableBE, IECommonTickableBE
 {
@@ -25,5 +28,9 @@ public interface IETickableBlockEntity extends IEClientTickableBE, IEServerTicka
 
 	default boolean canTickAny() {
 		return true;
+	}
+
+	static void tickStatic(Level level, BlockPos pos, BlockState state, IETickableBlockEntity entity) {
+		entity.tick();
 	}
 }

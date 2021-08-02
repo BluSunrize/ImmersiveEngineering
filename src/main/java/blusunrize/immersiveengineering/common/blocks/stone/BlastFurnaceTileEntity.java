@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -70,9 +69,11 @@ public class BlastFurnaceTileEntity<T extends BlastFurnaceTileEntity<T>> extends
 	public static class CrudeBlastFurnaceTileEntity extends BlastFurnaceTileEntity<CrudeBlastFurnaceTileEntity>
 	{
 
-		public CrudeBlastFurnaceTileEntity(BlockPos pos, BlockState state)
+		public CrudeBlastFurnaceTileEntity(
+				BlockEntityType<CrudeBlastFurnaceTileEntity> type, BlockPos pos, BlockState state
+		)
 		{
-			super(IEMultiblocks.BLAST_FURNACE, IETileTypes.BLAST_FURNACE.get(), pos, state);
+			super(IEMultiblocks.BLAST_FURNACE, type, pos, state);
 		}
 	}
 }

@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileE
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -30,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
@@ -63,9 +63,9 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	public int animation_fanFadeIn = 0;
 	public int animation_fanFadeOut = 0;
 
-	public DieselGeneratorTileEntity(BlockPos pos, BlockState state)
+	public DieselGeneratorTileEntity(BlockEntityType<DieselGeneratorTileEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.DIESEL_GENERATOR, IETileTypes.DIESEL_GENERATOR.get(), true, pos, state);
+		super(IEMultiblocks.DIESEL_GENERATOR, type, true, pos, state);
 	}
 
 	@Override
