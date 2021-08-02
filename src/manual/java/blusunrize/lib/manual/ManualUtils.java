@@ -50,6 +50,10 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 
 import static blusunrize.lib.manual.utils.ManualLogger.LOGGER;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
+import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.ONE;
+import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class ManualUtils
 {
@@ -113,6 +117,8 @@ public class ManualUtils
 
 	public static void drawTexturedRect(PoseStack transform, ResourceLocation texture, int x, int y, int w, int h, float... uv)
 	{
+		RenderSystem.enableBlend();
+		RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, texture);
@@ -420,6 +426,9 @@ public class ManualUtils
 		if(!stack.isEmpty())
 		{
 			// Include the matrix transformation
+			PoseStack modelViewStack = RenderSystem.getModelViewStack();
+			modelViewStack.pushPose();
+			modelViewStack.mulPoseMatrix(transform.last().pose());
 			RenderSystem.applyModelViewMatrix();
 
 			// Counteract the zlevel increase, because multiplied with the matrix, it goes out of view
@@ -435,6 +444,8 @@ public class ManualUtils
 				font = font!=null?font: Minecraft.getInstance().font;
 				itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
 			}
+			modelViewStack.popPose();
+			RenderSystem.applyModelViewMatrix();
 		}
 	}
 }

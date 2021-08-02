@@ -86,6 +86,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -94,7 +95,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fmlclient.registry.RenderingRegistry;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -146,7 +146,6 @@ public class ClientProxy extends CommonProxy
 				stencilEnabled = true;
 			});
 		registerContainersAndScreens();
-		registerEntityRenderers();
 		registerBERenders();
 		IEKeybinds.register();
 		ShaderHelper.initShaders();
@@ -164,10 +163,10 @@ public class ClientProxy extends CommonProxy
 	}
 
 	private static <T extends Entity, T2 extends T> void registerEntityRenderingHandler(
-			Supplier<EntityType<T2>> type, EntityRendererProvider<T> renderer
+			EntityRenderersEvent.RegisterRenderers ev, Supplier<EntityType<T2>> type, EntityRendererProvider<T> renderer
 	)
 	{
-		RenderingRegistry.registerEntityRenderingHandler(type.get(), renderer);
+		ev.registerEntityRenderer(type.get(), renderer);
 	}
 
 	//TODO are these here rather than in ClientEventHandler for any particular reason???
@@ -242,14 +241,17 @@ public class ClientProxy extends CommonProxy
 				ShaderMinecartRenderer.overrideModelIfMinecart(type);
 			ShaderMinecartRenderer.rendersReplaced = true;
 		}*/
-		if(!IEBipedLayerRenderer.rendersAssigned)
+	}
+
+	@SubscribeEvent
+	public static void registerLayers(EntityRenderersEvent.AddLayers ev)
+	{
+		for(EntityRenderer<?> render : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values())
 		{
-			for(Object render : mc().getEntityRenderDispatcher().renderers.values())
-				if(HumanoidMobRenderer.class.isAssignableFrom(render.getClass()))
-					addIELayer((HumanoidMobRenderer<?, ?>)render);
-				else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
-					((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer<>((ArmorStandRenderer)render));
-			IEBipedLayerRenderer.rendersAssigned = true;
+			if(HumanoidMobRenderer.class.isAssignableFrom(render.getClass()))
+				addIELayer((HumanoidMobRenderer<?, ?>)render);
+			else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
+				((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer<>((ArmorStandRenderer)render));
 		}
 	}
 
@@ -337,23 +339,25 @@ public class ClientProxy extends CommonProxy
 			Minecraft.getInstance().setScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 	}
 
-	private static void registerEntityRenderers()
+
+	@SubscribeEvent
+	public static void entityRenderers(EntityRenderersEvent.RegisterRenderers event)
 	{
-		registerEntityRenderingHandler(IEEntityTypes.REVOLVERSHOT, RevolvershotRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.FLARE_REVOLVERSHOT, RevolvershotRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.HOMING_REVOLVERSHOT, RevolvershotRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.WOLFPACK_SHOT, RevolvershotRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.SKYLINE_HOOK, NoneRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.CHEMTHROWER_SHOT, ChemthrowerShotRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.RAILGUN_SHOT, RailgunShotRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.EXPLOSIVE, IEExplosiveRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.FLUORESCENT_TUBE, FluorescentTubeRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.REVOLVERSHOT, RevolvershotRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.FLARE_REVOLVERSHOT, RevolvershotRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.HOMING_REVOLVERSHOT, RevolvershotRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.WOLFPACK_SHOT, RevolvershotRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.SKYLINE_HOOK, NoneRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.CHEMTHROWER_SHOT, ChemthrowerShotRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.RAILGUN_SHOT, RailgunShotRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.EXPLOSIVE, IEExplosiveRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.FLUORESCENT_TUBE, FluorescentTubeRenderer::new);
 		//TODO
 		//registerEntityRenderingHandler(IEEntityTypes.BARREL_MINECART, IEMinecartRenderer::new);
 		//registerEntityRenderingHandler(IEEntityTypes.CRATE_MINECART, IEMinecartRenderer::new);
 		//registerEntityRenderingHandler(IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer::new);
 		//registerEntityRenderingHandler(IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer::new);
-		registerEntityRenderingHandler(IEEntityTypes.SAWBLADE, SawbladeRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.SAWBLADE, SawbladeRenderer::new);
 	}
 
 	private static void registerContainersAndScreens()

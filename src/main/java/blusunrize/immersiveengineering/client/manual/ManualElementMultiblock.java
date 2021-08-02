@@ -18,6 +18,7 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
@@ -159,8 +160,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 					int indent = maxOff-(""+req.getCount()).length();
 					StringBuilder sIndent = new StringBuilder();
 					if(indent > 0)
-						for(int ii = 0; ii < indent; ii++)
-							sIndent.append("0");
+						sIndent.append("0".repeat(indent));
 					MutableComponent s;
 					if(hasItems[ss])
 						s = greenTick.copy();
@@ -219,6 +219,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 					transform.popPose();
 				}
 				else
+				{
+					VertexConsumer translucentFullbright = buffer.getBuffer(IERenderTypes.TRANSLUCENT_FULLBRIGHT);
 					for(int h = 0; h < structureHeight; h++)
 						for(int l = 0; l < structureLength; l++)
 							for(int w = 0; w < structureWidth; w++)
@@ -241,15 +243,16 @@ public class ManualElementMultiblock extends SpecialManualElements
 										BlockEntity te = structureWorld.getBlockEntity(pos);
 										if(te!=null)
 											modelData = te.getModelData();
-
-										// TODO batch these? Probably irrelevant for performance
-										blockRender.renderSingleBlock(state, transform,
-												IERenderTypes.disableLighting(buffer),
-												0xf000f0, overlay, modelData);
+										blockRender.getModelRenderer().tesselateBlock(
+												structureWorld, blockRender.getBlockModel(state), state, pos, transform,
+												translucentFullbright, false, structureWorld.random, state.getSeed(pos),
+												overlay, modelData
+										);
 									}
 									transform.popPose();
 								}
 							}
+				}
 				transform.popPose();
 				transform.popPose();
 			} catch(Exception e)

@@ -32,6 +32,7 @@ import java.util.function.Consumer;
 // Forge PR is merged
 public class IERenderTypes extends RenderStateShard
 {
+	public static final RenderType TRANSLUCENT_FULLBRIGHT;
 	public static final RenderType SOLID_FULLBRIGHT;
 	public static final RenderType TRANSLUCENT_LINES;
 	public static final RenderType LINES;
@@ -59,13 +60,25 @@ public class IERenderTypes extends RenderStateShard
 
 	static
 	{
-		RenderType.CompositeState fullbrightSolidState = RenderType.CompositeState.builder()
-				.setShaderState(FULLBRIGHT_BLOCKS)
-				.setLightmapState(LIGHTMAP_DISABLED)
-				.setTextureState(BLOCK_SHEET_MIPPED)
-				.createCompositeState(true);
 		SOLID_FULLBRIGHT = createDefault(
-				ImmersiveEngineering.MODID+":block_fullbright", DefaultVertexFormat.BLOCK, Mode.QUADS, fullbrightSolidState
+				ImmersiveEngineering.MODID+":solid_fullbright",
+				DefaultVertexFormat.BLOCK, Mode.QUADS,
+				RenderType.CompositeState.builder()
+						.setShaderState(FULLBRIGHT_BLOCKS)
+						.setLightmapState(LIGHTMAP_DISABLED)
+						.setTextureState(BLOCK_SHEET_MIPPED)
+						.createCompositeState(true)
+		);
+		TRANSLUCENT_FULLBRIGHT = createDefault(
+				ImmersiveEngineering.MODID+":translucent_fullbright",
+				DefaultVertexFormat.BLOCK, Mode.QUADS,
+				RenderType.CompositeState.builder()
+						.setShaderState(FULLBRIGHT_BLOCKS)
+						.setLightmapState(LIGHTMAP_DISABLED)
+						.setTextureState(BLOCK_SHEET_MIPPED)
+						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.setOutputState(TRANSLUCENT_TARGET)
+						.createCompositeState(true)
 		);
 		//TODO probably needs shader state
 		RenderType.CompositeState translucentNoDepthState = RenderType.CompositeState.builder().setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -266,6 +279,8 @@ public class IERenderTypes extends RenderStateShard
 		 */
 	}
 
+	@Deprecated
+	//TODO remove all usages, this is completely broken and unfixable (in general) in 1.17
 	public static MultiBufferSource disableLighting(MultiBufferSource in)
 	{
 		return wrapWithAdditional(
@@ -278,12 +293,12 @@ public class IERenderTypes extends RenderStateShard
 
 	public static MultiBufferSource disableCull(MultiBufferSource in)
 	{
-		return wrapWithAdditional(
+		return in;/*TODO wrapWithAdditional(
 				in,
 				"no_cull",
 				RenderSystem::disableCull,
 				RenderSystem::enableCull
-		);
+		);*/
 	}
 
 	private static MultiBufferSource wrapWithAdditional(

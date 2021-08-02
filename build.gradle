@@ -11,7 +11,7 @@ buildscript {
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
+        classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
         //TODO re-enable mixin
         //classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
@@ -136,7 +136,7 @@ minecraft {
 
             // Disable GUI by default, the IDE console can be used to enter commands
             arg '-nogui'
-            //arg "-mixin.config="+modid+".mixins.json"
+            arg "-mixin.config="+modid+".mixins.json"
 
             mods {
                 immersiveengineering {
@@ -172,6 +172,19 @@ minecraft {
         }
     }
 }
+
+// Workaround to make Mixins and BMS work with the mess that is FG
+configurations {
+    library
+    implementation.extendsFrom library
+}
+
+minecraft.runs.all {
+    lazyToken('minecraft_classpath') {
+        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
+    }
+}
+// End of workaround
 
 repositories {
 	maven { // TOP (The one probe)
@@ -211,11 +224,11 @@ dependencies {
     //compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
     //compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
 
-    implementation "malte0811:BlockModelSplitter:1.2.0"
+    library "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
     //annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
     //TODO this is a temporary hack to make Mixins work
-    implementation 'flatdir_ignored:mixin:0.8.3'
+    library 'flatdir_ignored:mixin:0.8.3'
 }
 
 def customGradle = rootProject.file('custom.gradle');
@@ -310,7 +323,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 artifacts {
     archives sourcesJar
     archives shadowJar
-    //archives datagenJar
+    archives datagenJar
     archives apiJar
 }
 

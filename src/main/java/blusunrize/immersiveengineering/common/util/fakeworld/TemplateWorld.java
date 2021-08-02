@@ -181,7 +181,7 @@ public class TemplateWorld extends Level
 	@Override
 	public float getShade(@Nonnull Direction p_230487_1_, boolean p_230487_2_)
 	{
-		return 0;
+		return 1;
 	}
 
 	@Nonnull

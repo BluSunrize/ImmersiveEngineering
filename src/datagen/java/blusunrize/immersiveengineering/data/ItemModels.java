@@ -277,8 +277,7 @@ public class ItemModels extends TRSRItemModelProvider
 		ieObj(Weapons.chemthrower, modLoc("item/chemthrower.obj.ie"))
 				.transforms(modLoc("item/chemthrower"));
 
-		//TODO Forge#7928
-		//IEFluids.ALL_ENTRIES.forEach(this::createBucket);
+		IEFluids.ALL_ENTRIES.forEach(this::createBucket);
 		withExistingParent(name(Misc.potionBucket), forgeLoc("item/bucket"))
 				.customLoader(SpecialModelBuilder.forLoader(Loader.LOADER_NAME))
 				.end();
