@@ -40,8 +40,6 @@ public class IERenderTypes extends RenderStateShard
 	public static final RenderType TRANSLUCENT_POSITION_COLOR;
 	public static final RenderType TRANSLUCENT_NO_DEPTH;
 	public static final RenderType CHUNK_MARKER;
-	//TODO changed from line_loop to line_strip, adjust usages!
-	public static final RenderType VEIN_MARKER;
 	public static final RenderType POSITION_COLOR_TEX_LIGHTMAP;
 	public static final RenderType POSITION_COLOR_LIGHTMAP;
 	public static final RenderType ITEM_DAMAGE_BAR;
@@ -83,22 +81,26 @@ public class IERenderTypes extends RenderStateShard
 		//TODO probably needs shader state
 		RenderType.CompositeState translucentNoDepthState = RenderType.CompositeState.builder().setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setLineState(new LineStateShard(OptionalDouble.of(2)))
-				.setTextureState(BLOCK_SHEET_MIPPED)
 				.setDepthTestState(DEPTH_ALWAYS)
-				.createCompositeState(false);
-		RenderType.CompositeState translucentNoTextureState = RenderType.CompositeState.builder()
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setTextureState(BLOCK_SHEET_MIPPED)
+				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
 				.createCompositeState(false);
 		TRANSLUCENT_LINES = createDefault(
 				ImmersiveEngineering.MODID+":translucent_lines", DefaultVertexFormat.POSITION_COLOR, Mode.LINES, translucentNoDepthState
 		);
 		LINES = createDefault(
-				ImmersiveEngineering.MODID+":lines", DefaultVertexFormat.POSITION_COLOR, Mode.LINES, RenderType.CompositeState.builder().createCompositeState(false)
+				ImmersiveEngineering.MODID+":lines", DefaultVertexFormat.POSITION_COLOR, Mode.LINES,
+				RenderType.CompositeState.builder()
+						.setShaderState(RENDERTYPE_LINES_SHADER)
+						.createCompositeState(false)
 		);
 		TRANSLUCENT_TRIANGLES = createDefault(
 				ImmersiveEngineering.MODID+":translucent_triangle_fan", DefaultVertexFormat.POSITION_COLOR, Mode.TRIANGLES, translucentNoDepthState
 		);
+		RenderType.CompositeState translucentNoTextureState = RenderType.CompositeState.builder()
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setTextureState(BLOCK_SHEET_MIPPED)
+				.setShaderState(RENDERTYPE_LIGHTNING_SHADER)
+				.createCompositeState(false);
 		TRANSLUCENT_POSITION_COLOR = createDefault(
 				ImmersiveEngineering.MODID+":translucent_pos_color", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, translucentNoTextureState
 		);
@@ -106,22 +108,18 @@ public class IERenderTypes extends RenderStateShard
 				ImmersiveEngineering.MODID+":translucent_no_depth", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, translucentNoDepthState
 		);
 		RenderType.CompositeState chunkMarkerState = RenderType.CompositeState.builder()
-				.setTextureState(BLOCK_SHEET_MIPPED)
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setCullState(new CullStateShard(false))
-				.setShaderState(RENDERTYPE_SOLID_SHADER)
+				.setShaderState(RENDERTYPE_LINES_SHADER)
 				.setLineState(new LineStateShard(OptionalDouble.of(5)))
+				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
+				.setCullState(NO_CULL)
+				.setOutputState(ITEM_ENTITY_TARGET)
+				.setWriteMaskState(COLOR_DEPTH_WRITE)
 				.createCompositeState(false);
 		CHUNK_MARKER = createDefault(
 				ImmersiveEngineering.MODID+":chunk_marker",
-				DefaultVertexFormat.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR_NORMAL,
 				Mode.LINES,
-				chunkMarkerState
-		);
-		VEIN_MARKER = createDefault(
-				ImmersiveEngineering.MODID+":vein_marker",
-				DefaultVertexFormat.POSITION_COLOR,
-				Mode.LINE_STRIP,
 				chunkMarkerState
 		);
 		POSITION_COLOR_TEX_LIGHTMAP = createDefault(
@@ -129,10 +127,9 @@ public class IERenderTypes extends RenderStateShard
 				DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
 				Mode.QUADS,
 				RenderType.CompositeState.builder()
-						.setTextureState(new TextureStateShard(
-								InventoryMenu.BLOCK_ATLAS,
-								false, false))
+						.setTextureState(new TextureStateShard(InventoryMenu.BLOCK_ATLAS, false, false))
 						.setLightmapState(new LightmapStateShard(true))
+						.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
 						.createCompositeState(false)
 		);
 		POSITION_COLOR_LIGHTMAP = createDefault(
@@ -142,6 +139,7 @@ public class IERenderTypes extends RenderStateShard
 				RenderType.CompositeState.builder()
 						.setTextureState(BLOCK_SHEET_MIPPED)
 						.setLightmapState(new LightmapStateShard(true))
+						.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 						.createCompositeState(false)
 		);
 		ITEM_DAMAGE_BAR = createDefault(
@@ -151,7 +149,7 @@ public class IERenderTypes extends RenderStateShard
 				RenderType.CompositeState.builder()
 						.setDepthTestState(DEPTH_ALWAYS)
 						.setTextureState(BLOCK_SHEET_MIPPED)
-						//TODO .setAlphaState(new AlphaStateShard(0))
+						.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 						.setTransparencyState(NO_TRANSPARENCY)
 						.createCompositeState(false)
 		);
@@ -184,7 +182,7 @@ public class IERenderTypes extends RenderStateShard
 				//TODO more state?
 				RenderType.CompositeState.builder()
 						.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
-						.setTextureState(BLOCK_SHEET_MIPPED)
+						.setShaderState(RENDERTYPE_LINES_SHADER)
 						.createCompositeState(false)
 		);
 	}

@@ -4,8 +4,8 @@
         "srcrgb": "srcalpha",
         "dstrgb": "1-srcalpha"
     },
-    "vertex": "immersiveengineering/block_fullbright",
-    "fragment": "immersiveengineering/block_fullbright",
+    "vertex": "immersiveengineering:block_fullbright",
+    "fragment": "immersiveengineering:block_fullbright",
     "attributes": [
         "Position",
         "Color",

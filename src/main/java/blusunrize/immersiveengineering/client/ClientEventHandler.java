@@ -60,8 +60,10 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
@@ -948,21 +950,33 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					transform.translate(pos.x, 0, pos.z);
 					VertexConsumer bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
 					Matrix4f mat = transform.last().pose();
-					bufferBuilder.vertex(mat, 0, 0, 0).color(r, g, b, .75f).endVertex();
-					bufferBuilder.vertex(mat, 0, 128, 0).color(r, g, b, .75f).endVertex();
-
-					bufferBuilder = buffers.getBuffer(IERenderTypes.VEIN_MARKER);
+					Matrix3f matN = transform.last().normal();
+					bufferBuilder.vertex(mat, 0, 0, 0).color(r, g, b, .75f).normal(matN, 0, 1, 0).endVertex();
+					bufferBuilder.vertex(mat, 0, 128, 0).color(r, g, b, .75f).normal(matN, 0, 1, 0).endVertex();
 					int radius = vein.getRadius();
-					float angle;
-					double x1;
-					double z1;
+					List<Vector3f> positions = new ArrayList<>();
 					for(int p = 0; p < 12; p++)
 					{
-						angle = 360.0f/12*p;
-						x1 = radius*Math.cos(angle*Math.PI/180);
-						z1 = radius*Math.sin(angle*Math.PI/180);
-						bufferBuilder.vertex(mat, (float)x1, 70, (float)z1).color(r, g, b, .75f).endVertex();
+						final float angle = 360.0f/12*p;
+						final double x1 = radius*Math.cos(angle*Math.PI/180);
+						final double z1 = radius*Math.sin(angle*Math.PI/180);
+						positions.add(new Vector3f((float)x1, (float)(Minecraft.getInstance().player.position().y+10), (float)z1));
 					}
+					for(int p = 0; p < 12; p++)
+					{
+						Vector3f pointA = positions.get(p);
+						Vector3f pointB = positions.get((p+1)%positions.size());
+						Vector3f diff = pointB.copy();
+						diff.sub(pointA);
+						diff.normalize();
+						for(Vector3f point : ImmutableList.of(pointA, pointB))
+							bufferBuilder.vertex(mat, point.x(), point.y(), point.z())
+									.color(r, g, b, .75f)
+									//Not actually a normal, just the direction of the line
+									.normal(matN, diff.x(), diff.y(), diff.z())
+									.endVertex();
+					}
+					buffers.endBatch();
 					transform.popPose();
 				}
 			}
@@ -977,17 +991,23 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				transform.pushPose();
 				transform.translate(conn.getEndA().getX(), conn.getEndA().getY(), conn.getEndA().getZ());
 				Matrix4f mat = transform.last().pose();
+				Matrix3f matN = transform.last().normal();
 				int time = entry.getValue().getValue().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
 				Vec3 prev = conn.getPoint(0, conn.getEndA());
 				for(int i = 0; i < RenderData.POINTS_PER_WIRE; i++)
 				{
-					builder.vertex(mat, (float)prev.x, (float)prev.y, (float)prev.z)
-							.color(1, 0, 0, alpha).endVertex();
-					alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
 					Vec3 next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
+					Vec3 diff = next.subtract(prev).normalize();
+					builder.vertex(mat, (float)prev.x, (float)prev.y, (float)prev.z)
+							.color(1, 0, 0, alpha)
+							.normal(matN, (float)diff.x, (float)diff.y, (float)diff.z)
+							.endVertex();
+					alpha = (float)Math.min((2+Math.sin((time+(i+1)*8)*Math.PI/40))/3, time/20F);
 					builder.vertex(mat, (float)next.x, (float)next.y, (float)next.z)
-							.color(1, 0, 0, alpha).endVertex();
+							.color(1, 0, 0, alpha)
+							.normal(matN, (float)diff.x, (float)diff.y, (float)diff.z)
+							.endVertex();
 					prev = next;
 				}
 				transform.popPose();

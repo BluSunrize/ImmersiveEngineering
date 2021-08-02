@@ -36,7 +36,6 @@ import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
-import blusunrize.immersiveengineering.client.utils.IEGLShaders;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
@@ -118,7 +117,6 @@ public class ClientProxy extends CommonProxy
 			MinecraftForge.EVENT_BUS.register(handler);
 			ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
 			reloadableManager.registerReloadListener(handler);
-			reloadableManager.registerReloadListener(new IEGLShaders());
 		}
 	}
 
