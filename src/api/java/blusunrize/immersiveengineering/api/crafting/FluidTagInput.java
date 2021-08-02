@@ -117,6 +117,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public List<FluidStack> getMatchingFluidStacks()
 	{
 		return fluidTag.map(
+				//TODO NPEs
 				t -> t.getValues().stream(),
 				l -> l.stream().map(ForgeRegistries.FLUIDS::getValue)
 		)

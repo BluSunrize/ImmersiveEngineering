@@ -77,6 +77,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -339,14 +340,16 @@ public class Villages
 
 	private static class EmeraldForItems implements ItemListing
 	{
-		public ItemStack buyingItem;
-		public PriceInterval buyAmounts;
-		final int maxUses;
-		final int xp;
+		private final Function<Level, ItemStack> getBuyingItem;
+		@Nullable
+		private ItemStack buyingItem;
+		private final PriceInterval buyAmounts;
+		private final int maxUses;
+		private final int xp;
 
-		public EmeraldForItems(@Nonnull ItemStack item, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
+		public EmeraldForItems(@Nonnull Function<Level, ItemStack> item, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
 		{
-			this.buyingItem = item;
+			this.getBuyingItem = item;
 			this.buyAmounts = buyAmounts;
 			this.maxUses = maxUses;
 			this.xp = xp;
@@ -354,12 +357,12 @@ public class Villages
 
 		public EmeraldForItems(@Nonnull ItemLike item, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
 		{
-			this(new ItemStack(item), buyAmounts, maxUses, xp);
+			this(l -> new ItemStack(item), buyAmounts, maxUses, xp);
 		}
 
 		public EmeraldForItems(@Nonnull ResourceLocation tag, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
 		{
-			this(IEApi.getPreferredTagStack(tag), buyAmounts, maxUses, xp);
+			this(l -> IEApi.getPreferredTagStack(l.getTagManager(), tag), buyAmounts, maxUses, xp);
 		}
 
 
@@ -367,6 +370,8 @@ public class Villages
 		@Override
 		public MerchantOffer getOffer(Entity trader, Random rand)
 		{
+			if(buyingItem==null)
+				this.buyingItem = Objects.requireNonNull(this.getBuyingItem.apply(trader.level));
 			return new MerchantOffer(
 					ItemHandlerHelper.copyStackWithSize(this.buyingItem, this.buyAmounts.getPrice(rand)),
 					new ItemStack(Items.EMERALD),
@@ -456,7 +461,7 @@ public class Villages
 				MapItemSavedData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
 				selling.setHoverName(new TranslatableComponent("item.immersiveengineering.map_orevein"));
 				ItemNBTHelper.setLore(selling, new TranslatableComponent(vein.getMineral().getTranslationKey()));
-				ItemStack steelIngot = IEApi.getPreferredTagStack(IETags.getIngot(EnumMetals.STEEL.tagName()));
+				ItemStack steelIngot = IEApi.getPreferredTagStack(trader.level.getTagManager(), IETags.getIngot(EnumMetals.STEEL.tagName()));
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
 						ItemHandlerHelper.copyStackWithSize(steelIngot, 4+random.nextInt(8)), selling, 0, 1, 30, 0.5F);
 			}

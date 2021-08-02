@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
 import net.minecraft.tags.Tag.Named;
@@ -22,121 +22,81 @@ import net.minecraftforge.common.Tags.Items;
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.function.Supplier;
 
 public class TagUtils
 {
-	// These will be overriden on the client side, because TagCollectionManager doesn't work there
-	public static Supplier<TagCollection<Item>> GET_ITEM_TAG_COLLECTION;
-	public static Supplier<TagCollection<Block>> GET_BLOCK_TAG_COLLECTION;
-
-	static
+	public static Tag<Item> getItemTag(TagContainer tags, ResourceLocation key)
 	{
-		//TODO are these the right ones? Do we still need the complexity?
-		setTagCollectionGetters(ItemTags::getAllTags, BlockTags::getAllTags);
+		return tags.getOrEmpty(Registry.ITEM_REGISTRY).getTag(key);
 	}
 
-	public static void setTagCollectionGetters(
-			Supplier<TagCollection<Item>> items, Supplier<TagCollection<Block>> blocks
-	)
+	public static Tag<Block> getBlockTag(TagContainer tags, ResourceLocation key)
 	{
-		GET_ITEM_TAG_COLLECTION = items;
-		GET_BLOCK_TAG_COLLECTION = blocks;
+		return tags.getOrEmpty(Registry.BLOCK_REGISTRY).getTag(key);
 	}
 
-	public static Tag<Item> getItemTag(ResourceLocation key)
+	public static Collection<ResourceLocation> getTagsForItem(TagContainer tags, Item item)
 	{
-		return GET_ITEM_TAG_COLLECTION.get().getTag(key);
+		return tags.getOrEmpty(Registry.ITEM_REGISTRY).getMatchingTags(item);
 	}
 
-	public static Tag<Block> getBlockTag(ResourceLocation key)
+	public static Collection<ResourceLocation> getTagsForBlock(TagContainer tags, Block block)
 	{
-		return GET_BLOCK_TAG_COLLECTION.get().getTag(key);
+		return tags.getOrEmpty(Registry.BLOCK_REGISTRY).getMatchingTags(block);
 	}
 
-	public static Collection<ResourceLocation> getTagsForItem(Item item)
+	public static boolean isInBlockOrItemTag(TagContainer tags, ItemStack stack, ResourceLocation oreName)
 	{
-		return GET_ITEM_TAG_COLLECTION.get().getMatchingTags(item);
-	}
-
-	public static Collection<ResourceLocation> getTagsForBlock(Block block)
-	{
-		return GET_BLOCK_TAG_COLLECTION.get().getMatchingTags(block);
-	}
-
-	public static boolean isInBlockOrItemTag(ItemStack stack, ResourceLocation oreName)
-	{
-		if(!isNonemptyBlockOrItemTag(oreName))
+		if(!isNonemptyBlockOrItemTag(tags, oreName))
 			return false;
-		Tag<Item> itemTag = getItemTag(oreName);
+		Tag<Item> itemTag = getItemTag(tags, oreName);
 		if(itemTag!=null&&itemTag.getValues().contains(stack.getItem()))
 			return true;
-		Tag<Block> blockTag = getBlockTag(oreName);
+		Tag<Block> blockTag = getBlockTag(tags, oreName);
 		return blockTag!=null&&blockTag.getValues()
 				.stream()
 				.map(ItemLike::asItem)
 				.anyMatch(i -> stack.getItem()==i);
 	}
 
-	public static boolean isNonemptyItemTag(ResourceLocation name)
+	public static boolean isNonemptyItemTag(TagContainer tags, ResourceLocation name)
 	{
-		Tag<Item> t = getItemTag(name);
+		Tag<Item> t = getItemTag(tags, name);
 		return t!=null&&!t.getValues().isEmpty();
 	}
 
-	public static boolean isNonemptyBlockTag(ResourceLocation name)
+	public static boolean isNonemptyBlockTag(TagContainer tags, ResourceLocation name)
 	{
-		Tag<Block> t = getBlockTag(name);
+		Tag<Block> t = getBlockTag(tags, name);
 		return t!=null&&!t.getValues().isEmpty();
 	}
 
-	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)
+	public static boolean isNonemptyBlockOrItemTag(TagContainer tags, ResourceLocation name)
 	{
-		return isNonemptyBlockTag(name)||isNonemptyItemTag(name);
+		return isNonemptyBlockTag(tags, name)||isNonemptyItemTag(tags, name);
 	}
 
-	public static NonNullList<ItemStack> getItemsInTag(ResourceLocation name)
+	public static String getMatchingPrefix(TagContainer tags, ItemStack stack, String... componentTypes)
 	{
-		NonNullList<ItemStack> ret = NonNullList.create();
-		addItemsInTag(ret, getItemTag(name));
-		addItemsInTag(ret, getBlockTag(name));
-		return ret;
-	}
-
-	private static <T extends ItemLike> void addItemsInTag(NonNullList<ItemStack> out, Tag<T> in)
-	{
-		if(in!=null)
-			in.getValues().stream()
-					.map(ItemStack::new)
-					.forEach(out::add);
-	}
-
-	public static boolean isInPrefixedTag(ItemStack stack, String componentType)
-	{
-		return getMatchingPrefix(stack, componentType)!=null;
-	}
-
-	public static String getMatchingPrefix(ItemStack stack, String... componentTypes)
-	{
-		for(ResourceLocation name : getMatchingTagNames(stack))
+		for(ResourceLocation name : getMatchingTagNames(tags, stack))
 			for(String componentType : componentTypes)
 				if(name.getPath().startsWith(componentType))
 					return componentType;
 		return null;
 	}
 
-	public static Collection<ResourceLocation> getMatchingTagNames(ItemStack stack)
+	public static Collection<ResourceLocation> getMatchingTagNames(TagContainer tags, ItemStack stack)
 	{
-		Collection<ResourceLocation> ret = new HashSet<>(getTagsForItem(stack.getItem()));
+		Collection<ResourceLocation> ret = new HashSet<>(getTagsForItem(tags, stack.getItem()));
 		Block b = Block.byItem(stack.getItem());
 		if(b!=Blocks.AIR)
-			ret.addAll(getTagsForBlock(b));
+			ret.addAll(getTagsForBlock(tags, b));
 		return ret;
 	}
 
-	public static String[] getMatchingPrefixAndRemaining(ItemStack stack, String... componentTypes)
+	public static String[] getMatchingPrefixAndRemaining(TagContainer tags, ItemStack stack, String... componentTypes)
 	{
-		for(ResourceLocation name : getMatchingTagNames(stack))
+		for(ResourceLocation name : getMatchingTagNames(tags, stack))
 		{
 			for(String componentType : componentTypes)
 				if(name.getPath().startsWith(componentType))
@@ -151,14 +111,9 @@ public class TagUtils
 		return null;
 	}
 
-	public static boolean isIngot(ItemStack stack)
+	public static boolean isIngot(TagContainer tags, ItemStack stack)
 	{
-		return getItemTag(Items.INGOTS.getName()).contains(stack.getItem());
-	}
-
-	public static boolean isPlate(ItemStack stack)
-	{
-		return isInPrefixedTag(stack, "plates/");
+		return tags.getOrEmpty(Registry.ITEM_REGISTRY).getTag(Items.INGOTS.getName()).contains(stack.getItem());
 	}
 
 	public static Named<Item> createItemWrapper(ResourceLocation name)

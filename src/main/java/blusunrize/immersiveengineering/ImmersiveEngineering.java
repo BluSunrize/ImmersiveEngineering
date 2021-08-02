@@ -167,8 +167,8 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
 				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);
 		// Ignore bricks
-		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> TagUtils.isIngot(stack)
-				&&Objects.requireNonNull(TagUtils.getMatchingPrefixAndRemaining(stack, "ingots"))[1].contains("brick"));
+		ArcRecyclingChecker.makeItemInvalidRecyclingOutput((tags, stack) -> TagUtils.isIngot(tags, stack)
+				&&Objects.requireNonNull(TagUtils.getMatchingPrefixAndRemaining(tags, stack, "ingots"))[1].contains("brick"));
 
 
 		new ThreadContributorSpecialsDownloader();

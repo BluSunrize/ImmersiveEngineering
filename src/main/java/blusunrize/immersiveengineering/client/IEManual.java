@@ -43,6 +43,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagContainer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -317,9 +318,10 @@ public class IEManual
 				else if(entry.getKey() instanceof ResourceLocation)
 				{
 					ResourceLocation key = (ResourceLocation)entry.getKey();
-					if(TagUtils.isNonemptyItemTag(key))
+					TagContainer clientTags = Minecraft.getInstance().getConnection().getTags();
+					if(TagUtils.isNonemptyItemTag(clientTags, key))
 					{
-						ItemStack is = IEApi.getPreferredTagStack(key);
+						ItemStack is = IEApi.getPreferredTagStack(clientTags, key);
 						if(!is.isEmpty())
 							item = is.getHoverName();
 					}

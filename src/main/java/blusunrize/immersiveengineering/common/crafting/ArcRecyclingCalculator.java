@@ -15,9 +15,13 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.google.common.collect.*;
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Sets;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -36,11 +40,13 @@ public class ArcRecyclingCalculator
 	private final List<Recipe<?>> recipeList;
 	private final long startTime;
 	private final ArcRecyclingChecker checker;
+	private final TagContainer tags;
 
-	public ArcRecyclingCalculator(Collection<Recipe<?>> allRecipes)
+	public ArcRecyclingCalculator(Collection<Recipe<?>> allRecipes, TagContainer tags)
 	{
+		this.tags = tags;
 		this.startTime = System.currentTimeMillis();
-		Pair<Predicate<Recipe<?>>, ArcRecyclingChecker> pair = ArcRecyclingChecker.assembleRecyclingFilter();
+		Pair<Predicate<Recipe<?>>, ArcRecyclingChecker> pair = ArcRecyclingChecker.assembleRecyclingFilter(tags);
 		this.checker = pair.getRight();
 		this.recipeList = allRecipes.stream()
 				.filter(pair.getLeft())
@@ -49,7 +55,7 @@ public class ArcRecyclingCalculator
 
 	public void run()
 	{
-		RecipeIterator iterator = new RecipeIterator(recipeList, checker);
+		RecipeIterator iterator = new RecipeIterator(recipeList, checker, tags);
 		iterator.process();
 		int timeout = 0;
 		while(!iterator.nonValidated.isEmpty()&&timeout++ < (iterator.invalidCount*10))
@@ -88,7 +94,7 @@ public class ArcRecyclingCalculator
 	private ArcRecyclingRecipe makeRecipe(RecyclingCalculation calculation)
 	{
 		ResourceLocation id = new ResourceLocation(Lib.MODID, "recycling/"+ForgeRegistries.ITEMS.getKey(calculation.stack.getItem()).getPath());
-		return new ArcRecyclingRecipe(id, calculation.outputs, IngredientWithSize.of(calculation.stack), 100, 51200);
+		return new ArcRecyclingRecipe(id, tags, calculation.outputs, IngredientWithSize.of(calculation.stack), 100, 51200);
 	}
 
 	public static List<ArcFurnaceRecipe> getRecipesFromRunningThreads()
@@ -103,11 +109,13 @@ public class ArcRecyclingCalculator
 		final Multimap<ItemStack, RecyclingCalculation> nonValidated = ArrayListMultimap.create();
 		private final ArcRecyclingChecker checker;
 		int invalidCount = 0;
+		private final TagContainer tags;
 
-		public RecipeIterator(List<Recipe<?>> recipeList, ArcRecyclingChecker checker)
+		public RecipeIterator(List<Recipe<?>> recipeList, ArcRecyclingChecker checker, TagContainer tags)
 		{
 			this.recipeList = recipeList;
 			this.checker = checker;
+			this.tags = tags;
 		}
 
 		public void process()
@@ -132,8 +140,8 @@ public class ArcRecyclingCalculator
 		private RecyclingCalculation getRecycleCalculation(ItemStack stack, Recipe<?> recipe)
 		{
 			// Check if recipe output is among the items that have fixed returns
-			Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(stack);
-			if(brokenDown!=null&&ArcRecyclingChecker.isValidRecyclingOutput(brokenDown.getLeft())&&brokenDown.getRight() > 0)
+			Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(tags, stack);
+			if(brokenDown!=null&&ArcRecyclingChecker.isValidRecyclingOutput(tags, brokenDown.getLeft())&&brokenDown.getRight() > 0)
 				return new RecyclingCalculation(recipe, ItemHandlerHelper.copyStackWithSize(stack, 1),
 						ImmutableMap.of(brokenDown.getLeft(), brokenDown.getRight()));
 
@@ -149,17 +157,17 @@ public class ArcRecyclingCalculator
 					{
 						ItemStack[] matchingStacks = in.getItems();
 						ItemStack inputStack = ItemStack.EMPTY;
-						if(matchingStacks.length>0)
+						if(matchingStacks.length > 0)
 							inputStack = IEApi.getPreferredStackbyMod(in.getItems());
 						if(inputStack.isEmpty())
 						{
 							IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getId()+")");
 							return null;
 						}
-						brokenDown = ApiUtils.breakStackIntoPreciseIngots(inputStack);
+						brokenDown = ApiUtils.breakStackIntoPreciseIngots(tags, inputStack);
 						if(brokenDown==null)
 						{
-							if(checker.isAllowed(inputStack)&&ArcRecyclingChecker.isValidRecyclingOutput(inputStack))
+							if(checker.isAllowed(tags, inputStack)&&ArcRecyclingChecker.isValidRecyclingOutput(tags, inputStack))
 							{
 								boolean b = false;
 								for(ItemStack storedMiss : missingSub.keySet())
@@ -175,7 +183,7 @@ public class ArcRecyclingCalculator
 						}
 						if(!brokenDown.getLeft().isEmpty()&&brokenDown.getRight() > 0)
 						{
-							boolean invalidOutput = !ArcRecyclingChecker.isValidRecyclingOutput(brokenDown.getLeft());
+							boolean invalidOutput = !ArcRecyclingChecker.isValidRecyclingOutput(tags, brokenDown.getLeft());
 							if(!invalidOutput)
 							{
 								boolean b = false;

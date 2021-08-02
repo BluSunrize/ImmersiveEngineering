@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagContainer;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.IForgeRegistryEntry;
@@ -71,14 +72,14 @@ public class IEApi
 	 */
 	public static List<Predicate<ItemStack>> forbiddenInCrates = new ArrayList<>();
 
-	public static ItemStack getPreferredTagStack(ResourceLocation name)
+	public static ItemStack getPreferredTagStack(TagContainer tags, ResourceLocation name)
 	{
 		return oreOutputPreference.computeIfAbsent(name, rl ->
 		{
-			if(TagUtils.isNonemptyItemTag(name))
-				return new ItemStack(getPreferredElementbyMod(TagUtils.getItemTag(name).getValues()));
-			else if(TagUtils.isNonemptyBlockTag(name))
-				return new ItemStack(getPreferredElementbyMod(TagUtils.getItemTag(name).getValues()));
+			if(TagUtils.isNonemptyItemTag(tags, name))
+				return new ItemStack(getPreferredElementbyMod(TagUtils.getItemTag(tags, name).getValues()));
+			else if(TagUtils.isNonemptyBlockTag(tags, name))
+				return new ItemStack(getPreferredElementbyMod(TagUtils.getBlockTag(tags, name).getValues()));
 			else
 				return ItemStack.EMPTY;
 		}).copy();

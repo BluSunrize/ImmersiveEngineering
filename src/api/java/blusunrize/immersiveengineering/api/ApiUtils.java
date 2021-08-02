@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.gson.JsonElement;
@@ -17,6 +16,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
+import net.minecraft.tags.TagContainer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.LivingEntity;
@@ -72,49 +72,17 @@ public class ApiUtils
 		return fluidStack;
 	}
 
-	public static int getComponentIngotWorth(ItemStack stack)
+	public static Pair<ItemStack, Double> breakStackIntoPreciseIngots(TagContainer tags, ItemStack stack)
 	{
 		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[0]);
-		String key = TagUtils.getMatchingPrefix(stack, keys);
-		if(key!=null)
-		{
-			Integer[] relation = IEApi.prefixToIngotMap.get(key);
-			if(relation!=null&&relation.length > 1)
-			{
-				double val = relation[0]/(double)relation[1];
-				return (int)val;
-			}
-		}
-		return 0;
-	}
-
-	public static ItemStack breakStackIntoIngots(ItemStack stack)
-	{
-		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[0]);
-		String[] type = TagUtils.getMatchingPrefixAndRemaining(stack, keys);
+		String[] type = TagUtils.getMatchingPrefixAndRemaining(tags, stack, keys);
 		if(type!=null)
 		{
 			Integer[] relation = IEApi.prefixToIngotMap.get(type[0]);
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return ItemUtils.copyStackWithAmount(IEApi.getPreferredTagStack(getIngot(type[1])), (int)val);
-			}
-		}
-		return ItemStack.EMPTY;
-	}
-
-	public static Pair<ItemStack, Double> breakStackIntoPreciseIngots(ItemStack stack)
-	{
-		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[0]);
-		String[] type = TagUtils.getMatchingPrefixAndRemaining(stack, keys);
-		if(type!=null)
-		{
-			Integer[] relation = IEApi.prefixToIngotMap.get(type[0]);
-			if(relation!=null&&relation.length > 1)
-			{
-				double val = relation[0]/(double)relation[1];
-				return new ImmutablePair<>(IEApi.getPreferredTagStack(getIngot(type[1])), val);
+				return new ImmutablePair<>(IEApi.getPreferredTagStack(tags, getIngot(type[1])), val);
 			}
 		}
 		return null;

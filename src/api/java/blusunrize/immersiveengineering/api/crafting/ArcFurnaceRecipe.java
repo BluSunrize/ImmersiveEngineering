@@ -12,13 +12,11 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.function.Predicate;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -178,60 +176,5 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 			if(recipe!=null&&recipe.isValidAdditive(stack))
 				return true;
 		return false;
-	}
-
-	/**
-	 * Add a predicate to the list of predicates determining whether an item may be recycled
-	 */
-	@Deprecated
-	public static void allowRecipeTypeForRecycling(RecipeType<?> recipeType)
-	{
-		ArcRecyclingChecker.allowRecipeTypeForRecycling(recipeType);
-	}
-
-	/**
-	 * Add a predicate to the list of predicates determining whether an item may be recycled
-	 */
-	@Deprecated
-	public static void allowItemForRecycling(Predicate<ItemStack> predicate)
-	{
-		ArcRecyclingChecker.allowItemForRecycling(predicate);
-	}
-
-	/**
-	 * Add a predicate to determine an invalid output for the recycling process.
-	 * Used for magical ingots that should not be reclaimable or similar
-	 */
-	@Deprecated
-	public static void makeItemInvalidRecyclingOutput(Predicate<ItemStack> predicate)
-	{
-		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(predicate);
-	}
-
-	/**
-	 * @return true if the given ItemStack can be recycled
-	 */
-	@Deprecated
-	public static boolean canRecycle(ItemStack stack)
-	{
-		return new ArcRecyclingChecker().isAllowed(stack);
-	}
-
-	/**
-	 * @return true if the given ItemStack should not be returned from recycling
-	 */
-	@Deprecated
-	public static boolean isValidRecyclingOutput(ItemStack stack)
-	{
-		return ArcRecyclingChecker.isValidRecyclingOutput(stack);
-	}
-
-	/**
-	 * @return a predicate for IRecipes which is used to filter the list of crafting recipes for recycling
-	 */
-	@Deprecated
-	public static Predicate<Recipe<?>> assembleRecyclingFilter()
-	{
-		return ArcRecyclingChecker.assembleRecyclingFilter().getLeft();
 	}
 }

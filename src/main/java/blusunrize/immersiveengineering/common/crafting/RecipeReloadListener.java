@@ -12,7 +12,6 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
-import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
@@ -21,14 +20,12 @@ import net.minecraft.server.ServerResources;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagContainer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
@@ -41,24 +38,21 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/* We can't use ISelectiveResourceReloadListener because it references a client-only class which crashes servers
- */
 public class RecipeReloadListener implements ResourceManagerReloadListener
 {
-	private final ServerResources dataPackRegistries;
+	private final ServerResources serverResources;
 
-	public RecipeReloadListener(ServerResources dataPackRegistries)
+	public RecipeReloadListener(ServerResources serverResources)
 	{
-		this.dataPackRegistries = dataPackRegistries;
+		this.serverResources = serverResources;
 	}
 
 	@Override
 	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
-		if(dataPackRegistries!=null)
+		if(serverResources!=null)
 		{
-			RecipeManager recipeManager = dataPackRegistries.getRecipeManager();
-			startArcRecyclingRecipeGen(recipeManager);
+			startArcRecyclingRecipeGen(serverResources.getRecipeManager(), serverResources.getTags());
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
 			if(server!=null)
 			{
@@ -73,13 +67,6 @@ public class RecipeReloadListener implements ResourceManagerReloadListener
 	}
 
 	RecipeManager clientRecipeManager;
-
-	@SubscribeEvent
-	public void onTagsUpdated(TagsUpdatedEvent event)
-	{
-		if(clientRecipeManager!=null)
-			TagUtils.setTagCollectionGetters(ItemTags::getAllTags, BlockTags::getAllTags);
-	}
 
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void onRecipesUpdated(RecipesUpdatedEvent event)
@@ -127,10 +114,10 @@ public class RecipeReloadListener implements ResourceManagerReloadListener
 		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 	}
 
-	private void startArcRecyclingRecipeGen(RecipeManager recipeManager)
+	private void startArcRecyclingRecipeGen(RecipeManager recipeManager, TagContainer tags)
 	{
 		Collection<Recipe<?>> recipes = recipeManager.getRecipes();
-		new ArcRecyclingCalculator(recipes).run();
+		new ArcRecyclingCalculator(recipes, tags).run();
 	}
 
 	static <R extends Recipe<?>> Map<ResourceLocation, R> filterRecipes(Collection<Recipe<?>> recipes, Class<R> recipeClass, RecipeType<R> recipeType)

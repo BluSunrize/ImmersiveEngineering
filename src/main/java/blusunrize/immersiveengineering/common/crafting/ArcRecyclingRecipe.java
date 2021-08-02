@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -26,6 +27,7 @@ import java.util.Map.Entry;
 
 public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
+	private final TagContainer tags;
 	private Map<ItemStack, Double> outputs;
 	private final Lazy<NonNullList<ItemStack>> defaultOutputs = Lazy.of(() -> {
 		NonNullList<ItemStack> ret = NonNullList.create();
@@ -37,10 +39,11 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		return ret;
 	});
 
-	public ArcRecyclingRecipe(ResourceLocation id, Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(ResourceLocation id, TagContainer tags, Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
 		super(id, outputs.keySet().stream().collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll),
 				input, ItemStack.EMPTY, time, energyPerTick);
+		this.tags = tags;
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
 	}
@@ -78,10 +81,10 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
 		if(nuggetOut > 0)
 		{
-			String[] type = TagUtils.getMatchingPrefixAndRemaining(e.getKey(), "ingots");
+			String[] type = TagUtils.getMatchingPrefixAndRemaining(tags, e.getKey(), "ingots");
 			if(type!=null)
 			{
-				ItemStack nuggets = IEApi.getPreferredTagStack(IETags.getNugget(type[1]));
+				ItemStack nuggets = IEApi.getPreferredTagStack(tags, IETags.getNugget(type[1]));
 				outs.add(ItemHandlerHelper.copyStackWithSize(nuggets, nuggetOut));
 			}
 		}
