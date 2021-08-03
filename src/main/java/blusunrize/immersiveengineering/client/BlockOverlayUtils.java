@@ -7,7 +7,9 @@ import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.mixin.accessors.client.WorldRendererAccess;
+import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.DrawSelectionEvent;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -64,20 +67,20 @@ public class BlockOverlayUtils
 
 	/* ----------- ARROWS ----------- */
 
-	private final static float[][] quarterRotationArrowCoords = {
-			{.375F, 0},
-			{.5F, -.125F},
-			{.4375F, -.125F},
-			{.4375F, -.25F},
-			{.25F, -.4375F},
-			{0, -.4375F},
-			{0, -.3125F},
-			{.1875F, -.3125F},
-			{.3125F, -.1875F},
-			{.3125F, -.125F},
-			{.25F, -.125F}
+	private final static Vec2[] quarterRotationArrowCoords = {
+			new Vec2(.375F, 0),
+			new Vec2(.5F, -.125F),
+			new Vec2(.4375F, -.125F),
+			new Vec2(.4375F, -.25F),
+			new Vec2(.25F, -.4375F),
+			new Vec2(0, -.4375F),
+			new Vec2(0, -.3125F),
+			new Vec2(.1875F, -.3125F),
+			new Vec2(.3125F, -.1875F),
+			new Vec2(.3125F, -.125F),
+			new Vec2(.25F, -.125F)
 	};
-	private final static float[][] quarterRotationArrowQuads = {
+	private final static Vec2[] quarterRotationArrowQuads = {
 			quarterRotationArrowCoords[5],
 			quarterRotationArrowCoords[6],
 			quarterRotationArrowCoords[4],
@@ -92,24 +95,24 @@ public class BlockOverlayUtils
 			quarterRotationArrowCoords[0]
 	};
 
-	private final static float[][] halfRotationArrowCoords = {
-			{.375F, 0},
-			{.5F, -.125F},
-			{.4375F, -.125F},
-			{.4375F, -.25F},
-			{.25F, -.4375F},
-			{-.25F, -.4375F},
-			{-.4375F, -.25F},
-			{-.4375F, -.0625F},
-			{-.3125F, -.0625F},
-			{-.3125F, -.1875F},
-			{-.1875F, -.3125F},
-			{.1875F, -.3125F},
-			{.3125F, -.1875F},
-			{.3125F, -.125F},
-			{.25F, -.125F}
+	private final static Vec2[] halfRotationArrowCoords = {
+			new Vec2(.375F, 0),
+			new Vec2(.5F, -.125F),
+			new Vec2(.4375F, -.125F),
+			new Vec2(.4375F, -.25F),
+			new Vec2(.25F, -.4375F),
+			new Vec2(-.25F, -.4375F),
+			new Vec2(-.4375F, -.25F),
+			new Vec2(-.4375F, -.0625F),
+			new Vec2(-.3125F, -.0625F),
+			new Vec2(-.3125F, -.1875F),
+			new Vec2(-.1875F, -.3125F),
+			new Vec2(.1875F, -.3125F),
+			new Vec2(.3125F, -.1875F),
+			new Vec2(.3125F, -.125F),
+			new Vec2(.25F, -.125F)
 	};
-	private final static float[][] halfRotationArrowQuads = {
+	private final static Vec2[] halfRotationArrowQuads = {
 			halfRotationArrowCoords[7],
 			halfRotationArrowCoords[8],
 			halfRotationArrowCoords[6],
@@ -135,8 +138,8 @@ public class BlockOverlayUtils
 	{
 		transform.pushPose();
 		transform.translate(0, 0.502, 0);
-		float[][] rotationArrowCoords;
-		float[][] rotationArrowQuads;
+		Vec2[] rotationArrowCoords;
+		Vec2[] rotationArrowQuads;
 		if(halfCircle)
 		{
 			rotationArrowCoords = halfRotationArrowCoords;
@@ -165,13 +168,16 @@ public class BlockOverlayUtils
 		for(int arrowId = 0; arrowId < 2; ++arrowId)
 		{
 			Matrix4f mat = transform.last().pose();
-			for(int i = 0; i <= rotationArrowCoords.length; i++)
+			for(int i = 0; i < rotationArrowCoords.length; i++)
 			{
-				float[] p = rotationArrowCoords[i%rotationArrowCoords.length];
-				if(i > 0)
-					builder.vertex(mat, p[0], 0, p[1]).color(0, 0, 0, 0.4F).endVertex();
-				if(i!=rotationArrowCoords.length)
-					builder.vertex(mat, p[0], 0, p[1]).color(0, 0, 0, 0.4F).endVertex();
+				Vec2 here = rotationArrowCoords[i];
+				Vec2 next = rotationArrowCoords[(i+1)%rotationArrowCoords.length];
+				Vec2 diff = new Vec2(next.x-here.x, next.y-here.y).normalized();
+				for(Vec2 v : ImmutableList.of(here, next))
+					builder.vertex(mat, v.x, 0, v.y)
+							.color(0, 0, 0, 0.4F)
+							.normal(transform.last().normal(), diff.x, 0, diff.y)
+							.endVertex();
 			}
 			transform.mulPose(new Quaternion(0, 180, 0, true));
 		}
@@ -184,8 +190,10 @@ public class BlockOverlayUtils
 			for(int i = 0; i+3 < rotationArrowQuads.length; i += 2)
 				for(int offset : vertexOrder)
 				{
-					float[] p = rotationArrowQuads[i+offset];
-					builder.vertex(mat, p[0], 0, p[1]).color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F).endVertex();
+					Vec2 p = rotationArrowQuads[i+offset];
+					builder.vertex(mat, p.x, 0, p.y)
+							.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
+							.endVertex();
 				}
 			transform.mulPose(new Quaternion(0, 180, 0, true));
 		}
@@ -198,7 +206,7 @@ public class BlockOverlayUtils
 	/**
 	 * Draw an arrow on a face, pointed at a specific direction, used by conveyors for placement.
 	 */
-	public static void drawBlockOverlayArrow(Matrix4f transform, MultiBufferSource buffers, Vec3 directionVec,
+	public static void drawBlockOverlayArrow(Pose transform, MultiBufferSource buffers, Vec3 directionVec,
 											 Direction side, AABB targetedBB)
 	{
 		Vec3[] translatedPositions = new Vec3[arrowCoords.length];
@@ -227,18 +235,20 @@ public class BlockOverlayUtils
 			Vec3 point = translatedPositions[i];
 			Vec3 prevPoint = translatedPositions[i-1];
 			for(Vec3 p : new Vec3[]{center, prevPoint, point})
-				triBuilder.vertex(transform, (float)p.x, (float)p.y, (float)p.z)
+				triBuilder.vertex(transform.pose(), (float)p.x, (float)p.y, (float)p.z)
 						.color(Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], 0.4F)
 						.endVertex();
 		}
-		VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
-		for(int i = 0; i <= translatedPositions.length; i++)
+		VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
+		for(int i = 0; i < translatedPositions.length; i++)
 		{
-			Vec3 point = translatedPositions[i%translatedPositions.length];
-			int max = i==0||i==translatedPositions.length?1: 2;
-			for(int j = 0; j < max; ++j)
-				lineBuilder.vertex(transform, (float)point.x, (float)point.y, (float)point.z)
+			Vec3 point = translatedPositions[i];
+			Vec3 next = translatedPositions[(i+1)%translatedPositions.length];
+			Vec3 diff = next.subtract(point).normalize();
+			for(Vec3 p : ImmutableList.of(point, next))
+				lineBuilder.vertex(transform.pose(), (float)p.x, (float)p.y, (float)p.z)
 						.color(0, 0, 0, 0.4F)
+						.normal(transform.normal(), (float)diff.x, (float)diff.y, (float)diff.z)
 						.endVertex();
 		}
 	}

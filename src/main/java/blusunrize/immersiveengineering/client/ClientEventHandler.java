@@ -769,7 +769,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
 			Entity player = event.getInfo().getEntity();
-			float f1 = 0.002F;
+			float eps = 0.002F;
 			BlockEntity tile = player.level.getBlockEntity(rtr.getBlockPos());
 			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getItemInHand(InteractionHand.MAIN_HAND): ItemStack.EMPTY;
 
@@ -808,53 +808,35 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					targetedBB = shape.bounds();
 
 				MultiBufferSource buffers = event.getBuffers();
-				float[][] points = new float[4][];
 
-
-				if(side.getAxis()==Axis.Y)
-				{
-					float y = (float)(targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-f1: targetedBB.maxY+f1);
-					points[0] = new float[]{0-f1, y, 0-f1};
-					points[1] = new float[]{1+f1, y, 1+f1};
-					points[2] = new float[]{0-f1, y, 1+f1};
-					points[3] = new float[]{1+f1, y, 0-f1};
-				}
-				else if(side.getAxis()==Axis.Z)
-				{
-					float z = (float)(targetedBB==null?0: side==Direction.NORTH?targetedBB.minZ-f1: targetedBB.maxZ+f1);
-					points[0] = new float[]{1+f1, 1+f1, z};
-					points[1] = new float[]{0-f1, 0-f1, z};
-					points[2] = new float[]{0-f1, 1+f1, z};
-					points[3] = new float[]{1+f1, 0-f1, z};
-				}
-				else
-				{
-					float x = (float)(targetedBB==null?0: side==Direction.WEST?targetedBB.minX-f1: targetedBB.maxX+f1);
-					points[0] = new float[]{x, 1+f1, 1+f1};
-					points[1] = new float[]{x, 0-f1, 0-f1};
-					points[2] = new float[]{x, 1+f1, 0-f1};
-					points[3] = new float[]{x, 0-f1, 1+f1};
-				}
+				float y = (float)(targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-eps: targetedBB.maxY+eps);
 				Matrix4f mat = transform.last().pose();
-				VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_LINES);
-				for(float[] point : points)
-					lineBuilder.vertex(mat, point[0], point[1], point[2])
-							.color(0, 0, 0, 0.4F)
-							.endVertex();
-
-				lineBuilder.vertex(mat, points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
-				lineBuilder.vertex(mat, points[2][0], points[2][1], points[2][2]).color(0, 0, 0, 0.4F).endVertex();
-				lineBuilder.vertex(mat, points[1][0], points[1][1], points[1][2]).color(0, 0, 0, 0.4F).endVertex();
-				lineBuilder.vertex(mat, points[3][0], points[3][1], points[3][2]).color(0, 0, 0, 0.4F).endVertex();
-				lineBuilder.vertex(mat, points[0][0], points[0][1], points[0][2]).color(0, 0, 0, 0.4F).endVertex();
+				Matrix3f matN = transform.last().normal();
+				VertexConsumer lineBuilder = buffers.getBuffer(IERenderTypes.LINES);
+				float sqrt2Half = (float)(Math.sqrt(2)/2);
+				lineBuilder.vertex(mat, 0-eps, y, 0-eps)
+						.color(0, 0, 0, 0.4F)
+						.normal(matN, sqrt2Half, 0, sqrt2Half)
+						.endVertex();
+				lineBuilder.vertex(mat, 1+eps, y, 1+eps)
+						.color(0, 0, 0, 0.4F)
+						.normal(matN, sqrt2Half, 0, sqrt2Half)
+						.endVertex();
+				lineBuilder.vertex(mat, 0-eps, y, 1+eps)
+						.color(0, 0, 0, 0.4F)
+						.normal(matN, sqrt2Half, 0, -sqrt2Half)
+						.endVertex();
+				lineBuilder.vertex(mat, 1+eps, y, 0-eps)
+						.color(0, 0, 0, 0.4F)
+						.normal(matN, sqrt2Half, 0, -sqrt2Half)
+						.endVertex();
 
 				float xFromMid = side.getAxis()==Axis.X?0: (float)rtr.getLocation().x-pos.getX()-.5f;
 				float yFromMid = side.getAxis()==Axis.Y?0: (float)rtr.getLocation().y-pos.getY()-.5f;
 				float zFromMid = side.getAxis()==Axis.Z?0: (float)rtr.getLocation().z-pos.getZ()-.5f;
 				float max = Math.max(Math.abs(yFromMid), Math.max(Math.abs(xFromMid), Math.abs(zFromMid)));
 				Vec3 dir = new Vec3(max==Math.abs(xFromMid)?Math.signum(xFromMid): 0, max==Math.abs(yFromMid)?Math.signum(yFromMid): 0, max==Math.abs(zFromMid)?Math.signum(zFromMid): 0);
-				BlockOverlayUtils.drawBlockOverlayArrow(mat, buffers, dir, side, targetedBB);
-
+				BlockOverlayUtils.drawBlockOverlayArrow(transform.last(), buffers, dir, side, targetedBB);
 			}
 
 			transform.popPose();
@@ -923,11 +905,11 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			ResourceKey<Level> dimension = ClientUtils.mc().player.getCommandSenderWorld().dimension();
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			Multimap<ResourceKey<Level>, MineralVein> minerals;
 			final ColumnPos playerCol = new ColumnPos(ClientUtils.mc().player.blockPosition());
 			// 24: very roughly 16 * sqrt(2)
 			final long maxDistance = ClientUtils.mc().options.renderDistance*24L;
 			final long maxDistanceSq = maxDistance*maxDistance;
+			Multimap<ResourceKey<Level>, MineralVein> minerals;
 			synchronized(minerals = ExcavatorHandler.getMineralVeinList())
 			{
 				for(MineralVein vein : minerals.get(dimension))

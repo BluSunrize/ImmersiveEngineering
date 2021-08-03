@@ -34,7 +34,6 @@ public class IERenderTypes extends RenderStateShard
 {
 	public static final RenderType TRANSLUCENT_FULLBRIGHT;
 	public static final RenderType SOLID_FULLBRIGHT;
-	public static final RenderType TRANSLUCENT_LINES;
 	public static final RenderType LINES;
 	public static final RenderType TRANSLUCENT_TRIANGLES;
 	public static final RenderType TRANSLUCENT_POSITION_COLOR;
@@ -43,6 +42,7 @@ public class IERenderTypes extends RenderStateShard
 	public static final RenderType POSITION_COLOR_TEX_LIGHTMAP;
 	public static final RenderType POSITION_COLOR_LIGHTMAP;
 	public static final RenderType ITEM_DAMAGE_BAR;
+	private static final ShaderStateShard RENDERTYPE_POSITION_COLOR = RENDERTYPE_LIGHTNING_SHADER;
 	protected static final RenderStateShard.TextureStateShard BLOCK_SHEET_MIPPED = new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, true);
 	protected static final RenderStateShard.LightmapStateShard LIGHTMAP_DISABLED = new RenderStateShard.LightmapStateShard(false);
 	protected static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
@@ -79,27 +79,31 @@ public class IERenderTypes extends RenderStateShard
 						.createCompositeState(true)
 		);
 		//TODO probably needs shader state
-		RenderType.CompositeState translucentNoDepthState = RenderType.CompositeState.builder().setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+		RenderType.CompositeState translucentNoDepthState = RenderType.CompositeState.builder()
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setLineState(new LineStateShard(OptionalDouble.of(2)))
 				.setDepthTestState(DEPTH_ALWAYS)
-				.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
+				.setShaderState(RENDERTYPE_POSITION_COLOR)
 				.createCompositeState(false);
-		TRANSLUCENT_LINES = createDefault(
-				ImmersiveEngineering.MODID+":translucent_lines", DefaultVertexFormat.POSITION_COLOR, Mode.LINES, translucentNoDepthState
-		);
 		LINES = createDefault(
-				ImmersiveEngineering.MODID+":lines", DefaultVertexFormat.POSITION_COLOR, Mode.LINES,
+				ImmersiveEngineering.MODID+":translucent_lines", DefaultVertexFormat.POSITION_COLOR_NORMAL, Mode.LINES,
 				RenderType.CompositeState.builder()
 						.setShaderState(RENDERTYPE_LINES_SHADER)
+						.setLineState(new LineStateShard(OptionalDouble.of(2)))
+						.setLayeringState(VIEW_OFFSET_Z_LAYERING)
+						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.setOutputState(ITEM_ENTITY_TARGET)
+						.setWriteMaskState(COLOR_DEPTH_WRITE)
+						.setCullState(NO_CULL)
 						.createCompositeState(false)
 		);
 		TRANSLUCENT_TRIANGLES = createDefault(
-				ImmersiveEngineering.MODID+":translucent_triangle_fan", DefaultVertexFormat.POSITION_COLOR, Mode.TRIANGLES, translucentNoDepthState
+				ImmersiveEngineering.MODID+":translucent_triangles", DefaultVertexFormat.POSITION_COLOR, Mode.TRIANGLES, translucentNoDepthState
 		);
 		RenderType.CompositeState translucentNoTextureState = RenderType.CompositeState.builder()
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setTextureState(BLOCK_SHEET_MIPPED)
-				.setShaderState(RENDERTYPE_LIGHTNING_SHADER)
+				.setShaderState(RENDERTYPE_POSITION_COLOR)
 				.createCompositeState(false);
 		TRANSLUCENT_POSITION_COLOR = createDefault(
 				ImmersiveEngineering.MODID+":translucent_pos_color", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, translucentNoTextureState
@@ -107,20 +111,20 @@ public class IERenderTypes extends RenderStateShard
 		TRANSLUCENT_NO_DEPTH = createDefault(
 				ImmersiveEngineering.MODID+":translucent_no_depth", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, translucentNoDepthState
 		);
-		RenderType.CompositeState chunkMarkerState = RenderType.CompositeState.builder()
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setShaderState(RENDERTYPE_LINES_SHADER)
-				.setLineState(new LineStateShard(OptionalDouble.of(5)))
-				.setLayeringState(VIEW_OFFSET_Z_LAYERING)
-				.setCullState(NO_CULL)
-				.setOutputState(ITEM_ENTITY_TARGET)
-				.setWriteMaskState(COLOR_DEPTH_WRITE)
-				.createCompositeState(false);
 		CHUNK_MARKER = createDefault(
 				ImmersiveEngineering.MODID+":chunk_marker",
 				DefaultVertexFormat.POSITION_COLOR_NORMAL,
+				//TODO figure out glitchyness
 				Mode.LINES,
-				chunkMarkerState
+				RenderType.CompositeState.builder()
+						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.setShaderState(RENDERTYPE_LINES_SHADER)
+						.setLineState(new LineStateShard(OptionalDouble.of(5)))
+						.setLayeringState(VIEW_OFFSET_Z_LAYERING)
+						.setCullState(NO_CULL)
+						.setOutputState(ITEM_ENTITY_TARGET)
+						.setWriteMaskState(COLOR_DEPTH_WRITE)
+						.createCompositeState(false)
 		);
 		POSITION_COLOR_TEX_LIGHTMAP = createDefault(
 				ImmersiveEngineering.MODID+":pos_color_tex_lightmap",
@@ -175,11 +179,11 @@ public class IERenderTypes extends RenderStateShard
 
 	public static RenderType getLines(float lineWidth)
 	{
+		//TODO fix all usages with normals
 		return createDefault(
 				"lines_color_pos_"+lineWidth,
-				DefaultVertexFormat.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR_NORMAL,
 				Mode.LINES,
-				//TODO more state?
 				RenderType.CompositeState.builder()
 						.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
 						.setShaderState(RENDERTYPE_LINES_SHADER)
