@@ -17,12 +17,13 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.tags.SerializationTags;
 import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -58,7 +59,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount, CompoundTag nbtTag)
 	{
-		this(getTagCollection().getTag(resourceLocation), amount, nbtTag);
+		this(SerializationTags.getInstance().getOrEmpty(Registry.FLUID_REGISTRY).getTag(resourceLocation), amount, nbtTag);
 	}
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount)
@@ -117,7 +118,6 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public List<FluidStack> getMatchingFluidStacks()
 	{
 		return fluidTag.map(
-				//TODO NPEs
 				t -> t.getValues().stream(),
 				l -> l.stream().map(ForgeRegistries.FLUIDS::getValue)
 		)
@@ -130,7 +130,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 	{
 		JsonObject jsonObject = new JsonObject();
 		Tag<Fluid> unnamedTag = this.fluidTag.orThrow();
-		ResourceLocation name = getTagCollection().getId(unnamedTag);
+		ResourceLocation name = FluidTags.getAllTags().getId(unnamedTag);
 		jsonObject.addProperty("tag", name.toString());
 		jsonObject.addProperty("amount", this.amount);
 		if(this.nbtTag!=null)
@@ -173,11 +173,6 @@ public class FluidTagInput implements Predicate<FluidStack>
 		out.writeBoolean(this.nbtTag!=null);
 		if(this.nbtTag!=null)
 			out.writeNbt(this.nbtTag);
-	}
-
-	private static TagCollection<Fluid> getTagCollection()
-	{
-		return FluidTags.getAllTags();
 	}
 
 	public boolean extractFrom(IFluidHandler handler, FluidAction action)
