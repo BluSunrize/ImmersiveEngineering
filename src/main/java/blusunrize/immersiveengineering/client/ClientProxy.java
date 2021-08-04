@@ -117,6 +117,8 @@ public class ClientProxy extends CommonProxy
 			MinecraftForge.EVENT_BUS.register(handler);
 			ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
 			reloadableManager.registerReloadListener(handler);
+
+			IEModelLayers.registerDefinitions();
 		}
 	}
 
@@ -350,11 +352,10 @@ public class ClientProxy extends CommonProxy
 		registerEntityRenderingHandler(event, IEEntityTypes.RAILGUN_SHOT, RailgunShotRenderer::new);
 		registerEntityRenderingHandler(event, IEEntityTypes.EXPLOSIVE, IEExplosiveRenderer::new);
 		registerEntityRenderingHandler(event, IEEntityTypes.FLUORESCENT_TUBE, FluorescentTubeRenderer::new);
-		//TODO
-		//registerEntityRenderingHandler(IEEntityTypes.BARREL_MINECART, IEMinecartRenderer::new);
-		//registerEntityRenderingHandler(IEEntityTypes.CRATE_MINECART, IEMinecartRenderer::new);
-		//registerEntityRenderingHandler(IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer::new);
-		//registerEntityRenderingHandler(IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer::new);
+		registerEntityRenderingHandler(event, IEEntityTypes.BARREL_MINECART, IEMinecartRenderer.provide(IEModelLayers.BARREL_MINECART));
+		registerEntityRenderingHandler(event, IEEntityTypes.CRATE_MINECART, IEMinecartRenderer.provide(IEModelLayers.CRATE_MINECART));
+		registerEntityRenderingHandler(event, IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer.provide(IEModelLayers.REINFORCED_CRATE_CART));
+		registerEntityRenderingHandler(event, IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer.provide(IEModelLayers.METAL_BARREL_CART));
 		registerEntityRenderingHandler(event, IEEntityTypes.SAWBLADE, SawbladeRenderer::new);
 	}
 

@@ -90,6 +90,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -662,13 +663,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		}
 	}
 
-	/*TODO @SubscribeEvent()
+	@SubscribeEvent()
 	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
 	{
-		Entity e = event.getInfo().getEntity();
-		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.flashed.get()))
+		if(event.getInfo().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.flashed.get()))
 		{
-			MobEffectInstance effect = ((LivingEntity)e).getEffect(IEPotions.flashed.get());
+			MobEffectInstance effect = living.getEffect(IEPotions.flashed.get());
 			int timeLeft = effect.getDuration();
 			float saturation = Math.max(0.25f, 1-timeLeft/(float)(80+40*effect.getAmplifier()));//Total Time =  4s + 2s per amplifier
 
@@ -676,12 +676,10 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			if(timeLeft < 20)
 				f1 += (event.getFarPlaneDistance()/4)*(1-timeLeft/20f);
 
-			RenderSystem.fogStart(0.25f*f1);
-			RenderSystem.fogEnd(f1);
-			RenderSystem.fogMode(GlStateManager.FogMode.LINEAR);
-			RenderSystem.setupNvFogDistance();
+			RenderSystem.setShaderFogStart(0.25f*f1);
+			RenderSystem.setShaderFogEnd(f1);
 		}
-	}*/
+	}
 
 	@SubscribeEvent()
 	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
