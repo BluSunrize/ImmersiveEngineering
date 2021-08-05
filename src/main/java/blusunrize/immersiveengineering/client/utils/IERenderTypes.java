@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -28,8 +26,7 @@ import org.lwjgl.opengl.GL11;
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
 
-//TODO This extends RenderStateShard to get access to various protected members. Should be removed once the relevant
-// Forge PR is merged
+//This extends RenderStateShard to get access to various protected members
 public class IERenderTypes extends RenderStateShard
 {
 	public static final RenderType TRANSLUCENT_FULLBRIGHT;
@@ -249,21 +246,18 @@ public class IERenderTypes extends RenderStateShard
 
 	public static MultiBufferSource wrapWithStencil(MultiBufferSource in, Consumer<VertexConsumer> setupStencilArea, String name, int ref)
 	{
-		// TODO
-		throw new NotImplementedException("NYI on 1.17. Might be worth replacing this with a shader");
-		/*
 		return wrapWithAdditional(
 				in,
 				"stencil_"+name+"_"+ref,
 				() -> {
-					GL11.glEnable(Mode.STENCIL_TEST);
+					GL11.glEnable(GL11.GL_STENCIL_TEST);
 					RenderSystem.colorMask(false, false, false, false);
 					RenderSystem.depthMask(false);
-					GL11.glStencilFunc(Mode.NEVER, 1, 0xFF);
-					GL11.glStencilOp(Mode.REPLACE, Mode.KEEP, Mode.KEEP);
+					GL11.glStencilFunc(GL11.GL_NEVER, 1, 0xFF);
+					GL11.glStencilOp(GL11.GL_REPLACE, GL11.GL_KEEP, GL11.GL_KEEP);
 
 					GL11.glStencilMask(0xFF);
-					RenderSystem.clear(Mode.STENCIL_BUFFER_BIT, true);
+					RenderSystem.clear(GL11.GL_STENCIL_BUFFER_BIT, true);
 					RenderSystem.disableTexture();
 					Tesselator tes = Tesselator.getInstance();
 					BufferBuilder bb = tes.getBuilder();
@@ -274,11 +268,10 @@ public class IERenderTypes extends RenderStateShard
 					RenderSystem.colorMask(true, true, true, true);
 					RenderSystem.depthMask(true);
 					GL11.glStencilMask(0x00);
-					GL11.glStencilFunc(Mode.EQUAL, ref, 0xFF);
+					GL11.glStencilFunc(GL11.GL_EQUAL, ref, 0xFF);
 				},
-				() -> GL11.glDisable(Mode.STENCIL_TEST)
+				() -> GL11.glDisable(GL11.GL_STENCIL_TEST)
 		);
-		 */
 	}
 
 	@Deprecated
@@ -291,16 +284,6 @@ public class IERenderTypes extends RenderStateShard
 				() -> Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer(),
 				() -> Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer()
 		);
-	}
-
-	public static MultiBufferSource disableCull(MultiBufferSource in)
-	{
-		return in;/*TODO wrapWithAdditional(
-				in,
-				"no_cull",
-				RenderSystem::disableCull,
-				RenderSystem::enableCull
-		);*/
 	}
 
 	private static MultiBufferSource wrapWithAdditional(

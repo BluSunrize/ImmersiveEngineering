@@ -139,7 +139,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			else
 				baseType = RenderType.entityCutout(atlas);
 			RenderType actualType = quadsForLayer.layer.getRenderType(baseType);
-			VertexConsumer builder = IERenderTypes.disableCull(buffer).getBuffer(actualType);
+			VertexConsumer builder = buffer.getBuffer(actualType);
 			Vector4f color = quadsForLayer.layer.getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer)
 				builder.putBulkData(
