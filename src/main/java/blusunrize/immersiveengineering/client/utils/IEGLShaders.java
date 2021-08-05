@@ -16,6 +16,7 @@ import java.io.IOException;
 public class IEGLShaders
 {
 	private static ShaderInstance blockFullbrightShader;
+	private static ShaderInstance vboShader;
 
 	@SubscribeEvent
 	public static void registerShaders(RegisterShadersEvent ev) throws IOException
@@ -24,10 +25,19 @@ public class IEGLShaders
 				new ShaderInstance(ev.getResourceManager(), ImmersiveEngineering.rl("block_fullbright"), DefaultVertexFormat.BLOCK),
 				shader -> blockFullbrightShader = shader
 		);
+		ev.registerShader(
+				new ShaderInstance(ev.getResourceManager(), ImmersiveEngineering.rl("rendertype_vbo"), VertexBufferHolder.BUFFER_FORMAT),
+				shader -> vboShader = shader
+		);
 	}
 
 	public static ShaderInstance getBlockFullbrightShader()
 	{
 		return blockFullbrightShader;
+	}
+
+	public static ShaderInstance getVboShader()
+	{
+		return vboShader;
 	}
 }
