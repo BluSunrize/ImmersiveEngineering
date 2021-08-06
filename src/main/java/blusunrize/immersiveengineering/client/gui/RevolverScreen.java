@@ -91,8 +91,11 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 
 		ItemRenderer ir = ClientUtils.mc().getItemRenderer();
 		int[][] slots = RevolverContainer.slotPositions[bulletAmount >= 18?2: bulletAmount > 8?1: 0];
-		transform.pushPose();
-		transform.translate(0, 0, 10);
+		PoseStack modelviewStack = RenderSystem.getModelViewStack();
+		modelviewStack.pushPose();
+		if(modelviewStack!=transform)
+			modelviewStack.mulPoseMatrix(transform.last().pose());
+		modelviewStack.translate(0, 0, 10);
 		RenderSystem.applyModelViewMatrix();
 		for(int i = 0; i < bulletAmount; i++)
 		{
@@ -120,6 +123,6 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 				ir.renderAndDecorateItem(b, x, y);
 			}
 		}
-		transform.popPose();
+		modelviewStack.popPose();
 	}
 }

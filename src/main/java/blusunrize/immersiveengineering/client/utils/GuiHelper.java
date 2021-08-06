@@ -167,7 +167,6 @@ public class GuiHelper
 	public static void renderItemWithOverlayIntoGUI(MultiBufferSource buffer, PoseStack transform,
 													ItemStack stack, int x, int y)
 	{
-		buffer = IERenderTypes.disableLighting(buffer);
 		transform.pushPose();
 		transform.translate(x, y, 100);
 		transform.pushPose();
