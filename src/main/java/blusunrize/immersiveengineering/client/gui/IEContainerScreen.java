@@ -101,17 +101,17 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	@Override
 	protected final void renderBg(@Nonnull PoseStack transform, float partialTicks, int x, int y)
 	{
+		RenderSystem.setShader(GameRenderer::getPositionTexShader);
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+		RenderSystem.setShaderTexture(0, background);
 		drawBackgroundTexture(transform);
 		drawContainerBackgroundPre(transform, partialTicks, x, y);
-		for (InfoArea area : infoAreas.get())
+		for(InfoArea area : infoAreas.get())
 			area.draw(transform);
 	}
 
 	protected void drawBackgroundTexture(PoseStack transform)
 	{
-		RenderSystem.setShader(GameRenderer::getPositionTexShader);
-		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-		RenderSystem.setShaderTexture(0, background);
 		blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 
