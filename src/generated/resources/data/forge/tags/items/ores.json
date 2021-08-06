@@ -1,11 +1,11 @@
 {
   "replace": false,
   "values": [
-    "immersiveengineering:ore_copper",
-    "immersiveengineering:ore_aluminum",
-    "immersiveengineering:ore_lead",
-    "immersiveengineering:ore_silver",
-    "immersiveengineering:ore_nickel",
-    "immersiveengineering:ore_uranium"
+    "#forge:ores/copper",
+    "#forge:ores/aluminum",
+    "#forge:ores/lead",
+    "#forge:ores/silver",
+    "#forge:ores/nickel",
+    "#forge:ores/uranium"
   ]
 }

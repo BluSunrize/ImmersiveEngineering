@@ -2,17 +2,17 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:crafting/ingot_copper_to_storage_copper"
+      "immersiveengineering:crafting/copper_ingot_to_nugget_copper"
     ]
   },
   "criteria": {
-    "has_ingot_copper": {
+    "has_copper_ingot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:ingot_copper"
+              "immersiveengineering:nugget_copper"
             ]
           }
         ]
@@ -21,13 +21,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:crafting/ingot_copper_to_storage_copper"
+        "recipe": "immersiveengineering:crafting/copper_ingot_to_nugget_copper"
       }
     }
   },
   "requirements": [
     [
-      "has_ingot_copper",
+      "has_copper_ingot",
       "has_the_recipe"
     ]
   ]

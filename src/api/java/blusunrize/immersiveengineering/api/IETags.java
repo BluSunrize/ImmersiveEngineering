@@ -132,6 +132,12 @@ public class IETags
 				ore = createBlockTag(getOre(name));
 			if(!m.isVanillaMetal())
 				storage = createBlockTag(getStorageBlock(name));
+			else if(m==EnumMetals.COPPER)
+			{
+				//TODO Forge#7891
+				storage = createBlockTag(getStorageBlock(name));
+				ore = createBlockTag(getOre(name));
+			}
 			else if(m==EnumMetals.IRON)
 			{
 				storage = Blocks.STORAGE_BLOCKS_IRON;

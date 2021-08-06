@@ -1,16 +1,16 @@
 {
   "replace": false,
   "values": [
-    "immersiveengineering:plate_copper",
-    "immersiveengineering:plate_aluminum",
-    "immersiveengineering:plate_lead",
-    "immersiveengineering:plate_silver",
-    "immersiveengineering:plate_nickel",
-    "immersiveengineering:plate_uranium",
-    "immersiveengineering:plate_constantan",
-    "immersiveengineering:plate_electrum",
-    "immersiveengineering:plate_steel",
-    "immersiveengineering:plate_iron",
-    "immersiveengineering:plate_gold"
+    "#forge:plates/copper",
+    "#forge:plates/aluminum",
+    "#forge:plates/lead",
+    "#forge:plates/silver",
+    "#forge:plates/nickel",
+    "#forge:plates/uranium",
+    "#forge:plates/constantan",
+    "#forge:plates/electrum",
+    "#forge:plates/steel",
+    "#forge:plates/iron",
+    "#forge:plates/gold"
   ]
 }

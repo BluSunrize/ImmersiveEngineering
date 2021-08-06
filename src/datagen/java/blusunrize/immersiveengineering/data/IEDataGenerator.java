@@ -46,7 +46,7 @@ public class IEDataGenerator
 		{
 			BlockTagsProvider blockTags = new IEBlockTags(gen, exHelper);
 			gen.addProvider(blockTags);
-			gen.addProvider(new ItemTags(gen, blockTags, exHelper));
+			gen.addProvider(new IEItemTags(gen, blockTags, exHelper));
 			gen.addProvider(new FluidTags(gen, exHelper));
 			gen.addProvider(new TileTags(gen, exHelper));
 			gen.addProvider(new Recipes(gen));

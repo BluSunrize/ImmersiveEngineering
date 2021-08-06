@@ -124,15 +124,14 @@ public class Recipes extends RecipeProvider
 			ItemLike dust = Metals.dusts.get(metal);
 			BlockEntry<Block> block = IEBlocks.Metals.storage.get(metal);
 			BlockEntry<IEBaseBlock> sheetMetal = IEBlocks.Metals.sheetmetal.get(metal);
-			if(!metal.isVanillaMetal())
-			{
+			if(metal.shouldAddNugget())
 				add3x3Conversion(ingot, nugget, tags.nugget, out);
+			if(!metal.isVanillaMetal())
 				add3x3Conversion(block, ingot, tags.ingot, out);
-				if(IEBlocks.Metals.ores.containsKey(metal))
-				{
-					BlockEntry<Block> ore = IEBlocks.Metals.ores.get(metal);
-					addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
-				}
+			if(metal.shouldAddOre())
+			{
+				BlockEntry<Block> ore = IEBlocks.Metals.ores.get(metal);
+				addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
 			}
 			addStandardSmeltingBlastingRecipe(dust, ingot, 0, out, "_from_dust");
 //			addStandardSmeltingBlastingRecipe(dust, ingot, metal.smeltingXP, out, "_from_dust"); //TODO: remove this, if 0 XP on dust is intentional. this bugs out because the alloys do not have metal.smeltingXP

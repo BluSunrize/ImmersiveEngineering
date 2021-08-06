@@ -3,7 +3,7 @@
   "ingredient": {
     "item": "immersiveengineering:dust_copper"
   },
-  "result": "immersiveengineering:ingot_copper",
+  "result": "minecraft:copper_ingot",
   "experience": 0.0,
   "cookingtime": 200
 }

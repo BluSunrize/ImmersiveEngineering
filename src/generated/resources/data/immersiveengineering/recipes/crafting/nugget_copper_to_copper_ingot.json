@@ -7,13 +7,13 @@
   ],
   "key": {
     "s": {
-      "tag": "forge:ingots/copper"
+      "tag": "forge:nuggets/copper"
     },
     "i": {
-      "item": "immersiveengineering:ingot_copper"
+      "item": "immersiveengineering:nugget_copper"
     }
   },
   "result": {
-    "item": "immersiveengineering:storage_copper"
+    "item": "minecraft:copper_ingot"
   }
 }

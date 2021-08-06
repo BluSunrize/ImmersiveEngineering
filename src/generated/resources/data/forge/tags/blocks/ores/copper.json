@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "immersiveengineering:ore_copper"
+    "minecraft:copper_ore"
   ]
 }

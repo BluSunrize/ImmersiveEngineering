@@ -23,7 +23,6 @@ import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -70,20 +69,26 @@ class IEBlockTags extends BlockTagsProvider
 			MetalTags tags = IETags.getTagsFor(metal);
 			if(!metal.isVanillaMetal())
 			{
-				Block storage = IEBlocks.Metals.storage.get(metal).get();
-				tag(tags.storage).add(storage);
-				tag(Tags.Blocks.STORAGE_BLOCKS).add(storage);
+				tag(tags.storage).add(IEBlocks.Metals.storage.get(metal).get());
+				tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.storage);
 				if(metal.shouldAddOre())
 				{
-					Block ore = IEBlocks.Metals.ores.get(metal).get();
 					assert tags.ore!=null;
-					tag(tags.ore).add(ore);
-					tag(Tags.Blocks.ORES).add(ore);
+					tag(tags.ore).add(IEBlocks.Metals.ores.get(metal).get());
+					tag(Tags.Blocks.ORES).addTag(tags.ore);
 				}
 			}
-			Block sheetmetal = IEBlocks.Metals.sheetmetal.get(metal).get();
-			tag(tags.sheetmetal).add(sheetmetal);
-			tag(IETags.sheetmetals).add(sheetmetal);
+			//TODO Forge#7891
+			if(metal==EnumMetals.COPPER)
+			{
+				tag(tags.storage).add(IEBlocks.Metals.storage.get(metal).get());
+				tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.storage);
+				assert tags.ore!=null;
+				tag(tags.ore).add(IEBlocks.Metals.ores.get(metal).get());
+				tag(Tags.Blocks.ORES).addTag(tags.ore);
+			}
+			tag(tags.sheetmetal).add(IEBlocks.Metals.sheetmetal.get(metal).get());
+			tag(IETags.sheetmetals).addTag(tags.sheetmetal);
 		}
 		for(DyeColor dye : DyeColor.values())
 			tag(IETags.sheetmetals).add(MetalDecoration.coloredSheetmetal.get(dye).get());

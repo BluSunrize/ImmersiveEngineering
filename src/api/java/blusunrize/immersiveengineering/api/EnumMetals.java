@@ -12,7 +12,7 @@ import java.util.Locale;
 
 public enum EnumMetals
 {
-	COPPER(0.3f),
+	COPPER(Type.VANILLA_NO_NUGGET, 0.3f),
 	ALUMINUM(0.3F),
 	LEAD(0.7F),
 	SILVER(1.0F),
@@ -41,7 +41,7 @@ public enum EnumMetals
 
 	public boolean isVanillaMetal()
 	{
-		return type==Type.VANILLA;
+		return type==Type.VANILLA||type==Type.VANILLA_NO_NUGGET;
 	}
 
 	public boolean isAlloy()
@@ -54,6 +54,11 @@ public enum EnumMetals
 		return !isVanillaMetal()&&!isAlloy();
 	}
 
+	public boolean shouldAddNugget()
+	{
+		return !isVanillaMetal()||type==Type.VANILLA_NO_NUGGET;
+	}
+
 	public String tagName()
 	{
 		return name().toLowerCase(Locale.US);
@@ -62,6 +67,7 @@ public enum EnumMetals
 	private enum Type
 	{
 		VANILLA,
+		VANILLA_NO_NUGGET,
 		IE_PURE,
 		IE_ALLOY
 	}

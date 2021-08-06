@@ -13,22 +13,20 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-class ItemTags extends ItemTagsProvider
+class IEItemTags extends ItemTagsProvider
 {
 
-	public ItemTags(DataGenerator gen, BlockTagsProvider blocks, ExistingFileHelper existingFileHelper)
+	public IEItemTags(DataGenerator gen, BlockTagsProvider blocks, ExistingFileHelper existingFileHelper)
 	{
 		super(gen, blocks, Lib.MODID, existingFileHelper);
 	}
@@ -36,30 +34,36 @@ class ItemTags extends ItemTagsProvider
 	@Override
 	protected void addTags()
 	{
+		IETags.forAllBlocktags(this::copy);
 		for(EnumMetals metal : EnumMetals.values())
 		{
-			Item nugget = Metals.nuggets.get(metal).get();
-			Item ingot = Metals.ingots.get(metal).get();
-			Item plate = Metals.plates.get(metal).get();
-			Item dust = Metals.dusts.get(metal).get();
 			MetalTags tags = IETags.getTagsFor(metal);
+			if(metal.shouldAddNugget())
+			{
+				tag(tags.nugget).add(Metals.nuggets.get(metal).get());
+				tag(Tags.Items.NUGGETS).addTag(tags.nugget);
+			}
 			if(!metal.isVanillaMetal())
 			{
-				tag(tags.ingot).add(ingot);
-				tag(Tags.Items.INGOTS).add(ingot);
-				tag(tags.nugget).add(nugget);
-				tag(Tags.Items.NUGGETS).add(nugget);
-				tag(Tags.Items.STORAGE_BLOCKS).add(IEBlocks.Metals.storage.get(metal).asItem());
+				tag(tags.ingot).add(Metals.ingots.get(metal).get());
+				tag(Tags.Items.INGOTS).addTag(tags.ingot);
+				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
 				if(metal.shouldAddOre())
-					tag(Tags.Items.ORES).add(IEBlocks.Metals.ores.get(metal).asItem());
+					tag(Tags.Items.ORES).addTag(IETags.getItemTag(tags.ore));
 			}
-			tag(tags.plate).add(plate);
-			tag(IETags.plates).add(plate);
-			tag(tags.dust).add(dust);
-			tag(Tags.Items.DUSTS).add(dust);
+			if(metal==EnumMetals.COPPER)
+			{
+				//TODO Forge#7891
+				tag(tags.ingot).add(Metals.ingots.get(metal).get());
+				tag(Tags.Items.INGOTS).addTag(tags.ingot);
+				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
+				tag(Tags.Items.ORES).addTag(IETags.getItemTag(tags.ore));
+			}
+			tag(tags.plate).add(Metals.plates.get(metal).get());
+			tag(IETags.plates).addTag(tags.plate);
+			tag(tags.dust).add(Metals.dusts.get(metal).get());
+			tag(Tags.Items.DUSTS).addTag(tags.dust);
 		}
-
-		IETags.forAllBlocktags(this::copy);
 
 		tag(IETags.clay).add(Items.CLAY_BALL);
 		tag(IETags.charCoal).add(Items.CHARCOAL);

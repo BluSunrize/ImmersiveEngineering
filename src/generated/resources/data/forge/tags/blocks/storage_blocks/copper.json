@@ -1,6 +1,6 @@
 {
   "replace": false,
   "values": [
-    "immersiveengineering:storage_copper"
+    "minecraft:copper_block"
   ]
 }

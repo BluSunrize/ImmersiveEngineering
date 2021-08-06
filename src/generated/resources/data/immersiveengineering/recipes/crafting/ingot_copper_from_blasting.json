@@ -1,9 +1,0 @@
-{
-  "type": "minecraft:blasting",
-  "ingredient": {
-    "item": "immersiveengineering:ore_copper"
-  },
-  "result": "immersiveengineering:ingot_copper",
-  "experience": 0.3,
-  "cookingtime": 100
-}

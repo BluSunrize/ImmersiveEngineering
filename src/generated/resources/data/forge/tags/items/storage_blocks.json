@@ -1,14 +1,14 @@
 {
   "replace": false,
   "values": [
-    "immersiveengineering:storage_copper",
-    "immersiveengineering:storage_aluminum",
-    "immersiveengineering:storage_lead",
-    "immersiveengineering:storage_silver",
-    "immersiveengineering:storage_nickel",
-    "immersiveengineering:storage_uranium",
-    "immersiveengineering:storage_constantan",
-    "immersiveengineering:storage_electrum",
-    "immersiveengineering:storage_steel"
+    "#forge:storage_blocks/copper",
+    "#forge:storage_blocks/aluminum",
+    "#forge:storage_blocks/lead",
+    "#forge:storage_blocks/silver",
+    "#forge:storage_blocks/nickel",
+    "#forge:storage_blocks/uranium",
+    "#forge:storage_blocks/constantan",
+    "#forge:storage_blocks/electrum",
+    "#forge:storage_blocks/steel"
   ]
 }

@@ -288,6 +288,11 @@ public final class IEBlocks
 					storage = new BlockEntry<>(Blocks.GOLD_BLOCK);
 					ore = new BlockEntry<>(Blocks.GOLD_ORE);
 				}
+				else if(m==EnumMetals.COPPER)
+				{
+					storage = new BlockEntry<>(Blocks.COPPER_BLOCK);
+					ore = new BlockEntry<>(Blocks.COPPER_ORE);
+				}
 				else
 					throw new RuntimeException("Unkown vanilla metal: "+m.name());
 				IEBlocks.Metals.storage.put(m, storage);

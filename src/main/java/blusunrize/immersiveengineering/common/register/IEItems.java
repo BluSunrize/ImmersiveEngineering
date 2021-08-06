@@ -117,20 +117,21 @@ public final class IEItems
 				ItemRegObject<Item> nugget;
 				ItemRegObject<Item> ingot;
 				if(!m.isVanillaMetal())
-				{
-					nugget = register("nugget_"+name, IEBaseItem::new);
 					ingot = register("ingot_"+name, IEBaseItem::new);
-				}
 				else if(m==EnumMetals.IRON)
-				{
-					nugget = of(Items.IRON_NUGGET);
 					ingot = of(Items.IRON_INGOT);
-				}
 				else if(m==EnumMetals.GOLD)
-				{
-					nugget = of(Items.GOLD_NUGGET);
 					ingot = of(Items.GOLD_INGOT);
-				}
+				else if(m==EnumMetals.COPPER)
+					ingot = of(Items.COPPER_INGOT);
+				else
+					throw new RuntimeException("Unkown vanilla metal: "+m.name());
+				if(m.shouldAddNugget())
+					nugget = register("nugget_"+name, IEBaseItem::new);
+				else if(m==EnumMetals.IRON)
+					nugget = of(Items.IRON_NUGGET);
+				else if(m==EnumMetals.GOLD)
+					nugget = of(Items.GOLD_NUGGET);
 				else
 					throw new RuntimeException("Unkown vanilla metal: "+m.name());
 				IEItems.Metals.nuggets.put(m, nugget);
