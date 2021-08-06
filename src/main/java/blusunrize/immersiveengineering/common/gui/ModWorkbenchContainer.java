@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
@@ -52,10 +53,16 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 145));
 	}
 
+	public void rebindSlotsDelayed()
+	{
+		ApiUtils.addFutureServerTask(world, this::rebindSlots, true);
+	}
+
 	public void rebindSlots()
 	{
 		this.slots.clear();
 		((ContainerAccess)this).getLastSlots().clear();
+		((ContainerAccess)this).getRemoteSlots().clear();
 		this.addSlot(new IESlot.ModWorkbench(this, this.inv, 0, 24, 22, 1));
 		slotCount = 1;
 

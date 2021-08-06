@@ -20,4 +20,7 @@ public interface ContainerAccess
 {
 	@Accessor
 	NonNullList<ItemStack> getLastSlots();
+
+	@Accessor
+	NonNullList<ItemStack> getRemoteSlots();
 }

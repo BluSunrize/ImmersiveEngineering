@@ -273,6 +273,7 @@ public abstract class IESlot extends Slot
 			super.setChanged();
 			upgradeableTool.recalculateUpgrades(toolStack, getWorld.get(), getPlayer.get());
 			if(container instanceof ModWorkbenchContainer)
+				//TODO delay?
 				((ModWorkbenchContainer)container).rebindSlots();
 			else if(container instanceof MaintenanceKitContainer)
 				((MaintenanceKitContainer)container).updateSlots();
@@ -342,7 +343,7 @@ public abstract class IESlot extends Slot
 		{
 			super.setChanged();
 			if(containerMenu instanceof ModWorkbenchContainer)
-				((ModWorkbenchContainer)containerMenu).rebindSlots();
+				((ModWorkbenchContainer)containerMenu).rebindSlotsDelayed();
 		}
 
 		@Override
@@ -431,7 +432,6 @@ public abstract class IESlot extends Slot
 			super.setChanged();
 			if(containerMenu instanceof AutoWorkbenchContainer)
 				ImmersiveEngineering.proxy.reInitGui();
-//				((ContainerAutoWorkbench)container).rebindSlots();
 		}
 	}
 
