@@ -13,18 +13,19 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTexture;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BannerRenderer;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,15 +38,16 @@ import java.util.HashMap;
 
 public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerTileEntity>
 {
-	private final ModelPart clothModel = BannerRenderer.makeFlag();
-	private final ModelPart standingModel = new ModelPart(64, 64, 44, 0);
+	private final ModelPart clothModel;
+	private final ModelPart standingModel;
 	private final ModelPart crossbar;
 
-	public ShaderBannerRenderer()
+	public ShaderBannerRenderer(BlockEntityRendererProvider.Context ctx)
 	{
-		this.standingModel.addBox(-1.0F, -30.0F, -1.0F, 2.0F, 42.0F, 2.0F, 0.0F);
-		this.crossbar = new ModelPart(64, 64, 0, 42);
-		this.crossbar.addBox(-10.0F, -32.0F, -1.0F, 20.0F, 2.0F, 2.0F, 0.0F);
+		ModelPart modelpart = ctx.bakeLayer(ModelLayers.BANNER);
+		this.clothModel = modelpart.getChild("flag");
+		this.standingModel = modelpart.getChild("pole");
+		this.crossbar = modelpart.getChild("bar");
 	}
 
 	@Override

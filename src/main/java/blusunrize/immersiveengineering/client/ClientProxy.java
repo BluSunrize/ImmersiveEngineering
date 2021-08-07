@@ -388,39 +388,41 @@ public class ClientProxy extends CommonProxy
 	}
 
 	private static <T extends BlockEntity>
-	void registerNoContext(BlockEntityType<? extends T> type, Supplier<BlockEntityRenderer<T>> render) {
+	void registerBERenderNoContext(BlockEntityType<? extends T> type, Supplier<BlockEntityRenderer<T>> render)
+	{
 		BlockEntityRenderers.register(type, $ -> render.get());
 	}
 
+	//TODO move to event after next Forge update
 	private static void registerBERenders()
 	{
-		registerNoContext(IETileTypes.CHARGING_STATION.get(), ChargingStationRenderer::new);
-		registerNoContext(IETileTypes.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
-		registerNoContext(IETileTypes.TESLACOIL.get(), TeslaCoilRenderer::new);
-		registerNoContext(IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
-		registerNoContext(IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
-		registerNoContext(IETileTypes.CLOCHE.get(), ClocheRenderer::new);
+		registerBERenderNoContext(IETileTypes.CHARGING_STATION.get(), ChargingStationRenderer::new);
+		registerBERenderNoContext(IETileTypes.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
+		registerBERenderNoContext(IETileTypes.TESLACOIL.get(), TeslaCoilRenderer::new);
+		registerBERenderNoContext(IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
+		registerBERenderNoContext(IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
+		registerBERenderNoContext(IETileTypes.CLOCHE.get(), ClocheRenderer::new);
 		// MULTIBLOCKS
-		registerNoContext(IETileTypes.METAL_PRESS.master(), MetalPressRenderer::new);
-		registerNoContext(IETileTypes.CRUSHER.master(), CrusherRenderer::new);
-		registerNoContext(IETileTypes.SAWMILL.master(), SawmillRenderer::new);
-		registerNoContext(IETileTypes.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
-		registerNoContext(IETileTypes.SILO.master(), SiloRenderer::new);
-		registerNoContext(IETileTypes.SQUEEZER.master(), SqueezerRenderer::new);
-		registerNoContext(IETileTypes.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
-		registerNoContext(IETileTypes.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
-		registerNoContext(IETileTypes.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
-		registerNoContext(IETileTypes.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);
-		registerNoContext(IETileTypes.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
-		registerNoContext(IETileTypes.MIXER.master(), MixerRenderer::new);
+		registerBERenderNoContext(IETileTypes.METAL_PRESS.master(), MetalPressRenderer::new);
+		registerBERenderNoContext(IETileTypes.CRUSHER.master(), CrusherRenderer::new);
+		registerBERenderNoContext(IETileTypes.SAWMILL.master(), SawmillRenderer::new);
+		registerBERenderNoContext(IETileTypes.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
+		registerBERenderNoContext(IETileTypes.SILO.master(), SiloRenderer::new);
+		registerBERenderNoContext(IETileTypes.SQUEEZER.master(), SqueezerRenderer::new);
+		registerBERenderNoContext(IETileTypes.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
+		registerBERenderNoContext(IETileTypes.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
+		registerBERenderNoContext(IETileTypes.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
+		registerBERenderNoContext(IETileTypes.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);
+		registerBERenderNoContext(IETileTypes.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
+		registerBERenderNoContext(IETileTypes.MIXER.master(), MixerRenderer::new);
 		//WOOD
-		registerNoContext(IETileTypes.WATERMILL.get(), WatermillRenderer::new);
-		registerNoContext(IETileTypes.WINDMILL.get(), WindmillRenderer::new);
-		registerNoContext(IETileTypes.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
+		registerBERenderNoContext(IETileTypes.WATERMILL.get(), WatermillRenderer::new);
+		registerBERenderNoContext(IETileTypes.WINDMILL.get(), WindmillRenderer::new);
+		registerBERenderNoContext(IETileTypes.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
 		//STONE
-		registerNoContext(IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
+		registerBERenderNoContext(IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
 		//CLOTH
-		//TODO registerNoContext(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
+		BlockEntityRenderers.register(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
