@@ -71,10 +71,14 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
+	public <T2> LazyOptional<T2> getCapability(Capability<T2> capability, @Nullable Direction facing)
 	{
 		if(this.isAlive()&&this.containedTileEntity!=null)
-			return this.containedTileEntity.getCapability(capability, facing);
+		{
+			LazyOptional<T2> fromTile = this.containedTileEntity.getCapability(capability, facing);
+			if (fromTile.isPresent())
+				return fromTile;
+		}
 		return super.getCapability(capability, facing);
 	}
 
