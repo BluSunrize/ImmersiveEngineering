@@ -75,34 +75,26 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 		@Override
 		public int getDurabilityForSlot(@Nonnull EquipmentSlot slotIn)
 		{
-			switch(slotIn)
-			{
-				case FEET:
-					return 13;
-				case LEGS:
-					return 15;
-				case CHEST:
-					return 16;
-				case HEAD:
-					return 11;
-			}
-			return 0;
+			return switch(slotIn)
+					{
+						case FEET -> 13;
+						case LEGS -> 15;
+						case CHEST -> 16;
+						case HEAD -> 11;
+						default -> 0;
+					};
 		}
 
 		@Override
 		public int getDefenseForSlot(EquipmentSlot slotIn)
 		{
-			switch(slotIn)
-			{
-				case FEET:
-				case HEAD:
-					return 1;
-				case LEGS:
-					return 2;
-				case CHEST:
-					return 3;
-			}
-			return 0;
+			return switch(slotIn)
+					{
+						case FEET, HEAD -> 1;
+						case LEGS -> 2;
+						case CHEST -> 3;
+						default -> 0;
+					};
 		}
 
 		@Override

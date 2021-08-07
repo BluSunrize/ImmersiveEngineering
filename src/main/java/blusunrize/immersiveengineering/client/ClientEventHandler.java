@@ -242,10 +242,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getItemStack(), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
 			{
-				event.getToolTip().add(TextUtils.applyFormat(
-						powerpack.getHoverName(),
-						ChatFormatting.GRAY
-				));
+				event.getToolTip().add(TextUtils.applyFormat(powerpack.getHoverName(), ChatFormatting.GRAY));
 				event.getToolTip().add(TextUtils.applyFormat(
 						new TextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
 						ChatFormatting.GRAY

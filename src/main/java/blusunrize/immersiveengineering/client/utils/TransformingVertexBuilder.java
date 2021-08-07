@@ -105,10 +105,15 @@ public class TransformingVertexBuilder implements VertexConsumer
 		base.endVertex();
 	}
 
+	public void defaultColor(float r, float g, float b, float a)
+	{
+		color.setGlobal(new Vector4f(r, g, b, a));
+	}
+
 	@Override
 	public void defaultColor(int r, int g, int b, int a)
 	{
-		color.setGlobal(new Vector4f(r / 255f, g / 255f, b / 255f, a / 255f));
+		defaultColor(r/255f, g/255f, b/255f, a/255f);
 	}
 
 	@Override

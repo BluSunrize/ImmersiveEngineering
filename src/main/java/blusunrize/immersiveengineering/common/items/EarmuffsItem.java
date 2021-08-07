@@ -20,7 +20,6 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
@@ -28,13 +27,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendColoredColour;
 
@@ -45,33 +41,11 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 		super();
 	}
 
+	@Nullable
 	@Override
-	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
+	public EquipmentSlot getEquipmentSlot(ItemStack stack)
 	{
-		return armorType==EquipmentSlot.HEAD;
-	}
-
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
-	{
-		if("overlay".equals(type))
-			return "immersiveengineering:textures/models/earmuffs_overlay.png";
-		return "immersiveengineering:textures/models/earmuffs.png";
-	}
-
-	@Override
-	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
-	{
-		super.initializeClient(consumer);
-		/* TODO consumer.accept(new IItemRenderProperties()
-		{
-			@Override
-			public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default)
-			{
-				//TODO fix unchecked cast
-				return (A)ModelEarmuffs.getModel();
-			}
-		});*/
+		return EquipmentSlot.HEAD;
 	}
 
 	@Override

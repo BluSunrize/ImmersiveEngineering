@@ -31,7 +31,7 @@ public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceTileEntit
 			@Override
 			public boolean mayPlace(ItemStack itemStack)
 			{
-				return BlastFurnaceRecipe.findRecipe(itemStack)!=null;
+				return BlastFurnaceRecipe.findRecipe(itemStack, null)!=null;
 			}
 		});
 		this.addSlot(new IESlot.BlastFuel(this, this.inv, 1, 52, 53));

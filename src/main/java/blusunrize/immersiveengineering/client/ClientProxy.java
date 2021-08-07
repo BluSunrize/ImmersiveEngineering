@@ -63,21 +63,18 @@ import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
-import net.minecraft.client.renderer.entity.ArmorStandRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.HumanoidMobRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -152,13 +149,6 @@ public class ClientProxy extends CommonProxy
 		IEDefaultColourHandlers.register();
 
 		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
-
-		/*Render Layers*/
-		Map<String, EntityRenderer<? extends Player>> skinMap = Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap();
-		if (skinMap.get("default") instanceof PlayerRenderer render)
-			render.addLayer(new IEBipedLayerRenderer<>(render));
-		if (skinMap.get("slim") instanceof PlayerRenderer render)
-			render.addLayer(new IEBipedLayerRenderer<>(render));
 		IEManual.addIEManualEntries();
 	}
 
@@ -248,16 +238,23 @@ public class ClientProxy extends CommonProxy
 	{
 		for(EntityRenderer<?> render : Minecraft.getInstance().getEntityRenderDispatcher().renderers.values())
 		{
-			if(HumanoidMobRenderer.class.isAssignableFrom(render.getClass()))
-				addIELayer((HumanoidMobRenderer<?, ?>)render);
-			else if(ArmorStandRenderer.class.isAssignableFrom(render.getClass()))
-				((ArmorStandRenderer)render).addLayer(new IEBipedLayerRenderer<>((ArmorStandRenderer)render));
+			if(render instanceof HumanoidMobRenderer<?, ?> hmr)
+				addIELayer(hmr, ev.getEntityModels());
+			else if(render instanceof ArmorStandRenderer asr)
+				addIELayer(asr, ev.getEntityModels());
+		}
+		for(String skin : ev.getSkins())
+		{
+			LivingEntityRenderer<?, ?> render = ev.getSkin(skin);
+			if(render!=null)
+				addIELayer(render, ev.getEntityModels());
 		}
 	}
 
-	private static <T extends Mob, M extends HumanoidModel<T>> void addIELayer(HumanoidMobRenderer<T, M> render)
+	private static <T extends LivingEntity, M extends EntityModel<T>>
+	void addIELayer(LivingEntityRenderer<T, M> render, EntityModelSet models)
 	{
-		render.addLayer(new IEBipedLayerRenderer<>(render));
+		render.addLayer(new IEBipedLayerRenderer<>(render, models));
 	}
 
 	@Override
@@ -303,9 +300,8 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(BucketWheelRenderer::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample::clearCache);
 		IEApi.renderCacheClearers.add(ModelItemDynamicOverride.modelCache::clear);
-		//TODO
-		//IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
-		//IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
+		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
+		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
 		IEApi.renderCacheClearers.add(FeedthroughModel.CACHE::invalidateAll);
 	}
 

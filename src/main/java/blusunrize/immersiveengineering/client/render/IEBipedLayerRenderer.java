@@ -8,12 +8,17 @@
 
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
+import blusunrize.immersiveengineering.client.models.ModelPowerpack;
+import blusunrize.immersiveengineering.client.render.entity.IEModelLayers;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
@@ -23,7 +28,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.RenderProperties;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,15 +35,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class IEBipedLayerRenderer<E extends LivingEntity, M extends HumanoidModel<E>> extends RenderLayer<E, M>
+public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<E>> extends RenderLayer<E, M>
 {
-	public static boolean rendersAssigned = false;
 	public static Map<UUID, Pair<ItemStack, Integer>> POWERPACK_PLAYERS = new HashMap<>();
+	private final ModelPowerpack<E> powerpackModel;
+	private final ModelEarmuffs<E> earmuffModel;
 
-	public IEBipedLayerRenderer(RenderLayerParent<E, M> entityRendererIn)
+	public IEBipedLayerRenderer(RenderLayerParent<E, M> entityRendererIn, EntityModelSet models)
 	{
 		super(entityRendererIn);
+		this.powerpackModel = new ModelPowerpack<>(models.bakeLayer(IEModelLayers.POWERPACK));
+		this.earmuffModel = new ModelEarmuffs<>(models.bakeLayer(IEModelLayers.EARMUFFS));
 	}
+
+	private static final ResourceLocation EARMUFF_OVERLAY = ImmersiveEngineering.rl("textures/models/earmuffs_overlay.png");
+	private static final ResourceLocation EARMUFF_TEXTURE = ImmersiveEngineering.rl("textures/models/earmuffs.png");
 
 	@Override
 	@ParametersAreNonnullByDefault
@@ -55,13 +65,12 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends HumanoidMode
 
 		if(!earmuffs.isEmpty())
 		{
-			HumanoidModel<E> model = RenderProperties.get(Misc.earmuffs.get()).getArmorModel(living, earmuffs, EquipmentSlot.HEAD, null);
-			model.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			RenderType type = model.renderType(new ResourceLocation(Misc.earmuffs.get().getArmorTexture(earmuffs, living, EquipmentSlot.HEAD, "overlay")));
-			model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+			earmuffModel.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			RenderType type = earmuffModel.renderType(EARMUFF_OVERLAY);
+			earmuffModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 			int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
-			type = model.renderType(new ResourceLocation(Misc.earmuffs.get().getArmorTexture(earmuffs, living, EquipmentSlot.HEAD, null)));
-			model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
+			type = earmuffModel.renderType(EARMUFF_TEXTURE);
+			earmuffModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
 					(colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
 		}
 
@@ -96,16 +105,15 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends HumanoidMode
 		POWERPACK_PLAYERS.put(living.getUUID(), Pair.of(powerpack, 5));
 	}
 
+	private static final ResourceLocation POWERPACK_TEXTURE = ImmersiveEngineering.rl("textures/models/powerpack.png");
+
 	private void renderPowerpack(ItemStack powerpack, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		if(!powerpack.isEmpty())
 		{
-			HumanoidModel<E> model = RenderProperties.get(Misc.powerpack.asItem()).getArmorModel(living, powerpack, EquipmentSlot.CHEST, null);
-			model.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			RenderType type = model.renderType(
-					new ResourceLocation(Misc.powerpack.asItem().getArmorTexture(powerpack, living, EquipmentSlot.CHEST, null))
-			);
-			model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+			powerpackModel.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			RenderType type = powerpackModel.renderType(POWERPACK_TEXTURE);
+			powerpackModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 		}
 	}
 }

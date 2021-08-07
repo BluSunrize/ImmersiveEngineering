@@ -65,12 +65,6 @@ public class AlloyRecipe extends IESerializableRecipe
 	// Initialized by reload listener
 	public static Map<ResourceLocation, AlloyRecipe> recipeList = Collections.emptyMap();
 
-	@Deprecated
-	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1)
-	{
-		return findRecipe(input0, input1, null);
-	}
-
 	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1, @Nullable AlloyRecipe hint)
 	{
 		if (input0.isEmpty() || input1.isEmpty())

@@ -38,7 +38,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootContext.Builder;
@@ -57,19 +56,6 @@ import java.util.List;
 
 public class IEBlockInterfaces
 {
-	public interface IAttachedIntegerProperies
-	{
-		String[] getIntPropertyNames();
-
-		IntegerProperty getIntProperty(String name);
-
-		int getIntPropertyValue(String name);
-
-		default void setValue(String name, int value)
-		{
-		}
-	}
-
 	public interface IBlockOverlayText
 	{
 		@Nullable

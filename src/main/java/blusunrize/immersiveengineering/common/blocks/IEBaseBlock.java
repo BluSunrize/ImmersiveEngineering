@@ -31,7 +31,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -141,12 +140,6 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		if(state.hasProperty(BlockStateProperties.WATERLOGGED))
 			state = state.setValue(BlockStateProperties.WATERLOGGED, Boolean.FALSE);
 		return state;
-	}
-
-	@SuppressWarnings("unchecked")
-	protected <V extends Comparable<V>> BlockState applyProperty(BlockState in, Property<V> prop, Object val)
-	{
-		return in.setValue(prop, (V)val);
 	}
 
 	public void onIEBlockPlacedBy(BlockPlaceContext context, BlockState state)

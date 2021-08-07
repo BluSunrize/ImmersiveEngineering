@@ -12,19 +12,24 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.monster.Skeleton;
 import net.minecraft.world.entity.monster.Zombie;
 
+import java.util.function.Function;
+
 public abstract class ModelIEArmorBase<T extends LivingEntity> extends HumanoidModel<T>
 {
 	T entityTemp;
 
-	public ModelIEArmorBase(float modelSize, float yOffsetIn, int textureWidthIn, int textureHeightIn)
+	public ModelIEArmorBase(ModelPart p_170679_, Function<ResourceLocation, RenderType> p_170680_)
 	{
-		super(modelSize, yOffsetIn, textureWidthIn, textureHeightIn);
+		super(p_170679_, p_170680_);
 	}
 
 	@Override

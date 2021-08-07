@@ -32,7 +32,6 @@
     "accessors.client.GPUWarningAccess",
     "accessors.client.MinecartRendererAccess",
     "accessors.client.MinecraftAccess",
-    "accessors.client.ModelAccess",
     "accessors.client.NewChatGuiAccess",
     "accessors.client.ParticleManagerAccess",
     "accessors.client.PlayerControllerAccess",

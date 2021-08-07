@@ -295,9 +295,6 @@ public class BlockOverlayUtils
 				if(mapData!=null)
 				{
 					Font font = ClientUtils.font();
-					//TODO no longer true?
-					// Map center is usually only calculated serverside, so we gotta do it manually
-					//mapData.setOrigin(world.getLevelData().getXSpawn(), world.getLevelData().getZSpawn(), mapData.scale);
 					int mapScale = 1<<mapData.scale;
 					float mapRotation = (frameEntity.getRotation()%4)*1.5708f;
 

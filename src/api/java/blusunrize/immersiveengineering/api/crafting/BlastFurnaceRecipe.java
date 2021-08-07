@@ -62,12 +62,6 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	// Initialized by reload listener
 	public static Map<ResourceLocation, BlastFurnaceRecipe> recipeList = Collections.emptyMap();
 
-	@Deprecated
-	public static BlastFurnaceRecipe findRecipe(ItemStack input)
-	{
-		return findRecipe(input, null);
-	}
-
 	public static BlastFurnaceRecipe findRecipe(ItemStack input, @Nullable BlastFurnaceRecipe hint)
 	{
 		if (input.isEmpty())

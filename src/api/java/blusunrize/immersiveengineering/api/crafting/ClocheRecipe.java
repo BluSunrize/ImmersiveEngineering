@@ -80,12 +80,6 @@ public class ClocheRecipe extends IESerializableRecipe
 		return this.outputs.get(0);
 	}
 
-	@Deprecated
-	public static ClocheRecipe findRecipe(ItemStack seed, ItemStack soil)
-	{
-		return findRecipe(seed, soil, null);
-	}
-
 	public static ClocheRecipe findRecipe(ItemStack seed, ItemStack soil, @Nullable ClocheRecipe hint)
 	{
 		if (seed.isEmpty() || soil.isEmpty())

@@ -24,7 +24,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -33,7 +32,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * @author BluSunrize
@@ -44,34 +42,6 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	public PowerpackItem()
 	{
 		super(new Properties().stacksTo(1));
-	}
-
-	@Override
-	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
-	{
-		super.initializeClient(consumer);
-		/*TODO consumer.accept(new IItemRenderProperties()
-		{
-			@Override
-			public <A extends HumanoidModel<?>> A getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, A _default)
-			{
-				//TODO fix unchecked cast
-				return (A)ModelPowerpack.getModel();
-			}
-		});*/
-	}
-
-	@Nullable
-	@Override
-	public EquipmentSlot getEquipmentSlot(ItemStack stack)
-	{
-		return EquipmentSlot.CHEST;
-	}
-
-	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
-	{
-		return "immersiveengineering:textures/models/powerpack.png";
 	}
 
 	@Override

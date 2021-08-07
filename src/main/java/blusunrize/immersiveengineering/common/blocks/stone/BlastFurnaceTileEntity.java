@@ -57,7 +57,7 @@ public class BlastFurnaceTileEntity<T extends BlastFurnaceTileEntity<T>> extends
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0?BlastFurnaceRecipe.findRecipe(stack)!=null: slot==1&&BlastFurnaceFuel.isValidBlastFuel(stack);
+		return slot==0?BlastFurnaceRecipe.findRecipe(stack, null)!=null: slot==1&&BlastFurnaceFuel.isValidBlastFuel(stack);
 	}
 
 	@Override
