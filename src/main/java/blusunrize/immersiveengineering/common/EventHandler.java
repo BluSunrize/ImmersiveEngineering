@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
@@ -29,12 +30,9 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
-import blusunrize.immersiveengineering.common.util.IEDamageSources;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import blusunrize.immersiveengineering.common.util.IEExplosion;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.wires.CapabilityInit;
+import blusunrize.immersiveengineering.common.wires.GlobalNetProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -57,6 +55,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.LecternBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.LevelChunk;
@@ -111,8 +110,16 @@ public class EventHandler
 	@SubscribeEvent
 	public void onCapabilitiesAttachWorld(AttachCapabilitiesEvent<Level> event)
 	{
-		event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "wire_network"),
-				new CapabilityInit.Provider(event.getObject()));
+		event.addCapability(ImmersiveEngineering.rl("wire_network"), new GlobalNetProvider(event.getObject()));
+	}
+
+	@SubscribeEvent
+	public void onCapabilitiesAttachBlockEntity(AttachCapabilitiesEvent<BlockEntity> event)
+	{
+		if(event.getObject() instanceof FurnaceBlockEntity furnace)
+			event.addCapability(ImmersiveEngineering.rl("vanilla_furnace_heater"), new SimpleCapProvider<>(
+					ExternalHeaterHandler.CAPABILITY, new VanillaFurnaceHeater(furnace)
+			));
 	}
 
 	@SubscribeEvent

@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 
 public class CapabilityRedstoneNetwork
 {
@@ -67,10 +66,5 @@ public class CapabilityRedstoneNetwork
 		public void updateInput(byte[] signals, ConnectionPoint cp, Direction side)
 		{
 		}
-	}
-
-	public static void register()
-	{
-		CapabilityManager.INSTANCE.register(RedstoneBundleConnection.class);
 	}
 }

@@ -9,10 +9,9 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
-import net.minecraft.core.Direction;
+import blusunrize.immersiveengineering.common.util.SimpleCapProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -24,12 +23,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -85,18 +81,7 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
-			return new ICapabilityProvider()
-			{
-				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = CapabilityUtils.constantOptional(
-						new EnergyHelper.ItemEnergyStorage(stack));
-
-				@Nonnull
-				@Override
-				public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
-				{
-					return capability==CapabilityEnergy.ENERGY?energyStorage.cast(): LazyOptional.empty();
-				}
-			};
+			return new SimpleCapProvider<>(CapabilityEnergy.ENERGY, new EnergyHelper.ItemEnergyStorage(stack));
 		else
 			return super.initCapabilities(stack, nbt);
 	}

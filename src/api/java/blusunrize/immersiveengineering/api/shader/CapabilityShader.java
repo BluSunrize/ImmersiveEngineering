@@ -16,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -150,11 +149,6 @@ public class CapabilityShader
 			if(!nbt.contains("IE:NoShader"))
 				setShaderItem(ItemStack.of(nbt));
 		}
-	}
-
-	public static void register()
-	{
-		CapabilityManager.INSTANCE.register(ShaderWrapper.class);
 	}
 
 	public static ModelProperty<ShaderWrapper> MODEL_PROPERTY = new ModelProperty<>();

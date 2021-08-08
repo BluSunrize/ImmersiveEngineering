@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
+import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.data.blockstates.BlockStates;
 import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -37,7 +38,7 @@ public class IEDataGenerator
 		CapabilityItemHandler.register();
 		CapabilityFluidHandler.register();
 		CapabilityEnergy.register();
-		CapabilityRedstoneNetwork.register();
+		CapabilityManager.INSTANCE.register(RedstoneBundleConnection.class);
 
 		ExistingFileHelper exHelper = event.getExistingFileHelper();
 		StaticTemplateManager.EXISTING_HELPER = exHelper;

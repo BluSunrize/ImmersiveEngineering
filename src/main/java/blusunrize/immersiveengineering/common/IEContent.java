@@ -17,13 +17,13 @@ import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
+import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ItemAgeAccessor;
-import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
 import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidStackRecipeQuery;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidTagRecipeQuery;
@@ -33,7 +33,7 @@ import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
-import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
+import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
@@ -46,7 +46,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
-import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData;
+import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.ChemthrowerEffects;
@@ -59,13 +59,11 @@ import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
-import blusunrize.immersiveengineering.common.util.DefaultFurnaceAdapter;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEShaders;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
-import blusunrize.immersiveengineering.common.wires.CapabilityInit;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
@@ -85,13 +83,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.ShulkerBoxBlock;
-import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -196,10 +194,11 @@ public class IEContent
 				}
 		);
 
-		CapabilityShader.register();
-		CapabilityInit.register();
-		CapabilitySkyhookData.register();
-		CapabilityRedstoneNetwork.register();
+		CapabilityManager.INSTANCE.register(ShaderWrapper.class);
+		CapabilityManager.INSTANCE.register(GlobalWireNetwork.class);
+		CapabilityManager.INSTANCE.register(SkyhookUserData.class);
+		CapabilityManager.INSTANCE.register(RedstoneBundleConnection.class);
+		CapabilityManager.INSTANCE.register(IExternalHeatable.class);
 		ShaderRegistry.itemShader = IEItems.Misc.shader.get();
 		ShaderRegistry.itemShaderBag = IEItems.Misc.shaderBag;
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.revolver));
@@ -256,8 +255,6 @@ public class IEContent
 		ChemthrowerEffects.register();
 
 		RailgunProjectiles.register();
-
-		ExternalHeaterHandler.registerHeatableAdapter(FurnaceBlockEntity.class, new DefaultFurnaceAdapter());
 
 		ThermoelectricHandler.registerSourceInKelvin(Blocks.MAGMA_BLOCK, 1300);
 		//TODO tags?

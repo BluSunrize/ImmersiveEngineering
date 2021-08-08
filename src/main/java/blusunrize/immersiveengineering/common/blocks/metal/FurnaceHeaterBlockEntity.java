@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
-import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -63,10 +62,9 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IETic
 				BlockEntity tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(fd));
 				int consumed = 0;
 				if(tileEntity!=null)
-					if(tileEntity instanceof IExternalHeatable)
-						consumed = ((IExternalHeatable)tileEntity).doHeatTick(energyStorage.getEnergyStored(), redstonePower);
-					else
-						consumed = heatTile(tileEntity, redstonePower);
+					consumed = tileEntity.getCapability(ExternalHeaterHandler.CAPABILITY)
+							.map(a -> a.doHeatTick(energyStorage.getEnergyStored(), redstonePower))
+							.orElse(0);
 				if(consumed > 0)
 				{
 					this.energyStorage.extractEnergy(consumed, false);
@@ -78,14 +76,6 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IETic
 			setActive(newActive);
 			this.setChanged();
 		}
-	}
-
-	private <T extends BlockEntity> int heatTile(T furnace, boolean redstonePower) {
-		ExternalHeaterHandler.HeatableAdapter<? super T> adapter = ExternalHeaterHandler.getHeatableAdapter(furnace);
-		if(adapter!=null)
-			return adapter.doHeatTick(furnace, energyStorage.getEnergyStored(), redstonePower);
-		else
-			return 0;
 	}
 
 	@Override

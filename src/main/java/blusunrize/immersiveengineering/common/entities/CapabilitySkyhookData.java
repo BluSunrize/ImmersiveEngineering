@@ -14,7 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.IntTag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -126,10 +125,5 @@ public class CapabilitySkyhookData
 			this.dismount = dismount;
 			this.release = release;
 		}
-	}
-
-	public static void register()
-	{
-		CapabilityManager.INSTANCE.register(SkyhookUserData.class);
 	}
 }

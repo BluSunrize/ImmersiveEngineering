@@ -1,50 +1,49 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
-import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.HeatableAdapter;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
 import blusunrize.immersiveengineering.mixin.accessors.FurnaceTEAccess;
 import net.minecraft.world.inventory.ContainerData;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.AbstractFurnaceBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.Optional;
 
-public class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceBlockEntity>
+public record VanillaFurnaceHeater(FurnaceBlockEntity furnace) implements IExternalHeatable
 {
-	boolean canCook(FurnaceBlockEntity tileEntity)
+	boolean canCook()
 	{
-		ItemStack input = tileEntity.getItem(0);
+		ItemStack input = furnace.getItem(0);
 		if(input.isEmpty())
 			return false;
-		RecipeType<? extends AbstractCookingRecipe> type = ((FurnaceTEAccess)tileEntity).getRecipeType();
-		Optional<? extends AbstractCookingRecipe> output = tileEntity.getLevel().getRecipeManager().getRecipeFor(type, tileEntity, tileEntity.getLevel());
+		RecipeType<? extends AbstractCookingRecipe> type = ((FurnaceTEAccess)furnace).getRecipeType();
+		Optional<? extends AbstractCookingRecipe> output = furnace.getLevel().getRecipeManager().getRecipeFor(type, furnace, furnace.getLevel());
 		if(!output.isPresent())
 			return false;
-		ItemStack existingOutput = tileEntity.getItem(2);
+		ItemStack existingOutput = furnace.getItem(2);
 		if(existingOutput.isEmpty())
 			return true;
 		ItemStack outStack = output.get().getResultItem();
 		if(!existingOutput.sameItem(outStack))
 			return false;
 		int stackSize = existingOutput.getCount()+outStack.getCount();
-		return stackSize <= tileEntity.getMaxStackSize()&&stackSize <= outStack.getMaxStackSize();
+		return stackSize <= furnace.getMaxStackSize()&&stackSize <= outStack.getMaxStackSize();
 	}
 
 	@Override
-	public int doHeatTick(FurnaceBlockEntity tileEntity, int energyAvailable, boolean redstone)
+	public int doHeatTick(int energyAvailable, boolean redstone)
 	{
 		int energyConsumed = 0;
-		boolean canCook = canCook(tileEntity);
+		boolean canCook = canCook();
 		if(canCook||redstone)
 		{
-			BlockState tileState = tileEntity.getLevel().getBlockState(tileEntity.getBlockPos());
+			BlockState tileState = furnace.getLevel().getBlockState(furnace.getBlockPos());
 			boolean burning = tileState.getValue(AbstractFurnaceBlock.LIT);
-			ContainerData furnaceData = ((FurnaceTEAccess)tileEntity).getDataAccess();
+			ContainerData furnaceData = ((FurnaceTEAccess)furnace).getDataAccess();
 			int burnTime = furnaceData.get(0);
 			if(burnTime < 200)
 			{
@@ -58,7 +57,7 @@ public class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceBlockEntity>
 					furnaceData.set(0, burnTime+heat);
 					energyConsumed += heat*heatEnergyRatio;
 					if(!burning)
-						updateFurnace(tileEntity, furnaceData.get(0) > 0);
+						updateFurnace(furnaceData.get(0) > 0);
 				}
 			}
 			if(canCook&&furnaceData.get(0) >= 200&&furnaceData.get(2) < 199)
@@ -74,9 +73,9 @@ public class DefaultFurnaceAdapter extends HeatableAdapter<FurnaceBlockEntity>
 		return energyConsumed;
 	}
 
-	public void updateFurnace(BlockEntity tileEntity, boolean active)
+	public void updateFurnace(boolean active)
 	{
-		BlockState oldState = tileEntity.getLevel().getBlockState(tileEntity.getBlockPos());
-		tileEntity.getLevel().setBlockAndUpdate(tileEntity.getBlockPos(), oldState.setValue(AbstractFurnaceBlock.LIT, active));
+		BlockState oldState = furnace.getLevel().getBlockState(furnace.getBlockPos());
+		furnace.getLevel().setBlockAndUpdate(furnace.getBlockPos(), oldState.setValue(AbstractFurnaceBlock.LIT, active));
 	}
 }

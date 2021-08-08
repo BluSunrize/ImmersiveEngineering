@@ -8,10 +8,8 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.world.level.block.entity.BlockEntity;
-
-import java.util.HashMap;
-import java.util.Map;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityInject;
 
 public class ExternalHeaterHandler
 {
@@ -19,11 +17,11 @@ public class ExternalHeaterHandler
 	public static int defaultFurnaceEnergyCost;
 	public static int defaultFurnaceSpeedupCost;
 
-	//TODO cap?
+	@CapabilityInject(IExternalHeatable.class)
+	public static Capability<IExternalHeatable> CAPABILITY;
+
 	/**
-	 * @author BluSunrize - 09.12.2015
-	 * <p>
-	 * An interface to be implemented by TileEntities that want to allow direct interaction with the external heater
+	 * Expose this interface on the null side to allow the external heater to work with your block entity
 	 */
 	public interface IExternalHeatable
 	{
@@ -37,50 +35,4 @@ public class ExternalHeaterHandler
 		 */
 		int doHeatTick(int energyAvailable, boolean redstone);
 	}
-
-	public static Map<Class<? extends BlockEntity>, HeatableAdapter<?>> adapterMap = new HashMap<>();
-
-	/**
-	 * @author BluSunrize - 09.12.2015
-	 * <p>
-	 * An adapter to appyl to TileEntities that can't implement the IExternalHeatable interface
-	 */
-	public abstract static class HeatableAdapter<E extends BlockEntity>
-	{
-		/**
-		 * Called each tick<br>
-		 * Handle fueling as well as possible smelting speed increases here
-		 *
-		 * @param energyAvailable the amount of RF the furnace heater has stored and can supply
-		 * @param canHeat         whether a redstone signal is applied to the furnace heater. To keep the target warm, but not do speed increases
-		 * @return the amount of RF consumed that tick. Should be lower or equal to "energyAvailable", obviously
-		 */
-		public abstract int doHeatTick(E tileEntity, int energyAvailable, boolean canHeat);
-	}
-
-	/**
-	 * registers a HeatableAdapter to a TileEnttiy class. Should really only be used when implementing the interface is not an option
-	 */
-	public static <T extends BlockEntity>
-	void registerHeatableAdapter(Class<T> c, HeatableAdapter<? super T> adapter)
-	{
-		adapterMap.put(c, adapter);
-	}
-
-	/**
-	 * @return a HeatableAdapter for the given TileEntity class
-	 */
-	public static <T extends BlockEntity> HeatableAdapter<? super T> getHeatableAdapter(T tile)
-	{
-		Class<? extends BlockEntity> c = tile.getClass();
-		HeatableAdapter<?> adapter = null;
-		while(adapter==null&&c!=BlockEntity.class&&c.getSuperclass()!=BlockEntity.class)
-		{
-			adapter = adapterMap.get(c);
-			c = (Class<? extends BlockEntity>)c.getSuperclass();
-		}
-		adapterMap.put(tile.getClass(), adapter);
-		return (HeatableAdapter<? super T>)adapter;
-	}
-
 }
