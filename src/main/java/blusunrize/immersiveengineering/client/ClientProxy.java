@@ -66,7 +66,6 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -83,6 +82,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -143,7 +143,6 @@ public class ClientProxy extends CommonProxy
 				stencilEnabled = true;
 			});
 		registerContainersAndScreens();
-		registerBERenders();
 		IEKeybinds.register();
 		ShaderHelper.initShaders();
 		IEDefaultColourHandlers.register();
@@ -326,7 +325,13 @@ public class ClientProxy extends CommonProxy
 
 
 	@SubscribeEvent
-	public static void entityRenderers(EntityRenderersEvent.RegisterRenderers event)
+	public static void registerRenders(EntityRenderersEvent.RegisterRenderers event)
+	{
+		registerBERenders(event);
+		registerEntityRenders(event);
+	}
+
+	private static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event)
 	{
 		registerEntityRenderingHandler(event, IEEntityTypes.REVOLVERSHOT, RevolvershotRenderer::new);
 		registerEntityRenderingHandler(event, IEEntityTypes.FLARE_REVOLVERSHOT, RevolvershotRenderer::new);
@@ -377,41 +382,42 @@ public class ClientProxy extends CommonProxy
 	}
 
 	private static <T extends BlockEntity>
-	void registerBERenderNoContext(BlockEntityType<? extends T> type, Supplier<BlockEntityRenderer<T>> render)
+	void registerBERenderNoContext(
+			RegisterRenderers event, BlockEntityType<? extends T> type, Supplier<BlockEntityRenderer<T>> render
+	)
 	{
-		BlockEntityRenderers.register(type, $ -> render.get());
+		event.registerBlockEntityRenderer(type, $ -> render.get());
 	}
 
-	//TODO move to event after next Forge update
-	private static void registerBERenders()
+	public static void registerBERenders(RegisterRenderers event)
 	{
-		registerBERenderNoContext(IETileTypes.CHARGING_STATION.get(), ChargingStationRenderer::new);
-		registerBERenderNoContext(IETileTypes.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
-		registerBERenderNoContext(IETileTypes.TESLACOIL.get(), TeslaCoilRenderer::new);
-		registerBERenderNoContext(IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
-		registerBERenderNoContext(IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
-		registerBERenderNoContext(IETileTypes.CLOCHE.get(), ClocheRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.CHARGING_STATION.get(), ChargingStationRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.TESLACOIL.get(), TeslaCoilRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.CLOCHE.get(), ClocheRenderer::new);
 		// MULTIBLOCKS
-		registerBERenderNoContext(IETileTypes.METAL_PRESS.master(), MetalPressRenderer::new);
-		registerBERenderNoContext(IETileTypes.CRUSHER.master(), CrusherRenderer::new);
-		registerBERenderNoContext(IETileTypes.SAWMILL.master(), SawmillRenderer::new);
-		registerBERenderNoContext(IETileTypes.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
-		registerBERenderNoContext(IETileTypes.SILO.master(), SiloRenderer::new);
-		registerBERenderNoContext(IETileTypes.SQUEEZER.master(), SqueezerRenderer::new);
-		registerBERenderNoContext(IETileTypes.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
-		registerBERenderNoContext(IETileTypes.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
-		registerBERenderNoContext(IETileTypes.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
-		registerBERenderNoContext(IETileTypes.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);
-		registerBERenderNoContext(IETileTypes.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
-		registerBERenderNoContext(IETileTypes.MIXER.master(), MixerRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.METAL_PRESS.master(), MetalPressRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.CRUSHER.master(), CrusherRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.SAWMILL.master(), SawmillRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.SILO.master(), SiloRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.SQUEEZER.master(), SqueezerRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.MIXER.master(), MixerRenderer::new);
 		//WOOD
-		registerBERenderNoContext(IETileTypes.WATERMILL.get(), WatermillRenderer::new);
-		registerBERenderNoContext(IETileTypes.WINDMILL.get(), WindmillRenderer::new);
-		registerBERenderNoContext(IETileTypes.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.WATERMILL.get(), WatermillRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.WINDMILL.get(), WindmillRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
 		//STONE
-		registerBERenderNoContext(IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
+		registerBERenderNoContext(event, IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
 		//CLOTH
-		BlockEntityRenderers.register(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
+		event.registerBlockEntityRenderer(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
