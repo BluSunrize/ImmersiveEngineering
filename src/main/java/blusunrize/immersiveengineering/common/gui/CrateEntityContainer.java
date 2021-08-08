@@ -22,7 +22,7 @@ public class CrateEntityContainer extends CrateContainer
 
 	public CrateEntityContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CrateMinecartEntity entity)
 	{
-		super(type, id, inventoryPlayer, entity.getContainedTileEntity());
+		super(type, id, inventoryPlayer, entity.getContainedBlockEntity());
 		this.wrappingEntity = entity;
 	}
 

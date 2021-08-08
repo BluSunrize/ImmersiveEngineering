@@ -41,7 +41,7 @@ import java.util.function.Consumer;
 
 public class IEPotions
 {
-	public static final DeferredRegister<MobEffect> REGISTER = DeferredRegister.create(ForgeRegistries.POTIONS, Lib.MODID);
+	public static final DeferredRegister<MobEffect> REGISTER = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Lib.MODID);
 
 	public static RegistryObject<MobEffect> flammable = REGISTER.register(
 			"flammable", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x8f3f1f, 0, false, 0, true, true)

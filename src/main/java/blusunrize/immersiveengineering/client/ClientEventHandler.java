@@ -628,7 +628,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						BlockOverlayUtils.renderOreveinMapOverlays(transform, (ItemFrame)entity, mop, scaledWidth, scaledHeight);
 					else if(entity instanceof IEMinecartEntity)
 					{
-						IEBaseTileEntity containedTile = ((IEMinecartEntity<?>)entity).getContainedTileEntity();
+						IEBaseTileEntity containedTile = ((IEMinecartEntity<?>)entity).getContainedBlockEntity();
 						if(containedTile instanceof IBlockOverlayText)
 						{
 							Component[] text = ((IBlockOverlayText)containedTile).getOverlayText(player, mop, false);
@@ -1023,7 +1023,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			final String key = "renderer";
 			final String suffix = "tencil enabled in Immersive Engineering config";
 			Map<String, String> oldWarnings = gpuWarning.getWarnings();
-			;
 			if(!oldWarnings.containsKey(key)||!oldWarnings.get(key).endsWith(suffix))
 			{
 				ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();

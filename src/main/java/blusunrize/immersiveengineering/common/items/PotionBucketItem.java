@@ -66,7 +66,7 @@ public class PotionBucketItem extends IEBaseItem
 	{
 		if(!allowdedIn(group))
 			return;
-		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTION_TYPES.getValues());
+		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
 		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
 		for(Potion p : sortedPotions)
 			if(p!=Potions.WATER)

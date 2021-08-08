@@ -120,10 +120,9 @@ public class EventHandler
 	{
 		Player player = event.getPlayer();
 		ItemStack stack = event.getItemStack();
-		if(!(event.getTarget() instanceof AbstractMinecart))
+		if(!(event.getTarget() instanceof AbstractMinecart cart))
 			return;
-		AbstractMinecart cart = (AbstractMinecart)event.getTarget();
-		if(!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
+		if(stack.getItem() instanceof IShaderItem)
 		{
 			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 			{

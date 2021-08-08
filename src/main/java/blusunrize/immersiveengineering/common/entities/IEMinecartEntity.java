@@ -38,25 +38,25 @@ import java.util.function.Supplier;
 
 public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends AbstractMinecart implements MenuProvider
 {
-	protected T containedTileEntity;
+	protected T containedBlockEntity;
 
 	protected IEMinecartEntity(EntityType<?> type, Level world, double x, double y, double z)
 	{
 		super(type, world, x, y, z);
-		this.containedTileEntity = getTileProvider().get();
+		this.containedBlockEntity = getTileProvider().get();
 	}
 
 	protected IEMinecartEntity(EntityType<?> type, Level world)
 	{
 		super(type, world);
-		this.containedTileEntity = getTileProvider().get();
+		this.containedBlockEntity = getTileProvider().get();
 	}
 
 	protected abstract Supplier<T> getTileProvider();
 
-	public T getContainedTileEntity()
+	public T getContainedBlockEntity()
 	{
-		return containedTileEntity;
+		return containedBlockEntity;
 	}
 
 	public abstract void writeTileToItem(ItemStack itemStack);
@@ -72,8 +72,12 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	@Override
 	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
 	{
-		if(this.isAlive()&&this.containedTileEntity!=null)
-			return this.containedTileEntity.getCapability(capability, facing);
+		if(this.isAlive()&&this.containedBlockEntity!=null)
+		{
+			LazyOptional<T> beCap = this.containedBlockEntity.getCapability(capability, facing);
+			if(beCap.isPresent())
+				return beCap;
+		}
 		return super.getCapability(capability, facing);
 	}
 
@@ -91,31 +95,21 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 		}
 	}
 
-	protected abstract void invalidateCaps();
-
 	@Override
 	public int getComparatorLevel()
 	{
-		if(this.containedTileEntity instanceof IComparatorOverride)
-			return ((IComparatorOverride)this.containedTileEntity).getComparatorInputOverride();
+		if(this.containedBlockEntity instanceof IComparatorOverride)
+			return ((IComparatorOverride)this.containedBlockEntity).getComparatorInputOverride();
 		return super.getComparatorLevel();
-	}
-
-	@Override
-	public void remove(boolean keepData)
-	{
-		super.remove(keepData);
-		if(!keepData)
-			invalidateCaps();
 	}
 
 	@Override
 	public InteractionResult interact(Player player, InteractionHand hand)
 	{
 		InteractionResult superResult = super.interact(player, hand);
-		if(superResult == InteractionResult.SUCCESS)
+		if(superResult==InteractionResult.SUCCESS)
 			return superResult;
-		if(!level.isClientSide&&this.containedTileEntity instanceof IInteractionObjectIE)
+		if(!level.isClientSide&&this.containedBlockEntity instanceof IInteractionObjectIE)
 		{
 			NetworkHooks.openGui((ServerPlayer)player, this, buffer -> buffer.writeInt(this.getId()));
 			return InteractionResult.SUCCESS;
@@ -133,16 +127,16 @@ public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends Abstr
 	protected void addAdditionalSaveData(CompoundTag compound)
 	{
 		super.addAdditionalSaveData(compound);
-		if(this.containedTileEntity!=null)
-			this.containedTileEntity.writeCustomNBT(compound, false);
+		if(this.containedBlockEntity!=null)
+			this.containedBlockEntity.writeCustomNBT(compound, false);
 	}
 
 	@Override
 	protected void readAdditionalSaveData(CompoundTag compound)
 	{
 		super.readAdditionalSaveData(compound);
-		this.containedTileEntity = getTileProvider().get();
-		this.containedTileEntity.readCustomNBT(compound, false);
+		this.containedBlockEntity = getTileProvider().get();
+		this.containedBlockEntity.readCustomNBT(compound, false);
 	}
 
 	@Override

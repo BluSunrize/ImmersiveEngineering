@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseMinecart;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecartRendererAccess;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
@@ -22,6 +22,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.MinecartModel;
+import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -32,26 +33,30 @@ import net.minecraft.client.renderer.entity.MinecartRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class ShaderMinecartRenderer<T extends AbstractMinecart> extends MinecartRenderer<T>
 {
 	public static Int2ObjectMap<ItemStack> shadedCarts = new Int2ObjectOpenHashMap<>();
-	public static boolean rendersReplaced = false;
 
 	private final MinecartRenderer<T> baseRenderer;
+	private final MinecartModel<?> baseModel;
 
 	public ShaderMinecartRenderer(MinecartRenderer<T> base, Context manager)
 	{
-		super(manager);
+		//TODO test with non-basic carts
+		super(manager, ModelLayers.MINECART);
 		this.baseRenderer = base;
+		this.baseModel = getModel();
 	}
 
 	@Override
@@ -70,8 +75,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 		{
 			matrixStackIn.pushPose();
 			applyTransforms(matrixStackIn, entity, partialTicks, entityYaw);
-			MinecartModel<?> model = getModel();
-			List<ModelPart> boxList = model.root().getAllParts().collect(Collectors.toList());
+			List<ModelPart> boxList = baseModel.root().getAllParts().collect(Collectors.toList());
 			//TODO check magic numbers
 			boxList.get(5).y = 4.1F;
 			for(int part = 0; part < boxList.size()-1; part++)
@@ -94,11 +98,12 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 							));
 
 							ModelPart subModel = boxList.get(part);
-							boolean oldMirrored = subModel.mirror;
-							subModel.mirror = ((ShaderCaseMinecart)sCase).mirrorSideForPass[pass];
+							//TODO why was this needed?
+							//boolean oldMirrored = subModel.mirror;
+							//subModel.mirror = ((ShaderCaseMinecart)sCase).mirrorSideForPass[pass];
 							subModel.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn,
 									OverlayTexture.NO_OVERLAY, col.x(), col.y(), col.z(), col.w());
-							subModel.mirror = oldMirrored;
+							//subModel.mirror = oldMirrored;
 
 							matrixStackIn.popPose();
 						}
@@ -113,7 +118,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 		if(model instanceof MinecartModel<?>)
 			return (MinecartModel<?>)model;
 		else
-			return new MinecartModel<>();
+			return (MinecartModel<?>)this.model;
 	}
 
 	private void applyTransforms(PoseStack matrixStackIn, T entityIn, float partialTicks, float entityYaw)
@@ -162,18 +167,19 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 		matrixStackIn.scale(-1.0F, -1.0F, 1.0F);
 	}
 
-	public static <T extends Entity> void overrideModelIfMinecart(EntityType<T> type)
+	public static void overrideMinecartModels()
 	{
 		Minecraft mc = Minecraft.getInstance();
 		EntityRenderDispatcher rendererManager = mc.getEntityRenderDispatcher();
-		EntityRenderer<T> render = (EntityRenderer<T>)rendererManager.renderers.get(type);
-		if(render instanceof MinecartRenderer<?>)
-			rendererManager.register(
-					type,
-					// Raw types to work around generics issues
-					new ShaderMinecartRenderer((MinecartRenderer<?>)render, new Context(
-							rendererManager, mc.getItemRenderer(), mc.getResourceManager(), mc.getEntityModels(), mc.font
-					))
-			);
+		Map<EntityType<?>, EntityRenderer<?>> mutableRenderers = new HashMap<>(rendererManager.renderers);
+		for(Entry<EntityType<?>, EntityRenderer<?>> entry : rendererManager.renderers.entrySet())
+			if(entry.getValue() instanceof MinecartRenderer<?> minecartRender)
+				mutableRenderers.put(
+						entry.getKey(),
+						new ShaderMinecartRenderer<>(minecartRender, new Context(
+								rendererManager, mc.getItemRenderer(), mc.getResourceManager(), mc.getEntityModels(), mc.font
+						))
+				);
+		rendererManager.renderers = ImmutableMap.copyOf(mutableRenderers);
 	}
 }

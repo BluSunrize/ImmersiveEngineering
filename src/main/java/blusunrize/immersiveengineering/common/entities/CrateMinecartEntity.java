@@ -59,7 +59,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	public void writeTileToItem(ItemStack itemStack)
 	{
 		CompoundTag tag = new CompoundTag();
-		ContainerHelper.saveAllItems(tag, containedTileEntity.getInventory());
+		ContainerHelper.saveAllItems(tag, containedBlockEntity.getInventory());
 		if(!tag.isEmpty())
 			itemStack.setTag(tag);
 	}
@@ -67,7 +67,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	@Override
 	public void readTileFromItem(LivingEntity placer, ItemStack itemStack)
 	{
-		this.containedTileEntity.readOnPlacement(placer, itemStack);
+		this.containedBlockEntity.readOnPlacement(placer, itemStack);
 	}
 
 	@Override
@@ -81,10 +81,11 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	}
 
 	@Override
-	protected void invalidateCaps()
+	public void invalidateCaps()
 	{
-		if(this.containedTileEntity!=null)
-			this.containedTileEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).invalidate();
+		super.invalidateCaps();
+		if(this.containedBlockEntity!=null)
+			this.containedBlockEntity.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).invalidate();
 	}
 
 	@Nonnull

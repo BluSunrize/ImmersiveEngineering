@@ -74,7 +74,7 @@ public class PotionFluid extends Fluid
 		ResourceLocation name = ResourceLocation.tryParse(tag.getString("Potion"));
 		if(name==null)
 			return Potions.WATER;
-		Potion result = ForgeRegistries.POTION_TYPES.getValue(name);
+		Potion result = ForgeRegistries.POTIONS.getValue(name);
 		return result==Potions.EMPTY?Potions.WATER: result;
 	}
 

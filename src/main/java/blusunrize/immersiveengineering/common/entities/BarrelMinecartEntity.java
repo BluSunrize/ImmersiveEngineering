@@ -57,7 +57,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	public void writeTileToItem(ItemStack itemStack)
 	{
 		CompoundTag tag = new CompoundTag();
-		this.containedTileEntity.writeTank(tag, true);
+		this.containedBlockEntity.writeTank(tag, true);
 		if(!tag.isEmpty())
 			itemStack.setTag(tag);
 	}
@@ -65,7 +65,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	@Override
 	public void readTileFromItem(LivingEntity placer, ItemStack itemStack)
 	{
-		this.containedTileEntity.readOnPlacement(placer, itemStack);
+		this.containedBlockEntity.readOnPlacement(placer, itemStack);
 	}
 
 	@Override
@@ -76,7 +76,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 		ItemStack itemstack = player.getItemInHand(hand);
 		if(FluidUtil.getFluidHandler(itemstack).isPresent())
 		{
-			this.containedTileEntity.interact(null, player, hand, itemstack, 0, 0, 0);
+			this.containedBlockEntity.interact(null, player, hand, itemstack, 0, 0, 0);
 			return InteractionResult.SUCCESS;//always return true to avoid placing lava in the world
 		}
 		return InteractionResult.PASS;
@@ -89,10 +89,11 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	}
 
 	@Override
-	protected void invalidateCaps()
+	public void invalidateCaps()
 	{
-		if(this.containedTileEntity!=null)
-			this.containedTileEntity.getCapability(FLUID_HANDLER_CAPABILITY).invalidate();
+		super.invalidateCaps();
+		if(this.containedBlockEntity!=null)
+			this.containedBlockEntity.getCapability(FLUID_HANDLER_CAPABILITY).invalidate();
 	}
 
 	@Override

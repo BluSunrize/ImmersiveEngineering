@@ -221,18 +221,6 @@ public class ClientProxy extends CommonProxy
 			mc().getSoundManager().stop(sound);
 	}
 
-	@Override
-	public void onWorldLoad()
-	{
-		/*TODO if(!ShaderMinecartRenderer.rendersReplaced)
-		{
-			EntityRenderDispatcher rendererManager = mc().getEntityRenderDispatcher();
-			for(EntityType<?> type : rendererManager.renderers.keySet())
-				ShaderMinecartRenderer.overrideModelIfMinecart(type);
-			ShaderMinecartRenderer.rendersReplaced = true;
-		}*/
-	}
-
 	@SubscribeEvent
 	public static void registerLayers(EntityRenderersEvent.AddLayers ev)
 	{
@@ -249,6 +237,7 @@ public class ClientProxy extends CommonProxy
 			if(render!=null)
 				addIELayer(render, ev.getEntityModels());
 		}
+		ShaderMinecartRenderer.overrideMinecartModels();
 	}
 
 	private static <T extends LivingEntity, M extends EntityModel<T>>

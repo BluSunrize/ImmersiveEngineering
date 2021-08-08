@@ -11,9 +11,11 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
+import blusunrize.immersiveengineering.client.render.entity.ShaderMinecartRenderer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
@@ -65,8 +67,8 @@ public class MessageMinecartShaderSync implements IMessage
 				LazyOptional<ShaderWrapper> cap = entity.getCapability(CapabilityShader.SHADER_CAPABILITY);
 				cap.ifPresent(handler ->
 						ImmersiveEngineering.packetHandler.send(PacketDistributor.DIMENSION.with(world::dimension),
-								new MessageMinecartShaderSync(entity, handler))
-				);
+								new MessageMinecartShaderSync(entity, handler)
+						));
 			});
 		}
 		else
@@ -75,9 +77,8 @@ public class MessageMinecartShaderSync implements IMessage
 				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
 					Entity entity = world.getEntity(entityID);
-					//TODO
-					//if(entity instanceof AbstractMinecart)
-					//	ShaderMinecartRenderer.shadedCarts.put(entityID, shader);
+					if(entity instanceof AbstractMinecart)
+						ShaderMinecartRenderer.shadedCarts.put(entityID, shader);
 				}
 			});
 	}
