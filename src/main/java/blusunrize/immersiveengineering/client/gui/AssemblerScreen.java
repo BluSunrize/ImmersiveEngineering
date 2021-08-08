@@ -17,9 +17,9 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
-import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -43,7 +43,7 @@ import java.util.function.IntConsumer;
 public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("assembler");
-	public AssemblerTileEntity tile;
+	public AssemblerBlockEntity tile;
 
 	public AssemblerScreen(AssemblerContainer container, Inventory inventoryPlayer, Component title)
 	{
@@ -99,7 +99,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		IntConsumer sendButtonClick = id -> {
 			CompoundTag tag = new CompoundTag();
 			tag.putInt("buttonID", id);
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile.master(), tag));
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile.master(), tag));
 		};
 		for(int i = 0; i < 3; ++i)
 		{

@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.CapacitorTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.EnergyCallbacks;
 
-public class CapacitorCallbacks extends CallbackOwner<CapacitorTileEntity>
+public class CapacitorCallbacks extends CallbackOwner<CapacitorBlockEntity>
 {
 	public CapacitorCallbacks(String voltage)
 	{
-		super(CapacitorTileEntity.class, "capacitor_"+voltage);
+		super(CapacitorBlockEntity.class, "capacitor_"+voltage);
 		addAdditional(EnergyCallbacks.INSTANCE);
 	}
 }

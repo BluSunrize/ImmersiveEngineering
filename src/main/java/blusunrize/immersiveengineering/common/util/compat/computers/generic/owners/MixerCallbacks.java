@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
@@ -18,17 +18,17 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class MixerCallbacks extends MultiblockCallbackOwner<MixerTileEntity>
+public class MixerCallbacks extends MultiblockCallbackOwner<MixerBlockEntity>
 {
 	public MixerCallbacks()
 	{
-		super(MixerTileEntity.class, "mixer");
+		super(MixerBlockEntity.class, "mixer");
 		addAdditional(PoweredMBCallbacks.INSTANCE);
 		addAdditional(new InventoryCallbacks<>(te -> te.inventory, 0, 12, "input"));
 	}
 
 	@ComputerCallable
-	public FluidStack getFluid(CallbackEnvironment<MixerTileEntity> env, @IndexArgument int index)
+	public FluidStack getFluid(CallbackEnvironment<MixerBlockEntity> env, @IndexArgument int index)
 	{
 		List<FluidStack> fluids = env.getObject().tank.fluids;
 		if(index >= 0&&index < fluids.size())
@@ -38,13 +38,13 @@ public class MixerCallbacks extends MultiblockCallbackOwner<MixerTileEntity>
 	}
 
 	@ComputerCallable
-	public int getCapacity(CallbackEnvironment<MixerTileEntity> env)
+	public int getCapacity(CallbackEnvironment<MixerBlockEntity> env)
 	{
 		return env.getObject().tank.getCapacity();
 	}
 
 	@ComputerCallable
-	public int getNumFluids(CallbackEnvironment<MixerTileEntity> env)
+	public int getNumFluids(CallbackEnvironment<MixerBlockEntity> env)
 	{
 		return env.getObject().tank.fluids.size();
 	}

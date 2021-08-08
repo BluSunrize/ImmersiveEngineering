@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireApi;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -30,11 +30,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity>
+public class FeedthroughBlock extends ConnectorBlock<FeedthroughBlockEntity>
 {
 	public FeedthroughBlock(Properties props)
 	{
-		super(props, IETileTypes.FEEDTHROUGH);
+		super(props, IEBlockEntities.FEEDTHROUGH);
 	}
 
 	@Override
@@ -49,9 +49,9 @@ public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		BlockEntity tile = world.getBlockEntity(pos);
-		if(tile instanceof FeedthroughTileEntity&&!world.isClientSide&&newState.getBlock()!=state.getBlock())
+		if(tile instanceof FeedthroughBlockEntity&&!world.isClientSide&&newState.getBlock()!=state.getBlock())
 		{
-			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)tile;
+			FeedthroughBlockEntity feedthrough = (FeedthroughBlockEntity)tile;
 			if(!feedthrough.currentlyDisassembling)
 			{
 				Direction dir = feedthrough.getFacing();
@@ -64,8 +64,8 @@ public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity
 						continue;
 					BlockPos posForOffset = centerPos.relative(dir, offset);
 					BlockEntity tileAtOffset = world.getBlockEntity(posForOffset);
-					if(tileAtOffset instanceof FeedthroughTileEntity)
-						((FeedthroughTileEntity)tileAtOffset).currentlyDisassembling = true;
+					if(tileAtOffset instanceof FeedthroughBlockEntity)
+						((FeedthroughBlockEntity)tileAtOffset).currentlyDisassembling = true;
 					if(offset==0)
 						world.setBlockAndUpdate(posForOffset, feedthrough.stateForMiddle);
 					else
@@ -73,7 +73,7 @@ public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity
 						BlockState connector = WireApi.INFOS.get(feedthrough.reference).conn.get()
 								.setValue(IEProperties.FACING_ALL, offset < 0?dir: dir.getOpposite());
 						ConnectionPoint cpOnFeedthrough = new ConnectionPoint(centerPos,
-								FeedthroughTileEntity.getIndexForOffset(offset));
+								FeedthroughBlockEntity.getIndexForOffset(offset));
 						GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
 						List<Connection> removedConnections = new ArrayList<>();
 						global.removeAllConnectionsAt(cpOnFeedthrough, removedConnections::add);

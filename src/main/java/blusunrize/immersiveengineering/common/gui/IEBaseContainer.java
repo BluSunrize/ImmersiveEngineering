@@ -36,7 +36,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		super(type, id);
 		this.tile = tile;
 		if(tile instanceof IIEInventory)
-			this.inv = new TileInventory(tile, this);
+			this.inv = new BlockEntityInventory(tile, this);
 	}
 
 	@Override

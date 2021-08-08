@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.gui.info.BlueprintOutputArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -32,7 +32,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("workbench");
 
-	private final ModWorkbenchTileEntity workbench;
+	private final ModWorkbenchBlockEntity workbench;
 
 	public ModWorkbenchScreen(ModWorkbenchContainer container, Inventory inventoryPlayer, Component title)
 	{
@@ -44,7 +44,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	@Override
 	protected void sendMessage(CompoundTag data)
 	{
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.workbench, data));
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(this.workbench, data));
 	}
 
 	@Nonnull

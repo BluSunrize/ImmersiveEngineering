@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -24,12 +24,12 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class DieselGeneratorRenderer extends IEBlockEntityRenderer<DieselGeneratorTileEntity>
+public class DieselGeneratorRenderer extends IEBlockEntityRenderer<DieselGeneratorBlockEntity>
 {
 	public static DynamicModel<Direction> FAN;
 
 	@Override
-	public void render(DieselGeneratorTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(DieselGeneratorBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;

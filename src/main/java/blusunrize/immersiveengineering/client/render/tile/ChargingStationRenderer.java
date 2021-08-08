@@ -9,17 +9,17 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.ChargingStationTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ChargingStationBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 
-public class ChargingStationRenderer extends IEBlockEntityRenderer<ChargingStationTileEntity>
+public class ChargingStationRenderer extends IEBlockEntityRenderer<ChargingStationBlockEntity>
 {
 	@Override
-	public void render(ChargingStationTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ChargingStationBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 		{

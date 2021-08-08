@@ -9,19 +9,19 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceTileEntity<?>>
+public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceBlockEntity<?>>
 {
-	public final FurnaceLikeTileEntity<?, ?>.StateView state;
+	public final FurnaceLikeBlockEntity<?, ?>.StateView state;
 
 	public BlastFurnaceContainer(
-			MenuType<?> type, int id, Inventory inventoryPlayer, BlastFurnaceTileEntity<?> tile
+			MenuType<?> type, int id, Inventory inventoryPlayer, BlastFurnaceBlockEntity<?> tile
 	)
 	{
 		super(type, inventoryPlayer, tile, id);

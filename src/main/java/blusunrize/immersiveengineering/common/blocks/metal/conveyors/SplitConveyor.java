@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -85,7 +85,7 @@ public class SplitConveyor extends BasicConveyor
 			BlockPos nextPos = getTile().getBlockPos().relative(redirect);
 			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getZ(): entity.getX()));
 			BlockEntity inventoryTile = getTile().getLevel().getBlockEntity(nextPos);
-			if(distNext < .7&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
+			if(distNext < .7&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorBlockEntity))
 			{
 				ItemStack stack = entity.getItem();
 				if(!stack.isEmpty())
@@ -120,9 +120,9 @@ public class SplitConveyor extends BasicConveyor
 				if(getTile().getLevel().hasChunkAt(nextPos))
 				{
 					BlockEntity nextTile = getTile().getLevel().getBlockEntity(nextPos);
-					if(!(nextTile instanceof IConveyorTile))
+					if(!(nextTile instanceof IConveyorBlockEntity))
 						nextOutputLeft = !nextOutputLeft;
-					else if(((IConveyorTile)nextTile).getFacing()!=this.getOutputFace())
+					else if(((IConveyorBlockEntity)nextTile).getFacing()!=this.getOutputFace())
 						nextOutputLeft = !nextOutputLeft;
 				}
 			}
@@ -269,8 +269,8 @@ public class SplitConveyor extends BasicConveyor
 				here.relative(outputFace, -1),
 		})
 		{
-			BlockEntity tile = SafeChunkUtils.getSafeTE(getTile().getLevel(), outputPos);
-			if(tile instanceof IConveyorTile&&((IConveyorTile)tile).getConveyorSubtype().isBlocked())
+			BlockEntity tile = SafeChunkUtils.getSafeBE(getTile().getLevel(), outputPos);
+			if(tile instanceof IConveyorBlockEntity&&((IConveyorBlockEntity)tile).getConveyorSubtype().isBlocked())
 				return true;
 		}
 		return false;

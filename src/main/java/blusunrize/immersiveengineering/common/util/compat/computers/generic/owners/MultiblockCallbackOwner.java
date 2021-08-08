@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 
-public abstract class MultiblockCallbackOwner<T extends MultiblockPartTileEntity<T>> extends CallbackOwner<T>
+public abstract class MultiblockCallbackOwner<T extends MultiblockPartBlockEntity<T>> extends CallbackOwner<T>
 {
 	public MultiblockCallbackOwner(Class<T> callbackType, String name)
 	{

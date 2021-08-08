@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client;
 
-import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.mixin.accessors.client.FontResourceManagerAccess;
 import blusunrize.immersiveengineering.mixin.accessors.client.MinecraftAccess;
 import com.google.common.base.Preconditions;
@@ -106,9 +106,9 @@ public class ClientUtils
 		return r<<16|g<<8|b;
 	}
 
-	public static IETileSound generatePositionedIESound(SoundEvent soundEvent, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
+	public static IEBlockEntitySound generatePositionedIESound(SoundEvent soundEvent, float volume, float pitch, boolean repeat, int delay, BlockPos pos)
 	{
-		IETileSound sound = new IETileSound(soundEvent, volume, pitch, repeat, delay, pos, Attenuation.LINEAR, SoundSource.BLOCKS);
+		IEBlockEntitySound sound = new IEBlockEntitySound(soundEvent, volume, pitch, repeat, delay, pos, Attenuation.LINEAR, SoundSource.BLOCKS);
 		sound.evaluateVolume();
 		ClientUtils.mc().getSoundManager().play(sound);
 		return sound;

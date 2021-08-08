@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -104,8 +104,8 @@ public class VerticalConveyor extends BasicConveyor
 	static boolean renderBottomBelt(BlockEntity tile, Direction facing)
 	{
 		BlockEntity te = tile.getLevel().getBlockEntity(tile.getBlockPos().offset(0, -1, 0));
-		if(te instanceof IConveyorTile&&((IConveyorTile)te).getConveyorSubtype()!=null)
-			for(Direction f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections())
+		if(te instanceof IConveyorBlockEntity&&((IConveyorBlockEntity)te).getConveyorSubtype()!=null)
+			for(Direction f : ((IConveyorBlockEntity)te).getConveyorSubtype().sigTransportDirections())
 				if(f==Direction.UP)
 					return false;
 		for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
@@ -117,18 +117,18 @@ public class VerticalConveyor extends BasicConveyor
 	protected static boolean isInwardConveyor(BlockEntity tile, Direction f)
 	{
 		BlockEntity te = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(f));
-		if(te instanceof IConveyorTile)
+		if(te instanceof IConveyorBlockEntity)
 		{
-			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
+			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorSubtype();
 			if(sub!=null)
 				for(Direction f2 : sub.sigTransportDirections())
 					if(f==f2.getOpposite())
 						return true;
 		}
 		te = tile.getLevel().getBlockEntity(tile.getBlockPos().offset(0, -1, 0).relative(f));
-		if(te instanceof IConveyorTile)
+		if(te instanceof IConveyorBlockEntity)
 		{
-			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
+			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorSubtype();
 			if(sub!=null)
 			{
 				int b = 0;
@@ -198,7 +198,7 @@ public class VerticalConveyor extends BasicConveyor
 		}
 		//Little boost at the top of a conveyor to help players and minecarts to get off
 		BlockPos upForward = getTile().getBlockPos().offset(0, 1, 0);
-		if(contact&&!(Utils.getExistingTileEntity(getTile().getLevel(), upForward) instanceof IConveyorTile))
+		if(contact&&!(Utils.getExistingTileEntity(getTile().getLevel(), upForward) instanceof IConveyorBlockEntity))
 			vY *= 2.25;
 		return new Vec3(vX, vY, vZ);
 	}
@@ -250,12 +250,12 @@ public class VerticalConveyor extends BasicConveyor
 		entity.setDeltaMovement(vec);
 
 		if(!contact)
-			ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)getTile());
+			ConveyorHandler.applyMagnetSuppression(entity, (IConveyorBlockEntity)getTile());
 		else
 		{
 			BlockPos posTop = getTile().getBlockPos().offset(0, 1, 0);
-			if(!((getTile().getLevel().getBlockEntity(posTop) instanceof IConveyorTile)||(getTile().getLevel().isEmptyBlock(posTop)&&(getTile().getLevel().getBlockEntity(posTop.relative(getFacing())) instanceof IConveyorTile))))
-				ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)getTile());
+			if(!((getTile().getLevel().getBlockEntity(posTop) instanceof IConveyorBlockEntity)||(getTile().getLevel().isEmptyBlock(posTop)&&(getTile().getLevel().getBlockEntity(posTop.relative(getFacing())) instanceof IConveyorBlockEntity))))
+				ConveyorHandler.revertMagnetSuppression(entity, (IConveyorBlockEntity)getTile());
 		}
 
 		if(entity instanceof ItemEntity)
@@ -273,7 +273,7 @@ public class VerticalConveyor extends BasicConveyor
 				inventoryTile = getTile().getLevel().getBlockEntity(getTile().getBlockPos().offset(0, 1, 0));
 				if(!getTile().getLevel().isClientSide)
 				{
-					if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
+					if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorBlockEntity))
 					{
 						ItemStack stack = item.getItem();
 						if(!stack.isEmpty())

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
@@ -20,10 +20,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraftforge.fluids.FluidStack;
 
-public class SheetmetalTankRenderer extends IEBlockEntityRenderer<SheetmetalTankTileEntity>
+public class SheetmetalTankRenderer extends IEBlockEntityRenderer<SheetmetalTankBlockEntity>
 {
 	@Override
-	public void render(SheetmetalTankTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(SheetmetalTankBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!tile.formed||tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;

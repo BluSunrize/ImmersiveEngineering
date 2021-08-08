@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.SawmillTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.SawmillTileEntity.SawmillProcess;
+import blusunrize.immersiveengineering.common.blocks.metal.SawmillBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SawmillBlockEntity.SawmillProcess;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -24,12 +24,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SawmillRenderer extends IEBlockEntityRenderer<SawmillTileEntity>
+public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 {
 	public static DynamicModel<Direction> BLADE;
 
 	@Override
-	public void render(SawmillTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(SawmillBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
@@ -43,7 +43,7 @@ public class SawmillRenderer extends IEBlockEntityRenderer<SawmillTileEntity>
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
 		matrixStack.translate(.5, 0, .5);
-		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
+		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
 
 
 		VertexConsumer solidBuilder = bufferIn.getBuffer(RenderType.solid());

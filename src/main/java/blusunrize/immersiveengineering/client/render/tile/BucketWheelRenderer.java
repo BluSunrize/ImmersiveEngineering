@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
-import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -41,7 +41,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("deprecation")
-public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelTileEntity>
+public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockEntity>
 {
 	public static DynamicModel<Void> WHEEL;
 	private static final Cache<List<String>, IVertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
@@ -51,7 +51,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelTileEn
 			.build();
 
 	@Override
-	public void render(BucketWheelTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(BucketWheelBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!tile.formed||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos())||tile.isDummy())
 			return;
@@ -79,7 +79,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelTileEn
 
 		matrixStack.translate(.5, .5, .5);
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true)); //to mirror different plane. compensate on dir rotate
-		TileRenderUtils.mirror(tile, matrixStack);
+		BERenderUtils.mirror(tile, matrixStack);
 		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		float rot = tile.rotation+(float)(tile.active?IEServerConfig.MACHINES.excavator_speed.get()*partialTicks: 0);

@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 //TODO maybe replace with Forge animations?
-public class WindmillRenderer extends IEBlockEntityRenderer<WindmillTileEntity>
+public class WindmillRenderer extends IEBlockEntityRenderer<WindmillBlockEntity>
 {
 	public static DynamicModel<Void> MODEL;
 	private static final IVertexBufferHolder[] BUFFERS = new IVertexBufferHolder[9];
@@ -52,7 +52,7 @@ public class WindmillRenderer extends IEBlockEntityRenderer<WindmillTileEntity>
 	}
 
 	@Override
-	public void render(WindmillTileEntity tile, float partialTicks, PoseStack transform, MultiBufferSource bufferIn,
+	public void render(WindmillBlockEntity tile, float partialTicks, PoseStack transform, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))

@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.TileContainer;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import com.google.common.base.Preconditions;
 import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;
@@ -65,7 +65,7 @@ public class IEBlockInterfaces
 		boolean useNixieFont(Player player, HitResult mop);
 	}
 
-	public interface ISoundTile
+	public interface ISoundBE
 	{
 		boolean shouldPlaySound(String sound);
 
@@ -104,12 +104,12 @@ public class IEBlockInterfaces
 		int getRenderColour(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex);
 	}
 
-	public interface IColouredTile
+	public interface IColouredBE
 	{
 		int getRenderColour(int tintIndex);
 	}
 
-	public interface IDirectionalTile
+	public interface IDirectionalBE
 	{
 		Direction getFacing();
 
@@ -209,7 +209,7 @@ public class IEBlockInterfaces
 		void setState(BlockState newState);
 	}
 
-	public interface IStateBasedDirectional extends IDirectionalTile, BlockstateProvider
+	public interface IStateBasedDirectional extends IDirectionalBE, BlockstateProvider
 	{
 
 		Property<Direction> getFacingProperty();
@@ -233,7 +233,7 @@ public class IEBlockInterfaces
 		}
 	}
 
-	public interface IAdvancedDirectionalTile extends IDirectionalTile
+	public interface IAdvancedDirectionalBE extends IDirectionalBE
 	{
 		void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer);
 	}
@@ -245,18 +245,17 @@ public class IEBlockInterfaces
 		boolean toggleSide(Direction side, Player p);
 	}
 
-	public interface ITileDrop extends IReadOnPlacement
+	public interface IBlockEntityDrop extends IReadOnPlacement
 	{
-		List<ItemStack> getTileDrops(LootContext context);
+		List<ItemStack> getBlockEntityDrop(LootContext context);
 
 		default ItemStack getPickBlock(@Nullable Player player, BlockState state, HitResult rayRes)
 		{
 			//TODO make this work properly on the client side
 			BlockEntity tile = (BlockEntity)this;
-			if(tile.getLevel().isClientSide)
+			if(!(tile.getLevel() instanceof ServerLevel world))
 				return new ItemStack(state.getBlock());
-			ServerLevel world = (ServerLevel)tile.getLevel();
-			return getTileDrops(
+			return getBlockEntityDrop(
 					new Builder(world)
 							.withOptionalParameter(LootContextParams.TOOL, ItemStack.EMPTY)
 							.withOptionalParameter(LootContextParams.BLOCK_STATE, world.getBlockState(tile.getBlockPos()))
@@ -299,7 +298,7 @@ public class IEBlockInterfaces
 
 	public interface IPlacementInteraction
 	{
-		void onTilePlaced(Level world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
+		void onBEPlaced(Level world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
 	}
 
 	public interface IActiveState extends BlockstateProvider
@@ -381,7 +380,7 @@ public class IEBlockInterfaces
 	}
 
 	/**
-	 * super-interface for {@link MultiblockPartTileEntity} and {@link IHasDummyBlocks}
+	 * super-interface for {@link MultiblockPartBlockEntity} and {@link IHasDummyBlocks}
 	 */
 	public interface IGeneralMultiblock extends BlockstateProvider
 	{
@@ -427,7 +426,7 @@ public class IEBlockInterfaces
 		@Nullable
 		T getGuiMaster();
 
-		TileContainer<? super T, ?> getContainerType();
+		BEContainer<? super T, ?> getContainerType();
 
 		boolean canUseGui(Player player);
 
@@ -442,7 +441,7 @@ public class IEBlockInterfaces
 		{
 			T master = getGuiMaster();
 			Preconditions.checkNotNull(master);
-			TileContainer<? super T, ?> type = getContainerType();
+			BEContainer<? super T, ?> type = getContainerType();
 			return type.create(id, playerInventory, master);
 		}
 
@@ -453,7 +452,7 @@ public class IEBlockInterfaces
 		}
 	}
 
-	public interface IProcessTile
+	public interface IProcessBE
 	{
 		int[] getCurrentProcessesStep();
 
@@ -467,6 +466,6 @@ public class IEBlockInterfaces
 	public interface IModelDataBlock
 	{
 		IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-								@Nonnull IModelData tileData);
+								@Nonnull IModelData entityData);
 	}
 }

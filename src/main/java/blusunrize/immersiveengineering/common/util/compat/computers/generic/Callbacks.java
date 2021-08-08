@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.owners.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -48,26 +48,26 @@ public class Callbacks
 	{
 		if(initialized)
 			return;
-		register(IETileTypes.CRUSHER, new CrusherCallbacks());
-		register(IETileTypes.ARC_FURNACE, new ArcFurnaceCallbacks());
-		register(IETileTypes.BOTTLING_MACHINE, new BottlingMachineCallbacks());
-		register(IETileTypes.CAPACITOR_LV, new CapacitorCallbacks("lv"));
-		register(IETileTypes.CAPACITOR_MV, new CapacitorCallbacks("mv"));
-		register(IETileTypes.CAPACITOR_HV, new CapacitorCallbacks("hv"));
-		register(IETileTypes.DIESEL_GENERATOR, new DieselGenCallbacks());
-		register(IETileTypes.ENERGY_METER, new EnergyMeterCallbacks());
-		register(IETileTypes.EXCAVATOR, new ExcavatorCallbacks());
-		register(IETileTypes.FERMENTER, new FermenterCallbacks());
-		register(IETileTypes.SQUEEZER, new SqueezerCallbacks());
-		register(IETileTypes.MIXER, new MixerCallbacks());
-		register(IETileTypes.REFINERY, new RefineryCallbacks());
-		register(IETileTypes.FLOODLIGHT, new FloodlightCallbacks());
-		register(IETileTypes.SAMPLE_DRILL, new SampleDrillCallbacks());
-		register(IETileTypes.TESLACOIL, new TeslaCoilCallbacks());
-		register(IETileTypes.ASSEMBLER, new AssemblerCallbacks());
-		register(IETileTypes.AUTO_WORKBENCH, new AutoWorkbenchCallbacks());
-		register(IETileTypes.SILO, new SiloCallbacks());
-		register(IETileTypes.SAWMILL, new SawmillCallbacks());
+		register(IEBlockEntities.CRUSHER, new CrusherCallbacks());
+		register(IEBlockEntities.ARC_FURNACE, new ArcFurnaceCallbacks());
+		register(IEBlockEntities.BOTTLING_MACHINE, new BottlingMachineCallbacks());
+		register(IEBlockEntities.CAPACITOR_LV, new CapacitorCallbacks("lv"));
+		register(IEBlockEntities.CAPACITOR_MV, new CapacitorCallbacks("mv"));
+		register(IEBlockEntities.CAPACITOR_HV, new CapacitorCallbacks("hv"));
+		register(IEBlockEntities.DIESEL_GENERATOR, new DieselGenCallbacks());
+		register(IEBlockEntities.ENERGY_METER, new EnergyMeterCallbacks());
+		register(IEBlockEntities.EXCAVATOR, new ExcavatorCallbacks());
+		register(IEBlockEntities.FERMENTER, new FermenterCallbacks());
+		register(IEBlockEntities.SQUEEZER, new SqueezerCallbacks());
+		register(IEBlockEntities.MIXER, new MixerCallbacks());
+		register(IEBlockEntities.REFINERY, new RefineryCallbacks());
+		register(IEBlockEntities.FLOODLIGHT, new FloodlightCallbacks());
+		register(IEBlockEntities.SAMPLE_DRILL, new SampleDrillCallbacks());
+		register(IEBlockEntities.TESLACOIL, new TeslaCoilCallbacks());
+		register(IEBlockEntities.ASSEMBLER, new AssemblerCallbacks());
+		register(IEBlockEntities.AUTO_WORKBENCH, new AutoWorkbenchCallbacks());
+		register(IEBlockEntities.SILO, new SiloCallbacks());
+		register(IEBlockEntities.SAWMILL, new SawmillCallbacks());
 		initialized = true;
 	}
 

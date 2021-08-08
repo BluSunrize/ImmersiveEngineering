@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlockEntity;
 import invtweaks.api.container.ChestContainer;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
@@ -26,13 +26,13 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @ChestContainer
-public class CraftingTableContainer extends IEBaseContainer<CraftingTableTileEntity>
+public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEntity>
 {
 	private final CraftingContainer craftingInventory = new CraftingContainer(this, 3, 3);
 	private final ResultContainer craftResultInventory = new ResultContainer();
 	private final Player player;
 
-	public CraftingTableContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CraftingTableTileEntity tile)
+	public CraftingTableContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CraftingTableBlockEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.player = inventoryPlayer.player;

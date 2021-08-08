@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -22,12 +22,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillTileEntity>
+public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillBlockEntity>
 {
 	public static DynamicModel<Void> DRILL;
 
 	@Override
-	public void render(SampleDrillTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(SampleDrillBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;

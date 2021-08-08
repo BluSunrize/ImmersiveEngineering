@@ -8,21 +8,21 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 
-public class TeslaCoilCallbacks extends CallbackOwner<TeslaCoilTileEntity>
+public class TeslaCoilCallbacks extends CallbackOwner<TeslaCoilBlockEntity>
 {
 	public TeslaCoilCallbacks()
 	{
-		super(TeslaCoilTileEntity.class, "tesla_coil");
+		super(TeslaCoilBlockEntity.class, "tesla_coil");
 	}
 
 	@ComputerCallable
-	public boolean isActive(CallbackEnvironment<TeslaCoilTileEntity> env)
+	public boolean isActive(CallbackEnvironment<TeslaCoilBlockEntity> env)
 	{
 		int energyDrain = IEServerConfig.MACHINES.teslacoil_consumption.get();
 		if(env.getObject().lowPower)
@@ -31,13 +31,13 @@ public class TeslaCoilCallbacks extends CallbackOwner<TeslaCoilTileEntity>
 	}
 
 	@ComputerCallable
-	public void setRSMode(CallbackEnvironment<TeslaCoilTileEntity> env, boolean inverted)
+	public void setRSMode(CallbackEnvironment<TeslaCoilBlockEntity> env, boolean inverted)
 	{
 		env.getObject().redstoneControlInverted = inverted;
 	}
 
 	@ComputerCallable
-	public void setPowerMode(CallbackEnvironment<TeslaCoilTileEntity> env, boolean high)
+	public void setPowerMode(CallbackEnvironment<TeslaCoilBlockEntity> env, boolean high)
 	{
 		if(isActive(env))
 			throw new RuntimeException("Can't switch power mode on an active coil");

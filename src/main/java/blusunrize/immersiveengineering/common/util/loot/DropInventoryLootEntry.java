@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.gson.JsonDeserializationContext;
@@ -51,8 +51,8 @@ public class DropInventoryLootEntry extends LootPoolSingletonContainer
 			{
 				BlockEntity masterTE = (BlockEntity)((IGeneralMultiblock)te).master();
 				boolean switchToMaster = true;
-				if(masterTE instanceof MultiblockPartTileEntity<?>&&masterTE.getLevel()!=null)
-					switchToMaster = ((MultiblockPartTileEntity<?>)masterTE).onlyLocalDissassembly!=masterTE.getLevel().getGameTime();
+				if(masterTE instanceof MultiblockPartBlockEntity<?>&&masterTE.getLevel()!=null)
+					switchToMaster = ((MultiblockPartBlockEntity<?>)masterTE).onlyLocalDissassembly!=masterTE.getLevel().getGameTime();
 				if(switchToMaster)
 					te = masterTE;
 			}

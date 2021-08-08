@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
 import blusunrize.immersiveengineering.common.gui.CokeOvenContainer;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,7 +26,7 @@ public class CokeOvenScreen extends IEContainerScreen<CokeOvenContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("coke_oven");
 
-	private final CokeOvenTileEntity tile;
+	private final CokeOvenBlockEntity tile;
 
 	public CokeOvenScreen(CokeOvenContainer container, Inventory inventoryPlayer, Component title)
 	{

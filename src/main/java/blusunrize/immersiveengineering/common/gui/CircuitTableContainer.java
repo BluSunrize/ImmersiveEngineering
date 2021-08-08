@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
-import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEntity;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -21,13 +21,13 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntity>
+public class CircuitTableContainer extends IEBaseContainer<CircuitTableBlockEntity>
 {
 	private final SimpleContainer outputInventory = new SimpleContainer(1);
 
 	public LogicCircuitInstruction instruction;
 
-	public CircuitTableContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CircuitTableTileEntity tile)
+	public CircuitTableContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CircuitTableBlockEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 

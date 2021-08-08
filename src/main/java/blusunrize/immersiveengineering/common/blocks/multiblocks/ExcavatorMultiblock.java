@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.ExcavatorTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ExcavatorBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -45,14 +45,14 @@ public class ExcavatorMultiblock extends IETemplateMultiblock
 		{
 			// Try to also form the bucket wheel
 			BlockEntity clickedTE = world.getBlockEntity(pos);
-			if(clickedTE instanceof ExcavatorTileEntity)
+			if(clickedTE instanceof ExcavatorBlockEntity)
 			{
-				ExcavatorTileEntity excavator = (ExcavatorTileEntity)clickedTE;
+				ExcavatorBlockEntity excavator = (ExcavatorBlockEntity)clickedTE;
 				BlockPos wheelCenter = excavator.getWheelCenterPos();
 				IEMultiblocks.BUCKET_WHEEL.createStructure(world, wheelCenter, side.getCounterClockWise(), player);
 				BlockEntity wheel = world.getBlockEntity(wheelCenter);
-				if(wheel instanceof BucketWheelTileEntity)
-					((BucketWheelTileEntity)wheel).adjustStructureFacingAndMirrored(side.getClockWise(), excavator.getIsMirrored());
+				if(wheel instanceof BucketWheelBlockEntity)
+					((BucketWheelBlockEntity)wheel).adjustStructureFacingAndMirrored(side.getClockWise(), excavator.getIsMirrored());
 			}
 		}
 		return excavatorFormed;

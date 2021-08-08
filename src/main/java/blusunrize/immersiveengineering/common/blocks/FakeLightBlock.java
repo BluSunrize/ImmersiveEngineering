@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
+import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.FloodlightBlockEntity;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -32,7 +32,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.function.Supplier;
 
-public class FakeLightBlock extends GenericTileBlock<FakeLightTileEntity>
+public class FakeLightBlock extends GenericEntityBlock<FakeLightBlockEntity>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.AIR)
 			.noOcclusion()
@@ -40,7 +40,7 @@ public class FakeLightBlock extends GenericTileBlock<FakeLightTileEntity>
 
 	public FakeLightBlock(Properties props)
 	{
-		super(IETileTypes.FAKE_LIGHT, props);
+		super(IEBlockEntities.FAKE_LIGHT, props);
 	}
 
 	@Override
@@ -67,13 +67,13 @@ public class FakeLightBlock extends GenericTileBlock<FakeLightTileEntity>
 		return true;
 	}
 
-	public static class FakeLightTileEntity extends IEBaseTileEntity implements IETickableBlockEntity, ISpawnInterdiction
+	public static class FakeLightBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, ISpawnInterdiction
 	{
 		public BlockPos floodlightCoords = null;
 
-		public FakeLightTileEntity(BlockPos pos, BlockState state)
+		public FakeLightBlockEntity(BlockPos pos, BlockState state)
 		{
-			super(IETileTypes.FAKE_LIGHT.get(), pos, state);
+			super(IEBlockEntities.FAKE_LIGHT.get(), pos, state);
 		}
 
 		@Override
@@ -87,7 +87,7 @@ public class FakeLightBlock extends GenericTileBlock<FakeLightTileEntity>
 			if(level.getGameTime()%256==((getBlockPos().getX()^getBlockPos().getZ())&255))
 			{
 				BlockEntity tile = Utils.getExistingTileEntity(level, floodlightCoords);
-				if(!(tile instanceof FloodlightTileEntity)||!((FloodlightTileEntity)tile).getIsActive())
+				if(!(tile instanceof FloodlightBlockEntity)||!((FloodlightBlockEntity)tile).getIsActive())
 					level.removeBlock(getBlockPos(), false);
 			}
 

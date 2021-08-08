@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui.info;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -21,9 +21,9 @@ import java.util.List;
 
 public class FertilizerInfoArea extends InfoArea
 {
-	private final ClocheTileEntity tile;
+	private final ClocheBlockEntity tile;
 
-	public FertilizerInfoArea(int xMin, int yMin, ClocheTileEntity tile)
+	public FertilizerInfoArea(int xMin, int yMin, ClocheBlockEntity tile)
 	{
 		super(new Rect2i(xMin, yMin, 7, 47));
 		this.tile = tile;

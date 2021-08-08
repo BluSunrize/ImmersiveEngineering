@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,11 +29,11 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class PostTransformerBlock extends MiscConnectableBlock<PostTransformerTileEntity>
+public class PostTransformerBlock extends ConnectorBlock<PostTransformerBlockEntity>
 {
 	public PostTransformerBlock(Properties props)
 	{
-		super(props, IETileTypes.POST_TRANSFORMER);
+		super(props, IEBlockEntities.POST_TRANSFORMER);
 	}
 
 	@Override

@@ -17,10 +17,10 @@ import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
-import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInWorld;
+import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.HashMultimap;
@@ -53,12 +53,12 @@ import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.*;
 
-public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTileEntity>
+public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBlockEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
 
 	@Override
-	public void render(AutoWorkbenchTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(AutoWorkbenchBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
@@ -74,7 +74,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTi
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
 		matrixStack.translate(0.5, 0.5, 0.5);
-		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
+		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.processQueue.size()][];
@@ -224,7 +224,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchTi
 			if(itemDisplays[i]!=null)
 			{
 				MultiblockProcess<MultiblockRecipe> process = te.processQueue.get(i);
-				if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
+				if(!(process instanceof PoweredMultiblockBlockEntity.MultiblockProcessInWorld))
 					continue;
 
 				float scale = .3125f;

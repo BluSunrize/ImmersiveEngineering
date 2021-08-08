@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,7 +50,7 @@ public class MessageMaintenanceKit implements IMessage
 		assert player!=null;
 		ctx.enqueueWork(() -> {
 			if(player.containerMenu instanceof MaintenanceKitContainer)
-				ModWorkbenchTileEntity.applyConfigTo(player.containerMenu.slots.get(0).getItem(), nbt);
+				ModWorkbenchBlockEntity.applyConfigTo(player.containerMenu.slots.get(0).getItem(), nbt);
 		});
 	}
 }

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.stone;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
@@ -19,7 +19,7 @@ import net.minecraft.world.level.material.Material;
 
 import java.util.function.Supplier;
 
-public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock<T>
+public class StoneMultiBlock<T extends MultiblockPartBlockEntity<? super T>> extends IEMultiblockBlock<T>
 {
 	public static Supplier<Properties> properties(boolean solid)
 	{

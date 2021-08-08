@@ -4,6 +4,8 @@
   "compatibilityLevel": "JAVA_8",
   "refmap": "immersiveengineering.refmap.json",
   "mixins": [
+    "accessors.BETypeAccess",
+    "accessors.BlockEntityAccess",
     "accessors.ConcretePowderBlockAccess",
     "accessors.ContainerAccess",
     "accessors.DimensionTypeAccessor",
@@ -20,8 +22,6 @@
     "accessors.ServerPlayNetHandlerAccess",
     "accessors.SingleJigsawAccess",
     "accessors.TemplateAccess",
-    "accessors.TileEntityAccess",
-    "accessors.TileTypeAccess",
     "accessors.TNTEntityAccess",
     "coremods.AbstractBlockStateMixin",
     "coremods.ServerWorldMixin",

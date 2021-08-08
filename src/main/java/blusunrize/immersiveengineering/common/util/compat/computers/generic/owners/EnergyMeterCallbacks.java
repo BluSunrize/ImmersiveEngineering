@@ -8,26 +8,26 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.EnergyMeterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.EnergyMeterBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 
-public class EnergyMeterCallbacks extends CallbackOwner<EnergyMeterTileEntity>
+public class EnergyMeterCallbacks extends CallbackOwner<EnergyMeterBlockEntity>
 {
 	public EnergyMeterCallbacks()
 	{
-		super(EnergyMeterTileEntity.class, "current_transformer");
+		super(EnergyMeterBlockEntity.class, "current_transformer");
 	}
 
 	@Override
-	public boolean canAttachTo(EnergyMeterTileEntity candidate)
+	public boolean canAttachTo(EnergyMeterBlockEntity candidate)
 	{
 		return !candidate.isDummy();
 	}
 
 	@ComputerCallable
-	public int getAveragePower(CallbackEnvironment<EnergyMeterTileEntity> env)
+	public int getAveragePower(CallbackEnvironment<EnergyMeterBlockEntity> env)
 	{
 		return env.getObject().getAveragePower();
 	}

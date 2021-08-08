@@ -9,23 +9,23 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
 import net.minecraft.world.item.ItemStack;
 
-public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenchTileEntity>
+public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenchBlockEntity>
 {
 	public AutoWorkbenchCallbacks()
 	{
-		super(AutoWorkbenchTileEntity.class, "auto_workbench");
+		super(AutoWorkbenchBlockEntity.class, "auto_workbench");
 		addAdditional(PoweredMBCallbacks.INSTANCE);
 	}
 
 	@ComputerCallable
-	public void selectRecipe(CallbackEnvironment<AutoWorkbenchTileEntity> env, @IndexArgument int selected)
+	public void selectRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env, @IndexArgument int selected)
 	{
 		BlueprintCraftingRecipe[] availableRecipes = env.getObject().getAvailableRecipes();
 		if(selected < 0||selected >= availableRecipes.length)
@@ -34,13 +34,13 @@ public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenc
 	}
 
 	@ComputerCallable
-	public void unselectRecipe(CallbackEnvironment<AutoWorkbenchTileEntity> env)
+	public void unselectRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
 	{
 		env.getObject().selectedRecipe = -1;
 	}
 
 	@ComputerCallable
-	public ItemStack[] getAvailableRecipes(CallbackEnvironment<AutoWorkbenchTileEntity> env)
+	public ItemStack[] getAvailableRecipes(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
 	{
 		BlueprintCraftingRecipe[] availableRecipes = env.getObject().getAvailableRecipes();
 		ItemStack[] outputs = new ItemStack[availableRecipes.length];
@@ -50,7 +50,7 @@ public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenc
 	}
 
 	@ComputerCallable
-	public int getSelectedRecipe(CallbackEnvironment<AutoWorkbenchTileEntity> env)
+	public int getSelectedRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
 	{
 		return env.getObject().selectedRecipe+1;
 	}

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -57,7 +57,7 @@ public class DropConveyor extends BasicConveyor
 				(getTile().getBlockPos().getX()+.5-entity.getX())) < .2;
 
 		LazyOptional<IItemHandler> cap = LazyOptional.empty();
-		if(contact&&!(inventoryTile instanceof IConveyorTile))
+		if(contact&&!(inventoryTile instanceof IConveyorBlockEntity))
 			cap = CapabilityUtils.findItemHandlerAtPos(getTile().getLevel(), posDown, Direction.UP, true);
 
 			if(cap.isPresent())
@@ -78,8 +78,8 @@ public class DropConveyor extends BasicConveyor
 			{
 				entity.setDeltaMovement(0, entity.getDeltaMovement().y, 0);
 				entity.setPos(getTile().getBlockPos().getX()+.5, getTile().getBlockPos().getY()-.5, getTile().getBlockPos().getZ()+.5);
-				if(!(inventoryTile instanceof IConveyorTile))
-					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)getTile());
+				if(!(inventoryTile instanceof IConveyorBlockEntity))
+					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorBlockEntity)getTile());
 			}
 			else
 				super.handleInsertion(entity, conDir, distX, distZ);
@@ -91,7 +91,7 @@ public class DropConveyor extends BasicConveyor
 	boolean isEmptySpace(Level world, BlockPos pos, BlockEntity tile)
 	{
 		// Special case conveyors, so items can be dropped through covered ones.
-		if(tile instanceof IConveyorTile)
+		if(tile instanceof IConveyorBlockEntity)
 			return true;
 		BlockState state = world.getBlockState(pos);
 		VoxelShape shape = state.getCollisionShape(world, pos);

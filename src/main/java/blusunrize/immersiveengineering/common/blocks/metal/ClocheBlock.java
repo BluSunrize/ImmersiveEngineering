@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -19,11 +19,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class ClocheBlock extends GenericTileBlock<ClocheTileEntity>
+public class ClocheBlock extends GenericEntityBlock<ClocheBlockEntity>
 {
 	public ClocheBlock(Properties props)
 	{
-		super(IETileTypes.CLOCHE, props);
+		super(IEBlockEntities.CLOCHE, props);
 		setLightOpacity(0);
 	}
 

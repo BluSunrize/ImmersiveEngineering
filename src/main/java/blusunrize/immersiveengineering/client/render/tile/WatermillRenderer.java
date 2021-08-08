@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
-import blusunrize.immersiveengineering.common.blocks.wooden.WatermillTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.WatermillBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,7 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-public class WatermillRenderer extends IEBlockEntityRenderer<WatermillTileEntity>
+public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntity>
 {
 	public static DynamicModel<Void> MODEL;
 	private static final IVertexBufferHolder MODEL_BUFFER = IVertexBufferHolder.create(() -> {
@@ -33,7 +33,7 @@ public class WatermillRenderer extends IEBlockEntityRenderer<WatermillTileEntity
 	});
 
 	@Override
-	public void render(WatermillTileEntity tile, float partialTicks, PoseStack transform, MultiBufferSource bufferIn,
+	public void render(WatermillBlockEntity tile, float partialTicks, PoseStack transform, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
 		if(tile.isDummy()||!SafeChunkUtils.isChunkSafe(tile.getLevelNonnull(), tile.getBlockPos()))

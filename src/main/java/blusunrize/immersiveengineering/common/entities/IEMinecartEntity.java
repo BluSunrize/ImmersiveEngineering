@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import net.minecraft.core.Direction;
@@ -36,7 +36,7 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public abstract class IEMinecartEntity<T extends IEBaseTileEntity> extends AbstractMinecart implements MenuProvider
+public abstract class IEMinecartEntity<T extends IEBaseBlockEntity> extends AbstractMinecart implements MenuProvider
 {
 	protected T containedBlockEntity;
 

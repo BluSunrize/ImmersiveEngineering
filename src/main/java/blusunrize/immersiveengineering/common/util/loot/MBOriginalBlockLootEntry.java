@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -42,9 +42,9 @@ public class MBOriginalBlockLootEntry extends LootPoolSingletonContainer
 		if(context.hasParam(LootContextParams.BLOCK_ENTITY))
 		{
 			BlockEntity te = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-			if(te instanceof MultiblockPartTileEntity)
+			if(te instanceof MultiblockPartBlockEntity)
 			{
-				MultiblockPartTileEntity<?> multiblockTile = (MultiblockPartTileEntity<?>)te;
+				MultiblockPartBlockEntity<?> multiblockTile = (MultiblockPartBlockEntity<?>)te;
 				Utils.getDrops(multiblockTile.getOriginalBlock(),
 						new LootContext.Builder(context.getLevel())
 								.withOptionalParameter(LootContextParams.TOOL, context.getParamOrNull(LootContextParams.TOOL))

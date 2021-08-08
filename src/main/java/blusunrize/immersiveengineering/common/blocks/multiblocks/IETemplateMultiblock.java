@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -49,9 +49,9 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		world.setBlockAndUpdate(actualPos, state);
 		BlockEntity curr = world.getBlockEntity(actualPos);
-		if(curr instanceof MultiblockPartTileEntity)
+		if(curr instanceof MultiblockPartBlockEntity)
 		{
-			MultiblockPartTileEntity tile = (MultiblockPartTileEntity)curr;
+			MultiblockPartBlockEntity tile = (MultiblockPartBlockEntity)curr;
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
@@ -103,8 +103,8 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	protected void prepareBlockForDisassembly(Level world, BlockPos pos)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof MultiblockPartTileEntity)
-			((MultiblockPartTileEntity<?>)te).formed = false;
+		if(te instanceof MultiblockPartBlockEntity)
+			((MultiblockPartBlockEntity<?>)te).formed = false;
 		else if (te != null)
 			IELogger.logger.error("Expected multiblock TE at {}, got {}", pos, te);
 	}

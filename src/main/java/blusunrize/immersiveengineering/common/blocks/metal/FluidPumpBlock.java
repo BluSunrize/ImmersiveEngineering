@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -19,11 +19,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class FluidPumpBlock extends GenericTileBlock<FluidPumpTileEntity>
+public class FluidPumpBlock extends GenericEntityBlock<FluidPumpBlockEntity>
 {
 	public FluidPumpBlock(Properties props)
 	{
-		super(IETileTypes.FLUID_PUMP, props);
+		super(IEBlockEntities.FLUID_PUMP, props);
 	}
 
 	@Override

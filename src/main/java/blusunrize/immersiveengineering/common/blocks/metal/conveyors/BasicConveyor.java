@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.utils.EntityCollisionTracker;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
@@ -407,8 +407,8 @@ public class BasicConveyor implements IConveyorBelt
 	protected final boolean isPowered()
 	{
 		BlockEntity te = getTile();
-		if(te instanceof ConveyorBeltTileEntity)
-			return ((ConveyorBeltTileEntity)te).isRSPowered();
+		if(te instanceof ConveyorBeltBlockEntity)
+			return ((ConveyorBeltBlockEntity)te).isRSPowered();
 		else
 			return te.getLevel().getBestNeighborSignal(te.getBlockPos()) > 0;
 	}
@@ -417,8 +417,8 @@ public class BasicConveyor implements IConveyorBelt
 	public Direction getFacing()
 	{
 		BlockEntity te = getTile();
-		if(te instanceof IDirectionalTile)
-			return ((IDirectionalTile)te).getFacing();
+		if(te instanceof IDirectionalBE)
+			return ((IDirectionalBE)te).getFacing();
 		return Direction.NORTH;
 	}
 

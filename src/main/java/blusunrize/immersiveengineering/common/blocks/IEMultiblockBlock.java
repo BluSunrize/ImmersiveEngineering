@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -30,7 +30,7 @@ import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nullable;
 
-public abstract class IEMultiblockBlock<T extends MultiblockPartTileEntity<? super T>> extends IETileProviderBlock
+public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? super T>> extends IEEntityBlock
 {
 	private final MultiblockBEType<T> entityType;
 
@@ -69,14 +69,14 @@ public abstract class IEMultiblockBlock<T extends MultiblockPartTileEntity<? sup
 		if(state.getBlock()!=newState.getBlock())
 		{
 			BlockEntity tileEntity = world.getBlockEntity(pos);
-			if(tileEntity instanceof IEBaseTileEntity)
-				((IEBaseTileEntity)tileEntity).setOverrideState(state);
-			if(tileEntity instanceof MultiblockPartTileEntity)
+			if(tileEntity instanceof IEBaseBlockEntity)
+				((IEBaseBlockEntity)tileEntity).setOverrideState(state);
+			if(tileEntity instanceof MultiblockPartBlockEntity)
 			{
 				// Remove the BE here before disassembling: The block is already gone, so setting the block state here
 				// to a block providing a BE will produce strange results otherwise
 				world.removeBlockEntity(pos);
-				((MultiblockPartTileEntity<?>)tileEntity).disassemble();
+				((MultiblockPartBlockEntity<?>)tileEntity).disassemble();
 			}
 		}
 		super.onRemove(state, world, pos, newState, isMoving);
@@ -86,8 +86,8 @@ public abstract class IEMultiblockBlock<T extends MultiblockPartTileEntity<? sup
 	public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof MultiblockPartTileEntity)
-			return Utils.getPickBlock(((MultiblockPartTileEntity<?>)te).getOriginalBlock(), target, player);
+		if(te instanceof MultiblockPartBlockEntity)
+			return Utils.getPickBlock(((MultiblockPartBlockEntity<?>)te).getOriginalBlock(), target, player);
 		return ItemStack.EMPTY;
 	}
 

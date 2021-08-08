@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseItem;
+import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
-import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
@@ -101,17 +101,17 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 						world.setBlockAndUpdate(pos, Cloth.shaderBanner.defaultBlockState()
 								.setValue(ShaderBannerStandingBlock.ROTATION, blockState.getValue(BannerBlock.ROTATION)));
 					tile = world.getBlockEntity(pos);
-					if(tile instanceof ShaderBannerTileEntity)
+					if(tile instanceof ShaderBannerBlockEntity)
 					{
-						((ShaderBannerTileEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItemInHand(), 1));
+						((ShaderBannerBlockEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItemInHand(), 1));
 						tile.setChanged();
 						return InteractionResult.SUCCESS;
 					}
 				}
 			}
-			else if(tile instanceof ShaderBannerTileEntity)
+			else if(tile instanceof ShaderBannerBlockEntity)
 			{
-				((ShaderBannerTileEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItemInHand(), 1));
+				((ShaderBannerBlockEntity)tile).shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(ctx.getItemInHand(), 1));
 				tile.setChanged();
 				return InteractionResult.SUCCESS;
 			}

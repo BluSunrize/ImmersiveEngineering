@@ -47,7 +47,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.getSafeTE;
+import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.getSafeBE;
 import static blusunrize.immersiveengineering.api.utils.SafeChunkUtils.isChunkSafe;
 
 @EventBusSubscriber(modid = Lib.MODID)
@@ -488,7 +488,7 @@ public class GlobalWireNetwork implements IWorldTickable
 						if(isChunkSafe(world, p))
 						{
 							IImmersiveConnectable inNet = local.getConnector(p);
-							BlockEntity inWorld = getSafeTE(world, p);
+							BlockEntity inWorld = getSafeBE(world, p);
 							if(inNet!=inWorld)
 								WireLogger.logger.warn("Connector at {}: {} in Net, {} in World (Net is {})", p, inNet, inWorld, local);
 						}

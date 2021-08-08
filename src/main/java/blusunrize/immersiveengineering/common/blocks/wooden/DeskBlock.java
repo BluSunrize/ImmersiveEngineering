@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +36,7 @@ import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.function.Supplier;
 
-public class DeskBlock<T extends BlockEntity> extends GenericTileBlock<T>
+public class DeskBlock<T extends BlockEntity> extends GenericEntityBlock<T>
 {
 	private static final CachedShapesWithTransform<Boolean, Direction> SHAPES = CachedShapesWithTransform.createDirectional(
 			b -> {

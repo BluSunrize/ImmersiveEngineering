@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -19,9 +19,9 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 
-public class AssemblerContainer extends IEBaseContainer<AssemblerTileEntity>
+public class AssemblerContainer extends IEBaseContainer<AssemblerBlockEntity>
 {
-	public AssemblerContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AssemblerTileEntity tile)
+	public AssemblerContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AssemblerBlockEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.tile = tile;

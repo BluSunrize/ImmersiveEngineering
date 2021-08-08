@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
-import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretChemBlockEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.Rect2i;
@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ChemTurretScreen extends TurretScreen<TurretChemTileEntity, TurretContainer.ChemTurretContainer>
+public class ChemTurretScreen extends TurretScreen<TurretChemBlockEntity, TurretContainer.ChemTurretContainer>
 {
 	public ChemTurretScreen(TurretContainer.ChemTurretContainer container, Inventory inventoryPlayer, Component title)
 	{

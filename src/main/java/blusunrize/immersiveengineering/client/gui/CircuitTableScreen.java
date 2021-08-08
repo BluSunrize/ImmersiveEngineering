@@ -21,7 +21,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiSelectingList;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
-import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEntity;
 import blusunrize.immersiveengineering.common.gui.CircuitTableContainer;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
@@ -42,13 +42,13 @@ import java.util.*;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
-import static blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity.SLOT_TYPES;
+import static blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEntity.SLOT_TYPES;
 
 public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 {
 	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("circuit_table");
 
-	private final CircuitTableTileEntity tile;
+	private final CircuitTableBlockEntity tile;
 
 	// Buttons
 	private GuiSelectingList operatorList;
@@ -193,7 +193,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 			DyeColor col = DyeColor.LIGHT_GRAY;
 			if(this.instruction.get().isPresent())
 			{
-				amount = CircuitTableTileEntity.getIngredientAmount(this.instruction.get().get(), i);
+				amount = CircuitTableBlockEntity.getIngredientAmount(this.instruction.get().get(), i);
 				if(this.menu.slots.get(i).getItem().getCount() >= amount)
 					col = DyeColor.GREEN;
 				else

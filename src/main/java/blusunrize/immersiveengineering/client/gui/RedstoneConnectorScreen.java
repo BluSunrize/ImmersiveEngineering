@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneTileEntity;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -33,11 +33,11 @@ import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneTileEntity>
+public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRedstoneBlockEntity>
 {
 	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("redstone_configuration");
 
-	public RedstoneConnectorScreen(ConnectorRedstoneTileEntity tileEntity, Component title)
+	public RedstoneConnectorScreen(ConnectorRedstoneBlockEntity tileEntity, Component title)
 	{
 		super(tileEntity, title);
 		this.xSize = 100;
@@ -56,7 +56,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 		clearWidgets();
 
 		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, TextComponent.EMPTY, new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
-				tileEntity.ioMode.ordinal()-1, TEXTURE, 176, 0, 1,
+				blockEntity.ioMode.ordinal()-1, TEXTURE, 176, 0, 1,
 				btn -> sendConfig("ioMode", btn.getNextState().ordinal())
 		);
 		this.addRenderableWidget(buttonInOut);
@@ -66,7 +66,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 		{
 			final DyeColor color = DyeColor.byId(i);
 			colorButtons[i] = buildColorButton(colorButtons, guiLeft+22+(i%4*14), guiTop+44+(i/4*14),
-					tileEntity.redstoneChannel.ordinal()==i, color, btn -> sendConfig("redstoneChannel", color.getId()));
+					blockEntity.redstoneChannel.ordinal()==i, color, btn -> sendConfig("redstoneChannel", color.getId()));
 			this.addRenderableWidget(colorButtons[i]);
 		}
 	}
@@ -75,7 +75,7 @@ public class RedstoneConnectorScreen extends ClientTileScreen<ConnectorRedstoneT
 	{
 		CompoundTag message = new CompoundTag();
 		message.putInt(key, value);
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tileEntity, message));
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	@Override

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.RefineryBlockEntity;
 import blusunrize.immersiveengineering.common.gui.RefineryContainer;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
@@ -26,7 +26,7 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("refinery");
 
-	private final RefineryTileEntity tile;
+	private final RefineryBlockEntity tile;
 
 	public RefineryScreen(RefineryContainer container, Inventory inventoryPlayer, Component component)
 	{

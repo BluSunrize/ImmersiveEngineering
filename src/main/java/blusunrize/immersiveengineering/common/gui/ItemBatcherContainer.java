@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -19,11 +19,11 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-import static blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity.NUM_SLOTS;
+import static blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherBlockEntity.NUM_SLOTS;
 
-public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherTileEntity>
+public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherBlockEntity>
 {
-	public ItemBatcherContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ItemBatcherTileEntity tile)
+	public ItemBatcherContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ItemBatcherBlockEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		IItemHandler filterItemHandler = new ItemStackHandler(tile.getFilters());

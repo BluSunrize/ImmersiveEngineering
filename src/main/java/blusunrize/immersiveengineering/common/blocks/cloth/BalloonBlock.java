@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
@@ -22,7 +22,7 @@ import net.minecraft.world.level.material.Material;
 
 import java.util.function.Supplier;
 
-public class BalloonBlock extends GenericTileBlock<BalloonTileEntity>
+public class BalloonBlock extends GenericEntityBlock<BalloonBlockEntity>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.WOOL)
 			.sound(SoundType.WOOL)
@@ -32,7 +32,7 @@ public class BalloonBlock extends GenericTileBlock<BalloonTileEntity>
 
 	public BalloonBlock(Properties props)
 	{
-		super(IETileTypes.BALLOON, props);
+		super(IEBlockEntities.BALLOON, props);
 		setHasColours();
 		setLightOpacity(0);
 	}

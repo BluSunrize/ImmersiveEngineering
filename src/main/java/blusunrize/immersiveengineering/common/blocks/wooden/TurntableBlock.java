@@ -9,19 +9,19 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class TurntableBlock extends GenericTileBlock<TurntableTileEntity>
+public class TurntableBlock extends GenericEntityBlock<TurntableBlockEntity>
 {
 	public TurntableBlock(Properties props)
 	{
-		super(IETileTypes.TURNTABLE, props);
+		super(IEBlockEntities.TURNTABLE, props);
 	}
 
 	@Override
@@ -42,7 +42,7 @@ public class TurntableBlock extends GenericTileBlock<TurntableTileEntity>
 	public void onRemove(BlockState state, Level world, BlockPos pos, BlockState newState, boolean isMoving)
 	{
 		if(state.hasProperty(IEProperties.FACING_ALL) && newState.hasProperty(IEProperties.FACING_ALL))
-			((TurntableTileEntity)world.getBlockEntity(pos)).verticalTransitionRotationMap(state.getValue(IEProperties.FACING_ALL), newState.getValue(IEProperties.FACING_ALL));
+			((TurntableBlockEntity)world.getBlockEntity(pos)).verticalTransitionRotationMap(state.getValue(IEProperties.FACING_ALL), newState.getValue(IEProperties.FACING_ALL));
 		super.onRemove(state, world, pos, newState, isMoving);
 	}
 }

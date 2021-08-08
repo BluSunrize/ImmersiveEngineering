@@ -16,12 +16,12 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.MultitankArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
-import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
 import blusunrize.immersiveengineering.common.gui.MixerContainer;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -40,7 +40,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("mixer");
 
-	private final MixerTileEntity tile;
+	private final MixerBlockEntity tile;
 
 	public MixerScreen(MixerContainer container, Inventory inventoryPlayer, Component title)
 	{
@@ -73,7 +73,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 					CompoundTag tag = new CompoundTag();
 					tile.outputAll = !btn.getState();
 					tag.putBoolean("outputAll", tile.outputAll);
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 					fullInit();
 				}));
 	}
@@ -85,7 +85,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
-			if(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInMachine)
+			if(process instanceof PoweredMultiblockBlockEntity.MultiblockProcessInMachine)
 			{
 				float mod = 1-(process.processTick/(float)process.maxTicks);
 				for(int slot : ((MultiblockProcessInMachine<?>)process).getInputSlots())

@@ -10,19 +10,19 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class SampleDrillBlock extends GenericTileBlock<SampleDrillTileEntity>
+public class SampleDrillBlock extends GenericEntityBlock<SampleDrillBlockEntity>
 {
 	public SampleDrillBlock(Properties props)
 	{
-		super(IETileTypes.SAMPLE_DRILL, props);
+		super(IEBlockEntities.SAMPLE_DRILL, props);
 	}
 
 	@Override

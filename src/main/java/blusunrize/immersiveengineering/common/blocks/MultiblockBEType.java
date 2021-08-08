@@ -46,7 +46,7 @@ public class MultiblockBEType<T extends BlockEntity & IGeneralMultiblock>
 	public <T2 extends BlockEntity>
 	BlockEntityTicker<T2> getTicker(BlockEntityType<T2> type, BlockEntityTicker<T> ticker)
 	{
-		return IETileProviderBlock.createTickerHelper(type, master.get(), ticker);
+		return IEEntityBlock.createTickerHelper(type, master.get(), ticker);
 	}
 
 	public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(BEWithTypeConstructor<T> create, Supplier<? extends Block> valid)

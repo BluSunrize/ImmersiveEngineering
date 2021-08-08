@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
-import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillBlockEntity;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
@@ -22,67 +22,67 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class SampleDrillCallbacks extends CallbackOwner<SampleDrillTileEntity>
+public class SampleDrillCallbacks extends CallbackOwner<SampleDrillBlockEntity>
 {
 	public SampleDrillCallbacks()
 	{
-		super(SampleDrillTileEntity.class, "sample_drill");
+		super(SampleDrillBlockEntity.class, "sample_drill");
 		addAdditional(EnergyCallbacks.INSTANCE);
 	}
 
 	@Override
-	public boolean canAttachTo(SampleDrillTileEntity candidate)
+	public boolean canAttachTo(SampleDrillBlockEntity candidate)
 	{
 		return !candidate.isDummy();
 	}
 
 
 	@ComputerCallable
-	public float getSampleProgress(CallbackEnvironment<SampleDrillTileEntity> env)
+	public float getSampleProgress(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
 		return env.getObject().getSampleProgress();
 	}
 
 	@ComputerCallable
-	public boolean isSamplingFinished(CallbackEnvironment<SampleDrillTileEntity> env)
+	public boolean isSamplingFinished(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
 		return env.getObject().isSamplingFinished();
 	}
 
 	@ComputerCallable
-	public List<String> getVeinNames(CallbackEnvironment<SampleDrillTileEntity> env)
+	public List<String> getVeinNames(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
 		return getVeinProperties(env, vsd -> vsd.getType().getId().toString());
 	}
 
 	@ComputerCallable
-	public List<Integer> getVeinIntegrities(CallbackEnvironment<SampleDrillTileEntity> env)
+	public List<Integer> getVeinIntegrities(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
 		return getVeinProperties(env, vsd -> ExcavatorHandler.mineralVeinYield-vsd.getDepletion());
 	}
 
 	@ComputerCallable
-	public List<Double> getVeinWeights(CallbackEnvironment<SampleDrillTileEntity> env)
+	public List<Double> getVeinWeights(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
 		return getVeinProperties(env, VeinSampleData::getPercentageInTotalSample);
 	}
 
 	@ComputerCallable
-	public List<Double> getVeinSaturations(CallbackEnvironment<SampleDrillTileEntity> env)
+	public List<Double> getVeinSaturations(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
 		return getVeinProperties(env, VeinSampleData::getSaturation);
 	}
 
 	@ComputerCallable
-	public void reset(CallbackEnvironment<SampleDrillTileEntity> env)
+	public void reset(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		SampleDrillTileEntity d = env.getObject();
+		SampleDrillBlockEntity d = env.getObject();
 		d.process = 0;
 		d.sample = ItemStack.EMPTY;
 	}
 
 	@Nullable
-	private <T> List<T> getVeinProperties(CallbackEnvironment<SampleDrillTileEntity> env, Function<VeinSampleData, T> get)
+	private <T> List<T> getVeinProperties(CallbackEnvironment<SampleDrillBlockEntity> env, Function<VeinSampleData, T> get)
 	{
 		List<VeinSampleData> veins = env.getObject().getVein();
 		if(veins==null)

@@ -8,14 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorBlockEntity;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -23,24 +24,28 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.function.Supplier;
 
-public abstract class ConnectorBlock extends IETileProviderBlock
+public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends GenericEntityBlock<T>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.METAL)
 		.sound(SoundType.METAL)
 						.strength(3.0F, 15.0F)
 						.noOcclusion();
+	public static final EnumProperty<Direction> DEFAULT_FACING_PROP = IEProperties.FACING_ALL;
 
-	public ConnectorBlock(Properties props)
+	public ConnectorBlock(Properties props, RegistryObject<BlockEntityType<T>> entityType)
 	{
-		super(props);
+		super(entityType, props);
 		lightOpacity = 0;
 		setMobility(PushReaction.BLOCK);
 	}
@@ -50,9 +55,9 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 	{
 		super.neighborChanged(state, world, pos, block, fromPos, isMoving);
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof EnergyConnectorTileEntity)
+		if(te instanceof EnergyConnectorBlockEntity)
 		{
-			EnergyConnectorTileEntity connector = (EnergyConnectorTileEntity)te;
+			EnergyConnectorBlockEntity connector = (EnergyConnectorBlockEntity)te;
 			if(world.isEmptyBlock(pos.relative(connector.getFacing())))
 			{
 				popResource(world, pos, new ItemStack(this));

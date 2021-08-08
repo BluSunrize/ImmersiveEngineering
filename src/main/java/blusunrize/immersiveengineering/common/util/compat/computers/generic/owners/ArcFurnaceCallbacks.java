@@ -8,40 +8,40 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.InventoryCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
 import net.minecraft.world.item.ItemStack;
 
-public class ArcFurnaceCallbacks extends MultiblockCallbackOwner<ArcFurnaceTileEntity>
+public class ArcFurnaceCallbacks extends MultiblockCallbackOwner<ArcFurnaceBlockEntity>
 {
 	public ArcFurnaceCallbacks()
 	{
-		super(ArcFurnaceTileEntity.class, "arc_furnace");
+		super(ArcFurnaceBlockEntity.class, "arc_furnace");
 		addAdditional(PoweredMBCallbacks.INSTANCE);
 		addAdditional(new InventoryCallbacks<>(
-				ArcFurnaceTileEntity::getInventory,
-				ArcFurnaceTileEntity.FIRST_ELECTRODE_SLOT, ArcFurnaceTileEntity.ELECTRODE_COUNT, "electrode"
+				ArcFurnaceBlockEntity::getInventory,
+				ArcFurnaceBlockEntity.FIRST_ELECTRODE_SLOT, ArcFurnaceBlockEntity.ELECTRODE_COUNT, "electrode"
 		));
 		addAdditional(new InventoryCallbacks<>(
-				ArcFurnaceTileEntity::getInventory,
-				ArcFurnaceTileEntity.FIRST_OUT_SLOT, ArcFurnaceTileEntity.OUT_SLOT_COUNT, "output"
+				ArcFurnaceBlockEntity::getInventory,
+				ArcFurnaceBlockEntity.FIRST_OUT_SLOT, ArcFurnaceBlockEntity.OUT_SLOT_COUNT, "output"
 		));
 		addAdditional(new InventoryCallbacks<>(
-				ArcFurnaceTileEntity::getInventory,
-				ArcFurnaceTileEntity.FIRST_IN_SLOT, ArcFurnaceTileEntity.IN_SLOT_COUNT, "input"
+				ArcFurnaceBlockEntity::getInventory,
+				ArcFurnaceBlockEntity.FIRST_IN_SLOT, ArcFurnaceBlockEntity.IN_SLOT_COUNT, "input"
 		));
 		addAdditional(new InventoryCallbacks<>(
-				ArcFurnaceTileEntity::getInventory,
-				ArcFurnaceTileEntity.FIRST_ADDITIVE_SLOT, ArcFurnaceTileEntity.ADDITIVE_SLOT_COUNT, "additive"
+				ArcFurnaceBlockEntity::getInventory,
+				ArcFurnaceBlockEntity.FIRST_ADDITIVE_SLOT, ArcFurnaceBlockEntity.ADDITIVE_SLOT_COUNT, "additive"
 		));
 	}
 
 	@ComputerCallable
-	public ItemStack getSlag(CallbackEnvironment<ArcFurnaceTileEntity> env)
+	public ItemStack getSlag(CallbackEnvironment<ArcFurnaceBlockEntity> env)
 	{
-		return env.getObject().getInventory().get(ArcFurnaceTileEntity.SLAG_SLOT);
+		return env.getObject().getInventory().get(ArcFurnaceBlockEntity.SLAG_SLOT);
 	}
 }

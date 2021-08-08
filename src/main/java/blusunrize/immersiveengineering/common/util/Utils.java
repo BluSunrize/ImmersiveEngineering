@@ -609,7 +609,7 @@ public class Utils
 
 	public static void dropStackAtPos(Level world, DirectionalBlockPos pos, ItemStack stack)
 	{
-		dropStackAtPos(world, pos.getPosition(), stack, pos.getSide());
+		dropStackAtPos(world, pos.position(), stack, pos.side());
 	}
 
 	public static void dropStackAtPos(Level world, BlockPos pos, ItemStack stack, @Nonnull Direction facing)

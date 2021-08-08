@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -36,7 +36,7 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceTileEntity>
+public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceBlockEntity>
 {
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;
@@ -46,14 +46,14 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceTileEnti
 	public static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
 
 	@Override
-	public void render(ArcFurnaceTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,
+	public void render(ArcFurnaceBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 		List<String> renderedParts = null;
-		for(int i = 0; i < ArcFurnaceTileEntity.ELECTRODE_COUNT; i++)
-			if(!te.getInventory().get(ArcFurnaceTileEntity.FIRST_ELECTRODE_SLOT+i).isEmpty())
+		for(int i = 0; i < ArcFurnaceBlockEntity.ELECTRODE_COUNT; i++)
+			if(!te.getInventory().get(ArcFurnaceBlockEntity.FIRST_ELECTRODE_SLOT+i).isEmpty())
 			{
 				if(renderedParts==null)
 					renderedParts = Lists.newArrayList("electrode"+(i+1));

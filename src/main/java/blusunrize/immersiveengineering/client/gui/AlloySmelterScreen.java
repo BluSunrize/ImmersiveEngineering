@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity;
 import blusunrize.immersiveengineering.common.gui.AlloySmelterContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
@@ -21,7 +21,7 @@ public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("alloy_smelter");
 
-	private final FurnaceLikeTileEntity<?, ?>.StateView state;
+	private final FurnaceLikeBlockEntity<?, ?>.StateView state;
 
 	public AlloySmelterScreen(AlloySmelterContainer container, Inventory inventoryPlayer, Component title)
 	{

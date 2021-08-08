@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.common.EventHandler;
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.Block;
@@ -31,12 +31,12 @@ public class IEIMCHandler
 	{
 		MESSAGE_HANDLERS.put("fluidpipe_cover", imcMessage -> {
 			Predicate<Block> func = (Predicate<Block>)imcMessage.getMessageSupplier().get();
-			FluidPipeTileEntity.validPipeCovers.add(func);
+			FluidPipeBlockEntity.validPipeCovers.add(func);
 		});
 
 		MESSAGE_HANDLERS.put("fluidpipe_cover_climb", imcMessage -> {
 			Predicate<Block> func = (Predicate<Block>)imcMessage.getMessageSupplier().get();
-			FluidPipeTileEntity.climbablePipeCovers.add(func);
+			FluidPipeBlockEntity.climbablePipeCovers.add(func);
 		});
 
 		MESSAGE_HANDLERS.put("shaderbag_exclude", imcMessage -> {

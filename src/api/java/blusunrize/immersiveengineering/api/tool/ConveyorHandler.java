@@ -64,8 +64,8 @@ public class ConveyorHandler
 	public static final Map<ResourceLocation, Function<BlockEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<>();
 	public static final Map<ResourceLocation, Supplier<BlockEntityType<?>>> tileEntities = new LinkedHashMap<>();
 	public static final Map<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<>();
-	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionFunctions = new HashSet<>();
-	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionReverse = new HashSet<>();
+	public static final Set<BiConsumer<Entity, IConveyorBlockEntity>> magnetSuppressionFunctions = new HashSet<>();
+	public static final Set<BiConsumer<Entity, IConveyorBlockEntity>> magnetSuppressionReverse = new HashSet<>();
 	public static final SetRestrictedField<ItemAgeAccessor> ITEM_AGE_ACCESS = SetRestrictedField.common();
 
 	public static final SetRestrictedField<Function<ResourceLocation, Block>> conveyorBlocks = SetRestrictedField.common();
@@ -134,9 +134,9 @@ public class ConveyorHandler
 	 */
 	public static IConveyorBelt getConveyor(ResourceLocation key, @Nullable BlockEntity tile)
 	{
-		if(tile instanceof IConveyorTile)
+		if(tile instanceof IConveyorBlockEntity)
 		{
-			IConveyorBelt fromTile = ((IConveyorTile)tile).getConveyorSubtype();
+			IConveyorBelt fromTile = ((IConveyorBlockEntity)tile).getConveyorSubtype();
 			if(fromTile!=null)
 				return fromTile;
 		}
@@ -188,11 +188,11 @@ public class ConveyorHandler
 	public static boolean isConveyor(Level world, BlockPos pos, @Nonnull String key, @Nullable Direction facing)
 	{
 		BlockEntity tile = world.getBlockEntity(pos);
-		if(!(tile instanceof IConveyorTile))
+		if(!(tile instanceof IConveyorBlockEntity))
 			return false;
-		if(facing!=null&&!facing.equals(((IConveyorTile)tile).getFacing()))
+		if(facing!=null&&!facing.equals(((IConveyorBlockEntity)tile).getFacing()))
 			return false;
-		IConveyorBelt conveyor = ((IConveyorTile)tile).getConveyorSubtype();
+		IConveyorBelt conveyor = ((IConveyorBlockEntity)tile).getConveyorSubtype();
 		if(conveyor==null)
 			return false;
 		ResourceLocation rl = reverseClassRegistry.get(conveyor.getClass());
@@ -211,7 +211,7 @@ public class ConveyorHandler
 	 * the reversal function is optional, to revert possible NBT changes
 	 * the tileentity parsed is an instanceof
 	 */
-	public static void registerMagnetSuppression(BiConsumer<Entity, IConveyorTile> function, @Nullable BiConsumer<Entity, IConveyorTile> revert)
+	public static void registerMagnetSuppression(BiConsumer<Entity, IConveyorBlockEntity> function, @Nullable BiConsumer<Entity, IConveyorBlockEntity> revert)
 	{
 		magnetSuppressionFunctions.add(function);
 		if(revert!=null)
@@ -221,20 +221,20 @@ public class ConveyorHandler
 	/**
 	 * applies all registered magnets suppressors to the entity
 	 */
-	public static void applyMagnetSuppression(Entity entity, IConveyorTile tile)
+	public static void applyMagnetSuppression(Entity entity, IConveyorBlockEntity tile)
 	{
 		if(entity!=null)
-			for(BiConsumer<Entity, IConveyorTile> func : magnetSuppressionFunctions)
+			for(BiConsumer<Entity, IConveyorBlockEntity> func : magnetSuppressionFunctions)
 				func.accept(entity, tile);
 	}
 
 	/**
 	 * applies all registered magnet suppression removals
 	 */
-	public static void revertMagnetSuppression(Entity entity, IConveyorTile tile)
+	public static void revertMagnetSuppression(Entity entity, IConveyorBlockEntity tile)
 	{
 		if(entity!=null)
-			for(BiConsumer<Entity, IConveyorTile> func : magnetSuppressionReverse)
+			for(BiConsumer<Entity, IConveyorBlockEntity> func : magnetSuppressionReverse)
 				func.accept(entity, tile);
 	}
 
@@ -337,7 +337,7 @@ public class ConveyorHandler
 				return true;
 			Direction side = wall==0?facing.getCounterClockWise(): facing.getClockWise();
 			BlockPos pos = getTile().getBlockPos().relative(side);
-			BlockEntity te = SafeChunkUtils.getSafeTE(getTile().getLevel(), pos);
+			BlockEntity te = SafeChunkUtils.getSafeBE(getTile().getLevel(), pos);
 			if(te instanceof IConveyorAttachable)
 			{
 				boolean b = false;
@@ -350,7 +350,7 @@ public class ConveyorHandler
 			}
 			else
 			{
-				te = SafeChunkUtils.getSafeTE(getTile().getLevel(), pos.offset(0, -1, 0));
+				te = SafeChunkUtils.getSafeBE(getTile().getLevel(), pos.offset(0, -1, 0));
 				if(te instanceof IConveyorAttachable)
 				{
 					int b = 0;
@@ -485,12 +485,12 @@ public class ConveyorHandler
 					entity.setPos(entity.getX()+move*getFacing().getStepX(), entity.getY()+1*move, entity.getZ()+move*getFacing().getStepZ());
 				}
 				if(!contact)
-					ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)getTile());
+					ConveyorHandler.applyMagnetSuppression(entity, (IConveyorBlockEntity)getTile());
 				else
 				{
 					BlockPos nextPos = getTile().getBlockPos().relative(getFacing());
-					if(!(SafeChunkUtils.getSafeTE(getTile().getLevel(), nextPos) instanceof IConveyorTile))
-						ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)getTile());
+					if(!(SafeChunkUtils.getSafeBE(getTile().getLevel(), nextPos) instanceof IConveyorBlockEntity))
+						ConveyorHandler.revertMagnetSuppression(entity, (IConveyorBlockEntity)getTile());
 				}
 
 				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
@@ -525,7 +525,7 @@ public class ConveyorHandler
 		 */
 		default void onItemDeployed(ItemEntity entity)
 		{
-			ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)getTile());
+			ConveyorHandler.applyMagnetSuppression(entity, (IConveyorBlockEntity)getTile());
 		}
 
 		default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
@@ -533,8 +533,8 @@ public class ConveyorHandler
 			BlockPos invPos = getOutputInventory();
 			Level world = getTile().getLevel();
 			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
-			BlockEntity inventoryTile = SafeChunkUtils.getSafeTE(world, invPos);
-			if(!contact||inventoryTile instanceof IConveyorTile)
+			BlockEntity inventoryTile = SafeChunkUtils.getSafeBE(world, invPos);
+			if(!contact||inventoryTile instanceof IConveyorBlockEntity)
 				return;
 
 			LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
@@ -578,9 +578,9 @@ public class ConveyorHandler
 		{
 			for(BlockPos pos : getNextConveyorCandidates())
 			{
-				BlockEntity outputTile = SafeChunkUtils.getSafeTE(getTile().getLevel(), pos);
-				if(outputTile instanceof IConveyorTile)
-					return ((IConveyorTile)outputTile).getConveyorSubtype();
+				BlockEntity outputTile = SafeChunkUtils.getSafeBE(getTile().getLevel(), pos);
+				if(outputTile instanceof IConveyorBlockEntity)
+					return ((IConveyorBlockEntity)outputTile).getConveyorSubtype();
 			}
 			return null;
 		}
@@ -660,7 +660,7 @@ public class ConveyorHandler
 	/**
 	 * This interface solely exists to mark a tile as conveyor, and have it ignored for insertion
 	 */
-	public interface IConveyorTile extends IConveyorAttachable
+	public interface IConveyorBlockEntity extends IConveyorAttachable
 	{
 		IConveyorBelt getConveyorSubtype();
 

@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -23,7 +23,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Locale;
 
-public class BasicConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends MiscConnectableBlock<T>
+public class BasicConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends ConnectorBlock<T>
 {
 	public BasicConnectorBlock(Properties props, RegistryObject<BlockEntityType<T>> type)
 	{
@@ -34,7 +34,7 @@ public class BasicConnectorBlock<T extends BlockEntity & IImmersiveConnectable> 
 	{
 		return new BlockEntry<>(
 				"connector_"+voltage.toLowerCase(Locale.US)+(relay?"_relay": ""), PROPERTIES,
-				p -> new BasicConnectorBlock<>(p, EnergyConnectorTileEntity.SPEC_TO_TYPE.get(Pair.of(voltage, relay)))
+				p -> new BasicConnectorBlock<>(p, EnergyConnectorBlockEntity.SPEC_TO_TYPE.get(Pair.of(voltage, relay)))
 		);
 	}
 

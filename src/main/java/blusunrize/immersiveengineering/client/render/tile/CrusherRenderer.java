@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -21,12 +21,12 @@ import net.minecraft.core.Direction;
 
 import java.util.List;
 
-public class CrusherRenderer extends IEBlockEntityRenderer<CrusherTileEntity>
+public class CrusherRenderer extends IEBlockEntityRenderer<CrusherBlockEntity>
 {
 	public static DynamicModel<Direction> BARREL;
 
 	@Override
-	public void render(CrusherTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(CrusherBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;

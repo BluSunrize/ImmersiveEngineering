@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
@@ -18,11 +18,11 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.TankCallbacks;
 import net.minecraft.world.item.ItemStack;
 
-public class AssemblerCallbacks extends MultiblockCallbackOwner<AssemblerTileEntity>
+public class AssemblerCallbacks extends MultiblockCallbackOwner<AssemblerBlockEntity>
 {
 	public AssemblerCallbacks()
 	{
-		super(AssemblerTileEntity.class, "assembler");
+		super(AssemblerBlockEntity.class, "assembler");
 		addAdditional(EnergyCallbacks.INSTANCE);
 		addAdditional(new InventoryCallbacks<>(te -> te.inventory, 0, 18, "input"));
 		addAdditional(new InventoryCallbacks<>(te -> te.inventory, 18, 3, "buffer"));
@@ -34,14 +34,14 @@ public class AssemblerCallbacks extends MultiblockCallbackOwner<AssemblerTileEnt
 	}
 
 	@ComputerCallable
-	public boolean isValidRecipe(CallbackEnvironment<AssemblerTileEntity> env, @IndexArgument int recipe)
+	public boolean isValidRecipe(CallbackEnvironment<AssemblerBlockEntity> env, @IndexArgument int recipe)
 	{
 		checkRecipeIndex(recipe);
 		return !env.getObject().patterns[recipe].inv.get(9).isEmpty();
 	}
 
 	@ComputerCallable
-	public void setRecipeEnabled(CallbackEnvironment<AssemblerTileEntity> env, @IndexArgument int recipe, boolean enabled)
+	public void setRecipeEnabled(CallbackEnvironment<AssemblerBlockEntity> env, @IndexArgument int recipe, boolean enabled)
 	{
 		checkRecipeIndex(recipe);
 		env.getObject().computerControlByRecipe[recipe] = new ComputerControlState(env.getIsAttached(), enabled);
@@ -49,7 +49,7 @@ public class AssemblerCallbacks extends MultiblockCallbackOwner<AssemblerTileEnt
 
 	@ComputerCallable
 	public ItemStack getRecipeInputStack(
-			CallbackEnvironment<AssemblerTileEntity> env, @IndexArgument int recipe, @IndexArgument int slot
+			CallbackEnvironment<AssemblerBlockEntity> env, @IndexArgument int recipe, @IndexArgument int slot
 	)
 	{
 		checkRecipeIndex(recipe);

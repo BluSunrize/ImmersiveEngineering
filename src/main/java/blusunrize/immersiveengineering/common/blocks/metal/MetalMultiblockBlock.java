@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class MetalMultiblockBlock<T extends MultiblockPartTileEntity<T>> extends IEMultiblockBlock<T>
+public class MetalMultiblockBlock<T extends MultiblockPartBlockEntity<T>> extends IEMultiblockBlock<T>
 {
 	public MetalMultiblockBlock(MultiblockBEType<T> te, Properties props)
 	{

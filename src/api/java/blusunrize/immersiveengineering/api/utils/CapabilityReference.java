@@ -28,21 +28,21 @@ public abstract class CapabilityReference<T>
 {
 	private static final Logger LOGGER = LogManager.getLogger();
 
-	public static <T> CapabilityReference<T> forTileEntityAt(
+	public static <T> CapabilityReference<T> forBlockEntityAt(
 			BlockEntity local, Supplier<DirectionalBlockPos> pos, Capability<T> cap
 	)
 	{
-		return new TECapReference<>(local::getLevel, pos, cap);
+		return new BECapReference<>(local::getLevel, pos, cap);
 	}
 
 	public static <T> CapabilityReference<T> forRelative(BlockEntity local, Capability<T> cap, Vec3i offset, Direction side)
 	{
-		return forTileEntityAt(local, () -> new DirectionalBlockPos(local.getBlockPos().offset(offset), side.getOpposite()), cap);
+		return forBlockEntityAt(local, () -> new DirectionalBlockPos(local.getBlockPos().offset(offset), side.getOpposite()), cap);
 	}
 
 	public static <T> CapabilityReference<T> forNeighbor(BlockEntity local, Capability<T> cap, NonNullSupplier<Direction> side)
 	{
-		return forTileEntityAt(
+		return forBlockEntityAt(
 				local,
 				() -> {
 					Direction d = side.get();
@@ -75,21 +75,21 @@ public abstract class CapabilityReference<T>
 
 	public abstract boolean isPresent();
 
-	private static class TECapReference<T> extends CapabilityReference<T>
+	private static class BECapReference<T> extends CapabilityReference<T>
 	{
-		private final Supplier<Level> world;
-		private final Supplier<DirectionalBlockPos> pos;
+		private final Supplier<Level> getLevel;
+		private final Supplier<DirectionalBlockPos> getPos;
 		@Nonnull
 		private LazyOptional<T> currentCap = LazyOptional.empty();
 		private DirectionalBlockPos lastPos;
 		private Level lastWorld;//TODO does this leak anywhere?
-		private BlockEntity lastTE;
+		private BlockEntity lastBE;
 
-		public TECapReference(Supplier<Level> world, Supplier<DirectionalBlockPos> pos, Capability<T> cap)
+		public BECapReference(Supplier<Level> getLevel, Supplier<DirectionalBlockPos> getPos, Capability<T> cap)
 		{
 			super(cap);
-			this.world = world;
-			this.pos = pos;
+			this.getLevel = getLevel;
+			this.getPos = getPos;
 		}
 
 		@Nullable
@@ -109,34 +109,34 @@ public abstract class CapabilityReference<T>
 
 		private void updateLazyOptional()
 		{
-			Level currWorld = world.get();
-			DirectionalBlockPos currPos = pos.get();
+			Level currWorld = getLevel.get();
+			DirectionalBlockPos currPos = getPos.get();
 			if(currWorld==null||currPos==null)
 			{
 				currentCap = LazyOptional.empty();
 				lastWorld = null;
 				lastPos = null;
-				lastTE = null;
+				lastBE = null;
 			}
 			else if(currWorld!=lastWorld
 					||!currPos.equals(lastPos)
 					||!currentCap.isPresent()
-					||(lastTE!=null&&lastTE.isRemoved()))
+					||(lastBE!=null&&lastBE.isRemoved()))
 			{
-				if(currentCap.isPresent()&&lastTE!=null&&lastTE.isRemoved())
+				if(currentCap.isPresent()&&lastBE!=null&&lastBE.isRemoved())
 				{
 					LOGGER.warn(
 							"The tile entity {} (class {}) was removed, but the value {} provided by it "+
 									"for the capability {} is still marked as valid. This is likely a bug in the mod(s) adding "+
 									"the tile entity/the capability",
-							lastTE,
-							lastTE.getClass(),
+							lastBE,
+							lastBE.getClass(),
 							currentCap.orElseThrow(RuntimeException::new),
 							cap.getName());
 				}
-				lastTE = SafeChunkUtils.getSafeTE(currWorld, currPos.getPosition());
-				if(lastTE!=null)
-					currentCap = lastTE.getCapability(cap, currPos.getSide());
+				lastBE = SafeChunkUtils.getSafeBE(currWorld, currPos.position());
+				if(lastBE!=null)
+					currentCap = lastBE.getCapability(cap, currPos.side());
 				else
 					currentCap = LazyOptional.empty();
 				lastWorld = currWorld;

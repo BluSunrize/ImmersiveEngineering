@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.elements.GuiReactiveList;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.EditBox;
@@ -35,7 +35,7 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends TurretContainer<T>> extends IEContainerScreen<C>
+public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends TurretContainer<T>> extends IEContainerScreen<C>
 {
 	protected static final ResourceLocation TEXTURE = makeTextureLocation("turret");
 
@@ -139,7 +139,7 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 	{
 		if(!nbt.isEmpty())
 		{
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, nbt));
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, nbt));
 			this.init();
 			if(listOffset >= 0)
 				((GuiReactiveList)this.children().get(0)).setOffset(listOffset);
@@ -173,7 +173,7 @@ public abstract class TurretScreen<T extends TurretTileEntity<T>, C extends Turr
 					CompoundTag tag = new CompoundTag();
 					tag.putString("add", name);
 					tile.targetList.add(name);
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 
 					this.init();
 					((GuiReactiveList)this.children().get(0)).setOffset(((GuiReactiveList)this.children().get(0)).getMaxOffset());

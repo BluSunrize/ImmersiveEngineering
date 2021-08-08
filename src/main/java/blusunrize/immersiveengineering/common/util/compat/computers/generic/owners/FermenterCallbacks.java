@@ -8,17 +8,17 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.FermenterBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.InventoryCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.SingleItemCallback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.TankCallbacks;
 
-public class FermenterCallbacks extends MultiblockCallbackOwner<FermenterTileEntity>
+public class FermenterCallbacks extends MultiblockCallbackOwner<FermenterBlockEntity>
 {
 	public FermenterCallbacks()
 	{
-		super(FermenterTileEntity.class, "fermenter");
+		super(FermenterBlockEntity.class, "fermenter");
 		addAdditional(PoweredMBCallbacks.INSTANCE);
 		addAdditional(new TankCallbacks<>(te -> te.tanks[0], ""));
 		addAdditional(new InventoryCallbacks<>(te -> te.inventory, 0, 8, "input"));

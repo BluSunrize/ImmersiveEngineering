@@ -13,8 +13,8 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEShaderLayerCompositeTexture;
+import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
-import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerTileEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -36,7 +36,7 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
-public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerTileEntity>
+public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBlockEntity>
 {
 	private final ModelPart clothModel;
 	private final ModelPart standingModel;
@@ -51,7 +51,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerTile
 	}
 
 	@Override
-	public void render(ShaderBannerTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ShaderBannerBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		long time = te.getLevelNonnull().getGameTime();
 		matrixStack.pushPose();
@@ -108,7 +108,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerTile
 	private static final HashMap<ResourceLocation, ResourceLocation> CACHE = new HashMap<>();
 
 	@Nullable
-	private ResourceLocation getBannerResourceLocation(ShaderBannerTileEntity bannerObj)
+	private ResourceLocation getBannerResourceLocation(ShaderBannerBlockEntity bannerObj)
 	{
 		ResourceLocation name = null;
 		ShaderCase sCase = null;

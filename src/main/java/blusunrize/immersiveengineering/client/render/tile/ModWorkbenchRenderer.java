@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
-import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -23,11 +23,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchTileEntity>
+public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBlockEntity>
 {
 
 	@Override
-	public void render(ModWorkbenchTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ModWorkbenchBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;

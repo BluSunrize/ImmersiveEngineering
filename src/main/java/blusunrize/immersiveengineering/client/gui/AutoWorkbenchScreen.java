@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonItem;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.gui.AutoWorkbenchContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +29,7 @@ import java.util.List;
 
 public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContainer>
 {
-	private final AutoWorkbenchTileEntity tile;
+	private final AutoWorkbenchBlockEntity tile;
 
 	public AutoWorkbenchScreen(AutoWorkbenchContainer container, Inventory inventoryPlayer, Component title)
 	{
@@ -71,7 +71,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 										tile.selectedRecipe = id;
 									CompoundTag message = new CompoundTag();
 									message.putInt("recipe", tile.selectedRecipe);
-									ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, message));
+									ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, message));
 									fullInit();
 								}));
 					}

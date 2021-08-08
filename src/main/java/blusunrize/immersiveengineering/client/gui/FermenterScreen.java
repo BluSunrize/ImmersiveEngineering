@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.FermenterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.FermenterBlockEntity;
 import blusunrize.immersiveengineering.common.gui.FermenterContainer;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
@@ -26,7 +26,7 @@ public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("fermenter");
 
-	private final FermenterTileEntity tile;
+	private final FermenterBlockEntity tile;
 
 	public FermenterScreen(FermenterContainer container, Inventory inventoryPlayer, Component title)
 	{

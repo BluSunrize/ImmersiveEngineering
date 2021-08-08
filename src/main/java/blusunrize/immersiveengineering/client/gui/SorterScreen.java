@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
-import blusunrize.immersiveengineering.common.blocks.wooden.SorterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.SorterBlockEntity;
 import blusunrize.immersiveengineering.common.gui.SorterContainer;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
@@ -40,7 +40,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("sorter");
 
-	private final SorterTileEntity tile;
+	private final SorterBlockEntity tile;
 
 	public SorterScreen(SorterContainer container, Inventory inventoryPlayer, Component title)
 	{
@@ -80,7 +80,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 
 					CompoundTag tag = new CompoundTag();
 					tag.putIntArray("sideConfig", tile.sideFilter);
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 					fullInit();
 				});
 				b.active = bit==0?this.tile.doOredict(side): bit==1?this.tile.doNBT(side): this.tile.doFuzzy(side);

@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.wooden.WindmillTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.gson.JsonDeserializationContext;
@@ -43,9 +43,9 @@ public class WindmillLootFunction extends LootItemConditionalFunction
 		if(stack.getItem()==WoodenDevices.windmill.asItem()&&context.hasParam(LootContextParams.BLOCK_ENTITY))
 		{
 			BlockEntity te = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-			if(te instanceof WindmillTileEntity)
+			if(te instanceof WindmillBlockEntity)
 			{
-				int sails = ((WindmillTileEntity)te).sails;
+				int sails = ((WindmillBlockEntity)te).sails;
 				if(sails > 0)
 					ItemNBTHelper.putInt(stack, "sails", sails);
 			}

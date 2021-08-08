@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
-import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
+import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -41,7 +41,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandler.IConveyorBlock
+public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.IConveyorBlock
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
@@ -81,15 +81,15 @@ public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandle
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
 		BlockEntity tile = world.getBlockEntity(pos);
-		if(tile instanceof ConveyorBeltTileEntity)
+		if(tile instanceof ConveyorBeltBlockEntity)
 		{
-			ConveyorBeltTileEntity conveyor = (ConveyorBeltTileEntity)tile;
+			ConveyorBeltBlockEntity conveyor = (ConveyorBeltBlockEntity)tile;
 			Direction f = conveyor.getFacing();
 			tile = world.getBlockEntity(pos.relative(f));
 			BlockEntity tileUp = world.getBlockEntity(pos.relative(f).offset(0, 1, 0));
 			IConveyorBelt subType = conveyor.getConveyorSubtype();
-			if(subType!=null&&(!(tile instanceof IConveyorTile)||((IConveyorTile)tile).getFacing()==f.getOpposite())
-					&&tileUp instanceof IConveyorTile&&((IConveyorTile)tileUp).getFacing()!=f.getOpposite()
+			if(subType!=null&&(!(tile instanceof IConveyorBlockEntity)||((IConveyorBlockEntity)tile).getFacing()==f.getOpposite())
+					&&tileUp instanceof IConveyorBlockEntity&&((IConveyorBlockEntity)tileUp).getFacing()!=f.getOpposite()
 					&&world.isEmptyBlock(pos.offset(0, 1, 0)))
 				subType.setConveyorDirection(ConveyorDirection.UP);
 		}
@@ -98,7 +98,7 @@ public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandle
 	@Override
 	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
-		return new ConveyorBeltTileEntity(typeName, pos, state);
+		return new ConveyorBeltBlockEntity(typeName, pos, state);
 	}
 
 	@Override

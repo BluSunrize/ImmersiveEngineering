@@ -37,7 +37,7 @@ import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetw
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
@@ -149,7 +149,7 @@ public class IEContent
 		IEFluids.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEPotions.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEParticles.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEBlockEntities.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEContainerTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEBlocks.init();
@@ -300,7 +300,7 @@ public class IEContent
 						Block.byItem(stack.getItem()) instanceof ShulkerBoxBlock
 		);
 
-		FluidPipeTileEntity.initCovers();
+		FluidPipeBlockEntity.initCovers();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler::new);
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler::new);
 		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler::new);

@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
-import blusunrize.immersiveengineering.common.blocks.metal.CapacitorTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.config.CachedConfig.*;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.electronwill.nightconfig.core.Config;
@@ -148,9 +148,9 @@ public class IEServerConfig
 			builder.push("machines");
 			{
 				builder.push("capacitors");
-				lvCapConfig = new CapacitorConfig(builder, () -> IETileTypes.CAPACITOR_LV.get(), "low", 100000, 256, 256);
-				mvCapConfig = new CapacitorConfig(builder, () -> IETileTypes.CAPACITOR_MV.get(), "medium", 1000000, 1024, 1024);
-				hvCapConfig = new CapacitorConfig(builder, () -> IETileTypes.CAPACITOR_HV.get(), "high", 4000000, 4096, 4096);
+				lvCapConfig = new CapacitorConfig(builder, () -> IEBlockEntities.CAPACITOR_LV.get(), "low", 100000, 256, 256);
+				mvCapConfig = new CapacitorConfig(builder, () -> IEBlockEntities.CAPACITOR_MV.get(), "medium", 1000000, 1024, 1024);
+				hvCapConfig = new CapacitorConfig(builder, () -> IEBlockEntities.CAPACITOR_HV.get(), "high", 4000000, 4096, 4096);
 				builder.pop();
 			}
 			dynamo_output = builder
@@ -331,14 +331,14 @@ public class IEServerConfig
 		public static class CapacitorConfig
 		{
 			public static final CapacitorConfig CREATIVE = new CapacitorConfig(
-					Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, () -> IETileTypes.CAPACITOR_CREATIVE.get()
+					Integer.MAX_VALUE, Integer.MAX_VALUE, Integer.MAX_VALUE, () -> IEBlockEntities.CAPACITOR_CREATIVE.get()
 			);
 			public final IntSupplier storage;
 			public final IntSupplier input;
 			public final IntSupplier output;
-			public final Supplier<BlockEntityType<? extends CapacitorTileEntity>> tileType;
+			public final Supplier<BlockEntityType<? extends CapacitorBlockEntity>> tileType;
 
-			private CapacitorConfig(Builder builder, Supplier<BlockEntityType<? extends CapacitorTileEntity>> tileType, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
+			private CapacitorConfig(Builder builder, Supplier<BlockEntityType<? extends CapacitorBlockEntity>> tileType, String voltage, int defaultStorage, int defaultInput, int defaultOutput)
 			{
 				this.tileType = tileType;
 				builder
@@ -356,7 +356,7 @@ public class IEServerConfig
 				builder.pop();
 			}
 
-			private CapacitorConfig(int storage, int input, int output, Supplier<BlockEntityType<? extends CapacitorTileEntity>> type)
+			private CapacitorConfig(int storage, int input, int output, Supplier<BlockEntityType<? extends CapacitorBlockEntity>> type)
 			{
 				this.storage = () -> storage;
 				this.input = () -> input;

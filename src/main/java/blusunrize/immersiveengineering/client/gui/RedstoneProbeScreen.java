@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeTileEntity;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -26,9 +26,9 @@ import java.util.ArrayList;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
-public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEntity>
+public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeBlockEntity>
 {
-	public RedstoneProbeScreen(ConnectorProbeTileEntity tileEntity, Component title)
+	public RedstoneProbeScreen(ConnectorProbeBlockEntity tileEntity, Component title)
 	{
 		super(tileEntity, title);
 		this.xSize = 216;
@@ -52,13 +52,13 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 		{
 			final DyeColor color = DyeColor.byId(i);
 			colorButtonsSend[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsSend, guiLeft+20+(i%4*14), guiTop+10+(i/4*14),
-					tileEntity.redstoneChannelSending.ordinal()==i, color, btn -> {
+					blockEntity.redstoneChannelSending.ordinal()==i, color, btn -> {
 						sendConfig("redstoneChannelSending", color);
 					});
 			this.addRenderableWidget(colorButtonsSend[i]);
 
 			colorButtonsReceive[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsReceive, guiLeft+136+(i%4*14), guiTop+10+(i/4*14),
-					tileEntity.redstoneChannel.ordinal()==i, color, btn -> {
+					blockEntity.redstoneChannel.ordinal()==i, color, btn -> {
 						sendConfig("redstoneChannel", color);
 					});
 			this.addRenderableWidget(colorButtonsReceive[i]);
@@ -69,7 +69,7 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 	{
 		CompoundTag message = new CompoundTag();
 		message.putInt(key, color.getId());
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tileEntity, message));
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
 	@Override

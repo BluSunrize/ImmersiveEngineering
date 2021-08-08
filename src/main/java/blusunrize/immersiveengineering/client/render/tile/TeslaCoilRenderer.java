@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity.LightningAnimation;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity.LightningAnimation;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -20,10 +20,10 @@ import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
 
-public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilTileEntity>
+public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntity>
 {
 	@Override
-	public void render(TeslaCoilTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(TeslaCoilBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;

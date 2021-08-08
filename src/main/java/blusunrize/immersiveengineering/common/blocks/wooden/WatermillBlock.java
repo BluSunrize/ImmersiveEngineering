@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -22,11 +22,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
-public class WatermillBlock extends GenericTileBlock<WatermillTileEntity>
+public class WatermillBlock extends GenericEntityBlock<WatermillBlockEntity>
 {
 	public WatermillBlock(Properties props)
 	{
-		super(IETileTypes.WATERMILL, props);
+		super(IEBlockEntities.WATERMILL, props);
 	}
 
 	@Override

@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
+public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity>
 {
 	public CrateMinecartEntity(Level world, double x, double y, double z)
 	{
@@ -71,10 +71,10 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateTileEntity>
 	}
 
 	@Override
-	protected Supplier<WoodenCrateTileEntity> getTileProvider()
+	protected Supplier<WoodenCrateBlockEntity> getTileProvider()
 	{
 		return () -> {
-			WoodenCrateTileEntity tile = new WoodenCrateTileEntity(BlockPos.ZERO, WoodenDevices.crate.defaultBlockState());
+			WoodenCrateBlockEntity tile = new WoodenCrateBlockEntity(BlockPos.ZERO, WoodenDevices.crate.defaultBlockState());
 			tile.setOverrideState(getDisplayBlockState());
 			return tile;
 		};

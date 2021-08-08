@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SqueezerBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -22,12 +22,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerTileEntity>
+public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerBlockEntity>
 {
 	public static DynamicModel<Direction> PISTON;
 
 	@Override
-	public void render(SqueezerTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(SqueezerBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
@@ -41,7 +41,7 @@ public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerTileEntity>
 
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
-		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
+		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
 		VertexConsumer buffer = bufferIn.getBuffer(RenderType.solid());
 
 		float piston = te.animation_piston;

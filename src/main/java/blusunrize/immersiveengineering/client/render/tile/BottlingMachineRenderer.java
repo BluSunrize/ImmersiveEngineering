@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
+import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.BottlingProcess;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -37,12 +37,12 @@ import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachineTileEntity>
+public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachineBlockEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
 
 	@Override
-	public void render(BottlingMachineTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(BottlingMachineBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
@@ -60,7 +60,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 		final MultiBufferSource originalBuffer = bufferIn;
-		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
+		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.bottlingProcessQueue.size()][];
@@ -74,8 +74,8 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 			if(process==null)
 				continue;
 			float processMaxTicks = process.maxProcessTick;
-			float transportTime = BottlingMachineTileEntity.getTransportTime(processMaxTicks);
-			float liftTime = BottlingMachineTileEntity.getLiftTime(processMaxTicks);
+			float transportTime = BottlingMachineBlockEntity.getTransportTime(processMaxTicks);
+			float liftTime = BottlingMachineBlockEntity.getLiftTime(processMaxTicks);
 			//+partialTicks
 			float fProcess = process.processTick;
 
@@ -109,7 +109,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 				itemX = .5f+.5f*(fProcess-(processMaxTicks-transportTime))/transportTime;
 				itemFill = 1;
 			}
-			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*BottlingMachineTileEntity.TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
+			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*BottlingMachineBlockEntity.TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
 		}
 
 		matrixStack.pushPose();

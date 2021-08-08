@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -34,7 +34,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class StripCurtainBlock extends GenericTileBlock<StripCurtainTileEntity>
+public class StripCurtainBlock extends GenericEntityBlock<StripCurtainBlockEntity>
 {
 	public static BooleanProperty CEILING_ATTACHED = BooleanProperty.create("ceiling_attached");
 	public static EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
@@ -45,7 +45,7 @@ public class StripCurtainBlock extends GenericTileBlock<StripCurtainTileEntity>
 
 	public StripCurtainBlock(Properties props)
 	{
-		super(IETileTypes.STRIP_CURTAIN, props);
+		super(IEBlockEntities.STRIP_CURTAIN, props);
 		setLightOpacity(0);
 		setHasColours();
 	}

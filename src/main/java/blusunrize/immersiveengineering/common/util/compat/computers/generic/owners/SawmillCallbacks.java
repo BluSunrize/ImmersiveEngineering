@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.SawmillTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SawmillBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.SingleItemCallback;
 
-public class SawmillCallbacks extends MultiblockCallbackOwner<SawmillTileEntity>
+public class SawmillCallbacks extends MultiblockCallbackOwner<SawmillBlockEntity>
 {
 	public SawmillCallbacks()
 	{
-		super(SawmillTileEntity.class, "sawmill");
+		super(SawmillBlockEntity.class, "sawmill");
 		addAdditional(PoweredMBCallbacks.INSTANCE);
 		addAdditional(new SingleItemCallback<>(te -> te.sawblade, "sawblade"));
 	}

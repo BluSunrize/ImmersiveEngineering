@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
@@ -19,11 +19,11 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 
-public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
+public class FluidSorterContainer extends IEBaseContainer<FluidSorterBlockEntity>
 {
 	int slotCount;
 
-	public FluidSorterContainer(MenuType<?> type, int id, Inventory inventoryPlayer, FluidSorterTileEntity tile)
+	public FluidSorterContainer(MenuType<?> type, int id, Inventory inventoryPlayer, FluidSorterBlockEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		for(int i = 0; i < 3; i++)

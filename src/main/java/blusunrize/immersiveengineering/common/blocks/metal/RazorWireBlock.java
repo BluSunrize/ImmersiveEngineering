@@ -1,18 +1,18 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class RazorWireBlock extends MiscConnectableBlock<RazorWireTileEntity>
+public class RazorWireBlock extends ConnectorBlock<RazorWireBlockEntity>
 {
 	public RazorWireBlock(Properties props)
 	{
-		super(props, IETileTypes.RAZOR_WIRE);
+		super(props, IEBlockEntities.RAZOR_WIRE);
 	}
 
 	@Override

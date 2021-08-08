@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInWorld;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -32,14 +32,14 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.List;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity.*;
+import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity.*;
 
-public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressTileEntity>
+public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEntity>
 {
 	public static DynamicModel<Void> PISTON;
 
 	@Override
-	public void render(MetalPressTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MetalPressBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
@@ -111,7 +111,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressTileEnti
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess<?> process = te.processQueue.get(i);
-			if(!(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInWorld))
+			if(!(process instanceof PoweredMultiblockBlockEntity.MultiblockProcessInWorld))
 				continue;
 			List<ItemStack> displays = ((MultiblockProcessInWorld<?>)process).getDisplayItem();
 			if(displays.isEmpty())

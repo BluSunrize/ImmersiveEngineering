@@ -14,9 +14,9 @@ import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterBlockEntity;
 import blusunrize.immersiveengineering.common.gui.FluidSorterContainer;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -38,7 +38,7 @@ import java.util.function.Consumer;
 
 public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 {
-	public final FluidSorterTileEntity tile;
+	public final FluidSorterBlockEntity tile;
 
 	public FluidSorterScreen(FluidSorterContainer container, Inventory inventoryPlayer, Component title)
 	{
@@ -127,7 +127,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 
 				CompoundTag tag = new CompoundTag();
 				tag.putByteArray("sideConfig", tile.sortWithNBT);
-				ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+				ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 				fullInit();
 			});
 			b.active = this.tile.doNBT(side);
@@ -143,7 +143,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
 			tag.put("filter", fluid.writeToNBT(new CompoundTag()));
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 	}
 
 	protected Rect2i getSlotArea(int side, int i) {

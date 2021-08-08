@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SqueezerBlockEntity;
 import blusunrize.immersiveengineering.common.gui.SqueezerContainer;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
@@ -26,7 +26,7 @@ public class SqueezerScreen extends IEContainerScreen<SqueezerContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("squeezer");
 
-	private final SqueezerTileEntity tile;
+	private final SqueezerBlockEntity tile;
 
 	public SqueezerScreen(SqueezerContainer container, Inventory inventoryPlayer, Component title)
 	{

@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultib
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -184,7 +184,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		{
 			BlockState state = Connectors.feedthrough.defaultBlockState().setValue(FACING_ALL, side);
 			BlockPos masterPos = pos.relative(side);
-			FeedthroughTileEntity master = setBlock(world, masterPos, state, wire, middle, 0);
+			FeedthroughBlockEntity master = setBlock(world, masterPos, state, wire, middle, 0);
 			if(master!=null)
 			{
 				moveConnectionsToMaster(connsOther, cpOther, world, master.getPositivePoint());
@@ -229,14 +229,14 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Nullable
-	private FeedthroughTileEntity setBlock(Level world, BlockPos here, BlockState newState, WireType wire, BlockState middle,
-										   int offset)
+	private FeedthroughBlockEntity setBlock(Level world, BlockPos here, BlockState newState, WireType wire, BlockState middle,
+											int offset)
 	{
 		world.setBlockAndUpdate(here, newState);
 		BlockEntity te = world.getBlockEntity(here);
-		if(te instanceof FeedthroughTileEntity)
+		if(te instanceof FeedthroughBlockEntity)
 		{
-			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)te;
+			FeedthroughBlockEntity feedthrough = (FeedthroughBlockEntity)te;
 			feedthrough.reference = wire;
 			feedthrough.stateForMiddle = middle;
 			feedthrough.offset = offset;

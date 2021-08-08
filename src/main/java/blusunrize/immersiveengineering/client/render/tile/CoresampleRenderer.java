@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.CoresampleBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -17,10 +17,10 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
 
-public class CoresampleRenderer extends IEBlockEntityRenderer<CoresampleTileEntity>
+public class CoresampleRenderer extends IEBlockEntityRenderer<CoresampleBlockEntity>
 {
 	@Override
-	public void render(CoresampleTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(CoresampleBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos())||tile.coresample==null)
 			return;

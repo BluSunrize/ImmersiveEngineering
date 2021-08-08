@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -184,9 +184,9 @@ public class HammerItem extends IEBaseItem implements ITool
 		}
 		else
 		{
-			boolean rotate = !(tile instanceof IDirectionalTile)&&!(tile instanceof IHammerInteraction);
-			if(!rotate&&tile instanceof IDirectionalTile)
-				rotate = ((IDirectionalTile)tile).canHammerRotate(side, context.getClickLocation().subtract(Vec3.atLowerCornerOf(pos)), player);
+			boolean rotate = !(tile instanceof IDirectionalBE)&&!(tile instanceof IHammerInteraction);
+			if(!rotate&&tile instanceof IDirectionalBE)
+				rotate = ((IDirectionalBE)tile).canHammerRotate(side, context.getClickLocation().subtract(Vec3.atLowerCornerOf(pos)), player);
 			if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isShiftKeyDown()!=side.equals(Direction.DOWN))))
 				return InteractionResult.SUCCESS;
 			else if(!rotate&&tile instanceof IHammerInteraction)

@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock.Orientation;
 import blusunrize.immersiveengineering.common.blocks.metal.*;
@@ -335,7 +335,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 						.baseName(modLoc("block/metal_device/barrel"))
 						.end());
 
-		for(Entry<BlockEntry<? extends GenericTileBlock<? extends CapacitorTileEntity>>, String> cap : ImmutableMap.of(
+		for(Entry<BlockEntry<? extends GenericEntityBlock<? extends CapacitorBlockEntity>>, String> cap : ImmutableMap.of(
 				MetalDevices.capacitorCreative, "creative",
 				MetalDevices.capacitorLV, "lv",
 				MetalDevices.capacitorMV, "mv",

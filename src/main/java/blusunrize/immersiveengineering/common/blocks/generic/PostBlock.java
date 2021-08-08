@@ -373,7 +373,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData entityData)
 	{
 		ArrayList<String> visible = new ArrayList<>();
 		visible.add("base");

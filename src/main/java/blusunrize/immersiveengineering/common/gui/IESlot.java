@@ -48,7 +48,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity.SLOT_FERTILIZER;
+import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity.SLOT_FERTILIZER;
 
 // TODO test various onTake implementations. May need to move to tryRemove
 public abstract class IESlot extends Slot

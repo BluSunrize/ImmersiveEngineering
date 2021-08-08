@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -25,12 +25,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.fluids.FluidStack;
 
-public class MixerRenderer extends IEBlockEntityRenderer<MixerTileEntity>
+public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 {
 	public static DynamicModel<Direction> AGITATOR;
 
 	@Override
-	public void render(MixerTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MixerBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
 			return;
@@ -45,7 +45,7 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerTileEntity>
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 
-		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
+		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
 		matrixStack.pushPose();
 		matrixStack.translate(te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.WEST?-.5: .5, 0, te.getFacing()==Direction.SOUTH||te.getFacing()==Direction.EAST?.5: -.5);
 		float agitator = te.animation_agitator-(!te.shouldRenderAsActive()?0: (1-partialTicks)*9f);

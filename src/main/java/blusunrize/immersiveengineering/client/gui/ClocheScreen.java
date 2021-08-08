@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FertilizerInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.gui.ClocheContainer;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -28,7 +28,7 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("cloche");
 
-	private final ClocheTileEntity tile;
+	private final ClocheBlockEntity tile;
 
 	public ClocheScreen(ClocheContainer container, Inventory inventoryPlayer, Component title)
 	{

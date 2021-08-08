@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -19,11 +19,11 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEntity>
+public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchBlockEntity>
 {
 	public Inventory inventoryPlayer;
 
-	public AutoWorkbenchContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AutoWorkbenchTileEntity tile)
+	public AutoWorkbenchContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AutoWorkbenchBlockEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 

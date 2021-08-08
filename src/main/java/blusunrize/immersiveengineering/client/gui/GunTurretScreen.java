@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
-import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.Rect2i;
@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GunTurretScreen extends TurretScreen<TurretGunTileEntity, TurretContainer.GunTurretContainer>
+public class GunTurretScreen extends TurretScreen<TurretGunBlockEntity, TurretContainer.GunTurretContainer>
 {
 	public GunTurretScreen(TurretContainer.GunTurretContainer container, Inventory inventoryPlayer, Component title)
 	{

@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
-public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntity>
+public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEntity>
 {
 	public BarrelMinecartEntity(Level world, double x, double y, double z)
 	{
@@ -83,9 +83,9 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	}
 
 	@Override
-	protected Supplier<WoodenBarrelTileEntity> getTileProvider()
+	protected Supplier<WoodenBarrelBlockEntity> getTileProvider()
 	{
-		return () -> new WoodenBarrelTileEntity(BlockPos.ZERO, WoodenDevices.woodenBarrel.defaultBlockState());
+		return () -> new WoodenBarrelBlockEntity(BlockPos.ZERO, WoodenDevices.woodenBarrel.defaultBlockState());
 	}
 
 	@Override

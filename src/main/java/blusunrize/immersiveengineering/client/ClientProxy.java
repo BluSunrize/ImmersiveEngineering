@@ -38,10 +38,10 @@ import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundTile;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
+import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
@@ -50,11 +50,12 @@ import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.util.sound.IETileSound;
+import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
@@ -190,16 +191,16 @@ public class ClientProxy extends CommonProxy
 		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "block/wire"));
 	}
 
-	private final Map<BlockPos, IETileSound> tileSoundMap = new HashMap<>();
+	private final Map<BlockPos, IEBlockEntitySound> tileSoundMap = new HashMap<>();
 
 	@Override
 	public void handleTileSound(SoundEvent soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch)
 	{
 		BlockPos pos = tile.getBlockPos();
-		IETileSound sound = tileSoundMap.get(pos);
+		IEBlockEntitySound sound = tileSoundMap.get(pos);
 		if(sound==null&&tileActive)
 		{
-			if(tile instanceof ISoundTile&&mc().player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundTile)tile).getSoundRadiusSq())
+			if(tile instanceof ISoundBE&&mc().player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundBE)tile).getSoundRadiusSq())
 				return;
 			sound = ClientUtils.generatePositionedIESound(soundEvent, volume, pitch, true, 0, pos);
 			tileSoundMap.put(pos, sound);
@@ -215,7 +216,7 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void stopTileSound(String soundName, BlockEntity tile)
 	{
-		IETileSound sound = tileSoundMap.get(tile.getBlockPos());
+		IEBlockEntitySound sound = tileSoundMap.get(tile.getBlockPos());
 		if(sound!=null)
 			mc().getSoundManager().stop(sound);
 	}
@@ -281,7 +282,7 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::invalidateAll);
-		IEApi.renderCacheClearers.add(FluidPipeTileEntity.cachedOBJStates::clear);
+		IEApi.renderCacheClearers.add(FluidPipeBlockEntity.cachedOBJStates::clear);
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
@@ -316,11 +317,11 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void openTileScreen(String guiId, BlockEntity tileEntity)
 	{
-		if(guiId.equals(Lib.GUIID_RedstoneConnector)&&tileEntity instanceof ConnectorRedstoneTileEntity)
-			Minecraft.getInstance().setScreen(new RedstoneConnectorScreen((ConnectorRedstoneTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+		if(guiId.equals(Lib.GUIID_RedstoneConnector)&&tileEntity instanceof ConnectorRedstoneBlockEntity)
+			Minecraft.getInstance().setScreen(new RedstoneConnectorScreen((ConnectorRedstoneBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 
-		if(guiId.equals(Lib.GUIID_RedstoneProbe)&&tileEntity instanceof ConnectorProbeTileEntity)
-			Minecraft.getInstance().setScreen(new RedstoneProbeScreen((ConnectorProbeTileEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
+		if(guiId.equals(Lib.GUIID_RedstoneProbe)&&tileEntity instanceof ConnectorProbeBlockEntity)
+			Minecraft.getInstance().setScreen(new RedstoneProbeScreen((ConnectorProbeBlockEntity)tileEntity, tileEntity.getBlockState().getBlock().getName()));
 	}
 
 
@@ -391,33 +392,33 @@ public class ClientProxy extends CommonProxy
 
 	public static void registerBERenders(RegisterRenderers event)
 	{
-		registerBERenderNoContext(event, IETileTypes.CHARGING_STATION.get(), ChargingStationRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.TESLACOIL.get(), TeslaCoilRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.CLOCHE.get(), ClocheRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.CHARGING_STATION.get(), ChargingStationRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.TESLACOIL.get(), TeslaCoilRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.TURRET_CHEM.get(), TurretRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.TURRET_GUN.get(), TurretRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.CLOCHE.get(), ClocheRenderer::new);
 		// MULTIBLOCKS
-		registerBERenderNoContext(event, IETileTypes.METAL_PRESS.master(), MetalPressRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.CRUSHER.master(), CrusherRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.SAWMILL.master(), SawmillRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.SILO.master(), SiloRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.SQUEEZER.master(), SqueezerRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.MIXER.master(), MixerRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.METAL_PRESS.master(), MetalPressRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.CRUSHER.master(), CrusherRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.SAWMILL.master(), SawmillRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.SHEETMETAL_TANK.master(), SheetmetalTankRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.SILO.master(), SiloRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.SQUEEZER.master(), SqueezerRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.DIESEL_GENERATOR.master(), DieselGeneratorRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.BUCKET_WHEEL.master(), BucketWheelRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.ARC_FURNACE.master(), ArcFurnaceRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.AUTO_WORKBENCH.master(), AutoWorkbenchRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.MIXER.master(), MixerRenderer::new);
 		//WOOD
-		registerBERenderNoContext(event, IETileTypes.WATERMILL.get(), WatermillRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.WINDMILL.get(), WindmillRenderer::new);
-		registerBERenderNoContext(event, IETileTypes.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.WATERMILL.get(), WatermillRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.WINDMILL.get(), WindmillRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
 		//STONE
-		registerBERenderNoContext(event, IETileTypes.CORE_SAMPLE.get(), CoresampleRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.CORE_SAMPLE.get(), CoresampleRenderer::new);
 		//CLOTH
-		event.registerBlockEntityRenderer(IETileTypes.SHADER_BANNER.get(), ShaderBannerRenderer::new);
+		event.registerBlockEntityRenderer(IEBlockEntities.SHADER_BANNER.get(), ShaderBannerRenderer::new);
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
@@ -433,7 +434,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	public static <C extends IEBaseContainer<?>, S extends Screen & MenuAccess<C>>
-	void registerTileScreen(IEContainerTypes.TileContainer<?, C> type, ScreenConstructor<C, S> factory)
+	void registerTileScreen(BEContainer<?, C> type, ScreenConstructor<C, S> factory)
 	{
 		MenuScreens.register(type.getType(), factory);
 	}

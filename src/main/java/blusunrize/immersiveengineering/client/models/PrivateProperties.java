@@ -9,5 +9,5 @@ public class PrivateProperties
 	 * This completely defeats the model data system, and is a bit of a nightmare in general. However removing all
 	 * usage of it will take a lot of work, so for now it's staying.
 	 */
-	public static final ModelProperty<BlockEntity> TILEENTITY_PASSTHROUGH = new ModelProperty<>();
+	public static final ModelProperty<BlockEntity> BLOCKENTITY_PASSTHROUGH = new ModelProperty<>();
 }

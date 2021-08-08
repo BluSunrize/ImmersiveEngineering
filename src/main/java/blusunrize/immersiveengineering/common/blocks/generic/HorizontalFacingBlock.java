@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
-public class HorizontalFacingBlock<T extends BlockEntity> extends GenericTileBlock<T>
+public class HorizontalFacingBlock<T extends BlockEntity> extends GenericEntityBlock<T>
 {
 	public HorizontalFacingBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
 	{

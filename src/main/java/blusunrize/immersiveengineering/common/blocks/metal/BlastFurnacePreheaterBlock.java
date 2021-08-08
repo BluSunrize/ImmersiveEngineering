@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
@@ -19,11 +19,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class BlastFurnacePreheaterBlock extends GenericTileBlock<BlastFurnacePreheaterTileEntity>
+public class BlastFurnacePreheaterBlock extends GenericEntityBlock<BlastFurnacePreheaterBlockEntity>
 {
 	public BlastFurnacePreheaterBlock(Properties props)
 	{
-		super(IETileTypes.BLASTFURNACE_PREHEATER, props);
+		super(IEBlockEntities.BLASTFURNACE_PREHEATER, props);
 	}
 
 	@Override

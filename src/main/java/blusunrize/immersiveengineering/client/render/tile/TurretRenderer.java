@@ -14,8 +14,8 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -34,10 +34,10 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class TurretRenderer extends IEBlockEntityRenderer<TurretTileEntity<?>>
+public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 {
 	@Override
-	public void render(TurretTileEntity<?> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(TurretBlockEntity<?> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
@@ -58,15 +58,15 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretTileEntity<?>>
 		matrixStack.mulPose(new Quaternion(new Vector3f(tile.getFacing().getStepZ(), 0, -tile.getFacing().getStepX()), tile.rotationPitch, true));
 
 		renderModelPart(bufferIn, matrixStack, tile.getLevelNonnull(), state, model, tile.getBlockPos(), true, combinedLightIn, "gun");
-		if(tile instanceof TurretGunTileEntity)
+		if(tile instanceof TurretGunBlockEntity)
 		{
-			if(((TurretGunTileEntity)tile).cycleRender > 0)
+			if(((TurretGunBlockEntity)tile).cycleRender > 0)
 			{
 				float cycle = 0;
-				if(((TurretGunTileEntity)tile).cycleRender > 3)
-					cycle = (5-((TurretGunTileEntity)tile).cycleRender)/2f;
+				if(((TurretGunBlockEntity)tile).cycleRender > 3)
+					cycle = (5-((TurretGunBlockEntity)tile).cycleRender)/2f;
 				else
-					cycle = ((TurretGunTileEntity)tile).cycleRender/3f;
+					cycle = ((TurretGunBlockEntity)tile).cycleRender/3f;
 
 				matrixStack.translate(-tile.getFacing().getStepX()*cycle*.3125, 0, -tile.getFacing().getStepZ()*cycle*.3125);
 			}

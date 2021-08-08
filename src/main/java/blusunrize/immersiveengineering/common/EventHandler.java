@@ -17,9 +17,9 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.CrusherTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.RazorWireTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.RazorWireBlockEntity;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SimpleSkyhookProvider;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
@@ -214,7 +214,7 @@ public class EventHandler
 		}
 	}
 
-	public static HashMap<UUID, CrusherTileEntity> crusherMap = new HashMap<>();
+	public static HashMap<UUID, CrusherBlockEntity> crusherMap = new HashMap<>();
 	public static HashSet<Class<? extends Mob>> listOfBoringBosses = new HashSet<>();
 
 	static
@@ -227,7 +227,7 @@ public class EventHandler
 	{
 		if(!event.isCanceled()&&Lib.DMG_Crusher.equals(event.getSource().getMsgId()))
 		{
-			CrusherTileEntity crusher = crusherMap.get(event.getEntityLiving().getUUID());
+			CrusherBlockEntity crusher = crusherMap.get(event.getEntityLiving().getUUID());
 			if(crusher!=null)
 			{
 				for(ItemEntity item : event.getDrops())
@@ -325,7 +325,7 @@ public class EventHandler
 			if(current.getItem()!=Tools.wirecutter.get())
 			{
 				event.setCanceled(true);
-				RazorWireTileEntity.applyDamage(event.getEntityLiving());
+				RazorWireBlockEntity.applyDamage(event.getEntityLiving());
 			}
 		if(event.getPos()!=null) // Avoid a potential NPE for invalid positions passed
 		{
@@ -413,8 +413,8 @@ public class EventHandler
 		if(event.getState().getBlock() instanceof IEMultiblockBlock)
 		{
 			BlockEntity te = event.getWorld().getBlockEntity(event.getPos());
-			if(te instanceof MultiblockPartTileEntity)
-				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getLevelData().getGameTime();
+			if(te instanceof MultiblockPartBlockEntity)
+				((MultiblockPartBlockEntity)te).onlyLocalDissassembly = event.getWorld().getLevelData().getGameTime();
 		}
 	}
 }

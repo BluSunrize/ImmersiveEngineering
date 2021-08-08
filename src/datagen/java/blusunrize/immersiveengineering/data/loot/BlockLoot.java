@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.data.loot;
 
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.blocks.metal.CapacitorTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
@@ -74,7 +74,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 				)));
 
 		LootPoolEntryContainer.Builder<?> tileOrInv = AlternativesEntry.alternatives(
-				TileDropLootEntry.builder().when(ExplosionCondition.survivesExplosion()),
+				BEDropLootEntry.builder().when(ExplosionCondition.survivesExplosion()),
 				DropInventoryLootEntry.builder()
 		);
 		register(WoodenDevices.crate, LootPool.lootPool().add(tileOrInv));
@@ -84,7 +84,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 		register(Cloth.shaderBanner, tileDrop());
 		register(Cloth.shaderBannerWall, tileDrop());
 		register(Cloth.curtain, tileDrop());
-		for(BlockEntry<? extends GenericTileBlock<? extends CapacitorTileEntity>> cap : ImmutableList.of(
+		for(BlockEntry<? extends GenericEntityBlock<? extends CapacitorBlockEntity>> cap : ImmutableList.of(
 				MetalDevices.capacitorLV, MetalDevices.capacitorMV, MetalDevices.capacitorHV, MetalDevices.capacitorCreative
 		))
 			register(cap, tileDrop());
@@ -168,7 +168,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 	private LootPool.Builder tileDrop()
 	{
 		return createPoolBuilder()
-				.add(TileDropLootEntry.builder());
+				.add(BEDropLootEntry.builder());
 	}
 
 	private LootPool.Builder dropOriginalBlock()

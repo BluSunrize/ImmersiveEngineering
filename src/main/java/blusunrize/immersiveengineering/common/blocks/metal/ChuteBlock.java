@@ -1,19 +1,19 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class ChuteBlock extends GenericTileBlock<ChuteTileEntity>
+public class ChuteBlock extends GenericEntityBlock<ChuteBlockEntity>
 {
 	public ChuteBlock(BlockBehaviour.Properties properties)
 	{
-		super(IETileTypes.CHUTE, properties);
+		super(IEBlockEntities.CHUTE, properties);
 	}
 
 	@Override

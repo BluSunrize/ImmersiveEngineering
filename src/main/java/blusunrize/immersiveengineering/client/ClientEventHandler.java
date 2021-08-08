@@ -34,9 +34,9 @@ import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.client.utils.*;
-import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
-import blusunrize.immersiveengineering.common.blocks.wooden.TurntableTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
@@ -628,7 +628,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						BlockOverlayUtils.renderOreveinMapOverlays(transform, (ItemFrame)entity, mop, scaledWidth, scaledHeight);
 					else if(entity instanceof IEMinecartEntity)
 					{
-						IEBaseTileEntity containedTile = ((IEMinecartEntity<?>)entity).getContainedBlockEntity();
+						IEBaseBlockEntity containedTile = ((IEMinecartEntity<?>)entity).getContainedBlockEntity();
 						if(containedTile instanceof IBlockOverlayText)
 						{
 							Component[] text = ((IBlockOverlayText)containedTile).getOverlayText(player, mop, false);
@@ -768,7 +768,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			BlockEntity tile = player.level.getBlockEntity(rtr.getBlockPos());
 			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getItemInHand(InteractionHand.MAIN_HAND): ItemStack.EMPTY;
 
-			if(tile instanceof TurntableTileEntity turntableTile&&Utils.isHammer(stack))
+			if(tile instanceof TurntableBlockEntity turntableTile&&Utils.isHammer(stack))
 			{
 				Direction side = rtr.getDirection();
 				Direction facing = turntableTile.getFacing();

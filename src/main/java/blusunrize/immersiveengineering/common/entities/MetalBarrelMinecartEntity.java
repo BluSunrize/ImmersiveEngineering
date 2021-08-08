@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
@@ -42,9 +42,9 @@ public class MetalBarrelMinecartEntity extends BarrelMinecartEntity
 	}
 
 	@Override
-	protected Supplier<WoodenBarrelTileEntity> getTileProvider()
+	protected Supplier<WoodenBarrelBlockEntity> getTileProvider()
 	{
-		return () -> new MetalBarrelTileEntity(BlockPos.ZERO, MetalDevices.barrel.defaultBlockState());
+		return () -> new MetalBarrelBlockEntity(BlockPos.ZERO, MetalDevices.barrel.defaultBlockState());
 	}
 
 	@Override

@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.LogicUnitTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.LogicUnitBlockEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 
-public class LogicUnitContainer extends IEBaseContainer<LogicUnitTileEntity>
+public class LogicUnitContainer extends IEBaseContainer<LogicUnitBlockEntity>
 {
-	public LogicUnitContainer(MenuType<?> type, int id, Inventory inventoryPlayer, LogicUnitTileEntity tile)
+	public LogicUnitContainer(MenuType<?> type, int id, Inventory inventoryPlayer, LogicUnitBlockEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -112,9 +112,9 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 			state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		world.setBlockAndUpdate(actualPos, state);
 		BlockEntity curr = world.getBlockEntity(actualPos);
-		if(curr instanceof MetalPressTileEntity)
+		if(curr instanceof MetalPressBlockEntity)
 		{
-			MetalPressTileEntity tile = (MetalPressTileEntity)curr;
+			MetalPressBlockEntity tile = (MetalPressBlockEntity)curr;
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;

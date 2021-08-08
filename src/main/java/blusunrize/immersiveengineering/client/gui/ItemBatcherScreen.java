@@ -13,10 +13,10 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonDyeColor;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonState;
-import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity;
-import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity.BatchMode;
+import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherBlockEntity.BatchMode;
 import blusunrize.immersiveengineering.common.gui.ItemBatcherContainer;
-import blusunrize.immersiveengineering.common.network.MessageTileSync;
+import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
@@ -36,7 +36,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("item_batcher");
 
-	private final ItemBatcherTileEntity tile;
+	private final ItemBatcherBlockEntity tile;
 	private GuiButtonState<BatchMode> buttonBatchMode;
 	private final GuiButtonDyeColor[] buttonsRedstone = new GuiButtonDyeColor[9];
 
@@ -55,7 +55,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 
 		this.clearWidgets();
 		buttonBatchMode = new GuiButtonState<>(leftPos+7, topPos+92, 18, 18, TextComponent.EMPTY,
-				ItemBatcherTileEntity.BatchMode.values(), tile.batchMode.ordinal(), TEXTURE,
+				ItemBatcherBlockEntity.BatchMode.values(), tile.batchMode.ordinal(), TEXTURE,
 				176, 36, 1,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
@@ -85,7 +85,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	{
 		if(!nbt.isEmpty())
 		{
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, nbt));
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, nbt));
 			this.init();
 		}
 	}

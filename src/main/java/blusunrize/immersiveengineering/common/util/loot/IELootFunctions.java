@@ -36,7 +36,7 @@ public class IELootFunctions
 		propertyCount = registerFunction(PropertyCountLootFunction.ID, new PropertyCountLootFunction.Serializer());
 
 		dropInventory = registerEntry(DropInventoryLootEntry.ID, new DropInventoryLootEntry.Serializer());
-		tileDrop = registerEntry(TileDropLootEntry.ID, new TileDropLootEntry.Serializer());
+		tileDrop = registerEntry(BEDropLootEntry.ID, new BEDropLootEntry.Serializer());
 		multiblockOrigBlock = registerEntry(MBOriginalBlockLootEntry.ID, new MBOriginalBlockLootEntry.Serializer());
 	}
 

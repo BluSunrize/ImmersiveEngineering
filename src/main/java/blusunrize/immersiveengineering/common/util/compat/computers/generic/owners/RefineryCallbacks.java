@@ -8,16 +8,16 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
-import blusunrize.immersiveengineering.common.blocks.metal.RefineryTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.RefineryBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.SingleItemCallback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.TankCallbacks;
 
-public class RefineryCallbacks extends MultiblockCallbackOwner<RefineryTileEntity>
+public class RefineryCallbacks extends MultiblockCallbackOwner<RefineryBlockEntity>
 {
 	public RefineryCallbacks()
 	{
-		super(RefineryTileEntity.class, "refinery");
+		super(RefineryBlockEntity.class, "refinery");
 		addAdditional(PoweredMBCallbacks.INSTANCE);
 		addAdditional(new TankCallbacks<>(te -> te.tanks[0], "left input"));
 		addAdditional(new TankCallbacks<>(te -> te.tanks[1], "right input"));

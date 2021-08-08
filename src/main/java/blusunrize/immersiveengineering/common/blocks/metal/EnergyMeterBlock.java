@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -25,14 +25,14 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
-public class EnergyMeterBlock extends MiscConnectableBlock<EnergyMeterTileEntity>
+public class EnergyMeterBlock extends ConnectorBlock<EnergyMeterBlockEntity>
 {
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
 	public EnergyMeterBlock(Properties props)
 	{
-		super(props, IETileTypes.ENERGY_METER);
+		super(props, IEBlockEntities.ENERGY_METER);
 	}
 
 	@Override

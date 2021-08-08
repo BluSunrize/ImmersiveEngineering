@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterTileEntity;
-import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceAdvancedBlockEntity;
 import blusunrize.immersiveengineering.common.gui.BlastFurnaceContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.resources.language.I18n;
@@ -23,13 +23,13 @@ import java.util.function.Function;
 
 public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 {
-	private static final Function<BlastFurnacePreheaterTileEntity, Boolean> PREHEATER_ACTIVE = tile -> tile.active;
+	private static final Function<BlastFurnacePreheaterBlockEntity, Boolean> PREHEATER_ACTIVE = tile -> tile.active;
 	private static final ResourceLocation TEXTURE = makeTextureLocation("blast_furnace");
 
 	public BlastFurnaceScreen(BlastFurnaceContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		if(container.tile instanceof BlastFurnaceAdvancedTileEntity)
+		if(container.tile instanceof BlastFurnaceAdvancedBlockEntity)
 			this.imageWidth = 210;
 		clearIntArray(container.tile.getGuiInts());
 	}
@@ -37,7 +37,7 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 	@Override
 	protected void renderLabels(PoseStack transform, int x, int y)
 	{
-		if(menu.tile instanceof BlastFurnaceAdvancedTileEntity)
+		if(menu.tile instanceof BlastFurnaceAdvancedBlockEntity)
 		{
 			String title = I18n.get(Lib.GUI+"blast_furnace.preheaters");
 			int w = this.font.width(title)/2;
@@ -56,9 +56,9 @@ public class BlastFurnaceScreen extends IEContainerScreen<BlastFurnaceContainer>
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		if(menu.tile instanceof BlastFurnaceAdvancedTileEntity)
+		if(menu.tile instanceof BlastFurnaceAdvancedBlockEntity)
 		{
-			BlastFurnaceAdvancedTileEntity tile = (BlastFurnaceAdvancedTileEntity)menu.tile;
+			BlastFurnaceAdvancedBlockEntity tile = (BlastFurnaceAdvancedBlockEntity)menu.tile;
 			this.blit(transform, leftPos+140, topPos+11, 176, 32, 70, 46);
 			if(tile.getFromPreheater(true, PREHEATER_ACTIVE, false))
 				this.blit(transform, leftPos+182, topPos+27, 200, 22, 10, 10);

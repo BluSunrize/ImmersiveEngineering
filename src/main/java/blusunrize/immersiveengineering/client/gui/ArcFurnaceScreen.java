@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInMachine;
-import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("arc_furnace");
-	private final ArcFurnaceTileEntity tile;
+	private final ArcFurnaceBlockEntity tile;
 	private GuiButtonIE distributeButton;
 
 	public ArcFurnaceScreen(ArcFurnaceContainer container, Inventory inventoryPlayer, Component title)

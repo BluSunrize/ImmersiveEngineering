@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.impl;
 
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 
-public class PoweredMBCallbacks extends Callback<PoweredMultiblockTileEntity<?, ?>>
+public class PoweredMBCallbacks extends Callback<PoweredMultiblockBlockEntity<?, ?>>
 {
 	public static final PoweredMBCallbacks INSTANCE = new PoweredMBCallbacks();
 

@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
-public class TurretBlock<T extends TurretTileEntity> extends GenericTileBlock<T>
+public class TurretBlock<T extends TurretBlockEntity> extends GenericEntityBlock<T>
 {
 	public TurretBlock(RegistryObject<BlockEntityType<T>> tileType, Properties props)
 	{

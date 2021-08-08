@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
-import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
@@ -29,14 +29,14 @@ import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntity>
+public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEntity>
 {
 	private final Level world;
 	public Inventory inventoryPlayer;
 	private BlueprintInventory inventoryBPoutput;
 	public ShaderInventory shaderInv;
 
-	public ModWorkbenchContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ModWorkbenchTileEntity tile)
+	public ModWorkbenchContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ModWorkbenchBlockEntity tile)
 	{
 		super(type, inventoryPlayer, tile, id);
 		this.world = tile.getLevelNonnull();

@@ -9,17 +9,17 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import blusunrize.immersiveengineering.common.register.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class WindmillBlock extends GenericTileBlock<WindmillTileEntity>
+public class WindmillBlock extends GenericEntityBlock<WindmillBlockEntity>
 {
 	public WindmillBlock(Properties props)
 	{
-		super(IETileTypes.WINDMILL, props);
+		super(IEBlockEntities.WINDMILL, props);
 	}
 
 	@Override

@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.data.blockstates;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
@@ -165,12 +165,12 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 				split(obj("block/metal_multiblock/lightningrod.obj"), IEMultiblocks.LIGHTNING_ROD));
 		createMultiblock(WoodenDevices.workbench,
 				splitDynamic(ieObj("block/wooden_device/workbench.obj.ie"), ImmutableList.of(
-						ModWorkbenchTileEntity.MASTER_POS, ModWorkbenchTileEntity.DUMMY_POS
+						ModWorkbenchBlockEntity.MASTER_POS, ModWorkbenchBlockEntity.DUMMY_POS
 				)),
 				null, null);
 		createMultiblock(WoodenDevices.circuitTable,
 				split(obj("block/wooden_device/circuit_table.obj"), ImmutableList.of(
-						ModWorkbenchTileEntity.MASTER_POS, ModWorkbenchTileEntity.DUMMY_POS
+						ModWorkbenchBlockEntity.MASTER_POS, ModWorkbenchBlockEntity.DUMMY_POS
 				)),
 				null, null);
 		createMultiblock(MetalDevices.sampleDrill,

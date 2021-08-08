@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.blocks.metal.ClocheTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -35,12 +35,12 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class ClocheRenderer extends IEBlockEntityRenderer<ClocheTileEntity>
+public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 {
 	private static final Map<BlockState, List<BakedQuad>> plantQuads = new HashMap<>();
 
 	@Override
-	public void render(ClocheTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ClocheBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
 		if(tile.dummy!=0||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
@@ -59,8 +59,8 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheTileEntity>
 			matrixStack.translate(0, 1.0625, 0);
 
 			NonNullList<ItemStack> inventory = tile.getInventory();
-			ItemStack seed = inventory.get(ClocheTileEntity.SLOT_SEED);
-			ItemStack soil = inventory.get(ClocheTileEntity.SLOT_SOIL);
+			ItemStack seed = inventory.get(ClocheBlockEntity.SLOT_SEED);
+			ItemStack soil = inventory.get(ClocheBlockEntity.SLOT_SOIL);
 			float growth = Mth.clamp(tile.renderGrowth/recipe.getTime(seed, soil), 0, 1);
 			float scale = recipe.renderFunction.getScale(seed, growth);
 			matrixStack.translate((1-scale)/2, 0, (1-scale)/2);

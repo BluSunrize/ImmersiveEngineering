@@ -51,7 +51,7 @@ public class SafeChunkUtils
 		return getSafeChunk(w, pos)!=null;
 	}
 
-	public static BlockEntity getSafeTE(LevelAccessor w, BlockPos pos)
+	public static BlockEntity getSafeBE(LevelAccessor w, BlockPos pos)
 	{
 		LevelChunk c = getSafeChunk(w, pos);
 		if(c==null)

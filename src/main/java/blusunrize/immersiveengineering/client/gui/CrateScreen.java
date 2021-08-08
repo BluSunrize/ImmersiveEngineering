@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
+import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEntity;
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,7 +26,7 @@ public abstract class CrateScreen<C extends CrateContainer> extends IEContainerS
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
-		WoodenCrateTileEntity te = menu.tile;
+		WoodenCrateBlockEntity te = menu.tile;
 		this.font.draw(transform, te.getDisplayName().getContents(), 8, 6, 0x190b06);
 	}
 

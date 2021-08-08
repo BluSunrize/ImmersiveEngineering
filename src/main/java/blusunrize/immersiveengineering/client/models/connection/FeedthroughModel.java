@@ -18,8 +18,8 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel.FeedthroughCacheKey;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
-import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.FeedthroughData;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.FeedthroughData;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -75,8 +75,8 @@ import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
-import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.MIDDLE_STATE;
-import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.WIRE;
+import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.MIDDLE_STATE;
+import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.WIRE;
 import static net.minecraft.core.Direction.Axis.Y;
 
 public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<FeedthroughCacheKey>
@@ -108,9 +108,9 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		List<IModelData> ret = new ArrayList<>();
 		ret.add(tileData);
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof FeedthroughTileEntity)
+		if(te instanceof FeedthroughBlockEntity)
 		{
-			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)te;
+			FeedthroughBlockEntity feedthrough = (FeedthroughBlockEntity)te;
 			int color = Minecraft.getInstance().getBlockColors().getColor(feedthrough.stateForMiddle, world, pos, 0);
 			FeedthroughData d = new FeedthroughData(
 					feedthrough.stateForMiddle,
