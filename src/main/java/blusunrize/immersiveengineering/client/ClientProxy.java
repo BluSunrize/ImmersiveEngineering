@@ -35,7 +35,6 @@ import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel.ModelType;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
@@ -466,66 +465,21 @@ public class ClientProxy extends CommonProxy
 
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "item/shader_slot"));
 
-		ArcFurnaceRenderer.ELECTRODES = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/arc_furnace_electrodes.obj.ie"),
-				"arc_furnace_electrodes", ModelType.IE_OBJ
-		);
-		AutoWorkbenchRenderer.DYNAMIC = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/auto_workbench_animated.obj.ie"),
-				"auto_workbench_animated", ModelType.IE_OBJ
-		);
-		BottlingMachineRenderer.DYNAMIC = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bottling_machine_animated.obj.ie"),
-				"bottling_machine", ModelType.IE_OBJ
-		);
-		BucketWheelRenderer.WHEEL = DynamicModel.createSimple(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/bucket_wheel.obj.ie"),
-				"bucket_wheel", ModelType.IE_OBJ
-		);
-		CrusherRenderer.BARREL = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/crusher_drum.obj"),
-				"crusher_barrel", ModelType.OBJ
-		);
-		SawmillRenderer.BLADE = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/sawmill_animated.obj"),
-				"blade", ModelType.OBJ
-		);
-		DieselGeneratorRenderer.FAN = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/diesel_generator_fan.obj"),
-				"diesel_gen", ModelType.OBJ
-		);
-		MetalPressRenderer.PISTON = DynamicModel.createSimple(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/metal_press_piston.obj"),
-				"metal_press_piston", ModelType.OBJ
-		);
-		MixerRenderer.AGITATOR = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/mixer_agitator.obj"),
-				"mixer", ModelType.OBJ
-		);
-		SampleDrillRenderer.DRILL = DynamicModel.createSimple(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_device/core_drill_center.obj"),
-				"sample_drill", ModelType.OBJ
-		);
-		SqueezerRenderer.PISTON = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_multiblock/squeezer_piston.obj"),
-				"squeezer", ModelType.OBJ
-		);
-		WatermillRenderer.MODEL = DynamicModel.createSimple(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/watermill.obj.ie"),
-				"watermill", ModelType.IE_OBJ
-		);
-		WindmillRenderer.MODEL = DynamicModel.createSimple(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/windmill.obj.ie"),
-				"windmill", ModelType.IE_OBJ
-		);
-		RedstoneConveyor.MODEL_PANEL = DynamicModel.createSided(
-				new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor_redstone.obj.ie"),
-				"conveyor_redstone", ModelType.IE_OBJ
-		);
-		SawbladeRenderer.MODEL = DynamicModel.createSimple(
-				new ResourceLocation(ImmersiveEngineering.MODID, "item/buzzsaw_diesel.obj.ie"),
-				"sawblade_entity", ModelType.IE_OBJ
-		);
+		ArcFurnaceRenderer.ELECTRODES = new DynamicModel(ArcFurnaceRenderer.NAME);
+		AutoWorkbenchRenderer.DYNAMIC = new DynamicModel(AutoWorkbenchRenderer.NAME);
+		BottlingMachineRenderer.DYNAMIC = new DynamicModel(BottlingMachineRenderer.NAME);
+		BucketWheelRenderer.WHEEL = new DynamicModel(BucketWheelRenderer.NAME);
+		CrusherRenderer.BARREL = new DynamicModel(CrusherRenderer.NAME);
+		SawmillRenderer.BLADE = new DynamicModel(SawmillRenderer.NAME);
+		DieselGeneratorRenderer.FAN = new DynamicModel(DieselGeneratorRenderer.NAME);
+		MetalPressRenderer.PISTON = new DynamicModel(MetalPressRenderer.NAME);
+		MixerRenderer.AGITATOR = new DynamicModel(MixerRenderer.NAME);
+		SampleDrillRenderer.DRILL = new DynamicModel(SampleDrillRenderer.NAME);
+		SqueezerRenderer.PISTON = new DynamicModel(SqueezerRenderer.NAME);
+		WatermillRenderer.MODEL = new DynamicModel(WatermillRenderer.NAME);
+		WindmillRenderer.MODEL = new DynamicModel(WindmillRenderer.NAME);
+		RedstoneConveyor.MODEL_PANEL = new DynamicModel(RedstoneConveyor.MODEL_NAME);
+		SawbladeRenderer.MODEL = new DynamicModel(SawbladeRenderer.NAME);
 	}
 
 	public static void populateAPI()

@@ -26,7 +26,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 {
-	public static DynamicModel<Direction> BLADE;
+	public static final String NAME = "sawmill_blade";
+	public static DynamicModel BLADE;
 
 	@Override
 	public void render(SawmillBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
@@ -63,8 +64,8 @@ public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 				spin += 36f*partialTicks;
 			matrixStack.mulPose(new Quaternion(0, 0, spin, true));
 			RenderUtils.renderModelTESRFast(
-					BLADE.getNullQuads(Direction.NORTH, state), solidBuilder, matrixStack, combinedLightIn,
-					combinedOverlayIn);
+					BLADE.getNullQuads(), solidBuilder, matrixStack, combinedLightIn, combinedOverlayIn
+			);
 			matrixStack.popPose();
 		}
 

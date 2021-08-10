@@ -73,8 +73,6 @@ import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
@@ -89,8 +87,6 @@ import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
@@ -313,10 +309,7 @@ public class IEContent
 		BlueprintCraftingRecipe.blueprintItem.setValue(IEItems.Misc.blueprint);
 		ExcavatorHandler.setSetDirtyCallback(IESaveData::markInstanceDirty);
 		TemplateMultiblock.setCallbacks(
-				bs -> Utils.getPickBlock(
-						bs, new BlockHitResult(Vec3.ZERO, Direction.DOWN, BlockPos.ZERO, false),
-						ImmersiveEngineering.proxy.getClientPlayer()
-				),
+				Utils::getPickBlock,
 				(loc, server) -> {
 					try
 					{

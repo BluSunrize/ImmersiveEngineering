@@ -1,0 +1,5 @@
+{
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/conveyor_redstone.obj.ie",
+  "flip-v": true
+}

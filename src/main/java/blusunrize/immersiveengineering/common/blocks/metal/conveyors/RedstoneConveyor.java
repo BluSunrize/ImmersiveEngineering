@@ -46,9 +46,10 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 public class RedstoneConveyor extends BasicConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "redstone");
+	public static final String MODEL_NAME = "conveyor_redstone_panel";
 
 	@OnlyIn(Dist.CLIENT)
-	public static DynamicModel<Direction> MODEL_PANEL;
+	public static DynamicModel MODEL_PANEL;
 	public static ResourceLocation texture_panel = new ResourceLocation("immersiveengineering:block/conveyor/redstone");
 
 	private boolean panelRight = true;
@@ -150,7 +151,7 @@ public class RedstoneConveyor extends BasicConveyor
 	@OnlyIn(Dist.CLIENT)
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
 	{
-		BakedModel model = MODEL_PANEL.get(panelRight?getFacing(): getFacing().getOpposite());
+		BakedModel model = MODEL_PANEL.get();
 		if(model!=null)
 		{
 			String[] parts = (getTile()!=null&&!isActive())?new String[]{"panel", "lamp"}: new String[]{"panel"};

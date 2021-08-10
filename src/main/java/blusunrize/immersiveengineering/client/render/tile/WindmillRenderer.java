@@ -29,17 +29,17 @@ import net.minecraftforge.client.model.data.IModelData;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO maybe replace with Forge animations?
 public class WindmillRenderer extends IEBlockEntityRenderer<WindmillBlockEntity>
 {
-	public static DynamicModel<Void> MODEL;
+	public static final String NAME = "windmill";
+	public static DynamicModel MODEL;
 	private static final IVertexBufferHolder[] BUFFERS = new IVertexBufferHolder[9];
 
 	private static IVertexBufferHolder getBufferHolder(int sails)
 	{
 		if(BUFFERS[sails]==null)
 			BUFFERS[sails] = IVertexBufferHolder.create(() -> {
-				BakedModel model = MODEL.get(null);
+				BakedModel model = MODEL.get();
 				List<String> parts = new ArrayList<>();
 				parts.add("base");
 				for(int i = 1; i <= sails; i++)

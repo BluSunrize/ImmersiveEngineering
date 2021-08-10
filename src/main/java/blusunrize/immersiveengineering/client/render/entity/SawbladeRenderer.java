@@ -37,7 +37,8 @@ import javax.annotation.Nonnull;
 
 public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 {
-	public static DynamicModel<Void> MODEL;
+	public static final String NAME = "sawblade_entity";
+	public static DynamicModel MODEL;
 
 	public static final ResourceLocation SAWBLADE = new ResourceLocation(ImmersiveEngineering.MODID, "item/sawblade_blade");
 
@@ -54,7 +55,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = entity.blockPosition();
 		BlockState state = entity.getCommandSenderWorld().getBlockState(blockPos);
-		BakedModel model = this.MODEL.get(null);
+		BakedModel model = this.MODEL.get();
 		IEObjState objState = new IEObjState(VisibilityList.show("blade"));
 
 		matrixStackIn.pushPose();

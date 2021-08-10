@@ -24,7 +24,8 @@ import java.util.List;
 
 public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillBlockEntity>
 {
-	public static DynamicModel<Void> DRILL;
+	public static final String NAME = "sample_drill";
+	public static DynamicModel DRILL;
 
 	@Override
 	public void render(SampleDrillBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
@@ -53,7 +54,7 @@ public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillBlockE
 		}
 
 		matrixStack.translate(-0.5, -0.5, -0.5);
-		List<BakedQuad> quads = DRILL.getNullQuads(null, state);
+		List<BakedQuad> quads = DRILL.getNullQuads();
 		RenderUtils.renderModelTESRFast(
 				quads, bufferIn.getBuffer(RenderType.solid()), matrixStack, combinedLightIn, combinedOverlayIn
 		);

@@ -13,6 +13,7 @@ import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.world.phys.Vec2;
@@ -99,7 +100,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 	@Override
 	public void endVertex()
 	{
-		for(var element : format.getElements())
+		for(VertexFormatElement element : format.getElements())
 		{
 			if(element==ELEMENT_POSITION)
 				pos.ifPresent(pos -> base.vertex(transform.last().pose(), (float)pos.x, (float)pos.y, (float)pos.z));

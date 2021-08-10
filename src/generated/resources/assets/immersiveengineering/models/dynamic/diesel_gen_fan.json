@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/diesel_generator_fan.obj",
+  "flip-v": true
+}

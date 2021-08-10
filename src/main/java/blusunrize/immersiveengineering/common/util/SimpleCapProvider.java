@@ -8,10 +8,12 @@ import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Objects;
+import java.util.function.Supplier;
 
-public record SimpleCapProvider<T>(Capability<T> cap, LazyOptional<T> value) implements ICapabilityProvider
+public record SimpleCapProvider<T>(Supplier<Capability<T>> cap, LazyOptional<T> value) implements ICapabilityProvider
 {
-	public SimpleCapProvider(Capability<T> cap, T value)
+	public SimpleCapProvider(Supplier<Capability<T>> cap, T value)
 	{
 		this(cap, CapabilityUtils.constantOptional(value));
 	}
@@ -20,6 +22,6 @@ public record SimpleCapProvider<T>(Capability<T> cap, LazyOptional<T> value) imp
 	@Override
 	public <T2> LazyOptional<T2> getCapability(@Nonnull Capability<T2> cap, @Nullable Direction side)
 	{
-		return this.cap.orEmpty(cap, value);
+		return Objects.requireNonNull(this.cap.get()).orEmpty(cap, value);
 	}
 }

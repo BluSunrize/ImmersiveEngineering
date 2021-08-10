@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/mixer_agitator.obj",
+  "flip-v": true
+}

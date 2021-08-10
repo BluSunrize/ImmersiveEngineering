@@ -36,7 +36,8 @@ import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressBloc
 
 public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEntity>
 {
-	public static DynamicModel<Void> PISTON;
+	public static final String NAME = "metal_press_piston";
+	public static DynamicModel PISTON;
 
 	@Override
 	public void render(MetalPressBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
@@ -49,7 +50,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 		BlockState state = te.getLevel().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.metalPress.get())
 			return;
-		BakedModel model = PISTON.get(null);
+		BakedModel model = PISTON.get();
 
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);

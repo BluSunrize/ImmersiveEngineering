@@ -1,0 +1,5 @@
+{
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/wooden_device/windmill.obj.ie",
+  "flip-v": true
+}

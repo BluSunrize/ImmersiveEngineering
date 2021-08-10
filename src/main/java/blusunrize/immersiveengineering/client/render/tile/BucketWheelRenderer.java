@@ -43,7 +43,8 @@ import java.util.concurrent.TimeUnit;
 @SuppressWarnings("deprecation")
 public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockEntity>
 {
-	public static DynamicModel<Void> WHEEL;
+	public static final String NAME = "bucket_wheel";
+	public static DynamicModel WHEEL;
 	private static final Cache<List<String>, IVertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.expireAfterAccess(1, TimeUnit.MINUTES)
@@ -89,7 +90,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 		try
 		{
 			CACHED_BUFFERS.get(textures, () -> IVertexBufferHolder.create(() -> {
-				BakedModel model = WHEEL.get(null);
+				BakedModel model = WHEEL.get();
 				BlockState state = Multiblocks.bucketWheel.defaultBlockState();
 				List<String> list = Lists.newArrayList("bucketWheel");
 				list.addAll(texMap.keySet());

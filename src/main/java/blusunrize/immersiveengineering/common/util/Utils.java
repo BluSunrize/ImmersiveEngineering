@@ -74,6 +74,7 @@ import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
@@ -933,6 +934,14 @@ public class Utils
 	{
 		BlockGetter w = getSingleBlockWorldAccess(state);
 		return state.getBlock().getPickBlock(state, rtr, w, BlockPos.ZERO, player);
+	}
+
+	public static ItemStack getPickBlock(BlockState state)
+	{
+		return getPickBlock(
+				state, new BlockHitResult(Vec3.ZERO, Direction.DOWN, BlockPos.ZERO, false),
+				ImmersiveEngineering.proxy.getClientPlayer()
+		);
 	}
 
 	public static List<AABB> flipBoxes(boolean flipFront, boolean flipRight, List<AABB> boxes)

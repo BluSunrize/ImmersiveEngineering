@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -18,12 +18,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
+import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.List;
 
 public class CrusherRenderer extends IEBlockEntityRenderer<CrusherBlockEntity>
 {
-	public static DynamicModel<Direction> BARREL;
+	public static String NAME = "crusher_barrel";
+	public static DynamicModel BARREL;
 
 	@Override
 	public void render(CrusherBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
@@ -59,7 +61,8 @@ public class CrusherRenderer extends IEBlockEntityRenderer<CrusherBlockEntity>
 	{
 		matrix.pushPose();
 		matrix.translate(-.5, -.5, -.5);
-		List<BakedQuad> quads = BARREL.getNullQuads(facing, Multiblocks.crusher.defaultBlockState());
+		List<BakedQuad> quads = BARREL.get().getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
+		rotateForFacing(matrix, facing);
 		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.solid()), matrix, light, overlay);
 		matrix.popPose();
 	}

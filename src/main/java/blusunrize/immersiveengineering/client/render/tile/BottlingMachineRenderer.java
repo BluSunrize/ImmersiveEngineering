@@ -39,7 +39,8 @@ import java.util.List;
 
 public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachineBlockEntity>
 {
-	public static DynamicModel<Direction> DYNAMIC;
+	public static final String NAME = "bottling_machine";
+	public static DynamicModel DYNAMIC;
 
 	@Override
 	public void render(BottlingMachineBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
@@ -115,7 +116,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		matrixStack.pushPose();
 
 		matrixStack.translate(0, lift, 0);
-		renderModelPart(matrixStack, solidBuilder, state, facing, combinedLightIn, combinedOverlayIn, "lift");
+		renderModelPart(matrixStack, solidBuilder, facing, combinedLightIn, combinedOverlayIn, "lift");
 		matrixStack.translate(0, -lift, 0);
 
 		matrixStack.popPose();
@@ -188,13 +189,14 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		matrixStack.popPose();
 	}
 
-	public static void renderModelPart(PoseStack matrixStack, VertexConsumer builder, BlockState state, Direction facing,
+	public static void renderModelPart(PoseStack matrixStack, VertexConsumer builder, Direction facing,
 									   int combinedLightIn, int combinedOverlayIn, String... parts)
 	{
 		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
 		matrixStack.pushPose();
 		matrixStack.translate(-.5, -.5, -.5);
-		List<BakedQuad> quads = DYNAMIC.getNullQuads(facing, state, data);
+		List<BakedQuad> quads = DYNAMIC.getNullQuads(data);
+		rotateForFacing(matrixStack, facing);
 		RenderUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn, combinedOverlayIn);
 		matrixStack.popPose();
 	}

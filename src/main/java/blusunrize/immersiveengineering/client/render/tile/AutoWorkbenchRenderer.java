@@ -36,7 +36,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.player.Player;
@@ -55,7 +54,8 @@ import java.util.*;
 
 public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBlockEntity>
 {
-	public static DynamicModel<Direction> DYNAMIC;
+	public static final String NAME = "auto_workbench_animated";
+	public static DynamicModel DYNAMIC;
 
 	@Override
 	public void render(AutoWorkbenchBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
@@ -69,12 +69,13 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		BlockState state = te.getLevelNonnull().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.autoWorkbench.get())
 			return;
-		BakedModel model = DYNAMIC.get(te.getFacing());
+		BakedModel model = DYNAMIC.get();
 
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
-		matrixStack.translate(0.5, 0.5, 0.5);
 		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
+		rotateForFacing(matrixStack, te.getFacing());
+		matrixStack.translate(0.5, 0.5, 0.5);
 
 		//Item Displacement
 		float[][] itemDisplays = new float[te.processQueue.size()][];
@@ -182,20 +183,19 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "lift");
 		matrixStack.translate(0, -lift, 0);
 
-		Direction f = te.getFacing();
-		float tx = f==Direction.WEST?-.9375f: f==Direction.EAST?.9375f: 0;
-		float tz = f==Direction.NORTH?-.9375f: f==Direction.SOUTH?.9375f: 0;
+		float tx = 0;
+		float tz = -.9375f;
 		matrixStack.pushPose();
 		matrixStack.translate(tx, 0, tz);
 		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), drill, true));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "drill");
 		matrixStack.popPose();
 
-		tx = f==Direction.WEST?-.59375f: f==Direction.EAST?.59375f: 0;
-		tz = f==Direction.NORTH?-.59375f: f==Direction.SOUTH?.59375f: 0;
+		tx = 0;
+		tz = -.59375f;
 		matrixStack.pushPose();
 		matrixStack.translate(tx, -.21875, tz);
-		matrixStack.mulPose(new Quaternion(new Vector3f(-f.getStepZ(), 0, f.getStepX()), press*90, true));
+		matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), press*90, true));
 		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "press");
 		matrixStack.popPose();
 
@@ -203,21 +203,6 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "pressLift");
 
 		matrixStack.popPose();
-
-		switch(f)
-		{
-			case NORTH:
-				break;
-			case SOUTH:
-				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
-				break;
-			case WEST:
-				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true));
-				break;
-			case EAST:
-				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), -90, true));
-				break;
-		}
 
 		//DRAW ITEMS HERE
 		for(int i = 0; i < itemDisplays.length; i++)
@@ -346,8 +331,13 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			HashSet<String> textures = new HashSet<>();
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, EmptyModelData.INSTANCE);
 			for(BakedQuad quad : quads)
-				if(quad!=null&&quad.getSprite()!=null)
+			{
+				if(quad!=null)
+				{
+					quad.getSprite();
 					textures.add(quad.getSprite().getName().toString());
+				}
+			}
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);
@@ -504,12 +494,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder, matrixStack, type.format());
 			builder.defaultColor(255, 255, 255, 255);
 			for(Pair<Point, Point> line : lines)
-			{
-				builder.vertex(line.getKey().x, line.getKey().y, 0)
-						.endVertex();
-				builder.vertex(line.getValue().x, line.getValue().y, 0)
-						.endVertex();
-			}
+				line2d(builder, line.getKey().x, line.getKey().y, line.getValue().x, line.getValue().y);
 
 			if(lineWidth >= 1)//Draw shading if player is close enough
 				for(ShadeStyle style : areas.keySet())
@@ -542,34 +527,27 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			}
 			for(int i = 0; i < stripeAmount; i++)
 				if(stripeDirection==0)//vertical
-				{
-					builder.vertex(pixel.x+offset+step*i, pixel.y, 0).endVertex();
-					builder.vertex(pixel.x+offset+step*i, pixel.y+1, 0).endVertex();
-				}
+					line2d(builder, pixel.x+offset+step*i, pixel.y, pixel.x+offset+step*i, pixel.y+1);
 				else if(stripeDirection==1)//horizontal
-				{
-					builder.vertex(pixel.x, pixel.y+offset+step*i, 0).endVertex();
-					builder.vertex(pixel.x+1, pixel.y+offset+step*i, 0).endVertex();
-				}
+					line2d(builder, pixel.x, pixel.y+offset+step*i, pixel.x+1, pixel.y+offset+step*i);
 				else if(stripeDirection==2)//diagonal
 				{
 					if(i==stripeAmount-1&&stripeAmount%2==1)
-					{
-						builder.vertex(pixel.x, pixel.y+1, 0).endVertex();
-						builder.vertex(pixel.x+1, pixel.y, 0).endVertex();
-					}
+						line2d(builder, pixel.x, pixel.y+1, pixel.x+1, pixel.y);
 					else if(i%2==0)
-					{
-						builder.vertex(pixel.x, pixel.y+offset+step*(i/2), 0).endVertex();
-						builder.vertex(pixel.x+offset+step*(i/2), pixel.y, 0).endVertex();
-					}
+						line2d(builder, pixel.x, pixel.y+offset+step*(i/2), pixel.x+offset+step*(i/2), pixel.y);
 					else
-					{
-						builder.vertex(pixel.x+1-offset-step*(i/2), pixel.y+1, 0).endVertex();
-						builder.vertex(pixel.x+1, pixel.y+1-offset-step*(i/2), 0).endVertex();
-					}
+						line2d(builder, pixel.x+1-offset-step*(i/2), pixel.y+1, pixel.x+1, pixel.y+1-offset-step*(i/2));
 				}
 		}
+	}
+
+	private static void line2d(VertexConsumer out, float x0, float y0, float x1, float y1)
+	{
+		float normalX = x1-x0;
+		float normalY = y1-y0;
+		out.vertex(x0, y0, 0).normal(normalX, normalY, 0).endVertex();
+		out.vertex(x1, y1, 0).normal(normalX, normalY, 0).endVertex();
 	}
 
 	private static class TexturePoint extends Point

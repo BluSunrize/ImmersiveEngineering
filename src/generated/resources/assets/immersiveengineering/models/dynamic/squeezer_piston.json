@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/squeezer_piston.obj",
+  "flip-v": true
+}

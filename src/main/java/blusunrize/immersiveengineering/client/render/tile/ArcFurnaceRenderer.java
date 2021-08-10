@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -29,7 +30,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
@@ -41,7 +41,8 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceBlockEnt
 	private TextureAtlasSprite hotMetal_flow = null;
 	private TextureAtlasSprite hotMetal_still = null;
 
-	public static DynamicModel<Direction> ELECTRODES;
+	public static final String NAME = "arc_furnace_electrodes";
+	public static DynamicModel ELECTRODES;
 	public static final ResourceLocation HOT_METLA_STILL = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_still");
 	public static final ResourceLocation HOT_METLA_FLOW = new ResourceLocation(ImmersiveEngineering.MODID, "block/fluid/hot_metal_flow");
 
@@ -72,10 +73,13 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceBlockEnt
 		IEObjState objState = new IEObjState(VisibilityList.show(renderedParts));
 
 		matrixStack.pushPose();
-		List<BakedQuad> quads = ELECTRODES.getNullQuads(te.getFacing(), state, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
+		List<BakedQuad> quads = ELECTRODES.get().getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
+		matrixStack.pushPose();
+		rotateForFacing(matrixStack, te.getFacing());
 		RenderUtils.renderModelTESRFast(
 				quads, bufferIn.getBuffer(RenderType.solid()), matrixStack, combinedLightIn, combinedOverlayIn
 		);
+		matrixStack.popPose();
 		matrixStack.translate(.5, .5, .5);
 
 		if(te.pouringMetal > 0)

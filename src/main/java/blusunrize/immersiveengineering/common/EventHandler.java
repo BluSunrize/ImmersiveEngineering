@@ -117,7 +117,7 @@ public class EventHandler
 	{
 		if(event.getObject() instanceof FurnaceBlockEntity furnace)
 			event.addCapability(ImmersiveEngineering.rl("vanilla_furnace_heater"), new SimpleCapProvider<>(
-					ExternalHeaterHandler.CAPABILITY, new VanillaFurnaceHeater(furnace)
+					() -> ExternalHeaterHandler.CAPABILITY, new VanillaFurnaceHeater(furnace)
 			));
 	}
 

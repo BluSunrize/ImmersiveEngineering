@@ -25,11 +25,12 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntity>
 {
-	public static DynamicModel<Void> MODEL;
+	public static final String NAME = "watermill";
+	public static DynamicModel MODEL;
 	private static final IVertexBufferHolder MODEL_BUFFER = IVertexBufferHolder.create(() -> {
 		BlockState state = WoodenDevices.watermill.defaultBlockState()
 				.setValue(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
-		return MODEL.get(null).getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
+		return MODEL.get().getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 	});
 
 	@Override

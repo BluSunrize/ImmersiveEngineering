@@ -81,7 +81,7 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
-			return new SimpleCapProvider<>(CapabilityEnergy.ENERGY, new EnergyHelper.ItemEnergyStorage(stack));
+			return new SimpleCapProvider<>(() -> CapabilityEnergy.ENERGY, new EnergyHelper.ItemEnergyStorage(stack));
 		else
 			return super.initCapabilities(stack, nbt);
 	}

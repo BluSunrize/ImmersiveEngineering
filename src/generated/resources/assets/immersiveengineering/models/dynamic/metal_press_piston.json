@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/metal_press_piston.obj",
+  "flip-v": true
+}

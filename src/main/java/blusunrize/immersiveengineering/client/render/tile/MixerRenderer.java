@@ -18,7 +18,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +26,8 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 {
-	public static DynamicModel<Direction> AGITATOR;
+	public static final String NAME = "mixer_agitator";
+	public static DynamicModel AGITATOR;
 
 	@Override
 	public void render(MixerBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
@@ -40,7 +40,6 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 		BlockState state = te.getLevel().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.mixer.get())
 			return;
-		BakedModel model = AGITATOR.get(te.getFacing());
 
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
@@ -53,7 +52,7 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 
 		matrixStack.translate(-0.5, -0.5, -0.5);
 		blockRenderer.getModelRenderer().renderModel(
-				matrixStack.last(), bufferIn.getBuffer(RenderType.solid()), state, model,
+				matrixStack.last(), bufferIn.getBuffer(RenderType.solid()), state, AGITATOR.get(),
 				1, 1, 1,
 				combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE
 		);

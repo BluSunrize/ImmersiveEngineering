@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_device/core_drill_center.obj",
+  "flip-v": true
+}

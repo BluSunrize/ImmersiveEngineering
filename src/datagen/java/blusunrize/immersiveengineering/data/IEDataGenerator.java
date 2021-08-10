@@ -60,6 +60,7 @@ public class IEDataGenerator
 			gen.addProvider(new Advancements(gen));
 			gen.addProvider(new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, gen));
 			gen.addProvider(new StructureUpdater("structures/village", Lib.MODID, exHelper, gen));
+			gen.addProvider(new DynamicModels(gen, exHelper));
 			// Always keep this as the last provider!
 			gen.addProvider(new RunCompleteHelper());
 		}

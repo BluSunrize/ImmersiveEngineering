@@ -18,13 +18,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerBlockEntity>
 {
-	public static DynamicModel<Direction> PISTON;
+	public static final String NAME = "squeezer_piston";
+	public static DynamicModel PISTON;
 
 	@Override
 	public void render(SqueezerBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
@@ -37,7 +37,7 @@ public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerBlockEntity>
 		BlockState state = te.getLevel().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.squeezer.get())
 			return;
-		BakedModel model = PISTON.get(te.getFacing());
+		BakedModel model = PISTON.get();
 
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
@@ -51,6 +51,7 @@ public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerBlockEntity>
 		matrixStack.translate(0, piston, 0);
 
 		matrixStack.translate(-.5, -.5, -.5);
+		rotateForFacing(matrixStack, te.getFacing());
 		blockRenderer.getModelRenderer().renderModel(
 				matrixStack.last(), buffer, state, model,
 				1, 1, 1,
