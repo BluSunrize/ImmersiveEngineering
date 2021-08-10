@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
@@ -27,11 +28,23 @@ import org.lwjgl.opengl.GL11;
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
 
+import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
 import static net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES;
 
 //This extends RenderStateShard to get access to various protected members
 public class IERenderTypes extends RenderStateShard
 {
+	public static final VertexFormat BLOCK_WITH_OVERLAY = new VertexFormat(
+			ImmutableMap.<String, VertexFormatElement>builder()
+					.put("Position", ELEMENT_POSITION)
+					.put("Color", ELEMENT_COLOR)
+					.put("UV0", ELEMENT_UV0)
+					.put("UV1", ELEMENT_UV1)
+					.put("UV2", ELEMENT_UV2)
+					.put("Normal", ELEMENT_NORMAL)
+					.put("Padding", ELEMENT_PADDING)
+					.build()
+	);
 	public static final RenderType TRANSLUCENT_FULLBRIGHT;
 	public static final RenderType SOLID_FULLBRIGHT;
 	public static final RenderType LINES;
@@ -61,19 +74,21 @@ public class IERenderTypes extends RenderStateShard
 	{
 		SOLID_FULLBRIGHT = createDefault(
 				ImmersiveEngineering.MODID+":solid_fullbright",
-				DefaultVertexFormat.BLOCK, Mode.QUADS,
+				BLOCK_WITH_OVERLAY, Mode.QUADS,
 				RenderType.CompositeState.builder()
 						.setShaderState(FULLBRIGHT_BLOCKS)
+						.setOverlayState(OVERLAY)
 						.setLightmapState(LIGHTMAP_DISABLED)
 						.setTextureState(BLOCK_SHEET_MIPPED)
 						.createCompositeState(false)
 		);
 		TRANSLUCENT_FULLBRIGHT = createDefault(
 				ImmersiveEngineering.MODID+":translucent_fullbright",
-				DefaultVertexFormat.BLOCK, Mode.QUADS,
+				BLOCK_WITH_OVERLAY, Mode.QUADS,
 				RenderType.CompositeState.builder()
 						.setShaderState(FULLBRIGHT_BLOCKS)
 						.setLightmapState(LIGHTMAP_DISABLED)
+						.setOverlayState(OVERLAY)
 						.setTextureState(BLOCK_SHEET_MIPPED)
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 						.setOutputState(TRANSLUCENT_TARGET)

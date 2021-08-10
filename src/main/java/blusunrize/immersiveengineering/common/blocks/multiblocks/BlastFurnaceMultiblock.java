@@ -10,12 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class BlastFurnaceMultiblock extends StoneMultiblock
 {
@@ -23,20 +19,7 @@ public class BlastFurnaceMultiblock extends StoneMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/blast_furnace"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 3, 3),
-				() -> Multiblocks.blastFurnace.defaultBlockState());
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean canRenderFormedStructure()
-	{
-		return false;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
-	{
+				Multiblocks.blastFurnace);
 	}
 
 	@Override

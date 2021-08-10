@@ -9,8 +9,11 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockRenderProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
@@ -26,15 +29,15 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 
 public abstract class IETemplateMultiblock extends TemplateMultiblock
 {
-	private final Supplier<BlockState> baseState;
+	private final IEBlocks.BlockEntry<?> baseState;
 
 	public IETemplateMultiblock(
 			ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
-			Supplier<BlockState> baseState
+			IEBlocks.BlockEntry<?> baseState
 	)
 	{
 		super(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableMap.of());
@@ -44,14 +47,13 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	@Override
 	protected void replaceStructureBlock(StructureBlockInfo info, Level world, BlockPos actualPos, boolean mirrored, Direction clickDirection, Vec3i offsetFromMaster)
 	{
-		BlockState state = baseState.get();
+		BlockState state = baseState.get().defaultBlockState();
 		if(!offsetFromMaster.equals(Vec3i.ZERO))
 			state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		world.setBlockAndUpdate(actualPos, state);
 		BlockEntity curr = world.getBlockEntity(actualPos);
-		if(curr instanceof MultiblockPartBlockEntity)
+		if(curr instanceof MultiblockPartBlockEntity<?> tile)
 		{
-			MultiblockPartBlockEntity tile = (MultiblockPartBlockEntity)curr;
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
@@ -107,5 +109,15 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 			((MultiblockPartBlockEntity<?>)te).formed = false;
 		else if (te != null)
 			IELogger.logger.error("Expected multiblock TE at {}, got {}", pos, te);
+	}
+
+	@Override
+	public void initializeClient(Consumer<MultiblockRenderProperties> consumer)
+	{
+		consumer.accept(new BasicClientProperties(this));
+	}
+
+	public ResourceLocation getBlockName() {
+		return baseState.getId();
 	}
 }

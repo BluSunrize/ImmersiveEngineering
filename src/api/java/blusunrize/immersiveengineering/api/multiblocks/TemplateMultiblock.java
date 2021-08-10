@@ -34,14 +34,11 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlac
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.Palette;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -64,8 +61,6 @@ public abstract class TemplateMultiblock implements IMultiblock
 	protected final List<MatcherPredicate> additionalPredicates;
 	@Nullable
 	private StructureTemplate template;
-	@Nullable
-	private ItemStack[] materials;
 	private BlockState trigger = Blocks.AIR.defaultBlockState();
 
 	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size,
@@ -133,7 +128,6 @@ public abstract class TemplateMultiblock implements IMultiblock
 					// Usually means it contains a block that has been renamed
 					LOGGER.error("Found non-default air block in template {}", loc);
 			}
-			materials = null;
 		}
 		return Objects.requireNonNull(template);
 	}
@@ -241,13 +235,6 @@ public abstract class TemplateMultiblock implements IMultiblock
 		return getTemplate(world).getSize();
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean overwriteBlockRender(BlockState state, int iterator)
-	{
-		return false;
-	}
-
 	public static BlockPos withSettingsAndOffset(BlockPos origin, BlockPos relative, Mirror mirror, Rotation rot)
 	{
 		StructurePlaceSettings settings = new StructurePlaceSettings().setMirror(mirror).setRotation(rot);
@@ -261,32 +248,6 @@ public abstract class TemplateMultiblock implements IMultiblock
 			return origin;
 		return withSettingsAndOffset(origin, relative, mirrored?Mirror.FRONT_BACK: Mirror.NONE,
 				rot);
-	}
-
-	@Override
-	public ItemStack[] getTotalMaterials()
-	{
-		if(materials==null)
-		{
-			List<StructureBlockInfo> structure = getStructure(null);
-			List<ItemStack> ret = new ArrayList<>(structure.size());
-			for(StructureBlockInfo info : structure)
-			{
-				ItemStack picked = PICK_BLOCK.getValue().apply(info.state);
-				boolean added = false;
-				for(ItemStack existing : ret)
-					if(ItemStack.isSame(existing, picked))
-					{
-						existing.grow(1);
-						added = true;
-						break;
-					}
-				if(!added)
-					ret.add(picked.copy());
-			}
-			materials = ret.toArray(new ItemStack[0]);
-		}
-		return materials;
 	}
 
 	@Override

@@ -8,8 +8,7 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockRenderProperties;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -19,8 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.eventbus.api.Cancelable;
@@ -30,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author BluSunrize - 27.04.2015
@@ -89,44 +87,17 @@ public class MultiblockHandler
 		List<StructureBlockInfo> getStructure(@Nullable Level world);
 
 		/**
-		 * An array of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
-		 *
-		 * @return
-		 */
-		@OnlyIn(Dist.CLIENT)
-		ItemStack[] getTotalMaterials();
-
-		/**
-		 * Use this to overwrite the rendering of a Multiblock's Component
-		 */
-		@OnlyIn(Dist.CLIENT)
-		boolean overwriteBlockRender(BlockState state, int iterator);
-
-		/**
 		 * returns the scale modifier to be applied when rendering the structure in the IE manual
 		 */
 		float getManualScale();
-
-		/**
-		 * returns true to add a button that will switch between the assembly of multiblocks and the finished render
-		 */
-		@OnlyIn(Dist.CLIENT)
-		boolean canRenderFormedStructure();
-
-		/**
-		 * use this function to render the complete multiblock
-		 *
-		 * @param transform
-		 * @param buffer
-		 */
-		@OnlyIn(Dist.CLIENT)
-		void renderFormedStructure(PoseStack transform, MultiBufferSource buffer);
 
 		Vec3i getSize(@Nullable Level world);
 
 		void disassemble(Level world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation);
 
 		BlockPos getTriggerOffset();
+
+		void initializeClient(Consumer<MultiblockRenderProperties> consumer);
 	}
 
 	public static MultiblockFormEvent postMultiblockFormationEvent(Player player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)

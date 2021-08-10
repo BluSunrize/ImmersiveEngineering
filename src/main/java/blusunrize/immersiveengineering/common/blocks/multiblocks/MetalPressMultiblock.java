@@ -10,26 +10,17 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class MetalPressMultiblock extends IETemplateMultiblock
 {
@@ -37,38 +28,7 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/metal_press"),
 				new BlockPos(1, 1, 0), new BlockPos(1, 1, 0), new BlockPos(3, 3, 1),
-				() -> Multiblocks.metalPress.defaultBlockState());
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean canRenderFormedStructure()
-	{
-		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private static ItemStack renderStack;
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
-	{
-		if(renderStack==null)
-			renderStack = new ItemStack(Multiblocks.metalPress);
-		transform.scale(4, 4, 4);
-		transform.translate(.375, .375, .125f);
-		transform.mulPose(new Quaternion(0, -45, 0, true));
-		transform.mulPose(new Quaternion(-20, 0, 0, true));
-
-		ClientUtils.mc().getItemRenderer().renderStatic(
-				renderStack,
-				TransformType.GUI,
-				0xf000f0,
-				OverlayTexture.NO_OVERLAY,
-				transform, buffer,
-				0
-		);
+				Multiblocks.metalPress);
 	}
 
 	@Override

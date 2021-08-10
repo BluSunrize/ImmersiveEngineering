@@ -23,12 +23,15 @@ import net.minecraft.tags.Tag;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.Property;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
 
 public class IEMultiblocks
 {
+	public static final List<IMultiblock> IE_MULTIBLOCKS = new ArrayList<>();
+
 	public static IETemplateMultiblock CRUSHER;
 	public static IETemplateMultiblock SAWMILL;
 	public static IETemplateMultiblock ALLOY_SMELTER;
@@ -108,32 +111,38 @@ public class IEMultiblocks
 		});
 
 		//Init IE multiblocks
-		CRUSHER = new CrusherMultiblock();
-		SAWMILL = new SawmillMultiblock();
-		ALLOY_SMELTER = new AlloySmelterMultiblock();
-		ARC_FURNACE = new ArcFurnaceMultiblock();
-		ASSEMBLER = new AssemblerMultiblock();
-		AUTO_WORKBENCH = new AutoWorkbenchMultiblock();
-		BLAST_FURNACE = new BlastFurnaceMultiblock();
-		ADVANCED_BLAST_FURNACE = new ImprovedBlastfurnaceMultiblock();
-		BOTTLING_MACHINE = new BottlingMachineMultiblock();
-		BUCKET_WHEEL = new BucketWheelMultiblock();
-		COKE_OVEN = new CokeOvenMultiblock();
-		DIESEL_GENERATOR = new DieselGeneratorMultiblock();
-		EXCAVATOR = new ExcavatorMultiblock();
-		FEEDTHROUGH = new FeedthroughMultiblock();
-		FERMENTER = new FermenterMultiblock();
-		LIGHTNING_ROD = new LightningRodMultiblock();
-		METAL_PRESS = new MetalPressMultiblock();
-		MIXER = new MixerMultiblock();
-		REFINERY = new RefineryMultiblock();
-		SHEETMETAL_TANK = new SheetmetalTankMultiblock();
-		SILO = new SiloMultiblock();
-		SQUEEZER = new SqueezerMultiblock();
-		EXCAVATOR_DEMO = new UnionMultiblock(new ResourceLocation(ImmersiveEngineering.MODID, "excavator_demo"),
+		CRUSHER = register(new CrusherMultiblock());
+		SAWMILL = register(new SawmillMultiblock());
+		ALLOY_SMELTER = register(new AlloySmelterMultiblock());
+		ARC_FURNACE = register(new ArcFurnaceMultiblock());
+		ASSEMBLER = register(new AssemblerMultiblock());
+		AUTO_WORKBENCH = register(new AutoWorkbenchMultiblock());
+		BLAST_FURNACE = register(new BlastFurnaceMultiblock());
+		ADVANCED_BLAST_FURNACE = register(new ImprovedBlastfurnaceMultiblock());
+		BOTTLING_MACHINE = register(new BottlingMachineMultiblock());
+		BUCKET_WHEEL = register(new BucketWheelMultiblock());
+		COKE_OVEN = register(new CokeOvenMultiblock());
+		DIESEL_GENERATOR = register(new DieselGeneratorMultiblock());
+		EXCAVATOR = register(new ExcavatorMultiblock());
+		FEEDTHROUGH = register(new FeedthroughMultiblock());
+		FERMENTER = register(new FermenterMultiblock());
+		LIGHTNING_ROD = register(new LightningRodMultiblock());
+		METAL_PRESS = register(new MetalPressMultiblock());
+		MIXER = register(new MixerMultiblock());
+		REFINERY = register(new RefineryMultiblock());
+		SHEETMETAL_TANK = register(new SheetmetalTankMultiblock());
+		SILO = register(new SiloMultiblock());
+		SQUEEZER = register(new SqueezerMultiblock());
+		EXCAVATOR_DEMO = register(new UnionMultiblock(new ResourceLocation(ImmersiveEngineering.MODID, "excavator_demo"),
 				ImmutableList.of(
 						new TransformedMultiblock(EXCAVATOR, Vec3i.ZERO, Rotation.NONE),
 						new TransformedMultiblock(BUCKET_WHEEL, new Vec3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
-				));
+				)));
+	}
+
+	private static <T extends IMultiblock>
+	T register(T multiblock) {
+		IE_MULTIBLOCKS.add(multiblock);
+		return multiblock;
 	}
 }

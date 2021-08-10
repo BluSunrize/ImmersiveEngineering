@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.client.manual;
 
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockRenderProperties;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
@@ -29,6 +31,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -49,6 +52,7 @@ import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 public class ManualElementMultiblock extends SpecialManualElements
 {
 	private final IMultiblock multiblock;
+	private final MultiblockRenderProperties renderProperties;
 
 	private boolean canTick = true;
 	private boolean showCompleted = false;
@@ -69,6 +73,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	{
 		super(manual);
 		this.multiblock = multiblock;
+		this.renderProperties = ClientMultiblocks.get(multiblock);
 		List<StructureBlockInfo> structure = multiblock.getStructure(Minecraft.getInstance().level);
 		renderInfo = new MultiblockRenderInfo(structure);
 		float diagLength = (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+
@@ -97,7 +102,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		int yOff = 0;
 		if(multiblock.getStructure(null)!=null)
 		{
-			boolean canRenderFormed = multiblock.canRenderFormedStructure();
+			boolean canRenderFormed = renderProperties.canRenderFormedStructure();
 
 			yOff = (int)(transY+scale*Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+renderInfo.structureWidth*renderInfo.structureWidth+renderInfo.structureLength*renderInfo.structureLength)/2);
 			pageButtons.add(new GuiButtonManualNavigation(gui, x+4, (int)transY-(canRenderFormed?11: 5), 10, 10, 4, btn -> {
@@ -125,56 +130,54 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 	private void checkMaterials()
 	{
-		ItemStack[] totalMaterials = this.multiblock.getTotalMaterials();
+		NonNullList<ItemStack> totalMaterials = this.renderProperties.getTotalMaterials();
 		if(totalMaterials!=null)
 		{
 			componentTooltip = new ArrayList<>();
 			componentTooltip.add(new TranslatableComponent("desc.immersiveengineering.info.reqMaterial"));
 			int maxOff = 1;
 			boolean hasAnyItems = false;
-			boolean[] hasItems = new boolean[totalMaterials.length];
-			for(int ss = 0; ss < totalMaterials.length; ss++)
-				if(totalMaterials[ss]!=null)
+			boolean[] hasItems = new boolean[totalMaterials.size()];
+			for(int ss = 0; ss < totalMaterials.size(); ss++)
+			{
+				ItemStack req = totalMaterials.get(ss);
+				int reqSize = req.getCount();
+				for(int slot = 0; slot < ManualUtils.mc().player.getInventory().getContainerSize(); slot++)
 				{
-					ItemStack req = totalMaterials[ss];
-					int reqSize = req.getCount();
-					for(int slot = 0; slot < ManualUtils.mc().player.getInventory().getContainerSize(); slot++)
-					{
-						ItemStack inSlot = ManualUtils.mc().player.getInventory().getItem(slot);
-						if(!inSlot.isEmpty()&&ItemStack.isSame(inSlot, req))
-							if((reqSize -= inSlot.getCount()) <= 0)
-								break;
-					}
-					if(reqSize <= 0)
-					{
-						hasItems[ss] = true;
-						if(!hasAnyItems)
-							hasAnyItems = true;
-					}
-					maxOff = Math.max(maxOff, (""+req.getCount()).length());
+					ItemStack inSlot = ManualUtils.mc().player.getInventory().getItem(slot);
+					if(!inSlot.isEmpty()&&ItemStack.isSame(inSlot, req))
+						if((reqSize -= inSlot.getCount()) <= 0)
+							break;
 				}
-			for(int ss = 0; ss < totalMaterials.length; ss++)
-				if(totalMaterials[ss]!=null)
+				if(reqSize <= 0)
 				{
-					ItemStack req = totalMaterials[ss];
-					int indent = maxOff-(""+req.getCount()).length();
-					StringBuilder sIndent = new StringBuilder();
-					if(indent > 0)
-						sIndent.append("0".repeat(indent));
-					MutableComponent s;
-					if(hasItems[ss])
-						s = greenTick.copy();
-					else
-						s = new TextComponent(hasAnyItems?"   ": "");
-					s.append(applyFormat(
-							new TextComponent(sIndent.toString()+req.getCount()+"x "), ChatFormatting.GRAY
-					));
-					if(!req.isEmpty())
-						s.append(applyFormat(req.getHoverName().copy(), req.getRarity().color));
-					else
-						s.append("???");
-					componentTooltip.add(s);
+					hasItems[ss] = true;
+					if(!hasAnyItems)
+						hasAnyItems = true;
 				}
+				maxOff = Math.max(maxOff, (""+req.getCount()).length());
+			}
+			for(int ss = 0; ss < totalMaterials.size(); ss++)
+			{
+				ItemStack req = totalMaterials.get(ss);
+				int indent = maxOff-(""+req.getCount()).length();
+				StringBuilder sIndent = new StringBuilder();
+				if(indent > 0)
+					sIndent.append("0".repeat(indent));
+				MutableComponent s;
+				if(hasItems[ss])
+					s = greenTick.copy();
+				else
+					s = new TextComponent(hasAnyItems?"   ": "");
+				s.append(applyFormat(
+						new TextComponent(sIndent.toString()+req.getCount()+"x "), ChatFormatting.GRAY
+				));
+				if(!req.isEmpty())
+					s.append(applyFormat(req.getHoverName().copy(), req.getRarity().color));
+				else
+					s.append("???");
+				componentTooltip.add(s);
+			}
 		}
 	}
 
@@ -211,11 +214,10 @@ public class ManualElementMultiblock extends SpecialManualElements
 
 				transform.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
 
-				int idx = 0;
-				if(showCompleted&&multiblock.canRenderFormedStructure())
+				if(showCompleted&&renderProperties.canRenderFormedStructure())
 				{
 					transform.pushPose();
-					multiblock.renderFormedStructure(transform, IERenderTypes.disableLighting(buffer));
+					renderProperties.renderFormedStructure(transform, IERenderTypes.disableLighting(buffer));
 					transform.popPose();
 				}
 				else
@@ -231,7 +233,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 								{
 									transform.pushPose();
 									transform.translate(l, h, w);
-									boolean b = multiblock.overwriteBlockRender(state, idx++);
+									boolean b = renderProperties.overwriteBlockRender(state, pos);
 									if(!b)
 									{
 										int overlay;

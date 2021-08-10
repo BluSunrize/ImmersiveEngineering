@@ -35,6 +35,7 @@ import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
+import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
@@ -480,6 +481,7 @@ public class ClientProxy extends CommonProxy
 		WindmillRenderer.MODEL = new DynamicModel(WindmillRenderer.NAME);
 		RedstoneConveyor.MODEL_PANEL = new DynamicModel(RedstoneConveyor.MODEL_NAME);
 		SawbladeRenderer.MODEL = new DynamicModel(SawbladeRenderer.NAME);
+		BasicClientProperties.initModels();
 	}
 
 	public static void populateAPI()

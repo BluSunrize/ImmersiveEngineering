@@ -27,7 +27,9 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
@@ -44,6 +46,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 			.map(BlockPos::immutable)
 			.collect(Collectors.toList());
 
+	public final Map<Block, ModelFile> unsplitModels = new HashMap<>();
 	public ModelFile blastFurnaceOff;
 	public ModelFile blastFurnaceOn;
 	public ModelFile cokeOvenOff;
@@ -232,6 +235,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 	private void createMultiblock(Supplier<? extends Block> b, ModelFile masterModel, @Nullable ModelFile mirroredModel,
 								  EnumProperty<Direction> facing, @Nullable Property<Boolean> mirroredState)
 	{
+		unsplitModels.put(b.get(), masterModel);
 		Preconditions.checkArgument((mirroredModel==null)==(mirroredState==null));
 		VariantBlockStateBuilder builder = getVariantBuilder(b.get());
 		boolean[] possibleMirrorStates;

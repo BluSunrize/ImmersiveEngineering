@@ -9,18 +9,9 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class SiloMultiblock extends IETemplateMultiblock
 {
@@ -28,38 +19,7 @@ public class SiloMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/silo"),
 				new BlockPos(1, 0, 1), new BlockPos(1, 1, 2), new BlockPos(3, 7, 3),
-				() -> Multiblocks.silo.defaultBlockState());
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean canRenderFormedStructure()
-	{
-		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private static ItemStack renderStack;
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
-	{
-		if(renderStack==null)
-			renderStack = new ItemStack(Multiblocks.silo);
-		transform.translate(2, 2.5, 1);
-		transform.mulPose(new Quaternion(0, 45, 0, true));
-		transform.mulPose(new Quaternion(-20, 0, 0, true));
-		transform.scale(8, 8, 8);
-
-		ClientUtils.mc().getItemRenderer().renderStatic(
-				renderStack,
-				TransformType.FIXED,
-				0xf000f0,
-				OverlayTexture.NO_OVERLAY,
-				transform, buffer,
-				0
-		);
+				Multiblocks.silo);
 	}
 
 	@Override

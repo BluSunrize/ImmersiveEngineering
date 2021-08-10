@@ -53,14 +53,14 @@ public class IEDataGenerator
 			gen.addProvider(new Recipes(gen));
 			gen.addProvider(new AllLoot(gen));
 			gen.addProvider(new BlockStates(gen, exHelper));
-			MultiblockStates blockStates = new MultiblockStates(gen, exHelper);
-			gen.addProvider(blockStates);
+			MultiblockStates multiblocks = new MultiblockStates(gen, exHelper);
+			gen.addProvider(multiblocks);
 			gen.addProvider(new ConnectorBlockStates(gen, exHelper));
-			gen.addProvider(new ItemModels(gen, exHelper, blockStates));
+			gen.addProvider(new ItemModels(gen, exHelper, multiblocks));
 			gen.addProvider(new Advancements(gen));
 			gen.addProvider(new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, gen));
 			gen.addProvider(new StructureUpdater("structures/village", Lib.MODID, exHelper, gen));
-			gen.addProvider(new DynamicModels(gen, exHelper));
+			gen.addProvider(new DynamicModels(multiblocks, gen, exHelper));
 			// Always keep this as the last provider!
 			gen.addProvider(new RunCompleteHelper());
 		}

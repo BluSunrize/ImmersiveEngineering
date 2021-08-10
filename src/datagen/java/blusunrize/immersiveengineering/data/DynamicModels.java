@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.client.render.entity.SawbladeRenderer;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.RedstoneConveyor;
 import blusunrize.immersiveengineering.data.DynamicModels.SimpleModelBuilder;
+import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -19,9 +20,12 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 {
-	public DynamicModels(DataGenerator generator, ExistingFileHelper existingFileHelper)
+	private final MultiblockStates multiblocks;
+
+	public DynamicModels(MultiblockStates multiblocks, DataGenerator generator, ExistingFileHelper existingFileHelper)
 	{
 		super(generator, Lib.MODID, "dynamic", rl -> new SimpleModelBuilder(rl, existingFileHelper), existingFileHelper);
+		this.multiblocks = multiblocks;
 	}
 
 	@Override
@@ -102,6 +106,8 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.modelLocation(rl("models/item/buzzsaw_diesel.obj.ie"))
 				.flipV(true)
 				.end();
+		for (var multiblock : multiblocks.unsplitModels.entrySet())
+			withExistingParent(multiblock.getKey().getRegistryName().getPath(), multiblock.getValue().getLocation());
 	}
 
 	@Nonnull
