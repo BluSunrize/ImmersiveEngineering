@@ -39,7 +39,7 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 	@Override
 	public void render(TurretBlockEntity<?> tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
+		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 
 		//Grab model + correct eextended state

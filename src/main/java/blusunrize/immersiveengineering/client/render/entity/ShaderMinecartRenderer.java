@@ -53,7 +53,6 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 
 	public ShaderMinecartRenderer(MinecartRenderer<T> base, Context manager)
 	{
-		//TODO test with non-basic carts
 		super(manager, ModelLayers.MINECART);
 		this.baseRenderer = base;
 		this.baseModel = getModel();
@@ -98,7 +97,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 							));
 
 							ModelPart subModel = boxList.get(part);
-							//TODO why was this needed?
+							//TODO Fix this
 							//boolean oldMirrored = subModel.mirror;
 							//subModel.mirror = ((ShaderCaseMinecart)sCase).mirrorSideForPass[pass];
 							subModel.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn,

@@ -23,8 +23,8 @@ import java.util.function.Supplier;
 
 public class MessageSpeedloaderSync implements IMessage
 {
-	private int slot;
-	private InteractionHand hand;
+	private final int slot;
+	private final InteractionHand hand;
 
 	public MessageSpeedloaderSync(int slot, InteractionHand hand)
 	{
@@ -57,7 +57,6 @@ public class MessageSpeedloaderSync implements IMessage
 					player.playSound(IESounds.revolverReload, 1f, 1f);
 					ItemNBTHelper.putInt(player.getItemInHand(hand), "reload", 60);
 				}
-				// TODO this is a speedloader dupe!
 				player.getInventory().setItem(slot, new ItemStack(Weapons.speedloader));
 			}
 		});

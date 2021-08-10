@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.*;
@@ -45,6 +44,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
@@ -73,9 +73,9 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IETickabl
 	public final List<LightningAnimation> effectMap = new ArrayList<>();
 	private static final ElectricSource TC_FIELD = new ElectricSource(-1);
 
-	public TeslaCoilBlockEntity(BlockPos pos, BlockState state)
+	public TeslaCoilBlockEntity(BlockEntityType<TeslaCoilBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.TESLACOIL.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	@Override
@@ -83,13 +83,6 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IETickabl
 	{
 		IETickableBlockEntity.super.tickClient();
 		effectMap.removeIf(LightningAnimation::tick);
-	}
-
-	@Override
-	public void tick()
-	{
-		checkForNeedlessTicking();
-		IETickableBlockEntity.super.tick();
 	}
 
 	@Override

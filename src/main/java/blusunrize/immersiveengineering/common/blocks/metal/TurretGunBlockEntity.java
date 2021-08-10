@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -32,6 +31,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
@@ -50,9 +50,9 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(2, ItemStack.EMPTY);
 	public boolean expelCasings = false;
 
-	public TurretGunBlockEntity(BlockPos pos, BlockState state)
+	public TurretGunBlockEntity(BlockEntityType<TurretGunBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.TURRET_GUN.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	@Override

@@ -494,13 +494,12 @@ public class ConveyorHandler
 				}
 
 				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
-				if(entity instanceof ItemEntity&&entity.tickCount > 1)
+				if(entity instanceof ItemEntity item&&entity.tickCount > 1)
 				{
-					ItemEntity item = (ItemEntity)entity;
 					if(!contact)
 					{
 						ItemAgeAccessor access = ITEM_AGE_ACCESS.getValue();
-						if(access.getAgeNonsided(item) > item.lifespan-60*20&&!outputBlocked)
+						if(item.getAge() > item.lifespan-60*20&&!outputBlocked)
 							access.setAge(item, item.lifespan-60*20);
 					}
 					else if(!w.isClientSide)
@@ -681,8 +680,6 @@ public class ConveyorHandler
 
 	public interface ItemAgeAccessor
 	{
-		int getAgeNonsided(ItemEntity entity);
-
 		void setAge(ItemEntity entity, int newAge);
 	}
 }

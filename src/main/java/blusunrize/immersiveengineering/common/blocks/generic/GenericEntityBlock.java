@@ -17,21 +17,27 @@ import net.minecraftforge.fmllegacy.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
 
 public class GenericEntityBlock<T extends BlockEntity> extends IEEntityBlock
 {
-	private final RegistryObject<BlockEntityType<T>> tileType;
+	private final BiFunction<BlockPos, BlockState, T> makeTile;
+
+	public GenericEntityBlock(BiFunction<BlockPos, BlockState, T> makeTile, Properties blockProps)
+	{
+		super(blockProps);
+		this.makeTile = makeTile;
+	}
 
 	public GenericEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
 	{
-		super(blockProps);
-		this.tileType = tileType;
+		this((bp, state) -> tileType.get().create(bp, state), blockProps);
 	}
 
 	@Nullable
 	@Override
 	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
-		return tileType.get().create(pos, state);
+		return makeTile.apply(pos, state);
 	}
 }

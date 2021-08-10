@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
@@ -145,7 +144,6 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 	@Override
 	public void tickCommon()
 	{
-		ApiUtils.checkForNeedlessTicking(this, te -> te.conveyorBeltSubtype!=null&&!te.conveyorBeltSubtype.isTicking());
 		if(this.conveyorBeltSubtype!=null)
 			this.conveyorBeltSubtype.onUpdate();
 	}

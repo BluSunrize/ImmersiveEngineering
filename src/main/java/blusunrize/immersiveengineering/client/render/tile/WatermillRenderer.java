@@ -36,7 +36,7 @@ public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntit
 	public void render(WatermillBlockEntity tile, float partialTicks, PoseStack transform, MultiBufferSource bufferIn,
 					   int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!SafeChunkUtils.isChunkSafe(tile.getLevelNonnull(), tile.getBlockPos()))
+		if(!SafeChunkUtils.isChunkSafe(tile.getLevelNonnull(), tile.getBlockPos()))
 			return;
 		transform.pushPose();
 		transform.translate(.5, .5, .5);

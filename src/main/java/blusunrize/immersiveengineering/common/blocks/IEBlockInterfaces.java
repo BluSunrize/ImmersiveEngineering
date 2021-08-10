@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
@@ -394,14 +393,6 @@ public class IEBlockInterfaces
 				return state.getValue(IEProperties.MULTIBLOCKSLAVE);
 			else
 				return true;
-		}
-
-		default void checkForNeedlessTicking()
-		{
-			ApiUtils.checkForNeedlessTicking((BlockEntity & IGeneralMultiblock)this,
-					// The warning on the next line should be ignored, using a method reference causes
-					// a "BootstrapMethodError"
-					te -> te.isDummy());
 		}
 	}
 

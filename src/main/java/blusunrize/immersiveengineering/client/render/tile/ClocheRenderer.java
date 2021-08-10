@@ -42,7 +42,7 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 	@Override
 	public void render(ClocheBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.dummy!=0||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
+		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = tile.getBlockPos();

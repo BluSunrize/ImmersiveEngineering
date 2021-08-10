@@ -87,7 +87,6 @@ public class EventHandler
 {
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
 	public static final Queue<Pair<ResourceKey<Level>, BlockPos>> requestedBlockUpdates = new LinkedList<>();
-	public static final Set<BlockEntity> REMOVE_FROM_TICKING = new HashSet<>();
 	public static final Queue<Runnable> SERVER_TASKS = new ArrayDeque<>();
 
 	@SubscribeEvent
@@ -173,12 +172,6 @@ public class EventHandler
 		{
 			GlobalWireNetwork.getNetwork(event.world).update(event.world);
 
-			if(!REMOVE_FROM_TICKING.isEmpty())
-			{
-				//TODO replace with vanilla system event.world.tickableBlockEntities.removeAll(REMOVE_FROM_TICKING);
-				// (should be near-trivial since you have a blockstate available)
-				REMOVE_FROM_TICKING.removeIf((te) -> te.getLevel()==event.world);
-			}
 			// Explicitly support tasks adding more tasks to be delayed
 			int numToRun = SERVER_TASKS.size();
 			for(int i = 0; i < numToRun; ++i)

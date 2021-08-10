@@ -164,15 +164,13 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 			}
 		}
 
-		if(entity instanceof ItemEntity)
+		if(entity instanceof ItemEntity itemEntity)
 		{
-			ItemEntity itemEntity = (ItemEntity)entity;
 			itemEntity.setPickUpDelay(10);
 			if(!contact)
 			{
-				ItemEntityAccess access = (ItemEntityAccess)itemEntity;
-				if(access.getAgeNonsided() > itemEntity.lifespan-60*20)
-					access.setAge(itemEntity.lifespan-60*20);
+				if(itemEntity.getAge() > itemEntity.lifespan-60*20)
+					((ItemEntityAccess)itemEntity).setAge(itemEntity.lifespan-60*20);
 			}
 			else
 			{

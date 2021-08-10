@@ -9,7 +9,10 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.*;
+import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
@@ -306,7 +309,6 @@ public class IEContent
 	public static void populateAPI()
 	{
 		SetRestrictedField.startInitializing(false);
-		ApiUtils.disableTicking.setValue(EventHandler.REMOVE_FROM_TICKING::add);
 		IngredientWithSize.SERIALIZER.setValue(IngredientWithSizeSerializer.INSTANCE);
 		BlueprintCraftingRecipe.blueprintItem.setValue(IEItems.Misc.blueprint);
 		ExcavatorHandler.setSetDirtyCallback(IESaveData::markInstanceDirty);
@@ -348,12 +350,6 @@ public class IEContent
 		GlobalWireNetwork.VALIDATE_CONNECTIONS.setValue(IECommonConfig.validateNet::get);
 		ConveyorHandler.ITEM_AGE_ACCESS.setValue(new ItemAgeAccessor()
 		{
-			@Override
-			public int getAgeNonsided(ItemEntity entity)
-			{
-				return ((ItemEntityAccess)entity).getAgeNonsided();
-			}
-
 			@Override
 			public void setAge(ItemEntity entity, int newAge)
 			{

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api;
 
-import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -22,7 +21,6 @@ import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.JsonUtils;
@@ -36,14 +34,11 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
 public class ApiUtils
 {
-	public static final SetRestrictedField<Consumer<BlockEntity>> disableTicking = SetRestrictedField.common();
 	/**
 	 * Random instance for general use. The "usual" per-world random instance can have unexpected behavior with
 	 * ghostloading (in some cases the seed is set directly), this instance does not have this problem.
@@ -98,12 +93,6 @@ public class ApiUtils
 		TreeMap<T, Integer> sortedMap = new TreeMap<>(new ValueComparator<T>(map, inverse));
 		sortedMap.putAll(map);
 		return sortedMap;
-	}
-
-	public static <T extends BlockEntity> void checkForNeedlessTicking(T te, Predicate<T> shouldDisable)
-	{
-		if(!te.getLevel().isClientSide&&shouldDisable.test(te))
-			disableTicking.getValue().accept(te);
 	}
 
 	//Based on net.minecraft.entity.EntityLivingBase.knockBack

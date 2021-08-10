@@ -25,7 +25,7 @@ public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntit
 	@Override
 	public void render(TeslaCoilBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
+		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 
 		for(LightningAnimation animation : tile.effectMap)

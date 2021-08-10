@@ -258,14 +258,12 @@ public class VerticalConveyor extends BasicConveyor
 				ConveyorHandler.revertMagnetSuppression(entity, (IConveyorBlockEntity)getTile());
 		}
 
-		if(entity instanceof ItemEntity)
+		if(entity instanceof ItemEntity item)
 		{
-			ItemEntity item = (ItemEntity)entity;
 			if(!contact)
 			{
-				ItemEntityAccess access = (ItemEntityAccess)item;
-				if(access.getAgeNonsided() > item.lifespan-60*20)
-					access.setAge(item.lifespan-60*20);
+				if(item.getAge() > item.lifespan-60*20)
+					((ItemEntityAccess)item).setAge(item.lifespan-60*20);
 			}
 			else
 			{

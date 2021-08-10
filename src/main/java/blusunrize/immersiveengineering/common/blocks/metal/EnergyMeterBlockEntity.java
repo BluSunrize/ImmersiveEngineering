@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -41,6 +40,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
@@ -62,9 +62,9 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 	private int compVal = -1;
 	private Connection shuntConnection;
 
-	public EnergyMeterBlockEntity(BlockPos pos, BlockState state)
+	public EnergyMeterBlockEntity(BlockEntityType<EnergyMeterBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.ENERGY_METER.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	@Override
@@ -85,13 +85,6 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 			transferred = Utils.formatDouble(transfer, "0.###");
 		ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"energyTransfered", packets, transferred));
 		return true;
-	}
-
-	@Override
-	public void tick()
-	{
-		checkForNeedlessTicking();
-		IETickableBlockEntity.super.tick();
 	}
 
 	@Override

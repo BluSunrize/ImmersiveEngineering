@@ -75,7 +75,6 @@ public class IERenderTypes extends RenderStateShard
 						.setOutputState(TRANSLUCENT_TARGET)
 						.createCompositeState(true)
 		);
-		//TODO probably needs shader state
 		RenderType.CompositeState translucentNoDepthState = RenderType.CompositeState.builder()
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 				.setLineState(new LineStateShard(OptionalDouble.of(2)))

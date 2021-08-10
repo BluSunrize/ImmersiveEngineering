@@ -14,10 +14,11 @@ import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
+import java.util.function.BiFunction;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public class MultiblockBEType<T extends BlockEntity & IGeneralMultiblock>
+public class MultiblockBEType<T extends BlockEntity & IGeneralMultiblock> implements BiFunction<BlockPos, BlockState, T>
 {
 	private final RegistryObject<BlockEntityType<T>> master;
 	private final RegistryObject<BlockEntityType<T>> dummy;
@@ -33,10 +34,11 @@ public class MultiblockBEType<T extends BlockEntity & IGeneralMultiblock>
 		this.dummy = register.register(name+"_dummy", makeType(make, block));
 	}
 
+	@Override
 	@Nullable
-	public T create(BlockPos pos, BlockState state)
+	public T apply(BlockPos pos, BlockState state)
 	{
-		if (isMaster.test(state))
+		if(isMaster.test(state))
 			return master.get().create(pos, state);
 		else
 			return dummy.get().create(pos, state);

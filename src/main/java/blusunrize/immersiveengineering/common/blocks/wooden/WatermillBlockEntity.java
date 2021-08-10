@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralM
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -28,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
@@ -48,22 +48,15 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 	private boolean beingBroken = false;
 	public double perTick;
 
-	public WatermillBlockEntity(BlockPos pos, BlockState state)
+	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.WATERMILL.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	@Override
 	public boolean canTickAny()
 	{
 		return offset[0]==0&&offset[1]==0;
-	}
-
-	@Override
-	public void tick()
-	{
-		checkForNeedlessTicking();
-		IETickableBlockEntity.super.tick();
 	}
 
 	@Override

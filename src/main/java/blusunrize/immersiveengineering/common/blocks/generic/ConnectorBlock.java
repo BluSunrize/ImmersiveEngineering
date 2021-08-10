@@ -33,17 +33,25 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
+import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends GenericEntityBlock<T>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.METAL)
-		.sound(SoundType.METAL)
-						.strength(3.0F, 15.0F)
-						.noOcclusion();
+			.sound(SoundType.METAL)
+			.strength(3.0F, 15.0F)
+			.noOcclusion();
 	public static final EnumProperty<Direction> DEFAULT_FACING_PROP = IEProperties.FACING_ALL;
 
 	public ConnectorBlock(Properties props, RegistryObject<BlockEntityType<T>> entityType)
+	{
+		super(entityType, props);
+		lightOpacity = 0;
+		setMobility(PushReaction.BLOCK);
+	}
+
+	public ConnectorBlock(Properties props, BiFunction<BlockPos, BlockState, T> entityType)
 	{
 		super(entityType, props);
 		lightOpacity = 0;

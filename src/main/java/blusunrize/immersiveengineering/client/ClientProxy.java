@@ -393,11 +393,11 @@ public class ClientProxy extends CommonProxy
 	public static void registerBERenders(RegisterRenderers event)
 	{
 		registerBERenderNoContext(event, IEBlockEntities.CHARGING_STATION.get(), ChargingStationRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.SAMPLE_DRILL.get(), SampleDrillRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.TESLACOIL.get(), TeslaCoilRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.TURRET_CHEM.get(), TurretRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.TURRET_GUN.get(), TurretRenderer::new);
-		registerBERenderNoContext(event, IEBlockEntities.CLOCHE.get(), ClocheRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.SAMPLE_DRILL.master(), SampleDrillRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.TESLACOIL.master(), TeslaCoilRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.TURRET_CHEM.master(), TurretRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.TURRET_GUN.master(), TurretRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.CLOCHE.master(), ClocheRenderer::new);
 		// MULTIBLOCKS
 		registerBERenderNoContext(event, IEBlockEntities.METAL_PRESS.master(), MetalPressRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.CRUSHER.master(), CrusherRenderer::new);
@@ -412,7 +412,7 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEBlockEntities.BOTTLING_MACHINE.master(), BottlingMachineRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.MIXER.master(), MixerRenderer::new);
 		//WOOD
-		registerBERenderNoContext(event, IEBlockEntities.WATERMILL.get(), WatermillRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.WATERMILL.master(), WatermillRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.WINDMILL.get(), WindmillRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.MOD_WORKBENCH.get(), ModWorkbenchRenderer::new);
 		//STONE

@@ -29,7 +29,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
@@ -58,6 +57,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
@@ -124,21 +124,14 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IETickableBl
 	public float renderGrowth = 0;
 	public boolean renderActive = false;
 
-	public ClocheBlockEntity(BlockPos pos, BlockState state)
+	public ClocheBlockEntity(BlockEntityType<ClocheBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.CLOCHE.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(worldPosition.above().relative(getFacing().getOpposite()), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-
-	@Override
-	public void tick()
-	{
-		checkForNeedlessTicking();
-		IETickableBlockEntity.super.tick();
-	}
 
 	@Override
 	public boolean canTickAny()

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -20,6 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
@@ -40,9 +40,9 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
 	public boolean ignite = false;
 
-	public TurretChemBlockEntity(BlockPos pos, BlockState state)
+	public TurretChemBlockEntity(BlockEntityType<TurretChemBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.TURRET_CHEM.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	@Override

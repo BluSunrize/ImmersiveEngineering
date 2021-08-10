@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity.DirectionalFluidOutput;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
@@ -39,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
@@ -60,10 +60,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IBlockBounds, IHasDummyBlocks,
 		IConfigurableSides, IFluidPipe, IIEInternalFluxHandler, IBlockOverlayText
@@ -84,15 +81,15 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IETickabl
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public boolean placeCobble = true;
 
-	boolean checkingArea = false;
-	Fluid searchFluid = null;
-	ArrayList<BlockPos> openList = new ArrayList<>();
-	ArrayList<BlockPos> closedList = new ArrayList<>();
-	ArrayList<BlockPos> checked = new ArrayList<>();
+	private boolean checkingArea = false;
+	private Fluid searchFluid = null;
+	private final List<BlockPos> openList = new ArrayList<>();
+	private final List<BlockPos> closedList = new ArrayList<>();
+	private final List<BlockPos> checked = new ArrayList<>();
 
-	public FluidPumpBlockEntity(BlockPos pos, BlockState state)
+	public FluidPumpBlockEntity(BlockEntityType<FluidPumpBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.FLUID_PUMP.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);
@@ -101,13 +98,6 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IETickabl
 		for(Direction neighbor : DirectionUtils.VALUES)
 			neighborFluids.put(neighbor,
 					CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, neighbor));
-	}
-
-	@Override
-	public void tick()
-	{
-		checkForNeedlessTicking();
-		IETickableBlockEntity.super.tick();
 	}
 
 	@Override

@@ -16,11 +16,6 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 @Mixin(ItemEntity.class)
 public interface ItemEntityAccess
 {
-	// There is a getter for it already, but it's client side only
-	//TODO remove in 1.17?
-	@Accessor("age")
-	int getAgeNonsided();
-
 	@Accessor
 	void setAge(int newAge);
 }

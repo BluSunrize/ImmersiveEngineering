@@ -98,13 +98,6 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		return !isDummy();
 	}
 
-	@Override
-	public void tick()
-	{
-		checkForNeedlessTicking();
-		IETickableBlockEntity.super.tick();
-	}
-
 	//TODO split sides more
 	@Override
 	public void tickCommon()

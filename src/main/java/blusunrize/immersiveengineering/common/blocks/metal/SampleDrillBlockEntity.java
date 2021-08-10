@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -38,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
@@ -58,22 +58,15 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IETicka
 	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
 
-	public SampleDrillBlockEntity(BlockPos pos, BlockState state)
+	public SampleDrillBlockEntity(BlockEntityType<SampleDrillBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.SAMPLE_DRILL.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	@Override
 	public boolean canTickAny()
 	{
 		return dummy==0&&sample.isEmpty();
-	}
-
-	@Override
-	public void tick()
-	{
-		checkForNeedlessTicking();
-		IETickableBlockEntity.super.tick();
 	}
 
 	@Override

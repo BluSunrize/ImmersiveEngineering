@@ -29,7 +29,7 @@ public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillBlockE
 	@Override
 	public void render(SampleDrillBlockEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
+		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 
 		BlockState state = tile.getLevelNonnull().getBlockState(tile.getBlockPos());
