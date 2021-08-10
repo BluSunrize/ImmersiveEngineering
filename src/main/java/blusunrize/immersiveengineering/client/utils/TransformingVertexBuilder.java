@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.client.utils;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import net.minecraft.world.phys.Vec2;
@@ -21,26 +22,30 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
+
 public class TransformingVertexBuilder implements VertexConsumer
 {
 	private final VertexConsumer base;
 	private final PoseStack transform;
-	ObjectWithGlobal<Vec2> uv = new ObjectWithGlobal<>();
-	ObjectWithGlobal<Vec3> pos = new ObjectWithGlobal<>();
-	ObjectWithGlobal<Vec2i> overlay = new ObjectWithGlobal<>();
-	ObjectWithGlobal<Vec2i> lightmap = new ObjectWithGlobal<>();
-	ObjectWithGlobal<Vector3f> normal = new ObjectWithGlobal<>();
-	ObjectWithGlobal<Vector4f> color = new ObjectWithGlobal<>();
+	private final ObjectWithGlobal<Vec2> uv = new ObjectWithGlobal<>();
+	private final ObjectWithGlobal<Vec3> pos = new ObjectWithGlobal<>();
+	private final ObjectWithGlobal<Vec2i> overlay = new ObjectWithGlobal<>();
+	private final ObjectWithGlobal<Vec2i> lightmap = new ObjectWithGlobal<>();
+	private final ObjectWithGlobal<Vector3f> normal = new ObjectWithGlobal<>();
+	private final ObjectWithGlobal<Vector4f> color = new ObjectWithGlobal<>();
+	private final VertexFormat format;
 
-	public TransformingVertexBuilder(VertexConsumer base, PoseStack transform)
+	public TransformingVertexBuilder(VertexConsumer base, PoseStack transform, VertexFormat format)
 	{
 		this.base = base;
 		this.transform = transform;
+		this.format = format;
 	}
 
-	public TransformingVertexBuilder(VertexConsumer base)
+	public TransformingVertexBuilder(VertexConsumer base, VertexFormat format)
 	{
-		this(base, new PoseStack());
+		this(base, new PoseStack(), format);
 	}
 
 	@Nonnull
@@ -94,14 +99,23 @@ public class TransformingVertexBuilder implements VertexConsumer
 	@Override
 	public void endVertex()
 	{
-		pos.ifPresent(pos -> base.vertex(transform.last().pose(), (float)pos.x, (float)pos.y, (float)pos.z));
-		color.ifPresent(c -> base.color(c.x(), c.y(), c.z(), c.w()));
-		uv.ifPresent(uv -> base.uv(uv.x, uv.y));
-		overlay.ifPresent(overlay -> base.overlayCoords(overlay.x, overlay.y));
-		lightmap.ifPresent(lightmap -> base.uv2(lightmap.x, lightmap.y));
-		normal.ifPresent(
-				normal -> base.normal(transform.last().normal(), normal.x(), normal.y(), normal.z())
-		);
+		for(var element : format.getElements())
+		{
+			if(element==ELEMENT_POSITION)
+				pos.ifPresent(pos -> base.vertex(transform.last().pose(), (float)pos.x, (float)pos.y, (float)pos.z));
+			else if(element==ELEMENT_COLOR)
+				color.ifPresent(c -> base.color(c.x(), c.y(), c.z(), c.w()));
+			else if(element==ELEMENT_UV0)
+				uv.ifPresent(uv -> base.uv(uv.x, uv.y));
+			else if(element==ELEMENT_UV1)
+				overlay.ifPresent(overlay -> base.overlayCoords(overlay.x, overlay.y));
+			else if(element==ELEMENT_UV2)
+				lightmap.ifPresent(lightmap -> base.uv2(lightmap.x, lightmap.y));
+			else if(element==ELEMENT_NORMAL)
+				normal.ifPresent(
+						normal -> base.normal(transform.last().normal(), normal.x(), normal.y(), normal.z())
+				);
+		}
 		base.endVertex();
 	}
 

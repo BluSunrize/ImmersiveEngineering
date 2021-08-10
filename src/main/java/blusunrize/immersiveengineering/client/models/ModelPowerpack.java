@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
@@ -113,7 +114,7 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 
 					float vStep = 1f/vex.length;
 
-					TransformingVertexBuilder builder = new TransformingVertexBuilder(bufferIn, matrixStackIn);
+					TransformingVertexBuilder builder = new TransformingVertexBuilder(bufferIn, matrixStackIn, DefaultVertexFormat.NEW_ENTITY);
 					double scaleX = right?-1: 1;
 					builder.defaultColor(.93f, .63f, .27f, 1);
 					builder.setLight(packedLightIn);

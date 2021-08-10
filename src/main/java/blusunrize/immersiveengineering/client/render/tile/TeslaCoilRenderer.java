@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 
 import java.util.List;
@@ -45,8 +46,9 @@ public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntit
 									 float[] rgba, float lineWidth, MultiBufferSource buffers,
 									 PoseStack transform)
 	{
-		VertexConsumer base = buffers.getBuffer(IERenderTypes.getLines(lineWidth));
-		TransformingVertexBuilder builder = new TransformingVertexBuilder(base, transform);
+		RenderType type = IERenderTypes.getLines(lineWidth);
+		VertexConsumer base = buffers.getBuffer(type);
+		TransformingVertexBuilder builder = new TransformingVertexBuilder(base, transform, type.format());
 		builder.defaultColor((int)(255*rgba[0]), (int)(255*rgba[1]), (int)(255*rgba[2]), (int)(255*rgba[3]));
 		List<Vec3> subs = animation.subPoints;
 		builder.vertex(animation.startPos.x-tileX, animation.startPos.y-tileY, animation.startPos.z-tileZ).endVertex();

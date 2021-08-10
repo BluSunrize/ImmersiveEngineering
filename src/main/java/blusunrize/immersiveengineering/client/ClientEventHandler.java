@@ -339,7 +339,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	private void renderObstructingBlocks(PoseStack transform, MultiBufferSource buffers)
 	{
 		VertexConsumer baseBuilder = buffers.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-		TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder);
+		TransformingVertexBuilder builder = new TransformingVertexBuilder(
+				baseBuilder, IERenderTypes.TRANSLUCENT_POSITION_COLOR.format()
+		);
 		builder.defaultColor(255, 0, 0, 128);
 		for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 		{

@@ -74,7 +74,8 @@ public class RailgunShotRenderer extends EntityRenderer<RailgunShotEntity>
 		matrixStackIn.translate(-length*.85f, 0, 0);
 		TransformingVertexBuilder builder = new TransformingVertexBuilder(
 				bufferIn.getBuffer(IERenderTypes.POSITION_COLOR_LIGHTMAP),
-				matrixStackIn
+				matrixStackIn,
+				IERenderTypes.POSITION_COLOR_LIGHTMAP.format()
 		);
 		builder.setLight(light);
 		int[] rgb;

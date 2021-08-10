@@ -499,8 +499,9 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		public void draw(float lineWidth, PoseStack matrixStack, MultiBufferSource buffer)
 		{
 			//Draw edges
-			VertexConsumer baseBuilder = buffer.getBuffer(IERenderTypes.getLines(lineWidth));
-			TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder, matrixStack);
+			RenderType type = IERenderTypes.getLines(lineWidth);
+			VertexConsumer baseBuilder = buffer.getBuffer(type);
+			TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder, matrixStack, type.format());
 			builder.defaultColor(255, 255, 255, 255);
 			for(Pair<Point, Point> line : lines)
 			{

@@ -69,7 +69,7 @@ public class GuiHelper
 			float u0, float u1, float v0, float v1
 	)
 	{
-		TransformingVertexBuilder innerBuilder = new TransformingVertexBuilder(builder, transform);
+		TransformingVertexBuilder innerBuilder = new TransformingVertexBuilder(builder, transform, DefaultVertexFormat.BLOCK);
 		innerBuilder.defaultColor((int)(255*r), (int)(255*g), (int)(255*b), (int)(255*alpha));
 		innerBuilder.setLight(LightTexture.pack(15, 15));
 		innerBuilder.setOverlay(OverlayTexture.NO_OVERLAY);

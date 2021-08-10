@@ -49,12 +49,13 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 
 		// Render particles in the TER rather than using the standard particle engine to avoid depth issues/the
 		// particles not rendering at all outside of fabulous mode
-		tile.particles.get().render(matrixStack, blockPos, bufferIn, partialTicks);
+		tile.particles.get().render(matrixStack, bufferIn, partialTicks);
 
 		ClocheRecipe recipe = tile.cachedRecipe.get();
 		if(recipe!=null)
 		{
-			VertexConsumer baseBuilder = bufferIn.getBuffer(RenderType.cutout());
+			RenderType type = RenderType.cutout();
+			VertexConsumer baseBuilder = bufferIn.getBuffer(type);
 			matrixStack.pushPose();
 			matrixStack.translate(0, 1.0625, 0);
 
@@ -81,7 +82,7 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
 				block.getRight().push(matrixStack);
-				RenderUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
+				RenderUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack, type.format()),
 						tile.getLevelNonnull(), blockPos, false, col, combinedLightIn);
 				matrixStack.popPose();
 			}
@@ -92,7 +93,7 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 			recipe.renderFunction.injectQuads(seed, growth, quadInjector);
 			if(injectedQuadList.size() > 0)
 			{
-				RenderUtils.renderModelTESRFancy(injectedQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack),
+				RenderUtils.renderModelTESRFancy(injectedQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack, type.format()),
 						tile.getLevelNonnull(), blockPos, false, -1, combinedLightIn);
 			}
 

@@ -14,6 +14,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
@@ -25,6 +26,8 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
+
+import static net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES;
 
 //This extends RenderStateShard to get access to various protected members
 public class IERenderTypes extends RenderStateShard
@@ -39,6 +42,7 @@ public class IERenderTypes extends RenderStateShard
 	public static final RenderType POSITION_COLOR_TEX_LIGHTMAP;
 	public static final RenderType POSITION_COLOR_LIGHTMAP;
 	public static final RenderType ITEM_DAMAGE_BAR;
+	public static final RenderType PARTICLES;
 	private static final ShaderStateShard RENDERTYPE_POSITION_COLOR = RENDERTYPE_LIGHTNING_SHADER;
 	protected static final RenderStateShard.TextureStateShard BLOCK_SHEET_MIPPED = new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, true);
 	protected static final RenderStateShard.LightmapStateShard LIGHTMAP_DISABLED = new RenderStateShard.LightmapStateShard(false);
@@ -62,7 +66,7 @@ public class IERenderTypes extends RenderStateShard
 						.setShaderState(FULLBRIGHT_BLOCKS)
 						.setLightmapState(LIGHTMAP_DISABLED)
 						.setTextureState(BLOCK_SHEET_MIPPED)
-						.createCompositeState(true)
+						.createCompositeState(false)
 		);
 		TRANSLUCENT_FULLBRIGHT = createDefault(
 				ImmersiveEngineering.MODID+":translucent_fullbright",
@@ -73,7 +77,7 @@ public class IERenderTypes extends RenderStateShard
 						.setTextureState(BLOCK_SHEET_MIPPED)
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 						.setOutputState(TRANSLUCENT_TARGET)
-						.createCompositeState(true)
+						.createCompositeState(false)
 		);
 		RenderType.CompositeState translucentNoDepthState = RenderType.CompositeState.builder()
 				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
@@ -152,6 +156,18 @@ public class IERenderTypes extends RenderStateShard
 						.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
 						.setTransparencyState(NO_TRANSPARENCY)
 						.createCompositeState(false)
+		);
+		PARTICLES = createDefault(
+				ImmersiveEngineering.MODID+":particles",
+				DefaultVertexFormat.PARTICLE,
+				Mode.QUADS,
+				RenderType.CompositeState.builder()
+						.setTextureState(new TextureStateShard(LOCATION_PARTICLES, false, false))
+						.setShaderState(new ShaderStateShard(GameRenderer::getParticleShader))
+						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.setOutputState(TRANSLUCENT_TARGET)
+						.setLightmapState(NO_LIGHTMAP)
+						.createCompositeState(true)
 		);
 	}
 
@@ -281,6 +297,19 @@ public class IERenderTypes extends RenderStateShard
 				in,
 				"no_lighting",
 				() -> Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer(),
+				() -> Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer()
+		);
+	}
+
+	/**
+	 * Only use with shaders using minecraft_sample_lightmap, not with minecraft_mix_light!
+	 */
+	public static MultiBufferSource whiteLightmap(MultiBufferSource in)
+	{
+		return wrapWithAdditional(
+				in,
+				"white_light",
+				() -> WhiteTexture.INSTANCE.get().bind(),
 				() -> Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer()
 		);
 	}

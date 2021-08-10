@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
@@ -86,7 +87,7 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		matrix.translate(-.5, 0, -.5);
 		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(
 				new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE));
-		RenderUtils.renderModelTESRFancy(quads, new TransformingVertexBuilder(solidBuilder, matrix), world, pos, !isFirst, -1, light);
+		RenderUtils.renderModelTESRFancy(quads, new TransformingVertexBuilder(solidBuilder, matrix, DefaultVertexFormat.POSITION_COLOR_TEX), world, pos, !isFirst, -1, light);
 		matrix.popPose();
 	}
 
