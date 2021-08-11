@@ -61,6 +61,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	public float animation_fanRotation = 0;
 	public int animation_fanFadeIn = 0;
 	public int animation_fanFadeOut = 0;
+	private float residualBurnTime = 0;
 
 	public DieselGeneratorTileEntity()
 	{
@@ -76,6 +77,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		animation_fanRotation = nbt.getFloat("animation_fanRotation");
 		animation_fanFadeIn = nbt.getInt("animation_fanFadeIn");
 		animation_fanFadeOut = nbt.getInt("animation_fanFadeOut");
+		residualBurnTime = nbt.getFloat("residualBurnTime");
 	}
 
 	@Override
@@ -87,6 +89,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		nbt.putFloat("animation_fanRotation", animation_fanRotation);
 		nbt.putInt("animation_fanFadeIn", animation_fanFadeIn);
 		nbt.putInt("animation_fanFadeOut", animation_fanFadeOut);
+		nbt.putFloat("residualBurnTime", residualBurnTime);
 	}
 
 
@@ -146,33 +149,26 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		{
 			boolean prevActive = active;
 
-			if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
+			if(!isRSDisabled()&&(!tanks[0].getFluid().isEmpty()||residualBurnTime>=1.0f))
 			{
-				int burnTime = DieselHandler.getBurnTime(tanks[0].getFluid().getFluid());
-				if(burnTime > 0)
+				if(residualBurnTime>=1.0f)
 				{
-					int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
-					int output = IEServerConfig.MACHINES.dieselGen_output.get();
-					List<IEnergyStorage> presentOutputs = outputs.stream()
-							.map(CapabilityReference::getNullable)
-							.filter(Objects::nonNull)
-							.collect(Collectors.toList());
-					if(!presentOutputs.isEmpty()&&
-							tanks[0].getFluidAmount() >= fluidConsumed&&
-							// Sort receivers by lowest input
-							EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
+					if(tryOutputPower)
 					{
-						if(!active)
-						{
-							active = true;
-							animation_fanFadeIn = 80;
-						}
-						tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
+						residualBurnTime -= 1.0f;
 					}
-					else if(active)
+				}
+				else
+				{
+					int burnTime = DieselHandler.getBurnTime(tanks[0].getFluid().getFluid());
+					if(burnTime > 0)
 					{
-						active = false;
-						animation_fanFadeOut = 80;
+						int fluidConsumed = (int)Math.ceil(FluidAttributes.BUCKET_VOLUME/(double)burnTime);
+						if(tryOutputPower)
+						{
+							tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
+							residualBurnTime += ((float)fluidConsumed)/FluidAttributes.BUCKET_VOLUME*burnTime-1.0f;
+						}
 					}
 				}
 			}
@@ -188,6 +184,33 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 				this.markContainingBlockForUpdate(null);
 			}
 		}
+	}
+	
+	private boolean tryOutputPower()
+	{
+		int output = IEServerConfig.MACHINES.dieselGen_output.get();
+		List<IEnergyStorage> presentOutputs = outputs.stream()
+				.map(CapabilityReference::getNullable)
+				.filter(Objects::nonNull)
+				.collect(Collectors.toList());
+		if(!presentOutputs.isEmpty()&&
+				tanks[0].getFluidAmount() >= fluidConsumed&&
+				// Sort receivers by lowest input
+				EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
+		{
+			if(!active)
+			{
+				active = true;
+				animation_fanFadeIn = 80;
+			}
+			return true;
+		}
+		else if(active)
+		{
+			active = false;
+			animation_fanFadeOut = 80;
+		}
+		return false;
 	}
 
 	public static AxisAlignedBB getBlockBounds(BlockPos posInMultiblock)
