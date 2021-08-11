@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.multiblocks;
 
-import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockRenderProperties;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -97,7 +97,7 @@ public class MultiblockHandler
 
 		BlockPos getTriggerOffset();
 
-		void initializeClient(Consumer<MultiblockRenderProperties> consumer);
+		void initializeClient(Consumer<MultiblockManualData> consumer);
 	}
 
 	public static MultiblockFormEvent postMultiblockFormationEvent(Player player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)

@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.client.utils;
 
-import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockRenderProperties;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class BasicClientProperties implements MultiblockRenderProperties
+public class BasicClientProperties implements MultiblockManualData
 {
 	private static final Map<ResourceLocation, DynamicModel> MODELS = new HashMap<>();
 

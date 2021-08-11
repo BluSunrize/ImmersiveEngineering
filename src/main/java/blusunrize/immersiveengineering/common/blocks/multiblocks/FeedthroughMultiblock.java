@@ -9,26 +9,19 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.utils.FeedthroughManualData;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -38,56 +31,23 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.api.IEProperties.FACING_ALL;
 
 public class FeedthroughMultiblock implements IMultiblock
 {
-	private static final Component ARBITRARY_SOLID = new TranslatableComponent("block.immersiveengineering.arb_solid");
 	public static FeedthroughMultiblock instance = new FeedthroughMultiblock();
 	static List<StructureBlockInfo> structure = new ArrayList<>();
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean canRenderFormedStructure()
-	{
-		return true;
-	}
-
-	private ItemStack renderStack;
-
-	private Block getDemoConnector()
+	public static Block getDemoConnector()
 	{
 		return Connectors.getEnergyConnector(WireType.LV_CATEGORY, false).get();
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
-	{
-		if(renderStack==null||renderStack.isEmpty())
-			renderStack = new ItemStack(Connectors.feedthrough);
-
-		transform.translate(1.5, .5, .5);
-		transform.mulPose(new Quaternion(0, 45, 0, true));
-		transform.mulPose(new Quaternion(-30, 0, 0, true));
-		transform.scale(1.75F, 1.75F, 1.75F);
-
-		ClientUtils.mc().getItemRenderer().renderStatic(
-				renderStack,
-				TransformType.GUI,
-				0xf000f0,
-				OverlayTexture.NO_OVERLAY,
-				transform, buffer,
-				0
-		);
 	}
 
 	@Override
@@ -106,6 +66,12 @@ public class FeedthroughMultiblock implements IMultiblock
 	public BlockPos getTriggerOffset()
 	{
 		return new BlockPos(-1, 0, 0);
+	}
+
+	@Override
+	public void initializeClient(Consumer<MultiblockManualData> consumer)
+	{
+		consumer.accept(new FeedthroughManualData());
 	}
 
 	@Override
@@ -234,9 +200,8 @@ public class FeedthroughMultiblock implements IMultiblock
 	{
 		world.setBlockAndUpdate(here, newState);
 		BlockEntity te = world.getBlockEntity(here);
-		if(te instanceof FeedthroughBlockEntity)
+		if(te instanceof FeedthroughBlockEntity feedthrough)
 		{
-			FeedthroughBlockEntity feedthrough = (FeedthroughBlockEntity)te;
 			feedthrough.reference = wire;
 			feedthrough.stateForMiddle = middle;
 			feedthrough.offset = offset;
@@ -244,20 +209,5 @@ public class FeedthroughMultiblock implements IMultiblock
 			return feedthrough;
 		}
 		return null;
-	}
-
-	@Override
-	public ItemStack[] getTotalMaterials()
-	{
-		return new ItemStack[]{
-				new ItemStack(getDemoConnector(), 2),
-				new ItemStack(Blocks.BOOKSHELF, 1).setHoverName(ARBITRARY_SOLID)
-		};
-	}
-
-	@Override
-	public boolean overwriteBlockRender(BlockState state, int iterator)
-	{
-		return false;
 	}
 }

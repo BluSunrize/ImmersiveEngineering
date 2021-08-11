@@ -9,15 +9,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
+import blusunrize.immersiveengineering.client.utils.UnionMBManualData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,6 +27,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class UnionMultiblock implements IMultiblock
 {
@@ -70,48 +70,9 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public ItemStack[] getTotalMaterials()
-	{
-		List<ItemStack> ret = new ArrayList<>();
-		for(TransformedMultiblock part : parts)
-			for(ItemStack stack : part.multiblock.getTotalMaterials())
-			{
-				boolean added = false;
-				for(ItemStack ex : ret)
-					if(ItemStack.isSame(ex, stack))
-					{
-						ex.grow(stack.getCount());
-						added = true;
-						break;
-					}
-				if(!added)
-					ret.add(stack.copy());
-			}
-		return ret.toArray(new ItemStack[0]);
-	}
-
-	@Override
-	public boolean overwriteBlockRender(BlockState state, int iterator)
-	{
-		return false;
-	}
-
-	@Override
 	public float getManualScale()
 	{
 		return 12;
-	}
-
-	@Override
-	public boolean canRenderFormedStructure()
-	{
-		return false;
-	}
-
-	@Override
-	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
-	{
-
 	}
 
 	@Override
@@ -149,20 +110,12 @@ public class UnionMultiblock implements IMultiblock
 
 	private Vec3i min(Vec3i a, Vec3i b)
 	{
-		return new Vec3i(
-				Math.min(a.getX(), b.getX()),
-				Math.min(a.getY(), b.getY()),
-				Math.min(a.getZ(), b.getZ())
-		);
+		return new Vec3i(Math.min(a.getX(), b.getX()), Math.min(a.getY(), b.getY()), Math.min(a.getZ(), b.getZ()));
 	}
 
 	private Vec3i max(Vec3i a, Vec3i b)
 	{
-		return new Vec3i(
-				Math.max(a.getX(), b.getX()),
-				Math.max(a.getY(), b.getY()),
-				Math.max(a.getZ(), b.getZ())
-		);
+		return new Vec3i(Math.max(a.getX(), b.getX()), Math.max(a.getY(), b.getY()), Math.max(a.getZ(), b.getZ()));
 	}
 
 	@Override
@@ -177,19 +130,14 @@ public class UnionMultiblock implements IMultiblock
 		return BlockPos.ZERO;
 	}
 
-	public static class TransformedMultiblock
+	@Override
+	public void initializeClient(Consumer<MultiblockManualData> consumer)
 	{
-		private final IMultiblock multiblock;
-		private final Vec3i offset;
-		private final Rotation rotation;
+		consumer.accept(new UnionMBManualData(parts));
+	}
 
-		public TransformedMultiblock(IMultiblock multiblock, Vec3i offset, Rotation rotation)
-		{
-			this.multiblock = multiblock;
-			this.offset = offset;
-			this.rotation = rotation;
-		}
-
+	public record TransformedMultiblock(IMultiblock multiblock, Vec3i offset, Rotation rotation)
+	{
 		public BlockPos toUnionCoords(Vec3i inMultiblockCoords)
 		{
 			return StructureTemplate.calculateRelativePosition(new StructurePlaceSettings()

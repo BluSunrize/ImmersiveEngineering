@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockRenderProperties;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
@@ -112,7 +112,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	}
 
 	@Override
-	public void initializeClient(Consumer<MultiblockRenderProperties> consumer)
+	public void initializeClient(Consumer<MultiblockManualData> consumer)
 	{
 		consumer.accept(new BasicClientProperties(this));
 	}

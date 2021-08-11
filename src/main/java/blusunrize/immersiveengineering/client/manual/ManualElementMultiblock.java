@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks;
-import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockRenderProperties;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
@@ -52,7 +52,7 @@ import static blusunrize.immersiveengineering.api.client.TextUtils.applyFormat;
 public class ManualElementMultiblock extends SpecialManualElements
 {
 	private final IMultiblock multiblock;
-	private final MultiblockRenderProperties renderProperties;
+	private final MultiblockManualData renderProperties;
 
 	private boolean canTick = true;
 	private boolean showCompleted = false;

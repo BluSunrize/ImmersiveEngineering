@@ -16,17 +16,19 @@ import java.util.Objects;
 
 public class ClientMultiblocks
 {
-	private static final Map<IMultiblock, MultiblockRenderProperties> CACHED_PROPERTIES = new IdentityHashMap<>();
+	private static final Map<IMultiblock, MultiblockManualData> CACHED_PROPERTIES = new IdentityHashMap<>();
 
-	public static MultiblockRenderProperties get(IMultiblock multiblock) {
+	public static MultiblockManualData get(IMultiblock multiblock)
+	{
 		return CACHED_PROPERTIES.computeIfAbsent(multiblock, mb -> {
-			Mutable<MultiblockRenderProperties> result = new MutableObject<>();
+			Mutable<MultiblockManualData> result = new MutableObject<>();
 			mb.initializeClient(result::setValue);
 			return Objects.requireNonNull(result.getValue(), "Did not get client properties for "+mb.getUniqueName());
 		});
 	}
 
-	public interface MultiblockRenderProperties {
+	public interface MultiblockManualData
+	{
 		/**
 		 * A list of ItemStacks that summarizes the total amount of materials needed for the structure. Will be rendered in the Engineer's Manual
 		 */
@@ -36,7 +38,8 @@ public class ClientMultiblocks
 		 * Use this to overwrite the rendering of a Multiblock's Component
 		 */
 		//TODO is this still used anywhere? May be something to remove
-		default boolean overwriteBlockRender(BlockState state, BlockPos iterator) {
+		default boolean overwriteBlockRender(BlockState state, BlockPos iterator)
+		{
 			return false;
 		}
 
