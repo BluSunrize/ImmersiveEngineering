@@ -209,8 +209,8 @@ repositories {
     maven { //Curious
         url "https://maven.theillusivec4.top/"
     }
-    flatDir {
-        dirs 'flatdir'
+    maven { // Mixins for early 1.17
+        url 'https://repo.spongepowered.org/repository/maven-public/'
     }
 }
 
@@ -225,10 +225,11 @@ dependencies {
     //compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
 
     library "malte0811:BlockModelSplitter:1.2.0"
-    testImplementation('junit:junit:4.13')
-    //annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
-    //TODO this is a temporary hack to make Mixins work
-    library 'flatdir_ignored:mixin:0.8.3'
+    testImplementation('junit:junit:4.13.2')
+    //annotationProcessor 'org.spongepowered:mixin:0.8.4-SNAPSHOT:processor'
+    library 'org.spongepowered:mixin:0.8.4-SNAPSHOT'
+    //TODO remove once Mixins are in Forge
+    library "com.google.guava:guava:21.0"
 }
 
 def customGradle = rootProject.file('custom.gradle');
