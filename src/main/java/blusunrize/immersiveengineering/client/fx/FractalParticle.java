@@ -11,29 +11,22 @@ package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.register.IEParticles;
-import blusunrize.immersiveengineering.common.util.IECodecs;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -46,20 +39,8 @@ import java.util.function.Consumer;
 /**
  * @author BluSunrize - 13.05.2018
  */
-@OnlyIn(Dist.CLIENT)
 public class FractalParticle extends Particle
 {
-	public static Codec<Data> CODEC = RecordCodecBuilder.create(
-			instance -> instance.group(
-					IECodecs.VECTOR3D.fieldOf("direction").forGetter(d -> d.direction),
-					Codec.DOUBLE.fieldOf("scale").forGetter(d -> d.scale),
-					Codec.INT.fieldOf("maxAge").forGetter(d -> d.maxAge),
-					Codec.INT.fieldOf("points").forGetter(d -> d.points),
-					IECodecs.COLOR4.fieldOf("outerColor").forGetter(d -> d.colourOut),
-					IECodecs.COLOR4.fieldOf("innerColor").forGetter(d -> d.colourIn)
-			).apply(instance, Data::new)
-	);
-
 	public static final Deque<FractalParticle> PARTICLE_FRACTAL_DEQUE = new ArrayDeque<>();
 
 	public static final float[][] COLOUR_RED = {{.79f, .31f, .31f, .5f}, {1, .97f, .87f, .75f}};
@@ -180,66 +161,10 @@ public class FractalParticle extends Particle
 		void draw(VertexConsumer builder, int index, float[] color);
 	}
 
-	public static class Data implements ParticleOptions
+	public static class DataDeserializer implements Deserializer<FractalOptions>
 	{
-		private final Vec3 direction;
-		private final double scale;
-		private final int maxAge;
-		private final int points;
-		private final float[] colourOut;
-		private final float[] colourIn;
-
-		public Data(Vec3 direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
-		{
-			this.direction = direction;
-			this.scale = scale;
-			this.maxAge = maxAge;
-			this.points = points;
-			this.colourOut = colourOut;
-			this.colourIn = colourIn;
-		}
-
 		@Override
-		public ParticleType<?> getType()
-		{
-			return IEParticles.FRACTAL.get();
-		}
-
-		@Override
-		public void writeToNetwork(FriendlyByteBuf buffer)
-		{
-			buffer.writeDouble(direction.x).writeDouble(direction.y).writeDouble(direction.z);
-			buffer.writeDouble(scale);
-			buffer.writeInt(maxAge)
-					.writeInt(points);
-			for(int i = 0; i < 4; ++i)
-				buffer.writeFloat(colourOut[i]);
-			for(int i = 0; i < 4; ++i)
-				buffer.writeFloat(colourIn[i]);
-		}
-
-		@Override
-		public String writeToString()
-		{
-			String ret = direction.x+" "+
-					direction.y+" "+
-					direction.z+" "+
-					scale+" "+
-					maxAge+" "+
-					points;
-			for(int i = 0; i < 4; ++i)
-				ret += " "+colourOut[i];
-			for(int i = 0; i < 4; ++i)
-				ret += " "+colourIn[i];
-			return ret;
-		}
-	}
-
-	public static class DataDeserializer implements Deserializer<Data>
-	{
-
-		@Override
-		public Data fromCommand(ParticleType<Data> particleTypeIn, StringReader reader) throws CommandSyntaxException
+		public FractalOptions fromCommand(ParticleType<FractalOptions> particleTypeIn, StringReader reader) throws CommandSyntaxException
 		{
 			double dX = reader.readDouble();
 			reader.expect(' ');
@@ -266,11 +191,11 @@ public class FractalParticle extends Particle
 				reader.expect(' ');
 			}
 
-			return new Data(new Vec3(dX, dY, dZ), scale, maxAge, points, colourOut, colourIn);
+			return new FractalOptions(new Vec3(dX, dY, dZ), scale, maxAge, points, colourOut, colourIn);
 		}
 
 		@Override
-		public Data fromNetwork(ParticleType<Data> particleTypeIn, FriendlyByteBuf buffer)
+		public FractalOptions fromNetwork(ParticleType<FractalOptions> particleTypeIn, FriendlyByteBuf buffer)
 		{
 			Vec3 dir = new Vec3(buffer.readDouble(), buffer.readDouble(), buffer.readDouble());
 			double scale = buffer.readDouble();
@@ -282,19 +207,19 @@ public class FractalParticle extends Particle
 				colourOut[i] = buffer.readFloat();
 			for(int i = 0; i < 4; ++i)
 				colourIn[i] = buffer.readFloat();
-			return new Data(dir, scale, maxAge, points, colourOut, colourIn);
+			return new FractalOptions(dir, scale, maxAge, points, colourOut, colourIn);
 		}
 	}
 
-	public static class Factory implements ParticleProvider<Data>
+	public static class Factory implements ParticleProvider<FractalOptions>
 	{
 
 		@Nullable
 		@Override
-		public Particle createParticle(Data typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle createParticle(FractalOptions typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
-			return new FractalParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.direction, typeIn.scale,
-					typeIn.maxAge, typeIn.points, typeIn.colourOut, typeIn.colourIn);
+			return new FractalParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, typeIn.direction(), typeIn.scale(),
+					typeIn.maxAge(), typeIn.points(), typeIn.colourOut(), typeIn.colourIn());
 		}
 	}
 }

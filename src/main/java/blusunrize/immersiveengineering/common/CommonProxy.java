@@ -25,6 +25,7 @@
 
 package blusunrize.immersiveengineering.common;
 
+import blusunrize.immersiveengineering.client.fx.FractalOptions;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.sounds.SoundEvent;
@@ -55,7 +56,7 @@ public class CommonProxy
 	{
 		if(prefixColour >= 0)
 			colour = prefixColour==1?FractalParticle.COLOUR_ORANGE: prefixColour==2?FractalParticle.COLOUR_RED: FractalParticle.COLOUR_LIGHTNING;
-		FractalParticle.Data particle = new FractalParticle.Data(direction, scale, 10, 16, colour[0], colour[1]);
+		FractalOptions particle = new FractalOptions(direction, scale, 10, 16, colour[0], colour[1]);
 		world.addParticle(particle, x, y, z, 0, 0, 0);
 	}
 

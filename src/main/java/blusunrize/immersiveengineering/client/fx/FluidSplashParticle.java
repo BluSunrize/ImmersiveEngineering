@@ -9,10 +9,8 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.register.IEParticles;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.Codec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -20,7 +18,6 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -33,7 +30,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,10 +40,6 @@ import javax.annotation.Nullable;
 @OnlyIn(Dist.CLIENT)
 public class FluidSplashParticle extends TextureSheetParticle
 {
-	public static final Codec<Data> CODEC = ResourceLocation.CODEC.xmap(
-			Data::new, d -> d.fluid.getRegistryName()
-	);
-
 	public FluidSplashParticle(Fluid fluid, ClientLevel worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
 							   double xSpeedIn, double ySpeedIn, double zSpeedIn)
 	{
@@ -124,67 +116,31 @@ public class FluidSplashParticle extends TextureSheetParticle
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	public static class Factory implements ParticleProvider<Data>
+	public static class Factory implements ParticleProvider<FluidSplashOptions>
 	{
 		@Nullable
 		@Override
-		public Particle createParticle(Data typeIn, @Nonnull ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle createParticle(FluidSplashOptions typeIn, @Nonnull ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
-			return new FluidSplashParticle(typeIn.fluid, worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
+			return new FluidSplashParticle(typeIn.fluid(), worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
 		}
 	}
 
-	public static class Data implements ParticleOptions
+	public static class DataDeserializer implements Deserializer<FluidSplashOptions>
 	{
-		private final Fluid fluid;
-
-		public Data(ResourceLocation name)
-		{
-			this(ForgeRegistries.FLUIDS.getValue(name));
-		}
-
-		public Data(Fluid fluid)
-		{
-			this.fluid = fluid;
-		}
-
 		@Nonnull
 		@Override
-		public ParticleType<?> getType()
-		{
-			return IEParticles.FLUID_SPLASH.get();
-		}
-
-		@Override
-		public void writeToNetwork(FriendlyByteBuf buffer)
-		{
-			buffer.writeResourceLocation(fluid.getRegistryName());
-		}
-
-		@Nonnull
-		@Override
-		public String writeToString()
-		{
-			return fluid.getRegistryName().toString();
-		}
-	}
-
-	public static class DataDeserializer implements Deserializer<Data>
-	{
-
-		@Nonnull
-		@Override
-		public Data fromCommand(@Nonnull ParticleType<Data> particleTypeIn, StringReader reader) throws CommandSyntaxException
+		public FluidSplashOptions fromCommand(@Nonnull ParticleType<FluidSplashOptions> particleTypeIn, StringReader reader) throws CommandSyntaxException
 		{
 			String name = reader.getString();
-			return new Data(new ResourceLocation(name));
+			return new FluidSplashOptions(new ResourceLocation(name));
 		}
 
 		@Nonnull
 		@Override
-		public Data fromNetwork(@Nonnull ParticleType<Data> particleTypeIn, FriendlyByteBuf buffer)
+		public FluidSplashOptions fromNetwork(@Nonnull ParticleType<FluidSplashOptions> particleTypeIn, FriendlyByteBuf buffer)
 		{
-			return new Data(buffer.readResourceLocation());
+			return new FluidSplashOptions(buffer.readResourceLocation());
 		}
 	}
 }

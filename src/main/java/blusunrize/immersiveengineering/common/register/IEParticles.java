@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.fx.*;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.DataDeserializer;
-import blusunrize.immersiveengineering.client.fx.FractalParticle.Data;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleType;
@@ -26,18 +25,17 @@ import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD, value = Dist.CLIENT)
 public class IEParticles
 {
 	public static final DeferredRegister<ParticleType<?>> REGISTER = DeferredRegister.create(
 			ForgeRegistries.PARTICLE_TYPES, Lib.MODID
 	);
 
-	public static final RegistryObject<ParticleType<FluidSplashParticle.Data>> FLUID_SPLASH = REGISTER.register(
-			"fluid_splash", () -> new IEParticleType<>(false, new DataDeserializer(), FluidSplashParticle.CODEC)
+	public static final RegistryObject<ParticleType<FluidSplashOptions>> FLUID_SPLASH = REGISTER.register(
+			"fluid_splash", () -> new IEParticleType<>(false, new DataDeserializer(), FluidSplashOptions.CODEC)
 	);
-	public static final RegistryObject<ParticleType<Data>> FRACTAL = REGISTER.register(
-			"fractal", () -> new IEParticleType<>(false, new FractalParticle.DataDeserializer(), FractalParticle.CODEC)
+	public static final RegistryObject<ParticleType<FractalOptions>> FRACTAL = REGISTER.register(
+			"fractal", () -> new IEParticleType<>(false, new FractalParticle.DataDeserializer(), FractalOptions.CODEC)
 	);
 	public static final RegistryObject<SimpleParticleType> IE_BUBBLE = REGISTER.register(
 			"ie_bubble", () -> new SimpleParticleType(false)
@@ -46,13 +44,17 @@ public class IEParticles
 			"sparks", () -> new SimpleParticleType(false)
 	);
 
-	@SubscribeEvent
-	public static void registerParticleFactories(ParticleFactoryRegisterEvent event)
+	@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD, value = Dist.CLIENT)
+	private static class Client
 	{
-		ParticleEngine manager = Minecraft.getInstance().particleEngine;
-		manager.register(IEParticles.FLUID_SPLASH.get(), new FluidSplashParticle.Factory());
-		manager.register(IEParticles.FRACTAL.get(), new FractalParticle.Factory());
-		manager.register(IEParticles.SPARKS.get(), SparksParticle.Factory::new);
-		manager.register(IEParticles.IE_BUBBLE.get(), IEBubbleParticle.Factory::new);
+		@SubscribeEvent
+		public static void registerParticleFactories(ParticleFactoryRegisterEvent event)
+		{
+			ParticleEngine manager = Minecraft.getInstance().particleEngine;
+			manager.register(IEParticles.FLUID_SPLASH.get(), new FluidSplashParticle.Factory());
+			manager.register(IEParticles.FRACTAL.get(), new FractalParticle.Factory());
+			manager.register(IEParticles.SPARKS.get(), SparksParticle.Factory::new);
+			manager.register(IEParticles.IE_BUBBLE.get(), IEBubbleParticle.Factory::new);
+		}
 	}
 }

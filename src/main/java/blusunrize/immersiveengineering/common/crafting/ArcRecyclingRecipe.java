@@ -24,10 +24,11 @@ import java.util.AbstractCollection;
 import java.util.AbstractList;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
 
 public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
-	private final TagContainer tags;
+	private final Supplier<TagContainer> tags;
 	private Map<ItemStack, Double> outputs;
 	private final Lazy<NonNullList<ItemStack>> defaultOutputs = Lazy.of(() -> {
 		NonNullList<ItemStack> ret = NonNullList.create();
@@ -39,7 +40,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		return ret;
 	});
 
-	public ArcRecyclingRecipe(ResourceLocation id, TagContainer tags, Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(ResourceLocation id, Supplier<TagContainer> tags, Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
 		super(id, outputs.keySet().stream().collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll),
 				input, ItemStack.EMPTY, time, energyPerTick);
@@ -81,10 +82,10 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
 		if(nuggetOut > 0)
 		{
-			String[] type = TagUtils.getMatchingPrefixAndRemaining(tags, e.getKey(), "ingots");
+			String[] type = TagUtils.getMatchingPrefixAndRemaining(tags.get(), e.getKey(), "ingots");
 			if(type!=null)
 			{
-				ItemStack nuggets = IEApi.getPreferredTagStack(tags, IETags.getNugget(type[1]));
+				ItemStack nuggets = IEApi.getPreferredTagStack(tags.get(), IETags.getNugget(type[1]));
 				outs.add(ItemHandlerHelper.copyStackWithSize(nuggets, nuggetOut));
 			}
 		}

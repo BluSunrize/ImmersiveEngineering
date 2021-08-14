@@ -20,7 +20,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 
@@ -87,8 +86,9 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			Map<ItemStack, Double> recyclingOutputs = new HashMap<>(numOutputs);
 			for(int i = 0; i < numOutputs; ++i)
 				recyclingOutputs.put(buffer.readItem(), buffer.readDouble());
-			TagContainer tags = Minecraft.getInstance().getConnection().getTags();
-			return new ArcRecyclingRecipe(recipeId, tags, recyclingOutputs, input, time, energy);
+			return new ArcRecyclingRecipe(
+					recipeId, () -> Minecraft.getInstance().getConnection().getTags(), recyclingOutputs, input, time, energy
+			);
 		}
 	}
 
