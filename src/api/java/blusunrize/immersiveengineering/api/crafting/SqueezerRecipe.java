@@ -85,7 +85,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 		SortedMap<ITextComponent, Integer> map = new TreeMap<>(
 				Comparator.comparing(
 						ITextComponent::getString,
-						inverse?Comparator.reverseOrder(): Comparator.reverseOrder()
+						inverse?Comparator.reverseOrder(): Comparator.naturalOrder()
 				)
 		);
 		for(SqueezerRecipe recipe : recipeList.values())
