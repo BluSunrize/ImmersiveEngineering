@@ -1,0 +1,33 @@
+{
+  "type": "immersiveengineering:sawmill",
+  "secondaries": [
+    {
+      "output": {
+        "tag": "forge:dusts/wood"
+      },
+      "stripping": true
+    },
+    {
+      "output": {
+        "tag": "forge:dusts/wood"
+      },
+      "stripping": false
+    }
+  ],
+  "result": {
+    "item": "minecraft:crimson_planks",
+    "count": 6
+  },
+  "energy": 1600,
+  "input": [
+    {
+      "item": "minecraft:crimson_stem"
+    },
+    {
+      "item": "minecraft:crimson_hyphae"
+    }
+  ],
+  "stripped": {
+    "item": "minecraft:stripped_crimson_stem"
+  }
+}

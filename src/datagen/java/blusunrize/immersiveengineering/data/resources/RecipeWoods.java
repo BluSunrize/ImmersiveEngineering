@@ -30,7 +30,11 @@ public enum RecipeWoods
 	ACACIA_LOGS("acacia", true, Items.ACACIA_PLANKS, Items.ACACIA_LOG, Items.STRIPPED_ACACIA_LOG,
 			Items.ACACIA_WOOD, Items.ACACIA_DOOR, Items.ACACIA_STAIRS),
 	DARK_OAK_LOGS("dark_oak", true, Items.DARK_OAK_PLANKS, Items.DARK_OAK_LOG, Items.STRIPPED_DARK_OAK_LOG,
-			Items.DARK_OAK_WOOD, Items.DARK_OAK_DOOR, Items.DARK_OAK_STAIRS);
+			Items.DARK_OAK_WOOD, Items.DARK_OAK_DOOR, Items.DARK_OAK_STAIRS),
+	CRIMSON_STEMS("crimson", true, Items.CRIMSON_PLANKS, Items.CRIMSON_STEM, Items.STRIPPED_CRIMSON_STEM,
+				  Items.CRIMSON_HYPHAE, Items.CRIMSON_DOOR, Items.CRIMSON_STAIRS),
+	WARPED_STEMS("warped", true, Items.WARPED_PLANKS, Items.WARPED_STEM, Items.STRIPPED_WARPED_STEM,
+			Items.WARPED_HYPHAE, Items.WARPED_DOOR, Items.WARPED_STAIRS);
 
 	private final String name;
 	private final boolean produceSawdust;
