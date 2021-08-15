@@ -29,7 +29,6 @@
   ],
   "client": [
     "accessors.client.FontResourceManagerAccess",
-    "accessors.client.GPUWarningAccess",
     "accessors.client.MinecartRendererAccess",
     "accessors.client.MinecraftAccess",
     "accessors.client.NewChatGuiAccess",

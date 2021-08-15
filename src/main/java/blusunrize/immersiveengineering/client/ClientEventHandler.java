@@ -52,9 +52,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
-import blusunrize.immersiveengineering.mixin.accessors.client.GPUWarningAccess;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -67,7 +65,6 @@ import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.VideoSettingsScreen;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HeadedModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -1013,30 +1010,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	{
 		if(event.getEntity().getPersistentData().contains("headshot"))
 			enableHead(event.getRenderer(), true);
-	}
-
-	@SubscribeEvent
-	public void onScreenOpened(GuiScreenEvent.InitGuiEvent.Pre event)
-	{
-		if(event.getGui() instanceof VideoSettingsScreen&&ClientProxy.stencilEnabled)
-		{
-			GPUWarningAccess gpuWarning = (GPUWarningAccess)Minecraft.getInstance().getGpuWarnlistManager();
-			final String key = "renderer";
-			final String suffix = "tencil enabled in Immersive Engineering config";
-			Map<String, String> oldWarnings = gpuWarning.getWarnings();
-			if(!oldWarnings.containsKey(key)||!oldWarnings.get(key).endsWith(suffix))
-			{
-				ImmutableMap.Builder<String, String> builder = ImmutableMap.builder();
-				for(Entry<String, String> e : oldWarnings.entrySet())
-					if(key.equals(e.getKey()))
-						builder.put(key, e.getValue()+", s"+suffix);
-					else
-						builder.put(e.getKey(), e.getValue());
-				if(!oldWarnings.containsKey(key))
-					builder.put(key, "S"+suffix);
-				gpuWarning.setWarnings(builder.build());
-			}
-		}
 	}
 
 	private static void enableHead(LivingEntityRenderer renderer, boolean shouldEnable)

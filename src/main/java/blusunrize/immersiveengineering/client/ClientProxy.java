@@ -133,16 +133,11 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
 	}
 
-	public static boolean stencilEnabled = false;
-
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent ev)
 	{
 		if(IEClientConfig.stencilBufferEnabled.get())
-			ev.enqueueWork(() -> {
-				Minecraft.getInstance().getMainRenderTarget().enableStencil();
-				stencilEnabled = true;
-			});
+			ev.enqueueWork(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
 		registerContainersAndScreens();
 		IEKeybinds.register();
 		ShaderHelper.initShaders();
