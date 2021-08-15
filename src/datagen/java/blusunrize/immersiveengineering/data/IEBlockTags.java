@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
@@ -22,10 +24,17 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag.Named;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Tiers;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fmllegacy.RegistryObject;
+
+import java.util.function.Supplier;
 
 class IEBlockTags extends BlockTagsProvider
 {
@@ -107,10 +116,84 @@ class IEBlockTags extends BlockTagsProvider
 		tag(BlockTags.FLOWER_POTS)
 				.add(Misc.pottedHemp.get());
 
+		registerHammerMineable();
+		registerPickaxeMineable();
+		tag(BlockTags.MINEABLE_WITH_SHOVEL)
+				.add(WoodenDecoration.sawdust.get());
+		tag(IETags.wirecutterHarvestable)
+				.add(MetalDevices.razorWire.get());
+		tag(IETags.drillHarvestable)
+				.addTag(BlockTags.MINEABLE_WITH_SHOVEL)
+				.addTag(BlockTags.MINEABLE_WITH_PICKAXE);
+
 		/* MOD COMPAT STARTS HERE */
 
 		// TConstruct
 		tag(TagUtils.createBlockWrapper(new ResourceLocation("tconstruct:harvestable/stackable")))
 				.add(Misc.hempPlant.get());
+	}
+
+	private void registerHammerMineable()
+	{
+		TagAppender<Block> tag = tag(IETags.hammerHarvestable);
+		MetalDecoration.metalLadder.values().forEach(b -> tag.add(b.get()));
+		tag.add(StoneDecoration.concreteSprayed.get())
+				.add(Cloth.curtain.get());
+		//TODO not really the nicest approach, but maintains 1.16 behavior
+		for(RegistryObject<Block> regObject : IEBlocks.REGISTER.getEntries())
+		{
+			Block block = regObject.get();
+			if(block instanceof ConnectorBlock<?>||block instanceof ConveyorBlock)
+				tag.add(block);
+		}
+	}
+
+	private void registerPickaxeMineable()
+	{
+		TagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_PICKAXE);
+		IEBlocks.REGISTER.getEntries().stream()
+				.map(RegistryObject::get)
+				.filter(b -> {
+					Material material = b.defaultBlockState().getMaterial();
+					return material==Material.STONE||material==Material.METAL;
+				})
+				.forEach(tag::add);
+		setOreMiningLevel(EnumMetals.COPPER, Tiers.STONE);
+		setOreMiningLevel(EnumMetals.ALUMINUM, Tiers.STONE);
+		setOreMiningLevel(EnumMetals.LEAD, Tiers.IRON);
+		setOreMiningLevel(EnumMetals.SILVER, Tiers.IRON);
+		setOreMiningLevel(EnumMetals.NICKEL, Tiers.IRON);
+		setOreMiningLevel(EnumMetals.URANIUM, Tiers.IRON);
+		setStorageMiningLevel(EnumMetals.COPPER, Tiers.STONE);
+		setStorageMiningLevel(EnumMetals.ALUMINUM, Tiers.STONE);
+		setStorageMiningLevel(EnumMetals.LEAD, Tiers.IRON);
+		setStorageMiningLevel(EnumMetals.SILVER, Tiers.IRON);
+		setStorageMiningLevel(EnumMetals.NICKEL, Tiers.IRON);
+		setStorageMiningLevel(EnumMetals.URANIUM, Tiers.IRON);
+		setStorageMiningLevel(EnumMetals.CONSTANTAN, Tiers.IRON);
+		setStorageMiningLevel(EnumMetals.ELECTRUM, Tiers.IRON);
+		setStorageMiningLevel(EnumMetals.STEEL, Tiers.IRON);
+	}
+
+	private void setOreMiningLevel(EnumMetals metal, Tiers level)
+	{
+		setMiningLevel(Metals.ores.get(metal), level);
+	}
+
+	private void setStorageMiningLevel(EnumMetals metal, Tiers level)
+	{
+		setMiningLevel(Metals.storage.get(metal), level);
+	}
+
+	private void setMiningLevel(Supplier<Block> block, Tiers level)
+	{
+		Named<Block> tag = switch(level)
+				{
+					case STONE -> BlockTags.NEEDS_STONE_TOOL;
+					case IRON -> BlockTags.NEEDS_IRON_TOOL;
+					case DIAMOND -> BlockTags.NEEDS_DIAMOND_TOOL;
+					default -> throw new IllegalArgumentException("No tag available for "+level.name());
+				};
+		tag(tag).add(block.get());
 	}
 }

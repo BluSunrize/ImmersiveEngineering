@@ -8,16 +8,15 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
@@ -37,6 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.ClipContext.Fluid;
 import net.minecraft.world.level.Level;
@@ -49,8 +49,11 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -58,10 +61,10 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class DrillItem extends DieselToolItem
 {
 	public static Material[] validMaterials = {Material.HEAVY_METAL, Material.CLAY, Material.GLASS, Material.GRASS, Material.DIRT,
@@ -163,11 +166,21 @@ public class DrillItem extends DieselToolItem
 	}
 
 	/* ------------- DIGGING ------------- */
-	public boolean canToolBeUsed(ItemStack drill, @Nullable LivingEntity player)
+	public boolean canToolBeUsed(ItemStack drill)
 	{
-		if(player!=null&&player.isEyeInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
-			return false;
 		return getHeadDamage(drill) < getMaxHeadDamage(drill)&&!getFluid(drill).isEmpty();
+	}
+
+	@SubscribeEvent
+	public static void handleUnderwaterDrill(HarvestCheck ev)
+	{
+		if(!(ev.getEntityLiving() instanceof Player player))
+			return;
+		ItemStack drill = player.getInventory().getSelected();
+		if(!(drill.getItem() instanceof DrillItem drillItem))
+			return;
+		if(player.isEyeInFluid(FluidTags.WATER)&&!drillItem.getUpgrades(drill).getBoolean("waterproof"))
+			ev.setCanHarvest(false);
 	}
 
 	@Override
@@ -212,43 +225,32 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable Player player, @Nullable BlockState blockState)
+	public Tier getHarvestLevel(ItemStack stack, @Nullable Player player)
 	{
 		ItemStack head = getHead(stack);
-		if(!head.isEmpty()&&canToolBeUsed(stack, player))
-			return ((IDrillHead)head.getItem()).getMiningLevel(head)+ItemNBTHelper.getInt(stack, "harvestLevel");
-		return -1;
+		if(!head.isEmpty()&&canToolBeUsed(stack))
+			return ((IDrillHead)head.getItem()).getMiningLevel(head);
+		return null;
 	}
 
 	@Override
-	public Set<ToolType> getToolTypes(ItemStack stack)
+	public boolean isEffective(ItemStack stack, BlockState state)
 	{
-		if(!getHead(stack).isEmpty()&&canToolBeUsed(stack, null))
-			return ImmutableSet.of(ToolType.PICKAXE, ToolType.SHOVEL);
-		return super.getToolTypes(stack);
-	}
-
-	@Override
-	public boolean isEffective(ItemStack stack, Material mat)
-	{
-		for(Material m : validMaterials)
-			if(m==mat)
-				return true;
-		return false;
+		return state.is(IETags.drillHarvestable);
 	}
 
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
 		ItemStack head = getHead(stack);
-		if(!head.isEmpty()&&canToolBeUsed(stack, null))
+		if(!head.isEmpty()&&canToolBeUsed(stack))
 			return ((IDrillHead)head.getItem()).getMiningSpeed(head)+getUpgrades(stack).getFloat("speed");
 		return super.getDestroySpeed(stack, state);
 	}
 
 	public boolean canBreakExtraBlock(Level world, Block block, BlockPos pos, BlockState state, Player player, ItemStack drill, ItemStack head, boolean inWorld)
 	{
-		if(block.canHarvestBlock(state, world, pos, player)&&isEffective(drill, state.getMaterial())&&canToolBeUsed(drill, player))
+		if(block.canHarvestBlock(state, world, pos, player)&&isEffective(drill, state)&&canToolBeUsed(drill))
 		{
 			if(inWorld)
 				return !((IDrillHead)head.getItem()).beforeBlockbreak(drill, head, player);
@@ -266,7 +268,7 @@ public class DrillItem extends DieselToolItem
 			return false;
 		HitResult mop = getPlayerPOVHitResult(world, player, Fluid.NONE);
 		ItemStack head = getHead(stack);
-		if(mop==null||head.isEmpty()||!canToolBeUsed(stack, player))
+		if(mop==null||head.isEmpty()||!canToolBeUsed(stack))
 			return false;
 		ImmutableList<BlockPos> additional = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world, player, mop);
 		for(BlockPos pos : additional)

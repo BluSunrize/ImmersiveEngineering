@@ -30,14 +30,15 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -185,9 +186,13 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, BlockState state)
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
-		return isEffective(stack, state.getMaterial())&&canToolBeUsed(stack, null);
+		//TODO fix drill air tank
+		Tier tier = getHarvestLevel(stack, null);
+		if(tier==null)
+			return false;
+		return isEffective(stack, state)&&canToolBeUsed(stack)&&TierSortingRegistry.isCorrectTierForDrops(tier, state);
 	}
 
 	@Override
@@ -197,7 +202,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 		if(slot==EquipmentSlot.MAINHAND)
 		{
 			ItemStack head = getHead(stack);
-			if(!head.isEmpty()&&canToolBeUsed(stack, null))
+			if(!head.isEmpty()&&canToolBeUsed(stack))
 			{
 				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
 						BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(stack, head), Operation.ADDITION
@@ -231,7 +236,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	@Override
 	public boolean onEntitySwing(ItemStack stack, LivingEntity entity)
 	{
-		if(canToolBeUsed(stack, entity))
+		if(canToolBeUsed(stack))
 		{
 			if(!animationTimer.containsKey(entity.getUUID()))
 				animationTimer.put(entity.getUUID(), 40);
@@ -248,7 +253,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 		Preconditions.checkArgument((pos==null)==(state==null));
 		if(state==null||state.getDestroySpeed(world, pos)!=0.0f)
 		{
-			int dmg = state==null||ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
+			int dmg = state==null||isEffective(stack, state)?1: 3;
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
 			{
@@ -277,7 +282,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 
 	protected boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
 	{
-		return entity!=null&&canToolBeUsed(stack, entity)&&
+		return entity!=null&&canToolBeUsed(stack)&&
 				(entity.getItemInHand(InteractionHand.MAIN_HAND)==stack||entity.getItemInHand(InteractionHand.OFF_HAND)==stack)&&
 				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
 						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
@@ -287,9 +292,11 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 
 	protected abstract double getAttackDamage(ItemStack stack, ItemStack head);
 
-	public abstract boolean isEffective(ItemStack stack, Material mat);
+	public abstract boolean isEffective(ItemStack stack, BlockState state);
 
-	protected abstract boolean canToolBeUsed(ItemStack stack, @Nullable LivingEntity player);
+	public abstract Tier getHarvestLevel(ItemStack stack, @Nullable Player player);
+
+	protected abstract boolean canToolBeUsed(ItemStack stack);
 
 	protected abstract ItemStack getHead(ItemStack tool);
 

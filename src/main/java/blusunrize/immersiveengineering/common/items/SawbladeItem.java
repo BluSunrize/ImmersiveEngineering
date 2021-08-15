@@ -10,12 +10,14 @@ package blusunrize.immersiveengineering.common.items;
 
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.block.state.BlockState;
+
+import java.util.function.Predicate;
 
 public class SawbladeItem extends IEBaseItem
 {
-	protected static Material[] validMaterials = {Material.WOOD, Material.PLANT, Material.REPLACEABLE_PLANT, Material.BAMBOO};
 	private final float sawbladeSpeed;
 	private final float sawbladeDamage;
 
@@ -70,8 +72,8 @@ public class SawbladeItem extends IEBaseItem
 		return null;
 	}
 
-	public Material[] getSawbladeMaterials()
+	public Predicate<BlockState> getSawbladeMaterials()
 	{
-		return validMaterials;
+		return s -> s.is(BlockTags.MINEABLE_WITH_AXE);
 	}
 }

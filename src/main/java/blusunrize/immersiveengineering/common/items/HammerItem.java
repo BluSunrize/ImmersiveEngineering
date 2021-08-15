@@ -8,12 +8,11 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -22,7 +21,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
-import com.google.common.collect.ImmutableSet;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.ChatFormatting;
@@ -54,19 +52,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 public class HammerItem extends IEBaseItem implements ITool
 {
-	public static final ToolType HAMMER_TOOL = ToolType.get(ImmersiveEngineering.MODID+"_hammer");
-
 	public HammerItem()
 	{
 		super(new Properties().defaultDurability(100));// Value is overridden in getMaxDamage
@@ -264,28 +258,11 @@ public class HammerItem extends IEBaseItem implements ITool
 			return InteractionResult.PASS;
 	}
 
-	@Nonnull
-	@Override
-	public Set<ToolType> getToolTypes(ItemStack stack)
-	{
-		return ImmutableSet.of(HAMMER_TOOL);
-	}
-
-	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable Player player, @Nullable BlockState blockState)
-	{
-		if(getToolTypes(stack).contains(tool))
-			return 2;
-		else
-			return -1;
-	}
-
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
-		for(ToolType type : this.getToolTypes(stack))
-			if(state.getBlock().isToolEffective(state, type))
-				return 6;
+		if(isCorrectToolForDrops(stack, state))
+			return 6;
 		return super.getDestroySpeed(stack, state);
 	}
 
@@ -296,12 +273,8 @@ public class HammerItem extends IEBaseItem implements ITool
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, BlockState state)
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
-		if(state.getBlock() instanceof IEBaseBlock)
-		{
-			return ((IEBaseBlock)state.getBlock()).allowHammerHarvest(state);
-		}
-		else return state.getBlock().isToolEffective(state, HAMMER_TOOL);
+		return state.is(IETags.hammerHarvestable);
 	}
 }

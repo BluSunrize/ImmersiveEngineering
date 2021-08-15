@@ -8,15 +8,22 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+
+import java.util.Set;
+import java.util.function.Predicate;
 
 public class RockcutterItem extends SawbladeItem
 {
-	private static Material[] silktouchMaterials = {Material.PLANT, Material.REPLACEABLE_PLANT, Material.GRASS,
-			Material.STONE, Material.GLASS, Material.ICE, Material.ICE_SOLID};
+	private static Set<Material> silktouchMaterials = ImmutableSet.of(
+			Material.PLANT, Material.REPLACEABLE_PLANT, Material.GRASS,
+			Material.STONE, Material.GLASS, Material.ICE, Material.ICE_SOLID
+	);
 	private static ListTag enchants = new ListTag();
 	public static ResourceLocation texture = new ResourceLocation("immersiveengineering:item/rockcutter_blade");
 
@@ -46,9 +53,9 @@ public class RockcutterItem extends SawbladeItem
 	}
 
 	@Override
-	public Material[] getSawbladeMaterials()
+	public Predicate<BlockState> getSawbladeMaterials()
 	{
-		return silktouchMaterials;
+		return s -> silktouchMaterials.contains(s.getMaterial());
 	}
 
 	@Override

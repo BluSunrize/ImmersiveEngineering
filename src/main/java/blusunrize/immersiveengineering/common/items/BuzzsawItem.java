@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableSet;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
@@ -43,22 +42,17 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -72,6 +66,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public class BuzzsawItem extends DieselToolItem implements IScrollwheel
@@ -277,7 +272,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	/* ------------- DIGGING ------------- */
 
 	@Override
-	public boolean canToolBeUsed(ItemStack stack, @Nullable LivingEntity player)
+	public boolean canToolBeUsed(ItemStack stack)
 	{
 		if(getHeadDamage(stack) >= getMaxHeadDamage(stack))
 			return false;
@@ -303,7 +298,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		consumeDurability(stack, world, state, pos, living);
 		if(!world.isClientSide&&!living.isShiftKeyDown()&&living instanceof ServerPlayer)
-			if(canFellTree(stack)&&canToolBeUsed(stack, living)&&isTree(world, pos))
+			if(canFellTree(stack)&&canToolBeUsed(stack)&&isTree(world, pos))
 				fellTree(world, pos, (ServerPlayer)living, stack);
 		return true;
 	}
@@ -322,43 +317,32 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable Player player, @Nullable BlockState blockState)
+	public Tier getHarvestLevel(ItemStack stack, @Nullable Player player)
 	{
 		ItemStack sawblade = getHead(stack);
 		if(!sawblade.isEmpty())
-			return 3;
-		return -1;
+			return Tiers.DIAMOND;
+		return null;
 	}
 
 	@Override
-	public Set<ToolType> getToolTypes(ItemStack stack)
+	public boolean isEffective(ItemStack stack, BlockState state)
 	{
-		if(!getHead(stack).isEmpty()&&canToolBeUsed(stack, null))
-			return ImmutableSet.of(ToolType.AXE);
-		return super.getToolTypes(stack);
-	}
-
-	public boolean isEffective(ItemStack stack, Material mat)
-	{
-		Material[] validMaterials = null;
+		Predicate<BlockState> mineable = null;
 		ItemStack sawblade = getHead(stack);
 		if(sawblade.getItem() instanceof SawbladeItem)
-			validMaterials = ((SawbladeItem)sawblade.getItem()).getSawbladeMaterials();
+			mineable = ((SawbladeItem)sawblade.getItem()).getSawbladeMaterials();
 
-		if(validMaterials!=null)
-			for(Material m : validMaterials)
-				if(m==mat)
-					return true;
-		return false;
+		return mineable!=null&&mineable.test(state);
 	}
 
 	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
-		if(isEffective(stack, state.getMaterial()))
+		if(isEffective(stack, state))
 		{
 			ItemStack sawblade = getHead(stack);
-			if(!sawblade.isEmpty()&&canToolBeUsed(stack, null))
+			if(!sawblade.isEmpty()&&canToolBeUsed(stack))
 				return ((SawbladeItem)sawblade.getItem()).getSawbladeSpeed();
 		}
 		return super.getDestroySpeed(stack, state);

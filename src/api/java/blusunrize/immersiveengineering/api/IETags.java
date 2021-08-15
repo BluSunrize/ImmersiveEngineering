@@ -74,6 +74,12 @@ public class IETags
 	public static final Named<Item> circuitPCB = createItemWrapper(rl("circuits/pcb"));
 	public static final Named<Item> circuitLogic = createItemWrapper(rl("circuits/logic"));
 	public static final Named<Item> circuitSolder = createItemWrapper(rl("circuits/solder"));
+	public static final Named<Item> hammers = createItemWrapper(rl("tools/hammers"));
+	public static final Named<Item> screwdrivers = createItemWrapper(rl("tools/screwdrivers"));
+	public static final Named<Item> wirecutters = createItemWrapper(rl("tools/wirecutters"));
+	public static final Named<Block> hammerHarvestable = createBlockWrapper(rl("mineable/hammer"));
+	public static final Named<Block> wirecutterHarvestable = createBlockWrapper(rl("mineable/wirecutter"));
+	public static final Named<Block> drillHarvestable = createBlockWrapper(rl("mineable/drill"));
 
 	public static final Named<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
 	public static final Named<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));

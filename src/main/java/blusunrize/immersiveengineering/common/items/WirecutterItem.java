@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.tool.ITool;
@@ -16,11 +16,9 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -35,17 +33,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class WirecutterItem extends IEBaseItem implements ITool
 {
-	public static final ToolType CUTTER_TOOL = ToolType.get(ImmersiveEngineering.MODID+"_cutter");
-
 	public WirecutterItem()
 	{
 		super(new Properties().defaultDurability(100));
@@ -102,13 +95,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player)
 	{
 		BlockState state = player.level.getBlockState(pos);
-		boolean effective = false;
-		for(ToolType tool : getToolTypes(itemstack))
-			if(state.getBlock().isToolEffective(state, tool))
-			{
-				effective = true;
-				break;
-			}
+		boolean effective = state.is(IETags.wirecutterHarvestable);
 		itemstack.hurt(1, Utils.RAND, null);
 		return effective;
 	}
@@ -184,39 +171,17 @@ public class WirecutterItem extends IEBaseItem implements ITool
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable Player player, @Nullable BlockState blockState)
-	{
-		if(getToolTypes(stack).contains(tool))
-			return 2;
-		else
-			return -1;
-	}
-
-
-	@Nonnull
-	@Override
-	public Set<ToolType> getToolTypes(ItemStack stack)
-	{
-		return ImmutableSet.of(CUTTER_TOOL);
-	}
-
-	@Override
 	public float getDestroySpeed(ItemStack stack, BlockState state)
 	{
-		for(ToolType type : this.getToolTypes(stack))
-			if(state.getBlock().isToolEffective(state, type))
-				return 6;
+		if(isCorrectToolForDrops(stack, state))
+			return 6;
 		return super.getDestroySpeed(stack, state);
 	}
 
 	@Override
-	public boolean canHarvestBlock(ItemStack stack, BlockState state)
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
-		if(state.getBlock() instanceof IEBaseBlock)
-		{
-			return ((IEBaseBlock)state.getBlock()).allowWirecutterHarvest(state);
-		}
-		else return state.getBlock().isToolEffective(state, CUTTER_TOOL);
+		return state.is(IETags.wirecutterHarvestable);
 	}
 
 	@Override

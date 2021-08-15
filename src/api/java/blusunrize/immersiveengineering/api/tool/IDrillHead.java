@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
@@ -45,7 +46,7 @@ public interface IDrillHead
 	/**
 	 * @return The mining level of the drill
 	 */
-	int getMiningLevel(ItemStack head);
+	Tier getMiningLevel(ItemStack head);
 
 	/**
 	 * @return The speed of the drill

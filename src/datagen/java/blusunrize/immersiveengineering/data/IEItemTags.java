@@ -103,6 +103,9 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.circuitPCB).add(Ingredients.circuitBoard.asItem());
 		tag(IETags.circuitLogic).add(Ingredients.electronTube.asItem());
 		tag(IETags.circuitSolder).addTag(IETags.copperWire).addTag(IETags.leadWire);
+		tag(IETags.hammers).add(Tools.hammer.get());
+		tag(IETags.screwdrivers).add(Tools.screwdriver.get());
+		tag(IETags.wirecutters).add(Tools.wirecutter.get());
 
 		/* MOD COMPAT STARTS HERE */
 

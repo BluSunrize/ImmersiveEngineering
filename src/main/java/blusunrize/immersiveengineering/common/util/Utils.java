@@ -9,14 +9,12 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.Raytracer;
-import blusunrize.immersiveengineering.common.items.HammerItem;
-import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
-import blusunrize.immersiveengineering.common.items.WirecutterItem;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
@@ -56,6 +54,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.BlockGetter;
@@ -78,6 +77,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -91,7 +91,6 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Method;
 import java.text.DecimalFormat;
 import java.util.*;
 import java.util.function.BiPredicate;
@@ -214,28 +213,10 @@ public class Utils
 		return s.substring(0, 1).toUpperCase(Locale.ENGLISH)+s.substring(1).toLowerCase(Locale.ENGLISH);
 	}
 
-	private static Method m_getHarvestLevel = null;
-
-	public static String getHarvestLevelName(int lvl)
+	public static String getHarvestLevelName(Tier lvl)
 	{
-		//TODO this is probably pre-1.11 code. Does it still work in 1.13+?
-		if(ModList.get().isLoaded("tconstruct"))
-		{
-			try
-			{
-				if(m_getHarvestLevel==null)
-				{
-					Class<?> clazz = Class.forName("tconstruct.library.util");
-					if(clazz!=null)
-						m_getHarvestLevel = clazz.getDeclaredMethod("getHarvestLevelName", int.class);
-				}
-				if(m_getHarvestLevel!=null)
-					return (String)m_getHarvestLevel.invoke(null, lvl);
-			} catch(Exception e)
-			{
-			}
-		}
-		return I18n.get(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
+		//TODO localize (or talk to Forge about generic localization)
+		return I18n.get(Lib.DESC_INFO+"mininglvl."+TierSortingRegistry.getName(lvl));
 	}
 
 	public static String getModName(String modid)
@@ -382,23 +363,12 @@ public class Utils
 
 	public static boolean isHammer(ItemStack stack)
 	{
-		if(stack.isEmpty())
-			return false;
-		return stack.getItem().getToolTypes(stack).contains(HammerItem.HAMMER_TOOL);
-	}
-
-	public static boolean isWirecutter(ItemStack stack)
-	{
-		if(stack.isEmpty())
-			return false;
-		return stack.getItem().getToolTypes(stack).contains(WirecutterItem.CUTTER_TOOL);
+		return stack.is(IETags.hammers);
 	}
 
 	public static boolean isScrewdriver(ItemStack stack)
 	{
-		if(stack.isEmpty())
-			return false;
-		return stack.getItem().getToolTypes(stack).contains(ScrewdriverItem.SCREWDRIVER_TOOL);
+		return stack.is(IETags.screwdrivers);
 	}
 
 	public static boolean canBlockDamageSource(LivingEntity entity, DamageSource damageSourceIn)

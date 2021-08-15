@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.common.items.HammerItem;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -22,7 +21,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -73,12 +71,6 @@ public class MetalLadderBlock extends LadderBlock
 			Direction ladderSide = state.getValue(LadderBlock.FACING);
 			return Shapes.joinUnoptimized(base, FRAMES.get(ladderSide), BooleanOp.OR);
 		}
-	}
-
-	@Override
-	public boolean isToolEffective(BlockState state, ToolType tool)
-	{
-		return super.isToolEffective(state, tool)||tool==HammerItem.HAMMER_TOOL;
 	}
 
 	@Nullable

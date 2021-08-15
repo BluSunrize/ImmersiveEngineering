@@ -8,9 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.common.items.HammerItem;
-import blusunrize.immersiveengineering.common.items.ScrewdriverItem;
-import blusunrize.immersiveengineering.common.items.WirecutterItem;
+import blusunrize.immersiveengineering.api.IETags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -40,7 +38,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ToolType;
 
 public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlock
 {
@@ -49,7 +46,6 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	//TODO wtf is variable opacity?
 	protected int lightOpacity;
 	protected PushReaction mobilityFlag = PushReaction.NORMAL;
-	protected boolean canHammerHarvest;
 	protected final boolean notNormalBlock;
 
 	public IEBaseBlock(Block.Properties blockProps)
@@ -176,41 +172,15 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		return super.triggerEvent(state, worldIn, pos, eventID, eventParam);
 	}
 
-	public IEBaseBlock setHammerHarvest()
-	{
-		canHammerHarvest = true;
-		return this;
-	}
-
-	public boolean allowHammerHarvest(BlockState blockState)
-	{
-		return canHammerHarvest;
-	}
-
-	public boolean allowWirecutterHarvest(BlockState blockState)
-	{
-		return false;
-	}
-
-	@Override
-	public boolean isToolEffective(BlockState state, ToolType tool)
-	{
-		if(allowHammerHarvest(state)&&tool==HammerItem.HAMMER_TOOL)
-			return true;
-		if(allowWirecutterHarvest(state)&&tool==WirecutterItem.CUTTER_TOOL)
-			return true;
-		return super.isToolEffective(state, tool);
-	}
-
 	@Override
 	@SuppressWarnings("deprecation")
 	public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
 											 BlockHitResult hit)
 	{
 		ItemStack activeStack = player.getItemInHand(hand);
-		if(activeStack.getToolTypes().contains(HammerItem.HAMMER_TOOL))
+		if(activeStack.is(IETags.hammers))
 			return hammerUseSide(hit.getDirection(), player, hand, world, pos, hit);
-		if(activeStack.getToolTypes().contains(ScrewdriverItem.SCREWDRIVER_TOOL))
+		if(activeStack.is(IETags.screwdrivers))
 			return screwdriverUseSide(hit.getDirection(), player, hand, world, pos, hit);
 		return super.use(state, world, pos, player, hand, hit);
 	}

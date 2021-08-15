@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEnti
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
@@ -37,7 +36,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.MaterialColor;
-import net.minecraftforge.common.ToolType;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
@@ -58,17 +56,14 @@ public final class IEBlocks
 	private static final Supplier<Properties> STONE_DECO_PROPS = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
-			.harvestTool(ToolType.PICKAXE)
 			.strength(2, 10);
 	private static final Supplier<Properties> STONE_DECO_LEADED_PROPS = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
-			.harvestTool(ToolType.PICKAXE)
 			.strength(2, 180);
 	private static final Supplier<Properties> STONE_DECO_PROPS_NOT_SOLID = () -> Block.Properties.of(Material.STONE)
 			.sound(SoundType.STONE)
 			.requiresCorrectToolForDrops()
-			.harvestTool(ToolType.PICKAXE)
 			.strength(2, 10)
 			.noOcclusion();
 	private static final Supplier<Properties> SHEETMETAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
@@ -86,14 +81,12 @@ public final class IEBlocks
 	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
 			.requiresCorrectToolForDrops()
-			.harvestTool(ToolType.PICKAXE)
 			.strength(3, 15);
 	private static final Supplier<Properties> METAL_PROPERTIES_NO_OVERLAY =
 			() -> Block.Properties.of(Material.METAL)
 					.sound(SoundType.METAL)
 					.strength(3, 15)
 					.requiresCorrectToolForDrops()
-					.harvestTool(ToolType.PICKAXE)
 					.isViewBlocking((state, blockReader, pos) -> false);
 	private static final Supplier<Properties> METAL_PROPERTIES_NOT_SOLID = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
 
@@ -125,7 +118,7 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> concreteSprayed = BlockEntry.simple(
 				"concrete_sprayed", () -> Block.Properties.of(Material.STONE)
 						.strength(.2F, 1)
-						.noOcclusion(), IEBaseBlock::setHammerHarvest);
+						.noOcclusion());
 		public static final BlockEntry<IEBaseBlock> alloybrick = BlockEntry.simple("alloybrick", STONE_DECO_PROPS);
 
 		//TODO possibly merge into a single block with "arbitrary" height?
@@ -229,25 +222,6 @@ public final class IEBlocks
 
 		private static void init()
 		{
-			Map<EnumMetals, Integer> oreMiningLevels = ImmutableMap.<EnumMetals, Integer>builder()
-					.put(EnumMetals.COPPER, 1)
-					.put(EnumMetals.ALUMINUM, 1)
-					.put(EnumMetals.LEAD, 2)
-					.put(EnumMetals.SILVER, 2)
-					.put(EnumMetals.NICKEL, 2)
-					.put(EnumMetals.URANIUM, 2)
-					.build();
-			Map<EnumMetals, Integer> storageMiningLevels = ImmutableMap.<EnumMetals, Integer>builder()
-					.put(EnumMetals.COPPER, 1)
-					.put(EnumMetals.ALUMINUM, 1)
-					.put(EnumMetals.LEAD, 2)
-					.put(EnumMetals.SILVER, 2)
-					.put(EnumMetals.NICKEL, 2)
-					.put(EnumMetals.URANIUM, 2)
-					.put(EnumMetals.CONSTANTAN, 2)
-					.put(EnumMetals.ELECTRUM, 2)
-					.put(EnumMetals.STEEL, 2)
-					.build();
 			for(EnumMetals m : EnumMetals.values())
 			{
 				String name = m.tagName();
@@ -261,20 +235,15 @@ public final class IEBlocks
 					ore = new BlockEntry<>(BlockEntry.simple("ore_"+name,
 							() -> Block.Properties.of(Material.STONE)
 									.strength(3, 5)
-									.requiresCorrectToolForDrops()
-									.harvestTool(ToolType.PICKAXE)
-									.harvestLevel(oreMiningLevels.get(m))));
+									.requiresCorrectToolForDrops()));
 				}
 				if(!m.isVanillaMetal())
 				{
 					BlockEntry<IEBaseBlock> storageIE = BlockEntry.simple(
 							"storage_"+name, () -> Block.Properties.of(Material.METAL)
-							.sound(m==EnumMetals.STEEL?SoundType.NETHERITE_BLOCK: SoundType.METAL)
-							.strength(5, 10)
-							.requiresCorrectToolForDrops()
-							.harvestTool(ToolType.PICKAXE)
-							.harvestLevel(storageMiningLevels.get(m))
-					);
+									.sound(m==EnumMetals.STEEL?SoundType.NETHERITE_BLOCK: SoundType.METAL)
+									.strength(5, 10)
+									.requiresCorrectToolForDrops());
 					registerSlab(storageIE);
 					storage = new BlockEntry<>(storageIE);
 				}
@@ -312,7 +281,6 @@ public final class IEBlocks
 				"sawdust",
 				() -> Block.Properties.of(Material.WOOD, MaterialColor.SAND)
 						.sound(SoundType.SAND)
-						.harvestTool(ToolType.SHOVEL)
 						.strength(0.5F)
 						.noCollission().noOcclusion(),
 				SawdustBlock::new

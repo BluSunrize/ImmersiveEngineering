@@ -28,9 +28,7 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -49,8 +47,8 @@ import java.util.Set;
 public class DrillheadItem extends IEBaseItem implements IDrillHead
 {
 	//Maximal damage is slightly proportionate to pickaxes
-	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, 3, 10, 7, 10000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_diesel"));
-	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, 2, 9, 6, 6000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_iron"));
+	public static final DrillHeadPerm STEEL = new DrillHeadPerm("steel", IETags.getTagsFor(EnumMetals.STEEL).ingot, 3, 1, Tiers.DIAMOND, 10, 7, 10000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_diesel"));
+	public static final DrillHeadPerm IRON = new DrillHeadPerm("iron", Items.INGOTS_IRON, 2, 1, Tiers.IRON, 9, 6, 6000, new ResourceLocation(ImmersiveEngineering.MODID, "item/drill_iron"));
 
 	public static final String DAMAGE_KEY_OLD = "headDamage";
 	public static final String DAMAGE_KEY = "Damage";
@@ -98,7 +96,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	}
 
 	@Override
-	public int getMiningLevel(ItemStack head)
+	public Tier getMiningLevel(ItemStack head)
 	{
 		return perms.drillLevel;
 	}
@@ -176,7 +174,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		final Tag<Item> repairMaterial;
 		final int drillSize;
 		final int drillDepth;
-		final int drillLevel;
+		final Tier drillLevel;
 		final float drillSpeed;
 		final float drillAttack;
 		final int maxDamage;
@@ -184,7 +182,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite sprite;
 
-		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
+		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, Tier drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
 		{
 			this.name = name;
 			this.repairMaterial = repairMaterial;
@@ -203,9 +201,8 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	@Override
 	public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, Level world, Player player, HitResult rtr)
 	{
-		if(!(rtr instanceof BlockHitResult))
+		if(!(rtr instanceof BlockHitResult brtr))
 			return ImmutableList.of();
-		BlockHitResult brtr = (BlockHitResult)rtr;
 		Direction side = brtr.getDirection();
 		int diameter = perms.drillSize;
 		int depth = perms.drillDepth;
@@ -213,7 +210,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		BlockPos startPos = brtr.getBlockPos();
 		BlockState state = world.getBlockState(startPos);
 		float maxHardness = 1;
-		if(state.isAir())
+		if(!state.isAir())
 			maxHardness = state.getDestroyProgress(player, world, startPos)*0.6F;
 		if(maxHardness < 0)
 			maxHardness = 0;
@@ -244,7 +241,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 					Block block = state.getBlock();
 					float h = state.getDestroyProgress(player, world, pos);
 					boolean canHarvest = block.canHarvestBlock(world.getBlockState(pos), world, pos, player);
-					boolean drillMat = Tools.drill.get().isEffective(ItemStack.EMPTY, state.getMaterial());
+					boolean drillMat = Tools.drill.get().isEffective(ItemStack.EMPTY, state);
 					boolean hardness = h > maxHardness;
 					if(canHarvest&&drillMat&&hardness)
 						b.add(pos);

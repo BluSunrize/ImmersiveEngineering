@@ -755,20 +755,19 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(HighlightBlock event)
 	{
-		if(event.getTarget().getType()==Type.BLOCK)
+		if(event.getTarget().getType()==Type.BLOCK&&event.getInfo().getEntity() instanceof LivingEntity player)
 		{
 			PoseStack transform = event.getMatrix();
 			MultiBufferSource buffer = event.getBuffers();
-			BlockHitResult rtr = (BlockHitResult)event.getTarget();
+			BlockHitResult rtr = event.getTarget();
 			BlockPos pos = rtr.getBlockPos();
 			Vec3 renderView = event.getInfo().getPosition();
 			transform.pushPose();
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
-			Entity player = event.getInfo().getEntity();
 			float eps = 0.002F;
 			BlockEntity tile = player.level.getBlockEntity(rtr.getBlockPos());
-			ItemStack stack = player instanceof LivingEntity?((LivingEntity)player).getItemInHand(InteractionHand.MAIN_HAND): ItemStack.EMPTY;
+			ItemStack stack = player.getItemInHand(InteractionHand.MAIN_HAND);
 
 			if(tile instanceof TurntableBlockEntity turntableTile&&Utils.isHammer(stack))
 			{
@@ -838,7 +837,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 
 			transform.popPose();
 			if(!stack.isEmpty()&&stack.getItem() instanceof DrillItem&&
-					((DrillItem)stack.getItem()).isEffective(stack, world.getBlockState(rtr.getBlockPos()).getMaterial()))
+					((DrillItem)stack.getItem()).isEffective(stack, world.getBlockState(rtr.getBlockPos())))
 			{
 				ItemStack head = ((DrillItem)stack.getItem()).getHead(stack);
 				if(!head.isEmpty()&&player instanceof Player&&!player.isShiftKeyDown())

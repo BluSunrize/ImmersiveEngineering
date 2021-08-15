@@ -67,10 +67,4 @@ public class StripCurtainBlock extends GenericEntityBlock<StripCurtainBlockEntit
 			tooltip.add(FontUtils.withAppendColoredColour(new TranslatableComponent(Lib.DESC_INFO+"colour"), color));
 		}
 	}
-
-	@Override
-	public boolean allowHammerHarvest(BlockState blockState)
-	{
-		return true;
-	}
 }

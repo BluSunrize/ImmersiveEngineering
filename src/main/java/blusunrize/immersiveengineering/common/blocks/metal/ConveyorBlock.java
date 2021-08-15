@@ -104,12 +104,6 @@ public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.ICon
 	}
 
 	@Override
-	public boolean allowHammerHarvest(BlockState blockState)
-	{
-		return true;
-	}
-
-	@Override
 	public ResourceLocation getTypeName()
 	{
 		return typeName;

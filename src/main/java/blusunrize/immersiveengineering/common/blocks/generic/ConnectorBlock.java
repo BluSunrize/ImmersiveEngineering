@@ -102,10 +102,4 @@ public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectab
 		}
 		return super.getPickBlock(state, targetIn, world, pos, player);
 	}
-
-	@Override
-	public boolean allowHammerHarvest(BlockState state)
-	{
-		return true;
-	}
 }
