@@ -61,7 +61,7 @@ public class ThermoelectricHandler
 		SortedMap<Component, Integer> existingMap = new TreeMap<>(
 				Comparator.comparing(
 						(Function<Component, String>) Component::getString,
-						inverse?Comparator.reverseOrder(): Comparator.reverseOrder()
+						inverse?Comparator.reverseOrder(): Comparator.naturalOrder()
 				)
 		);
 		for(ThermoelectricSource ingr : temperatureMap)

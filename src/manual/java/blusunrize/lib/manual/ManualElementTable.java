@@ -23,9 +23,9 @@ import java.util.OptionalInt;
 
 public class ManualElementTable extends SpecialManualElements
 {
-	private Component[][] table;
+	private final Component[][] table;
 	private int[] bars;
-	private boolean horizontalBars;
+	private final boolean horizontalBars;
 	private OptionalInt height = OptionalInt.empty();
 	private int[] textOff;
 
@@ -71,6 +71,7 @@ public class ManualElementTable extends SpecialManualElements
 			int col = manual.getHighlightColour()|0xff000000;
 			GuiComponent.fill(transform, x, y-2, x+120, y-1, col);
 
+			final int lineHeight = manual.fontRenderer().lineHeight;
 			int yOff = 0;
 			for(Component[] line : table)
 				if(line!=null)
@@ -83,8 +84,10 @@ public class ManualElementTable extends SpecialManualElements
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
 							Component lineText = line[j];
 							List<FormattedCharSequence> lines = manual.fontRenderer().split(lineText, w);
-							for(FormattedCharSequence l : lines)
-								manual.fontRenderer().draw(transform, l, xx, y+yOff, manual.getTextColour());
+							for(int i = 0; i < lines.size(); i++)
+								manual.fontRenderer().draw(
+										transform, lines.get(i), xx, y+yOff+i*lineHeight, manual.getTextColour()
+								);
 							if(lines.size() > height)
 								height = lines.size();
 						}
@@ -93,13 +96,13 @@ public class ManualElementTable extends SpecialManualElements
 					{
 						float scale = .5f;
 						transform.scale(1, scale, 1);
-						int barHeight = (int)((y+yOff+height*manual.fontRenderer().lineHeight)/scale);
+						int barHeight = (int)((y+yOff+height*lineHeight)/scale);
 						GuiComponent.fill(transform, x, barHeight, x+120, barHeight+1,
 								manual.getTextColour()|0xff000000);
 						transform.scale(1, 1/scale, 1);
 					}
 
-					yOff += height*(manual.fontRenderer().lineHeight+1);
+					yOff += height*(lineHeight+1);
 				}
 
 			if(bars!=null)
