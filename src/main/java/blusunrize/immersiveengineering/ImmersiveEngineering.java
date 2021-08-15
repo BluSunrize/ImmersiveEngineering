@@ -62,6 +62,7 @@ import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartedEvent;
 import net.minecraftforge.fml.event.server.FMLServerStartingEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.fml.network.NetworkRegistry;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
@@ -75,6 +76,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static net.minecraftforge.fml.network.NetworkDirection.PLAY_TO_CLIENT;
@@ -86,7 +88,9 @@ public class ImmersiveEngineering
 	public static final String MODID = Lib.MODID;
 	public static final String MODNAME = "Immersive Engineering";
 	public static final String VERSION = "${version}";
-	public static CommonProxy proxy = DistExecutor.safeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+	public static CommonProxy proxy = DistExecutor.safeRunForDist(
+			bootstrapErrorToXCPInDev(() -> ClientProxy::new), bootstrapErrorToXCPInDev(() -> CommonProxy::new)
+	);
 
 	public static final SimpleChannel packetHandler = NetworkRegistry.ChannelBuilder
 			.named(new ResourceLocation(MODID, "main"))
@@ -94,6 +98,25 @@ public class ImmersiveEngineering
 			.serverAcceptedVersions(VERSION::equals)
 			.clientAcceptedVersions(VERSION::equals)
 			.simpleChannel();
+
+	// Complete hack: DistExecutor::safeRunForDist intentionally tries to access the "wrong" supplier in dev, which
+	// throws an error (rather than an exception) on J16 due to trying to load a client-only class. So we need to
+	// replace the error with an exception in dev.
+	public static <T>
+	Supplier<T> bootstrapErrorToXCPInDev(Supplier<T> in)
+	{
+		if(FMLLoader.isProduction())
+			return in;
+		return () -> {
+			try
+			{
+				return in.get();
+			} catch(BootstrapMethodError e)
+			{
+				throw new RuntimeException(e);
+			}
+		};
+	}
 
 	public ImmersiveEngineering()
 	{
