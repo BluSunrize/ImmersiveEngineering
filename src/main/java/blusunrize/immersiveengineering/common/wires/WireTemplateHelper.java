@@ -33,7 +33,9 @@ public class WireTemplateHelper
 	)
 	{
 		template.getStoredConnections().clear();
-		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(worldIn);
+		GlobalWireNetwork net = getNetwork(worldIn);
+		if (net == null)
+			return;
 		BlockPos endPos = startPos.offset(size).offset(-1, -1, -1);
 		BoundingBox box = BoundingBox.fromCorners(startPos, endPos);
 		Vec3i offset = new Vec3i(box.minX(), box.minY(), box.minZ());
@@ -67,7 +69,9 @@ public class WireTemplateHelper
 		if(template.getStoredConnections().isEmpty())
 			return;
 		Level world = iworld.getLevel();
-		GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
+		GlobalWireNetwork net = getNetwork(world);
+		if (net == null)
+			return;
 		for(Connection relative : template.getStoredConnections())
 		{
 			ConnectionPoint endA = getAbsolutePoint(relative.getEndA(), orientation, world, startPos);
@@ -109,5 +113,12 @@ public class WireTemplateHelper
 		if(!((IImmersiveConnectable)connector).getConnectionPoints().contains(point))
 			return null;
 		return point;
+	}
+
+	@Nullable
+	private static GlobalWireNetwork getNetwork(Level world) {
+		return world.getCapability(NetHandlerCapability.NET_CAPABILITY)
+				.resolve()
+				.orElse(null);
 	}
 }
