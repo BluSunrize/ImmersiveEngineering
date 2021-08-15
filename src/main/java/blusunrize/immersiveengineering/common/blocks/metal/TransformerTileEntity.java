@@ -131,6 +131,15 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	{
 		if(offset.getY()!=2)
 			return null;
+		ConnectionPoint leftCP = new ConnectionPoint(pos, LEFT_INDEX);
+		ConnectionPoint rightCP = new ConnectionPoint(pos, RIGHT_INDEX);
+		boolean leftEmpty = getLocalNet(LEFT_INDEX).getConnections(leftCP).stream().allMatch(Connection::isInternal);
+		boolean rightEmpty = getLocalNet(RIGHT_INDEX).getConnections(rightCP).stream().allMatch(Connection::isInternal);
+		// Special case: If one side is already connected, target the other side
+		if (leftEmpty && !rightEmpty)
+			return leftCP;
+		else if (!leftEmpty && rightEmpty)
+			return rightCP;
 		Direction facing = getFacing();
 		double hitPos;
 		if(facing.getAxis()==Axis.X)
@@ -139,9 +148,9 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 			hitPos = 0.5-target.hitX;
 
 		if((hitPos < .5)==(facing.getAxisDirection()==AxisDirection.POSITIVE))
-			return new ConnectionPoint(pos, LEFT_INDEX);
+			return leftCP;
 		else
-			return new ConnectionPoint(pos, RIGHT_INDEX);
+			return rightCP;
 	}
 
 	@Override
