@@ -39,6 +39,7 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.math.vector.Vector3i;
 import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.world.World;
 import net.minecraft.world.gen.feature.template.Template.BlockInfo;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
@@ -47,10 +48,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Set;
 
@@ -452,5 +455,18 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 	public VoxelShape getShape(CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> cache)
 	{
 		return cache.get(posInMultiblock, Pair.of(getFacing(), getIsMirrored()));
+	}
+
+	public static <T extends MultiblockPartTileEntity<?> & IComparatorOverride>
+	void updateComparators(T tile, Collection<BlockPos> offsets, MutableInt cachedValue, int newValue) {
+		if (newValue == cachedValue.intValue())
+			return;
+		cachedValue.setValue(newValue);
+		final World world = tile.getWorldNonnull();
+		for (BlockPos offset : offsets) {
+			final BlockPos worldPos = tile.getBlockPosForPos(offset);
+			final BlockState stateAt = world.getBlockState(worldPos);
+			world.updateComparatorOutputLevel(worldPos, stateAt.getBlock());
+		}
 	}
 }

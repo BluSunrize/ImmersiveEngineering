@@ -176,7 +176,6 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 					this.sawblade = ItemStack.EMPTY;
 					this.updateMasterBlock(null, true);
 				}
-				this.updateComparatorLevel(false);
 			}
 		}
 		for(ItemStack output : secondaries)
@@ -196,7 +195,6 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				else if(!world.isRemote)
 					player.entityDropItem(master.sawblade.copy(), 0);
 				master.sawblade = ItemStack.EMPTY;
-				master.updateComparatorLevel(false);
 				this.updateMasterBlock(null, true);
 				return true;
 			}
@@ -216,7 +214,6 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 					else if(!world.isRemote)
 						player.entityDropItem(tempBlade, 0);
 				}
-				master.updateComparatorLevel(false);
 				this.updateMasterBlock(null, true);
 				return true;
 			}
@@ -301,45 +298,11 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		);
 	}
 
-	private int cachedComparatorLevel = -1;
-
-	private void updateComparatorLevel(boolean force)
+	@Override
+	protected int getComparatorValueOnMaster()
 	{
 		float damage = 1-(this.sawblade.getDamage()/(float)this.sawblade.getMaxDamage());
-		int level = MathHelper.floor(damage*15);
-
-		if(level!=cachedComparatorLevel||force)
-		{
-			this.cachedComparatorLevel = level;
-			this.markDirty();
-
-			Set<BlockPos> rsPositions = getRedstonePos();
-			for(BlockPos rsPos : rsPositions)
-			{
-				SawmillTileEntity tile = this.getTileForPos(rsPos);
-				if(tile!=null)
-				{
-					tile.cachedComparatorLevel = level;
-					tile.markDirty();
-					tile.markContainingBlockForUpdate(null);
-				}
-			}
-		}
-	}
-
-
-	@Override
-	public int getComparatorInputOverride()
-	{
-		if(!this.isRedstonePos())
-			return 0;
-		if(this.cachedComparatorLevel < 0)
-		{
-			SawmillTileEntity master = master();
-			if(master!=null)
-				master.updateComparatorLevel(true);
-		}
-		return this.cachedComparatorLevel;
+		return MathHelper.floor(damage*15);
 	}
 
 	@Override

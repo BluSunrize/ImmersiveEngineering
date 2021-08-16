@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.excavator.MineralVein;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
+import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -92,12 +93,10 @@ public class ExcavatorTileEntity extends PoweredMultiblockTileEntity<ExcavatorTi
 	}
 
 	@Override
-	public int getComparatorInputOverride()
+	protected int getComparatorValueOnMaster()
 	{
-		if(!this.isRedstonePos())
-			return 0;
 		BlockPos wheelPos = getWheelCenterPos();
-		if(world.isBlockLoaded(wheelPos)&&world.getTileEntity(wheelPos) instanceof BucketWheelTileEntity)
+		if(SafeChunkUtils.getSafeTE(world, wheelPos) instanceof BucketWheelTileEntity)
 		{
 			MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, wheelPos);
 			if(info==null)
