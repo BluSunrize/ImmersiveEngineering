@@ -32,6 +32,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -47,10 +48,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.Set;
 
@@ -455,5 +458,18 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 	public VoxelShape getShape(CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> cache)
 	{
 		return cache.get(posInMultiblock, Pair.of(getFacing(), getIsMirrored()));
+	}
+
+	public static <T extends MultiblockPartBlockEntity<?> & IComparatorOverride>
+	void updateComparators(T tile, Collection<BlockPos> offsets, MutableInt cachedValue, int newValue) {
+		if (newValue == cachedValue.intValue())
+			return;
+		cachedValue.setValue(newValue);
+		final Level world = tile.getLevelNonnull();
+		for (BlockPos offset : offsets) {
+			final BlockPos worldPos = tile.getBlockPosForPos(offset);
+			final BlockState stateAt = world.getBlockState(worldPos);
+			world.updateNeighbourForOutputSignal(worldPos, stateAt.getBlock());
+		}
 	}
 }

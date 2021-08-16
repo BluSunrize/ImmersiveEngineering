@@ -322,14 +322,9 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	}
 
 	@Override
-	public int getComparatorInputOverride()
+	protected int getComparatorValueOnMaster()
 	{
-		if(!this.isRedstonePos())
-			return 0;
-		CrusherBlockEntity master = master();
-		if(master==null)
-			return 0;
-		float fill = master.processQueue.size()/(float)master.getProcessQueueMaxLength();
+		float fill = processQueue.size()/(float)getProcessQueueMaxLength();
 		return Mth.floor(fill*14.0F)+(fill > 0?1: 0);
 	}
 

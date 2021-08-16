@@ -181,7 +181,6 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 					this.sawblade = ItemStack.EMPTY;
 					this.updateMasterBlock(null, true);
 				}
-				this.updateComparatorLevel(false);
 			}
 		}
 		for(ItemStack output : secondaries)
@@ -201,7 +200,6 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 				else if(!level.isClientSide)
 					player.spawnAtLocation(master.sawblade.copy(), 0);
 				master.sawblade = ItemStack.EMPTY;
-				master.updateComparatorLevel(false);
 				this.updateMasterBlock(null, true);
 				return true;
 			}
@@ -221,7 +219,6 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 					else if(!level.isClientSide)
 						player.spawnAtLocation(tempBlade, 0);
 				}
-				master.updateComparatorLevel(false);
 				this.updateMasterBlock(null, true);
 				return true;
 			}
@@ -306,45 +303,11 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		);
 	}
 
-	private int cachedComparatorLevel = -1;
-
-	private void updateComparatorLevel(boolean force)
+	@Override
+	protected int getComparatorValueOnMaster()
 	{
 		float damage = 1-(this.sawblade.getDamageValue()/(float)this.sawblade.getMaxDamage());
-		int level = Mth.floor(damage*15);
-
-		if(level!=cachedComparatorLevel||force)
-		{
-			this.cachedComparatorLevel = level;
-			this.setChanged();
-
-			Set<BlockPos> rsPositions = getRedstonePos();
-			for(BlockPos rsPos : rsPositions)
-			{
-				SawmillBlockEntity tile = this.getEntityForPos(rsPos);
-				if(tile!=null)
-				{
-					tile.cachedComparatorLevel = level;
-					tile.setChanged();
-					tile.markContainingBlockForUpdate(null);
-				}
-			}
-		}
-	}
-
-
-	@Override
-	public int getComparatorInputOverride()
-	{
-		if(!this.isRedstonePos())
-			return 0;
-		if(this.cachedComparatorLevel < 0)
-		{
-			SawmillBlockEntity master = master();
-			if(master!=null)
-				master.updateComparatorLevel(true);
-		}
-		return this.cachedComparatorLevel;
+		return Mth.floor(damage*15);
 	}
 
 	@Override

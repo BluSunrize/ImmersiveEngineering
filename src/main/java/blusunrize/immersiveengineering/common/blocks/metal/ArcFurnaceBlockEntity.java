@@ -53,6 +53,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
@@ -177,6 +178,9 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 				for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 					if(this.inventory.get(i).hurt(1, Utils.RAND, null))
 						this.inventory.set(i, ItemStack.EMPTY);
+			updateComparators(
+					this, ImmutableList.of(ELECTRODE_COMPARATOR_POS), electrodeComparatorValue, getElectrodeComparatorValueOnMaster()
+			);
 
 			if(this.processQueue.size() < this.getProcessQueueMaxLength())
 			{
@@ -464,20 +468,25 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		);
 	}
 
+	private static final BlockPos ELECTRODE_COMPARATOR_POS = new BlockPos(2, 4, 2);
+	private final MutableInt electrodeComparatorValue = new MutableInt(-1);
+
+	private int getElectrodeComparatorValueOnMaster() {
+		float f = 0;
+		for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
+			if(!inventory.get(i).isEmpty())
+				f += 1-(inventory.get(i).getDamageValue()/(float)inventory.get(i).getMaxDamage());
+		return Mth.floor(Math.max(f/3f, 0)*15);
+	}
+
 	@Override
 	public int getComparatorInputOverride()
 	{
-		if(new BlockPos(2, 4, 2).equals(posInMultiblock))
+		if(ELECTRODE_COMPARATOR_POS.equals(posInMultiblock))
 		{
 			ArcFurnaceBlockEntity master = master();
 			if(master!=null)
-			{
-				float f = 0;
-				for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
-					if(!master.inventory.get(i).isEmpty())
-						f += 1-(master.inventory.get(i).getDamageValue()/(float)master.inventory.get(i).getMaxDamage());
-				return Mth.floor(Math.max(f/3f, 0)*15);
-			}
+				return master.getElectrodeComparatorValueOnMaster();
 		}
 		return super.getComparatorInputOverride();
 	}

@@ -41,6 +41,7 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,6 +55,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		IProcessBE, IComparatorOverride
 {
 	public final FluxStorageAdvanced energyStorage;
+	private final MutableInt cachedComparatorValue = new MutableInt(-1);
 
 	public PoweredMultiblockBlockEntity(IETemplateMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
 										BlockEntityType<? extends T> type, BlockPos pos, BlockState state)
@@ -191,10 +193,14 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	{
 		if(!this.isRedstonePos())
 			return 0;
-		PoweredMultiblockBlockEntity master = master();
+		PoweredMultiblockBlockEntity<?, ?> master = master();
 		if(master==null)
 			return 0;
-		return Utils.calcRedstoneFromInventory(master);
+		return master.getComparatorValueOnMaster();
+	}
+
+	protected int getComparatorValueOnMaster() {
+		return Utils.calcRedstoneFromInventory(this);
 	}
 
 	//	=================================
@@ -226,7 +232,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			if(process.clearProcess)
 				processIterator.remove();
 		}
-
+		updateComparators(this, getRedstonePos(), cachedComparatorValue, getComparatorValueOnMaster());
 	}
 
 	@Nullable
