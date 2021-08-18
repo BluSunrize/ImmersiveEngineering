@@ -217,7 +217,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 				if(showCompleted&&renderProperties.canRenderFormedStructure())
 				{
 					transform.pushPose();
-					renderProperties.renderFormedStructure(transform, IERenderTypes.disableLighting(buffer));
+					renderProperties.renderFormedStructure(transform, buffer);
 					transform.popPose();
 				}
 				else

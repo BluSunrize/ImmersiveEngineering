@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.SiloBlockEntity;
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -53,8 +53,9 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 				matrixStack.pushPose();
 				matrixStack.scale(itemScale/baseScale, itemScale/baseScale, flatScale);
 				matrixStack.translate(0, -0.75, 0);
+				RenderSystem.setShaderLights(new Vector3f(0, -1, 0), new Vector3f(0, 0, 1));
 				ClientUtils.mc().getItemRenderer().renderStatic(
-						stack, TransformType.GUI, combinedLightIn, combinedOverlayIn, matrixStack, IERenderTypes.disableLighting(bufferIn), 0
+						stack, TransformType.GUI, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0
 				);
 				matrixStack.popPose();
 

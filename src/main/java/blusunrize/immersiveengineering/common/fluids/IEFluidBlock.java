@@ -57,8 +57,8 @@ public class IEFluidBlock extends LiquidBlock
 	public FluidState getFluidState(@Nonnull BlockState state)
 	{
 		FluidState baseState = super.getFluidState(state);
-		for(Property<?> prop : getFluid().getStateDefinition().getProperties())
-			if(prop!=LiquidBlock.LEVEL)
+		for(Property<?> prop : baseState.getProperties())
+			if(state.hasProperty(prop))
 				baseState = withCopiedValue(prop, baseState, state);
 		return baseState;
 	}

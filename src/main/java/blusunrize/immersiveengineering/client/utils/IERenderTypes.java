@@ -304,18 +304,6 @@ public class IERenderTypes extends RenderStateShard
 		);
 	}
 
-	@Deprecated
-	//TODO remove all usages, this is completely broken and unfixable (in general) in 1.17
-	public static MultiBufferSource disableLighting(MultiBufferSource in)
-	{
-		return wrapWithAdditional(
-				in,
-				"no_lighting",
-				() -> Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer(),
-				() -> Minecraft.getInstance().gameRenderer.lightTexture().turnOnLightLayer()
-		);
-	}
-
 	/**
 	 * Only use with shaders using minecraft_sample_lightmap, not with minecraft_mix_light!
 	 */
