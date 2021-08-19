@@ -1,4 +1,4 @@
-##### Version 1.16.5-5.0.2-pre
+##### Version 1.16.5-5.0.3-138
 - Add Nether Fungi to the sawmill's recipes (BluSunrize)
 - Change Engineer's Workbench, Circuit Table and Crafting Table to be waterloggable (Malte)
 - Change Transformers to make attaching wires easier (Malte)
@@ -6,6 +6,7 @@
 - Fix crash with empty ingredients in JEI (Malte)
 - Fix shaders not working on minecarts (Malte)
 - Fix table rendering in the manual (Malte)
+- Fix comparator updates on multiblocks (Malte)
 - Various performance improvements, crash protection and logging (Malte)
 - Translations Added/Updated: es_* (docanuto)
 
