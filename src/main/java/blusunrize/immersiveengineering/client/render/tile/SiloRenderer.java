@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.SiloBlockEntity;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -32,6 +33,10 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 
 		if(!tile.identStack.isEmpty())
 		{
+			// TODO this is a hack, item lighting vectors are global per batch and we need our own ones
+			if(bufferIn instanceof MultiBufferSource.BufferSource realSource)
+				realSource.endBatch();
+			RenderSystem.setShaderLights(new Vector3f(0, -1, 0), new Vector3f(0, 0, 1));
 			matrixStack.translate(0, 5, 0);
 			float baseScale = .0625f;
 			float itemScale = .5f;
@@ -53,7 +58,6 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 				matrixStack.pushPose();
 				matrixStack.scale(itemScale/baseScale, itemScale/baseScale, flatScale);
 				matrixStack.translate(0, -0.75, 0);
-				RenderSystem.setShaderLights(new Vector3f(0, -1, 0), new Vector3f(0, 0, 1));
 				ClientUtils.mc().getItemRenderer().renderStatic(
 						stack, TransformType.GUI, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0
 				);
@@ -78,6 +82,10 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 				matrixStack.popPose();
 				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			}
+			// TODO this is a hack, item lighting vectors are global per batch and we need our own ones
+			if(bufferIn instanceof MultiBufferSource.BufferSource realSource)
+				realSource.endBatch();
+			Lighting.setupFor3DItems();
 		}
 		matrixStack.popPose();
 	}
