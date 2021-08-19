@@ -51,17 +51,16 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 	public void onCollided(LivingEntity e, BlockPos pos, CollisionInfo info)
 	{
 		WireType wType = info.conn.type;
-		if(!(wType instanceof IShockingWire))
+		if(!(wType instanceof IShockingWire shockWire))
 			return;
 		EnergyTransferHandler energyHandler = getEnergyHandler();
 		if(energyHandler==null)
 			return;
-		IShockingWire shockWire = (IShockingWire)wType;
 		double extra = shockWire.getDamageRadius();
 		AABB eAabb = e.getBoundingBox();
 		AABB includingExtra = eAabb.inflate(extra).move(-pos.getX(), -pos.getY(), -pos.getZ());
 		boolean collides = includingExtra.contains(info.intersectA)||includingExtra.contains(info.intersectB);
-		if(!collides&&!includingExtra.clip(info.intersectA, info.intersectB).isPresent())
+		if(!collides&&includingExtra.clip(info.intersectA, info.intersectB).isEmpty())
 			return;
 		final ConnectionPoint target = info.conn.getEndA();//TODO less random choice?
 		final List<SourceData> available = getAvailableEnergy(energyHandler, target);
@@ -107,25 +106,13 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 				paths = energyHandler.getPathsFromSource(target);
 			final Path path = paths.get(c.getKey());
 			if(path!=null)
-				ret.add(new SourceData(energy, path, c.getValue(), c.getKey()));
+				ret.add(new SourceData(energy, path, c.getValue()));
 		}
 		return ret;
 	}
 
-	private static class SourceData
+	private record SourceData(int amountAvailable, Path pathToSource, EnergyConnector source)
 	{
-		private final int amountAvailable;
-		private final Path pathToSource;
-		private final EnergyConnector source;
-		private final ConnectionPoint point;
-
-		public SourceData(int amount, Path path, EnergyConnector source, ConnectionPoint point)
-		{
-			this.amountAvailable = amount;
-			this.pathToSource = path;
-			this.source = source;
-			this.point = point;
-		}
 	}
 
 	private EnergyTransferHandler getEnergyHandler()
