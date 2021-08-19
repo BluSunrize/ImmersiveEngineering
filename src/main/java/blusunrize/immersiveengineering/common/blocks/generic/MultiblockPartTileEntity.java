@@ -309,7 +309,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 		T master = master();
 		if(master!=null)
 		{
-			master.markDirty();
+			master.markChunkDirty();
 			if(blockUpdate)
 				master.markContainingBlockForUpdate(state);
 		}
