@@ -1,0 +1,14 @@
+광석
+땅파자 땅파
+<&copper>§l구리 광석e§r은 높이 <config;i;ores.copper.max_y> 에서부터 <config;i;ores.copper.min_y> 사이에서 발견되며 최소 돌 곡괭이가 있어야 캘 수 있습니다.
+기본 구리 전선, 코일 및 IE 구조물들의 기타 필수 부품을 만드는 데 사용되는 구리괴로 제련됩니다.
+<&alu>§l보크사이트 광석§r은 높이 <config;i;ores.bauxite.max_y> 에서부터 <config;i;ores.bauxite.min_y> 사이에서 발견되며 최소 돌 곡괭이가 있어야 캘 수 있습니다.
+강철과 함께 고전압 전선을 만드는 데 사용되는 알루미늄괴로 제련됩니다.
+<&lead>§l납 광석§r은 높이 <config;i;ores.lead.max_y> 에서부터 <config;i;ores.lead.min_y> 사이에서 발견되며 최소 철 곡괭이가 있어야 캘 수 있습니다.
+축전지를 만드는 데 사용되는 연괴로 제련됩니다.
+<&silver>§l은 광석§r은 높이 <config;i;ores.silver.max_y> 에서부터 <config;i;ores.silver.min_y> 사이에서 발견되며 최소 철 곡괭이가 있어야 캘 수 있습니다.
+제련하여 은괴를 만들고 금괴과 합금하여 훨씬 더 효과적인 전도체인 일렉트럼을 제작할 수 있습니다.
+<&nickel>§l니켈 광석§r은 높이 <config;i;ores.nickel.max_y> 에서부터 <config;i;ores.nickel.min_y> 사이에서 발견되며 최소 철 곡괭이가 있어야 캘 수 있습니다.
+제련하여 니켈괴로 만들고 구리괴와 합금하여 <link;thermoelectric;열전기 발전기;start>를 만드는데 사용되는 내열성 전도체인 콘스탄탄을 제작할 수 있습니다.
+<&uranium>§l우라늄 광석§r은 높이 <config;i;ores.uranium.max_y> 에서브터 <config;i;ores.uranium.min_y> 사이에서 발견되며 최소 철 곡괭이가 있어야 캘 수 있습니다.
+제련되어 우라늄괴로 만들어 낼 수 있지만 현재 금속의 용도는 많지 않습니다. 우라늄 블록은 <link;thermoelectric;열전기 발전기;start>의 열원으로 사용될 수 있으며 향후 사용처가 생길지도 모릅니다.
