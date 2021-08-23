@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -20,9 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 
 import javax.annotation.Nullable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Supplier;
 
 public class BasicClientProperties implements MultiblockManualData
@@ -33,16 +32,25 @@ public class BasicClientProperties implements MultiblockManualData
 	@Nullable
 	private NonNullList<ItemStack> materials;
 	private final Supplier<DynamicModel> model;
+	private final Optional<Quaternion> rotation;
 
 	public BasicClientProperties(IETemplateMultiblock multiblock)
 	{
+		this(multiblock, OptionalDouble.empty());
+	}
+
+	public BasicClientProperties(IETemplateMultiblock multiblock, OptionalDouble yRotationRadians)
+	{
 		this.multiblock = multiblock;
 		this.model = Suppliers.memoize(() -> MODELS.get(multiblock.getUniqueName()));
+		this.rotation = yRotationRadians.stream()
+				.mapToObj(r -> new Quaternion(0, (float)r, 0, false))
+				.findAny();
 	}
 
 	public static void initModels()
 	{
-		for (IMultiblock mb : IEMultiblocks.IE_MULTIBLOCKS)
+		for(IMultiblock mb : IEMultiblocks.IE_MULTIBLOCKS)
 			if (mb instanceof IETemplateMultiblock ieMB)
 				MODELS.put(mb.getUniqueName(), new DynamicModel(ieMB.getBlockName().getPath()));
 	}
@@ -78,6 +86,12 @@ public class BasicClientProperties implements MultiblockManualData
 		transform.pushPose();
 		BlockPos offset = multiblock.getMasterFromOriginOffset();
 		transform.translate(offset.getX(), offset.getY(), offset.getZ());
+		if(rotation.isPresent())
+		{
+			transform.translate(0.5, 0, 0.5);
+			transform.mulPose(rotation.get());
+			transform.translate(-0.5, 0, -0.5);
+		}
 		List<BakedQuad> nullQuads = model.get().getNullQuads();
 		VertexConsumer buffer = bufferSource.getBuffer(IERenderTypes.TRANSLUCENT_FULLBRIGHT);
 		nullQuads.forEach(quad -> buffer.putBulkData(

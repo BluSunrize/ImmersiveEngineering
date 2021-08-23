@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
+import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.IELogger;
@@ -17,10 +19,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+
+import java.util.OptionalDouble;
+import java.util.function.Consumer;
 
 public class MetalPressMultiblock extends IETemplateMultiblock
 {
@@ -72,9 +78,8 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 			state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		world.setBlockAndUpdate(actualPos, state);
 		BlockEntity curr = world.getBlockEntity(actualPos);
-		if(curr instanceof MetalPressBlockEntity)
+		if(curr instanceof MetalPressBlockEntity tile)
 		{
-			MetalPressBlockEntity tile = (MetalPressBlockEntity)curr;
 			tile.formed = true;
 			tile.offsetToMaster = new BlockPos(offsetFromMaster);
 			tile.posInMultiblock = info.pos;
@@ -84,5 +89,11 @@ public class MetalPressMultiblock extends IETemplateMultiblock
 		}
 		else
 			IELogger.logger.error("Expected metal press TE at {} during placement", actualPos);
+	}
+
+	@Override
+	public void initializeClient(Consumer<MultiblockManualData> consumer)
+	{
+		consumer.accept(new BasicClientProperties(this, OptionalDouble.of(-Mth.HALF_PI)));
 	}
 }

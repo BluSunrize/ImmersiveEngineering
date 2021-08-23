@@ -65,8 +65,8 @@ public class IEDamageSources
 		@Override
 		public boolean apply(Entity e)
 		{
-			if(e instanceof LivingEntity)
-				IElectricEquipment.applyToEntity((LivingEntity)e, this, source);
+			if(e instanceof LivingEntity living)
+				IElectricEquipment.applyToEntity(living, this, source);
 			if(dmg > 0)
 				e.hurt(this, dmg);
 			return dmg > 0;

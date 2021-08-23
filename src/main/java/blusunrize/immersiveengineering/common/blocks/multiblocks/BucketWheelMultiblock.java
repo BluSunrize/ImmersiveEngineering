@@ -9,9 +9,15 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
+import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+
+import java.util.OptionalDouble;
+import java.util.function.Consumer;
 
 public class BucketWheelMultiblock extends IETemplateMultiblock
 {
@@ -26,5 +32,11 @@ public class BucketWheelMultiblock extends IETemplateMultiblock
 	public float getManualScale()
 	{
 		return 12;
+	}
+
+	@Override
+	public void initializeClient(Consumer<MultiblockManualData> consumer)
+	{
+		consumer.accept(new BasicClientProperties(this, OptionalDouble.of(-Mth.HALF_PI)));
 	}
 }

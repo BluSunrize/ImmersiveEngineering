@@ -43,7 +43,7 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.end();
 		getBuilder(BottlingMachineRenderer.NAME)
 				.customLoader(IEOBJBuilder::begin)
-				.modelLocation(rl("models/block/metal_multiblock/bottling_machine_animated.obj.ie"))
+				.modelLocation(rl("models/block/metal_multiblock/bottling_machine.obj.ie"))
 				.flipV(true)
 				.end();
 		getBuilder(BucketWheelRenderer.NAME)
