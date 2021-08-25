@@ -1,6 +1,3 @@
 {
-  "parent": "immersiveengineering:block/metal_multiblock/bottling_machine_split",
-  "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine.obj.ie",
-  "flip-v": true
+  "parent": "immersiveengineering:block/metal_multiblock/bottling_machine_split"
 }

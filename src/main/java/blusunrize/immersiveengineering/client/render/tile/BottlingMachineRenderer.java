@@ -39,7 +39,7 @@ import java.util.List;
 
 public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachineBlockEntity>
 {
-	public static final String NAME = "bottling_machine";
+	public static final String NAME = "bottling_machine_dynamic";
 	public static DynamicModel DYNAMIC;
 
 	@Override
