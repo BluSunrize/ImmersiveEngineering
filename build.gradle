@@ -12,8 +12,7 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
-        //TODO re-enable mixin
-        //classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -226,8 +225,8 @@ dependencies {
 
     library "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13.2')
-    //annotationProcessor 'org.spongepowered:mixin:0.8.4-SNAPSHOT:processor'
     library 'org.spongepowered:mixin:0.8.4-SNAPSHOT'
+    annotationProcessor 'org.spongepowered:mixin:0.8.4-SNAPSHOT:processor'
     //TODO remove once Mixins are in Forge
     library "com.google.guava:guava:21.0"
 }
@@ -539,11 +538,11 @@ task updateJson(type: GenerateUpdateJSON)
 
 processResources.dependsOn updateJson
 
-//apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'org.spongepowered.mixin'
 
-//mixin {
-//    add sourceSets.main, "${modid}.refmap.json"
-//}
+mixin {
+    add sourceSets.main, "${modid}.refmap.json"
+}
 
 // Prevent Mixin annotation processor from getting into IDEA's annotation processor settings
 // Copied from Botania

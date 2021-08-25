@@ -35,9 +35,7 @@ public class GuiButtonItem extends Button
 		{
 			ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
 			this.isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
-			RenderSystem.enableBlend();
-			RenderSystem.blendFuncSeparate(770, 771, 1, 0);
-			RenderSystem.blendFunc(770, 771);
+			RenderSystem.defaultBlendFunc();
 			this.blit(transform, x, y, 24+(state?18: 0), 128, width, height);
 			//TODO this.mouseDragged(mc, mouseX, mouseY);
 
@@ -49,7 +47,7 @@ public class GuiButtonItem extends Button
 				if(!state)
 				{
 					RenderSystem.disableDepthTest();
-					fill(transform, x+1, y+1, x+17, x+17, 0x77444444);
+					fill(transform, x+1, y+1, x+17, y+17, 0x77444444);
 					RenderSystem.enableDepthTest();
 				}
 			}
