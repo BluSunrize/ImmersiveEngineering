@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.utils.UnionMBManualData;
@@ -143,7 +144,7 @@ public class UnionMultiblock implements IMultiblock
 	@Override
 	public void initializeClient(Consumer<MultiblockManualData> consumer)
 	{
-		consumer.accept(new UnionMBManualData(parts));
+		consumer.accept(new UnionMBManualData(parts, getMin(ImmersiveEngineering.proxy.getClientWorld())));
 	}
 
 	@Override
