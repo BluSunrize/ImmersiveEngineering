@@ -10,15 +10,12 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.SiloBlockEntity;
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 {
@@ -33,19 +30,14 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 
 		if(!tile.identStack.isEmpty())
 		{
-			// TODO this is a hack, item lighting vectors are global per batch and we need our own ones
-			if(bufferIn instanceof MultiBufferSource.BufferSource realSource)
-				realSource.endBatch();
-			RenderSystem.setShaderLights(new Vector3f(0, -1, 0), new Vector3f(0, 0, 1));
 			matrixStack.translate(0, 5, 0);
 			float baseScale = .0625f;
 			float itemScale = .5f;
 			float flatScale = .001f;
 			float textScale = .375f*0.75f;
 			matrixStack.scale(baseScale, baseScale, baseScale);
-			ItemStack stack = ItemHandlerHelper.copyStackWithSize(tile.identStack, tile.storageAmount);
-			String s = ""+stack.getCount();
-			float w = ClientUtils.mc().font.width(s);
+			String label = ""+tile.storageAmount;
+			float w = ClientUtils.mc().font.width(label);
 
 			float zz = 1.501f;
 			zz /= baseScale;
@@ -56,10 +48,13 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 				matrixStack.translate(0, 0, zz);
 
 				matrixStack.pushPose();
-				matrixStack.scale(itemScale/baseScale, itemScale/baseScale, flatScale);
+				// Do not multiply the normal matrix here, it messes up lighting for some reason
+				matrixStack.last().pose().multiply(
+						Matrix4f.createScaleMatrix(itemScale/baseScale, itemScale/baseScale, flatScale)
+				);
 				matrixStack.translate(0, -0.75, 0);
 				ClientUtils.mc().getItemRenderer().renderStatic(
-						stack, TransformType.GUI, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0
+						tile.identStack, TransformType.GUI, combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0
 				);
 				matrixStack.popPose();
 
@@ -67,25 +62,13 @@ public class SiloRenderer extends IEBlockEntityRenderer<SiloBlockEntity>
 				matrixStack.translate(-w/2, -11, .001f);
 				matrixStack.scale(textScale, -textScale, 1);
 				ClientUtils.font().drawInBatch(
-						""+stack.getCount(),
-						0, 0,
-						0x888888,
-						true,
-						matrixStack.last().pose(),
-						bufferIn,
-						false,
-						0,
-						combinedLightIn
+						label, 0, 0, 0x888888, true, matrixStack.last().pose(), bufferIn, false, 0, combinedLightIn
 				);
 				matrixStack.popPose();
 
 				matrixStack.popPose();
 				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			}
-			// TODO this is a hack, item lighting vectors are global per batch and we need our own ones
-			if(bufferIn instanceof MultiBufferSource.BufferSource realSource)
-				realSource.endBatch();
-			Lighting.setupFor3DItems();
 		}
 		matrixStack.popPose();
 	}
