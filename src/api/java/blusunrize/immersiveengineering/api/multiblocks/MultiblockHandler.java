@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.Multibl
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -98,6 +99,8 @@ public class MultiblockHandler
 		BlockPos getTriggerOffset();
 
 		void initializeClient(Consumer<MultiblockManualData> consumer);
+
+		Component getDisplayName();
 	}
 
 	public static MultiblockFormEvent postMultiblockFormationEvent(Player player, IMultiblock multiblock, BlockPos clickedBlock, ItemStack hammer)

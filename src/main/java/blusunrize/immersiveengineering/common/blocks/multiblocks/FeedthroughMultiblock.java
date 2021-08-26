@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -209,5 +210,11 @@ public class FeedthroughMultiblock implements IMultiblock
 			return feedthrough;
 		}
 		return null;
+	}
+
+	@Override
+	public Component getDisplayName()
+	{
+		return Connectors.feedthrough.get().getName();
 	}
 }

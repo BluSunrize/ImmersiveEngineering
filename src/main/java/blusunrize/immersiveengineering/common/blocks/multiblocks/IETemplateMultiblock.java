@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -117,7 +118,14 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		consumer.accept(new BasicClientProperties(this));
 	}
 
-	public ResourceLocation getBlockName() {
+	public ResourceLocation getBlockName()
+	{
 		return baseState.getId();
+	}
+
+	@Override
+	public Component getDisplayName()
+	{
+		return baseState.get().getName();
 	}
 }

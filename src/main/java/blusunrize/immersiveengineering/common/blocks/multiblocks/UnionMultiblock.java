@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.client.utils.UnionMBManualData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -28,16 +30,24 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public class UnionMultiblock implements IMultiblock
 {
 	private final ResourceLocation name;
 	private final List<TransformedMultiblock> parts;
+	private final Supplier<Component> displayName;
 
 	public UnionMultiblock(ResourceLocation name, List<TransformedMultiblock> parts)
 	{
 		this.name = name;
 		this.parts = parts;
+		this.displayName = () -> parts.stream()
+				.map(TransformedMultiblock::multiblock)
+				.map(IMultiblock::getDisplayName)
+				.map(Component::copy)
+				.reduce((c1, c2) -> c1.append(", ").append(c2))
+				.orElse(TextComponent.EMPTY.copy());
 	}
 
 	@Override
@@ -134,6 +144,12 @@ public class UnionMultiblock implements IMultiblock
 	public void initializeClient(Consumer<MultiblockManualData> consumer)
 	{
 		consumer.accept(new UnionMBManualData(parts));
+	}
+
+	@Override
+	public Component getDisplayName()
+	{
+		return displayName.get();
 	}
 
 	public record TransformedMultiblock(IMultiblock multiblock, Vec3i offset, Rotation rotation)
