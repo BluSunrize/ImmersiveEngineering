@@ -88,7 +88,7 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -166,6 +166,16 @@ public class IEContent
 		populateAPI();
 	}
 
+	@SubscribeEvent
+	public static void registerCaps(RegisterCapabilitiesEvent ev)
+	{
+		ev.register(ShaderWrapper.class);
+		ev.register(GlobalWireNetwork.class);
+		ev.register(SkyhookUserData.class);
+		ev.register(RedstoneBundleConnection.class);
+		ev.register(IExternalHeatable.class);
+	}
+
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public static void registerItems(RegistryEvent.Register<Item> event)
 	{
@@ -193,11 +203,6 @@ public class IEContent
 				}
 		);
 
-		CapabilityManager.INSTANCE.register(ShaderWrapper.class);
-		CapabilityManager.INSTANCE.register(GlobalWireNetwork.class);
-		CapabilityManager.INSTANCE.register(SkyhookUserData.class);
-		CapabilityManager.INSTANCE.register(RedstoneBundleConnection.class);
-		CapabilityManager.INSTANCE.register(IExternalHeatable.class);
 		ShaderRegistry.itemShader = IEItems.Misc.shader.get();
 		ShaderRegistry.itemShaderBag = IEItems.Misc.shaderBag;
 		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.revolver));

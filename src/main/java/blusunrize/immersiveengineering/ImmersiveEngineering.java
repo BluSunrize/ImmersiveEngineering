@@ -139,7 +139,7 @@ public class ImmersiveEngineering
 		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC.getBaseSpec());
 		DeferredWorkQueue queue = DeferredWorkQueue.lookup(Optional.of(ModLoadingStage.CONSTRUCT)).orElseThrow();
 		Consumer<Runnable> runLater = job -> queue.enqueueWork(
-				ModLoadingContext.get().getActiveContainer().getModInfo(), job
+				ModLoadingContext.get().getActiveContainer(), job
 		);
 		IEContent.modConstruction(runLater);
 		DistExecutor.safeRunWhenOn(Dist.CLIENT, bootstrapErrorToXCPInDev(() -> ClientProxy::modConstruction));
