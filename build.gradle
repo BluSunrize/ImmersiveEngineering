@@ -19,7 +19,6 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
 apply plugin: 'com.github.johnrengelman.shadow'
 
 version = buildVersionString()
@@ -375,45 +374,49 @@ jar {
     }
 }
 
-/* TODO get sky or someone elese who knows things to fix this!
-apply plugin: 'maven'
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven")))
-            pom {
-                groupId = project.group
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name project.archivesBaseName
-                    packaging 'jar'
-                    description project.archivesBaseName
-                    url ''
-                    scm {
-                        url 'https://github.com/BluSunrize/ImmersiveEngineering'
-                        connection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
-                        developerConnection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
-                    }
-                    issueManagement {
-                        system 'github'
-                        url 'https://github.com/BluSunrize/ImmersiveEngineering/issues'
-                    }
+apply plugin: 'maven-publish'
 
-                    developers {
-                        developer {
-                            id 'BluSunrize'
-                            name 'BluSunrize'
-                            roles { role 'developer' }
-                        }
+publishing {
+    /*repositories {
+        maven {
+            url = "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven"))
+        }
+    }*/
+    publications {
+        maven(MavenPublication) {
+            groupId = project.group
+            version = project.version
+            artifactId = project.archivesBaseName
+
+            artifact sourcesJar
+            artifact shadowJar
+            artifact datagenJar
+            artifact apiJar
+
+            pom {
+                name = project.archivesBaseName
+                description = project.archivesBaseName
+                url = 'https://www.curseforge.com/minecraft/mc-mods/immersive-engineering'
+                scm {
+                    url = 'https://github.com/BluSunrize/ImmersiveEngineering'
+                    connection = 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
+                    developerConnection = 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
+                }
+                issueManagement {
+                    system = 'github'
+                    url = 'https://github.com/BluSunrize/ImmersiveEngineering/issues'
+                }
+
+                developers {
+                    developer {
+                        id = 'BluSunrize'
+                        name = 'BluSunrize'
                     }
                 }
             }
         }
     }
 }
-uploadArchives.dependsOn build
-*/
 
 //Code for automatic update JSON generation
 class GenerateUpdateJSON extends DefaultTask {
