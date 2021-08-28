@@ -10,7 +10,9 @@
       "term": {
         "condition": "minecraft:match_tool",
         "predicate": {
-          "item": "minecraft:shears"
+          "items": [
+            "minecraft:shears"
+          ]
         }
       }
     },
