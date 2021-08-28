@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
+import blusunrize.immersiveengineering.data.resources.RecipeMetals;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -64,6 +65,10 @@ class IEItemTags extends ItemTagsProvider
 			tag(tags.dust).add(Metals.dusts.get(metal).get());
 			tag(Tags.Items.DUSTS).addTag(tags.dust);
 		}
+		//TODO Forge#7891
+		tag(RecipeMetals.COPPER.getRawOre()).add(Items.RAW_COPPER);
+		tag(RecipeMetals.IRON.getRawOre()).add(Items.RAW_IRON);
+		tag(RecipeMetals.GOLD.getRawOre()).add(Items.RAW_GOLD);
 
 		tag(IETags.clay).add(Items.CLAY_BALL);
 		tag(IETags.charCoal).add(Items.CHARCOAL);

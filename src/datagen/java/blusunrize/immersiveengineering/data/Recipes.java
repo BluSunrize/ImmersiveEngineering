@@ -95,8 +95,8 @@ public class Recipes extends RecipeProvider
 	private final Path ADV_ROOT;
 	private final HashMap<String, Integer> PATH_COUNT = new HashMap<>();
 
-	private final int standardSmeltingTime = 200;
-	private final int blastDivider = 2;
+	private static final int standardSmeltingTime = 200;
+	private static final int blastDivider = 2;
 
 	public Recipes(DataGenerator gen)
 	{
@@ -510,7 +510,6 @@ public class Recipes extends RecipeProvider
 	private void recipesMultiblockMachines(@Nonnull Consumer<FinishedRecipe> out)
 	{
 		HammerCrushingRecipeBuilder hammerBuilder;
-		CrusherRecipeBuilder crusherBuilder;
 		ArcFurnaceRecipeBuilder arcBuilder;
 		MetalPressRecipeBuilder pressBuilder;
 		AlloyRecipeBuilder alloyBuilder;
@@ -531,15 +530,25 @@ public class Recipes extends RecipeProvider
 						.build(out, toRL("crafting/hammercrushing_"+metal.getName()));
 
 				// Crush ore
-				crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 2);
+				CrusherRecipeBuilder oreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 2);
 				if(!metal.isNative())
-					crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getOre()));
+					oreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getOre()));
 				if(secondaryOutputs!=null)
 					for(SecondaryOutput secondaryOutput : secondaryOutputs)
-						crusherBuilder.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance(), secondaryOutput.getConditions());
-				crusherBuilder.addInput(metal.getOre())
+						oreCrushing.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance(), secondaryOutput.getConditions());
+				oreCrushing.addInput(metal.getOre())
 						.setEnergy(6000)
 						.build(out, toRL("crusher/ore_"+metal.getName()));
+
+				CrusherRecipeBuilder rawOreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 1);
+				//TODO re-add once we have raw ores for our own ores
+				//if(!metal.isNative())
+				rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getRawOre()));
+				//TODO "interesting" secondary outputs (gold from copper etc) for raw ore crushing?
+				rawOreCrushing.addSecondary(metal.getDust(), 1/3f)
+						.addInput(metal.getRawOre())
+						.setEnergy(6000)
+						.build(out, toRL("crusher/raw_ore_"+metal.getName()));
 
 				// Arcfurnace ore
 				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 2);
@@ -553,10 +562,10 @@ public class Recipes extends RecipeProvider
 			}
 
 			// Crush ingot
-			crusherBuilder = CrusherRecipeBuilder.builder(metal.getDust(), 1);
+			CrusherRecipeBuilder ingotCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 1);
 			if(!metal.isNative())
-				crusherBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getIngot()));
-			crusherBuilder.addInput(metal.getIngot())
+				ingotCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getIngot()));
+			ingotCrushing.addInput(metal.getIngot())
 					.setEnergy(3000)
 					.build(out, toRL("crusher/ingot_"+metal.getName()));
 
@@ -642,13 +651,13 @@ public class Recipes extends RecipeProvider
 		for(RecipeOres ore : RecipeOres.values())
 		{
 			SecondaryOutput[] secondaryOutputs = ore.getSecondaryOutputs();
-			crusherBuilder = CrusherRecipeBuilder.builder(ore.getOutput());
+			CrusherRecipeBuilder oreCrushing = CrusherRecipeBuilder.builder(ore.getOutput());
 			if(!ore.isNative())
-				crusherBuilder.addCondition(getTagCondition(ore.getOre()));
+				oreCrushing.addCondition(getTagCondition(ore.getOre()));
 			if(secondaryOutputs!=null)
 				for(SecondaryOutput secondaryOutput : secondaryOutputs)
-					crusherBuilder.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance(), secondaryOutput.getConditions());
-			crusherBuilder.addInput(ore.getOre())
+					oreCrushing.addSecondary(secondaryOutput.getItem(), secondaryOutput.getChance(), secondaryOutput.getConditions());
+			oreCrushing.addInput(ore.getOre())
 					.setEnergy(6000)
 					.build(out, toRL("crusher/ore_"+ore.getName()));
 		}

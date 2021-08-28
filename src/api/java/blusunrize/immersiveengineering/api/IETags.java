@@ -175,6 +175,11 @@ public class IETags
 		return forgeLoc("ores/"+type);
 	}
 
+	public static ResourceLocation getRawOre(String type)
+	{
+		return forgeLoc("raw_ores/"+type);
+	}
+
 	public static ResourceLocation getNugget(String type)
 	{
 		return forgeLoc("nuggets/"+type);
