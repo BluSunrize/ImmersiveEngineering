@@ -1,7 +1,5 @@
 Ores
 Diggy diggy hole
-<&copper>§lCopper Ore§r is found in the world between layers <config;i;ores.copper.min_y> and <config;i;ores.copper.max_y>, and requires a Stone Pickaxe to harvest.
-The ore will smelt into copper ingots, which are used in crafting basic copper wires, coils, and other integral parts of the IE architecture.
 <&alu>§lBauxite Ore§r is found in the world between layers <config;i;ores.bauxite.min_y> and <config;i;ores.bauxite.max_y>, and requires a Stone Pickaxe to harvest.
 The ore will smelt into aluminium ingots, which, together with steel, are used to create high-voltage wires.
 <&lead>§lLead Ore§r is found in the world between layers <config;i;ores.lead.min_y> and <config;i;ores.lead.max_y>, and requires an Iron Pickaxe to harvest.

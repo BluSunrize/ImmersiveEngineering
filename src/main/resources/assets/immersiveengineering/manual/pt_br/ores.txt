@@ -1,7 +1,5 @@
 Minérios
 Escavando buraco
-<&copper>O §lMinério de Cobre§r é encontrado no mundo entre as camadas <config;i;ores.copper.min_y> e <config;i;ores.copper.max_y>, e requer uma picareta de pedra para coletar.
-O minério será fundido em barras de cobre, que são usados na elaboração de fios básicos de cobre, bobinas e outras partes integrantes da arquitetura do IE.
 <&alu>O §lMinério de Bauxita§R é encontrado no mundo entre camadas <config;i;ores.bauxite.min_y> e <config;i;ores.bauxite.max_y>, e requer uma picareta de pedra para coletar.
 O minério se transformará em barras de alumínio que, junto com o aço, são usados para criar fios de alta tensão.
 <&lead>§O §lMinério de Chumbo§r é encontrado no mundo entre as camadas <config;i;ores.lead.min_y> e <config;i;ores.lead.max_y>, e requer uma picareta de ferro para coletar.

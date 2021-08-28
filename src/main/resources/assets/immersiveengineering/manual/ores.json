@@ -1,15 +1,4 @@
 {
-  "copper": {
-    "type": "item_display",
-    "items": [
-      {
-        "item": "immersiveengineering:ore_copper"
-      },
-      {
-        "item": "immersiveengineering:ingot_copper"
-      }
-    ]
-  },
   "alu": {
     "type": "item_display",
     "items": [

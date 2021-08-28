@@ -1,7 +1,5 @@
 §lMinerales§r
 §oCavando pozos§r
-<&copper>La §lmena de cobre§r se encuentra en el mundo entre las capas <config;i;ores.copper.min_y> y <config;i;ores.copper.max_y>, y requiere un §lpico de piedra§r para su recolección.
-El mineral se fundirá en §llingotes de cobre§r, que se utilizan en la elaboración de §lcables de baja tensión§r, §lbobinas§r y otras partes integrales de la arquitectura de IE.
 <&alu>La §lmena de bauxita§r se encuentra en el mundo entre las capas <config;i;ores.bauxite.min_y> y <config;i;ores.bauxite.max_y>, y requiere un §lpico de piedra§r para su recolección.
 El mineral se funde en §llingotes de aluminio§r que, junto con el §lacero§r, se utilizan para crear §lcables de alta tensión§r.
 <&lead>La §lmena de plomo§r se encuentra en el mundo entre las capas <config;i;ores.lead.min_y> y <config;i;ores.lead.max_y>, y requiere un §lpico de hierro§r para su recolección.

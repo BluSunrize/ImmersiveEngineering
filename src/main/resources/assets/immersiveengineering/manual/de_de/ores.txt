@@ -1,7 +1,5 @@
 Erze
 Grabe grabe Loch
-<&copper>§lKupfererz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.copper.min_y> und <config;i;ores.copper.max_y> und benötigt zum Abbau eine Steinspitzhacke.
-Das Erz schmilzt zu Kupferbarren, die zur Herstellung grundlegender Kupferkabel, Spulen und anderer integraler Bestandteile der IE-Architektur verwendet werden.
 <&alu>§lBauxiterz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.bauxite.min_y> und <config;i;ores.bauxite.max_y> und benötigt zum Abbau eine Steinspitzhacke.
 Das Erz schmilzt zu Aluminiumbarren, aus denen zusammen mit Stahl Hochspannungskabel hergestellt werden.
 <&lead>§lBleierz§r befindet sich in der Welt zwischen den Schichten <config;i;ores.lead.min_y> und <config;i;ores.lead.max_y> und benötigt zum Abbau eine Eisenspitzhacke.

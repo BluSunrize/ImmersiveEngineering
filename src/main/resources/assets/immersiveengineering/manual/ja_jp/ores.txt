@@ -1,12 +1,5 @@
 鉱石
 掘る,掘る,ホール(Diggy diggy hole)
-<&copper>§l銅鉱石§rは、ワールド内において<config;i;ores.copper.min_y>から<config;i;ores.copper.max_y>の範囲に産出します。採掘には石のツルハシを用い
-ます。
-この鉱石を精錬すると、銅
-インゴットが得られます。
-IEの基本となるワイヤーや
-コイルなどの、様々な装置の
-部品として不可欠な材料です。<np>
 <&alu>§lボーキサイト鉱石§rは、
 ワールド内において<config;i;ores.bauxite.min_y>から<config;i;ores.bauxite.max_y>
 の範囲で見つかり、採掘には
