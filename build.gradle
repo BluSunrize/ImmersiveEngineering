@@ -218,7 +218,7 @@ dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
     //TODO update as necessary
-    //compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
+    compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.0.0.14:api")
     //compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:1.94.0")
     //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
     //compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
