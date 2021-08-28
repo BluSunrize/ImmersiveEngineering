@@ -22,8 +22,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.core.config.Configurator;
 
 import java.util.HashMap;
 import java.util.List;
@@ -85,12 +83,7 @@ public class IECommonConfig
 	{
 		if(CONFIG_SPEC.reloadIfMatched(ev, Type.COMMON))
 		{
-			Level wireLoggerLevel;
-			if(enableWireLogger.get())
-				wireLoggerLevel = Level.ALL;
-			else
-				wireLoggerLevel = Level.WARN;
-			Configurator.setLevel(WireLogger.logger.getName(), wireLoggerLevel);
+			WireLogger.logger.setEnabled(enableWireLogger.get());
 			IEApi.modPreference = preferredOres.get();
 		}
 	}

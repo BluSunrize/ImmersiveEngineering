@@ -9,17 +9,10 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.Lib;
-import org.apache.logging.log4j.Level;
+import blusunrize.immersiveengineering.api.utils.GatedLogger;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.config.Configurator;
 
 public class WireLogger
 {
-	public static Logger logger = LogManager.getLogger(Lib.MODID+"-wires");
-
-	static
-	{
-		Configurator.setLevel(logger.getName(), Level.WARN);
-	}
+	public static GatedLogger logger = new GatedLogger(LogManager.getLogger(Lib.MODID+"-wires"), false);
 }
