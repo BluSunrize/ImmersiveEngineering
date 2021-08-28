@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "blusunrize.immersiveengineering.mixin",
-  "compatibilityLevel": "JAVA_8",
+  "compatibilityLevel": "JAVA_16",
   "refmap": "immersiveengineering.refmap.json",
   "mixins": [
     "accessors.BETypeAccess",

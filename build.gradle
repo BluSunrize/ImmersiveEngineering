@@ -377,11 +377,11 @@ jar {
 apply plugin: 'maven-publish'
 
 publishing {
-    /*repositories {
+    repositories {
         maven {
             url = "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven"))
         }
-    }*/
+    }
     publications {
         maven(MavenPublication) {
             groupId = project.group
@@ -417,6 +417,8 @@ publishing {
         }
     }
 }
+
+publish.dependsOn build
 
 //Code for automatic update JSON generation
 class GenerateUpdateJSON extends DefaultTask {
