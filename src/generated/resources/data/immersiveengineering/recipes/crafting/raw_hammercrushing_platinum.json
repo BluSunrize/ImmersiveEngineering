@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:hammer_crushing",
+  "result": {
+    "tag": "forge:dusts/platinum"
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:dusts/platinum",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:raw_ores/platinum",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:raw_ores/platinum"
+  }
+}

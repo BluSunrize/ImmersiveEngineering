@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:hammer_crushing",
+  "result": {
+    "tag": "forge:dusts/tin"
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:dusts/tin",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:raw_ores/tin",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:raw_ores/tin"
+  }
+}

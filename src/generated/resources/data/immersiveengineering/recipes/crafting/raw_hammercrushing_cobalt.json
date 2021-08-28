@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:hammer_crushing",
+  "result": {
+    "tag": "forge:dusts/cobalt"
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:dusts/cobalt",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:raw_ores/cobalt",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:raw_ores/cobalt"
+  }
+}

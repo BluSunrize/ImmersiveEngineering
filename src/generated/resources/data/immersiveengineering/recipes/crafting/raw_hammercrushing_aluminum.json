@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:hammer_crushing",
+  "result": {
+    "tag": "forge:dusts/aluminum"
+  },
+  "conditions": [
+    {
+      "value": {
+        "tag": "forge:dusts/aluminum",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    },
+    {
+      "value": {
+        "tag": "forge:raw_ores/aluminum",
+        "type": "forge:tag_empty"
+      },
+      "type": "forge:not"
+    }
+  ],
+  "input": {
+    "tag": "forge:raw_ores/aluminum"
+  }
+}

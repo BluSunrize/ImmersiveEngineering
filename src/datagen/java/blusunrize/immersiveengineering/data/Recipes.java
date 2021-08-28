@@ -509,7 +509,6 @@ public class Recipes extends RecipeProvider
 
 	private void recipesMultiblockMachines(@Nonnull Consumer<FinishedRecipe> out)
 	{
-		HammerCrushingRecipeBuilder hammerBuilder;
 		ArcFurnaceRecipeBuilder arcBuilder;
 		MetalPressRecipeBuilder pressBuilder;
 		AlloyRecipeBuilder alloyBuilder;
@@ -523,11 +522,15 @@ public class Recipes extends RecipeProvider
 				SecondaryOutput[] secondaryOutputs = metal.getSecondaryOutputs();
 
 				// Hammer crushing
-				hammerBuilder = HammerCrushingRecipeBuilder.builder(metal.getDust());
+				HammerCrushingRecipeBuilder hammerBuilder = HammerCrushingRecipeBuilder.builder(metal.getDust());
 				if(!metal.isNative())
 					hammerBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getOre()));
 				hammerBuilder.addInput(metal.getOre())
 						.build(out, toRL("crafting/hammercrushing_"+metal.getName()));
+				HammerCrushingRecipeBuilder rawHammerBuilder = HammerCrushingRecipeBuilder.builder(metal.getDust());
+				rawHammerBuilder.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getRawOre()))
+						.addInput(metal.getRawOre())
+						.build(out, toRL("crafting/raw_hammercrushing_"+metal.getName()));
 
 				// Crush ore
 				CrusherRecipeBuilder oreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 2);
