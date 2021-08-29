@@ -212,11 +212,6 @@
     "immersiveengineering:conveyor_dropper",
     "immersiveengineering:conveyor_vertical",
     "immersiveengineering:conveyor_splitter",
-    "immersiveengineering:conveyor_extract",
-    "immersiveengineering:conveyor_covered",
-    "immersiveengineering:conveyor_droppercovered",
-    "immersiveengineering:conveyor_verticalcovered",
-    "immersiveengineering:conveyor_extractcovered",
-    "immersiveengineering:conveyor_splittercovered"
+    "immersiveengineering:conveyor_extract"
   ]
 }

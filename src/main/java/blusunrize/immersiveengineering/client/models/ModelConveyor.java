@@ -10,9 +10,8 @@ package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
+import blusunrize.immersiveengineering.api.tool.conveyor.*;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -20,6 +19,8 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
@@ -34,7 +35,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
@@ -42,7 +42,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -63,10 +62,12 @@ import java.util.*;
 import java.util.function.Function;
 
 @SuppressWarnings("deprecation")
-public class ModelConveyor extends BakedIEModel
+public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 {
-	private static final ModelProperty<IConveyorBelt> CONVEYOR_MODEL_DATA = new ModelProperty<>();
-	public static HashMap<String, List<BakedQuad>> modelCache = new HashMap<>();
+	private static final ModelProperty<IConveyorBelt<?>> CONVEYOR_MODEL_DATA = new ModelProperty<>();
+	public Cache<String, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
+			.maximumSize(100)
+			.build();
 	public static ResourceLocation[] rl_casing = {
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_top"),
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_side"),
@@ -74,66 +75,48 @@ public class ModelConveyor extends BakedIEModel
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_full")
 	};
 
-	@Nullable
-	private final IConveyorBelt defaultBelt;
+	private final IConveyorType<T> type;
 
-	public ModelConveyor(@Nullable IConveyorBelt defaultBelt)
+	public ModelConveyor(IConveyorType<T> type)
 	{
-		this.defaultBelt = defaultBelt;
-	}
-
-	public ModelConveyor()
-	{
-		this(null);
+		this.type = type;
 	}
 
 	@Nonnull
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState blockState, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
-		BlockEntity tile = null;
-		String key = "default";
 		Direction facing = Direction.NORTH;
-		IConveyorBelt conveyor = defaultBelt;
-		if(blockState==null)
-			key = conveyor!=null?ConveyorHandler.reverseClassRegistry.get(conveyor.getClass()).toString(): "immersiveengineering:conveyor";
-		else
+		T conveyor = null;
+		if(blockState!=null)
 		{
 			facing = blockState.getValue(IEProperties.FACING_HORIZONTAL);
 			if(extraData.hasProperty(CONVEYOR_MODEL_DATA))
-				conveyor = extraData.getData(CONVEYOR_MODEL_DATA);
-			if(extraData.hasProperty(PrivateProperties.BLOCKENTITY_PASSTHROUGH))
+				conveyor = (T)extraData.getData(CONVEYOR_MODEL_DATA);
+			if(conveyor!=null)
 			{
-				tile = extraData.getData(PrivateProperties.BLOCKENTITY_PASSTHROUGH);
+				BlockEntity tile = conveyor.getBlockEntity();
 				if(tile instanceof IDirectionalBE)
 					facing = ((IDirectionalBE)tile).getFacing();
 			}
-			if(conveyor==null)
-				conveyor = ConveyorHandler.getConveyor(new ResourceLocation(key), tile);
-			if(conveyor!=null&&tile!=null)
-				key = conveyor.getModelCacheKey();
 		}
-		List<BakedQuad> cachedQuads = modelCache.get(key);
+		IConveyorClientData<T> clientData = ClientConveyors.getData(type);
+		String key = clientData.getModelCacheKey(type, conveyor);
+		List<BakedQuad> cachedQuads = modelCache.getIfPresent(key);
 		if(cachedQuads==null)
 		{
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
 			Transformation matrix = ClientUtils.rotateTo(facing);
-			if(conveyor!=null)
-				matrix = conveyor.modifyBaseRotationMatrix(matrix);
+			matrix = clientData.modifyBaseRotationMatrix(matrix, conveyor);
 			ConveyorDirection conDir = conveyor!=null?conveyor.getConveyorDirection(): ConveyorDirection.HORIZONTAL;
-			boolean[] walls = conveyor!=null&&tile!=null?new boolean[]{conveyor.renderWall(facing, 0), conveyor.renderWall(facing, 1)}: new boolean[]{true, true};
-			TextureAtlasSprite tex_conveyor = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
-			TextureAtlasSprite tex_conveyor_colour = null;
+			boolean[] walls = new boolean[]{clientData.renderWall(facing, 0, conveyor), clientData.renderWall(facing, 1, conveyor)};
+			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(conveyor==null||conveyor.isActive()?clientData.getActiveTexture(): clientData.getInactiveTexture());
 			DyeColor colourStripes = null;
-			if(conveyor!=null)
-			{
-				tex_conveyor = ClientUtils.getSprite(tile!=null?(conveyor.isActive()?conveyor.getActiveTexture(): conveyor.getInactiveTexture()): conveyor.getActiveTexture());
-				if((colourStripes = conveyor.getDyeColour())!=null)
-					tex_conveyor_colour = ClientUtils.getSprite(conveyor.getColouredStripesTexture());
-			}
+			TextureAtlasSprite tex_conveyor_colour = null;
+			if(conveyor!=null&&(colourStripes = conveyor.getDyeColour())!=null)
+				tex_conveyor_colour = ClientUtils.getSprite(clientData.getColouredStripesTexture());
 			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
-			if(conveyor!=null)
-				cachedQuads = conveyor.modifyQuads(cachedQuads);
+			cachedQuads = clientData.modifyQuads(cachedQuads, type, conveyor);
 			modelCache.put(key, ImmutableList.copyOf(cachedQuads));
 		}
 		return ImmutableList.copyOf(cachedQuads);
@@ -413,6 +396,7 @@ public class ModelConveyor extends BakedIEModel
 
 	TextureAtlasSprite tex_particle;
 
+	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
@@ -421,12 +405,14 @@ public class ModelConveyor extends BakedIEModel
 		return tex_particle;
 	}
 
+	@Nonnull
 	@Override
 	public ItemTransforms getTransforms()
 	{
 		return ItemTransforms.NO_TRANSFORMS;
 	}
 
+	@Nonnull
 	@Override
 	public ItemOverrides getOverrides()
 	{
@@ -436,45 +422,46 @@ public class ModelConveyor extends BakedIEModel
 	static HashMap<String, BakedModel> itemModelCache = new HashMap<>();
 	ItemOverrides overrideList = new ItemOverrides()
 	{
-		@Nullable
 		@Override
 		public BakedModel resolve(@Nonnull BakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int unused)
 		{
 			String key = "default";
+			IConveyorType<?> conveyorType;
 			if(stack.getItem() instanceof BlockItem)
 			{
 				Block b = ((BlockItem)stack.getItem()).getBlock();
-				ResourceLocation rlKey = ConveyorHandler.getType(b);
-				if(rlKey!=null)
-					key = rlKey.toString();
+				conveyorType = ConveyorHandler.getType(b);
+				if(conveyorType!=null)
+					key = conveyorType.getId().toString();
+				BakedModel model = itemModelCache.get(key);
+				if(model==null)
+				{
+					model = new ModelConveyor<>(conveyorType);
+					itemModelCache.put(key, model);
+				}
+				return model;
 			}
-			BakedModel model = itemModelCache.get(key);
-			if(model==null)
-			{
-				model = new ModelConveyor(ConveyorHandler.getConveyor(new ResourceLocation(key), null));
-				itemModelCache.put(key, model);
-			}
-			return model;
+			return Minecraft.getInstance().getModelManager().getMissingModel();
 		}
 	};
 
-	static HashMap<TransformType, Matrix4> transformationMap = new HashMap<>();
+	private static final Map<TransformType, Matrix4> TRANSFORMATION_MAP = new EnumMap<>(TransformType.class);
 
 	static
 	{
-		transformationMap.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
-		transformationMap.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
-		transformationMap.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
-		transformationMap.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
-		transformationMap.put(TransformType.GUI, new Matrix4().scale(.625, .625, .625).rotate(Math.toRadians(-45), 0, 1, 0).rotate(Math.toRadians(-20), 0, 0, 1).rotate(Math.toRadians(20), 1, 0, 0));
-		transformationMap.put(TransformType.FIXED, new Matrix4().scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).translate(0, 0, .3125));
-		transformationMap.put(TransformType.GROUND, new Matrix4().scale(.25, .25, .25));
+		TRANSFORMATION_MAP.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
+		TRANSFORMATION_MAP.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
+		TRANSFORMATION_MAP.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
+		TRANSFORMATION_MAP.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
+		TRANSFORMATION_MAP.put(TransformType.GUI, new Matrix4().scale(.625, .625, .625).rotate(Math.toRadians(-45), 0, 1, 0).rotate(Math.toRadians(-20), 0, 0, 1).rotate(Math.toRadians(20), 1, 0, 0));
+		TRANSFORMATION_MAP.put(TransformType.FIXED, new Matrix4().scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).translate(0, 0, .3125));
+		TRANSFORMATION_MAP.put(TransformType.GROUND, new Matrix4().scale(.25, .25, .25));
 	}
 
 	@Override
 	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat)
 	{
-		Matrix4 matrix = transformationMap.containsKey(cameraTransformType)?transformationMap.get(cameraTransformType): new Matrix4();
+		Matrix4 matrix = TRANSFORMATION_MAP.containsKey(cameraTransformType)?TRANSFORMATION_MAP.get(cameraTransformType): new Matrix4();
 		matrix.toTransformationMatrix().push(mat);
 		return this;
 	}
@@ -484,7 +471,7 @@ public class ModelConveyor extends BakedIEModel
 	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		Block b = state.getBlock();
-		ResourceLocation conveyorName = ConveyorHandler.getType(b);
+		IConveyorType<?> conveyorName = ConveyorHandler.getType(b);
 		if(conveyorName!=null)
 		{
 			IConveyorBelt belt = ConveyorHandler.getConveyor(conveyorName, world.getBlockEntity(pos));
@@ -494,14 +481,13 @@ public class ModelConveyor extends BakedIEModel
 			return tileData;
 	}
 
-	public static class RawConveyorModel implements IModelGeometry<RawConveyorModel>
+	public record RawConveyorModel(IConveyorType<?> type) implements IModelGeometry<RawConveyorModel>
 	{
-
 		@Override
 		public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-								ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+							   ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
-			return new ModelConveyor();
+			return new ModelConveyor<>(type);
 		}
 
 		@Override
@@ -515,16 +501,20 @@ public class ModelConveyor extends BakedIEModel
 	public static class ConveyorLoader implements IModelLoader<RawConveyorModel>
 	{
 		public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/conveyor");
+		public static final String TYPE_KEY = "conveyorType";
 
 		@Override
-		public void onResourceManagerReload(ResourceManager resourceManager)
+		public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 		{
 		}
 
+		@Nonnull
 		@Override
-		public RawConveyorModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
+		public RawConveyorModel read(@Nonnull JsonDeserializationContext deserializationContext, JsonObject modelContents)
 		{
-			return new RawConveyorModel();
+			String typeName = modelContents.get(TYPE_KEY).getAsString();
+			IConveyorType<?> type = ConveyorHandler.getConveyorType(new ResourceLocation(typeName));
+			return new RawConveyorModel(Objects.requireNonNull(type));
 		}
 	}
 }

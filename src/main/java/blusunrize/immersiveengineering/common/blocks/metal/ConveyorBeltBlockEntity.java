@@ -9,9 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
@@ -53,23 +54,24 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map.Entry;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
-public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, ICollisionBounds,
-		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorBlockEntity, IPropertyPassthrough,
-		IETickableBlockEntity
+public class ConveyorBeltBlockEntity<T extends IConveyorBelt<T>> extends IEBaseBlockEntity
+		implements IStateBasedDirectional, ICollisionBounds, ISelectionBounds, IHammerInteraction,
+		IPlayerInteraction, IConveyorBlockEntity<T>, IPropertyPassthrough, IETickableBlockEntity
 {
-	private final IConveyorBelt conveyorBeltSubtype;
+	private final T conveyorBeltSubtype;
 
-	public ConveyorBeltBlockEntity(ResourceLocation typeName, BlockPos pos, BlockState state)
+	public ConveyorBeltBlockEntity(IConveyorType<T> type, BlockPos pos, BlockState state)
 	{
-		super(Preconditions.checkNotNull(ConveyorHandler.getTEType(typeName), "Not TE type for "+typeName), pos, state);
-		conveyorBeltSubtype = ConveyorHandler.getConveyor(typeName, this);
+		super(Preconditions.checkNotNull(ConveyorHandler.getBEType(type), "Not TE type for "+type), pos, state);
+		conveyorBeltSubtype = ConveyorHandler.getConveyor(type, this);
 	}
 
 	@Override
 	@Nullable
-	public IConveyorBelt getConveyorSubtype()
+	public T getConveyorInstance()
 	{
 		return conveyorBeltSubtype;
 	}
@@ -180,7 +182,7 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 		if(conveyorBeltSubtype!=null)
 		{
 			boolean update;
-			if(conveyorBeltSubtype.canBeDyed()&&Utils.isDye(heldItem))
+			if(conveyorBeltSubtype.getType().canBeDyed()&&Utils.isDye(heldItem))
 			{
 				DyeColor dye = Utils.getDye(heldItem);
 				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye);
@@ -217,7 +219,7 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 		return COLISIONBB;
 	}
 
-	private LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ConveyorInventoryHandler(this));
+	private final LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ConveyorInventoryHandler(this));
 
 	@Nonnull
 	@Override
@@ -238,14 +240,15 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 	@SubscribeEvent
 	public static void registerConveyorTEsAndBlocks(RegistryEvent.NewRegistry ev)
 	{
-		for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
+		for(Entry<ResourceLocation, IConveyorType<?>> entry : ConveyorHandler.typeRegistry.entrySet())
 		{
-			RegistryObject<BlockEntityType<?>> type = IEBlockEntities.REGISTER.register(
-					ConveyorHandler.getRegistryNameFor(rl).getPath(), () -> new BlockEntityType<>(
-							(pos, state) -> new ConveyorBeltBlockEntity(rl, pos, state),
-							ImmutableSet.of(ConveyorHandler.getBlock(rl)), null
+			IConveyorType<?> type = entry.getValue();
+			RegistryObject<BlockEntityType<?>> beType = IEBlockEntities.REGISTER.register(
+					entry.getKey().getPath(), () -> new BlockEntityType<>(
+							(pos, state) -> new ConveyorBeltBlockEntity(type, pos, state),
+							ImmutableSet.of(ConveyorHandler.getBlock(type)), null
 					));
-			ConveyorHandler.tileEntities.put(rl, type);
+			ConveyorHandler.blockEntityTypes.put(type, beType);
 		}
 		MetalDevices.initConveyors();
 	}
@@ -274,7 +277,7 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
-			if(conveyor.getConveyorSubtype().isBlocked())
+			if(conveyor.getConveyorInstance().isBlocked())
 				return stack;
 			if(!simulate)
 			{

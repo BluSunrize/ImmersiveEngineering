@@ -9,17 +9,17 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -50,13 +50,13 @@ public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.ICon
 			.strength(3.0F, 15.0F)
 			.noOcclusion();
 
-	private final ResourceLocation typeName;
+	private final IConveyorType<?> type;
 	public static final EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
-	public ConveyorBlock(ResourceLocation type, Properties props)
+	public ConveyorBlock(IConveyorType<?> type, Properties props)
 	{
 		super(props);
-		this.typeName = type;
+		this.type = type;
 		lightOpacity = 0;
 	}
 
@@ -83,13 +83,12 @@ public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.ICon
 		Level world = context.getLevel();
 		BlockPos pos = context.getClickedPos();
 		BlockEntity tile = world.getBlockEntity(pos);
-		if(tile instanceof ConveyorBeltBlockEntity)
+		if(tile instanceof ConveyorBeltBlockEntity conveyor)
 		{
-			ConveyorBeltBlockEntity conveyor = (ConveyorBeltBlockEntity)tile;
 			Direction f = conveyor.getFacing();
 			tile = world.getBlockEntity(pos.relative(f));
 			BlockEntity tileUp = world.getBlockEntity(pos.relative(f).offset(0, 1, 0));
-			IConveyorBelt subType = conveyor.getConveyorSubtype();
+			IConveyorBelt subType = conveyor.getConveyorInstance();
 			if(subType!=null&&(!(tile instanceof IConveyorBlockEntity)||((IConveyorBlockEntity)tile).getFacing()==f.getOpposite())
 					&&tileUp instanceof IConveyorBlockEntity&&((IConveyorBlockEntity)tileUp).getFacing()!=f.getOpposite()
 					&&world.isEmptyBlock(pos.offset(0, 1, 0)))
@@ -100,20 +99,22 @@ public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.ICon
 	@Override
 	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
 	{
-		return new ConveyorBeltBlockEntity(typeName, pos, state);
+		return new ConveyorBeltBlockEntity(type, pos, state);
 	}
 
 	@Override
-	public ResourceLocation getTypeName()
+	public IConveyorType<?> getType()
 	{
-		return typeName;
+		return type;
 	}
 
 	@Nullable
 	@Override
 	public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type)
 	{
-		//TODO check BET and only return ticker for ticking belt types
-		return super.getTicker(world, state, type);
+		if(this.type.isTicking())
+			return super.getTicker(world, state, type);
+		else
+			return null;
 	}
 }

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.data;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
@@ -125,10 +126,10 @@ public class Advancements extends AdvancementProvider
 					.addCriterion("steel", InventoryChangeTrigger.TriggerInstance.hasItems(Metals.ingots.get(EnumMetals.STEEL)))
 					.save(consumer, "immersiveengineering:main/make_steel");
 
-			Advancement.Builder b_conveyor = advancement(rtfm, MetalDevices.CONVEYORS.get(BasicConveyor.NAME), "place_conveyor", FrameType.TASK, true, true, false)
+			Advancement.Builder b_conveyor = advancement(rtfm, MetalDevices.CONVEYORS.get(BasicConveyor.TYPE), "place_conveyor", FrameType.TASK, true, true, false)
 					.requirements(RequirementsStrategy.OR);
-			for(Entry<ResourceLocation, BlockEntry<ConveyorBlock>> entry : MetalDevices.CONVEYORS.entrySet())
-				b_conveyor.addCriterion(entry.getKey().getPath(), PlacedBlockTrigger.TriggerInstance.placedBlock(entry.getValue().get()));
+			for(Entry<IConveyorType<?>, BlockEntry<ConveyorBlock>> entry : MetalDevices.CONVEYORS.entrySet())
+				b_conveyor.addCriterion(entry.getKey().getId().getPath(), PlacedBlockTrigger.TriggerInstance.placedBlock(entry.getValue().get()));
 			Advancement conveyor = b_conveyor.save(consumer, "immersiveengineering:main/place_conveyor");
 
 			Advancement windmill = advancement(rtfm, WoodenDevices.windmill, "place_windmill", FrameType.TASK, true, true, false)

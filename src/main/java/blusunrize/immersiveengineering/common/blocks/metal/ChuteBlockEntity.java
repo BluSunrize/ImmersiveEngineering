@@ -11,13 +11,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -36,6 +35,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -201,16 +201,17 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 	{
 		if(inventoryTile!=null)
 		{
-			if(!(inventoryTile instanceof IConveyorBlockEntity))
-				return true;
+			if(inventoryTile instanceof IConveyorBlockEntity<?> conveyorTile)
+				return isCovered(conveyorTile.getConveyorInstance());
 			else
-			{
-				IConveyorBlockEntity conveyorTile = ((IConveyorBlockEntity)inventoryTile);
-				if(conveyorTile.getConveyorSubtype() instanceof BasicConveyor) //TODO: change this to IConveyorTile.isCovered() and maybe inline this whole method
-					return ((BasicConveyor)conveyorTile.getConveyorSubtype()).isCovered();
-			}
+				return true;
 		}
 		return false;
+	}
+
+	private static <T extends IConveyorBelt<T>> boolean isCovered(IConveyorBelt<T> belt)
+	{
+		return belt.getType().getCover(belt.castThis())!=Blocks.AIR;
 	}
 
 	@Override
@@ -347,7 +348,7 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 		BlockEntity te = level.getBlockEntity(getBlockPos().relative(f));
 		if(te instanceof IConveyorBlockEntity)
 		{
-			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorSubtype();
+			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorInstance();
 			if(sub!=null)
 				for(Direction f2 : sub.sigTransportDirections())
 					if(f==f2.getOpposite())
@@ -359,7 +360,7 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 		te = level.getBlockEntity(getBlockPos().offset(0, -1, 0).relative(f));
 		if(te instanceof IConveyorBlockEntity)
 		{
-			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorSubtype();
+			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorInstance();
 			if(sub!=null)
 			{
 				int b = 0;

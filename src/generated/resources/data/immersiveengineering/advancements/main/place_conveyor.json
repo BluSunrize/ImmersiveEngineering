@@ -16,22 +16,10 @@
     "hidden": false
   },
   "criteria": {
-    "extract": {
+    "splitter": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_extract"
-      }
-    },
-    "extractcovered": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_extractcovered"
-      }
-    },
-    "splittercovered": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_splittercovered"
+        "block": "immersiveengineering:conveyor_splitter"
       }
     },
     "dropper": {
@@ -40,22 +28,10 @@
         "block": "immersiveengineering:conveyor_dropper"
       }
     },
-    "covered": {
+    "basic": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_covered"
-      }
-    },
-    "vertical": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_vertical"
-      }
-    },
-    "verticalcovered": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_verticalcovered"
+        "block": "immersiveengineering:conveyor_basic"
       }
     },
     "redstone": {
@@ -64,38 +40,27 @@
         "block": "immersiveengineering:conveyor_redstone"
       }
     },
-    "splitter": {
+    "vertical": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_splitter"
+        "block": "immersiveengineering:conveyor_vertical"
       }
     },
-    "basic": {
+    "extract": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_basic"
-      }
-    },
-    "droppercovered": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_droppercovered"
+        "block": "immersiveengineering:conveyor_extract"
       }
     }
   },
   "requirements": [
     [
-      "extract",
-      "extractcovered",
-      "splittercovered",
-      "dropper",
-      "covered",
-      "vertical",
-      "verticalcovered",
-      "redstone",
       "splitter",
+      "dropper",
       "basic",
-      "droppercovered"
+      "redstone",
+      "vertical",
+      "extract"
     ]
   ]
 }

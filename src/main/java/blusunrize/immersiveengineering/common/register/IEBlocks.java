@@ -10,7 +10,8 @@ package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.*;
 import blusunrize.immersiveengineering.common.blocks.cloth.*;
@@ -45,6 +46,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -464,7 +466,7 @@ public final class IEBlocks
 				"turret_gun", METAL_PROPERTIES_NOT_SOLID, p -> new TurretBlock<>(IEBlockEntities.TURRET_GUN, p)
 		);
 		public static final BlockEntry<ClocheBlock> cloche = new BlockEntry<>("cloche", METAL_PROPERTIES_NOT_SOLID, ClocheBlock::new);
-		public static final Map<ResourceLocation, BlockEntry<ConveyorBlock>> CONVEYORS = new HashMap<>();
+		public static final Map<IConveyorType<?>, BlockEntry<ConveyorBlock>> CONVEYORS = new HashMap<>();
 		public static Map<EnumMetals, BlockEntry<ChuteBlock>> chutes = new EnumMap<>(EnumMetals.class);
 
 		private static void init()
@@ -477,13 +479,14 @@ public final class IEBlocks
 		public static void initConveyors()
 		{
 			Preconditions.checkState(CONVEYORS.isEmpty());
-			for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
+			for(Entry<ResourceLocation, IConveyorType<?>> entry : ConveyorHandler.typeRegistry.entrySet())
 			{
-				BlockEntry<ConveyorBlock> entry = new BlockEntry<>(
-						ConveyorHandler.getRegistryNameFor(rl).getPath(), ConveyorBlock.PROPERTIES, p -> new ConveyorBlock(rl, p)
+				ResourceLocation rl = entry.getKey();
+				BlockEntry<ConveyorBlock> blockEntry = new BlockEntry<>(
+						ConveyorHandler.getRegistryNameFor(rl).getPath(), ConveyorBlock.PROPERTIES, p -> new ConveyorBlock(entry.getValue(), p)
 				);
-				CONVEYORS.put(rl, entry);
-				IEItems.REGISTER.register(entry.getId().getPath(), () -> new BlockItemIE(entry.get()));
+				CONVEYORS.put(entry.getValue(), blockEntry);
+				IEItems.REGISTER.register(blockEntry.getId().getPath(), () -> new BlockItemIE(blockEntry.get()));
 			}
 		}
 	}

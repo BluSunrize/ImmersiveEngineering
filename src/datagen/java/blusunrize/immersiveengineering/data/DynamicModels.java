@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
 import blusunrize.immersiveengineering.client.render.entity.SawbladeRenderer;
 import blusunrize.immersiveengineering.client.render.tile.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.RedstoneConveyor;
 import blusunrize.immersiveengineering.data.DynamicModels.SimpleModelBuilder;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
@@ -96,7 +96,7 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.modelLocation(rl("models/block/wooden_device/windmill.obj.ie"))
 				.flipV(true)
 				.end();
-		getBuilder(RedstoneConveyor.MODEL_NAME)
+		getBuilder(RedstoneConveyorRender.MODEL_NAME)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/conveyor_redstone.obj.ie"))
 				.flipV(true)
