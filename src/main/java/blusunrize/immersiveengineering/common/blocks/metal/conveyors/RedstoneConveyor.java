@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
@@ -33,7 +34,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 /**
  * @author BluSunrize - 06.05.2017
  */
-public class RedstoneConveyor extends ConveyorBase<RedstoneConveyor>
+public class RedstoneConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "redstone");
 	public static final IConveyorType<RedstoneConveyor> TYPE = new BasicConveyorType<>(

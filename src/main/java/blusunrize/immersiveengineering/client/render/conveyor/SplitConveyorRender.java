@@ -1,6 +1,5 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
@@ -15,7 +14,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.common.util.Utils.withCoordinate;
@@ -28,7 +26,7 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 	}
 
 	@Override
-	public boolean renderWall(Direction facing, int wall, @Nullable SplitConveyor instance)
+	public boolean shouldRenderWall(Direction facing, int wall, RenderContext<SplitConveyor> context)
 	{
 		return false;
 	}
@@ -36,10 +34,10 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 	public static ResourceLocation texture_casing = new ResourceLocation("immersiveengineering:block/conveyor/split_wall");
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, IConveyorType<SplitConveyor> type, @Nullable SplitConveyor conveyor)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<SplitConveyor> context)
 	{
 		TextureAtlasSprite tex_casing0 = ClientUtils.getSprite(texture_casing);
-		Direction facing = conveyor!=null?conveyor.getFacing(): Direction.NORTH;
+		Direction facing = context!=null?context.getFacing(): Direction.NORTH;
 		Matrix4 matrix = new Matrix4(facing);
 		Transformation tMatrix = matrix.toTransformationMatrix();
 		float[] colour = {1, 1, 1, 1};
@@ -75,7 +73,7 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices3), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
 			}
 		}
-		super.modifyQuads(baseModel, type, conveyor);
+		super.modifyQuads(baseModel, context);
 		return baseModel;
 	}
 }

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.conveyor.*;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorClientData.RenderContext;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -47,6 +48,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
@@ -64,7 +66,7 @@ import java.util.function.Function;
 @SuppressWarnings("deprecation")
 public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 {
-	private static final ModelProperty<IConveyorBelt<?>> CONVEYOR_MODEL_DATA = new ModelProperty<>();
+	private static final ModelProperty<IConveyorBelt> CONVEYOR_MODEL_DATA = new ModelProperty<>();
 	public Cache<String, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.build();
@@ -101,22 +103,26 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			}
 		}
 		IConveyorClientData<T> clientData = ClientConveyors.getData(type);
-		String key = clientData.getModelCacheKey(type, conveyor);
+		//TODO use different fallback based on items
+		IConveyorClientData.RenderContext<T> context = new RenderContext<>(type, conveyor, Blocks.AIR);
+		String key = clientData.getModelCacheKey(context);
+		if(blockState!=null)
+			modelCache.invalidateAll();
 		List<BakedQuad> cachedQuads = modelCache.getIfPresent(key);
 		if(cachedQuads==null)
 		{
 			cachedQuads = Collections.synchronizedList(Lists.newArrayList());
 			Transformation matrix = ClientUtils.rotateTo(facing);
-			matrix = clientData.modifyBaseRotationMatrix(matrix, conveyor);
+			matrix = clientData.modifyBaseRotationMatrix(matrix);
 			ConveyorDirection conDir = conveyor!=null?conveyor.getConveyorDirection(): ConveyorDirection.HORIZONTAL;
-			boolean[] walls = new boolean[]{clientData.renderWall(facing, 0, conveyor), clientData.renderWall(facing, 1, conveyor)};
-			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(conveyor==null||conveyor.isActive()?clientData.getActiveTexture(): clientData.getInactiveTexture());
+			boolean[] walls = new boolean[]{clientData.shouldRenderWall(facing, 0, context), clientData.shouldRenderWall(facing, 1, context)};
+			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(context.isActiveOr(false)?clientData.getActiveTexture(): clientData.getInactiveTexture());
 			DyeColor colourStripes = null;
 			TextureAtlasSprite tex_conveyor_colour = null;
 			if(conveyor!=null&&(colourStripes = conveyor.getDyeColour())!=null)
 				tex_conveyor_colour = ClientUtils.getSprite(clientData.getColouredStripesTexture());
 			cachedQuads.addAll(getBaseConveyor(facing, 1, matrix, conDir, tex_conveyor, walls, new boolean[]{true, true}, tex_conveyor_colour, colourStripes));
-			cachedQuads = clientData.modifyQuads(cachedQuads, type, conveyor);
+			cachedQuads = clientData.modifyQuads(cachedQuads, context);
 			modelCache.put(key, ImmutableList.copyOf(cachedQuads));
 		}
 		return ImmutableList.copyOf(cachedQuads);

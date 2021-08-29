@@ -2,7 +2,6 @@ package blusunrize.immersiveengineering.client.render.conveyor;
 
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorClientData;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -21,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -51,30 +49,20 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorCli
 	}
 
 	@Override
-	public String getModelCacheKey(IConveyorType<T> type, @Nullable T instance)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<T> context)
 	{
-		String key = IConveyorClientData.super.getModelCacheKey(type, instance);
-		Block cover = type.getCover(instance);
-		if(cover!=Blocks.AIR)
-			key += "s"+cover.getRegistryName();
-		return key;
-	}
-
-	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, IConveyorType<T> type, @Nullable T conveyor)
-	{
-		addCoverToQuads(baseModel, type, conveyor);
+		addCoverToQuads(baseModel, context);
 		return baseModel;
 	}
 
-	protected void addCoverToQuads(List<BakedQuad> baseModel, IConveyorType<T> type, @Nullable T conveyor)
+	protected void addCoverToQuads(List<BakedQuad> baseModel, RenderContext<T> context)
 	{
-		Block b = type.getCover(conveyor);
+		Block b = context.getCover();
 		if(b==Blocks.AIR)
 			return;
 		Function<Direction, TextureAtlasSprite> getSprite = makeTextureGetter(b);
-		Direction facing = conveyor==null?Direction.NORTH: conveyor.getFacing();
-		ConveyorDirection conDir = conveyor==null?ConveyorDirection.HORIZONTAL: conveyor.getConveyorDirection();
+		Direction facing = context.getFacing();
+		ConveyorDirection conDir = context.getConveyorDirection();
 
 		Function<Direction, TextureAtlasSprite> getSpriteHorizontal = f -> f.getAxis()==Axis.Y?null: getSprite.apply(f);
 
@@ -90,7 +78,7 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorCli
 
 		baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .75f, 0), new Vec3(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
 
-		if(renderWall(facing, 0, conveyor))
+		if(shouldRenderWall(facing, 0, context))
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, 0), new Vec3(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 		else
 		{
@@ -98,7 +86,7 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorCli
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, .9375f), new Vec3(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 		}
 
-		if(renderWall(facing, 1, conveyor))
+		if(shouldRenderWall(facing, 1, context))
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, .1875f, 0), new Vec3(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 		else
 		{
@@ -107,7 +95,7 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorCli
 		}
 	}
 
-	protected Function<Direction, TextureAtlasSprite> makeTextureGetter(Block b)
+	protected static Function<Direction, TextureAtlasSprite> makeTextureGetter(Block b)
 	{
 		BlockState state = b.defaultBlockState();
 		BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);

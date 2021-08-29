@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
@@ -17,7 +16,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
@@ -29,7 +27,7 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 	}
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, IConveyorType<ExtractConveyor> type, @Nullable ExtractConveyor conveyor)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<ExtractConveyor> context)
 	{
 		final TextureAtlasSprite texture_steel = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/metal/storage_steel"));
 		final TextureAtlasSprite texture_casing = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_device/turntable_bottom"));
@@ -37,9 +35,10 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 		final TextureAtlasSprite texture_assembler = ClientUtils.getSprite(new ResourceLocation(ImmersiveEngineering.MODID, "block/multiblocks/assembler"));
 
 		float[] colour = {1, 1, 1, 1};
-		Matrix4 matrix = new Matrix4(conveyor==null?Direction.SOUTH: conveyor.getExtractDirection());
+		ExtractConveyor instance = context.instance();
+		Matrix4 matrix = new Matrix4(instance==null?Direction.SOUTH: instance.getExtractDirection());
 		Transformation tMatrix = matrix.toTransformationMatrix();
-		final double extend = conveyor==null?0: conveyor.getCurrentExtension();
+		final double extend = instance==null?0: instance.getCurrentExtension();
 
 		Function<Direction, TextureAtlasSprite> getCasingSprite = enumFacing -> enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
 
@@ -58,7 +57,7 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 			return ret;
 		};
 
-		Direction facing = conveyor==null?Direction.NORTH: conveyor.getFacing();
+		Direction facing = context.getFacing();
 		baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.0625f, .375f, .625f), new Vec3(.1875f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
 		baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.8125f, .375f, .625f), new Vec3(.9375f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
 		baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.1875f, .875f, .625f), new Vec3(.8125f, 1f, 1f), matrix, facing, casingTransformer, getCasingSprite, colour));
@@ -66,7 +65,7 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 		if(extend > 0)
 		{
 			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(
-					conveyor.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
+					instance.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
 			);
 			Function<Direction, TextureAtlasSprite> getExtensionSprite = enumFacing -> enumFacing.getAxis()==Axis.Y?null: enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
 
@@ -91,15 +90,16 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.203125f+off, .1875f, .09375f), new Vec3(.296875f+off, .625f, .125f), matrix, facing, vertexTransformer, (facing1) -> texture_curtain, colour));
 		}
 
-		super.modifyQuads(baseModel, type, conveyor);
+		super.modifyQuads(baseModel, context);
 
 		return baseModel;
 	}
 
 	@Override
-	public String getModelCacheKey(IConveyorType<ExtractConveyor> type, @Nullable ExtractConveyor instance)
+	public String getModelCacheKey(RenderContext<ExtractConveyor> context)
 	{
-		String key = super.getModelCacheKey(type, instance);
+		String key = super.getModelCacheKey(context);
+		ExtractConveyor instance = context.instance();
 		if(instance==null)
 			return key;
 		key += "e"+instance.getExtractDirection().ordinal();
@@ -108,11 +108,12 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 	}
 
 	@Override
-	public boolean renderWall(Direction facing, int wall, @Nullable ExtractConveyor instance)
+	public boolean shouldRenderWall(Direction facing, int wall, RenderContext<ExtractConveyor> context)
 	{
+		ExtractConveyor instance = context.instance();
 		if(instance==null)
 			return true;
 		Direction side = wall==0?facing.getCounterClockWise(): facing.getClockWise();
-		return side!=instance.getExtractDirection()&&super.renderWall(facing, wall, instance);
+		return side!=instance.getExtractDirection()&&super.shouldRenderWall(facing, wall, context);
 	}
 }

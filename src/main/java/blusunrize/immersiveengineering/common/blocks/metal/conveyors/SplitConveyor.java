@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
@@ -37,7 +38,7 @@ import java.util.List;
 /**
  * @author BluSunrize - 20.08.2016
  */
-public class SplitConveyor extends ConveyorBase<SplitConveyor>
+public class SplitConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = ImmersiveEngineering.rl("splitter");
 	public static final ResourceLocation texture_on = ImmersiveEngineering.rl("block/conveyor/split");
@@ -124,7 +125,7 @@ public class SplitConveyor extends ConveyorBase<SplitConveyor>
 					BlockEntity nextTile = getBlockEntity().getLevel().getBlockEntity(nextPos);
 					if(!(nextTile instanceof IConveyorBlockEntity))
 						nextOutputLeft = !nextOutputLeft;
-					else if(((IConveyorBlockEntity)nextTile).getFacing()!=this.getOutputFace())
+					else if(((IConveyorBlockEntity<?>)nextTile).getFacing()!=this.getOutputFace())
 						nextOutputLeft = !nextOutputLeft;
 				}
 			}
@@ -205,7 +206,7 @@ public class SplitConveyor extends ConveyorBase<SplitConveyor>
 		})
 		{
 			BlockEntity tile = SafeChunkUtils.getSafeBE(getBlockEntity().getLevel(), outputPos);
-			if(tile instanceof IConveyorBlockEntity&&((IConveyorBlockEntity)tile).getConveyorInstance().isBlocked())
+			if(tile instanceof IConveyorBlockEntity&&((IConveyorBlockEntity<?>)tile).getConveyorInstance().isBlocked())
 				return true;
 		}
 		return false;

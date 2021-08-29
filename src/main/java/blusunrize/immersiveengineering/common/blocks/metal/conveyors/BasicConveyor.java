@@ -9,12 +9,13 @@
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.render.conveyor.BasicConveyorRender;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-public class BasicConveyor extends ConveyorBase<BasicConveyor>
+public class BasicConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "basic");
 	public static final IConveyorType<BasicConveyor> TYPE = new BasicConveyorType<>(

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
@@ -35,7 +36,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 /**
  * @author BluSunrize - 20.08.2016
  */
-public class DropConveyor extends ConveyorBase<DropConveyor>
+public class DropConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "dropper");
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/dropper");

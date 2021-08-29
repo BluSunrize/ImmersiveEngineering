@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
@@ -20,11 +19,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Function;
 
-public class VerticalConveyorRender<T extends VerticalConveyor> extends BasicConveyorRender<T>
+public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor>
 {
 	public VerticalConveyorRender(ResourceLocation active, ResourceLocation inactive)
 	{
@@ -32,82 +30,78 @@ public class VerticalConveyorRender<T extends VerticalConveyor> extends BasicCon
 	}
 
 	@Override
-	public boolean renderWall(Direction facing, int wall, @Nullable T instance)
+	public boolean shouldRenderWall(Direction facing, int wall, RenderContext<VerticalConveyor> context)
 	{
 		return true;
 	}
 
 	@Override
-	public String getModelCacheKey(IConveyorType<T> type, @Nullable T instance)
+	public String getModelCacheKey(RenderContext<VerticalConveyor> context)
 	{
-		String key = "";
+		String key = super.getModelCacheKey(context);
+		VerticalConveyor instance = context.instance();
 		if(instance==null)
 			return key;
-		Direction facing = instance.getFacing();
-		key += "f"+facing.ordinal();
-		key += "a"+(instance.isActive()?1: 0);
 		BlockEntity blockEntity = instance.getBlockEntity();
+		Direction facing = context.getFacing();
 		if(VerticalConveyor.renderBottomBelt(blockEntity, facing))
 		{
 			key += "b";
 			key += VerticalConveyor.isInwardConveyor(blockEntity, facing.getOpposite())?"1": "0";
-			key += renderBottomWall(facing, 0, instance)?"1": "0";
-			key += renderBottomWall(facing, 1, instance)?"1": "0";
+			key += renderBottomWall(facing, 0, context)?"1": "0";
+			key += renderBottomWall(facing, 1, context)?"1": "0";
 		}
-		key += "c"+instance.getDyeColour();
-		Block cover = type.getCover(instance);
-		if(cover!=Blocks.AIR)
-			key += "s"+cover.getRegistryName();
 		return key;
 	}
 
 	@Override
-	public Transformation modifyBaseRotationMatrix(Transformation matrix, @Nullable T conveyor)
+	public Transformation modifyBaseRotationMatrix(Transformation matrix)
 	{
 		return matrix.compose(new Transformation(
 				new Vector3f(0, 1, 0), new Quaternion((float)Math.PI/2, 0, 0, false), null, null
 		));
 	}
 
-	public boolean renderBottomWall(Direction facing, int wall, T instance)
+	public boolean renderBottomWall(Direction facing, int wall, RenderContext<VerticalConveyor> context)
 	{
-		return super.renderWall(facing, wall, instance);
+		return super.shouldRenderWall(facing, wall, context);
 	}
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, IConveyorType<T> type, @Nullable T conveyor)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context)
 	{
-		if(conveyor==null)
+		VerticalConveyor instance = context.instance();
+		if(instance==null)
 			return baseModel;
-		BlockEntity blockEntity = conveyor.getBlockEntity();
-		Direction facing = conveyor.getFacing();
+		BlockEntity blockEntity = instance.getBlockEntity();
+		Direction facing = context.getFacing();
 
 		boolean[] walls = {true, true};
 		if(VerticalConveyor.renderBottomBelt(blockEntity, facing))
 		{
 			TextureAtlasSprite sprite = ClientUtils.getSprite(
-					conveyor.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
+					instance.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
 			);
 			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
-			walls = new boolean[]{renderBottomWall(facing, 0, conveyor), renderBottomWall(facing, 1, conveyor)};
+			walls = new boolean[]{renderBottomWall(facing, 0, context), renderBottomWall(facing, 1, context)};
 			baseModel.addAll(ModelConveyor.getBaseConveyor(
 					facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
-					new boolean[]{true, false}, spriteColour, conveyor.getDyeColour()
+					new boolean[]{true, false}, spriteColour, instance.getDyeColour()
 			));
 		}
-		addCoverQuads(baseModel, type, conveyor, walls);
+		addCoverQuads(baseModel, context, walls);
 		return baseModel;
 	}
 
-	private void addCoverQuads(List<BakedQuad> baseModel, IConveyorType<T> type, @Nullable T conveyor, boolean[] walls)
+	private void addCoverQuads(List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context, boolean[] walls)
 	{
-		Direction facing = conveyor!=null?conveyor.getFacing(): Direction.NORTH;
-		BlockEntity blockEntity = conveyor!=null?conveyor.getBlockEntity(): null;
-		boolean renderBottom = conveyor!=null&&VerticalConveyor.renderBottomBelt(blockEntity, facing);
-
-		Block b = type.getCover(conveyor);
+		Block b = context.getCover();
 		if(b==Blocks.AIR)
 			return;
+		Direction facing = context.getFacing();
+		VerticalConveyor conveyor = context.instance();
+		BlockEntity blockEntity = conveyor!=null?conveyor.getBlockEntity(): null;
+		boolean renderBottom = conveyor!=null&&VerticalConveyor.renderBottomBelt(blockEntity, facing);
 		Function<Direction, TextureAtlasSprite> getSprite = makeTextureGetter(b);
 		float[] colour = {1, 1, 1, 1};
 		Matrix4 matrix = new Matrix4(facing);

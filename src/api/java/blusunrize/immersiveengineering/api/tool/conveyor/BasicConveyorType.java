@@ -1,17 +1,13 @@
-package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
+package blusunrize.immersiveengineering.api.tool.conveyor;
 
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorClientData;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public record BasicConveyorType<T extends ConveyorBase>(
+public record BasicConveyorType<T extends IConveyorBelt>(
 		ResourceLocation id,
 		boolean ticking,
 		boolean dyeable,
@@ -45,14 +41,8 @@ public record BasicConveyorType<T extends ConveyorBase>(
 	}
 
 	@Override
-	public void initClientData(Consumer<IConveyorClientData<? super T>> clientData)
+	public void initClientData(Consumer<IConveyorClientData<T>> clientData)
 	{
 		clientData.accept(makeClientData.get());
-	}
-
-	@Override
-	public Block getCover(T conveyor)
-	{
-		return conveyor!=null?conveyor.cover: Blocks.AIR;
 	}
 }

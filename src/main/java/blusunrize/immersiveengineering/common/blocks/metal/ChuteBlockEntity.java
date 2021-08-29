@@ -209,9 +209,9 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 		return false;
 	}
 
-	private static <T extends IConveyorBelt<T>> boolean isCovered(IConveyorBelt<T> belt)
+	private static <T extends IConveyorBelt> boolean isCovered(IConveyorBelt belt)
 	{
-		return belt.getType().getCover(belt.castThis())!=Blocks.AIR;
+		return IConveyorBelt.isCovered(belt, Blocks.AIR);
 	}
 
 	@Override

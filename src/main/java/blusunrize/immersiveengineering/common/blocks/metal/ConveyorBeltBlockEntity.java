@@ -57,7 +57,7 @@ import javax.annotation.Nullable;
 import java.util.Map.Entry;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
-public class ConveyorBeltBlockEntity<T extends IConveyorBelt<T>> extends IEBaseBlockEntity
+public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBlockEntity
 		implements IStateBasedDirectional, ICollisionBounds, ISelectionBounds, IHammerInteraction,
 		IPlayerInteraction, IConveyorBlockEntity<T>, IPropertyPassthrough, IETickableBlockEntity
 {

@@ -21,6 +21,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -36,7 +37,7 @@ import java.util.List;
 /**
  * An interface for the external handling of conveyorbelts
  */
-public interface IConveyorBelt<T extends IConveyorBelt<T>>
+public interface IConveyorBelt
 {
 	BlockEntity getBlockEntity();
 
@@ -221,12 +222,12 @@ public interface IConveyorBelt<T extends IConveyorBelt<T>>
 				entity.setPos(entity.getX()+move*getFacing().getStepX(), entity.getY()+1*move, entity.getZ()+move*getFacing().getStepZ());
 			}
 			if(!contact)
-				ConveyorHandler.applyMagnetSuppression(entity, (IConveyorBlockEntity)getBlockEntity());
+				ConveyorHandler.applyMagnetSuppression(entity, (IConveyorBlockEntity<?>)getBlockEntity());
 			else
 			{
 				BlockPos nextPos = getBlockEntity().getBlockPos().relative(getFacing());
 				if(!(SafeChunkUtils.getSafeBE(getBlockEntity().getLevel(), nextPos) instanceof IConveyorBlockEntity))
-					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorBlockEntity)getBlockEntity());
+					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorBlockEntity<?>)getBlockEntity());
 			}
 
 			// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
@@ -260,7 +261,7 @@ public interface IConveyorBelt<T extends IConveyorBelt<T>>
 	 */
 	default void onItemDeployed(ItemEntity entity)
 	{
-		ConveyorHandler.applyMagnetSuppression(entity, (IConveyorBlockEntity)getBlockEntity());
+		ConveyorHandler.applyMagnetSuppression(entity, (IConveyorBlockEntity<?>)getBlockEntity());
 	}
 
 	default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
@@ -314,8 +315,8 @@ public interface IConveyorBelt<T extends IConveyorBelt<T>>
 		for(BlockPos pos : getNextConveyorCandidates())
 		{
 			BlockEntity outputTile = SafeChunkUtils.getSafeBE(getBlockEntity().getLevel(), pos);
-			if(outputTile instanceof IConveyorBlockEntity)
-				return ((IConveyorBlockEntity)outputTile).getConveyorInstance();
+			if(outputTile instanceof IConveyorBlockEntity<?> convOut)
+				return convOut.getConveyorInstance();
 		}
 		return null;
 	}
@@ -342,10 +343,17 @@ public interface IConveyorBelt<T extends IConveyorBelt<T>>
 
 	void readConveyorNBT(CompoundTag nbt);
 
-	IConveyorType<T> getType();
+	IConveyorType<?> getType();
 
-	default T castThis()
+	Block getCover();
+
+	static Block getCoverOrDefault(@Nullable IConveyorBelt belt, Block fallback)
 	{
-		return (T)this;
+		return belt!=null?belt.getCover(): fallback;
+	}
+
+	static boolean isCovered(@Nullable IConveyorBelt belt, Block fallback)
+	{
+		return getCoverOrDefault(belt, fallback)!=Blocks.AIR;
 	}
 }

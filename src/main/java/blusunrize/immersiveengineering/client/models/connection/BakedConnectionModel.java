@@ -30,6 +30,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -87,7 +88,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 		if(side==null&&extraData.hasProperty(Model.CONNECTIONS))
 		{
 			T extraKey = extraCacheKey.map(ickp -> ickp.getKey(state, side, rand, extraData), Function.identity());
-			RenderCacheKey ad = new RenderCacheKey(state, null, extraKey);
+			RenderCacheKey ad = new RenderCacheKey(state, BlockModelRotation.X0_Y0, null, extraKey);
 			Set<Connection.RenderData> data = new HashSet<>();
 			ConnectionModelData orig = extraData.getData(Model.CONNECTIONS);
 			assert (orig!=null);

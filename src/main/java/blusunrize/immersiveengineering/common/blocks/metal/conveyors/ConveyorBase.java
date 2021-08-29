@@ -49,12 +49,12 @@ import java.util.function.Predicate;
 /**
  * @author BluSunrize - 20.08.2016
  */
-public abstract class ConveyorBase<T extends ConveyorBase<T>> implements IConveyorBelt<T>
+public abstract class ConveyorBase implements IConveyorBelt
 {
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/conveyor");
 	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor/off");
 
-	public Block cover = Blocks.AIR;
+	private Block cover = Blocks.AIR;
 
 	ConveyorDirection direction = ConveyorDirection.HORIZONTAL;
 	@Nullable
@@ -202,7 +202,7 @@ public abstract class ConveyorBase<T extends ConveyorBase<T>> implements IConvey
 
 	protected final boolean isCovered()
 	{
-		return getType().getCover(castThis())!=Blocks.AIR;
+		return IConveyorBelt.isCovered(this, Blocks.AIR);
 	}
 
 	private static List<AABB> getBoxes(ShapeKey key)
@@ -297,8 +297,8 @@ public abstract class ConveyorBase<T extends ConveyorBase<T>> implements IConvey
 	protected final boolean isPowered()
 	{
 		BlockEntity te = getBlockEntity();
-		if(te instanceof ConveyorBeltBlockEntity)
-			return ((ConveyorBeltBlockEntity)te).isRSPowered();
+		if(te instanceof ConveyorBeltBlockEntity<?> conveBE)
+			return conveBE.isRSPowered();
 		else
 			return te.getLevel().getBestNeighborSignal(te.getBlockPos()) > 0;
 	}
@@ -312,6 +312,12 @@ public abstract class ConveyorBase<T extends ConveyorBase<T>> implements IConvey
 		return Direction.NORTH;
 	}
 
+	@Override
+	public Block getCover()
+	{
+		return cover;
+	}
+
 	private static class ShapeKey
 	{
 		private final ConveyorDirection direction;
@@ -320,7 +326,7 @@ public abstract class ConveyorBase<T extends ConveyorBase<T>> implements IConvey
 		@Nullable
 		private final VoxelShape superShape;
 
-		public ShapeKey(ConveyorBase<?> conveyor, boolean collision, @Nullable VoxelShape superShape)
+		public ShapeKey(ConveyorBase conveyor, boolean collision, @Nullable VoxelShape superShape)
 		{
 			this.direction = conveyor.getConveyorDirection();
 			this.collision = collision;

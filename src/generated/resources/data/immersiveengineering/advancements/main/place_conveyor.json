@@ -16,22 +16,10 @@
     "hidden": false
   },
   "criteria": {
-    "splitter": {
+    "vertical": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_splitter"
-      }
-    },
-    "dropper": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_dropper"
-      }
-    },
-    "basic": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_basic"
+        "block": "immersiveengineering:conveyor_vertical"
       }
     },
     "redstone": {
@@ -40,10 +28,10 @@
         "block": "immersiveengineering:conveyor_redstone"
       }
     },
-    "vertical": {
+    "splitter": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_vertical"
+        "block": "immersiveengineering:conveyor_splitter"
       }
     },
     "extract": {
@@ -51,16 +39,28 @@
       "conditions": {
         "block": "immersiveengineering:conveyor_extract"
       }
+    },
+    "basic": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "immersiveengineering:conveyor_basic"
+      }
+    },
+    "dropper": {
+      "trigger": "minecraft:placed_block",
+      "conditions": {
+        "block": "immersiveengineering:conveyor_dropper"
+      }
     }
   },
   "requirements": [
     [
-      "splitter",
-      "dropper",
-      "basic",
-      "redstone",
       "vertical",
-      "extract"
+      "redstone",
+      "splitter",
+      "extract",
+      "basic",
+      "dropper"
     ]
   ]
 }

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
@@ -30,7 +31,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -47,13 +47,13 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 /**
  * @author BluSunrize - 20.08.2016
  */
-public class VerticalConveyor extends ConveyorBase<VerticalConveyor>
+public class VerticalConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "vertical");
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/vertical");
 	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor/vertical_off");
 	public static IConveyorType<VerticalConveyor> TYPE = new BasicConveyorType<>(
-			NAME, false, true, VerticalConveyor::new, () -> new VerticalConveyorRender<>(texture_on, texture_off)
+			NAME, false, true, VerticalConveyor::new, () -> new VerticalConveyorRender(texture_on, texture_off)
 	);
 
 	public VerticalConveyor(BlockEntity tile)
@@ -217,7 +217,7 @@ public class VerticalConveyor extends ConveyorBase<VerticalConveyor>
 			}
 		}
 
-		if(cover!=Blocks.AIR&&entity instanceof ItemEntity)
+		if(isCovered()&&entity instanceof ItemEntity)
 			((ItemEntity)entity).setPickUpDelay(10);
 	}
 

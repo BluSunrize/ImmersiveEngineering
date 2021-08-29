@@ -107,9 +107,9 @@ public class ConveyorHandler
 	public static <T extends IConveyorBelt>
 	T getConveyor(IConveyorType<T> type, @Nonnull BlockEntity tile)
 	{
-		if(tile instanceof IConveyorBlockEntity)
+		if(tile instanceof IConveyorBlockEntity<?> convBE)
 		{
-			IConveyorBelt fromTile = ((IConveyorBlockEntity)tile).getConveyorInstance();
+			IConveyorBelt fromTile = convBE.getConveyorInstance();
 			if(fromTile!=null)
 				return (T)fromTile;
 		}
@@ -242,7 +242,7 @@ public class ConveyorHandler
 	/**
 	 * This interface solely exists to mark a tile as conveyor, and have it ignored for insertion
 	 */
-	public interface IConveyorBlockEntity<T extends IConveyorBelt<T>> extends IConveyorAttachable
+	public interface IConveyorBlockEntity<T extends IConveyorBelt> extends IConveyorAttachable
 	{
 		T getConveyorInstance();
 

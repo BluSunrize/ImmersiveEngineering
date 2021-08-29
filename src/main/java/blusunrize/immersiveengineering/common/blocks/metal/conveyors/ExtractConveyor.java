@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
@@ -43,7 +44,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 /**
  * @author BluSunrize - 19.05.2017
  */
-public class ExtractConveyor extends ConveyorBase<ExtractConveyor>
+public class ExtractConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "extract");
 	public static final IConveyorType<ExtractConveyor> TYPE = new BasicConveyorType<>(

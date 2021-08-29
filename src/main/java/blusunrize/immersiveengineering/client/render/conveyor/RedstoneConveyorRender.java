@@ -3,26 +3,55 @@ package blusunrize.immersiveengineering.client.render.conveyor;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.RedstoneConveyor;
+import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ModelBakeEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
-import javax.annotation.Nullable;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
+@EventBusSubscriber(modid = Lib.MODID, value = Dist.CLIENT, bus = Bus.MOD)
 public class RedstoneConveyorRender extends BasicConveyorRender<RedstoneConveyor>
 {
 	public static final ResourceLocation texture_panel = new ResourceLocation("immersiveengineering:block/conveyor/redstone");
 	public static final String MODEL_NAME = "conveyor_redstone_panel";
 	public static DynamicModel MODEL_PANEL;
+
+	private static final Map<Direction, BakedModel> ROTATED_MODELS = new EnumMap<>(Direction.class);
+
+	@SubscribeEvent
+	public static void initModels(ModelBakeEvent ev)
+	{
+		ResourceLocation modelName = MODEL_PANEL.getName();
+		UnbakedModel model = ev.getModelLoader().getModel(modelName);
+		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
+		{
+			ModelState transform = BlockModelRotation.by(0, (int)d.toYRot()+180);
+			BakedModel baked = model.bake(
+					ev.getModelLoader(), ModelLoader.defaultTextureGetter(), transform, modelName
+			);
+			ROTATED_MODELS.put(d, baked);
+		}
+	}
 
 	public RedstoneConveyorRender(ResourceLocation active, ResourceLocation inactive)
 	{
@@ -30,29 +59,33 @@ public class RedstoneConveyorRender extends BasicConveyorRender<RedstoneConveyor
 	}
 
 	@Override
-	public String getModelCacheKey(IConveyorType<RedstoneConveyor> type, @Nullable RedstoneConveyor instance)
+	public String getModelCacheKey(RenderContext<RedstoneConveyor> context)
 	{
-		String key = super.getModelCacheKey(type, instance);
+		String key = super.getModelCacheKey(context);
+		RedstoneConveyor instance = context.instance();
 		if(instance!=null)
 			key += "p"+instance.isPanelRight();
 		return key;
 	}
 
 	@Override
-	public boolean renderWall(Direction facing, int wall, @Nullable RedstoneConveyor instance)
+	public boolean shouldRenderWall(Direction facing, int wall, RenderContext<RedstoneConveyor> context)
 	{
+		RedstoneConveyor instance = context.instance();
 		if(instance==null||(instance.isPanelRight()&&wall==1)||(!instance.isPanelRight()&&wall==0))
 			return true;
-		return super.renderWall(facing, wall, instance);
+		return super.shouldRenderWall(facing, wall, context);
 	}
 
 	@Override
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, IConveyorType<RedstoneConveyor> type, @Nullable RedstoneConveyor conveyor)
+	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<RedstoneConveyor> context)
 	{
-		BakedModel model = MODEL_PANEL.get();
+		boolean panelRight = context.instance()==null||context.instance().isPanelRight();
+		Direction facing = context.getFacing();
+		BakedModel model = ROTATED_MODELS.get(panelRight?facing: facing.getOpposite());
 		if(model!=null)
 		{
-			String[] parts = (conveyor!=null&&!conveyor.isActive())?new String[]{"panel", "lamp"}: new String[]{"panel"};
+			String[] parts = context.isActiveOr(false)?new String[]{"panel", "lamp"}: new String[]{"panel"};
 			IEObjState objState = new IEObjState(VisibilityList.show(parts));
 			BlockState state = ConveyorHandler.getBlock(RedstoneConveyor.TYPE).defaultBlockState();
 			baseModel.addAll(model.getQuads(state, null, Utils.RAND,

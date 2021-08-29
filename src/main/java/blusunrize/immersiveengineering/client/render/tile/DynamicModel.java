@@ -46,4 +46,9 @@ public class DynamicModel
 	{
 		return get().getQuads(null, null, Utils.RAND, data);
 	}
+
+	public ResourceLocation getName()
+	{
+		return name;
+	}
 }
