@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
@@ -1988,12 +1989,11 @@ public class Recipes extends RecipeProvider
 		ItemLike extract = ConveyorHandler.getBlock(ExtractConveyor.TYPE);
 		ItemLike splitter = ConveyorHandler.getBlock(SplitConveyor.TYPE);
 		ItemLike vertical = ConveyorHandler.getBlock(VerticalConveyor.TYPE);
-		//TODO re-add
-		//addCoveyorCoveringRecipe(covered, basic, out);
-		//addCoveyorCoveringRecipe(dropperCovered, dropper, out);
-		//addCoveyorCoveringRecipe(extractCovered, extract, out);
-		//addCoveyorCoveringRecipe(splitterCovered, splitter, out);
-		//addCoveyorCoveringRecipe(verticalCovered, vertical, out);
+		addCoveyorCoveringRecipe(basic, out);
+		addCoveyorCoveringRecipe(dropper, out);
+		addCoveyorCoveringRecipe(extract, out);
+		addCoveyorCoveringRecipe(splitter, out);
+		addCoveyorCoveringRecipe(vertical, out);
 		ShapedRecipeBuilder.shaped(basic, 8)
 				.pattern("lll")
 				.pattern("iri")
@@ -2051,15 +2051,15 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(vertical)));
 	}
 
-	private void addCoveyorCoveringRecipe(ItemLike covered, ItemLike base, Consumer<FinishedRecipe> out)
+	private void addCoveyorCoveringRecipe(ItemLike basic, Consumer<FinishedRecipe> out)
 	{
-		ShapedRecipeBuilder.shaped(covered)
+		new ShapedNBTBuilder(ConveyorBlock.makeCovered(basic, MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD).get()))
 				.pattern("s")
 				.pattern("c")
 				.define('s', IETags.getItemTag(IETags.scaffoldingSteel))
-				.define('c', base)
-				.unlockedBy("has_vertical_conveyor", has(base))
-				.save(out, toRL(toPath(covered)));
+				.define('c', basic)
+				.unlockedBy("has_vertical_conveyor", has(basic))
+				.save(out, toRL(toPath(basic)+"_covered"));
 	}
 
 	private void recipesCloth(@Nonnull Consumer<FinishedRecipe> out)

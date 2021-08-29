@@ -38,7 +38,7 @@ public class RedstoneConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "redstone");
 	public static final IConveyorType<RedstoneConveyor> TYPE = new BasicConveyorType<>(
-			NAME, false, true, RedstoneConveyor::new, () -> new RedstoneConveyorRender(texture_on, texture_off)
+			NAME, false, true, RedstoneConveyor::new, () -> new RedstoneConveyorRender(texture_on, texture_off), false
 	);
 
 	private boolean panelRight = true;

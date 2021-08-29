@@ -318,6 +318,12 @@ public abstract class ConveyorBase implements IConveyorBelt
 		return cover;
 	}
 
+	@Override
+	public void setCover(Block cover)
+	{
+		this.cover = cover;
+	}
+
 	private static class ShapeKey
 	{
 		private final ConveyorDirection direction;

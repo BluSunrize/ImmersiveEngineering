@@ -356,4 +356,6 @@ public interface IConveyorBelt
 	{
 		return getCoverOrDefault(belt, fallback)!=Blocks.AIR;
 	}
+
+	void setCover(Block cover);
 }

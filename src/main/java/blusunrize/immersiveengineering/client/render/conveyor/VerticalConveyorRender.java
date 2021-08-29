@@ -71,23 +71,24 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel, RenderContext<VerticalConveyor> context)
 	{
 		VerticalConveyor instance = context.instance();
-		if(instance==null)
-			return baseModel;
-		BlockEntity blockEntity = instance.getBlockEntity();
-		Direction facing = context.getFacing();
-
 		boolean[] walls = {true, true};
-		if(VerticalConveyor.renderBottomBelt(blockEntity, facing))
+		if(instance!=null)
 		{
-			TextureAtlasSprite sprite = ClientUtils.getSprite(
-					instance.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
-			);
-			TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
-			walls = new boolean[]{renderBottomWall(facing, 0, context), renderBottomWall(facing, 1, context)};
-			baseModel.addAll(ModelConveyor.getBaseConveyor(
-					facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
-					new boolean[]{true, false}, spriteColour, instance.getDyeColour()
-			));
+			BlockEntity blockEntity = instance.getBlockEntity();
+			Direction facing = context.getFacing();
+
+			if(VerticalConveyor.renderBottomBelt(blockEntity, facing))
+			{
+				TextureAtlasSprite sprite = ClientUtils.getSprite(
+						instance.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
+				);
+				TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
+				walls = new boolean[]{renderBottomWall(facing, 0, context), renderBottomWall(facing, 1, context)};
+				baseModel.addAll(ModelConveyor.getBaseConveyor(
+						facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
+						new boolean[]{true, false}, spriteColour, instance.getDyeColour()
+				));
+			}
 		}
 		addCoverQuads(baseModel, context, walls);
 		return baseModel;

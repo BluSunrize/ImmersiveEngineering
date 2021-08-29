@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
@@ -78,10 +79,12 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 	};
 
 	private final IConveyorType<T> type;
+	private final Block fallbackCover;
 
-	public ModelConveyor(IConveyorType<T> type)
+	public ModelConveyor(IConveyorType<T> type, Block fallbackCover)
 	{
 		this.type = type;
+		this.fallbackCover = fallbackCover;
 	}
 
 	@Nonnull
@@ -103,11 +106,8 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			}
 		}
 		IConveyorClientData<T> clientData = ClientConveyors.getData(type);
-		//TODO use different fallback based on items
-		IConveyorClientData.RenderContext<T> context = new RenderContext<>(type, conveyor, Blocks.AIR);
+		IConveyorClientData.RenderContext<T> context = new RenderContext<>(type, conveyor, fallbackCover);
 		String key = clientData.getModelCacheKey(context);
-		if(blockState!=null)
-			modelCache.invalidateAll();
 		List<BakedQuad> cachedQuads = modelCache.getIfPresent(key);
 		if(cachedQuads==null)
 		{
@@ -425,27 +425,33 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		return overrideList;
 	}
 
-	static HashMap<String, BakedModel> itemModelCache = new HashMap<>();
 	ItemOverrides overrideList = new ItemOverrides()
 	{
+		static record Key(IConveyorType<?> type, Block defaultCover)
+		{
+		}
+
+		private final HashMap<Key, BakedModel> itemModelCache = new HashMap<>();
+
 		@Override
 		public BakedModel resolve(@Nonnull BakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int unused)
 		{
-			String key = "default";
-			IConveyorType<?> conveyorType;
-			if(stack.getItem() instanceof BlockItem)
+			if(stack.getItem() instanceof BlockItem asBlock)
 			{
-				Block b = ((BlockItem)stack.getItem()).getBlock();
-				conveyorType = ConveyorHandler.getType(b);
+				Block b = asBlock.getBlock();
+				IConveyorType<?> conveyorType = ConveyorHandler.getType(b);
 				if(conveyorType!=null)
-					key = conveyorType.getId().toString();
-				BakedModel model = itemModelCache.get(key);
-				if(model==null)
 				{
-					model = new ModelConveyor<>(conveyorType);
-					itemModelCache.put(key, model);
+					Block defaultCover = ConveyorBlock.getCover(stack);
+					Key key = new Key(conveyorType, defaultCover);
+					BakedModel model = itemModelCache.get(key);
+					if(model==null)
+					{
+						model = new ModelConveyor<>(conveyorType, defaultCover);
+						itemModelCache.put(key, model);
+					}
+					return model;
 				}
-				return model;
 			}
 			return Minecraft.getInstance().getModelManager().getMissingModel();
 		}
@@ -493,7 +499,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
 							   ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
-			return new ModelConveyor<>(type);
+			return new ModelConveyor<>(type, Blocks.AIR);
 		}
 
 		@Override

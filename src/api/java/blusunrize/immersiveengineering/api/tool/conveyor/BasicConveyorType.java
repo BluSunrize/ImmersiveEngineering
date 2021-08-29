@@ -12,9 +12,20 @@ public record BasicConveyorType<T extends IConveyorBelt>(
 		boolean ticking,
 		boolean dyeable,
 		Function<BlockEntity, T> makeBelt,
-		Supplier<IConveyorClientData<T>> makeClientData
+		Supplier<IConveyorClientData<T>> makeClientData,
+		boolean acceptsCovers
 ) implements IConveyorType<T>
 {
+	public BasicConveyorType(
+			ResourceLocation id,
+			boolean ticking,
+			boolean dyeable,
+			Function<BlockEntity, T> makeBelt,
+			Supplier<IConveyorClientData<T>> makeClientData
+	)
+	{
+		this(id, ticking, dyeable, makeBelt, makeClientData, true);
+	}
 
 	@Override
 	public T makeInstance(BlockEntity blockEntity)

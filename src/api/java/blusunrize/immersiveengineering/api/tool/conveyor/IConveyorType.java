@@ -19,4 +19,6 @@ public interface IConveyorType<T extends IConveyorBelt>
 	void initClientData(Consumer<IConveyorClientData<T>> clientData);
 
 	ResourceLocation getId();
+
+	boolean acceptsCovers();
 }
