@@ -3035,6 +3035,7 @@ bdaadd458ca2497633cdebabe74861cc3d568660 data/immersiveengineering/tags/items/to
 7bb5faea7280d5130cc755a75c412169a90fb9a0 data/minecraft/tags/blocks/climbable.json
 7a37a42b6d89fa15d014d8ff8bcf7ff36d87f8ce data/minecraft/tags/blocks/fences.json
 89339a771c8b34a7d29c05003ab0ec267c94766c data/minecraft/tags/blocks/flower_pots.json
+bb9f70e178c6c42746aa13014d01c576f9811fe2 data/minecraft/tags/blocks/mineable/axe.json
 97e29125d9d4bd84a13fb538591927f47d4ba054 data/minecraft/tags/blocks/mineable/pickaxe.json
 f04948c07759a8dc0add9b8d025580901d73ea24 data/minecraft/tags/blocks/mineable/shovel.json
 4d060078dcf7bbe7aee6d2b3ac37584d727e464d data/minecraft/tags/blocks/needs_iron_tool.json

@@ -18,12 +18,19 @@ import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
+import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Sets;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.Tag.Builder;
+import net.minecraft.tags.Tag.BuilderEntry;
 import net.minecraft.tags.Tag.Named;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Tiers;
@@ -34,7 +41,11 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
+import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 class IEBlockTags extends BlockTagsProvider
 {
@@ -118,6 +129,7 @@ class IEBlockTags extends BlockTagsProvider
 
 		registerHammerMineable();
 		registerPickaxeMineable();
+		registerAxeMineable();
 		tag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.add(WoodenDecoration.sawdust.get());
 		tag(IETags.wirecutterHarvestable)
@@ -125,6 +137,7 @@ class IEBlockTags extends BlockTagsProvider
 		tag(IETags.drillHarvestable)
 				.addTag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.addTag(BlockTags.MINEABLE_WITH_PICKAXE);
+		checkAllRegisteredForBreaking();
 
 		/* MOD COMPAT STARTS HERE */
 
@@ -146,6 +159,17 @@ class IEBlockTags extends BlockTagsProvider
 			if(block instanceof ConnectorBlock<?>||block instanceof ConveyorBlock)
 				tag.add(block);
 		}
+	}
+
+	private void registerAxeMineable()
+	{
+		TagAppender<Block> tag = tag(BlockTags.MINEABLE_WITH_AXE);
+		IEBlocks.REGISTER.getEntries().stream()
+				.map(RegistryObject::get)
+				.filter(b -> b.defaultBlockState().getMaterial()==Material.WOOD)
+				.forEach(tag::add);
+		tag.add(Cloth.shaderBannerWall.get());
+		tag.add(Cloth.shaderBanner.get());
 	}
 
 	private void registerPickaxeMineable()
@@ -195,5 +219,42 @@ class IEBlockTags extends BlockTagsProvider
 					default -> throw new IllegalArgumentException("No tag available for "+level.name());
 				};
 		tag(tag).add(block.get());
+	}
+
+	private void checkAllRegisteredForBreaking()
+	{
+		List<Named<Block>> knownHarvestTags = ImmutableList.of(
+				BlockTags.MINEABLE_WITH_AXE,
+				BlockTags.MINEABLE_WITH_PICKAXE,
+				BlockTags.MINEABLE_WITH_SHOVEL,
+				IETags.wirecutterHarvestable,
+				IETags.hammerHarvestable
+		);
+		Set<ResourceLocation> harvestable = knownHarvestTags.stream()
+				.map(this::tag)
+				.map(TagAppender::getInternalBuilder)
+				.flatMap(Builder::getEntries)
+				.map(BuilderEntry::getEntry)
+				.filter(e -> e instanceof Tag.ElementEntry)
+				.map(Object::toString)
+				.map(ResourceLocation::new)
+				.collect(Collectors.toSet());
+		Set<ResourceLocation> knownNonHarvestable = Stream.of(
+						Cloth.balloon, Cloth.cushion, Misc.fakeLight, Misc.pottedHemp, Misc.hempPlant
+				)
+				.map(BlockEntry::getId)
+				.collect(Collectors.toSet());
+		Set<ResourceLocation> registered = IEBlocks.REGISTER.getEntries().stream()
+				.map(RegistryObject::get)
+				.filter(b -> !(b instanceof IEFluidBlock))
+				.map(Block::getRegistryName)
+				.filter(name -> !knownNonHarvestable.contains(name))
+				.collect(Collectors.toSet());
+		Set<ResourceLocation> notHarvestable = Sets.difference(registered, harvestable);
+		if(!notHarvestable.isEmpty())
+		{
+			notHarvestable.forEach(rl -> IELogger.logger.error("Not harvestable: {}", rl));
+			throw new RuntimeException();
+		}
 	}
 }
