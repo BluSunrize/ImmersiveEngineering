@@ -106,7 +106,7 @@ public class ImmersiveEngineering
 	// Complete hack: DistExecutor::safeRunForDist intentionally tries to access the "wrong" supplier in dev, which
 	// throws an error (rather than an exception) on J16 due to trying to load a client-only class. So we need to
 	// replace the error with an exception in dev.
-	private static <T>
+	public static <T>
 	Supplier<T> bootstrapErrorToXCPInDev(Supplier<T> in)
 	{
 		if(FMLLoader.isProduction())

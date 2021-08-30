@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.DistExecutor.SafeCallable;
@@ -23,7 +24,7 @@ public class DistField<T>
 
 	public DistField(Dist correctDist, Supplier<SafeCallable<T>> content)
 	{
-		this.content = DistExecutor.safeCallWhenOn(correctDist, content);
+		this.content = DistExecutor.safeCallWhenOn(correctDist, ImmersiveEngineering.bootstrapErrorToXCPInDev(content));
 	}
 
 	public static <T> DistField<T> client(Supplier<SafeCallable<T>> content)
