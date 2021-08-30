@@ -24,7 +24,7 @@ public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 	public ToolboxScreen(ToolboxContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("toolbox"));
-		this.imageHeight = 255;
+		this.imageHeight = 238;
 	}
 
 	@Override
