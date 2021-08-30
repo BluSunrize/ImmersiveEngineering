@@ -286,8 +286,8 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	 */
 	protected void markChunkDirty()
 	{
-		if(this.world!=null)
-			this.world.markChunkDirty(this.pos, this);
+		if(this.world!=null && this.world.isBlockLoaded(this.pos))
+			this.world.getChunkAt(this.pos).markDirty();
 	}
 
 	@Nonnull
@@ -311,6 +311,21 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	{
 		super.setWorldAndPos(world, pos);
 		this.redstoneBySide.clear();
+	}
+
+	// Based on the super version, but works around a Forge patch to World#markChunkDirty causing duplicate comparator
+	// updates and only performs comparator updates if this TE actually has comparator behavior
+	@Override
+	public void markDirty()
+	{
+		if (this.world != null) {
+			BlockState state = this.world.getBlockState(this.pos);
+			((TileEntityAccess) this).setCachedBlockState(state);
+			markChunkDirty();
+			if (this instanceof IComparatorOverride && !state.isAir(this.world, this.pos)) {
+				this.world.updateComparatorOutputLevel(this.pos, state.getBlock());
+			}
+		}
 	}
 
 	protected void onNeighborBlockChange(BlockPos otherPos)

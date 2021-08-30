@@ -223,21 +223,10 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 		return (te instanceof CircuitTableTileEntity)?(CircuitTableTileEntity)te: null;
 	}
 
-	private void setDummy(boolean dummy)
-	{
-		setState(getState().with(IEProperties.MULTIBLOCKSLAVE, dummy));
-	}
-
 	@Override
 	public void placeDummies(BlockItemUseContext ctx, BlockState state)
 	{
-		Direction facing = getFacing();
-		Direction dummyDir = DeskBlock.getDeskDummyOffset(world, getPos(), facing, ctx);
-		BlockPos dummyPos = pos.offset(dummyDir);
-		boolean mirror = dummyDir!=facing.rotateY();
-		if(mirror)
-			setDummy(true);
-		world.setBlockState(dummyPos, state.with(IEProperties.MULTIBLOCKSLAVE, !mirror));
+		DeskBlock.placeDummies(getBlockState(), world, pos, ctx);
 	}
 
 	@Override

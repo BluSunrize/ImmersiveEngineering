@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.IEPotions;
+import blusunrize.immersiveengineering.mixin.accessors.FlowingFluidAccess;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.ILiquidContainer;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.FlowingFluid;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -26,17 +26,13 @@ import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.function.Consumer;
 
 public class ConcreteFluid extends IEFluid
@@ -131,20 +127,6 @@ public class ConcreteFluid extends IEFluid
 		return ret;
 	}
 
-	private static Method doesSideHaveHoles = ObfuscationReflectionHelper.findMethod(FlowingFluid.class, "func_212751_a",
-			Direction.class, IBlockReader.class, BlockPos.class, BlockState.class, BlockPos.class, BlockState.class);
-
-	private boolean doesSideHaveHoles(Direction side, IBlockReader world, BlockPos pos, BlockState state, BlockPos pos2, BlockState state2)
-	{
-		try
-		{
-			return (boolean)doesSideHaveHoles.invoke(this, side, world, pos, state, pos2, state2);
-		} catch(IllegalAccessException|InvocationTargetException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
-
 	@Nonnull
 	@Override
 	protected FluidState calculateCorrectFlowingState(IWorldReader worldIn, BlockPos pos, @Nonnull BlockState blockStateIn)
@@ -159,7 +141,7 @@ public class ConcreteFluid extends IEFluid
 			BlockState neighborState = worldIn.getBlockState(neighborPos);
 			FluidState fluidAtNeighbor = neighborState.getFluidState();
 			if(fluidAtNeighbor.getFluid().isEquivalentTo(this)
-					&&this.doesSideHaveHoles(neighborSide, worldIn, pos, blockStateIn, neighborPos, neighborState)
+					&&((FlowingFluidAccess) this).invokeDoesSideHaveHoles(neighborSide, worldIn, pos, blockStateIn, neighborPos, neighborState)
 					&&fluidAtNeighbor.getLevel() > maxNeighborLevel
 			)
 			{
@@ -172,7 +154,7 @@ public class ConcreteFluid extends IEFluid
 		BlockState aboveState = worldIn.getBlockState(abovePos);
 		FluidState aboveFluid = aboveState.getFluidState();
 		FluidState currFluid = blockStateIn.getFluidState();
-		if(!aboveFluid.isEmpty()&&aboveFluid.getFluid().isEquivalentTo(this)&&this.doesSideHaveHoles(Direction.UP, worldIn, pos, blockStateIn, abovePos, aboveState))
+		if(!aboveFluid.isEmpty()&&aboveFluid.getFluid().isEquivalentTo(this)&&((FlowingFluidAccess) this).invokeDoesSideHaveHoles(Direction.UP, worldIn, pos, blockStateIn, abovePos, aboveState))
 			return this.getFlowingFluidState(8, true, currFluid, Math.max(correspondingTimer, aboveFluid.get(IEProperties.INT_16)));
 		else
 		{

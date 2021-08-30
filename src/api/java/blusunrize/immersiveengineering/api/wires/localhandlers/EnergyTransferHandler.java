@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap;
 import blusunrize.immersiveengineering.api.wires.utils.BinaryHeap.HeapEntry;
 import com.google.common.base.Preconditions;
+import it.unimi.dsi.fastutil.objects.AbstractObject2DoubleMap.BasicEntry;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMaps;
 import it.unimi.dsi.fastutil.objects.Object2DoubleOpenHashMap;
@@ -221,7 +222,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 				continue;
 			final Map<ConnectionPoint, Path> pathsToSinks = getPathsFromSource(sourceCp);
 			double maxSum = 0;
-			Object2DoubleMap<Path> maxOut = new Object2DoubleOpenHashMap<>();
+			List<Object2DoubleMap.Entry<Path>> maxOut = new ArrayList<>(sinks.size());
 			for(Entry<ConnectionPoint, EnergyConnector> sinkEntry : sinks.entrySet())
 			{
 				Path p = pathsToSinks.get(sinkEntry.getKey());
@@ -232,16 +233,17 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 					if(requested <= 0)
 						continue;
 					double requiredAtSource = Math.min(requested/(1-p.loss), available);
-					maxOut.put(p, requiredAtSource);
+					maxOut.add(new BasicEntry<>(p, requiredAtSource));
 					maxSum += requiredAtSource;
 				}
 			}
 			if(maxSum==0)
 				continue;
 			double allowedFactor = Math.min(1, available/maxSum);
-			for(Path p : maxOut.keySet())
+			for(Object2DoubleMap.Entry<Path> entry : maxOut)
 			{
-				double atSource = allowedFactor*maxOut.getDouble(p);
+				Path p = entry.getKey();
+				double atSource = allowedFactor*entry.getDoubleValue();
 				double currentLoss = 0;
 				ConnectionPoint currentPoint = sourceCp;
 				for(Connection c : p.conns)
@@ -272,9 +274,10 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	{
 		Preconditions.checkNotNull(globalNet);
 		List<Pair<Connection, Double>> toBurn = new ArrayList<>();
-		for(Connection c : transferredLastTick.keySet())
+		for(Object2DoubleMap.Entry<Connection> entry : transferredLastTick.object2DoubleEntrySet())
 		{
-			double transferred = transferredLastTick.getDouble(c);
+			Connection c = entry.getKey();
+			double transferred = entry.getDoubleValue();
 			if(c.type instanceof IEnergyWire&&((IEnergyWire)c.type).shouldBurn(c, transferred))
 				toBurn.add(new ImmutablePair<>(c, transferred));
 		}

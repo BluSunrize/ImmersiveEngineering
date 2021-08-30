@@ -9,7 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -18,19 +21,34 @@ import net.minecraft.block.material.Material;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.state.Property;
 import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.tileentity.TileEntityType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Direction.Axis;
 import net.minecraft.util.Mirror;
 import net.minecraft.util.Rotation;
+import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.shapes.ISelectionContext;
+import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.RegistryObject;
 
 public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
 {
+	private static final CachedShapesWithTransform<Boolean, Direction> SHAPES = CachedShapesWithTransform.createDirectional(
+			b -> {
+				double xMin = b?0: 1/16.;
+				double xMax = xMin + 15 / 16.;
+				return ImmutableList.of(
+						new AxisAlignedBB(0, 13 / 16., 0, 1, 1, 1),
+						new AxisAlignedBB(xMin, 0, 1 / 16., xMax, 13 / 16., 15 / 16.)
+				);
+			}
+	);
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 	public static final Property<Boolean> DUMMY = IEProperties.MULTIBLOCKSLAVE;
 
@@ -43,7 +61,7 @@ public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
 	protected void fillStateContainer(Builder<Block, BlockState> builder)
 	{
 		super.fillStateContainer(builder);
-		builder.add(DUMMY, FACING);
+		builder.add(DUMMY, FACING, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
@@ -69,7 +87,6 @@ public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
 	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
 	{
 		BlockPos start = context.getPos();
-		World w = context.getWorld();
 		return areAllReplaceable(start, start.up(2), context);
 	}
 
@@ -109,5 +126,24 @@ public class DeskBlock<T extends TileEntity> extends GenericTileBlock<T>
 		if(!world.getBlockState(dummyPos).isReplaceable(BlockItemUseContext.func_221536_a(ctx, dummyPos, dummyDir)))
 			dummyDir = dummyDir.getOpposite();
 		return dummyDir;
+	}
+
+	public static void placeDummies(BlockState state, World world, BlockPos pos, BlockItemUseContext ctx)
+	{
+		Direction facing = state.get(FACING);
+		Direction dummyDir = DeskBlock.getDeskDummyOffset(world, pos, facing, ctx);
+		BlockPos dummyPos = pos.offset(dummyDir);
+		boolean mirror = dummyDir!=facing.rotateY();
+		if(mirror)
+			world.setBlockState(pos, state.with(DUMMY, true));
+		world.setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
+				state.with(IEProperties.MULTIBLOCKSLAVE, !mirror), world, pos
+		));
+	}
+
+	@Override
+	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+	{
+		return SHAPES.get(state.get(DUMMY), state.get(FACING));
 	}
 }

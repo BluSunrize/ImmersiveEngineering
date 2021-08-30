@@ -378,9 +378,10 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 		return true;
 	}
 
+	// final: If any block wants to override this in the future, make sure to adjust IEBaseTE#markDirty as required
 	@Override
 	@SuppressWarnings("deprecation")
-	public int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
+	public final int getComparatorInputOverride(BlockState state, World world, BlockPos pos)
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof IEBlockInterfaces.IComparatorOverride)

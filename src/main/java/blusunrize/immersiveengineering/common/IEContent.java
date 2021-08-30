@@ -55,6 +55,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.PartialConcreteBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.StoneMultiBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -355,10 +356,9 @@ public class IEContent
 		WoodenDecoration.treatedFence = new IEFenceBlock("treated_fence", standardWoodPropertiesNoOverlay);
 		WoodenDecoration.treatedScaffolding = new ScaffoldingBlock("treated_scaffold", standardWoodPropertiesNotSolid);
 
-		WoodenDevices.craftingTable = new HorizontalFacingBlock<>("craftingtable", IETileTypes.CRAFTING_TABLE,
-				standardWoodPropertiesNotSolid);
-		WoodenDevices.workbench = new DeskBlock("workbench", IETileTypes.MOD_WORKBENCH);
-		WoodenDevices.circuitTable = new DeskBlock("circuit_table", IETileTypes.CIRCUIT_TABLE);
+		WoodenDevices.craftingTable = new CraftingTableBlock("craftingtable", IETileTypes.CRAFTING_TABLE, standardWoodPropertiesNotSolid);
+		WoodenDevices.workbench = new DeskBlock<>("workbench", IETileTypes.MOD_WORKBENCH);
+		WoodenDevices.circuitTable = new DeskBlock<>("circuit_table", IETileTypes.CIRCUIT_TABLE);
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
 		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
 		WoodenDevices.turntable = new TurntableBlock("turntable");
@@ -485,10 +485,10 @@ public class IEContent
 		for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
 			MetalDevices.chutes.put(metal, new ChuteBlock(metal, metalPropertiesNotSolid));
 
-		Multiblocks.cokeOven = new StoneMultiBlock<>("coke_oven", IETileTypes.COKE_OVEN);
-		Multiblocks.blastFurnace = new StoneMultiBlock<>("blast_furnace", IETileTypes.BLAST_FURNACE);
-		Multiblocks.alloySmelter = new StoneMultiBlock<>("alloy_smelter", IETileTypes.ALLOY_SMELTER);
-		Multiblocks.blastFurnaceAdv = new StoneMultiBlock<>("advanced_blast_furnace", IETileTypes.BLAST_FURNACE_ADVANCED);
+		Multiblocks.cokeOven = new StoneMultiBlock<>("coke_oven", IETileTypes.COKE_OVEN, true);
+		Multiblocks.blastFurnace = new StoneMultiBlock<>("blast_furnace", IETileTypes.BLAST_FURNACE, true);
+		Multiblocks.alloySmelter = new StoneMultiBlock<>("alloy_smelter", IETileTypes.ALLOY_SMELTER, true);
+		Multiblocks.blastFurnaceAdv = new StoneMultiBlock<>("advanced_blast_furnace", IETileTypes.BLAST_FURNACE_ADVANCED, false);
 		Multiblocks.crusher = new MetalMultiblockBlock<>("crusher", IETileTypes.CRUSHER);
 		Multiblocks.sawmill = new MetalMultiblockBlock<>("sawmill", IETileTypes.SAWMILL);
 		Multiblocks.silo = new MetalMultiblockBlock<>("silo", IETileTypes.SILO);

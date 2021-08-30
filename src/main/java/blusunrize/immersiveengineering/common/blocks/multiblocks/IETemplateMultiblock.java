@@ -104,8 +104,8 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	{
 		TileEntity te = world.getTileEntity(pos);
 		if(te instanceof MultiblockPartTileEntity)
-			((MultiblockPartTileEntity)te).formed = false;
-		else
-			IELogger.logger.error("Expected multiblock TE at {}", pos);
+			((MultiblockPartTileEntity<?>)te).formed = false;
+		else if (te != null)
+			IELogger.logger.error("Expected multiblock TE at {}, got {}", pos, te);
 	}
 }
