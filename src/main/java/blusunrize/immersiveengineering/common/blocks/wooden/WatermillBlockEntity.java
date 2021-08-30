@@ -36,6 +36,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IStateBasedDirectional, IHasDummyBlocks, IHasObjProperty
 {
@@ -74,43 +76,40 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 			setPerTickAndAdvance(0);
 			return;
 		}
+		if(level.getGameTime()%64==((getBlockPos().getX()^getBlockPos().getZ())&63))
+			rotationVec = null;
 		if(multiblock)
 		{
 			multiblock = false;
 			return;
 		}
 
-		if(level.getGameTime()%64==((getBlockPos().getX()^getBlockPos().getZ())&63))
-			rotationVec = null;
-
 		BlockEntity acc = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing().getOpposite()));
 		if(acc instanceof IRotationAcceptor)
 		{
 			double power = getPower();
-			int l = 1;
-			BlockEntity tileEntity = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing(), l));
-			while(l < 3&&canUse(tileEntity))
+			List<WatermillBlockEntity> connectedWheels = new ArrayList<>();
+			for(int i = 1; i < 3; ++i)
 			{
-				power += ((WatermillBlockEntity)tileEntity).getPower();
-				l++;
-				tileEntity = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing(), l));
+				BlockEntity blockEntity = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing(), i));
+				if(!canUse(blockEntity))
+					break;
+				WatermillBlockEntity asWatermill = (WatermillBlockEntity)blockEntity;
+				connectedWheels.add(asWatermill);
+				power += asWatermill.getPower();
 			}
 
-			setPerTickAndAdvance(1f/1440*power/l);
-			for(int l2 = 1; l2 < l; l2++)
+			// +1: Self is not included in list of connected wheels
+			setPerTickAndAdvance(1f/1440*power/(connectedWheels.size()+1));
+			for(WatermillBlockEntity watermill : connectedWheels)
 			{
-				tileEntity = level.getBlockEntity(getBlockPos().relative(getFacing(), l2));
-				if(tileEntity instanceof WatermillBlockEntity)
+				watermill.setPerTickAndAdvance(perTick);
+				if(watermill.rotation!=rotation)
 				{
-					WatermillBlockEntity watermill = (WatermillBlockEntity) tileEntity;
-					watermill.setPerTickAndAdvance(perTick);
-					if (watermill.rotation != rotation)
-					{
-						watermill.rotation = rotation;
-						markContainingBlockForUpdate(null);
-					}
-					watermill.multiblock = true;
+					watermill.rotation = rotation;
+					markContainingBlockForUpdate(null);
 				}
+				watermill.multiblock = true;
 			}
 
 			((IRotationAcceptor)acc).inputRotation(Math.abs(power*.75), getFacing().getOpposite());
@@ -130,9 +129,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 
 	private boolean canUse(@Nullable BlockEntity tileEntity)
 	{
-		if (!(tileEntity instanceof WatermillBlockEntity))
+		if(!(tileEntity instanceof WatermillBlockEntity watermill))
 			return false;
-		WatermillBlockEntity watermill = (WatermillBlockEntity) tileEntity;
 		return watermill.offset[0]==0&&watermill.offset[1]==0
 				&&(watermill.getFacing()==getFacing()||watermill.getFacing()==getFacing().getOpposite())
 				&&!watermill.isBlocked()&&!watermill.multiblock;
@@ -339,10 +337,9 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 				if((hh > -2&&hh < 2)||(ww > -2&&ww < 2))
 				{
 					BlockPos pos2 = initPos.offset(getFacing().getAxis()==Axis.Z?ww: 0, hh, getFacing().getAxis()==Axis.X?ww: 0);
-					BlockEntity te = level.getBlockEntity(pos2);
-					if(te instanceof WatermillBlockEntity)
+					if(level.getBlockEntity(pos2) instanceof WatermillBlockEntity dummy)
 					{
-						((WatermillBlockEntity)te).beingBroken = true;
+						dummy.beingBroken = true;
 						level.removeBlock(pos2, false);
 					}
 				}
