@@ -112,6 +112,15 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.screwdrivers).add(Tools.screwdriver.get());
 		tag(IETags.wirecutters).add(Tools.wirecutter.get());
 
+		//TODO Forge#7891
+		tag(Tags.Items.ORES_GOLD).add(Items.DEEPSLATE_GOLD_ORE);
+		tag(Tags.Items.ORES_IRON).add(Items.DEEPSLATE_IRON_ORE);
+		tag(Tags.Items.ORES_COAL).add(Items.DEEPSLATE_COAL_ORE);
+		tag(Tags.Items.ORES_LAPIS).add(Items.DEEPSLATE_LAPIS_ORE);
+		tag(Tags.Items.ORES_DIAMOND).add(Items.DEEPSLATE_DIAMOND_ORE);
+		tag(Tags.Items.ORES_REDSTONE).add(Items.DEEPSLATE_REDSTONE_ORE);
+		tag(Tags.Items.ORES_EMERALD).add(Items.DEEPSLATE_EMERALD_ORE);
+
 		/* MOD COMPAT STARTS HERE */
 
 		// Curios
