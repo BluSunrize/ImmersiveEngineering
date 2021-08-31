@@ -54,6 +54,8 @@ public abstract class ImmersiveConnectableBlockEntity extends BlockEntity implem
 		);
 	}
 
+	// WARNING: This method is currently never called due to a Forge bug. Make sure to differentiate between unloads and
+	// removes in setRemoved until this is fixed!
 	@Override
 	public void onChunkUnloaded()
 	{

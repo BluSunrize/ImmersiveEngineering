@@ -98,9 +98,9 @@ public abstract class ImmersiveConnectableBlockEntity extends IEBaseBlockEntity 
 	}
 
 	@Override
-	public void onChunkUnloaded()
+	public void onChunkUnloadedIE()
 	{
-		super.onChunkUnloaded();
+		super.onChunkUnloadedIE();
 		ConnectorBlockEntityHelper.onChunkUnload(globalNet, this);
 	}
 
@@ -112,9 +112,9 @@ public abstract class ImmersiveConnectableBlockEntity extends IEBaseBlockEntity 
 	}
 
 	@Override
-	public void setRemoved()
+	public void setRemovedIE()
 	{
-		super.setRemoved();
+		super.setRemovedIE();
 		ConnectorBlockEntityHelper.remove(level, this);
 	}
 

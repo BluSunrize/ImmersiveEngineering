@@ -186,9 +186,9 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@Override
-	public void setRemoved()
+	public void setRemovedIE()
 	{
-		super.setRemoved();
+		super.setRemovedIE();
 		if(level!=null&&!level.isClientSide)
 			indirectConnections.clearDimension(level);
 	}

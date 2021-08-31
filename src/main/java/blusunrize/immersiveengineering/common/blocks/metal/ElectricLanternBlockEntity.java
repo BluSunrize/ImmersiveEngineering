@@ -72,17 +72,17 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public void setRemoved()
+	public void setRemovedIE()
 	{
 		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
-		super.setRemoved();
+		super.setRemovedIE();
 	}
 
 	@Override
-	public void onChunkUnloaded()
+	public void onChunkUnloadedIE()
 	{
 		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
-		super.onChunkUnloaded();
+		super.onChunkUnloadedIE();
 	}
 
 	@Override
