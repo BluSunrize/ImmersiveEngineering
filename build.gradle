@@ -12,8 +12,7 @@ buildscript {
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
-        //TODO MG reverted the commit adding FG5 support. Need to figure out why, and update once they re-add support.
-        classpath 'org.spongepowered:mixingradle:0.7-20210825.165444-3'
+        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
