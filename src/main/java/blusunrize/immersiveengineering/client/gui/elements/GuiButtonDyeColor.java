@@ -26,16 +26,11 @@ public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 		super(x, y, 8, 8, Component.nullToEmpty(name), DyeColor.values(), initialColor.ordinal(), GuiReactiveList.TEXTURE, 0, 128, -1, handler, tooltip);
 	}
 
-	public GuiButtonDyeColor(int x, int y, String name, DyeColor initialColor, IIEPressable<GuiButtonState<DyeColor>> handler)
-	{
-		this(x, y, name, initialColor, handler, (a, b) -> {});
-	}
-
 	@Override
 	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
 		super.render(transform, mouseX, mouseY, partialTicks);
 		if(this.visible)
-			GuiHelper.drawColouredRect(transform, x+2, y+2, x+6, y+6, getState());
+			GuiHelper.drawColouredRect(transform, x+2, y+2, 4, 4, getState());
 	}
 }

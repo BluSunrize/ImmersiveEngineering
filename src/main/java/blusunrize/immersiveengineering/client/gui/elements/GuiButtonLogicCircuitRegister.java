@@ -56,7 +56,7 @@ public class GuiButtonLogicCircuitRegister extends GuiButtonState<LogicCircuitRe
 		{
 			LogicCircuitRegister state = getState();
 			if(state.ordinal() < 16)
-				GuiHelper.drawColouredRect(transform, x+3, y+3, x+15, y+15, DyeColor.byId(state.ordinal()));
+				GuiHelper.drawColouredRect(transform, x+3, y+3, 12, 12, DyeColor.byId(state.ordinal()));
 		}
 	}
 
