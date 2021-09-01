@@ -15,10 +15,12 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.math.Vector4f;
+import net.minecraft.Util;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -42,7 +44,9 @@ import net.minecraftforge.client.MinecraftForgeClient;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 {
@@ -155,24 +159,20 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 		return new Vec3(.5+side.getStepX()*(.375-conRadius), .5+side.getStepY()*(.375-conRadius), .5+side.getStepZ()*(.375-conRadius));
 	}
 
+	private static final Map<Direction.Axis, VoxelShape> SHAPES = Util.make(
+			new EnumMap<>(Direction.Axis.class), map -> {
+				final float wMin = .28125f;
+				final float wMax = .71875f;
+				map.put(Axis.X, Shapes.box(0, wMin, wMin, 1, wMax, wMax));
+				map.put(Axis.Y, Shapes.box(wMin, 0, wMin, wMax, 1, wMax));
+				map.put(Axis.Z, Shapes.box(wMin, wMin, 0, wMax, wMax, 1));
+			}
+	);
+
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		float wMin = .28125f;
-		float wMax = .71875f;
-		switch(getFacing().getOpposite())
-		{
-			case UP:
-			case DOWN:
-				return Shapes.box(wMin, 0, wMin, wMax, 1, wMax);
-			case SOUTH:
-			case NORTH:
-				return Shapes.box(wMin, wMin, 0, wMax, wMax, 1);
-			case EAST:
-			case WEST:
-				return Shapes.box(0, wMin, wMin, 1, wMax, wMax);
-		}
-		return Shapes.block();
+		return SHAPES.get(getFacing().getAxis());
 	}
 
 	@OnlyIn(Dist.CLIENT)

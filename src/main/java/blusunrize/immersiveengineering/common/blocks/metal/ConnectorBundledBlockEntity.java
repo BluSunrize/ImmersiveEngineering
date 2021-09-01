@@ -184,9 +184,7 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		float length = .625f;
-		float wMin = .3125f;
-		return EnergyConnectorBlockEntity.getConnectorBounds(getFacing(), wMin, length);
+		return EnergyConnectorBlockEntity.getConnectorBounds(getFacing(), .625f);
 	}
 
 	@Override

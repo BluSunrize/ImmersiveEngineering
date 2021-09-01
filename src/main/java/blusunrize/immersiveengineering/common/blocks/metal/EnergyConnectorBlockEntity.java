@@ -306,33 +306,26 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 		LENGTH.defaultReturnValue(0.5F);
 	}
 
-	public static VoxelShape getConnectorBounds(Direction facing, float wMin, float length)
+	public static VoxelShape getConnectorBounds(Direction facing, float length)
 	{
-		float wMax = 1-wMin;
-		switch(facing.getOpposite())
-		{
-			case UP:
-				return Shapes.box(wMin, 0, wMin, wMax, length, wMax);
-			case DOWN:
-				return Shapes.box(wMin, 1-length, wMin, wMax, 1, wMax);
-			case SOUTH:
-				return Shapes.box(wMin, wMin, 0, wMax, wMax, length);
-			case NORTH:
-				return Shapes.box(wMin, wMin, 1-length, wMax, wMax, 1);
-			case EAST:
-				return Shapes.box(0, wMin, wMin, length, wMax, wMax);
-			case WEST:
-				return Shapes.box(1-length, wMin, wMin, 1, wMax, wMax);
-		}
-		return Shapes.block();
+		final float wMin = 0.3125f;
+		final float wMax = 1-wMin;
+		return switch(facing.getOpposite())
+				{
+					case UP -> Shapes.box(wMin, 0, wMin, wMax, length, wMax);
+					case DOWN -> Shapes.box(wMin, 1-length, wMin, wMax, 1, wMax);
+					case SOUTH -> Shapes.box(wMin, wMin, 0, wMax, wMax, length);
+					case NORTH -> Shapes.box(wMin, wMin, 1-length, wMax, wMax, 1);
+					case EAST -> Shapes.box(0, wMin, wMin, length, wMax, wMax);
+					case WEST -> Shapes.box(1-length, wMin, wMin, 1, wMax, wMax);
+				};
 	}
 
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		float length = LENGTH.getFloat(new ImmutablePair<>(voltage, relay));
-		float wMin = .3125f;
-		return getConnectorBounds(getFacing(), wMin, length);
+		return getConnectorBounds(getFacing(), length);
 	}
 
 	@Override

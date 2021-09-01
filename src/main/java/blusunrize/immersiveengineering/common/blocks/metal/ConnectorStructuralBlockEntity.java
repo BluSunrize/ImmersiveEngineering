@@ -120,7 +120,7 @@ public class ConnectorStructuralBlockEntity extends ImmersiveConnectableBlockEnt
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return EnergyConnectorBlockEntity.getConnectorBounds(getFacing(), .3125F, .5F);
+		return EnergyConnectorBlockEntity.getConnectorBounds(getFacing(), .5F);
 	}
 
 	@Override

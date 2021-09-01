@@ -297,7 +297,7 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 		}
 	}
 
-	static final VoxelShape selectionShape = Shapes.box(0, 0, 0, 1, 1, 1);
+	static final VoxelShape selectionShape = Shapes.block();
 
 	@Override
 	public VoxelShape getSelectionShape(@Nullable CollisionContext ctx)

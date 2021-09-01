@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
@@ -17,7 +16,6 @@ import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -38,17 +36,17 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * @author BluSunrize - 01.10.2016
  */
 public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IRedstoneOutput, IScrewdriverInteraction,
-		ICollisionBounds, IAdvancedDirectionalBE, IStateBasedDirectional, IColouredBE, IBlockEntityDrop, ISelectionBounds
+		IAdvancedDirectionalBE, IStateBasedDirectional, IColouredBE, IBlockEntityDrop, IBlockBounds
 {
 	public int colour = 0xffffff;
 	private int redstoneSignal = 0;
@@ -64,9 +62,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IETick
 	{
 		if(level.getGameTime()%4==((getBlockPos().getX()^getBlockPos().getZ())&3))
 		{
-			AABB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
-			aabb = new AABB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).move(getBlockPos());
-			List<Entity> entities = level.getEntitiesOfClass(Entity.class, aabb);
+			List<Entity> entities = level.getEntitiesOfClass(Entity.class, getEntityCollectionBox());
 			if(!isCeilingAttached()&&!entities.isEmpty()&&redstoneSignal==0)
 			{
 				redstoneSignal = 15;
@@ -86,18 +82,19 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IETick
 	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(isCeilingAttached()&&entity.isAlive()&&redstoneSignal==0)
+		if(isCeilingAttached()&&entity.isAlive()&&redstoneSignal==0&&entity.getBoundingBox().intersects(getEntityCollectionBox()))
 		{
-			AABB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
-			aabb = new AABB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).move(getBlockPos());
-			if(entity.getBoundingBox().intersects(aabb))
-			{
-				redstoneSignal = 15;
-				setChanged();
-				world.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
-				world.updateNeighborsAt(getBlockPos().relative(Direction.UP), getBlockState().getBlock());
-			}
+			redstoneSignal = 15;
+			setChanged();
+			world.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
+			world.updateNeighborsAt(getBlockPos().relative(Direction.UP), getBlockState().getBlock());
 		}
+	}
+
+	private AABB getEntityCollectionBox()
+	{
+		AABB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
+		return new AABB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).move(getBlockPos());
 	}
 
 	@Override
@@ -144,28 +141,15 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IETick
 			new AABB(0, .8125f, .46875f, 1, 1, .53125f),
 			new AABB(.46875f, .8125f, 0, .53125f, 1, 1)
 	};
+	private static final VoxelShape[] shapes = Arrays.stream(bounds)
+			.map(Shapes::create)
+			.toArray(VoxelShape[]::new);
 
 	@Nonnull
 	@Override
-	public VoxelShape getSelectionShape(@Nullable CollisionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		AABB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
-		return Shapes.box(aabb.minX, aabb.minY, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ);
-	}
-
-	private static final CachedVoxelShapes<Pair<Boolean, Direction>> SHAPES = new CachedVoxelShapes<>(StripCurtainBlockEntity::getShape);
-
-	@Nonnull
-	@Override
-	public VoxelShape getCollisionShape(CollisionContext ctx)
-	{
-		return SHAPES.get(Pair.of(isCeilingAttached(), getFacing()));
-	}
-
-	private static List<AABB> getShape(Pair<Boolean, Direction> key)
-	{
-		int index = key.getLeft()?(key.getRight().getAxis()==Axis.Z?4: 5): ((key.getRight().ordinal()-2)%4);
-		return Lists.newArrayList(bounds[index]);
+		return shapes[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
 	}
 
 	@Nonnull
@@ -202,10 +186,7 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IETick
 	@Override
 	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
-		if(side==Direction.DOWN)
-			setCeilingAttached(true);
-		else
-			setCeilingAttached(false);
+		setCeilingAttached(side==Direction.DOWN);
 	}
 
 	@Override

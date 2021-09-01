@@ -218,19 +218,14 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		{
 			float down = hasConnection(state, Direction.DOWN, world, pos)?0: .4375f;
 			float up = down > 0?1: .5625f;
-			switch(state.getValue(HORIZONTAL_OFFSET))
-			{
-				case NONE:
-					return Shapes.box(.3125f, 0, .3125f, .6875f, 1, .6875f);
-				case NORTH:
-					return Shapes.box(.3125f, down, .3125f, .6875f, up, 1);
-				case SOUTH:
-					return Shapes.box(.3125f, down, 0, .6875f, up, .6875f);
-				case EAST:
-					return Shapes.box(0, down, .3125f, .6875f, up, .6875f);
-				case WEST:
-					return Shapes.box(.3125f, down, .3125f, 1, up, .6875f);
-			}
+			return switch(state.getValue(HORIZONTAL_OFFSET))
+					{
+						case NONE -> Shapes.box(.3125f, 0, .3125f, .6875f, 1, .6875f);
+						case NORTH -> Shapes.box(.3125f, down, .3125f, .6875f, up, 1);
+						case SOUTH -> Shapes.box(.3125f, down, 0, .6875f, up, .6875f);
+						case EAST -> Shapes.box(0, down, .3125f, .6875f, up, .6875f);
+						case WEST -> Shapes.box(.3125f, down, .3125f, 1, up, .6875f);
+					};
 		}
 		return Shapes.block();
 	}
