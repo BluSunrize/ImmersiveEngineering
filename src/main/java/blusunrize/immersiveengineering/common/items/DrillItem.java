@@ -90,17 +90,14 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-				.orElseThrow(RuntimeException::new);
-		return new Slot[]
-				{
-						new IESlot.WithPredicate(inv, 0, 98, 22, (itemStack) -> itemStack.getItem() instanceof IDrillHead),
-						new IESlot.Upgrades(container, inv, 1, 78, 52, "DRILL", stack, true, getWorld, getPlayer),
-						new IESlot.Upgrades(container, inv, 2, 98, 52, "DRILL", stack, true, getWorld, getPlayer),
-						new IESlot.Upgrades(container, inv, 3, 118, 52, "DRILL", stack, true, getWorld, getPlayer)
-				};
+		return new Slot[]{
+				new IESlot.WithPredicate(toolInventory, 0, 98, 22, (itemStack) -> itemStack.getItem() instanceof IDrillHead),
+				new IESlot.Upgrades(container, toolInventory, 1, 78, 52, "DRILL", stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 2, 98, 52, "DRILL", stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 3, 118, 52, "DRILL", stack, true, level, getPlayer)
+		};
 	}
 
 	@Override

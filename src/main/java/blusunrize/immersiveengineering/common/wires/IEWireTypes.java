@@ -245,16 +245,13 @@ public class IEWireTypes
 		@Override
 		public double getDamageRadius()
 		{
-			switch(type)
-			{
-				case COPPER://LV
-					return .05;
-				case ELECTRUM://MV
-					return .1;
-				case STEEL://HV
-					return .3;
-			}
-			return 0;
+			return switch(type)
+					{
+						case COPPER -> .05;
+						case ELECTRUM -> .1;
+						case STEEL -> .3;
+						default -> 0;
+					};
 		}
 
 		@Override

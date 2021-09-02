@@ -13,16 +13,12 @@ import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-
-import java.util.function.Supplier;
 
 public abstract class UpgradeableToolItem extends InternalStorageItem implements IUpgradeableTool
 {
@@ -97,10 +93,4 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
 	}
-
-	@Override
-	public abstract boolean canModify(ItemStack stack);
-
-	@Override
-	public abstract Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer);
 }

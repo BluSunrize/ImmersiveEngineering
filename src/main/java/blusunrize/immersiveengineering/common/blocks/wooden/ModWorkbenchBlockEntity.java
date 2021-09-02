@@ -208,8 +208,8 @@ public class ModWorkbenchBlockEntity extends IEBaseBlockEntity implements IIEInv
 		return IEContainerTypes.MOD_WORKBENCH;
 	}
 
-	private static VisibilityList normalDisplayList = VisibilityList.show("cube0");
-	private static VisibilityList blueprintDisplayList = VisibilityList.show("cube0", "blueprint");
+	private static final VisibilityList normalDisplayList = VisibilityList.show("cube0");
+	private static final VisibilityList blueprintDisplayList = VisibilityList.show("cube0", "blueprint");
 
 	@Override
 	public VisibilityList compileDisplayList(BlockState state)

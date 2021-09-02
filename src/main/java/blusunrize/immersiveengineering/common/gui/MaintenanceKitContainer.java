@@ -21,12 +21,18 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+
+import static blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer.MAX_NUM_DYNAMIC_SLOTS;
 
 public class MaintenanceKitContainer extends ItemContainer
 {
 	private final Container inv = new SimpleContainer(ItemStack.EMPTY);
+	private final ItemStackHandler clientInventory = new ItemStackHandler(MAX_NUM_DYNAMIC_SLOTS+1);
 	private boolean wasUsed = false;
 
 	public MaintenanceKitContainer(MenuType<?> type, int id, Inventory inventoryPlayer, Level world, EquipmentSlot slot, ItemStack item)
@@ -50,21 +56,19 @@ public class MaintenanceKitContainer extends ItemContainer
 		if(this.inv==null)
 			return 0;
 		//Don't rebind if the tool didn't change
-		if(world.isClientSide&&!inv.getItem(0).isEmpty())
-			for(Slot slot : slots)
-				if(slot instanceof IESlot.Upgrades)
-					if(ItemStack.matches(((IESlot.Upgrades)slot).toolStack, inv.getItem(0)))
-						return this.internalSlots;
 		this.slots.clear();
 		((ContainerAccess)this).getLastSlots().clear();
 		this.addSlot(new IESlot.Maintenance(this, this.inv, 0, 28, 10));
 		int slotCount = 1;
 
 		ItemStack tool = this.getSlot(0).getItem();
-		if(tool.getItem() instanceof IUpgradeableTool)
+		if(tool.getItem() instanceof IUpgradeableTool upgradeableTool)
 		{
 			wasUsed = true;
-			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, () -> world, () -> player);
+			IItemHandler toolInv = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
+			Slot[] slots = upgradeableTool.getWorkbenchSlots(
+					this, tool, world, () -> player, world.isClientSide?clientInventory: toolInv
+			);
 			if(slots!=null)
 				for(Slot s : slots)
 				{
@@ -72,6 +76,8 @@ public class MaintenanceKitContainer extends ItemContainer
 					slotCount++;
 				}
 		}
+		for(; slotCount < MAX_NUM_DYNAMIC_SLOTS; ++slotCount)
+			addSlot(new IESlot.AlwaysEmptySlot(this));
 		bindPlayerInv(this.inventoryPlayer);
 		ImmersiveEngineering.proxy.reInitGui();
 		return slotCount;

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.gui.IESlot.AlwaysEmptySlot;
 import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
@@ -67,7 +68,8 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 		for(int i = 0; i < menu.slotCount; i++)
 		{
 			Slot s = menu.getSlot(i);
-			GuiHelper.drawSlot(transform, leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999);
+			if(!(s instanceof AlwaysEmptySlot))
+				GuiHelper.drawSlot(transform, leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999);
 		}
 	}
 }

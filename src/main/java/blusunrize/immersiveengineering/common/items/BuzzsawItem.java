@@ -93,22 +93,20 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-				.orElseThrow(RuntimeException::new);
 		final boolean hasQuiver = hasQuiverUpgrade(stack);
 		final int mainHeadX = hasQuiver?88: 98;
 		List<Slot> slots = new ArrayList<>(5);
 		slots.add(new IESlot.WithPredicate(
-				inv, 0, mainHeadX, 22, BuzzsawItem::isSawblade, newBlade -> setHead(stack, newBlade)
+				toolInventory, 0, mainHeadX, 22, BuzzsawItem::isSawblade, newBlade -> setHead(stack, newBlade)
 		));
-		slots.add(new IESlot.Upgrades(container, inv, 1, 88, 52, "BUZZSAW", stack, true, getWorld, getPlayer));
-		slots.add(new IESlot.Upgrades(container, inv, 2, 108, 52, "BUZZSAW", stack, true, getWorld, getPlayer));
+		slots.add(new IESlot.Upgrades(container, toolInventory, 1, 88, 52, "BUZZSAW", stack, true, level, getPlayer));
+		slots.add(new IESlot.Upgrades(container, toolInventory, 2, 108, 52, "BUZZSAW", stack, true, level, getPlayer));
 		if(hasQuiverUpgrade(stack))
 		{
-			slots.add(new IESlot.WithPredicate(inv, 3, 108, 12, BuzzsawItem::isSawblade));
-			slots.add(new IESlot.WithPredicate(inv, 4, 108, 32, BuzzsawItem::isSawblade));
+			slots.add(new IESlot.WithPredicate(toolInventory, 3, 108, 12, BuzzsawItem::isSawblade));
+			slots.add(new IESlot.WithPredicate(toolInventory, 4, 108, 32, BuzzsawItem::isSawblade));
 		}
 		return slots.toArray(new Slot[0]);
 	}
