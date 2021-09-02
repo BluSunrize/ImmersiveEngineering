@@ -25,15 +25,20 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
 public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntity>
 {
+	public static final int MAX_NUM_DYNAMIC_SLOTS = 20;
+
 	private final Level world;
 	public Inventory inventoryPlayer;
 	private BlueprintInventory inventoryBPoutput;
 	public ShaderInventory shaderInv;
+	private final ItemStackHandler clientInventory = new ItemStackHandler(MAX_NUM_DYNAMIC_SLOTS+1);
 
 	public ModWorkbenchContainer(int id, Inventory inventoryPlayer, ModWorkbenchTileEntity tile)
 	{
@@ -62,12 +67,17 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 		ItemStack tool = this.getSlot(0).getItem();
 		if(tool.getItem() instanceof IUpgradeableTool)
 		{
-			tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
-					.ifPresent(handler -> {
-						if(handler instanceof IEItemStackHandler)
-							((IEItemStackHandler)handler).setTile(tile);
-					});
-			Slot[] slots = ((IUpgradeableTool)tool.getItem()).getWorkbenchSlots(this, tool, () -> world, () -> inventoryPlayer.player);
+			final IUpgradeableTool upgradeableTool = (IUpgradeableTool)tool.getItem();
+			IItemHandler toolInv = tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
+			if(toolInv instanceof IEItemStackHandler)
+				((IEItemStackHandler) toolInv).setTile(tile);
+
+			// Use a "simple" inventory on the client rather than the one for the tool stack. The server always syncs an
+			// "empty" tool to the client, so if the slots use the tool inventory the behavior become highly dependent
+			// on slot update order
+			Slot[] slots = upgradeableTool.getWorkbenchSlots(
+					this, tool, world, () -> inventoryPlayer.player, world.isClientSide?clientInventory: toolInv
+			);
 			if(slots!=null)
 				for(Slot s : slots)
 				{
@@ -90,7 +100,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 			{
 				//Init the output inventory
 				blueprint = true;
-				BlueprintCraftingRecipe[] recipes = ((EngineersBlueprintItem)tool.getItem()).getRecipes(tool);
+				BlueprintCraftingRecipe[] recipes = EngineersBlueprintItem.getRecipes(tool);
 				inventoryBPoutput = new BlueprintInventory(this, recipes);
 
 				//Add output slots
@@ -113,6 +123,10 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 			if(inventoryBPoutput!=null)
 				inventoryBPoutput.updateOutputs(inv);
 		}
+		// Add "useless" slots to keep the number of slots (and therefore the IDs of the player inventory slots)
+		// constant. MC doesn't handle changing slot IDs well, causing desyncs
+		for(; slotCount < MAX_NUM_DYNAMIC_SLOTS; ++slotCount)
+			addSlot(new IESlot.AlwaysEmptySlot(this));
 		bindPlayerInv(inventoryPlayer);
 		ImmersiveEngineering.proxy.reInitGui();
 	}

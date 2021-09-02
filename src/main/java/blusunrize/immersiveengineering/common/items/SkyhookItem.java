@@ -35,7 +35,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -178,14 +177,12 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Level level, Supplier<Player> getPlayer, IItemHandler toolInventory)
 	{
-		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
-		return new Slot[]
-				{
-						new IESlot.Upgrades(container, inv, 0, 102, 42, "SKYHOOK", stack, true, getWorld, getPlayer),
-						new IESlot.Upgrades(container, inv, 1, 102, 22, "SKYHOOK", stack, true, getWorld, getPlayer),
-				};
+		return new Slot[]{
+				new IESlot.Upgrades(container, toolInventory, 0, 102, 42, "SKYHOOK", stack, true, level, getPlayer),
+				new IESlot.Upgrades(container, toolInventory, 1, 102, 22, "SKYHOOK", stack, true, level, getPlayer),
+		};
 	}
 
 	@Override

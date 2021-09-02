@@ -199,8 +199,8 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 		return null;
 	}
 
-	private static VisibilityList normalDisplayList = VisibilityList.show("cube0");
-	private static VisibilityList blueprintDisplayList = VisibilityList.show("cube0", "blueprint");
+	private static final VisibilityList normalDisplayList = VisibilityList.show("cube0");
+	private static final VisibilityList blueprintDisplayList = VisibilityList.show("cube0", "blueprint");
 
 	@Override
 	public VisibilityList compileDisplayList(BlockState state)

@@ -21,8 +21,8 @@ import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
+import blusunrize.immersiveengineering.common.util.inventory.EmptyContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag.Named;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -219,18 +219,18 @@ public abstract class IESlot extends Slot
 		final String type;
 		final boolean preventDoubles;
 		final AbstractContainerMenu container;
-		final Supplier<Level> getWorld;
+		final Level world;
 		final Supplier<Player> getPlayer;
 
 		public Upgrades(AbstractContainerMenu container, IItemHandler inv, int id, int x, int y, String type, ItemStack upgradeableTool,
-						boolean preventDoubles, Supplier<Level> getWorld, Supplier<Player> getPlayer)
+						boolean preventDoubles, Level world, Supplier<Player> getPlayer)
 		{
 			super(inv, id, x, y);
 			this.container = container;
 			this.type = type;
 			this.upgradeableTool = upgradeableTool;
 			this.preventDoubles = preventDoubles;
-			this.getWorld = getWorld;
+			this.world = world;
 			this.getPlayer = getPlayer;
 		}
 
@@ -262,11 +262,14 @@ public abstract class IESlot extends Slot
 		public void setChanged()
 		{
 			super.setChanged();
-			((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, getWorld.get(), getPlayer.get());
-			if(container instanceof ModWorkbenchContainer)
-				((ModWorkbenchContainer)container).rebindSlots();
-			else if(container instanceof MaintenanceKitContainer)
-				((MaintenanceKitContainer)container).updateSlots();
+			if(!world.isClientSide)
+			{
+				((IUpgradeableTool)upgradeableTool.getItem()).recalculateUpgrades(upgradeableTool, world, getPlayer.get());
+				if(container instanceof ModWorkbenchContainer)
+					((ModWorkbenchContainer)container).rebindSlots();
+				else if(container instanceof MaintenanceKitContainer)
+					((MaintenanceKitContainer)container).updateSlots();
+			}
 		}
 	}
 
@@ -278,7 +281,7 @@ public abstract class IESlot extends Slot
 		{
 			super(container, inv, id, x, y);
 			this.tool = tool;
-			this.setBackground(InventoryMenu.BLOCK_ATLAS, new ResourceLocation("immersiveengineering", "item/shader_slot"));
+			this.setBackground(InventoryMenu.BLOCK_ATLAS, ImmersiveEngineering.rl("item/shader_slot"));
 		}
 
 		@Override
@@ -606,6 +609,27 @@ public abstract class IESlot extends Slot
 			if(itemStack.isEmpty())
 				return false;
 			return this.tag.contains(itemStack.getItem());
+		}
+	}
+
+	// Only used to "fill up slot IDs" to keep the IDs of later slots stable when adding/removing "real" slots
+	public static class AlwaysEmptySlot extends IESlot
+	{
+		public AlwaysEmptySlot(AbstractContainerMenu containerMenu)
+		{
+			super(containerMenu, EmptyContainer.INSTANCE, 0, 0, 0);
+		}
+
+		@Override
+		public boolean mayPlace(ItemStack itemStack)
+		{
+			return false;
+		}
+
+		@Override
+		public boolean isActive()
+		{
+			return false;
 		}
 	}
 

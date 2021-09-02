@@ -16,6 +16,8 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.gui.IESlot.AlwaysEmptySlot;
+import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import com.mojang.blaze3d.platform.Lighting;
@@ -126,17 +128,8 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 		for(int i = 0; i < menu.slotCount; i++)
 		{
 			Slot s = menu.getSlot(i);
-			if(s instanceof IESlot.BlueprintOutput&&!s.hasItem())
-			{
-				ItemStack ghostStack = ((IESlot.BlueprintOutput)s).recipe.output;
-				if(!ghostStack.isEmpty())
-				{
-					itemRender.renderAndDecorateItem(ghostStack, leftPos+s.x, topPos+s.y);
-					RenderSystem.depthFunc(GL11.GL_GREATER);
-					fill(transform, leftPos+s.x, topPos+s.y, leftPos+s.x+16, topPos+s.y+16, 0xbb333333);
-					RenderSystem.depthFunc(GL11.GL_LEQUAL);
-				}
-			}
+			if(!(s instanceof AlwaysEmptySlot))
+				GuiHelper.drawSlot(transform, leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999);
 		}
 	}
 }
