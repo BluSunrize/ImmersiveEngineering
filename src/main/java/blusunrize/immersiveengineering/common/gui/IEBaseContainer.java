@@ -132,12 +132,6 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 	}
 
 	@Override
-	protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection)
-	{
-		return super.moveItemStackTo(stack, startIndex, endIndex, reverseDirection);
-	}
-
-	@Override
 	public void removed(Player playerIn)
 	{
 		super.removed(playerIn);

@@ -135,13 +135,13 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 	@Override
 	public ItemStack quickMoveStack(Player player, int slot)
 	{
-		ItemStack stack = ItemStack.EMPTY;
+		ItemStack resultStack = ItemStack.EMPTY;
 		Slot slotObject = slots.get(slot);
 
 		if(slotObject!=null&&slotObject.hasItem())
 		{
 			ItemStack stackInSlot = slotObject.getItem();
-			stack = stackInSlot.copy();
+			resultStack = stackInSlot.copy();
 
 			if(slot < slotCount)
 			{
@@ -155,12 +155,12 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
-				else if(stackInSlot.getItem() instanceof IUpgradeableTool&&((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
+				else if(stackInSlot.getItem() instanceof IUpgradeableTool tool&&tool.canModify(stackInSlot))
 				{
 					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
-				else if(stackInSlot.getItem() instanceof IConfigurableTool&&((IConfigurableTool)stackInSlot.getItem()).canConfigure(stackInSlot))
+				else if(stackInSlot.getItem() instanceof IConfigurableTool tool&&tool.canConfigure(stackInSlot))
 				{
 					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
@@ -185,13 +185,13 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 
 			slotObject.setChanged();
 
-			if(stackInSlot.getCount()==stack.getCount())
-				return ItemStack.EMPTY;
-			slotObject.onTake(player, stackInSlot);
+			if(stackInSlot.getCount()==resultStack.getCount())
+				resultStack = ItemStack.EMPTY;
+			slotObject.onTake(player, resultStack);
 			if(slotObject.hasItem())
 				player.drop(slotObject.getItem(), false);
 		}
-		return stack;
+		return resultStack;
 	}
 
 	@Override

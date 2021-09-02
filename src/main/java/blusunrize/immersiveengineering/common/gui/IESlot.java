@@ -352,18 +352,18 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean mayPickup(Player player)
 		{
-			return !(!this.getItem().isEmpty()&&getItem().getItem() instanceof IUpgradeableTool&&!((IUpgradeableTool)getItem().getItem()).canTakeFromWorkbench(getItem()));
+			return !(getItem().getItem() instanceof IUpgradeableTool tool&&!tool.canTakeFromWorkbench(getItem()));
 		}
 
 		@Override
 		public void onTake(Player player, ItemStack stack)
 		{
 			super.onTake(player, stack);
-			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool)
-				((IUpgradeableTool)stack.getItem()).removeFromWorkbench(player, stack);
-			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler -> {
-				if(handler instanceof IEItemStackHandler)
-					((IEItemStackHandler)handler).setTile(null);
+			if(!stack.isEmpty()&&stack.getItem() instanceof IUpgradeableTool upgradeableTool)
+				upgradeableTool.removeFromWorkbench(player, stack);
+			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY).ifPresent(handler -> {
+				if(handler instanceof IEItemStackHandler ieHandler)
+					ieHandler.setTile(null);
 			});
 		}
 	}
