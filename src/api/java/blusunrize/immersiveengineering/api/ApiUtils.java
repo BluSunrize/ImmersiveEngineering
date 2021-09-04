@@ -130,16 +130,10 @@ public class ApiUtils
 		addFutureServerTask(world, task, false);
 	}
 
-	public static class ValueComparator<T extends Comparable<T>> implements java.util.Comparator<T>
+	public static record ValueComparator<T extends Comparable<T>>(
+			Map<T, Integer> base, boolean inverse
+	) implements java.util.Comparator<T>
 	{
-		Map<T, Integer> base;
-		boolean inverse;
-
-		public ValueComparator(Map<T, Integer> base, boolean inverse)
-		{
-			this.base = base;
-			this.inverse = inverse;
-		}
 
 		@Override
 		public int compare(T s0, T s1)//Cant return equal to keys separate
@@ -154,15 +148,6 @@ public class ApiUtils
 			else
 				ret = s0.compareTo(s1);
 			return ret*(inverse?-1: 1);
-		}
-
-		@Override
-		public boolean equals(Object obj)
-		{
-			if(!(obj instanceof ValueComparator))
-				return false;
-			ValueComparator other = (ValueComparator)obj;
-			return other.base==base&&other.inverse==inverse;
 		}
 	}
 }

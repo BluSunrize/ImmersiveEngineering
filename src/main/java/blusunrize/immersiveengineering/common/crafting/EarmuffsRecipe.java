@@ -54,16 +54,19 @@ public class EarmuffsRecipe implements CraftingRecipe
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
-				if(earmuffs.isEmpty()&&Misc.earmuffs.equals(stackInSlot.getItem()))
+			{
+				final boolean isEarmuffs = stackInSlot.is(Misc.earmuffs.asItem());
+				if(earmuffs.isEmpty()&&isEarmuffs)
 					earmuffs = stackInSlot;
-				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem&&
-						((ArmorItem)stackInSlot.getItem()).getSlot()==EquipmentSlot.HEAD&&
-						!Misc.earmuffs.equals(stackInSlot.getItem()))
+				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem armorItem&&
+						armorItem.getSlot()==EquipmentSlot.HEAD&&
+						!isEarmuffs)
 					armor = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
 					list.add(stackInSlot);
 				else
 					return false;
+			}
 		}
 		if(!earmuffs.isEmpty()&&(!armor.isEmpty()||!list.isEmpty()))
 			return true;
@@ -83,7 +86,9 @@ public class EarmuffsRecipe implements CraftingRecipe
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
-				if(earmuffs.isEmpty()&&Misc.earmuffs.equals(stackInSlot.getItem()))
+			{
+				final boolean isEarmuffs = stackInSlot.is(Misc.earmuffs.asItem());
+				if(earmuffs.isEmpty()&&isEarmuffs)
 				{
 					earmuffs = stackInSlot;
 					int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
@@ -110,8 +115,9 @@ public class EarmuffsRecipe implements CraftingRecipe
 				}
 				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem&&
 						((ArmorItem)stackInSlot.getItem()).getSlot()==EquipmentSlot.HEAD&&
-						!Misc.earmuffs.equals(stackInSlot.getItem()))
+						!isEarmuffs)
 					armor = stackInSlot;
+			}
 		}
 
 		if(!earmuffs.isEmpty())

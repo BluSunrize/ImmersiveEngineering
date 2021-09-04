@@ -76,7 +76,7 @@ public class JerrycanRefillRecipe extends CustomRecipe
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(ret[0].isEmpty()&&Misc.jerrycan.equals(stackInSlot.getItem())
+				if(ret[0].isEmpty()&&stackInSlot.is(Misc.jerrycan.asItem())
 						&&FluidUtil.getFluidContained(stackInSlot).map(fs -> !fs.isEmpty()).orElse(false))
 					ret[0] = stackInSlot;
 				else if(ret[1].isEmpty()&&FluidUtil.getFluidHandler(stackInSlot).isPresent())
@@ -114,7 +114,7 @@ public class JerrycanRefillRecipe extends CustomRecipe
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(Misc.jerrycan.equals(stackInSlot.getItem())&&!foundJerrycan)
+				if(stackInSlot.is(Misc.jerrycan.asItem())&&!foundJerrycan)
 					foundJerrycan = true;
 				else
 					remaining.set(i, ItemStack.EMPTY);

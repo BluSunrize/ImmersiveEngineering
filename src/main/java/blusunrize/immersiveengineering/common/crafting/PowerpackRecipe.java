@@ -51,12 +51,14 @@ public class PowerpackRecipe implements CraftingRecipe
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty()&&Misc.powerpack.equals(stackInSlot.getItem()))
+			{
+				if(powerpack.isEmpty()&&stackInSlot.is(Misc.powerpack.asItem()))
 					powerpack = stackInSlot;
 				else if(armor.isEmpty()&&isValidArmor(stackInSlot))
 					armor = stackInSlot;
 				else
 					return false;
+			}
 		}
 		if(!powerpack.isEmpty()&&!armor.isEmpty()&&!ItemNBTHelper.hasKey(armor, Lib.NBT_Powerpack))
 			return true;
@@ -73,7 +75,7 @@ public class PowerpackRecipe implements CraftingRecipe
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty()&&Misc.powerpack.equals(stackInSlot.getItem()))
+				if(powerpack.isEmpty()&&stackInSlot.is(Misc.powerpack.asItem()))
 					powerpack = stackInSlot;
 				else if(armor.isEmpty()&&isValidArmor(stackInSlot))
 					armor = stackInSlot;

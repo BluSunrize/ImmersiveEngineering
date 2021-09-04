@@ -460,7 +460,9 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		int lineStyle = 0;
 		for(Integer i : lumiSort)
 		{
-			complete_areaMap.putAll(new ShadeStyle(lineNumber, lineStyle), area.get(i));
+			Set<Point> styleSlot = complete_areaMap.get(new ShadeStyle(lineNumber, lineStyle));
+			for(TexturePoint point : area.get(i))
+				styleSlot.add(new Point(point.x(), point.y()));
 			++lineStyle;
 			lineStyle %= 3;
 			if(lineStyle==0)
@@ -559,21 +561,8 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		out.vertex(x1, y1, 0).normal(normalX, normalY, 0).endVertex();
 	}
 
-	private static class TexturePoint extends Point
+	private static record TexturePoint(int x, int y, int scale)
 	{
-		final int scale;
-
-		public TexturePoint(int x, int y, int scale)
-		{
-			super(x, y);
-			this.scale = scale;
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return 31*(31*x+y)+scale;
-		}
 	}
 
 	private static double getLuminance(int rgb)
