@@ -26,10 +26,10 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -131,7 +131,7 @@ public class IEFluids
 			this.flowing = REGISTER.register(name+"_flowing", () -> IEFluid.makeFluid(
 					makeFlowing, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
 			));
-			this.block = new IEBlocks.BlockEntry<>(name+"_fluid_block", () -> Properties.of(Material.WATER), p -> new IEFluidBlock(thisMutable.getValue(), p));
+			this.block = new IEBlocks.BlockEntry<>(name+"_fluid_block", () -> Properties.copy(Blocks.WATER), p -> new IEFluidBlock(thisMutable.getValue(), p));
 			this.bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
 			thisMutable.setValue(this);
 			ALL_FLUID_BLOCKS.add(block);

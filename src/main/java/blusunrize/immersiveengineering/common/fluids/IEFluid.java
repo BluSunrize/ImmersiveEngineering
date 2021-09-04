@@ -104,9 +104,9 @@ public class IEFluid extends FlowingFluid
 	}
 
 	@Override
-	public boolean isSame(Fluid fluidIn)
+	public boolean isSame(@Nonnull Fluid fluidIn)
 	{
-		return fluidIn==entry.getStill()||fluidIn==entry.getStill();
+		return fluidIn==entry.getStill()||fluidIn==entry.getFlowing();
 	}
 
 	//TODO all copied from water. Maybe make configurable?
