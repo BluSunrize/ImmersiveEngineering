@@ -351,7 +351,7 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 
 	protected int getRSInput(Direction from)
 	{
-		if(!redstoneBySide.containsKey(from))
+		if(level.isClientSide||!redstoneBySide.containsKey(from))
 			updateRSForSide(from);
 		return redstoneBySide.get(from);
 	}
