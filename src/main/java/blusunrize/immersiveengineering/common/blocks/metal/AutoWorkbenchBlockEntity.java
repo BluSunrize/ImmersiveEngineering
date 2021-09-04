@@ -211,17 +211,13 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	@Override
 	public Set<BlockPos> getEnergyPos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(0, 1, 2)
-		);
+		return ImmutableSet.of(new BlockPos(0, 1, 2));
 	}
 
 	@Override
 	public Set<BlockPos> getRedstonePos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(1, 0, 2)
-		);
+		return ImmutableSet.of(new BlockPos(1, 0, 2));
 	}
 
 	@Override
@@ -236,20 +232,25 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 		return true;
 	}
 
-	CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
-			() -> {
-				Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
-				return new DirectionalBlockPos(worldPosition.relative(outDir, 2), outDir.getOpposite());
-			}
-			, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(
+			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+	);
 
 	@Override
 	public void doProcessOutput(ItemStack output)
 	{
-		Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
 		output = Utils.insertStackIntoInventory(this.output, output, false);
 		if(!output.isEmpty())
-			Utils.dropStackAtPos(level, worldPosition, output, outDir);
+		{
+			DirectionalBlockPos outputPos = getOutputPos();
+			Utils.dropStackAtPos(level, outputPos.position(), output, outputPos.side().getOpposite());
+		}
+	}
+
+	private DirectionalBlockPos getOutputPos()
+	{
+		Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+		return new DirectionalBlockPos(worldPosition.relative(outDir, 2), outDir.getOpposite());
 	}
 
 	@Override
