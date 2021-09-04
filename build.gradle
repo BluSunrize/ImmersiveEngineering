@@ -4,21 +4,24 @@ import net.minecraftforge.gradle.common.tasks.SignJar
 
 buildscript {
     repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven {url "https://plugins.gradle.org/m2/"}
+        maven { url 'https://maven.minecraftforge.net' }
+        maven {url 'https://plugins.gradle.org/m2/'}
         mavenCentral()
-        maven {url='https://repo.spongepowered.org/repository/maven-public/'}
+        maven {url 'https://repo.spongepowered.org/repository/maven-public/'}
+        maven {url 'https://maven.parchmentmc.org'}
     }
     dependencies {
         classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
         classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath 'org.parchmentmc:librarian:1.+'
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
 // Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
 apply plugin: 'eclipse'
 apply plugin: 'com.github.johnrengelman.shadow'
+apply plugin: 'org.parchmentmc.librarian.forgegradle'
 
 version = buildVersionString()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -100,7 +103,7 @@ task copyResourcesForIntelliJ(type: Copy) {
 processResources.finalizedBy replaceInModsToml, copyResourcesForIntelliJ
 
 minecraft {
-    mappings channel: 'official', version: version_minecraft
+    mappings channel: 'parchment', version: version_parchment
 
     runs {
         client {
