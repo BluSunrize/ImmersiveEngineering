@@ -36,6 +36,8 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.entity.player.Player;
@@ -58,27 +60,20 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 	public static DynamicModel DYNAMIC;
 
 	@Override
-	public void render(AutoWorkbenchBlockEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(AutoWorkbenchBlockEntity blockEntity, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getLevelNonnull().hasChunkAt(te.getBlockPos()))
+		if(!blockEntity.formed||blockEntity.isDummy()||!blockEntity.getLevelNonnull().hasChunkAt(blockEntity.getBlockPos()))
 			return;
 
-		//Grab model + correct eextended state
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-		BlockPos blockPos = te.getBlockPos();
-		BlockState state = te.getLevelNonnull().getBlockState(blockPos);
+		BlockPos blockPos = blockEntity.getBlockPos();
+		BlockState state = blockEntity.getLevelNonnull().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.autoWorkbench.get())
 			return;
 		BakedModel model = DYNAMIC.get();
 
-		//Outer GL Wrapping, initial translation
-		matrixStack.pushPose();
-		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
-		rotateForFacing(matrixStack, te.getFacing());
-		matrixStack.translate(0.5, 0.5, 0.5);
-
 		//Item Displacement
-		float[][] itemDisplays = new float[te.processQueue.size()][];
+		float[][] itemDisplays = new float[blockEntity.processQueue.size()][];
 		//Animations
 		float drill = 0;
 		float lift = 0;
@@ -87,7 +82,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
-			MultiblockProcess<MultiblockRecipe> process = te.processQueue.get(i);
+			MultiblockProcess<MultiblockRecipe> process = blockEntity.processQueue.get(i);
 			if(process==null||process.processTick <= 0||process.processTick==process.maxTicks)
 				continue;
 			//+partialTicks
@@ -173,8 +168,22 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 
 		}
 
+		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
-		ItemStack blueprintStack = te.inventory.get(0);
+		bufferIn = BERenderUtils.mirror(blockEntity, matrixStack, bufferIn);
+		Direction facing = blockEntity.getFacing();
+		if(blockEntity.getIsMirrored())
+		{
+			if(facing.getAxis()==Axis.Z)
+				matrixStack.translate(-1, 0, 0);
+			else
+				matrixStack.translate(0, 0, -1);
+		}
+		rotateForFacing(matrixStack, facing);
+		matrixStack.translate(0.5, 0.5, 0.5);
+
+		matrixStack.pushPose();
+		ItemStack blueprintStack = blockEntity.inventory.get(0);
 		if(!blueprintStack.isEmpty())
 			renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "blueprint");
 
@@ -208,7 +217,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		for(int i = 0; i < itemDisplays.length; i++)
 			if(itemDisplays[i]!=null)
 			{
-				MultiblockProcess<MultiblockRecipe> process = te.processQueue.get(i);
+				MultiblockProcess<MultiblockRecipe> process = blockEntity.processQueue.get(i);
 				if(!(process instanceof PoweredMultiblockBlockEntity.MultiblockProcessInWorld))
 					continue;
 
@@ -270,8 +279,8 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{
 			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(blueprintStack, "blueprint"));
-			BlueprintCraftingRecipe recipe = (te.selectedRecipe < 0||te.selectedRecipe >= recipes.length)?null: recipes[te.selectedRecipe];
-			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, te.getLevelNonnull());
+			BlueprintCraftingRecipe recipe = (blockEntity.selectedRecipe < 0||blockEntity.selectedRecipe >= recipes.length)?null: recipes[blockEntity.selectedRecipe];
+			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, blockEntity.getLevelNonnull());
 			if(blueprint!=null)
 			{
 				//Width depends on distance
