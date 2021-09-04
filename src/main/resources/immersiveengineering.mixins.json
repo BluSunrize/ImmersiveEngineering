@@ -15,6 +15,7 @@
     "accessors.FurnaceTEAccess",
     "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess",
+    "accessors.LiquidBlockFix",
     "accessors.MixPredicateAccess",
     "accessors.PaletteAccess",
     "accessors.PotionBrewingAccess",
