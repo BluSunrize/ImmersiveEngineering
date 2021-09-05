@@ -40,6 +40,7 @@ import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetw
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.utils.ClocheRenderFunctions;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
@@ -130,7 +131,6 @@ public class IEContent
 		ConveyorHandler.registerConveyorType(VerticalConveyor.TYPE);
 		ConveyorHandler.registerConveyorType(SplitConveyor.TYPE);
 		ConveyorHandler.registerConveyorType(ExtractConveyor.TYPE);
-		ConveyorHandler.registerSubstitute(new ResourceLocation(MODID, "conveyor"), new ResourceLocation(MODID, "uncontrolled"));
 		/*SHADERS*/
 		ShaderRegistry.rarityWeightMap.put(Rarity.COMMON, 9);
 		ShaderRegistry.rarityWeightMap.put(Rarity.UNCOMMON, 7);
@@ -350,7 +350,8 @@ public class IEContent
 			}
 		});
 		TemplateWorldCreator.CREATOR.setValue(TemplateWorld::new);
-		ConveyorHandler.conveyorBlocks.setValue(rl -> MetalDevices.CONVEYORS.get(rl).get());
+		ConveyorHandler.CONVEYOR_BLOCKS.setValue(rl -> MetalDevices.CONVEYORS.get(rl).get());
+		ConveyorHandler.BLOCK_ENTITY_TYPES.setValue(rl -> ConveyorBeltBlockEntity.BE_TYPES.get(rl).get());
 		SetRestrictedField.lock(false);
 	}
 }

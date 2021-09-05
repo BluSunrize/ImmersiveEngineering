@@ -46,7 +46,6 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.Map.Entry;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -479,13 +478,13 @@ public final class IEBlocks
 		public static void initConveyors()
 		{
 			Preconditions.checkState(CONVEYORS.isEmpty());
-			for(Entry<ResourceLocation, IConveyorType<?>> entry : ConveyorHandler.typeRegistry.entrySet())
+			for(IConveyorType<?> type : ConveyorHandler.getConveyorTypes())
 			{
-				ResourceLocation rl = entry.getKey();
+				ResourceLocation rl = type.getId();
 				BlockEntry<ConveyorBlock> blockEntry = new BlockEntry<>(
-						ConveyorHandler.getRegistryNameFor(rl).getPath(), ConveyorBlock.PROPERTIES, p -> new ConveyorBlock(entry.getValue(), p)
+						ConveyorHandler.getRegistryNameFor(rl).getPath(), ConveyorBlock.PROPERTIES, p -> new ConveyorBlock(type, p)
 				);
-				CONVEYORS.put(entry.getValue(), blockEntry);
+				CONVEYORS.put(type, blockEntry);
 				IEItems.REGISTER.register(blockEntry.getId().getPath(), () -> new BlockItemIE(blockEntry.get()));
 			}
 		}

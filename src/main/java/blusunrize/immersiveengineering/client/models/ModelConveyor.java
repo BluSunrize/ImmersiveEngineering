@@ -23,6 +23,8 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
@@ -68,16 +70,16 @@ import java.util.function.Function;
 public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 {
 	private static final ModelProperty<IConveyorBelt> CONVEYOR_MODEL_DATA = new ModelProperty<>();
-	public Cache<Object, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
-			.maximumSize(100)
-			.build();
-	public static ResourceLocation[] rl_casing = {
+	public static final ResourceLocation[] rl_casing = {
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_top"),
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_side"),
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_walls"),
 			new ResourceLocation(ImmersiveEngineering.MODID, "block/conveyor/casing_full")
 	};
 
+	private final Cache<Object, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
+			.maximumSize(100)
+			.build();
 	private final IConveyorType<T> type;
 	private final Block fallbackCover;
 
@@ -428,13 +430,15 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		return overrideList;
 	}
 
-	ItemOverrides overrideList = new ItemOverrides()
+	private static final ItemOverrides overrideList = new ItemOverrides()
 	{
 		static record Key(IConveyorType<?> type, Block defaultCover)
 		{
 		}
 
-		private final HashMap<Key, BakedModel> itemModelCache = new HashMap<>();
+		private final LoadingCache<Key, BakedModel> itemModelCache = CacheBuilder.newBuilder()
+				.maximumSize(100)
+				.build(CacheLoader.from(key -> new ModelConveyor<>(key.type(), key.defaultCover())));
 
 		@Override
 		public BakedModel resolve(@Nonnull BakedModel originalModel, @Nonnull ItemStack stack, @Nullable ClientLevel world, @Nullable LivingEntity entity, int unused)
@@ -446,14 +450,7 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 				if(conveyorType!=null)
 				{
 					Block defaultCover = ConveyorBlock.getCover(stack);
-					Key key = new Key(conveyorType, defaultCover);
-					BakedModel model = itemModelCache.get(key);
-					if(model==null)
-					{
-						model = new ModelConveyor<>(conveyorType, defaultCover);
-						itemModelCache.put(key, model);
-					}
-					return model;
+					return itemModelCache.getUnchecked(new Key(conveyorType, defaultCover));
 				}
 			}
 			return Minecraft.getInstance().getModelManager().getMissingModel();

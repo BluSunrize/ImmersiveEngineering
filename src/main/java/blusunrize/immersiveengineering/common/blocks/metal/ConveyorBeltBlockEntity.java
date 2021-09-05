@@ -21,10 +21,10 @@ import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -54,18 +54,21 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Map.Entry;
+import java.util.Map;
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBlockEntity
 		implements IStateBasedDirectional, ICollisionBounds, ISelectionBounds, IHammerInteraction,
 		IPlayerInteraction, IConveyorBlockEntity<T>, IPropertyPassthrough, IETickableBlockEntity
 {
+	public static final Map<IConveyorType<?>, Supplier<BlockEntityType<?>>> BE_TYPES = new Reference2ObjectOpenHashMap<>();
+
 	private final T conveyorBeltSubtype;
 
 	public ConveyorBeltBlockEntity(IConveyorType<T> type, BlockPos pos, BlockState state)
 	{
-		super(Preconditions.checkNotNull(ConveyorHandler.getBEType(type), "Not TE type for "+type), pos, state);
+		super(Preconditions.checkNotNull(ConveyorHandler.getBEType(type), "Not BE type for "+type), pos, state);
 		conveyorBeltSubtype = ConveyorHandler.getConveyor(type, this);
 	}
 
@@ -155,16 +158,6 @@ public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBloc
 	{
 		if(player.isShiftKeyDown()&&conveyorBeltSubtype!=null&&conveyorBeltSubtype.changeConveyorDirection())
 		{
-//			if(transportUp)
-//			{
-//				transportUp = false;
-//				transportDown = true;
-//			}
-//			else if(transportDown)
-//				transportDown = false;
-//			else
-//				transportUp = true;
-
 			if(!level.isClientSide)
 			{
 				this.setChanged();
@@ -238,17 +231,16 @@ public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBloc
 	}
 
 	@SubscribeEvent
-	public static void registerConveyorTEsAndBlocks(RegistryEvent.NewRegistry ev)
+	public static void registerConveyorBEsAndBlocks(RegistryEvent.NewRegistry ev)
 	{
-		for(Entry<ResourceLocation, IConveyorType<?>> entry : ConveyorHandler.typeRegistry.entrySet())
+		for(IConveyorType<?> type : ConveyorHandler.getConveyorTypes())
 		{
-			IConveyorType<?> type = entry.getValue();
 			RegistryObject<BlockEntityType<?>> beType = IEBlockEntities.REGISTER.register(
-					entry.getKey().getPath(), () -> new BlockEntityType<>(
-							(pos, state) -> new ConveyorBeltBlockEntity(type, pos, state),
+					type.getId().getPath(), () -> new BlockEntityType<>(
+							(pos, state) -> new ConveyorBeltBlockEntity<>(type, pos, state),
 							ImmutableSet.of(ConveyorHandler.getBlock(type)), null
 					));
-			ConveyorHandler.blockEntityTypes.put(type, beType);
+			BE_TYPES.put(type, beType);
 		}
 		MetalDevices.initConveyors();
 	}

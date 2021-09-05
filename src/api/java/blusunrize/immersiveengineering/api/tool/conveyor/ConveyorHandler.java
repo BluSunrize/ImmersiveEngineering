@@ -26,13 +26,9 @@ import org.apache.commons.lang3.mutable.MutableLong;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 
 /**
@@ -41,14 +37,13 @@ import java.util.function.Supplier;
  */
 public class ConveyorHandler
 {
-	//TODO make private?
-	public static final Map<ResourceLocation, IConveyorType<?>> typeRegistry = new LinkedHashMap<>();
-	public static final Map<IConveyorType<?>, Supplier<BlockEntityType<?>>> blockEntityTypes = new LinkedHashMap<>();
-	public static final Set<BiConsumer<Entity, IConveyorBlockEntity>> magnetSuppressionFunctions = new HashSet<>();
-	public static final Set<BiConsumer<Entity, IConveyorBlockEntity>> magnetSuppressionReverse = new HashSet<>();
+	private static final Map<ResourceLocation, IConveyorType<?>> typeRegistry = new LinkedHashMap<>();
+	private static final Set<BiConsumer<Entity, IConveyorBlockEntity<?>>> magnetSuppressionFunctions = new HashSet<>();
+	private static final Set<BiConsumer<Entity, IConveyorBlockEntity<?>>> magnetSuppressionReverse = new HashSet<>();
 	public static final SetRestrictedField<ItemAgeAccessor> ITEM_AGE_ACCESS = SetRestrictedField.common();
 
-	public static final SetRestrictedField<Function<IConveyorType<?>, Block>> conveyorBlocks = SetRestrictedField.common();
+	public static final SetRestrictedField<Function<IConveyorType<?>, Block>> CONVEYOR_BLOCKS = SetRestrictedField.common();
+	public static final SetRestrictedField<Function<IConveyorType<?>, BlockEntityType<?>>> BLOCK_ENTITY_TYPES = SetRestrictedField.common();
 	public static final ResourceLocation textureConveyorColour = new ResourceLocation("immersiveengineering:block/conveyor/colour");
 
 	// Should work for multiple dimensions since the calls aren't "interleaved" for multiple dimensions
@@ -110,9 +105,14 @@ public class ConveyorHandler
 		return typeRegistry.get(key);
 	}
 
+	public static Collection<IConveyorType<?>> getConveyorTypes()
+	{
+		return typeRegistry.values();
+	}
+
 	public static BlockEntityType<? extends BlockEntity> getBEType(IConveyorType<?> type)
 	{
-		return blockEntityTypes.get(type).get();
+		return BLOCK_ENTITY_TYPES.getValue().apply(type);
 	}
 
 	public static ResourceLocation getRegistryNameFor(ResourceLocation conveyorLoc)
@@ -127,15 +127,15 @@ public class ConveyorHandler
 
 	public static IConveyorType<?> getType(Block b)
 	{
-		if(b instanceof IConveyorBlock)
-			return ((IConveyorBlock)b).getType();
+		if(b instanceof IConveyorBlock conveyorBlock)
+			return conveyorBlock.getType();
 		else
 			return null;
 	}
 
 	public static Block getBlock(IConveyorType<?> type)
 	{
-		return conveyorBlocks.getValue().apply(type);
+		return CONVEYOR_BLOCKS.getValue().apply(type);
 	}
 
 	public static boolean isConveyorBlock(Block b)
@@ -151,7 +151,9 @@ public class ConveyorHandler
 	 * the reversal function is optional, to revert possible NBT changes
 	 * the tileentity parsed is an instanceof
 	 */
-	public static void registerMagnetSuppression(BiConsumer<Entity, IConveyorBlockEntity> function, @Nullable BiConsumer<Entity, IConveyorBlockEntity> revert)
+	public static void registerMagnetSuppression(
+			BiConsumer<Entity, IConveyorBlockEntity<?>> function, @Nullable BiConsumer<Entity, IConveyorBlockEntity<?>> revert
+	)
 	{
 		magnetSuppressionFunctions.add(function);
 		if(revert!=null)
@@ -161,20 +163,20 @@ public class ConveyorHandler
 	/**
 	 * applies all registered magnets suppressors to the entity
 	 */
-	public static void applyMagnetSuppression(Entity entity, IConveyorBlockEntity tile)
+	public static void applyMagnetSuppression(Entity entity, IConveyorBlockEntity<?> tile)
 	{
 		if(entity!=null)
-			for(BiConsumer<Entity, IConveyorBlockEntity> func : magnetSuppressionFunctions)
+			for(BiConsumer<Entity, IConveyorBlockEntity<?>> func : magnetSuppressionFunctions)
 				func.accept(entity, tile);
 	}
 
 	/**
 	 * applies all registered magnet suppression removals
 	 */
-	public static void revertMagnetSuppression(Entity entity, IConveyorBlockEntity tile)
+	public static void revertMagnetSuppression(Entity entity, IConveyorBlockEntity<?> tile)
 	{
 		if(entity!=null)
-			for(BiConsumer<Entity, IConveyorBlockEntity> func : magnetSuppressionReverse)
+			for(BiConsumer<Entity, IConveyorBlockEntity<?>> func : magnetSuppressionReverse)
 				func.accept(entity, tile);
 	}
 
