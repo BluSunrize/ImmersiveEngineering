@@ -6,37 +6,38 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 
 import javax.annotation.Nullable;
 import java.util.List;
 
-public interface IConveyorClientData<T extends IConveyorBelt>
+public interface IConveyorModelRender<T extends IConveyorBelt>
 {
 	/**
-	 * @param context
-	 * @return the string by which unique models would be cached. Override for additional appended information*
-	 * The model class will also append to this key for rendered walls and facing
+	 * @return An Object (typically a record) uniquely identifying the model produced by the given context
 	 */
-	default String getModelCacheKey(RenderContext<T> context)
+	default Object getModelCacheKey(RenderContext<T> context)
+	{
+		return getDefaultData(this, context);
+	}
+
+	static <T extends IConveyorBelt>
+	BasicConveyorCacheData getDefaultData(IConveyorModelRender<T> renderer, RenderContext<T> context)
 	{
 		T instance = context.instance();
-		String key = "";
 		Block cover = context.getCover();
-		if(cover!=Blocks.AIR)
-			key += "s"+cover.getRegistryName();
 		if(instance==null)
-			return key;
-		//TODO return record instead?
+			return new BasicConveyorCacheData(
+					cover, Direction.NORTH, ConveyorDirection.HORIZONTAL, true, true, true, DyeColor.WHITE
+			);
 		Direction facing = instance.getFacing();
-		key += "f"+facing.ordinal();
-		key += "d"+instance.getConveyorDirection().ordinal();
-		key += "a"+(instance.isActive()?1: 0);
-		key += "w0"+(shouldRenderWall(facing, 0, context)?1: 0);
-		key += "w1"+(shouldRenderWall(facing, 1, context)?1: 0);
-		key += "c"+instance.getDyeColour();
-		return key;
+		return new BasicConveyorCacheData(
+				cover, facing, instance.getConveyorDirection(), instance.isActive(),
+				renderer.shouldRenderWall(facing, ConveyorWall.LEFT, context),
+				renderer.shouldRenderWall(facing, ConveyorWall.RIGHT, context),
+				instance.getDyeColour()
+		);
 	}
 
 	default Transformation modifyBaseRotationMatrix(Transformation matrix)
@@ -59,16 +60,14 @@ public interface IConveyorClientData<T extends IConveyorBelt>
 	}
 
 	/**
-	 * @param wall    0 is left, 1 is right
-	 * @param context
 	 * @return whether the wall should be drawn on the model. Also used for they cache key
 	 */
-	default boolean shouldRenderWall(Direction facing, int wall, RenderContext<T> context)
+	default boolean shouldRenderWall(Direction facing, ConveyorWall wall, RenderContext<T> context)
 	{
 		T instance = context.instance();
 		if(instance==null||instance.getConveyorDirection()!=ConveyorDirection.HORIZONTAL)
 			return true;
-		Direction side = wall==0?facing.getCounterClockWise(): facing.getClockWise();
+		Direction side = wall.getWallSide(facing);
 		BlockPos pos = instance.getBlockEntity().getBlockPos().relative(side);
 		return ConveyorHandler.connectsToConveyor(instance.getBlockEntity().getLevel(), pos, side);
 	}

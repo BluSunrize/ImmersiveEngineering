@@ -4,12 +4,16 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorCacheData;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.RedstoneConveyor;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
@@ -59,20 +63,20 @@ public class RedstoneConveyorRender extends BasicConveyorRender<RedstoneConveyor
 	}
 
 	@Override
-	public String getModelCacheKey(RenderContext<RedstoneConveyor> context)
+	public Object getModelCacheKey(RenderContext<RedstoneConveyor> context)
 	{
-		String key = super.getModelCacheKey(context);
+		BasicConveyorCacheData basic = IConveyorModelRender.getDefaultData(this, context);
 		RedstoneConveyor instance = context.instance();
-		if(instance!=null)
-			key += "p"+instance.isPanelRight();
-		return key;
+		if(instance==null)
+			return basic;
+		return Pair.of(basic, instance.isPanelRight());
 	}
 
 	@Override
-	public boolean shouldRenderWall(Direction facing, int wall, RenderContext<RedstoneConveyor> context)
+	public boolean shouldRenderWall(Direction facing, ConveyorWall wall, RenderContext<RedstoneConveyor> context)
 	{
 		RedstoneConveyor instance = context.instance();
-		if(instance==null||(instance.isPanelRight()&&wall==1)||(!instance.isPanelRight()&&wall==0))
+		if(instance==null||(instance.isPanelRight()&&wall==ConveyorWall.RIGHT)||(!instance.isPanelRight()&&wall==ConveyorWall.LEFT))
 			return true;
 		return super.shouldRenderWall(facing, wall, context);
 	}

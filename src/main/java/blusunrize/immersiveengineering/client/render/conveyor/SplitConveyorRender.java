@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
@@ -26,7 +27,7 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 	}
 
 	@Override
-	public boolean shouldRenderWall(Direction facing, int wall, RenderContext<SplitConveyor> context)
+	public boolean shouldRenderWall(Direction facing, ConveyorWall wall, RenderContext<SplitConveyor> context)
 	{
 		return false;
 	}

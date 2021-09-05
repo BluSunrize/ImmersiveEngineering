@@ -16,7 +16,7 @@ public interface IConveyorType<T extends IConveyorBelt>
 	 */
 	boolean canBeDyed();
 
-	void initClientData(Consumer<IConveyorClientData<T>> clientData);
+	void initClientData(Consumer<IConveyorModelRender<T>> clientData);
 
 	ResourceLocation getId();
 

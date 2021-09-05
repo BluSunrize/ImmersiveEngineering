@@ -12,7 +12,7 @@ public record BasicConveyorType<T extends IConveyorBelt>(
 		boolean ticking,
 		boolean dyeable,
 		Function<BlockEntity, T> makeBelt,
-		Supplier<IConveyorClientData<T>> makeClientData,
+		Supplier<IConveyorModelRender<T>> makeClientData,
 		boolean acceptsCovers
 ) implements IConveyorType<T>
 {
@@ -21,7 +21,7 @@ public record BasicConveyorType<T extends IConveyorBelt>(
 			boolean ticking,
 			boolean dyeable,
 			Function<BlockEntity, T> makeBelt,
-			Supplier<IConveyorClientData<T>> makeClientData
+			Supplier<IConveyorModelRender<T>> makeClientData
 	)
 	{
 		this(id, ticking, dyeable, makeBelt, makeClientData, true);
@@ -52,7 +52,7 @@ public record BasicConveyorType<T extends IConveyorBelt>(
 	}
 
 	@Override
-	public void initClientData(Consumer<IConveyorClientData<T>> clientData)
+	public void initClientData(Consumer<IConveyorModelRender<T>> clientData)
 	{
 		clientData.accept(makeClientData.get());
 	}

@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.conveyor.*;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorClientData.RenderContext;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender.RenderContext;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -68,7 +68,7 @@ import java.util.function.Function;
 public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 {
 	private static final ModelProperty<IConveyorBelt> CONVEYOR_MODEL_DATA = new ModelProperty<>();
-	public Cache<String, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
+	public Cache<Object, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.build();
 	public static ResourceLocation[] rl_casing = {
@@ -105,9 +105,9 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 					facing = ((IDirectionalBE)tile).getFacing();
 			}
 		}
-		IConveyorClientData<T> clientData = ClientConveyors.getData(type);
-		IConveyorClientData.RenderContext<T> context = new RenderContext<>(type, conveyor, fallbackCover);
-		String key = clientData.getModelCacheKey(context);
+		IConveyorModelRender<T> clientData = ClientConveyors.getData(type);
+		IConveyorModelRender.RenderContext<T> context = new RenderContext<>(type, conveyor, fallbackCover);
+		Object key = clientData.getModelCacheKey(context);
 		List<BakedQuad> cachedQuads = modelCache.getIfPresent(key);
 		if(cachedQuads==null)
 		{
@@ -115,7 +115,10 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 			Transformation matrix = ClientUtils.rotateTo(facing);
 			matrix = clientData.modifyBaseRotationMatrix(matrix);
 			ConveyorDirection conDir = conveyor!=null?conveyor.getConveyorDirection(): ConveyorDirection.HORIZONTAL;
-			boolean[] walls = new boolean[]{clientData.shouldRenderWall(facing, 0, context), clientData.shouldRenderWall(facing, 1, context)};
+			boolean[] walls = new boolean[]{
+					clientData.shouldRenderWall(facing, ConveyorWall.LEFT, context),
+					clientData.shouldRenderWall(facing, ConveyorWall.RIGHT, context)
+			};
 			TextureAtlasSprite tex_conveyor = ClientUtils.getSprite(context.isActiveOr(false)?clientData.getActiveTexture(): clientData.getInactiveTexture());
 			DyeColor colourStripes = null;
 			TextureAtlasSprite tex_conveyor_colour = null;

@@ -1,6 +1,9 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorCacheData;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
@@ -96,24 +99,25 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 	}
 
 	@Override
-	public String getModelCacheKey(RenderContext<ExtractConveyor> context)
+	public Object getModelCacheKey(RenderContext<ExtractConveyor> context)
 	{
-		String key = super.getModelCacheKey(context);
+		BasicConveyorCacheData basic = IConveyorModelRender.getDefaultData(this, context);
 		ExtractConveyor instance = context.instance();
 		if(instance==null)
-			return key;
-		key += "e"+instance.getExtractDirection().ordinal();
-		key += "ex"+instance.getCurrentExtension();
-		return key;
+			return basic;
+		record Key(BasicConveyorCacheData basic, Direction extractFrom, double extension)
+		{
+		}
+		return new Key(basic, instance.getExtractDirection(), instance.getCurrentExtension());
 	}
 
 	@Override
-	public boolean shouldRenderWall(Direction facing, int wall, RenderContext<ExtractConveyor> context)
+	public boolean shouldRenderWall(Direction facing, ConveyorWall wall, RenderContext<ExtractConveyor> context)
 	{
 		ExtractConveyor instance = context.instance();
 		if(instance==null)
 			return true;
-		Direction side = wall==0?facing.getCounterClockWise(): facing.getClockWise();
+		Direction side = wall.getWallSide(facing);
 		return side!=instance.getExtractDirection()&&super.shouldRenderWall(facing, wall, context);
 	}
 }

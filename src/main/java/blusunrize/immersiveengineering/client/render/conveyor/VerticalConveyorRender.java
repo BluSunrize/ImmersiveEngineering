@@ -1,6 +1,9 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorCacheData;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
@@ -30,28 +33,31 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 	}
 
 	@Override
-	public boolean shouldRenderWall(Direction facing, int wall, RenderContext<VerticalConveyor> context)
+	public boolean shouldRenderWall(Direction facing, ConveyorWall wall, RenderContext<VerticalConveyor> context)
 	{
 		return true;
 	}
 
 	@Override
-	public String getModelCacheKey(RenderContext<VerticalConveyor> context)
+	public Object getModelCacheKey(RenderContext<VerticalConveyor> context)
 	{
-		String key = super.getModelCacheKey(context);
+		BasicConveyorCacheData basic = IConveyorModelRender.getDefaultData(this, context);
 		VerticalConveyor instance = context.instance();
 		if(instance==null)
-			return key;
+			return basic;
 		BlockEntity blockEntity = instance.getBlockEntity();
 		Direction facing = context.getFacing();
-		if(VerticalConveyor.renderBottomBelt(blockEntity, facing))
+		if(!VerticalConveyor.renderBottomBelt(blockEntity, facing))
+			return basic;
+		record Key(BasicConveyorCacheData base, boolean inward, boolean bottomWall0, boolean bottomWall1)
 		{
-			key += "b";
-			key += VerticalConveyor.isInwardConveyor(blockEntity, facing.getOpposite())?"1": "0";
-			key += renderBottomWall(facing, 0, context)?"1": "0";
-			key += renderBottomWall(facing, 1, context)?"1": "0";
 		}
-		return key;
+		return new Key(
+				basic,
+				VerticalConveyor.isInwardConveyor(blockEntity, facing.getOpposite()),
+				renderBottomWall(facing, ConveyorWall.LEFT, context),
+				renderBottomWall(facing, ConveyorWall.RIGHT, context)
+		);
 	}
 
 	@Override
@@ -62,7 +68,7 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 		));
 	}
 
-	public boolean renderBottomWall(Direction facing, int wall, RenderContext<VerticalConveyor> context)
+	public boolean renderBottomWall(Direction facing, ConveyorWall wall, RenderContext<VerticalConveyor> context)
 	{
 		return super.shouldRenderWall(facing, wall, context);
 	}
@@ -83,7 +89,10 @@ public class VerticalConveyorRender extends BasicConveyorRender<VerticalConveyor
 						instance.isActive()?ConveyorBase.texture_on: ConveyorBase.texture_off
 				);
 				TextureAtlasSprite spriteColour = ClientUtils.getSprite(getColouredStripesTexture());
-				walls = new boolean[]{renderBottomWall(facing, 0, context), renderBottomWall(facing, 1, context)};
+				walls = new boolean[]{
+						renderBottomWall(facing, ConveyorWall.LEFT, context),
+						renderBottomWall(facing, ConveyorWall.RIGHT, context)
+				};
 				baseModel.addAll(ModelConveyor.getBaseConveyor(
 						facing, .875f, ClientUtils.rotateTo(facing), ConveyorDirection.HORIZONTAL, sprite, walls,
 						new boolean[]{true, false}, spriteColour, instance.getDyeColour()

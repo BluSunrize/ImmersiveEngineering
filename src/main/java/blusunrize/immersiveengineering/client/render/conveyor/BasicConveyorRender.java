@@ -1,7 +1,8 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorClientData;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -25,7 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorClientData<T>
+public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorModelRender<T>
 {
 	private final ResourceLocation active;
 	private final ResourceLocation inactive;
@@ -78,7 +79,7 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorCli
 
 		baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .75f, 0), new Vec3(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
 
-		if(shouldRenderWall(facing, 0, context))
+		if(shouldRenderWall(facing, ConveyorWall.LEFT, context))
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, 0), new Vec3(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 		else
 		{
@@ -86,7 +87,7 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorCli
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, .9375f), new Vec3(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 		}
 
-		if(shouldRenderWall(facing, 1, context))
+		if(shouldRenderWall(facing, ConveyorWall.RIGHT, context))
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, .1875f, 0), new Vec3(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 		else
 		{
