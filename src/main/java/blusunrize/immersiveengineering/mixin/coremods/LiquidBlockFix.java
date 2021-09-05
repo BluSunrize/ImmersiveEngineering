@@ -7,7 +7,7 @@
  *
  */
 
-package blusunrize.immersiveengineering.mixin.accessors;
+package blusunrize.immersiveengineering.mixin.coremods;
 
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;
@@ -15,8 +15,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
+//TODO Forge#7992
 @Mixin(LiquidBlock.class)
-public abstract class LiquidBlockFix
+public class LiquidBlockFix
 {
 	@Redirect(
 			method = {

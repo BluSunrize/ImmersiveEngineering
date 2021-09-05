@@ -15,7 +15,6 @@
     "accessors.FurnaceTEAccess",
     "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess",
-    "accessors.LiquidBlockFix",
     "accessors.MixPredicateAccess",
     "accessors.PaletteAccess",
     "accessors.PotionBrewingAccess",
@@ -25,6 +24,7 @@
     "accessors.TemplateAccess",
     "accessors.TNTEntityAccess",
     "coremods.AbstractBlockStateMixin",
+    "coremods.LiquidBlockFix",
     "coremods.ServerWorldMixin",
     "coremods.TemplateMixin",
     "coremods.temp.ServerLevelMixin"
