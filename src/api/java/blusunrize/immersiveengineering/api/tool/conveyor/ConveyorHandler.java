@@ -26,7 +26,10 @@ import org.apache.commons.lang3.mutable.MutableLong;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -40,7 +43,6 @@ public class ConveyorHandler
 {
 	//TODO make private?
 	public static final Map<ResourceLocation, IConveyorType<?>> typeRegistry = new LinkedHashMap<>();
-	public static final Map<ResourceLocation, Set<ResourceLocation>> substituteRegistry = new HashMap<>();
 	public static final Map<IConveyorType<?>, Supplier<BlockEntityType<?>>> blockEntityTypes = new LinkedHashMap<>();
 	public static final Set<BiConsumer<Entity, IConveyorBlockEntity>> magnetSuppressionFunctions = new HashSet<>();
 	public static final Set<BiConsumer<Entity, IConveyorBlockEntity>> magnetSuppressionReverse = new HashSet<>();
@@ -86,19 +88,6 @@ public class ConveyorHandler
 			return false;
 		typeRegistry.put(key, type);
 		return true;
-	}
-
-	/**
-	 * Registers a valid substitute for the given key conveyor. This substitute is allowed in the construction of multiblocks in place of the key
-	 *
-	 * @param key        A unique ResourceLocation to identify the conveyor by
-	 * @param substitute A unique ResourceLocation to identify the substitute
-	 */
-	//TODO this is probably broken?
-	public static void registerSubstitute(ResourceLocation key, ResourceLocation substitute)
-	{
-		Set<ResourceLocation> registeredSubstitutes = substituteRegistry.computeIfAbsent(key, k -> new HashSet<>());
-		registeredSubstitutes.add(substitute);
 	}
 
 	/**
