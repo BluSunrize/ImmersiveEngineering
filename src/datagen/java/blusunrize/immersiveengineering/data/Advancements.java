@@ -13,10 +13,8 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.items.BulletItem;
-import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
@@ -51,6 +49,7 @@ import net.minecraft.world.level.ItemLike;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.Comparator;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -128,8 +127,14 @@ public class Advancements extends AdvancementProvider
 
 			Advancement.Builder b_conveyor = advancement(rtfm, MetalDevices.CONVEYORS.get(BasicConveyor.TYPE), "place_conveyor", FrameType.TASK, true, true, false)
 					.requirements(RequirementsStrategy.OR);
-			for(Entry<IConveyorType<?>, BlockEntry<ConveyorBlock>> entry : MetalDevices.CONVEYORS.entrySet())
-				b_conveyor.addCriterion(entry.getKey().getId().getPath(), PlacedBlockTrigger.TriggerInstance.placedBlock(entry.getValue().get()));
+			MetalDevices.CONVEYORS.entrySet().stream()
+					.sorted(Comparator.comparing((Entry<IConveyorType<?>, ?> e) -> e.getKey().getId()))
+					.forEach(e -> {
+						String name = e.getKey().getId().getPath();
+						b_conveyor.addCriterion(
+								name, PlacedBlockTrigger.TriggerInstance.placedBlock(e.getValue().get())
+						);
+					});
 			Advancement conveyor = b_conveyor.save(consumer, "immersiveengineering:main/place_conveyor");
 
 			Advancement windmill = advancement(rtfm, WoodenDevices.windmill, "place_windmill", FrameType.TASK, true, true, false)
