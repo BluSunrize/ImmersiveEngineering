@@ -32,9 +32,8 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	@Override
 	public LocalNetworkHandler merge(LocalNetworkHandler other)
 	{
-		if(!(other instanceof RedstoneNetworkHandler))
+		if(!(other instanceof RedstoneNetworkHandler otherRS))
 			return new RedstoneNetworkHandler(localNet, globalNet);
-		RedstoneNetworkHandler otherRS = (RedstoneNetworkHandler)other;
 		RedstoneNetworkHandler ret = new RedstoneNetworkHandler(localNet, globalNet);
 		fillWithMax(totalValues, otherRS.totalValues, ret.totalValues);
 		ret.emittedValues.putAll(this.emittedValues);
@@ -45,20 +44,15 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	@Override
 	public void onConnectorLoaded(ConnectionPoint newCP, IImmersiveConnectable iic)
 	{
-		if(!(iic instanceof IRedstoneConnector))
+		if(!(iic instanceof IRedstoneConnector rsConn))
 			return;
 		localNet.addAsFutureTask(() -> {
-			IRedstoneConnector rsConn = (IRedstoneConnector)iic;
-
 			byte[] emitted = getEmitted(rsConn, newCP);
 			fillWithMax(emitted, totalValues, totalValues);
 			emittedValues.put(newCP, emitted);
 			for(ConnectionPoint cp : localNet.getConnectionPoints())
-			{
-				IImmersiveConnectable here = localNet.getConnector(cp);
-				if(here instanceof IRedstoneConnector)
-					((IRedstoneConnector)here).onChange(cp, this);
-			}
+				if(localNet.getConnector(cp) instanceof IRedstoneConnector here)
+					here.onChange(cp, this);
 		});
 	}
 
@@ -67,21 +61,15 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 		totalValues = new byte[16];
 		emittedValues.clear();
 		for(ConnectionPoint cp : localNet.getConnectionPoints())
-		{
-			IImmersiveConnectable here = localNet.getConnector(cp);
-			if(here instanceof IRedstoneConnector)
+			if(localNet.getConnector(cp) instanceof IRedstoneConnector here)
 			{
-				byte[] output = getEmitted((IRedstoneConnector)here, cp);
+				byte[] output = getEmitted(here, cp);
 				emittedValues.put(cp, output);
 				fillWithMax(output, totalValues, totalValues);
 			}
-		}
 		for(ConnectionPoint cp : localNet.getConnectionPoints())
-		{
-			IImmersiveConnectable here = localNet.getConnector(cp);
-			if(here instanceof IRedstoneConnector)
-				((IRedstoneConnector)here).onChange(cp, this);
-		}
+			if(localNet.getConnector(cp) instanceof IRedstoneConnector here)
+				here.onChange(cp, this);
 	}
 
 	@Override
@@ -111,11 +99,8 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	{
 		super.setLocalNet(net);
 		for(ConnectionPoint cp : net.getConnectionPoints())
-		{
-			IImmersiveConnectable here = net.getConnector(cp);
-			if(here instanceof IRedstoneConnector)
-				((IRedstoneConnector)here).onChange(cp, this);
-		}
+			if(net.getConnector(cp) instanceof IRedstoneConnector here)
+				here.onChange(cp, this);
 	}
 
 	public byte getValue(int redstoneChannel)
@@ -127,12 +112,8 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	{
 		byte[] ret = new byte[16];
 		for(Map.Entry<ConnectionPoint, byte[]> entry : emittedValues.entrySet())
-		{
 			if(!entry.getKey().equals(excluded))
-			{
 				fillWithMax(entry.getValue(), ret, ret);
-			}
-		}
 		return ret;
 	}
 

@@ -18,14 +18,8 @@ import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 
-public class DefaultProxyProvider implements IICProxyProvider
+public record DefaultProxyProvider(Level world) implements IICProxyProvider
 {
-	private final Level world;
-
-	public DefaultProxyProvider(Level world)
-	{
-		this.world = world;
-	}
 
 	@Override
 	public CompoundTag toNBT(IImmersiveConnectable proxy)

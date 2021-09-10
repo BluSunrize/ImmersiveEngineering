@@ -205,17 +205,6 @@ public class WireUtils
 		return offset;
 	}
 
-	public static BlockPos toBlockPos(Object object)
-	{
-		if(object instanceof BlockPos)
-			return (BlockPos)object;
-		if(object instanceof BlockEntity)
-			return ((BlockEntity)object).getBlockPos();
-		if(object instanceof IImmersiveConnectable)
-			return ((IImmersiveConnectable)object).getPosition();
-		return null;
-	}
-
 	public static Connection getTargetConnection(Level world, Player player, Connection ignored, double maxDistance)
 	{
 		Vec3 look = player.getLookAngle();
