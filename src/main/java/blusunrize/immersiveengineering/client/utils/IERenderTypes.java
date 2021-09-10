@@ -250,9 +250,8 @@ public class IERenderTypes extends RenderStateShard
 				DefaultVertexFormat.POSITION_TEX,
 				Mode.QUADS,
 				RenderType.CompositeState.builder()
-						.setTextureState(new TextureStateShard(
-								texture,
-								false, false))
+						.setTextureState(new TextureStateShard(texture, false, false))
+						.setShaderState(POSITION_TEX_SHADER)
 						.createCompositeState(false)
 		);
 	}
