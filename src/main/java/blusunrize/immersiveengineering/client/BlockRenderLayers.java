@@ -70,6 +70,7 @@ public class BlockRenderLayers
 			setRenderLayer(b, RenderType.cutout());
 		setRenderLayer(MetalDevices.chargingStation, RenderType.solid(), RenderType.translucent());
 		setRenderLayer(Multiblocks.tank, RenderType.cutoutMipped());
+		setRenderLayer(Multiblocks.dieselGenerator, RenderType.cutoutMipped());
 		setRenderLayer(Multiblocks.bottlingMachine, RenderType.solid(), RenderType.translucent());
 
 		for(Map<ResourceLocation, ? extends BlockEntry<? extends Block>> map : ImmutableList.of(IEBlocks.toSlab, IEBlocks.toStairs))
