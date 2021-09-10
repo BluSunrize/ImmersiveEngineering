@@ -43,6 +43,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -68,7 +69,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	private final IICProxyProvider proxyProvider;
 	private final IWireSyncManager syncManager;
 
-	private List<Pair<IImmersiveConnectable, Level>> queuedLoads = new ArrayList<>();
+	private Map<Pair<BlockPos, Level>, IImmersiveConnectable> queuedLoads = new LinkedHashMap<>();
 
 	@Nonnull
 	public static GlobalWireNetwork getNetwork(Level w)
@@ -81,7 +82,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			return lastClientNet;
 		LazyOptional<GlobalWireNetwork> netOptional = w.getCapability(NetHandlerCapability.NET_CAPABILITY);
 		if(!netOptional.isPresent())
-			throw new RuntimeException("No net handler found for dimension "+w.dimension().location()+", remote: "+w.isClientSide);
+			throw new RuntimeException("No net handler found for dimension "+w.dimension().location()+", client: "+w.isClientSide);
 		GlobalWireNetwork ret = netOptional.orElseThrow(RuntimeException::new);
 		if(!w.isClientSide)
 		{
@@ -106,10 +107,10 @@ public class GlobalWireNetwork implements IWorldTickable
 		}
 	}
 
-	public GlobalWireNetwork(boolean remote, IICProxyProvider proxyProvider, IWireSyncManager syncManager)
+	public GlobalWireNetwork(boolean isClientSide, IICProxyProvider proxyProvider, IWireSyncManager syncManager)
 	{
 		this.proxyProvider = proxyProvider;
-		collisionData = new WireCollisionData(this, remote);
+		collisionData = new WireCollisionData(this, isClientSide);
 		this.syncManager = syncManager;
 	}
 
@@ -315,7 +316,7 @@ public class GlobalWireNetwork implements IWorldTickable
 
 	public void onConnectorLoad(IImmersiveConnectable iic, Level world)
 	{
-		queuedLoads.add(Pair.of(iic, world));
+		queuedLoads.put(Pair.of(iic.getPosition(), world), iic);
 	}
 
 	private boolean processingLoadQueue = false;
@@ -325,23 +326,25 @@ public class GlobalWireNetwork implements IWorldTickable
 		if(queuedLoads.isEmpty()||processingLoadQueue)
 			return;
 		processingLoadQueue = true;
-		List<Pair<IImmersiveConnectable, Level>> failedLoads = new ArrayList<>();
-		for(Pair<IImmersiveConnectable, Level> load : queuedLoads)
-			if(isChunkSafe(load.getSecond(), load.getFirst().getPosition()))
+		Map<Pair<BlockPos, Level>, IImmersiveConnectable> failedLoads = new LinkedHashMap<>();
+		for(Entry<Pair<BlockPos, Level>, IImmersiveConnectable> load : queuedLoads.entrySet())
+		{
+			IImmersiveConnectable iic = load.getValue();
+			Level level = load.getKey().getSecond();
+			if(isChunkSafe(level, load.getKey().getFirst()))
 			{
-				IImmersiveConnectable iic = load.getFirst();
-				Level world = load.getSecond();
 				WireLogger.logger.info("Loading connector {} at {}", iic, iic.getPosition());
 				if(validating)
 					WireLogger.logger.error("Adding a connector during validation!");
-				onConnectorLoad(iic, world.isClientSide);
-				ApiUtils.addFutureServerTask(world, () -> initializeConnectionsOn(iic, world), true);
+				onConnectorLoad(iic, level.isClientSide);
+				ApiUtils.addFutureServerTask(level, () -> initializeConnectionsOn(iic, level), true);
 				validateNextTick = true;
-				if(world.isClientSide)
-					updateModelData(iic, world);
+				if(level.isClientSide)
+					updateModelData(iic, level);
 			}
 			else
-				failedLoads.add(load);
+				failedLoads.put(load.getKey(), load.getValue());
+		}
 		queuedLoads = failedLoads;
 		processingLoadQueue = false;
 	}
@@ -406,7 +409,7 @@ public class GlobalWireNetwork implements IWorldTickable
 				handledNets.put(local, actuallyRemoved);
 			}
 			if(actuallyRemoved)
-				for(Connection c : getLocalNet(connectionPoint).getConnections(connectionPoint))
+				for(Connection c : local.getConnections(connectionPoint))
 					collisionData.removeConnection(c);
 		}
 		validateNextTick = true;
