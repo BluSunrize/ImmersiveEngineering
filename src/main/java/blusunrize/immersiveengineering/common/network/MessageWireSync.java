@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -76,7 +77,11 @@ public class MessageWireSync implements IMessage
 			if(added)
 				globalNet.addConnection(new Connection(type, start, end));
 			else if(globalNet.getNullableLocalNet(start)!=null&&globalNet.getNullableLocalNet(end)!=null)
+			{
 				globalNet.removeConnection(new Connection(type, start, end));
+				removeProxyIfNoWires(start, globalNet);
+				removeProxyIfNoWires(end, globalNet);
+			}
 			BlockEntity startTE = w.getBlockEntity(start.getPosition());
 			if(startTE!=null)
 				startTE.requestModelDataUpdate();
@@ -89,5 +94,13 @@ public class MessageWireSync implements IMessage
 			w.sendBlockUpdated(end.getPosition(), state, state, 3);
 		});
 		context.get().setPacketHandled(true);
+	}
+
+	private void removeProxyIfNoWires(ConnectionPoint point, GlobalWireNetwork globalNet)
+	{
+		LocalWireNetwork localNet = globalNet.getLocalNet(point);
+		IImmersiveConnectable iic = localNet.getConnector(point);
+		if(iic.isProxy()&&!WireUtils.hasAnyConnections(globalNet, iic))
+			globalNet.removeConnector(iic);
 	}
 }

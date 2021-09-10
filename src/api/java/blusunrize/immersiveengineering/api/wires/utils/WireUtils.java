@@ -242,4 +242,12 @@ public class WireUtils
 			return delta.dot(across)/across.lengthSqr();
 		}
 	}
+
+	public static boolean hasAnyConnections(GlobalWireNetwork global, IImmersiveConnectable iic)
+	{
+		for(ConnectionPoint cp : iic.getConnectionPoints())
+			if(!global.getLocalNet(cp).getConnections(cp).stream().allMatch(Connection::isInternal))
+				return true;
+		return false;
+	}
 }

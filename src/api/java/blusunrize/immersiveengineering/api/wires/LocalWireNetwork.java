@@ -218,12 +218,12 @@ public class LocalWireNetwork implements IWorldTickable
 				"Unloading connector at %s in %s, but %s is already a proxy",
 				pos, this, existingIIC
 		);
+		connectors.put(pos, proxyProvider.createFor(existingIIC));
 		for(LocalNetworkHandler h : handlers.values())
 			h.onConnectorUnloaded(pos, existingIIC);
 		for(ConnectionPoint cp : existingIIC.getConnectionPoints())
 			if(connections.containsKey(cp))
 				removeHandlersFor(existingIIC);
-		connectors.put(pos, proxyProvider.createFor(existingIIC));
 		return true;
 	}
 

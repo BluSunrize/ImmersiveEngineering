@@ -245,7 +245,7 @@ public class AutoWorkbenchTileEntity extends PoweredMultiblockTileEntity<AutoWor
 		if(!output.isEmpty())
 		{
 			DirectionalBlockPos outputPos = getOutputPos();
-			Utils.dropStackAtPos(level, outputPos.position(), output, outputPos.side().getOpposite());
+			Utils.dropStackAtPos(level, outputPos.getPosition(), output, outputPos.getSide().getOpposite());
 		}
 	}
 
