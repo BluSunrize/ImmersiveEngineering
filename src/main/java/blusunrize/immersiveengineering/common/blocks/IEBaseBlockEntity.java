@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
@@ -377,6 +378,6 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	public void clearRemoved()
 	{
 		super.clearRemoved();
-		onLoad();
+		ApiUtils.addFutureServerTask(level, this::onLoad);
 	}
 }

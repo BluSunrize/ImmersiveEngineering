@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
+import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
@@ -91,7 +92,10 @@ public class ConnectorBlockEntityHelper
 			for(ConnectionPoint cp : iic.getConnectionPoints())
 				globalNet.removeAllConnectionsAt(cp, dropHandler);
 		}
-		globalNet.removeConnector(iic);
+		if(world.isClientSide&&WireUtils.hasAnyConnections(globalNet, iic))
+			globalNet.onConnectorUnload(iic);
+		else
+			globalNet.removeConnector(iic);
 	}
 
 	public static LocalWireNetwork getLocalNetWithCache(
