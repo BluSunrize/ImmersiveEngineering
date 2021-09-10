@@ -48,6 +48,13 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
 	}
 
+	@Nullable
+	@Override
+	public EquipmentSlot getEquipmentSlot(ItemStack stack)
+	{
+		return EquipmentSlot.CHEST;
+	}
+
 	@Override
 	public void onArmorTick(ItemStack itemStack, Level world, Player player)
 	{
@@ -56,8 +63,11 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 		{
 			int pre = energy;
 			for(EquipmentSlot slot : EquipmentSlot.values())
-				if(EnergyHelper.isFluxReceiver(player.getItemBySlot(slot))&&!(player.getItemBySlot(slot).getItem() instanceof PowerpackItem))
-					energy -= EnergyHelper.insertFlux(player.getItemBySlot(slot), Math.min(energy, 256), false);
+			{
+				ItemStack equipped = player.getItemBySlot(slot);
+				if(EnergyHelper.isFluxReceiver(equipped)&&!(equipped.getItem() instanceof PowerpackItem))
+					energy -= EnergyHelper.insertFlux(equipped, Math.min(energy, 256), false);
+			}
 			if(pre!=energy)
 				EnergyHelper.extractFlux(itemStack, pre-energy, false);
 		}
