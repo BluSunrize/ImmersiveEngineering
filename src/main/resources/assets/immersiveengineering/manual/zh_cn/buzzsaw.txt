@@ -5,7 +5,7 @@
 
 像其它工具一样，伐木机械锯也可以使用<link;workbench;工程师装配台>进行改装。这些升级影响内部储罐容量和锯条耐久。
 <np>
-<&rockcutter_recipe>如果使用§2凿石机刀片§r代替普通的锯条，伐木机械锯可以从地下开采石头块，就像§2精准采集§r附魔一样。但是，这种钻石边缘的锯条不能再用来砍伐树木。<np>
-<&tank_recipe>§2大型燃料缸§r增加储罐容量2000mb。<np>
+<&rockcutter_recipe>如果使用§2凿石机刀片§r代替普通的锯条，伐木机械锯可以从地下开采石块，就像§2精准采集§r附魔一样。但是，这种钻石边缘的锯条不能再用来砍伐树木。<np>
+<&tank_recipe>§2大型燃料缸§r增加储罐容量2000mB。<np>
 <&lube_recipe>§2高级润滑系统§r向锯条添加额外的润滑剂，减少耐久的消耗。<np>
-<&quiver_recipe>向锯子添加§2刀片盒子§r，你可以携带额外的两根锯条。你可以使用<config;b;tools.chemthrower.scroll;潜行鼠标滚轮，或使用;using>按键§l<keybind;key.immersiveengineering.chemthrowerSwitch>§r来进行锯条切换，如果按键绑定已设置。
+<&quiver_recipe>向锯子添加§2刀片盒子§r，你可以携带额外的两根锯条。你可以使用<config;b;tools.chemthrower.scroll;潜行滚动鼠标滚轮，或使用;using>按键§l<keybind;key.immersiveengineering.chemthrowerSwitch>§r来进行锯条切换，如果按键绑定已设置。
