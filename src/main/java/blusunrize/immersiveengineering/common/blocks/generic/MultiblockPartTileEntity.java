@@ -237,7 +237,7 @@ public abstract class MultiblockPartTileEntity<T extends MultiblockPartTileEntit
 							break;
 					}
 				}
-			if(fill > 0)
+			if(fill > 0&&doFill.execute())
 				this.multiblock.updateMasterBlock(null, true);
 			return Math.max(fill, 0);
 		}
