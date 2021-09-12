@@ -227,10 +227,7 @@ dependencies {
 
     library "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13.2')
-    library 'org.spongepowered:mixin:0.8.4-SNAPSHOT'
-    annotationProcessor 'org.spongepowered:mixin:0.8.4-SNAPSHOT:processor'
-    //TODO remove once Mixins are in Forge
-    library "com.google.guava:guava:21.0"
+    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
 
 def customGradle = rootProject.file('custom.gradle');
