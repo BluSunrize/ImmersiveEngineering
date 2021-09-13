@@ -190,6 +190,7 @@ public class IEContent
 
 	public static void init(ParallelDispatchEvent ev)
 	{
+		IEFluids.fixFluidFields();
 		/*WORLDGEN*/
 		ev.enqueueWork(
 				() -> {

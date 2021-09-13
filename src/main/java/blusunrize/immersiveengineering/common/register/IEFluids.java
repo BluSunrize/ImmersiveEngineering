@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
+import blusunrize.immersiveengineering.mixin.accessors.LiquidBlockAccess;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
@@ -54,7 +56,7 @@ public class IEFluids
 {
 	public static final DeferredRegister<Fluid> REGISTER = DeferredRegister.create(ForgeRegistries.FLUIDS, Lib.MODID);
 	public static final List<FluidEntry> ALL_ENTRIES = new ArrayList<>();
-	public static final Set<BlockEntry<?>> ALL_FLUID_BLOCKS = new HashSet<>();
+	public static final Set<BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
 
 	public static final FluidEntry fluidCreosote = new FluidEntry(
 			"creosote", 800, rl("block/fluid/creosote_still"), rl("block/fluid/creosote_flow")
@@ -77,6 +79,16 @@ public class IEFluids
 			"herbicide", rl("block/fluid/herbicide_still"), rl("block/fluid/herbicide_flow")
 	);
 	public static final RegistryObject<PotionFluid> fluidPotion = REGISTER.register("potion", PotionFluid::new);
+
+	public static void fixFluidFields()
+	{
+		//TODO Forge#7992
+		for(BlockEntry<? extends LiquidBlock> entry : ALL_FLUID_BLOCKS)
+		{
+			LiquidBlock block = entry.get();
+			((LiquidBlockAccess)block).setFluid(block.getFluid());
+		}
+	}
 
 	public static class FluidEntry
 	{
