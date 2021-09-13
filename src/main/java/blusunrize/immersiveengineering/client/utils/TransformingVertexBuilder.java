@@ -16,6 +16,8 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 
@@ -47,6 +49,11 @@ public class TransformingVertexBuilder implements VertexConsumer
 	public TransformingVertexBuilder(VertexConsumer base, VertexFormat format)
 	{
 		this(base, new PoseStack(), format);
+	}
+
+	public TransformingVertexBuilder(MultiBufferSource buffer, RenderType type, PoseStack transform)
+	{
+		this(buffer.getBuffer(type), transform, type.format());
 	}
 
 	@Nonnull

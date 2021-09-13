@@ -21,7 +21,6 @@ import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import org.apache.commons.lang3.NotImplementedException;
 import org.lwjgl.opengl.GL11;
 
@@ -52,7 +51,6 @@ public class IERenderTypes extends RenderStateShard
 	public static final RenderType TRANSLUCENT_POSITION_COLOR;
 	public static final RenderType TRANSLUCENT_NO_DEPTH;
 	public static final RenderType CHUNK_MARKER;
-	public static final RenderType POSITION_COLOR_TEX_LIGHTMAP;
 	public static final RenderType POSITION_COLOR_LIGHTMAP;
 	public static final RenderType ITEM_DAMAGE_BAR;
 	public static final RenderType PARTICLES;
@@ -139,16 +137,6 @@ public class IERenderTypes extends RenderStateShard
 						.setCullState(NO_CULL)
 						.setOutputState(ITEM_ENTITY_TARGET)
 						.setWriteMaskState(COLOR_DEPTH_WRITE)
-						.createCompositeState(false)
-		);
-		POSITION_COLOR_TEX_LIGHTMAP = createDefault(
-				ImmersiveEngineering.MODID+":pos_color_tex_lightmap",
-				DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
-				Mode.QUADS,
-				RenderType.CompositeState.builder()
-						.setTextureState(new TextureStateShard(InventoryMenu.BLOCK_ATLAS, false, false))
-						.setLightmapState(new LightmapStateShard(true))
-						.setShaderState(RENDERTYPE_ENTITY_TRANSLUCENT_SHADER)
 						.createCompositeState(false)
 		);
 		POSITION_COLOR_LIGHTMAP = createDefault(

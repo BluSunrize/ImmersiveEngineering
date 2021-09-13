@@ -24,9 +24,9 @@
     "accessors.TemplateAccess",
     "accessors.TNTEntityAccess",
     "coremods.AbstractBlockStateMixin",
-    "coremods.LiquidBlockFix",
     "coremods.ServerWorldMixin",
     "coremods.TemplateMixin",
+    "coremods.temp.LiquidBlockFix",
     "coremods.temp.ServerLevelMixin"
   ],
   "client": [

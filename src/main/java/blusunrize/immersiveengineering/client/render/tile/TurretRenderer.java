@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
@@ -43,10 +42,8 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		if(!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 
-		//Grab model + correct eextended state
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
-		BlockPos blockPos = tile.getBlockPos();
-		BlockState state = tile.getLevel().getBlockState(blockPos);
+		BlockState state = tile.getBlockState();
 		if(state.getBlock()!=MetalDevices.turretChem.get()&&state.getBlock()!=MetalDevices.turretGun.get())
 			return;
 		BakedModel model = blockRenderer.getBlockModelShaper().getBlockModel(state);
@@ -59,15 +56,15 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		matrixStack.mulPose(new Quaternion(new Vector3f(tile.getFacing().getStepZ(), 0, -tile.getFacing().getStepX()), tile.rotationPitch, true));
 
 		renderModelPart(bufferIn, matrixStack, tile.getLevelNonnull(), state, model, tile.getBlockPos(), true, combinedLightIn, "gun");
-		if(tile instanceof TurretGunBlockEntity)
+		if(tile instanceof TurretGunBlockEntity gunTurret)
 		{
-			if(((TurretGunBlockEntity)tile).cycleRender > 0)
+			if(gunTurret.cycleRender > 0)
 			{
 				float cycle = 0;
-				if(((TurretGunBlockEntity)tile).cycleRender > 3)
-					cycle = (5-((TurretGunBlockEntity)tile).cycleRender)/2f;
+				if(gunTurret.cycleRender > 3)
+					cycle = (5-gunTurret.cycleRender)/2f;
 				else
-					cycle = ((TurretGunBlockEntity)tile).cycleRender/3f;
+					cycle = gunTurret.cycleRender/3f;
 
 				matrixStack.translate(-tile.getFacing().getStepX()*cycle*.3125, 0, -tile.getFacing().getStepZ()*cycle*.3125);
 			}
@@ -82,12 +79,12 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 	{
 		pos = pos.above();
 
-		VertexConsumer solidBuilder = buffer.getBuffer(RenderType.solid());
+		VertexConsumer solidBuilder = new TransformingVertexBuilder(buffer, RenderType.solid(), matrix);
 		matrix.pushPose();
 		matrix.translate(-.5, 0, -.5);
 		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(
 				new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE));
-		RenderUtils.renderModelTESRFancy(quads, new TransformingVertexBuilder(solidBuilder, matrix, DefaultVertexFormat.POSITION_COLOR_TEX), world, pos, !isFirst, -1, light);
+		RenderUtils.renderModelTESRFancy(quads, solidBuilder, world, pos, !isFirst, -1, light);
 		matrix.popPose();
 	}
 

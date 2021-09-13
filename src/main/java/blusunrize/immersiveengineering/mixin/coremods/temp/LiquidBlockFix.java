@@ -7,7 +7,7 @@
  *
  */
 
-package blusunrize.immersiveengineering.mixin.coremods;
+package blusunrize.immersiveengineering.mixin.coremods.temp;
 
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.FlowingFluid;

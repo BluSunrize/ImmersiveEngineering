@@ -51,6 +51,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		super(IEEntityTypes.CHEMTHROWER_SHOT.get(), world, x, y, z);
 		this.fluid = fluid;
 		this.setFluidSynced();
+		this.pickup = Pickup.DISALLOWED;
 	}
 
 	public ChemthrowerShotEntity(Level world, LivingEntity living, double ax, double ay, double az, FluidStack fluid)
@@ -58,6 +59,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		super(IEEntityTypes.CHEMTHROWER_SHOT.get(), world, living, ax, ay, az);
 		this.fluid = fluid;
 		this.setFluidSynced();
+		this.pickup = Pickup.DISALLOWED;
 	}
 
 	@Override

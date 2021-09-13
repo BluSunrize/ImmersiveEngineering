@@ -9,17 +9,17 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -59,37 +59,28 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		float g = (colour >> 8&255)/255f;
 		float b = (colour&255)/255f;
 		int lightAll = entity.getBrightnessForRender();
-		int blockLight = Math.max(
-				LightTexture.block(lightAll),
-				LightTexture.block(packedLightIn)
-		);
-		int skyLight = Math.max(
-				LightTexture.sky(lightAll),
-				LightTexture.sky(packedLightIn)
-		);
+		int blockLight = Math.max(LightTexture.block(lightAll), LightTexture.block(packedLightIn));
+		int skyLight = Math.max(LightTexture.sky(lightAll), LightTexture.sky(packedLightIn));
 		packedLightIn = LightTexture.pack(blockLight, skyLight);
 		matrixStackIn.scale(.25f, .25f, .25f);
-		Matrix4f mat = matrixStackIn.last().pose();
-		VertexConsumer builder = bufferIn.getBuffer(IERenderTypes.POSITION_COLOR_TEX_LIGHTMAP);
-		builder.vertex(mat, -.25f, -.25f, 0)
-				.color(r, g, b, a)
+		TransformingVertexBuilder builder = new TransformingVertexBuilder(
+				bufferIn, RenderType.entityTranslucent(InventoryMenu.BLOCK_ATLAS), matrixStackIn
+		);
+		builder.defaultColor(r, g, b, a);
+		builder.setNormal(0, 1, 0);
+		builder.setLight(packedLightIn);
+		builder.setOverlay(OverlayTexture.NO_OVERLAY);
+		builder.vertex(-.25f, -.25f, 0)
 				.uv(sprite.getU(4), sprite.getV(4))
-				.uv2(packedLightIn)
 				.endVertex();
-		builder.vertex(mat, .25f, -.25f, 0)
-				.color(r, g, b, a)
+		builder.vertex(.25f, -.25f, 0)
 				.uv(sprite.getU(0), sprite.getV(4))
-				.uv2(packedLightIn)
 				.endVertex();
-		builder.vertex(mat, .25f, .25f, 0)
-				.color(r, g, b, a)
+		builder.vertex(.25f, .25f, 0)
 				.uv(sprite.getU(0), sprite.getV(0))
-				.uv2(packedLightIn)
 				.endVertex();
-		builder.vertex(mat, -.25f, .25f, 0)
-				.color(r, g, b, a)
+		builder.vertex(-.25f, .25f, 0)
 				.uv(sprite.getU(4), sprite.getV(0))
-				.uv2(packedLightIn)
 				.endVertex();
 		matrixStackIn.popPose();
 	}
