@@ -124,5 +124,6 @@ public class RevolverScreen extends IEContainerScreen<RevolverContainer>
 			}
 		}
 		modelviewStack.popPose();
+		RenderSystem.applyModelViewMatrix();
 	}
 }
