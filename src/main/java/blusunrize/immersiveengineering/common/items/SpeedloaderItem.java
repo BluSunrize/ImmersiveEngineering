@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -77,35 +76,22 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 	}
 
 	@Override
-	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
+	public NonNullList<ItemStack> getBullets(ItemStack revolver)
 	{
-		if(!remote&&isEmpty(revolver))
-			remote = true;
-		else if(remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
-			remote = false;
-		if(!remote)
-			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getSlotCount()));
-		else
-			return Utils.readInventory(revolver.getOrCreateTag().getList("bullets", 10), getSlotCount());
+		return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getSlotCount()));
 	}
 
 	@Nullable
 	@Override
 	public CompoundTag getShareTag(ItemStack stack)
 	{
-		CompoundTag ret = super.getShareTag(stack);
-		if(ret==null)
-			ret = new CompoundTag();
-		else
-			ret = ret.copy();
-		final CompoundTag retConst = ret;
-		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler->
-		{
-			NonNullList<ItemStack> bullets = NonNullList.withSize(getSlotCount(), ItemStack.EMPTY);
-			for(int i = 0; i < getSlotCount(); i++)
-				bullets.set(i, handler.getStackInSlot(i));
-			retConst.put("bullets", Utils.writeInventory(bullets));
-		});
-		return retConst;
+		return RevolverItem.copyBulletsToShareTag(stack, super.getShareTag(stack));
+	}
+
+	@Override
+	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
+	{
+		super.readShareTag(stack, nbt);
+		RevolverItem.readBulletsFromShareTag(stack, nbt);
 	}
 }

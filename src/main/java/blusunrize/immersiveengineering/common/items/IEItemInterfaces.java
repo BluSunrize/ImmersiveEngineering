@@ -16,8 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.thread.EffectiveSide;
 
 import java.util.List;
 import java.util.Optional;
@@ -67,12 +65,7 @@ public class IEItemInterfaces
 
 	public interface IBulletContainer
 	{
-		NonNullList<ItemStack> getBullets(ItemStack container, boolean remote);
-
-		default NonNullList<ItemStack> getBullets(ItemStack container)
-		{
-			return getBullets(container, EffectiveSide.get()==LogicalSide.CLIENT);
-		}
+		NonNullList<ItemStack> getBullets(ItemStack container);
 
 		int getBulletCount(ItemStack container);
 	}

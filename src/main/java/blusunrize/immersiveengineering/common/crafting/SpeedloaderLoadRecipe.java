@@ -51,7 +51,7 @@ public class SpeedloaderLoadRecipe extends CustomRecipe
 					if(hasSpeedloader)
 						return false;
 					if(!((SpeedloaderItem)stackInSlot.getItem()).isEmpty(stackInSlot))
-						speedloaderBullets = ((SpeedloaderItem)stackInSlot.getItem()).getBullets(stackInSlot, false);
+						speedloaderBullets = ((SpeedloaderItem)stackInSlot.getItem()).getBullets(stackInSlot);
 					speedloaderX = i%width;
 					speedloaderY = i/width;
 					hasSpeedloader = true;
@@ -105,7 +105,7 @@ public class SpeedloaderLoadRecipe extends CustomRecipe
 		}
 
 		ItemStack out = speedloader.copy();
-		NonNullList<ItemStack> fill = ((SpeedloaderItem)out.getItem()).getBullets(out, false);
+		NonNullList<ItemStack> fill = ((SpeedloaderItem)out.getItem()).getBullets(out);
 
 		for(int i = 0; i < 8; i++)
 		{ //8 == offsetPattern.length == # of Revolver Slots

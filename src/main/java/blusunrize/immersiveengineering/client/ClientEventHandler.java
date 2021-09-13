@@ -288,7 +288,7 @@ public class ClientEventHandler implements ISelectiveResourceReloadListener
 		ItemStack stack = event.getStack();
 		if(stack.getItem() instanceof IBulletContainer)
 		{
-			NonNullList<ItemStack> bullets = ((IBulletContainer)stack.getItem()).getBullets(stack, true);
+			NonNullList<ItemStack> bullets = ((IBulletContainer)stack.getItem()).getBullets(stack);
 			if(bullets!=null)
 			{
 				int bulletAmount = ((IBulletContainer)stack.getItem()).getBulletCount(stack);
