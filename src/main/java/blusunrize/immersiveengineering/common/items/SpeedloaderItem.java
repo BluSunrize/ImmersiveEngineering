@@ -12,11 +12,9 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -85,39 +83,22 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 	}
 
 	@Override
-	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
+	public NonNullList<ItemStack> getBullets(ItemStack revolver)
 	{
-		if(!remote&&isEmpty(revolver))
-			remote = true;
-		else if(remote&&!ItemNBTHelper.hasKey(revolver, "bullets"))
-			remote = false;
-		if(!remote)
-			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getSlotCount()));
-		else
-		{
-			NonNullList<ItemStack> result = NonNullList.withSize(getSlotCount(), ItemStack.EMPTY);
-			ContainerHelper.loadAllItems(revolver.getOrCreateTag().getCompound("bullets"), result);
-			return result;
-		}
+		return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getSlotCount()));
 	}
 
 	@Nullable
 	@Override
 	public CompoundTag getShareTag(ItemStack stack)
 	{
-		CompoundTag ret = super.getShareTag(stack);
-		if(ret==null)
-			ret = new CompoundTag();
-		else
-			ret = ret.copy();
-		final CompoundTag retConst = ret;
-		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler->
-		{
-			NonNullList<ItemStack> bullets = NonNullList.withSize(getSlotCount(), ItemStack.EMPTY);
-			for(int i = 0; i < getSlotCount(); i++)
-				bullets.set(i, handler.getStackInSlot(i));
-			retConst.put("bullets", ContainerHelper.saveAllItems(new CompoundTag(), bullets));
-		});
-		return retConst;
+		return RevolverItem.copyBulletsToShareTag(stack, super.getShareTag(stack));
+	}
+
+	@Override
+	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
+	{
+		super.readShareTag(stack, nbt);
+		RevolverItem.readBulletsFromShareTag(stack, nbt);
 	}
 }

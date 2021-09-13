@@ -38,7 +38,7 @@ public class ItemOverlayUtils
 	public static void renderRevolverOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
 											 Player player, InteractionHand hand, ItemStack equipped)
 	{
-		NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped, true);
+		NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped);
 		if(bullets!=null)
 		{
 			int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);

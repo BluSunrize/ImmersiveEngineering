@@ -30,7 +30,10 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletCont
 import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMultimap;
@@ -82,7 +85,6 @@ import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -153,7 +155,11 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	@Override
 	public CompoundTag getShareTag(ItemStack stack)
 	{
-		CompoundTag ret = super.getShareTag(stack);
+		return copyBulletsToShareTag(stack, super.getShareTag(stack));
+	}
+
+	public static CompoundTag copyBulletsToShareTag(ItemStack stack, CompoundTag ret)
+	{
 		if(ret==null)
 			ret = new CompoundTag();
 		else
@@ -161,12 +167,35 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		final CompoundTag retFinal = ret;
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler ->
 		{
-			NonNullList<ItemStack> bullets = NonNullList.withSize(getBulletCount(stack), ItemStack.EMPTY);
-			for(int i = 0; i < getBulletCount(stack); i++)
+			IBulletContainer container = (IBulletContainer)stack.getItem();
+			NonNullList<ItemStack> bullets = NonNullList.withSize(container.getBulletCount(stack), ItemStack.EMPTY);
+			for(int i = 0; i < bullets.size(); i++)
 				bullets.set(i, handler.getStackInSlot(i));
 			retFinal.put("bullets", ContainerHelper.saveAllItems(new CompoundTag(), bullets));
 		});
 		return retFinal;
+	}
+
+	@Override
+	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
+	{
+		super.readShareTag(stack, nbt);
+		readBulletsFromShareTag(stack, nbt);
+	}
+
+	public static void readBulletsFromShareTag(ItemStack stack, @Nullable CompoundTag nbt)
+	{
+		if(nbt!=null)
+			stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler ->
+			{
+				if(!(handler instanceof IItemHandlerModifiable modifiable))
+					return;
+				IBulletContainer container = (IBulletContainer)stack.getItem();
+				NonNullList<ItemStack> bullets = NonNullList.withSize(container.getBulletCount(stack), ItemStack.EMPTY);
+				ContainerHelper.loadAllItems(nbt.getCompound("bullets"), bullets);
+				for(int i = 0; i < bullets.size(); ++i)
+					modifiable.setStackInSlot(i, bullets.get(i));
+			});
 	}
 
 	@Override
@@ -338,7 +367,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
 						return new InteractionResultHolder<>(InteractionResult.PASS, revolver);
 
-					NonNullList<ItemStack> bullets = getBullets(revolver, false);
+					NonNullList<ItemStack> bullets = getBullets(revolver);
 
 					if(isEmpty(revolver, false))
 						for(int i = 0; i < player.getInventory().getContainerSize(); i++)
@@ -451,30 +480,15 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	public NonNullList<ItemStack> getBullets(ItemStack revolver, boolean remote)
+	public NonNullList<ItemStack> getBullets(ItemStack revolver)
 	{
-		if(!remote&&isEmpty(revolver, true))
-			remote = true;
-		else if(remote&&(
-				!ItemNBTHelper.hasKey(revolver, "bullets", NBT.TAG_LIST)
-						||revolver.getOrCreateTag().getList("bullets", NBT.TAG_COMPOUND).isEmpty()
-		))
-			remote = false;
-		if(!remote)
-			return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
-		else
-		{
-			NonNullList<ItemStack> stacks = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
-			ContainerHelper.loadAllItems(revolver.getOrCreateTag().getCompound("bullets"), stacks);
-			return stacks;
-		}
+		return ListUtils.fromItems(this.getContainedItems(revolver).subList(0, getBulletCount(revolver)));
 	}
 
 	/* ------------- BULLET UTILITY ------------- */
 
 	private RevolvershotEntity getBullet(Player player, Vec3 vecDir, IBullet type, boolean electro)
 	{
-		IELogger.logger.info("Starting with motion vector {}", vecDir);
 		RevolvershotEntity bullet = new RevolvershotEntity(player.level, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
 		bullet.setDeltaMovement(vecDir.scale(2));
 		bullet.bulletElectro = electro;
