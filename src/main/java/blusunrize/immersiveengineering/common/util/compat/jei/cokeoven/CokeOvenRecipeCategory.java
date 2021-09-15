@@ -39,7 +39,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 		super(CokeOvenRecipe.class, helper, UID, "block.immersiveengineering.coke_oven");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/coke_oven.png");
 		setBackground(helper.createDrawable(background, 8, 16, 142, 54));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.cokeOven.get()));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.COKE_OVEN.get()));
 		tankOverlay = helper.createDrawable(background, 178, 33, 16, 47);
 	}
 
@@ -48,7 +48,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 	{
 		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
 		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
-		ingredients.setOutput(VanillaTypes.FLUID, new FluidStack(IEFluids.fluidCreosote.getStill(), recipe.creosoteOutput));
+		ingredients.setOutput(VanillaTypes.FLUID, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput));
 	}
 
 	@Override
@@ -66,7 +66,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 		{
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 			guiFluidStacks.init(0, false, 121, 4, 16, 47, 5*FluidAttributes.BUCKET_VOLUME, false, tankOverlay);
-			guiFluidStacks.set(0, new FluidStack(IEFluids.fluidCreosote.getStill(), recipe.creosoteOutput));
+			guiFluidStacks.set(0, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput));
 			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 		}
 	}

@@ -41,12 +41,12 @@ class IEItemTags extends ItemTagsProvider
 			MetalTags tags = IETags.getTagsFor(metal);
 			if(metal.shouldAddNugget())
 			{
-				tag(tags.nugget).add(Metals.nuggets.get(metal).get());
+				tag(tags.nugget).add(Metals.NUGGETS.get(metal).get());
 				tag(Tags.Items.NUGGETS).addTag(tags.nugget);
 			}
 			if(!metal.isVanillaMetal())
 			{
-				tag(tags.ingot).add(Metals.ingots.get(metal).get());
+				tag(tags.ingot).add(Metals.INGOTS.get(metal).get());
 				tag(Tags.Items.INGOTS).addTag(tags.ingot);
 				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
 				if(metal.shouldAddOre())
@@ -55,14 +55,14 @@ class IEItemTags extends ItemTagsProvider
 			if(metal==EnumMetals.COPPER)
 			{
 				//TODO Forge#7891
-				tag(tags.ingot).add(Metals.ingots.get(metal).get());
+				tag(tags.ingot).add(Metals.INGOTS.get(metal).get());
 				tag(Tags.Items.INGOTS).addTag(tags.ingot);
 				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
 				tag(Tags.Items.ORES).addTag(IETags.getItemTag(tags.ore));
 			}
-			tag(tags.plate).add(Metals.plates.get(metal).get());
+			tag(tags.plate).add(Metals.PLATES.get(metal).get());
 			tag(IETags.plates).addTag(tags.plate);
-			tag(tags.dust).add(Metals.dusts.get(metal).get());
+			tag(tags.dust).add(Metals.DUSTS.get(metal).get());
 			tag(Tags.Items.DUSTS).addTag(tags.dust);
 		}
 		//TODO Forge#7891
@@ -73,44 +73,44 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.clay).add(Items.CLAY_BALL);
 		tag(IETags.charCoal).add(Items.CHARCOAL);
 
-		tag(net.minecraft.tags.ItemTags.LECTERN_BOOKS).add(Tools.manual.get());
-		tag(Tags.Items.SEEDS).add(Misc.hempSeeds.get());
-		tag(Tags.Items.RODS_WOODEN).add(Ingredients.stickTreated.get());
-		tag(IETags.treatedStick).add(Ingredients.stickTreated.get());
-		tag(IETags.slag).add(Ingredients.slag.get());
-		tag(IETags.ironRod).add(Ingredients.stickIron.get());
-		tag(IETags.steelRod).add(Ingredients.stickSteel.get());
-		tag(IETags.aluminumRod).add(Ingredients.stickAluminum.get());
-		tag(IETags.fiberHemp).add(Ingredients.hempFiber.get());
-		tag(IETags.fabricHemp).add(Ingredients.hempFabric.get());
-		tag(IETags.coalCoke).add(Ingredients.coalCoke.get());
-		tag(IETags.coalCokeDust).add(Ingredients.dustCoke.get());
-		tag(IETags.hopGraphiteDust).add(Ingredients.dustHopGraphite.get());
-		tag(IETags.hopGraphiteIngot).add(Ingredients.ingotHopGraphite.get());
-		tag(IETags.copperWire).add(Ingredients.wireCopper.get());
-		tag(IETags.electrumWire).add(Ingredients.wireElectrum.get());
-		tag(IETags.aluminumWire).add(Ingredients.wireAluminum.get());
-		tag(IETags.steelWire).add(Ingredients.wireSteel.get());
-		tag(IETags.leadWire).add(Ingredients.wireLead.get());
-		tag(IETags.saltpeterDust).add(Ingredients.dustSaltpeter.get());
-		tag(IETags.sulfurDust).add(Ingredients.dustSulfur.get());
-		tag(IETags.sawdust).add(Ingredients.dustWood.get());
+		tag(net.minecraft.tags.ItemTags.LECTERN_BOOKS).add(Tools.MANUAL.get());
+		tag(Tags.Items.SEEDS).add(Misc.HEMP_SEEDS.get());
+		tag(Tags.Items.RODS_WOODEN).add(Ingredients.STICK_TREATED.get());
+		tag(IETags.treatedStick).add(Ingredients.STICK_TREATED.get());
+		tag(IETags.slag).add(Ingredients.SLAG.get());
+		tag(IETags.ironRod).add(Ingredients.STICK_IRON.get());
+		tag(IETags.steelRod).add(Ingredients.STICK_STEEL.get());
+		tag(IETags.aluminumRod).add(Ingredients.STICK_ALUMINUM.get());
+		tag(IETags.fiberHemp).add(Ingredients.HEMP_FIBER.get());
+		tag(IETags.fabricHemp).add(Ingredients.HEMP_FABRIC.get());
+		tag(IETags.coalCoke).add(Ingredients.COAL_COKE.get());
+		tag(IETags.coalCokeDust).add(Ingredients.DUST_COKE.get());
+		tag(IETags.hopGraphiteDust).add(Ingredients.DUST_HOP_GRAPHITE.get());
+		tag(IETags.hopGraphiteIngot).add(Ingredients.INGOT_HOP_GRAPHITE.get());
+		tag(IETags.copperWire).add(Ingredients.WIRE_COPPER.get());
+		tag(IETags.electrumWire).add(Ingredients.WIRE_ELECTRUM.get());
+		tag(IETags.aluminumWire).add(Ingredients.WIRE_ALUMINUM.get());
+		tag(IETags.steelWire).add(Ingredients.WIRE_STEEL.get());
+		tag(IETags.leadWire).add(Ingredients.WIRE_LEAD.get());
+		tag(IETags.saltpeterDust).add(Ingredients.DUST_SALTPETER.get());
+		tag(IETags.sulfurDust).add(Ingredients.DUST_SULFUR.get());
+		tag(IETags.sawdust).add(Ingredients.DUST_WOOD.get());
 		tag(IETags.metalRods)
 				.addTag(IETags.aluminumRod)
 				.addTag(IETags.ironRod)
 				.addTag(IETags.steelRod);
-		tag(IETags.sawblades).add(Tools.sawblade.get());
-		tag(IETags.forbiddenInCrates).add(Tools.toolbox.get())
-				.add(WoodenDevices.crate.asItem())
-				.add(WoodenDevices.reinforcedCrate.asItem())
-				.add(Minecarts.cartWoodenCrate.asItem())
-				.add(Minecarts.cartReinforcedCrate.asItem());
-		tag(IETags.circuitPCB).add(Ingredients.circuitBoard.asItem());
-		tag(IETags.circuitLogic).add(Ingredients.electronTube.asItem());
+		tag(IETags.sawblades).add(Tools.SAWBLADE.get());
+		tag(IETags.forbiddenInCrates).add(Tools.TOOLBOX.get())
+				.add(WoodenDevices.CRATE.asItem())
+				.add(WoodenDevices.REINFORCED_CRATE.asItem())
+				.add(Minecarts.CART_WOODEN_CRATE.asItem())
+				.add(Minecarts.CART_REINFORCED_CRATE.asItem());
+		tag(IETags.circuitPCB).add(Ingredients.CIRCUIT_BOARD.asItem());
+		tag(IETags.circuitLogic).add(Ingredients.ELECTRON_TUBE.asItem());
 		tag(IETags.circuitSolder).addTag(IETags.copperWire).addTag(IETags.leadWire);
-		tag(IETags.hammers).add(Tools.hammer.get());
-		tag(IETags.screwdrivers).add(Tools.screwdriver.get());
-		tag(IETags.wirecutters).add(Tools.wirecutter.get());
+		tag(IETags.hammers).add(Tools.HAMMER.get());
+		tag(IETags.screwdrivers).add(Tools.SCREWDRIVER.get());
+		tag(IETags.wirecutters).add(Tools.WIRECUTTER.get());
 
 		//TODO Forge#7891
 		tag(Tags.Items.ORES_GOLD).add(Items.DEEPSLATE_GOLD_ORE);
@@ -125,8 +125,8 @@ class IEItemTags extends ItemTagsProvider
 
 		// Curios
 		tag(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
-				.add(Misc.powerpack.asItem());
+				.add(Misc.POWERPACK.asItem());
 		tag(TagUtils.createItemWrapper(new ResourceLocation("curios:head")))
-				.add(Misc.earmuffs.asItem());
+				.add(Misc.EARMUFFS.asItem());
 	}
 }

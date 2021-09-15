@@ -77,10 +77,10 @@ public class ToolboxItem extends InternalStorageItem
 
 			if(stack.getCount()!=0&&player.mayUseItemAt(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))
 			{
-				BlockState toolbox = MetalDevices.toolbox.defaultBlockState();
+				BlockState toolbox = MetalDevices.TOOLBOX.defaultBlockState();
 				if(world.setBlock(pos, toolbox, 3))
 				{
-					MetalDevices.toolbox.get().onIEBlockPlacedBy(new BlockPlaceContext(ctx), toolbox);
+					MetalDevices.TOOLBOX.get().onIEBlockPlacedBy(new BlockPlaceContext(ctx), toolbox);
 
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);

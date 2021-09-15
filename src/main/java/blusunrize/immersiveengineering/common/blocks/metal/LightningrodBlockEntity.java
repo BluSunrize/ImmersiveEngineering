@@ -139,7 +139,7 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 
 	private boolean isFence(BlockPos pos)
 	{
-		return Utils.isBlockAt(level, pos, MetalDecoration.steelFence.get());
+		return Utils.isBlockAt(level, pos, MetalDecoration.STEEL_FENCE.get());
 	}
 
 	@Override

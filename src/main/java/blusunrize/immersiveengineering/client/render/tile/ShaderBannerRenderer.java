@@ -57,7 +57,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 		matrixStack.pushPose();
 
 		// Check which of the two blocks we are so we can calculate the orientation.
-		if(te.getState().getBlock() == Cloth.shaderBanner.get())
+		if(te.getState().getBlock()==Cloth.SHADER_BANNER.get())
 		{
 			// Standing banner, we have 16 different rotations.
 			int orientation = te.getState().getValue(ShaderBannerStandingBlock.ROTATION);
@@ -69,7 +69,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 		else
 		{
 			// Must be the wall banner, attaches to the side of the block with no support pillar.
-			assert te.getState().getBlock() == Cloth.shaderBannerWall.get();
+			assert te.getState().getBlock()==Cloth.SHADER_BANNER_WALL.get();
 
 			Direction facing = te.getState().getValue(ShaderBannerWallBlock.FACING);
 			float rotation = facing.toYRot();

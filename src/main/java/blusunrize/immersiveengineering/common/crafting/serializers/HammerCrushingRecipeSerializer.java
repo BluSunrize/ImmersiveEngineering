@@ -38,7 +38,7 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<Shapeless
 	{
 		ItemStack output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
-		NonNullList<Ingredient> ingredients = NonNullList.of(Ingredient.EMPTY, input, Ingredient.of(IEItems.Tools.hammer));
+		NonNullList<Ingredient> ingredients = NonNullList.of(Ingredient.EMPTY, input, Ingredient.of(IEItems.Tools.HAMMER));
 		return new ShapelessRecipe(recipeId, "", output, ingredients);
 	}
 

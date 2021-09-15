@@ -29,7 +29,7 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.sawmill);
+		return new ItemStack(Multiblocks.SAWMILL);
 	}
 
 	@Override

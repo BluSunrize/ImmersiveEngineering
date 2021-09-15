@@ -19,7 +19,7 @@ public class SqueezerMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/squeezer"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 1), new BlockPos(3, 3, 3),
-				Multiblocks.squeezer);
+				Multiblocks.SQUEEZER);
 	}
 
 	@Override

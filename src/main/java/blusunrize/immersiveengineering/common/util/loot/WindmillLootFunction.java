@@ -40,7 +40,7 @@ public class WindmillLootFunction extends LootItemConditionalFunction
 	@Override
 	protected ItemStack run(@Nonnull ItemStack stack, @Nonnull LootContext context)
 	{
-		if(stack.getItem()==WoodenDevices.windmill.asItem()&&context.hasParam(LootContextParams.BLOCK_ENTITY))
+		if(stack.getItem()==WoodenDevices.WINDMILL.asItem()&&context.hasParam(LootContextParams.BLOCK_ENTITY))
 		{
 			BlockEntity te = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
 			if(te instanceof WindmillBlockEntity)

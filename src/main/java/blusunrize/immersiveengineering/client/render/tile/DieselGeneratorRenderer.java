@@ -38,7 +38,7 @@ public class DieselGeneratorRenderer extends IEBlockEntityRenderer<DieselGenerat
 
 		BlockPos blockPos = te.getBlockPos();
 		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.dieselGenerator.get())
+		if(state.getBlock()!=Multiblocks.DIESEL_GENERATOR.get())
 			return;
 
 		matrixStack.pushPose();

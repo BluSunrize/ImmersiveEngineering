@@ -130,7 +130,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IETicka
 	@Nonnull
 	public ItemStack createCoreSample(@Nullable MineralWorldInfo info)
 	{
-		ItemStack stack = new ItemStack(Misc.coresample);
+		ItemStack stack = new ItemStack(Misc.CORESAMPLE);
 		ItemNBTHelper.putLong(stack, "timestamp", level.getGameTime());
 		CoresampleItem.setDimension(stack, level.dimension());
 		CoresampleItem.setCoords(stack, getBlockPos());

@@ -112,7 +112,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 				int slot = FIRST_ELECTRODE_SLOT+i;
 				boolean hasElectrodeClient = !inventory.get(slot).isEmpty();
 				if(hasElectrodeServer&&!hasElectrodeClient)
-					inventory.set(slot, new ItemStack(Misc.graphiteElectrode));
+					inventory.set(slot, new ItemStack(Misc.GRAPHITE_ELECTRODE));
 				else if(!hasElectrodeServer&&hasElectrodeClient)
 					inventory.set(slot, ItemStack.EMPTY);
 				electrodeStatus >>>= 1;

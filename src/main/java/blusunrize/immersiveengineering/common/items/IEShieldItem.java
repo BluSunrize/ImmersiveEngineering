@@ -188,7 +188,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 			for(LivingEntity t : targets)
 				if(!player.equals(t))
 				{
-					t.addEffect(new MobEffectInstance(IEPotions.flashed.get(), 100, 1));
+					t.addEffect(new MobEffectInstance(IEPotions.FLASHED.get(), 100, 1));
 					if(t instanceof Mob)
 						((Mob)t).setTarget(null);
 				}

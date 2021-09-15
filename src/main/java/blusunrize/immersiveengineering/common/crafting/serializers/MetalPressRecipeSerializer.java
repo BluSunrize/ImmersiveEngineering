@@ -27,7 +27,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.metalPress);
+		return new ItemStack(Multiblocks.METAL_PRESS);
 	}
 
 	@Override

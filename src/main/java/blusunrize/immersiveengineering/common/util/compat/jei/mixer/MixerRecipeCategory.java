@@ -40,7 +40,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	{
 		super(MixerRecipe.class, helper, UID, "block.immersiveengineering.mixer");
 		setBackground(helper.createBlankDrawable(155, 60));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.mixer));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.MIXER));
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/mixer.png");
 		tankTexture = helper.createDrawable(background, 68, 8, 74, 60);
 		tankOverlay = helper.drawableBuilder(background, 177, 31, 20, 51).addPadding(-2, 2, -2, 2).build();

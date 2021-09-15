@@ -91,7 +91,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 		{
 			CACHED_BUFFERS.get(textures, () -> IVertexBufferHolder.create(() -> {
 				BakedModel model = WHEEL.get();
-				BlockState state = Multiblocks.bucketWheel.defaultBlockState();
+				BlockState state = Multiblocks.BUCKET_WHEEL.defaultBlockState();
 				List<String> list = Lists.newArrayList("bucketWheel");
 				list.addAll(texMap.keySet());
 				IEObjState objState = new IEObjState(VisibilityList.show(list));

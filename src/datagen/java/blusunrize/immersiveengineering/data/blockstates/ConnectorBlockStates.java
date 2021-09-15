@@ -32,7 +32,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 	protected void registerStatesAndModels()
 	{
 		createConnector(
-				MetalDevices.floodlight,
+				MetalDevices.FLOODLIGHT,
 				ieObj("block/metal_device/floodlight.obj.ie"),
 				RenderType.translucent(), RenderType.solid()
 		);
@@ -61,19 +61,19 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"),
 				RenderType.translucent());
 
-		createConnector(Connectors.connectorStructural, ieObj("block/connector/connector_structural.obj.ie"),
+		createConnector(Connectors.CONNECTOR_STRUCTURAL, ieObj("block/connector/connector_structural.obj.ie"),
 				RenderType.solid());
-		createConnector(Connectors.connectorRedstone, ieObj("block/connector/connector_redstone.obj.ie"),
+		createConnector(Connectors.CONNECTOR_REDSTONE, ieObj("block/connector/connector_redstone.obj.ie"),
 				RenderType.solid());
-		createConnector(Connectors.connectorProbe, ieObj("block/connector/connector_probe.obj.ie"),
+		createConnector(Connectors.CONNECTOR_PROBE, ieObj("block/connector/connector_probe.obj.ie"),
 				RenderType.cutout(), RenderType.translucent());
-		createConnector(Connectors.connectorBundled, obj("block/connector/connector_bundled.obj"),
+		createConnector(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj"),
 				RenderType.cutout());
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();
-		createConnector(Connectors.feedthrough, feedthroughModelFile, RenderType.chunkBufferLayers().toArray(new RenderType[0]));
-		buildConnector(MetalDevices.electricLantern)
+		createConnector(Connectors.FEEDTHROUGH, feedthroughModelFile, RenderType.chunkBufferLayers().toArray(new RenderType[0]));
+		buildConnector(MetalDevices.ELECTRIC_LANTERN)
 				.binaryModel(IEProperties.ACTIVE, obj(
 						"block/metal_device/e_lantern_off", rl("block/metal_device/e_lantern.obj"),
 						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern"))
@@ -86,9 +86,9 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				.build();
 
 		createConnector(
-				Connectors.redstoneBreaker, ieObj("block/connector/redstone_breaker.obj.ie"), RenderType.solid()
+				Connectors.REDSTONE_BREAKER, ieObj("block/connector/redstone_breaker.obj.ie"), RenderType.solid()
 		);
-		buildConnector(Connectors.breakerswitch)
+		buildConnector(Connectors.BREAKER_SWITCH)
 				.binaryModel(
 						IEProperties.ACTIVE,
 						ieObj("block/connector/breaker_switch_off.obj.ie"),
@@ -96,15 +96,15 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				.rotationProperty(IEProperties.FACING_ALL)
 				.layers(RenderType.solid())
 				.build();
-		transformerModel("block/connector/transformer_mv", Connectors.transformer);
-		transformerModel("block/connector/transformer_hv", Connectors.transformerHV);
+		transformerModel("block/connector/transformer_mv", Connectors.TRANSFORMER);
+		transformerModel("block/connector/transformer_hv", Connectors.TRANSFORMER_HV);
 		createConnector(Connectors.postTransformer, obj("block/connector/transformer_post.obj"),
 				RenderType.solid());
 
 		ModelFile ctModel = split(obj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
-		createConnector(Connectors.currentTransformer, ctModel, RenderType.solid());
-		createConnector(MetalDevices.razorWire, ieObj("block/razor_wire.obj.ie"), RenderType.cutout());
-		createConnector(Cloth.balloon, ieObj("block/balloon.obj.ie"), RenderType.translucent());
+		createConnector(Connectors.CURRENT_TRANSFORMER, ctModel, RenderType.solid());
+		createConnector(MetalDevices.RAZOR_WIRE, ieObj("block/razor_wire.obj.ie"), RenderType.cutout());
+		createConnector(Cloth.BALLOON, ieObj("block/balloon.obj.ie"), RenderType.translucent());
 	}
 
 	private void transformerModel(String baseName, Supplier<? extends Block> transformer)

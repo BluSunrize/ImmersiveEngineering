@@ -40,7 +40,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	{
 		super(CrusherRecipe.class, helper, UID, "block.immersiveengineering.crusher");
 		setBackground(helper.createBlankDrawable(140, 54));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.crusher));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.CRUSHER));
 	}
 
 	@Override

@@ -39,7 +39,7 @@ public class ShaderBagRecipe extends CustomRecipe
 			if(!stackInSlot.isEmpty())
 				if(stack.isEmpty())
 				{
-					if(Misc.shaderBag.containsValue(stackInSlot.getItem()))
+					if(Misc.SHADER_BAG.containsValue(stackInSlot.getItem()))
 						stack = stackInSlot;
 					else
 						return false;
@@ -60,7 +60,7 @@ public class ShaderBagRecipe extends CustomRecipe
 			if(!stackInSlot.isEmpty())
 			{
 				Rarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
-				ItemStack output = new ItemStack(Misc.shaderBag.get(next), next!=stackInSlot.getRarity()?2: 1);
+				ItemStack output = new ItemStack(Misc.SHADER_BAG.get(next), next!=stackInSlot.getRarity()?2: 1);
 				if(next!=null)
 				{
 					ItemNBTHelper.putString(output, "rarity", next.toString());
@@ -81,7 +81,7 @@ public class ShaderBagRecipe extends CustomRecipe
 	@Override
 	public ItemStack getResultItem()
 	{
-		return new ItemStack(Misc.shaderBag.get(Rarity.COMMON), 2);
+		return new ItemStack(Misc.SHADER_BAG.get(Rarity.COMMON), 2);
 	}
 
 	@Override

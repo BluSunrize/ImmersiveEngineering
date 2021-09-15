@@ -38,20 +38,20 @@ public class MetalPressPackingRecipes
 	public static MetalPressRecipe get2x2PackingContainer()
 	{
 		return new MetalPressPackingRecipe(
-				new ResourceLocation(Lib.MODID, "metalpress/packing2x2"), Molds.moldPacking4.asItem(), 2
+				new ResourceLocation(Lib.MODID, "metalpress/packing2x2"), Molds.MOLD_PACKING_4.asItem(), 2
 		);
 	}
 
 	public static MetalPressRecipe get3x3PackingContainer()
 	{
 		return new MetalPressPackingRecipe(
-				new ResourceLocation(Lib.MODID, "metalpress/packing3x3"), Molds.moldPacking9.asItem(), 3
+				new ResourceLocation(Lib.MODID, "metalpress/packing3x3"), Molds.MOLD_PACKING_9.asItem(), 3
 		);
 	}
 
 	public static MetalPressRecipe getUnpackingContainer()
 	{
-		return new MetalPressContainerRecipe(new ResourceLocation(Lib.MODID, "metalpress/unpacking"), Molds.moldUnpacking.asItem())
+		return new MetalPressContainerRecipe(new ResourceLocation(Lib.MODID, "metalpress/unpacking"), Molds.MOLD_UNPACKING.asItem())
 		{
 			@Override
 			protected MetalPressRecipe getRecipeFunction(ItemStack input, Level world)
@@ -143,7 +143,7 @@ public class MetalPressPackingRecipes
 			ItemStack output = originalRecipe.getRight();
 			ResourceLocation originalId = originalRecipe.getLeft().getId();
 			String id = "metalpress/packing_"+originalId.getNamespace()+".."+originalId.getPath();
-			return new RecipeDelegate(id, output, input, (big?Molds.moldPacking9: Molds.moldPacking4).get());
+			return new RecipeDelegate(id, output, input, (big?Molds.MOLD_PACKING_9: Molds.MOLD_PACKING_4).get());
 		}
 
 		public static RecipeDelegate getUnpacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input)
@@ -151,7 +151,7 @@ public class MetalPressPackingRecipes
 			ItemStack output = originalRecipe.getRight();
 			ResourceLocation originalId = originalRecipe.getLeft().getId();
 			String id = "metalpress/unpacking_"+originalId.getNamespace()+".."+originalId.getPath();
-			return new RecipeDelegate(id, output, input, Molds.moldUnpacking.get());
+			return new RecipeDelegate(id, output, input, Molds.MOLD_UNPACKING.get());
 		}
 
 		@Override

@@ -25,12 +25,12 @@ class FluidTags extends FluidTagsProvider
 	@Override
 	protected void addTags()
 	{
-		tag(IETags.fluidCreosote).add(IEFluids.fluidCreosote.getStill());
-		tag(IETags.fluidPlantoil).add(IEFluids.fluidPlantoil.getStill());
-		tag(IETags.fluidEthanol).add(IEFluids.fluidEthanol.getStill());
-		tag(IETags.fluidBiodiesel).add(IEFluids.fluidBiodiesel.getStill());
-		tag(IETags.fluidConcrete).add(IEFluids.fluidConcrete.getStill());
-		tag(IETags.fluidHerbicide).add(IEFluids.fluidHerbicide.getStill());
-		tag(IETags.fluidPotion).add(IEFluids.fluidPotion.get());
+		tag(IETags.fluidCreosote).add(IEFluids.CREOSOTE.getStill());
+		tag(IETags.fluidPlantoil).add(IEFluids.PLANTOIL.getStill());
+		tag(IETags.fluidEthanol).add(IEFluids.ETHANOL.getStill());
+		tag(IETags.fluidBiodiesel).add(IEFluids.BIODIESEL.getStill());
+		tag(IETags.fluidConcrete).add(IEFluids.CONCRETE.getStill());
+		tag(IETags.fluidHerbicide).add(IEFluids.HERBICIDE.getStill());
+		tag(IETags.fluidPotion).add(IEFluids.POTION.get());
 	}
 }

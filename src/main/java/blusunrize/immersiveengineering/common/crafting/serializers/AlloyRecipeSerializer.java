@@ -25,7 +25,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.alloySmelter);
+		return new ItemStack(Multiblocks.ALLOY_SMELTER);
 	}
 
 	@Override

@@ -51,7 +51,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		//Grab model
 		BlockPos blockPos = te.getBlockPos();
 		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.bottlingMachine.get())
+		if(state.getBlock()!=Multiblocks.BOTTLING_MACHINE.get())
 			return;
 		Direction facing = te.getFacing();
 

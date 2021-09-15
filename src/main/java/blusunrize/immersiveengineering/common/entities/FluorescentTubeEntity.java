@@ -146,7 +146,7 @@ public class FluorescentTubeEntity extends Entity implements ITeslaEntity
 	{
 		if(isAlive()&&!level.isClientSide)
 		{
-			ItemStack tube = new ItemStack(Misc.fluorescentTube);
+			ItemStack tube = new ItemStack(Misc.FLUORESCENT_TUBE);
 			FluorescentTubeItem.setRGB(tube, rgb);
 			ItemEntity ent = new ItemEntity(level, getX(), getY(), getZ(), tube);
 			level.addFreshEntity(ent);

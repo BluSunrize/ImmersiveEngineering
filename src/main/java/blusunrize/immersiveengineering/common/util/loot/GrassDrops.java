@@ -63,7 +63,7 @@ public class GrassDrops
 		@Override
 		protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
 		{
-			generatedLoot.add(new ItemStack(Misc.hempSeeds));
+			generatedLoot.add(new ItemStack(Misc.HEMP_SEEDS));
 			return generatedLoot;
 		}
 	}

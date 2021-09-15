@@ -82,8 +82,8 @@ import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
-import static blusunrize.immersiveengineering.common.register.IEItems.Misc.toolUpgrades;
-import static blusunrize.immersiveengineering.common.register.IEItems.Misc.wireCoils;
+import static blusunrize.immersiveengineering.common.register.IEItems.Misc.TOOL_UPGRADES;
+import static blusunrize.immersiveengineering.common.register.IEItems.Misc.WIRE_COILS;
 
 public class Villages
 {
@@ -168,19 +168,19 @@ public class Villages
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PoiType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
-				"craftingtable", () -> createPOI("craftingtable", assembleStates(WoodenDevices.craftingTable.get()))
+				"craftingtable", () -> createPOI("craftingtable", assembleStates(WoodenDevices.CRAFTING_TABLE.get()))
 		);
 		public static final RegistryObject<PoiType> POI_ANVIL = POINTS_OF_INTEREST.register(
 				"anvil", () -> createPOI("anvil", assembleStates(Blocks.ANVIL))
 		);
 		public static final RegistryObject<PoiType> POI_ENERGYMETER = POINTS_OF_INTEREST.register(
-				"energymeter", () -> createPOI("energymeter", assembleStates(Connectors.currentTransformer.get()))
+				"energymeter", () -> createPOI("energymeter", assembleStates(Connectors.CURRENT_TRANSFORMER.get()))
 		);
 		public static final RegistryObject<PoiType> POI_BANNER = POINTS_OF_INTEREST.register(
-				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.shaderBanner.get()))
+				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.SHADER_BANNER.get()))
 		);
 		public static final RegistryObject<PoiType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
-				"workbench", () -> createPOI("workbench", assembleStates(WoodenDevices.workbench.get()))
+				"workbench", () -> createPOI("workbench", assembleStates(WoodenDevices.WORKBENCH.get()))
 		);
 
 		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
@@ -235,16 +235,16 @@ public class Villages
 			if(ENGINEER.equals(ev.getType().getRegistryName()))
 			{
 				trades.get(1).add(new EmeraldForItems(IETags.treatedStick.getName(), new PriceInterval(8, 16), 16, 2));
-				trades.get(1).add(new ItemsForEmerald(WoodenDecoration.treatedWood.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(-10, -6), 12, 1, 0.2f));
-				trades.get(1).add(new ItemsForEmerald(Cloth.balloon, new PriceInterval(-3, -1), 12, 1, 0.2f));
+				trades.get(1).add(new ItemsForEmerald(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(-10, -6), 12, 1, 0.2f));
+				trades.get(1).add(new ItemsForEmerald(Cloth.BALLOON, new PriceInterval(-3, -1), 12, 1, 0.2f));
 
 				trades.get(2).add(new EmeraldForItems(IETags.ironRod.getName(), new PriceInterval(2, 6), 12, 10));
-				trades.get(2).add(new ItemsForEmerald(MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
-				trades.get(2).add(new ItemsForEmerald(MetalDecoration.aluScaffolding.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(MetalDecoration.ALU_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
 
 				trades.get(3).add(new EmeraldForItems(IETags.steelRod.getName(), new PriceInterval(2, 6), 12, 20));
 				trades.get(3).add(new EmeraldForItems(IETags.slag.getName(), new PriceInterval(4, 8), 12, 20));
-				trades.get(3).add(new ItemsForEmerald(StoneDecoration.concrete, new PriceInterval(-6, -2), 12, 10, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(StoneDecoration.CONCRETE, new PriceInterval(-6, -2), 12, 10, 0.2f));
 
 				trades.get(4).add(new OreveinMapForEmeralds());
 			}
@@ -254,21 +254,21 @@ public class Villages
 				 * Sells tools, metals, blueprints and drillheads
 				 */
 				trades.get(1).add(new EmeraldForItems(IETags.coalCoke.getName(), new PriceInterval(8, 16), 16, 2));
-				trades.get(1).add(new ItemsForEmerald(Tools.hammer, new PriceInterval(4, 7), 12, 1, 0.2f));
+				trades.get(1).add(new ItemsForEmerald(Tools.HAMMER, new PriceInterval(4, 7), 12, 1, 0.2f));
 
 				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.COPPER.tagName()), new PriceInterval(4, 6), 12, 10));
 				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.ALUMINUM.tagName()), new PriceInterval(4, 6), 12, 10));
-				trades.get(2).add(new ItemsForEmerald(Ingredients.componentSteel, new PriceInterval(1, 3), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(Ingredients.COMPONENT_STEEL, new PriceInterval(1, 3), 12, 5, 0.2f));
 
-				trades.get(3).add(new ItemsForEmerald(Tools.toolbox, new PriceInterval(6, 8), 12, 10, 0.2f));
-				trades.get(3).add(new ItemsForEmerald(Ingredients.waterwheelSegment, new PriceInterval(1, 3), 12, 10, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(Tools.TOOLBOX, new PriceInterval(6, 8), 12, 10, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(Ingredients.WATERWHEEL_SEGMENT, new PriceInterval(1, 3), 12, 10, 0.2f));
 				// Todo, replace with somethign more appropriate
 				// trades.get(3).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new PriceInterval(5, 9), 12, 10, 0.2f));
 
-				trades.get(4).add(new ItemsForEmerald(Tools.drillheadIron, new PriceInterval(28, 40), 3, 15, 0.2f));
-				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.earmuffs, new PriceInterval(4, 9), 3, 15, 0.2f));
+				trades.get(4).add(new ItemsForEmerald(Tools.DRILLHEAD_IRON, new PriceInterval(28, 40), 3, 15, 0.2f));
+				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.EARMUFFS, new PriceInterval(4, 9), 3, 15, 0.2f));
 
-				trades.get(5).add(new ItemsForEmerald(Tools.drillheadSteel, new PriceInterval(32, 48), 3, 30, 0.2f));
+				trades.get(5).add(new ItemsForEmerald(Tools.DRILLHEAD_STEEL, new PriceInterval(32, 48), 3, 30, 0.2f));
 				trades.get(5).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new PriceInterval(12, 24), 3, 30, 0.2f));
 			}
 			else if(ELECTRICIAN.equals(ev.getType().getRegistryName()))
@@ -277,33 +277,33 @@ public class Villages
 				 * Sells wires, tools and the faraday suit
 				 */
 				trades.get(1).add(new EmeraldForItems(IETags.copperWire.getName(), new PriceInterval(8, 16), 16, 2));
-				trades.get(1).add(new ItemsForEmerald(Tools.wirecutter, new PriceInterval(4, 7), 12, 1, 0.2f));
-				trades.get(1).add(new ItemsForEmerald(wireCoils.get(WireType.COPPER), new PriceInterval(-4, -2), 12, 1, 0.2f));
+				trades.get(1).add(new ItemsForEmerald(Tools.WIRECUTTER, new PriceInterval(4, 7), 12, 1, 0.2f));
+				trades.get(1).add(new ItemsForEmerald(WIRE_COILS.get(WireType.COPPER), new PriceInterval(-4, -2), 12, 1, 0.2f));
 
 				trades.get(2).add(new EmeraldForItems(IETags.electrumWire.getName(), new PriceInterval(6, 12), 12, 10));
-				trades.get(2).add(new ItemsForEmerald(Tools.voltmeter, new PriceInterval(4, 7), 12, 5, 0.2f));
-				trades.get(2).add(new ItemsForEmerald(wireCoils.get(WireType.ELECTRUM), new PriceInterval(-4, -1), 12, 5, 0.2f));
-				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlot.FEET), new PriceInterval(5, 7), 12, 5, 0.2f));
-				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlot.LEGS), new PriceInterval(9, 11), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(Tools.VOLTMETER, new PriceInterval(4, 7), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(WIRE_COILS.get(WireType.ELECTRUM), new PriceInterval(-4, -1), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.FEET), new PriceInterval(5, 7), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.LEGS), new PriceInterval(9, 11), 12, 5, 0.2f));
 
 				trades.get(3).add(new EmeraldForItems(IETags.aluminumWire.getName(), new PriceInterval(4, 8), 12, 20));
-				trades.get(3).add(new ItemsForEmerald(wireCoils.get(WireType.STEEL), new PriceInterval(-2, -1), 12, 10, 0.2f));
-				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlot.CHEST), new PriceInterval(11, 15), 12, 10, 0.2f));
-				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.faradaySuit.get(EquipmentSlot.HEAD), new PriceInterval(5, 7), 12, 10, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(WIRE_COILS.get(WireType.STEEL), new PriceInterval(-2, -1), 12, 10, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST), new PriceInterval(11, 15), 12, 10, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD), new PriceInterval(5, 7), 12, 10, 0.2f));
 
-				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.fluorescentTube, new PriceInterval(8, 12), 3, 15, 0.2f));
-				trades.get(4).add(new ItemsForEmerald(toolUpgrades.get(ToolUpgrade.REVOLVER_ELECTRO), new PriceInterval(8, 12), 3, 15, 0.2f));
+				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.FLUORESCENT_TUBE, new PriceInterval(8, 12), 3, 15, 0.2f));
+				trades.get(4).add(new ItemsForEmerald(TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_ELECTRO), new PriceInterval(8, 12), 3, 15, 0.2f));
 
-				trades.get(5).add(new ItemsForEmerald(toolUpgrades.get(ToolUpgrade.RAILGUN_CAPACITORS), new PriceInterval(8, 12), 3, 30, 0.2f));
+				trades.get(5).add(new ItemsForEmerald(TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_CAPACITORS), new PriceInterval(8, 12), 3, 30, 0.2f));
 			}
 			else if(OUTFITTER.equals(ev.getType().getRegistryName()))
 			{
 				/* Outfitter
 				 * Sells Shaderbags
 				 */
-				ItemLike bag_common = IEItems.Misc.shaderBag.get(Rarity.COMMON);
-				ItemLike bag_uncommon = IEItems.Misc.shaderBag.get(Rarity.UNCOMMON);
-				ItemLike bag_rare = IEItems.Misc.shaderBag.get(Rarity.RARE);
+				ItemLike bag_common = IEItems.Misc.SHADER_BAG.get(Rarity.COMMON);
+				ItemLike bag_uncommon = IEItems.Misc.SHADER_BAG.get(Rarity.UNCOMMON);
+				ItemLike bag_rare = IEItems.Misc.SHADER_BAG.get(Rarity.RARE);
 
 				trades.get(1).add(new ItemsForEmerald(bag_common, new PriceInterval(8, 16), 24, 1, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(bag_uncommon, new PriceInterval(12, 20), 24, 5, 0.2f));
@@ -314,9 +314,9 @@ public class Villages
 				/* Gunsmith
 				 * Sells ammunition, blueprints and revolver parts
 				 */
-				trades.get(1).add(new EmeraldForItems(Ingredients.emptyCasing, new PriceInterval(6, 12), 16, 2));
-				trades.get(1).add(new EmeraldForItems(Ingredients.emptyShell, new PriceInterval(6, 12), 16, 2));
-				trades.get(1).add(new ItemsForEmerald(Ingredients.woodenGrip, new PriceInterval(2, 4), 12, 1, 0.2f));
+				trades.get(1).add(new EmeraldForItems(Ingredients.EMPTY_CASING, new PriceInterval(6, 12), 16, 2));
+				trades.get(1).add(new EmeraldForItems(Ingredients.EMPTY_SHELL, new PriceInterval(6, 12), 16, 2));
+				trades.get(1).add(new ItemsForEmerald(Ingredients.WOODEN_GRIP, new PriceInterval(2, 4), 12, 1, 0.2f));
 
 				trades.get(2).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("bullet"), new PriceInterval(3, 6), 1, 25, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(BulletHandler.getBulletStack(BulletItem.CASULL), new PriceInterval(-4, -2), 12, 5, 0.2f));
@@ -480,7 +480,7 @@ public class Villages
 		{
 			int part = random.nextInt(3);
 
-			ItemStack stack = new ItemStack(part==0?Ingredients.gunpartBarrel: part==1?Ingredients.gunpartDrum: Ingredients.gunpartDrum);
+			ItemStack stack = new ItemStack(part==0?Ingredients.GUNPART_BARREL: part==1?Ingredients.GUNPART_DRUM: Ingredients.GUNPART_DRUM);
 
 			float luck = 1;
 			if(trader instanceof AbstractVillager&&((AbstractVillager)trader).isTrading())

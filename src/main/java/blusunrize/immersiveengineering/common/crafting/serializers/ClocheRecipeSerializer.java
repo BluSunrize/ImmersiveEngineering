@@ -29,7 +29,7 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(MetalDevices.cloche);
+		return new ItemStack(MetalDevices.CLOCHE);
 	}
 
 	@Override

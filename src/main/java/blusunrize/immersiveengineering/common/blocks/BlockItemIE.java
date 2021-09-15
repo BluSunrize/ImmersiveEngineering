@@ -59,15 +59,10 @@ public class BlockItemIE extends BlockItem
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> tooltip, TooltipFlag advanced)
 	{
-		if(getBlock() instanceof IIEBlock)
+		if(getBlock() instanceof IIEBlock ieBlock&&ieBlock.hasFlavour())
 		{
-			IIEBlock ieBlock = (IIEBlock)getBlock();
-			if(ieBlock.hasFlavour())
-			{
-				String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
-				tooltip.add(TextUtils.applyFormat(new TranslatableComponent(flavourKey),
-						ChatFormatting.GRAY));
-			}
+			String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
+			tooltip.add(TextUtils.applyFormat(new TranslatableComponent(flavourKey), ChatFormatting.GRAY));
 		}
 		super.appendHoverText(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
@@ -101,9 +96,8 @@ public class BlockItemIE extends BlockItem
 	protected boolean placeBlock(BlockPlaceContext context, BlockState newState)
 	{
 		Block b = newState.getBlock();
-		if(b instanceof IEBaseBlock)
+		if(b instanceof IEBaseBlock ieBlock)
 		{
-			IEBaseBlock ieBlock = (IEBaseBlock)b;
 			if(!ieBlock.canIEBlockBePlaced(newState, context))
 				return false;
 			boolean ret = super.placeBlock(context, newState);

@@ -25,7 +25,7 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.blastFurnace);
+		return new ItemStack(Multiblocks.BLAST_FURNACE);
 	}
 
 	@Override

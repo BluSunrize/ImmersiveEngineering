@@ -28,8 +28,8 @@ public class PottedHempBlock extends FlowerPotBlock
 
 	public PottedHempBlock(Properties props)
 	{
-		super(() -> (FlowerPotBlock)Blocks.FLOWER_POT, () -> IEBlocks.Misc.hempPlant.get(), props);
-		GenericDeferredWork.registerPotablePlant(Misc.hempPlant.get().getRegistryName(), this);
+		super(() -> (FlowerPotBlock)Blocks.FLOWER_POT, () -> IEBlocks.Misc.HEMP_PLANT.get(), props);
+		GenericDeferredWork.registerPotablePlant(Misc.HEMP_PLANT.get().getRegistryName(), this);
 	}
 
 	@Override

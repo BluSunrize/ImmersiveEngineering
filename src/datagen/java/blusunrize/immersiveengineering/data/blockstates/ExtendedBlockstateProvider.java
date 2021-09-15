@@ -94,7 +94,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected void slabFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
-		slab(IEBlocks.toSlab.get(b.get().getRegistryName()).get(), side, top, bottom);
+		slab(IEBlocks.TO_SLAB.get(b.get().getRegistryName()).get(), side, top, bottom);
 	}
 
 	protected void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
@@ -110,7 +110,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation texture)
 	{
-		stairs(IEBlocks.toStairs.get(b.get().getRegistryName()).get(), texture);
+		stairs(IEBlocks.TO_STAIRS.get(b.get().getRegistryName()).get(), texture);
 	}
 
 	protected void stairs(StairBlock b, ResourceLocation texture)
@@ -120,7 +120,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
-		stairs(IEBlocks.toStairs.get(b.get().getRegistryName()).get(), side, top, bottom);
+		stairs(IEBlocks.TO_STAIRS.get(b.get().getRegistryName()).get(), side, top, bottom);
 	}
 
 	protected void stairs(StairBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)

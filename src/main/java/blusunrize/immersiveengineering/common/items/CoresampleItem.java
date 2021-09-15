@@ -158,10 +158,10 @@ public class CoresampleItem extends IEBaseItem
 
 			if(!stack.isEmpty()&&player.mayUseItemAt(pos, side, stack)&&world.getBlockState(pos).canBeReplaced(blockCtx))
 			{
-				BlockState coresample = StoneDecoration.coresample.defaultBlockState();
+				BlockState coresample = StoneDecoration.CORESAMPLE.defaultBlockState();
 				if(world.setBlock(pos, coresample, 3))
 				{
-					((IEBaseBlock)StoneDecoration.coresample.get()).onIEBlockPlacedBy(blockCtx, coresample);
+					((IEBaseBlock)StoneDecoration.CORESAMPLE.get()).onIEBlockPlacedBy(blockCtx, coresample);
 					SoundType soundtype = world.getBlockState(pos).getBlock().getSoundType(world.getBlockState(pos), world, pos, player);
 					world.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS, (soundtype.getVolume()+1.0F)/2.0F, soundtype.getPitch()*0.8F);
 					stack.shrink(1);

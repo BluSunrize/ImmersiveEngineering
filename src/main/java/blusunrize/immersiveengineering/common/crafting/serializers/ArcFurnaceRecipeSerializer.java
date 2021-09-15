@@ -33,7 +33,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.arcFurnace);
+		return new ItemStack(Multiblocks.ARC_FURNACE);
 	}
 
 	@Override

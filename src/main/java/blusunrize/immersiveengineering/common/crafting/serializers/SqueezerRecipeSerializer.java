@@ -28,7 +28,7 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.squeezer);
+		return new ItemStack(Multiblocks.SQUEEZER);
 	}
 
 	@Override

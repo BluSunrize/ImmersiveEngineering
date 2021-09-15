@@ -59,15 +59,15 @@ class IEBlockTags extends BlockTagsProvider
 	protected void addTags()
 	{
 		tag(BlockTags.FENCES)
-				.add(MetalDecoration.aluFence.get())
-				.add(MetalDecoration.steelFence.get())
-				.add(WoodenDecoration.treatedFence.get());
+				.add(MetalDecoration.ALU_FENCE.get())
+				.add(MetalDecoration.STEEL_FENCE.get())
+				.add(WoodenDecoration.TREATED_FENCE.get());
 		tag(BlockTags.WOODEN_FENCES)
-				.add(WoodenDecoration.treatedFence.get());
+				.add(WoodenDecoration.TREATED_FENCE.get());
 		tag(IETags.fencesSteel)
-				.add(MetalDecoration.steelFence.get());
+				.add(MetalDecoration.STEEL_FENCE.get());
 		tag(IETags.fencesAlu)
-				.add(MetalDecoration.aluFence.get());
+				.add(MetalDecoration.ALU_FENCE.get());
 		tag(IETags.clayBlock)
 				.add(Blocks.CLAY);
 		tag(IETags.glowstoneBlock)
@@ -82,58 +82,58 @@ class IEBlockTags extends BlockTagsProvider
 				.add(Blocks.CUT_RED_SANDSTONE)
 				.add(Blocks.CHISELED_RED_SANDSTONE)
 				.add(Blocks.SMOOTH_RED_SANDSTONE);
-		for(BlockEntry<MetalLadderBlock> b : MetalDecoration.metalLadder.values())
+		for(BlockEntry<MetalLadderBlock> b : MetalDecoration.METAL_LADDER.values())
 			tag(BlockTags.CLIMBABLE).add(b.get());
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);
 			if(!metal.isVanillaMetal())
 			{
-				tag(tags.storage).add(IEBlocks.Metals.storage.get(metal).get());
+				tag(tags.storage).add(IEBlocks.Metals.STORAGE.get(metal).get());
 				tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.storage);
 				if(metal.shouldAddOre())
 				{
 					assert tags.ore!=null;
-					tag(tags.ore).add(IEBlocks.Metals.ores.get(metal).get());
+					tag(tags.ore).add(IEBlocks.Metals.ORES.get(metal).get());
 					tag(Tags.Blocks.ORES).addTag(tags.ore);
 				}
 			}
 			//TODO Forge#7891
 			if(metal==EnumMetals.COPPER)
 			{
-				tag(tags.storage).add(IEBlocks.Metals.storage.get(metal).get());
+				tag(tags.storage).add(IEBlocks.Metals.STORAGE.get(metal).get());
 				tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.storage);
 				assert tags.ore!=null;
-				tag(tags.ore).add(IEBlocks.Metals.ores.get(metal).get());
+				tag(tags.ore).add(IEBlocks.Metals.ORES.get(metal).get());
 				tag(Tags.Blocks.ORES).addTag(tags.ore);
 			}
-			tag(tags.sheetmetal).add(IEBlocks.Metals.sheetmetal.get(metal).get());
+			tag(tags.sheetmetal).add(IEBlocks.Metals.SHEETMETAL.get(metal).get());
 			tag(IETags.sheetmetals).addTag(tags.sheetmetal);
 		}
 		for(DyeColor dye : DyeColor.values())
-			tag(IETags.sheetmetals).add(MetalDecoration.coloredSheetmetal.get(dye).get());
+			tag(IETags.sheetmetals).add(MetalDecoration.COLORED_SHEETMETAL.get(dye).get());
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 		{
-			tag(IETags.treatedWood).add(WoodenDecoration.treatedWood.get(style).get());
-			tag(IETags.treatedWoodSlab).add(IEBlocks.toSlab.get(IEBlocks.WoodenDecoration.treatedWood.get(style).getId()).get());
+			tag(IETags.treatedWood).add(WoodenDecoration.TREATED_WOOD.get(style).get());
+			tag(IETags.treatedWoodSlab).add(IEBlocks.TO_SLAB.get(IEBlocks.WoodenDecoration.TREATED_WOOD.get(style).getId()).get());
 		}
 		for(MetalScaffoldingType t : MetalScaffoldingType.values())
 		{
-			tag(IETags.scaffoldingSteel).add(MetalDecoration.steelScaffolding.get(t).get());
-			tag(IETags.scaffoldingAlu).add(MetalDecoration.aluScaffolding.get(t).get());
+			tag(IETags.scaffoldingSteel).add(MetalDecoration.STEEL_SCAFFOLDING.get(t).get());
+			tag(IETags.scaffoldingAlu).add(MetalDecoration.ALU_SCAFFOLDING.get(t).get());
 		}
 		tag(IETags.coalCokeBlock)
-				.add(StoneDecoration.coke.get());
+				.add(StoneDecoration.COKE.get());
 		tag(BlockTags.FLOWER_POTS)
-				.add(Misc.pottedHemp.get());
+				.add(Misc.POTTED_HEMP.get());
 
 		registerHammerMineable();
 		registerPickaxeMineable();
 		registerAxeMineable();
 		tag(BlockTags.MINEABLE_WITH_SHOVEL)
-				.add(WoodenDecoration.sawdust.get());
+				.add(WoodenDecoration.SAWDUST.get());
 		tag(IETags.wirecutterHarvestable)
-				.add(MetalDevices.razorWire.get());
+				.add(MetalDevices.RAZOR_WIRE.get());
 		tag(IETags.drillHarvestable)
 				.addTag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.addTag(BlockTags.MINEABLE_WITH_PICKAXE);
@@ -153,15 +153,15 @@ class IEBlockTags extends BlockTagsProvider
 
 		// TConstruct
 		tag(TagUtils.createBlockWrapper(new ResourceLocation("tconstruct:harvestable/stackable")))
-				.add(Misc.hempPlant.get());
+				.add(Misc.HEMP_PLANT.get());
 	}
 
 	private void registerHammerMineable()
 	{
 		TagAppender<Block> tag = tag(IETags.hammerHarvestable);
-		MetalDecoration.metalLadder.values().forEach(b -> tag.add(b.get()));
-		tag.add(StoneDecoration.concreteSprayed.get())
-				.add(Cloth.curtain.get());
+		MetalDecoration.METAL_LADDER.values().forEach(b -> tag.add(b.get()));
+		tag.add(StoneDecoration.CONCRETE_SPRAYED.get())
+				.add(Cloth.STRIP_CURTAIN.get());
 		//TODO not really the nicest approach, but maintains 1.16 behavior
 		for(RegistryObject<Block> regObject : IEBlocks.REGISTER.getEntries())
 		{
@@ -178,8 +178,8 @@ class IEBlockTags extends BlockTagsProvider
 				.map(RegistryObject::get)
 				.filter(b -> b.defaultBlockState().getMaterial()==Material.WOOD)
 				.forEach(tag::add);
-		tag.add(Cloth.shaderBannerWall.get());
-		tag.add(Cloth.shaderBanner.get());
+		tag.add(Cloth.SHADER_BANNER_WALL.get());
+		tag.add(Cloth.SHADER_BANNER.get());
 	}
 
 	private void registerPickaxeMineable()
@@ -211,12 +211,12 @@ class IEBlockTags extends BlockTagsProvider
 
 	private void setOreMiningLevel(EnumMetals metal, Tiers level)
 	{
-		setMiningLevel(Metals.ores.get(metal), level);
+		setMiningLevel(Metals.ORES.get(metal), level);
 	}
 
 	private void setStorageMiningLevel(EnumMetals metal, Tiers level)
 	{
-		setMiningLevel(Metals.storage.get(metal), level);
+		setMiningLevel(Metals.STORAGE.get(metal), level);
 	}
 
 	private void setMiningLevel(Supplier<Block> block, Tiers level)
@@ -250,7 +250,7 @@ class IEBlockTags extends BlockTagsProvider
 				.map(ResourceLocation::new)
 				.collect(Collectors.toSet());
 		Set<ResourceLocation> knownNonHarvestable = Stream.of(
-						Cloth.balloon, Cloth.cushion, Misc.fakeLight, Misc.pottedHemp, Misc.hempPlant
+						Cloth.BALLOON, Cloth.CUSHION, Misc.FAKE_LIGHT, Misc.POTTED_HEMP, Misc.HEMP_PLANT
 				)
 				.map(BlockEntry::getId)
 				.collect(Collectors.toSet());

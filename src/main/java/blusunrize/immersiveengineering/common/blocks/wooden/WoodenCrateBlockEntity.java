@@ -109,7 +109,7 @@ public class WoodenCrateBlockEntity extends IEBaseBlockEntity implements IIEInve
 		else
 		{
 			Block b = getBlockState().getBlock();
-			if(b ==WoodenDevices.reinforcedCrate.get())
+			if(b==WoodenDevices.REINFORCED_CRATE.get())
 				return new TranslatableComponent("block.immersiveengineering.reinforced_crate");
 			else
 				return new TranslatableComponent("block.immersiveengineering.crate");

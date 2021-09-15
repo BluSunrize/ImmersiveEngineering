@@ -221,7 +221,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IETickable
 	@Override
 	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
-		if(sails < 8&&heldItem.getItem()==Ingredients.windmillSail.asItem())
+		if(sails < 8&&heldItem.getItem()==Ingredients.WINDMILL_SAIL.asItem())
 		{
 			this.sails++;
 			if(!player.getAbilities().instabuild)

@@ -42,7 +42,7 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 		setBackground(helper.drawableBuilder(
 				JEIHelper.JEI_GUI, 0, 0, 114, 26).setTextureSize(128, 128).addPadding(2, 36, 2, 12).build()
 		);
-		setIcon(new ItemStack(IEBlocks.Multiblocks.sawmill));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.SAWMILL));
 
 		this.middle = helper.drawableBuilder(JEIHelper.JEI_GUI, 0, 26, 29, 16).setTextureSize(128, 128).build();
 		IDrawableStatic arrowStatic = helper.drawableBuilder(JEIHelper.JEI_GUI, 29, 26, 66, 16).setTextureSize(128, 128).build();

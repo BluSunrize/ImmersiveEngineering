@@ -30,7 +30,7 @@ public class MixerRecipeSerializer extends IERecipeSerializer<MixerRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.mixer);
+		return new ItemStack(Multiblocks.MIXER);
 	}
 
 	@Override

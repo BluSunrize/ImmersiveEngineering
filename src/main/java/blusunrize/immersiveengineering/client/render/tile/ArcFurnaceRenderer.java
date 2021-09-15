@@ -68,7 +68,7 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceBlockEnt
 
 		BlockPos blockPos = te.getBlockPos();
 		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.arcFurnace.get())
+		if(state.getBlock()!=Multiblocks.ARC_FURNACE.get())
 			return;
 		IEObjState objState = new IEObjState(VisibilityList.show(renderedParts));
 

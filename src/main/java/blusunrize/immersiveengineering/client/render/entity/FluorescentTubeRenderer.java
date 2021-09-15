@@ -86,10 +86,10 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 						 int overlay)
 	{
 		if(tube.isEmpty())
-			tube = new ItemStack(Misc.fluorescentTube);
+			tube = new ItemStack(Misc.FLUORESCENT_TUBE);
 		if(tubeActive.isEmpty())
 		{
-			tubeActive = new ItemStack(Misc.fluorescentTube);
+			tubeActive = new ItemStack(Misc.FLUORESCENT_TUBE);
 			FluorescentTubeItem.setLit(tubeActive, 1);
 		}
 		matrixStack.translate(-.5, .25, -.5);

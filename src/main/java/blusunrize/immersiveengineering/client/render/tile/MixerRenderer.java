@@ -38,7 +38,7 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = te.getBlockPos();
 		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.mixer.get())
+		if(state.getBlock()!=Multiblocks.MIXER.get())
 			return;
 
 		matrixStack.pushPose();

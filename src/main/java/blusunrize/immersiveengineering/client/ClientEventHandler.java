@@ -313,8 +313,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		{
 			ItemStack head = ClientUtils.mc().player.getItemBySlot(EquipmentSlot.HEAD);
 			ItemStack earmuffs = ItemStack.EMPTY;
-			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
-				earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+			if(!head.isEmpty()&&(head.getItem()==Misc.EARMUFFS.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+				earmuffs = head.getItem()==Misc.EARMUFFS.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
 			//TODO
 			//else if(ModList.get().isLoaded("curios"))
 			//	earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
@@ -524,7 +524,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				{
 					MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 					ItemStack equipped = player.getItemInHand(hand);
-					if(ItemStack.isSame(new ItemStack(Tools.voltmeter), equipped)||equipped.getItem() instanceof IWireCoil)
+					if(ItemStack.isSame(new ItemStack(Tools.VOLTMETER), equipped)||equipped.getItem() instanceof IWireCoil)
 					{
 						if(WirecoilUtils.hasWireLink(equipped))
 						{
@@ -550,7 +550,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 									true, transform.last().pose(), buffer, false, 0, 0xf000f0);
 						}
 					}
-					else if(equipped.getItem()==Misc.fluorescentTube.get())
+					else if(equipped.getItem()==Misc.FLUORESCENT_TUBE.get())
 					{
 						int color = FluorescentTubeItem.getRGBInt(equipped, 1);
 						String s = I18n.get(Lib.DESC_INFO+"colour")+"#"+FontUtils.hexColorString(color);
@@ -571,7 +571,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						ItemOverlayUtils.renderChemthrowerOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					else if(equipped.getItem() instanceof IEShieldItem)
 						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					if(equipped.getItem()==Tools.voltmeter.get())
+					if(equipped.getItem()==Tools.VOLTMETER.get())
 					{
 						HitResult rrt = ClientUtils.mc().hitResult;
 						IFluxReceiver receiver = null;
@@ -662,9 +662,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent()
 	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
 	{
-		if(event.getInfo().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.flashed.get()))
+		if(event.getInfo().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.FLASHED.get()))
 		{
-			MobEffectInstance effect = living.getEffect(IEPotions.flashed.get());
+			MobEffectInstance effect = living.getEffect(IEPotions.FLASHED.get());
 			int timeLeft = effect.getDuration();
 			float saturation = Math.max(0.25f, 1-timeLeft/(float)(80+40*effect.getAmplifier()));//Total Time =  4s + 2s per amplifier
 
@@ -681,7 +681,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
 	{
 		Entity e = event.getInfo().getEntity();
-		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.flashed.get()))
+		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.FLASHED.get()))
 		{
 			event.setRed(1);
 			event.setGreen(1);
@@ -707,7 +707,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		}
 
 		// Concrete feet slow you, but shouldn't break FoV
-		if(player.getEffect(IEPotions.concreteFeet.get())!=null)
+		if(player.getEffect(IEPotions.CONCRETE_FEET.get())!=null)
 			event.setNewfov(1);
 	}
 

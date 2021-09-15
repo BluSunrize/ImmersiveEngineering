@@ -147,8 +147,8 @@ public class IEContent
 		IEBlocks.init();
 		IEItems.init();
 
-		BulletHandler.emptyCasing = Ingredients.emptyCasing;
-		BulletHandler.emptyShell = Ingredients.emptyShell;
+		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
+		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;
 		IEWireTypes.setup();
 		EntityDataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
@@ -189,23 +189,23 @@ public class IEContent
 		/*WORLDGEN*/
 		ev.enqueueWork(
 				() -> {
-					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
-					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);
-					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.LEAD), "lead", IEServerConfig.ORES.ore_lead);
-					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.SILVER), "silver", IEServerConfig.ORES.ore_silver);
-					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.NICKEL), "nickel", IEServerConfig.ORES.ore_nickel);
-					IEWorldGen.addOreGen(Metals.ores.get(EnumMetals.URANIUM), "uranium", IEServerConfig.ORES.ore_uranium);
+					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
+					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);
+					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.LEAD), "lead", IEServerConfig.ORES.ore_lead);
+					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.SILVER), "silver", IEServerConfig.ORES.ore_silver);
+					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.NICKEL), "nickel", IEServerConfig.ORES.ore_nickel);
+					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.URANIUM), "uranium", IEServerConfig.ORES.ore_uranium);
 					IEWorldGen.registerMineralVeinGen();
 				}
 		);
 
-		ShaderRegistry.itemShader = IEItems.Misc.shader.get();
-		ShaderRegistry.itemShaderBag = IEItems.Misc.shaderBag;
-		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.revolver));
-		ShaderRegistry.itemExamples.add(new ItemStack(Tools.drill));
-		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.chemthrower));
-		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.railgun));
-		ShaderRegistry.itemExamples.add(new ItemStack(IEItems.Misc.shield));
+		ShaderRegistry.itemShader = IEItems.Misc.SHADER.get();
+		ShaderRegistry.itemShaderBag = IEItems.Misc.SHADER_BAG;
+		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.REVOLVER));
+		ShaderRegistry.itemExamples.add(new ItemStack(Tools.DRILL));
+		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.CHEMTHROWER));
+		ShaderRegistry.itemExamples.add(new ItemStack(Weapons.RAILGUN));
+		ShaderRegistry.itemExamples.add(new ItemStack(IEItems.Misc.SHIELD));
 
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
@@ -247,10 +247,10 @@ public class IEContent
 		DieselHandler.registerFuel(IETags.fluidCreosote, 20);
 
 		// TODO move to IEFluids/constructors?
-		IEFluids.fluidCreosote.getBlock().setEffect(IEPotions.flammable.get(), 100, 0);
-		IEFluids.fluidEthanol.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
-		IEFluids.fluidBiodiesel.getBlock().setEffect(IEPotions.flammable.get(), 100, 1);
-		IEFluids.fluidConcrete.getBlock().setEffect(MobEffects.MOVEMENT_SLOWDOWN, 20, 3);
+		IEFluids.CREOSOTE.getBlock().setEffect(IEPotions.FLAMMABLE.get(), 100, 0);
+		IEFluids.ETHANOL.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
+		IEFluids.BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE.get(), 100, 1);
+		IEFluids.CONCRETE.getBlock().setEffect(MobEffects.MOVEMENT_SLOWDOWN, 20, 3);
 
 		ChemthrowerEffects.register();
 
@@ -307,7 +307,7 @@ public class IEContent
 	{
 		SetRestrictedField.startInitializing(false);
 		IngredientWithSize.SERIALIZER.setValue(IngredientWithSizeSerializer.INSTANCE);
-		BlueprintCraftingRecipe.blueprintItem.setValue(IEItems.Misc.blueprint);
+		BlueprintCraftingRecipe.blueprintItem.setValue(IEItems.Misc.BLUEPRINT);
 		ExcavatorHandler.setSetDirtyCallback(IESaveData::markInstanceDirty);
 		TemplateMultiblock.setCallbacks(
 				Utils::getPickBlock,
@@ -326,7 +326,7 @@ public class IEContent
 		WirecoilUtils.COIL_USE.setValue(WireCoilItem::doCoilUse);
 		AssemblerHandler.registerRecipeAdapter(Recipe.class, defaultAdapter);
 		BulletHandler.GET_BULLET_ITEM.setValue(b -> {
-			ItemRegObject<BulletItem> regObject = Weapons.bullets.get(b);
+			ItemRegObject<BulletItem> regObject = Weapons.BULLETS.get(b);
 			if(regObject!=null)
 				return regObject.asItem();
 			else

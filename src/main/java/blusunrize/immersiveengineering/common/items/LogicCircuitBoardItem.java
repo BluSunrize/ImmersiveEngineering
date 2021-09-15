@@ -56,7 +56,7 @@ public class LogicCircuitBoardItem extends IEBaseItem
 
 	public static ItemStack buildCircuitBoard(LogicCircuitInstruction instruction)
 	{
-		ItemStack stack = new ItemStack(Misc.logicCircuitBoard.get());
+		ItemStack stack = new ItemStack(Misc.LOGIC_CIRCUIT_BOARD.get());
 		stack.setTag(instruction.serialize());
 		return stack;
 	}

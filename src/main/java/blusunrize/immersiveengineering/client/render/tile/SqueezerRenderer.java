@@ -35,7 +35,7 @@ public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerBlockEntity>
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = te.getBlockPos();
 		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.squeezer.get())
+		if(state.getBlock()!=Multiblocks.SQUEEZER.get())
 			return;
 		BakedModel model = PISTON.get();
 

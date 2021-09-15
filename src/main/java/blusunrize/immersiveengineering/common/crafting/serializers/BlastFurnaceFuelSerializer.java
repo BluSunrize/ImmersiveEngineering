@@ -25,7 +25,7 @@ public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceF
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(IEItems.Ingredients.coalCoke);
+		return new ItemStack(IEItems.Ingredients.COAL_COKE);
 	}
 
 	@Override

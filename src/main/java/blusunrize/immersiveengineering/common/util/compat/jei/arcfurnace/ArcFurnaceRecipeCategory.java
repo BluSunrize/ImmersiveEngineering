@@ -40,7 +40,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	{
 		super(recipeClass, helper, uid, "block.immersiveengineering.arc_furnace");
 		setBackground(helper.createBlankDrawable(140, 54));
-		setIcon(helper.createDrawableIngredient(new ItemStack(IEBlocks.Multiblocks.arcFurnace)));
+		setIcon(helper.createDrawableIngredient(new ItemStack(IEBlocks.Multiblocks.ARC_FURNACE)));
 	}
 
 	public static ArcFurnaceRecipeCategory getDefault(IGuiHelper helper)

@@ -28,7 +28,7 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.fermenter);
+		return new ItemStack(Multiblocks.FERMENTER);
 	}
 
 	@Override

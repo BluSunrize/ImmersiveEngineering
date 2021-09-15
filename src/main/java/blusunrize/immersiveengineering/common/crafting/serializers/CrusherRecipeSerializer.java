@@ -30,7 +30,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.crusher);
+		return new ItemStack(Multiblocks.CRUSHER);
 	}
 
 	@Override

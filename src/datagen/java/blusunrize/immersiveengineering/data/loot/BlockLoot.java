@@ -66,10 +66,10 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 	{
 		this.out = out;
 		registerHemp();
-		register(StoneDecoration.concreteSprayed, LootTable.lootTable());
-		register(WoodenDevices.windmill, LootTable.lootTable().withPool(
+		register(StoneDecoration.CONCRETE_SPRAYED, LootTable.lootTable());
+		register(WoodenDevices.WINDMILL, LootTable.lootTable().withPool(
 				createPoolBuilder().add(
-						LootItem.lootTableItem(WoodenDevices.windmill)
+						LootItem.lootTableItem(WoodenDevices.WINDMILL)
 								.apply(new WindmillLootFunction.Builder())
 				)));
 
@@ -77,31 +77,31 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 				BEDropLootEntry.builder().when(ExplosionCondition.survivesExplosion()),
 				DropInventoryLootEntry.builder()
 		);
-		register(WoodenDevices.crate, LootPool.lootPool().add(tileOrInv));
-		register(WoodenDevices.reinforcedCrate, tileDrop());
-		register(StoneDecoration.coresample, tileDrop());
-		register(MetalDevices.toolbox, tileDrop());
-		register(Cloth.shaderBanner, tileDrop());
-		register(Cloth.shaderBannerWall, tileDrop());
-		register(Cloth.curtain, tileDrop());
+		register(WoodenDevices.CRATE, LootPool.lootPool().add(tileOrInv));
+		register(WoodenDevices.REINFORCED_CRATE, tileDrop());
+		register(StoneDecoration.CORESAMPLE, tileDrop());
+		register(MetalDevices.TOOLBOX, tileDrop());
+		register(Cloth.SHADER_BANNER, tileDrop());
+		register(Cloth.SHADER_BANNER_WALL, tileDrop());
+		register(Cloth.STRIP_CURTAIN, tileDrop());
 		for(BlockEntry<? extends GenericEntityBlock<? extends CapacitorBlockEntity>> cap : ImmutableList.of(
-				MetalDevices.capacitorLV, MetalDevices.capacitorMV, MetalDevices.capacitorHV, MetalDevices.capacitorCreative
+				MetalDevices.CAPACITOR_LV, MetalDevices.CAPACITOR_MV, MetalDevices.CAPACITOR_HV, MetalDevices.CAPACITOR_CREATIVE
 		))
 			register(cap, tileDrop());
-		register(Connectors.feedthrough, tileDrop());
-		register(MetalDevices.turretChem, tileDrop());
-		register(MetalDevices.turretGun, tileDrop(), dropInv());
-		register(WoodenDevices.woodenBarrel, tileDrop());
-		register(WoodenDevices.logicUnit, tileDrop());
-		register(MetalDevices.barrel, tileDrop());
+		register(Connectors.FEEDTHROUGH, tileDrop());
+		register(MetalDevices.TURRET_CHEM, tileDrop());
+		register(MetalDevices.TURRET_GUN, tileDrop(), dropInv());
+		register(WoodenDevices.WOODEN_BARREL, tileDrop());
+		register(WoodenDevices.LOGIC_UNIT, tileDrop());
+		register(MetalDevices.BARREL, tileDrop());
 
 		registerMultiblocks();
 
-		registerSelfDropping(WoodenDevices.craftingTable, dropInv());
-		registerSelfDropping(WoodenDevices.workbench, dropInv());
-		registerSelfDropping(WoodenDevices.itemBatcher, dropInv());
-		registerSelfDropping(MetalDevices.cloche, dropInv());
-		registerSelfDropping(MetalDevices.chargingStation, dropInv());
+		registerSelfDropping(WoodenDevices.CRAFTING_TABLE, dropInv());
+		registerSelfDropping(WoodenDevices.WORKBENCH, dropInv());
+		registerSelfDropping(WoodenDevices.ITEM_BATCHER, dropInv());
+		registerSelfDropping(MetalDevices.CLOCHE, dropInv());
+		registerSelfDropping(MetalDevices.CHARGING_STATION, dropInv());
 		registerSlabs();
 		registerSawdust();
 
@@ -110,33 +110,33 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 
 	private void registerMultiblocks()
 	{
-		registerMultiblock(Multiblocks.cokeOven);
-		registerMultiblock(Multiblocks.blastFurnace);
-		registerMultiblock(Multiblocks.alloySmelter);
-		registerMultiblock(Multiblocks.blastFurnaceAdv);
+		registerMultiblock(Multiblocks.COKE_OVEN);
+		registerMultiblock(Multiblocks.BLAST_FURNACE);
+		registerMultiblock(Multiblocks.ALLOY_SMELTER);
+		registerMultiblock(Multiblocks.ADVANCED_BLAST_FURNACE);
 
-		registerMultiblock(Multiblocks.metalPress);
-		registerMultiblock(Multiblocks.crusher);
-		registerMultiblock(Multiblocks.sawmill);
-		registerMultiblock(Multiblocks.tank);
-		registerMultiblock(Multiblocks.silo);
-		registerMultiblock(Multiblocks.assembler);
-		registerMultiblock(Multiblocks.autoWorkbench);
-		registerMultiblock(Multiblocks.bottlingMachine);
-		registerMultiblock(Multiblocks.squeezer);
-		registerMultiblock(Multiblocks.fermenter);
-		registerMultiblock(Multiblocks.refinery);
-		registerMultiblock(Multiblocks.dieselGenerator);
-		registerMultiblock(Multiblocks.excavator);
-		registerMultiblock(Multiblocks.bucketWheel);
-		registerMultiblock(Multiblocks.arcFurnace);
-		registerMultiblock(Multiblocks.lightningrod);
-		registerMultiblock(Multiblocks.mixer);
+		registerMultiblock(Multiblocks.METAL_PRESS);
+		registerMultiblock(Multiblocks.CRUSHER);
+		registerMultiblock(Multiblocks.SAWMILL);
+		registerMultiblock(Multiblocks.TANK);
+		registerMultiblock(Multiblocks.SILO);
+		registerMultiblock(Multiblocks.ASSEMBLER);
+		registerMultiblock(Multiblocks.AUTO_WORKBENCH);
+		registerMultiblock(Multiblocks.BOTTLING_MACHINE);
+		registerMultiblock(Multiblocks.SQUEEZER);
+		registerMultiblock(Multiblocks.FERMENTER);
+		registerMultiblock(Multiblocks.REFINERY);
+		registerMultiblock(Multiblocks.DIESEL_GENERATOR);
+		registerMultiblock(Multiblocks.EXCAVATOR);
+		registerMultiblock(Multiblocks.BUCKET_WHEEL);
+		registerMultiblock(Multiblocks.ARC_FURNACE);
+		registerMultiblock(Multiblocks.LIGHTNING_ROD);
+		registerMultiblock(Multiblocks.MIXER);
 	}
 
 	private void registerSlabs()
 	{
-		for(BlockEntry<SlabBlock> slab : IEBlocks.toSlab.values())
+		for(BlockEntry<SlabBlock> slab : IEBlocks.TO_SLAB.values())
 		{
 			LootItemConditionalFunction.Builder<?> doubleSlabFunction = SetItemCountFunction.setCount(ConstantValue.exactly(2))
 					.when(propertyIs(slab, SlabBlock.TYPE, SlabType.DOUBLE));
@@ -225,24 +225,24 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 	private void registerHemp()
 	{
 		LootTable.Builder ret = LootTable.lootTable()
-				.withPool(singleItem(Misc.hempSeeds));
+				.withPool(singleItem(Misc.HEMP_SEEDS));
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 			if(g==HempBlock.getMaxGrowth(g))
 			{
 				ret.withPool(
-						binBonusLootPool(Ingredients.hempFiber, Enchantments.BLOCK_FORTUNE, g.ordinal()/8f, 3)
-								.when(propertyIs(IEBlocks.Misc.hempPlant, HempBlock.GROWTH, g))
+						binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.BLOCK_FORTUNE, g.ordinal()/8f, 3)
+								.when(propertyIs(IEBlocks.Misc.HEMP_PLANT, HempBlock.GROWTH, g))
 				);
 			}
-		register(IEBlocks.Misc.hempPlant, ret);
+		register(IEBlocks.Misc.HEMP_PLANT, ret);
 	}
 
 	private void registerSawdust()
 	{
 		LootTable.Builder ret = LootTable.lootTable()
-				.withPool(singleItem(WoodenDecoration.sawdust))
+				.withPool(singleItem(WoodenDecoration.SAWDUST))
 				.apply(new PropertyCountLootFunction.Builder(SawdustBlock.LAYERS.getName()));
-		register(WoodenDecoration.sawdust, ret);
+		register(WoodenDecoration.SAWDUST, ret);
 	}
 
 	private LootPool.Builder binBonusLootPool(ItemLike item, Enchantment ench, float prob, int extra)

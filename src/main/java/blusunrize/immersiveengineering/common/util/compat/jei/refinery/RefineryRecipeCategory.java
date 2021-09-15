@@ -37,7 +37,7 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 		super(RefineryRecipe.class, helper, UID, "block.immersiveengineering.refinery");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/refinery.png");
 		setBackground(helper.createDrawable(background, 6, 10, 164, 62));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.refinery));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.REFINERY));
 		tankOverlay = helper.createDrawable(background, 179, 33, 16, 47);
 	}
 

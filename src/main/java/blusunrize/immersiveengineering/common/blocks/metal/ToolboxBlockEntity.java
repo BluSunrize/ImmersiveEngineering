@@ -152,8 +152,8 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	@Override
 	public List<ItemStack> getBlockEntityDrop(LootContext context)
 	{
-		ItemStack stack = new ItemStack(Tools.toolbox);
-		Tools.toolbox.get().setContainedItems(stack, inventory);
+		ItemStack stack = new ItemStack(Tools.TOOLBOX);
+		Tools.TOOLBOX.get().setContainedItems(stack, inventory);
 		if(this.name!=null)
 			stack.setHoverName(this.name);
 		if(enchantments!=null)

@@ -28,7 +28,7 @@ public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntit
 	public static final String NAME = "watermill";
 	public static DynamicModel MODEL;
 	private static final IVertexBufferHolder MODEL_BUFFER = IVertexBufferHolder.create(() -> {
-		BlockState state = WoodenDevices.watermill.defaultBlockState()
+		BlockState state = WoodenDevices.WATERMILL.defaultBlockState()
 				.setValue(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
 		return MODEL.get().getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 	});

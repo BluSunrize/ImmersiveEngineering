@@ -48,7 +48,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = te.getBlockPos();
 		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.metalPress.get())
+		if(state.getBlock()!=Multiblocks.METAL_PRESS.get())
 			return;
 		BakedModel model = PISTON.get();
 

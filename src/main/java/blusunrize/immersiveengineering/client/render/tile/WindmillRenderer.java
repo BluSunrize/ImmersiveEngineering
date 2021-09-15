@@ -46,7 +46,7 @@ public class WindmillRenderer extends IEBlockEntityRenderer<WindmillBlockEntity>
 					parts.add("sail_"+i);
 				IModelData data = new SinglePropertyModelData<>(
 						new IEObjState(VisibilityList.show(parts)), IEProperties.Model.IE_OBJ_STATE);
-				return model.getQuads(WoodenDevices.windmill.defaultBlockState(), null, Utils.RAND, data);
+				return model.getQuads(WoodenDevices.WINDMILL.defaultBlockState(), null, Utils.RAND, data);
 			});
 		return BUFFERS[sails];
 	}

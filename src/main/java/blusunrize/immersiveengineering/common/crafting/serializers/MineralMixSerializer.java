@@ -35,7 +35,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.crusher);
+		return new ItemStack(Multiblocks.CRUSHER);
 	}
 
 	@Override

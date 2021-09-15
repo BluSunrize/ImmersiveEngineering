@@ -38,13 +38,13 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 	@Override
 	public ItemStack getCartItem()
 	{
-		return new ItemStack(IEItems.Minecarts.cartReinforcedCrate.get());
+		return new ItemStack(IEItems.Minecarts.CART_REINFORCED_CRATE.get());
 	}
 
 	@Override
 	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.WoodenDevices.reinforcedCrate.defaultBlockState();
+		return IEBlocks.WoodenDevices.REINFORCED_CRATE.defaultBlockState();
 	}
 
 }

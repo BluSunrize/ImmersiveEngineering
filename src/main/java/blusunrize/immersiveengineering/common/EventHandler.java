@@ -248,7 +248,7 @@ public class EventHandler
 			for(Class<? extends Mob> boring : listOfBoringBosses)
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
 					return;
-			ItemStack bag = new ItemStack(Misc.shaderBag.get(r));
+			ItemStack bag = new ItemStack(Misc.SHADER_BAG.get(r));
 			event.getDrops().add(new ItemEntity(event.getEntityLiving().level, event.getEntityLiving().getX(), event.getEntityLiving().getY(), event.getEntityLiving().getZ(), bag));
 		}
 	}
@@ -272,16 +272,16 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingHurt(LivingHurtEvent event)
 	{
-		if(event.getSource().isFire()&&event.getEntityLiving().getEffect(IEPotions.flammable.get())!=null)
+		if(event.getSource().isFire()&&event.getEntityLiving().getEffect(IEPotions.FLAMMABLE.get())!=null)
 		{
-			int amp = event.getEntityLiving().getEffect(IEPotions.flammable.get()).getAmplifier();
+			int amp = event.getEntityLiving().getEffect(IEPotions.FLAMMABLE.get()).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
 		if(("flux".equals(event.getSource().getMsgId())||IEDamageSources.razorShock.equals(event.getSource())||
-				event.getSource() instanceof ElectricDamageSource)&&event.getEntityLiving().getEffect(IEPotions.conductive.get())!=null)
+				event.getSource() instanceof ElectricDamageSource)&&event.getEntityLiving().getEffect(IEPotions.CONDUCTIVE.get())!=null)
 		{
-			int amp = event.getEntityLiving().getEffect(IEPotions.conductive.get()).getAmplifier();
+			int amp = event.getEntityLiving().getEffect(IEPotions.CONDUCTIVE.get()).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
@@ -293,9 +293,9 @@ public class EventHandler
 	public void onLivingJump(LivingJumpEvent event)
 	{
 		Vec3 motion = event.getEntity().getDeltaMovement();
-		if(event.getEntityLiving().getEffect(IEPotions.sticky.get())!=null)
-			motion = motion.subtract(0, (event.getEntityLiving().getEffect(IEPotions.sticky.get()).getAmplifier()+1)*0.3F, 0);
-		else if(event.getEntityLiving().getEffect(IEPotions.concreteFeet.get())!=null)
+		if(event.getEntityLiving().getEffect(IEPotions.STICKY.get())!=null)
+			motion = motion.subtract(0, (event.getEntityLiving().getEffect(IEPotions.STICKY.get()).getAmplifier()+1)*0.3F, 0);
+		else if(event.getEntityLiving().getEffect(IEPotions.CONCRETE_FEET.get())!=null)
 			motion = Vec3.ZERO;
 		event.getEntity().setDeltaMovement(motion);
 	}
@@ -316,13 +316,13 @@ public class EventHandler
 	{
 		ItemStack current = event.getPlayer().getItemInHand(InteractionHand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
-		if(!current.isEmpty()&&current.getItem()==Tools.drill.get()&&event.getPlayer().isEyeInFluid(FluidTags.WATER))
-			if(Tools.drill.get().getUpgrades(current).getBoolean("waterproof"))
+		if(!current.isEmpty()&&current.getItem()==Tools.DRILL.get()&&event.getPlayer().isEyeInFluid(FluidTags.WATER))
+			if(Tools.DRILL.get().getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);
-		if(event.getState().getBlock()==MetalDevices.razorWire.get())
-			if(current.getItem()!=Tools.wirecutter.get())
+		if(event.getState().getBlock()==MetalDevices.RAZOR_WIRE.get())
+			if(current.getItem()!=Tools.WIRECUTTER.get())
 			{
 				event.setCanceled(true);
 				RazorWireBlockEntity.applyDamage(event.getEntityLiving());

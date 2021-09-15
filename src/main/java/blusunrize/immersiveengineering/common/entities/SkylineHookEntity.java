@@ -140,7 +140,7 @@ public class SkylineHookEntity extends Entity
 		List<Entity> list = this.getPassengers();
 		if(!list.isEmpty()&&list.get(0) instanceof Player)
 			player = (Player)list.get(0);
-		if(connection==null||player==null||(hand!=null&&player.getItemInHand(hand).getItem()!=Misc.skyhook.asItem()))
+		if(connection==null||player==null||(hand!=null&&player.getItemInHand(hand).getItem()!=Misc.SKYHOOK.asItem()))
 		{
 			if(!level.isClientSide)
 				discard();
@@ -485,8 +485,8 @@ public class SkylineHookEntity extends Entity
 		if(hand!=null&&passenger instanceof Player)
 		{
 			ItemStack held = ((Player)passenger).getItemInHand(hand);
-			if(held.getItem()==Misc.skyhook.asItem())
-				((Player)passenger).getCooldowns().addCooldown(Misc.skyhook.asItem(), 10);
+			if(held.getItem()==Misc.SKYHOOK.asItem())
+				((Player)passenger).getCooldowns().addCooldown(Misc.SKYHOOK.asItem(), 10);
 		}
 	}
 

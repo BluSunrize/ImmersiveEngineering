@@ -33,7 +33,7 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Misc.wireCoils.get(WireType.COPPER));
+		return new ItemStack(Misc.WIRE_COILS.get(WireType.COPPER));
 	}
 
 	@Override

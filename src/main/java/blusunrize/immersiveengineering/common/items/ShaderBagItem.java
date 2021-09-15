@@ -81,7 +81,7 @@ public class ShaderBagItem extends IEBaseItem
 				ResourceLocation shader = ShaderRegistry.getRandomShader(player.getUUID(), player.getRandom(), rarity, true);
 				if(shader==null)
 					return new InteractionResultHolder<>(InteractionResult.FAIL, stack);
-				ItemStack shaderItem = new ItemStack(Misc.shader);
+				ItemStack shaderItem = new ItemStack(Misc.SHADER);
 				ItemNBTHelper.putString(shaderItem, "shader_name", shader.toString());
 				Rarity shaderRarity = ShaderRegistry.shaderRegistry.get(shader).getRarity();
 				if(ShaderRegistry.sortedRarityMap.indexOf(shaderRarity) <= ShaderRegistry.sortedRarityMap.indexOf(Rarity.EPIC)&&

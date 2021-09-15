@@ -46,7 +46,7 @@ public class PostTransformerBlock extends ConnectorBlock<PostTransformerBlockEnt
 	@Override
 	public Item asItem()
 	{
-		return Connectors.transformer.get().asItem();
+		return Connectors.TRANSFORMER.get().asItem();
 	}
 
 	@Override

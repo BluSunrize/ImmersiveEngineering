@@ -52,7 +52,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	@Override
 	public ItemStack getCartItem()
 	{
-		return new ItemStack(IEItems.Minecarts.cartWoodenCrate.get());
+		return new ItemStack(IEItems.Minecarts.CART_WOODEN_CRATE.get());
 	}
 
 	@Override
@@ -74,7 +74,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	protected Supplier<WoodenCrateBlockEntity> getTileProvider()
 	{
 		return () -> {
-			WoodenCrateBlockEntity tile = new WoodenCrateBlockEntity(BlockPos.ZERO, WoodenDevices.crate.defaultBlockState());
+			WoodenCrateBlockEntity tile = new WoodenCrateBlockEntity(BlockPos.ZERO, WoodenDevices.CRATE.defaultBlockState());
 			tile.setOverrideState(getDisplayBlockState());
 			return tile;
 		};
@@ -92,7 +92,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	@Override
 	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.WoodenDevices.crate.defaultBlockState();
+		return IEBlocks.WoodenDevices.CRATE.defaultBlockState();
 	}
 
 	@Nullable

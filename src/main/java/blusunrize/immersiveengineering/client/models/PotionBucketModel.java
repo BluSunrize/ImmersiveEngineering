@@ -40,7 +40,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 {
 	private final QuadTransformer recolorTransformer;
 	private final IModelGeometry<?> baseGeometry = new DynamicBucketModel(
-			IEFluids.fluidPotion.get(), false, true, true, true
+			IEFluids.POTION.get(), false, true, true, true
 	);
 
 	public PotionBucketModel(int color)
@@ -61,7 +61,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 		ItemMultiLayerBakedModel.Builder builder = ItemMultiLayerBakedModel.builder(
 				owner, baseModel.getParticleIcon(EmptyModelData.INSTANCE), new OverrideHandler(overrides, bakery, owner), transformMap
 		);
-		ResourceLocation fluidMaskLocation = IEFluids.fluidPotion.get().getAttributes().getStillTexture();
+		ResourceLocation fluidMaskLocation = IEFluids.POTION.get().getAttributes().getStillTexture();
 		for(Pair<BakedModel, RenderType> layer : baseModel.getLayerModels(ItemStack.EMPTY, false))
 		{
 			List<BakedQuad> baseQuads = layer.getFirst().getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);

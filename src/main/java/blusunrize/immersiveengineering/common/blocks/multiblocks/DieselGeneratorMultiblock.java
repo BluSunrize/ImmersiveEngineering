@@ -19,7 +19,7 @@ public class DieselGeneratorMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/diesel_generator"),
 				new BlockPos(1, 1, 2), new BlockPos(1, 1, 4), new BlockPos(3, 3, 5),
-				Multiblocks.dieselGenerator);
+				Multiblocks.DIESEL_GENERATOR);
 	}
 
 	@Override

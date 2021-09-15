@@ -38,19 +38,19 @@ public class MetalBarrelMinecartEntity extends BarrelMinecartEntity
 	@Override
 	public ItemStack getCartItem()
 	{
-		return new ItemStack(IEItems.Minecarts.cartMetalBarrel.get());
+		return new ItemStack(IEItems.Minecarts.CART_METAL_BARREL.get());
 	}
 
 	@Override
 	protected Supplier<WoodenBarrelBlockEntity> getTileProvider()
 	{
-		return () -> new MetalBarrelBlockEntity(BlockPos.ZERO, MetalDevices.barrel.defaultBlockState());
+		return () -> new MetalBarrelBlockEntity(BlockPos.ZERO, MetalDevices.BARREL.defaultBlockState());
 	}
 
 	@Override
 	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.MetalDevices.barrel.defaultBlockState();
+		return IEBlocks.MetalDevices.BARREL.defaultBlockState();
 	}
 
 }

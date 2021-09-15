@@ -149,7 +149,7 @@ public class FeedthroughMultiblock implements IMultiblock
 		//Form
 		if(!world.isClientSide)
 		{
-			BlockState state = Connectors.feedthrough.defaultBlockState().setValue(FACING_ALL, side);
+			BlockState state = Connectors.FEEDTHROUGH.defaultBlockState().setValue(FACING_ALL, side);
 			BlockPos masterPos = pos.relative(side);
 			FeedthroughBlockEntity master = setBlock(world, masterPos, state, wire, middle, 0);
 			if(master!=null)
@@ -215,6 +215,6 @@ public class FeedthroughMultiblock implements IMultiblock
 	@Override
 	public Component getDisplayName()
 	{
-		return Connectors.feedthrough.get().getName();
+		return Connectors.FEEDTHROUGH.get().getName();
 	}
 }

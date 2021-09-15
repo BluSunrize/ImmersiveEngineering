@@ -52,7 +52,7 @@ public class PowerpackRecipe implements CraftingRecipe
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
-				if(powerpack.isEmpty()&&stackInSlot.is(Misc.powerpack.asItem()))
+				if(powerpack.isEmpty()&&stackInSlot.is(Misc.POWERPACK.asItem()))
 					powerpack = stackInSlot;
 				else if(armor.isEmpty()&&isValidArmor(stackInSlot))
 					armor = stackInSlot;
@@ -75,7 +75,7 @@ public class PowerpackRecipe implements CraftingRecipe
 		{
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
-				if(powerpack.isEmpty()&&stackInSlot.is(Misc.powerpack.asItem()))
+				if(powerpack.isEmpty()&&stackInSlot.is(Misc.POWERPACK.asItem()))
 					powerpack = stackInSlot;
 				else if(armor.isEmpty()&&isValidArmor(stackInSlot))
 					armor = stackInSlot;
@@ -106,7 +106,7 @@ public class PowerpackRecipe implements CraftingRecipe
 	@Override
 	public ItemStack getResultItem()
 	{
-		return new ItemStack(Misc.powerpack, 1);
+		return new ItemStack(Misc.POWERPACK, 1);
 	}
 
 	@Nonnull
@@ -127,7 +127,7 @@ public class PowerpackRecipe implements CraftingRecipe
 	{
 		if(!(stack.getItem() instanceof ArmorItem)||((ArmorItem)stack.getItem()).getSlot()!=EquipmentSlot.CHEST)
 			return false;
-		if(stack.getItem()==Misc.powerpack.asItem())
+		if(stack.getItem()==Misc.POWERPACK.asItem())
 			return false;
 		String regName = stack.getItem().getRegistryName().toString();
 		for(String s : IEServerConfig.TOOLS.powerpack_whitelist.get())
@@ -156,6 +156,6 @@ public class PowerpackRecipe implements CraftingRecipe
 	@Override
 	public NonNullList<Ingredient> getIngredients()
 	{
-		return NonNullList.withSize(1, Ingredient.of(Misc.powerpack));
+		return NonNullList.withSize(1, Ingredient.of(Misc.POWERPACK));
 	}
 }

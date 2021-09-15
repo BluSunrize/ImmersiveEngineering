@@ -34,7 +34,7 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 	{
 		super(ClocheRecipe.class, helper, UID, "block.immersiveengineering.cloche");
 		setBackground(helper.createBlankDrawable(100, 50));
-		setIcon(new ItemStack(IEBlocks.MetalDevices.cloche));
+		setIcon(new ItemStack(IEBlocks.MetalDevices.CLOCHE));
 	}
 
 	@Override

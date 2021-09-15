@@ -68,7 +68,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = blockEntity.getBlockPos();
 		BlockState state = blockEntity.getLevelNonnull().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.autoWorkbench.get())
+		if(state.getBlock()!=Multiblocks.AUTO_WORKBENCH.get())
 			return;
 		BakedModel model = DYNAMIC.get();
 

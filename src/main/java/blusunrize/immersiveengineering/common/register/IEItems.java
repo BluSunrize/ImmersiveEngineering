@@ -40,6 +40,7 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
 public final class IEItems
 {
+	public static final int COKE_BURN_TIME = 3200;
 	public static final DeferredRegister<Item> REGISTER = DeferredRegister.create(ForgeRegistries.ITEMS, Lib.MODID);
 
 	private IEItems()
@@ -48,14 +49,14 @@ public final class IEItems
 
 	public static final class Molds
 	{
-		public static ItemRegObject<IEBaseItem> moldPlate = simpleWithStackSize("mold_plate", 1);
-		public static ItemRegObject<IEBaseItem> moldGear = simpleWithStackSize("mold_gear", 1);
-		public static ItemRegObject<IEBaseItem> moldRod = simpleWithStackSize("mold_rod", 1);
-		public static ItemRegObject<IEBaseItem> moldBulletCasing = simpleWithStackSize("mold_bullet_casing", 1);
-		public static ItemRegObject<IEBaseItem> moldWire = simpleWithStackSize("mold_wire", 1);
-		public static ItemRegObject<IEBaseItem> moldPacking4 = simpleWithStackSize("mold_packing_4", 1);
-		public static ItemRegObject<IEBaseItem> moldPacking9 = simpleWithStackSize("mold_packing_9", 1);
-		public static ItemRegObject<IEBaseItem> moldUnpacking = simpleWithStackSize("mold_unpacking", 1);
+		public static final ItemRegObject<IEBaseItem> MOLD_PLATE = simpleWithStackSize("mold_plate", 1);
+		public static final ItemRegObject<IEBaseItem> MOLD_GEAR = simpleWithStackSize("mold_gear", 1);
+		public static final ItemRegObject<IEBaseItem> MOLD_ROD = simpleWithStackSize("mold_rod", 1);
+		public static final ItemRegObject<IEBaseItem> MOLD_BULLET_CASING = simpleWithStackSize("mold_bullet_casing", 1);
+		public static final ItemRegObject<IEBaseItem> MOLD_WIRE = simpleWithStackSize("mold_wire", 1);
+		public static final ItemRegObject<IEBaseItem> MOLD_PACKING_4 = simpleWithStackSize("mold_packing_4", 1);
+		public static final ItemRegObject<IEBaseItem> MOLD_PACKING_9 = simpleWithStackSize("mold_packing_9", 1);
+		public static final ItemRegObject<IEBaseItem> MOLD_UNPACKING = simpleWithStackSize("mold_unpacking", 1);
 
 		private static void init()
 		{
@@ -64,38 +65,38 @@ public final class IEItems
 
 	public static final class Ingredients
 	{
-		public static ItemRegObject<IEBaseItem> stickTreated = simple("stick_treated");
-		public static ItemRegObject<IEBaseItem> stickIron = simple("stick_iron");
-		public static ItemRegObject<IEBaseItem> stickSteel = simple("stick_steel");
-		public static ItemRegObject<IEBaseItem> stickAluminum = simple("stick_aluminum");
-		public static ItemRegObject<IEBaseItem> hempFiber = simple("hemp_fiber");
-		public static ItemRegObject<IEBaseItem> hempFabric = simple("hemp_fabric");
-		public static ItemRegObject<IEBaseItem> coalCoke = simple("coal_coke", nothing(), i -> i.setBurnTime(3200));
-		public static ItemRegObject<IEBaseItem> slag = simple("slag");
-		public static ItemRegObject<IEBaseItem> componentIron = simple("component_iron");
-		public static ItemRegObject<IEBaseItem> componentSteel = simple("component_steel");
-		public static ItemRegObject<IEBaseItem> waterwheelSegment = simple("waterwheel_segment");
-		public static ItemRegObject<IEBaseItem> windmillBlade = simple("windmill_blade");
-		public static ItemRegObject<IEBaseItem> windmillSail = simple("windmill_sail");
-		public static ItemRegObject<IEBaseItem> woodenGrip = simple("wooden_grip");
-		public static ItemRegObject<IEBaseItem> gunpartBarrel = simple("gunpart_barrel");
-		public static ItemRegObject<IEBaseItem> gunpartDrum = simple("gunpart_drum");
-		public static ItemRegObject<IEBaseItem> gunpartHammer = simple("gunpart_hammer");
-		public static ItemRegObject<IEBaseItem> dustCoke = simple("dust_coke");
-		public static ItemRegObject<IEBaseItem> dustHopGraphite = simple("dust_hop_graphite");
-		public static ItemRegObject<IEBaseItem> ingotHopGraphite = simple("ingot_hop_graphite");
-		public static ItemRegObject<IEBaseItem> wireCopper = simple("wire_copper");
-		public static ItemRegObject<IEBaseItem> wireElectrum = simple("wire_electrum");
-		public static ItemRegObject<IEBaseItem> wireAluminum = simple("wire_aluminum");
-		public static ItemRegObject<IEBaseItem> wireSteel = simple("wire_steel");
-		public static ItemRegObject<IEBaseItem> wireLead = simple("wire_lead");
-		public static ItemRegObject<IEBaseItem> dustSaltpeter = simple("dust_saltpeter");
-		public static ItemRegObject<IEBaseItem> dustSulfur = simple("dust_sulfur");
-		public static ItemRegObject<IEBaseItem> dustWood = simple("dust_wood", nothing(), i -> i.setBurnTime(100));
-		public static ItemRegObject<IEBaseItem> electronTube = simple("electron_tube");
-		public static ItemRegObject<IEBaseItem> circuitBoard = simple("circuit_board");
-		public static ItemRegObject<IEBaseItem> emptyCasing = simple("empty_casing");
-		public static ItemRegObject<IEBaseItem> emptyShell = simple("empty_shell");
+		public static final ItemRegObject<IEBaseItem> STICK_TREATED = simple("stick_treated");
+		public static final ItemRegObject<IEBaseItem> STICK_IRON = simple("stick_iron");
+		public static final ItemRegObject<IEBaseItem> STICK_STEEL = simple("stick_steel");
+		public static final ItemRegObject<IEBaseItem> STICK_ALUMINUM = simple("stick_aluminum");
+		public static final ItemRegObject<IEBaseItem> HEMP_FIBER = simple("hemp_fiber");
+		public static final ItemRegObject<IEBaseItem> HEMP_FABRIC = simple("hemp_fabric");
+		public static final ItemRegObject<IEBaseItem> COAL_COKE = simple("coal_coke", nothing(), i -> i.setBurnTime(COKE_BURN_TIME));
+		public static final ItemRegObject<IEBaseItem> SLAG = simple("slag");
+		public static final ItemRegObject<IEBaseItem> COMPONENT_IRON = simple("component_iron");
+		public static final ItemRegObject<IEBaseItem> COMPONENT_STEEL = simple("component_steel");
+		public static final ItemRegObject<IEBaseItem> WATERWHEEL_SEGMENT = simple("waterwheel_segment");
+		public static final ItemRegObject<IEBaseItem> WINDMILL_BLADE = simple("windmill_blade");
+		public static final ItemRegObject<IEBaseItem> WINDMILL_SAIL = simple("windmill_sail");
+		public static final ItemRegObject<IEBaseItem> WOODEN_GRIP = simple("wooden_grip");
+		public static final ItemRegObject<IEBaseItem> GUNPART_BARREL = simple("gunpart_barrel");
+		public static final ItemRegObject<IEBaseItem> GUNPART_DRUM = simple("gunpart_drum");
+		public static final ItemRegObject<IEBaseItem> GUNPART_HAMMER = simple("gunpart_hammer");
+		public static final ItemRegObject<IEBaseItem> DUST_COKE = simple("dust_coke");
+		public static final ItemRegObject<IEBaseItem> DUST_HOP_GRAPHITE = simple("dust_hop_graphite");
+		public static final ItemRegObject<IEBaseItem> INGOT_HOP_GRAPHITE = simple("ingot_hop_graphite");
+		public static final ItemRegObject<IEBaseItem> WIRE_COPPER = simple("wire_copper");
+		public static final ItemRegObject<IEBaseItem> WIRE_ELECTRUM = simple("wire_electrum");
+		public static final ItemRegObject<IEBaseItem> WIRE_ALUMINUM = simple("wire_aluminum");
+		public static final ItemRegObject<IEBaseItem> WIRE_STEEL = simple("wire_steel");
+		public static final ItemRegObject<IEBaseItem> WIRE_LEAD = simple("wire_lead");
+		public static final ItemRegObject<IEBaseItem> DUST_SALTPETER = simple("dust_saltpeter");
+		public static final ItemRegObject<IEBaseItem> DUST_SULFUR = simple("dust_sulfur");
+		public static final ItemRegObject<IEBaseItem> DUST_WOOD = simple("dust_wood", nothing(), i -> i.setBurnTime(100));
+		public static final ItemRegObject<IEBaseItem> ELECTRON_TUBE = simple("electron_tube");
+		public static final ItemRegObject<IEBaseItem> CIRCUIT_BOARD = simple("circuit_board");
+		public static final ItemRegObject<IEBaseItem> EMPTY_CASING = simple("empty_casing");
+		public static final ItemRegObject<IEBaseItem> EMPTY_SHELL = simple("empty_shell");
 
 		private static void init()
 		{
@@ -104,10 +105,10 @@ public final class IEItems
 
 	public static final class Metals
 	{
-		public static Map<EnumMetals, ItemRegObject<Item>> ingots = new EnumMap<>(EnumMetals.class);
-		public static Map<EnumMetals, ItemRegObject<Item>> nuggets = new EnumMap<>(EnumMetals.class);
-		public static Map<EnumMetals, ItemRegObject<IEBaseItem>> dusts = new EnumMap<>(EnumMetals.class);
-		public static Map<EnumMetals, ItemRegObject<IEBaseItem>> plates = new EnumMap<>(EnumMetals.class);
+		public static final Map<EnumMetals, ItemRegObject<Item>> INGOTS = new EnumMap<>(EnumMetals.class);
+		public static final Map<EnumMetals, ItemRegObject<Item>> NUGGETS = new EnumMap<>(EnumMetals.class);
+		public static final Map<EnumMetals, ItemRegObject<IEBaseItem>> DUSTS = new EnumMap<>(EnumMetals.class);
+		public static final Map<EnumMetals, ItemRegObject<IEBaseItem>> PLATES = new EnumMap<>(EnumMetals.class);
 
 		private static void init()
 		{
@@ -134,64 +135,64 @@ public final class IEItems
 					nugget = of(Items.GOLD_NUGGET);
 				else
 					throw new RuntimeException("Unkown vanilla metal: "+m.name());
-				IEItems.Metals.nuggets.put(m, nugget);
-				IEItems.Metals.ingots.put(m, ingot);
-				IEItems.Metals.plates.put(m, simple("plate_"+name));
-				IEItems.Metals.dusts.put(m, simple("dust_"+name));
+				NUGGETS.put(m, nugget);
+				INGOTS.put(m, ingot);
+				PLATES.put(m, simple("plate_"+name));
+				DUSTS.put(m, simple("dust_"+name));
 			}
 		}
 	}
 
 	public static final class Tools
 	{
-		public static ItemRegObject<HammerItem> hammer = register("hammer", HammerItem::new);
-		public static ItemRegObject<WirecutterItem> wirecutter = register("wirecutter", WirecutterItem::new);
-		public static ItemRegObject<ScrewdriverItem> screwdriver = register("screwdriver", ScrewdriverItem::new);
-		public static ItemRegObject<ManualItem> manual = register("manual", ManualItem::new);
-		public static ItemRegObject<VoltmeterItem> voltmeter = register("voltmeter", VoltmeterItem::new);
+		public static final ItemRegObject<HammerItem> HAMMER = register("hammer", HammerItem::new);
+		public static final ItemRegObject<WirecutterItem> WIRECUTTER = register("wirecutter", WirecutterItem::new);
+		public static final ItemRegObject<ScrewdriverItem> SCREWDRIVER = register("screwdriver", ScrewdriverItem::new);
+		public static final ItemRegObject<ManualItem> MANUAL = register("manual", ManualItem::new);
+		public static final ItemRegObject<VoltmeterItem> VOLTMETER = register("voltmeter", VoltmeterItem::new);
 
-		public static ItemRegObject<PickaxeItem> steelPick = register(
+		public static final ItemRegObject<PickaxeItem> STEEL_PICK = register(
 				"pickaxe_steel", IETools.createPickaxe(Lib.MATERIAL_Steel)
 		);
-		public static ItemRegObject<ShovelItem> steelShovel = register(
+		public static final ItemRegObject<ShovelItem> STEEL_SHOVEL = register(
 				"shovel_steel", IETools.createShovel(Lib.MATERIAL_Steel)
 		);
-		public static ItemRegObject<AxeItem> steelAxe = register(
+		public static final ItemRegObject<AxeItem> STEEL_AXE = register(
 				"axe_steel", IETools.createAxe(Lib.MATERIAL_Steel)
 		);
-		public static ItemRegObject<HoeItem> steelHoe = register(
+		public static final ItemRegObject<HoeItem> STEEL_HOE = register(
 				"hoe_steel", IETools.createHoe(Lib.MATERIAL_Steel)
 		);
-		public static ItemRegObject<SwordItem> steelSword = register(
+		public static final ItemRegObject<SwordItem> STEEL_SWORD = register(
 				"sword_steel", IETools.createSword(Lib.MATERIAL_Steel)
 		);
-		public static Map<EquipmentSlot, ItemRegObject<SteelArmorItem>> steelArmor = new EnumMap<>(EquipmentSlot.class);
+		public static final Map<EquipmentSlot, ItemRegObject<SteelArmorItem>> STEEL_ARMOR = new EnumMap<>(EquipmentSlot.class);
 
-		public static ItemRegObject<ToolboxItem> toolbox = register("toolbox", ToolboxItem::new);
+		public static final ItemRegObject<ToolboxItem> TOOLBOX = register("toolbox", ToolboxItem::new);
 
-		public static ItemRegObject<DrillItem> drill = register("drill", DrillItem::new);
-		public static ItemRegObject<DrillheadItem> drillheadSteel = register(
+		public static final ItemRegObject<DrillItem> DRILL = register("drill", DrillItem::new);
+		public static final ItemRegObject<DrillheadItem> DRILLHEAD_STEEL = register(
 				"drillhead_steel", () -> new DrillheadItem(DrillheadItem.STEEL)
 		);
-		public static ItemRegObject<DrillheadItem> drillheadIron = register(
+		public static final ItemRegObject<DrillheadItem> DRILLHEAD_IRON = register(
 				"drillhead_iron", () -> new DrillheadItem(DrillheadItem.IRON)
 		);
 
-		public static ItemRegObject<BuzzsawItem> buzzsaw = register("buzzsaw", BuzzsawItem::new);
-		public static ItemRegObject<SawbladeItem> sawblade = register(
+		public static final ItemRegObject<BuzzsawItem> BUZZSAW = register("buzzsaw", BuzzsawItem::new);
+		public static final ItemRegObject<SawbladeItem> SAWBLADE = register(
 				"sawblade", () -> new SawbladeItem(10000, 8f, 9f)
 		);
-		public static ItemRegObject<RockcutterItem> rockcutter = register(
+		public static final ItemRegObject<RockcutterItem> ROCKCUTTER = register(
 				"rockcutter", () -> new RockcutterItem(5000, 5f, 9f)
 		);
 
-		public static ItemRegObject<SurveyToolsItem> surveyTools = register("survey_tools", SurveyToolsItem::new);
+		public static final ItemRegObject<SurveyToolsItem> SURVEY_TOOLS = register("survey_tools", SurveyToolsItem::new);
 
 		private static void init()
 		{
 			for(EquipmentSlot slot : EquipmentSlot.values())
 				if(slot.getType()==Type.ARMOR)
-					steelArmor.put(slot, register(
+					STEEL_ARMOR.put(slot, register(
 							"armor_steel_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new SteelArmorItem(slot)
 					));
 		}
@@ -199,11 +200,11 @@ public final class IEItems
 
 	public static final class Weapons
 	{
-		public static ItemRegObject<RevolverItem> revolver = register("revolver", RevolverItem::new);
-		public static ItemRegObject<SpeedloaderItem> speedloader = register("speedloader", SpeedloaderItem::new);
-		public static Map<IBullet, ItemRegObject<BulletItem>> bullets = new IdentityHashMap<>();
-		public static ItemRegObject<ChemthrowerItem> chemthrower = register("chemthrower", ChemthrowerItem::new);
-		public static ItemRegObject<RailgunItem> railgun = register("railgun", RailgunItem::new);
+		public static final ItemRegObject<RevolverItem> REVOLVER = register("revolver", RevolverItem::new);
+		public static final ItemRegObject<SpeedloaderItem> SPEEDLOADER = register("speedloader", SpeedloaderItem::new);
+		public static final Map<IBullet, ItemRegObject<BulletItem>> BULLETS = new IdentityHashMap<>();
+		public static final ItemRegObject<ChemthrowerItem> CHEMTHROWER = register("chemthrower", ChemthrowerItem::new);
+		public static final ItemRegObject<RailgunItem> RAILGUN = register("railgun", RailgunItem::new);
 
 		private static void init()
 		{
@@ -211,7 +212,7 @@ public final class IEItems
 			{
 				IBullet bullet = BulletHandler.getBullet(bulletType);
 				if(bullet.isProperCartridge())
-					Weapons.bullets.put(bullet, register(nameFor(bullet), () -> new BulletItem(bullet)));
+					BULLETS.put(bullet, register(nameFor(bullet), () -> new BulletItem(bullet)));
 			}
 		}
 
@@ -227,14 +228,14 @@ public final class IEItems
 
 	public static final class BannerPatterns
 	{
-		public static ItemRegObject<BannerPatternItem> bannerPatternHammer = addBanner("hammer", "hmr");
-		public static ItemRegObject<BannerPatternItem> bannerPatternBevels = addBanner("bevels", "bvl");
-		public static ItemRegObject<BannerPatternItem> bannerPatternOrnate = addBanner("ornate", "orn");
-		public static ItemRegObject<BannerPatternItem> bannerPatternTreatedWood = addBanner("treated_wood", "twd");
-		public static ItemRegObject<BannerPatternItem> bannerPatternWindmill = addBanner("windmill", "wnd");
-		public static ItemRegObject<BannerPatternItem> bannerPatternWolfR = addBanner("wolf_r", "wlfr");
-		public static ItemRegObject<BannerPatternItem> bannerPatternWolfL = addBanner("wolf_l", "wlfl");
-		public static ItemRegObject<BannerPatternItem> bannerPatternWolf = addBanner("wolf", "wlf");
+		public static final ItemRegObject<BannerPatternItem> HAMMER = addBanner("hammer", "hmr");
+		public static final ItemRegObject<BannerPatternItem> BEVELS = addBanner("bevels", "bvl");
+		public static final ItemRegObject<BannerPatternItem> ORNATE = addBanner("ornate", "orn");
+		public static final ItemRegObject<BannerPatternItem> TREATED_WOOD = addBanner("treated_wood", "twd");
+		public static final ItemRegObject<BannerPatternItem> WINDMILL = addBanner("windmill", "wnd");
+		public static final ItemRegObject<BannerPatternItem> WOLF_R = addBanner("wolf_r", "wlfr");
+		public static final ItemRegObject<BannerPatternItem> WOLF_L = addBanner("wolf_l", "wlfl");
+		public static final ItemRegObject<BannerPatternItem> WOLF = addBanner("wolf", "wlf");
 
 		private static ItemRegObject<BannerPatternItem> addBanner(String name, String id)
 		{
@@ -256,10 +257,10 @@ public final class IEItems
 
 	public static final class Minecarts
 	{
-		public static ItemRegObject<IEMinecartItem> cartWoodenCrate = register("woodencrate", CrateMinecartEntity::new);
-		public static ItemRegObject<IEMinecartItem> cartReinforcedCrate = register("reinforcedcrate", ReinforcedCrateMinecartEntity::new);
-		public static ItemRegObject<IEMinecartItem> cartWoodenBarrel = register("woodenbarrel", BarrelMinecartEntity::new);
-		public static ItemRegObject<IEMinecartItem> cartMetalBarrel = register("metalbarrel", MetalBarrelMinecartEntity::new);
+		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_CRATE = register("woodencrate", CrateMinecartEntity::new);
+		public static final ItemRegObject<IEMinecartItem> CART_REINFORCED_CRATE = register("reinforcedcrate", ReinforcedCrateMinecartEntity::new);
+		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_BARREL = register("woodenbarrel", BarrelMinecartEntity::new);
+		public static final ItemRegObject<IEMinecartItem> CART_METAL_BARREL = register("metalbarrel", MetalBarrelMinecartEntity::new);
 
 		private static void init()
 		{
@@ -274,33 +275,33 @@ public final class IEItems
 	//TODO move all of these somewhere else
 	public static final class Misc
 	{
-		public static Map<WireType, ItemRegObject<WireCoilItem>> wireCoils = new LinkedHashMap<>();
-		public static Map<ToolUpgrade, ItemRegObject<ToolUpgradeItem>> toolUpgrades = new EnumMap<>(ToolUpgrade.class);
+		public static final Map<WireType, ItemRegObject<WireCoilItem>> WIRE_COILS = new LinkedHashMap<>();
+		public static final Map<ToolUpgrade, ItemRegObject<ToolUpgradeItem>> TOOL_UPGRADES = new EnumMap<>(ToolUpgrade.class);
 
-		public static ItemRegObject<IESeedItem> hempSeeds = register(
-				"seed", () -> new IESeedItem(IEBlocks.Misc.hempPlant.get())
+		public static final ItemRegObject<IESeedItem> HEMP_SEEDS = register(
+				"seed", () -> new IESeedItem(IEBlocks.Misc.HEMP_PLANT.get())
 		);
-		public static ItemRegObject<JerrycanItem> jerrycan = register("jerrycan", JerrycanItem::new);
-		public static ItemRegObject<EngineersBlueprintItem> blueprint = register("blueprint", EngineersBlueprintItem::new);
-		public static ItemRegObject<SkyhookItem> skyhook = register("skyhook", SkyhookItem::new);
-		public static ItemRegObject<ShaderItem> shader = register("shader", ShaderItem::new);
-		public static Map<Rarity, ItemRegObject<ShaderBagItem>> shaderBag = new EnumMap<>(Rarity.class);
-		public static ItemRegObject<EarmuffsItem> earmuffs = register("earmuffs", EarmuffsItem::new);
-		public static ItemRegObject<CoresampleItem> coresample = register("coresample", CoresampleItem::new);
-		public static ItemRegObject<GraphiteElectrodeItem> graphiteElectrode = register("graphite_electrode", GraphiteElectrodeItem::new);
-		public static Map<EquipmentSlot, ItemRegObject<FaradaySuitItem>> faradaySuit = new EnumMap<>(EquipmentSlot.class);
-		public static ItemRegObject<FluorescentTubeItem> fluorescentTube = register("fluorescent_tube", FluorescentTubeItem::new);
-		public static ItemRegObject<PowerpackItem> powerpack = register("powerpack", PowerpackItem::new);
-		public static ItemRegObject<IEShieldItem> shield = register("shield", IEShieldItem::new);
-		public static ItemRegObject<MaintenanceKitItem> maintenanceKit = register("maintenance_kit", MaintenanceKitItem::new);
-		public static ItemRegObject<LogicCircuitBoardItem> logicCircuitBoard = register("logic_circuit", LogicCircuitBoardItem::new);
+		public static final ItemRegObject<JerrycanItem> JERRYCAN = register("jerrycan", JerrycanItem::new);
+		public static final ItemRegObject<EngineersBlueprintItem> BLUEPRINT = register("blueprint", EngineersBlueprintItem::new);
+		public static final ItemRegObject<SkyhookItem> SKYHOOK = register("skyhook", SkyhookItem::new);
+		public static final ItemRegObject<ShaderItem> SHADER = register("shader", ShaderItem::new);
+		public static final Map<Rarity, ItemRegObject<ShaderBagItem>> SHADER_BAG = new EnumMap<>(Rarity.class);
+		public static final ItemRegObject<EarmuffsItem> EARMUFFS = register("earmuffs", EarmuffsItem::new);
+		public static final ItemRegObject<CoresampleItem> CORESAMPLE = register("coresample", CoresampleItem::new);
+		public static final ItemRegObject<GraphiteElectrodeItem> GRAPHITE_ELECTRODE = register("graphite_electrode", GraphiteElectrodeItem::new);
+		public static final Map<EquipmentSlot, ItemRegObject<FaradaySuitItem>> FARADAY_SUIT = new EnumMap<>(EquipmentSlot.class);
+		public static final ItemRegObject<FluorescentTubeItem> FLUORESCENT_TUBE = register("fluorescent_tube", FluorescentTubeItem::new);
+		public static final ItemRegObject<PowerpackItem> POWERPACK = register("powerpack", PowerpackItem::new);
+		public static final ItemRegObject<IEShieldItem> SHIELD = register("shield", IEShieldItem::new);
+		public static final ItemRegObject<MaintenanceKitItem> MAINTENANCE_KIT = register("maintenance_kit", MaintenanceKitItem::new);
+		public static final ItemRegObject<LogicCircuitBoardItem> LOGIC_CIRCUIT_BOARD = register("logic_circuit", LogicCircuitBoardItem::new);
 
-		public static ItemRegObject<FakeIconItem> iconBirthday = icon("birthday");
-		public static ItemRegObject<FakeIconItem> iconLucky = icon("lucky");
-		public static ItemRegObject<FakeIconItem> iconDrillbreak = icon("drillbreak");
-		public static ItemRegObject<FakeIconItem> iconRavenholm = icon("ravenholm");
+		public static final ItemRegObject<FakeIconItem> ICON_BIRTHDAY = icon("birthday");
+		public static final ItemRegObject<FakeIconItem> ICON_LUCKY = icon("lucky");
+		public static final ItemRegObject<FakeIconItem> ICON_DRILLBREAK = icon("drillbreak");
+		public static final ItemRegObject<FakeIconItem> ICON_RAVENHOLM = icon("ravenholm");
 
-		public static ItemRegObject<PotionBucketItem> potionBucket = IEItems.register("potion_bucket", PotionBucketItem::new);
+		public static final ItemRegObject<PotionBucketItem> POTION_BUCKET = IEItems.register("potion_bucket", PotionBucketItem::new);
 
 		private static ItemRegObject<FakeIconItem> icon(String name)
 		{
@@ -310,16 +311,16 @@ public final class IEItems
 		private static void init()
 		{
 			for(WireType t : WireType.getIEWireTypes())
-				IEItems.Misc.wireCoils.put(t, register(
+				IEItems.Misc.WIRE_COILS.put(t, register(
 						"wirecoil_"+t.getUniqueName().toLowerCase(Locale.US), () -> new WireCoilItem(t)
 				));
 			for(ToolUpgrade upgrade : ToolUpgrade.values())
-				IEItems.Misc.toolUpgrades.put(upgrade, register(
+				IEItems.Misc.TOOL_UPGRADES.put(upgrade, register(
 						"toolupgrade_"+upgrade.name().toLowerCase(Locale.US), () -> new ToolUpgradeItem(upgrade)
 				));
 			for(EquipmentSlot slot : EquipmentSlot.values())
 				if(slot.getType()==Type.ARMOR)
-					IEItems.Misc.faradaySuit.put(slot, register(
+					IEItems.Misc.FARADAY_SUIT.put(slot, register(
 							"armor_faraday_"+slot.getName().toLowerCase(Locale.ENGLISH), () -> new FaradaySuitItem(slot)
 					));
 		}
@@ -327,7 +328,7 @@ public final class IEItems
 		public static void registerShaderBags()
 		{
 			for(Rarity r : ShaderRegistry.rarityWeightMap.keySet())
-				IEItems.Misc.shaderBag.put(r, register(
+				IEItems.Misc.SHADER_BAG.put(r, register(
 						"shader_bag_"+r.name().toLowerCase(Locale.US).replace(':', '_'), () -> new ShaderBagItem(r)
 				));
 		}

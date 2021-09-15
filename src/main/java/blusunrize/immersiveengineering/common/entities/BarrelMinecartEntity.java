@@ -50,7 +50,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	@Override
 	public ItemStack getCartItem()
 	{
-		return new ItemStack(IEItems.Minecarts.cartWoodenBarrel.get());
+		return new ItemStack(IEItems.Minecarts.CART_WOODEN_BARREL.get());
 	}
 
 	@Override
@@ -85,7 +85,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	@Override
 	protected Supplier<WoodenBarrelBlockEntity> getTileProvider()
 	{
-		return () -> new WoodenBarrelBlockEntity(BlockPos.ZERO, WoodenDevices.woodenBarrel.defaultBlockState());
+		return () -> new WoodenBarrelBlockEntity(BlockPos.ZERO, WoodenDevices.WOODEN_BARREL.defaultBlockState());
 	}
 
 	@Override
@@ -99,7 +99,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	@Override
 	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.WoodenDevices.woodenBarrel.defaultBlockState();
+		return IEBlocks.WoodenDevices.WOODEN_BARREL.defaultBlockState();
 	}
 
 }

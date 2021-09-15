@@ -55,7 +55,7 @@ public class EarmuffsRecipe implements CraftingRecipe
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
-				final boolean isEarmuffs = stackInSlot.is(Misc.earmuffs.asItem());
+				final boolean isEarmuffs = stackInSlot.is(Misc.EARMUFFS.asItem());
 				if(earmuffs.isEmpty()&&isEarmuffs)
 					earmuffs = stackInSlot;
 				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem armorItem&&
@@ -87,7 +87,7 @@ public class EarmuffsRecipe implements CraftingRecipe
 			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
-				final boolean isEarmuffs = stackInSlot.is(Misc.earmuffs.asItem());
+				final boolean isEarmuffs = stackInSlot.is(Misc.EARMUFFS.asItem());
 				if(earmuffs.isEmpty()&&isEarmuffs)
 				{
 					earmuffs = stackInSlot;
@@ -165,7 +165,7 @@ public class EarmuffsRecipe implements CraftingRecipe
 	@Override
 	public ItemStack getResultItem()
 	{
-		return new ItemStack(Misc.earmuffs, 1);
+		return new ItemStack(Misc.EARMUFFS, 1);
 	}
 
 	@Nonnull
@@ -198,6 +198,6 @@ public class EarmuffsRecipe implements CraftingRecipe
 	@Override
 	public NonNullList<Ingredient> getIngredients()
 	{
-		return NonNullList.withSize(1, Ingredient.of(Misc.earmuffs));
+		return NonNullList.withSize(1, Ingredient.of(Misc.EARMUFFS));
 	}
 }

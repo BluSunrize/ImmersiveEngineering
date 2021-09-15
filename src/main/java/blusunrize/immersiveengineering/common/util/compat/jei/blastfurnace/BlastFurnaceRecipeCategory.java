@@ -32,7 +32,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 	{
 		super(BlastFurnaceRecipe.class, helper, UID, "gui.immersiveengineering.blastFurnace");
 		setBackground(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/blast_furnace.png"), 8, 8, 142, 65));
-		setIcon(helper.createDrawableIngredient(new ItemStack(IEBlocks.Multiblocks.blastFurnace)));
+		setIcon(helper.createDrawableIngredient(new ItemStack(IEBlocks.Multiblocks.BLAST_FURNACE)));
 	}
 
 	@Override

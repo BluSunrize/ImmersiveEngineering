@@ -19,7 +19,7 @@ public class RefineryMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/refinery"),
 				new BlockPos(2, 1, 2), new BlockPos(2, 1, 2), new BlockPos(5, 3, 3),
-				Multiblocks.refinery);
+				Multiblocks.REFINERY);
 	}
 
 	@Override

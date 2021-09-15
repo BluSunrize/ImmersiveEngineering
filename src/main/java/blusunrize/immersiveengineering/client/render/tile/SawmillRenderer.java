@@ -38,7 +38,7 @@ public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 		//Grab model
 		BlockPos blockPos = te.getBlockPos();
 		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.sawmill.get())
+		if(state.getBlock()!=Multiblocks.SAWMILL.get())
 			return;
 
 		//Outer GL Wrapping, initial translation

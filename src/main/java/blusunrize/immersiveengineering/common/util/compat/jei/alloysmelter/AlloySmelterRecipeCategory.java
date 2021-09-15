@@ -31,7 +31,7 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 	{
 		super(AlloyRecipe.class, helper, UID, "block.immersiveengineering.alloy_smelter");
 		setBackground(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/alloy_smelter.png"), 32, 16, 116, 54));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.alloySmelter));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.ALLOY_SMELTER));
 	}
 
 	@Override

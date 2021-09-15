@@ -19,7 +19,7 @@ public class AlloySmelterMultiblock extends StoneMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/alloy_smelter"),
 				new BlockPos(0, 0, 1), new BlockPos(1, 1, 1), new BlockPos(2, 2, 2),
-				Multiblocks.alloySmelter);
+				Multiblocks.ALLOY_SMELTER);
 	}
 
 	@Override

@@ -119,7 +119,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IETickabl
 						if(energyStorage.extractEnergy(energyDrain, true)==energyDrain)
 						{
 							energyStorage.extractEnergy(energyDrain, false);
-							target.addEffect(new MobEffectInstance(IEPotions.stunned.get(), 128));
+							target.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 128));
 							if(dmgsrc.apply(target))
 							{
 								EntityAccess targetAccessor = (EntityAccess)target;

@@ -35,7 +35,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 	{
 		super(BlueprintCraftingRecipe.class, helper, UID, "block.immersiveengineering.workbench");
 		setBackground(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/workbench.png"), 0, 11, 176, 54));
-		setIcon(new ItemStack(IEBlocks.WoodenDevices.workbench));
+		setIcon(new ItemStack(IEBlocks.WoodenDevices.WORKBENCH));
 	}
 
 	@Override

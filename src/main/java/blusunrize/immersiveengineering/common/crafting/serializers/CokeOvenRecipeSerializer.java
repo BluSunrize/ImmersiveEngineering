@@ -25,7 +25,7 @@ public class CokeOvenRecipeSerializer extends IERecipeSerializer<CokeOvenRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.cokeOven);
+		return new ItemStack(Multiblocks.COKE_OVEN);
 	}
 
 	@Override

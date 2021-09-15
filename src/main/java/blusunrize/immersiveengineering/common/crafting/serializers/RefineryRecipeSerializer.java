@@ -28,7 +28,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.refinery);
+		return new ItemStack(Multiblocks.REFINERY);
 	}
 
 	@Override

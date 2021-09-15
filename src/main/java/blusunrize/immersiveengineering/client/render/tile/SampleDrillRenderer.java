@@ -34,7 +34,7 @@ public class SampleDrillRenderer extends IEBlockEntityRenderer<SampleDrillBlockE
 			return;
 
 		BlockState state = tile.getLevelNonnull().getBlockState(tile.getBlockPos());
-		if(state.getBlock()!=MetalDevices.sampleDrill.get())
+		if(state.getBlock()!=MetalDevices.SAMPLE_DRILL.get())
 			return;
 
 		matrixStack.pushPose();

@@ -50,7 +50,7 @@ public class RailgunProjectiles
 		);
 
 		// Graphite
-		RailgunHandler.registerStandardProjectile(new ItemStack(IEItems.Misc.graphiteElectrode), 30, .9).setColorMap(
+		RailgunHandler.registerStandardProjectile(new ItemStack(IEItems.Misc.GRAPHITE_ELECTRODE), 30, .9).setColorMap(
 				new RailgunRenderColors(0x242424, 0x242424, 0x242424, 0x171717, 0x171717, 0x0a0a0a)
 		);
 
@@ -72,7 +72,7 @@ public class RailgunProjectiles
 		}.setColorMap(new RailgunRenderColors(0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300)));
 
 		// Sawblade
-		RailgunHandler.registerProjectile(() -> Ingredient.of(IEItems.Tools.sawblade), new RailgunHandler.IRailgunProjectile()
+		RailgunHandler.registerProjectile(() -> Ingredient.of(IEItems.Tools.SAWBLADE), new RailgunHandler.IRailgunProjectile()
 		{
 			@Override
 			public Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)

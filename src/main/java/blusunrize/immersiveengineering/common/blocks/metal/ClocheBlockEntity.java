@@ -386,7 +386,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IETickableBl
 		{
 			BlockPos pos = lowest.above(i);
 			BlockState state = getLevelNonnull().getBlockState(pos);
-			if(state.getBlock()==MetalDevices.cloche.get())
+			if(state.getBlock()==MetalDevices.CLOCHE.get())
 				getLevelNonnull().setBlockAndUpdate(pos, state.setValue(getFacingProperty(), facing));
 		}
 	}

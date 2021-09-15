@@ -57,7 +57,7 @@ public class PotionFluid extends Fluid
 	{
 		if(type==Potions.WATER||type==null)
 			return new FluidStack(Fluids.WATER, amount);
-		FluidStack stack = new FluidStack(IEFluids.fluidPotion.get(), amount);
+		FluidStack stack = new FluidStack(IEFluids.POTION.get(), amount);
 		stack.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
 		return stack;
 	}

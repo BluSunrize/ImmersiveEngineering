@@ -35,7 +35,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 	{
 		super(MetalPressRecipe.class, helper, UID, "block.immersiveengineering.metal_press");
 		setBackground(helper.createBlankDrawable(100, 50));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.metalPress));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.METAL_PRESS));
 	}
 
 	@Override

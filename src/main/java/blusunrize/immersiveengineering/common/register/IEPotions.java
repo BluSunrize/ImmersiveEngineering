@@ -43,47 +43,47 @@ public class IEPotions
 {
 	public static final DeferredRegister<MobEffect> REGISTER = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, Lib.MODID);
 
-	public static RegistryObject<MobEffect> flammable = REGISTER.register(
+	public static final RegistryObject<MobEffect> FLAMMABLE = REGISTER.register(
 			"flammable", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x8f3f1f, 0, false, 0, true, true)
 	);
-	public static RegistryObject<MobEffect> slippery = REGISTER.register(
+	public static final RegistryObject<MobEffect> SLIPPERY = REGISTER.register(
 			"slippery", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x171003, 0, false, 1, true, true)
 	);
-	public static RegistryObject<MobEffect> conductive = REGISTER.register(
+	public static final RegistryObject<MobEffect> CONDUCTIVE = REGISTER.register(
 			"conductive", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x690000, 0, false, 2, true, true)
 	);
-	public static RegistryObject<MobEffect> sticky = REGISTER.register(
+	public static final RegistryObject<MobEffect> STICKY = REGISTER.register(
 			"sticky", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x9c6800, 0, false, 3, true, true)
 					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL)
 	);
-	public static RegistryObject<MobEffect> stunned = REGISTER.register(
+	public static final RegistryObject<MobEffect> STUNNED = REGISTER.register(
 			"stunned", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 4, true, true)
 	);
-	public static RegistryObject<MobEffect> concreteFeet = REGISTER.register(
+	public static final RegistryObject<MobEffect> CONCRETE_FEET = REGISTER.register(
 			"concrete_feet", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 5, true, true)
 					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -2D, Operation.MULTIPLY_TOTAL)
 	);
-	public static RegistryObject<MobEffect> flashed = REGISTER.register(
+	public static final RegistryObject<MobEffect> FLASHED = REGISTER.register(
 			"flashed", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 6, true, true)
 					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.15, Operation.MULTIPLY_TOTAL)
 	);
 
 	static
 	{
-		IEApi.potions = ImmutableList.of(flammable, slippery, conductive, sticky, stunned, concreteFeet, flashed);
+		IEApi.potions = ImmutableList.of(FLAMMABLE, SLIPPERY, CONDUCTIVE, STICKY, STUNNED, CONCRETE_FEET, FLASHED);
 	}
 
 	public static class IEPotion extends MobEffect
 	{
 		private static final Set<Block> concrete = ImmutableSet.<Block>builder()
-				.add(StoneDecoration.concrete.get())
-				.add(StoneDecoration.concreteTile.get())
-				.add(StoneDecoration.concreteSprayed.get())
-				.add(IEBlocks.toStairs.get(StoneDecoration.concrete.getId()).get())
-				.add(StoneDecoration.concreteThreeQuarter.get())
-				.add(StoneDecoration.concreteSheet.get())
-				.add(StoneDecoration.concreteQuarter.get())
-				.add(StoneDecoration.concreteLeaded.get())
+				.add(StoneDecoration.CONCRETE.get())
+				.add(StoneDecoration.CONCRETE_TILE.get())
+				.add(StoneDecoration.CONCRETE_SPRAYED.get())
+				.add(IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()).get())
+				.add(StoneDecoration.CONCRETE_THREE_QUARTER.get())
+				.add(StoneDecoration.CONCRETE_SHEET.get())
+				.add(StoneDecoration.CONCRETE_QUARTER.get())
+				.add(StoneDecoration.CONCRETE_LEADED.get())
 				.build();
 		final int tickrate;
 		final boolean halfTickRateWIthAmplifier;
@@ -144,7 +144,7 @@ public class IEPotions
 		@Override
 		public void applyEffectTick(LivingEntity living, int amplifier)
 		{
-			if(this==IEPotions.slippery.get())
+			if(this==IEPotions.SLIPPERY.get())
 			{
 				if(living.isOnGround())
 					living.moveRelative(0, new Vec3(0, 1, 0.005));
@@ -156,13 +156,13 @@ public class IEPotions
 					living.setItemSlot(hand, ItemStack.EMPTY);
 				}
 			}
-			else if(this==IEPotions.concreteFeet.get()&&!living.level.isClientSide)
+			else if(this==IEPotions.CONCRETE_FEET.get()&&!living.level.isClientSide)
 			{
 				BlockState state = living.level.getBlockState(living.blockPosition());
 				if(!concrete.contains(state.getBlock())&&
 						concrete.stream()
 								.map(Block::getRegistryName)
-								.map(IEBlocks.toSlab::get)
+								.map(IEBlocks.TO_SLAB::get)
 								.filter(Objects::nonNull)
 								.noneMatch(b -> b.get()==state.getBlock()))
 				{

@@ -78,7 +78,7 @@ public class IEWireTypes
 				() -> Connectors.getEnergyConnector(HV_CATEGORY, false).defaultBlockState());
 		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone"),
 				new float[]{3, 8, 11, 16}, .5625, .5,
-				() -> Connectors.connectorRedstone.defaultBlockState()
+				() -> Connectors.CONNECTOR_REDSTONE.defaultBlockState()
 		);
 	}
 
@@ -148,7 +148,7 @@ public class IEWireTypes
 		@Override
 		public ItemStack getWireCoil(Connection con)
 		{
-			return new ItemStack(Misc.wireCoils.get(this), 1);
+			return new ItemStack(Misc.WIRE_COILS.get(this), 1);
 		}
 
 		@Override

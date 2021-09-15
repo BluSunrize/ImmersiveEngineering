@@ -19,7 +19,7 @@ public class MixerMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/mixer"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 1), new BlockPos(3, 3, 3),
-				Multiblocks.mixer);
+				Multiblocks.MIXER);
 	}
 
 	@Override

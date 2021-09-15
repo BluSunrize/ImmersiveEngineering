@@ -102,7 +102,7 @@ public class ChemthrowerEffects
 					return;
 				BlockHitResult brtr = (BlockHitResult)mop;
 				BlockState hit = world.getBlockState(brtr.getBlockPos());
-				if(hit.getBlock()!=StoneDecoration.concreteSprayed.get())
+				if(hit.getBlock()!=StoneDecoration.CONCRETE_SPRAYED.get())
 				{
 					BlockPos pos = brtr.getBlockPos().relative(brtr.getDirection());
 					if(!world.isEmptyBlock(pos))
@@ -125,9 +125,9 @@ public class ChemthrowerEffects
 				List<ChemthrowerShotEntity> otherProjectiles = world.getEntitiesOfClass(ChemthrowerShotEntity.class, aabb);
 				for(ChemthrowerShotEntity shot : otherProjectiles)
 					shot.discard();
-				world.setBlockAndUpdate(pos, StoneDecoration.concreteSprayed.defaultBlockState());
+				world.setBlockAndUpdate(pos, StoneDecoration.CONCRETE_SPRAYED.defaultBlockState());
 				for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, aabb))
-					living.addEffect(new MobEffectInstance(IEPotions.concreteFeet.get(), Integer.MAX_VALUE));
+					living.addEffect(new MobEffectInstance(IEPotions.CONCRETE_FEET.get(), Integer.MAX_VALUE));
 			}
 		});
 
@@ -165,9 +165,9 @@ public class ChemthrowerEffects
 			}
 		});
 
-		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable.get(), 140, 0));
+		ChemthrowerHandler.registerEffect(fluidCreosote, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE.get(), 140, 0));
 		ChemthrowerHandler.registerFlammable(fluidCreosote);
-		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.flammable.get(), 140, 1));
+		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE.get(), 140, 1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
 		/*TODO

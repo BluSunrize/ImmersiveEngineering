@@ -37,7 +37,7 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 		super(FermenterRecipe.class, helper, UID, "block.immersiveengineering.fermenter");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/fermenter.png");
 		setBackground(helper.createDrawable(background, 6, 12, 164, 59));
-		setIcon(new ItemStack(IEBlocks.Multiblocks.fermenter.get()));
+		setIcon(new ItemStack(IEBlocks.Multiblocks.FERMENTER.get()));
 		tankOverlay = helper.createDrawable(background, 179, 33, 16, 47);
 	}
 

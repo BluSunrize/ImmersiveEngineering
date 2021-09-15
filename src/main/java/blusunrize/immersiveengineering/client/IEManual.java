@@ -141,7 +141,7 @@ public class IEManual
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
-					() -> FermenterRecipe.getFluidValuesSorted(IEFluids.fluidEthanol.getStill(), true), "mB"
+					() -> FermenterRecipe.getFluidValuesSorted(IEFluids.ETHANOL.getStill(), true), "mB"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "fermenter"));
 			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 1/3d));
@@ -149,7 +149,7 @@ public class IEManual
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
-					() -> SqueezerRecipe.getFluidValuesSorted(IEFluids.fluidPlantoil.getStill(), true), "mB"
+					() -> SqueezerRecipe.getFluidValuesSorted(IEFluids.PLANTOIL.getStill(), true), "mB"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
 			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 2/3d));

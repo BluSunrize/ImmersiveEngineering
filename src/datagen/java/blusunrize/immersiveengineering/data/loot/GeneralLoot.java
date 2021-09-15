@@ -49,20 +49,20 @@ public class GeneralLoot implements Consumer<BiConsumer<ResourceLocation, LootTa
 		LootPool.Builder mainPool = LootPool.lootPool();
 		mainPool
 				.setRolls(ConstantValue.exactly(4))
-				.add(createEntry(Ingredients.stickTreated, 20, 2, 7))
-				.add(createEntry(Ingredients.stickIron, 10, 1, 4))
-				.add(createEntry(Ingredients.stickSteel, 6, 1, 4))
-				.add(createEntry(Ingredients.stickAluminum, 10, 1, 4))
-				.add(createEntry(Ingredients.hempFabric, 10, 1, 3))
-				.add(createEntry(Ingredients.coalCoke, 10, 1, 3))
-				.add(createEntry(Ingredients.componentIron, 8, 1, 2))
-				.add(createEntry(Ingredients.componentSteel, 5, 1, 1))
+				.add(createEntry(Ingredients.STICK_TREATED, 20, 2, 7))
+				.add(createEntry(Ingredients.STICK_IRON, 10, 1, 4))
+				.add(createEntry(Ingredients.STICK_STEEL, 6, 1, 4))
+				.add(createEntry(Ingredients.STICK_ALUMINUM, 10, 1, 4))
+				.add(createEntry(Ingredients.HEMP_FABRIC, 10, 1, 3))
+				.add(createEntry(Ingredients.COAL_COKE, 10, 1, 3))
+				.add(createEntry(Ingredients.COMPONENT_IRON, 8, 1, 2))
+				.add(createEntry(Ingredients.COMPONENT_STEEL, 5, 1, 1))
 				.add(createEntry(Items.IRON_INGOT, 10, 1, 4))
-				.add(createEntry(Metals.ingots.get(EnumMetals.COPPER), 10, 1, 4))
-				.add(createEntry(Metals.ingots.get(EnumMetals.ALUMINUM), 10, 1, 4))
-				.add(createEntry(Metals.nuggets.get(EnumMetals.LEAD), 9, 1, 4))
-				.add(createEntry(Metals.nuggets.get(EnumMetals.SILVER), 7, 1, 2))
-				.add(createEntry(Metals.nuggets.get(EnumMetals.NICKEL), 7, 1, 2))
+				.add(createEntry(Metals.INGOTS.get(EnumMetals.COPPER), 10, 1, 4))
+				.add(createEntry(Metals.INGOTS.get(EnumMetals.ALUMINUM), 10, 1, 4))
+				.add(createEntry(Metals.NUGGETS.get(EnumMetals.LEAD), 9, 1, 4))
+				.add(createEntry(Metals.NUGGETS.get(EnumMetals.SILVER), 7, 1, 2))
+				.add(createEntry(Metals.NUGGETS.get(EnumMetals.NICKEL), 7, 1, 2))
 				.add(createBlueprint("bullet", 4))
 				.add(createBlueprint("specialBullet", 4))
 				.add(createBlueprint("electrode", 4));
@@ -74,40 +74,40 @@ public class GeneralLoot implements Consumer<BiConsumer<ResourceLocation, LootTa
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().name("rare_shader").setRolls(ConstantValue.exactly(1))
-				.add(createEntry(Misc.shaderBag.get(Rarity.RARE), 1, 1, 1)));
+				.add(createEntry(Misc.SHADER_BAG.get(Rarity.RARE), 1, 1, 1)));
 		out.accept(rl("advancements/shader_rare"), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().name("epic_shader").setRolls(ConstantValue.exactly(1))
-				.add(createEntry(Misc.shaderBag.get(Rarity.EPIC), 1, 1, 1)));
+				.add(createEntry(Misc.SHADER_BAG.get(Rarity.EPIC), 1, 1, 1)));
 		out.accept(rl("advancements/shader_epic"), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().name("masterwork_shader").setRolls(ConstantValue.exactly(1))
-				.add(createEntry(Misc.shaderBag.get(Lib.RARITY_MASTERWORK), 1, 1, 1)));
+				.add(createEntry(Misc.SHADER_BAG.get(Lib.RARITY_MASTERWORK), 1, 1, 1)));
 		out.accept(rl("advancements/shader_masterwork"), builder);
 
 		/* Add Hero of the Village Loot Tables */
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(createEntry(Ingredients.stickTreated))
-				.add(createEntry(Ingredients.stickIron))
-				.add(createEntry(Ingredients.stickSteel)));
+				.add(createEntry(Ingredients.STICK_TREATED))
+				.add(createEntry(Ingredients.STICK_IRON))
+				.add(createEntry(Ingredients.STICK_STEEL)));
 		out.accept(rl("gameplay/hero_of_the_village/"+Villages.ENGINEER.getPath()), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(createEntry(Ingredients.componentIron))
-				.add(createEntry(Ingredients.componentSteel)));
+				.add(createEntry(Ingredients.COMPONENT_IRON))
+				.add(createEntry(Ingredients.COMPONENT_STEEL)));
 		out.accept(rl("gameplay/hero_of_the_village/"+Villages.MACHINIST.getPath()), builder);
 
 		builder = LootTable.lootTable();
 		builder.withPool(LootPool.lootPool().setRolls(ConstantValue.exactly(1))
-				.add(createEntry(Misc.faradaySuit.get(EquipmentSlot.HEAD)))
-				.add(createEntry(Misc.faradaySuit.get(EquipmentSlot.CHEST)))
-				.add(createEntry(Misc.faradaySuit.get(EquipmentSlot.LEGS)))
-				.add(createEntry(Misc.faradaySuit.get(EquipmentSlot.FEET))));
+				.add(createEntry(Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD)))
+				.add(createEntry(Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST)))
+				.add(createEntry(Misc.FARADAY_SUIT.get(EquipmentSlot.LEGS)))
+				.add(createEntry(Misc.FARADAY_SUIT.get(EquipmentSlot.FEET))));
 		out.accept(rl("gameplay/hero_of_the_village/"+Villages.ELECTRICIAN.getPath()), builder);
 
 		builder = LootTable.lootTable();
@@ -115,8 +115,8 @@ public class GeneralLoot implements Consumer<BiConsumer<ResourceLocation, LootTa
 				.add(createEntry(Items.WHITE_BANNER))
 				.add(createEntry(Items.ORANGE_BANNER))
 				.add(createEntry(Items.GREEN_BANNER))
-				.add(createEntry(Misc.shaderBag.get(Rarity.RARE)))
-				.add(createEntry(Misc.shaderBag.get(Rarity.EPIC))));
+				.add(createEntry(Misc.SHADER_BAG.get(Rarity.RARE)))
+				.add(createEntry(Misc.SHADER_BAG.get(Rarity.EPIC))));
 		out.accept(rl("gameplay/hero_of_the_village/"+Villages.OUTFITTER.getPath()), builder);
 
 		builder = LootTable.lootTable();
@@ -124,7 +124,7 @@ public class GeneralLoot implements Consumer<BiConsumer<ResourceLocation, LootTa
 				.add(createEntry(BulletHandler.getBulletItem(BulletItem.SILVER)))
 				.add(createEntry(BulletHandler.getBulletItem(BulletItem.DRAGONS_BREATH)))
 				.add(createEntry(BulletHandler.getBulletItem(BulletItem.HOMING)))
-				.add(createEntry(Misc.toolUpgrades.get(ToolUpgrade.REVOLVER_MAGAZINE))));
+				.add(createEntry(Misc.TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_MAGAZINE))));
 		out.accept(rl("gameplay/hero_of_the_village/"+Villages.GUNSMITH.getPath()), builder);
 	}
 

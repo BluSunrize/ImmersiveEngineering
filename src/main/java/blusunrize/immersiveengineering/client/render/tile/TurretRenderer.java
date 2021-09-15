@@ -44,7 +44,7 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockState state = tile.getBlockState();
-		if(state.getBlock()!=MetalDevices.turretChem.get()&&state.getBlock()!=MetalDevices.turretGun.get())
+		if(state.getBlock()!=MetalDevices.TURRET_CHEM.get()&&state.getBlock()!=MetalDevices.TURRET_GUN.get())
 			return;
 		BakedModel model = blockRenderer.getBlockModelShaper().getBlockModel(state);
 

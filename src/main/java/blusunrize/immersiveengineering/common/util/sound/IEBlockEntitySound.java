@@ -157,8 +157,8 @@ public class IEBlockEntitySound implements TickableSoundInstance
 		{
 			ItemStack head = ClientUtils.mc().player.getItemBySlot(EquipmentSlot.HEAD);
 			ItemStack earmuffs = ItemStack.EMPTY;
-			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
-				earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+			if(!head.isEmpty()&&(head.getItem()==Misc.EARMUFFS.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+				earmuffs = head.getItem()==Misc.EARMUFFS.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
 			//TODO
 			//else if(ModList.get().isLoaded("curios"))
 			//	earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);

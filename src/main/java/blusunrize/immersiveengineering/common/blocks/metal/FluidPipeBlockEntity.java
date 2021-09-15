@@ -103,11 +103,11 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	{
 		validPipeCovers.add(IETags.scaffoldingAlu::contains);
 		validPipeCovers.add(IETags.scaffoldingSteel::contains);
-		validPipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding.get());
+		validPipeCovers.add(input -> input==WoodenDecoration.TREATED_SCAFFOLDING.get());
 
 		climbablePipeCovers.add(IETags.scaffoldingAlu::contains);
 		climbablePipeCovers.add(IETags.scaffoldingSteel::contains);
-		climbablePipeCovers.add(input -> input==WoodenDecoration.treatedScaffolding.get());
+		climbablePipeCovers.add(input -> input==WoodenDecoration.TREATED_SCAFFOLDING.get());
 	}
 
 	public Object2BooleanMap<Direction> sideConfig = new Object2BooleanOpenHashMap<>();
@@ -634,7 +634,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	public VoxelShape getSelectionShape(@Nullable CollisionContext ctx)
 	{
 		//TODO needs to be a more generic check!
-		boolean hammer = ctx!=null&&ctx.isHoldingItem(Tools.hammer.get());
+		boolean hammer = ctx!=null&&ctx.isHoldingItem(Tools.HAMMER.get());
 		return SHAPES.get(new BoundingBoxKey(hammer, this));
 	}
 

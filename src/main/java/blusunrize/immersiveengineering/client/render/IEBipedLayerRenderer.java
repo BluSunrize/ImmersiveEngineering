@@ -57,8 +57,8 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 	{
 		ItemStack head = living.getItemBySlot(EquipmentSlot.HEAD);
 		ItemStack earmuffs = ItemStack.EMPTY;
-		if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
-			earmuffs = head.getItem()==Misc.earmuffs.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+		if(!head.isEmpty()&&(head.getItem()==Misc.EARMUFFS.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
+			earmuffs = head.getItem()==Misc.EARMUFFS.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
 		// TODO reenable
 		//else if(ModList.get().isLoaded("curios"))
 		//	earmuffs = CuriosCompatModule.getEarmuffs(living);
@@ -75,9 +75,9 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 		}
 
 		ItemStack chest = living.getItemBySlot(EquipmentSlot.CHEST);
-		if(!chest.isEmpty()&&(chest.getItem()==Misc.powerpack.asItem()||ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack)))
+		if(!chest.isEmpty()&&(chest.getItem()==Misc.POWERPACK.asItem()||ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack)))
 		{
-			ItemStack powerpack = chest.getItem()==Misc.powerpack.asItem()?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
+			ItemStack powerpack = chest.getItem()==Misc.POWERPACK.asItem()?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
 			addWornPowerpack(living, powerpack);
 		}
 		//TODO reenable

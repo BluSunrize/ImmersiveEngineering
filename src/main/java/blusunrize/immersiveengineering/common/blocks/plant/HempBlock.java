@@ -194,6 +194,6 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 	@Override
 	public Item asItem()
 	{
-		return Misc.hempSeeds.asItem();
+		return Misc.HEMP_SEEDS.asItem();
 	}
 }

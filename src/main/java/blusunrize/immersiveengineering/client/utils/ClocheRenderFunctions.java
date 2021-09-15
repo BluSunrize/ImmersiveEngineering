@@ -236,11 +236,11 @@ public class ClocheRenderFunctions
 			{
 				Transformation top = new Transformation(new Vector3f(0, 1, 0), null, null, null);
 				return ImmutableList.of(
-						Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new Transformation(null)),
-						Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
+						Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new Transformation(null)),
+						Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
 				);
 			}
-			return ImmutableList.of(Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new Transformation(null)));
+			return ImmutableList.of(Pair.of(Misc.HEMP_PLANT.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new Transformation(null)));
 		}
 	}
 }

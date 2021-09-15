@@ -27,7 +27,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(Multiblocks.bottlingMachine);
+		return new ItemStack(Multiblocks.BOTTLING_MACHINE);
 	}
 
 	@Override

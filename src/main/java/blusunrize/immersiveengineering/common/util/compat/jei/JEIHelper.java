@@ -68,7 +68,7 @@ public class JEIHelper implements IModPlugin
 	public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry)
 	{
 		subtypeRegistry.registerSubtypeInterpreter(
-				Misc.blueprint.asItem(),
+				Misc.BLUEPRINT.asItem(),
 				(stack, $) -> EngineersBlueprintItem.getCategory(stack)
 		);
 	}
@@ -143,24 +143,24 @@ public class JEIHelper implements IModPlugin
 	@Override
 	public void registerRecipeCatalysts(IRecipeCatalystRegistration registration)
 	{
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.assembler), VanillaRecipeCategoryUid.CRAFTING);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.ASSEMBLER), VanillaRecipeCategoryUid.CRAFTING);
 
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.cokeOven), CokeOvenRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.alloySmelter), AlloySmelterRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.blastFurnaceAdv), BlastFurnaceRecipeCategory.UID, BlastFurnaceFuelCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.blastFurnace), BlastFurnaceRecipeCategory.UID, BlastFurnaceFuelCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(MetalDevices.cloche), ClocheRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.metalPress), MetalPressRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.crusher), CrusherRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.sawmill), SawmillRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(WoodenDevices.workbench), WorkbenchRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.autoWorkbench), WorkbenchRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.squeezer), SqueezerRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.fermenter), FermenterRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.refinery), RefineryRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.arcFurnace), ArcFurnaceRecipeCategory.UID, ArcFurnaceRecipeCategory.UID_RECYCLING);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.bottlingMachine), BottlingMachineRecipeCategory.UID);
-		registration.addRecipeCatalyst(new ItemStack(Multiblocks.mixer), MixerRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.COKE_OVEN), CokeOvenRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.ALLOY_SMELTER), AlloySmelterRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.ADVANCED_BLAST_FURNACE), BlastFurnaceRecipeCategory.UID, BlastFurnaceFuelCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.BLAST_FURNACE), BlastFurnaceRecipeCategory.UID, BlastFurnaceFuelCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(MetalDevices.CLOCHE), ClocheRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.METAL_PRESS), MetalPressRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.CRUSHER), CrusherRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.SAWMILL), SawmillRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(WoodenDevices.WORKBENCH), WorkbenchRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.AUTO_WORKBENCH), WorkbenchRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.SQUEEZER), SqueezerRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.FERMENTER), FermenterRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.REFINERY), RefineryRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.ARC_FURNACE), ArcFurnaceRecipeCategory.UID, ArcFurnaceRecipeCategory.UID_RECYCLING);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.BOTTLING_MACHINE), BottlingMachineRecipeCategory.UID);
+		registration.addRecipeCatalyst(new ItemStack(Multiblocks.MIXER), MixerRecipeCategory.UID);
 	}
 
 	@Override

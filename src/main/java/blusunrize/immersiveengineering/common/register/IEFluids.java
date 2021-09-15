@@ -58,27 +58,27 @@ public class IEFluids
 	public static final List<FluidEntry> ALL_ENTRIES = new ArrayList<>();
 	public static final Set<BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
 
-	public static final FluidEntry fluidCreosote = new FluidEntry(
+	public static final FluidEntry CREOSOTE = new FluidEntry(
 			"creosote", 800, rl("block/fluid/creosote_still"), rl("block/fluid/creosote_flow")
 	);
-	public static final FluidEntry fluidPlantoil = new FluidEntry(
+	public static final FluidEntry PLANTOIL = new FluidEntry(
 			"plantoil", rl("block/fluid/plantoil_still"), rl("block/fluid/plantoil_flow")
 	);
-	public static final FluidEntry fluidEthanol = new FluidEntry(
+	public static final FluidEntry ETHANOL = new FluidEntry(
 			"ethanol", rl("block/fluid/ethanol_still"), rl("block/fluid/ethanol_flow")
 	);
-	public static final FluidEntry fluidBiodiesel = new FluidEntry(
+	public static final FluidEntry BIODIESEL = new FluidEntry(
 			"biodiesel", rl("block/fluid/biodiesel_still"), rl("block/fluid/biodiesel_flow")
 	);
-	public static final FluidEntry fluidConcrete = new FluidEntry(
+	public static final FluidEntry CONCRETE = new FluidEntry(
 			"concrete", rl("block/fluid/concrete_still"), rl("block/fluid/concrete_flow"),
 			ConcreteFluid::new, ConcreteFluid.Flowing::new, createBuilder(2400, 4000),
 			ImmutableList.of(IEProperties.INT_16)
 	);
-	public static final FluidEntry fluidHerbicide = new FluidEntry(
+	public static final FluidEntry HERBICIDE = new FluidEntry(
 			"herbicide", rl("block/fluid/herbicide_still"), rl("block/fluid/herbicide_flow")
 	);
-	public static final RegistryObject<PotionFluid> fluidPotion = REGISTER.register("potion", PotionFluid::new);
+	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
 
 	public static void fixFluidFields()
 	{

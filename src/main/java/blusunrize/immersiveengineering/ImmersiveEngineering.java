@@ -178,8 +178,8 @@ public class ImmersiveEngineering
 				||stack instanceof DrillheadItem);
 		// Molds
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
-				Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire,
-				Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking
+				Molds.MOLD_PLATE, Molds.MOLD_GEAR, Molds.MOLD_ROD, Molds.MOLD_BULLET_CASING, Molds.MOLD_WIRE,
+				Molds.MOLD_PACKING_4, Molds.MOLD_PACKING_9, Molds.MOLD_UNPACKING
 		).map(ItemLike::asItem));
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
 		ArcRecyclingChecker.allowItemTagForRecycling(IETags.plates);
@@ -306,7 +306,7 @@ public class ImmersiveEngineering
 		@Nonnull
 		public ItemStack makeIcon()
 		{
-			return new ItemStack(Misc.wireCoils.get(WireType.COPPER));
+			return new ItemStack(Misc.WIRE_COILS.get(WireType.COPPER));
 		}
 	};
 

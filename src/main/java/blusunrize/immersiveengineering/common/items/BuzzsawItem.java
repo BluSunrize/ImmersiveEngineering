@@ -126,7 +126,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	private void forEachSpareBlade(ItemStack stack, ItemStack upgrade, BiConsumer<Integer, ItemStack> onBlade)
 	{
-		if(upgrade.getItem()==Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
+		if(upgrade.getItem()==Misc.TOOL_UPGRADES.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
 			for(int i = 1; i <= 2; i++)
 			{
 				ItemStack sawblade = getSawblade(stack, i);
@@ -154,7 +154,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			for(int iUpgrade = 1; iUpgrade <= 2; iUpgrade++)
 			{
 				ItemStack upgrade = inv.getStackInSlot(iUpgrade);
-				if(upgrade.getItem()==Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
+				if(upgrade.getItem()==Misc.TOOL_UPGRADES.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
 					for(int i = 1; i <= 2; i++)
 						if(ItemNBTHelper.hasKey(upgrade, "sawblade"+i))
 						{
@@ -612,7 +612,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 
 	public static boolean hasQuiverUpgrade(ItemStack stack)
 	{
-		return Tools.buzzsaw.get().getUpgrades(stack).getBoolean("spareblades");
+		return Tools.BUZZSAW.get().getUpgrades(stack).getBoolean("spareblades");
 	}
 
 	public static boolean isSawblade(ItemStack stack)

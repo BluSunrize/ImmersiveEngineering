@@ -71,18 +71,18 @@ public class ConcreteFluid extends IEFluid
 		{
 			BlockEntry<? extends Block> solidBlock;
 			if(level >= 14)
-				solidBlock = StoneDecoration.concreteSheet;
+				solidBlock = StoneDecoration.CONCRETE_SHEET;
 			else if(level >= 10)
-				solidBlock = StoneDecoration.concreteQuarter;
+				solidBlock = StoneDecoration.CONCRETE_QUARTER;
 			else if(level >= 6)
-				solidBlock = IEBlocks.toSlab.get(StoneDecoration.concrete.getId());
+				solidBlock = IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE.getId());
 			else if(level >= 2)
-				solidBlock = StoneDecoration.concreteThreeQuarter;
+				solidBlock = StoneDecoration.CONCRETE_THREE_QUARTER;
 			else
-				solidBlock = StoneDecoration.concrete;
+				solidBlock = StoneDecoration.CONCRETE;
 			world.setBlockAndUpdate(pos, solidBlock.get().defaultBlockState());
 			for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos, pos.offset(1, 1, 1))))
-				living.addEffect(new MobEffectInstance(IEPotions.concreteFeet.get(), Integer.MAX_VALUE));
+				living.addEffect(new MobEffectInstance(IEPotions.CONCRETE_FEET.get(), Integer.MAX_VALUE));
 		}
 		else if(world.getBlockState(pos).getBlock()==entry.getBlock())
 		{

@@ -108,9 +108,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 			if(!m.isVanillaMetal())
 			{
 				if(m.shouldAddOre())
-					cubeAll(Metals.ores.get(m), modLoc("block/metal/ore_"+name));
+					cubeAll(Metals.ORES.get(m), modLoc("block/metal/ore_"+name));
 				ResourceLocation defaultStorageTexture = modLoc("block/metal/storage_"+name);
-				BlockEntry<Block> storage = Metals.storage.get(m);
+				BlockEntry<Block> storage = Metals.STORAGE.get(m);
 				String storageName = name(storage);
 				BlockModelBuilder storageModel;
 				if(m==EnumMetals.URANIUM)
@@ -128,42 +128,42 @@ public class BlockStates extends ExtendedBlockstateProvider
 				simpleBlockAndItem(storage, storageModel);
 			}
 			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+name);
-			cubeAll(Metals.sheetmetal.get(m), sheetmetalName);
-			slabFor(Metals.sheetmetal.get(m), sheetmetalName);
+			cubeAll(Metals.SHEETMETAL.get(m), sheetmetalName);
+			slabFor(Metals.SHEETMETAL.get(m), sheetmetalName);
 		}
 		for(DyeColor dye : DyeColor.values())
 		{
 			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+dye.getName());
-			cubeAll(MetalDecoration.coloredSheetmetal.get(dye), sheetmetalName);
-			slabFor(MetalDecoration.coloredSheetmetal.get(dye), sheetmetalName);
+			cubeAll(MetalDecoration.COLORED_SHEETMETAL.get(dye), sheetmetalName);
+			slabFor(MetalDecoration.COLORED_SHEETMETAL.get(dye), sheetmetalName);
 		}
-		fenceBlock(WoodenDecoration.treatedFence, TREATED_FENCE_TEXTURE);
-		fenceBlock(MetalDecoration.steelFence, STEEL_FENCE_TEXTURE);
-		fenceBlock(MetalDecoration.aluFence, ALU_FENCE_TEXTURE);
+		fenceBlock(WoodenDecoration.TREATED_FENCE, TREATED_FENCE_TEXTURE);
+		fenceBlock(MetalDecoration.STEEL_FENCE, STEEL_FENCE_TEXTURE);
+		fenceBlock(MetalDecoration.ALU_FENCE, ALU_FENCE_TEXTURE);
 
-		cubeAll(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"));
-		cubeAll(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"));
-		cubeAll(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"));
-		cubeAll(StoneDecoration.coke, rl("block/stone_decoration/coke"));
-		cubeAll(StoneDecoration.concrete, rl("block/stone_decoration/concrete"));
-		cubeAll(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"));
-		cubeAll(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"));
-		cubeAll(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"));
-		cubeAll(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"));
-		cubeAll(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"));
+		cubeAll(StoneDecoration.COKEBRICK, rl("block/stone_decoration/cokebrick"));
+		cubeAll(StoneDecoration.BLASTBRICK, rl("block/stone_decoration/blastbrick"));
+		cubeAll(StoneDecoration.BLASTBRICK_REINFORCED, rl("block/stone_decoration/blastbrick_reinforced"));
+		cubeAll(StoneDecoration.COKE, rl("block/stone_decoration/coke"));
+		cubeAll(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
+		cubeAll(StoneDecoration.CONCRETE_LEADED, rl("block/stone_decoration/concrete_leaded"));
+		cubeAll(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
+		cubeAll(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
+		cubeAll(StoneDecoration.INSULATING_GLASS, rl("block/stone_decoration/insulating_glass"));
+		cubeAll(StoneDecoration.ALLOYBRICK, rl("block/stone_decoration/alloybrick"));
 
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
-			cubeAll(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
-		cubeSideVertical(MetalDecoration.lvCoil, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"));
-		cubeSideVertical(MetalDecoration.mvCoil, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"));
-		cubeSideVertical(MetalDecoration.hvCoil, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"));
-		cubeAll(MetalDecoration.engineeringRS, rl("block/metal_decoration/redstone_engineering"));
-		cubeAll(MetalDecoration.engineeringHeavy, rl("block/metal_decoration/heavy_engineering"));
-		cubeAll(MetalDecoration.engineeringLight, rl("block/metal_decoration/light_engineering"));
-		cubeAll(MetalDecoration.generator, rl("block/metal_decoration/generator"));
-		cubeAll(MetalDecoration.radiator, rl("block/metal_decoration/radiator"));
+			cubeAll(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
+		cubeSideVertical(MetalDecoration.LV_COIL, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"));
+		cubeSideVertical(MetalDecoration.MV_COIL, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"));
+		cubeSideVertical(MetalDecoration.HV_COIL, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"));
+		cubeAll(MetalDecoration.ENGINEERING_RS, rl("block/metal_decoration/redstone_engineering"));
+		cubeAll(MetalDecoration.ENGINEERING_HEAVY, rl("block/metal_decoration/heavy_engineering"));
+		cubeAll(MetalDecoration.ENGINEERING_LIGHT, rl("block/metal_decoration/light_engineering"));
+		cubeAll(MetalDecoration.GENERATOR, rl("block/metal_decoration/generator"));
+		cubeAll(MetalDecoration.RADIATOR, rl("block/metal_decoration/radiator"));
 
-		scaffold(WoodenDecoration.treatedScaffolding, rl("block/wooden_decoration/scaffolding"), rl("block/wooden_decoration/scaffolding_top"));
+		scaffold(WoodenDecoration.TREATED_SCAFFOLDING, rl("block/wooden_decoration/scaffolding"), rl("block/wooden_decoration/scaffolding_top"));
 
 		ResourceLocation aluSide = rl("block/metal_decoration/aluminum_scaffolding");
 		ResourceLocation steelSide = rl("block/metal_decoration/steel_scaffolding");
@@ -172,43 +172,43 @@ public class BlockStates extends ExtendedBlockstateProvider
 			String suffix = "_"+type.name().toLowerCase(Locale.ENGLISH);
 			ResourceLocation aluTop = rl("block/metal_decoration/aluminum_scaffolding_top"+suffix);
 			ResourceLocation steelTop = rl("block/metal_decoration/steel_scaffolding_top"+suffix);
-			scaffold(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop);
-			scaffold(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop);
-			slabFor(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, aluSide);
-			slabFor(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, steelSide);
-			stairsFor(MetalDecoration.aluScaffolding.get(type), aluSide, aluTop, aluSide);
-			stairsFor(MetalDecoration.steelScaffolding.get(type), steelSide, steelTop, steelSide);
+			scaffold(MetalDecoration.ALU_SCAFFOLDING.get(type), aluSide, aluTop);
+			scaffold(MetalDecoration.STEEL_SCAFFOLDING.get(type), steelSide, steelTop);
+			slabFor(MetalDecoration.ALU_SCAFFOLDING.get(type), aluSide, aluTop, aluSide);
+			slabFor(MetalDecoration.STEEL_SCAFFOLDING.get(type), steelSide, steelTop, steelSide);
+			stairsFor(MetalDecoration.ALU_SCAFFOLDING.get(type), aluSide, aluTop, aluSide);
+			stairsFor(MetalDecoration.STEEL_SCAFFOLDING.get(type), steelSide, steelTop, steelSide);
 		}
-		slabFor(StoneDecoration.cokebrick, rl("block/stone_decoration/cokebrick"));
-		slabFor(StoneDecoration.blastbrick, rl("block/stone_decoration/blastbrick"));
-		slabFor(StoneDecoration.blastbrickReinforced, rl("block/stone_decoration/blastbrick_reinforced"));
-		slabFor(StoneDecoration.coke, rl("block/stone_decoration/coke"));
-		slabFor(StoneDecoration.concrete, rl("block/stone_decoration/concrete"));
-		slabFor(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"));
-		slabFor(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"));
-		slabFor(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"));
-		slabFor(StoneDecoration.insulatingGlass, rl("block/stone_decoration/insulating_glass"));
-		slabFor(StoneDecoration.alloybrick, rl("block/stone_decoration/alloybrick"));
+		slabFor(StoneDecoration.COKEBRICK, rl("block/stone_decoration/cokebrick"));
+		slabFor(StoneDecoration.BLASTBRICK, rl("block/stone_decoration/blastbrick"));
+		slabFor(StoneDecoration.BLASTBRICK_REINFORCED, rl("block/stone_decoration/blastbrick_reinforced"));
+		slabFor(StoneDecoration.COKE, rl("block/stone_decoration/coke"));
+		slabFor(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
+		slabFor(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
+		slabFor(StoneDecoration.CONCRETE_LEADED, rl("block/stone_decoration/concrete_leaded"));
+		slabFor(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
+		slabFor(StoneDecoration.INSULATING_GLASS, rl("block/stone_decoration/insulating_glass"));
+		slabFor(StoneDecoration.ALLOYBRICK, rl("block/stone_decoration/alloybrick"));
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
-			slabFor(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
+			slabFor(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
 
-		stairsFor(StoneDecoration.hempcrete, rl("block/stone_decoration/hempcrete"));
-		stairsFor(StoneDecoration.concrete, rl("block/stone_decoration/concrete"));
-		stairsFor(StoneDecoration.concreteTile, rl("block/stone_decoration/concrete_tile"));
-		stairsFor(StoneDecoration.concreteLeaded, rl("block/stone_decoration/concrete_leaded"));
+		stairsFor(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
+		stairsFor(StoneDecoration.CONCRETE, rl("block/stone_decoration/concrete"));
+		stairsFor(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
+		stairsFor(StoneDecoration.CONCRETE_LEADED, rl("block/stone_decoration/concrete_leaded"));
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
-			stairsFor(WoodenDecoration.treatedWood.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
+			stairsFor(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
 
-		postBlock(WoodenDecoration.treatedPost, rl("block/wooden_decoration/post"));
-		postBlock(MetalDecoration.steelPost, rl("block/metal_decoration/steel_post"));
-		postBlock(MetalDecoration.aluPost, rl("block/metal_decoration/aluminum_post"));
+		postBlock(WoodenDecoration.TREATED_POST, rl("block/wooden_decoration/post"));
+		postBlock(MetalDecoration.STEEL_POST, rl("block/metal_decoration/steel_post"));
+		postBlock(MetalDecoration.ALU_POST, rl("block/metal_decoration/aluminum_post"));
 
-		simpleBlock(Multiblocks.bucketWheel.get(), emptyWithParticles("block/bucket_wheel", "block/multiblocks/bucket_wheel"));
-		simpleBlock(MetalDevices.fluidPipe.get(), ieObj("block/metal_device/fluid_pipe.obj.ie"));
+		simpleBlock(Multiblocks.BUCKET_WHEEL.get(), emptyWithParticles("block/bucket_wheel", "block/multiblocks/bucket_wheel"));
+		simpleBlock(MetalDevices.FLUID_PIPE.get(), ieObj("block/metal_device/fluid_pipe.obj.ie"));
 
-		turret(MetalDevices.turretChem, ieObj("block/metal_device/chem_turret.obj.ie"));
-		turret(MetalDevices.turretGun, ieObj("block/metal_device/gun_turret.obj.ie"));
-		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.chutes.entrySet())
+		turret(MetalDevices.TURRET_CHEM, ieObj("block/metal_device/chem_turret.obj.ie"));
+		turret(MetalDevices.TURRET_GUN, ieObj("block/metal_device/gun_turret.obj.ie"));
+		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.CHUTES.entrySet())
 		{
 			ModelFile model = ieObj("block/metal_device/chute_"+chute.getKey().tagName(), rl("block/metal_device/chute.obj.ie"))
 					.texture("texture", rl("block/metal/sheetmetal_"+chute.getKey().tagName()))
@@ -216,15 +216,15 @@ public class BlockStates extends ExtendedBlockstateProvider
 			simpleBlock(chute.getValue().get(), model);
 		}
 
-		simpleBlock(Misc.fakeLight.get(), EMPTY_MODEL);
+		simpleBlock(Misc.FAKE_LIGHT.get(), EMPTY_MODEL);
 
-		createMultistateSingleModel(WoodenDevices.windmill, emptyWithParticles(
+		createMultistateSingleModel(WoodenDevices.WINDMILL, emptyWithParticles(
 				"block/windmill", "block/wooden_device/windmill"
 		));
-		createMultistateSingleModel(WoodenDevices.watermill, emptyWithParticles(
+		createMultistateSingleModel(WoodenDevices.WATERMILL, emptyWithParticles(
 				"block/watermill", "block/wooden_device/watermill"
 		));
-		createMultistateSingleModel(MetalDecoration.lantern,
+		createMultistateSingleModel(MetalDecoration.LANTERN,
 				new ConfiguredModel(ieObj("block/lantern.obj.ie")));
 
 		{
@@ -237,9 +237,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 					"metal_ladder_steel",
 					rl("block/metal_decoration/steel_scaffolding_open"),
 					rl("block/metal_decoration/steel_scaffolding"));
-			BlockEntry<MetalLadderBlock> steel = MetalDecoration.metalLadder.get(CoverType.STEEL);
-			BlockEntry<MetalLadderBlock> alu = MetalDecoration.metalLadder.get(CoverType.ALU);
-			BlockEntry<MetalLadderBlock> none = MetalDecoration.metalLadder.get(CoverType.NONE);
+			BlockEntry<MetalLadderBlock> steel = MetalDecoration.METAL_LADDER.get(CoverType.STEEL);
+			BlockEntry<MetalLadderBlock> alu = MetalDecoration.METAL_LADDER.get(CoverType.ALU);
+			BlockEntry<MetalLadderBlock> none = MetalDecoration.METAL_LADDER.get(CoverType.NONE);
 			createDirectionalBlock(none, IEProperties.FACING_HORIZONTAL, noneModel);
 			createDirectionalBlock(alu, IEProperties.FACING_HORIZONTAL, aluModel);
 			createDirectionalBlock(steel, IEProperties.FACING_HORIZONTAL, steelModel);
@@ -247,18 +247,18 @@ public class BlockStates extends ExtendedBlockstateProvider
 			itemModel(steel, steelModel);
 		}
 
-		createWallmount(WoodenDevices.treatedWallmount, rl("block/wooden_device/wallmount"));
+		createWallmount(WoodenDevices.TREATED_WALLMOUNT, rl("block/wooden_device/wallmount"));
 		{
 			ModelFile turntableModel = models().cubeBottomTop("turntable",
 					modLoc("block/wooden_device/turntable"),
 					modLoc("block/wooden_device/turntable_bottom"),
 					modLoc("block/wooden_device/turntable_top")
 			);
-			createRotatedBlock(WoodenDevices.turntable, s -> turntableModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
-			itemModel(WoodenDevices.turntable, turntableModel);
+			createRotatedBlock(WoodenDevices.TURNTABLE, s -> turntableModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
+			itemModel(WoodenDevices.TURNTABLE, turntableModel);
 		}
-		createWallmount(MetalDecoration.aluWallmount, rl("block/metal_decoration/aluminum_wallmount"));
-		createWallmount(MetalDecoration.steelWallmount, rl("block/metal_decoration/steel_wallmount"));
+		createWallmount(MetalDecoration.ALU_WALLMOUNT, rl("block/metal_decoration/aluminum_wallmount"));
+		createWallmount(MetalDecoration.STEEL_WALLMOUNT, rl("block/metal_decoration/steel_wallmount"));
 		{
 			ModelFile steelModel = ieObj("block/slope.obj.ie")
 					.texture("texture", modLoc("block/metal_decoration/steel_scaffolding"))
@@ -268,33 +268,33 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.texture("texture", modLoc("block/metal_decoration/aluminum_scaffolding"))
 					.texture("particle", modLoc("block/metal_decoration/aluminum_scaffolding"))
 					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
-			createMultistateSingleModel(MetalDecoration.slopeSteel, new ConfiguredModel(steelModel));
-			itemModel(MetalDecoration.slopeSteel, steelModel);
-			createMultistateSingleModel(MetalDecoration.slopeAlu, new ConfiguredModel(aluModel));
-			itemModel(MetalDecoration.slopeAlu, aluModel);
+			createMultistateSingleModel(MetalDecoration.STEEL_SLOPE, new ConfiguredModel(steelModel));
+			itemModel(MetalDecoration.STEEL_SLOPE, steelModel);
+			createMultistateSingleModel(MetalDecoration.ALU_SLOPE, new ConfiguredModel(aluModel));
+			itemModel(MetalDecoration.ALU_SLOPE, aluModel);
 		}
 
-		createRotatedBlock(StoneDecoration.coresample, map -> obj("block/coresample.obj"),
+		createRotatedBlock(StoneDecoration.CORESAMPLE, map -> obj("block/coresample.obj"),
 				ImmutableList.of());
 		ResourceLocation concreteTexture = rl("block/stone_decoration/concrete");
-		simpleBlockAndItem(StoneDecoration.concreteSheet, models().carpet("concrete_sheet", concreteTexture));
-		simpleBlockAndItem(StoneDecoration.concreteQuarter, quarter("concrete_quarter", concreteTexture));
-		simpleBlockAndItem(StoneDecoration.concreteThreeQuarter, threeQuarter("concrete_three_quarter", concreteTexture));
-		simpleBlock(StoneDecoration.concreteSprayed.get(), obj("block/sprayed_concrete.obj"));
+		simpleBlockAndItem(StoneDecoration.CONCRETE_SHEET, models().carpet("concrete_sheet", concreteTexture));
+		simpleBlockAndItem(StoneDecoration.CONCRETE_QUARTER, quarter("concrete_quarter", concreteTexture));
+		simpleBlockAndItem(StoneDecoration.CONCRETE_THREE_QUARTER, threeQuarter("concrete_three_quarter", concreteTexture));
+		simpleBlock(StoneDecoration.CONCRETE_SPRAYED.get(), obj("block/sprayed_concrete.obj"));
 
-		createRotatedBlock(WoodenDevices.craftingTable, state -> obj("block/wooden_device/craftingtable.obj"),
+		createRotatedBlock(WoodenDevices.CRAFTING_TABLE, state -> obj("block/wooden_device/craftingtable.obj"),
 				ImmutableList.of());
-		cubeAll(WoodenDevices.crate, modLoc("block/wooden_device/crate"));
-		cubeAll(WoodenDevices.reinforcedCrate, modLoc("block/wooden_device/reinforced_crate"));
+		cubeAll(WoodenDevices.CRATE, modLoc("block/wooden_device/crate"));
+		cubeAll(WoodenDevices.REINFORCED_CRATE, modLoc("block/wooden_device/reinforced_crate"));
 		{
 			ModelFile gunpowderModel = models().cubeBottomTop(
 					"gunpowder_barrel", rl("block/wooden_device/gunpowder_barrel"),
 					rl("block/wooden_device/barrel_up_none"), rl("block/wooden_device/gunpowder_barrel_top")
 			);
-			createMultistateSingleModel(WoodenDevices.gunpowderBarrel, new ConfiguredModel(gunpowderModel));
-			itemModel(WoodenDevices.gunpowderBarrel, gunpowderModel);
+			createMultistateSingleModel(WoodenDevices.GUNPOWDER_BARREL, new ConfiguredModel(gunpowderModel));
+			itemModel(WoodenDevices.GUNPOWDER_BARREL, gunpowderModel);
 		}
-		simpleBlockAndItem(WoodenDevices.sorter, createRouterModel(rl("block/wooden_device/sorter"),
+		simpleBlockAndItem(WoodenDevices.SORTER, createRouterModel(rl("block/wooden_device/sorter"),
 				"router"));
 		{
 			ModelFile batcherModel = models().cubeBottomTop("item_batcher",
@@ -302,32 +302,32 @@ public class BlockStates extends ExtendedBlockstateProvider
 					modLoc("block/wooden_device/item_batcher_in"),
 					modLoc("block/wooden_device/item_batcher_out")
 			);
-			createRotatedBlock(WoodenDevices.itemBatcher, s -> batcherModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
-			itemModel(WoodenDevices.itemBatcher, batcherModel);
+			createRotatedBlock(WoodenDevices.ITEM_BATCHER, s -> batcherModel, IEProperties.FACING_ALL, ImmutableList.of(), -90, 0);
+			itemModel(WoodenDevices.ITEM_BATCHER, batcherModel);
 		}
-		simpleBlockAndItem(WoodenDevices.fluidSorter, createRouterModel(rl("block/wooden_device/fluid_sorter"),
+		simpleBlockAndItem(WoodenDevices.FLUID_SORTER, createRouterModel(rl("block/wooden_device/fluid_sorter"),
 				"fluid_router"));
-		simpleBlockAndItem(WoodenDevices.woodenBarrel,
+		simpleBlockAndItem(WoodenDevices.WOODEN_BARREL,
 				models().getBuilder("wooden_devices/barrel")
 						.customLoader(SideConfigBuilder::begin)
 						.type(Type.VERTICAL)
 						.baseName(modLoc("block/wooden_device/barrel"))
 						.end()
 		);
-		createRotatedBlock(WoodenDevices.logicUnit, state -> ieObj("block/wooden_device/logic_unit.obj.ie"), ImmutableList.of());
+		createRotatedBlock(WoodenDevices.LOGIC_UNIT, state -> ieObj("block/wooden_device/logic_unit.obj.ie"), ImmutableList.of());
 
-		createRotatedBlock(Cloth.curtain,
+		createRotatedBlock(Cloth.STRIP_CURTAIN,
 				state -> new ExistingModelFile(rl(
 						state.getSetStates().get(StripCurtainBlock.CEILING_ATTACHED)==Boolean.FALSE?
 								"block/stripcurtain":
 								"block/stripcurtain_middle"
 				), existingFileHelper),
 				ImmutableList.of(StripCurtainBlock.CEILING_ATTACHED));
-		cubeAll(Cloth.cushion, modLoc("block/cushion"));
-		createMultistateSingleModel(Cloth.shaderBanner, EMPTY_MODEL);
-		createMultistateSingleModel(Cloth.shaderBannerWall, EMPTY_MODEL);
+		cubeAll(Cloth.CUSHION, modLoc("block/cushion"));
+		createMultistateSingleModel(Cloth.SHADER_BANNER, EMPTY_MODEL);
+		createMultistateSingleModel(Cloth.SHADER_BANNER_WALL, EMPTY_MODEL);
 
-		simpleBlockAndItem(MetalDevices.barrel,
+		simpleBlockAndItem(MetalDevices.BARREL,
 				models().getBuilder("metal_devices/barrel")
 						.customLoader(SideConfigBuilder::begin)
 						.type(Type.VERTICAL)
@@ -335,10 +335,10 @@ public class BlockStates extends ExtendedBlockstateProvider
 						.end());
 
 		for(Entry<BlockEntry<? extends GenericEntityBlock<? extends CapacitorBlockEntity>>, String> cap : ImmutableMap.of(
-				MetalDevices.capacitorCreative, "creative",
-				MetalDevices.capacitorLV, "lv",
-				MetalDevices.capacitorMV, "mv",
-				MetalDevices.capacitorHV, "hv"
+				MetalDevices.CAPACITOR_CREATIVE, "creative",
+				MetalDevices.CAPACITOR_LV, "lv",
+				MetalDevices.CAPACITOR_MV, "mv",
+				MetalDevices.CAPACITOR_HV, "hv"
 		).entrySet())
 		{
 			ModelFile model = models().getBuilder("block/metal_device/capacitor_"+cap.getValue())
@@ -354,7 +354,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.type(Type.ALL_SAME_TEXTURE)
 					.baseName(modLoc("block/metal_device/fluid_placer"))
 					.end();
-			simpleBlockAndItem(MetalDevices.fluidPlacer, model);
+			simpleBlockAndItem(MetalDevices.FLUID_PLACER, model);
 		}
 		{
 			ModelFile furnaceHeaterOn = models().withExistingParent("furnace_heater_on", rl("block/ie_six_sides_overlay_all_but_one"))
@@ -365,13 +365,13 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.texture("block_all", rl("block/metal_device/furnace_heater"))
 					.texture("block_north", rl("block/metal_device/furnace_heater_socket"))
 					.texture("overlay_all", rl("block/metal_device/furnace_heater_overlay"));
-			createRotatedBlock(MetalDevices.furnaceHeater, props -> {
+			createRotatedBlock(MetalDevices.FURNACE_HEATER, props -> {
 				if(props.getSetStates().get(IEProperties.ACTIVE)==Boolean.TRUE)
 					return furnaceHeaterOn;
 				else
 					return furnaceHeaterOff;
 			}, IEProperties.FACING_ALL, ImmutableList.of(IEProperties.ACTIVE), 180, 0);
-			itemModel(MetalDevices.furnaceHeater, furnaceHeaterOff);
+			itemModel(MetalDevices.FURNACE_HEATER, furnaceHeaterOff);
 		}
 		createPump();
 		{
@@ -383,11 +383,11 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.texture("west", modLoc("block/metal_device/dynamo_side"))
 					.texture("east", modLoc("block/metal_device/dynamo_side"))
 					.texture("particle", modLoc("block/metal_device/dynamo_side"));
-			createRotatedBlock(MetalDevices.dynamo, state -> kineticDynamo,
+			createRotatedBlock(MetalDevices.DYNAMO, state -> kineticDynamo,
 					ImmutableList.of());
-			itemModel(MetalDevices.dynamo, kineticDynamo);
+			itemModel(MetalDevices.DYNAMO, kineticDynamo);
 		}
-		simpleBlockAndItem(MetalDevices.thermoelectricGen, new ConfiguredModel(models().cubeBottomTop(
+		simpleBlockAndItem(MetalDevices.THERMOELECTRIC_GEN, new ConfiguredModel(models().cubeBottomTop(
 				"thermoelectric_generator",
 				modLoc("block/metal_device/thermoelectric_gen_side"),
 				modLoc("block/metal_device/thermoelectric_gen_bottom"),
@@ -398,11 +398,11 @@ public class BlockStates extends ExtendedBlockstateProvider
 					RenderType.solid(), modLoc("block/metal_device/charging_station.obj"),
 					RenderType.translucent(), modLoc("block/metal_device/charging_station_glass.obj")
 			), modLoc("block/metal_device/charging_station.obj"));
-			createRotatedBlock(MetalDevices.chargingStation,
+			createRotatedBlock(MetalDevices.CHARGING_STATION,
 					state -> full,
 					ImmutableList.of()
 			);
-			itemModel(MetalDevices.chargingStation, full);
+			itemModel(MetalDevices.CHARGING_STATION, full);
 		}
 		for(BlockEntry<ConveyorBlock> b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(
@@ -412,7 +412,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 							.end()
 			));
 		createHemp();
-		simpleBlock(Misc.pottedHemp.get(), models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
+		simpleBlock(Misc.POTTED_HEMP.get(), models().withExistingParent("potted_hemp", mcLoc("block/flower_pot_cross"))
 				.texture("plant", new ResourceLocation(ImmersiveEngineering.MODID, "block/hemp/potted")));
 		createSawdust();
 
@@ -424,7 +424,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.texture("particle", stillTexture);
 			getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
 		}
-		createRotatedBlock(MetalDevices.toolbox, state -> obj("block/toolbox.obj"),
+		createRotatedBlock(MetalDevices.TOOLBOX, state -> obj("block/toolbox.obj"),
 				ImmutableList.of());
 	}
 
@@ -459,7 +459,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 
 	private void createPump()
 	{
-		VariantBlockStateBuilder builder = getVariantBuilder(MetalDevices.fluidPump.get());
+		VariantBlockStateBuilder builder = getVariantBuilder(MetalDevices.FLUID_PUMP.get());
 		builder.partialState()
 				.with(IEProperties.MULTIBLOCKSLAVE, true)
 				.setModels(new ConfiguredModel(obj("block/metal_device/fluid_pump.obj"),
@@ -609,7 +609,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 
 	private void createHemp()
 	{
-		VariantBlockStateBuilder builder = getVariantBuilder(Misc.hempPlant.get());
+		VariantBlockStateBuilder builder = getVariantBuilder(Misc.HEMP_PLANT.get());
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
 			ModelFile model = models().withExistingParent("block/hemp/"+g.getSerializedName(),
@@ -623,7 +623,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 
 	private void createSawdust()
 	{
-		VariantBlockStateBuilder builder = getVariantBuilder(WoodenDecoration.sawdust.get());
+		VariantBlockStateBuilder builder = getVariantBuilder(WoodenDecoration.SAWDUST.get());
 		ResourceLocation sawdustTexture = new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_decoration/sawdust");
 		ModelFile singleModel = null;
 		for(int layer : SawdustBlock.LAYERS.getPossibleValues())
@@ -654,7 +654,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 					.with(SawdustBlock.LAYERS, layer)
 					.setModels(new ConfiguredModel(model));
 		}
-		itemModel(WoodenDecoration.sawdust, singleModel);
+		itemModel(WoodenDecoration.SAWDUST, singleModel);
 	}
 
 	private ModelFile createRouterModel(ResourceLocation baseTexName, String outName)

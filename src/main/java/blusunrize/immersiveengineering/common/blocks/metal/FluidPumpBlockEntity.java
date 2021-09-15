@@ -517,7 +517,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IETickabl
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 1; i++)
-			if(Utils.isBlockAt(level, getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), MetalDevices.fluidPump.get()))
+			if(Utils.isBlockAt(level, getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), MetalDevices.FLUID_PUMP.get()))
 				level.removeBlock(getBlockPos().offset(0, isDummy()?-1: 0, 0).offset(0, i, 0), false);
 	}
 

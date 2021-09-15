@@ -19,7 +19,7 @@ public class AutoWorkbenchMultiblock extends IETemplateMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/auto_workbench"),
 				new BlockPos(1, 1, 1), new BlockPos(1, 1, 2), new BlockPos(3, 2, 3),
-				Multiblocks.autoWorkbench);
+				Multiblocks.AUTO_WORKBENCH);
 	}
 
 	@Override

@@ -136,7 +136,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 						inventory.get(OUTPUT_SLOT).grow(recipe.output.copy().getCount());
 					else if(inventory.get(OUTPUT_SLOT).isEmpty())
 						inventory.set(OUTPUT_SLOT, recipe.output.copy());
-					this.tank.fill(new FluidStack(IEFluids.fluidCreosote.getStill(), recipe.creosoteOutput), FluidAction.EXECUTE);
+					this.tank.fill(new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput), FluidAction.EXECUTE);
 				}
 				processMax = 0;
 				setActive(false);

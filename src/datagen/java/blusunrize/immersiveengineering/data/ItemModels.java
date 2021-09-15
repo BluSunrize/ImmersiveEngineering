@@ -74,81 +74,81 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private void createMetalModels()
 	{
-		cubeBottomTop(name(MetalDevices.barrel),
+		cubeBottomTop(name(MetalDevices.BARREL),
 				rl("block/metal_device/barrel_side"),
 				rl("block/metal_device/barrel_up_none"),
 				rl("block/metal_device/barrel_up_none"));
 
-		obj(MetalDecoration.steelPost, modLoc("block/wooden_device/wooden_post_inv.obj"))
+		obj(MetalDecoration.STEEL_POST, modLoc("block/wooden_device/wooden_post_inv.obj"))
 				.texture("post", modLoc("block/metal_decoration/steel_post"))
 				.transforms(modLoc("item/post"));
-		obj(MetalDecoration.aluPost, modLoc("block/wooden_device/wooden_post_inv.obj"))
+		obj(MetalDecoration.ALU_POST, modLoc("block/wooden_device/wooden_post_inv.obj"))
 				.texture("post", modLoc("block/metal_decoration/aluminum_post"))
 				.transforms(modLoc("item/post"));
 
-		obj(MetalDevices.cloche, rl("block/metal_device/cloche.obj.ie"))
+		obj(MetalDevices.CLOCHE, rl("block/metal_device/cloche.obj.ie"))
 				.transforms(rl("item/cloche"));
-		obj(MetalDevices.teslaCoil, rl("block/metal_device/teslacoil.obj"))
+		obj(MetalDevices.TESLA_COIL, rl("block/metal_device/teslacoil.obj"))
 				.transforms(rl("item/teslacoil"));
-		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.chutes.entrySet())
+		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.CHUTES.entrySet())
 			obj(chute.getValue(), rl("block/metal_device/chute_inv.obj"))
 					.texture("texture", modLoc("block/metal/sheetmetal_"+chute.getKey().tagName()))
 					.transforms(rl("item/block"));
 
 
-		obj(MetalDevices.turretChem, rl("block/metal_device/chem_turret_inv.obj"))
+		obj(MetalDevices.TURRET_CHEM, rl("block/metal_device/chem_turret_inv.obj"))
 				.transforms(rl("item/turret"));
-		obj(MetalDevices.turretGun, rl("block/metal_device/gun_turret_inv.obj"))
+		obj(MetalDevices.TURRET_GUN, rl("block/metal_device/gun_turret_inv.obj"))
 				.transforms(rl("item/turret"));
-		obj(MetalDevices.fluidPipe, rl("block/metal_device/fluid_pipe.obj.ie"))
+		obj(MetalDevices.FLUID_PIPE, rl("block/metal_device/fluid_pipe.obj.ie"))
 				.transforms(rl("item/block"));
-		obj(MetalDevices.fluidPump, rl("block/metal_device/fluid_pump_inv.obj"))
+		obj(MetalDevices.FLUID_PUMP, rl("block/metal_device/fluid_pump_inv.obj"))
 				.transforms(rl("item/fluid_pump"));
 
 
-		obj(MetalDevices.blastFurnacePreheater, rl("block/metal_device/blastfurnace_preheater.obj"))
+		obj(MetalDevices.BLAST_FURNACE_PREHEATER, rl("block/metal_device/blastfurnace_preheater.obj"))
 				.transforms(rl("item/blastfurnace_preheater"));
-		obj(MetalDevices.sampleDrill, rl("block/metal_device/core_drill.obj"))
+		obj(MetalDevices.SAMPLE_DRILL, rl("block/metal_device/core_drill.obj"))
 				.transforms(rl("item/sampledrill"));
-		obj(Multiblocks.metalPress, rl("block/metal_multiblock/metal_press.obj"))
+		obj(Multiblocks.METAL_PRESS, rl("block/metal_multiblock/metal_press.obj"))
 				.transforms(rl("item/multiblock"));
-		obj(Multiblocks.crusher, rl("block/metal_multiblock/crusher.obj"))
+		obj(Multiblocks.CRUSHER, rl("block/metal_multiblock/crusher.obj"))
 				.transforms(rl("item/crusher"));
-		obj(Multiblocks.sawmill, rl("block/metal_multiblock/sawmill.obj"))
+		obj(Multiblocks.SAWMILL, rl("block/metal_multiblock/sawmill.obj"))
 				.transforms(rl("item/crusher"));
-		obj(Multiblocks.tank, rl("block/metal_multiblock/tank.obj"))
+		obj(Multiblocks.TANK, rl("block/metal_multiblock/tank.obj"))
 				.transforms(rl("item/tank"));
-		obj(Multiblocks.silo, rl("block/metal_multiblock/silo.obj"))
+		obj(Multiblocks.SILO, rl("block/metal_multiblock/silo.obj"))
 				.transforms(rl("item/silo"));
-		obj(Multiblocks.assembler, rl("block/metal_multiblock/assembler.obj"))
+		obj(Multiblocks.ASSEMBLER, rl("block/metal_multiblock/assembler.obj"))
 				.transforms(rl("item/multiblock"));
-		obj(Multiblocks.autoWorkbench, rl("block/metal_multiblock/auto_workbench.obj"))
+		obj(Multiblocks.AUTO_WORKBENCH, rl("block/metal_multiblock/auto_workbench.obj"))
 				.transforms(rl("item/multiblock"));
-		obj(Multiblocks.bottlingMachine, rl("block/metal_multiblock/bottling_machine.obj.ie"))
+		obj(Multiblocks.BOTTLING_MACHINE, rl("block/metal_multiblock/bottling_machine.obj.ie"))
 				.transforms(rl("item/bottling_machine"));
-		obj(Multiblocks.squeezer, rl("block/metal_multiblock/squeezer.obj"))
+		obj(Multiblocks.SQUEEZER, rl("block/metal_multiblock/squeezer.obj"))
 				.transforms(rl("item/multiblock"));
-		obj(Multiblocks.fermenter, rl("block/metal_multiblock/fermenter.obj"))
+		obj(Multiblocks.FERMENTER, rl("block/metal_multiblock/fermenter.obj"))
 				.transforms(rl("item/multiblock"));
-		obj(Multiblocks.refinery, rl("block/metal_multiblock/refinery.obj"))
+		obj(Multiblocks.REFINERY, rl("block/metal_multiblock/refinery.obj"))
 				.transforms(rl("item/refinery"));
-		obj(Multiblocks.dieselGenerator, rl("block/metal_multiblock/diesel_generator.obj"))
+		obj(Multiblocks.DIESEL_GENERATOR, rl("block/metal_multiblock/diesel_generator.obj"))
 				.transforms(rl("item/crusher"));
-		obj(Multiblocks.excavator, rl("block/metal_multiblock/excavator.obj"))
+		obj(Multiblocks.EXCAVATOR, rl("block/metal_multiblock/excavator.obj"))
 				.transforms(rl("item/excavator"));
-		obj(Multiblocks.bucketWheel, rl("block/metal_multiblock/bucket_wheel.obj.ie"))
+		obj(Multiblocks.BUCKET_WHEEL, rl("block/metal_multiblock/bucket_wheel.obj.ie"))
 				.transforms(rl("item/bucket_wheel"));
-		obj(Multiblocks.arcFurnace, rl("block/metal_multiblock/arc_furnace.obj"))
+		obj(Multiblocks.ARC_FURNACE, rl("block/metal_multiblock/arc_furnace.obj"))
 				.transforms(rl("item/arc_furnace"));
-		obj(Multiblocks.lightningrod, rl("block/metal_multiblock/lightningrod.obj"))
+		obj(Multiblocks.LIGHTNING_ROD, rl("block/metal_multiblock/lightningrod.obj"))
 				.transforms(rl("item/multiblock"));
-		obj(Multiblocks.mixer, rl("block/metal_multiblock/mixer.obj"))
+		obj(Multiblocks.MIXER, rl("block/metal_multiblock/mixer.obj"))
 				.transforms(rl("item/multiblock"));
 
-		obj(MetalDecoration.aluWallmount, modLoc("block/wooden_device/wallmount.obj"))
+		obj(MetalDecoration.ALU_WALLMOUNT, modLoc("block/wooden_device/wallmount.obj"))
 				.texture("texture", modLoc("block/metal_decoration/aluminum_wallmount"))
 				.transforms(modLoc("item/wallmount"));
-		obj(MetalDecoration.steelWallmount, modLoc("block/wooden_device/wallmount.obj"))
+		obj(MetalDecoration.STEEL_WALLMOUNT, modLoc("block/wooden_device/wallmount.obj"))
 				.texture("texture", modLoc("block/metal_decoration/steel_wallmount"))
 				.transforms(modLoc("item/wallmount"));
 
@@ -157,132 +157,132 @@ public class ItemModels extends TRSRItemModelProvider
 					.type(b.get().getType())
 					.end();
 
-		obj(MetalDecoration.lantern, modLoc("block/lantern_inventory.obj"))
+		obj(MetalDecoration.LANTERN, modLoc("block/lantern_inventory.obj"))
 				.transforms(modLoc("item/block"));
 		addLayeredItemModel(
-				MetalDecoration.metalLadder.get(CoverType.NONE).asItem(),
+				MetalDecoration.METAL_LADDER.get(CoverType.NONE).asItem(),
 				rl("block/metal_decoration/metal_ladder")
 		);
 	}
 
 	private void createWoodenModels()
 	{
-		obj(WoodenDevices.craftingTable, rl("block/wooden_device/craftingtable.obj"))
+		obj(WoodenDevices.CRAFTING_TABLE, rl("block/wooden_device/craftingtable.obj"))
 				.transforms(rl("item/block"));
 
-		cubeBottomTop(name(WoodenDevices.woodenBarrel),
+		cubeBottomTop(name(WoodenDevices.WOODEN_BARREL),
 				rl("block/wooden_device/barrel_side"),
 				rl("block/wooden_device/barrel_up_none"),
 				rl("block/wooden_device/barrel_up_none"));
 
-		obj(WoodenDecoration.treatedPost, modLoc("block/wooden_device/wooden_post_inv.obj"))
+		obj(WoodenDecoration.TREATED_POST, modLoc("block/wooden_device/wooden_post_inv.obj"))
 				.texture("post", modLoc("block/wooden_decoration/post"))
 				.transforms(modLoc("item/post"));
-		obj(WoodenDevices.workbench, rl("block/wooden_device/workbench.obj.ie"))
+		obj(WoodenDevices.WORKBENCH, rl("block/wooden_device/workbench.obj.ie"))
 				.transforms(rl("item/workbench"));
-		obj(WoodenDevices.circuitTable, rl("block/wooden_device/circuit_table.obj"))
+		obj(WoodenDevices.CIRCUIT_TABLE, rl("block/wooden_device/circuit_table.obj"))
 				.transforms(rl("item/workbench"));
-		obj(WoodenDevices.logicUnit, rl("block/wooden_device/logic_unit.obj.ie"))
+		obj(WoodenDevices.LOGIC_UNIT, rl("block/wooden_device/logic_unit.obj.ie"))
 				.transforms(rl("item/block"));
 
-		obj(WoodenDevices.treatedWallmount, modLoc("block/wooden_device/wallmount.obj"))
+		obj(WoodenDevices.TREATED_WALLMOUNT, modLoc("block/wooden_device/wallmount.obj"))
 				.texture("texture", modLoc("block/wooden_device/wallmount"))
 				.transforms(modLoc("item/wallmount"));
 
-		obj(WoodenDevices.watermill, modLoc("block/wooden_device/watermill.obj.ie"))
+		obj(WoodenDevices.WATERMILL, modLoc("block/wooden_device/watermill.obj.ie"))
 				.transforms(modLoc("item/watermill"));
-		obj(WoodenDevices.windmill, modLoc("block/wooden_device/windmill.obj.ie"))
+		obj(WoodenDevices.WINDMILL, modLoc("block/wooden_device/windmill.obj.ie"))
 				.transforms(modLoc("item/windmill"));
 	}
 
 	private void createClothModels()
 	{
-		withExistingParent(name(Cloth.curtain), rl("block/stripcurtain"))
+		withExistingParent(name(Cloth.STRIP_CURTAIN), rl("block/stripcurtain"))
 				.transforms(rl("item/stripcurtain"));
-		obj(Cloth.balloon, rl("block/balloon.obj.ie"))
+		obj(Cloth.BALLOON, rl("block/balloon.obj.ie"))
 				.transforms(rl("item/block"));
 	}
 
 	private void createItemModels()
 	{
-		addItemModels("metal_", IEItems.Metals.ingots.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
-		addItemModels("metal_", IEItems.Metals.nuggets.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
-		addItemModels("metal_", IEItems.Metals.dusts.values().toArray(new ItemLike[0]));
-		addItemModels("metal_", IEItems.Metals.plates.values().toArray(new ItemLike[0]));
-		for(ItemLike bag : IEItems.Misc.shaderBag.values())
+		addItemModels("metal_", IEItems.Metals.INGOTS.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
+		addItemModels("metal_", IEItems.Metals.NUGGETS.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
+		addItemModels("metal_", IEItems.Metals.DUSTS.values().toArray(new ItemLike[0]));
+		addItemModels("metal_", IEItems.Metals.PLATES.values().toArray(new ItemLike[0]));
+		for(ItemLike bag : IEItems.Misc.SHADER_BAG.values())
 			addItemModel("shader_bag", bag);
 
-		addItemModels("material_", Ingredients.stickTreated, Ingredients.stickIron, Ingredients.stickSteel, Ingredients.stickAluminum,
-				Ingredients.hempFiber, Ingredients.hempFabric, Ingredients.coalCoke, Ingredients.slag,
-				Ingredients.componentIron, Ingredients.componentSteel, Ingredients.waterwheelSegment, Ingredients.windmillBlade, Ingredients.windmillSail,
-				Ingredients.woodenGrip, Ingredients.gunpartBarrel, Ingredients.gunpartDrum, Ingredients.gunpartHammer,
-				Ingredients.dustCoke, Ingredients.dustHopGraphite, Ingredients.ingotHopGraphite,
-				Ingredients.wireCopper, Ingredients.wireElectrum, Ingredients.wireAluminum, Ingredients.wireSteel, Ingredients.wireLead,
-				Ingredients.dustSaltpeter, Ingredients.dustSulfur, Ingredients.dustWood, Ingredients.electronTube, Ingredients.circuitBoard);
+		addItemModels("material_", Ingredients.STICK_TREATED, Ingredients.STICK_IRON, Ingredients.STICK_STEEL, Ingredients.STICK_ALUMINUM,
+				Ingredients.HEMP_FIBER, Ingredients.HEMP_FABRIC, Ingredients.COAL_COKE, Ingredients.SLAG,
+				Ingredients.COMPONENT_IRON, Ingredients.COMPONENT_STEEL, Ingredients.WATERWHEEL_SEGMENT, Ingredients.WINDMILL_BLADE, Ingredients.WINDMILL_SAIL,
+				Ingredients.WOODEN_GRIP, Ingredients.GUNPART_BARREL, Ingredients.GUNPART_DRUM, Ingredients.GUNPART_HAMMER,
+				Ingredients.DUST_COKE, Ingredients.DUST_HOP_GRAPHITE, Ingredients.INGOT_HOP_GRAPHITE,
+				Ingredients.WIRE_COPPER, Ingredients.WIRE_ELECTRUM, Ingredients.WIRE_ALUMINUM, Ingredients.WIRE_STEEL, Ingredients.WIRE_LEAD,
+				Ingredients.DUST_SALTPETER, Ingredients.DUST_SULFUR, Ingredients.DUST_WOOD, Ingredients.ELECTRON_TUBE, Ingredients.CIRCUIT_BOARD);
 
 		addItemModels(
-				"tool_", mcLoc("item/handheld"), Tools.hammer, Tools.wirecutter, Tools.screwdriver,
-				Tools.manual, Tools.steelPick, Tools.steelShovel, Tools.steelAxe, Tools.steelHoe, Tools.steelSword
+				"tool_", mcLoc("item/handheld"), Tools.HAMMER, Tools.WIRECUTTER, Tools.SCREWDRIVER,
+				Tools.MANUAL, Tools.STEEL_PICK, Tools.STEEL_SHOVEL, Tools.STEEL_AXE, Tools.STEEL_HOE, Tools.STEEL_SWORD
 		);
-		addItemModels("", Tools.surveyTools);
-		addItemModels("", IEItems.Misc.wireCoils.values().toArray(new ItemLike[0]));
-		addItemModels("", IEItems.Misc.graphiteElectrode);
-		addItemModels("", IEItems.Misc.toolUpgrades.values().toArray(new ItemLike[0]));
-		addItemModels("", Molds.moldPlate, Molds.moldGear, Molds.moldRod, Molds.moldBulletCasing, Molds.moldWire, Molds.moldPacking4, Molds.moldPacking9, Molds.moldUnpacking);
-		addItemModels("bullet_", Ingredients.emptyCasing, Ingredients.emptyShell);
-		for(Entry<IBullet, ItemRegObject<BulletItem>> bullet : Weapons.bullets.entrySet())
+		addItemModels("", Tools.SURVEY_TOOLS);
+		addItemModels("", IEItems.Misc.WIRE_COILS.values().toArray(new ItemLike[0]));
+		addItemModels("", IEItems.Misc.GRAPHITE_ELECTRODE);
+		addItemModels("", IEItems.Misc.TOOL_UPGRADES.values().toArray(new ItemLike[0]));
+		addItemModels("", Molds.MOLD_PLATE, Molds.MOLD_GEAR, Molds.MOLD_ROD, Molds.MOLD_BULLET_CASING, Molds.MOLD_WIRE, Molds.MOLD_PACKING_4, Molds.MOLD_PACKING_9, Molds.MOLD_UNPACKING);
+		addItemModels("bullet_", Ingredients.EMPTY_CASING, Ingredients.EMPTY_SHELL);
+		for(Entry<IBullet, ItemRegObject<BulletItem>> bullet : Weapons.BULLETS.entrySet())
 			addLayeredItemModel(bullet.getValue().asItem(), bullet.getKey().getTextures());
-		addItemModels("", IEItems.Misc.faradaySuit.values());
-		addItemModels("", IEItems.Tools.steelArmor.values());
-		addItemModel("blueprint", IEItems.Misc.blueprint);
-		addItemModel("seed_hemp", IEItems.Misc.hempSeeds);
-		addItemModel("drillhead_iron", Tools.drillheadIron);
-		addItemModel("drillhead_steel", Tools.drillheadSteel);
-		addItemModels("", Tools.sawblade, Tools.rockcutter);
-		addItemModels("", IEItems.Misc.maintenanceKit);
-		addItemModels("", IEItems.Minecarts.cartWoodenCrate, IEItems.Minecarts.cartReinforcedCrate, IEItems.Minecarts.cartWoodenBarrel, IEItems.Minecarts.cartMetalBarrel);
-		addItemModels("", IEItems.Misc.logicCircuitBoard);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternHammer);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternBevels);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternOrnate);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternTreatedWood);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternWindmill);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternWolfR);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternWolfL);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.bannerPatternWolf);
-		addItemModels("", IEItems.Misc.iconBirthday, IEItems.Misc.iconLucky, IEItems.Misc.iconDrillbreak, IEItems.Misc.iconRavenholm);
+		addItemModels("", IEItems.Misc.FARADAY_SUIT.values());
+		addItemModels("", IEItems.Tools.STEEL_ARMOR.values());
+		addItemModel("blueprint", IEItems.Misc.BLUEPRINT);
+		addItemModel("seed_hemp", IEItems.Misc.HEMP_SEEDS);
+		addItemModel("drillhead_iron", Tools.DRILLHEAD_IRON);
+		addItemModel("drillhead_steel", Tools.DRILLHEAD_STEEL);
+		addItemModels("", Tools.SAWBLADE, Tools.ROCKCUTTER);
+		addItemModels("", IEItems.Misc.MAINTENANCE_KIT);
+		addItemModels("", IEItems.Minecarts.CART_WOODEN_CRATE, IEItems.Minecarts.CART_REINFORCED_CRATE, IEItems.Minecarts.CART_WOODEN_BARREL, IEItems.Minecarts.CART_METAL_BARREL);
+		addItemModels("", IEItems.Misc.LOGIC_CIRCUIT_BOARD);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.HAMMER);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.BEVELS);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.ORNATE);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.TREATED_WOOD);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.WINDMILL);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.WOLF_R);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.WOLF_L);
+		addItemModel("banner_pattern", IEItems.BannerPatterns.WOLF);
+		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY, IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM);
 
-		obj(Tools.voltmeter, rl("item/voltmeter.obj"))
+		obj(Tools.VOLTMETER, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));
-		obj(Tools.toolbox, rl("item/toolbox.obj"))
+		obj(Tools.TOOLBOX, rl("item/toolbox.obj"))
 				.transforms(rl("item/toolbox"));
-		ieObj(IEItems.Misc.shield, rl("item/shield.obj.ie"))
+		ieObj(IEItems.Misc.SHIELD, rl("item/shield.obj.ie"))
 				.transforms(rl("item/shield"));
-		ieObjBuilder(Weapons.revolver, modLoc("item/revolver.obj.ie"))
+		ieObjBuilder(Weapons.REVOLVER, modLoc("item/revolver.obj.ie"))
 				.dynamic(true)
 				.end()
 				.transforms(modLoc("item/revolver"));
-		ieObjBuilder(Tools.drill, modLoc("item/drill/drill_diesel.obj.ie"))
+		ieObjBuilder(Tools.DRILL, modLoc("item/drill/drill_diesel.obj.ie"))
 				.dynamic(true)
 				.end()
 				.transforms(modLoc("item/drill"));
-		ieObjBuilder(Tools.buzzsaw, modLoc("item/buzzsaw_diesel.obj.ie"))
+		ieObjBuilder(Tools.BUZZSAW, modLoc("item/buzzsaw_diesel.obj.ie"))
 				.dynamic(true)
 				.end()
 				.transforms(modLoc("item/buzzsaw"));
-		ieObj(Weapons.railgun, modLoc("item/railgun.obj.ie"))
+		ieObj(Weapons.RAILGUN, modLoc("item/railgun.obj.ie"))
 				.transforms(modLoc("item/railgun"));
-		ieObj(Weapons.chemthrower, modLoc("item/chemthrower.obj.ie"))
+		ieObj(Weapons.CHEMTHROWER, modLoc("item/chemthrower.obj.ie"))
 				.transforms(modLoc("item/chemthrower"));
 
 		IEFluids.ALL_ENTRIES.forEach(this::createBucket);
-		withExistingParent(name(Misc.potionBucket), forgeLoc("item/bucket"))
+		withExistingParent(name(Misc.POTION_BUCKET), forgeLoc("item/bucket"))
 				.customLoader(SpecialModelBuilder.forLoader(Loader.LOADER_NAME))
 				.end();
 
-		ieObj(IEItems.Misc.fluorescentTube, rl("item/fluorescent_tube.obj.ie"))
+		ieObj(IEItems.Misc.FLUORESCENT_TUBE, rl("item/fluorescent_tube.obj.ie"))
 				.transforms(modLoc("item/fluorescent_tube"));
-		getBuilder(IEItems.Misc.coresample)
+		getBuilder(IEItems.Misc.CORESAMPLE)
 				.customLoader(SpecialModelBuilder.forLoader(CoresampleLoader.LOCATION));
 	}
 
@@ -295,18 +295,18 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private void createStoneModels()
 	{
-		obj(StoneDecoration.concreteSprayed, rl("block/sprayed_concrete.obj"))
+		obj(StoneDecoration.CONCRETE_SPRAYED, rl("block/sprayed_concrete.obj"))
 				.transforms(rl("item/block"));
-		getBuilder(Multiblocks.alloySmelter)
+		getBuilder(Multiblocks.ALLOY_SMELTER)
 				.parent(blockStates.alloySmelterOn)
 				.transforms(rl("item/alloysmelter"));
-		getBuilder(Multiblocks.blastFurnace)
+		getBuilder(Multiblocks.BLAST_FURNACE)
 				.parent(blockStates.blastFurnaceOn)
 				.transforms(rl("item/blastfurnace"));
-		getBuilder(Multiblocks.cokeOven)
+		getBuilder(Multiblocks.COKE_OVEN)
 				.parent(blockStates.cokeOvenOn)
 				.transforms(rl("item/blastfurnace"));
-		obj(Multiblocks.blastFurnaceAdv, rl("block/blastfurnace_advanced.obj"))
+		obj(Multiblocks.ADVANCED_BLAST_FURNACE, rl("block/blastfurnace_advanced.obj"))
 				.transforms(rl("item/multiblock"));
 	}
 
@@ -331,33 +331,33 @@ public class ItemModels extends TRSRItemModelProvider
 		obj(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), rl("block/connector/relay_hv.obj"))
 				.transforms(rl("item/connector"));
 
-		obj(Connectors.connectorRedstone, rl("block/connector/connector_redstone.obj.ie"))
+		obj(Connectors.CONNECTOR_REDSTONE, rl("block/connector/connector_redstone.obj.ie"))
 				.transforms(rl("item/connector"));
-		obj(Connectors.connectorProbe, rl("block/connector/connector_probe.obj.ie"))
+		obj(Connectors.CONNECTOR_PROBE, rl("block/connector/connector_probe.obj.ie"))
 				.transforms(rl("item/connector"));
-		obj(Connectors.connectorBundled, rl("block/connector/connector_bundled.obj"))
+		obj(Connectors.CONNECTOR_BUNDLED, rl("block/connector/connector_bundled.obj"))
 				.transforms(rl("item/connector"));
-		obj(Connectors.connectorStructural, rl("block/connector/connector_structural.obj.ie"))
+		obj(Connectors.CONNECTOR_STRUCTURAL, rl("block/connector/connector_structural.obj.ie"))
 				.transforms(rl("item/connector"));
-		obj(Connectors.transformer, rl("block/connector/transformer_mv_left.obj"))
+		obj(Connectors.TRANSFORMER, rl("block/connector/transformer_mv_left.obj"))
 				.transforms(rl("item/transformer"));
-		obj(Connectors.transformerHV, rl("block/connector/transformer_hv_left.obj"))
+		obj(Connectors.TRANSFORMER_HV, rl("block/connector/transformer_hv_left.obj"))
 				.transforms(rl("item/transformer"));
-		obj(Connectors.redstoneBreaker, rl("block/connector/redstone_breaker.obj.ie"))
+		obj(Connectors.REDSTONE_BREAKER, rl("block/connector/redstone_breaker.obj.ie"))
 				.transforms(rl("item/redstone_breaker"));
-		obj(Connectors.currentTransformer, rl("block/connector/e_meter.obj"))
+		obj(Connectors.CURRENT_TRANSFORMER, rl("block/connector/e_meter.obj"))
 				.transforms(rl("item/current_transformer"));
-		obj(Connectors.breakerswitch, rl("block/connector/breaker_switch_off.obj.ie"))
+		obj(Connectors.BREAKER_SWITCH, rl("block/connector/breaker_switch_off.obj.ie"))
 				.transforms(rl("item/breaker_switch"));
-		obj(MetalDevices.razorWire, rl("block/razor_wire.obj.ie"))
+		obj(MetalDevices.RAZOR_WIRE, rl("block/razor_wire.obj.ie"))
 				.transforms(rl("item/block"));
 
-		obj(MetalDevices.electricLantern, rl("block/metal_device/e_lantern.obj"))
+		obj(MetalDevices.ELECTRIC_LANTERN, rl("block/metal_device/e_lantern.obj"))
 				.texture("texture", modLoc("block/metal_device/electric_lantern"))
 				.transforms(rl("item/block"));
-		obj(MetalDevices.floodlight, rl("block/metal_device/floodlight.obj.ie"))
+		obj(MetalDevices.FLOODLIGHT, rl("block/metal_device/floodlight.obj.ie"))
 				.transforms(rl("item/floodlight"));
-		getBuilder(Connectors.feedthrough)
+		getBuilder(Connectors.FEEDTHROUGH)
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION));
 	}
 
@@ -406,7 +406,7 @@ public class ItemModels extends TRSRItemModelProvider
 	{
 		String name = metal.tagName();
 		if(metal.shouldAddOre())
-			cubeAll(name(Metals.ores.get(metal)), rl("block/metal/ore_"+name));
+			cubeAll(name(Metals.ORES.get(metal)), rl("block/metal/ore_"+name));
 		if(!metal.isVanillaMetal())
 		{
 			ResourceLocation defaultName = rl("block/metal/storage_"+name);
@@ -414,13 +414,13 @@ public class ItemModels extends TRSRItemModelProvider
 			{
 				ResourceLocation side = rl("block/metal/storage_"+name+"_side");
 				ResourceLocation top = rl("block/metal/storage_"+name+"_top");
-				cubeBottomTop(name(Metals.storage.get(metal)), side, top, top);
+				cubeBottomTop(name(Metals.STORAGE.get(metal)), side, top, top);
 			}
 			else
-				cubeAll(name(Metals.storage.get(metal)), defaultName);
+				cubeAll(name(Metals.STORAGE.get(metal)), defaultName);
 		}
 		ResourceLocation sheetmetalName = rl("block/metal/sheetmetal_"+name);
-		cubeAll(name(Metals.sheetmetal.get(metal)), sheetmetalName);
+		cubeAll(name(Metals.SHEETMETAL.get(metal)), sheetmetalName);
 
 	}
 

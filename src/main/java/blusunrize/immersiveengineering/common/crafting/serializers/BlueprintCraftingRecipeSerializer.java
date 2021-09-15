@@ -27,7 +27,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	@Override
 	public ItemStack getIcon()
 	{
-		return new ItemStack(WoodenDevices.workbench);
+		return new ItemStack(WoodenDevices.WORKBENCH);
 	}
 
 	@Override
