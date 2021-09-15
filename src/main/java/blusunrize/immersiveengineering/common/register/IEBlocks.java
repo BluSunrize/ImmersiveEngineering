@@ -78,7 +78,7 @@ public final class IEBlocks
 					.sound(SoundType.WOOD)
 					.strength(2, 5)
 					.isViewBlocking((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NOT_SOLID = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	private static final Supplier<Properties> STANDARD_WOOD_PROPERTIES_NO_OCCLUSION = () -> STANDARD_WOOD_PROPERTIES_NO_OVERLAY.get().noOcclusion();
 	private static final Supplier<Properties> DEFAULT_METAL_PROPERTIES = () -> Block.Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
 			.requiresCorrectToolForDrops()
@@ -89,7 +89,7 @@ public final class IEBlocks
 					.strength(3, 15)
 					.requiresCorrectToolForDrops()
 					.isViewBlocking((state, blockReader, pos) -> false);
-	private static final Supplier<Properties> METAL_PROPERTIES_NOT_SOLID = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
+	private static final Supplier<Properties> METAL_PROPERTIES_NO_OCCLUSION = () -> METAL_PROPERTIES_NO_OVERLAY.get().noOcclusion();
 
 	private IEBlocks()
 	{
@@ -159,55 +159,55 @@ public final class IEBlocks
 		);
 
 		public static final BlockEntry<MetalMultiblockBlock<MetalPressBlockEntity>> metalPress = new BlockEntry<>(
-				"metal_press", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.METAL_PRESS, p)
+				"metal_press", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.METAL_PRESS, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<CrusherBlockEntity>> crusher = new BlockEntry<>(
-				"crusher", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.CRUSHER, p)
+				"crusher", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.CRUSHER, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<SawmillBlockEntity>> sawmill = new BlockEntry<>(
-				"sawmill", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.SAWMILL, p)
+				"sawmill", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.SAWMILL, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<SheetmetalTankBlockEntity>> tank = new BlockEntry<>(
-				"tank", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.SHEETMETAL_TANK, p)
+				"tank", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.SHEETMETAL_TANK, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<SiloBlockEntity>> silo = new BlockEntry<>(
-				"silo", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.SILO, p)
+				"silo", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.SILO, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<AssemblerBlockEntity>> assembler = new BlockEntry<>(
-				"assembler", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.ASSEMBLER, p)
+				"assembler", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.ASSEMBLER, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<AutoWorkbenchBlockEntity>> autoWorkbench = new BlockEntry<>(
-				"auto_workbench", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.AUTO_WORKBENCH, p)
+				"auto_workbench", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.AUTO_WORKBENCH, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<BottlingMachineBlockEntity>> bottlingMachine = new BlockEntry<>(
-				"bottling_machine", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.BOTTLING_MACHINE, p)
+				"bottling_machine", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.BOTTLING_MACHINE, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<SqueezerBlockEntity>> squeezer = new BlockEntry<>(
-				"squeezer", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.SQUEEZER, p)
+				"squeezer", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.SQUEEZER, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<FermenterBlockEntity>> fermenter = new BlockEntry<>(
-				"fermenter", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.FERMENTER, p)
+				"fermenter", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.FERMENTER, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<RefineryBlockEntity>> refinery = new BlockEntry<>(
-				"refinery", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.REFINERY, p)
+				"refinery", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.REFINERY, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<DieselGeneratorBlockEntity>> dieselGenerator = new BlockEntry<>(
-				"diesel_generator", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.DIESEL_GENERATOR, p)
+				"diesel_generator", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.DIESEL_GENERATOR, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<ExcavatorBlockEntity>> excavator = new BlockEntry<>(
-				"excavator", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.EXCAVATOR, p)
+				"excavator", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.EXCAVATOR, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<BucketWheelBlockEntity>> bucketWheel = new BlockEntry<>(
-				"bucket_wheel", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.BUCKET_WHEEL, p)
+				"bucket_wheel", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.BUCKET_WHEEL, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<ArcFurnaceBlockEntity>> arcFurnace = new BlockEntry<>(
-				"arc_furnace", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.ARC_FURNACE, p)
+				"arc_furnace", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.ARC_FURNACE, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<LightningrodBlockEntity>> lightningrod = new BlockEntry<>(
-				"lightning_rod", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.LIGHTNING_ROD, p)
+				"lightning_rod", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.LIGHTNING_ROD, p)
 		);
 		public static final BlockEntry<MetalMultiblockBlock<MixerBlockEntity>> mixer = new BlockEntry<>(
-				"mixer", METAL_PROPERTIES_NO_OVERLAY, p -> new MetalMultiblockBlock<>(IEBlockEntities.MIXER, p)
+				"mixer", METAL_PROPERTIES_NO_OCCLUSION, p -> new MetalMultiblockBlock<>(IEBlockEntities.MIXER, p)
 		);
 
 		private static void init()
@@ -276,7 +276,7 @@ public final class IEBlocks
 	{
 		public static Map<TreatedWoodStyles, BlockEntry<IEBaseBlock>> treatedWood = new EnumMap<>(TreatedWoodStyles.class);
 		public static final BlockEntry<FenceBlock> treatedFence = BlockEntry.fence("treated_fence", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
-		public static final BlockEntry<ScaffoldingBlock> treatedScaffolding = BlockEntry.scaffolding("treated_scaffold", STANDARD_WOOD_PROPERTIES_NOT_SOLID);
+		public static final BlockEntry<ScaffoldingBlock> treatedScaffolding = BlockEntry.scaffolding("treated_scaffold", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION);
 		public static final BlockEntry<PostBlock> treatedPost = BlockEntry.post("treated_post", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<SawdustBlock> sawdust = new BlockEntry<>(
 				"sawdust",
@@ -303,7 +303,7 @@ public final class IEBlocks
 	public static final class WoodenDevices
 	{
 		public static final BlockEntry<HorizontalFacingBlock<CraftingTableBlockEntity>> craftingTable = new BlockEntry<>(
-				"craftingtable", STANDARD_WOOD_PROPERTIES_NOT_SOLID, p -> new HorizontalFacingBlock<>(IEBlockEntities.CRAFTING_TABLE, p)
+				"craftingtable", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, p -> new HorizontalFacingBlock<>(IEBlockEntities.CRAFTING_TABLE, p)
 		);
 		public static final BlockEntry<DeskBlock<ModWorkbenchBlockEntity>> workbench = new BlockEntry<>(
 				"workbench", DeskBlock.PROPERTIES, p -> new DeskBlock<>(IEBlockEntities.MOD_WORKBENCH, p)
@@ -334,15 +334,15 @@ public final class IEBlocks
 				"fluid_sorter", STANDARD_WOOD_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.FLUID_SORTER, p)
 		);
 		public static final BlockEntry<WindmillBlock> windmill = new BlockEntry<>(
-				"windmill", STANDARD_WOOD_PROPERTIES_NOT_SOLID, WindmillBlock::new
+				"windmill", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WindmillBlock::new
 		);
 		public static final BlockEntry<WatermillBlock> watermill = new BlockEntry<>(
-				"watermill", STANDARD_WOOD_PROPERTIES_NOT_SOLID, WatermillBlock::new
+				"watermill", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WatermillBlock::new
 		);
 		//TODO move to deco?
 		public static final BlockEntry<WallmountBlock> treatedWallmount = BlockEntry.wallmount("treated_wallmount", STANDARD_WOOD_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<HorizontalFacingBlock<LogicUnitBlockEntity>> logicUnit = new BlockEntry<>(
-				"logic_unit", STANDARD_WOOD_PROPERTIES_NOT_SOLID, p -> new HorizontalFacingBlock<>(IEBlockEntities.LOGIC_UNIT, p)
+				"logic_unit", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, p -> new HorizontalFacingBlock<>(IEBlockEntities.LOGIC_UNIT, p)
 		);
 
 		private static void init()
@@ -391,14 +391,14 @@ public final class IEBlocks
 			for(CoverType type : CoverType.values())
 				metalLadder.put(type, new BlockEntry<>(
 						"metal_ladder_"+type.name().toLowerCase(Locale.US),
-						METAL_PROPERTIES_NOT_SOLID,
+						METAL_PROPERTIES_NO_OCCLUSION,
 						p -> new MetalLadderBlock(type, p)
 				));
 			for(MetalScaffoldingType type : MetalScaffoldingType.values())
 			{
 				String name = type.name().toLowerCase(Locale.ENGLISH);
-				BlockEntry<ScaffoldingBlock> steelBlock = BlockEntry.scaffolding("steel_scaffolding_"+name, METAL_PROPERTIES_NOT_SOLID);
-				BlockEntry<ScaffoldingBlock> aluBlock = BlockEntry.scaffolding("alu_scaffolding_"+name, METAL_PROPERTIES_NOT_SOLID);
+				BlockEntry<ScaffoldingBlock> steelBlock = BlockEntry.scaffolding("steel_scaffolding_"+name, METAL_PROPERTIES_NO_OCCLUSION);
+				BlockEntry<ScaffoldingBlock> aluBlock = BlockEntry.scaffolding("alu_scaffolding_"+name, METAL_PROPERTIES_NO_OCCLUSION);
 				steelScaffolding.put(type, steelBlock);
 				aluScaffolding.put(type, aluBlock);
 				registerSlab(steelBlock);
@@ -431,13 +431,13 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<GenericEntityBlock<?>> barrel = BlockEntry.barrel("metal_barrel", true);
 		public static final BlockEntry<FluidPumpBlock> fluidPump = new BlockEntry<>(
-				"fluid_pump", METAL_PROPERTIES_NOT_SOLID, FluidPumpBlock::new
+				"fluid_pump", METAL_PROPERTIES_NO_OCCLUSION, FluidPumpBlock::new
 		);
 		public static final BlockEntry<GenericEntityBlock<FluidPlacerBlockEntity>> fluidPlacer = new BlockEntry<>(
-				"fluid_placer", METAL_PROPERTIES_NOT_SOLID, p -> new GenericEntityBlock<>(IEBlockEntities.FLUID_PLACER, p)
+				"fluid_placer", METAL_PROPERTIES_NO_OCCLUSION, p -> new GenericEntityBlock<>(IEBlockEntities.FLUID_PLACER, p)
 		);
 		public static final BlockEntry<BlastFurnacePreheaterBlock> blastFurnacePreheater = new BlockEntry<>(
-				"blastfurnace_preheater", METAL_PROPERTIES_NOT_SOLID, BlastFurnacePreheaterBlock::new
+				"blastfurnace_preheater", METAL_PROPERTIES_NO_OCCLUSION, BlastFurnacePreheaterBlock::new
 		);
 		public static final BlockEntry<FurnaceHeaterBlock> furnaceHeater = new BlockEntry<>(
 				"furnace_heater", DEFAULT_METAL_PROPERTIES, FurnaceHeaterBlock::new
@@ -455,23 +455,23 @@ public final class IEBlocks
 				"charging_station", METAL_PROPERTIES_NO_OVERLAY, p -> new HorizontalFacingBlock<>(IEBlockEntities.CHARGING_STATION, p)
 		);
 		public static final BlockEntry<FluidPipeBlock> fluidPipe = new BlockEntry<>("fluid_pipe", METAL_PROPERTIES_NO_OVERLAY, FluidPipeBlock::new);
-		public static final BlockEntry<SampleDrillBlock> sampleDrill = new BlockEntry<>("sample_drill", METAL_PROPERTIES_NOT_SOLID, SampleDrillBlock::new);
-		public static final BlockEntry<TeslaCoilBlock> teslaCoil = new BlockEntry<>("tesla_coil", METAL_PROPERTIES_NOT_SOLID, TeslaCoilBlock::new);
+		public static final BlockEntry<SampleDrillBlock> sampleDrill = new BlockEntry<>("sample_drill", METAL_PROPERTIES_NO_OCCLUSION, SampleDrillBlock::new);
+		public static final BlockEntry<TeslaCoilBlock> teslaCoil = new BlockEntry<>("tesla_coil", METAL_PROPERTIES_NO_OCCLUSION, TeslaCoilBlock::new);
 		public static final BlockEntry<FloodlightBlock> floodlight = new BlockEntry<>("floodlight", FloodlightBlock.PROPERTIES, FloodlightBlock::new);
 		public static final BlockEntry<TurretBlock<TurretChemBlockEntity>> turretChem = new BlockEntry<>(
-				"turret_chem", METAL_PROPERTIES_NOT_SOLID, p -> new TurretBlock<>(IEBlockEntities.TURRET_CHEM, p)
+				"turret_chem", METAL_PROPERTIES_NO_OCCLUSION, p -> new TurretBlock<>(IEBlockEntities.TURRET_CHEM, p)
 		);
 		public static final BlockEntry<TurretBlock<TurretGunBlockEntity>> turretGun = new BlockEntry<>(
-				"turret_gun", METAL_PROPERTIES_NOT_SOLID, p -> new TurretBlock<>(IEBlockEntities.TURRET_GUN, p)
+				"turret_gun", METAL_PROPERTIES_NO_OCCLUSION, p -> new TurretBlock<>(IEBlockEntities.TURRET_GUN, p)
 		);
-		public static final BlockEntry<ClocheBlock> cloche = new BlockEntry<>("cloche", METAL_PROPERTIES_NOT_SOLID, ClocheBlock::new);
+		public static final BlockEntry<ClocheBlock> cloche = new BlockEntry<>("cloche", METAL_PROPERTIES_NO_OCCLUSION, ClocheBlock::new);
 		public static final Map<IConveyorType<?>, BlockEntry<ConveyorBlock>> CONVEYORS = new HashMap<>();
 		public static Map<EnumMetals, BlockEntry<ChuteBlock>> chutes = new EnumMap<>(EnumMetals.class);
 
 		private static void init()
 		{
 			for(EnumMetals metal : new EnumMetals[]{EnumMetals.IRON, EnumMetals.STEEL, EnumMetals.ALUMINUM, EnumMetals.COPPER})
-				MetalDevices.chutes.put(metal, new BlockEntry<>("chute_"+metal.tagName(), METAL_PROPERTIES_NOT_SOLID, ChuteBlock::new));
+				MetalDevices.chutes.put(metal, new BlockEntry<>("chute_"+metal.tagName(), METAL_PROPERTIES_NO_OCCLUSION, ChuteBlock::new));
 
 		}
 
