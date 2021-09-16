@@ -105,11 +105,9 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 		{
 			if(shouldRenderAsActive())
 			{
-				if(Utils.RAND.nextInt(8)==0)
+				if(Utils.RAND.nextInt(8)==0&&!tank.fluids.isEmpty())
 				{
-					FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0): null;
-					if(fs!=null)
-					{
+					FluidStack fs = tank.fluids.get(0);
 						float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
 						Vec3 partPos = new Vec3(getBlockPos().getX()+.5f+getFacing().getStepX()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepX()*.5f, getBlockPos().getY()-.0625f+amount, getBlockPos().getZ()+.5f+getFacing().getStepZ()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepZ()*.5f);
 						float r = Utils.RAND.nextFloat()*.8125f;
@@ -119,7 +117,7 @@ public class MixerTileEntity extends PoweredMultiblockTileEntity<MixerTileEntity
 							ImmersiveEngineering.proxy.spawnBubbleFX(level, fs, partPos.x, partPos.y, partPos.z, 0, 0, 0);
 						else
 							ImmersiveEngineering.proxy.spawnFluidSplashFX(level, fs, partPos.x, partPos.y, partPos.z, 0, 0, 0);
-					}
+
 				}
 				animation_agitator = (animation_agitator+9)%360;
 			}

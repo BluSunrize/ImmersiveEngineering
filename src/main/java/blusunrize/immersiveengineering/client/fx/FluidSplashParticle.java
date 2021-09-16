@@ -68,7 +68,7 @@ public class FluidSplashParticle extends TextureSheetParticle
 		this.setSize(0.01F, 0.01F);
 		this.gravity = 0.06F;
 		this.lifetime = (int)(8.0D/(Math.random()*0.8D+0.2D));
-		this.quadSize = .375f;
+		this.quadSize *= .375f;
 		this.setFluidTexture(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
 	}
 
@@ -121,14 +121,14 @@ public class FluidSplashParticle extends TextureSheetParticle
 		int argb = fluid.getFluid().getAttributes().getColor(fluid);
 		this.alpha = ((argb >> 24)&255)/255f;
 		this.rCol = ((argb >> 16)&255)/255f;
-		this.rCol = ((argb >> 8&255))/255f;
-		this.rCol = (argb&255)/255f;
+		this.gCol = ((argb >> 8&255))/255f;
+		this.bCol = (argb&255)/255f;
 	}
 
 	@Override
 	public ParticleRenderType getRenderType()
 	{
-		return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+		return ParticleRenderType.TERRAIN_SHEET;
 	}
 
 	@OnlyIn(Dist.CLIENT)
