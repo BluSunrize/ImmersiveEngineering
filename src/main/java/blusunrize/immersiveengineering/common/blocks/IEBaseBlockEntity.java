@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
-import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.models.PrivateProperties;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstoneOutput;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -33,7 +33,6 @@ import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
@@ -288,22 +287,6 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	{
 		if(this.level!=null && this.level.hasChunkAt(this.worldPosition))
 			this.level.getChunkAt(this.worldPosition).markUnsaved();
-	}
-
-	@Nonnull
-	@Override
-	// Note: The line in the superclass javadoc about this being called off-thread is not actually correct, see
-	// https://github.com/MinecraftForge/MinecraftForge/commit/06a30e9f23289a45c3c58e83d84c3dee01757e2b#r36351093 and
-	// the original PR
-	public IModelData getModelData()
-	{
-		IModelData base = super.getModelData();
-		if(this instanceof IPropertyPassthrough)
-			return CombinedModelData.combine(
-					base, new SinglePropertyModelData<>(this, PrivateProperties.BLOCKENTITY_PASSTHROUGH)
-			);
-		else
-			return base;
 	}
 
 	@Override

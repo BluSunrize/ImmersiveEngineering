@@ -9,9 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
@@ -20,10 +21,10 @@ import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
+import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,23 +54,27 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
-public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, ICollisionBounds,
-		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorBlockEntity, IPropertyPassthrough,
-		IETickableBlockEntity
+public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBlockEntity
+		implements IStateBasedDirectional, ICollisionBounds, ISelectionBounds, IHammerInteraction,
+		IPlayerInteraction, IConveyorBlockEntity<T>, IPropertyPassthrough, IETickableBlockEntity
 {
-	private final IConveyorBelt conveyorBeltSubtype;
+	public static final Map<IConveyorType<?>, Supplier<BlockEntityType<?>>> BE_TYPES = new Reference2ObjectOpenHashMap<>();
 
-	public ConveyorBeltBlockEntity(ResourceLocation typeName, BlockPos pos, BlockState state)
+	private final T conveyorBeltSubtype;
+
+	public ConveyorBeltBlockEntity(IConveyorType<T> type, BlockPos pos, BlockState state)
 	{
-		super(Preconditions.checkNotNull(ConveyorHandler.getTEType(typeName), "Not TE type for "+typeName), pos, state);
-		conveyorBeltSubtype = ConveyorHandler.getConveyor(typeName, this);
+		super(Preconditions.checkNotNull(ConveyorHandler.getBEType(type), "Not BE type for "+type), pos, state);
+		conveyorBeltSubtype = ConveyorHandler.getConveyor(type, this);
 	}
 
 	@Override
 	@Nullable
-	public IConveyorBelt getConveyorSubtype()
+	public T getConveyorInstance()
 	{
 		return conveyorBeltSubtype;
 	}
@@ -153,16 +158,6 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 	{
 		if(player.isShiftKeyDown()&&conveyorBeltSubtype!=null&&conveyorBeltSubtype.changeConveyorDirection())
 		{
-//			if(transportUp)
-//			{
-//				transportUp = false;
-//				transportDown = true;
-//			}
-//			else if(transportDown)
-//				transportDown = false;
-//			else
-//				transportUp = true;
-
 			if(!level.isClientSide)
 			{
 				this.setChanged();
@@ -180,7 +175,7 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 		if(conveyorBeltSubtype!=null)
 		{
 			boolean update;
-			if(conveyorBeltSubtype.canBeDyed()&&Utils.isDye(heldItem))
+			if(conveyorBeltSubtype.getType().canBeDyed()&&Utils.isDye(heldItem))
 			{
 				DyeColor dye = Utils.getDye(heldItem);
 				update = dye!=null&&conveyorBeltSubtype.setDyeColour(dye);
@@ -217,7 +212,7 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 		return COLISIONBB;
 	}
 
-	private LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ConveyorInventoryHandler(this));
+	private final LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ConveyorInventoryHandler(this));
 
 	@Nonnull
 	@Override
@@ -236,16 +231,16 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 	}
 
 	@SubscribeEvent
-	public static void registerConveyorTEsAndBlocks(RegistryEvent.NewRegistry ev)
+	public static void registerConveyorBEsAndBlocks(RegistryEvent.NewRegistry ev)
 	{
-		for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
+		for(IConveyorType<?> type : ConveyorHandler.getConveyorTypes())
 		{
-			RegistryObject<BlockEntityType<?>> type = IEBlockEntities.REGISTER.register(
-					ConveyorHandler.getRegistryNameFor(rl).getPath(), () -> new BlockEntityType<>(
-							(pos, state) -> new ConveyorBeltBlockEntity(rl, pos, state),
-							ImmutableSet.of(ConveyorHandler.getBlock(rl)), null
+			RegistryObject<BlockEntityType<?>> beType = IEBlockEntities.REGISTER.register(
+					type.getId().getPath(), () -> new BlockEntityType<>(
+							(pos, state) -> new ConveyorBeltBlockEntity<>(type, pos, state),
+							ImmutableSet.of(ConveyorHandler.getBlock(type)), null
 					));
-			ConveyorHandler.tileEntities.put(rl, type);
+			BE_TYPES.put(type, beType);
 		}
 		MetalDevices.initConveyors();
 	}
@@ -274,7 +269,7 @@ public class ConveyorBeltBlockEntity extends IEBaseBlockEntity implements IState
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
-			if(conveyor.getConveyorSubtype().isBlocked())
+			if(conveyor.getConveyorInstance().isBlocked())
 				return stack;
 			if(!simulate)
 			{

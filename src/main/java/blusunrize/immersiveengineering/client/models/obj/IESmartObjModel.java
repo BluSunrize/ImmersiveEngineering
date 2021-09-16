@@ -216,59 +216,8 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			BakedModel model = cachedBakedItemModels.getIfPresent(comp);
 			if(model==null)
 			{
-					/*TODO
-				if(originalModel instanceof IESmartObjModel)
+				if(originalModel instanceof IESmartObjModel smrtModel)
 				{
-					IESmartObjModel newModel = (IESmartObjModel)originalModel;
-
-					ImmutableMap.Builder<String, TextureAtlasSprite> builder = ImmutableMap.builder();
-					builder.put(ModelLoader.White.LOCATION.toString(), ModelLoader.White.INSTANCE);
-					TextureAtlasSprite missing = Minecraft.getInstance().getTextureMap()
-							.getAtlasSprite(new ResourceLocation("missingno").toString());
-
-					for(String s : newModel.baseOld.getModel().getMatLib().getMaterialNames())
-					{
-						TextureAtlasSprite sprite;
-						{
-							LazyOptional<TextureAtlasSprite> tempSprite = stack.getCapability(CapabilityShader.SHADER_CAPABILITY).map(wrapper ->
-							{
-								ItemStack shader = wrapper.getShaderItem();
-								if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-								{
-									ShaderCase sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, stack, wrapper.getShaderType());
-									if(sCase!=null)
-									{
-										ResourceLocation rl = sCase.getReplacementSprite(shader, stack, s, 0);
-										return ClientUtils.getSprite(rl);
-									}
-								}
-								return missing;
-							})
-									.filter(t -> t!=missing);
-							if(tempSprite.isPresent())
-								sprite = tempSprite.orElse(missing);
-							else
-								sprite = null;
-						}
-						if(sprite!=null&&stack.getItem() instanceof IOBJModelCallback)
-							sprite = ((IOBJModelCallback)stack.getItem()).getTextureReplacement(stack, s);
-						if(sprite==null)
-							sprite = Minecraft.getInstance().getTextureMap().getAtlasSprite(
-									newModel.baseOld.getModel().getMatLib().getMaterial(s).getTexture().getTextureLocation().toString());
-						builder.put(s, sprite);
-					}
-					builder.put("missingno", missing);
-					IESmartObjModel bakedModel = new IESmartObjModel(newModel.baseModel, baseBaked, newModel.baseOld.getModel(),
-							newModel.state, newModel.getFormat(), builder.build(), transformationMap, isDynamic);
-					bakedModel.tempStack = stack;
-					bakedModel.tempEntity = entity;
-					model = bakedModel;
-				}
-				else
-					 */
-				if(originalModel instanceof IESmartObjModel)
-				{
-					IESmartObjModel smrtModel = (IESmartObjModel)originalModel;
 
 					model = new IESmartObjModel(smrtModel.baseModel, smrtModel.baseBaked, smrtModel.owner, smrtModel.bakery,
 							smrtModel.spriteGetter, smrtModel.sprite,
@@ -359,9 +308,9 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		if(blockState!=null&&modelData.hasProperty(IOBJModelCallback.PROPERTY))
 			cacheKey = modelData.getData(IOBJModelCallback.PROPERTY).getCacheKey(blockState);
 		if(addAnimationAndTex)
-			return new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), visibility, tex, cacheKey);
+			return new RenderCacheKey(blockState, sprite, MinecraftForgeClient.getRenderLayer(), visibility, tex, cacheKey);
 		else
-			return new RenderCacheKey(blockState, MinecraftForgeClient.getRenderLayer(), cacheKey);
+			return new RenderCacheKey(blockState, sprite, MinecraftForgeClient.getRenderLayer(), cacheKey);
 	}
 
 	public List<BakedQuad> getQuads(BlockState blockState, IEObjState visibility, Map<String, String> tex,

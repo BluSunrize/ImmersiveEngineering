@@ -8,18 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
+import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -28,14 +23,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
-import java.util.List;
 import java.util.Map;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -43,20 +34,24 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 /**
  * @author BluSunrize - 06.05.2017
  */
-public class RedstoneConveyor extends BasicConveyor
+public class RedstoneConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "redstone");
-	public static final String MODEL_NAME = "conveyor_redstone_panel";
-
-	@OnlyIn(Dist.CLIENT)
-	public static DynamicModel MODEL_PANEL;
-	public static ResourceLocation texture_panel = new ResourceLocation("immersiveengineering:block/conveyor/redstone");
+	public static final IConveyorType<RedstoneConveyor> TYPE = new BasicConveyorType<>(
+			NAME, false, true, RedstoneConveyor::new, () -> new RedstoneConveyorRender(texture_on, texture_off), false
+	);
 
 	private boolean panelRight = true;
 
 	public RedstoneConveyor(BlockEntity tile)
 	{
 		super(tile);
+	}
+
+	@Override
+	public IConveyorType<RedstoneConveyor> getType()
+	{
+		return TYPE;
 	}
 
 	/* Prevent Diagonals */
@@ -129,37 +124,8 @@ public class RedstoneConveyor extends BasicConveyor
 		return ret;
 	}
 
-	/* Rendering */
-
-	@Override
-	public String getModelCacheKey()
+	public boolean isPanelRight()
 	{
-		String key = super.getModelCacheKey();
-		key += "p"+this.panelRight;
-		return key;
-	}
-
-	@Override
-	public boolean renderWall(Direction facing, int wall)
-	{
-		if((panelRight&&wall==1)||(!panelRight&&wall==0))
-			return true;
-		return super.renderWall(facing, wall);
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(List<BakedQuad> baseModel)
-	{
-		BakedModel model = MODEL_PANEL.get();
-		if(model!=null)
-		{
-			String[] parts = (getTile()!=null&&!isActive())?new String[]{"panel", "lamp"}: new String[]{"panel"};
-			IEObjState objState = new IEObjState(VisibilityList.show(parts));
-			BlockState state = ConveyorHandler.getBlock(NAME).defaultBlockState();
-			baseModel.addAll(model.getQuads(state, null, Utils.RAND,
-					new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE)));
-		}
-		return baseModel;
+		return panelRight;
 	}
 }

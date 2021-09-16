@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:metal_device/conveyor"
+      "model": "immersiveengineering:block/conveyor_redstone"
     }
   }
 }

@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.gui.*;
@@ -33,6 +33,8 @@ import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
+import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
+import blusunrize.immersiveengineering.client.render.conveyor.SplitConveyorRender;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
@@ -42,7 +44,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConveyor;
+import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalConveyor;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
@@ -275,7 +280,6 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::invalidateAll);
 		IEApi.renderCacheClearers.add(IESmartObjModel.cachedBakedItemModels::invalidateAll);
 		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
-		IEApi.renderCacheClearers.add(ModelConveyor.modelCache::clear);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::invalidateAll);
 		IEApi.renderCacheClearers.add(FluidPipeBlockEntity.cachedOBJStates::clear);
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
@@ -448,16 +452,16 @@ public class ClientProxy extends CommonProxy
 		for(ResourceLocation rl : ModelConveyor.rl_casing)
 			DynamicModelLoader.requestTexture(rl);
 		DynamicModelLoader.requestTexture(ConveyorHandler.textureConveyorColour);
-		DynamicModelLoader.requestTexture(BasicConveyor.texture_off);
-		DynamicModelLoader.requestTexture(BasicConveyor.texture_on);
+		DynamicModelLoader.requestTexture(ConveyorBase.texture_off);
+		DynamicModelLoader.requestTexture(ConveyorBase.texture_on);
 		DynamicModelLoader.requestTexture(DropConveyor.texture_off);
 		DynamicModelLoader.requestTexture(DropConveyor.texture_on);
 		DynamicModelLoader.requestTexture(VerticalConveyor.texture_off);
 		DynamicModelLoader.requestTexture(VerticalConveyor.texture_on);
 		DynamicModelLoader.requestTexture(SplitConveyor.texture_off);
 		DynamicModelLoader.requestTexture(SplitConveyor.texture_on);
-		DynamicModelLoader.requestTexture(SplitConveyor.texture_casing);
-		DynamicModelLoader.requestTexture(RedstoneConveyor.texture_panel);
+		DynamicModelLoader.requestTexture(SplitConveyorRender.texture_casing);
+		DynamicModelLoader.requestTexture(RedstoneConveyorRender.texture_panel);
 
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "item/shader_slot"));
 
@@ -474,7 +478,7 @@ public class ClientProxy extends CommonProxy
 		SqueezerRenderer.PISTON = new DynamicModel(SqueezerRenderer.NAME);
 		WatermillRenderer.MODEL = new DynamicModel(WatermillRenderer.NAME);
 		WindmillRenderer.MODEL = new DynamicModel(WindmillRenderer.NAME);
-		RedstoneConveyor.MODEL_PANEL = new DynamicModel(RedstoneConveyor.MODEL_NAME);
+		RedstoneConveyorRender.MODEL_PANEL = new DynamicModel(RedstoneConveyorRender.MODEL_NAME);
 		SawbladeRenderer.MODEL = new DynamicModel(SawbladeRenderer.NAME);
 		BasicClientProperties.initModels();
 	}

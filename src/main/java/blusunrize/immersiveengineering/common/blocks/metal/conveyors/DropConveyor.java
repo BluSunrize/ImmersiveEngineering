@@ -8,10 +8,13 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.client.render.conveyor.BasicConveyorRender;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -33,9 +36,15 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 /**
  * @author BluSunrize - 20.08.2016
  */
-public class DropConveyor extends BasicConveyor
+public class DropConveyor extends ConveyorBase
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "dropper");
+	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/dropper");
+	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor/dropper_off");
+	public static final IConveyorType<DropConveyor> TYPE = new BasicConveyorType<>(
+			NAME, false, true, DropConveyor::new, () -> new BasicConveyorRender<>(texture_on, texture_off)
+	);
+
 	/// Items will be spawned when this space is empty in the block below:
 	private static final VoxelShape REQUIRED_SPACE = Shapes.box(0.25, 0.75, 0.25, 0.75, 1.0, 0.75);
 	private VoxelShape cachedDownShape = Shapes.empty();
@@ -47,18 +56,24 @@ public class DropConveyor extends BasicConveyor
 	}
 
 	@Override
+	public IConveyorType<DropConveyor> getType()
+	{
+		return TYPE;
+	}
+
+	@Override
 	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 	{
 		if(!isPowered())
 		{
-			BlockPos posDown = getTile().getBlockPos().below();
-			BlockEntity inventoryTile = getTile().getLevel().getBlockEntity(posDown);
-			boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getTile().getBlockPos().getZ()+.5-entity.getZ()):
-				(getTile().getBlockPos().getX()+.5-entity.getX())) < .2;
+			BlockPos posDown = getBlockEntity().getBlockPos().below();
+			BlockEntity inventoryTile = getBlockEntity().getLevel().getBlockEntity(posDown);
+			boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getBlockEntity().getBlockPos().getZ()+.5-entity.getZ()):
+					(getBlockEntity().getBlockPos().getX()+.5-entity.getX())) < .2;
 
-		LazyOptional<IItemHandler> cap = LazyOptional.empty();
-		if(contact&&!(inventoryTile instanceof IConveyorBlockEntity))
-			cap = CapabilityUtils.findItemHandlerAtPos(getTile().getLevel(), posDown, Direction.UP, true);
+			LazyOptional<IItemHandler> cap = LazyOptional.empty();
+			if(contact&&!(inventoryTile instanceof IConveyorBlockEntity))
+				cap = CapabilityUtils.findItemHandlerAtPos(getBlockEntity().getLevel(), posDown, Direction.UP, true);
 
 			if(cap.isPresent())
 				cap.ifPresent(itemHandler ->
@@ -74,12 +89,12 @@ public class DropConveyor extends BasicConveyor
 							entity.setItem(temp);
 					}
 				});
-			else if(contact&&isEmptySpace(getTile().getLevel(), posDown, inventoryTile))
+			else if(contact&&isEmptySpace(getBlockEntity().getLevel(), posDown, inventoryTile))
 			{
 				entity.setDeltaMovement(0, entity.getDeltaMovement().y, 0);
-				entity.setPos(getTile().getBlockPos().getX()+.5, getTile().getBlockPos().getY()-.5, getTile().getBlockPos().getZ()+.5);
+				entity.setPos(getBlockEntity().getBlockPos().getX()+.5, getBlockEntity().getBlockPos().getY()-.5, getBlockEntity().getBlockPos().getZ()+.5);
 				if(!(inventoryTile instanceof IConveyorBlockEntity))
-					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorBlockEntity)getTile());
+					ConveyorHandler.revertMagnetSuppression(entity, (IConveyorBlockEntity)getBlockEntity());
 			}
 			else
 				super.handleInsertion(entity, conDir, distX, distZ);
@@ -104,20 +119,5 @@ public class DropConveyor extends BasicConveyor
 			cachedDownShape = shape;
 		}
 		return cachedOpenBelow;
-	}
-
-	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/dropper");
-	public static ResourceLocation texture_off = new ResourceLocation("immersiveengineering:block/conveyor/dropper_off");
-
-	@Override
-	public ResourceLocation getActiveTexture()
-	{
-		return texture_on;
-	}
-
-	@Override
-	public ResourceLocation getInactiveTexture()
-	{
-		return texture_off;
 	}
 }

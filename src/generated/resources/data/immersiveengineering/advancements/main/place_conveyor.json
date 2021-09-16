@@ -16,22 +16,10 @@
     "hidden": false
   },
   "criteria": {
-    "extract": {
+    "basic": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_extract"
-      }
-    },
-    "extractcovered": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_extractcovered"
-      }
-    },
-    "splittercovered": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_splittercovered"
+        "block": "immersiveengineering:conveyor_basic"
       }
     },
     "dropper": {
@@ -40,22 +28,10 @@
         "block": "immersiveengineering:conveyor_dropper"
       }
     },
-    "covered": {
+    "extract": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_covered"
-      }
-    },
-    "vertical": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_vertical"
-      }
-    },
-    "verticalcovered": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_verticalcovered"
+        "block": "immersiveengineering:conveyor_extract"
       }
     },
     "redstone": {
@@ -70,32 +46,21 @@
         "block": "immersiveengineering:conveyor_splitter"
       }
     },
-    "basic": {
+    "vertical": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:conveyor_basic"
-      }
-    },
-    "droppercovered": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_droppercovered"
+        "block": "immersiveengineering:conveyor_vertical"
       }
     }
   },
   "requirements": [
     [
-      "extract",
-      "extractcovered",
-      "splittercovered",
+      "basic",
       "dropper",
-      "covered",
-      "vertical",
-      "verticalcovered",
+      "extract",
       "redstone",
       "splitter",
-      "basic",
-      "droppercovered"
+      "vertical"
     ]
   ]
 }

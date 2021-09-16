@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
@@ -27,10 +26,7 @@ import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
-import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
-import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
-import blusunrize.immersiveengineering.data.models.TRSRItemModelProvider;
-import blusunrize.immersiveengineering.data.models.TRSRModelBuilder;
+import blusunrize.immersiveengineering.data.models.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -157,7 +153,9 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/wallmount"));
 
 		for(BlockEntry<ConveyorBlock> b : MetalDevices.CONVEYORS.values())
-			getBuilder(b).customLoader(SpecialModelBuilder.forLoader(ConveyorLoader.LOCATION));
+			getBuilder(b).customLoader(ConveyorModelBuilder::begin)
+					.type(b.get().getType())
+					.end();
 
 		obj(MetalDecoration.lantern, modLoc("block/lantern_inventory.obj"))
 				.transforms(modLoc("item/block"));

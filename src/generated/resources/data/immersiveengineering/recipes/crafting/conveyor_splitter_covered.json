@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "s",
+    "c"
+  ],
+  "key": {
+    "s": {
+      "tag": "immersiveengineering:scaffoldings/steel"
+    },
+    "c": {
+      "item": "immersiveengineering:conveyor_splitter"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:conveyor_splitter",
+    "nbt": {
+      "defaultCover": "immersiveengineering:steel_scaffolding_standard"
+    }
+  }
+}

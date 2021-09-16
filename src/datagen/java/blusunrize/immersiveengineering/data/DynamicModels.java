@@ -1,20 +1,23 @@
 package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
 import blusunrize.immersiveengineering.client.render.entity.SawbladeRenderer;
 import blusunrize.immersiveengineering.client.render.tile.*;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.RedstoneConveyor;
 import blusunrize.immersiveengineering.data.DynamicModels.SimpleModelBuilder;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ModelBuilder;
+import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
+import java.util.Map.Entry;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
@@ -96,7 +99,7 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.modelLocation(rl("models/block/wooden_device/windmill.obj.ie"))
 				.flipV(true)
 				.end();
-		getBuilder(RedstoneConveyor.MODEL_NAME)
+		getBuilder(RedstoneConveyorRender.MODEL_NAME)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/conveyor_redstone.obj.ie"))
 				.flipV(true)
@@ -106,7 +109,7 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.modelLocation(rl("models/item/buzzsaw_diesel.obj.ie"))
 				.flipV(true)
 				.end();
-		for (var multiblock : multiblocks.unsplitModels.entrySet())
+		for(Entry<Block, ModelFile> multiblock : multiblocks.unsplitModels.entrySet())
 			withExistingParent(multiblock.getKey().getRegistryName().getPath(), multiblock.getValue().getLocation());
 	}
 

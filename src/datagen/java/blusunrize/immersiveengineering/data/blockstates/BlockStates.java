@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
-import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
@@ -27,8 +26,8 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.data.DataGenUtils;
+import blusunrize.immersiveengineering.data.models.ConveyorModelBuilder;
 import blusunrize.immersiveengineering.data.models.SideConfigBuilder;
-import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -407,8 +406,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 		}
 		for(BlockEntry<ConveyorBlock> b : MetalDevices.CONVEYORS.values())
 			createMultistateSingleModel(b, new ConfiguredModel(
-					models().getBuilder("metal_device/conveyor")
-							.customLoader(SpecialModelBuilder.forLoader(ConveyorLoader.LOCATION))
+					models().getBuilder(b.getId().getPath())
+							.customLoader(ConveyorModelBuilder::begin)
+							.type(b.get().getType())
 							.end()
 			));
 		createHemp();

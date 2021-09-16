@@ -15,10 +15,11 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheR
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
-import blusunrize.immersiveengineering.api.tool.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.*;
@@ -1301,9 +1302,9 @@ public class Recipes extends RecipeProvider
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('r', Tags.Items.DUSTS_REDSTONE)
 				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('b', ConveyorHandler.getBlock(BasicConveyor.NAME))
+				.define('b', ConveyorHandler.getBlock(BasicConveyor.TYPE))
 				.define('c', Ingredients.componentIron)
-				.unlockedBy("has_"+toPath(ConveyorHandler.getBlock(BasicConveyor.NAME)), has(ConveyorHandler.getBlock(BasicConveyor.NAME)))
+				.unlockedBy("has_"+toPath(ConveyorHandler.getBlock(BasicConveyor.TYPE)), has(ConveyorHandler.getBlock(BasicConveyor.TYPE)))
 				.save(out, toRL(toPath(WoodenDevices.sorter)));
 		ShapedRecipeBuilder.shaped(WoodenDevices.itemBatcher)
 				.pattern("wrw")
@@ -1314,7 +1315,7 @@ public class Recipes extends RecipeProvider
 				.define('w', IETags.getItemTag(IETags.treatedWood))
 				.define('p', Ingredients.circuitBoard)
 				.define('c', Ingredients.componentIron)
-				.unlockedBy("has_"+toPath(ConveyorHandler.getBlock(BasicConveyor.NAME)), has(ConveyorHandler.getBlock(BasicConveyor.NAME)))
+				.unlockedBy("has_"+toPath(ConveyorHandler.getBlock(BasicConveyor.TYPE)), has(ConveyorHandler.getBlock(BasicConveyor.TYPE)))
 				.save(out, toRL(toPath(WoodenDevices.itemBatcher)));
 		ShapedRecipeBuilder.shaped(WoodenDevices.fluidSorter)
 				.pattern("wrw")
@@ -1982,22 +1983,17 @@ public class Recipes extends RecipeProvider
 
 	private void recipesConveyors(@Nonnull Consumer<FinishedRecipe> out)
 	{
-		ItemLike basic = ConveyorHandler.getBlock(BasicConveyor.NAME);
-		ItemLike redstone = ConveyorHandler.getBlock(RedstoneConveyor.NAME);
-		ItemLike covered = ConveyorHandler.getBlock(CoveredConveyor.NAME);
-		ItemLike dropper = ConveyorHandler.getBlock(DropConveyor.NAME);
-		ItemLike dropperCovered = ConveyorHandler.getBlock(DropCoveredConveyor.NAME);
-		ItemLike extract = ConveyorHandler.getBlock(ExtractConveyor.NAME);
-		ItemLike extractCovered = ConveyorHandler.getBlock(ExtractCoveredConveyor.NAME);
-		ItemLike splitter = ConveyorHandler.getBlock(SplitConveyor.NAME);
-		ItemLike splitterCovered = ConveyorHandler.getBlock(SplitCoveredConveyor.NAME);
-		ItemLike vertical = ConveyorHandler.getBlock(VerticalConveyor.NAME);
-		ItemLike verticalCovered = ConveyorHandler.getBlock(VerticalCoveredConveyor.NAME);
-		addCoveyorCoveringRecipe(covered, basic, out);
-		addCoveyorCoveringRecipe(dropperCovered, dropper, out);
-		addCoveyorCoveringRecipe(extractCovered, extract, out);
-		addCoveyorCoveringRecipe(splitterCovered, splitter, out);
-		addCoveyorCoveringRecipe(verticalCovered, vertical, out);
+		ItemLike basic = ConveyorHandler.getBlock(BasicConveyor.TYPE);
+		ItemLike redstone = ConveyorHandler.getBlock(RedstoneConveyor.TYPE);
+		ItemLike dropper = ConveyorHandler.getBlock(DropConveyor.TYPE);
+		ItemLike extract = ConveyorHandler.getBlock(ExtractConveyor.TYPE);
+		ItemLike splitter = ConveyorHandler.getBlock(SplitConveyor.TYPE);
+		ItemLike vertical = ConveyorHandler.getBlock(VerticalConveyor.TYPE);
+		addCoveyorCoveringRecipe(basic, out);
+		addCoveyorCoveringRecipe(dropper, out);
+		addCoveyorCoveringRecipe(extract, out);
+		addCoveyorCoveringRecipe(splitter, out);
+		addCoveyorCoveringRecipe(vertical, out);
 		ShapedRecipeBuilder.shaped(basic, 8)
 				.pattern("lll")
 				.pattern("iri")
@@ -2055,15 +2051,15 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(vertical)));
 	}
 
-	private void addCoveyorCoveringRecipe(ItemLike covered, ItemLike base, Consumer<FinishedRecipe> out)
+	private void addCoveyorCoveringRecipe(ItemLike basic, Consumer<FinishedRecipe> out)
 	{
-		ShapedRecipeBuilder.shaped(covered)
+		new ShapedNBTBuilder(ConveyorBlock.makeCovered(basic, MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD).get()))
 				.pattern("s")
 				.pattern("c")
 				.define('s', IETags.getItemTag(IETags.scaffoldingSteel))
-				.define('c', base)
-				.unlockedBy("has_vertical_conveyor", has(base))
-				.save(out, toRL(toPath(covered)));
+				.define('c', basic)
+				.unlockedBy("has_vertical_conveyor", has(basic))
+				.save(out, toRL(toPath(basic)+"_covered"));
 	}
 
 	private void recipesCloth(@Nonnull Consumer<FinishedRecipe> out)
