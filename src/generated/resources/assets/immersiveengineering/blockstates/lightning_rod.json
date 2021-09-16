@@ -1,0 +1,23 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "immersiveengineering:block/metal_multiblock/lightningrod_split",
+      "uvlock": true
+    },
+    "facing=south": {
+      "model": "immersiveengineering:block/metal_multiblock/lightningrod_split",
+      "y": 180,
+      "uvlock": true
+    },
+    "facing=west": {
+      "model": "immersiveengineering:block/metal_multiblock/lightningrod_split",
+      "y": 270,
+      "uvlock": true
+    },
+    "facing=east": {
+      "model": "immersiveengineering:block/metal_multiblock/lightningrod_split",
+      "y": 90,
+      "uvlock": true
+    }
+  }
+}

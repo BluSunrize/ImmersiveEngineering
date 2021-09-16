@@ -2053,7 +2053,7 @@ public class Recipes extends RecipeProvider
 
 	private void addCoveyorCoveringRecipe(ItemLike basic, Consumer<FinishedRecipe> out)
 	{
-		new ShapedNBTBuilder(ConveyorBlock.makeCovered(basic, MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD).get()))
+		new ShapedNBTBuilder(ConveyorBlock.makeCovered(basic, MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD).get()))
 				.pattern("s")
 				.pattern("c")
 				.define('s', IETags.getItemTag(IETags.scaffoldingSteel))

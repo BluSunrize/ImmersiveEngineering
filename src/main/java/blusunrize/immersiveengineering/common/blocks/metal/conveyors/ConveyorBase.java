@@ -15,8 +15,6 @@ import blusunrize.immersiveengineering.api.utils.EntityCollisionTracker;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBeltBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
-import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Direction;
@@ -98,11 +96,6 @@ public abstract class ConveyorBase implements IConveyorBelt
 	public boolean isActive()
 	{
 		return true;
-	}
-
-	public static Block getDefaultCover()
-	{
-		return MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD).get();
 	}
 
 	@Override
@@ -251,7 +244,7 @@ public abstract class ConveyorBase implements IConveyorBelt
 	{
 		validCoveyorCovers.add(IETags.scaffoldingAlu::contains);
 		validCoveyorCovers.add(IETags.scaffoldingSteel::contains);
-		validCoveyorCovers.add(input -> input==WoodenDecoration.treatedScaffolding.get());
+		validCoveyorCovers.add(input -> input==WoodenDecoration.TREATED_SCAFFOLDING.get());
 		validCoveyorCovers.add(Tags.Blocks.GLASS::contains);
 	}
 

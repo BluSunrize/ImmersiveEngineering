@@ -74,7 +74,7 @@ public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.ICon
 	{
 		super.fillItemCategory(group, items);
 		if(type.acceptsCovers())
-			items.add(makeCovered(this, MetalDecoration.steelScaffolding.get(MetalScaffoldingType.STANDARD).get()));
+			items.add(makeCovered(this, MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD).get()));
 	}
 
 	public static ItemStack makeCovered(ItemLike conveyor, Block cover)
