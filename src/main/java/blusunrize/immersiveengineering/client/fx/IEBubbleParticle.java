@@ -37,9 +37,7 @@ public class IEBubbleParticle extends TextureSheetParticle
 		this.yo = this.y;
 		this.zo = this.z;
 		if(this.lifetime-- <= 0)
-		{
 			this.remove();
-		}
 		else
 		{
 			this.yd += 0.002D;

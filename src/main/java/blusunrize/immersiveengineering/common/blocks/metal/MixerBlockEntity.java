@@ -111,21 +111,18 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		super.tickClient();
 		if(shouldRenderAsActive())
 		{
-			if(Utils.RAND.nextInt(8)==0)
+			if(Utils.RAND.nextInt(8)==0&&!tank.fluids.isEmpty())
 			{
-				FluidStack fs = !tank.fluids.isEmpty()?tank.fluids.get(0): null;
-				if(fs!=null)
-				{
-					float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
-					Vec3 partPos = new Vec3(getBlockPos().getX()+.5f+getFacing().getStepX()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepX()*.5f, getBlockPos().getY()-.0625f+amount, getBlockPos().getZ()+.5f+getFacing().getStepZ()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepZ()*.5f);
-					float r = Utils.RAND.nextFloat()*.8125f;
-					float angleRad = (float)Math.toRadians(animation_agitator);
-					partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
-					if(Utils.RAND.nextBoolean())
-						level.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
-					else
-						level.addParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
-				}
+				FluidStack fs = tank.fluids.get(0);
+				float amount = tank.getFluidAmount()/(float)tank.getCapacity()*1.125f;
+				Vec3 partPos = new Vec3(getBlockPos().getX()+.5f+getFacing().getStepX()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepX()*.5f, getBlockPos().getY()-.0625f+amount, getBlockPos().getZ()+.5f+getFacing().getStepZ()*.5f+(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()).getStepZ()*.5f);
+				float r = Utils.RAND.nextFloat()*.8125f;
+				float angleRad = (float)Math.toRadians(animation_agitator);
+				partPos = partPos.add(r*Math.cos(angleRad), 0, r*Math.sin(angleRad));
+				if(Utils.RAND.nextBoolean())
+					level.addParticle(IEParticles.IE_BUBBLE.get(), partPos.x, partPos.y, partPos.z, 0, 0, 0);
+				else
+					level.addParticle(new FluidSplashOptions(fs.getFluid()), partPos.x, partPos.y, partPos.z, 0, 0, 0);
 			}
 			animation_agitator = (animation_agitator+9)%360;
 		}
