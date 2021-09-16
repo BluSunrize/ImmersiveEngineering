@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ChunkHolder.FullChunkStatus;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -23,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -33,6 +35,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * An interface for the external handling of conveyorbelts
@@ -252,8 +255,18 @@ public interface IConveyorBelt
 
 	default boolean isOutputBlocked()
 	{
-		IConveyorBelt outputBelt = getOutputConveyor();
-		return outputBelt!=null&&outputBelt.isBlocked();
+		Level level = Objects.requireNonNull(getBlockEntity().getLevel());
+		for(BlockPos pos : getNextConveyorCandidates())
+		{
+			LevelChunk chunk = SafeChunkUtils.getSafeChunk(level, pos);
+			// Do not export entities into non-ticking chunks, where they would pile up at the boundary
+			if(chunk==null||(!level.isClientSide&&!chunk.getFullStatus().isOrAfter(FullChunkStatus.ENTITY_TICKING)))
+				return true;
+			BlockEntity outputTile = chunk.getBlockEntity(pos);
+			if(outputTile instanceof IConveyorBlockEntity<?> convOut)
+				return convOut.getConveyorInstance().isBlocked();
+		}
+		return false;
 	}
 
 	/**
