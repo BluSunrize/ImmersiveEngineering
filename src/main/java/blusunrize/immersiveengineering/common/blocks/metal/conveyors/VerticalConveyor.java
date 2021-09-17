@@ -8,12 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
-import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.*;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
-import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.client.render.conveyor.VerticalConveyorRender;
@@ -40,6 +37,7 @@ import net.minecraftforge.items.IItemHandler;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -217,8 +215,8 @@ public class VerticalConveyor extends ConveyorBase
 			}
 		}
 
-		if(isCovered()&&entity instanceof ItemEntity)
-			((ItemEntity)entity).setPickUpDelay(10);
+		if(isCovered()&&entity instanceof ItemEntity item)
+			item.setPickUpDelay(10);
 	}
 
 	@Override
@@ -238,7 +236,34 @@ public class VerticalConveyor extends ConveyorBase
 	}
 
 	private static final CachedShapesWithTransform<Boolean, Direction> SHAPES =
-			CachedShapesWithTransform.createDirectional(VerticalConveyor::getShapes);
+			CachedShapesWithTransform.createDirectional(bottomBelt -> {
+				List<AABB> list = Lists.newArrayList(new AABB(0, 0, 0, 1, 1, .125f));
+				if(bottomBelt)
+					list.add(conveyorBounds.bounds());
+				return list;
+			});
+
+	record CoveredShapeKey(
+			boolean bottomBelt, boolean leftWall, boolean rightWall, boolean frontConveyor
+	)
+	{
+	}
+
+	private static final CachedShapesWithTransform<CoveredShapeKey, Direction> COVERED_SHAPES =
+			CachedShapesWithTransform.createDirectional(key -> {
+				List<AABB> list = new ArrayList<>();
+				// back
+				list.add(new AABB(0, 0, 0, 1, 1, .125f));
+				//left
+				list.add(new AABB(0, key.leftWall?0: .75, 0, 0.0625, 1, 1));
+				// right
+				list.add(new AABB(0.9375, key.rightWall?0: .75, 0, 1, 1, 1));
+				// front
+				list.add(new AABB(0, key.frontConveyor?0: .75, .9375, 1, 1, 1));
+				if(key.bottomBelt)
+					list.add(conveyorBounds.bounds());
+				return list;
+			});
 
 	@Override
 	public VoxelShape getSelectionShape()
@@ -246,35 +271,42 @@ public class VerticalConveyor extends ConveyorBase
 		return getCollisionShape();
 	}
 
-	private static List<AABB> getShapes(Boolean bottomBelt)
-	{
-		List<AABB> list = Lists.newArrayList(new AABB(0, 0, 0, 1, 1, .125f));
-		if(bottomBelt)
-			list.add(conveyorBounds.bounds());
-		return list;
-	}
-
 	@Override
 	public VoxelShape getCollisionShape()
 	{
-		return SHAPES.get(Pair.of(renderBottomBelt(getBlockEntity(), getFacing()), getFacing()));
+		final Direction facing = getFacing();
+		if(!isCovered())
+			return SHAPES.get(Pair.of(renderBottomBelt(getBlockEntity(), facing), facing));
+		else
+			return COVERED_SHAPES.get(new CoveredShapeKey(
+					renderBottomBelt(getBlockEntity(), facing),
+					isSideOpen(ConveyorWall.LEFT.getWallSide(facing)),
+					isSideOpen(ConveyorWall.RIGHT.getWallSide(facing)),
+					isSideOpen(facing.getOpposite())
+			), facing);
 	}
 
-	public static boolean isInwardConveyor(BlockEntity tile, Direction f)
+	private boolean isSideOpen(Direction side)
 	{
-		BlockEntity te = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(f));
-		if(te instanceof IConveyorBlockEntity)
+		BlockPos pos = getBlockEntity().getBlockPos().relative(side);
+		return ConveyorHandler.connectsToConveyor(getBlockEntity().getLevel(), pos, side);
+	}
+
+	public static boolean isInwardConveyor(BlockEntity bEntity, Direction f)
+	{
+		BlockEntity te = bEntity.getLevel().getBlockEntity(bEntity.getBlockPos().relative(f));
+		if(te instanceof IConveyorBlockEntity<?> convBE)
 		{
-			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorInstance();
+			IConveyorBelt sub = convBE.getConveyorInstance();
 			if(sub!=null)
 				for(Direction f2 : sub.sigTransportDirections())
 					if(f==f2.getOpposite())
 						return true;
 		}
-		te = tile.getLevel().getBlockEntity(tile.getBlockPos().offset(0, -1, 0).relative(f));
-		if(te instanceof IConveyorBlockEntity)
+		te = bEntity.getLevel().getBlockEntity(bEntity.getBlockPos().offset(0, -1, 0).relative(f));
+		if(te instanceof IConveyorBlockEntity<?> convBE)
 		{
-			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorInstance();
+			IConveyorBelt sub = convBE.getConveyorInstance();
 			if(sub!=null)
 			{
 				int b = 0;
