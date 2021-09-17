@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2020
+ * Copyright (c) 2021
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -10,11 +10,13 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -25,11 +27,11 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
 import javax.annotation.Nonnull;
 
-public class WindmillLootFunction extends LootItemConditionalFunction
+public class ConveyorCoverLootFunction extends LootItemConditionalFunction
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "windmill");
+	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_cover");
 
-	protected WindmillLootFunction(LootItemCondition[] conditionsIn)
+	protected ConveyorCoverLootFunction(LootItemCondition[] conditionsIn)
 	{
 		super(conditionsIn);
 	}
@@ -38,11 +40,16 @@ public class WindmillLootFunction extends LootItemConditionalFunction
 	@Override
 	protected ItemStack run(@Nonnull ItemStack stack, @Nonnull LootContext context)
 	{
-		if(stack.getItem()==WoodenDevices.WINDMILL.asItem()&&context.hasParam(LootContextParams.BLOCK_ENTITY))
+		Block asBlock = Block.byItem(stack.getItem());
+		if(ConveyorHandler.isConveyorBlock(asBlock)&&context.hasParam(LootContextParams.BLOCK_ENTITY))
 		{
-			BlockEntity bEntity = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-			if(bEntity instanceof WindmillBlockEntity windmill&&windmill.sails > 0)
-				ItemNBTHelper.putInt(stack, "sails", windmill.sails);
+			BlockEntity te = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
+			if(te instanceof IConveyorBlockEntity<?> conveyorBE)
+			{
+				Block cover = conveyorBE.getConveyorInstance().getCover();
+				if(cover!=Blocks.AIR)
+					return ConveyorBlock.makeCovered(stack.getItem(), cover);
+			}
 		}
 		return stack;
 	}
@@ -50,11 +57,11 @@ public class WindmillLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.windmill;
+		return IELootFunctions.conveyorCover;
 	}
 
 	public static LootItemFunction.Builder builder()
 	{
-		return simpleBuilder(WindmillLootFunction::new);
+		return simpleBuilder(ConveyorCoverLootFunction::new);
 	}
 }

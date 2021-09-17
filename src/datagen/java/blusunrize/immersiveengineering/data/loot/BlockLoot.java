@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.data.loot;
 
 import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
@@ -70,7 +71,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 		register(WoodenDevices.WINDMILL, LootTable.lootTable().withPool(
 				createPoolBuilder().add(
 						LootItem.lootTableItem(WoodenDevices.WINDMILL)
-								.apply(new WindmillLootFunction.Builder())
+								.apply(WindmillLootFunction.builder())
 				)));
 
 		LootPoolEntryContainer.Builder<?> tileOrInv = AlternativesEntry.alternatives(
@@ -104,6 +105,11 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 		registerSelfDropping(MetalDevices.CHARGING_STATION, dropInv());
 		registerSlabs();
 		registerSawdust();
+		for(BlockEntry<ConveyorBlock> entry : MetalDevices.CONVEYORS.values())
+		{
+			ConveyorBlock block = entry.get();
+			register(entry, singleItem(block).apply(ConveyorCoverLootFunction.builder()));
+		}
 
 		registerAllRemainingAsDefault();
 	}

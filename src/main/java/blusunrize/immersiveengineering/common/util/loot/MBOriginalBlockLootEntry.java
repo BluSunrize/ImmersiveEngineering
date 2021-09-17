@@ -42,15 +42,12 @@ public class MBOriginalBlockLootEntry extends LootPoolSingletonContainer
 		if(context.hasParam(LootContextParams.BLOCK_ENTITY))
 		{
 			BlockEntity te = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-			if(te instanceof MultiblockPartBlockEntity)
-			{
-				MultiblockPartBlockEntity<?> multiblockTile = (MultiblockPartBlockEntity<?>)te;
+			if(te instanceof MultiblockPartBlockEntity<?> multiblockTile)
 				Utils.getDrops(multiblockTile.getOriginalBlock(),
 						new LootContext.Builder(context.getLevel())
 								.withOptionalParameter(LootContextParams.TOOL, context.getParamOrNull(LootContextParams.TOOL))
 								.withOptionalParameter(LootContextParams.ORIGIN, context.getParamOrNull(LootContextParams.ORIGIN))
 				).forEach(output);
-			}
 		}
 	}
 

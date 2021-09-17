@@ -11,14 +11,11 @@ package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
@@ -49,35 +46,8 @@ public class BluprintzLootFunction extends LootItemConditionalFunction
 		return IELootFunctions.bluprintz;
 	}
 
-	public static class Serializer extends LootItemConditionalFunction.Serializer<BluprintzLootFunction>
+	public static Builder<?> builder()
 	{
-		@Override
-		@Nonnull
-		public BluprintzLootFunction deserialize(@Nonnull JsonObject object, @Nonnull JsonDeserializationContext deserializationContext, @Nonnull LootItemCondition[] conditionsIn)
-		{
-			return new BluprintzLootFunction(conditionsIn);
-		}
-	}
-
-	public static class Builder extends LootItemConditionalFunction.Builder<blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction.Builder>
-	{
-		@Nonnull
-		@Override
-		protected blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction.Builder getThis()
-		{
-			return this;
-		}
-
-		@Nonnull
-		@Override
-		public LootItemFunction build()
-		{
-			return new BluprintzLootFunction(getConditions());
-		}
-	}
-
-	public static blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction.Builder builder()
-	{
-		return new blusunrize.immersiveengineering.common.util.loot.BluprintzLootFunction.Builder();
+		return LootItemConditionalFunction.simpleBuilder(BluprintzLootFunction::new);
 	}
 }

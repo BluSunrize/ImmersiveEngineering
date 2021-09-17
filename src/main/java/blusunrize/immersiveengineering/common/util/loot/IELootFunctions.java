@@ -23,6 +23,7 @@ public class IELootFunctions
 {
 	public static LootItemFunctionType bluprintz;
 	public static LootItemFunctionType windmill;
+	public static LootItemFunctionType conveyorCover;
 	public static LootItemFunctionType propertyCount;
 
 	public static LootPoolEntryType dropInventory;
@@ -31,8 +32,9 @@ public class IELootFunctions
 
 	public static void register()
 	{
-		bluprintz = registerFunction(BluprintzLootFunction.ID, new BluprintzLootFunction.Serializer());
-		windmill = registerFunction(WindmillLootFunction.ID, new WindmillLootFunction.Serializer());
+		bluprintz = registerFunction(BluprintzLootFunction.ID, new SimpleSerializer<>(BluprintzLootFunction::new));
+		windmill = registerFunction(WindmillLootFunction.ID, new SimpleSerializer<>(WindmillLootFunction::new));
+		conveyorCover = registerFunction(ConveyorCoverLootFunction.ID, new SimpleSerializer<>(ConveyorCoverLootFunction::new));
 		propertyCount = registerFunction(PropertyCountLootFunction.ID, new PropertyCountLootFunction.Serializer());
 
 		dropInventory = registerEntry(DropInventoryLootEntry.ID, new DropInventoryLootEntry.Serializer());
@@ -42,9 +44,7 @@ public class IELootFunctions
 
 	private static LootPoolEntryType registerEntry(ResourceLocation id, Serializer<? extends LootPoolEntryContainer> serializer)
 	{
-		return Registry.register(
-				Registry.LOOT_POOL_ENTRY_TYPE, id, new LootPoolEntryType(serializer)
-		);
+		return Registry.register(Registry.LOOT_POOL_ENTRY_TYPE, id, new LootPoolEntryType(serializer));
 	}
 
 	private static LootItemFunctionType registerFunction(ResourceLocation id, Serializer<? extends LootItemFunction> serializer)

@@ -15,7 +15,11 @@
           "condition": "minecraft:survives_explosion"
         }
       ],
-      "functions": []
+      "functions": [
+        {
+          "function": "immersiveengineering:conveyor_cover"
+        }
+      ]
     }
   ]
 }
