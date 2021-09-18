@@ -1,0 +1,14 @@
+광석
+Diggy diggy hole
+<&copper>§l구리 광석§r은 Y 높이 <config;i;ores.copper.min_y>과 <config;i;ores.copper.max_y> 사이에서 발견되며 얻으려면 돌 곡괭이가 필요합니다.
+구리는 저압 전선, 코일 및 IE 기계의 기타 필수 부품을 만드는 데 사용됩니다.
+<&alu>§l보크사이트 광석§r은 Y 높이 <config;i;ores.bauxite.min_y>과 <config;i;ores.bauxite.max_y> 사이에서 발견되며 얻으려면 돌 곡괭이가 필요합니다.
+이 광석을 제련하면 알루미늄이 되며, 알루미늄은 강철과 함께 고압 전선을 만드는 데 사용됩니다.
+<&lead>§l납 광석§r은 Y 높이 <config;i;ores.lead.min_y>과 <config;i;ores.lead.max_y> 사이에서 발견되며 얻으려면 철 곡괭이가 필요합니다.
+납은 축전기를 만드는 데 사용됩니다.
+<&silver>§l은 광석§r은 Y 높이 <config;i;ores.silver.min_y>과 <config;i;ores.silver.max_y> 사이에서 발견되며 얻으려면 철 곡괭이가 필요합니다.
+은으로는 금과 합금하여 효과적인 전도체인 일렉트럼을 만들 수 있습니다.
+<&nickel>§l니켈 광석§r은 Y 높이 <config;i;ores.nickel.min_y>과 <config;i;ores.nickel.max_y> 사이에서 발견되며 얻으려면 철 곡괭이가 필요합니다.
+니켈은 <link;thermoelectric;열전 발전기;start> 제작에 필요한 내열성 전도체 콘스탄탄을 만드는데 사용됩니다.
+<&uranium>§l우라늄 광석§r은 Y 높이 <config;i;ores.uranium.min_y>과 <config;i;ores.uranium.max_y> 사이에서 발견되며 얻으려면 철 곡괭이가 필요합니다.
+우라늄은 현재 용도가 많지 않습니다. 우라늄 블록은 <link;thermoelectric;열전 발전기;start>의 열원으로 사용될 수 있으며 금속은 향후 업데이트에 따라 사용처가 늘어날 것입니다.
