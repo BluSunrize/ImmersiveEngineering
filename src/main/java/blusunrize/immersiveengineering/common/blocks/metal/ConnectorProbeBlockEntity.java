@@ -123,7 +123,8 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 	@Override
 	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
+		if(level.isClientSide)
+			ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
 		return InteractionResult.SUCCESS;
 	}
 
