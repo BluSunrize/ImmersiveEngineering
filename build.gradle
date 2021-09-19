@@ -3,7 +3,7 @@ import groovy.json.JsonSlurper
 
 // TODO reimplement custom build features (changelog, shadow, signing, what else?)
 plugins {
-    id 'dev.architectury.loom' version '0.7.2-SNAPSHOT'
+    id 'dev.architectury.loom' version '0.7.2.9999'
     id 'maven-publish'
 }
 
@@ -24,12 +24,12 @@ sourceSets {
         runtimeClasspath += manual.output
     }
     main {
-        //resources {
-        //    srcDirs = [
-        //            //"$rootDir/src/main/resources",
-        //            "$rootDir/src/generated/resources"
-        //    ]
-        //}
+        resources {
+            srcDirs = [
+                    "$rootDir/src/main/resources",
+                    "$rootDir/src/generated/resources"
+            ]
+        }
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
     }
@@ -40,8 +40,8 @@ sourceSets {
         runtimeClasspath += main.output
     }
     test {
-        compileClasspath += manual.output + api.output
-        runtimeClasspath += manual.output + api.output
+        compileClasspath += main.compileClasspath + manual.output + api.output
+        runtimeClasspath += main.runtimeClasspath + manual.output + api.output
     }
 }
 
@@ -61,6 +61,10 @@ loom {
         data {
             arg "--existing", file("src/main/resources").absolutePath
         }
+    }
+
+    localMods {
+        addMod(project.modid, sourceSets.main, sourceSets.manual, sourceSets.api)
     }
 }
 
