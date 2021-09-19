@@ -2,7 +2,6 @@
   "required": true,
   "package": "blusunrize.immersiveengineering.mixin",
   "compatibilityLevel": "JAVA_8",
-  "refmap": "immersiveengineering.refmap.json",
   "mixins": [
     "accessors.ConcretePowderBlockAccess",
     "accessors.ContainerAccess",
