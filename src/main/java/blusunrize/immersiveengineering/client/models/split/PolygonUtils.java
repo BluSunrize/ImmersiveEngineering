@@ -75,7 +75,7 @@ public class PolygonUtils
 			);
 			vertices.add(new Vertex(pos, normalVec, uv));
 		}
-		return new Polygon<>(vertices, quad.getSprite());
+		return new Polygon<>(vertices, quad.func_187508_a());
 	}
 
 	public static BakedQuad toBakedQuad(Polygon<TextureAtlasSprite> poly, IModelTransform transform, VertexFormat format)

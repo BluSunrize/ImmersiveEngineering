@@ -1,31 +1,18 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
-import net.minecraftforge.gradle.common.task.SignJar
 
-buildscript {
-    repositories {
-        maven { url = 'https://maven.minecraftforge.net' }
-        maven {url "https://plugins.gradle.org/m2/"}
-        mavenCentral()
-        maven {url='https://repo.spongepowered.org/repository/maven-public/'}
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '4.1.+', changing: true
-        classpath 'com.github.jengelman.gradle.plugins:shadow:4.0.0'
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
-    }
+// TODO reimplement custom build features (changelog, shadow, signing, what else?)
+plugins {
+    id 'dev.architectury.loom' version '0.7.2-SNAPSHOT'
+    id 'maven-publish'
 }
-apply plugin: 'net.minecraftforge.gradle'
-// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
-apply plugin: 'eclipse'
-apply plugin: 'maven-publish'
-apply plugin: 'com.github.johnrengelman.shadow'
 
-version = buildVersionString()
-group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
 archivesBaseName = 'ImmersiveEngineering'
-
-sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
+version = buildVersionString()
+group = 'blusunrize.immersiveengineering'
 
 sourceSets {
     manual {
@@ -37,12 +24,12 @@ sourceSets {
         runtimeClasspath += manual.output
     }
     main {
-        resources {
-            srcDirs = [
-                    "$rootDir/src/main/resources",
-                    "$rootDir/src/generated/resources"
-            ]
-        }
+        //resources {
+        //    srcDirs = [
+        //            //"$rootDir/src/main/resources",
+        //            "$rootDir/src/generated/resources"
+        //    ]
+        //}
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
     }
@@ -58,117 +45,21 @@ sourceSets {
     }
 }
 
-def version_replaces = [
-        'version': project.version,
-        'mc_version': version_minecraft,
-        'forge_version': version_forge
-]
+loom {
+    silentMojangMappingsLicense()
 
-def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
+    mixinConfigs = [
+            //TODO constant, and fix silly cast errors
+            "immersiveengineering.mixins.json"
+    ]
 
-processResources {
-    duplicatesStrategy = DuplicatesStrategy.FAIL
-    exclude 'META-INF/mods.toml'
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META-INF/mods.toml'
-
-        expand version_replaces
+    dataGen {
+        mod project.modid
     }
-    //Minify json resources
-    doLast {
-        fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
-            File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
-        }
-    }
-}
 
-task replaceInModsToml(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.main.resources) {
-        include "META-INF/mods.toml"
-        expand version_replaces
-    }
-    into "$buildDir/resources/main/"
-}
-
-// When using "Run using IntelliJ" (the only option with well-working hotswapping) the used "resources" directory is
-// different from the one used by gradle/the processResources task
-task copyResourcesForIntelliJ(type: Copy) {
-    from processResources.destinationDir
-    into "$projectDir/out/production/resources"
-}
-
-processResources.finalizedBy replaceInModsToml, copyResourcesForIntelliJ
-
-minecraft {
-    mappings channel: 'snapshot', version: "${version_mcp}"
-
-    runs {
-        client {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
-            property 'fml.earlyprogresswindow', 'false'
-            property 'mixin.env.disableRefMap', 'true'
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config="+modid+".mixins.json"
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.manual
-                    source sourceSets.api
-                }
-            }
-        }
-
-        server {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.disableRefMap', 'true'
-
-            // Disable GUI by default, the IDE console can be used to enter commands
-            arg '-nogui'
-            arg "-mixin.config="+modid+".mixins.json"
-
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.api
-                }
-            }
-        }
+    launches {
         data {
-            workingDirectory project.file('run')
-
-            // Recommended logging data for a userdev environment
-            property 'forge.logging.markers', ''
-
-            // Recommended logging level for the console
-            property 'forge.logging.console.level', 'debug'
-            property 'fml.earlyprogresswindow', 'false'
-            property 'mixin.env.disableRefMap', 'true'
-
-            args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
-                    '--existing', sourceSets.main.resources.srcDirs[0]
-            arg "-mixin.config="+modid+".mixins.json"
-            ideaModule project.name+".datagen"
-
-            mods {
-                immersiveengineering {
-                    source sourceSets.main
-                    source sourceSets.datagen
-                    source sourceSets.manual
-                    source sourceSets.api
-                }
-            }
+            arg "--existing", file("src/main/resources").absolutePath
         }
     }
 }
@@ -186,11 +77,10 @@ repositories {
         name 'Jared maven'
         url 'https://maven.blamejared.com/'
     }
-    repositories {//Curseforge maven, in case some other maven goes offline and for mods that don't have a maven
-        maven {
-            name = "CurseForge"
-            url = "https://minecraft.curseforge.com/api/maven/"
-        }
+    //Curseforge maven, in case some other maven goes offline and for mods that don't have a maven
+    maven {
+        name = "CurseForge"
+        url = "https://minecraft.curseforge.com/api/maven/"
     }
     maven { // CC-Tweaked
         url 'https://squiddev.cc/maven/'
@@ -201,47 +91,59 @@ repositories {
 }
 
 dependencies {
-    minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
+    minecraft "com.mojang:minecraft:${project.version_minecraft}"
+    //TODO remap mappings minecraft.officialMojangMappings()
+    mappings "de.oceanlabs.mcp:mcp_snapshot:20210309-1.16.5"
+    forge "net.minecraftforge:forge:${project.version_minecraft}-${project.version_forge}"
+    modCompileOnly "mezz.jei:jei-1.16.5:7.6.1.75:api"
+    modCompileOnly "org.squiddev:cc-tweaked-1.16.4:1.94.0"
+    modCompileOnly "mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+"
+    modCompileOnly "top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api"
+    modCompileOnly group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.16.5:7.6.1.75:api")
-    compileOnly fg.deobf("org.squiddev:cc-tweaked-1.16.4:1.94.0")
-    compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
-    compile "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13')
-    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
-
-    compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
+    compile "malte0811:BlockModelSplitter:1.2.0"
 }
 
-def customGradle = rootProject.file('custom.gradle');
-if (customGradle.exists()) {
-    apply from: customGradle;
-}
+def version_replaces = [
+        'version': project.version,
+        'mc_version': version_minecraft,
+        'forge_version': version_forge
+]
 
-def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) {
-    type 'jar'
-    builtBy 'reobfJar'
-}
-
-task signJar(type: SignJar, dependsOn: jar) {
-    onlyIf {
-        project.hasProperty('keyStore')
+processResources {
+    duplicatesStrategy = DuplicatesStrategy.FAIL
+    filesMatching("META-INF/mods.toml") {
+        expand version_replaces
     }
-    if (project.hasProperty('keyStore')) {
-        keyStore = project.keyStore
-        alias = project.storeAlias
-        storePass = project.storePass
-        keyPass = project.storePass
-        inputFile = jar.archivePath
-        outputFile = jar.archivePath
-    } else {
-        logger.warn("No key store found, not signing the output jar\n")
+    //TODO Minify json resources
+    //doLast {
+    //    fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
+    //        File file -> file.setText(JsonOutput.toJson(new JsonSlurper().parse(file, 'UTF-8')))
+    //    }
+    //}
+}
+
+tasks.withType(JavaCompile).configureEach {
+    it.options.encoding = "UTF-8"
+    def targetVersion = 8
+    if (JavaVersion.current().isJava9Compatible()) {
+        it.options.release = targetVersion
     }
 }
 
-build.dependsOn signJar
+java {
+    withSourcesJar()
+}
+
+jar {
+    // add some additional metadata to the jar manifest
+    manifest {
+        attributes([
+                "MixinConfigs": "${modid}.mixins.json"
+        ])
+    }
+}
 
 String buildVersionString() {
     String ie_output_version = "${version_ie}-${version_buildnumber}"
@@ -279,258 +181,4 @@ String buildVersionString() {
             ie_output_version = "${ie_output_version}.${pre_version}"
     }
     return "${version_minecraft}-${ie_output_version}"
-}
-
-task datagenJar(type: Jar, dependsOn: datagenClasses) {
-    classifier = 'datagen'
-    from sourceSets.datagen.output
-    manifest {
-        attributes "FMLModType": "LIBRARY"
-    }
-}
-
-task apiJar(type: Jar, dependsOn: apiClasses) {
-    classifier = 'api'
-    from sourceSets.api.output
-    from sourceSets.manual.output
-}
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-    from sourceSets.manual.allSource
-    from sourceSets.api.allSource
-    from sourceSets.datagen.allSource
-}
-
-artifacts {
-    archives sourcesJar
-    archives shadowJar
-    archives datagenJar
-    archives apiJar
-}
-
-shadowJar {
-    classifier = ''
-    dependencies {
-        include(dependency('malte0811:BlockModelSplitter:.*'))
-    }
-    from(sourceSets.manual.output)
-    from(sourceSets.api.output)
-}
-
-reobf {
-    shadowJar {}
-}
-
-//Minimize/optimize all png files, requires optipng on the PATH
-// Credits: BrainStone
-void minimizePNGFile(File file) {
-    long size = file.length()
-    exec {
-        executable "optipng"
-        args "-q", "-o7", "-zm1-9", "-strip", "all", file
-    }
-    long newSize = file.length()
-    if (newSize < size) {
-        System.out.format("Reduced File size of %s from %d bytes to %d bytes (reduced by %.2f%%)\n",
-                file, size, newSize, ((double) (size - newSize)) / ((double) size) * 100.0)
-    }
-}
-
-task optimizePng {
-    def pngPatterns = ["**/*.png"]
-    doLast {
-        //Ensure the logo is minimized (we add this file to each jar)
-        //Minimize any PNGs in the source sets
-        for (dir in sourceSets.main.resources.srcDirs) {
-            fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
-        }
-    }
-}
-
-jar {
-    manifest {
-        attributes([
-                "MixinConfigs": "${modid}.mixins.json"
-        ])
-    }
-}
-
-apply plugin: 'maven'
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository(url: "file://" + (System.getenv("local_maven") != null ? System.getenv("local_maven") : System.getenv("bamboo_local_maven")))
-            pom {
-                groupId = project.group
-                version = project.version
-                artifactId = project.archivesBaseName
-                project {
-                    name project.archivesBaseName
-                    packaging 'jar'
-                    description project.archivesBaseName
-                    url ''
-                    scm {
-                        url 'https://github.com/BluSunrize/ImmersiveEngineering'
-                        connection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
-                        developerConnection 'scm:git:git@github.com/BluSunrize/ImmersiveEngineering.git'
-                    }
-                    issueManagement {
-                        system 'github'
-                        url 'https://github.com/BluSunrize/ImmersiveEngineering/issues'
-                    }
-
-                    developers {
-                        developer {
-                            id 'BluSunrize'
-                            name 'BluSunrize'
-                            roles { role 'developer' }
-                        }
-                    }
-                }
-            }
-        }
-    }
-}
-uploadArchives.dependsOn build
-
-//Code for automatic update JSON generation
-class GenerateUpdateJSON extends DefaultTask {
-    static def initVersions = { mcFromIEVersion ->
-        mcFromIEVersion.put("0.8", "1.8.9")
-        mcFromIEVersion.put("0.9", "1.9.4")
-        mcFromIEVersion.put("0.10", "1.10.2")
-        mcFromIEVersion.put("0.11", "1.11.2")
-        mcFromIEVersion.put("0.12", "1.12.2")
-        mcFromIEVersion.put("0.14", "1.14.4")
-        mcFromIEVersion.put("0.15", "1.15.2")
-        mcFromIEVersion.put("0.16", "1.16.1")
-    }
-    static def VERSION_PREFIX = "##### Version "
-    static def CHANGELOG_FOR_MANUAL = "src/main/resources/assets/immersiveengineering/changelog.json"
-    static def BUILT_SUFFIX = " - BUILT"
-    static def PRE_SUFFIX = "-pre"
-    static def RECOMMENDED = "-recommended"
-    static def LATEST = "-latest"
-    static def CF_URL = "https://minecraft.curseforge.com/projects/immersive-engineering"
-
-    static int compareVersions(String vA, String vB) {
-        String[] vPartsA = vA.split("[\\D]")
-        String[] vPartsB = vB.split("[\\D]")
-        if (vPartsA.length == 0 && vPartsB.length == 0)
-            return vA <=> vB
-        else if (vPartsA.length == 0)
-            return -1
-        else if (vPartsB.length == 0)
-            return 1
-
-        int length = Math.min(vPartsA.length, vPartsB.length)
-        for (int i = 0; i < length; i++) {
-            int pA = Integer.parseInt(vPartsA[i])
-            int pB = Integer.parseInt(vPartsB[i])
-            if (pA != pB) {
-                return pA <=> pB
-            }
-        }
-        if (vPartsA.length != vPartsB.length)
-            return vPartsA.length <=> vPartsB.length
-        return vA <=> vB
-    }
-
-    @TaskAction
-    def generate() {
-        Map<String, String> mcFromIEVersion = new HashMap<>()
-        initVersions(mcFromIEVersion)
-        File changelog = new File("changelog.md")
-        if (!changelog.exists())
-            println "Changelog does not exist! Aborting!"
-        else {
-            Map<String, Map<String, String>> changelogForVersions = new HashMap<>()
-            Map<String, String> promos = new TreeMap<>({ String s1, String s2 ->
-                compareVersions(s1, s2)
-            })
-            String currentVersion = null
-            String currentChangelog = ""
-            changelog.eachLine('ISO-8859-1', { line ->
-                if (line.startsWith(VERSION_PREFIX)) {
-                    if (currentVersion != null) {
-                        String mainVer = currentVersion.substring(0, currentVersion.indexOf('-'))
-                        String mcVer;
-                        // legacy versioning support
-                        if (mainVer.startsWith("0.")) {
-                            mcVer = mcFromIEVersion[mainVer]
-                        } else {
-                            mcVer = mainVer
-                        }
-                        if (mcVer == null) {
-                            throw new NullPointerException("Could not find MC version for " + currentVersion);
-                        }
-                        if (!changelogForVersions.containsKey(mcVer)) {
-                            promos.put(mcVer + RECOMMENDED, currentVersion)
-                            promos.put(mcVer + LATEST, currentVersion)
-                            changelogForVersions[mcVer] = new TreeMap<>({ String s1, String s2 ->
-                                compareVersions(s1, s2)
-                            })
-                        }
-                        changelogForVersions[mcVer][currentVersion] = currentChangelog
-                    }
-                    if (line.endsWith(BUILT_SUFFIX)) {
-                        currentVersion = line.substring(VERSION_PREFIX.length(), line.length() - BUILT_SUFFIX.length())
-                    } else if (!line.endsWith(PRE_SUFFIX)) {
-                        currentVersion = line.substring(VERSION_PREFIX.length())
-                    } else {
-                        currentVersion = (String) null
-                    }
-                    currentChangelog = ""
-                } else if (!line.isEmpty()) {
-                    if (currentChangelog.length() == 0)
-                        currentChangelog += line
-                    else
-                        currentChangelog += "\n" + line
-                }
-                return null
-            })
-            Map<String, Object> mainMap = new TreeMap<>({ String s1, String s2 ->
-                compareVersions(s1, s2)
-            })
-            mainMap.putAll(changelogForVersions)
-            mainMap["homepage"] = CF_URL
-            mainMap["promos"] = promos
-            //JSON for the Forge update checker
-            def updateJson = JsonOutput.toJson(mainMap)
-            updateJson = JsonOutput.prettyPrint(updateJson)
-            File outF = new File("changelog.json")
-            outF.delete()
-            outF << updateJson
-
-            //JSON for the manual
-            def mapForCurrent = changelogForVersions.getOrDefault(project.ext.version_minecraft, new HashMap<>())
-            def manualJson = JsonOutput.toJson(mapForCurrent)
-            manualJson = JsonOutput.prettyPrint(manualJson)
-            outF = new File(CHANGELOG_FOR_MANUAL)
-            outF.delete()
-            outF << manualJson
-        }
-    }
-}
-
-task updateJson(type: GenerateUpdateJSON)
-
-processResources.dependsOn updateJson
-
-apply plugin: 'org.spongepowered.mixin'
-
-mixin {
-    add sourceSets.main, "${modid}.refmap.json"
-}
-
-// Prevent Mixin annotation processor from getting into IDEA's annotation processor settings
-// Copied from Botania
-if (System.getProperty("idea.sync.active") == "true") {
-    afterEvaluate {
-        tasks.withType(JavaCompile).all {
-            it.options.annotationProcessorPath = files()
-        }
-    }
 }

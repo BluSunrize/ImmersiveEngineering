@@ -326,11 +326,11 @@ public class BasicConveyor implements IConveyorBelt
 
 			for(Direction f : DirectionUtils.VALUES)
 				for(BakedQuad q : model.getQuads(state, f, Utils.RAND))
-					if(q!=null&&q.getSprite()!=null)
-						sprites.put(f, q.getSprite());
+					if(q!=null&&q.func_187508_a()!=null)
+						sprites.put(f, q.func_187508_a());
 			for(BakedQuad q : model.getQuads(state, null, Utils.RAND))
-				if(q!=null&&q.getSprite()!=null&&q.getFace()!=null)
-					sprites.put(q.getFace(), q.getSprite());
+				if(q!=null&&q.func_187508_a()!=null&&q.getFace()!=null)
+					sprites.put(q.getFace(), q.func_187508_a());
 
 			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.containsKey(f)?sprites.get(f): sprite;
 			Function<Direction, TextureAtlasSprite> getSpriteHorizontal = f -> f.getAxis()==Axis.Y?null: sprites.containsKey(f)?sprites.get(f): sprite;
