@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.client.render.entity.ShaderMinecartRenderer;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
@@ -33,24 +33,24 @@ public class MessageMinecartShaderSync implements IMessage
 
 	public MessageMinecartShaderSync(Entity entity, Object o)
 	{
-		this.entityID = entity.getEntityId();
+		this.entityID = entity.getId();
 		if(o instanceof ShaderWrapper)
 			shader = ((ShaderWrapper)o).getShaderItem();
 		else
 			shader = ItemStack.EMPTY;
 	}
 
-	public MessageMinecartShaderSync(PacketBuffer buf)
+	public MessageMinecartShaderSync(FriendlyByteBuf buf)
 	{
 		this.entityID = buf.readInt();
-		this.shader = buf.readItemStack();
+		this.shader = buf.readItem();
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeInt(this.entityID);
-		buf.writeItemStack(this.shader);
+		buf.writeItem(this.shader);
 	}
 
 	@Override
@@ -59,25 +59,25 @@ public class MessageMinecartShaderSync implements IMessage
 		Context ctx = context.get();
 		if(ctx.getDirection().getReceptionSide()==LogicalSide.SERVER)
 		{
-			ServerWorld world = Objects.requireNonNull(ctx.getSender()).getServerWorld();
+			ServerLevel world = Objects.requireNonNull(ctx.getSender()).getLevel();
 			ctx.enqueueWork(() -> {
-				Entity entity = world.getEntityByID(entityID);
+				Entity entity = world.getEntity(entityID);
 				if(entity==null)
 					return;
 				LazyOptional<ShaderWrapper> cap = entity.getCapability(CapabilityShader.SHADER_CAPABILITY);
 				cap.ifPresent(handler ->
-						ImmersiveEngineering.packetHandler.send(PacketDistributor.DIMENSION.with(world::getDimensionKey),
+						ImmersiveEngineering.packetHandler.send(PacketDistributor.DIMENSION.with(world::dimension),
 								new MessageMinecartShaderSync(entity, handler))
 				);
 			});
 		}
 		else
 			ctx.enqueueWork(() -> {
-				World world = ImmersiveEngineering.proxy.getClientWorld();
+				Level world = ImmersiveEngineering.proxy.getClientWorld();
 				if (world!=null) // This can happen if the task is scheduled right before leaving the world
 				{
-					Entity entity = world.getEntityByID(entityID);
-					if(entity instanceof AbstractMinecartEntity)
+					Entity entity = world.getEntity(entityID);
+					if(entity instanceof AbstractMinecart)
 						ShaderMinecartRenderer.shadedCarts.put(entityID, shader);
 				}
 			});

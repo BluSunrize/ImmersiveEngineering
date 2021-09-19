@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.api.shader;
 
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 
 public class DynamicShaderLayer extends ShaderLayer
 {

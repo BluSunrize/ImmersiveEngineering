@@ -9,35 +9,35 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.util.ChatUtils;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
 
 public class MessageNoSpamChatComponents implements IMessage
 {
-	private ITextComponent[] chatMessages;
+	private Component[] chatMessages;
 
-	public MessageNoSpamChatComponents(ITextComponent... chatMessages)
+	public MessageNoSpamChatComponents(Component... chatMessages)
 	{
 		this.chatMessages = chatMessages;
 	}
 
-	public MessageNoSpamChatComponents(PacketBuffer buf)
+	public MessageNoSpamChatComponents(FriendlyByteBuf buf)
 	{
 		int l = buf.readInt();
-		chatMessages = new ITextComponent[l];
+		chatMessages = new Component[l];
 		for(int i = 0; i < l; i++)
-			chatMessages[i] = ITextComponent.Serializer.getComponentFromJson(buf.readString(1000));
+			chatMessages[i] = Component.Serializer.fromJson(buf.readUtf(1000));
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeInt(chatMessages.length);
-		for(ITextComponent component : chatMessages)
-			buf.writeString(ITextComponent.Serializer.toJson(component));
+		for(Component component : chatMessages)
+			buf.writeUtf(Component.Serializer.toJson(component));
 	}
 
 	@Override

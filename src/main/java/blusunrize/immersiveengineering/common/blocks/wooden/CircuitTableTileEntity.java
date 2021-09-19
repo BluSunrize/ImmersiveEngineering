@@ -23,23 +23,23 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -64,22 +64,22 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
 		if(!descPacket)
 		{
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 		if(!descPacket)
 		{
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 		}
 	}
 
@@ -118,19 +118,19 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
+	private AABB renderAABB;
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			renderAABB = new AxisAlignedBB(getPos().getX()-1, getPos().getY(), getPos().getZ()-1, getPos().getX()+2, getPos().getY()+2, getPos().getZ()+2);
+			renderAABB = new AABB(getBlockPos().getX()-1, getBlockPos().getY(), getBlockPos().getZ()-1, getBlockPos().getX()+2, getBlockPos().getY()+2, getBlockPos().getZ()+2);
 		return renderAABB;
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -140,8 +140,8 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	{
 		if(!isDummy())
 			return this;
-		Direction dummyDir = getFacing().rotateYCCW();
-		TileEntity tileEntity = world.getTileEntity(pos.offset(dummyDir));
+		Direction dummyDir = getFacing().getCounterClockWise();
+		BlockEntity tileEntity = level.getBlockEntity(worldPosition.relative(dummyDir));
 		if(tileEntity instanceof CircuitTableTileEntity)
 			return (CircuitTableTileEntity)tileEntity;
 		return null;
@@ -149,7 +149,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 
 	@Nonnull
 	@Override
-	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player)
+	public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player)
 	{
 		return IInteractionObjectIE.super.createMenu(id, playerInventory, player);
 	}
@@ -175,7 +175,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Override
@@ -191,7 +191,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -217,28 +217,28 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 		// Used to provide tile-dependant drops after breaking
 		if(tempMasterTE!=null)
 			return (CircuitTableTileEntity)tempMasterTE;
-		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
-		BlockPos masterPos = getPos().offset(dummyDir);
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		Direction dummyDir = isDummy()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+		BlockPos masterPos = getBlockPos().relative(dummyDir);
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return (te instanceof CircuitTableTileEntity)?(CircuitTableTileEntity)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		DeskBlock.placeDummies(getBlockState(), world, pos, ctx);
+		DeskBlock.placeDummies(getBlockState(), level, worldPosition, ctx);
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		tempMasterTE = master();
-		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
-		world.removeBlock(pos.offset(dummyDir), false);
+		Direction dummyDir = isDummy()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+		level.removeBlock(pos.relative(dummyDir), false);
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		if(isDummy())
 			return DUMMY_POS;
@@ -270,7 +270,7 @@ public class CircuitTableTileEntity extends IEBaseTileEntity implements IIEInven
 		}
 		else if(!simulate&&energy!=0)
 		{
-			this.markDirty();
+			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
 	}

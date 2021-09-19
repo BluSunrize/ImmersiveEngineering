@@ -10,21 +10,21 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceTileEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceTileEntity>
 {
 	public final BlastFurnaceTileEntity.BlastFurnaceState state;
-	public BlastFurnaceContainer(int id, PlayerInventory inventoryPlayer, BlastFurnaceTileEntity tile)
+	public BlastFurnaceContainer(int id, Inventory inventoryPlayer, BlastFurnaceTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 
 		this.addSlot(new IESlot(this, this.inv, 0, 52, 17)
 		{
 			@Override
-			public boolean isItemValid(ItemStack itemStack)
+			public boolean mayPlace(ItemStack itemStack)
 			{
 				return BlastFurnaceRecipe.findRecipe(itemStack)!=null;
 			}
@@ -40,6 +40,6 @@ public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceTileEntit
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 142));
 		state = tile.getGuiInts();
-		trackIntArray(state);
+		addDataSlots(state);
 	}
 }

@@ -12,15 +12,15 @@ import blusunrize.immersiveengineering.client.models.BakedIEModel;
 import blusunrize.immersiveengineering.mixin.accessors.client.RenderTypeAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.model.ItemOverrideList;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -33,17 +33,17 @@ import java.util.Random;
 
 public class BakedMultiLayerModel extends BakedIEModel
 {
-	private final Map<String, IBakedModel> models;
-	private final IBakedModel model;
+	private final Map<String, BakedModel> models;
+	private final BakedModel model;
 
-	public BakedMultiLayerModel(Map<String, IBakedModel> models)
+	public BakedMultiLayerModel(Map<String, BakedModel> models)
 	{
 		this.models = models;
 		RenderType[] preferences = {
-				RenderType.getSolid(),
-				RenderType.getCutout(),
-				RenderType.getCutoutMipped(),
-				RenderType.getTranslucent(),
+				RenderType.solid(),
+				RenderType.cutout(),
+				RenderType.cutoutMipped(),
+				RenderType.translucent(),
 		};
 		for(RenderType layer : preferences)
 		{
@@ -65,7 +65,7 @@ public class BakedMultiLayerModel extends BakedIEModel
 		if(current==null)
 		{
 			ImmutableList.Builder<BakedQuad> ret = new Builder<>();
-			for(IBakedModel model : models.values())
+			for(BakedModel model : models.values())
 				ret.addAll(model.getQuads(state, side, rand));
 			return ret.build();
 		}
@@ -81,9 +81,9 @@ public class BakedMultiLayerModel extends BakedIEModel
 	}
 
 	@Override
-	public boolean isAmbientOcclusion()
+	public boolean useAmbientOcclusion()
 	{
-		return model.isAmbientOcclusion();
+		return model.useAmbientOcclusion();
 	}
 
 	@Override
@@ -93,27 +93,27 @@ public class BakedMultiLayerModel extends BakedIEModel
 	}
 
 	@Override
-	public boolean isBuiltInRenderer()
+	public boolean isCustomRenderer()
 	{
-		return model.isBuiltInRenderer();
+		return model.isCustomRenderer();
 	}
 
 	@Nonnull
 	@Override
-	public TextureAtlasSprite getParticleTexture()
+	public TextureAtlasSprite getParticleIcon()
 	{
-		return model.getParticleTexture();
+		return model.getParticleIcon();
 	}
 
 	@Nonnull
 	@Override
-	public ItemOverrideList getOverrides()
+	public ItemOverrides getOverrides()
 	{
 		return model.getOverrides();
 	}
 
 	@Override
-	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat)
+	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat)
 	{
 		model.handlePerspective(cameraTransformType, mat);
 		return this;

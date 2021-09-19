@@ -16,27 +16,27 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockRenderType;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -49,9 +49,9 @@ import static blusunrize.immersiveengineering.api.IEProperties.FACING_ALL;
 
 public class FeedthroughMultiblock implements IMultiblock
 {
-	private static final ITextComponent ARBITRARY_SOLID = new TranslationTextComponent("block.immersiveengineering.arb_solid");
+	private static final Component ARBITRARY_SOLID = new TranslatableComponent("block.immersiveengineering.arb_solid");
 	public static FeedthroughMultiblock instance = new FeedthroughMultiblock();
-	static List<BlockInfo> structure = new ArrayList<>();
+	static List<StructureBlockInfo> structure = new ArrayList<>();
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
@@ -69,17 +69,17 @@ public class FeedthroughMultiblock implements IMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer)
+	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
 	{
 		if(renderStack==null||renderStack.isEmpty())
 			renderStack = new ItemStack(Connectors.feedthrough);
 
 		transform.translate(1.5, .5, .5);
-		transform.rotate(new Quaternion(0, 45, 0, true));
-		transform.rotate(new Quaternion(-30, 0, 0, true));
+		transform.mulPose(new Quaternion(0, 45, 0, true));
+		transform.mulPose(new Quaternion(-30, 0, 0, true));
 		transform.scale(1.75F, 1.75F, 1.75F);
 
-		ClientUtils.mc().getItemRenderer().renderItem(
+		ClientUtils.mc().getItemRenderer().renderStatic(
 				renderStack,
 				TransformType.GUI,
 				0xf000f0,
@@ -89,13 +89,13 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Override
-	public Vector3i getSize(@Nullable World world)
+	public Vec3i getSize(@Nullable Level world)
 	{
-		return new Vector3i(3, 1, 1);
+		return new Vec3i(3, 1, 1);
 	}
 
 	@Override
-	public void disassemble(World world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation)
+	public void disassemble(Level world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation)
 	{
 		throw new UnsupportedOperationException();
 	}
@@ -119,13 +119,13 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state, Direction side, @Nullable World world)
+	public boolean isBlockTrigger(BlockState state, Direction side, @Nullable Level world)
 	{
 		return WireApi.getWireType(state)!=null;
 	}
 
 	@Nullable
-	WireType checkValidConnector(World w, BlockPos pos, GlobalWireNetwork globalNet, Direction expectedDirection)
+	WireType checkValidConnector(Level w, BlockPos pos, GlobalWireNetwork globalNet, Direction expectedDirection)
 	{
 		LocalWireNetwork localNet = globalNet.getNullableLocalNet(pos);
 		if(localNet==null)
@@ -137,29 +137,29 @@ public class FeedthroughMultiblock implements IMultiblock
 		if(connsHere.size() > 1||connHere.getConnectionPoints().size()!=1)
 			return null;
 		BlockState state = w.getBlockState(pos);
-		if(!state.hasProperty(FACING_ALL)||state.get(FACING_ALL)!=expectedDirection)
+		if(!state.hasProperty(FACING_ALL)||state.getValue(FACING_ALL)!=expectedDirection)
 			return null;
 		return WireApi.getWireType(state);
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
+	public boolean createStructure(Level world, BlockPos pos, Direction side, Player player)
 	{
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
 		//Check
 		BlockState stateHere = world.getBlockState(pos);
 		if(stateHere.hasProperty(FACING_ALL))
-			side = stateHere.get(FACING_ALL);
+			side = stateHere.getValue(FACING_ALL);
 		WireType wire = checkValidConnector(world, pos, globalNet, side);
 		if(wire==null)
 			return false;
-		BlockPos middlePos = pos.offset(side);
+		BlockPos middlePos = pos.relative(side);
 		BlockState middle = world.getBlockState(middlePos);
-		if(!middle.getShape(world, pos).equals(VoxelShapes.fullCube())
+		if(!middle.getShape(world, pos).equals(Shapes.block())
 				||middle.getBlock().hasTileEntity(middle)
-				||middle.getRenderType()!=BlockRenderType.MODEL)
+				||middle.getRenderShape()!=RenderShape.MODEL)
 			return false;
-		BlockPos otherPos = pos.offset(side, 2);
+		BlockPos otherPos = pos.relative(side, 2);
 		WireType otherWire = checkValidConnector(world, otherPos, globalNet, side.getOpposite());
 		if(otherWire!=wire)
 			return false;
@@ -178,10 +178,10 @@ public class FeedthroughMultiblock implements IMultiblock
 				return false;
 		}
 		//Form
-		if(!world.isRemote)
+		if(!world.isClientSide)
 		{
-			BlockState state = Connectors.feedthrough.getDefaultState().with(FACING_ALL, side);
-			BlockPos masterPos = pos.offset(side);
+			BlockState state = Connectors.feedthrough.defaultBlockState().setValue(FACING_ALL, side);
+			BlockPos masterPos = pos.relative(side);
 			FeedthroughTileEntity master = setBlock(world, masterPos, state, wire, middle, 0);
 			if(master!=null)
 			{
@@ -189,37 +189,37 @@ public class FeedthroughMultiblock implements IMultiblock
 				moveConnectionsToMaster(connsHere, cpHere, world, master.getNegativePoint());
 			}
 			setBlock(world, pos, state, wire, middle, -1);
-			setBlock(world, pos.offset(side, 2), state, wire, middle, 1);
+			setBlock(world, pos.relative(side, 2), state, wire, middle, 1);
 		}
 		return true;
 	}
 
 	@Override
-	public List<BlockInfo> getStructure(@Nullable World world)
+	public List<StructureBlockInfo> getStructure(@Nullable Level world)
 	{
 		if(structure.isEmpty())
 		{
 			//Along x axis
-			structure.add(new BlockInfo(
+			structure.add(new StructureBlockInfo(
 					BlockPos.ZERO,
-					getDemoConnector().getDefaultState().with(FACING_ALL, Direction.EAST),
+					getDemoConnector().defaultBlockState().setValue(FACING_ALL, Direction.EAST),
 					null
 			));
-			structure.add(new BlockInfo(
+			structure.add(new StructureBlockInfo(
 					new BlockPos(1, 0, 0),
-					Blocks.BOOKSHELF.getDefaultState(),
+					Blocks.BOOKSHELF.defaultBlockState(),
 					null
 			));
-			structure.add(new BlockInfo(
+			structure.add(new StructureBlockInfo(
 					new BlockPos(2, 0, 0),
-					getDemoConnector().getDefaultState().with(FACING_ALL, Direction.WEST),
+					getDemoConnector().defaultBlockState().setValue(FACING_ALL, Direction.WEST),
 					null
 			));
 		}
 		return structure;
 	}
 
-	private void moveConnectionsToMaster(Collection<Connection> conns, ConnectionPoint oldCommon, World world,
+	private void moveConnectionsToMaster(Collection<Connection> conns, ConnectionPoint oldCommon, Level world,
 										 ConnectionPoint newCommon)
 	{
 		for(Connection c : ImmutableSet.copyOf(conns))
@@ -227,18 +227,18 @@ public class FeedthroughMultiblock implements IMultiblock
 	}
 
 	@Nullable
-	private FeedthroughTileEntity setBlock(World world, BlockPos here, BlockState newState, WireType wire, BlockState middle,
+	private FeedthroughTileEntity setBlock(Level world, BlockPos here, BlockState newState, WireType wire, BlockState middle,
 										   int offset)
 	{
-		world.setBlockState(here, newState);
-		TileEntity te = world.getTileEntity(here);
+		world.setBlockAndUpdate(here, newState);
+		BlockEntity te = world.getBlockEntity(here);
 		if(te instanceof FeedthroughTileEntity)
 		{
 			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)te;
 			feedthrough.reference = wire;
 			feedthrough.stateForMiddle = middle;
 			feedthrough.offset = offset;
-			world.addBlockEvent(here, feedthrough.getBlockState().getBlock(), 253, 0);
+			world.blockEvent(here, feedthrough.getBlockState().getBlock(), 253, 0);
 			return feedthrough;
 		}
 		return null;
@@ -249,7 +249,7 @@ public class FeedthroughMultiblock implements IMultiblock
 	{
 		return new ItemStack[]{
 				new ItemStack(getDemoConnector(), 2),
-				new ItemStack(Blocks.BOOKSHELF, 1).setDisplayName(ARBITRARY_SOLID)
+				new ItemStack(Blocks.BOOKSHELF, 1).setHoverName(ARBITRARY_SOLID)
 		};
 	}
 

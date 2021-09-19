@@ -10,35 +10,35 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.CoresampleTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.core.Direction;
 
-public class CoresampleRenderer extends TileEntityRenderer<CoresampleTileEntity>
+public class CoresampleRenderer extends BlockEntityRenderer<CoresampleTileEntity>
 {
-	public CoresampleRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public CoresampleRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(CoresampleTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(CoresampleTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.getWorldNonnull().isBlockLoaded(tile.getPos())||tile.coresample==null)
+		if(!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos())||tile.coresample==null)
 			return;
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.WEST?-90: tile.getFacing()==Direction.EAST?90: 0, true));
-		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -45, true));
+		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.WEST?-90: tile.getFacing()==Direction.EAST?90: 0, true));
+		matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -45, true));
 		matrixStack.translate(0, .04864, .02903);
-		ClientUtils.mc().getItemRenderer().renderItem(tile.coresample, TransformType.FIXED, combinedLightIn,
+		ClientUtils.mc().getItemRenderer().renderStatic(tile.coresample, TransformType.FIXED, combinedLightIn,
 				combinedOverlayIn, matrixStack, bufferIn);
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 }

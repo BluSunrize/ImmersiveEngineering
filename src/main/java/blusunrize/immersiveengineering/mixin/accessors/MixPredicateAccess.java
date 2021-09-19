@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.PotionBrewing.MixPredicate;
+import net.minecraft.world.item.alchemy.PotionBrewing.Mix;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(MixPredicate.class)
+@Mixin(Mix.class)
 public interface MixPredicateAccess
 {
 	@Accessor
-	Ingredient getReagent();
+	Ingredient getIngredient();
 }

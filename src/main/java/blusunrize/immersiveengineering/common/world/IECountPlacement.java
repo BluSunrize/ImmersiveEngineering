@@ -13,31 +13,32 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.feature.FeatureSpread;
-import net.minecraft.world.gen.feature.IFeatureConfig;
-import net.minecraft.world.gen.placement.IPlacementConfig;
-import net.minecraft.world.gen.placement.SimplePlacement;
+import net.minecraft.core.BlockPos;
+import net.minecraft.util.UniformInt;
+import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
+import net.minecraft.world.level.levelgen.placement.SimpleFeatureDecorator;
 
 import java.util.List;
 import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class IECountPlacement extends SimplePlacement<IECountPlacement.IEFeatureSpreadConfig>
+public class IECountPlacement extends SimpleFeatureDecorator<IECountPlacement.IEFeatureSpreadConfig>
 {
 	public IECountPlacement()
 	{
 		super(IEFeatureSpreadConfig.CODEC);
 	}
 
-	public Stream<BlockPos> getPositions(Random random, IEFeatureSpreadConfig config, BlockPos pos)
+	@Override
+	public Stream<BlockPos> place(Random random, IEFeatureSpreadConfig config, BlockPos pos)
 	{
-		return IntStream.range(0, config.getSpreadFeature().getSpread(random))
+		return IntStream.range(0, config.getSpreadFeature().sample(random))
 				.mapToObj(count -> pos);
 	}
 
-	public static class IEFeatureSpreadConfig implements IPlacementConfig, IFeatureConfig
+	public static class IEFeatureSpreadConfig implements DecoratorConfiguration, FeatureConfiguration
 	{
 		public static final Codec<IEFeatureSpreadConfig> CODEC = RecordCodecBuilder.create(
 				app -> app.group(
@@ -57,9 +58,9 @@ public class IECountPlacement extends SimplePlacement<IECountPlacement.IEFeature
 			count = path;
 		}
 
-		public FeatureSpread getSpreadFeature()
+		public UniformInt getSpreadFeature()
 		{
-			return FeatureSpread.create(IEServerConfig.getRawConfig().getInt(count));
+			return UniformInt.fixed(IEServerConfig.getRawConfig().getInt(count));
 		}
 	}
 }

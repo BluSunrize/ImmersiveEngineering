@@ -11,19 +11,19 @@ package blusunrize.lib.manual;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.PrivateAccess;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Lighting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.*;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import java.util.ArrayList;
@@ -52,7 +52,7 @@ public class ManualElementCrafting extends SpecialManualElements
 	@Override
 	public void recalculateCraftingRecipes()
 	{
-		if(Minecraft.getInstance().world==null)
+		if(Minecraft.getInstance().level==null)
 			return;
 		this.providedItems.clear();
 		for(int iStack = 0; iStack < recipeRows.length; iStack++)
@@ -76,24 +76,24 @@ public class ManualElementCrafting extends SpecialManualElements
 
 	private void checkAllRecipesFor(Object stack, int recipeIndex)
 	{
-		RecipeManager recipeManager = Minecraft.getInstance().world.getRecipeManager();
-		Map<ResourceLocation, IRecipe<CraftingInventory>> recipes = PrivateAccess.getRecipes(
-				recipeManager, IRecipeType.CRAFTING
+		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
+		Map<ResourceLocation, Recipe<CraftingContainer>> recipes = PrivateAccess.getRecipes(
+				recipeManager, RecipeType.CRAFTING
 		);
 		if(stack instanceof ResourceLocation)
 		{
-			IRecipe<CraftingInventory> recipe = recipes.get(stack);
+			Recipe<CraftingContainer> recipe = recipes.get(stack);
 			if(recipe!=null)
 				checkRecipe(recipe, stack, recipeIndex);
 		}
 		else
-			for(IRecipe<CraftingInventory> recipe : recipes.values())
+			for(Recipe<CraftingContainer> recipe : recipes.values())
 				checkRecipe(recipe, stack, recipeIndex);
 	}
 
-	private void checkRecipe(IRecipe<CraftingInventory> rec, Object stack, int recipeIndex)
+	private void checkRecipe(Recipe<CraftingContainer> rec, Object stack, int recipeIndex)
 	{
-		boolean matches = !rec.getRecipeOutput().isEmpty()&&ManualUtils.stackMatchesObject(rec.getRecipeOutput(), stack);
+		boolean matches = !rec.getResultItem().isEmpty()&&ManualUtils.stackMatchesObject(rec.getResultItem(), stack);
 		if(!matches&&stack instanceof ResourceLocation&&stack.equals(rec.getId()))
 			matches = true;
 		if(matches)
@@ -103,7 +103,7 @@ public class ManualElementCrafting extends SpecialManualElements
 			int recipeHeight;
 			if(rec instanceof ShapelessRecipe)
 			{
-				recipeWidth = MathHelper.clamp(ingredientsPre.size(), 1, 3);
+				recipeWidth = Mth.clamp(ingredientsPre.size(), 1, 3);
 				recipeHeight = (ingredientsPre.size()-1)/3+1;
 			}
 			else if(rec instanceof IShapedRecipe)
@@ -127,7 +127,7 @@ public class ManualElementCrafting extends SpecialManualElements
 						pIngredients[index] = new PositionedItemStack(ingredientsPre.get(index),
 								xBase+widthPos*18, heightPos*18+yOffset);
 				}
-			pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getRecipeOutput(), xBase+recipeWidth*18+18,
+			pIngredients[pIngredients.length-1] = new PositionedItemStack(rec.getResultItem(), xBase+recipeWidth*18+18,
 					recipeHeight*9-8+yOffset);
 			if(this.heightPixels[recipeIndex] < recipeHeight*18)
 			{
@@ -138,7 +138,7 @@ public class ManualElementCrafting extends SpecialManualElements
 							oldStack.y += yOffset;
 			}
 			this.recipeLayout[recipeIndex].add(pIngredients);
-			addProvidedItem(rec.getRecipeOutput());
+			addProvidedItem(rec.getResultItem());
 		}
 	}
 
@@ -194,9 +194,9 @@ public class ManualElementCrafting extends SpecialManualElements
 	}
 
 	@Override
-	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
+	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
-		RenderHelper.enableStandardItemLighting();
+		Lighting.turnBackOn();
 
 		int totalYOff = 0;
 		highlighted = ItemStack.EMPTY;
@@ -211,14 +211,14 @@ public class ManualElementCrafting extends SpecialManualElements
 					{
 						if(pstack.x > maxX)
 							maxX = pstack.x;
-						AbstractGui.fill(transform, x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666);
+						GuiComponent.fill(transform, x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666);
 					}
 
-				IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+				MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 				ManualUtils.drawTexturedRect(transform, buffers, manual.texture, x+maxX-17,
 						y+totalYOff+heightPixels[i]/2-5, 16, 10, 0/256f,
 						16/256f, 226/256f, 236/256f);
-				buffers.finish();
+				buffers.endBatch();
 
 				totalYOff += heightPixels[i]+8;
 			}

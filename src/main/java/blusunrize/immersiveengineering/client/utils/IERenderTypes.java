@@ -11,13 +11,21 @@ package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.RenderState.*;
-import net.minecraft.client.renderer.texture.AtlasTexture;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.renderer.RenderStateShard.AlphaStateShard;
+import net.minecraft.client.renderer.RenderStateShard.CullStateShard;
+import net.minecraft.client.renderer.RenderStateShard.FogStateShard;
+import net.minecraft.client.renderer.RenderStateShard.LightmapStateShard;
+import net.minecraft.client.renderer.RenderStateShard.LineStateShard;
+import net.minecraft.client.renderer.RenderStateShard.ShadeModelStateShard;
+import net.minecraft.client.renderer.RenderStateShard.TextureStateShard;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import org.lwjgl.opengl.GL11;
 
 import java.util.OptionalDouble;
@@ -36,218 +44,218 @@ public class IERenderTypes
 	public static final RenderType POSITION_COLOR_TEX_LIGHTMAP;
 	public static final RenderType POSITION_COLOR_LIGHTMAP;
 	public static final RenderType ITEM_DAMAGE_BAR;
-	protected static final RenderState.ShadeModelState SHADE_ENABLED = new RenderState.ShadeModelState(true);
-	protected static final RenderState.TextureState BLOCK_SHEET_MIPPED = new RenderState.TextureState(AtlasTexture.LOCATION_BLOCKS_TEXTURE, false, true);
-	protected static final RenderState.LightmapState LIGHTMAP_DISABLED = new RenderState.LightmapState(false);
-	protected static final RenderState.TransparencyState TRANSLUCENT_TRANSPARENCY = new RenderState.TransparencyState("translucent_transparency", () -> {
+	protected static final RenderStateShard.ShadeModelStateShard SHADE_ENABLED = new RenderStateShard.ShadeModelStateShard(true);
+	protected static final RenderStateShard.TextureStateShard BLOCK_SHEET_MIPPED = new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, true);
+	protected static final RenderStateShard.LightmapStateShard LIGHTMAP_DISABLED = new RenderStateShard.LightmapStateShard(false);
+	protected static final RenderStateShard.TransparencyStateShard TRANSLUCENT_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("translucent_transparency", () -> {
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
 	}, RenderSystem::disableBlend);
-	protected static final RenderState.TransparencyState NO_TRANSPARENCY = new RenderState.TransparencyState(
+	protected static final RenderStateShard.TransparencyStateShard NO_TRANSPARENCY = new RenderStateShard.TransparencyStateShard(
 			"no_transparency",
 			RenderSystem::disableBlend, () -> {
 	});
-	protected static final RenderState.DepthTestState DEPTH_ALWAYS = new RenderState.DepthTestState("always", GL11.GL_ALWAYS);
+	protected static final RenderStateShard.DepthTestStateShard DEPTH_ALWAYS = new RenderStateShard.DepthTestStateShard("always", GL11.GL_ALWAYS);
 
 	static
 	{
-		RenderType.State fullbrightSolidState = RenderType.State.getBuilder()
-				.shadeModel(SHADE_ENABLED)
-				.lightmap(LIGHTMAP_DISABLED)
-				.texture(BLOCK_SHEET_MIPPED)
-				.build(true);
-		SOLID_FULLBRIGHT = RenderType.makeType(
+		RenderType.CompositeState fullbrightSolidState = RenderType.CompositeState.builder()
+				.setShadeModelState(SHADE_ENABLED)
+				.setLightmapState(LIGHTMAP_DISABLED)
+				.setTextureState(BLOCK_SHEET_MIPPED)
+				.createCompositeState(true);
+		SOLID_FULLBRIGHT = RenderType.create(
 				ImmersiveEngineering.MODID+":block_fullbright",
-				DefaultVertexFormats.BLOCK,
+				DefaultVertexFormat.BLOCK,
 				GL11.GL_QUADS,
 				256,//TODO is that a good value?
 				fullbrightSolidState
 		);
-		RenderType.State translucentNoDepthState = RenderType.State.getBuilder().transparency(TRANSLUCENT_TRANSPARENCY)
-				.line(new LineState(OptionalDouble.of(2)))
-				.texture(new TextureState())
-				.depthTest(DEPTH_ALWAYS)
-				.build(false);
-		RenderType.State translucentNoTextureState = RenderType.State.getBuilder()
-				.transparency(TRANSLUCENT_TRANSPARENCY)
-				.texture(new TextureState())
-				.build(false);
-		TRANSLUCENT_LINES = RenderType.makeType(
+		RenderType.CompositeState translucentNoDepthState = RenderType.CompositeState.builder().setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setLineState(new LineStateShard(OptionalDouble.of(2)))
+				.setTextureState(new TextureStateShard())
+				.setDepthTestState(DEPTH_ALWAYS)
+				.createCompositeState(false);
+		RenderType.CompositeState translucentNoTextureState = RenderType.CompositeState.builder()
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setTextureState(new TextureStateShard())
+				.createCompositeState(false);
+		TRANSLUCENT_LINES = RenderType.create(
 				ImmersiveEngineering.MODID+":translucent_lines",
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_LINES,
 				256,//TODO is that a good value?
 				translucentNoDepthState
 		);
-		LINES = RenderType.makeType(
+		LINES = RenderType.create(
 				ImmersiveEngineering.MODID+":lines",
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_LINES,
 				256,//TODO is that a good value?
-				RenderType.State.getBuilder().build(false)
+				RenderType.CompositeState.builder().createCompositeState(false)
 		);
-		TRANSLUCENT_TRIANGLES = RenderType.makeType(
+		TRANSLUCENT_TRIANGLES = RenderType.create(
 				ImmersiveEngineering.MODID+":translucent_triangle_fan",
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_TRIANGLES,
 				256,//TODO is that a good value?
 				translucentNoDepthState
 		);
-		TRANSLUCENT_POSITION_COLOR = RenderType.makeType(
+		TRANSLUCENT_POSITION_COLOR = RenderType.create(
 				ImmersiveEngineering.MODID+":translucent_pos_color",
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_QUADS,
 				256,//TODO is that a good value?
 				translucentNoTextureState
 		);
-		TRANSLUCENT_NO_DEPTH = RenderType.makeType(
+		TRANSLUCENT_NO_DEPTH = RenderType.create(
 				ImmersiveEngineering.MODID+":translucent_no_depth",
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_QUADS,
 				256,//TODO is that a good value?
 				translucentNoDepthState
 		);
-		RenderType.State chunkMarkerState = RenderType.State.getBuilder()
-				.texture(new TextureState())
-				.transparency(TRANSLUCENT_TRANSPARENCY)
-				.cull(new CullState(false))
-				.shadeModel(new ShadeModelState(true))
-				.line(new LineState(OptionalDouble.of(5)))
-				.build(false);
-		CHUNK_MARKER = RenderType.makeType(
+		RenderType.CompositeState chunkMarkerState = RenderType.CompositeState.builder()
+				.setTextureState(new TextureStateShard())
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setCullState(new CullStateShard(false))
+				.setShadeModelState(new ShadeModelStateShard(true))
+				.setLineState(new LineStateShard(OptionalDouble.of(5)))
+				.createCompositeState(false);
+		CHUNK_MARKER = RenderType.create(
 				ImmersiveEngineering.MODID+":chunk_marker",
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_LINES,
 				256,//TODO is that a good value?
 				chunkMarkerState
 		);
-		VEIN_MARKER = RenderType.makeType(
+		VEIN_MARKER = RenderType.create(
 				ImmersiveEngineering.MODID+":vein_marker",
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_LINE_LOOP,
 				256,//TODO is that a good value?
 				chunkMarkerState
 		);
-		POSITION_COLOR_TEX_LIGHTMAP = RenderType.makeType(
+		POSITION_COLOR_TEX_LIGHTMAP = RenderType.create(
 				ImmersiveEngineering.MODID+":pos_color_tex_lightmap",
-				DefaultVertexFormats.POSITION_COLOR_TEX_LIGHTMAP,
+				DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP,
 				GL11.GL_QUADS,
 				256,//TODO is that a good value?
-				RenderType.State.getBuilder()
-						.texture(new TextureState(
-								PlayerContainer.LOCATION_BLOCKS_TEXTURE,
+				RenderType.CompositeState.builder()
+						.setTextureState(new TextureStateShard(
+								InventoryMenu.BLOCK_ATLAS,
 								false, false))
-						.lightmap(new LightmapState(true))
-						.build(false)
+						.setLightmapState(new LightmapStateShard(true))
+						.createCompositeState(false)
 		);
-		POSITION_COLOR_LIGHTMAP = RenderType.makeType(
+		POSITION_COLOR_LIGHTMAP = RenderType.create(
 				ImmersiveEngineering.MODID+":pos_color_lightmap",
-				DefaultVertexFormats.POSITION_COLOR_LIGHTMAP,
+				DefaultVertexFormat.POSITION_COLOR_LIGHTMAP,
 				GL11.GL_QUADS,
 				256,//TODO is that a good value?
-				RenderType.State.getBuilder()
-						.texture(new TextureState())
-						.lightmap(new LightmapState(true))
-						.build(false)
+				RenderType.CompositeState.builder()
+						.setTextureState(new TextureStateShard())
+						.setLightmapState(new LightmapStateShard(true))
+						.createCompositeState(false)
 		);
-		ITEM_DAMAGE_BAR = RenderType.makeType(
+		ITEM_DAMAGE_BAR = RenderType.create(
 				ImmersiveEngineering.MODID+":item_damage_bar",
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_QUADS,
 				256,
-				RenderType.State.getBuilder()
-						.depthTest(DEPTH_ALWAYS)
-						.texture(new TextureState())
-						.alpha(new AlphaState(0))
-						.transparency(NO_TRANSPARENCY)
-						.build(false)
+				RenderType.CompositeState.builder()
+						.setDepthTestState(DEPTH_ALWAYS)
+						.setTextureState(new TextureStateShard())
+						.setAlphaState(new AlphaStateShard(0))
+						.setTransparencyState(NO_TRANSPARENCY)
+						.createCompositeState(false)
 		);
 	}
 
 	public static RenderType getGui(ResourceLocation texture)
 	{
-		return RenderType.makeType(
+		return RenderType.create(
 				"gui_"+texture,
-				DefaultVertexFormats.POSITION_COLOR_TEX,
+				DefaultVertexFormat.POSITION_COLOR_TEX,
 				GL11.GL_QUADS,
 				256,
-				RenderType.State.getBuilder()
-						.texture(new TextureState(texture, false, false))
-						.alpha(new AlphaState(0.5F))
-						.build(false)
+				RenderType.CompositeState.builder()
+						.setTextureState(new TextureStateShard(texture, false, false))
+						.setAlphaState(new AlphaStateShard(0.5F))
+						.createCompositeState(false)
 		);
 	}
 
 	public static RenderType getLines(float lineWidth)
 	{
-		return RenderType.makeType(
+		return RenderType.create(
 				"lines_color_pos_"+lineWidth,
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_LINES,
 				256,
 				//TODO more state?
-				RenderType.State.getBuilder()
-						.line(new LineState(OptionalDouble.of(lineWidth)))
-						.texture(new TextureState())
-						.build(false)
+				RenderType.CompositeState.builder()
+						.setLineState(new LineStateShard(OptionalDouble.of(lineWidth)))
+						.setTextureState(new TextureStateShard())
+						.createCompositeState(false)
 		);
 	}
 
 	public static RenderType getPoints(float pointSize)
 	{
 		//Not really a fog state, but using it like this makes using RenderType.State with custom states possible
-		FogState setPointSize = new FogState(
+		FogStateShard setPointSize = new FogStateShard(
 				ImmersiveEngineering.MODID+":pointsize_"+pointSize,
 				() -> GL11.glPointSize(pointSize),
 				() -> {
 					GL11.glPointSize(1);
 				}
 		);
-		return RenderType.makeType(
+		return RenderType.create(
 				"point_pos_color_"+pointSize,
-				DefaultVertexFormats.POSITION_COLOR,
+				DefaultVertexFormat.POSITION_COLOR,
 				GL11.GL_POINTS,
 				256,
 				//TODO more state?
-				RenderType.State.getBuilder()
-						.fog(setPointSize)
-						.texture(new TextureState())
-						.build(false)
+				RenderType.CompositeState.builder()
+						.setFogState(setPointSize)
+						.setTextureState(new TextureStateShard())
+						.createCompositeState(false)
 		);
 	}
 
 	public static RenderType getPositionTex(ResourceLocation texture)
 	{
-		return RenderType.makeType(
+		return RenderType.create(
 				ImmersiveEngineering.MODID+":pos_tex_"+texture,
-				DefaultVertexFormats.POSITION_TEX,
+				DefaultVertexFormat.POSITION_TEX,
 				GL11.GL_QUADS,
 				256,//TODO is that a good value?
-				RenderType.State.getBuilder()
-						.texture(new TextureState(
+				RenderType.CompositeState.builder()
+						.setTextureState(new TextureStateShard(
 								texture,
 								false, false))
-						.build(false)
+						.createCompositeState(false)
 		);
 	}
 
 	public static RenderType getFullbrightTranslucent(ResourceLocation resourceLocation)
 	{
-		RenderType.State glState = RenderType.State.getBuilder()
-				.transparency(TRANSLUCENT_TRANSPARENCY)
-				.texture(new TextureState(resourceLocation, false, false))
-				.lightmap(new LightmapState(false))
-				.build(false);
-		return RenderType.makeType(
+		RenderType.CompositeState glState = RenderType.CompositeState.builder()
+				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+				.setTextureState(new TextureStateShard(resourceLocation, false, false))
+				.setLightmapState(new LightmapStateShard(false))
+				.createCompositeState(false);
+		return RenderType.create(
 				"immersiveengineering:fullbright_translucent_"+resourceLocation,
-				DefaultVertexFormats.BLOCK,
+				DefaultVertexFormat.BLOCK,
 				GL11.GL_QUADS,
 				256,
 				glState
 		);
 	}
 
-	public static IRenderTypeBuffer wrapWithStencil(IRenderTypeBuffer in, Consumer<IVertexBuilder> setupStencilArea, String name, int ref)
+	public static MultiBufferSource wrapWithStencil(MultiBufferSource in, Consumer<VertexConsumer> setupStencilArea, String name, int ref)
 	{
 		return wrapWithAdditional(
 				in,
@@ -262,11 +270,11 @@ public class IERenderTypes
 					GL11.glStencilMask(0xFF);
 					RenderSystem.clear(GL11.GL_STENCIL_BUFFER_BIT, true);
 					RenderSystem.disableTexture();
-					Tessellator tes = Tessellator.getInstance();
-					BufferBuilder bb = tes.getBuffer();
-					bb.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION);
+					Tesselator tes = Tesselator.getInstance();
+					BufferBuilder bb = tes.getBuilder();
+					bb.begin(GL11.GL_QUADS, DefaultVertexFormat.POSITION);
 					setupStencilArea.accept(bb);
-					tes.draw();
+					tes.end();
 					RenderSystem.enableTexture();
 					RenderSystem.colorMask(true, true, true, true);
 					RenderSystem.depthMask(true);
@@ -277,7 +285,7 @@ public class IERenderTypes
 		);
 	}
 
-	public static IRenderTypeBuffer disableLighting(IRenderTypeBuffer in)
+	public static MultiBufferSource disableLighting(MultiBufferSource in)
 	{
 		return wrapWithAdditional(
 				in,
@@ -288,7 +296,7 @@ public class IERenderTypes
 		);
 	}
 
-	public static IRenderTypeBuffer disableCull(IRenderTypeBuffer in)
+	public static MultiBufferSource disableCull(MultiBufferSource in)
 	{
 		return wrapWithAdditional(
 				in,
@@ -298,8 +306,8 @@ public class IERenderTypes
 		);
 	}
 
-	private static IRenderTypeBuffer wrapWithAdditional(
-			IRenderTypeBuffer in,
+	private static MultiBufferSource wrapWithAdditional(
+			MultiBufferSource in,
 			String name,
 			Runnable setup,
 			Runnable teardown
@@ -308,10 +316,10 @@ public class IERenderTypes
 		return type -> {
 			return in.getBuffer(new RenderType(
 					ImmersiveEngineering.MODID+":"+type+"_"+name,
-					type.getVertexFormat(),
-					type.getDrawMode(),
-					type.getBufferSize(),
-					type.isUseDelegate(),
+					type.format(),
+					type.mode(),
+					type.bufferSize(),
+					type.affectsCrumbling(),
 					false, // needsSorting is private and shouldn't be too relevant here
 					() -> {
 						type.setupRenderState();

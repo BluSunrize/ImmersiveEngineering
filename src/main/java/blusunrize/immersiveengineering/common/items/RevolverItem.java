@@ -34,40 +34,49 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.texture.AtlasTexture;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.EquipmentSlotType.Group;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.*;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot.Type;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -94,7 +103,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 {
 	public RevolverItem()
 	{
-		super("revolver", withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
+		super("revolver", withIEOBJRender().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "REVOLVER");
 	}
 
 	public static UUID speedModUUID = Utils.generateNewUUID();
@@ -115,7 +124,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			}
 	}
 
-	public static void retrieveRevolverTextures(AtlasTexture map)
+	public static void retrieveRevolverTextures(TextureAtlas map)
 	{
 		revolverDefaultTexture = map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver"));
 		for(String key : specialRevolversByTag.keySet())
@@ -138,14 +147,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	@Nullable
 	@Override
-	public CompoundNBT getShareTag(ItemStack stack)
+	public CompoundTag getShareTag(ItemStack stack)
 	{
-		CompoundNBT ret = super.getShareTag(stack);
+		CompoundTag ret = super.getShareTag(stack);
 		if(ret==null)
-			ret = new CompoundNBT();
+			ret = new CompoundTag();
 		else
 			ret = ret.copy();
-		final CompoundNBT retFinal = ret;
+		final CompoundTag retFinal = ret;
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).ifPresent(handler ->
 		{
 			NonNullList<ItemStack> bullets = NonNullList.withSize(getBulletCount(stack), ItemStack.EMPTY);
@@ -157,7 +166,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
@@ -186,7 +195,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
@@ -204,7 +213,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
+	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
 		stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.ifPresent(inv -> {
@@ -217,53 +226,53 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	@Nonnull
 	@Override
-	public String getTranslationKey(ItemStack stack)
+	public String getDescriptionId(ItemStack stack)
 	{
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())
-			return this.getTranslationKey()+"."+tag;
-		return super.getTranslationKey(stack);
+			return this.getDescriptionId()+"."+tag;
+		return super.getDescriptionId(stack);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"revolver."+tag));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"revolver."+tag));
 		else if(ItemNBTHelper.hasKey(stack, "flavour"))
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
 		else
-			list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"revolver"));
+			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"revolver"));
 
-		CompoundNBT perks = getPerks(stack);
-		for(String key : perks.keySet())
+		CompoundTag perks = getPerks(stack);
+		for(String key : perks.getAllKeys())
 		{
 			RevolverPerk perk = RevolverPerk.get(key);
 			if(perk!=null)
-				list.add(new StringTextComponent("  ").appendSibling(perk.getDisplayString(perks.getDouble(key))));
+				list.add(new TextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
 		}
 	}
 
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlotType slot, ItemStack stack)
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(@Nonnull EquipmentSlot slot, ItemStack stack)
 	{
 		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		if(slot==EquipmentSlotType.MAINHAND)
+		if(slot==EquipmentSlot.MAINHAND)
 		{
 			if(getUpgrades(stack).getBoolean("fancyAnimation"))
-				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2, Operation.ADDITION));
+				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2, Operation.ADDITION));
 			double melee = getUpgradeValue_d(stack, "melee");
 			if(melee!=0)
 			{
-				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(ATTACK_DAMAGE_MODIFIER, "Weapon modifier", melee, Operation.ADDITION));
-				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(ATTACK_SPEED_MODIFIER, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
+				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", melee, Operation.ADDITION));
+				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(BASE_ATTACK_SPEED_UUID, "Weapon modifier", -2.4000000953674316D, Operation.ADDITION));
 			}
 		}
-		if(slot.getSlotType()==Group.HAND)
+		if(slot.getType()==Type.HAND)
 		{
 			double speed = getUpgradeValue_d(stack, "speed");
 			if(speed!=0)
@@ -277,7 +286,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
+	public void inventoryTick(ItemStack stack, Level world, Entity ent, int slot, boolean inHand)
 	{
 		super.inventoryTick(stack, world, ent, slot, inHand);
 		{
@@ -301,52 +310,52 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack)
+	public UseAnim getUseAnimation(ItemStack stack)
 	{
-		return UseAction.BOW;
+		return UseAnim.BOW;
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
-		ItemStack revolver = player.getHeldItem(hand);
-		if(!world.isRemote)
+		ItemStack revolver = player.getItemInHand(hand);
+		if(!world.isClientSide)
 		{
-			if(player.isSneaking())
+			if(player.isShiftKeyDown())
 			{
-				openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
-				return new ActionResult<>(ActionResultType.SUCCESS, revolver);
+				openGui(player, hand==InteractionHand.MAIN_HAND?EquipmentSlot.MAINHAND: EquipmentSlot.OFFHAND);
+				return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 			}
-			else if(player.getCooledAttackStrength(1) >= 1)
+			else if(player.getAttackStrengthScale(1) >= 1)
 			{
 				if(this.getUpgrades(revolver).getBoolean("nerf"))
-					world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.PLAYERS, 1f, 0.6f);
+					world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 1f, 0.6f);
 				else
 				{
 					if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
-						return new ActionResult<>(ActionResultType.PASS, revolver);
+						return new InteractionResultHolder<>(InteractionResult.PASS, revolver);
 
 					NonNullList<ItemStack> bullets = getBullets(revolver, false);
 
 					if(isEmpty(revolver, false))
-						for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+						for(int i = 0; i < player.inventory.getContainerSize(); i++)
 						{
-							ItemStack stack = player.inventory.getStackInSlot(i);
+							ItemStack stack = player.inventory.getItem(i);
 							if(stack.getItem() instanceof SpeedloaderItem&&!((SpeedloaderItem)stack.getItem()).isEmpty(stack))
 							{
 								for(ItemStack b : bullets)
 									if(!b.isEmpty())
-										world.addEntity(new ItemEntity(world, player.getPosX(), player.getPosY(), player.getPosZ(), b));
+										world.addFreshEntity(new ItemEntity(world, player.getX(), player.getY(), player.getZ(), b));
 								setBullets(revolver, ((SpeedloaderItem)stack.getItem()).getContainedItems(stack), true);
 								((SpeedloaderItem)stack.getItem()).setContainedItems(stack, NonNullList.withSize(8, ItemStack.EMPTY));
-								player.inventory.markDirty();
-								if(player instanceof ServerPlayerEntity)
-									ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
+								player.inventory.setChanged();
+								if(player instanceof ServerPlayer)
+									ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
 											new MessageSpeedloaderSync(i, hand));
 
 								ItemNBTHelper.putInt(revolver, "reload", 60);
-								return new ActionResult<>(ActionResultType.SUCCESS, revolver);
+								return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 							}
 						}
 
@@ -358,20 +367,20 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 							IBullet bullet = ((BulletItem)bullet0).getType();
 							if(bullet!=null)
 							{
-								Vector3d vec = player.getLookVec();
+								Vec3 vec = player.getLookAngle();
 								boolean electro = getUpgrades(revolver).getBoolean("electro");
 								int count = bullet.getProjectileCount(player);
 								if(count==1)
 								{
 									Entity entBullet = getBullet(player, vec, bullet, electro);
-									player.world.addEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
+									player.level.addFreshEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 								}
 								else
 									for(int i = 0; i < count; i++)
 									{
-										Vector3d vecDir = vec.add(player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1, player.getRNG().nextGaussian()*.1);
+										Vec3 vecDir = vec.add(player.getRandom().nextGaussian()*.1, player.getRandom().nextGaussian()*.1, player.getRandom().nextGaussian()*.1);
 										Entity entBullet = getBullet(player, vecDir, bullet, electro);
-										player.world.addEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
+										player.level.addFreshEntity(bullet.getProjectile(player, bullets.get(0), entBullet, electro));
 									}
 								bullets.set(0, bullet.getCasing(bullets.get(0)).copy());
 
@@ -382,25 +391,25 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 								SoundEvent sound = bullet.getSound();
 								if(sound==null)
 									sound = IESounds.revolverFire;
-								world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), sound, SoundCategory.PLAYERS, noise, 1f);
+								world.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, noise, 1f);
 							}
 							else
-								world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1f, 1f);
+								world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1f, 1f);
 						}
 						else
-							world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), SoundEvents.BLOCK_NOTE_BLOCK_HAT, SoundCategory.PLAYERS, 1f, 1f);
+							world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.NOTE_BLOCK_HAT, SoundSource.PLAYERS, 1f, 1f);
 
 						rotateCylinder(revolver, player, true, bullets);
 						ItemNBTHelper.putInt(revolver, "cooldown", getMaxShootCooldown(revolver));
-						return new ActionResult<>(ActionResultType.SUCCESS, revolver);
+						return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 					}
 				}
 			}
 		}
-		else if(!player.isSneaking())
+		else if(!player.isShiftKeyDown())
 		{
 			if(getShootCooldown(revolver) > 0||ItemNBTHelper.hasKey(revolver, "reload"))
-				return new ActionResult<>(ActionResultType.PASS, revolver);
+				return new InteractionResultHolder<>(InteractionResult.PASS, revolver);
 			NonNullList<ItemStack> bullets = getBullets(revolver);
 			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem)
 			{
@@ -408,15 +417,15 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				if(shader!=null)
 				{
 
-					Vector3d pos = Utils.getLivingFrontPos(player, .75, player.getHeight()*.75, ItemUtils.getLivingHand(player, hand), false, 1);
+					Vec3 pos = Utils.getLivingFrontPos(player, .75, player.getBbHeight()*.75, ItemUtils.getLivingHand(player, hand), false, 1);
 					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver,
 							shader.getRight().getShaderType().toString(), pos,
-							Vector3d.fromPitchYaw(player.getPitchYaw()), .125f);
+							Vec3.directionFromRotation(player.getRotationVector()), .125f);
 				}
 			}
-			return new ActionResult<>(ActionResultType.SUCCESS, revolver);
+			return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 		}
-		return new ActionResult<>(ActionResultType.SUCCESS, revolver);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, revolver);
 	}
 
 	public int getShootCooldown(ItemStack stack)
@@ -457,11 +466,11 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	/* ------------- BULLET UTILITY ------------- */
 
-	private RevolvershotEntity getBullet(PlayerEntity player, Vector3d vecDir, IBullet type, boolean electro)
+	private RevolvershotEntity getBullet(Player player, Vec3 vecDir, IBullet type, boolean electro)
 	{
 		IELogger.logger.info("Starting with motion vector {}", vecDir);
-		RevolvershotEntity bullet = new RevolvershotEntity(player.world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
-		bullet.setMotion(vecDir.scale(2));
+		RevolvershotEntity bullet = new RevolvershotEntity(player.level, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, type);
+		bullet.setDeltaMovement(vecDir.scale(2));
 		bullet.bulletElectro = electro;
 		return bullet;
 	}
@@ -480,17 +489,17 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				inv.setStackInSlot(i, bullets.get(i));
 	}
 
-	public void rotateCylinder(ItemStack revolver, PlayerEntity player, boolean forward, NonNullList<ItemStack> bullets)
+	public void rotateCylinder(ItemStack revolver, Player player, boolean forward, NonNullList<ItemStack> bullets)
 	{
 		NonNullList<ItemStack> cycled = NonNullList.withSize(getBulletCount(revolver), ItemStack.EMPTY);
 		int offset = forward?-1: 1;
 		for(int i = 0; i < cycled.size(); i++)
 			cycled.set((i+offset+cycled.size())%cycled.size(), bullets.get(i));
 		setBullets(revolver, cycled, false);
-		player.inventory.markDirty();
+		player.inventory.setChanged();
 	}
 
-	public void rotateCylinder(ItemStack revolver, PlayerEntity player, boolean forward)
+	public void rotateCylinder(ItemStack revolver, Player player, boolean forward)
 	{
 		NonNullList<ItemStack> bullets = getBullets(revolver);
 		rotateCylinder(revolver, player, forward, bullets);
@@ -516,7 +525,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	/* ------------- UPGRADES & PERKS ------------- */
 
 	@Override
-	public CompoundNBT getUpgradeBase(ItemStack stack)
+	public CompoundTag getUpgradeBase(ItemStack stack)
 	{
 		return ItemNBTHelper.getTagCompound(stack, "baseUpgrades");
 	}
@@ -534,7 +543,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return "";
 	}
 
-	public CompoundNBT getPerks(ItemStack stack)
+	public CompoundTag getPerks(ItemStack stack)
 	{
 		return ItemNBTHelper.getTagCompound(stack, "perks");
 	}
@@ -552,12 +561,12 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	/* ------------- CRAFTING ------------- */
 
 	@Override
-	public void onCreated(ItemStack stack, World world, PlayerEntity player)
+	public void onCraftedBy(ItemStack stack, Level world, Player player)
 	{
 		if(stack.isEmpty()||player==null)
 			return;
 
-		String uuid = player.getUniqueID().toString();
+		String uuid = player.getUUID().toString();
 		if(specialRevolvers.containsKey(uuid))
 		{
 			ArrayList<SpecialRevolver> list = new ArrayList<>(specialRevolvers.get(uuid));
@@ -594,7 +603,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			ItemNBTHelper.putString(stack, "elite", r.tag);
 		if(r.flavour!=null&&!r.flavour.isEmpty())
 			ItemNBTHelper.putString(stack, "flavour", r.flavour);
-		CompoundNBT baseUpgrades = new CompoundNBT();
+		CompoundTag baseUpgrades = new CompoundTag();
 		for(Map.Entry<String, Object> e : r.baseUpgrades.entrySet())
 		{
 			if(e.getValue() instanceof Boolean)
@@ -622,7 +631,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
 		});
 		if(!sameShader.orElse(true))
@@ -666,7 +675,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			if(r!=null&&r.renderAdditions!=null)
 				Collections.addAll(render, r.renderAdditions);
 		}
-		CompoundNBT upgrades = this.getUpgrades(stack);
+		CompoundTag upgrades = this.getUpgrades(stack);
 		if(upgrades.getInt("bullets") > 0&&!render.contains("dev_mag"))
 			render.add("player_mag");
 		if(upgrades.getDouble("melee") > 0&&!render.contains("dev_bayonet"))
@@ -684,27 +693,27 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void handlePerspective(ItemStack stack, TransformType cameraTransformType, MatrixStack mat, @Nullable LivingEntity entity)
+	public void handlePerspective(ItemStack stack, TransformType cameraTransformType, PoseStack mat, @Nullable LivingEntity entity)
 	{
-		if(entity instanceof PlayerEntity&&(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
+		if(entity instanceof Player&&(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
-			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==HandSide.RIGHT);
+			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT);
 			boolean left = cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND;
 			if(getUpgrades(stack).getBoolean("fancyAnimation")&&main)
 			{
-				float f = ((PlayerEntity)entity).getCooledAttackStrength(ClientUtils.mc().getRenderPartialTicks());
+				float f = ((Player)entity).getAttackStrengthScale(ClientUtils.mc().getFrameTime());
 				if(f < 1)
 				{
 					float angle = f*-6.28318f;
 					if(left)
 						angle *= -1;
 					mat.translate(0, 1.5-f, 0);
-					mat.rotate(new Quaternion(new Vector3f(0, 0, 1), angle, false));
+					mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), angle, false));
 				}
 			}
 
 			//Re-grab stack because the other one doesn't do reloads properly
-			stack = main?entity.getHeldItemMainhand(): entity.getHeldItemOffhand();
+			stack = main?entity.getMainHandItem(): entity.getOffhandItem();
 			if(ItemNBTHelper.hasKey(stack, "reload"))
 			{
 				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
@@ -712,33 +721,33 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					if(f < .5)
 					{
 						mat.translate((.35-f)*2, 0, 0);
-						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(f-.35F), false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(f-.35F), false));
 					}
 					else if(f < .6)
 					{
 						mat.translate((f-.5)*6, (.5-f)*1, 0);
-						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
 					}
 					else if(f < 1.7)
 					{
 						mat.translate(0, -.6, 0);
-						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
 					}
 					else if(f < 1.8)
 					{
 						mat.translate((1.8-f)*6, (f-1.8)*1, 0);
-						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
 					}
 					else
 					{
 						mat.translate((f-1.95f)*2, 0, 0);
-						mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(1.95F-f), false));
+						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(1.95F-f), false));
 					}
 			}
-			else if(((PlayerEntity)entity).openContainer instanceof RevolverContainer)
+			else if(((Player)entity).containerMenu instanceof RevolverContainer)
 			{
 				mat.translate(left?.4: -.4, .4, 0);
-				mat.rotate(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
+				mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
 			}
 		}
 	}
@@ -753,30 +762,30 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static TransformationMatrix matOpen;
+	private static Transformation matOpen;
 	@OnlyIn(Dist.CLIENT)
-	private static TransformationMatrix matClose;
+	private static Transformation matClose;
 	@OnlyIn(Dist.CLIENT)
-	private static TransformationMatrix matCylinder;
+	private static Transformation matCylinder;
 
 	@Nonnull
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
+	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
 													  float partialTicks)
 	{
 		if(matOpen==null)
-			matOpen = new TransformationMatrix(new Vector3f(-.625F, .25F, 0), new Quaternion(0, 0, -.87266f, false), null, null);
+			matOpen = new Transformation(new Vector3f(-.625F, .25F, 0), new Quaternion(0, 0, -.87266f, false), null, null);
 		if(matClose==null)
-			matClose = new TransformationMatrix(new Vector3f(-.625F, .25F, 0), null, null, null);
+			matClose = new Transformation(new Vector3f(-.625F, .25F, 0), null, null, null);
 		if(matCylinder==null)
-			matCylinder = new TransformationMatrix(new Vector3f(0, .6875F, 0), null, null, null);
-		if(entity instanceof PlayerEntity&&(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND))
+			matCylinder = new Transformation(new Vector3f(0, .6875F, 0), null, null, null);
+		if(entity instanceof Player&&(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND))
 		{
-			boolean main = (transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getPrimaryHand()==HandSide.RIGHT);
+			boolean main = (transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT);
 			boolean left = transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND;
 			//Re-grab stack because the other one doesn't do reloads properly
-			stack = main?entity.getHeldItemMainhand(): entity.getHeldItemOffhand();
+			stack = main?entity.getMainHandItem(): entity.getOffhandItem();
 			if(ItemNBTHelper.hasKey(stack, "reload"))
 			{
 				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
@@ -785,14 +794,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 					if(f < .35||f > 1.95)
 						return matClose;
 					else if(f < .5)
-						return new TransformationMatrix(
+						return new Transformation(
 								new Vector3f(-.625f, .25f, 0),
 								new Quaternion(0, 0, -2.64F*(f-.35F), false),
 								null, null);
 					else if(f < 1.8)
 						return matOpen;
 					else
-						return new TransformationMatrix(
+						return new Transformation(
 								new Vector3f(-.625f, .25f, 0),
 								new Quaternion(0, 0, -2.64f*(1.95f-f), false),
 								null, null);
@@ -800,13 +809,13 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 				else if(f > 2.5&&f < 2.9)
 				{
 					float angle = (left?-1: 1)*-15.70795f*(f-2.5f);
-					return new TransformationMatrix(
+					return new Transformation(
 							new Vector3f(0, .6875f, 0),
 							new Quaternion(angle, 0, 0, false),
 							null, null);
 				}
 			}
-			else if("frame".equals(groups[0])&&((PlayerEntity)entity).openContainer instanceof RevolverContainer)
+			else if("frame".equals(groups[0])&&((Player)entity).containerMenu instanceof RevolverContainer)
 				return matOpen;
 		}
 		return "frame".equals(groups[0])?matClose: matCylinder;
@@ -873,43 +882,43 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			return name().toLowerCase(Locale.US);
 		}
 
-		public ITextComponent getDisplayString(double value)
+		public Component getDisplayString(double value)
 		{
 			String key = Lib.DESC_INFO+"revolver.perk."+this.toString();
-			return new TranslationTextComponent(key, valueFormatter.apply(value))
-					.mergeStyle(isBadValue.test(value)?TextFormatting.RED: TextFormatting.BLUE);
+			return new TranslatableComponent(key, valueFormatter.apply(value))
+					.withStyle(isBadValue.test(value)?ChatFormatting.RED: ChatFormatting.BLUE);
 		}
 
-		public static ITextComponent getFormattedName(ITextComponent name, CompoundNBT perksTag)
+		public static Component getFormattedName(Component name, CompoundTag perksTag)
 		{
 			double averageTier = 0;
-			for(String key : perksTag.keySet())
+			for(String key : perksTag.getAllKeys())
 			{
 				RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
 				double value = perksTag.getDouble(key);
 				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
 				averageTier += dTier;
-				int iTier = (int)MathHelper.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
+				int iTier = (int)Mth.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase(Locale.US)+".tier"+iTier;
-				name = new TranslationTextComponent(translate).appendSibling(name);
+				name = new TranslatableComponent(translate).append(name);
 			}
 
-			int rarityTier = (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
+			int rarityTier = (int)Math.ceil(Mth.clamp(averageTier+3, 0, 6)/6*5);
 			Rarity rarity = rarityTier==5?Lib.RARITY_MASTERWORK: rarityTier==4?Rarity.EPIC: rarityTier==3?Rarity.RARE: rarityTier==2?Rarity.UNCOMMON: Rarity.COMMON;
-			return name.deepCopy().mergeStyle(rarity.color);
+			return name.copy().withStyle(rarity.color);
 		}
 
-		public static int calculateTier(CompoundNBT perksTag)
+		public static int calculateTier(CompoundTag perksTag)
 		{
 			double averageTier = 0;
-			for(String key : perksTag.keySet())
+			for(String key : perksTag.getAllKeys())
 			{
 				RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
 				double value = perksTag.getDouble(key);
 				double dTier = (value-perk.generate_median)/perk.generate_deviation*3;
 				averageTier += dTier;
 			}
-			return (int)Math.ceil(MathHelper.clamp(averageTier+3, 0, 6)/6*5);
+			return (int)Math.ceil(Mth.clamp(averageTier+3, 0, 6)/6*5);
 		}
 
 		public double concat(double left, double right)
@@ -948,14 +957,14 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 			return values()[i];
 		}
 
-		public static CompoundNBT generatePerkSet(Random rand, float luck)
+		public static CompoundTag generatePerkSet(Random rand, float luck)
 		{
 			RevolverPerk goodPerk = RevolverPerk.getRandom(rand);
 			RevolverPerk badPerk = RevolverPerk.LUCK;
 			//RevolverPerk.getRandom(rand);
 			double val = goodPerk.generateValue(rand, false, luck);
 
-			CompoundNBT perkCompound = new CompoundNBT();
+			CompoundTag perkCompound = new CompoundTag();
 			if(goodPerk==badPerk)
 				val = (val+badPerk.generateValue(rand, true, luck))/2;
 			else

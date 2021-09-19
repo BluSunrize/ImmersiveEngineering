@@ -12,16 +12,16 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 
 import java.util.Collection;
 
 public interface IICProxyProvider
 {
-	CompoundNBT toNBT(IImmersiveConnectable proxy);
+	CompoundTag toNBT(IImmersiveConnectable proxy);
 
-	IImmersiveConnectable fromNBT(CompoundNBT nbt);
+	IImmersiveConnectable fromNBT(CompoundTag nbt);
 
 	IImmersiveConnectable create(BlockPos pos, Collection<Connection> internal, Collection<ConnectionPoint> points);
 

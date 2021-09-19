@@ -19,9 +19,8 @@ import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import java.util.Arrays;
 
 public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRecipe>

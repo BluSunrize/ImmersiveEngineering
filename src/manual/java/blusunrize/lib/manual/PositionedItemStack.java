@@ -8,10 +8,10 @@
 
 package blusunrize.lib.manual;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,12 +48,12 @@ public class PositionedItemStack
 		else if(stack instanceof ItemStack[])
 			Collections.addAll(displayList, (ItemStack[])stack);
 		else if(stack instanceof Ingredient)
-			displayList.addAll(Arrays.asList(((Ingredient)stack).getMatchingStacks()));
+			displayList.addAll(Arrays.asList(((Ingredient)stack).getItems()));
 		else if(stack instanceof List&&!((List<?>)stack).isEmpty())
 			displayList.addAll((List<ItemStack>)this.stack);
-		else if(stack instanceof ITag)
-			((ITag<?>)stack).getAllElements().stream()
-					.map(o -> ((IItemProvider)o).asItem())
+		else if(stack instanceof Tag)
+			((Tag<?>)stack).getValues().stream()
+					.map(o -> ((ItemLike)o).asItem())
 					.map(ItemStack::new)
 					.forEach(displayList::add);
 		else

@@ -10,21 +10,21 @@
 package blusunrize.immersiveengineering.client.models.split;
 
 import com.google.common.base.Preconditions;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
+import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import malte0811.modelsplitter.math.Vec3d;
 import malte0811.modelsplitter.model.Polygon;
 import malte0811.modelsplitter.model.Vertex;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IModelTransform;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.Type;
-import net.minecraft.client.renderer.vertex.VertexFormatElement.Usage;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 import java.util.ArrayList;
@@ -35,7 +35,7 @@ public class PolygonUtils
 	private static int getOffset(VertexFormatElement.Usage usage, VertexFormatElement.Type type)
 	{
 		int offset = 0;
-		for(VertexFormatElement e : DefaultVertexFormats.BLOCK.getElements())
+		for(VertexFormatElement e : DefaultVertexFormat.BLOCK.getElements())
 		{
 			if(e.getUsage()==usage&&e.getType()==type)
 			{
@@ -43,7 +43,7 @@ public class PolygonUtils
 			}
 			else
 			{
-				offset += e.getSize();
+				offset += e.getByteSize();
 			}
 		}
 		throw new IllegalStateException("Did not find element with usage "+usage.name()+" and type "+type.name());
@@ -57,32 +57,32 @@ public class PolygonUtils
 		final int normalOffset = getOffset(Usage.NORMAL, Type.BYTE);
 		for(int v = 0; v < 4; ++v)
 		{
-			final int baseOffset = v*DefaultVertexFormats.BLOCK.getSize()/4;
-			int packedNormal = quad.getVertexData()[normalOffset+baseOffset];
+			final int baseOffset = v*DefaultVertexFormat.BLOCK.getVertexSize()/4;
+			int packedNormal = quad.getVertices()[normalOffset+baseOffset];
 			final Vec3d normalVec = new Vec3d(
 					(byte)(packedNormal),
 					(byte)(packedNormal >> 8),
 					(byte)(packedNormal >> 16)
 			).normalize();
 			final double[] uv = {
-					Float.intBitsToFloat(quad.getVertexData()[uvOffset+baseOffset]),
-					Float.intBitsToFloat(quad.getVertexData()[uvOffset+baseOffset+1])
+					Float.intBitsToFloat(quad.getVertices()[uvOffset+baseOffset]),
+					Float.intBitsToFloat(quad.getVertices()[uvOffset+baseOffset+1])
 			};
 			final Vec3d pos = new Vec3d(
-					Float.intBitsToFloat(quad.getVertexData()[baseOffset+posOffset]),
-					Float.intBitsToFloat(quad.getVertexData()[baseOffset+posOffset+1]),
-					Float.intBitsToFloat(quad.getVertexData()[baseOffset+posOffset+2])
+					Float.intBitsToFloat(quad.getVertices()[baseOffset+posOffset]),
+					Float.intBitsToFloat(quad.getVertices()[baseOffset+posOffset+1]),
+					Float.intBitsToFloat(quad.getVertices()[baseOffset+posOffset+2])
 			);
 			vertices.add(new Vertex(pos, normalVec, uv));
 		}
 		return new Polygon<>(vertices, quad.func_187508_a());
 	}
 
-	public static BakedQuad toBakedQuad(Polygon<TextureAtlasSprite> poly, IModelTransform transform, VertexFormat format)
+	public static BakedQuad toBakedQuad(Polygon<TextureAtlasSprite> poly, ModelState transform, VertexFormat format)
 	{
 		Preconditions.checkArgument(poly.getPoints().size()==4);
 		BakedQuadBuilder quadBuilder = new BakedQuadBuilder(poly.getTexture());
-		TransformationMatrix rotation = transform.getRotation().blockCenterToCorner();
+		Transformation rotation = transform.getRotation().blockCenterToCorner();
 		Vector3f normal = new Vector3f();
 		for(Vertex v : poly.getPoints())
 		{
@@ -96,9 +96,9 @@ public class PolygonUtils
 			final double epsilon = 1e-5;
 			for (int i = 0; i < 2; ++i)
 			{
-				if(Math.abs(i - pos.getX()) < epsilon) pos.setX(i);
-				if(Math.abs(i - pos.getY()) < epsilon) pos.setY(i);
-				if(Math.abs(i - pos.getZ()) < epsilon) pos.setZ(i);
+				if(Math.abs(i - pos.x()) < epsilon) pos.setX(i);
+				if(Math.abs(i - pos.y()) < epsilon) pos.setY(i);
+				if(Math.abs(i - pos.z()) < epsilon) pos.setZ(i);
 			}
 			for(int i = 0, elementsSize = elements.size(); i < elementsSize; i++)
 			{
@@ -106,10 +106,10 @@ public class PolygonUtils
 				switch(element.getUsage())
 				{
 					case POSITION:
-						quadBuilder.put(i, pos.getX(), pos.getY(), pos.getZ());
+						quadBuilder.put(i, pos.x(), pos.y(), pos.z());
 						break;
 					case NORMAL:
-						quadBuilder.put(i, normal.getX(), normal.getY(), normal.getZ());
+						quadBuilder.put(i, normal.x(), normal.y(), normal.z());
 						break;
 					case COLOR:
 						quadBuilder.put(i, 1, 1, 1, 1);
@@ -126,7 +126,7 @@ public class PolygonUtils
 				}
 			}
 		}
-		quadBuilder.setQuadOrientation(Direction.getFacingFromVector(normal.getX(), normal.getY(), normal.getZ()));
+		quadBuilder.setQuadOrientation(Direction.getNearest(normal.x(), normal.y(), normal.z()));
 		return quadBuilder.build();
 	}
 

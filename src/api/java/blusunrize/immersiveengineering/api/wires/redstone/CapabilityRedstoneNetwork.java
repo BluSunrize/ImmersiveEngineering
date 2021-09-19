@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.api.wires.redstone;
 
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import net.minecraft.nbt.INBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -75,13 +75,13 @@ public class CapabilityRedstoneNetwork
 		CapabilityManager.INSTANCE.register(RedstoneBundleConnection.class, new Capability.IStorage<RedstoneBundleConnection>()
 		{
 			@Override
-			public INBT writeNBT(Capability<RedstoneBundleConnection> capability, RedstoneBundleConnection instance, Direction side)
+			public Tag writeNBT(Capability<RedstoneBundleConnection> capability, RedstoneBundleConnection instance, Direction side)
 			{
 				return null;
 			}
 
 			@Override
-			public void readNBT(Capability<RedstoneBundleConnection> capability, RedstoneBundleConnection instance, Direction side, INBT nbt)
+			public void readNBT(Capability<RedstoneBundleConnection> capability, RedstoneBundleConnection instance, Direction side, Tag nbt)
 			{
 			}
 		}, RedstoneBundleConnection::new);

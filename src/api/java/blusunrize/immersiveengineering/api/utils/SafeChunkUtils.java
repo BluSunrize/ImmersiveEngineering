@@ -10,16 +10,16 @@ package blusunrize.immersiveengineering.api.utils;
 
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.AbstractChunkProvider;
-import net.minecraft.world.chunk.Chunk;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.ChunkSource;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.world.ChunkEvent;
@@ -34,59 +34,59 @@ import java.util.WeakHashMap;
 @EventBusSubscriber(modid = Lib.MODID)
 public class SafeChunkUtils
 {
-	private static final Map<IWorld, Set<ChunkPos>> unloadingChunks = new WeakHashMap<>();
+	private static final Map<LevelAccessor, Set<ChunkPos>> unloadingChunks = new WeakHashMap<>();
 
 	//Based on a version by Ellpeck, but changed to use canTick and slightly extended
-	public static Chunk getSafeChunk(IWorld w, BlockPos pos)
+	public static LevelChunk getSafeChunk(LevelAccessor w, BlockPos pos)
 	{
-		AbstractChunkProvider provider = w.getChunkProvider();
+		ChunkSource provider = w.getChunkSource();
 		ChunkPos chunkPos = new ChunkPos(pos);
 		if(unloadingChunks.getOrDefault(w, ImmutableSet.of()).contains(chunkPos))
 			return null;
-		else if(provider.canTick(pos))
+		else if(provider.isTickingChunk(pos))
 			return provider.getChunk(chunkPos.x, chunkPos.z, false);
 		else
 			return null;
 	}
 
-	public static boolean isChunkSafe(IWorld w, BlockPos pos)
+	public static boolean isChunkSafe(LevelAccessor w, BlockPos pos)
 	{
 		return getSafeChunk(w, pos)!=null;
 	}
 
-	public static TileEntity getSafeTE(IWorld w, BlockPos pos)
+	public static BlockEntity getSafeTE(LevelAccessor w, BlockPos pos)
 	{
-		Chunk c = getSafeChunk(w, pos);
+		LevelChunk c = getSafeChunk(w, pos);
 		if(c==null)
 			return null;
 		else
-			return c.getTileEntity(pos);
+			return c.getBlockEntity(pos);
 	}
 
 	@Nonnull
-	public static BlockState getBlockState(IWorld w, BlockPos pos)
+	public static BlockState getBlockState(LevelAccessor w, BlockPos pos)
 	{
-		Chunk c = getSafeChunk(w, pos);
+		LevelChunk c = getSafeChunk(w, pos);
 		if(c==null)
-			return Blocks.AIR.getDefaultState();
+			return Blocks.AIR.defaultBlockState();
 		else
 			return c.getBlockState(pos);
 	}
 
-	public static int getRedstonePower(World w, BlockPos pos, Direction d)
+	public static int getRedstonePower(Level w, BlockPos pos, Direction d)
 	{
 		if(!isChunkSafe(w, pos))
 			return 0;
 		else
-			return w.getRedstonePower(pos, d);
+			return w.getSignal(pos, d);
 	}
 
-	public static int getRedstonePowerFromNeighbors(World w, BlockPos pos)
+	public static int getRedstonePowerFromNeighbors(Level w, BlockPos pos)
 	{
 		int ret = 0;
 		for(Direction d : DirectionUtils.VALUES)
 		{
-			int atNeighbor = getRedstonePower(w, pos.offset(d), d);
+			int atNeighbor = getRedstonePower(w, pos.relative(d), d);
 			ret = Math.max(ret, atNeighbor);
 			if(ret >= 15)
 				break;

@@ -11,20 +11,20 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class RGBColourationRecipe implements ICraftingRecipe
+public class RGBColourationRecipe implements CraftingRecipe
 {
 	private final Ingredient target;
 	private final String colorKey;
@@ -38,13 +38,13 @@ public class RGBColourationRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, @Nonnull World world)
+	public boolean matches(CraftingContainer inv, @Nonnull Level world)
 	{
 		ItemStack itemToColour = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
 				if(itemToColour.isEmpty()&&target.test(stackInSlot))
@@ -60,15 +60,15 @@ public class RGBColourationRecipe implements ICraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv)
+	public ItemStack assemble(CraftingContainer inv)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
 		ItemStack itemToColour = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 				if(itemToColour.isEmpty()&&target.test(stackInSlot))
 				{
@@ -89,7 +89,7 @@ public class RGBColourationRecipe implements ICraftingRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = Utils.getDye(stackInSlot).getColorComponentValues();
+					float[] afloat = Utils.getDye(stackInSlot).getTextureDiffuseColors();
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
@@ -120,14 +120,14 @@ public class RGBColourationRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width >= 2&&height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return ItemStack.EMPTY;
 	}
@@ -140,14 +140,14 @@ public class RGBColourationRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public boolean isDynamic()
+	public boolean isSpecial()
 	{
 		return true;
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.RGB_SERIALIZER.get();
 	}

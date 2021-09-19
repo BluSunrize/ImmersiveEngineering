@@ -24,28 +24,28 @@ import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.GameRules;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -74,16 +74,16 @@ public class BasicConveyor implements IConveyorBelt
 	ConveyorDirection direction = ConveyorDirection.HORIZONTAL;
 	@Nullable
 	DyeColor dyeColour = null;
-	private final TileEntity tile;
+	private final BlockEntity tile;
 	protected final EntityCollisionTracker collisionTracker = new EntityCollisionTracker(10);
 
-	public BasicConveyor(TileEntity tile)
+	public BasicConveyor(BlockEntity tile)
 	{
 		this.tile = tile;
 	}
 
 	@Override
-	public TileEntity getTile()
+	public BlockEntity getTile()
 	{
 		return tile;
 	}
@@ -97,7 +97,7 @@ public class BasicConveyor implements IConveyorBelt
 	@Override
 	public boolean changeConveyorDirection()
 	{
-		if(!tile.getWorld().isRemote)
+		if(!tile.getLevel().isClientSide)
 			direction = direction==ConveyorDirection.HORIZONTAL?ConveyorDirection.UP: direction==ConveyorDirection.UP?ConveyorDirection.DOWN: ConveyorDirection.HORIZONTAL;
 		return true;
 	}
@@ -131,13 +131,13 @@ public class BasicConveyor implements IConveyorBelt
 		collisionTracker.onEntityCollided(entity);
 		IConveyorBelt.super.onEntityCollision(entity);
 		if(isCovered()&&entity instanceof ItemEntity)
-			((ItemEntity)entity).setPickupDelay(10);
+			((ItemEntity)entity).setPickUpDelay(10);
 	}
 
 	@Override
 	public boolean isBlocked()
 	{
-		return collisionTracker.getCollidedInRange(getTile().getWorld().getGameTime()) > 2;
+		return collisionTracker.getCollidedInRange(getTile().getLevel().getGameTime()) > 2;
 	}
 
 	@Override
@@ -145,11 +145,11 @@ public class BasicConveyor implements IConveyorBelt
 	{
 		IConveyorBelt.super.onItemDeployed(entity);
 		if(isCovered())
-			entity.setPickupDelay(10);
+			entity.setPickUpDelay(10);
 	}
 
 	@Override
-	public boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
+	public boolean playerInteraction(Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 	{
 		if(isCovered())
 			return handleCoverInteraction(player, hand, heldItem);
@@ -159,9 +159,9 @@ public class BasicConveyor implements IConveyorBelt
 	/* ============ NBT ============ */
 
 	@Override
-	public CompoundNBT writeConveyorNBT()
+	public CompoundTag writeConveyorNBT()
 	{
-		CompoundNBT nbt = new CompoundNBT();
+		CompoundTag nbt = new CompoundTag();
 		nbt.putInt("direction", direction.ordinal());
 		if(dyeColour!=null)
 			nbt.putInt("dyeColour", dyeColour.getId());
@@ -171,7 +171,7 @@ public class BasicConveyor implements IConveyorBelt
 	}
 
 	@Override
-	public void readConveyorNBT(CompoundNBT nbt)
+	public void readConveyorNBT(CompoundTag nbt)
 	{
 		direction = ConveyorDirection.values()[nbt.getInt("direction")];
 		if(nbt.contains("dyeColour", NBT.TAG_INT))
@@ -240,7 +240,7 @@ public class BasicConveyor implements IConveyorBelt
 
 	/* ============ AABB ============ */
 
-	private static final AxisAlignedBB topBox = new AxisAlignedBB(0, .75, 0, 1, 1, 1);
+	private static final AABB topBox = new AABB(0, .75, 0, 1, 1, 1);
 
 	private static final CachedVoxelShapes<ShapeKey> SHAPES = new CachedVoxelShapes<>(BasicConveyor::getBoxes);
 
@@ -261,15 +261,15 @@ public class BasicConveyor implements IConveyorBelt
 		return IConveyorBelt.super.getSelectionShape();
 	}
 
-	private static List<AxisAlignedBB> getBoxes(ShapeKey key)
+	private static List<AABB> getBoxes(ShapeKey key)
 	{
-		List<AxisAlignedBB> ret = new ArrayList<>();
+		List<AABB> ret = new ArrayList<>();
 		if(key.superShape!=null)
-			ret.addAll(key.superShape.toBoundingBoxList());
+			ret.addAll(key.superShape.toAabbs());
 		if(key.direction==ConveyorDirection.HORIZONTAL)
 		{
 			if(!key.collision)
-				return ImmutableList.of(FULL_BLOCK.getBoundingBox());
+				return ImmutableList.of(FULL_BLOCK.bounds());
 			else
 				ret.add(topBox);
 		}
@@ -278,7 +278,7 @@ public class BasicConveyor implements IConveyorBelt
 			boolean up = key.direction==ConveyorDirection.UP;
 			boolean collision = key.collision;
 			Direction facing = key.facing;
-			ret.add(new AxisAlignedBB(
+			ret.add(new AABB(
 					(facing==Direction.WEST&&!up)||(facing==Direction.EAST&&up)?.5: 0,
 					collision?1.75: .5,
 					(facing==Direction.NORTH&&!up)||(facing==Direction.SOUTH&&up)?.5: 0,
@@ -286,7 +286,7 @@ public class BasicConveyor implements IConveyorBelt
 					2,
 					(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 1
 			));
-			ret.add(new AxisAlignedBB(
+			ret.add(new AABB(
 					(facing==Direction.WEST&&up)||(facing==Direction.EAST&&!up)?.5: 0,
 					collision?1.25: 0,
 					(facing==Direction.NORTH&&up)||(facing==Direction.SOUTH&&!up)?.5: 0,
@@ -314,8 +314,8 @@ public class BasicConveyor implements IConveyorBelt
 	protected void addCoverToQuads(List<BakedQuad> baseModel)
 	{
 		Block b = this.cover!=Blocks.AIR?this.cover: getDefaultCover();
-		BlockState state = b.getDefaultState();
-		IBakedModel model = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(state);
+		BlockState state = b.defaultBlockState();
+		BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
 		if(model!=null)
 		{
 			Direction facing = this.getFacing();
@@ -329,8 +329,8 @@ public class BasicConveyor implements IConveyorBelt
 					if(q!=null&&q.func_187508_a()!=null)
 						sprites.put(f, q.func_187508_a());
 			for(BakedQuad q : model.getQuads(state, null, Utils.RAND))
-				if(q!=null&&q.func_187508_a()!=null&&q.getFace()!=null)
-					sprites.put(q.getFace(), q.func_187508_a());
+				if(q!=null&&q.func_187508_a()!=null&&q.getDirection()!=null)
+					sprites.put(q.getDirection(), q.func_187508_a());
 
 			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.containsKey(f)?sprites.get(f): sprite;
 			Function<Direction, TextureAtlasSprite> getSpriteHorizontal = f -> f.getAxis()==Axis.Y?null: sprites.containsKey(f)?sprites.get(f): sprite;
@@ -338,54 +338,54 @@ public class BasicConveyor implements IConveyorBelt
 			float[] colour = {1, 1, 1, 1};
 			Matrix4 matrix = new Matrix4(facing);
 
-			Function<Vector3d[], Vector3d[]> vertexTransformer = conDir==ConveyorDirection.HORIZONTAL?vertices -> vertices: vertices -> {
-				Vector3d[] ret = new Vector3d[vertices.length];
+			Function<Vec3[], Vec3[]> vertexTransformer = conDir==ConveyorDirection.HORIZONTAL?vertices -> vertices: vertices -> {
+				Vec3[] ret = new Vec3[vertices.length];
 				for(int i = 0; i < ret.length; i++)
-					ret[i] = new Vector3d(vertices[i].x, vertices[i].y+(vertices[i].z==(conDir==ConveyorDirection.UP?0: 1)?1: 0), vertices[i].z);
+					ret[i] = new Vec3(vertices[i].x, vertices[i].y+(vertices[i].z==(conDir==ConveyorDirection.UP?0: 1)?1: 0), vertices[i].z);
 				return ret;
 			};
 
-			baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .75f, 0), new Vector3d(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
+			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .75f, 0), new Vec3(1, 1, 1), matrix, facing, vertexTransformer, getSprite, colour));
 
 			if(getTile()==null||this.renderWall(getFacing(), 0))
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, 0), new Vector3d(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, 0), new Vec3(.0625f, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, 0), new Vector3d(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(0, .1875f, .9375f), new Vector3d(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, 0), new Vec3(.0625f, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(0, .1875f, .9375f), new Vec3(.0625f, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 
 			if(getTile()==null||this.renderWall(getFacing(), 1))
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, 0), new Vector3d(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, .1875f, 0), new Vec3(1, .75f, 1), matrix, facing, vertexTransformer, getSpriteHorizontal, colour));
 			else
 			{
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, 0), new Vector3d(1, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
-				baseModel.addAll(ModelUtils.createBakedBox(new Vector3d(.9375f, .1875f, .9375f), new Vector3d(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, .1875f, 0), new Vec3(1, .75f, .0625f), matrix, facing, getSpriteHorizontal, colour));
+				baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.9375f, .1875f, .9375f), new Vec3(1, .75f, 1), matrix, facing, getSpriteHorizontal, colour));
 			}
 		}
 	}
 
-	public void dropCover(PlayerEntity player)
+	public void dropCover(Player player)
 	{
-		if(tile!=null&&!tile.getWorld().isRemote&&cover!=Blocks.AIR&&tile.getWorld().getGameRules().getBoolean(GameRules.DO_TILE_DROPS))
+		if(tile!=null&&!tile.getLevel().isClientSide&&cover!=Blocks.AIR&&tile.getLevel().getGameRules().getBoolean(GameRules.RULE_DOBLOCKDROPS))
 		{
-			ItemEntity entityitem = player.dropItem(new ItemStack(cover), false);
+			ItemEntity entityitem = player.drop(new ItemStack(cover), false);
 			if(entityitem!=null)
-				entityitem.setNoPickupDelay();
+				entityitem.setNoPickUpDelay();
 		}
 	}
 
-	protected boolean handleCoverInteraction(PlayerEntity player, Hand hand, ItemStack heldItem)
+	protected boolean handleCoverInteraction(Player player, InteractionHand hand, ItemStack heldItem)
 	{
-		if(heldItem.isEmpty()&&player.isSneaking()&&cover!=Blocks.AIR)
+		if(heldItem.isEmpty()&&player.isShiftKeyDown()&&cover!=Blocks.AIR)
 		{
 			dropCover(player);
 			this.cover = Blocks.AIR;
 			return true;
 		}
-		else if(!heldItem.isEmpty()&&!player.isSneaking())
+		else if(!heldItem.isEmpty()&&!player.isShiftKeyDown())
 		{
-			Block heldBlock = Block.getBlockFromItem(heldItem.getItem());
+			Block heldBlock = Block.byItem(heldItem.getItem());
 			if(heldBlock!=Blocks.AIR)
 				for(Predicate<Block> func : validCoveyorCovers)
 					if(func.test(heldBlock))
@@ -396,7 +396,7 @@ public class BasicConveyor implements IConveyorBelt
 							this.cover = heldBlock;
 							heldItem.shrink(1);
 							if(heldItem.getCount() <= 0)
-								player.setHeldItem(hand, heldItem);
+								player.setItemInHand(hand, heldItem);
 							return true;
 						}
 					}
@@ -406,17 +406,17 @@ public class BasicConveyor implements IConveyorBelt
 
 	protected final boolean isPowered()
 	{
-		TileEntity te = getTile();
+		BlockEntity te = getTile();
 		if(te instanceof ConveyorBeltTileEntity)
 			return ((ConveyorBeltTileEntity)te).isRSPowered();
 		else
-			return te.getWorld().getRedstonePowerFromNeighbors(te.getPos()) > 0;
+			return te.getLevel().getBestNeighborSignal(te.getBlockPos()) > 0;
 	}
 
 	@Override
 	public Direction getFacing()
 	{
-		TileEntity te = getTile();
+		BlockEntity te = getTile();
 		if(te instanceof IDirectionalTile)
 			return ((IDirectionalTile)te).getFacing();
 		return Direction.NORTH;

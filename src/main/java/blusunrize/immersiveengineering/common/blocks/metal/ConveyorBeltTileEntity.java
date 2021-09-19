@@ -17,24 +17,24 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -48,7 +48,7 @@ import javax.annotation.Nullable;
 
 public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, ICollisionBounds,
 		ISelectionBounds, IHammerInteraction, IPlayerInteraction, IConveyorTile, IPropertyPassthrough,
-		ITickableTileEntity
+		TickableBlockEntity
 {
 	private final IConveyorBelt conveyorBeltSubtype;
 
@@ -66,24 +66,24 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public void onEntityCollision(World world, Entity entity)
+	public void onEntityCollision(Level world, Entity entity)
 	{
 		if(this.conveyorBeltSubtype!=null)
 			this.conveyorBeltSubtype.onEntityCollision(entity);
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(nbt.contains("conveyorBeltSubtypeNBT", NBT.TAG_COMPOUND))
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompound("conveyorBeltSubtypeNBT"));
 
-		if(descPacket&&world!=null)
+		if(descPacket&&level!=null)
 			this.markContainingBlockForUpdate(null);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(conveyorBeltSubtype!=null)
 			nbt.put("conveyorBeltSubtypeNBT", conveyorBeltSubtype.writeConveyorNBT());
@@ -114,9 +114,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
-		return !entity.isSneaking();
+		return !entity.isShiftKeyDown();
 	}
 
 	@Override
@@ -141,9 +141,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		if(player.isSneaking()&&conveyorBeltSubtype!=null&&conveyorBeltSubtype.changeConveyorDirection())
+		if(player.isShiftKeyDown()&&conveyorBeltSubtype!=null&&conveyorBeltSubtype.changeConveyorDirection())
 		{
 //			if(transportUp)
 //			{
@@ -155,11 +155,11 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 //			else
 //				transportUp = true;
 
-			if(!world.isRemote)
+			if(!level.isClientSide)
 			{
-				this.markDirty();
+				this.setChanged();
 				this.markContainingBlockForUpdate(null);
-				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+				level.blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
 			}
 			return true;
 		}
@@ -167,7 +167,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(conveyorBeltSubtype!=null)
 		{
@@ -181,9 +181,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 				update = conveyorBeltSubtype.playerInteraction(player, hand, heldItem, hitX, hitY, hitZ, side);
 			if(update)
 			{
-				this.markDirty();
+				this.setChanged();
 				this.markContainingBlockForUpdate(null);
-				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+				level.blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
 				return true;
 			}
 		}
@@ -191,10 +191,10 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	private static final VoxelShape COLISIONBB =
-			VoxelShapes.create(0, 0, 0, 1, .125F, 1);
+			Shapes.box(0, 0, 0, 1, .125F, 1);
 
 	@Override
-	public VoxelShape getCollisionShape(ISelectionContext ctx)
+	public VoxelShape getCollisionShape(CollisionContext ctx)
 	{
 		if(conveyorBeltSubtype!=null)
 			return conveyorBeltSubtype.getCollisionShape();
@@ -202,7 +202,7 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 	}
 
 	@Override
-	public VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
+	public VoxelShape getSelectionShape(@Nullable CollisionContext ctx)
 	{
 		if(conveyorBeltSubtype!=null)
 			return conveyorBeltSubtype.getSelectionShape();
@@ -227,11 +227,11 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 		return super.isRSPowered();
 	}
 
-	public static void registerConveyorTEs(RegistryEvent.Register<TileEntityType<?>> evt)
+	public static void registerConveyorTEs(RegistryEvent.Register<BlockEntityType<?>> evt)
 	{
 		for(ResourceLocation rl : ConveyorHandler.classRegistry.keySet())
 		{
-			TileEntityType<ConveyorBeltTileEntity> te = new TileEntityType<>(() -> new ConveyorBeltTileEntity(rl),
+			BlockEntityType<ConveyorBeltTileEntity> te = new BlockEntityType<>(() -> new ConveyorBeltTileEntity(rl),
 					ImmutableSet.of(ConveyorHandler.conveyorBlocks.get(rl)),
 					null);
 			te.setRegistryName(ConveyorHandler.getRegistryNameFor(rl));
@@ -268,9 +268,9 @@ public class ConveyorBeltTileEntity extends IEBaseTileEntity implements IStateBa
 				return stack;
 			if(!simulate)
 			{
-				ItemEntity entity = new ItemEntity(conveyor.getWorldNonnull(), conveyor.getPos().getX()+.5, conveyor.getPos().getY()+.1875, conveyor.getPos().getZ()+.5, stack.copy());
-				entity.setMotion(Vector3d.ZERO);
-				conveyor.getWorldNonnull().addEntity(entity);
+				ItemEntity entity = new ItemEntity(conveyor.getWorldNonnull(), conveyor.getBlockPos().getX()+.5, conveyor.getBlockPos().getY()+.1875, conveyor.getBlockPos().getZ()+.5, stack.copy());
+				entity.setDeltaMovement(Vec3.ZERO);
+				conveyor.getWorldNonnull().addFreshEntity(entity);
 				if(conveyor.conveyorBeltSubtype!=null)
 					conveyor.conveyorBeltSubtype.onItemDeployed(entity);
 			}

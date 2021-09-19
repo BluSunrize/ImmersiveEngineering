@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -25,7 +25,7 @@ import java.util.Map;
  */
 public class BlastFurnaceRecipe extends IESerializableRecipe
 {
-	public static IRecipeType<BlastFurnaceRecipe> TYPE;
+	public static RecipeType<BlastFurnaceRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input;
@@ -50,7 +50,7 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	}
 
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return output;
 	}

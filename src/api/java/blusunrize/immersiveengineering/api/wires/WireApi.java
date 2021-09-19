@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.state.Property;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.ModelBakeEvent;
@@ -111,7 +111,7 @@ public final class WireApi
 			if(state.getBlock()!=conn.getBlock())
 				return false;
 			for(Property<?> p : state.getProperties())
-				if(p!=IEProperties.FACING_ALL&&p!=BlockStateProperties.WATERLOGGED&&!state.get(p).equals(conn.get(p)))
+				if(p!=IEProperties.FACING_ALL&&p!=BlockStateProperties.WATERLOGGED&&!state.getValue(p).equals(conn.getValue(p)))
 					return false;
 			return true;
 		}
@@ -120,7 +120,7 @@ public final class WireApi
 		//TODO use more appropriate event
 		public void onModelBake(ModelBakeEvent evt)
 		{
-			tex = Minecraft.getInstance().getModelManager().getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE).getSprite(texLoc);
+			tex = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(texLoc);
 		}
 	}
 }

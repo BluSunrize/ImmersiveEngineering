@@ -14,22 +14,21 @@ import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.concurrent.ThreadTaskExecutor;
-import net.minecraft.util.concurrent.TickDelayedTask;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.server.TickTask;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.util.thread.BlockableEventLoop;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.JsonUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.LogicalSidedProvider;
-import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -44,7 +43,7 @@ import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
 public class ApiUtils
 {
-	public static final SetRestrictedField<Consumer<TileEntity>> disableTicking = SetRestrictedField.common();
+	public static final SetRestrictedField<Consumer<BlockEntity>> disableTicking = SetRestrictedField.common();
 	/**
 	 * Random instance for general use. The "usual" per-world random instance can have unexpected behavior with
 	 * ghostloading (in some cases the seed is set directly), this instance does not have this problem.
@@ -65,10 +64,10 @@ public class ApiUtils
 
 	public static FluidStack jsonDeserializeFluidStack(JsonObject jsonObject)
 	{
-		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(JSONUtils.getString(jsonObject, "fluid")));
-		int amount = JSONUtils.getInt(jsonObject, "amount");
+		Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(GsonHelper.getAsString(jsonObject, "fluid")));
+		int amount = GsonHelper.getAsInt(jsonObject, "amount");
 		FluidStack fluidStack = new FluidStack(fluid, amount);
-		if(JSONUtils.hasField(jsonObject, "tag"))
+		if(GsonHelper.isValidNode(jsonObject, "tag"))
 			fluidStack.setTag(JsonUtils.readNBT(jsonObject, "tag"));
 		return fluidStack;
 	}
@@ -121,7 +120,7 @@ public class ApiUtils
 		return null;
 	}
 
-	public static double getDim(Vector3d vec, int dim)
+	public static double getDim(Vec3 vec, int dim)
 	{
 		return dim==0?vec.x: (dim==1?vec.y: vec.z);
 	}
@@ -133,43 +132,43 @@ public class ApiUtils
 		return sortedMap;
 	}
 
-	public static <T extends TileEntity> void checkForNeedlessTicking(T te, Predicate<T> shouldDisable)
+	public static <T extends BlockEntity> void checkForNeedlessTicking(T te, Predicate<T> shouldDisable)
 	{
-		if(!te.getWorld().isRemote&&shouldDisable.test(te))
+		if(!te.getLevel().isClientSide&&shouldDisable.test(te))
 			disableTicking.getValue().accept(te);
 	}
 
 	//Based on net.minecraft.entity.EntityLivingBase.knockBack
 	public static void knockbackNoSource(LivingEntity entity, double strength, double xRatio, double zRatio)
 	{
-		entity.isAirBorne = true;
-		Vector3d motionOld = entity.getMotion();
-		Vector3d toAdd = (new Vector3d(xRatio, 0.0D, zRatio)).normalize().scale(strength);
-		entity.setMotion(
+		entity.hasImpulse = true;
+		Vec3 motionOld = entity.getDeltaMovement();
+		Vec3 toAdd = (new Vec3(xRatio, 0.0D, zRatio)).normalize().scale(strength);
+		entity.setDeltaMovement(
 				motionOld.x/2.0D-toAdd.x,
 				entity.isOnGround()?Math.min(0.4D, motionOld.y/2.0D+strength): motionOld.y,
 				motionOld.z/2.0D-toAdd.z);
 	}
 
-	public static void addFutureServerTask(World world, Runnable task, boolean forceFuture)
+	public static void addFutureServerTask(Level world, Runnable task, boolean forceFuture)
 	{
-		LogicalSide side = world.isRemote?LogicalSide.CLIENT: LogicalSide.SERVER;
+		LogicalSide side = world.isClientSide?LogicalSide.CLIENT: LogicalSide.SERVER;
 		//TODO this sometimes causes NPEs?
-		ThreadTaskExecutor<? super TickDelayedTask> tmp = LogicalSidedProvider.WORKQUEUE.get(side);
+		BlockableEventLoop<? super TickTask> tmp = LogicalSidedProvider.WORKQUEUE.get(side);
 		if(forceFuture)
 		{
 			int tick;
-			if(world.isRemote)
+			if(world.isClientSide)
 				tick = 0;
 			else
-				tick = ((MinecraftServer)tmp).getTickCounter();
-			tmp.enqueue(new TickDelayedTask(tick, task));
+				tick = ((MinecraftServer)tmp).getTickCount();
+			tmp.tell(new TickTask(tick, task));
 		}
 		else
-			tmp.deferTask(task);
+			tmp.submitAsync(task);
 	}
 
-	public static void addFutureServerTask(World world, Runnable task)
+	public static void addFutureServerTask(Level world, Runnable task)
 	{
 		addFutureServerTask(world, task, false);
 	}

@@ -20,13 +20,13 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.Path;
 import blusunrize.immersiveengineering.api.wires.utils.IElectricDamageSource;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,10 +58,10 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 			return;
 		IShockingWire shockWire = (IShockingWire)wType;
 		double extra = shockWire.getDamageRadius();
-		AxisAlignedBB eAabb = e.getBoundingBox();
-		AxisAlignedBB includingExtra = eAabb.grow(extra).offset(-pos.getX(), -pos.getY(), -pos.getZ());
+		AABB eAabb = e.getBoundingBox();
+		AABB includingExtra = eAabb.inflate(extra).move(-pos.getX(), -pos.getY(), -pos.getZ());
 		boolean collides = includingExtra.contains(info.intersectA)||includingExtra.contains(info.intersectB);
-		if(!collides&&!includingExtra.rayTrace(info.intersectA, info.intersectB).isPresent())
+		if(!collides&&!includingExtra.clip(info.intersectA, info.intersectB).isPresent())
 			return;
 		final ConnectionPoint target = info.conn.getEndA();//TODO less random choice?
 		final List<SourceData> available = getAvailableEnergy(energyHandler, target);
@@ -80,7 +80,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		if(!dmg.apply(e))
 			return;
 		final float actualDamage = dmg.getDamage();
-		Vector3d v = e.getLookVec();
+		Vec3 v = e.getLookAngle();
 		ApiUtils.knockbackNoSource(e, actualDamage/KNOCKBACK_PER_DAMAGE, v.x, v.z);
 		//Consume energy
 		final double factor = actualDamage/maxPossibleDamage;
@@ -88,7 +88,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		for(SourceData source : available)
 		{
 			final double energyFromSource = source.amountAvailable*factor;
-			source.source.extractEnergy(MathHelper.ceil(energyFromSource));
+			source.source.extractEnergy(Mth.ceil(energyFromSource));
 			for(Connection c : source.pathToSource.conns)
 				transferred.mergeDouble(c, energyFromSource, Double::sum);
 		}

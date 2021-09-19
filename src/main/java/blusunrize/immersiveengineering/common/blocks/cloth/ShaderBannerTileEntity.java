@@ -16,13 +16,13 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ITileDrop;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -42,7 +42,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements ITileDro
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(nbt.contains("shader", NBT.TAG_COMPOUND))
 		{
@@ -52,7 +52,7 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements ITileDro
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.put("shader", shader.serializeNBT());
 	}
@@ -69,14 +69,14 @@ public class ShaderBannerTileEntity extends IEBaseTileEntity implements ITileDro
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 		{
 			this.markContainingBlockForUpdate(null);
 			return true;
 		}
-		return super.receiveClientEvent(id, arg);
+		return super.triggerEvent(id, arg);
 	}
 
 	private LazyOptional<ShaderWrapper> shaderCap;

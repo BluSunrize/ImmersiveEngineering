@@ -18,17 +18,17 @@ import blusunrize.immersiveengineering.common.network.MessageTileSync;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -91,26 +91,26 @@ public class TurretGunTileEntity extends TurretTileEntity
 			if(bullet!=null&&bullet.isValidForTurret())
 			{
 				ItemStack casing = bullet.getCasing(bulletStack);
-				if(expelCasings||casing.isEmpty()||inventory.get(1).isEmpty()||(ItemStack.areItemsEqual(casing, inventory.get(1))&&
+				if(expelCasings||casing.isEmpty()||inventory.get(1).isEmpty()||(ItemStack.isSame(casing, inventory.get(1))&&
 						inventory.get(1).getCount()+casing.getCount() <= inventory.get(1).getMaxStackSize()))
 				{
 					this.energyStorage.extractEnergy(energy, false);
 					this.sendRenderPacket();
 
-					Vector3d vec = getGunToTargetVec(target).normalize();
+					Vec3 vec = getGunToTargetVec(target).normalize();
 
 					int count = bullet.getProjectileCount(null);
 					if(count==1)
 					{
-						Entity entBullet = getBulletEntity(world, vec, bullet);
-						world.addEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
+						Entity entBullet = getBulletEntity(level, vec, bullet);
+						level.addFreshEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
 					}
 					else
 						for(int i = 0; i < count; i++)
 						{
-							Vector3d vecDir = vec.add(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
-							Entity entBullet = getBulletEntity(world, vecDir, bullet);
-							world.addEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
+							Vec3 vecDir = vec.add(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
+							Entity entBullet = getBulletEntity(level, vecDir, bullet);
+							level.addFreshEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
 						}
 					bulletStack.shrink(1);
 					if(bulletStack.getCount() <= 0)
@@ -119,14 +119,14 @@ public class TurretGunTileEntity extends TurretTileEntity
 					{
 						if(expelCasings)
 						{
-							double cX = getPos().getX()+.5;
-							double cY = getPos().getY()+1.375;
-							double cZ = getPos().getZ()+.5;
-							Vector3d vCasing = vec.rotateYaw(-1.57f);
-							world.addParticle(RedstoneParticleData.REDSTONE_DUST, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0);
-							ItemEntity entCasing = new ItemEntity(world, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
-							entCasing.setMotion(0, -.01, 0);
-							world.addEntity(entCasing);
+							double cX = getBlockPos().getX()+.5;
+							double cY = getBlockPos().getY()+1.375;
+							double cZ = getBlockPos().getZ()+.5;
+							Vec3 vCasing = vec.yRot(-1.57f);
+							level.addParticle(DustParticleOptions.REDSTONE, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, 0, 0, 0);
+							ItemEntity entCasing = new ItemEntity(level, cX+vCasing.x, cY+vCasing.y, cZ+vCasing.z, casing.copy());
+							entCasing.setDeltaMovement(0, -.01, 0);
+							level.addFreshEntity(entCasing);
 						}
 						else
 						{
@@ -139,7 +139,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 					SoundEvent sound = bullet.getSound();
 					if(sound==null)
 						sound = IESounds.revolverFire;
-					world.playSound(null, getPos(), sound, SoundCategory.BLOCKS, 1, 1);
+					level.playSound(null, getBlockPos(), sound, SoundSource.BLOCKS, 1, 1);
 				}
 			}
 		}
@@ -147,17 +147,17 @@ public class TurretGunTileEntity extends TurretTileEntity
 
 	protected void sendRenderPacket()
 	{
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		tag.putBoolean("cycle", true);
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> getWorldNonnull().getChunkAt(pos)),
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> getWorldNonnull().getChunkAt(worldPosition)),
 				new MessageTileSync(this, tag));
 	}
 
-	RevolvershotEntity getBulletEntity(World world, Vector3d vecDir, IBullet type)
+	RevolvershotEntity getBulletEntity(Level world, Vec3 vecDir, IBullet type)
 	{
-		Vector3d gunPos = getGunPosition();
+		Vec3 gunPos = getGunPosition();
 		RevolvershotEntity bullet = new RevolvershotEntity(world, gunPos.x+vecDir.x, gunPos.y+vecDir.y, gunPos.z+vecDir.z, 0, 0, 0, type);
-		bullet.setMotion(vecDir);
+		bullet.setDeltaMovement(vecDir);
 		return bullet;
 	}
 
@@ -179,20 +179,20 @@ public class TurretGunTileEntity extends TurretTileEntity
 	@Override
 	public void tick()
 	{
-		if(world.isRemote&&!isDummy()&&cycleRender > 0)
+		if(level.isClientSide&&!isDummy()&&cycleRender > 0)
 			cycleRender--;
 		super.tick();
 	}
 
 	@Override
-	public void receiveMessageFromServer(CompoundNBT message)
+	public void receiveMessageFromServer(CompoundTag message)
 	{
 		if(message.contains("cycle"))
 			cycleRender = 5;
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		super.receiveMessageFromClient(message);
 		if(message.contains("expelCasings", NBT.TAG_BYTE))
@@ -200,7 +200,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		expelCasings = nbt.getBoolean("expelCasings");
@@ -209,7 +209,7 @@ public class TurretGunTileEntity extends TurretTileEntity
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putBoolean("expelCasings", expelCasings);

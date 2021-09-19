@@ -13,22 +13,22 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.IEPotions;
 import blusunrize.immersiveengineering.mixin.accessors.FlowingFluidAccess;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ILiquidContainer;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.state.StateContainer;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
 
 import javax.annotation.Nonnull;
@@ -50,13 +50,13 @@ public class ConcreteFluid extends IEFluid
 	}
 
 	@Override
-	protected boolean ticksRandomly()
+	protected boolean isRandomlyTicking()
 	{
 		return true;
 	}
 
 	@Override
-	public int getTickRate(IWorldReader p_205569_1_)
+	public int getTickDelay(LevelReader p_205569_1_)
 	{
 		return 20;
 	}
@@ -64,12 +64,12 @@ public class ConcreteFluid extends IEFluid
 	boolean hasFlownInTick = false;
 
 	@Override
-	public void tick(World world, BlockPos pos, FluidState state)
+	public void tick(Level world, BlockPos pos, FluidState state)
 	{
 		hasFlownInTick = false;
 		super.tick(world, pos, state);
-		int timer = state.get(IEProperties.INT_16);
-		int level = getLevelFromState(state);
+		int timer = state.getValue(IEProperties.INT_16);
+		int level = getLegacyLevel(state);
 		int quantaRemaining = 16-level;
 		if(timer >= Math.min(14, quantaRemaining))
 		{
@@ -84,28 +84,28 @@ public class ConcreteFluid extends IEFluid
 				solidBlock = StoneDecoration.concreteThreeQuarter;
 			else
 				solidBlock = StoneDecoration.concrete;
-			world.setBlockState(pos, solidBlock.getDefaultState());
-			for(LivingEntity living : world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(pos, pos.add(1, 1, 1))))
-				living.addPotionEffect(new EffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
+			world.setBlockAndUpdate(pos, solidBlock.defaultBlockState());
+			for(LivingEntity living : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos, pos.offset(1, 1, 1))))
+				living.addEffect(new MobEffectInstance(IEPotions.concreteFeet, Integer.MAX_VALUE));
 		}
 		else if(world.getBlockState(pos).getBlock()==block)
 		{
-			BlockState newState = world.getBlockState(pos).with(IEProperties.INT_16, timer+(hasFlownInTick?1: 2));
-			world.setBlockState(pos, newState);
+			BlockState newState = world.getBlockState(pos).setValue(IEProperties.INT_16, timer+(hasFlownInTick?1: 2));
+			world.setBlockAndUpdate(pos, newState);
 		}
 	}
 
 	@Override
-	protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
+	protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createFluidStateDefinition(builder);
 		builder.add(IEProperties.INT_16);
 	}
 
 	@Override
-	protected BlockState getBlockState(FluidState state)
+	protected BlockState createLegacyBlock(FluidState state)
 	{
-		return super.getBlockState(state).with(IEProperties.INT_16, state.get(IEProperties.INT_16));
+		return super.createLegacyBlock(state).setValue(IEProperties.INT_16, state.getValue(IEProperties.INT_16));
 	}
 
 	@Override
@@ -114,22 +114,22 @@ public class ConcreteFluid extends IEFluid
 		ConcreteFluid ret = new ConcreteFluid(fluidName, stillTex, flowingTex, buildAttributes, false)
 		{
 			@Override
-			protected void fillStateContainer(StateContainer.Builder<Fluid, FluidState> builder)
+			protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder)
 			{
-				super.fillStateContainer(builder);
-				builder.add(LEVEL_1_8);
+				super.createFluidStateDefinition(builder);
+				builder.add(LEVEL);
 			}
 		};
 		ret.source = this;
 		ret.bucket = bucket;
 		ret.block = block;
-		ret.setDefaultState(ret.getStateContainer().getBaseState().with(LEVEL_1_8, 7));
+		ret.registerDefaultState(ret.getStateDefinition().any().setValue(LEVEL, 7));
 		return ret;
 	}
 
 	@Nonnull
 	@Override
-	protected FluidState calculateCorrectFlowingState(IWorldReader worldIn, BlockPos pos, @Nonnull BlockState blockStateIn)
+	protected FluidState getNewLiquid(LevelReader worldIn, BlockPos pos, @Nonnull BlockState blockStateIn)
 	{
 		//Based on super version, respects timer/decay
 		int maxNeighborLevel = 0;
@@ -137,30 +137,30 @@ public class ConcreteFluid extends IEFluid
 
 		for(Direction neighborSide : Direction.Plane.HORIZONTAL)
 		{
-			BlockPos neighborPos = pos.offset(neighborSide);
+			BlockPos neighborPos = pos.relative(neighborSide);
 			BlockState neighborState = worldIn.getBlockState(neighborPos);
 			FluidState fluidAtNeighbor = neighborState.getFluidState();
-			if(fluidAtNeighbor.getFluid().isEquivalentTo(this)
-					&&((FlowingFluidAccess) this).invokeDoesSideHaveHoles(neighborSide, worldIn, pos, blockStateIn, neighborPos, neighborState)
-					&&fluidAtNeighbor.getLevel() > maxNeighborLevel
+			if(fluidAtNeighbor.getType().isSame(this)
+					&&((FlowingFluidAccess) this).invokeCanPassThroughWall(neighborSide, worldIn, pos, blockStateIn, neighborPos, neighborState)
+					&&fluidAtNeighbor.getAmount() > maxNeighborLevel
 			)
 			{
-				correspondingTimer = fluidAtNeighbor.get(IEProperties.INT_16);
-				maxNeighborLevel = fluidAtNeighbor.getLevel();
+				correspondingTimer = fluidAtNeighbor.getValue(IEProperties.INT_16);
+				maxNeighborLevel = fluidAtNeighbor.getAmount();
 			}
 		}
 
-		BlockPos abovePos = pos.up();
+		BlockPos abovePos = pos.above();
 		BlockState aboveState = worldIn.getBlockState(abovePos);
 		FluidState aboveFluid = aboveState.getFluidState();
 		FluidState currFluid = blockStateIn.getFluidState();
-		if(!aboveFluid.isEmpty()&&aboveFluid.getFluid().isEquivalentTo(this)&&((FlowingFluidAccess) this).invokeDoesSideHaveHoles(Direction.UP, worldIn, pos, blockStateIn, abovePos, aboveState))
-			return this.getFlowingFluidState(8, true, currFluid, Math.max(correspondingTimer, aboveFluid.get(IEProperties.INT_16)));
+		if(!aboveFluid.isEmpty()&&aboveFluid.getType().isSame(this)&&((FlowingFluidAccess) this).invokeCanPassThroughWall(Direction.UP, worldIn, pos, blockStateIn, abovePos, aboveState))
+			return this.getFlowingFluidState(8, true, currFluid, Math.max(correspondingTimer, aboveFluid.getValue(IEProperties.INT_16)));
 		else
 		{
-			int newLevel = maxNeighborLevel-this.getLevelDecreasePerBlock(worldIn);
+			int newLevel = maxNeighborLevel-this.getDropOff(worldIn);
 			if(newLevel <= 0)
-				return Fluids.EMPTY.getDefaultState();
+				return Fluids.EMPTY.defaultFluidState();
 			else
 				return this.getFlowingFluidState(newLevel, false, currFluid, correspondingTimer);
 		}
@@ -168,24 +168,24 @@ public class ConcreteFluid extends IEFluid
 
 	public FluidState getFlowingFluidState(int level, boolean falling, FluidState currentState, int baseDecay)
 	{
-		FluidState baseState = super.getFlowingFluidState(level, falling);
-		if(isEquivalentTo(currentState.getFluid()))
-			baseDecay = Math.max(currentState.get(IEProperties.INT_16), baseDecay);
-		baseState = baseState.with(IEProperties.INT_16, baseDecay);
+		FluidState baseState = super.getFlowing(level, falling);
+		if(isSame(currentState.getType()))
+			baseDecay = Math.max(currentState.getValue(IEProperties.INT_16), baseDecay);
+		baseState = baseState.setValue(IEProperties.INT_16, baseDecay);
 		return baseState;
 	}
 
-	protected void flowInto(@Nonnull IWorld worldIn, @Nonnull BlockPos pos, BlockState blockStateIn, Direction direction,
+	protected void spreadTo(@Nonnull LevelAccessor worldIn, @Nonnull BlockPos pos, BlockState blockStateIn, Direction direction,
 							@Nonnull FluidState fluidStateIn)
 	{
-		if(blockStateIn.getBlock() instanceof ILiquidContainer)
-			((ILiquidContainer)blockStateIn.getBlock()).receiveFluid(worldIn, pos, blockStateIn, fluidStateIn);
+		if(blockStateIn.getBlock() instanceof LiquidBlockContainer)
+			((LiquidBlockContainer)blockStateIn.getBlock()).placeLiquid(worldIn, pos, blockStateIn, fluidStateIn);
 		else
 		{
 			if(!blockStateIn.isAir())
-				this.beforeReplacingBlock(worldIn, pos, blockStateIn);
+				this.beforeDestroyingBlock(worldIn, pos, blockStateIn);
 
-			worldIn.setBlockState(pos, fluidStateIn.getBlockState(), 3);
+			worldIn.setBlock(pos, fluidStateIn.createLegacyBlock(), 3);
 		}
 		hasFlownInTick = true;
 	}

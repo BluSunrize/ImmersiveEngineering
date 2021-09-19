@@ -15,10 +15,10 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -36,12 +36,12 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 	{
 		FluidStack fluidOutput = FluidStack.EMPTY;
 		if(json.has("fluid"))
-			fluidOutput = ApiUtils.jsonDeserializeFluidStack(JSONUtils.getJsonObject(json, "fluid"));
+			fluidOutput = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "fluid"));
 		ItemStack itemOutput = ItemStack.EMPTY;
 		if(json.has("result"))
 			itemOutput = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-		int energy = JSONUtils.getInt(json, "energy");
+		int energy = GsonHelper.getAsInt(json, "energy");
 		return IEServerConfig.MACHINES.fermenterConfig.apply(
 				new FermenterRecipe(recipeId, fluidOutput, itemOutput, input, energy)
 		);
@@ -49,20 +49,20 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 
 	@Nullable
 	@Override
-	public FermenterRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public FermenterRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
-		ItemStack itemOutput = buffer.readItemStack();
+		ItemStack itemOutput = buffer.readItem();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		int energy = buffer.readInt();
 		return new FermenterRecipe(recipeId, fluidOutput, itemOutput, input, energy);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, FermenterRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, FermenterRecipe recipe)
 	{
 		buffer.writeFluidStack(recipe.fluidOutput);
-		buffer.writeItemStack(recipe.itemOutput);
+		buffer.writeItem(recipe.itemOutput);
 		recipe.input.write(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}

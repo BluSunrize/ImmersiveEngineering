@@ -17,14 +17,14 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
-import net.minecraft.block.BlockState;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxConnector
+public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements TickableBlockEntity, IIEInternalFluxConnector
 {
 	private int energyOutput = -1;
 	private Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = new EnumMap<>(Direction.class);
@@ -48,9 +48,9 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 	@Override
 	public void tick()
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
-			if(world.getGameTime()%1024==((getPos().getX()^getPos().getZ())&1023))
+			if(level.getGameTime()%1024==((getBlockPos().getX()^getBlockPos().getZ())&1023))
 				recalculateEnergyOutput();
 			if(this.energyOutput > 0)
 				outputEnergy(this.energyOutput);
@@ -78,10 +78,10 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 	{
 		int energy = 0;
 		for(Direction fd : new Direction[]{Direction.DOWN, Direction.NORTH, Direction.WEST})
-			if(!world.isAirBlock(getPos().offset(fd))&&!world.isAirBlock(getPos().offset(fd.getOpposite())))
+			if(!level.isEmptyBlock(getBlockPos().relative(fd))&&!level.isEmptyBlock(getBlockPos().relative(fd.getOpposite())))
 			{
-				int temp0 = getTemperature(getPos().offset(fd));
-				int temp1 = getTemperature(getPos().offset(fd.getOpposite()));
+				int temp0 = getTemperature(getBlockPos().relative(fd));
+				int temp1 = getTemperature(getBlockPos().relative(fd.getOpposite()));
 				if(temp0 > -1&&temp1 > -1)
 				{
 					int diff = Math.abs(temp0-temp1);
@@ -95,27 +95,27 @@ public class ThermoelectricGenTileEntity extends IEBaseTileEntity implements ITi
 	{
 		Fluid f = getFluid(pos);
 		if(f!=Fluids.EMPTY)
-			return f.getAttributes().getTemperature(world, pos);
-		BlockState state = world.getBlockState(pos);
+			return f.getAttributes().getTemperature(level, pos);
+		BlockState state = level.getBlockState(pos);
 		return ThermoelectricHandler.getTemperature(state.getBlock());
 	}
 
 	@Nullable
 	Fluid getFluid(BlockPos pos)
 	{
-		BlockState state = world.getBlockState(pos);
+		BlockState state = level.getBlockState(pos);
 		FluidState fState = state.getFluidState();
-		return fState.getFluid();
+		return fState.getType();
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		this.energyOutput = nbt.getInt("enegyOutput");
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putInt("enegyOutput", this.energyOutput);
 	}

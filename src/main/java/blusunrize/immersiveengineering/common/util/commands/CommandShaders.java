@@ -13,34 +13,33 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
-import net.minecraft.command.arguments.EntityArgument;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.TranslationTextComponent;
-
 import java.util.UUID;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
+import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
 
 public class CommandShaders
 {
-	public static LiteralArgumentBuilder<CommandSource> create()
+	public static LiteralArgumentBuilder<CommandSourceStack> create()
 	{
-		LiteralArgumentBuilder<CommandSource> main = Commands.literal("clearshaders");
-		main.requires(source -> source.hasPermissionLevel(4));
-		main.executes(source -> clearShaders(source, source.getSource().asPlayer()));
+		LiteralArgumentBuilder<CommandSourceStack> main = Commands.literal("clearshaders");
+		main.requires(source -> source.hasPermission(4));
+		main.executes(source -> clearShaders(source, source.getSource().getPlayerOrException()));
 		main.then(Commands.argument("player", EntityArgument.player()).executes(
-				context -> clearShaders(context, context.getArgument("player", ServerPlayerEntity.class))));
+				context -> clearShaders(context, context.getArgument("player", ServerPlayer.class))));
 		return main;
 	}
 
-	private static int clearShaders(CommandContext<CommandSource> context, ServerPlayerEntity player)
+	private static int clearShaders(CommandContext<CommandSourceStack> context, ServerPlayer player)
 	{
-		UUID uuid = player.getUniqueID();
+		UUID uuid = player.getUUID();
 		if(ShaderRegistry.receivedShaders.containsKey(uuid))
 			ShaderRegistry.receivedShaders.get(uuid).clear();
 		ShaderRegistry.recalculatePlayerTotalWeight(uuid);
-		context.getSource().sendFeedback(
-				new TranslationTextComponent(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
+		context.getSource().sendSuccess(
+				new TranslatableComponent(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
 				true);
 		return Command.SINGLE_SUCCESS;
 	}

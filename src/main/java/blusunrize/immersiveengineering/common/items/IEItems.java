@@ -12,14 +12,13 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.Rarity;
-
 import java.util.EnumMap;
 import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Rarity;
 
 public final class IEItems
 {
@@ -96,7 +95,7 @@ public final class IEItems
 		public static Item steelAxe;
 		public static Item steelHoe;
 		public static Item steelSword;
-		public static Map<EquipmentSlotType, Item> steelArmor = new EnumMap<>(EquipmentSlotType.class);
+		public static Map<EquipmentSlot, Item> steelArmor = new EnumMap<>(EquipmentSlot.class);
 
 		public static Item toolbox;
 
@@ -136,7 +135,7 @@ public final class IEItems
 		public static Item earmuffs;
 		public static Item coresample;
 		public static Item graphiteElectrode;
-		public static Map<EquipmentSlotType, Item> faradaySuit = new EnumMap<>(EquipmentSlotType.class);
+		public static Map<EquipmentSlot, Item> faradaySuit = new EnumMap<>(EquipmentSlot.class);
 		public static Item fluorescentTube;
 		public static Item powerpack;
 		public static Item shield;

@@ -10,74 +10,74 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.items.*;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public class IEBipedRotations
 {
-	public static void handleBipedRotations(BipedModel<?> model, Entity entity)
+	public static void handleBipedRotations(HumanoidModel<?> model, Entity entity)
 	{
 		if(!IEClientConfig.fancyItemHolding.get())
 			return;
 
-		if(entity instanceof PlayerEntity)
+		if(entity instanceof Player)
 		{
-			PlayerEntity player = (PlayerEntity)entity;
-			for(Hand hand : Hand.values())
+			Player player = (Player)entity;
+			for(InteractionHand hand : InteractionHand.values())
 			{
-				ItemStack heldItem = player.getHeldItem(hand);
+				ItemStack heldItem = player.getItemInHand(hand);
 				if(!heldItem.isEmpty())
 				{
-					boolean right = (hand==Hand.MAIN_HAND)==(player.getPrimaryHand()==HandSide.RIGHT);
+					boolean right = (hand==InteractionHand.MAIN_HAND)==(player.getMainArm()==HumanoidArm.RIGHT);
 					if(heldItem.getItem() instanceof RevolverItem)
 					{
 						if(right)
 						{
-							model.bipedRightArm.rotateAngleX = -1.39626f+model.bipedHead.rotateAngleX;
-							model.bipedRightArm.rotateAngleY = -.08726f+model.bipedHead.rotateAngleY;
+							model.rightArm.xRot = -1.39626f+model.head.xRot;
+							model.rightArm.yRot = -.08726f+model.head.yRot;
 						}
 						else
 						{
-							model.bipedLeftArm.rotateAngleX = -1.39626f+model.bipedHead.rotateAngleX;
-							model.bipedLeftArm.rotateAngleY = .08726f+model.bipedHead.rotateAngleY;
+							model.leftArm.xRot = -1.39626f+model.head.xRot;
+							model.leftArm.yRot = .08726f+model.head.yRot;
 						}
 					}
 					else if(heldItem.getItem() instanceof DrillItem||heldItem.getItem() instanceof ChemthrowerItem)
 					{
 						if(right)
 						{
-							model.bipedLeftArm.rotateAngleX = -.87266f;
-							model.bipedLeftArm.rotateAngleY = .52360f;
+							model.leftArm.xRot = -.87266f;
+							model.leftArm.yRot = .52360f;
 						}
 						else
 						{
-							model.bipedRightArm.rotateAngleX = -.87266f;
-							model.bipedRightArm.rotateAngleY = -.52360f;
+							model.rightArm.xRot = -.87266f;
+							model.rightArm.yRot = -.52360f;
 						}
 					}
 					else if(heldItem.getItem() instanceof BuzzsawItem)
 					{
 						if(right)
 						{
-							model.bipedLeftArm.rotateAngleX = -.87266f;
-							model.bipedLeftArm.rotateAngleY = .78539f;
+							model.leftArm.xRot = -.87266f;
+							model.leftArm.yRot = .78539f;
 						}
 						else
 						{
-							model.bipedRightArm.rotateAngleX = -.87266f;
-							model.bipedRightArm.rotateAngleY = -.78539f;
+							model.rightArm.xRot = -.87266f;
+							model.rightArm.yRot = -.78539f;
 						}
 					}
 					else if(heldItem.getItem() instanceof RailgunItem)
 					{
 						if(right)
-							model.bipedRightArm.rotateAngleX = -.87266f;
+							model.rightArm.xRot = -.87266f;
 						else
-							model.bipedLeftArm.rotateAngleX = -.87266f;
+							model.leftArm.xRot = -.87266f;
 					}
 
 				}

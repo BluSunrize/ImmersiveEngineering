@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.client.utils;
 
-import net.minecraft.util.text.Color;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextColor;
+import net.minecraft.network.chat.TextComponent;
 
 public class FontUtils
 {
@@ -15,11 +15,11 @@ public class FontUtils
 		return hexCol.toString();
 	}
 
-	public static IFormattableTextComponent withAppendColoredColour(IFormattableTextComponent base, int color) {
+	public static MutableComponent withAppendColoredColour(MutableComponent base, int color) {
 		String hexCol = hexColorString(color);
-		IFormattableTextComponent coloredComponent = new StringTextComponent("#"+hexCol);
-		Style coloredStyle = coloredComponent.getStyle().setColor(Color.fromInt(color));
+		MutableComponent coloredComponent = new TextComponent("#"+hexCol);
+		Style coloredStyle = coloredComponent.getStyle().withColor(TextColor.fromRgb(color));
 		coloredComponent.setStyle(coloredStyle);
-		return base.appendSibling(coloredComponent);
+		return base.append(coloredComponent);
 	}
 }

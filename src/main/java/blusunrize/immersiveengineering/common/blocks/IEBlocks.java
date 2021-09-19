@@ -16,17 +16,17 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.block.Block;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.ResourceLocation;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.EnumMap;
 import java.util.IdentityHashMap;
 import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.StairBlock;
 
 public final class IEBlocks
 {
@@ -49,8 +49,8 @@ public final class IEBlocks
 		public static Block insulatingGlass;
 		public static Block concreteSprayed;
 		public static Block alloybrick;
-		public static StairsBlock hempcreteStairs;
-		public static StairsBlock[] concreteStairs = new StairsBlock[3];
+		public static StairBlock hempcreteStairs;
+		public static StairBlock[] concreteStairs = new StairBlock[3];
 
 		//TODO possibly merge into a single block with "arbitrary" height?
 		public static Block concreteSheet;
@@ -96,7 +96,7 @@ public final class IEBlocks
 	public static final class WoodenDecoration
 	{
 		public static Map<TreatedWoodStyles, Block> treatedWood = new EnumMap<>(TreatedWoodStyles.class);
-		public static Map<TreatedWoodStyles, StairsBlock> treatedStairs = new EnumMap<>(TreatedWoodStyles.class);
+		public static Map<TreatedWoodStyles, StairBlock> treatedStairs = new EnumMap<>(TreatedWoodStyles.class);
 		public static IEFenceBlock treatedFence;
 		public static Block treatedScaffolding;
 		public static Block treatedPost;
@@ -146,8 +146,8 @@ public final class IEBlocks
 		public static Map<CoverType, Block> metalLadder = new EnumMap<>(CoverType.class);
 		public static Map<MetalScaffoldingType, Block> steelScaffolding = new EnumMap<>(MetalScaffoldingType.class);
 		public static Map<MetalScaffoldingType, Block> aluScaffolding = new EnumMap<>(MetalScaffoldingType.class);
-		public static Map<MetalScaffoldingType, StairsBlock> steelScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);
-		public static Map<MetalScaffoldingType, StairsBlock> aluScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);
+		public static Map<MetalScaffoldingType, StairBlock> steelScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);
+		public static Map<MetalScaffoldingType, StairBlock> aluScaffoldingStair = new EnumMap<>(MetalScaffoldingType.class);
 		public static Map<DyeColor, Block> coloredSheetmetal = new EnumMap<>(DyeColor.class);
 	}
 

@@ -17,9 +17,8 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Call
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.PoweredMBCallbacks;
-import net.minecraft.item.ItemStack;
-
 import java.util.List;
+import net.minecraft.world.item.ItemStack;
 
 public class CrusherCallbacks extends MultiblockCallbackOwner<CrusherTileEntity>
 {

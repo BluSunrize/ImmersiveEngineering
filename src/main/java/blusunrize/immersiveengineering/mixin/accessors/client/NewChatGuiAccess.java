@@ -9,17 +9,17 @@
 
 package blusunrize.immersiveengineering.mixin.accessors.client;
 
-import net.minecraft.client.gui.NewChatGui;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.network.chat.Component;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
-@Mixin(NewChatGui.class)
+@Mixin(ChatComponent.class)
 public interface NewChatGuiAccess
 {
 	@Invoker
-	void callDeleteChatLine(int id);
+	void callRemoveById(int id);
 
 	@Invoker
-	void callPrintChatMessageWithOptionalDeletion(ITextComponent chatComponent, int chatLineId);
+	void callAddMessage(Component chatComponent, int chatLineId);
 }

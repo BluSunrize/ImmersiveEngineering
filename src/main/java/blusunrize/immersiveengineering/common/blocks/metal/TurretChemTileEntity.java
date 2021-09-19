@@ -14,10 +14,10 @@ import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -83,7 +83,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 			{
 				tank.drain(consumed, FluidAction.EXECUTE);
 				this.energyStorage.extractEnergy(energy, false);
-				Vector3d v = getGunToTargetVec(target).normalize();
+				Vec3 v = getGunToTargetVec(target).normalize();
 
 				int split = 8;
 				boolean isGas = fs.getFluid().getAttributes().isGaseous();
@@ -98,29 +98,29 @@ public class TurretChemTileEntity extends TurretTileEntity
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&this.ignite;
 				for(int i = 0; i < split; i++)
 				{
-					Vector3d vecDir = v.add(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
-					Vector3d throwerPos = getGunPosition();
-					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(world, throwerPos.x+v.x*0.875, throwerPos.y+v.y*0.875,
+					Vec3 vecDir = v.add(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
+					Vec3 throwerPos = getGunPosition();
+					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(level, throwerPos.x+v.x*0.875, throwerPos.y+v.y*0.875,
 							throwerPos.z+v.z*0.875, 0, 0, 0, fs);
-					chem.setMotion(vecDir.scale(range));
+					chem.setDeltaMovement(vecDir.scale(range));
 					if(ignite)
-						chem.setFire(10);
-					if(!world.isRemote)
-						world.addEntity(chem);
+						chem.setSecondsOnFire(10);
+					if(!level.isClientSide)
+						level.addFreshEntity(chem);
 				}
 				if(tick%4==0)
 				{
 					if(ignite)
-						world.playSound(null, getPos(), IESounds.sprayFire, SoundCategory.BLOCKS, .5F, 1.5F);
+						level.playSound(null, getBlockPos(), IESounds.sprayFire, SoundSource.BLOCKS, .5F, 1.5F);
 					else
-						world.playSound(null, getPos(), IESounds.spray, SoundCategory.BLOCKS, .5F, .75F);
+						level.playSound(null, getBlockPos(), IESounds.spray, SoundSource.BLOCKS, .5F, .75F);
 				}
 			}
 		}
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		super.receiveMessageFromClient(message);
 		if(message.contains("ignite", NBT.TAG_BYTE))
@@ -128,7 +128,7 @@ public class TurretChemTileEntity extends TurretTileEntity
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tank.readFromNBT(nbt.getCompound("tank"));
@@ -136,10 +136,10 @@ public class TurretChemTileEntity extends TurretTileEntity
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
+		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
 		nbt.putBoolean("ignite", ignite);
 	}
 

@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.Hand;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -26,13 +26,13 @@ public class MessageMagnetEquip implements IMessage
 		this.fetchSlot = fetch;
 	}
 
-	public MessageMagnetEquip(PacketBuffer buf)
+	public MessageMagnetEquip(FriendlyByteBuf buf)
 	{
 		this.fetchSlot = buf.readInt();
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeInt(this.fetchSlot);
 	}
@@ -41,18 +41,18 @@ public class MessageMagnetEquip implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		Context ctx = context.get();
-		ServerPlayerEntity player = ctx.getSender();
+		ServerPlayer player = ctx.getSender();
 		assert player!=null;
 		ctx.enqueueWork(() -> {
-			ItemStack held = player.getHeldItem(Hand.OFF_HAND);
+			ItemStack held = player.getItemInHand(InteractionHand.OFF_HAND);
 			if(fetchSlot >= 0)
 			{
-				ItemStack s = player.inventory.mainInventory.get(fetchSlot);
+				ItemStack s = player.inventory.items.get(fetchSlot);
 				if(!s.isEmpty()&&s.getItem() instanceof IEShieldItem&&((IEShieldItem)s.getItem()).getUpgrades(s).getBoolean("magnet"))
 				{
 					((IEShieldItem)s.getItem()).getUpgrades(s).putInt("prevSlot", fetchSlot);
-					player.inventory.mainInventory.set(fetchSlot, held);
-					player.setHeldItem(Hand.OFF_HAND, s);
+					player.inventory.items.set(fetchSlot, held);
+					player.setItemInHand(InteractionHand.OFF_HAND, s);
 				}
 			}
 			else
@@ -60,9 +60,9 @@ public class MessageMagnetEquip implements IMessage
 				if(held.getItem() instanceof IEShieldItem&&((IEShieldItem)held.getItem()).getUpgrades(held).getBoolean("magnet"))
 				{
 					int prevSlot = ((IEShieldItem)held.getItem()).getUpgrades(held).getInt("prevSlot");
-					ItemStack s = player.inventory.mainInventory.get(prevSlot);
-					player.inventory.mainInventory.set(prevSlot, held);
-					player.setHeldItem(Hand.OFF_HAND, s);
+					ItemStack s = player.inventory.items.get(prevSlot);
+					player.inventory.items.set(prevSlot, held);
+					player.setItemInHand(InteractionHand.OFF_HAND, s);
 					((IEShieldItem)held.getItem()).getUpgrades(held).remove("prevSlot");
 				}
 			}

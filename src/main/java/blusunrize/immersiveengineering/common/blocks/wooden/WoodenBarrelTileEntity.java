@@ -22,21 +22,21 @@ import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -54,7 +54,7 @@ import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
-public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
+public class WoodenBarrelTileEntity extends IEBaseTileEntity implements TickableBlockEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, ITileDrop, IComparatorOverride
 {
 	public static final int IGNITION_TEMPERATURE = 573;
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(
@@ -63,7 +63,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	));
 	public FluidTank tank = new FluidTank(12*FluidAttributes.BUCKET_VOLUME, this::isFluidValid);
 
-	public WoodenBarrelTileEntity(TileEntityType<? extends WoodenBarrelTileEntity> type)
+	public WoodenBarrelTileEntity(BlockEntityType<? extends WoodenBarrelTileEntity> type)
 	{
 		super(type);
 	}
@@ -81,7 +81,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	@Override
 	public void tick()
 	{
-		if(world.isRemote)
+		if(level.isClientSide)
 			return;
 
 		boolean update = false;
@@ -104,57 +104,57 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			}
 		if(update)
 		{
-			this.markDirty();
+			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
 	}
 
 	@Override
-	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult rtr, boolean hammer)
+	public Component[] getOverlayText(Player player, HitResult rtr, boolean hammer)
 	{
 		if(rtr.getType()==Type.MISS)
 			return null;
-		if(Utils.isFluidRelatedItemStack(player.getHeldItem(Hand.MAIN_HAND)))
-			return new ITextComponent[]{
+		if(Utils.isFluidRelatedItemStack(player.getItemInHand(InteractionHand.MAIN_HAND)))
+			return new Component[]{
 					TextUtils.formatFluidStack(tank.getFluid())
 			};
-		if(!(rtr instanceof BlockRayTraceResult))
+		if(!(rtr instanceof BlockHitResult))
 			return null;
-		BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
-		if(hammer&&IEClientConfig.showTextOverlay.get()&&brtr.getFace().getAxis()==Axis.Y)
+		BlockHitResult brtr = (BlockHitResult)rtr;
+		if(hammer&&IEClientConfig.showTextOverlay.get()&&brtr.getDirection().getAxis()==Axis.Y)
 		{
-			IOSideConfig side = sideConfig.getOrDefault(brtr.getFace(), NONE);
-			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getFace().getOpposite(), NONE);
+			IOSideConfig side = sideConfig.getOrDefault(brtr.getDirection(), NONE);
+			IOSideConfig opposite = sideConfig.getOrDefault(brtr.getDirection().getOpposite(), NONE);
 			return TextUtils.sideConfigWithOpposite(Lib.DESC_INFO+"blockSide.connectFluid.", side, opposite);
 		}
 		return null;
 	}
 
 	@Override
-	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
+	public boolean useNixieFont(Player player, HitResult mop)
 	{
 		return false;
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		int[] sideCfgArray = nbt.getIntArray("sideConfig");
 		if(sideCfgArray.length < 2)
 			sideCfgArray = new int[]{-1, 0};
 		sideConfig.clear();
 		for(int i = 0; i < sideCfgArray.length; ++i)
-			sideConfig.put(Direction.byIndex(i), IOSideConfig.VALUES[sideCfgArray[i]]);
+			sideConfig.put(Direction.from3DDataValue(i), IOSideConfig.VALUES[sideCfgArray[i]]);
 		this.readTank(nbt);
 	}
 
-	public void readTank(CompoundNBT nbt)
+	public void readTank(CompoundTag nbt)
 	{
 		tank.readFromNBT(nbt.getCompound("tank"));
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		int[] sideCfgArray = new int[2];
 		sideCfgArray[0] = sideConfig.get(Direction.DOWN).ordinal();
@@ -163,10 +163,10 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 		this.writeTank(nbt, false);
 	}
 
-	public void writeTank(CompoundNBT nbt, boolean toItem)
+	public void writeTank(CompoundTag nbt, boolean toItem)
 	{
 		boolean write = tank.getFluidAmount() > 0;
-		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
+		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
 		if(!toItem||write)
 			nbt.put("tank", tankTag);
 	}
@@ -209,7 +209,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			int i = barrel.tank.fill(resource, doFill);
 			if(i > 0&&doFill.execute())
 			{
-				barrel.markDirty();
+				barrel.setChanged();
 				barrel.markContainingBlockForUpdate(null);
 			}
 			return i;
@@ -231,7 +231,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			FluidStack f = barrel.tank.drain(maxDrain, doDrain);
 			if(!f.isEmpty())
 			{
-				barrel.markDirty();
+				barrel.setChanged();
 				barrel.markContainingBlockForUpdate(null);
 			}
 			return f;
@@ -277,19 +277,19 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public boolean toggleSide(Direction side, PlayerEntity p)
+	public boolean toggleSide(Direction side, Player p)
 	{
 		if(side.getAxis()!=Axis.Y)
 			return false;
 		sideConfig.compute(side, (s, config) -> IOSideConfig.next(config));
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
-		world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 0, 0);
+		level.blockEvent(getBlockPos(), this.getBlockState().getBlock(), 0, 0);
 		return true;
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 		{
@@ -300,7 +300,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		Optional<FluidStack> fOptional = FluidUtil.getFluidContained(heldItem);
 		boolean metal = this instanceof MetalBarrelTileEntity;
@@ -309,12 +309,12 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 			Optional<Boolean> ret = fOptional.map((f) -> {
 				if(f.getFluid().getAttributes().isGaseous(f))
 				{
-					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"noGasAllowed"));
+					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"noGasAllowed"));
 					return true;
 				}
 				else if(f.getFluid().getAttributes().getTemperature(f) >= WoodenBarrelTileEntity.IGNITION_TEMPERATURE)
 				{
-					ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"tooHot"));
+					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"tooHot"));
 					return true;
 				}
 				else
@@ -326,7 +326,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 
 		if(FluidUtils.interactWithFluidHandler(player, hand, tank))
 		{
-			this.markDirty();
+			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 			return true;
 		}
@@ -337,7 +337,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements ITickabl
 	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		writeTank(tag, true);
 		if(!tag.isEmpty())
 			stack.setTag(tag);

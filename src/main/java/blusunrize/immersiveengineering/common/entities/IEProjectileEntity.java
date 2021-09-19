@@ -10,28 +10,37 @@ package blusunrize.immersiveengineering.common.entities;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.*;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.AbstractArrowEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.math.*;
-import net.minecraft.util.math.RayTraceContext.BlockMode;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult.Type;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.ClipContext.Block;
+import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -43,10 +52,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have to extend arrow or else it's all weird and broken >_>
+public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to extend arrow or else it's all weird and broken >_>
 {
-	private static final DataParameter<Optional<UUID>> SHOOTER_PARAMETER =
-			EntityDataManager.createKey(IEProjectileEntity.class, DataSerializers.OPTIONAL_UNIQUE_ID);
+	private static final EntityDataAccessor<Optional<UUID>> SHOOTER_PARAMETER =
+			SynchedEntityData.defineId(IEProjectileEntity.class, EntityDataSerializers.OPTIONAL_UUID);
 
 	protected BlockPos stuckIn = null;
 	protected BlockState inBlockState;
@@ -59,50 +68,50 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	private int tickLimit = 40;
 
-	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world)
 	{
 		super(type, world);
-		this.pickupStatus = PickupStatus.DISALLOWED;
+		this.pickup = Pickup.DISALLOWED;
 	}
 
-	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, double x, double y, double z)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world, double x, double y, double z)
 	{
 		this(type, world);
-		this.setLocationAndAngles(x, y, z, this.rotationYaw, this.rotationPitch);
-		this.setPosition(x, y, z);
+		this.moveTo(x, y, z, this.yRot, this.xRot);
+		this.setPos(x, y, z);
 	}
 
-	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double ax, double ay, double az)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world, LivingEntity living, double ax, double ay, double az)
 	{
-		this(type, world, living, living.getPosX(), living.getPosY()+living.getEyeHeight(), living.getPosZ(), ax, ay, az);
+		this(type, world, living, living.getX(), living.getY()+living.getEyeHeight(), living.getZ(), ax, ay, az);
 	}
 
-	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, World world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
+	public IEProjectileEntity(EntityType<? extends IEProjectileEntity> type, Level world, LivingEntity living, double x, double y, double z, double ax, double ay, double az)
 	{
 		this(type, world);
-		float yaw = living!=null?living.rotationYaw: 0;
-		float pitch = living!=null?living.rotationPitch: 0;
-		this.setLocationAndAngles(x, y, z, yaw, pitch);
-		this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-		setMotion(ax, ay, az);
-		setShooter(living);
+		float yaw = living!=null?living.yRot: 0;
+		float pitch = living!=null?living.xRot: 0;
+		this.moveTo(x, y, z, yaw, pitch);
+		this.setPos(this.getX(), this.getY(), this.getZ());
+		setDeltaMovement(ax, ay, az);
+		setOwner(living);
 		this.setShooterSynced();
-		Vector3d motion = getMotion();
+		Vec3 motion = getDeltaMovement();
 		this.shoot(motion.x, motion.y, motion.z, 2*1.5F, 1.0F);
 	}
 
 	@Override
-	protected void registerData()
+	protected void defineSynchedData()
 	{
-		super.registerData();
-		this.dataManager.register(SHOOTER_PARAMETER, Optional.empty());
+		super.defineSynchedData();
+		this.entityData.define(SHOOTER_PARAMETER, Optional.empty());
 	}
 
 	@Nonnull
 	@Override
-	public EntitySize getSize(Pose poseIn)
+	public EntityDimensions getDimensions(Pose poseIn)
 	{
-		return new EntitySize(.125f, .125f, true);
+		return new EntityDimensions(.125f, .125f, true);
 	}
 
 	public void setTickLimit(int limit)
@@ -112,12 +121,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	public void setShooterSynced()
 	{
-		this.dataManager.set(SHOOTER_PARAMETER, Optional.ofNullable(this.shooterUUID));
+		this.entityData.set(SHOOTER_PARAMETER, Optional.ofNullable(this.shooterUUID));
 	}
 
 	public UUID getShooterSynced()
 	{
-		Optional<UUID> s = this.dataManager.get(SHOOTER_PARAMETER);
+		Optional<UUID> s = this.entityData.get(SHOOTER_PARAMETER);
 		return s.orElse(null);
 	}
 
@@ -129,7 +138,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	@Nonnull
 	@Override
-	protected ItemStack getArrowStack()
+	protected ItemStack getPickupItem()
 	{
 		return ItemStack.EMPTY;
 	}
@@ -137,22 +146,22 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	@Override
 	public void tick()
 	{
-		if(this.getShooter()==null&&this.world.isRemote)
+		if(this.getOwner()==null&&this.level.isClientSide)
 			this.shooterUUID = getShooterSynced();
 
 		this.baseTick();
 		BlockState localState;
 		if(stuckIn!=null)
-			localState = this.world.getBlockState(stuckIn);
+			localState = this.level.getBlockState(stuckIn);
 		else
-			localState = Blocks.AIR.getDefaultState();
+			localState = Blocks.AIR.defaultBlockState();
 
 		//TODO better air check
 		if(localState.getMaterial()!=Material.AIR)
 		{
-			VoxelShape shape = localState.getCollisionShapeUncached(this.world, stuckIn);
-			for(AxisAlignedBB subbox : shape.toBoundingBoxList())
-				if(subbox.contains(this.getPosX(), this.getPosY(), this.getPosZ()))
+			VoxelShape shape = localState.getCollisionShape(this.level, stuckIn);
+			for(AABB subbox : shape.toAabbs())
+				if(subbox.contains(this.getX(), this.getY(), this.getZ()))
 				{
 					inGround = true;
 					break;
@@ -170,7 +179,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 			else
 			{
 				this.inGround = false;
-				setMotion(getMotion().scale(this.rand.nextFloat()/5));
+				setDeltaMovement(getDeltaMovement().scale(this.random.nextFloat()/5));
 				this.ticksInGround = 0;
 				this.ticksInAir = 0;
 			}
@@ -185,26 +194,26 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				return;
 			}
 
-			Vector3d currentPos = new Vector3d(this.getPosX(), this.getPosY(), this.getPosZ());
-			Vector3d nextPos = new Vector3d(this.getPosX(), this.getPosY(), this.getPosZ()).add(getMotion());
-			RayTraceResult mop = this.world.rayTraceBlocks(new RayTraceContext(currentPos, nextPos, BlockMode.COLLIDER,
-					FluidMode.NONE, this));
+			Vec3 currentPos = new Vec3(this.getX(), this.getY(), this.getZ());
+			Vec3 nextPos = new Vec3(this.getX(), this.getY(), this.getZ()).add(getDeltaMovement());
+			HitResult mop = this.level.clip(new ClipContext(currentPos, nextPos, Block.COLLIDER,
+					Fluid.NONE, this));
 
 			if(mop.getType()==Type.BLOCK)
-				nextPos = mop.getHitVec();
+				nextPos = mop.getLocation();
 
 			if(mop.getType()!=Type.ENTITY)
 			{
 				Entity entity = null;
-				List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getBoundingBox().expand(getMotion()).grow(1), Entity::canBeCollidedWith);
+				List<Entity> list = this.level.getEntities(this, this.getBoundingBox().expandTowards(getDeltaMovement()).inflate(1), Entity::isPickable);
 				double d0 = 0.0D;
 				for(Entity entity1 : list)
 				{
-					if(entity1.canBeCollidedWith()&&(!entity1.getUniqueID().equals(this.shooterUUID)||this.ticksInAir > 5))
+					if(entity1.isPickable()&&(!entity1.getUUID().equals(this.shooterUUID)||this.ticksInAir > 5))
 					{
 						float f = 0.3F;
-						AxisAlignedBB axisalignedbb = entity1.getBoundingBox().grow((double)f, (double)f, (double)f);
-						Optional<Vector3d> movingobjectposition1 = axisalignedbb.rayTrace(currentPos, nextPos);
+						AABB axisalignedbb = entity1.getBoundingBox().inflate((double)f, (double)f, (double)f);
+						Optional<Vec3> movingobjectposition1 = axisalignedbb.clip(currentPos, nextPos);
 
 						if(movingobjectposition1.isPresent())
 						{
@@ -218,67 +227,67 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 					}
 				}
 				if(entity!=null)
-					mop = new EntityRayTraceResult(entity);
+					mop = new EntityHitResult(entity);
 			}
 
 			if(mop.getType()!=Type.MISS)
 			{
 				if(mop.getType()==Type.ENTITY)
 				{
-					EntityRayTraceResult entityHit = (EntityRayTraceResult)mop;
-					if(!this.isBurning()&&this.canIgnite()&&entityHit.getEntity().isBurning())
-						this.setFire(3);
+					EntityHitResult entityHit = (EntityHitResult)mop;
+					if(!this.isOnFire()&&this.canIgnite()&&entityHit.getEntity().isOnFire())
+						this.setSecondsOnFire(3);
 					boolean allowHit = true;
 					if(shooterUUID!=null)
 					{
-						PlayerEntity shooter = world.getPlayerByUuid(shooterUUID);
-						if(shooter!=null&&entityHit.getEntity() instanceof PlayerEntity)
-							allowHit = shooter.canAttackPlayer((PlayerEntity)entityHit.getEntity());
+						Player shooter = level.getPlayerByUUID(shooterUUID);
+						if(shooter!=null&&entityHit.getEntity() instanceof Player)
+							allowHit = shooter.canHarmPlayer((Player)entityHit.getEntity());
 					}
 					if(allowHit)
-						this.onImpact(mop);
+						this.onHit(mop);
 					this.handlePiecing(entityHit.getEntity());
 				}
 				else if(mop.getType()==Type.BLOCK)
 				{
-					BlockRayTraceResult blockHit = (BlockRayTraceResult)mop;
-					this.onImpact(blockHit);
-					this.stuckIn = blockHit.getPos();
-					this.inBlockState = this.world.getBlockState(blockHit.getPos());
-					setMotion(blockHit.getHitVec().subtract(getPositionVec()));
-					float f2 = (float)getMotion().length();
-					Vector3d motion = getMotion();
-					this.setPosition(
-							this.getPosX()-motion.x/(double)f2*0.05,
-							this.getPosY()-motion.y/(double)f2*0.05,
-							this.getPosZ()-motion.z/(double)f2*0.05
+					BlockHitResult blockHit = (BlockHitResult)mop;
+					this.onHit(blockHit);
+					this.stuckIn = blockHit.getBlockPos();
+					this.inBlockState = this.level.getBlockState(blockHit.getBlockPos());
+					setDeltaMovement(blockHit.getLocation().subtract(position()));
+					float f2 = (float)getDeltaMovement().length();
+					Vec3 motion = getDeltaMovement();
+					this.setPos(
+							this.getX()-motion.x/(double)f2*0.05,
+							this.getY()-motion.y/(double)f2*0.05,
+							this.getZ()-motion.z/(double)f2*0.05
 					);
 
 					this.inGround = true;
 					if(this.inBlockState.getMaterial()!=Material.AIR)
-						this.inBlockState.onEntityCollision(this.world, blockHit.getPos(), this);
+						this.inBlockState.entityInside(this.level, blockHit.getBlockPos(), this);
 				}
 			}
 
-			this.setPosition(
-					this.getPosX()+getMotion().x,
-					this.getPosY()+getMotion().y,
-					this.getPosZ()+getMotion().z
+			this.setPos(
+					this.getX()+getDeltaMovement().x,
+					this.getY()+getDeltaMovement().y,
+					this.getZ()+getDeltaMovement().z
 			);
 
-			float absMotion = (float)getMotion().length();
-			this.rotationYaw = (float)(Math.atan2(getMotion().x, getMotion().z)*180.0D/Math.PI);
-			this.rotationPitch = (float)(Math.atan2(getMotion().y, absMotion)*180.0D/Math.PI);
-			while(this.rotationPitch-this.prevRotationPitch < -180.0F)
-				this.prevRotationPitch -= 360.0F;
-			while(this.rotationPitch-this.prevRotationPitch >= 180.0F)
-				this.prevRotationPitch += 360.0F;
-			while(this.rotationYaw-this.prevRotationYaw < -180.0F)
-				this.prevRotationYaw -= 360.0F;
-			while(this.rotationYaw-this.prevRotationYaw >= 180.0F)
-				this.prevRotationYaw += 360.0F;
-			this.rotationPitch = this.prevRotationPitch+(this.rotationPitch-this.prevRotationPitch)*0.2F;
-			this.rotationYaw = this.prevRotationYaw+(this.rotationYaw-this.prevRotationYaw)*0.2F;
+			float absMotion = (float)getDeltaMovement().length();
+			this.yRot = (float)(Math.atan2(getDeltaMovement().x, getDeltaMovement().z)*180.0D/Math.PI);
+			this.xRot = (float)(Math.atan2(getDeltaMovement().y, absMotion)*180.0D/Math.PI);
+			while(this.xRot-this.xRotO < -180.0F)
+				this.xRotO -= 360.0F;
+			while(this.xRot-this.xRotO >= 180.0F)
+				this.xRotO += 360.0F;
+			while(this.yRot-this.yRotO < -180.0F)
+				this.yRotO -= 360.0F;
+			while(this.yRot-this.yRotO >= 180.0F)
+				this.yRotO += 360.0F;
+			this.xRot = this.xRotO+(this.xRot-this.xRotO)*0.2F;
+			this.yRot = this.yRotO+(this.yRot-this.yRotO)*0.2F;
 
 
 			float movementDecay = getMotionDecayFactor();
@@ -288,38 +297,38 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				for(int j = 0; j < 4; ++j)
 				{
 					float f3 = 0.25F;
-					this.world.addParticle(ParticleTypes.BUBBLE,
-							this.getPosX()-getMotion().x*(double)f3,
-							this.getPosY()-getMotion().y*(double)f3,
-							this.getPosZ()-getMotion().z*(double)f3,
-							getMotion().x,
-							getMotion().y,
-							getMotion().z);
+					this.level.addParticle(ParticleTypes.BUBBLE,
+							this.getX()-getDeltaMovement().x*(double)f3,
+							this.getY()-getDeltaMovement().y*(double)f3,
+							this.getZ()-getDeltaMovement().z*(double)f3,
+							getDeltaMovement().x,
+							getDeltaMovement().y,
+							getDeltaMovement().z);
 				}
 				movementDecay *= 0.8F;
 			}
 			if(movementDecay > 0)
-				setMotion(getMotion().scale(movementDecay).add(0, -getGravity(), 0));
-			this.setPosition(this.getPosX(), this.getPosY(), this.getPosZ());
-			this.doBlockCollisions();
+				setDeltaMovement(getDeltaMovement().scale(movementDecay).add(0, -getGravity(), 0));
+			this.setPos(this.getX(), this.getY(), this.getZ());
+			this.checkInsideBlocks();
 		}
 	}
 
 	@Override
-	public void onCollideWithPlayer(PlayerEntity player)
+	public void playerTouch(Player player)
 	{
-		if(!this.world.isRemote&&(this.inGround||this.getNoClip())&&this.arrowShake <= 0)
+		if(!this.level.isClientSide&&(this.inGround||this.isNoPhysics())&&this.shakeTime <= 0)
 		{
-			boolean flag = this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
-					||this.pickupStatus==AbstractArrowEntity.PickupStatus.CREATIVE_ONLY&&player.abilities.isCreativeMode
-					||this.getNoClip()&&this.getShooter().getUniqueID()==player.getUniqueID();
-			if(this.pickupStatus==AbstractArrowEntity.PickupStatus.ALLOWED
-					&&!player.inventory.addItemStackToInventory(this.getArrowStack()))
+			boolean flag = this.pickup==AbstractArrow.Pickup.ALLOWED
+					||this.pickup==AbstractArrow.Pickup.CREATIVE_ONLY&&player.abilities.instabuild
+					||this.isNoPhysics()&&this.getOwner().getUUID()==player.getUUID();
+			if(this.pickup==AbstractArrow.Pickup.ALLOWED
+					&&!player.inventory.add(this.getPickupItem()))
 				flag = false;
 
 			if(flag)
 			{
-				player.onItemPickup(this, 1);
+				player.take(this, 1);
 				this.remove();
 			}
 
@@ -337,7 +346,7 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 				this.remove();
 				return;
 			}
-			this.piercedEntities.add(target.getEntityId());
+			this.piercedEntities.add(target.getId());
 		}
 		else
 			this.remove();
@@ -345,9 +354,9 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public boolean isInRangeToRenderDist(double distSq)
+	public boolean shouldRenderAtSqrDistance(double distSq)
 	{
-		double d1 = this.getBoundingBox().getAverageEdgeLength()*4.0D;
+		double d1 = this.getBoundingBox().getSize()*4.0D;
 		d1 *= 64.0D;
 		return distSq < d1*d1;
 	}
@@ -367,12 +376,12 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		return 100;
 	}
 
-	public abstract void onImpact(RayTraceResult mop);
+	public abstract void onHit(HitResult mop);
 
-	protected void onHitBlock(BlockRayTraceResult mop)
+	protected void onHitBlock(BlockHitResult mop)
 	{
-		BlockState blockstate = this.world.getBlockState(mop.getPos());
-		blockstate.onProjectileCollision(this.world, blockstate, mop, this);
+		BlockState blockstate = this.level.getBlockState(mop.getBlockPos());
+		blockstate.onProjectileHit(this.level, blockstate, mop, this);
 	}
 
 	protected float getMotionDecayFactor()
@@ -381,28 +390,28 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT nbt)
+	public void addAdditionalSaveData(CompoundTag nbt)
 	{
-		super.writeAdditional(nbt);
+		super.addAdditionalSaveData(nbt);
 		if(inBlockState!=null)
 		{
-			nbt.put("inPos", NBTUtil.writeBlockPos(stuckIn));
-			nbt.put("inTile", NBTUtil.writeBlockState(inBlockState));
+			nbt.put("inPos", NbtUtils.writeBlockPos(stuckIn));
+			nbt.put("inTile", NbtUtils.writeBlockState(inBlockState));
 		}
 		nbt.putByte("inGround", (byte)(this.inGround?1: 0));
 		if(this.shooterUUID!=null)
-			nbt.putUniqueId("Owner", this.shooterUUID);
+			nbt.putUUID("Owner", this.shooterUUID);
 
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT nbt)
+	public void readAdditionalSaveData(CompoundTag nbt)
 	{
-		super.readAdditional(nbt);
+		super.readAdditionalSaveData(nbt);
 		if(nbt.contains("inTile", NBT.TAG_COMPOUND))
 		{
-			inBlockState = NBTUtil.readBlockState(nbt.getCompound("inTile"));
-			stuckIn = NBTUtil.readBlockPos(nbt.getCompound("inPos"));
+			inBlockState = NbtUtils.readBlockState(nbt.getCompound("inTile"));
+			stuckIn = NbtUtils.readBlockPos(nbt.getCompound("inPos"));
 		}
 		else
 		{
@@ -411,27 +420,27 @@ public abstract class IEProjectileEntity extends AbstractArrowEntity//Yes I have
 		}
 		this.inGround = nbt.getByte("inGround")==1;
 		if(nbt.contains("Owner"))
-			this.shooterUUID = nbt.getUniqueId("Owner");
+			this.shooterUUID = nbt.getUUID("Owner");
 		else
 			this.shooterUUID = null;
 	}
 
 	@Override
-	public boolean attackEntityFrom(DamageSource source, float amount)
+	public boolean hurt(DamageSource source, float amount)
 	{
 		return false;
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket()
+	public Packet<?> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	public void setShooter(@Nullable Entity entityIn)
+	public void setOwner(@Nullable Entity entityIn)
 	{
-		super.setShooter(entityIn);
+		super.setOwner(entityIn);
 		if(entityIn!=null)
-			this.shooterUUID = entityIn.getUniqueID();
+			this.shooterUUID = entityIn.getUUID();
 	}
 }

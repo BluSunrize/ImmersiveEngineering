@@ -9,20 +9,20 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 public abstract class InternalStorageItemContainer extends ItemContainer
 {
-	public final EquipmentSlotType entityEquipmentSlot;
+	public final EquipmentSlot entityEquipmentSlot;
 	public IItemHandler inv;
 
-	public InternalStorageItemContainer(int id, PlayerInventory iinventory, World world, EquipmentSlotType entityEquipmentSlot, ItemStack heldItem)
+	public InternalStorageItemContainer(int id, Inventory iinventory, Level world, EquipmentSlot entityEquipmentSlot, ItemStack heldItem)
 	{
 		super(id, iinventory, world, entityEquipmentSlot, heldItem);
 		this.entityEquipmentSlot = entityEquipmentSlot;
@@ -41,9 +41,9 @@ public abstract class InternalStorageItemContainer extends ItemContainer
 	}
 
 	@Override
-	public void onContainerClosed(PlayerEntity par1EntityPlayer)
+	public void removed(Player par1EntityPlayer)
 	{
-		super.onContainerClosed(par1EntityPlayer);
+		super.removed(par1EntityPlayer);
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setInventoryForUpdate(null);
 	}

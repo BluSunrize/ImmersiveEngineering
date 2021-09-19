@@ -12,30 +12,30 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import com.google.common.base.Preconditions;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 
 import java.util.Collection;
 
 public class DefaultProxyProvider implements IICProxyProvider
 {
-	private final World world;
+	private final Level world;
 
-	public DefaultProxyProvider(World world)
+	public DefaultProxyProvider(Level world)
 	{
 		this.world = world;
 	}
 
 	@Override
-	public CompoundNBT toNBT(IImmersiveConnectable proxy)
+	public CompoundTag toNBT(IImmersiveConnectable proxy)
 	{
 		Preconditions.checkArgument(proxy instanceof IICProxy, "Expected IICProxy, got "+proxy);
 		return ((IICProxy)proxy).writeToNBT();
 	}
 
 	@Override
-	public IImmersiveConnectable fromNBT(CompoundNBT nbt)
+	public IImmersiveConnectable fromNBT(CompoundTag nbt)
 	{
 		return IICProxy.readFromNBT(world, nbt);
 	}

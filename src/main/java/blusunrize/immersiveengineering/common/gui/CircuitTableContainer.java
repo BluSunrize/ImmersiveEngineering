@@ -12,21 +12,21 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.Inventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntity>
 {
-	private final Inventory outputInventory = new Inventory(1);
+	private final SimpleContainer outputInventory = new SimpleContainer(1);
 
 	public LogicCircuitInstruction instruction;
 
-	public CircuitTableContainer(int id, PlayerInventory inventoryPlayer, CircuitTableTileEntity tile)
+	public CircuitTableContainer(int id, Inventory inventoryPlayer, CircuitTableTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 
@@ -37,13 +37,13 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 		this.addSlot(new IESlot.Output(this, this.outputInventory, 0, 194, 56)
 		{
 			@Override
-			public int getSlotStackLimit()
+			public int getMaxStackSize()
 			{
 				return 1;
 			}
 
 			@Override
-			public ItemStack onTake(PlayerEntity player, ItemStack stack)
+			public ItemStack onTake(Player player, ItemStack stack)
 			{
 				consumeInputs();
 				return super.onTake(player, stack);
@@ -65,19 +65,19 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 	}
 
 	@Override
-	public void onCraftMatrixChanged(IInventory inventory)
+	public void slotsChanged(Container inventory)
 	{
 		if(instruction!=null&&this.tile.canAssemble(instruction))
-			this.outputInventory.setInventorySlotContents(0, LogicCircuitBoardItem.buildCircuitBoard(instruction));
+			this.outputInventory.setItem(0, LogicCircuitBoardItem.buildCircuitBoard(instruction));
 		else
-			this.outputInventory.setInventorySlotContents(0, ItemStack.EMPTY);
-		super.onCraftMatrixChanged(inventory);
+			this.outputInventory.setItem(0, ItemStack.EMPTY);
+		super.slotsChanged(inventory);
 	}
 
 	@Override
-	public void receiveMessageFromScreen(CompoundNBT nbt)
+	public void receiveMessageFromScreen(CompoundTag nbt)
 	{
 		this.instruction = nbt.contains("operator")?LogicCircuitInstruction.deserialize(nbt): null;
-		this.onCraftMatrixChanged(this.inv);
+		this.slotsChanged(this.inv);
 	}
 }

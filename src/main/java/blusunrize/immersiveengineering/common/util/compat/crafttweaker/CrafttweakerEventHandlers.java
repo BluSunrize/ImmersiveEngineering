@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.impl.commands.CTCommandCollectionEvent;
 import com.blamejared.crafttweaker.impl.commands.script_examples.ExampleCollectionEvent;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CrafttweakerEventHandlers
@@ -28,8 +28,8 @@ public class CrafttweakerEventHandlers
 			CraftTweakerAPI.logDump("List of all known blueprint categories: ");
 			for(String recipeCategory : BlueprintCraftingRecipe.recipeCategories)
 				CraftTweakerAPI.logDump("- %s", recipeCategory);
-			final StringTextComponent message = new StringTextComponent(TextFormatting.GREEN+"Categories written to the log"+TextFormatting.RESET);
-			commandContext.getSource().sendFeedback(message, true);
+			final TextComponent message = new TextComponent(ChatFormatting.GREEN+"Categories written to the log"+ChatFormatting.RESET);
+			commandContext.getSource().sendSuccess(message, true);
 			return 0;
 		});
 	}

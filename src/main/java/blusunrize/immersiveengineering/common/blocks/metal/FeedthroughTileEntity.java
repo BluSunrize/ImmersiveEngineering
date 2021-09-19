@@ -22,28 +22,27 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -60,7 +59,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	@Nonnull
 	public WireType reference = WireType.COPPER;
 	@Nonnull
-	public BlockState stateForMiddle = Blocks.DIRT.getDefaultState();
+	public BlockState stateForMiddle = Blocks.DIRT.defaultBlockState();
 	public int offset = 0;
 	public boolean currentlyDisassembling = false;
 
@@ -70,26 +69,26 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putString(WIRE, reference.getUniqueName());
 		nbt.putInt(OFFSET, offset);
-		CompoundNBT stateNbt = NBTUtil.writeBlockState(stateForMiddle);
+		CompoundTag stateNbt = NbtUtils.writeBlockState(stateForMiddle);
 		nbt.put(MIDDLE_STATE, stateNbt);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		reference = WireType.getValue(nbt.getString(WIRE));
 		offset = nbt.getInt(OFFSET);
-		stateForMiddle = NBTUtil.readBlockState(nbt.getCompound(MIDDLE_STATE));
+		stateForMiddle = NbtUtils.readBlockState(nbt.getCompound(MIDDLE_STATE));
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		double l = INFOS.get(reference).connOffset;
 		int factor;
@@ -97,12 +96,12 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 			factor = 1;
 		else
 			factor = -1;
-		return new Vector3d(.5+(.5+l)*getFacing().getXOffset()*factor, .5+(.5+l)*getFacing().getYOffset()*factor,
-				.5+(.5+l)*getFacing().getZOffset()*factor);
+		return new Vec3(.5+(.5+l)*getFacing().getStepX()*factor, .5+(.5+l)*getFacing().getStepY()*factor,
+				.5+(.5+l)*getFacing().getStepZ()*factor);
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(!WireApi.canMix(reference, cableType))
 			return false;
@@ -128,13 +127,13 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public Set<BlockPos> getIgnored(IImmersiveConnectable other)
 	{
-		return ImmutableSet.of(pos.offset(getFacing(), 1), pos.offset(getFacing(), -1));
+		return ImmutableSet.of(worldPosition.relative(getFacing(), 1), worldPosition.relative(getFacing(), -1));
 	}
 
 	@Override
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
 	{
-		return pos.offset(getFacing(), -offset);
+		return worldPosition.relative(getFacing(), -offset);
 	}
 
 	@Override
@@ -143,21 +142,21 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 		WireApi.FeedthroughModelInfo info = INFOS.get(reference);
 		if(offset==0)
 		{
-			LootContext.Builder builder = new LootContext.Builder(context.getWorld())
-					.withNullableParameter(LootParameters.TOOL, context.get(LootParameters.TOOL))
-					.withNullableParameter(LootParameters.THIS_ENTITY, context.get(LootParameters.THIS_ENTITY))
-					.withNullableParameter(LootParameters.ORIGIN, context.get(LootParameters.ORIGIN));
+			LootContext.Builder builder = new LootContext.Builder(context.getLevel())
+					.withOptionalParameter(LootContextParams.TOOL, context.getParamOrNull(LootContextParams.TOOL))
+					.withOptionalParameter(LootContextParams.THIS_ENTITY, context.getParamOrNull(LootContextParams.THIS_ENTITY))
+					.withOptionalParameter(LootContextParams.ORIGIN, context.getParamOrNull(LootContextParams.ORIGIN));
 			return Utils.getDrops(stateForMiddle, builder);
 		}
 		else
 		{
-			return NonNullList.from(ItemStack.EMPTY,
+			return NonNullList.of(ItemStack.EMPTY,
 					new ItemStack(info.conn.get().getBlock(), 1));
 		}
 	}
 
 	@Override
-	public ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
+	public ItemStack getPickBlock(@Nullable Player player, BlockState state, HitResult rayRes)
 	{
 		if(offset==0)
 			return Utils.getPickBlock(stateForMiddle, rayRes, player);
@@ -168,7 +167,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
 	{
 		reference = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-		stateForMiddle = NBTUtil.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+		stateForMiddle = NbtUtils.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
 	}
 
 	@Override
@@ -184,7 +183,7 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -198,10 +197,10 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	private VoxelShape aabb;
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		if(offset==0)
-			return VoxelShapes.fullCube();
+			return Shapes.block();
 		if(aabb==null)
 		{
 			float[] tmp = {
@@ -209,20 +208,20 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 					11F/16, (float)INFOS.get(reference).connLength, 11F/16
 			};
 			tmp = Utils.rotateToFacing(tmp, offset > 0?getFacing(): getFacing().getOpposite());
-			aabb = VoxelShapes.create(tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
+			aabb = Shapes.box(tmp[0], tmp[1], tmp[2], tmp[3], tmp[4], tmp[5]);
 		}
 		return aabb;
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==253)
 		{
 			checkLight();
 			return true;
 		}
-		return super.receiveClientEvent(id, arg);
+		return super.triggerEvent(id, arg);
 	}
 
 	@Override
@@ -234,13 +233,13 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	//pos.add(facing.getOpposite().getDirectionVec())
 	public ConnectionPoint getNegativePoint()
 	{
-		return new ConnectionPoint(pos, getIndexForOffset(-1));
+		return new ConnectionPoint(worldPosition, getIndexForOffset(-1));
 	}
 
 	//pos.add(facing.getDirectionVec())
 	public ConnectionPoint getPositivePoint()
 	{
-		return new ConnectionPoint(pos, getIndexForOffset(1));
+		return new ConnectionPoint(worldPosition, getIndexForOffset(1));
 	}
 
 	@Override
@@ -252,16 +251,16 @@ public class FeedthroughTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public Iterable<? extends Connection> getInternalConnections()
 	{
-		return ImmutableList.of(new Connection(pos, 0, 1));
+		return ImmutableList.of(new Connection(worldPosition, 0, 1));
 	}
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
-		if(offset.equals(getFacing().getDirectionVec()))
+		if(offset.equals(getFacing().getNormal()))
 			return getPositivePoint();
-		else if(offset.equals(getFacing().getOpposite().getDirectionVec()))
+		else if(offset.equals(getFacing().getOpposite().getNormal()))
 			return getNegativePoint();
 		else
 			return null;

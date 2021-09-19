@@ -12,35 +12,35 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.Material;
 
 public class TeslaCoilBlock extends GenericTileBlock<TeslaCoilTileEntity>
 {
 	public TeslaCoilBlock()
 	{
 		super("tesla_coil", IETileTypes.TESLACOIL,
-				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+				Properties.of(Material.METAL).sound(SoundType.METAL).strength(3, 15).noOcclusion());
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_ALL, IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockPlaceContext context)
 	{
-		BlockPos start = context.getPos();
-		World w = context.getWorld();
-		return areAllReplaceable(start, start.offset(context.getFace(), 1), context);
+		BlockPos start = context.getClickedPos();
+		Level w = context.getLevel();
+		return areAllReplaceable(start, start.relative(context.getClickedFace(), 1), context);
 	}
 }

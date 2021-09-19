@@ -14,20 +14,20 @@ import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -42,34 +42,34 @@ public class StripCurtainBlock extends IETileProviderBlock
 
 	public StripCurtainBlock()
 	{
-		super("strip_curtain", Block.Properties.create(Material.WOOL).sound(SoundType.CLOTH).hardnessAndResistance(0.8F).notSolid(),
+		super("strip_curtain", Block.Properties.of(Material.WOOL).sound(SoundType.WOOL).strength(0.8F).noOcclusion(),
 				BlockItemIE::new);
 		setLightOpacity(0);
 		setHasColours();
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(CEILING_ATTACHED, FACING);
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
+	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
 	{
 		return new StripCurtainTileEntity();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable IBlockReader world, List<ITextComponent> tooltip, ITooltipFlag advanced)
+	public void appendHoverText(ItemStack stack, @Nullable BlockGetter world, List<Component> tooltip, TooltipFlag advanced)
 	{
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 		{
 			int color = ItemNBTHelper.getInt(stack, "colour");
-			tooltip.add(FontUtils.withAppendColoredColour(new TranslationTextComponent(Lib.DESC_INFO+"colour"), color));
+			tooltip.add(FontUtils.withAppendColoredColour(new TranslatableComponent(Lib.DESC_INFO+"colour"), color));
 		}
 	}
 

@@ -17,9 +17,9 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 /**
@@ -36,7 +36,7 @@ public class BlastFurnaceRecipeManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<BlastFurnaceRecipe> getRecipeType()
+	public RecipeType<BlastFurnaceRecipe> getRecipeType()
 	{
 		return BlastFurnaceRecipe.TYPE;
 	}

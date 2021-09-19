@@ -12,27 +12,27 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowerPotBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.FlowerPotBlock;
+import net.minecraft.world.level.material.Material;
 
 public class PottedHempBlock extends FlowerPotBlock
 {
 	public PottedHempBlock(String name)
 	{
 		super(() -> (FlowerPotBlock)Blocks.FLOWER_POT, () -> IEBlocks.Misc.hempPlant,
-				Block.Properties.create(Material.MISCELLANEOUS).hardnessAndResistance(0.0F).notSolid());
+				Block.Properties.of(Material.DECORATION).strength(0.0F).noOcclusion());
 		((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(Misc.hempPlant.getRegistryName(), () -> this);
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEBlocks.add(this);
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{
 		//NOP
 	}

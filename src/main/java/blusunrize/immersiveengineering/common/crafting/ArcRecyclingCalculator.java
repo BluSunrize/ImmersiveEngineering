@@ -19,11 +19,11 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
@@ -36,14 +36,14 @@ import java.util.stream.Collectors;
 public class ArcRecyclingCalculator
 {
 	private static List<ArcFurnaceRecipe> lastResult;
-	private final List<IRecipe<?>> recipeList;
+	private final List<Recipe<?>> recipeList;
 	private final long startTime;
 	private final ArcRecyclingChecker checker;
 
-	public ArcRecyclingCalculator(Collection<IRecipe<?>> allRecipes)
+	public ArcRecyclingCalculator(Collection<Recipe<?>> allRecipes)
 	{
 		this.startTime = System.currentTimeMillis();
-		Pair<Predicate<IRecipe<?>>, ArcRecyclingChecker> pair = ArcRecyclingChecker.assembleRecyclingFilter();
+		Pair<Predicate<Recipe<?>>, ArcRecyclingChecker> pair = ArcRecyclingChecker.assembleRecyclingFilter();
 		this.checker = pair.getRight();
 		this.recipeList = allRecipes.stream()
 				.filter(pair.getLeft())
@@ -61,7 +61,7 @@ public class ArcRecyclingCalculator
 			for(RecyclingCalculation valid : iterator.validated)
 				for(ItemStack key : iterator.nonValidated.keySet())
 				{
-					if(ItemStack.areItemsEqual(key, valid.stack))
+					if(ItemStack.isSame(key, valid.stack))
 						for(RecyclingCalculation nonValid : iterator.nonValidated.get(key))
 							if(nonValid.validateSubcomponent(valid))
 								newlyValid.add(nonValid);
@@ -101,13 +101,13 @@ public class ArcRecyclingCalculator
 
 	private static class RecipeIterator
 	{
-		final List<IRecipe<?>> recipeList;
+		final List<Recipe<?>> recipeList;
 		final List<RecyclingCalculation> validated = new ArrayList<>();
 		final Multimap<ItemStack, RecyclingCalculation> nonValidated = ArrayListMultimap.create();
 		private final ArcRecyclingChecker checker;
 		int invalidCount = 0;
 
-		public RecipeIterator(List<IRecipe<?>> recipeList, ArcRecyclingChecker checker)
+		public RecipeIterator(List<Recipe<?>> recipeList, ArcRecyclingChecker checker)
 		{
 			this.recipeList = recipeList;
 			this.checker = checker;
@@ -115,9 +115,9 @@ public class ArcRecyclingCalculator
 
 		public void process()
 		{
-			for(IRecipe<?> recipe : recipeList)
+			for(Recipe<?> recipe : recipeList)
 			{
-				RecyclingCalculation calc = getRecycleCalculation(recipe.getRecipeOutput(), recipe);
+				RecyclingCalculation calc = getRecycleCalculation(recipe.getResultItem(), recipe);
 				if(calc!=null)
 				{
 					if(calc.isValid())
@@ -132,7 +132,7 @@ public class ArcRecyclingCalculator
 			}
 		}
 
-		private RecyclingCalculation getRecycleCalculation(ItemStack stack, IRecipe<?> recipe)
+		private RecyclingCalculation getRecycleCalculation(ItemStack stack, Recipe<?> recipe)
 		{
 			// Check if recipe output is among the items that have fixed returns
 			Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(stack);
@@ -150,10 +150,10 @@ public class ArcRecyclingCalculator
 				for(Ingredient in : inputs)
 					if(in!=null&&in!=Ingredient.EMPTY)
 					{
-						ItemStack[] matchingStacks = in.getMatchingStacks();
+						ItemStack[] matchingStacks = in.getItems();
 						ItemStack inputStack = ItemStack.EMPTY;
 						if(matchingStacks.length>0)
-							inputStack = IEApi.getPreferredStackbyMod(in.getMatchingStacks());
+							inputStack = IEApi.getPreferredStackbyMod(in.getItems());
 						if(inputStack.isEmpty())
 						{
 							IELogger.warn("Recipe has invalid inputs and will be ignored: "+recipe+" ("+recipe.getId()+")");
@@ -166,7 +166,7 @@ public class ArcRecyclingCalculator
 							{
 								boolean b = false;
 								for(ItemStack storedMiss : missingSub.keySet())
-									if(ItemStack.areItemsEqual(inputStack, storedMiss))
+									if(ItemStack.isSame(inputStack, storedMiss))
 									{
 										missingSub.put(storedMiss, missingSub.get(storedMiss)+inputStack.getCount());
 										b = true;
@@ -183,7 +183,7 @@ public class ArcRecyclingCalculator
 							{
 								boolean b = false;
 								for(ItemStack storedOut : outputs.keySet())
-									if(ItemStack.areItemsEqual(brokenDown.getLeft(), storedOut))
+									if(ItemStack.isSame(brokenDown.getLeft(), storedOut))
 									{
 										outputs.put(storedOut, outputs.get(storedOut)+brokenDown.getRight());
 										b = true;
@@ -213,12 +213,12 @@ public class ArcRecyclingCalculator
 
 	private static class RecyclingCalculation
 	{
-		IRecipe<?> recipe;
+		Recipe<?> recipe;
 		ItemStack stack;
 		Map<ItemStack, Double> outputs;
 		Map<ItemStack, Double> queriedSubcomponents = new HashMap<>();
 
-		public RecyclingCalculation(IRecipe<?> recipe, ItemStack stack, Map<ItemStack, Double> outputs)
+		public RecyclingCalculation(Recipe<?> recipe, ItemStack stack, Map<ItemStack, Double> outputs)
 		{
 			this.recipe = recipe;
 			this.stack = stack;
@@ -240,7 +240,7 @@ public class ArcRecyclingCalculator
 			while(it.hasNext())
 			{
 				ItemStack next = it.next();
-				if(ItemStack.areItemsEqual(next, calc.stack))
+				if(ItemStack.isSame(next, calc.stack))
 				{
 					double queriedAmount = queriedSubcomponents.get(next);
 					for(Map.Entry<ItemStack, Double> e : calc.outputs.entrySet())
@@ -248,7 +248,7 @@ public class ArcRecyclingCalculator
 						double scaledVal = e.getValue()*queriedAmount;
 						boolean b = true;
 						for(ItemStack key : outputs.keySet())
-							if(ItemStack.areItemsEqual(key, e.getKey()))
+							if(ItemStack.isSame(key, e.getKey()))
 							{
 								outputs.put(key, outputs.get(key)+scaledVal);
 								b = false;

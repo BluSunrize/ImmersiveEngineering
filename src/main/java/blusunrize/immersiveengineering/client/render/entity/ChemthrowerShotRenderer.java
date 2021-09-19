@@ -11,31 +11,31 @@ package blusunrize.immersiveengineering.client.render.entity;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
 
 public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntity>
 {
-	public ChemthrowerShotRenderer(EntityRendererManager renderManager)
+	public ChemthrowerShotRenderer(EntityRenderDispatcher renderManager)
 	{
 		super(renderManager);
 	}
 
 	@Override
-	public void render(ChemthrowerShotEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+	public void render(ChemthrowerShotEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
 		FluidStack f = entity.getFluid();
 		if(f==null||f.isEmpty())
@@ -45,13 +45,13 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 				return;
 		}
 
-		matrixStackIn.push();
+		matrixStackIn.pushPose();
 
-		matrixStackIn.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 180.0F-this.renderManager.info.getYaw(), true));
-		matrixStackIn.rotate(new Quaternion(new Vector3f(1.0F, 0.0F, 0.0F), -this.renderManager.info.getPitch(), true));
+		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 180.0F-this.entityRenderDispatcher.camera.getYRot(), true));
+		matrixStackIn.mulPose(new Quaternion(new Vector3f(1.0F, 0.0F, 0.0F), -this.entityRenderDispatcher.camera.getXRot(), true));
 
 		TextureAtlasSprite sprite = ClientUtils.mc().getModelManager()
-				.getAtlasTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE)
+				.getAtlas(InventoryMenu.BLOCK_ATLAS)
 				.getSprite(f.getFluid().getAttributes().getStillTexture(f));
 		int colour = f.getFluid().getAttributes().getColor(f);
 		float a = (colour >> 24&255)/255f;
@@ -60,43 +60,43 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		float b = (colour&255)/255f;
 		int lightAll = entity.getBrightnessForRender();
 		int blockLight = Math.max(
-				LightTexture.getLightBlock(lightAll),
-				LightTexture.getLightBlock(packedLightIn)
+				LightTexture.block(lightAll),
+				LightTexture.block(packedLightIn)
 		);
 		int skyLight = Math.max(
-				LightTexture.getLightSky(lightAll),
-				LightTexture.getLightSky(packedLightIn)
+				LightTexture.sky(lightAll),
+				LightTexture.sky(packedLightIn)
 		);
-		packedLightIn = LightTexture.packLight(blockLight, skyLight);
+		packedLightIn = LightTexture.pack(blockLight, skyLight);
 		matrixStackIn.scale(.25f, .25f, .25f);
-		Matrix4f mat = matrixStackIn.getLast().getMatrix();
-		IVertexBuilder builder = bufferIn.getBuffer(IERenderTypes.POSITION_COLOR_TEX_LIGHTMAP);
-		builder.pos(mat, -.25f, -.25f, 0)
+		Matrix4f mat = matrixStackIn.last().pose();
+		VertexConsumer builder = bufferIn.getBuffer(IERenderTypes.POSITION_COLOR_TEX_LIGHTMAP);
+		builder.vertex(mat, -.25f, -.25f, 0)
 				.color(r, g, b, a)
-				.tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(4))
-				.lightmap(packedLightIn)
+				.uv(sprite.getU(4), sprite.getV(4))
+				.uv2(packedLightIn)
 				.endVertex();
-		builder.pos(mat, .25f, -.25f, 0)
+		builder.vertex(mat, .25f, -.25f, 0)
 				.color(r, g, b, a)
-				.tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(4))
-				.lightmap(packedLightIn)
+				.uv(sprite.getU(0), sprite.getV(4))
+				.uv2(packedLightIn)
 				.endVertex();
-		builder.pos(mat, .25f, .25f, 0)
+		builder.vertex(mat, .25f, .25f, 0)
 				.color(r, g, b, a)
-				.tex(sprite.getInterpolatedU(0), sprite.getInterpolatedV(0))
-				.lightmap(packedLightIn)
+				.uv(sprite.getU(0), sprite.getV(0))
+				.uv2(packedLightIn)
 				.endVertex();
-		builder.pos(mat, -.25f, .25f, 0)
+		builder.vertex(mat, -.25f, .25f, 0)
 				.color(r, g, b, a)
-				.tex(sprite.getInterpolatedU(4), sprite.getInterpolatedV(0))
-				.lightmap(packedLightIn)
+				.uv(sprite.getU(4), sprite.getV(0))
+				.uv2(packedLightIn)
 				.endVertex();
-		matrixStackIn.pop();
+		matrixStackIn.popPose();
 	}
 
 	@Override
 	@Nonnull
-	public ResourceLocation getEntityTexture(@Nonnull ChemthrowerShotEntity chemthrowerShotEntity)
+	public ResourceLocation getTextureLocation(@Nonnull ChemthrowerShotEntity chemthrowerShotEntity)
 	{
 		return new ResourceLocation("immersiveengineering:textures/models/bullet.png");
 	}

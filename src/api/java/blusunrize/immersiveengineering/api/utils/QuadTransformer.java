@@ -8,17 +8,17 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.blaze3d.vertex.VertexFormatElement;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import com.mojang.math.Vector4f;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.client.renderer.vertex.VertexFormatElement;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
@@ -32,13 +32,13 @@ import java.util.function.Function;
 public class QuadTransformer implements Function<BakedQuad, BakedQuad>
 {
 	@Nonnull
-	private final TransformationMatrix transform;
+	private final Transformation transform;
 	@Nullable
 	private final Int2IntFunction colorTransform;
 	private BakedQuadBuilder currentQuadBuilder;
-	private final IVertexConsumer transformer = createConsumer(DefaultVertexFormats.BLOCK);
+	private final IVertexConsumer transformer = createConsumer(DefaultVertexFormat.BLOCK);
 
-	public QuadTransformer(TransformationMatrix transform, @Nullable Int2IntFunction colorTransform)
+	public QuadTransformer(Transformation transform, @Nullable Int2IntFunction colorTransform)
 	{
 		this.transform = transform;
 		this.colorTransform = colorTransform;
@@ -90,10 +90,10 @@ public class QuadTransformer implements Function<BakedQuad, BakedQuad>
 			@Override
 			public void setQuadOrientation(@Nonnull Direction orientation)
 			{
-				Vector3i normal = orientation.getDirectionVec();
+				Vec3i normal = orientation.getNormal();
 				Vector3f newFront = new Vector3f(normal.getX(), normal.getY(), normal.getZ());
 				transform.transformNormal(newFront);
-				Direction newOrientation = Direction.getFacingFromVector(newFront.getX(), newFront.getY(), newFront.getZ());
+				Direction newOrientation = Direction.getNearest(newFront.x(), newFront.y(), newFront.z());
 				currentQuadBuilder.setQuadOrientation(newOrientation);
 			}
 
@@ -117,18 +117,18 @@ public class QuadTransformer implements Function<BakedQuad, BakedQuad>
 					Vector4f newPos = new Vector4f(data[0], data[1], data[2], 1);
 					transform.transformPosition(newPos);
 					data = new float[3];
-					data[0] = newPos.getX();
-					data[1] = newPos.getY();
-					data[2] = newPos.getZ();
+					data[0] = newPos.x();
+					data[1] = newPos.y();
+					data[2] = newPos.z();
 				}
 				else if(element==normPosFinal)
 				{
 					Vector3f newNormal = new Vector3f(data[0], data[1], data[2]);
 					transform.transformNormal(newNormal);
 					data = new float[3];
-					data[0] = newNormal.getX();
-					data[1] = newNormal.getY();
-					data[2] = newNormal.getZ();
+					data[0] = newNormal.x();
+					data[1] = newNormal.y();
+					data[2] = newNormal.z();
 				}
 				else if(element==colorPosFinal)
 				{

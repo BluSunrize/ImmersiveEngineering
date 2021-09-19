@@ -3,12 +3,12 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITag.INamedTag;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ public class ArcRecyclingChecker
 		return false;
 	}
 
-	private static final Set<IRecipeType<?>> RECYCLING_RECIPE_TYPES = new HashSet<>();
+	private static final Set<RecipeType<?>> RECYCLING_RECIPE_TYPES = new HashSet<>();
 	private static final List<Predicate<ItemStack>> RECYCLING_ALLOWED_STACK_SENSITIVE = new ArrayList<>();
 	private static final List<Predicate<Item>> RECYCLING_ALLOWED = new ArrayList<>();
 	private static final List<Supplier<Stream<Item>>> RECYCLING_ALLOWED_ENUMERATED = new ArrayList<>();
@@ -61,18 +61,18 @@ public class ArcRecyclingChecker
 	public static void allowPrefixedTagForRecycling(String prefix)
 	{
 		allowEnumeratedItemsForRecycling(
-				() -> TagUtils.GET_ITEM_TAG_COLLECTION.get().getIDTagMap().entrySet().stream()
+				() -> TagUtils.GET_ITEM_TAG_COLLECTION.get().getAllTags().entrySet().stream()
 						.filter(e -> e.getKey().getPath().startsWith(prefix))
 						.map(Entry::getValue)
-						.flatMap(t -> t.getAllElements().stream())
+						.flatMap(t -> t.getValues().stream())
 		);
 	}
 
-	public static void allowItemTagForRecycling(INamedTag<Item> tag)
+	public static void allowItemTagForRecycling(Named<Item> tag)
 	{
 		allowEnumeratedItemsForRecycling(() -> {
-			ITag<Item> realTag = TagUtils.getItemTag(tag.getName());
-			return realTag.getAllElements().stream();
+			Tag<Item> realTag = TagUtils.getItemTag(tag.getName());
+			return realTag.getValues().stream();
 		});
 	}
 
@@ -88,7 +88,7 @@ public class ArcRecyclingChecker
 	/**
 	 * Add a predicate to the list of predicates determining whether an item may be recycled
 	 */
-	public static void allowRecipeTypeForRecycling(IRecipeType<?> recipeType)
+	public static void allowRecipeTypeForRecycling(RecipeType<?> recipeType)
 	{
 		RECYCLING_RECIPE_TYPES.add(recipeType);
 	}
@@ -113,13 +113,13 @@ public class ArcRecyclingChecker
 	/**
 	 * @return a predicate for IRecipes which is used to filter the list of crafting recipes for recycling
 	 */
-	public static Pair<Predicate<IRecipe<?>>, ArcRecyclingChecker> assembleRecyclingFilter()
+	public static Pair<Predicate<Recipe<?>>, ArcRecyclingChecker> assembleRecyclingFilter()
 	{
 		ArcRecyclingChecker checker = new ArcRecyclingChecker();
 		return Pair.of(iRecipe -> {
 			if(!RECYCLING_RECIPE_TYPES.contains(iRecipe.getType()))
 				return false;
-			return checker.isAllowed(iRecipe.getRecipeOutput());
+			return checker.isAllowed(iRecipe.getResultItem());
 		}, checker);
 	}
 

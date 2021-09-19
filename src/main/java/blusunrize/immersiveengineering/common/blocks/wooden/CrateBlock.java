@@ -10,16 +10,15 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
 public class CrateBlock extends IETileProviderBlock
 {
@@ -28,20 +27,20 @@ public class CrateBlock extends IETileProviderBlock
 
 	public CrateBlock(String name, boolean reinforced)
 	{
-		super(name, Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5),
+		super(name, Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 5),
 				BlockItemIE::new);
 		this.reinforced = reinforced;
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
+	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
 	{
 		return new WoodenCrateTileEntity();
 	}
 
 	@Override
-	public float getExplosionResistance(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion)
+	public float getExplosionResistance(BlockState state, BlockGetter world, BlockPos pos, Explosion explosion)
 	{
 		if(reinforced)
 			return 1200000;

@@ -9,9 +9,10 @@
 package blusunrize.immersiveengineering.client.models.multilayer;
 
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.model.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -30,18 +31,18 @@ public class MultiLayerModel implements IModelGeometry<MultiLayerModel>
 	}
 
 	@Override
-	public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 	{
-		List<RenderMaterial> ret = new ArrayList<>();
+		List<Material> ret = new ArrayList<>();
 		for(IModelGeometry<?> geometry : subModels.values())
 			ret.addAll(geometry.getTextures(owner, modelGetter, missingTextureErrors));
 		return ret;
 	}
 
 	@Override
-	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
+	public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 	{
-		Map<String, IBakedModel> baked = new HashMap<>();
+		Map<String, BakedModel> baked = new HashMap<>();
 		for(Entry<String, IModelGeometry<?>> e : subModels.entrySet())
 			//TODO sprite getters?
 			baked.put(e.getKey(), e.getValue().bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation));

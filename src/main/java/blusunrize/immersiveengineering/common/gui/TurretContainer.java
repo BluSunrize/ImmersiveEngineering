@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretTileEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class TurretContainer extends IEBaseContainer<TurretTileEntity>
 {
-	public TurretContainer(int id, PlayerInventory inventoryPlayer, TurretTileEntity tile)
+	public TurretContainer(int id, Inventory inventoryPlayer, TurretTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 		this.tile = tile;
@@ -29,9 +29,9 @@ public class TurretContainer extends IEBaseContainer<TurretTileEntity>
 					((TurretGunTileEntity)tile).containerHandler.orElseThrow(RuntimeException::new), 0, 134, 13, 64)
 			{
 				@Override
-				public boolean isItemValid(ItemStack itemStack)
+				public boolean mayPlace(ItemStack itemStack)
 				{
-					if(!super.isItemValid(itemStack))
+					if(!super.mayPlace(itemStack))
 						return false;
 					IBullet bullet = ((BulletItem)itemStack.getItem()).getType();
 					return bullet!=null&&bullet.isValidForTurret();

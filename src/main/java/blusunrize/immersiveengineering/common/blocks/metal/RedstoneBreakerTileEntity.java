@@ -12,21 +12,20 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements ITickableTileEntity
+public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implements TickableBlockEntity
 {
 	public RedstoneBreakerTileEntity()
 	{
@@ -36,7 +35,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	public void tick()
 	{
 		final boolean activeOld = getIsActive();
-		if(!world.isRemote&&(isRSPowered())==activeOld)
+		if(!level.isClientSide&&(isRSPowered())==activeOld)
 		{
 			setActive(!activeOld);
 			updateConductivity();
@@ -55,24 +54,24 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		Vector3d start = new Vector3d(0, .125f, 0);
-		Vector3d end = new Vector3d(1, .875f, 1);
+		Vec3 start = new Vec3(0, .125f, 0);
+		Vec3 end = new Vec3(1, .875f, 1);
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
-		return VoxelShapes.create(new AxisAlignedBB(start, end));
+		return Shapes.create(new AABB(start, end));
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		boolean isLeft = here.getIndex()==LEFT_INDEX;
-		Vector3d ret = mat.apply(isLeft?new Vector3d(.125, .5, 1): new Vector3d(.875, .5, 1));
+		Vec3 ret = mat.apply(isLeft?new Vec3(.125, .5, 1): new Vec3(.875, .5, 1));
 		return ret;
 	}
 
@@ -89,7 +88,7 @@ public class RedstoneBreakerTileEntity extends BreakerSwitchTileEntity implement
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		return false;
 	}

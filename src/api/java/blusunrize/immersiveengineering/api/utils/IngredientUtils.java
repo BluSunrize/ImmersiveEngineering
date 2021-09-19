@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.api.utils;
 
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,7 +35,7 @@ public class IngredientUtils
 
 	public static Ingredient createIngredientFromList(List<ItemStack> list)
 	{
-		return Ingredient.fromStacks(list.toArray(new ItemStack[0]));
+		return Ingredient.of(list.toArray(new ItemStack[0]));
 	}
 
 	private static <T> boolean stacksMatchList(List<T> list, NonNullList<ItemStack> stacks, Function<T, Integer> size,
@@ -81,13 +81,13 @@ public class IngredientUtils
 		return true;
 	}
 
-	public static boolean hasPlayerIngredient(PlayerEntity player, IngredientWithSize ingredient)
+	public static boolean hasPlayerIngredient(Player player, IngredientWithSize ingredient)
 	{
 		int amount = ingredient.getCount();
 		ItemStack itemstack;
-		for(Hand hand : Hand.values())
+		for(InteractionHand hand : InteractionHand.values())
 		{
-			itemstack = player.getHeldItem(hand);
+			itemstack = player.getItemInHand(hand);
 			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
@@ -95,9 +95,9 @@ public class IngredientUtils
 					return true;
 			}
 		}
-		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+		for(int i = 0; i < player.inventory.getContainerSize(); i++)
 		{
-			itemstack = player.inventory.getStackInSlot(i);
+			itemstack = player.inventory.getItem(i);
 			if(ingredient.test(itemstack))
 			{
 				amount -= itemstack.getCount();
@@ -108,34 +108,34 @@ public class IngredientUtils
 		return amount <= 0;
 	}
 
-	public static void consumePlayerIngredient(PlayerEntity player, IngredientWithSize ingredient)
+	public static void consumePlayerIngredient(Player player, IngredientWithSize ingredient)
 	{
 		int amount = ingredient.getCount();
 		ItemStack itemstack;
-		for(Hand hand : Hand.values())
+		for(InteractionHand hand : InteractionHand.values())
 		{
-			itemstack = player.getHeldItem(hand);
+			itemstack = player.getItemInHand(hand);
 			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
 				itemstack.shrink(taken);
 				if(itemstack.getCount() <= 0)
-					player.setHeldItem(hand, ItemStack.EMPTY);
+					player.setItemInHand(hand, ItemStack.EMPTY);
 				if(amount <= 0)
 					return;
 			}
 		}
-		for(int i = 0; i < player.inventory.getSizeInventory(); i++)
+		for(int i = 0; i < player.inventory.getContainerSize(); i++)
 		{
-			itemstack = player.inventory.getStackInSlot(i);
+			itemstack = player.inventory.getItem(i);
 			if(ingredient.testIgnoringSize(itemstack))
 			{
 				int taken = Math.min(amount, itemstack.getCount());
 				amount -= taken;
 				itemstack.shrink(taken);
 				if(itemstack.getCount() <= 0)
-					player.inventory.setInventorySlotContents(i, ItemStack.EMPTY);
+					player.inventory.setItem(i, ItemStack.EMPTY);
 				if(amount <= 0)
 					return;
 			}

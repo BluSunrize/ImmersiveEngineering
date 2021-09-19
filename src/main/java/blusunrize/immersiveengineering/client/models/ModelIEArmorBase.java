@@ -9,16 +9,16 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ArmorStandEntity;
-import net.minecraft.entity.monster.SkeletonEntity;
-import net.minecraft.entity.monster.ZombieEntity;
-import net.minecraft.util.math.MathHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.monster.Skeleton;
+import net.minecraft.world.entity.monster.Zombie;
 
-public abstract class ModelIEArmorBase<T extends LivingEntity> extends BipedModel<T>
+public abstract class ModelIEArmorBase<T extends LivingEntity> extends HumanoidModel<T>
 {
 	T entityTemp;
 
@@ -28,76 +28,76 @@ public abstract class ModelIEArmorBase<T extends LivingEntity> extends BipedMode
 	}
 
 	@Override
-	public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
+	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
 	{
 		if(entityTemp!=null)
 		{
-			isChild = entityTemp.isChild();
-			isSneak = entityTemp.isSneaking();
-			isSitting = entityTemp.isPassenger()&&(entityTemp.getRidingEntity()!=null&&entityTemp.getRidingEntity().shouldRiderSit());
+			young = entityTemp.isBaby();
+			crouching = entityTemp.isShiftKeyDown();
+			riding = entityTemp.isPassenger()&&(entityTemp.getVehicle()!=null&&entityTemp.getVehicle().shouldRiderSit());
 		}
-		super.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+		super.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 	}
 
 	@Override
-	public void setRotationAngles(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		entityTemp = entity;
-		swingProgress = entity.getSwingProgress(ClientUtils.partialTicks());
-		if(entity instanceof ArmorStandEntity)
+		attackTime = entity.getAttackAnim(ClientUtils.partialTicks());
+		if(entity instanceof ArmorStand)
 			setRotationAnglesStand(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		else if(entity instanceof SkeletonEntity||entity instanceof ZombieEntity)
+		else if(entity instanceof Skeleton||entity instanceof Zombie)
 			setRotationAnglesZombie(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		else
-			super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 	}
 
 	public void setRotationAnglesZombie(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
-		super.setRotationAngles(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-		float f6 = MathHelper.sin(this.swingProgress*3.141593F);
-		float f7 = MathHelper.sin((1.0F-(1.0F-this.swingProgress)*(1.0F-this.swingProgress))*3.141593F);
-		this.bipedRightArm.rotateAngleZ = 0.0F;
-		this.bipedLeftArm.rotateAngleZ = 0.0F;
-		this.bipedRightArm.rotateAngleY = (-(0.1F-f6*0.6F));
-		this.bipedLeftArm.rotateAngleY = (0.1F-f6*0.6F);
-		this.bipedRightArm.rotateAngleX = -1.570796F;
-		this.bipedLeftArm.rotateAngleX = -1.570796F;
-		this.bipedRightArm.rotateAngleX -= f6*1.2F-f7*0.4F;
-		this.bipedLeftArm.rotateAngleX -= f6*1.2F-f7*0.4F;
-		this.bipedRightArm.rotateAngleZ += MathHelper.cos(ageInTicks*0.09F)*0.05F+0.05F;
-		this.bipedLeftArm.rotateAngleZ -= MathHelper.cos(ageInTicks*0.09F)*0.05F+0.05F;
-		this.bipedRightArm.rotateAngleX += MathHelper.sin(ageInTicks*0.067F)*0.05F;
-		this.bipedLeftArm.rotateAngleX -= MathHelper.sin(ageInTicks*0.067F)*0.05F;
+		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		float f6 = Mth.sin(this.attackTime*3.141593F);
+		float f7 = Mth.sin((1.0F-(1.0F-this.attackTime)*(1.0F-this.attackTime))*3.141593F);
+		this.rightArm.zRot = 0.0F;
+		this.leftArm.zRot = 0.0F;
+		this.rightArm.yRot = (-(0.1F-f6*0.6F));
+		this.leftArm.yRot = (0.1F-f6*0.6F);
+		this.rightArm.xRot = -1.570796F;
+		this.leftArm.xRot = -1.570796F;
+		this.rightArm.xRot -= f6*1.2F-f7*0.4F;
+		this.leftArm.xRot -= f6*1.2F-f7*0.4F;
+		this.rightArm.zRot += Mth.cos(ageInTicks*0.09F)*0.05F+0.05F;
+		this.leftArm.zRot -= Mth.cos(ageInTicks*0.09F)*0.05F+0.05F;
+		this.rightArm.xRot += Mth.sin(ageInTicks*0.067F)*0.05F;
+		this.leftArm.xRot -= Mth.sin(ageInTicks*0.067F)*0.05F;
 	}
 
 	public void setRotationAnglesStand(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
-		if(entity instanceof ArmorStandEntity)
+		if(entity instanceof ArmorStand)
 		{
-			ArmorStandEntity entityarmorstand = (ArmorStandEntity)entity;
-			this.bipedHead.rotateAngleX = (0.01745329F*entityarmorstand.getHeadRotation().getX());
-			this.bipedHead.rotateAngleY = (0.01745329F*entityarmorstand.getHeadRotation().getY());
-			this.bipedHead.rotateAngleZ = (0.01745329F*entityarmorstand.getHeadRotation().getZ());
-			this.bipedHead.setRotationPoint(0.0F, 1.0F, 0.0F);
-			this.bipedBody.rotateAngleX = (0.01745329F*entityarmorstand.getBodyRotation().getX());
-			this.bipedBody.rotateAngleY = (0.01745329F*entityarmorstand.getBodyRotation().getY());
-			this.bipedBody.rotateAngleZ = (0.01745329F*entityarmorstand.getBodyRotation().getZ());
-			this.bipedLeftArm.rotateAngleX = (0.01745329F*entityarmorstand.getLeftArmRotation().getX());
-			this.bipedLeftArm.rotateAngleY = (0.01745329F*entityarmorstand.getLeftArmRotation().getY());
-			this.bipedLeftArm.rotateAngleZ = (0.01745329F*entityarmorstand.getLeftArmRotation().getZ());
-			this.bipedRightArm.rotateAngleX = (0.01745329F*entityarmorstand.getRightArmRotation().getX());
-			this.bipedRightArm.rotateAngleY = (0.01745329F*entityarmorstand.getRightArmRotation().getY());
-			this.bipedRightArm.rotateAngleZ = (0.01745329F*entityarmorstand.getRightArmRotation().getZ());
-			this.bipedLeftLeg.rotateAngleX = (0.01745329F*entityarmorstand.getLeftLegRotation().getX());
-			this.bipedLeftLeg.rotateAngleY = (0.01745329F*entityarmorstand.getLeftLegRotation().getY());
-			this.bipedLeftLeg.rotateAngleZ = (0.01745329F*entityarmorstand.getLeftLegRotation().getZ());
-			this.bipedLeftLeg.setRotationPoint(1.9F, 11.0F, 0.0F);
-			this.bipedRightLeg.rotateAngleX = (0.01745329F*entityarmorstand.getRightLegRotation().getX());
-			this.bipedRightLeg.rotateAngleY = (0.01745329F*entityarmorstand.getRightLegRotation().getY());
-			this.bipedRightLeg.rotateAngleZ = (0.01745329F*entityarmorstand.getRightLegRotation().getZ());
-			this.bipedRightLeg.setRotationPoint(-1.9F, 11.0F, 0.0F);
-			this.bipedHeadwear.copyModelAngles(this.bipedHead);
+			ArmorStand entityarmorstand = (ArmorStand)entity;
+			this.head.xRot = (0.01745329F*entityarmorstand.getHeadPose().getX());
+			this.head.yRot = (0.01745329F*entityarmorstand.getHeadPose().getY());
+			this.head.zRot = (0.01745329F*entityarmorstand.getHeadPose().getZ());
+			this.head.setPos(0.0F, 1.0F, 0.0F);
+			this.body.xRot = (0.01745329F*entityarmorstand.getBodyPose().getX());
+			this.body.yRot = (0.01745329F*entityarmorstand.getBodyPose().getY());
+			this.body.zRot = (0.01745329F*entityarmorstand.getBodyPose().getZ());
+			this.leftArm.xRot = (0.01745329F*entityarmorstand.getLeftArmPose().getX());
+			this.leftArm.yRot = (0.01745329F*entityarmorstand.getLeftArmPose().getY());
+			this.leftArm.zRot = (0.01745329F*entityarmorstand.getLeftArmPose().getZ());
+			this.rightArm.xRot = (0.01745329F*entityarmorstand.getRightArmPose().getX());
+			this.rightArm.yRot = (0.01745329F*entityarmorstand.getRightArmPose().getY());
+			this.rightArm.zRot = (0.01745329F*entityarmorstand.getRightArmPose().getZ());
+			this.leftLeg.xRot = (0.01745329F*entityarmorstand.getLeftLegPose().getX());
+			this.leftLeg.yRot = (0.01745329F*entityarmorstand.getLeftLegPose().getY());
+			this.leftLeg.zRot = (0.01745329F*entityarmorstand.getLeftLegPose().getZ());
+			this.leftLeg.setPos(1.9F, 11.0F, 0.0F);
+			this.rightLeg.xRot = (0.01745329F*entityarmorstand.getRightLegPose().getX());
+			this.rightLeg.yRot = (0.01745329F*entityarmorstand.getRightLegPose().getY());
+			this.rightLeg.zRot = (0.01745329F*entityarmorstand.getRightLegPose().getZ());
+			this.rightLeg.setPos(-1.9F, 11.0F, 0.0F);
+			this.hat.copyFrom(this.head);
 		}
 	}
 }

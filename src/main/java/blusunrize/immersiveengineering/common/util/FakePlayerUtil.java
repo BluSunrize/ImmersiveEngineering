@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.common.util;
 
 import com.mojang.authlib.GameProfile;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
 import net.minecraftforge.event.world.WorldEvent;
@@ -26,13 +26,13 @@ import java.util.UUID;
 public class FakePlayerUtil
 {
 	private static GameProfile IE_PROFILE = new GameProfile(UUID.fromString("99562b85-bd1a-4ded-bb1a-c307bf0c0133"), "[ImmersiveEngineering]");
-	private static Map<IWorld, FakePlayer> fakePlayerInstances = new HashMap<>();
+	private static Map<LevelAccessor, FakePlayer> fakePlayerInstances = new HashMap<>();
 
-	public static FakePlayer getFakePlayer(World world)
+	public static FakePlayer getFakePlayer(Level world)
 	{
 		return fakePlayerInstances.computeIfAbsent(world, w -> {
-			if(w instanceof ServerWorld)
-				return FakePlayerFactory.get((ServerWorld)w, IE_PROFILE);
+			if(w instanceof ServerLevel)
+				return FakePlayerFactory.get((ServerLevel)w, IE_PROFILE);
 			else
 				return null;
 		});
@@ -41,8 +41,8 @@ public class FakePlayerUtil
 	@SubscribeEvent
 	public static void onUnload(WorldEvent.Unload ev)
 	{
-		IWorld world = ev.getWorld();
-		if(world instanceof ServerWorld)
+		LevelAccessor world = ev.getWorld();
+		if(world instanceof ServerLevel)
 			fakePlayerInstances.remove(world);
 	}
 

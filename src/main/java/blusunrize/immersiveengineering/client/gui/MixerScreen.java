@@ -20,15 +20,15 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.metal.MixerTileEntity;
 import blusunrize.immersiveengineering.common.gui.MixerContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
@@ -41,11 +41,11 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 
 	private final MixerTileEntity tile;
 
-	public MixerScreen(MixerContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public MixerScreen(MixerContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
 		this.tile = container.tile;
-		this.ySize = 167;
+		this.imageHeight = 167;
 	}
 
 	@Override
@@ -53,9 +53,9 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	{
 		super.init();
 		this.buttons.clear();
-		this.addButton(new GuiButtonBoolean(guiLeft+106, guiTop+61, 30, 16, "", tile.outputAll, TEXTURE, 176, 82, 1,
+		this.addButton(new GuiButtonBoolean(leftPos+106, topPos+61, 30, 16, "", tile.outputAll, TEXTURE, 176, 82, 1,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					tile.outputAll = !btn.getState();
 					tag.putBoolean("outputAll", tile.outputAll);
 					ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tile, tag));
@@ -64,22 +64,22 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	public void render(PoseStack transform, int mx, int my, float partial)
 	{
 		super.render(transform, mx, my, partial);
-		List<ITextComponent> tooltip = new ArrayList<>();
+		List<Component> tooltip = new ArrayList<>();
 
-		if(mx >= guiLeft+76&&mx <= guiLeft+134&&my >= guiTop+11&&my <= guiTop+58)
+		if(mx >= leftPos+76&&mx <= leftPos+134&&my >= topPos+11&&my <= topPos+58)
 		{
 			float capacity = tile.tank.getCapacity();
 			if(tile.tank.getFluidTypes()==0)
-				tooltip.add(new TranslationTextComponent("gui.immersiveengineering.empty"));
+				tooltip.add(new TranslatableComponent("gui.immersiveengineering.empty"));
 			else
 			{
 
 				int fluidUpToNow = 0;
 				int lastY = 0;
-				int myRelative = guiTop+58-my;
+				int myRelative = topPos+58-my;
 				for(int i = tile.tank.getFluidTypes()-1; i >= 0; i--)
 				{
 					FluidStack fs = tile.tank.fluids.get(i);
@@ -97,21 +97,21 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 				}
 			}
 		}
-		if(mx >= guiLeft+158&&mx < guiLeft+165&&my > guiTop+22&&my < guiTop+68)
-			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
-		if(mx >= guiLeft+106&&mx <= guiLeft+136&&my >= guiTop+61&&my <= guiTop+77)
-			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
+		if(mx >= leftPos+158&&mx < leftPos+165&&my > topPos+22&&my < topPos+68)
+			tooltip.add(new TextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+		if(mx >= leftPos+106&&mx <= leftPos+136&&my >= topPos+61&&my <= topPos+77)
+			tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single")));
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void renderBg(PoseStack transform, float f, int mx, int my)
 	{
-		transform.push();
-		IRenderTypeBuffer.Impl buffers = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
+		transform.pushPose();
+		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
 			if(process instanceof PoweredMultiblockTileEntity.MultiblockProcessInMachine)
@@ -120,12 +120,12 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 				for(int slot : ((MultiblockProcessInMachine<?>)process).getInputSlots())
 				{
 					int h = (int)Math.max(1, mod*16);
-					this.blit(transform, guiLeft+24+slot%2*21, guiTop+7+slot/2*18+(16-h), 176, 16-h, 2, h);
+					this.blit(transform, leftPos+24+slot%2*21, topPos+7+slot/2*18+(16-h), 176, 16-h, 2, h);
 				}
 			}
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		fillGradient(transform, guiLeft+158, guiTop+22+(46-stored), guiLeft+165, guiTop+68, 0xffb51500, 0xff600b00);
+		fillGradient(transform, leftPos+158, topPos+22+(46-stored), leftPos+165, topPos+68, 0xffb51500, 0xff600b00);
 
 		float capacity = tile.tank.getCapacity();
 		int fluidUpToNow = 0;
@@ -137,10 +137,10 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 			{
 				fluidUpToNow += fs.getAmount();
 				int newY = (int)(47*(fluidUpToNow/capacity));
-				GuiHelper.drawRepeatedFluidSpriteGui(buffers, transform, fs, guiLeft+76, guiTop+58-newY, 58, newY-lastY);
+				GuiHelper.drawRepeatedFluidSpriteGui(buffers, transform, fs, leftPos+76, topPos+58-newY, 58, newY-lastY);
 				lastY = newY;
 			}
 		}
-		buffers.finish();
+		buffers.endBatch();
 	}
 }

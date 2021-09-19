@@ -3,10 +3,10 @@ package blusunrize.immersiveengineering.data.blockstates;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.data.models.ConnectorBuilder;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.Block;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 
@@ -50,7 +50,7 @@ public class ConnectorBlockBuilder
 
 	public ConnectorBlockBuilder addAdditional(Property<?> prop)
 	{
-		Preconditions.checkArgument(block.getStateContainer().getProperties().contains(prop));
+		Preconditions.checkArgument(block.getStateDefinition().getProperties().contains(prop));
 		additional.add(prop);
 		return this;
 	}
@@ -71,11 +71,11 @@ public class ConnectorBlockBuilder
 
 	public ConnectorBlockBuilder autoRotationData()
 	{
-		if(block.getDefaultState().hasProperty(IEProperties.FACING_ALL))
+		if(block.defaultBlockState().hasProperty(IEProperties.FACING_ALL))
 			return rotationProperty(IEProperties.FACING_ALL);
-		else if(block.getDefaultState().hasProperty(IEProperties.FACING_TOP_DOWN))
+		else if(block.defaultBlockState().hasProperty(IEProperties.FACING_TOP_DOWN))
 			return rotationProperty(IEProperties.FACING_TOP_DOWN);
-		else if(block.getDefaultState().hasProperty(IEProperties.FACING_HORIZONTAL))
+		else if(block.defaultBlockState().hasProperty(IEProperties.FACING_HORIZONTAL))
 			return rotationProperty(IEProperties.FACING_HORIZONTAL);
 		else
 			return this;
@@ -114,7 +114,7 @@ public class ConnectorBlockBuilder
 
 	public ConnectorBlockBuilder rotationData(Property<Direction> prop, int xForHorizontal)
 	{
-		Preconditions.checkArgument(block.getStateContainer().getProperties().contains(prop));
+		Preconditions.checkArgument(block.getStateDefinition().getProperties().contains(prop));
 		this.facingProp = prop;
 		this.xForHorizontal = xForHorizontal;
 		return this;
@@ -136,7 +136,7 @@ public class ConnectorBlockBuilder
 		forEachState(outputBuilder.partialState(), additional, map -> {
 			if(facingProp!=null)
 			{
-				for(Direction d : facingProp.getAllowedValues())
+				for(Direction d : facingProp.getPossibleValues())
 					if(d==Direction.DOWN)
 					{
 						PartialBlockstate downState = map.with(facingProp, Direction.DOWN);
@@ -153,7 +153,7 @@ public class ConnectorBlockBuilder
 					}
 					else
 					{
-						int rotation = (int)d.getHorizontalAngle();
+						int rotation = (int)d.toYRot();
 						PartialBlockstate dState = map.with(facingProp, d);
 						ModelFile connFile = modelForState(dState);
 						outputBuilder.setModels(dState, new ConfiguredModel(connFile, xForHorizontal, rotation, true));

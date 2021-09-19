@@ -14,10 +14,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
@@ -36,7 +36,7 @@ public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 	public static final String DYNAMIC = "dynamic";
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
 	}
 
@@ -59,23 +59,23 @@ public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 			baseModel = ModelLoaderRegistry.getModel(subloader, deserializationContext, modelContents);
 		}
 		JsonArray partsJson = modelContents.getAsJsonArray(PARTS);
-		List<Vector3i> parts = new ArrayList<>(partsJson.size());
+		List<Vec3i> parts = new ArrayList<>(partsJson.size());
 		for(JsonElement e : partsJson)
 			parts.add(fromJson(e.getAsJsonArray()));
-		MutableBoundingBox box = pointBB(parts.get(0));
-		for(Vector3i v : parts)
-			box.expandTo(pointBB(v));
-		Vector3i size = new Vector3i(box.getXSize(), box.getYSize(), box.getZSize());
+		BoundingBox box = pointBB(parts.get(0));
+		for(Vec3i v : parts)
+			box.expand(pointBB(v));
+		Vec3i size = new Vec3i(box.getXSpan(), box.getYSpan(), box.getZSpan());
 		return new UnbakedSplitModel(baseModel, parts, modelContents.get(DYNAMIC).getAsBoolean(), size);
 	}
 
-	private Vector3i fromJson(JsonArray a)
+	private Vec3i fromJson(JsonArray a)
 	{
-		return new Vector3i(a.get(0).getAsInt(), a.get(1).getAsInt(), a.get(2).getAsInt());
+		return new Vec3i(a.get(0).getAsInt(), a.get(1).getAsInt(), a.get(2).getAsInt());
 	}
 
-	private MutableBoundingBox pointBB(Vector3i point)
+	private BoundingBox pointBB(Vec3i point)
 	{
-		return new MutableBoundingBox(point, point);
+		return new BoundingBox(point, point);
 	}
 }

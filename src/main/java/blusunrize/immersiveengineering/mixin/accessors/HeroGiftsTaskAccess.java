@@ -9,15 +9,15 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.entity.ai.brain.task.GiveHeroGiftsTask;
-import net.minecraft.entity.merchant.villager.VillagerProfession;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ai.behavior.GiveGiftToHero;
+import net.minecraft.world.entity.npc.VillagerProfession;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.Map;
 
-@Mixin(GiveHeroGiftsTask.class)
+@Mixin(GiveGiftToHero.class)
 public interface HeroGiftsTaskAccess
 {
 	@Accessor("GIFTS")

@@ -18,14 +18,14 @@ import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
 import com.blamejared.crafttweaker.impl.helper.CraftTweakerHelper;
 import com.blamejared.crafttweaker.impl.item.MCItemStack;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeType;
 
 /**
  * Allows you to add or remove Sawmill recipes.
@@ -44,7 +44,7 @@ public class SawmillRecipeManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<SawmillRecipe> getRecipeType()
+	public RecipeType<SawmillRecipe> getRecipeType()
 	{
 		return SawmillRecipe.TYPE;
 	}

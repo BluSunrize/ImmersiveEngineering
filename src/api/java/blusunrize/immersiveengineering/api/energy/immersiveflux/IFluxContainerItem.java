@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy.immersiveflux;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * An interface to be implemented by Items that can store IF and allow external modification of their storage.

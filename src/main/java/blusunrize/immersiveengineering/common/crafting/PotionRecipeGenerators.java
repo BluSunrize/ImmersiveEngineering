@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.*;
@@ -49,8 +49,8 @@ public class PotionRecipeGenerators
 		Map<Potion, BottlingMachineRecipe> recipes = new HashMap<>();
 		Function<Potion, BottlingMachineRecipe> toRecipe = potion -> new BottlingMachineRecipe(
 				potion.getRegistryName(),
-				PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), potion),
-				Ingredient.fromItems(Items.GLASS_BOTTLE),
+				PotionUtils.setPotion(new ItemStack(Items.POTION), potion),
+				Ingredient.of(Items.GLASS_BOTTLE),
 				getFluidTagForType(potion, 250)
 		);
 		PotionHelper.applyToAllPotionRecipes((out, in, reagent) -> {

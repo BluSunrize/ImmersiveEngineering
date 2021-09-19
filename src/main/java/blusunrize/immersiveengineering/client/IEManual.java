@@ -36,14 +36,14 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.VersionChecker;
@@ -78,7 +78,7 @@ public class IEManual
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),
 				s -> {
 					ItemStack[] stacks;
-					if(JSONUtils.isJsonArray(s, "recipes"))
+					if(GsonHelper.isArrayNode(s, "recipes"))
 					{
 						JsonArray arr = s.get("recipes").getAsJsonArray();
 						stacks = new ItemStack[arr.size()];
@@ -98,7 +98,7 @@ public class IEManual
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
 				s -> {
 					ResourceLocation name = ManualUtils.getLocationForManual(
-							JSONUtils.getString(s, "name"),
+							GsonHelper.getAsString(s, "name"),
 							ieMan
 					);
 					IMultiblock mb = MultiblockHandler.getByUniqueName(name);
@@ -193,12 +193,12 @@ public class IEManual
 	}
 
 	private static Supplier<ManualElementTable> addDynamicTable(
-			Supplier<SortedMap<ITextComponent, Integer>> getContents,
+			Supplier<SortedMap<Component, Integer>> getContents,
 			String valueType
 	)
 	{
 		return () -> {
-			ITextComponent[][] table = formatToTable_ItemIntMap(getContents.get(), valueType);
+			Component[][] table = formatToTable_ItemIntMap(getContents.get(), valueType);
 			return new ManualElementTable(ManualHelper.getManual(), table, false);
 		};
 	}
@@ -210,7 +210,7 @@ public class IEManual
 		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.mineralList.values());
 		Function<MineralMix, String> toName = mineral -> {
 			String translationKey = mineral.getTranslationKey();
-			String localizedName = I18n.format(translationKey);
+			String localizedName = I18n.get(translationKey);
 			if(localizedName.equals(translationKey))
 				localizedName = mineral.getPlainName();
 			return localizedName;
@@ -222,15 +222,15 @@ public class IEManual
 			if(mineral.dimensions!=null&&mineral.dimensions.size() > 0)
 			{
 				StringBuilder validDims = new StringBuilder();
-				for(RegistryKey<World> dim : mineral.dimensions)
+				for(ResourceKey<Level> dim : mineral.dimensions)
 					validDims.append((validDims.length() > 0)?", ": "")
 							.append("<dim;")
-							.append(dim.getLocation())
+							.append(dim.location())
 							.append(">");
-				dimensionString = I18n.format("ie.manual.entry.mineralsDimValid", toName.apply(mineral), validDims.toString());
+				dimensionString = I18n.get("ie.manual.entry.mineralsDimValid", toName.apply(mineral), validDims.toString());
 			}
 			else
-				dimensionString = I18n.format("ie.manual.entry.mineralsDimAny", toName.apply(mineral));
+				dimensionString = I18n.get("ie.manual.entry.mineralsDimAny", toName.apply(mineral));
 
 			List<StackWithChance> formattedOutputs = Arrays.asList(mineral.outputs);
 			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.getChance()));
@@ -246,11 +246,11 @@ public class IEManual
 										.format(sorted.getChance()*100)
 										.replaceAll("\\G0", "\u00A0")
 						).append("% ")
-						.append(sorted.getStack().getDisplayName().getString());
+						.append(sorted.getStack().getHoverName().getString());
 				sortedOres.add(sorted.getStack());
 			}
 			splitter.addSpecialPage(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres));
-			String desc = I18n.format("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());
+			String desc = I18n.get("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());
 			if(text.length() > 0)
 				text.append("<np>");
 			text.append("<&")
@@ -304,27 +304,27 @@ public class IEManual
 		builder.setContent(() -> {
 			String title = version.toString();
 			if(ahead)
-				title += " - "+I18n.format("ie.manual.newerVersion");
+				title += " - "+I18n.get("ie.manual.newerVersion");
 			else if(currVer.equals(version))
-				title += " - "+I18n.format("ie.manual.currentVersion");
+				title += " - "+I18n.get("ie.manual.currentVersion");
 			return title;
 		}, () -> "", () -> text);
 		builder.setLocation(new ResourceLocation(MODID, "changelog_"+version.toString()));
 		return builder.create();
 	}
 
-	static <T> ITextComponent[][] formatToTable_ItemIntMap(Map<T, Integer> map, String valueType)
+	static <T> Component[][] formatToTable_ItemIntMap(Map<T, Integer> map, String valueType)
 	{
 		List<Entry<T, Integer>> sortedMapArray = new ArrayList<>(map.entrySet());
 		sortedMapArray.sort(Entry.comparingByValue());
-		ArrayList<ITextComponent[]> list = new ArrayList<>();
+		ArrayList<Component[]> list = new ArrayList<>();
 		try
 		{
 			for(Entry<T, Integer> entry : sortedMapArray)
 			{
-				ITextComponent item = null;
-				if(entry.getKey() instanceof ITextComponent)
-					item = (ITextComponent)entry.getKey();
+				Component item = null;
+				if(entry.getKey() instanceof Component)
+					item = (Component)entry.getKey();
 				else if(entry.getKey() instanceof ResourceLocation)
 				{
 					ResourceLocation key = (ResourceLocation)entry.getKey();
@@ -332,19 +332,19 @@ public class IEManual
 					{
 						ItemStack is = IEApi.getPreferredTagStack(key);
 						if(!is.isEmpty())
-							item = is.getDisplayName();
+							item = is.getHoverName();
 					}
 				}
 				if(item==null)
-					item = ITextComponent.getTextComponentOrEmpty(entry.getKey().toString());
+					item = Component.nullToEmpty(entry.getKey().toString());
 
 				int bt = entry.getValue();
-				ITextComponent am = ITextComponent.getTextComponentOrEmpty(bt+" "+valueType);
-				list.add(new ITextComponent[]{item, am});
+				Component am = Component.nullToEmpty(bt+" "+valueType);
+				list.add(new Component[]{item, am});
 			}
 		} catch(Exception e)
 		{
 		}
-		return list.toArray(new ITextComponent[0][]);
+		return list.toArray(new Component[0][]);
 	}
 }

@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Hand;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
 
@@ -18,9 +18,9 @@ import java.util.function.BiPredicate;
 
 public class ItemKeybindConflictContext implements IKeyConflictContext
 {
-	private final BiPredicate<ItemStack, PlayerEntity> activePredicate;
+	private final BiPredicate<ItemStack, Player> activePredicate;
 
-	public ItemKeybindConflictContext(BiPredicate<ItemStack, PlayerEntity> activePredicate)
+	public ItemKeybindConflictContext(BiPredicate<ItemStack, Player> activePredicate)
 	{
 		this.activePredicate = activePredicate;
 	}
@@ -28,13 +28,13 @@ public class ItemKeybindConflictContext implements IKeyConflictContext
 	@Override
 	public boolean isActive()
 	{
-		if(ClientUtils.mc().currentScreen!=null)
+		if(ClientUtils.mc().screen!=null)
 			return false;
-		PlayerEntity player = ClientUtils.mc().player;
+		Player player = ClientUtils.mc().player;
 		if(player!=null)
-			for(Hand hand : Hand.values())
+			for(InteractionHand hand : InteractionHand.values())
 			{
-				ItemStack held = player.getHeldItem(hand);
+				ItemStack held = player.getItemInHand(hand);
 				if(this.activePredicate.test(held, player))
 					return true;
 			}

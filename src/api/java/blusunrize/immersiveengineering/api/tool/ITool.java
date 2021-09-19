@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * Items that implement this will be allowed in the toolbox

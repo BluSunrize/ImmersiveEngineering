@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraft.block.AbstractRailBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseRailBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.extensions.IForgeEntityMinecart;
 import net.minecraftforge.common.util.LazyOptional;
@@ -30,9 +30,9 @@ import java.util.Objects;
 
 public class CapabilityUtils
 {
-	public static <T> LazyOptional<T> findCapabilityAtPos(Capability<T> capability, World world, BlockPos pos, Direction side, boolean allowCart)
+	public static <T> LazyOptional<T> findCapabilityAtPos(Capability<T> capability, Level world, BlockPos pos, Direction side, boolean allowCart)
 	{
-		TileEntity neighbourTile = world.getTileEntity(pos);
+		BlockEntity neighbourTile = world.getBlockEntity(pos);
 		if(neighbourTile!=null)
 		{
 			LazyOptional<T> cap = neighbourTile.getCapability(capability, side);
@@ -41,12 +41,12 @@ public class CapabilityUtils
 		}
 		if(allowCart)
 		{
-			if(AbstractRailBlock.isRail(world, pos))
+			if(BaseRailBlock.isRail(world, pos))
 			{
-				List<Entity> list = world.getEntitiesInAABBexcluding(null, new AxisAlignedBB(pos), entity -> entity instanceof IForgeEntityMinecart);
+				List<Entity> list = world.getEntities((Entity) null, new AABB(pos), entity -> entity instanceof IForgeEntityMinecart);
 				if(!list.isEmpty())
 				{
-					LazyOptional<T> cap = list.get(world.rand.nextInt(list.size())).getCapability(capability);
+					LazyOptional<T> cap = list.get(world.random.nextInt(list.size())).getCapability(capability);
 					if(cap.isPresent())
 						return cap;
 				}
@@ -55,17 +55,17 @@ public class CapabilityUtils
 		return LazyOptional.empty();
 	}
 
-	public static LazyOptional<IItemHandler> findItemHandlerAtPos(World world, BlockPos pos, Direction side, boolean allowCart)
+	public static LazyOptional<IItemHandler> findItemHandlerAtPos(Level world, BlockPos pos, Direction side, boolean allowCart)
 	{
 		return findCapabilityAtPos(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, world, pos, side, allowCart);
 	}
 
-	public static LazyOptional<IFluidHandler> findFluidHandlerAtPos(World world, BlockPos pos, Direction side, boolean allowCart)
+	public static LazyOptional<IFluidHandler> findFluidHandlerAtPos(Level world, BlockPos pos, Direction side, boolean allowCart)
 	{
 		return findCapabilityAtPos(CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, world, pos, side, allowCart);
 	}
 
-	public static boolean canInsertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)
+	public static boolean canInsertStackIntoInventory(BlockEntity inventory, ItemStack stack, Direction side)
 	{
 		if(!stack.isEmpty()&&inventory!=null)
 		{
@@ -79,7 +79,7 @@ public class CapabilityUtils
 		return false;
 	}
 
-	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side)
+	public static ItemStack insertStackIntoInventory(BlockEntity inventory, ItemStack stack, Direction side)
 	{
 		if(!stack.isEmpty()&&inventory!=null)
 		{
@@ -95,7 +95,7 @@ public class CapabilityUtils
 		return stack;
 	}
 
-	public static ItemStack insertStackIntoInventory(TileEntity inventory, ItemStack stack, Direction side, boolean simulate)
+	public static ItemStack insertStackIntoInventory(BlockEntity inventory, ItemStack stack, Direction side, boolean simulate)
 	{
 		if(inventory!=null&&!stack.isEmpty())
 		{

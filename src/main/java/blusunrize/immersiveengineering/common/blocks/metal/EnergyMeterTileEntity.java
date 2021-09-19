@@ -29,32 +29,31 @@ import com.google.common.collect.Lists;
 import it.unimi.dsi.fastutil.doubles.DoubleArrayList;
 import it.unimi.dsi.fastutil.doubles.DoubleList;
 import it.unimi.dsi.fastutil.objects.Object2DoubleMap;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.TranslationTextComponent;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements ITickableTileEntity, IStateBasedDirectional,
+public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implements TickableBlockEntity, IStateBasedDirectional,
 		IHasDummyBlocks, IPlayerInteraction, IComparatorOverride, EnergyConnector, IBlockBounds, IModelOffsetProvider
 {
 	public final DoubleList lastPackets = new DoubleArrayList(20);
@@ -68,7 +67,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IWireCoil)
 			return false;
@@ -76,14 +75,14 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		int packets = lastPackets.size();
 		if(isDummy())
 		{
-			TileEntity below = world.getTileEntity(getPos().down());
+			BlockEntity below = level.getBlockEntity(getBlockPos().below());
 			if(below instanceof EnergyMeterTileEntity)
 				packets = ((EnergyMeterTileEntity)below).lastPackets.size();
 		}
 		String transferred = "0";
 		if(transfer > 0)
 			transferred = Utils.formatDouble(transfer, "0.###");
-		ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"energyTransfered", packets, transferred));
+		ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"energyTransfered", packets, transferred));
 		return true;
 	}
 
@@ -91,11 +90,11 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(isDummy()||world.isRemote)
+		if(isDummy()||level.isClientSide)
 			return;
-		if(((world.getGameTime()&31)==(pos.toLong()&31)||compVal < 0))
+		if(((level.getGameTime()&31)==(worldPosition.asLong()&31)||compVal < 0))
 			updateComparatorValues();
-		EnergyTransferHandler handler = globalNet.getLocalNet(pos)
+		EnergyTransferHandler handler = globalNet.getLocalNet(worldPosition)
 				.getHandler(EnergyTransferHandler.ID, EnergyTransferHandler.class);
 		double transferred = 0;
 		if(handler!=null)
@@ -117,18 +116,18 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(isDummy())
 		{
-			TileEntity below = world.getTileEntity(getPos().down());
+			BlockEntity below = level.getBlockEntity(getBlockPos().below());
 			if(below instanceof EnergyMeterTileEntity)
 				return ((EnergyMeterTileEntity)below).canConnectCable(cableType, target, offset);
 		}
 		if(!(cableType instanceof IEnergyWire))
 			return false;
 		for(ConnectionPoint cp : getConnectionPoints())
-			for(Connection c : globalNet.getLocalNet(pos).getConnections(cp))
+			for(Connection c : globalNet.getLocalNet(worldPosition).getConnections(cp))
 				if(!c.isInternal()&&(target.equals(cp)||!c.type.getCategory().equals(cableType.getCategory())))
 					return false;
 		return true;
@@ -139,27 +138,27 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		if(isDummy())
 			return ImmutableSet.of(
-					pos,
-					pos.down()
+					worldPosition,
+					worldPosition.below()
 			);
 		else
 			return ImmutableSet.of(
-					pos,
-					pos.up()
+					worldPosition,
+					worldPosition.above()
 			);
 	}
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
 		ConnectionPoint targetByHit;
 		if(getFacing().getAxis()==Axis.X)
-			targetByHit = info.hitZ > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+			targetByHit = info.hitZ > 0.5?new ConnectionPoint(worldPosition, 0): new ConnectionPoint(worldPosition, 1);
 		else
-			targetByHit = info.hitX > 0.5?new ConnectionPoint(pos, 0): new ConnectionPoint(pos, 1);
+			targetByHit = info.hitX > 0.5?new ConnectionPoint(worldPosition, 0): new ConnectionPoint(worldPosition, 1);
 		if(!globalNet.getLocalNet(targetByHit).getConnections(targetByHit).stream().allMatch(Connection::isInternal))
-			return new ConnectionPoint(pos, 1-targetByHit.getIndex());
+			return new ConnectionPoint(worldPosition, 1-targetByHit.getIndex());
 		else
 			return targetByHit;
 	}
@@ -169,7 +168,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		if(isDummy())
 		{
-			TileEntity below = world.getTileEntity(getPos().down());
+			BlockEntity below = level.getBlockEntity(getBlockPos().below());
 			if(below instanceof EnergyMeterTileEntity)
 				((EnergyMeterTileEntity)below).connectCable(cableType, target, other, otherTarget);
 		}
@@ -181,18 +180,18 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
 	{
 		if(isDummy())
-			return pos.down();
+			return worldPosition.below();
 		else
-			return pos;
+			return worldPosition;
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		if(getFacing().getAxis()==Axis.X)
-			return new Vector3d(.5, 1.4375, here.getIndex()==0?.8125: .1875);
+			return new Vec3(.5, 1.4375, here.getIndex()==0?.8125: .1875);
 		else
-			return new Vector3d(here.getIndex()==0?.8125: .1875, 1.4375, .5);
+			return new Vec3(here.getIndex()==0?.8125: .1875, 1.4375, .5);
 	}
 
 	@Nullable
@@ -201,28 +200,28 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	{
 		if(!isDummy())
 			return this;
-		BlockPos masterPos = getPos().down();
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		BlockPos masterPos = getBlockPos().below();
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		BlockPos dummyPos = pos.up();
-		world.setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
-				state.with(IEProperties.MULTIBLOCKSLAVE, true), world, dummyPos
+		BlockPos dummyPos = worldPosition.above();
+		level.setBlockAndUpdate(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
+				state.setValue(IEProperties.MULTIBLOCKSLAVE, true), level, dummyPos
 		));
-		((EnergyMeterTileEntity)world.getTileEntity(dummyPos)).setFacing(this.getFacing());
+		((EnergyMeterTileEntity)level.getBlockEntity(dummyPos)).setFacing(this.getFacing());
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		if(isDummy())
-			world.removeBlock(pos.down(), false);
+			level.removeBlock(pos.below(), false);
 		else
-			world.removeBlock(pos.up(), false);
+			level.removeBlock(pos.above(), false);
 	}
 
 	public int getAveragePower()
@@ -230,7 +229,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		EnergyMeterTileEntity te = this;
 		if(te.isDummy())
 		{
-			TileEntity below = world.getTileEntity(getPos().down());
+			BlockEntity below = level.getBlockEntity(getBlockPos().below());
 			if(!(below instanceof EnergyMeterTileEntity))
 				return -1;
 			te = (EnergyMeterTileEntity)below;
@@ -247,22 +246,22 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return SHAPES.get(isDummy());
 	}
 
 	private static final CachedVoxelShapes<Boolean> SHAPES = new CachedVoxelShapes<>(EnergyMeterTileEntity::getShape);
 
-	private static List<AxisAlignedBB> getShape(Boolean isDummy)
+	private static List<AABB> getShape(Boolean isDummy)
 	{
-		List<AxisAlignedBB> list = Lists.newArrayList(
-				new AxisAlignedBB(.1875f, -.625f, .1875f, .8125f, .8125f, .8125f),
-				new AxisAlignedBB(0, -1, 0, 1, .375f-1, 1)
+		List<AABB> list = Lists.newArrayList(
+				new AABB(.1875f, -.625f, .1875f, .8125f, .8125f, .8125f),
+				new AABB(0, -1, 0, 1, .375f-1, 1)
 		);
 		if(!isDummy)
 			for(int i = 0; i < list.size(); ++i)
-				list.set(i, list.get(i).offset(0, 1, 0));
+				list.set(i, list.get(i).move(0, 1, 0));
 		return list;
 	}
 
@@ -285,7 +284,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -303,7 +302,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		for(ConnectionPoint cp : getConnectionPoints())
 		{
 			int maxTransForPoint = 0;
-			Collection<Connection> conns = globalNet.getLocalNet(cp).getConnections(pos);
+			Collection<Connection> conns = globalNet.getLocalNet(cp).getConnections(worldPosition);
 			for(Connection c : conns)
 				if(!c.isInternal()&&c.type instanceof IEnergyWire)
 					maxTransForPoint += ((IEnergyWire)c.type).getTransferRate();
@@ -315,14 +314,14 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 		{
 			final double val = getAveragePower()/(double)maxTrans;
 			compVal = (int)Math.ceil(15*val);
-			TileEntity te = world.getTileEntity(pos.down());
+			BlockEntity te = level.getBlockEntity(worldPosition.below());
 			if(te instanceof EnergyMeterTileEntity)
 				((EnergyMeterTileEntity)te).compVal = compVal;
 		}
 		if(oldVal!=compVal)
 		{
-			world.updateComparatorOutputLevel(pos, getBlockState().getBlock());
-			world.updateComparatorOutputLevel(pos.down(), getBlockState().getBlock());
+			level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+			level.updateNeighbourForOutputSignal(worldPosition.below(), getBlockState().getBlock());
 		}
 	}
 
@@ -347,7 +346,7 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public void onLoad()
 	{
-		shuntConnection = new Connection(pos, 0, 1);
+		shuntConnection = new Connection(worldPosition, 0, 1);
 		super.onLoad();
 	}
 
@@ -363,11 +362,11 @@ public class EnergyMeterTileEntity extends ImmersiveConnectableTileEntity implem
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		return ImmutableList.of(new ConnectionPoint(pos, 0), new ConnectionPoint(pos, 1));
+		return ImmutableList.of(new ConnectionPoint(worldPosition, 0), new ConnectionPoint(worldPosition, 1));
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		if(isDummy())
 			return BlockPos.ZERO;

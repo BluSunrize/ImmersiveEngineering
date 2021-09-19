@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.common.base.Preconditions;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.ItemLike;
 
 public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 {
@@ -39,12 +39,12 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 		return new ClocheRecipeBuilder().addResult(result);
 	}
 
-	public static ClocheRecipeBuilder builder(ITag<Item> result, int count)
+	public static ClocheRecipeBuilder builder(Tag<Item> result, int count)
 	{
 		return new ClocheRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
 
-	public ClocheRecipeBuilder addSoil(IItemProvider itemProvider)
+	public ClocheRecipeBuilder addSoil(ItemLike itemProvider)
 	{
 		return addItem("soil", new ItemStack(itemProvider));
 	}
@@ -54,14 +54,14 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 		return addItem("soil", itemStack);
 	}
 
-	public ClocheRecipeBuilder addSoil(ITag<Item> tag)
+	public ClocheRecipeBuilder addSoil(Tag<Item> tag)
 	{
-		return addSoil(Ingredient.fromTag(tag));
+		return addSoil(Ingredient.of(tag));
 	}
 
 	public ClocheRecipeBuilder addSoil(Ingredient ingredient)
 	{
-		return addWriter(jsonObject -> jsonObject.add("soil", ingredient.serialize()));
+		return addWriter(jsonObject -> jsonObject.add("soil", ingredient.toJson()));
 	}
 
 	public ClocheRecipeBuilder setRender(ClocheRenderReference renderReference)

@@ -15,16 +15,16 @@ import com.google.common.base.Preconditions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.item.ItemStack;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import org.apache.commons.lang3.tuple.Triple;
@@ -91,12 +91,12 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 	}
 
-	public void renderPage(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void renderPage(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		int page = gui.page;
 		ManualPage toRender = pages.get(page);
 		int offsetText = 0;
-		int offsetSpecial = ((toRender.renderText.size()*manual.fontRenderer().FONT_HEIGHT+1)+
+		int offsetSpecial = ((toRender.renderText.size()*manual.fontRenderer().lineHeight+1)+
 				manual.pageHeight-toRender.special.getPixelsTaken())/2;
 		ManualInstance manual = gui.getManual();
 		if(toRender.special.isAbove())
@@ -106,10 +106,10 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 		ManualUtils.drawSplitString(transform, manual.fontRenderer(), toRender.renderText, x, y+offsetText,
 				manual.getTextColour());
-		transform.push();
+		transform.pushPose();
 		transform.translate(x, y+offsetSpecial, 0);
 		toRender.special.render(transform, gui, 0, 0, mouseX, mouseY);
-		transform.pop();
+		transform.popPose();
 	}
 
 	public String getTitle()
@@ -292,13 +292,13 @@ public class ManualEntry implements Comparable<ManualEntry>
 			location = name;
 			getContent = (splitter) -> {
 				ResourceLocation langLoc = new ResourceLocation(name.getNamespace(),
-						"manual/"+Minecraft.getInstance().getLanguageManager().getCurrentLanguage().getCode()
+						"manual/"+Minecraft.getInstance().getLanguageManager().getSelected().getCode()
 								+"/"+name.getPath()+".txt");
 				ResourceLocation dataLoc = new ResourceLocation(name.getNamespace(),
 						"manual/"+name.getPath()+".json");
-				IResource resLang = getResourceNullable(langLoc);
-				IResourceManager manager = Minecraft.getInstance().getResourceManager();
-				IResource resData;
+				Resource resLang = getResourceNullable(langLoc);
+				ResourceManager manager = Minecraft.getInstance().getResourceManager();
+				Resource resData;
 				try
 				{
 					resData = manager.getResource(dataLoc);
@@ -313,7 +313,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 					return new EntryData("ERROR", "This is not a good thing", "Could not find the file for "+name);
 				try
 				{
-					JsonObject json = JSONUtils.fromJson(GSON, new InputStreamReader(resData.getInputStream()),
+					JsonObject json = GsonHelper.fromJson(GSON, new InputStreamReader(resData.getInputStream()),
 							JsonObject.class, true);
 					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
 					String content = new String(bytesLang, StandardCharsets.UTF_8);
@@ -349,7 +349,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 			return new ManualEntry(manual, getContent, location);
 		}
 
-		private static IResource getResourceNullable(ResourceLocation rl)
+		private static Resource getResourceNullable(ResourceLocation rl)
 		{
 			try
 			{
@@ -376,7 +376,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 
 		@Override
-		public void render(MatrixStack transform, ManualScreen m, int x, int y, int mouseX, int mouseY)
+		public void render(PoseStack transform, ManualScreen m, int x, int y, int mouseX, int mouseY)
 		{
 		}
 

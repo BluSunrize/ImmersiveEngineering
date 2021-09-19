@@ -9,50 +9,49 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.Entity;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Material;
 
 public class BalloonBlock extends IETileProviderBlock
 {
 	public BalloonBlock()
 	{
-		super("balloon", Properties.create(Material.WOOL)
-				.sound(SoundType.CLOTH)
-				.hardnessAndResistance(0.8F)
-				.setLightLevel(s -> 13)
-				.notSolid(), BlockItemBalloon::new);
+		super("balloon", Properties.of(Material.WOOL)
+				.sound(SoundType.WOOL)
+				.strength(0.8F)
+				.lightLevel(s -> 13)
+				.noOcclusion(), BlockItemBalloon::new);
 		setHasColours();
 		setLightOpacity(0);
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(BlockStateProperties.WATERLOGGED);
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
+	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
 	{
 		return new BalloonTileEntity();
 	}
 
 	@Override
-	public void onFallenUpon(World w, BlockPos pos, Entity entity, float fallStrength)
+	public void fallOn(Level w, BlockPos pos, Entity entity, float fallStrength)
 	{
 		entity.fallDistance = 0;
 	}

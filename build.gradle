@@ -96,8 +96,7 @@ repositories {
 
 dependencies {
     minecraft "com.mojang:minecraft:${project.version_minecraft}"
-    //TODO remap mappings minecraft.officialMojangMappings()
-    mappings "de.oceanlabs.mcp:mcp_snapshot:20210309-1.16.5"
+    mappings minecraft.officialMojangMappings()
     forge "net.minecraftforge:forge:${project.version_minecraft}-${project.version_forge}"
     modCompileOnly "mezz.jei:jei-1.16.5:7.6.1.75:api"
     modCompileOnly "org.squiddev:cc-tweaked-1.16.4:1.94.0"

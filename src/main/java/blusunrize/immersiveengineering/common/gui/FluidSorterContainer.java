@@ -10,19 +10,18 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.Vector3d;
-
 import javax.annotation.Nonnull;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
 public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
 {
 	int slotCount;
 
-	public FluidSorterContainer(int id, PlayerInventory inventoryPlayer, FluidSorterTileEntity tile)
+	public FluidSorterContainer(int id, Inventory inventoryPlayer, FluidSorterTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 		for(int i = 0; i < 3; i++)
@@ -34,18 +33,18 @@ public class FluidSorterContainer extends IEBaseContainer<FluidSorterTileEntity>
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		return ItemStack.EMPTY;
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player)
+	public boolean stillValid(@Nonnull Player player)
 	{
 		if(tile==null)
 			return false;
 		if(!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
-		return !tile.isRemoved()&&Vector3d.copy(tile.getPos()).squareDistanceTo(player.getPositionVec()) < 64;
+		return !tile.isRemoved()&&Vec3.atLowerCornerOf(tile.getBlockPos()).distanceToSqr(player.position()) < 64;
 	}
 }

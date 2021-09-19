@@ -11,35 +11,35 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.material.Material;
 import net.minecraftforge.fml.RegistryObject;
 
 public class TurretBlock<T extends TurretTileEntity> extends GenericTileBlock<T>
 {
-	public TurretBlock(String name, RegistryObject<TileEntityType<T>> tileType)
+	public TurretBlock(String name, RegistryObject<BlockEntityType<T>> tileType)
 	{
-		super(name, tileType, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+		super(name, tileType, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(3, 15).noOcclusion());
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockPlaceContext context)
 	{
 		return areAllReplaceable(
-				context.getPos(),
-				context.getPos().up(),
+				context.getClickedPos(),
+				context.getClickedPos().above(),
 				context
 		);
 	}

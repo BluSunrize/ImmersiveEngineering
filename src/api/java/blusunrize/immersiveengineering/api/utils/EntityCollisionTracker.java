@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.utils;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.entity.Entity;
+import net.minecraft.world.entity.Entity;
 
 public class EntityCollisionTracker
 {
@@ -57,8 +57,8 @@ public class EntityCollisionTracker
 
 	public void onEntityCollided(Entity collided)
 	{
-		updateForTick(collided.world.getGameTime());
-		collidingInCurrentTick.entities.add(collided.getEntityId());
+		updateForTick(collided.level.getGameTime());
+		collidingInCurrentTick.entities.add(collided.getId());
 	}
 
 	public int getCollidedInRange(long currentTick)

@@ -18,33 +18,33 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fluids.IEItemFluidHandler;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.play.server.SChangeBlockPacket;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceContext.FluidMode;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.ClipContext.Fluid;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeHooks;
@@ -62,12 +62,12 @@ import java.util.function.Supplier;
 
 public class DrillItem extends DieselToolItem
 {
-	public static Material[] validMaterials = {Material.ANVIL, Material.CLAY, Material.GLASS, Material.ORGANIC, Material.EARTH,
-			Material.ICE, Material.IRON, Material.PACKED_ICE, Material.PISTON, Material.ROCK, Material.SAND, Material.SNOW};
+	public static Material[] validMaterials = {Material.HEAVY_METAL, Material.CLAY, Material.GLASS, Material.GRASS, Material.DIRT,
+			Material.ICE, Material.METAL, Material.ICE_SOLID, Material.PISTON, Material.STONE, Material.SAND, Material.TOP_SNOW};
 
 	public DrillItem()
 	{
-		super("drill", withIEOBJRender().maxStackSize(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
+		super("drill", withIEOBJRender().stacksTo(1).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "DRILL");
 	}
 
 	/* ------------- WORKBENCH & INVENTORY ------------- */
@@ -78,7 +78,7 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
@@ -92,7 +92,7 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public void removeFromWorkbench(PlayerEntity player, ItemStack stack)
+	public void removeFromWorkbench(Player player, ItemStack stack)
 	{
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
@@ -124,24 +124,24 @@ public class DrillItem extends DieselToolItem
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
 		if(getHead(stack).isEmpty())
 			list.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.noHead"),
-					TextFormatting.GRAY
+					new TranslatableComponent(Lib.DESC_FLAVOUR+"drill.noHead"),
+					ChatFormatting.GRAY
 			));
 		else
 		{
 			int maxDmg = getMaxHeadDamage(stack);
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
-			TextFormatting status = quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN;
-			list.add(TextUtils.applyFormat(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drill.headDamage"), TextFormatting.GRAY)
-					.appendString(" ")
-					.appendSibling(TextUtils.applyFormat(
-							new TranslationTextComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
+			ChatFormatting status = quote < .1?ChatFormatting.RED: quote < .3?ChatFormatting.GOLD: quote < .6?ChatFormatting.YELLOW: ChatFormatting.GREEN;
+			list.add(TextUtils.applyFormat(new TranslatableComponent(Lib.DESC_FLAVOUR+"drill.headDamage"), ChatFormatting.GRAY)
+					.append(" ")
+					.append(TextUtils.applyFormat(
+							new TranslatableComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
 							status
 					)));
 		}
@@ -156,7 +156,7 @@ public class DrillItem extends DieselToolItem
 	/* ------------- DIGGING ------------- */
 	public boolean canToolBeUsed(ItemStack drill, @Nullable LivingEntity player)
 	{
-		if(player!=null&&player.areEyesInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
+		if(player!=null&&player.isEyeInFluid(FluidTags.WATER)&&!getUpgrades(drill).getBoolean("waterproof"))
 			return false;
 		return getHeadDamage(drill) < getMaxHeadDamage(drill)&&!getFluid(drill).isEmpty();
 	}
@@ -176,18 +176,18 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public boolean onBlockDestroyed(ItemStack stack, World world, BlockState state, BlockPos pos, LivingEntity living)
+	public boolean mineBlock(ItemStack stack, Level world, BlockState state, BlockPos pos, LivingEntity living)
 	{
-		if(state.getBlockHardness(world, pos)!=0)
+		if(state.getDestroySpeed(world, pos)!=0)
 		{
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
 			{
-				if(living instanceof PlayerEntity)
+				if(living instanceof Player)
 				{
-					if(((PlayerEntity)living).abilities.isCreativeMode)
+					if(((Player)living).abilities.instabuild)
 						return true;
-					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (PlayerEntity)living);
+					((IDrillHead)head.getItem()).afterBlockbreak(stack, head, (Player)living);
 				}
 				consumeDurability(stack, world, state, pos, living);
 			}
@@ -203,7 +203,7 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable Player player, @Nullable BlockState blockState)
 	{
 		ItemStack head = getHead(stack);
 		if(!head.isEmpty()&&canToolBeUsed(stack, player))
@@ -237,7 +237,7 @@ public class DrillItem extends DieselToolItem
 		return super.getDestroySpeed(stack, state);
 	}
 
-	public boolean canBreakExtraBlock(World world, Block block, BlockPos pos, BlockState state, PlayerEntity player, ItemStack drill, ItemStack head, boolean inWorld)
+	public boolean canBreakExtraBlock(Level world, Block block, BlockPos pos, BlockState state, Player player, ItemStack drill, ItemStack head, boolean inWorld)
 	{
 		if(block.canHarvestBlock(state, world, pos, player)&&isEffective(drill, state.getMaterial())&&canToolBeUsed(drill, player))
 		{
@@ -250,53 +250,53 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, PlayerEntity player)
+	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, Player player)
 	{
-		World world = player.world;
-		if(player.isSneaking()||world.isRemote||!(player instanceof ServerPlayerEntity))
+		Level world = player.level;
+		if(player.isShiftKeyDown()||world.isClientSide||!(player instanceof ServerPlayer))
 			return false;
-		RayTraceResult mop = rayTrace(world, player, FluidMode.NONE);
+		HitResult mop = getPlayerPOVHitResult(world, player, Fluid.NONE);
 		ItemStack head = getHead(stack);
 		if(mop==null||head.isEmpty()||!canToolBeUsed(stack, player))
 			return false;
 		ImmutableList<BlockPos> additional = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world, player, mop);
 		for(BlockPos pos : additional)
 		{
-			if(!world.isBlockLoaded(pos))
+			if(!world.hasChunkAt(pos))
 				continue;
 			BlockState state = world.getBlockState(pos);
 			Block block = state.getBlock();
 
-			if(block!=null&&!block.isAir(state, world, pos)&&state.getPlayerRelativeBlockHardness(player, world, pos)!=0)
+			if(block!=null&&!block.isAir(state, world, pos)&&state.getDestroyProgress(player, world, pos)!=0)
 			{
 				if(!this.canBreakExtraBlock(world, block, pos, state, player, stack, head, true))
 					continue;
-				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayerEntity)player).interactionManager.getGameType(), (ServerPlayerEntity)player, pos);
+				int xpDropEvent = ForgeHooks.onBlockBreakEvent(world, ((ServerPlayer)player).gameMode.getGameModeForPlayer(), (ServerPlayer)player, pos);
 				if(xpDropEvent < 0)
 					continue;
 
-				if(player.abilities.isCreativeMode)
+				if(player.abilities.instabuild)
 				{
-					block.onBlockHarvested(world, pos, state, player);
+					block.playerWillDestroy(world, pos, state, player);
 					if(block.removedByPlayer(state, world, pos, player, false, state.getFluidState()))
-						block.onPlayerDestroy(world, pos, state);
+						block.destroy(world, pos, state);
 				}
 				else
 				{
-					block.onBlockHarvested(world, pos, state, player);
-					TileEntity te = world.getTileEntity(pos);
+					block.playerWillDestroy(world, pos, state, player);
+					BlockEntity te = world.getBlockEntity(pos);
 					//implicitly damages head
-					stack.onBlockDestroyed(world, state, pos, player);
+					stack.mineBlock(world, state, pos, player);
 					if(block.removedByPlayer(state, world, pos, player, true, state.getFluidState()))
 					{
-						block.onPlayerDestroy(world, pos, state);
-						block.harvestBlock(world, player, pos, state, te, stack);
-						if(world instanceof ServerWorld)
-							block.dropXpOnBlockBreak((ServerWorld)world, pos, xpDropEvent);
+						block.destroy(world, pos, state);
+						block.playerDestroy(world, player, pos, state, te, stack);
+						if(world instanceof ServerLevel)
+							block.popExperience((ServerLevel)world, pos, xpDropEvent);
 					}
 				}
-				world.playEvent(2001, pos, Block.getStateId(state));
-				((ServerPlayerEntity)player).connection.sendPacket(new SChangeBlockPacket(world, pos));
+				world.levelEvent(2001, pos, Block.getId(state));
+				((ServerPlayer)player).connection.send(new ClientboundBlockUpdatePacket(world, pos));
 			}
 		}
 		return false;
@@ -322,7 +322,7 @@ public class DrillItem extends DieselToolItem
 	{
 		if(group.equals("drill_frame")||group.equals("drill_grip"))
 			return true;
-		CompoundNBT upgrades = this.getUpgrades(stack);
+		CompoundTag upgrades = this.getUpgrades(stack);
 		if(group.equals("upgrade_waterproof"))
 			return upgrades.getBoolean("waterproof");
 		if(group.equals("upgrade_speed"))
@@ -344,11 +344,11 @@ public class DrillItem extends DieselToolItem
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public TransformationMatrix applyTransformations(ItemStack stack, String group, TransformationMatrix transform)
+	public Transformation applyTransformations(ItemStack stack, String group, Transformation transform)
 	{
-		CompoundNBT upgrades = this.getUpgrades(stack);
+		CompoundTag upgrades = this.getUpgrades(stack);
 		if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
-			return transform.compose(new TransformationMatrix(
+			return transform.compose(new Transformation(
 					new Vector3f(-.25f, 0, 0), null, null, null
 			));
 		return transform;
@@ -374,18 +374,18 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private static TransformationMatrix matAugers;
+	private static Transformation matAugers;
 
 	@Nonnull
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
+	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
 		if(matAugers==null)
-			matAugers = new TransformationMatrix(new Vector3f(.441f, 0, 0), null, null, null);
+			matAugers = new Transformation(new Vector3f(.441f, 0, 0), null, null, null);
 		if(groups==FIXED[0])
 			return matAugers;
-		float angle = (entity.ticksExisted%60+partialTicks)/60f*(float)(2*Math.PI);
+		float angle = (entity.tickCount%60+partialTicks)/60f*(float)(2*Math.PI);
 		Quaternion rotation = null;
 		Vector3f translation = null;
 		if("drill_head".equals(groups[0]))
@@ -400,6 +400,6 @@ public class DrillItem extends DieselToolItem
 			translation = new Vector3f(.441f, 0, 0);
 			rotation = new Quaternion(0, 0, angle, false);
 		}
-		return new TransformationMatrix(translation, rotation, null, null);
+		return new Transformation(translation, rotation, null, null);
 	}
 }

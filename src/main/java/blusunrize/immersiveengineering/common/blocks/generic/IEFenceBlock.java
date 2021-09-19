@@ -11,12 +11,11 @@ package blusunrize.immersiveengineering.common.blocks.generic;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
-import net.minecraft.block.FenceBlock;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-
 import java.util.Map;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 
 public class IEFenceBlock extends FenceBlock
 {
@@ -30,6 +29,6 @@ public class IEFenceBlock extends FenceBlock
 
 	public Map<Direction, BooleanProperty> getFacingStateMap()
 	{
-		return FACING_TO_PROPERTY_MAP;
+		return PROPERTY_BY_DIRECTION;
 	}
 }

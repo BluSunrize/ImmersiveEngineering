@@ -16,38 +16,38 @@ import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootContext.Builder;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import com.mojang.math.Transformation;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootContext.Builder;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -73,10 +73,10 @@ public class IEBlockInterfaces
 	public interface IBlockOverlayText
 	{
 		@Nullable
-		ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer);
+		Component[] getOverlayText(Player player, HitResult mop, boolean hammer);
 
 		@Deprecated
-		boolean useNixieFont(PlayerEntity player, RayTraceResult mop);
+		boolean useNixieFont(Player player, HitResult mop);
 	}
 
 	public interface ISoundTile
@@ -115,7 +115,7 @@ public class IEBlockInterfaces
 	{
 		boolean hasCustomBlockColours();
 
-		int getRenderColour(BlockState state, @Nullable IBlockReader worldIn, @Nullable BlockPos pos, int tintIndex);
+		int getRenderColour(BlockState state, @Nullable BlockGetter worldIn, @Nullable BlockPos pos, int tintIndex);
 	}
 
 	public interface IColouredTile
@@ -144,16 +144,16 @@ public class IEBlockInterfaces
 					f = side;
 					break;
 				case PISTON_LIKE:
-					f = Direction.getFacingDirections(placer)[0];
+					f = Direction.orderedByNearest(placer)[0];
 					break;
 				case HORIZONTAL:
-					f = Direction.fromAngle(placer.rotationYaw);
+					f = Direction.fromYRot(placer.yRot);
 					break;
 				case VERTICAL:
 					f = (side!=Direction.DOWN&&(side==Direction.UP||hitY <= .5))?Direction.UP: Direction.DOWN;
 					break;
 				case HORIZONTAL_AXIS:
-					f = Direction.fromAngle(placer.rotationYaw);
+					f = Direction.fromYRot(placer.yRot);
 					if(f==Direction.SOUTH||f==Direction.WEST)
 						f = f.getOpposite();
 					break;
@@ -172,7 +172,7 @@ public class IEBlockInterfaces
 					}
 					break;
 				case HORIZONTAL_PREFER_SIDE:
-					f = side.getAxis()!=Axis.Y?side.getOpposite(): placer.getHorizontalFacing();
+					f = side.getAxis()!=Axis.Y?side.getOpposite(): placer.getDirection();
 					break;
 				case FIXED_DOWN:
 					f = Direction.DOWN;
@@ -189,7 +189,7 @@ public class IEBlockInterfaces
 			return false;
 		}
 
-		default boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+		default boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 		{
 			return true;
 		}
@@ -233,7 +233,7 @@ public class IEBlockInterfaces
 		{
 			BlockState state = getState();
 			if(state.hasProperty(getFacingProperty()))
-				return state.get(getFacingProperty());
+				return state.getValue(getFacingProperty());
 			else
 				return Direction.NORTH;
 		}
@@ -242,7 +242,7 @@ public class IEBlockInterfaces
 		default void setFacing(Direction facing)
 		{
 			BlockState oldState = getState();
-			BlockState newState = oldState.with(getFacingProperty(), facing);
+			BlockState newState = oldState.setValue(getFacingProperty(), facing);
 			setState(newState);
 		}
 	}
@@ -256,26 +256,26 @@ public class IEBlockInterfaces
 	{
 		IOSideConfig getSideConfig(Direction side);
 
-		boolean toggleSide(Direction side, PlayerEntity p);
+		boolean toggleSide(Direction side, Player p);
 	}
 
 	public interface ITileDrop extends IReadOnPlacement
 	{
 		List<ItemStack> getTileDrops(LootContext context);
 
-		default ItemStack getPickBlock(@Nullable PlayerEntity player, BlockState state, RayTraceResult rayRes)
+		default ItemStack getPickBlock(@Nullable Player player, BlockState state, HitResult rayRes)
 		{
 			//TODO make this work properly on the client side
-			TileEntity tile = (TileEntity)this;
-			if(tile.getWorld().isRemote)
+			BlockEntity tile = (BlockEntity)this;
+			if(tile.getLevel().isClientSide)
 				return new ItemStack(state.getBlock());
-			ServerWorld world = (ServerWorld)tile.getWorld();
+			ServerLevel world = (ServerLevel)tile.getLevel();
 			return getTileDrops(
 					new Builder(world)
-							.withNullableParameter(LootParameters.TOOL, ItemStack.EMPTY)
-							.withNullableParameter(LootParameters.BLOCK_STATE, world.getBlockState(tile.getPos()))
-							.withNullableParameter(LootParameters.ORIGIN, Vector3d.copyCentered(tile.getPos()))
-							.build(LootParameterSets.BLOCK)
+							.withOptionalParameter(LootContextParams.TOOL, ItemStack.EMPTY)
+							.withOptionalParameter(LootContextParams.BLOCK_STATE, world.getBlockState(tile.getBlockPos()))
+							.withOptionalParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(tile.getBlockPos()))
+							.create(LootContextParamSets.BLOCK)
 			).get(0);
 		}
 	}
@@ -287,7 +287,7 @@ public class IEBlockInterfaces
 
 	public interface IAdditionalDrops
 	{
-		Collection<ItemStack> getExtraDrops(PlayerEntity player, BlockState state);
+		Collection<ItemStack> getExtraDrops(Player player, BlockState state);
 	}
 
 	public interface IEntityProof
@@ -298,22 +298,22 @@ public class IEBlockInterfaces
 	public interface IPlayerInteraction
 	{
 		//TODO should really return ActionResultType
-		boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
+		boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ);
 	}
 
 	public interface IHammerInteraction
 	{
-		boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec);
+		boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec);
 	}
 
 	public interface IScrewdriverInteraction
 	{
-		ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec);
+		InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec);
 	}
 
 	public interface IPlacementInteraction
 	{
-		void onTilePlaced(World world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
+		void onTilePlaced(Level world, BlockPos pos, BlockState state, Direction side, float hitX, float hitY, float hitZ, LivingEntity placer, ItemStack stack);
 	}
 
 	public interface IActiveState extends BlockstateProvider
@@ -322,7 +322,7 @@ public class IEBlockInterfaces
 		{
 			BlockState state = getState();
 			if(state.hasProperty(IEProperties.ACTIVE))
-				return state.get(IEProperties.ACTIVE);
+				return state.getValue(IEProperties.ACTIVE);
 			else
 				return false;
 		}
@@ -330,7 +330,7 @@ public class IEBlockInterfaces
 		default void setActive(boolean active)
 		{
 			BlockState state = getState();
-			BlockState newState = state.with(IEProperties.ACTIVE, active);
+			BlockState newState = state.setValue(IEProperties.ACTIVE, active);
 			setState(newState);
 		}
 	}
@@ -341,7 +341,7 @@ public class IEBlockInterfaces
 		{
 			BlockState state = getState();
 			if(state.hasProperty(IEProperties.MIRRORED))
-				return state.get(IEProperties.MIRRORED);
+				return state.getValue(IEProperties.MIRRORED);
 			else
 				return false;
 		}
@@ -349,7 +349,7 @@ public class IEBlockInterfaces
 		default void setMirrored(boolean mirrored)
 		{
 			BlockState state = getState();
-			BlockState newState = state.with(IEProperties.MIRRORED, mirrored);
+			BlockState newState = state.setValue(IEProperties.MIRRORED, mirrored);
 			setState(newState);
 		}
 	}
@@ -357,18 +357,18 @@ public class IEBlockInterfaces
 	public interface IBlockBounds extends ISelectionBounds, ICollisionBounds
 	{
 		@Nonnull
-		VoxelShape getBlockBounds(@Nullable ISelectionContext ctx);
+		VoxelShape getBlockBounds(@Nullable CollisionContext ctx);
 
 		@Nonnull
 		@Override
-		default VoxelShape getCollisionShape(ISelectionContext ctx)
+		default VoxelShape getCollisionShape(CollisionContext ctx)
 		{
 			return getBlockBounds(ctx);
 		}
 
 		@Nonnull
 		@Override
-		default VoxelShape getSelectionShape(@Nullable ISelectionContext ctx)
+		default VoxelShape getSelectionShape(@Nullable CollisionContext ctx)
 		{
 			return getBlockBounds(ctx);
 		}
@@ -377,19 +377,19 @@ public class IEBlockInterfaces
 	public interface ISelectionBounds
 	{
 		@Nonnull
-		VoxelShape getSelectionShape(@Nullable ISelectionContext ctx);
+		VoxelShape getSelectionShape(@Nullable CollisionContext ctx);
 	}
 
 	public interface ICollisionBounds
 	{
 		@Nonnull
-		VoxelShape getCollisionShape(ISelectionContext ctx);
+		VoxelShape getCollisionShape(CollisionContext ctx);
 	}
 
 	//TODO move a lot of this to block states!
 	public interface IHasDummyBlocks extends IGeneralMultiblock
 	{
-		void placeDummies(BlockItemUseContext ctx, BlockState state);
+		void placeDummies(BlockPlaceContext ctx, BlockState state);
 
 		void breakDummies(BlockPos pos, BlockState state);
 	}
@@ -406,14 +406,14 @@ public class IEBlockInterfaces
 		{
 			BlockState state = getState();
 			if(state.hasProperty(IEProperties.MULTIBLOCKSLAVE))
-				return state.get(IEProperties.MULTIBLOCKSLAVE);
+				return state.getValue(IEProperties.MULTIBLOCKSLAVE);
 			else
 				return true;
 		}
 
 		default void checkForNeedlessTicking()
 		{
-			ApiUtils.checkForNeedlessTicking((TileEntity & IGeneralMultiblock)this,
+			ApiUtils.checkForNeedlessTicking((BlockEntity & IGeneralMultiblock)this,
 					// The warning on the next line should be ignored, using a method reference causes
 					// a "BootstrapMethodError"
 					te -> te.isDummy());
@@ -427,7 +427,7 @@ public class IEBlockInterfaces
 		@Override
 		default IEObjState getIEObjState(BlockState state)
 		{
-			return new IEObjState(compileDisplayList(state), TransformationMatrix.identity());
+			return new IEObjState(compileDisplayList(state), Transformation.identity());
 		}
 	}
 
@@ -436,12 +436,12 @@ public class IEBlockInterfaces
 		IEObjState getIEObjState(BlockState state);
 	}
 
-	public interface IInteractionObjectIE extends INamedContainerProvider
+	public interface IInteractionObjectIE extends MenuProvider
 	{
 		@Nullable
 		IInteractionObjectIE getGuiMaster();
 
-		boolean canUseGui(PlayerEntity player);
+		boolean canUseGui(Player player);
 
 		default boolean isValid()
 		{
@@ -450,17 +450,17 @@ public class IEBlockInterfaces
 
 		@Nonnull//Super is annotated nullable, but Forge assumes Nonnull in at least one place
 		@Override
-		default Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity playerEntity)
+		default AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player playerEntity)
 		{
 			IInteractionObjectIE master = getGuiMaster();
-			Preconditions.checkState(master instanceof TileEntity);
-			return GuiHandler.createContainer(playerInventory, (TileEntity)master, id);
+			Preconditions.checkState(master instanceof BlockEntity);
+			return GuiHandler.createContainer(playerInventory, (BlockEntity)master, id);
 		}
 
 		@Override
-		default ITextComponent getDisplayName()
+		default Component getDisplayName()
 		{
-			return new StringTextComponent("");
+			return new TextComponent("");
 		}
 	}
 
@@ -477,7 +477,7 @@ public class IEBlockInterfaces
 
 	public interface IModelDataBlock
 	{
-		IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state,
+		IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state,
 								@Nonnull IModelData tileData);
 	}
 }

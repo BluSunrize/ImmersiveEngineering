@@ -10,38 +10,38 @@
 package blusunrize.immersiveengineering.data.recipebuilder;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class FluidAwareShapedRecipeBuilder extends ShapedRecipeBuilder
 {
-	public FluidAwareShapedRecipeBuilder(IItemProvider result, int count)
+	public FluidAwareShapedRecipeBuilder(ItemLike result, int count)
 	{
 		super(result, count);
 	}
 
-	public static FluidAwareShapedRecipeBuilder builder(IItemProvider result, int count)
+	public static FluidAwareShapedRecipeBuilder builder(ItemLike result, int count)
 	{
 		return new FluidAwareShapedRecipeBuilder(result, count);
 	}
 
-	public static FluidAwareShapedRecipeBuilder builder(IItemProvider result)
+	public static FluidAwareShapedRecipeBuilder builder(ItemLike result)
 	{
 		return new FluidAwareShapedRecipeBuilder(result, 1);
 	}
 
 	@Override
-	public void build(@Nonnull Consumer<IFinishedRecipe> consumerIn, @Nonnull ResourceLocation id)
+	public void save(@Nonnull Consumer<FinishedRecipe> consumerIn, @Nonnull ResourceLocation id)
 	{
-		Consumer<IFinishedRecipe> dummyConsumer = iFinishedRecipe -> {
+		Consumer<FinishedRecipe> dummyConsumer = iFinishedRecipe -> {
 			WrappedFinishedRecipe result = new WrappedFinishedRecipe(iFinishedRecipe, RecipeSerializers.IE_SHAPED_SERIALIZER);
 			consumerIn.accept(result);
 		};
-		super.build(dummyConsumer, id);
+		super.save(dummyConsumer, id);
 	}
 }

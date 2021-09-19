@@ -21,25 +21,25 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import net.minecraft.block.Blocks;
-import net.minecraft.client.renderer.model.BakedQuad;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -58,7 +58,7 @@ public class VerticalConveyor extends BasicConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "vertical");
 
-	public VerticalConveyor(TileEntity tile)
+	public VerticalConveyor(BlockEntity tile)
 	{
 		super(tile);
 	}
@@ -101,9 +101,9 @@ public class VerticalConveyor extends BasicConveyor
 		return key;
 	}
 
-	static boolean renderBottomBelt(TileEntity tile, Direction facing)
+	static boolean renderBottomBelt(BlockEntity tile, Direction facing)
 	{
-		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0));
+		BlockEntity te = tile.getLevel().getBlockEntity(tile.getBlockPos().offset(0, -1, 0));
 		if(te instanceof IConveyorTile&&((IConveyorTile)te).getConveyorSubtype()!=null)
 			for(Direction f : ((IConveyorTile)te).getConveyorSubtype().sigTransportDirections())
 				if(f==Direction.UP)
@@ -114,9 +114,9 @@ public class VerticalConveyor extends BasicConveyor
 		return false;
 	}
 
-	protected static boolean isInwardConveyor(TileEntity tile, Direction f)
+	protected static boolean isInwardConveyor(BlockEntity tile, Direction f)
 	{
-		TileEntity te = tile.getWorld().getTileEntity(tile.getPos().offset(f));
+		BlockEntity te = tile.getLevel().getBlockEntity(tile.getBlockPos().relative(f));
 		if(te instanceof IConveyorTile)
 		{
 			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
@@ -125,7 +125,7 @@ public class VerticalConveyor extends BasicConveyor
 					if(f==f2.getOpposite())
 						return true;
 		}
-		te = tile.getWorld().getTileEntity(tile.getPos().add(0, -1, 0).offset(f));
+		te = tile.getLevel().getBlockEntity(tile.getBlockPos().offset(0, -1, 0).relative(f));
 		if(te instanceof IConveyorTile)
 		{
 			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
@@ -146,7 +146,7 @@ public class VerticalConveyor extends BasicConveyor
 		return false;
 	}
 
-	protected boolean renderBottomWall(TileEntity tile, Direction facing, int wall)
+	protected boolean renderBottomWall(BlockEntity tile, Direction facing, int wall)
 	{
 		return super.renderWall(facing, wall);
 	}
@@ -158,49 +158,49 @@ public class VerticalConveyor extends BasicConveyor
 	}
 
 	@Override
-	public Vector3d getDirection(Entity entity, boolean outputBlocked)
+	public Vec3 getDirection(Entity entity, boolean outputBlocked)
 	{
-		BlockPos posWall = getTile().getPos().offset(getFacing());
-		double d = .625+entity.getWidth();
-		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
+		BlockPos posWall = getTile().getBlockPos().relative(getFacing());
+		double d = .625+entity.getBbWidth();
+		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getZ(): entity.getX()));
 		if(distToWall > d)
 			return super.getDirection(entity, outputBlocked);
 
 		double vBase = entity instanceof LivingEntity?1.5: 1.15;
-		double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.getPosY());
+		double distY = Math.abs(getTile().getBlockPos().offset(0, 1, 0).getY()+.5-entity.getY());
 		double treshold = .9;
 		boolean contact = distY < treshold;
 
-		double vX = entity.getMotion().x;
+		double vX = entity.getDeltaMovement().x;
 		double vY = 0.1*vBase;
-		double vZ = entity.getMotion().z;
-		if(entity.getMotion().y < 0)
-			vY += entity.getMotion().y*.9;
+		double vZ = entity.getDeltaMovement().z;
+		if(entity.getDeltaMovement().y < 0)
+			vY += entity.getDeltaMovement().y*.9;
 
-		if(!(entity instanceof PlayerEntity))
+		if(!(entity instanceof Player))
 		{
-			vX = 0.05*getFacing().getXOffset();
-			vZ = 0.05*getFacing().getZOffset();
+			vX = 0.05*getFacing().getStepX();
+			vZ = 0.05*getFacing().getStepZ();
 			if(getFacing()==Direction.WEST||getFacing()==Direction.EAST)
 			{
-				if(entity.getPosZ() > getTile().getPos().getZ()+0.65D)
+				if(entity.getZ() > getTile().getBlockPos().getZ()+0.65D)
 					vZ = -0.1D*vBase;
-				else if(entity.getPosZ() < getTile().getPos().getZ()+0.35D)
+				else if(entity.getZ() < getTile().getBlockPos().getZ()+0.35D)
 					vZ = 0.1D*vBase;
 			}
 			else if(getFacing()==Direction.NORTH||getFacing()==Direction.SOUTH)
 			{
-				if(entity.getPosX() > getTile().getPos().getX()+0.65D)
+				if(entity.getX() > getTile().getBlockPos().getX()+0.65D)
 					vX = -0.1D*vBase;
-				else if(entity.getPosX() < getTile().getPos().getX()+0.35D)
+				else if(entity.getX() < getTile().getBlockPos().getX()+0.35D)
 					vX = 0.1D*vBase;
 			}
 		}
 		//Little boost at the top of a conveyor to help players and minecarts to get off
-		BlockPos upForward = getTile().getPos().add(0, 1, 0);
-		if(contact&&!(Utils.getExistingTileEntity(getTile().getWorld(), upForward) instanceof IConveyorTile))
+		BlockPos upForward = getTile().getBlockPos().offset(0, 1, 0);
+		if(contact&&!(Utils.getExistingTileEntity(getTile().getLevel(), upForward) instanceof IConveyorTile))
 			vY *= 2.25;
-		return new Vector3d(vX, vY, vZ);
+		return new Vec3(vX, vY, vZ);
 	}
 
 	private CapabilityReference<IItemHandler> inserter;
@@ -211,12 +211,12 @@ public class VerticalConveyor extends BasicConveyor
 		collisionTracker.onEntityCollided(entity);
 		if(!isActive()||!entity.isAlive())
 			return;
-		if(entity instanceof PlayerEntity&&entity.isSneaking())
+		if(entity instanceof Player&&entity.isShiftKeyDown())
 			return;
 
-		BlockPos posWall = getTile().getPos().offset(getFacing());
-		double d = .625+entity.getWidth();
-		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getPosZ(): entity.getPosX()));
+		BlockPos posWall = getTile().getBlockPos().relative(getFacing());
+		double d = .625+entity.getBbWidth();
+		double distToWall = Math.abs((getFacing().getAxis()==Axis.Z?posWall.getZ(): posWall.getX())+.5-(getFacing().getAxis()==Axis.Z?entity.getZ(): entity.getX()));
 		if(distToWall > d)
 		{
 			super.onEntityCollision(entity);
@@ -224,7 +224,7 @@ public class VerticalConveyor extends BasicConveyor
 		}
 
 		boolean outputBlocked = isOutputBlocked();
-		double distY = Math.abs(getTile().getPos().add(0, 1, 0).getY()+.5-entity.getPosY());
+		double distY = Math.abs(getTile().getBlockPos().offset(0, 1, 0).getY()+.5-entity.getY());
 		double treshold = .9;
 		boolean contact = distY < treshold;
 
@@ -233,28 +233,28 @@ public class VerticalConveyor extends BasicConveyor
 			entity.fallDistance = 0;
 		else
 			entity.fallDistance *= .9;
-		Vector3d vec = getDirection(entity, outputBlocked);
+		Vec3 vec = getDirection(entity, outputBlocked);
 		boolean hasBeenHandled = !ConveyorHandler.markEntityAsHandled(entity);
-		if(outputBlocked&&entity.getPosY() >= getTile().getPos().getY()+0.25)
+		if(outputBlocked&&entity.getY() >= getTile().getBlockPos().getY()+0.25)
 		{
 			double my;
-			if(entity.getPosY() < entity.lastTickPosY)
-				my = entity.lastTickPosY-entity.getPosY();
+			if(entity.getY() < entity.yOld)
+				my = entity.yOld-entity.getY();
 			else
-				my = entity.getMotion().y;
+				my = entity.getDeltaMovement().y;
 			if(hasBeenHandled)
-				vec = new Vector3d(vec.x, my, vec.z);
+				vec = new Vec3(vec.x, my, vec.z);
 			else
-				vec = new Vector3d(0, my, 0);
+				vec = new Vec3(0, my, 0);
 		}
-		entity.setMotion(vec);
+		entity.setDeltaMovement(vec);
 
 		if(!contact)
 			ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)getTile());
 		else
 		{
-			BlockPos posTop = getTile().getPos().add(0, 1, 0);
-			if(!((getTile().getWorld().getTileEntity(posTop) instanceof IConveyorTile)||(getTile().getWorld().isAirBlock(posTop)&&(getTile().getWorld().getTileEntity(posTop.offset(getFacing())) instanceof IConveyorTile))))
+			BlockPos posTop = getTile().getBlockPos().offset(0, 1, 0);
+			if(!((getTile().getLevel().getBlockEntity(posTop) instanceof IConveyorTile)||(getTile().getLevel().isEmptyBlock(posTop)&&(getTile().getLevel().getBlockEntity(posTop.relative(getFacing())) instanceof IConveyorTile))))
 				ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)getTile());
 		}
 
@@ -269,9 +269,9 @@ public class VerticalConveyor extends BasicConveyor
 			}
 			else
 			{
-				TileEntity inventoryTile;
-				inventoryTile = getTile().getWorld().getTileEntity(getTile().getPos().add(0, 1, 0));
-				if(!getTile().getWorld().isRemote)
+				BlockEntity inventoryTile;
+				inventoryTile = getTile().getLevel().getBlockEntity(getTile().getBlockPos().offset(0, 1, 0));
+				if(!getTile().getLevel().isClientSide)
 				{
 					if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
 					{
@@ -292,22 +292,22 @@ public class VerticalConveyor extends BasicConveyor
 		}
 
 		if(isCovered()&&entity instanceof ItemEntity)
-			((ItemEntity)entity).setPickupDelay(10);
+			((ItemEntity)entity).setPickUpDelay(10);
 	}
 
 	@Override
 	public BlockPos getOutputInventory()
 	{
-		return getTile().getPos().up();
+		return getTile().getBlockPos().above();
 	}
 
 	@Override
 	public List<BlockPos> getNextConveyorCandidates()
 	{
-		BlockPos pos = getTile().getPos();
+		BlockPos pos = getTile().getBlockPos();
 		return ImmutableList.of(
-				pos.up(),
-				pos.up().offset(getFacing())
+				pos.above(),
+				pos.above().relative(getFacing())
 		);
 	}
 
@@ -320,11 +320,11 @@ public class VerticalConveyor extends BasicConveyor
 		return getCollisionShape();
 	}
 
-	private static List<AxisAlignedBB> getShapes(Boolean bottomBelt)
+	private static List<AABB> getShapes(Boolean bottomBelt)
 	{
-		List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, 1, .125f));
+		List<AABB> list = Lists.newArrayList(new AABB(0, 0, 0, 1, 1, .125f));
 		if(bottomBelt)
-			list.add(conveyorBounds.getBoundingBox());
+			list.add(conveyorBounds.bounds());
 		return list;
 	}
 
@@ -336,10 +336,10 @@ public class VerticalConveyor extends BasicConveyor
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TransformationMatrix modifyBaseRotationMatrix(TransformationMatrix matrix)
+	public Transformation modifyBaseRotationMatrix(Transformation matrix)
 	{
 		return matrix
-				.compose(new TransformationMatrix(
+				.compose(new Transformation(
 						new Vector3f(0, 1, 0),
 						new Quaternion((float)Math.PI/2, 0, 0, false),
 						null,

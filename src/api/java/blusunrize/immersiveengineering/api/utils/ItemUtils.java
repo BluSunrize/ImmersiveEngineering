@@ -14,14 +14,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.JsonToNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -32,12 +32,12 @@ public class ItemUtils
 {
 	private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-	public static CompoundNBT parseNbtFromJson(JsonElement jsonElement) throws CommandSyntaxException
+	public static CompoundTag parseNbtFromJson(JsonElement jsonElement) throws CommandSyntaxException
 	{
 		if(jsonElement.isJsonObject())
-			return JsonToNBT.getTagFromJson(GSON.toJson(jsonElement));
+			return TagParser.parseTag(GSON.toJson(jsonElement));
 		else
-			return JsonToNBT.getTagFromJson(jsonElement.getAsString());
+			return TagParser.parseTag(jsonElement.getAsString());
 	}
 
 	@Deprecated
@@ -50,8 +50,8 @@ public class ItemUtils
 	public static boolean stackMatchesObject(ItemStack stack, Object o, boolean checkNBT)
 	{
 		if(o instanceof ItemStack)
-			return ItemStack.areItemsEqual((ItemStack)o, stack)&&
-					(!checkNBT||ItemStack.areItemStackTagsEqual((ItemStack)o, stack));
+			return ItemStack.isSame((ItemStack)o, stack)&&
+					(!checkNBT||ItemStack.tagMatches((ItemStack)o, stack));
 		else if(o instanceof Collection)
 		{
 			for(Object io : (Collection)o)
@@ -65,7 +65,7 @@ public class ItemUtils
 		else if(o instanceof ItemStack[])
 		{
 			for(ItemStack io : (ItemStack[])o)
-				if(ItemStack.areItemsEqual(io, stack)&&(!checkNBT||ItemStack.areItemStackTagsEqual(io, stack)))
+				if(ItemStack.isSame(io, stack)&&(!checkNBT||ItemStack.tagMatches(io, stack)))
 					return true;
 		}
 		else if(o instanceof FluidStack)
@@ -92,11 +92,11 @@ public class ItemUtils
 	 *
 	 * @return the side the entity's provided hand
 	 */
-	public static HandSide getLivingHand(LivingEntity living, Hand hand)
+	public static HumanoidArm getLivingHand(LivingEntity living, InteractionHand hand)
 	{
-		HandSide handside = living.getPrimaryHand();
-		if(hand!=Hand.MAIN_HAND)
-			handside = handside==HandSide.LEFT?HandSide.RIGHT: HandSide.LEFT;
+		HumanoidArm handside = living.getMainArm();
+		if(hand!=InteractionHand.MAIN_HAND)
+			handside = handside==HumanoidArm.LEFT?HumanoidArm.RIGHT: HumanoidArm.LEFT;
 		return handside;
 	}
 
@@ -104,7 +104,7 @@ public class ItemUtils
 	{
 		if(stack.hasTag())
 		{
-			CompoundNBT tag = stack.getOrCreateTag();
+			CompoundTag tag = stack.getOrCreateTag();
 			tag.remove(key);
 			if(tag.isEmpty())
 				stack.setTag(null);

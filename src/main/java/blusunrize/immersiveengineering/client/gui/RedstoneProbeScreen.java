@@ -14,12 +14,12 @@ import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeTileEntity;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEntity>
 {
-	public RedstoneProbeScreen(ConnectorProbeTileEntity tileEntity, ITextComponent title)
+	public RedstoneProbeScreen(ConnectorProbeTileEntity tileEntity, Component title)
 	{
 		super(tileEntity, title);
 		this.xSize = 216;
@@ -42,7 +42,7 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 	public void init()
 	{
 		super.init();
-		mc().keyboardListener.enableRepeatEvents(true);
+		mc().keyboardHandler.setSendRepeatsToGui(true);
 
 		this.buttons.clear();
 
@@ -67,31 +67,31 @@ public class RedstoneProbeScreen extends ClientTileScreen<ConnectorProbeTileEnti
 
 	private void sendConfig(String key, DyeColor color)
 	{
-		CompoundNBT message = new CompoundNBT();
+		CompoundTag message = new CompoundTag();
 		message.putInt(key, color.getId());
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(tileEntity, message));
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerBackgroundLayer(PoseStack transform, int mouseX, int mouseY, float partialTick)
 	{
 
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick)
+	protected void drawGuiContainerForegroundLayer(PoseStack transform, int mouseX, int mouseY, float partialTick)
 	{
-		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop, DyeColor.WHITE.getTextColor());
-		this.font.drawString(transform, new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getString(), guiLeft+116, guiTop, DyeColor.WHITE.getTextColor());
+		this.font.draw(transform, new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop, DyeColor.WHITE.getTextColor());
+		this.font.draw(transform, new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getString(), guiLeft+116, guiTop, DyeColor.WHITE.getTextColor());
 
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		ArrayList<Component> tooltip = new ArrayList<>();
 		for(int i = 0; i < colorButtonsSend.length; i++)
 			if(colorButtonsSend[i].isHovered()||colorButtonsReceive[i].isHovered())
 			{
-				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"redstone_color"));
+				tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color"));
 				tooltip.add(TextUtils.applyFormat(
-						new TranslationTextComponent("color.minecraft."+DyeColor.byId(i).getTranslationKey()),
-						TextFormatting.GRAY
+						new TranslatableComponent("color.minecraft."+DyeColor.byId(i).getName()),
+						ChatFormatting.GRAY
 				));
 			}
 

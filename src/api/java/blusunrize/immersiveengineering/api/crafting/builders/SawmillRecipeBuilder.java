@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
+import net.minecraft.tags.SetTag;
 import net.minecraft.tags.Tag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -41,12 +41,12 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 		return new SawmillRecipeBuilder().addResult(result);
 	}
 
-	public static SawmillRecipeBuilder builder(Tag<Item> result, int count)
+	public static SawmillRecipeBuilder builder(SetTag<Item> result, int count)
 	{
 		return new SawmillRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
 
-	public SawmillRecipeBuilder addStripped(IItemProvider itemProvider)
+	public SawmillRecipeBuilder addStripped(ItemLike itemProvider)
 	{
 		return addItem("stripped", new ItemStack(itemProvider));
 	}
@@ -56,7 +56,7 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 		return addItem("stripped", itemStack);
 	}
 
-	public SawmillRecipeBuilder addStripped(Tag<Item> tag)
+	public SawmillRecipeBuilder addStripped(SetTag<Item> tag)
 	{
 		return addStripped(new IngredientWithSize(tag));
 	}
@@ -66,7 +66,7 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 		return addWriter(jsonObject -> jsonObject.add("stripped", ingredient.serialize()));
 	}
 
-	public SawmillRecipeBuilder addSecondary(IItemProvider itemProvider, boolean stripping)
+	public SawmillRecipeBuilder addSecondary(ItemLike itemProvider, boolean stripping)
 	{
 		return this.addSecondary(new ItemStack(itemProvider), stripping);
 	}
@@ -80,7 +80,7 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 		return this;
 	}
 
-	public SawmillRecipeBuilder addSecondary(ITag<Item> tag, boolean stripping)
+	public SawmillRecipeBuilder addSecondary(Tag<Item> tag, boolean stripping)
 	{
 		return addSecondary(new IngredientWithSize(tag), stripping);
 	}

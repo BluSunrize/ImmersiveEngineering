@@ -13,13 +13,13 @@ import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -27,16 +27,16 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class BakedBasicSplitModel extends AbstractSplitModel<IBakedModel>
+public class BakedBasicSplitModel extends AbstractSplitModel<BakedModel>
 {
 	private static final Set<BakedBasicSplitModel> WEAK_INSTANCES = Collections.newSetFromMap(new WeakHashMap<>());
 	static {
 		IEApi.renderCacheClearers.add(() -> WEAK_INSTANCES.forEach(b -> b.splitModels.reset()));
 	}
 
-	private final ResettableLazy<Map<Vector3i, List<BakedQuad>>> splitModels;
+	private final ResettableLazy<Map<Vec3i, List<BakedQuad>>> splitModels;
 
-	public BakedBasicSplitModel(IBakedModel base, Set<Vector3i> parts, IModelTransform transform, Vector3i size)
+	public BakedBasicSplitModel(BakedModel base, Set<Vec3i> parts, ModelState transform, Vec3i size)
 	{
 		super(base, size);
 		this.splitModels = new ResettableLazy<>(() -> {

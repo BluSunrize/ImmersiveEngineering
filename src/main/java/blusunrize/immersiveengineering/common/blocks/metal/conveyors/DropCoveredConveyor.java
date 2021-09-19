@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 /**
  * @author BluSunrize - 17.02.2019
@@ -20,7 +20,7 @@ public class DropCoveredConveyor extends DropConveyor
 {
 	public static final ResourceLocation NAME = new ResourceLocation(MODID, "droppercovered");
 
-	public DropCoveredConveyor(TileEntity tile)
+	public DropCoveredConveyor(BlockEntity tile)
 	{
 		super(tile);
 	}

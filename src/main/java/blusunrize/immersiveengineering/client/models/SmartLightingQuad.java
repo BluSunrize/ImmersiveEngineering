@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import com.mojang.blaze3d.matrix.MatrixStack.Entry;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockDisplayReader;
-import net.minecraft.world.LightType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.LightLayer;
 import net.minecraftforge.client.model.pipeline.BlockInfo;
 import net.minecraftforge.client.model.pipeline.IVertexConsumer;
 import net.minecraftforge.client.model.pipeline.QuadGatheringTransformer;
@@ -72,8 +72,8 @@ public class SmartLightingQuad extends BakedQuad
 			try
 			{
 				setParent((IVertexConsumer)SmartLightingQuad.parent.get(base));
-				setTransform((Entry)SmartLightingQuad.pose.get(base));
-				setVertexFormat(DefaultVertexFormats.BLOCK);
+				setTransform((Pose)SmartLightingQuad.pose.get(base));
+				setVertexFormat(DefaultVertexFormat.BLOCK);
 				BlockInfo info = (BlockInfo)SmartLightingQuad.blockInfo.get(base);
 				setWorld(info.getWorld());
 				setState(info.getState());
@@ -90,10 +90,10 @@ public class SmartLightingQuad extends BakedQuad
 		@Override
 		protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z)
 		{
-			IBlockDisplayReader world = blockInfo.getWorld();
-			BlockPos here = blockPos.add(Math.floor(x-normal[0]/2+0.5), Math.floor(y-normal[1]/2+0.5), Math.floor(z-normal[2]/2+0.5));
-			lightmap[0] = world.getLightManager().getLightEngine(LightType.BLOCK).getLightFor(here)/(float)0xF;
-			lightmap[1] = world.getLightManager().getLightEngine(LightType.SKY).getLightFor(here)/(float)0xF;
+			BlockAndTintGetter world = blockInfo.getWorld();
+			BlockPos here = blockPos.offset(Math.floor(x-normal[0]/2+0.5), Math.floor(y-normal[1]/2+0.5), Math.floor(z-normal[2]/2+0.5));
+			lightmap[0] = world.getLightEngine().getLayerListener(LightLayer.BLOCK).getLightValue(here)/(float)0xF;
+			lightmap[1] = world.getLightEngine().getLayerListener(LightLayer.SKY).getLightValue(here)/(float)0xF;
 			oldLightmapLength = dataLength[lightmapIndex];
 			dataLength[lightmapIndex] = 0;
 		}

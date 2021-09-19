@@ -26,15 +26,15 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -68,7 +68,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank0"));
@@ -79,10 +79,10 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.put("tank0", tanks[0].writeToNBT(new CompoundNBT()));
+		nbt.put("tank0", tanks[0].writeToNBT(new CompoundTag()));
 		nbt.putBoolean("active", active);
 		nbt.putFloat("animation_fanRotation", animation_fanRotation);
 		nbt.putInt("animation_fanFadeIn", animation_fanFadeIn);
@@ -92,13 +92,13 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 	private final List<CapabilityReference<IEnergyStorage>> outputs = Arrays.asList(
 			CapabilityReference.forTileEntityAt(this,
-					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(0, 1, 4)).add(0, 1, 0), Direction.DOWN),
+					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(0, 1, 4)).offset(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY),
 			CapabilityReference.forTileEntityAt(this,
-					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(1, 1, 4)).add(0, 1, 0), Direction.DOWN),
+					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(1, 1, 4)).offset(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY),
 			CapabilityReference.forTileEntityAt(this,
-					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(2, 1, 4)).add(0, 1, 0), Direction.DOWN),
+					() -> new DirectionalBlockPos(this.getBlockPosForPos(new BlockPos(2, 1, 4)).offset(0, 1, 0), Direction.DOWN),
 					CapabilityEnergy.ENERGY)
 	);
 
@@ -128,18 +128,18 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 			animation_fanRotation %= 360;
 		}
 
-		if(world.isRemote)
+		if(level.isClientSide)
 		{
 			ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, active, .5f, 1);
-			if(active&&world.getGameTime()%4==0)
+			if(active&&level.getGameTime()%4==0)
 			{
 				BlockPos exhaust = this.getBlockPosForPos(new BlockPos(2, 2, 2));
 				Direction fl = getFacing();
-				Direction fw = getFacing().rotateY();
+				Direction fw = getFacing().getClockWise();
 				if(getIsMirrored())
 					fw = fw.getOpposite();
-				world.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
-						exhaust.getX()+.5+(fl.getXOffset()*.3125f)+(-fw.getXOffset()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getZOffset()*.3125f)+(-fw.getZOffset()*.3125f), 0.015625-(0.03125*Math.random()), 0.0625, 0.015625-(0.03125*Math.random()));
+				level.addParticle(ParticleTypes.CAMPFIRE_COSY_SMOKE,
+						exhaust.getX()+.5+(fl.getStepX()*.3125f)+(-fw.getStepX()*.3125f), exhaust.getY()+1.25, exhaust.getZ()+.5+(fl.getStepZ()*.3125f)+(-fw.getStepZ()*.3125f), 0.015625-(0.03125*Math.random()), 0.0625, 0.015625-(0.03125*Math.random()));
 			}
 		}
 		else
@@ -184,114 +184,114 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 
 			if(prevActive!=active)
 			{
-				this.markDirty();
+				this.setChanged();
 				this.markContainingBlockForUpdate(null);
 			}
 		}
 	}
 
-	public static AxisAlignedBB getBlockBounds(BlockPos posInMultiblock)
+	public static AABB getBlockBounds(BlockPos posInMultiblock)
 	{
 		if(new BlockPos(1, 0, 4).equals(posInMultiblock))
-			return new AxisAlignedBB(0, .5f, -.625f, 1, 1.5f, 1);
+			return new AABB(0, .5f, -.625f, 1, 1.5f, 1);
 		if(ImmutableSet.of(
 				new BlockPos(0, 0, 4),
 				new BlockPos(2, 1, 0),
 				new BlockPos(2, 2, 0)
 		).contains(posInMultiblock))
-			return new AxisAlignedBB(0, 0, 0, .5f, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0?1.125f: 1);
+			return new AABB(0, 0, 0, .5f, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0?1.125f: 1);
 		if(ImmutableSet.of(
 				new BlockPos(2, 0, 4),
 				new BlockPos(0, 1, 0),
 				new BlockPos(0, 2, 0)
 		).contains(posInMultiblock))
-			return new AxisAlignedBB(.5f, 0, 0, 1, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0?1.125f: 1);
+			return new AABB(.5f, 0, 0, 1, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0?1.125f: 1);
 		if(new BlockPos(1, 2, 0).equals(posInMultiblock))
-			return new AxisAlignedBB(0, 0, 0, 1, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0?.625f: 1);
+			return new AABB(0, 0, 0, 1, posInMultiblock.getY()==2?.8125f: 1, posInMultiblock.getZ()==0?.625f: 1);
 
 		if(posInMultiblock.getY()==1&&posInMultiblock.getZ()==4)
-			return new AxisAlignedBB(0, .5f, 0, 1, 1, 1);
+			return new AABB(0, .5f, 0, 1, 1, 1);
 
 		if(posInMultiblock.getX()==1&&posInMultiblock.getY() > 0&&posInMultiblock.getZ()==3)
-			return new AxisAlignedBB(.0625f, 0, 0, .9375f, posInMultiblock.getY()==2?.3125f: 1, .625f);
-		if(new MutableBoundingBox(1, 2, 1, 1, 2, 2).isVecInside(posInMultiblock))
-			return new AxisAlignedBB(.0625f, 0, 0, .9375f, .3125f, 1);
+			return new AABB(.0625f, 0, 0, .9375f, posInMultiblock.getY()==2?.3125f: 1, .625f);
+		if(new BoundingBox(1, 2, 1, 1, 2, 2).isInside(posInMultiblock))
+			return new AABB(.0625f, 0, 0, .9375f, .3125f, 1);
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0)
-			return new AxisAlignedBB(0, 0, 0, 1, .5f, 1);
+			return new AABB(0, 0, 0, 1, .5f, 1);
 
 		//TODO more sensible name
 		boolean lessThan21 = posInMultiblock.getY()==0||(posInMultiblock.getY()==1&&posInMultiblock.getZ() > 2);
 		if(posInMultiblock.getX()==0&&posInMultiblock.getY() < 2)
-			return new AxisAlignedBB(.9375f, -.5f, 0, 1, .625f, lessThan21?.625f: 1);
+			return new AABB(.9375f, -.5f, 0, 1, .625f, lessThan21?.625f: 1);
 		if(posInMultiblock.getX()==2&&posInMultiblock.getY() < 2)
-			return new AxisAlignedBB(0, -.5f, 0, .0625f, .625f, lessThan21?.625f: 1);
+			return new AABB(0, -.5f, 0, .0625f, .625f, lessThan21?.625f: 1);
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==2&&posInMultiblock.getZ()==2)
 			return Utils.flipBox(false, posInMultiblock.getX()==2,
-					new AxisAlignedBB(
+					new AABB(
 							0.5625, 0, -0.0625,
 							1.0625, posInMultiblock.getX()==2?1.125f: .75f, 0.4375
 					));
 
-		return new AxisAlignedBB(0, 0, 0, 1, 1, 1);
+		return new AABB(0, 0, 0, 1, 1, 1);
 	}
 
 	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =
 			CachedShapesWithTransform.createForMultiblock(DieselGeneratorTileEntity::getShape);
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		VoxelShape base = getShape(SHAPES);
-		if(isRedstonePos()&&ctx!=null&&!ctx.func_216378_a(ScaffoldingBlock.CHECK_SHAPE, pos, false))
+		if(isRedstonePos()&&ctx!=null&&!ctx.isAbove(ScaffoldingBlock.CHECK_SHAPE, worldPosition, false))
 		{
-			AxisAlignedBB box = CachedShapesWithTransform.withFacingAndMirror(
-					new AxisAlignedBB(0.9375, 0, 0, 1, 1, 1),
+			AABB box = CachedShapesWithTransform.withFacingAndMirror(
+					new AABB(0.9375, 0, 0, 1, 1, 1),
 					getFacing(),
 					getIsMirrored()
 			);
-			base = VoxelShapes.or(base, VoxelShapes.create(box));
+			base = Shapes.or(base, Shapes.create(box));
 		}
 		return base;
 	}
 
-	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
+	private static List<AABB> getShape(BlockPos posInMultiblock)
 	{
 		if(new BlockPos(1, 1, 4).equals(posInMultiblock))
-			return Lists.newArrayList(new AxisAlignedBB(0, .5f, 0, 1, 1, 1),
-					new AxisAlignedBB(0, -.5f, -.625f, 1, .5f, 1));
+			return Lists.newArrayList(new AABB(0, .5f, 0, 1, 1, 1),
+					new AABB(0, -.5f, -.625f, 1, .5f, 1));
 		else if(posInMultiblock.getY()==1&&posInMultiblock.getZ()==4)
 			return Utils.flipBoxes(false, posInMultiblock.getX()==2,
-					new AxisAlignedBB(0, .5f, 0, 1, 1, 1),
-					new AxisAlignedBB(.125f, 0, .125f, .375f, .5f, .375f),
-					new AxisAlignedBB(.125f, 0, .625f, .375f, .5f, .875f)
+					new AABB(0, .5f, 0, 1, 1, 1),
+					new AABB(.125f, 0, .125f, .375f, .5f, .375f),
+					new AABB(.125f, 0, .625f, .375f, .5f, .875f)
 			);
 		if(new BlockPos(2, 1, 2).equals(posInMultiblock))
 			return ImmutableList.of(getBlockBounds(posInMultiblock),
-					new AxisAlignedBB(.5f, .25f, .3125f, 1, .75f, .6875f),
-					new AxisAlignedBB(.6875f, -.5f, .4375f, .8125f, .25f, .5625f)
+					new AABB(.5f, .25f, .3125f, 1, .75f, .6875f),
+					new AABB(.6875f, -.5f, .4375f, .8125f, .25f, .5625f)
 			);
 
 		if(posInMultiblock.getX()%2==0&&posInMultiblock.getY()==0&&posInMultiblock.getZ() < 4)
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(getBlockBounds(posInMultiblock));
+			List<AABB> list = Lists.newArrayList(getBlockBounds(posInMultiblock));
 			if(posInMultiblock.getZ() > 2)
 			{
-				list.add(new AxisAlignedBB(0.125, .5625f, 0.25, 1, .8125f, 0.5));
-				list.add(new AxisAlignedBB(0.125, .5625f, 0.5, 0.375, .8125f, 1));
+				list.add(new AABB(0.125, .5625f, 0.25, 1, .8125f, 0.5));
+				list.add(new AABB(0.125, .5625f, 0.5, 0.375, .8125f, 1));
 			}
 			else if(posInMultiblock.getZ() > 0)
 			{
 				final double offset = posInMultiblock.getZ() > 1?0: 1;
-				list.add(new AxisAlignedBB(0.4375, .5f, -0.5625+offset, 1, 1, 0.75+offset));
+				list.add(new AABB(0.4375, .5f, -0.5625+offset, 1, 1, 0.75+offset));
 			}
 			if(posInMultiblock.getZ() < 2)
 			{
 				final double offset = posInMultiblock.getZ()==1?0: 1;
-				list.add(new AxisAlignedBB(0.375, .5625f, 0.5625+offset, 0.4375, .8125f, 0.8125+offset));
-				list.add(new AxisAlignedBB(0.375, .5625f, -0.875+offset, 0.5, .8125f, -0.625+offset));
-				list.add(new AxisAlignedBB(0.125, .5625f, -0.875+offset, 0.375, .8125f, 0.8125+offset));
+				list.add(new AABB(0.375, .5625f, 0.5625+offset, 0.4375, .8125f, 0.8125+offset));
+				list.add(new AABB(0.375, .5625f, -0.875+offset, 0.5, .8125f, -0.625+offset));
+				list.add(new AABB(0.125, .5625f, -0.875+offset, 0.375, .8125f, 0.8125+offset));
 			}
 			return Utils.flipBoxes(false, posInMultiblock.getX()==2, list);
 		}
@@ -311,7 +311,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 	{
 		DieselGeneratorTileEntity master = master();
 		if(master!=null&&(posInMultiblock.getZ()==4&&posInMultiblock.getY()==0&&posInMultiblock.getX()%2==0)
-				&&(side==null||side.getAxis()==getFacing().rotateYCCW().getAxis()))
+				&&(side==null||side.getAxis()==getFacing().getCounterClockWise().getAxis()))
 			return master.tanks;
 		return new FluidTank[0];
 	}

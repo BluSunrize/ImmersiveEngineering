@@ -10,39 +10,39 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fml.RegistryObject;
 
 public class CraftingTableBlock extends GenericTileBlock<CraftingTableTileEntity>
 {
-	private static final VoxelShape SHAPE = VoxelShapes.or(
-			VoxelShapes.create(0, 13 / 16., 0, 1, 1, 1),
-			VoxelShapes.create(1 / 16., 0, 1 / 16., 15 / 16., 13 / 16., 15 / 16.)
+	private static final VoxelShape SHAPE = Shapes.or(
+			Shapes.box(0, 13 / 16., 0, 1, 1, 1),
+			Shapes.box(1 / 16., 0, 1 / 16., 15 / 16., 13 / 16., 15 / 16.)
 	);
 
-	public CraftingTableBlock(String name, RegistryObject<TileEntityType<CraftingTableTileEntity>> tileType, Properties blockProps)
+	public CraftingTableBlock(String name, RegistryObject<BlockEntityType<CraftingTableTileEntity>> tileType, Properties blockProps)
 	{
 		super(name, tileType, blockProps);
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_HORIZONTAL, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
 	{
 		return SHAPE;
 	}

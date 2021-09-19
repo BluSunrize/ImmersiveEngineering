@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
-import net.minecraft.fluid.Fluid;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class SqueezerRecipeBuilder extends IEFinishedRecipe<SqueezerRecipeBuilder>

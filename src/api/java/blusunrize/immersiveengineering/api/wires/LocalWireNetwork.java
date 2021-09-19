@@ -15,12 +15,12 @@ import blusunrize.immersiveengineering.api.wires.proxy.IICProxyProvider;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
@@ -42,23 +42,23 @@ public class LocalWireNetwork implements IWorldTickable
 	private boolean isValid = true;
 	private int version = 0;
 
-	public LocalWireNetwork(CompoundNBT subnet, GlobalWireNetwork globalNet)
+	public LocalWireNetwork(CompoundTag subnet, GlobalWireNetwork globalNet)
 	{
 		this(globalNet);
-		ListNBT proxies = subnet.getList("proxies", NBT.TAG_COMPOUND);
-		for(INBT b : proxies)
+		ListTag proxies = subnet.getList("proxies", NBT.TAG_COMPOUND);
+		for(Tag b : proxies)
 		{
-			IImmersiveConnectable proxy = proxyProvider.fromNBT(((CompoundNBT)b).getCompound("proxy"));
-			for(INBT p : ((CompoundNBT)b).getList("points", NBT.TAG_COMPOUND))
+			IImmersiveConnectable proxy = proxyProvider.fromNBT(((CompoundTag)b).getCompound("proxy"));
+			for(Tag p : ((CompoundTag)b).getList("points", NBT.TAG_COMPOUND))
 			{
-				ConnectionPoint point = new ConnectionPoint((CompoundNBT)p);
+				ConnectionPoint point = new ConnectionPoint((CompoundTag)p);
 				addConnector(point, proxy, globalNet);
 			}
 		}
-		ListNBT wires = subnet.getList("wires", NBT.TAG_COMPOUND);
-		for(INBT b : wires)
+		ListTag wires = subnet.getList("wires", NBT.TAG_COMPOUND);
+		for(Tag b : wires)
 		{
-			Connection wire = new Connection((CompoundNBT)b);
+			Connection wire = new Connection((CompoundTag)b);
 			if(connectors.containsKey(wire.getEndA().getPosition())&&connectors.containsKey(wire.getEndB().getPosition()))
 				addConnection(wire, globalNet);
 			else
@@ -71,19 +71,19 @@ public class LocalWireNetwork implements IWorldTickable
 		this.proxyProvider = globalNet.getProxyProvider();
 	}
 
-	public CompoundNBT writeToNBT()
+	public CompoundTag writeToNBT()
 	{
-		ListNBT wires = new ListNBT();
+		ListTag wires = new ListTag();
 		for(ConnectionPoint p : connections.keySet())
 			for(Connection conn : connections.get(p))
 				if(conn.isPositiveEnd(p))
 					wires.add(conn.toNBT());
-		CompoundNBT ret = new CompoundNBT();
+		CompoundTag ret = new CompoundTag();
 		ret.put("wires", wires);
 		Multimap<BlockPos, ConnectionPoint> connsByBlock = HashMultimap.create();
 		for(ConnectionPoint cp : connections.keySet())
 			connsByBlock.put(cp.getPosition(), cp);
-		ListNBT proxies = new ListNBT();
+		ListTag proxies = new ListTag();
 		for(BlockPos p : connectors.keySet())
 		{
 			IImmersiveConnectable iic = connectors.get(p);
@@ -94,9 +94,9 @@ public class LocalWireNetwork implements IWorldTickable
 				proxy = proxyProvider.createFor(iic);
 			if(proxy!=null)
 			{
-				CompoundNBT complete = new CompoundNBT();
+				CompoundTag complete = new CompoundTag();
 				complete.put("proxy", proxyProvider.toNBT(proxy));
-				ListNBT cps = new ListNBT();
+				ListTag cps = new ListTag();
 				for(ConnectionPoint cp : connsByBlock.get(p))
 					cps.add(cp.createTag());
 				complete.put("points", cps);
@@ -436,7 +436,7 @@ public class LocalWireNetwork implements IWorldTickable
 	}
 
 	@Override
-	public void update(World w)
+	public void update(Level w)
 	{
 		for(LocalNetworkHandler handler : handlers.values())
 			if(handler instanceof IWorldTickable)

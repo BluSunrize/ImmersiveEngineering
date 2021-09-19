@@ -12,20 +12,19 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.items.IEItems;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
 import javax.annotation.Nonnull;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 {
 	public static final EntityType<ReinforcedCrateMinecartEntity> TYPE = Builder
-			.<ReinforcedCrateMinecartEntity>create(ReinforcedCrateMinecartEntity::new, EntityClassification.MISC)
-			.size(0.98F, 0.7F)
+			.<ReinforcedCrateMinecartEntity>of(ReinforcedCrateMinecartEntity::new, MobCategory.MISC)
+			.sized(0.98F, 0.7F)
 			.build(ImmersiveEngineering.MODID+":cart_reinforcedcrate");
 
 	static
@@ -33,18 +32,18 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 		TYPE.setRegistryName(ImmersiveEngineering.MODID, "cart_reinforcedcrate");
 	}
 
-	public ReinforcedCrateMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
+	public ReinforcedCrateMinecartEntity(EntityType<?> type, Level world, double x, double y, double z)
 	{
 		super(type, world, x, y, z);
 	}
 
-	public ReinforcedCrateMinecartEntity(EntityType<?> type, World world)
+	public ReinforcedCrateMinecartEntity(EntityType<?> type, Level world)
 	{
 		super(type, world);
 	}
 
 	@Override
-	public boolean isImmuneToExplosions()
+	public boolean ignoreExplosion()
 	{
 		return true;
 	}
@@ -63,9 +62,9 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 	}
 
 	@Override
-	public BlockState getDisplayTile()
+	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.WoodenDevices.reinforcedCrate.getDefaultState();
+		return IEBlocks.WoodenDevices.reinforcedCrate.defaultBlockState();
 	}
 
 }

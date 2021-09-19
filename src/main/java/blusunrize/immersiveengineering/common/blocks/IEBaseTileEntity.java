@@ -20,19 +20,19 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.mixin.accessors.TileEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TileTypeAccess;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.RedstoneWireBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Mirror;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.RedStoneWireBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -44,7 +44,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public abstract class IEBaseTileEntity extends TileEntity implements BlockstateProvider
+public abstract class IEBaseTileEntity extends BlockEntity implements BlockstateProvider
 {
 	/**
 	 * Set by and for those instances of IGeneralMultiblock that need to drop their inventory
@@ -55,48 +55,48 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 
 	private final EnumMap<Direction, Integer> redstoneBySide = new EnumMap<>(Direction.class);
 
-	public IEBaseTileEntity(TileEntityType<? extends TileEntity> type)
+	public IEBaseTileEntity(BlockEntityType<? extends BlockEntity> type)
 	{
 		super(type);
 	}
 
 	@Override
-	public void read(BlockState stateIn, CompoundNBT nbtIn)
+	public void load(BlockState stateIn, CompoundTag nbtIn)
 	{
-		super.read(stateIn, nbtIn);
+		super.load(stateIn, nbtIn);
 		this.readCustomNBT(nbtIn, false);
 	}
 
-	public abstract void readCustomNBT(CompoundNBT nbt, boolean descPacket);
+	public abstract void readCustomNBT(CompoundTag nbt, boolean descPacket);
 
 	@Override
-	public CompoundNBT write(CompoundNBT nbt)
+	public CompoundTag save(CompoundTag nbt)
 	{
-		super.write(nbt);
+		super.save(nbt);
 		this.writeCustomNBT(nbt, false);
 		return nbt;
 	}
 
-	public abstract void writeCustomNBT(CompoundNBT nbt, boolean descPacket);
+	public abstract void writeCustomNBT(CompoundTag nbt, boolean descPacket);
 
 	@Override
-	public SUpdateTileEntityPacket getUpdatePacket()
+	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
-		CompoundNBT nbttagcompound = new CompoundNBT();
+		CompoundTag nbttagcompound = new CompoundTag();
 		this.writeCustomNBT(nbttagcompound, true);
-		return new SUpdateTileEntityPacket(this.pos, 3, nbttagcompound);
+		return new ClientboundBlockEntityDataPacket(this.worldPosition, 3, nbttagcompound);
 	}
 
 	@Override
-	public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
+	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
 	{
-		this.readCustomNBT(pkt.getNbtCompound(), true);
+		this.readCustomNBT(pkt.getTag(), true);
 	}
 
 	@Override
-	public CompoundNBT getUpdateTag()
+	public CompoundTag getUpdateTag()
 	{
-		CompoundNBT nbt = super.getUpdateTag();
+		CompoundTag nbt = super.getUpdateTag();
 		writeCustomNBT(nbt, true);
 		return nbt;
 	}
@@ -107,27 +107,27 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 		if(mirrorIn==Mirror.FRONT_BACK&&this instanceof IDirectionalTile)
 		{
 			((IDirectionalTile)this).setFacing(((IDirectionalTile)this).getFacing());
-			this.markDirty();
-			if(this.pos!=null)
-				this.markBlockForUpdate(this.pos, null);
+			this.setChanged();
+			if(this.worldPosition!=null)
+				this.markBlockForUpdate(this.worldPosition, null);
 		}
 	}
 
 
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 	}
 
-	public void receiveMessageFromServer(CompoundNBT message)
+	public void receiveMessageFromServer(CompoundTag message)
 	{
 	}
 
-	public void onEntityCollision(World world, Entity entity)
+	public void onEntityCollision(Level world, Entity entity)
 	{
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int type)
+	public boolean triggerEvent(int id, int type)
 	{
 		if(id==0||id==255)
 		{
@@ -136,26 +136,26 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 		}
 		else if(id==254)
 		{
-			BlockState state = world.getBlockState(pos);
-			world.notifyBlockUpdate(pos, state, state, 3);
+			BlockState state = level.getBlockState(worldPosition);
+			level.sendBlockUpdated(worldPosition, state, state, 3);
 			return true;
 		}
-		return super.receiveClientEvent(id, type);
+		return super.triggerEvent(id, type);
 	}
 
 	public void markContainingBlockForUpdate(@Nullable BlockState newState)
 	{
-		if(this.world!=null)
-			markBlockForUpdate(getPos(), newState);
+		if(this.level!=null)
+			markBlockForUpdate(getBlockPos(), newState);
 	}
 
 	public void markBlockForUpdate(BlockPos pos, @Nullable BlockState newState)
 	{
-		BlockState state = world.getBlockState(pos);
+		BlockState state = level.getBlockState(pos);
 		if(newState==null)
 			newState = state;
-		world.notifyBlockUpdate(pos, state, newState, 3);
-		world.notifyNeighborsOfStateChange(pos, newState.getBlock());
+		level.sendBlockUpdated(pos, state, newState, 3);
+		level.updateNeighborsAt(pos, newState.getBlock());
 	}
 
 	private final Set<LazyOptional<?>> caps = new HashSet<>();
@@ -205,17 +205,17 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
-	public double getMaxRenderDistanceSquared()
+	public double getViewDistance()
 	{
 		double increase = IEClientConfig.increasedTileRenderdistance.get();
-		return super.getMaxRenderDistanceSquared()*
+		return super.getViewDistance()*
 				increase*increase;
 	}
 
 	@Override
-	public void remove()
+	public void setRemoved()
 	{
-		super.remove();
+		super.setRemoved();
 		for(LazyOptional<?> cap : caps)
 			if(cap.isPresent())
 				cap.invalidate();
@@ -223,19 +223,19 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Nonnull
-	public World getWorldNonnull()
+	public Level getWorldNonnull()
 	{
-		return Objects.requireNonNull(super.getWorld());
+		return Objects.requireNonNull(super.getLevel());
 	}
 
 	protected void checkLight()
 	{
-		checkLight(pos);
+		checkLight(worldPosition);
 	}
 
 	protected void checkLight(BlockPos pos)
 	{
-		getWorldNonnull().getPendingBlockTicks().scheduleTick(pos, getBlockState().getBlock(), 4);
+		getWorldNonnull().getBlockTicks().scheduleTick(pos, getBlockState().getBlock(), 4);
 	}
 
 	public void setOverrideState(BlockState state)
@@ -246,8 +246,8 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	@Override
 	public BlockState getBlockState()
 	{
-		if(world==null&&((TileEntityAccess)this).getCachedBlockStateDirectly()==null)
-			return ((TileTypeAccess)getType()).getValidBlocks().iterator().next().getDefaultState();
+		if(level==null&&((TileEntityAccess)this).getCachedBlockStateDirectly()==null)
+			return ((TileTypeAccess)getType()).getValidBlocks().iterator().next().defaultBlockState();
 		if(overrideBlockState!=null)
 			return overrideBlockState;
 		else
@@ -255,23 +255,23 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
-	public void updateContainingBlockInfo()
+	public void clearCache()
 	{
 		BlockState old = getBlockState();
-		super.updateContainingBlockInfo();
+		super.clearCache();
 		BlockState newState = getBlockState();
 		if(old!=null&&
 				newState!=null&&
-				getType().isValidBlock(old.getBlock())&&
-				!getType().isValidBlock(newState.getBlock()))
+				getType().isValid(old.getBlock())&&
+				!getType().isValid(newState.getBlock()))
 			setOverrideState(old);
 	}
 
 	@Override
 	public void setState(BlockState state)
 	{
-		if(getWorldNonnull().getBlockState(pos)==getState())
-			getWorldNonnull().setBlockState(pos, state);
+		if(getWorldNonnull().getBlockState(worldPosition)==getState())
+			getWorldNonnull().setBlockAndUpdate(worldPosition, state);
 	}
 
 	@Override
@@ -281,13 +281,13 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	/**
-	 * Most calls to {@link TileEntity#markDirty} should be replaced by this. The vanilla mD also updates comparator
+	 * Most calls to {@link BlockEntity#setChanged} should be replaced by this. The vanilla mD also updates comparator
 	 * states and re-caches the block state, while in most cases we just want to say "this needs to be saved to disk"
 	 */
 	protected void markChunkDirty()
 	{
-		if(this.world!=null && this.world.isBlockLoaded(this.pos))
-			this.world.getChunkAt(this.pos).markDirty();
+		if(this.level!=null && this.level.hasChunkAt(this.worldPosition))
+			this.level.getChunkAt(this.worldPosition).markUnsaved();
 	}
 
 	@Nonnull
@@ -307,50 +307,50 @@ public abstract class IEBaseTileEntity extends TileEntity implements BlockstateP
 	}
 
 	@Override
-	public void setWorldAndPos(World world, BlockPos pos)
+	public void setLevelAndPosition(Level world, BlockPos pos)
 	{
-		super.setWorldAndPos(world, pos);
+		super.setLevelAndPosition(world, pos);
 		this.redstoneBySide.clear();
 	}
 
 	// Based on the super version, but works around a Forge patch to World#markChunkDirty causing duplicate comparator
 	// updates and only performs comparator updates if this TE actually has comparator behavior
 	@Override
-	public void markDirty()
+	public void setChanged()
 	{
-		if (this.world != null) {
-			BlockState state = this.world.getBlockState(this.pos);
-			((TileEntityAccess) this).setCachedBlockState(state);
+		if (this.level != null) {
+			BlockState state = this.level.getBlockState(this.worldPosition);
+			((TileEntityAccess) this).setBlockState(state);
 			markChunkDirty();
-			if (this instanceof IComparatorOverride && !state.isAir(this.world, this.pos)) {
-				this.world.updateComparatorOutputLevel(this.pos, state.getBlock());
+			if (this instanceof IComparatorOverride && !state.isAir(this.level, this.worldPosition)) {
+				this.level.updateNeighbourForOutputSignal(this.worldPosition, state.getBlock());
 			}
 		}
 	}
 
 	protected void onNeighborBlockChange(BlockPos otherPos)
 	{
-		BlockPos delta = otherPos.subtract(pos);
-		Direction side = Direction.getFacingFromVector(delta.getX(), delta.getY(), delta.getZ());
+		BlockPos delta = otherPos.subtract(worldPosition);
+		Direction side = Direction.getNearest(delta.getX(), delta.getY(), delta.getZ());
 		Preconditions.checkNotNull(side);
 		updateRSForSide(side);
 	}
 
 	private void updateRSForSide(Direction side)
 	{
-		int rsStrength = getWorldNonnull().getRedstonePower(pos.offset(side), side);
+		int rsStrength = getWorldNonnull().getSignal(worldPosition.relative(side), side);
 		if(rsStrength==0&&this instanceof IRedstoneOutput&&((IRedstoneOutput)this).canConnectRedstone(side))
 		{
-			BlockState state = SafeChunkUtils.getBlockState(world, pos.offset(side));
-			if(state.getBlock()==Blocks.REDSTONE_WIRE&&state.get(RedstoneWireBlock.POWER) > rsStrength)
-				rsStrength = state.get(RedstoneWireBlock.POWER);
+			BlockState state = SafeChunkUtils.getBlockState(level, worldPosition.relative(side));
+			if(state.getBlock()==Blocks.REDSTONE_WIRE&&state.getValue(RedStoneWireBlock.POWER) > rsStrength)
+				rsStrength = state.getValue(RedStoneWireBlock.POWER);
 		}
 		redstoneBySide.put(side, rsStrength);
 	}
 
 	protected int getRSInput(Direction from)
 	{
-		if(getWorldNonnull().isRemote||!redstoneBySide.containsKey(from))
+		if(getWorldNonnull().isClientSide||!redstoneBySide.containsKey(from))
 			updateRSForSide(from);
 		return redstoneBySide.get(from);
 	}

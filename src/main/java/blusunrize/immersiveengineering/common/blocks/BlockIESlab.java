@@ -10,19 +10,18 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SlabBlock;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.state.properties.SlabType;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-
 import java.util.function.Function;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.SlabType;
 
 public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implements IIEBlock
 {
@@ -31,8 +30,8 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 	public BlockIESlab(String name, Properties props, Function<Block, Item> itemBlock, T base)
 	{
 		super(props
-				.setSuffocates(causesSuffocation(base))
-				.setOpaque(isNormalCube(base)));
+				.isSuffocating(causesSuffocation(base))
+				.isRedstoneConductor(isNormalCube(base)));
 		ResourceLocation registryName = new ResourceLocation(ImmersiveEngineering.MODID, name);
 		setRegistryName(registryName);
 
@@ -49,10 +48,10 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 	}
 
 	@Override
-	public boolean isLadder(BlockState state, IWorldReader world, BlockPos pos, LivingEntity entity)
+	public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity)
 	{
-		double relativeEntityPosition = entity.getPositionVec().getY()-pos.getY();
-		switch(state.get(SlabBlock.TYPE))
+		double relativeEntityPosition = entity.position().y()-pos.getY();
+		switch(state.getValue(SlabBlock.TYPE))
 		{
 			case TOP:
 				return 0.5 < relativeEntityPosition&&relativeEntityPosition < 1;
@@ -78,26 +77,26 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public int getOpacity(BlockState state, IBlockReader worldIn, BlockPos pos)
+	public int getLightBlock(BlockState state, BlockGetter worldIn, BlockPos pos)
 	{
-		return Math.min(base.getOpacity(state, worldIn, pos), super.getOpacity(state, worldIn, pos));
+		return Math.min(base.getLightBlock(state, worldIn, pos), super.getLightBlock(state, worldIn, pos));
 	}
 
 	@Override
-	public boolean propagatesSkylightDown(BlockState state, IBlockReader reader, BlockPos pos)
+	public boolean propagatesSkylightDown(BlockState state, BlockGetter reader, BlockPos pos)
 	{
 		return super.propagatesSkylightDown(state, reader, pos)||base.propagatesSkylightDown(state, reader, pos);
 	}
 
-	public static AbstractBlock.IPositionPredicate causesSuffocation(Block base)
+	public static BlockBehaviour.StatePredicate causesSuffocation(Block base)
 	{
 		return (state, world, pos) ->
-			base.getDefaultState().isSuffocating(world, pos) && state.get(TYPE) == SlabType.DOUBLE;
+			base.defaultBlockState().isSuffocating(world, pos) && state.getValue(TYPE) == SlabType.DOUBLE;
 	}
 
-	public static AbstractBlock.IPositionPredicate isNormalCube(Block base)
+	public static BlockBehaviour.StatePredicate isNormalCube(Block base)
 	{
 		return (state, world, pos) ->
-				base.getDefaultState().isNormalCube(world, pos) && state.get(TYPE) == SlabType.DOUBLE;
+				base.defaultBlockState().isRedstoneConductor(world, pos) && state.getValue(TYPE) == SlabType.DOUBLE;
 	}
 }

@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.api.wires.localhandlers;
 
 import blusunrize.immersiveengineering.api.wires.*;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;

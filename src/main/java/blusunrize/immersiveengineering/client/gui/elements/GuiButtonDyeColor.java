@@ -8,19 +8,19 @@
 
 package blusunrize.immersiveengineering.client.gui.elements;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.DyeColor;
 
 public class GuiButtonDyeColor extends GuiButtonState<DyeColor>
 {
 	public GuiButtonDyeColor(int x, int y, String name, DyeColor initialColor, IIEPressable<GuiButtonState<DyeColor>> handler)
 	{
-		super(x, y, 8, 8, ITextComponent.getTextComponentOrEmpty(name), DyeColor.values(), initialColor.ordinal(), GuiReactiveList.TEXTURE, 0, 128, -1, handler);
+		super(x, y, 8, 8, Component.nullToEmpty(name), DyeColor.values(), initialColor.ordinal(), GuiReactiveList.TEXTURE, 0, 128, -1, handler);
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
 		super.render(transform, mouseX, mouseY, partialTicks);
 		if(this.visible)

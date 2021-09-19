@@ -10,21 +10,21 @@
 package blusunrize.immersiveengineering.data.recipebuilder;
 
 import com.google.gson.JsonObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class WrappedFinishedRecipe implements IFinishedRecipe
+public class WrappedFinishedRecipe implements FinishedRecipe
 {
-	private final IFinishedRecipe base;
-	private final IRecipeSerializer<?> serializer;
+	private final FinishedRecipe base;
+	private final RecipeSerializer<?> serializer;
 
 	public WrappedFinishedRecipe(
-			IFinishedRecipe base, RegistryObject<? extends IRecipeSerializer<?>> serializer
+			FinishedRecipe base, RegistryObject<? extends RecipeSerializer<?>> serializer
 	)
 	{
 		this.base = base;
@@ -32,36 +32,36 @@ public class WrappedFinishedRecipe implements IFinishedRecipe
 	}
 
 	@Override
-	public void serialize(@Nonnull JsonObject json)
+	public void serializeRecipeData(@Nonnull JsonObject json)
 	{
-		base.serialize(json);
+		base.serializeRecipeData(json);
 	}
 
 	@Nonnull
 	@Override
-	public ResourceLocation getID()
+	public ResourceLocation getId()
 	{
-		return base.getID();
+		return base.getId();
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getType()
 	{
 		return serializer;
 	}
 
 	@Nullable
 	@Override
-	public JsonObject getAdvancementJson()
+	public JsonObject serializeAdvancement()
 	{
-		return base.getAdvancementJson();
+		return base.serializeAdvancement();
 	}
 
 	@Nullable
 	@Override
-	public ResourceLocation getAdvancementID()
+	public ResourceLocation getAdvancementId()
 	{
-		return base.getAdvancementID();
+		return base.getAdvancementId();
 	}
 }

@@ -13,39 +13,39 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
 import blusunrize.immersiveengineering.common.network.MessageMaintenanceKit;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 
 public class MaintenanceKitScreen extends ToolModificationScreen<MaintenanceKitContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("maintenance_kit");
 
-	public MaintenanceKitScreen(MaintenanceKitContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public MaintenanceKitScreen(MaintenanceKitContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
-		this.xSize = 195;
+		this.imageWidth = 195;
 	}
 
 	@Override
-	protected void sendMessage(CompoundNBT data)
+	protected void sendMessage(CompoundTag data)
 	{
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(container.getEquipmentSlot(), data));
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageMaintenanceKit(menu.getEquipmentSlot(), data));
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void renderBg(PoseStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
-		for(int i = 0; i < container.internalSlots; i++)
+		for(int i = 0; i < menu.internalSlots; i++)
 		{
-			Slot s = container.getSlot(i);
-			GuiHelper.drawSlot(guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x44, transform);
+			Slot s = menu.getSlot(i);
+			GuiHelper.drawSlot(leftPos+s.x, topPos+s.y, 16, 16, 0x44, transform);
 		}
 	}
 }

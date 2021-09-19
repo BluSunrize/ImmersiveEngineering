@@ -20,43 +20,43 @@ import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineTileEntity.BottlingProcess;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
-public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineTileEntity>
+public class BottlingMachineRenderer extends BlockEntityRenderer<BottlingMachineTileEntity>
 {
 	public static DynamicModel<Direction> DYNAMIC;
 
-	public BottlingMachineRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public BottlingMachineRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(BottlingMachineTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(BottlingMachineTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
+		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
 		//Grab model
-		BlockPos blockPos = te.getPos();
-		BlockState state = te.getWorld().getBlockState(blockPos);
+		BlockPos blockPos = te.getBlockPos();
+		BlockState state = te.getLevel().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.bottlingMachine)
 			return;
 		Direction facing = te.getFacing();
@@ -64,9 +64,9 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		final float pixelHeight = 1f/16f;
 
 		//Outer GL Wrapping, initial translation
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
-		final IRenderTypeBuffer originalBuffer = bufferIn;
+		final MultiBufferSource originalBuffer = bufferIn;
 		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
 
 		//Item Displacement
@@ -74,7 +74,7 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 		//Animations
 		float lift = 0;
 
-		IVertexBuilder solidBuilder = bufferIn.getBuffer(RenderType.getSolid());
+		VertexConsumer solidBuilder = bufferIn.getBuffer(RenderType.solid());
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
 			BottlingProcess process = te.bottlingProcessQueue.get(i);
@@ -119,45 +119,45 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 			itemDisplays[i] = new float[]{fProcess, (itemX-0.5f)*BottlingMachineTileEntity.TRANSLATION_DISTANCE, itemY-.15625f, 1, itemFill};
 		}
 
-		matrixStack.push();
+		matrixStack.pushPose();
 
 		matrixStack.translate(0, lift, 0);
 		renderModelPart(matrixStack, solidBuilder, state, facing, combinedLightIn, combinedOverlayIn, "lift");
 		matrixStack.translate(0, -lift, 0);
 
-		matrixStack.pop();
+		matrixStack.popPose();
 
 		float dir = facing==Direction.SOUTH?180: facing==Direction.NORTH?0: facing==Direction.EAST?-90: 90;
-		matrixStack.rotate(new Quaternion(0, dir, 0, true));
+		matrixStack.mulPose(new Quaternion(0, dir, 0, true));
 
 		float scale = pixelHeight;
 		FluidStack fs = te.tanks[0].getFluid();
 		if(!fs.isEmpty())
 		{
 			final float tankWidth = 7;
-			matrixStack.push();
+			matrixStack.pushPose();
 			float level = fs.getAmount()/(float)te.tanks[0].getCapacity();
 			matrixStack.translate(-.21875, .376, 1.21875);
 			matrixStack.scale(scale, scale, scale);
 			matrixStack.translate(tankWidth/2, 0, -tankWidth/2);
 			float h = level*9;
-			IVertexBuilder builder = originalBuffer.getBuffer(RenderType.getTranslucent());
+			VertexConsumer builder = originalBuffer.getBuffer(RenderType.translucent());
 			for(int i = 0; i < 4; ++i)
 			{
-				matrixStack.push();
+				matrixStack.pushPose();
 				matrixStack.translate(0, 0, -tankWidth/2);
 				GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, 0, tankWidth, h);
-				matrixStack.pop();
-				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
+				matrixStack.popPose();
+				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 			}
 
-			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -90, true));
+			matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
 			GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, -tankWidth/2, tankWidth, tankWidth);
-			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 180, true));
+			matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), 180, true));
 			matrixStack.translate(0, 0, -h);
 			GuiHelper.drawRepeatedFluidSprite(builder, matrixStack, fs, -tankWidth/2, -tankWidth/2, tankWidth, tankWidth);
 
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
 
 
@@ -176,10 +176,10 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 				matrixStack.scale(scale, scale, scale);
 
 				if(itemDisplays[i][4]==0)
-					ClientUtils.mc().getItemRenderer().renderItem(process.items.get(0), TransformType.FIXED,
+					ClientUtils.mc().getItemRenderer().renderStatic(process.items.get(0), TransformType.FIXED,
 							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
-				else if(itemDisplays[i][4]==1||!ClientUtils.mc().getFramebuffer().isStencilEnabled())
-					ClientUtils.mc().getItemRenderer().renderItem(display, TransformType.FIXED,
+				else if(itemDisplays[i][4]==1||!ClientUtils.mc().getMainRenderTarget().isStencilEnabled())
+					ClientUtils.mc().getItemRenderer().renderStatic(display, TransformType.FIXED,
 							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 				else
 				{
@@ -192,39 +192,39 @@ public class BottlingMachineRenderer extends TileEntityRenderer<BottlingMachineT
 				matrixStack.scale(1/scale, 1/scale, 1/scale);
 				matrixStack.translate(-itemDisplays[i][1], -itemDisplays[i][2], -itemDisplays[i][3]);
 			}
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
-	public static void renderModelPart(MatrixStack matrixStack, IVertexBuilder builder, BlockState state, Direction facing,
+	public static void renderModelPart(PoseStack matrixStack, VertexConsumer builder, BlockState state, Direction facing,
 									   int combinedLightIn, int combinedOverlayIn, String... parts)
 	{
 		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(-.5, -.5, -.5);
 		List<BakedQuad> quads = DYNAMIC.getNullQuads(facing, state, data);
 		RenderUtils.renderModelTESRFast(quads, builder, matrixStack, combinedLightIn, combinedOverlayIn);
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
-	private void renderItemPart(IRenderTypeBuffer baseBuffer, MatrixStack matrix, ItemStack item, float minY, float maxY,
+	private void renderItemPart(MultiBufferSource baseBuffer, PoseStack matrix, ItemStack item, float minY, float maxY,
 								int combinedLightIn, int combinedOverlayIn, int ref)
 	{
-		MatrixStack innerStack = new MatrixStack();
-		innerStack.getLast().getMatrix().mul(matrix.getLast().getMatrix());
-		innerStack.getLast().getNormal().mul(matrix.getLast().getNormal());
-		IRenderTypeBuffer stencilWrapper = IERenderTypes.wrapWithStencil(
+		PoseStack innerStack = new PoseStack();
+		innerStack.last().pose().multiply(matrix.last().pose());
+		innerStack.last().normal().mul(matrix.last().normal());
+		MultiBufferSource stencilWrapper = IERenderTypes.wrapWithStencil(
 				baseBuffer,
 				vertexBuilder -> {
-					innerStack.push();
-					innerStack.rotate(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 90.0F-ClientUtils.mc().getRenderManager().info.getYaw(), true));
+					innerStack.pushPose();
+					innerStack.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 90.0F-ClientUtils.mc().getEntityRenderDispatcher().camera.getYRot(), true));
 					RenderUtils.renderBox(vertexBuilder, innerStack, -.5f, minY, -.5f, .5f, maxY, .5f);
-					innerStack.pop();
+					innerStack.popPose();
 				},
 				"min"+minY+"max"+maxY,
 				ref
 		);
 		BatchingRenderTypeBuffer batchBuffer = new BatchingRenderTypeBuffer();
-		ClientUtils.mc().getItemRenderer().renderItem(item, TransformType.FIXED,
+		ClientUtils.mc().getItemRenderer().renderStatic(item, TransformType.FIXED,
 				combinedLightIn, combinedOverlayIn, matrix, batchBuffer);
 		batchBuffer.pipe(stencilWrapper);
 	}

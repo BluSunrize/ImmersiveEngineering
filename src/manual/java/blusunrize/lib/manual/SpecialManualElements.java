@@ -9,13 +9,13 @@
 package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.LanguageMap;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.locale.Language;
+import net.minecraft.util.FormattedCharSequence;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
@@ -62,19 +62,19 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	{
 	}
 
-	protected void renderHighlightedTooltip(MatrixStack transform, ManualScreen gui, int mx, int my)
+	protected void renderHighlightedTooltip(PoseStack transform, ManualScreen gui, int mx, int my)
 	{
 		if(!highlighted.isEmpty())
 		{
-			FontRenderer font = highlighted.getItem().getFontRenderer(highlighted);
+			Font font = highlighted.getItem().getFontRenderer(highlighted);
 			GuiUtils.preItemToolTip(highlighted);
-			List<IReorderingProcessor> tooltip = LanguageMap.getInstance().func_244260_a(
+			List<FormattedCharSequence> tooltip = Language.getInstance().getVisualOrder(
 					Collections.unmodifiableList(gui.getTooltipFromItem(highlighted))
 			);
-			transform.push();
+			transform.pushPose();
 			transform.translate(0,0,100);
-			gui.renderToolTip(transform, tooltip, mx, my, font!=null?font: Minecraft.getInstance().fontRenderer);
-			transform.pop();
+			gui.renderToolTip(transform, tooltip, mx, my, font!=null?font: Minecraft.getInstance().font);
+			transform.popPose();
 			GuiUtils.postItemToolTip();
 		}
 	}

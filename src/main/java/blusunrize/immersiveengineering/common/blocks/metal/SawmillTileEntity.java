@@ -26,28 +26,28 @@ import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.particles.ItemParticleData;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ItemParticleOption;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -79,42 +79,42 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 
-		sawblade = ItemStack.read(nbt.getCompound("sawblade"));
+		sawblade = ItemStack.of(nbt.getCompound("sawblade"));
 
-		ListNBT processNBT = nbt.getList("sawmillQueue", 10);
+		ListTag processNBT = nbt.getList("sawmillQueue", 10);
 		sawmillProcessQueue.clear();
 		for(int i = 0; i < processNBT.size(); i++)
 		{
-			CompoundNBT tag = processNBT.getCompound(i);
+			CompoundTag tag = processNBT.getCompound(i);
 			SawmillProcess process = SawmillProcess.readFromNBT(tag);
 			sawmillProcessQueue.add(process);
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!this.sawblade.isEmpty())
-			nbt.put("sawblade", this.sawblade.write(new CompoundNBT()));
-		ListNBT processNBT = new ListNBT();
+			nbt.put("sawblade", this.sawblade.save(new CompoundTag()));
+		ListTag processNBT = new ListTag();
 		for(SawmillProcess process : this.sawmillProcessQueue)
 			processNBT.add(process.writeToNBT());
 		nbt.put("sawmillQueue", processNBT);
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 	}
 
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this, () -> {
-		Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
-		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(4, 1, 1)).offset(outDir), outDir.getOpposite());
+		Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(4, 1, 1)).relative(outDir), outDir.getOpposite());
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	private final CapabilityReference<IItemHandler> secondaryOutputCap = CapabilityReference.forTileEntityAt(
@@ -127,7 +127,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		super.tick();
 		if(isDummy()||isRSDisabled())
 			return;
-		if(world.isRemote)
+		if(level.isClientSide)
 		{
 			if(shouldRenderAsActive())
 			{
@@ -140,15 +140,15 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 							.filter(SawmillProcess::isSawing).findFirst();
 					if(process.isPresent())
 					{
-						Direction particleDir = getIsMirrored()?getFacing().rotateY(): getFacing().rotateYCCW();
-						AxisAlignedBB aabb = CACHED_SAWBLADE_AABB.apply(this);
-						double posX = aabb.minX+world.rand.nextDouble()*(aabb.maxX-aabb.minX);
-						double posY = aabb.minY+world.rand.nextDouble()*(aabb.maxY-aabb.minY);
-						double posZ = aabb.minZ+world.rand.nextDouble()*(aabb.maxZ-aabb.minZ);
-						double vX = world.rand.nextDouble()*particleDir.getXOffset()*0.3;
-						double vY = world.rand.nextDouble()*0.3;
-						double vZ = world.rand.nextDouble()*particleDir.getZOffset()*0.3;
-						world.addParticle(new ItemParticleData(ParticleTypes.ITEM, process.get().getCurrentStack(true)),
+						Direction particleDir = getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise();
+						AABB aabb = CACHED_SAWBLADE_AABB.apply(this);
+						double posX = aabb.minX+level.random.nextDouble()*(aabb.maxX-aabb.minX);
+						double posY = aabb.minY+level.random.nextDouble()*(aabb.maxY-aabb.minY);
+						double posZ = aabb.minZ+level.random.nextDouble()*(aabb.maxZ-aabb.minZ);
+						double vX = level.random.nextDouble()*particleDir.getStepX()*0.3;
+						double vY = level.random.nextDouble()*0.3;
+						double vZ = level.random.nextDouble()*particleDir.getStepZ()*0.3;
+						level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, process.get().getCurrentStack(true)),
 								posX, posY, posZ, vX, vY, vZ);
 					}
 				}
@@ -171,7 +171,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			{
 				doProcessOutput(process.getCurrentStack(!this.sawblade.isEmpty()).copy());
 				processIterator.remove();
-				if(this.sawblade.attemptDamageItem(IEServerConfig.MACHINES.sawmill_bladeDamage.get(), Utils.RAND, null))
+				if(this.sawblade.hurt(IEServerConfig.MACHINES.sawmill_bladeDamage.get(), Utils.RAND, null))
 				{
 					this.sawblade = ItemStack.EMPTY;
 					this.updateMasterBlock(null, true);
@@ -183,17 +183,17 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		SawmillTileEntity master = master();
 		if(master!=null)
 		{
-			if(player.isSneaking()&&!master.sawblade.isEmpty())
+			if(player.isShiftKeyDown()&&!master.sawblade.isEmpty())
 			{
 				if(heldItem.isEmpty())
-					player.setHeldItem(hand, master.sawblade.copy());
-				else if(!world.isRemote)
-					player.entityDropItem(master.sawblade.copy(), 0);
+					player.setItemInHand(hand, master.sawblade.copy());
+				else if(!level.isClientSide)
+					player.spawnAtLocation(master.sawblade.copy(), 0);
 				master.sawblade = ItemStack.EMPTY;
 				this.updateMasterBlock(null, true);
 				return true;
@@ -206,13 +206,13 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				if(heldItem.getCount() <= 0)
 					heldItem = ItemStack.EMPTY;
 				else
-					player.setHeldItem(hand, heldItem);
+					player.setItemInHand(hand, heldItem);
 				if(!tempBlade.isEmpty())
 				{
 					if(heldItem.isEmpty())
-						player.setHeldItem(hand, tempBlade);
-					else if(!world.isRemote)
-						player.entityDropItem(tempBlade, 0);
+						player.setItemInHand(hand, tempBlade);
+					else if(!level.isClientSide)
+						player.spawnAtLocation(tempBlade, 0);
 				}
 				this.updateMasterBlock(null, true);
 				return true;
@@ -225,12 +225,12 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			= CachedShapesWithTransform.createForMultiblock(SawmillTileEntity::getShape);
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return SHAPES.get(posInMultiblock, Pair.of(getFacing(), getIsMirrored()));
 	}
 
-	private static List<AxisAlignedBB> getShape(BlockPos posInMultiblock)
+	private static List<AABB> getShape(BlockPos posInMultiblock)
 	{
 		// Slabs
 		Set<BlockPos> slabs = ImmutableSet.of(
@@ -239,47 +239,47 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				new BlockPos(4, 0, 2)
 		);
 		if(slabs.contains(posInMultiblock))
-			return VoxelShapes.create(0, 0, 0, 1, .5f, 1).toBoundingBoxList();
+			return Shapes.box(0, 0, 0, 1, .5f, 1).toAabbs();
 		// Redstone panel feet
 		if(new BlockPos(0, 0, 2).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5f, 1));
-			list.add(new AxisAlignedBB(.125, .5f, .625, .25, 1, .875));
-			list.add(new AxisAlignedBB(.75, .5f, .625, .875, 1, .875));
+			List<AABB> list = Lists.newArrayList(new AABB(0, 0, 0, 1, .5f, 1));
+			list.add(new AABB(.125, .5f, .625, .25, 1, .875));
+			list.add(new AABB(.75, .5f, .625, .875, 1, .875));
 			return list;
 		}
 		// Restone panel
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock))
-			return VoxelShapes.create(0, 0, .5f, 1, 1, 1).toBoundingBoxList();
+			return Shapes.box(0, 0, .5f, 1, 1, 1).toAabbs();
 		// Stripper
 		if(new BlockPos(1, 1, 1).equals(posInMultiblock))
-			return VoxelShapes.create(.25, 0, 0, .875, 1, 1).toBoundingBoxList();
+			return Shapes.box(.25, 0, 0, .875, 1, 1).toAabbs();
 		// Vacuum
 		if(new BlockPos(1, 1, 2).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(.25, 0, 0, .875, 1, .125));
-			list.add(new AxisAlignedBB(.25, 0, .125, .875, .875, .75));
-			list.add(new AxisAlignedBB(.1875, 0, 0, .9375, .125, .8125));
+			List<AABB> list = Lists.newArrayList(new AABB(.25, 0, 0, .875, 1, .125));
+			list.add(new AABB(.25, 0, .125, .875, .875, .75));
+			list.add(new AABB(.1875, 0, 0, .9375, .125, .8125));
 			return list;
 		}
 		if(new BlockPos(1, 0, 2).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5, 1));
-			list.add(new AxisAlignedBB(.1875, .5, 0, .9375, 1, .8125));
-			list.add(new AxisAlignedBB(.9375, .5, .25, 1, .875, .625));
+			List<AABB> list = Lists.newArrayList(new AABB(0, 0, 0, 1, .5, 1));
+			list.add(new AABB(.1875, .5, 0, .9375, 1, .8125));
+			list.add(new AABB(.9375, .5, .25, 1, .875, .625));
 			return list;
 		}
 		if(new BlockPos(2, 0, 2).equals(posInMultiblock))
 		{
-			List<AxisAlignedBB> list = Lists.newArrayList(new AxisAlignedBB(0, 0, 0, 1, .5, 1));
-			list.add(new AxisAlignedBB(0, .5, .25, 1, .875, .625));
+			List<AABB> list = Lists.newArrayList(new AABB(0, 0, 0, 1, .5, 1));
+			list.add(new AABB(0, .5, .25, 1, .875, .625));
 			return list;
 		}
 		// Conveyors
 		if(posInMultiblock.getY()==1&&posInMultiblock.getZ()==1)
-			return VoxelShapes.create(0, 0, 0, 1, .125, 1).toBoundingBoxList();
+			return Shapes.box(0, 0, 0, 1, .125, 1).toAabbs();
 		// Rest
-		return VoxelShapes.create(0, 0, 0, 1, 1, 1).toBoundingBoxList();
+		return Shapes.box(0, 0, 0, 1, 1, 1).toAabbs();
 	}
 
 	@Override
@@ -301,8 +301,8 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	@Override
 	protected int getComparatorValueOnMaster()
 	{
-		float damage = 1-(this.sawblade.getDamage()/(float)this.sawblade.getMaxDamage());
-		return MathHelper.floor(damage*15);
+		float damage = 1-(this.sawblade.getDamageValue()/(float)this.sawblade.getMaxDamage());
+		return Mth.floor(damage*15);
 	}
 
 	@Override
@@ -317,9 +317,9 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		super.replaceStructureBlock(pos, state, stack, h, l, w);
 		if(h==1&&l==1)
 		{
-			TileEntity tile = world.getTileEntity(pos);
+			BlockEntity tile = level.getBlockEntity(pos);
 			if(tile instanceof ConveyorBeltTileEntity)
-				((ConveyorBeltTileEntity)tile).setFacing(this.getIsMirrored()?this.getFacing().rotateYCCW(): this.getFacing().rotateY());
+				((ConveyorBeltTileEntity)tile).setFacing(this.getIsMirrored()?this.getFacing().getCounterClockWise(): this.getFacing().getClockWise());
 		}
 	}
 
@@ -337,7 +337,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				{
 					dist = p.getRelativeProcessStep();
 					// either it's a different item or we have 3 together already
-					if(!stack.isItemEqual(p.input)||combinedLogs > 2)
+					if(!stack.sameItem(p.input)||combinedLogs > 2)
 					{
 						if(!simulate)
 							combinedLogs = 0;
@@ -354,7 +354,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			{
 				p = new SawmillProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
 				this.sawmillProcessQueue.add(p);
-				this.markDirty();
+				this.setChanged();
 				this.markContainingBlockForUpdate(null);
 				combinedLogs++;
 			}
@@ -362,24 +362,24 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		}
 	}
 
-	private static final AxisAlignedBB SAWBLADE_AABB = new AxisAlignedBB(2.6875, 1, 1.375, 4.3125, 2, 1.625);
-	private static final Function<SawmillTileEntity, AxisAlignedBB> CACHED_SAWBLADE_AABB = new Function<SawmillTileEntity, AxisAlignedBB>()
+	private static final AABB SAWBLADE_AABB = new AABB(2.6875, 1, 1.375, 4.3125, 2, 1.625);
+	private static final Function<SawmillTileEntity, AABB> CACHED_SAWBLADE_AABB = new Function<SawmillTileEntity, AABB>()
 	{
-		Map<Pair<Direction, Boolean>, AxisAlignedBB> cache = new ConcurrentHashMap<>();
+		Map<Pair<Direction, Boolean>, AABB> cache = new ConcurrentHashMap<>();
 
 		@Override
-		public AxisAlignedBB apply(SawmillTileEntity tile)
+		public AABB apply(SawmillTileEntity tile)
 		{
 			return cache.computeIfAbsent(Pair.of(tile.getFacing(), tile.getIsMirrored()),
 					key -> CachedShapesWithTransform.withFacingAndMirror(SAWBLADE_AABB, key.getLeft(), key.getRight()))
-					.offset(tile.getOrigin());
+					.move(tile.getOrigin());
 		}
 	};
 
 	@Override
-	public void onEntityCollision(World world, Entity entity)
+	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(!world.isRemote&&entity!=null&&entity.isAlive())
+		if(!world.isClientSide&&entity!=null&&entity.isAlive())
 		{
 			SawmillTileEntity master = master();
 			if(master==null)
@@ -396,14 +396,14 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			else if(entity instanceof LivingEntity&&!master.sawblade.isEmpty()
 					&&CACHED_SAWBLADE_AABB.apply(master).intersects(entity.getBoundingBox()))
 			{
-				if(entity instanceof PlayerEntity&&((PlayerEntity)entity).abilities.disableDamage)
+				if(entity instanceof Player&&((Player)entity).abilities.invulnerable)
 					return;
 
 				int consumed = master.energyStorage.extractEnergy(80, true);
 				if(consumed > 0)
 				{
 					master.energyStorage.extractEnergy(consumed, false);
-					entity.attackEntityFrom(IEDamageSources.sawmill, 7);
+					entity.hurt(IEDamageSources.sawmill, 7);
 				}
 			}
 		}
@@ -427,9 +427,9 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		output = Utils.insertStackIntoInventory(outputCap, output, false);
 		if(!output.isEmpty())
 		{
-			Direction outDir = getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY();
-			BlockPos pos = getPos().offset(outDir, 3);
-			Utils.dropStackAtPos(world, pos, output, outDir);
+			Direction outDir = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+			BlockPos pos = getBlockPos().relative(outDir, 3);
+			Utils.dropStackAtPos(level, pos, output, outDir);
 		}
 	}
 
@@ -439,7 +439,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 		if(!output.isEmpty())
 		{
 			DirectionalBlockPos secondaryPos = getSecondaryOutputCapPos();
-			Utils.dropStackAtPos(world, secondaryPos.getPosition(), output, secondaryPos.getSide().getOpposite());
+			Utils.dropStackAtPos(level, secondaryPos.getPosition(), output, secondaryPos.getSide().getOpposite());
 		}
 	}
 
@@ -516,7 +516,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		this.markContainingBlockForUpdate(null);
 	}
 
@@ -553,7 +553,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			SawmillTileEntity master = master();
 			if(master==null)
 				return LazyOptional.empty();
-			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().rotateY(): this.getFacing().rotateYCCW()))
+			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().getClockWise(): this.getFacing().getCounterClockWise()))
 				return master.insertionHandler.cast();
 			return LazyOptional.empty();
 		}
@@ -582,14 +582,14 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	public Direction[] sigOutputDirections()
 	{
 		if(new BlockPos(4, 1, 1).equals(posInMultiblock))
-			return new Direction[]{getIsMirrored()?getFacing().rotateYCCW(): getFacing().rotateY()};
+			return new Direction[]{getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise()};
 		return new Direction[0];
 	}
 
 	private DirectionalBlockPos getSecondaryOutputCapPos()
 	{
 		Direction shiftDir = getFacing().getOpposite();
-		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(3, 0, 2)).offset(shiftDir), shiftDir.getOpposite());
+		return new DirectionalBlockPos(getBlockPosForPos(new BlockPos(3, 0, 2)).relative(shiftDir), shiftDir.getOpposite());
 	}
 
 	public static class SawmillProcess
@@ -675,19 +675,19 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			return getRelativeProcessStep() > .5375&&!this.sawed;
 		}
 
-		public CompoundNBT writeToNBT()
+		public CompoundTag writeToNBT()
 		{
-			CompoundNBT nbt = new CompoundNBT();
-			nbt.put("input", this.input.write(new CompoundNBT()));
+			CompoundTag nbt = new CompoundTag();
+			nbt.put("input", this.input.save(new CompoundTag()));
 			nbt.putInt("processTick", this.processTick);
 			nbt.putBoolean("stripped", this.stripped);
 			nbt.putBoolean("sawed", this.sawed);
 			return nbt;
 		}
 
-		public static SawmillProcess readFromNBT(CompoundNBT nbt)
+		public static SawmillProcess readFromNBT(CompoundTag nbt)
 		{
-			ItemStack input = ItemStack.read(nbt.getCompound("input"));
+			ItemStack input = ItemStack.of(nbt.getCompound("input"));
 			SawmillProcess process = new SawmillProcess(input);
 			process.processTick = nbt.getInt("processTick");
 			process.stripped = nbt.getBoolean("stripped");

@@ -14,15 +14,15 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.registry.Registry;
-import net.minecraft.world.World;
+import net.minecraft.core.Registry;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -50,7 +50,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 			if(CraftingHelper.processConditions(element, "conditions"))
 			{
 				ItemStack stack = readOutput(element.get("output"));
-				float chance = JSONUtils.getFloat(element, "chance");
+				float chance = GsonHelper.getAsFloat(element, "chance");
 				totalChance += chance;
 				tempOres.add(new StackWithChance(stack, chance));
 			}
@@ -58,16 +58,16 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		float finalTotalChance = totalChance;
 		StackWithChance[] ores = tempOres.stream().map(stack -> stack.recalculate(finalTotalChance)).toArray(StackWithChance[]::new);
 
-		int weight = JSONUtils.getInt(json, "weight");
-		float failChance = JSONUtils.getFloat(json, "fail_chance", 0);
+		int weight = GsonHelper.getAsInt(json, "weight");
+		float failChance = GsonHelper.getAsFloat(json, "fail_chance", 0);
 		array = json.getAsJsonArray("dimensions");
-		List<RegistryKey<World>> dimensions = new ArrayList<>();
+		List<ResourceKey<Level>> dimensions = new ArrayList<>();
 		for(int i = 0; i < array.size(); i++)
-			dimensions.add(RegistryKey.getOrCreateKey(
-					Registry.WORLD_KEY,
+			dimensions.add(ResourceKey.create(
+					Registry.DIMENSION_REGISTRY,
 					new ResourceLocation(array.get(i).getAsString())
 			));
-		ResourceLocation rl = new ResourceLocation(JSONUtils.getString(json, "sample_background", "minecraft:stone"));
+		ResourceLocation rl = new ResourceLocation(GsonHelper.getAsString(json, "sample_background", "minecraft:stone"));
 		Block b = ForgeRegistries.BLOCKS.getValue(rl);
 		if(b==Blocks.AIR)
 			b = Blocks.STONE;
@@ -76,7 +76,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 
 	@Nullable
 	@Override
-	public MineralMix read(ResourceLocation recipeId, PacketBuffer buffer)
+	public MineralMix fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
 		int count = buffer.readInt();
 		StackWithChance[] outputs = new StackWithChance[count];
@@ -85,10 +85,10 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		int weight = buffer.readInt();
 		float failChance = buffer.readFloat();
 		count = buffer.readInt();
-		List<RegistryKey<World>> dimensions = new ArrayList<>();
+		List<ResourceKey<Level>> dimensions = new ArrayList<>();
 		for(int i = 0; i < count; i++)
-			dimensions.add(RegistryKey.getOrCreateKey(
-					Registry.WORLD_KEY,
+			dimensions.add(ResourceKey.create(
+					Registry.DIMENSION_REGISTRY,
 					buffer.readResourceLocation()
 			));
 		Block bg = ForgeRegistries.BLOCKS.getValue(buffer.readResourceLocation());
@@ -96,7 +96,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, MineralMix recipe)
+	public void toNetwork(FriendlyByteBuf buffer, MineralMix recipe)
 	{
 		buffer.writeInt(recipe.outputs.length);
 		for(StackWithChance secondaryOutput : recipe.outputs)
@@ -104,8 +104,8 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		buffer.writeInt(recipe.weight);
 		buffer.writeFloat(recipe.failChance);
 		buffer.writeInt(recipe.dimensions.size());
-		for(RegistryKey<World> dimension : recipe.dimensions)
-			buffer.writeResourceLocation(dimension.getLocation());
+		for(ResourceKey<Level> dimension : recipe.dimensions)
+			buffer.writeResourceLocation(dimension.location());
 		buffer.writeResourceLocation(ForgeRegistries.BLOCKS.getKey(recipe.background));
 	}
 }

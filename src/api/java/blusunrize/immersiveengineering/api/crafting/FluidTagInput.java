@@ -17,14 +17,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITagCollection;
-import net.minecraft.tags.TagCollectionManager;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.SerializationTags;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagCollection;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -40,25 +40,25 @@ import java.util.stream.Collectors;
 public class FluidTagInput implements Predicate<FluidStack>
 {
 	// Generally left on the server, right on the client
-	protected final Either<ITag<Fluid>, List<ResourceLocation>> fluidTag;
+	protected final Either<Tag<Fluid>, List<ResourceLocation>> fluidTag;
 	protected final int amount;
-	protected final CompoundNBT nbtTag;
+	protected final CompoundTag nbtTag;
 
-	public FluidTagInput(Either<ITag<Fluid>, List<ResourceLocation>> matching, int amount, CompoundNBT nbtTag)
+	public FluidTagInput(Either<Tag<Fluid>, List<ResourceLocation>> matching, int amount, CompoundTag nbtTag)
 	{
 		this.fluidTag = matching;
 		this.amount = amount;
 		this.nbtTag = nbtTag;
 	}
 
-	public FluidTagInput(ITag<Fluid> fluidTag, int amount, CompoundNBT nbtTag)
+	public FluidTagInput(Tag<Fluid> fluidTag, int amount, CompoundTag nbtTag)
 	{
 		this(Either.left(fluidTag), amount, nbtTag);
 	}
 
-	public FluidTagInput(ResourceLocation resourceLocation, int amount, CompoundNBT nbtTag)
+	public FluidTagInput(ResourceLocation resourceLocation, int amount, CompoundTag nbtTag)
 	{
-		this(getTagCollection().get(resourceLocation), amount, nbtTag);
+		this(getTagCollection().getTag(resourceLocation), amount, nbtTag);
 	}
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount)
@@ -66,7 +66,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 		this(resourceLocation, amount, null);
 	}
 
-	public FluidTagInput(ITag<Fluid> tag, int amount)
+	public FluidTagInput(Tag<Fluid> tag, int amount)
 	{
 		this(tag, amount, null);
 	}
@@ -75,13 +75,13 @@ public class FluidTagInput implements Predicate<FluidStack>
 	{
 		Preconditions.checkArgument(input instanceof JsonObject, "FluidTagWithSize can only be deserialized from a JsonObject");
 		JsonObject jsonObject = input.getAsJsonObject();
-		ResourceLocation resourceLocation = new ResourceLocation(JSONUtils.getString(jsonObject, "tag"));
-		if(!JSONUtils.hasField(jsonObject, "nbt"))
-			return new FluidTagInput(resourceLocation, JSONUtils.getInt(jsonObject, "amount"));
+		ResourceLocation resourceLocation = new ResourceLocation(GsonHelper.getAsString(jsonObject, "tag"));
+		if(!GsonHelper.isValidNode(jsonObject, "nbt"))
+			return new FluidTagInput(resourceLocation, GsonHelper.getAsInt(jsonObject, "amount"));
 		try
 		{
-			CompoundNBT nbt = ItemUtils.parseNbtFromJson(jsonObject.get("nbt"));
-			return new FluidTagInput(resourceLocation, JSONUtils.getInt(jsonObject, "amount"), nbt);
+			CompoundTag nbt = ItemUtils.parseNbtFromJson(jsonObject.get("nbt"));
+			return new FluidTagInput(resourceLocation, GsonHelper.getAsInt(jsonObject, "amount"), nbt);
 		} catch(CommandSyntaxException e)
 		{
 			throw new JsonParseException(e);
@@ -117,7 +117,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public List<FluidStack> getMatchingFluidStacks()
 	{
 		return fluidTag.map(
-				t -> t.getAllElements().stream(),
+				t -> t.getValues().stream(),
 				l -> l.stream().map(ForgeRegistries.FLUIDS::getValue)
 		)
 				.map(fluid -> new FluidStack(fluid, FluidTagInput.this.amount, FluidTagInput.this.nbtTag))
@@ -128,8 +128,8 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public JsonElement serialize()
 	{
 		JsonObject jsonObject = new JsonObject();
-		ITag<Fluid> unnamedTag = this.fluidTag.orThrow();
-		ResourceLocation name = getTagCollection().getValidatedIdFromTag(unnamedTag);
+		Tag<Fluid> unnamedTag = this.fluidTag.orThrow();
+		ResourceLocation name = getTagCollection().getIdOrThrow(unnamedTag);
 		jsonObject.addProperty("tag", name.toString());
 		jsonObject.addProperty("amount", this.amount);
 		if(this.nbtTag!=null)
@@ -148,21 +148,21 @@ public class FluidTagInput implements Predicate<FluidStack>
 		return all.get((rand/20)%all.size());
 	}
 
-	public static FluidTagInput read(PacketBuffer input)
+	public static FluidTagInput read(FriendlyByteBuf input)
 	{
 		int numMatching = input.readVarInt();
 		List<ResourceLocation> matching = new ArrayList<>(numMatching);
 		for(int i = 0; i < numMatching; ++i)
 			matching.add(input.readResourceLocation());
 		int amount = input.readInt();
-		CompoundNBT nbt = input.readBoolean()?input.readCompoundTag(): null;
+		CompoundTag nbt = input.readBoolean()?input.readNbt(): null;
 		return new FluidTagInput(Either.right(matching), amount, nbt);
 	}
 
-	public void write(PacketBuffer out)
+	public void write(FriendlyByteBuf out)
 	{
 		List<ResourceLocation> matching = fluidTag.map(
-				f -> f.getAllElements().stream().map(Fluid::getRegistryName).collect(Collectors.toList()),
+				f -> f.getValues().stream().map(Fluid::getRegistryName).collect(Collectors.toList()),
 				l -> l
 		);
 		out.writeVarInt(matching.size());
@@ -171,12 +171,12 @@ public class FluidTagInput implements Predicate<FluidStack>
 		out.writeInt(this.amount);
 		out.writeBoolean(this.nbtTag!=null);
 		if(this.nbtTag!=null)
-			out.writeCompoundTag(this.nbtTag);
+			out.writeNbt(this.nbtTag);
 	}
 
-	private static ITagCollection<Fluid> getTagCollection()
+	private static TagCollection<Fluid> getTagCollection()
 	{
-		return TagCollectionManager.getManager().getFluidTags();
+		return SerializationTags.getInstance().getFluids();
 	}
 
 	public boolean extractFrom(IFluidHandler handler, FluidAction action)

@@ -12,8 +12,8 @@ import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ import java.util.List;
 
 public class Link
 {
-	public final static String FORMAT = TextFormatting.ITALIC.toString()+TextFormatting.UNDERLINE.toString();
+	public final static String FORMAT = ChatFormatting.ITALIC.toString()+ChatFormatting.UNDERLINE.toString();
 	private final List<String> parts;
 	@Nullable
 	private final ResourceLocation target;
@@ -46,7 +46,7 @@ public class Link
 			parts.add(part);
 		}
 		int last = parts.size()-1;
-		parts.set(last, parts.get(last)+TextFormatting.RESET);
+		parts.set(last, parts.get(last)+ChatFormatting.RESET);
 		if(ManualUtils.THIS.equals(target))
 			this.target = null;
 		else

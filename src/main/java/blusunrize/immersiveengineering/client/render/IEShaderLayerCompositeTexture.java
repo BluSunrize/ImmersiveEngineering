@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.client.renderer.texture.NativeImage;
-import net.minecraft.client.renderer.texture.Texture;
-import net.minecraft.client.renderer.texture.TextureUtil;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector4f;
+import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.platform.TextureUtil;
+import com.mojang.math.Vector4f;
+import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
@@ -25,10 +25,10 @@ import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.function.IntFunction;
 
-import static net.minecraft.client.renderer.texture.NativeImage.*;
+import static com.mojang.blaze3d.platform.NativeImage.*;
 
 @OnlyIn(Dist.CLIENT)
-public class IEShaderLayerCompositeTexture extends Texture
+public class IEShaderLayerCompositeTexture extends AbstractTexture
 {
 	/**
 	 * The location of the texture.
@@ -43,10 +43,10 @@ public class IEShaderLayerCompositeTexture extends Texture
 	}
 
 	@Override
-	public void loadTexture(@Nonnull IResourceManager resourceManager)
+	public void load(@Nonnull ResourceManager resourceManager)
 	{
-		this.deleteGlTexture();
-		IResource iresource = null;
+		this.releaseId();
+		Resource iresource = null;
 		NativeImage finalTexture = null;
 		NativeImage originalImage = null;
 		try
@@ -61,7 +61,7 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 			while(layer < 17&&layer < this.layers.length)
 			{
-				IResource iresource1 = null;
+				Resource iresource1 = null;
 
 				try
 				{
@@ -77,7 +77,7 @@ public class IEShaderLayerCompositeTexture extends Texture
 					iresource1 = resourceManager.getResource(new ResourceLocation(texture));
 					NativeImage texureImage = NativeImage.read(iresource1.getInputStream());
 
-					float[] mod = new float[]{colour.getX(), colour.getY(), colour.getZ(), colour.getW()};
+					float[] mod = new float[]{colour.x(), colour.y(), colour.z(), colour.w()};
 					if(mod[3] < 0.2)
 						mod[3] *= 2.5f;
 
@@ -160,8 +160,8 @@ public class IEShaderLayerCompositeTexture extends Texture
 
 				++layer;
 			}
-			TextureUtil.prepareImage(this.getGlTextureId(), 0, finalTexture.getWidth(), finalTexture.getHeight());
-			finalTexture.uploadTextureSub(0, 0, 0, 0, 0, finalTexture.getWidth(), finalTexture.getHeight(), false, false, false, false);
+			TextureUtil.prepareImage(this.getId(), 0, finalTexture.getWidth(), finalTexture.getHeight());
+			finalTexture.upload(0, 0, 0, 0, 0, finalTexture.getWidth(), finalTexture.getHeight(), false, false, false, false);
 
 		} catch(IOException ioexception)
 		{
@@ -179,14 +179,14 @@ public class IEShaderLayerCompositeTexture extends Texture
 	private void blendPixel(NativeImage image, int xIn, int yIn, int colIn)
 	{
 		int existing = image.getPixelRGBA(xIn, yIn);
-		float alphaIn = (float)getAlpha(colIn)/255.0F;
-		float blueIn = (float)getBlue(colIn)/255.0F;
-		float greenIn = (float)getGreen(colIn)/255.0F;
-		float redIn = (float)getRed(colIn)/255.0F;
-		float alphaOld = (float)getAlpha(existing)/255.0F;
-		float blueOld = (float)getBlue(existing)/255.0F;
-		float greenOld = (float)getGreen(existing)/255.0F;
-		float redOld = (float)getRed(existing)/255.0F;
+		float alphaIn = (float)getA(colIn)/255.0F;
+		float blueIn = (float)getB(colIn)/255.0F;
+		float greenIn = (float)getG(colIn)/255.0F;
+		float redIn = (float)getR(colIn)/255.0F;
+		float alphaOld = (float)getA(existing)/255.0F;
+		float blueOld = (float)getB(existing)/255.0F;
+		float greenOld = (float)getG(existing)/255.0F;
+		float redOld = (float)getR(existing)/255.0F;
 		float oldMixFactor = 1.0F-alphaIn;
 		float alphaOut = alphaIn*alphaIn+alphaOld*oldMixFactor;
 		float blueOut = blueIn*alphaIn+blueOld*oldMixFactor;
@@ -216,6 +216,6 @@ public class IEShaderLayerCompositeTexture extends Texture
 		int blueOutInt = (int)(blueOut*255.0F);
 		int greenOutInt = (int)(greenOut*255.0F);
 		int alphaOutInt = (int)(redOut*255.0F);
-		image.setPixelRGBA(xIn, yIn, getCombined(redOutInt, blueOutInt, greenOutInt, alphaOutInt));
+		image.setPixelRGBA(xIn, yIn, combine(redOutInt, blueOutInt, greenOutInt, alphaOutInt));
 	}
 }

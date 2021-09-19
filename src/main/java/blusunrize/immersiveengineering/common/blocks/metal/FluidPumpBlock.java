@@ -12,34 +12,34 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.material.Material;
 
 public class FluidPumpBlock extends GenericTileBlock<FluidPumpTileEntity>
 {
 	public FluidPumpBlock()
 	{
 		super("fluid_pump", IETileTypes.FLUID_PUMP,
-				Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+				Properties.of(Material.METAL).sound(SoundType.METAL).strength(3, 15).noOcclusion());
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.FACING_HORIZONTAL, IEProperties.MULTIBLOCKSLAVE, BlockStateProperties.WATERLOGGED);
 	}
 
 	@Override
-	public boolean canIEBlockBePlaced(BlockState newState, BlockItemUseContext context)
+	public boolean canIEBlockBePlaced(BlockState newState, BlockPlaceContext context)
 	{
-		BlockPos start = context.getPos();
-		return areAllReplaceable(start, start.up(1), context);
+		BlockPos start = context.getClickedPos();
+		return areAllReplaceable(start, start.above(1), context);
 	}
 }

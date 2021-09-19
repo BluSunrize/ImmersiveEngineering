@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.FluidTagsProvider;
+import net.minecraft.data.tags.FluidTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 class FluidTags extends FluidTagsProvider
@@ -23,14 +23,14 @@ class FluidTags extends FluidTagsProvider
 	}
 
 	@Override
-	protected void registerTags()
+	protected void addTags()
 	{
-		getOrCreateBuilder(IETags.fluidCreosote).add(IEContent.fluidCreosote);
-		getOrCreateBuilder(IETags.fluidPlantoil).add(IEContent.fluidPlantoil);
-		getOrCreateBuilder(IETags.fluidEthanol).add(IEContent.fluidEthanol);
-		getOrCreateBuilder(IETags.fluidBiodiesel).add(IEContent.fluidBiodiesel);
-		getOrCreateBuilder(IETags.fluidConcrete).add(IEContent.fluidConcrete);
-		getOrCreateBuilder(IETags.fluidHerbicide).add(IEContent.fluidHerbicide);
-		getOrCreateBuilder(IETags.fluidPotion).add(IEContent.fluidPotion);
+		tag(IETags.fluidCreosote).add(IEContent.fluidCreosote);
+		tag(IETags.fluidPlantoil).add(IEContent.fluidPlantoil);
+		tag(IETags.fluidEthanol).add(IEContent.fluidEthanol);
+		tag(IETags.fluidBiodiesel).add(IEContent.fluidBiodiesel);
+		tag(IETags.fluidConcrete).add(IEContent.fluidConcrete);
+		tag(IETags.fluidHerbicide).add(IEContent.fluidHerbicide);
+		tag(IETags.fluidPotion).add(IEContent.fluidPotion);
 	}
 }

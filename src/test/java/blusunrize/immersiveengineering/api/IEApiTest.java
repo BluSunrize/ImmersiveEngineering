@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import junit.framework.TestCase;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
 import org.junit.Assert;
 
 import java.util.Arrays;

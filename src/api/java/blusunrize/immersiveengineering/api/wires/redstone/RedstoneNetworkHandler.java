@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import com.google.common.base.Preconditions;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.HashMap;
 import java.util.Map;

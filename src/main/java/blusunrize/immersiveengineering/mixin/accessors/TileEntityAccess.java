@@ -9,17 +9,17 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.tileentity.TileEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(TileEntity.class)
+@Mixin(BlockEntity.class)
 public interface TileEntityAccess
 {
-	@Accessor("cachedBlockState")
+	@Accessor("blockState")
 	BlockState getCachedBlockStateDirectly();
 
 	@Accessor
-	void setCachedBlockState(BlockState newValue);
+	void setBlockState(BlockState newValue);
 }

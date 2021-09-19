@@ -13,21 +13,21 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
-public class PowerpackRecipe implements ICraftingRecipe
+public class PowerpackRecipe implements CraftingRecipe
 {
 	private final ResourceLocation id;
 
@@ -37,19 +37,19 @@ public class PowerpackRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public boolean isDynamic()
+	public boolean isSpecial()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, @Nonnull World world)
+	public boolean matches(CraftingContainer inv, @Nonnull Level world)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 				if(powerpack.isEmpty()&&Misc.powerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
@@ -65,13 +65,13 @@ public class PowerpackRecipe implements ICraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv)
+	public ItemStack assemble(CraftingContainer inv)
 	{
 		ItemStack powerpack = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 				if(powerpack.isEmpty()&&Misc.powerpack.equals(stackInSlot.getItem()))
 					powerpack = stackInSlot;
@@ -95,26 +95,26 @@ public class PowerpackRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width >= 2&&height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return new ItemStack(Misc.powerpack, 1);
 	}
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
 	{
-		NonNullList<ItemStack> remaining = ICraftingRecipe.super.getRemainingItems(inv);
+		NonNullList<ItemStack> remaining = CraftingRecipe.super.getRemainingItems(inv);
 		for(int i = 0; i < remaining.size(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty()&&ItemNBTHelper.hasKey(stackInSlot, Lib.NBT_Powerpack))
 				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Powerpack));
 		}
@@ -123,7 +123,7 @@ public class PowerpackRecipe implements ICraftingRecipe
 
 	private boolean isValidArmor(ItemStack stack)
 	{
-		if(!(stack.getItem() instanceof ArmorItem)||((ArmorItem)stack.getItem()).getEquipmentSlot()!=EquipmentSlotType.CHEST)
+		if(!(stack.getItem() instanceof ArmorItem)||((ArmorItem)stack.getItem()).getSlot()!=EquipmentSlot.CHEST)
 			return false;
 		if(stack.getItem()==Misc.powerpack)
 			return false;
@@ -146,7 +146,7 @@ public class PowerpackRecipe implements ICraftingRecipe
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.POWERPACK_SERIALIZER.get();
 	}
@@ -154,6 +154,6 @@ public class PowerpackRecipe implements ICraftingRecipe
 	@Override
 	public NonNullList<Ingredient> getIngredients()
 	{
-		return NonNullList.withSize(1, Ingredient.fromItems(Misc.powerpack));
+		return NonNullList.withSize(1, Ingredient.of(Misc.powerpack));
 	}
 }

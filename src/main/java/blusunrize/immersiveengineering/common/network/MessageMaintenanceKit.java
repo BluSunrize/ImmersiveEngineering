@@ -10,47 +10,47 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.gui.MaintenanceKitContainer;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
 
 public class MessageMaintenanceKit implements IMessage
 {
-	EquipmentSlotType slot;
-	CompoundNBT nbt;
+	EquipmentSlot slot;
+	CompoundTag nbt;
 
-	public MessageMaintenanceKit(EquipmentSlotType slot, CompoundNBT nbt)
+	public MessageMaintenanceKit(EquipmentSlot slot, CompoundTag nbt)
 	{
 		this.slot = slot;
 		this.nbt = nbt;
 	}
 
-	public MessageMaintenanceKit(PacketBuffer buf)
+	public MessageMaintenanceKit(FriendlyByteBuf buf)
 	{
-		this.slot = EquipmentSlotType.fromString(buf.readString(100));
-		this.nbt = buf.readCompoundTag();
+		this.slot = EquipmentSlot.byName(buf.readUtf(100));
+		this.nbt = buf.readNbt();
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
-		buf.writeString(this.slot.getName());
-		buf.writeCompoundTag(this.nbt);
+		buf.writeUtf(this.slot.getName());
+		buf.writeNbt(this.nbt);
 	}
 
 	@Override
 	public void process(Supplier<Context> context)
 	{
 		Context ctx = context.get();
-		ServerPlayerEntity player = ctx.getSender();
+		ServerPlayer player = ctx.getSender();
 		assert player!=null;
 		ctx.enqueueWork(() -> {
-			if(player.openContainer instanceof MaintenanceKitContainer)
-				ModWorkbenchTileEntity.applyConfigTo(player.openContainer.inventorySlots.get(0).getStack(), nbt);
+			if(player.containerMenu instanceof MaintenanceKitContainer)
+				ModWorkbenchTileEntity.applyConfigTo(player.containerMenu.slots.get(0).getItem(), nbt);
 		});
 	}
 }

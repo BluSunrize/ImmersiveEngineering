@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,7 +23,7 @@ public class AlloySmelterMultiblock extends StoneMultiblock
 	{
 		super(new ResourceLocation(ImmersiveEngineering.MODID, "multiblocks/alloy_smelter"),
 				new BlockPos(0, 0, 1), new BlockPos(1, 1, 1), new BlockPos(2, 2, 2),
-				() -> Multiblocks.alloySmelter.getDefaultState());
+				() -> Multiblocks.alloySmelter.defaultBlockState());
 	}
 
 	@Override
@@ -35,7 +35,7 @@ public class AlloySmelterMultiblock extends StoneMultiblock
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer)
+	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
 	{
 	}
 

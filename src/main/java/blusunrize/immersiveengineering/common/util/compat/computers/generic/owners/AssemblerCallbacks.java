@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.util.compat.computers.generic.Inde
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.EnergyCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.InventoryCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.TankCallbacks;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 public class AssemblerCallbacks extends MultiblockCallbackOwner<AssemblerTileEntity>
 {

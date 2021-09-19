@@ -11,21 +11,21 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
 import invtweaks.api.container.ChestContainer;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 @ChestContainer
 public class CrateContainer extends IEBaseContainer<WoodenCrateTileEntity>
 {
-	public CrateContainer(int id, PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile)
+	public CrateContainer(int id, Inventory inventoryPlayer, WoodenCrateTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)
 			this.addSlot(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18)
 			{
 				@Override
-				public boolean isItemValid(ItemStack stack)
+				public boolean mayPlace(ItemStack stack)
 				{
 					return IEApi.isAllowedInCrate(stack);
 				}

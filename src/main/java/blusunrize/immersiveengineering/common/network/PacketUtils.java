@@ -9,16 +9,15 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import net.minecraft.network.PacketBuffer;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import net.minecraft.network.FriendlyByteBuf;
 
 public class PacketUtils
 {
-	public static <T> List<T> readList(PacketBuffer buffer, Function<PacketBuffer, T> readElement)
+	public static <T> List<T> readList(FriendlyByteBuf buffer, Function<FriendlyByteBuf, T> readElement)
 	{
 		int numElements = buffer.readVarInt();
 		List<T> ret = new ArrayList<>(numElements);
@@ -27,7 +26,7 @@ public class PacketUtils
 		return ret;
 	}
 
-	public static <T> void writeList(PacketBuffer buffer, List<T> toWrite, BiConsumer<T, PacketBuffer> writeElement)
+	public static <T> void writeList(FriendlyByteBuf buffer, List<T> toWrite, BiConsumer<T, FriendlyByteBuf> writeElement)
 	{
 		buffer.writeVarInt(toWrite.size());
 		for(T element : toWrite)

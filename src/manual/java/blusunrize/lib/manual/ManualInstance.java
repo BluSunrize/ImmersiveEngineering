@@ -21,22 +21,22 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.resources.IReloadableResourceManager;
-import net.minecraft.resources.IResource;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.Style;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.client.gui.Font;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.resource.IResourceType;
 import net.minecraftforge.resource.ISelectiveResourceReloadListener;
@@ -74,12 +74,12 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		this.pageHeight = pageHeight;
 		this.pageWidth = pageWidth;
 		contentTree = new Tree<>(name);
-		((IReloadableResourceManager)Minecraft.getInstance().getResourceManager()).addReloadListener(this);
+		((ReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener(this);
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "crafting"), s -> {
 			Object[] stacksAndRecipes;
-			if(JSONUtils.isJsonArray(s, "recipes"))
+			if(GsonHelper.isArrayNode(s, "recipes"))
 			{
-				JsonArray data = JSONUtils.getJsonArray(s, "recipes");
+				JsonArray data = GsonHelper.getAsJsonArray(s, "recipes");
 				stacksAndRecipes = new Object[data.size()];
 				for(int i = 0; i < data.size(); i++)
 				{
@@ -105,17 +105,17 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		});
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "image"),
 				s -> {
-					JsonArray data = JSONUtils.getJsonArray(s, "images");
+					JsonArray data = GsonHelper.getAsJsonArray(s, "images");
 					ManualImage[] images = new ManualImage[data.size()];
 					for(int i = 0; i < data.size(); i++)
 					{
 						JsonObject img = data.get(i).getAsJsonObject();
 						ResourceLocation loc = ManualUtils.getLocationForManual(
-								JSONUtils.getString(img, "location"), this);
-						int uMin = JSONUtils.getInt(img, "uMin");
-						int vMin = JSONUtils.getInt(img, "vMin");
-						int uSize = JSONUtils.getInt(img, "uSize");
-						int vSize = JSONUtils.getInt(img, "vSize");
+								GsonHelper.getAsString(img, "location"), this);
+						int uMin = GsonHelper.getAsInt(img, "uMin");
+						int vMin = GsonHelper.getAsInt(img, "vMin");
+						int uSize = GsonHelper.getAsInt(img, "uSize");
+						int vSize = GsonHelper.getAsInt(img, "vSize");
 						images[i] = new ManualImage(loc, uMin, uSize, vMin, vSize);
 					}
 					return new ManualElementImage(this, images);
@@ -139,16 +139,16 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		);
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "table"),
 				s -> {
-					JsonArray arr = JSONUtils.getJsonArray(s, "table");
-					ITextComponent[][] table = new ITextComponent[arr.size()][];
+					JsonArray arr = GsonHelper.getAsJsonArray(s, "table");
+					Component[][] table = new Component[arr.size()][];
 					for(int i = 0; i < table.length; i++)
 					{
 						JsonArray row = arr.get(i).getAsJsonArray();
-						table[i] = new ITextComponent[row.size()];
+						table[i] = new Component[row.size()];
 						for(int j = 0; j < row.size(); j++)
-							table[i][j] = ITextComponent.getTextComponentOrEmpty(row.get(j).getAsString());
+							table[i][j] = Component.nullToEmpty(row.get(j).getAsString());
 					}
-					return new ManualElementTable(this, table, JSONUtils.getBoolean(s,
+					return new ManualElementTable(this, table, GsonHelper.getAsBoolean(s,
 							"horizontal_bars", false));
 				}
 		);
@@ -263,12 +263,12 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 			ManualLogger.LOGGER.info("Manual reload took {} ms", System.currentTimeMillis()-start);
 			if(numFailedEntries > 0)
 			{
-				PlayerEntity player = Minecraft.getInstance().player;
+				Player player = Minecraft.getInstance().player;
 				String error = numFailedEntries+" entries failed to load! Please report this as an issue with your log file!";
 				if(player!=null)
 					player.sendMessage(
-							new StringTextComponent(error).setStyle(Style.EMPTY.applyFormatting(TextFormatting.RED)),
-							Util.DUMMY_UUID
+							new TextComponent(error).setStyle(Style.EMPTY.applyFormat(ChatFormatting.RED)),
+							Util.NIL_UUID
 					);
 				else
 					ManualLogger.LOGGER.error(error);
@@ -371,7 +371,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		int ret = ForgeRegistries.ITEMS.getKey(stack.getItem()).hashCode();
 		if(stack.hasTag())
 		{
-			CompoundNBT nbt = stack.getTag();
+			CompoundTag nbt = stack.getTag();
 			if(!nbt.isEmpty())
 				ret = ret*31+nbt.hashCode();
 		}
@@ -384,7 +384,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 	}
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager, @Nonnull Predicate<IResourceType> resourcePredicate)
 	{
 		reset();
 	}
@@ -439,11 +439,11 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		ResourceLocation autoLoc = ManualUtils.getLocationForManual("manual/autoload.json", this);
 		try
 		{
-			List<IResource> autoload = Minecraft.getInstance().getResourceManager().getAllResources(autoLoc);
+			List<Resource> autoload = Minecraft.getInstance().getResourceManager().getResources(autoLoc);
 			NavigableSet<Pair<Double, JsonObject>> autoloadSources = new TreeSet<>(Comparator.comparingDouble(Pair::getLeft));
-			for(IResource r : autoload)
+			for(Resource r : autoload)
 			{
-				JsonObject autoloadJson = JSONUtils.fromJson(new InputStreamReader(r.getInputStream()));
+				JsonObject autoloadJson = GsonHelper.parse(new InputStreamReader(r.getInputStream()));
 				double priority = 0;
 				JsonElement priorityElement = autoloadJson.remove("autoload_priority");
 				if(priorityElement!=null)
@@ -551,7 +551,7 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 		throw new NoSuchElementException("Did not find a child with name "+name);
 	}
 
-	public abstract FontRenderer fontRenderer();
+	public abstract Font fontRenderer();
 
 	public static class ManualLink
 	{

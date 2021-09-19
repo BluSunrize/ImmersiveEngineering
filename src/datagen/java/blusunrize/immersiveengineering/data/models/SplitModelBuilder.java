@@ -4,7 +4,7 @@ import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Vec3i;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -24,11 +24,11 @@ public class SplitModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBu
 		super(SplitModelLoader.LOCATION, parent, existingFileHelper);
 	}
 
-	private List<Vector3i> parts;
+	private List<Vec3i> parts;
 	private ModelFile modelToSplit;
 	private boolean isDynamic;
 
-	public SplitModelBuilder<T> parts(List<Vector3i> parts)
+	public SplitModelBuilder<T> parts(List<Vec3i> parts)
 	{
 		Preconditions.checkNotNull(parts);
 		Preconditions.checkState(this.parts==null);
@@ -57,7 +57,7 @@ public class SplitModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBu
 		json.addProperty(SplitModelLoader.DYNAMIC, isDynamic);
 		json.addProperty(SplitModelLoader.BASE_MODEL, modelToSplit.getLocation().toString());
 		JsonArray partsJson = new JsonArray();
-		for(Vector3i part : parts)
+		for(Vec3i part : parts)
 		{
 			JsonArray posArray = new JsonArray();
 			posArray.add(part.getX());

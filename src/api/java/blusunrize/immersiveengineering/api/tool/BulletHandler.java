@@ -13,18 +13,18 @@ import com.google.common.base.Preconditions;
 import com.google.common.base.Supplier;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -101,11 +101,11 @@ public class BulletHandler
 			return baseName;
 		}
 
-		default void addTooltip(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+		default void addTooltip(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 		{
 		}
 
-		default int getProjectileCount(@Nullable PlayerEntity shooter)
+		default int getProjectileCount(@Nullable Player shooter)
 		{
 			return 1;
 		}
@@ -117,7 +117,7 @@ public class BulletHandler
 		 * @param charged    whether the revolver has the electron tube upgrade
 		 * @return the given or a custom entity
 		 */
-		default Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean charged)
+		default Entity getProjectile(@Nullable Player shooter, ItemStack cartridge, Entity projectile, boolean charged)
 		{
 			return projectile;
 		}
@@ -125,7 +125,7 @@ public class BulletHandler
 		/**
 		 * called when the bullet hits a target
 		 */
-		void onHitTarget(World world, RayTraceResult target, @Nullable UUID shooter, Entity projectile, boolean headshot);
+		void onHitTarget(Level world, HitResult target, @Nullable UUID shooter, Entity projectile, boolean headshot);
 
 		/**
 		 * @return the casing left when fired. Can return the static ItemStacks in BulletHandler
@@ -200,23 +200,23 @@ public class BulletHandler
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot)
+		public void onHitTarget(Level world, HitResult rtr, @Nullable UUID shooterUUID, Entity projectile, boolean headshot)
 		{
-			if(!(rtr instanceof EntityRayTraceResult))
+			if(!(rtr instanceof EntityHitResult))
 				return;
-			EntityRayTraceResult target = (EntityRayTraceResult)rtr;
+			EntityHitResult target = (EntityHitResult)rtr;
 			Entity hitEntity = target.getEntity();
-			if(!world.isRemote&&hitEntity!=null&&damageSourceGetter!=null)
+			if(!world.isClientSide&&hitEntity!=null&&damageSourceGetter!=null)
 			{
 				Entity shooter = null;
 				if(shooterUUID!=null)
-					shooter = world.getPlayerByUuid(shooterUUID);
-				if(hitEntity.attackEntityFrom(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(hitEntity, headshot)))
+					shooter = world.getPlayerByUUID(shooterUUID);
+				if(hitEntity.hurt(damageSourceGetter.getSource(projectile, shooter, hitEntity), getDamage(hitEntity, headshot)))
 				{
 					if(resetHurt)
-						hitEntity.hurtResistantTime = 0;
+						hitEntity.invulnerableTime = 0;
 					if(setFire)
-						hitEntity.setFire(3);
+						hitEntity.setSecondsOnFire(3);
 				}
 			}
 		}

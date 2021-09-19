@@ -13,28 +13,33 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.items.PotionBucketItem;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.*;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.ChatFormatting;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
@@ -71,11 +76,11 @@ public class PotionFluid extends Fluid
 		return fromTag(stack.getTag());
 	}
 
-	public static Potion fromTag(@Nullable CompoundNBT tag)
+	public static Potion fromTag(@Nullable CompoundTag tag)
 	{
 		if(tag==null||!tag.contains("Potion", NBT.TAG_STRING))
 			return Potions.WATER;
-		ResourceLocation name = ResourceLocation.tryCreate(tag.getString("Potion"));
+		ResourceLocation name = ResourceLocation.tryParse(tag.getString("Potion"));
 		if(name==null)
 			return Potions.WATER;
 		Potion result = ForgeRegistries.POTION_TYPES.getValue(name);
@@ -84,13 +89,13 @@ public class PotionFluid extends Fluid
 
 	@Nonnull
 	@Override
-	public Item getFilledBucket()
+	public Item getBucket()
 	{
 		return Items.AIR;
 	}
 
 	@Override
-	protected boolean canDisplace(@Nonnull FluidState fluidState, @Nonnull IBlockReader blockReader,
+	protected boolean canBeReplacedWith(@Nonnull FluidState fluidState, @Nonnull BlockGetter blockReader,
 								  @Nonnull BlockPos pos, @Nonnull Fluid fluid, @Nonnull Direction direction)
 	{
 		return true;
@@ -98,13 +103,13 @@ public class PotionFluid extends Fluid
 
 	@Nonnull
 	@Override
-	protected Vector3d getFlow(@Nonnull IBlockReader blockReader, @Nonnull BlockPos pos, @Nonnull FluidState fluidState)
+	protected Vec3 getFlow(@Nonnull BlockGetter blockReader, @Nonnull BlockPos pos, @Nonnull FluidState fluidState)
 	{
-		return Vector3d.ZERO;
+		return Vec3.ZERO;
 	}
 
 	@Override
-	public int getTickRate(IWorldReader p_205569_1_)
+	public int getTickDelay(LevelReader p_205569_1_)
 	{
 		return 0;
 	}
@@ -116,22 +121,22 @@ public class PotionFluid extends Fluid
 	}
 
 	@Override
-	public float getActualHeight(@Nonnull FluidState p_215662_1_, @Nonnull IBlockReader p_215662_2_, @Nonnull BlockPos p_215662_3_)
+	public float getHeight(@Nonnull FluidState p_215662_1_, @Nonnull BlockGetter p_215662_2_, @Nonnull BlockPos p_215662_3_)
 	{
 		return 0;
 	}
 
 	@Override
-	public float getHeight(@Nonnull FluidState p_223407_1_)
+	public float getOwnHeight(@Nonnull FluidState p_223407_1_)
 	{
 		return 0;
 	}
 
 	@Nonnull
 	@Override
-	protected BlockState getBlockState(@Nonnull FluidState state)
+	protected BlockState createLegacyBlock(@Nonnull FluidState state)
 	{
-		return Blocks.AIR.getDefaultState();
+		return Blocks.AIR.defaultBlockState();
 	}
 
 	@Override
@@ -141,16 +146,16 @@ public class PotionFluid extends Fluid
 	}
 
 	@Override
-	public int getLevel(@Nonnull FluidState state)
+	public int getAmount(@Nonnull FluidState state)
 	{
 		return 0;
 	}
 
 	@Nonnull
 	@Override
-	public VoxelShape func_215664_b(@Nonnull FluidState p_215664_1_, @Nonnull IBlockReader p_215664_2_, @Nonnull BlockPos p_215664_3_)
+	public VoxelShape getShape(@Nonnull FluidState p_215664_1_, @Nonnull BlockGetter p_215664_2_, @Nonnull BlockPos p_215664_3_)
 	{
-		return VoxelShapes.empty();
+		return Shapes.empty();
 	}
 
 	@Override
@@ -160,32 +165,32 @@ public class PotionFluid extends Fluid
 		return new PotionFluidAttributes(builder, this);
 	}
 
-	public void addInformation(FluidStack fluidStack, List<ITextComponent> tooltip)
+	public void addInformation(FluidStack fluidStack, List<Component> tooltip)
 	{
 		if(fluidStack!=null&&fluidStack.hasTag())
 		{
-			List<EffectInstance> effects = PotionUtils.getEffectsFromTag(fluidStack.getTag());
+			List<MobEffectInstance> effects = PotionUtils.getAllEffects(fluidStack.getTag());
 			if(effects.isEmpty())
-				tooltip.add(new TranslationTextComponent("effect.none").mergeStyle(TextFormatting.GRAY));
+				tooltip.add(new TranslatableComponent("effect.none").withStyle(ChatFormatting.GRAY));
 			else
 			{
-				for(EffectInstance instance : effects)
+				for(MobEffectInstance instance : effects)
 				{
-					IFormattableTextComponent itextcomponent = new TranslationTextComponent(instance.getEffectName());
-					Effect effect = instance.getPotion();
+					MutableComponent itextcomponent = new TranslatableComponent(instance.getDescriptionId());
+					MobEffect effect = instance.getEffect();
 					if(instance.getAmplifier() > 0)
-						itextcomponent.appendString(" ").appendSibling(new TranslationTextComponent("potion.potency."+instance.getAmplifier()));
+						itextcomponent.append(" ").append(new TranslatableComponent("potion.potency."+instance.getAmplifier()));
 					if(instance.getDuration() > 20)
-						itextcomponent.appendString(" (").appendString(EffectUtils.getPotionDurationString(instance, 1)).appendString(")");
+						itextcomponent.append(" (").append(MobEffectUtil.formatDuration(instance, 1)).append(")");
 
-					tooltip.add(itextcomponent.mergeStyle(effect.getEffectType().getColor()));
+					tooltip.add(itextcomponent.withStyle(effect.getCategory().getTooltipFormatting()));
 				}
 			}
-			Potion potionType = PotionUtils.getPotionTypeFromNBT(fluidStack.getTag());
+			Potion potionType = PotionUtils.getPotion(fluidStack.getTag());
 			if(potionType!=Potions.EMPTY)
 			{
 				String modID = potionType.getRegistryName().getNamespace();
-				tooltip.add(new TranslationTextComponent(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).mergeStyle(TextFormatting.DARK_GRAY));
+				tooltip.add(new TranslatableComponent(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).withStyle(ChatFormatting.DARK_GRAY));
 			}
 		}
 	}
@@ -198,11 +203,11 @@ public class PotionFluid extends Fluid
 		}
 
 		@Override
-		public ITextComponent getDisplayName(FluidStack stack)
+		public Component getDisplayName(FluidStack stack)
 		{
 			if(stack==null||!stack.hasTag())
 				return super.getDisplayName(stack);
-			return new TranslationTextComponent(PotionUtils.getPotionTypeFromNBT(stack.getTag()).getNamePrefixed("item.minecraft.potion.effect."));
+			return new TranslatableComponent(PotionUtils.getPotion(stack.getTag()).getName("item.minecraft.potion.effect."));
 		}
 
 		@Override
@@ -210,7 +215,7 @@ public class PotionFluid extends Fluid
 		{
 			if(stack==null||!stack.hasTag())
 				return 0xff0000ff;
-			return 0xff000000|PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromTag(stack.getTag()));
+			return 0xff000000|PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag()));
 		}
 
 		@Override

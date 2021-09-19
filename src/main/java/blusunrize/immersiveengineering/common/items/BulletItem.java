@@ -25,25 +25,29 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.AreaEffectCloudEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.FireworkRocketEntity;
-import net.minecraft.item.*;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.Explosion.Mode;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.AreaEffectCloud;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.FireworkRocketEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.LingeringPotionItem;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.SplashPotionItem;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Explosion.BlockInteraction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -108,7 +112,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				new ResourceLocation("immersiveengineering:item/bullet_buckshot"))
 		{
 			@Override
-			public int getProjectileCount(PlayerEntity shooter)
+			public int getProjectileCount(Player shooter)
 			{
 				return 10;
 			}
@@ -117,16 +121,16 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet(HIGH_EXPLOSIVE, new BulletHandler.DamagingBullet(null, 0, () -> BulletHandler.emptyCasing, new ResourceLocation("immersiveengineering:item/bullet_he"))
 		{
 			@Override
-			public void onHitTarget(World world, RayTraceResult target, UUID shooterId, Entity projectile, boolean headshot)
+			public void onHitTarget(Level world, HitResult target, UUID shooterId, Entity projectile, boolean headshot)
 			{
 				Entity shooter = null;
 				if(shooterId!=null)
-					shooter = world.getPlayerByUuid(shooterId);
-				world.createExplosion(shooter, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), 2, Mode.NONE);
+					shooter = world.getPlayerByUUID(shooterId);
+				world.explode(shooter, projectile.getX(), projectile.getY(), projectile.getZ(), 2, BlockInteraction.NONE);
 			}
 
 			@Override
-			public Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean charged)
+			public Entity getProjectile(@Nullable Player shooter, ItemStack cartridge, Entity projectile, boolean charged)
 			{
 				if(projectile instanceof RevolvershotEntity)
 				{
@@ -153,7 +157,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 			protected float getDamage(Entity hitEntity, boolean headshot)
 			{
 				float dmg = super.getDamage(hitEntity, headshot);
-				if(hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isEntityUndead())
+				if(hitEntity instanceof LivingEntity&&((LivingEntity)hitEntity).isInvertedHealAndHarm())
 					dmg *= 1.5;
 				return dmg;
 			}
@@ -168,16 +172,16 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 				new ResourceLocation("immersiveengineering:item/bullet_dragons_breath"))
 		{
 			@Override
-			public int getProjectileCount(PlayerEntity shooter)
+			public int getProjectileCount(Player shooter)
 			{
 				return 30;
 			}
 
 			@Override
-			public Entity getProjectile(PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean electro)
+			public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
 			{
 				((RevolvershotEntity)projectile).setTickLimit(10);
-				projectile.setFire(3);
+				projectile.setSecondsOnFire(3);
 				return projectile;
 			}
 		});
@@ -198,20 +202,20 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		type.addTooltip(stack, world, list, flag);
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
+	public Component getName(@Nonnull ItemStack stack)
 	{
 		String s = "item.immersiveengineering.bullet.";
 		String key = getRegistryName().getPath();
 		s += key;
 		s = type.getTranslationKey(stack, s);
-		return new TranslationTextComponent(s);
+		return new TranslatableComponent(s);
 	}
 
 	@Override
@@ -269,78 +273,78 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public Entity getProjectile(PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean electro)
+		public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
 			((RevolvershotEntity)projectile).bulletPotion = ItemNBTHelper.getItemStack(cartridge, "potion");
 			return projectile;
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, UUID shooterUUID, Entity projectile, boolean headshot)
+		public void onHitTarget(Level world, HitResult target, UUID shooterUUID, Entity projectile, boolean headshot)
 		{
 			super.onHitTarget(world, target, shooterUUID, projectile, headshot);
 			RevolvershotEntity bullet = (RevolvershotEntity)projectile;
 			if(!bullet.bulletPotion.isEmpty()&&bullet.bulletPotion.hasTag())
 			{
-				Potion potionType = PotionUtils.getPotionFromItem(bullet.bulletPotion);
-				List<EffectInstance> effects = PotionUtils.getEffectsFromStack(bullet.bulletPotion);
+				Potion potionType = PotionUtils.getPotion(bullet.bulletPotion);
+				List<MobEffectInstance> effects = PotionUtils.getMobEffects(bullet.bulletPotion);
 				LivingEntity shooter = null;
 				if(shooterUUID!=null)
-					shooter = world.getPlayerByUuid(shooterUUID);
+					shooter = world.getPlayerByUUID(shooterUUID);
 				if(effects!=null)
 					if(bullet.bulletPotion.getItem() instanceof LingeringPotionItem)
 					{
-						AreaEffectCloudEntity entityareaeffectcloud = new AreaEffectCloudEntity(bullet.world, bullet.getPosX(), bullet.getPosY(), bullet.getPosZ());
+						AreaEffectCloud entityareaeffectcloud = new AreaEffectCloud(bullet.level, bullet.getX(), bullet.getY(), bullet.getZ());
 						entityareaeffectcloud.setOwner(shooter);
 						entityareaeffectcloud.setRadius(3.0F);
 						entityareaeffectcloud.setRadiusOnUse(-0.5F);
 						entityareaeffectcloud.setWaitTime(10);
 						entityareaeffectcloud.setRadiusPerTick(-entityareaeffectcloud.getRadius()/(float)entityareaeffectcloud.getDuration());
 						entityareaeffectcloud.setPotion(potionType);
-						for(EffectInstance potioneffect : effects)
-							entityareaeffectcloud.addEffect(new EffectInstance(potioneffect.getPotion(), potioneffect.getDuration(), potioneffect.getAmplifier()));
-						bullet.world.addEntity(entityareaeffectcloud);
+						for(MobEffectInstance potioneffect : effects)
+							entityareaeffectcloud.addEffect(new MobEffectInstance(potioneffect.getEffect(), potioneffect.getDuration(), potioneffect.getAmplifier()));
+						bullet.level.addFreshEntity(entityareaeffectcloud);
 					}
 					else if(bullet.bulletPotion.getItem() instanceof SplashPotionItem)
 					{
-						List<LivingEntity> livingEntities = bullet.world.getEntitiesWithinAABB(LivingEntity.class, bullet.getBoundingBox().grow(4.0D, 2.0D, 4.0D));
+						List<LivingEntity> livingEntities = bullet.level.getEntitiesOfClass(LivingEntity.class, bullet.getBoundingBox().inflate(4.0D, 2.0D, 4.0D));
 						if(livingEntities!=null&&!livingEntities.isEmpty())
 							for(LivingEntity living : livingEntities)
-								if(living.canBeHitWithPotion())
+								if(living.isAffectedByPotions())
 								{
-									double dist = bullet.getDistanceSq(living);
+									double dist = bullet.distanceToSqr(living);
 									if(dist < 16D)
 									{
 										double dist2 = 1-Math.sqrt(dist)/4D;
-										if(target instanceof EntityRayTraceResult&&living==((EntityRayTraceResult)target).getEntity())
+										if(target instanceof EntityHitResult&&living==((EntityHitResult)target).getEntity())
 											dist2 = 1D;
-										for(EffectInstance p : effects)
-											if(p.getPotion().isInstant())
-												p.getPotion().affectEntity(bullet, shooter, living, p.getAmplifier(), dist2);
+										for(MobEffectInstance p : effects)
+											if(p.getEffect().isInstantenous())
+												p.getEffect().applyInstantenousEffect(bullet, shooter, living, p.getAmplifier(), dist2);
 											else
 											{
 												int j = (int)(dist2*p.getDuration()+.5D);
 												if(j > 20)
-													living.addPotionEffect(new EffectInstance(p.getPotion(), j, p.getAmplifier()));
+													living.addEffect(new MobEffectInstance(p.getEffect(), j, p.getAmplifier()));
 											}
 									}
 								}
 
 					}
-					else if(target instanceof EntityRayTraceResult&&((EntityRayTraceResult)target).getEntity() instanceof LivingEntity)
-						for(EffectInstance p : effects)
+					else if(target instanceof EntityHitResult&&((EntityHitResult)target).getEntity() instanceof LivingEntity)
+						for(MobEffectInstance p : effects)
 						{
 							if(p.getDuration() < 1)
-								p = new EffectInstance(p.getPotion(), 1);
-							((LivingEntity)((EntityRayTraceResult)target).getEntity()).addPotionEffect(p);
+								p = new MobEffectInstance(p.getEffect(), 1);
+							((LivingEntity)((EntityHitResult)target).getEntity()).addEffect(p);
 						}
-				world.playEvent(2002, bullet.getPosition(), PotionUtils.getPotionColor(potionType));
+				world.levelEvent(2002, bullet.blockPosition(), PotionUtils.getColor(potionType));
 			}
 		}
 
 
 		@Override
-		public void addTooltip(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flag)
+		public void addTooltip(ItemStack stack, Level world, List<Component> list, TooltipFlag flag)
 		{
 			ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
 			if(!pot.isEmpty()&&pot.getItem() instanceof PotionItem)
@@ -353,7 +357,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 			if(layer==1)
 			{
 				ItemStack pot = ItemNBTHelper.getItemStack(stack, "potion");
-				return pot.isEmpty()?0xff385dc6: PotionUtils.getPotionColorFromEffectList(PotionUtils.getEffectsFromStack(pot));
+				return pot.isEmpty()?0xff385dc6: PotionUtils.getColor(PotionUtils.getMobEffects(pot));
 			}
 			return 0xffffffff;
 		}
@@ -368,14 +372,14 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public Entity getProjectile(PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean electro)
+		public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			RevolvershotFlareEntity flare = shooter!=null?new RevolvershotFlareEntity(projectile.world, shooter,
-					projectile.getMotion().x*1.5,
-					projectile.getMotion().y*1.5,
-					projectile.getMotion().z*1.5, this, cartridge):
-					new RevolvershotFlareEntity(projectile.world, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), 0, 0, 0, this);
-			flare.setMotion(projectile.getMotion());
+			RevolvershotFlareEntity flare = shooter!=null?new RevolvershotFlareEntity(projectile.level, shooter,
+					projectile.getDeltaMovement().x*1.5,
+					projectile.getDeltaMovement().y*1.5,
+					projectile.getDeltaMovement().z*1.5, this, cartridge):
+					new RevolvershotFlareEntity(projectile.level, projectile.getX(), projectile.getY(), projectile.getZ(), 0, 0, 0, this);
+			flare.setDeltaMovement(projectile.getDeltaMovement());
 			flare.bulletElectro = electro;
 			flare.colour = this.getColour(cartridge, 1);
 			flare.setColourSynced();
@@ -383,7 +387,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(Level world, HitResult target, UUID shooter, Entity projectile, boolean headshot)
 		{
 		}
 
@@ -400,13 +404,13 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public void addTooltip(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flag)
+		public void addTooltip(ItemStack stack, Level world, List<Component> list, TooltipFlag flag)
 		{
 			if(stack.getItem() instanceof IColouredItem)
 			{
 				int color = ((IColouredItem)stack.getItem()).getColourForIEItem(stack, 1);
 				list.add(FontUtils.withAppendColoredColour(
-						new TranslationTextComponent(Lib.DESC_INFO+"bullet.flareColour"),
+						new TranslatableComponent(Lib.DESC_INFO+"bullet.flareColour"),
 						color
 				));
 			}
@@ -436,13 +440,13 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public Entity getProjectile(PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean electro)
+		public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
 			ItemStack fireworkStack = new ItemStack(Items.FIREWORK_ROCKET);
 			fireworkStack.setTag(cartridge.hasTag()?cartridge.getTag().copy(): null);
-			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.world, fireworkStack, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), true);
-			Vector3d vector = projectile.getMotion();
-			firework.shoot(vector.getX(), vector.getY(), vector.getZ(), 1.6f, 1.0f);
+			FireworkRocketEntity firework = new FireworkRocketEntity(projectile.level, fireworkStack, projectile.getX(), projectile.getY(), projectile.getZ(), true);
+			Vec3 vector = projectile.getDeltaMovement();
+			firework.shoot(vector.x(), vector.y(), vector.z(), 1.6f, 1.0f);
 			return firework;
 		}
 
@@ -453,7 +457,7 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(Level world, HitResult target, UUID shooter, Entity projectile, boolean headshot)
 		{
 		}
 
@@ -470,9 +474,9 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public void addTooltip(ItemStack stack, World world, List<ITextComponent> list, ITooltipFlag flag)
+		public void addTooltip(ItemStack stack, Level world, List<Component> list, TooltipFlag flag)
 		{
-			Items.FIREWORK_ROCKET.addInformation(stack, world, list, flag);
+			Items.FIREWORK_ROCKET.appendHoverText(stack, world, list, flag);
 		}
 
 		@Override
@@ -499,11 +503,11 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public Entity getProjectile(PlayerEntity shooter, ItemStack cartridge, Entity projectile, boolean electro)
+		public Entity getProjectile(Player shooter, ItemStack cartridge, Entity projectile, boolean electro)
 		{
-			RevolvershotHomingEntity shot = shooter!=null?new RevolvershotHomingEntity(projectile.world, shooter,
-					projectile.getMotion().x*1.5, projectile.getMotion().y*1.5, projectile.getMotion().z*1.5, this): new RevolvershotHomingEntity(projectile.world, projectile.getPosX(), projectile.getPosY(), projectile.getPosZ(), 0, 0, 0, this);
-			shot.setMotion(projectile.getMotion());
+			RevolvershotHomingEntity shot = shooter!=null?new RevolvershotHomingEntity(projectile.level, shooter,
+					projectile.getDeltaMovement().x*1.5, projectile.getDeltaMovement().y*1.5, projectile.getDeltaMovement().z*1.5, this): new RevolvershotHomingEntity(projectile.level, projectile.getX(), projectile.getY(), projectile.getZ(), 0, 0, 0, this);
+			shot.setDeltaMovement(projectile.getDeltaMovement());
 			shot.bulletElectro = electro;
 			return shot;
 		}
@@ -526,34 +530,34 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		}
 
 		@Override
-		public void onHitTarget(World world, RayTraceResult target, UUID shooter, Entity projectile, boolean headshot)
+		public void onHitTarget(Level world, HitResult target, UUID shooter, Entity projectile, boolean headshot)
 		{
 			super.onHitTarget(world, target, shooter, projectile, headshot);
-			Vector3d v = projectile.getMotion().scale(-1);
+			Vec3 v = projectile.getDeltaMovement().scale(-1);
 			int split = 6;
 			for(int i = 0; i < split; i++)
 			{
 				float angle = i*(360f/split);
 				Matrix4 matrix = new Matrix4();
 				matrix.rotate(angle, v.x, v.y, v.z);
-				Vector3d vecDir = new Vector3d(0, 1, 0);
+				Vec3 vecDir = new Vec3(0, 1, 0);
 				vecDir = matrix.apply(vecDir);
 
 				WolfpackShotEntity bullet;
-				PlayerEntity player = shooter!=null?world.getPlayerByUuid(shooter): null;
+				Player player = shooter!=null?world.getPlayerByUUID(shooter): null;
 				if(player!=null)
 					bullet = new WolfpackShotEntity(world, player, vecDir.x*1.5, vecDir.y*1.5, vecDir.z*1.5, this);
 				else
 					bullet = new WolfpackShotEntity(world, 0, 0, 0, 0, 0, 0, this);
-				if(target instanceof EntityRayTraceResult)
+				if(target instanceof EntityHitResult)
 				{
-					EntityRayTraceResult eTarget = (EntityRayTraceResult)target;
+					EntityHitResult eTarget = (EntityHitResult)target;
 					if(eTarget.getEntity() instanceof LivingEntity)
 						bullet.targetOverride = (LivingEntity)eTarget.getEntity();
 				}
-				bullet.setPosition(target.getHitVec().x+vecDir.x, target.getHitVec().y+vecDir.y, target.getHitVec().z+vecDir.z);
-				bullet.setMotion(vecDir.scale(.375));
-				world.addEntity(bullet);
+				bullet.setPos(target.getLocation().x+vecDir.x, target.getLocation().y+vecDir.y, target.getLocation().z+vecDir.z);
+				bullet.setDeltaMovement(vecDir.scale(.375));
+				world.addFreshEntity(bullet);
 			}
 		}
 

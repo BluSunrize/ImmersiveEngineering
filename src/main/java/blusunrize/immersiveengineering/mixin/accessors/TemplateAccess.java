@@ -9,20 +9,20 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.Template.Palette;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.Palette;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
 import java.util.List;
 
-@Mixin(Template.class)
+@Mixin(StructureTemplate.class)
 public interface TemplateAccess
 {
 	@Accessor
 	void setSize(BlockPos size);
 
 	@Accessor
-	List<Palette> getBlocks();
+	List<Palette> getPalettes();
 }

@@ -13,14 +13,13 @@ import com.blamejared.crafttweaker.api.actions.IRuntimeAction;
 import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl_native.fluid.ExpandFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.util.ResourceLocation;
-
 import java.util.Iterator;
 import java.util.Map;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.material.Fluid;
 
-public abstract class AbstractActionGenericRemoveRecipe<T extends IRecipe<?>> implements IRuntimeAction
+public abstract class AbstractActionGenericRemoveRecipe<T extends Recipe<?>> implements IRuntimeAction
 {
 
 	private final IRecipeManager manager;
@@ -46,7 +45,7 @@ public abstract class AbstractActionGenericRemoveRecipe<T extends IRecipe<?>> im
 	public void apply()
 	{
 		int count = 0;
-		final Iterator<Map.Entry<ResourceLocation, IRecipe<?>>> iterator = manager.getRecipes()
+		final Iterator<Map.Entry<ResourceLocation, Recipe<?>>> iterator = manager.getRecipes()
 				.entrySet()
 				.iterator();
 
@@ -54,7 +53,7 @@ public abstract class AbstractActionGenericRemoveRecipe<T extends IRecipe<?>> im
 		{
 			while(iterator.hasNext())
 			{
-				final IRecipe<?> recipe = iterator.next().getValue();
+				final Recipe<?> recipe = iterator.next().getValue();
 				if(recipe instanceof GeneratedListRecipe)
 				{
 					CraftTweakerAPI.logDebug("Skipping GeneratedListRecipe '%s'", recipe.getId());

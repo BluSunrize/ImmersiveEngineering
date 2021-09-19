@@ -45,7 +45,7 @@ public class ShaderHelper
 		if(shader!=0)
 		{
 			int time = ARBShaderObjects.glGetUniformLocationARB(shader, "time");
-			ARBShaderObjects.glUniform1iARB(time, ClientUtils.mc().player.ticksExisted);
+			ARBShaderObjects.glUniform1iARB(time, ClientUtils.mc().player.tickCount);
 
 			if(callback!=null)
 				callback.accept(shader);

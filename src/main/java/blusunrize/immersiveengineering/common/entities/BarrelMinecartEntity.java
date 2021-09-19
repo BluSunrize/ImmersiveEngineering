@@ -13,17 +13,17 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenBarrelTileEntity;
 import blusunrize.immersiveengineering.common.items.IEItems;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
@@ -34,8 +34,8 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntity>
 {
 	public static final EntityType<BarrelMinecartEntity> TYPE = Builder
-			.<BarrelMinecartEntity>create(BarrelMinecartEntity::new, EntityClassification.MISC)
-			.size(0.98F, 0.7F)
+			.<BarrelMinecartEntity>of(BarrelMinecartEntity::new, MobCategory.MISC)
+			.sized(0.98F, 0.7F)
 			.build(ImmersiveEngineering.MODID+":cart_woodenbarrel");
 
 	static
@@ -43,12 +43,12 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 		TYPE.setRegistryName(ImmersiveEngineering.MODID, "cart_woodenbarrel");
 	}
 
-	public BarrelMinecartEntity(EntityType<?> type, World world, double x, double y, double z)
+	public BarrelMinecartEntity(EntityType<?> type, Level world, double x, double y, double z)
 	{
 		super(type, world, x, y, z);
 	}
 
-	public BarrelMinecartEntity(EntityType<?> type, World world)
+	public BarrelMinecartEntity(EntityType<?> type, Level world)
 	{
 		super(type, world);
 	}
@@ -62,7 +62,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	@Override
 	public void writeTileToItem(ItemStack itemStack)
 	{
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		this.containedTileEntity.writeTank(tag, true);
 		if(!tag.isEmpty())
 			itemStack.setTag(tag);
@@ -75,17 +75,17 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	}
 
 	@Override
-	public ActionResultType processInitialInteract(PlayerEntity player, Hand hand)
+	public InteractionResult interact(Player player, InteractionHand hand)
 	{
-		if(super.processInitialInteract(player, hand) == ActionResultType.SUCCESS)
-			return ActionResultType.SUCCESS;
-		ItemStack itemstack = player.getHeldItem(hand);
+		if(super.interact(player, hand) == InteractionResult.SUCCESS)
+			return InteractionResult.SUCCESS;
+		ItemStack itemstack = player.getItemInHand(hand);
 		if(FluidUtil.getFluidHandler(itemstack).isPresent())
 		{
 			this.containedTileEntity.interact(null, player, hand, itemstack, 0, 0, 0);
-			return ActionResultType.SUCCESS;//always return true to avoid placing lava in the world
+			return InteractionResult.SUCCESS;//always return true to avoid placing lava in the world
 		}
-		return ActionResultType.PASS;
+		return InteractionResult.PASS;
 	}
 
 	@Nonnull
@@ -109,9 +109,9 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelTileEntit
 	}
 
 	@Override
-	public BlockState getDisplayTile()
+	public BlockState getDisplayBlockState()
 	{
-		return IEBlocks.WoodenDevices.woodenBarrel.getDefaultState();
+		return IEBlocks.WoodenDevices.woodenBarrel.defaultBlockState();
 	}
 
 }

@@ -9,43 +9,43 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerData;
 
 /**
  * @author BluSunrize - 05.07.2017
  */
-public abstract class IEContainerScreen<C extends Container> extends ContainerScreen<C>
+public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends AbstractContainerScreen<C>
 {
-	public IEContainerScreen(C inventorySlotsIn, PlayerInventory inv, ITextComponent title)
+	public IEContainerScreen(C inventorySlotsIn, Inventory inv, Component title)
 	{
 		super(inventorySlotsIn, inv, title);
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mouseX, int mouseY, float partialTicks)
+	public void render(PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
-		this.playerInventoryTitleY = this.ySize-94;
+		this.inventoryLabelY = this.imageHeight-94;
 		this.renderBackground(transform);
 		super.render(transform, mouseX, mouseY, partialTicks);
-		this.renderHoveredTooltip(transform, mouseX, mouseY);
+		this.renderTooltip(transform, mouseX, mouseY);
 	}
 
 	protected boolean isMouseIn(int mouseX, int mouseY, int x, int y, int w, int h)
 	{
-		return mouseX >= guiLeft+x&&mouseY >= guiTop+y
-				&&mouseX < guiLeft+x+w&&mouseY < guiTop+y+h;
+		return mouseX >= leftPos+x&&mouseY >= topPos+y
+				&&mouseX < leftPos+x+w&&mouseY < topPos+y+h;
 	}
 
-	protected void clearIntArray(IIntArray ints)
+	protected void clearIntArray(ContainerData ints)
 	{
 		// Clear GUI ints, the sync code assumes that 0 is the initial state
-		for(int i = 0; i < ints.size(); ++i)
+		for(int i = 0; i < ints.getCount(); ++i)
 			ints.set(i, 0);
 	}
 

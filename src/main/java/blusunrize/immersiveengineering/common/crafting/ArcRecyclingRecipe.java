@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -51,10 +51,10 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		if(outputs==null)
 			return NonNullList.create();
 		float mod;
-		if(!input.isDamageable())
+		if(!input.isDamageableItem())
 			mod = 1;
 		else
-			mod = (input.getMaxDamage()-input.getDamage())/(float)input.getMaxDamage();
+			mod = (input.getMaxDamage()-input.getDamageValue())/(float)input.getMaxDamage();
 		NonNullList<ItemStack> outs = NonNullList.create();
 		for(Entry<ItemStack, Double> e : outputs.entrySet())
 		{

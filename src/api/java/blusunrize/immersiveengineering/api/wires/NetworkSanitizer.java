@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ChunkPos;
-import net.minecraft.world.IWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.world.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -23,11 +23,11 @@ import java.util.*;
 @EventBusSubscriber(modid = Lib.MODID)
 public class NetworkSanitizer
 {
-	private static final Map<IWorld, Set<ChunkPos>> toSanitize = new WeakHashMap<>();
+	private static final Map<LevelAccessor, Set<ChunkPos>> toSanitize = new WeakHashMap<>();
 
 	// TODO sanitize more errors? This seems to make the networks "validate-clean" for all cases of broken
 	// data I have
-	static void tick(IWorld w, GlobalWireNetwork global)
+	static void tick(LevelAccessor w, GlobalWireNetwork global)
 	{
 		synchronized(toSanitize)
 		{
@@ -37,14 +37,14 @@ public class NetworkSanitizer
 			for(Iterator<ChunkPos> iterator = relevant.iterator(); iterator.hasNext(); )
 			{
 				ChunkPos chunk = iterator.next();
-				if(!SafeChunkUtils.isChunkSafe(w, chunk.asBlockPos()))
+				if(!SafeChunkUtils.isChunkSafe(w, chunk.getWorldPosition()))
 					continue;
 				Collection<ConnectionPoint> extraCPs = new ArrayList<>();
 				Set<BlockPos> missingConnectors = new HashSet<>();
 				for(ConnectionPoint cp : global.getAllConnectorsIn(chunk))
 					if(!missingConnectors.contains(cp.getPosition()))
 					{
-						TileEntity inWorld = w.getTileEntity(cp.getPosition());
+						BlockEntity inWorld = w.getBlockEntity(cp.getPosition());
 						if(!(inWorld instanceof IImmersiveConnectable))
 							missingConnectors.add(cp.getPosition());
 						else

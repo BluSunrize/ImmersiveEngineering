@@ -12,13 +12,13 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.gui.ToolboxBlockContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
@@ -27,22 +27,22 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("toolbox");
 
-	public ToolboxBlockScreen(ToolboxBlockContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ToolboxBlockScreen(ToolboxBlockContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
-		this.ySize = 238;
+		this.imageHeight = 238;
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	public void render(PoseStack transform, int mx, int my, float partial)
 	{
 		super.render(transform, mx, my, partial);
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		ArrayList<Component> tooltip = new ArrayList<>();
 		int slot = -1;
-		for(int i = 0; i < this.container.slotCount; i++)
+		for(int i = 0; i < this.menu.slotCount; i++)
 		{
-			Slot s = this.container.getSlot(i);
-			if(!s.getHasStack()&&mx > guiLeft+s.xPos&&mx < guiLeft+s.xPos+16&&my > guiTop+s.yPos&&my < guiTop+s.yPos+16)
+			Slot s = this.menu.getSlot(i);
+			if(!s.hasItem()&&mx > leftPos+s.x&&mx < leftPos+s.x+16&&my > topPos+s.y&&my < topPos+s.y+16)
 				slot = i;
 		}
 		String ss = null;
@@ -50,18 +50,18 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
 			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_INFO+"toolbox."+ss),
-					TextFormatting.GRAY
+					new TranslatableComponent(Lib.DESC_INFO+"toolbox."+ss),
+					ChatFormatting.GRAY
 			));
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float par1, int par2, int par3)
+	protected void renderBg(PoseStack transform, float par1, int par2, int par3)
 	{
 		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop-17, 0, 0, 176, ySize+17);
+		this.blit(transform, leftPos, topPos-17, 0, 0, 176, imageHeight+17);
 	}
 
 }

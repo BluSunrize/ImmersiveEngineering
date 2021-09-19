@@ -16,19 +16,19 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -47,7 +47,7 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(!descPacket)
 		{
@@ -56,7 +56,7 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(!descPacket)
 		{
@@ -64,18 +64,18 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 		}
 	}
 
-	public void writeInv(CompoundNBT nbt, boolean toItem)
+	public void writeInv(CompoundTag nbt, boolean toItem)
 	{
 		boolean write = false;
-		ListNBT invList = new ListNBT();
+		ListTag invList = new ListTag();
 		for(int i = 0; i < this.inventory.size(); i++)
 			if(!this.inventory.get(i).isEmpty())
 			{
 				if(toItem)
 					write = true;
-				CompoundNBT itemTag = new CompoundNBT();
+				CompoundTag itemTag = new CompoundTag();
 				itemTag.putByte("Slot", (byte)i);
-				this.inventory.get(i).write(itemTag);
+				this.inventory.get(i).save(itemTag);
 				invList.add(itemTag);
 			}
 		if(!toItem||write)
@@ -84,13 +84,13 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 
 	@Override
 	@Nonnull
-	public ITextComponent getDisplayName()
+	public Component getDisplayName()
 	{
-		return new TranslationTextComponent("block.immersiveengineering.craftingtable");
+		return new TranslatableComponent("block.immersiveengineering.craftingtable");
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -103,7 +103,7 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 
 	@Nonnull
 	@Override
-	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player)
+	public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player)
 	{
 		return IInteractionObjectIE.super.createMenu(id, playerInventory, player);
 	}
@@ -129,7 +129,7 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 	}
 
 	private LazyOptional<IItemHandler> insertionCap = registerConstantCap(new IEInventoryHandler(27, this));
@@ -156,7 +156,7 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}

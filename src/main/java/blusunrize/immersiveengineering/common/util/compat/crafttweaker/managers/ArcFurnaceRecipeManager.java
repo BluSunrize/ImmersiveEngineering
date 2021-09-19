@@ -19,14 +19,14 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 
 /**
  * Allows you to add or remove arc furnace smelter recipes.
@@ -43,7 +43,7 @@ public class ArcFurnaceRecipeManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<ArcFurnaceRecipe> getRecipeType()
+	public RecipeType<ArcFurnaceRecipe> getRecipeType()
 	{
 		return ArcFurnaceRecipe.TYPE;
 	}

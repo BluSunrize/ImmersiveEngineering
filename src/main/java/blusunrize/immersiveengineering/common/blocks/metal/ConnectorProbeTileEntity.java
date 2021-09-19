@@ -14,28 +14,28 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
+import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.item.ItemFrameEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector4f;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.decoration.ItemFrame;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -57,7 +57,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	@Override
 	public void tick()
 	{
-		if(!world.isRemote&&world.getGameTime()%8!=((getPos().getX()^getPos().getZ())&8))
+		if(!level.isClientSide&&level.getGameTime()%8!=((getBlockPos().getX()^getBlockPos().getZ())&8))
 		{
 			int out = getComparatorSignal();
 			if(out!=lastOutput)
@@ -83,19 +83,19 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 
 	private int getComparatorSignal()
 	{
-		BlockPos pos = this.getPos().offset(getFacing());
-		BlockState state = world.getBlockState(pos);
-		if(state.hasComparatorInputOverride())
-			return state.getComparatorInputOverride(world, pos);
-		else if(state.isNormalCube(world, pos))
+		BlockPos pos = this.getBlockPos().relative(getFacing());
+		BlockState state = level.getBlockState(pos);
+		if(state.hasAnalogOutputSignal())
+			return state.getAnalogOutputSignal(level, pos);
+		else if(state.isRedstoneConductor(level, pos))
 		{
-			pos = pos.offset(getFacing());
-			state = world.getBlockState(pos);
-			if(state.hasComparatorInputOverride())
-				return state.getComparatorInputOverride(world, pos);
+			pos = pos.relative(getFacing());
+			state = level.getBlockState(pos);
+			if(state.hasAnalogOutputSignal())
+				return state.getAnalogOutputSignal(level, pos);
 			else if(state.getMaterial()==Material.AIR)
 			{
-				ItemFrameEntity entityitemframe = this.findItemFrame(world, getFacing(), pos);
+				ItemFrame entityitemframe = this.findItemFrame(level, getFacing(), pos);
 				if(entityitemframe!=null)
 					return entityitemframe.getAnalogOutput();
 			}
@@ -103,9 +103,9 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		return 0;
 	}
 
-	private ItemFrameEntity findItemFrame(World world, final Direction facing, BlockPos pos)
+	private ItemFrame findItemFrame(Level world, final Direction facing, BlockPos pos)
 	{
-		List<ItemFrameEntity> list = world.getEntitiesWithinAABB(ItemFrameEntity.class, new AxisAlignedBB(pos), entity -> entity!=null&&entity.getHorizontalFacing()==facing);
+		List<ItemFrame> list = world.getEntitiesOfClass(ItemFrame.class, new AABB(pos), entity -> entity!=null&&entity.getDirection()==facing);
 		return list.size()==1?list.get(0): null;
 	}
 
@@ -117,14 +117,14 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		ImmersiveEngineering.proxy.openTileScreen(Lib.GUIID_RedstoneProbe, this);
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		if(message.contains("redstoneChannel"))
 			redstoneChannel = DyeColor.byId(message.getInt("redstoneChannel"));
@@ -134,29 +134,29 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("redstoneChannelSending", redstoneChannelSending.getId());
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		redstoneChannelSending = DyeColor.byId(nbt.getInt("redstoneChannelSending"));
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
 		double conRadius = con.type.getRenderDiameter()/2;
-		return new Vector3d(.5+side.getXOffset()*(.375-conRadius), .5+side.getYOffset()*(.375-conRadius), .5+side.getZOffset()*(.375-conRadius));
+		return new Vec3(.5+side.getStepX()*(.375-conRadius), .5+side.getStepY()*(.375-conRadius), .5+side.getStepZ()*(.375-conRadius));
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		float wMin = .28125f;
 		float wMax = .71875f;
@@ -164,15 +164,15 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 		{
 			case UP:
 			case DOWN:
-				return VoxelShapes.create(wMin, 0, wMin, wMax, 1, wMax);
+				return Shapes.box(wMin, 0, wMin, wMax, 1, wMax);
 			case SOUTH:
 			case NORTH:
-				return VoxelShapes.create(wMin, wMin, 0, wMax, wMax, 1);
+				return Shapes.box(wMin, wMin, 0, wMax, wMax, 1);
 			case EAST:
 			case WEST:
-				return VoxelShapes.create(0, wMin, wMin, 1, wMax, wMax);
+				return Shapes.box(0, wMin, wMin, 1, wMax, wMax);
 		}
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -180,8 +180,8 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	public boolean shouldRenderGroup(BlockState object, String group)
 	{
 		if("glass".equals(group))
-			return MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent();
-		return MinecraftForgeClient.getRenderLayer()==RenderType.getCutout();
+			return MinecraftForgeClient.getRenderLayer()==RenderType.translucent();
+		return MinecraftForgeClient.getRenderLayer()==RenderType.cutout();
 	}
 
 	@OnlyIn(Dist.CLIENT)
@@ -190,12 +190,12 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	{
 		if("colour_in".equals(group))
 		{
-			float[] rgb = redstoneChannel.getColorComponentValues();
+			float[] rgb = redstoneChannel.getTextureDiffuseColors();
 			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
 		}
 		else if("colour_out".equals(group))
 		{
-			float[] rgb = redstoneChannelSending.getColorComponentValues();
+			float[] rgb = redstoneChannelSending.getTextureDiffuseColors();
 			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
 		}
 		return original;
@@ -208,18 +208,18 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	}
 
 	@Override
-	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
 	{
-		if(!Utils.isScrewdriver(player.getHeldItem(Hand.MAIN_HAND)))
+		if(!Utils.isScrewdriver(player.getItemInHand(InteractionHand.MAIN_HAND)))
 			return null;
-		return new ITextComponent[]{
-				new TranslationTextComponent(Lib.DESC_INFO+"redstoneChannel.rec", I18n.format("item.minecraft.firework_star."+redstoneChannel.getTranslationKey())),
-				new TranslationTextComponent(Lib.DESC_INFO+"redstoneChannel.send", I18n.format("item.minecraft.firework_star."+redstoneChannelSending.getTranslationKey()))
+		return new Component[]{
+				new TranslatableComponent(Lib.DESC_INFO+"redstoneChannel.rec", I18n.get("item.minecraft.firework_star."+redstoneChannel.getName())),
+				new TranslatableComponent(Lib.DESC_INFO+"redstoneChannel.send", I18n.get("item.minecraft.firework_star."+redstoneChannelSending.getName()))
 		};
 	}
 
 	@Override
-	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
+	public boolean useNixieFont(Player player, HitResult mop)
 	{
 		return false;
 	}

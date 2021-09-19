@@ -18,18 +18,18 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.gui.ModWorkbenchContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.opengl.GL11;
@@ -45,41 +45,41 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 
 	private final ModWorkbenchTileEntity workbench;
 
-	public ModWorkbenchScreen(ModWorkbenchContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ModWorkbenchScreen(ModWorkbenchContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
 		workbench = container.tile;
-		this.ySize = 168;
+		this.imageHeight = 168;
 	}
 
 	@Override
-	protected void sendMessage(CompoundNBT data)
+	protected void sendMessage(CompoundTag data)
 	{
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageTileSync(this.workbench, data));
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	public void render(PoseStack transform, int mx, int my, float partial)
 	{
 		super.render(transform, mx, my, partial);
-		for(int i = 0; i < container.slotCount; i++)
+		for(int i = 0; i < menu.slotCount; i++)
 		{
-			Slot s = container.getSlot(i);
-			if(s instanceof IESlot.BlueprintOutput&&!s.getHasStack())
+			Slot s = menu.getSlot(i);
+			if(s instanceof IESlot.BlueprintOutput&&!s.hasItem())
 			{
 				BlueprintCraftingRecipe recipe = ((IESlot.BlueprintOutput)s).recipe;
 				if(recipe!=null&&!recipe.output.isEmpty())
-					if(isPointInRegion(s.xPos, s.yPos, 16, 16, mx, my))
+					if(isHovering(s.x, s.y, 16, 16, mx, my))
 					{
-						List<ITextComponent> tooltip = new ArrayList<>();
+						List<Component> tooltip = new ArrayList<>();
 						tooltip.add(TextUtils.applyFormat(
-								recipe.output.getDisplayName().deepCopy(),
+								recipe.output.getHoverName().copy(),
 								recipe.output.getRarity().color
 						));
 						List<ItemStack> inputs = new ArrayList<>();
 						for(IngredientWithSize stack : recipe.inputs)
 						{
-							ItemStack toAdd = ItemHandlerHelper.copyStackWithSize(stack.getRandomizedExampleStack(mc().player.ticksExisted), stack.getCount());
+							ItemStack toAdd = ItemHandlerHelper.copyStackWithSize(stack.getRandomizedExampleStack(mc().player.tickCount), stack.getCount());
 							if(toAdd.isEmpty())
 								continue;
 							boolean isNew = true;
@@ -95,12 +95,12 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 						}
 						for(ItemStack ss : inputs)
 							tooltip.add(TextUtils.applyFormat(
-									new StringTextComponent(ss.getCount()+"x ").appendSibling(ss.getDisplayName()),
-									TextFormatting.GRAY
+									new TextComponent(ss.getCount()+"x ").append(ss.getHoverName()),
+									ChatFormatting.GRAY
 							));
 
 						GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
-						RenderHelper.enableStandardItemLighting();
+						Lighting.turnBackOn();
 					}
 			}
 		}
@@ -108,32 +108,32 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void renderBg(PoseStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 
-		for(int i = 0; i < container.slotCount; i++)
+		for(int i = 0; i < menu.slotCount; i++)
 		{
-			Slot s = container.getSlot(i);
+			Slot s = menu.getSlot(i);
 			GuiHelper.drawSlot(
-					transform, guiLeft+s.xPos, guiTop+s.yPos, 16, 16, 0x77222222, 0x77444444, 0x77999999
+					transform, leftPos+s.x, topPos+s.y, 16, 16, 0x77222222, 0x77444444, 0x77999999
 			);
 		}
 
 		ItemRenderer itemRender = mc().getItemRenderer();
-		for(int i = 0; i < container.slotCount; i++)
+		for(int i = 0; i < menu.slotCount; i++)
 		{
-			Slot s = container.getSlot(i);
-			if(s instanceof IESlot.BlueprintOutput&&!s.getHasStack())
+			Slot s = menu.getSlot(i);
+			if(s instanceof IESlot.BlueprintOutput&&!s.hasItem())
 			{
 				ItemStack ghostStack = ((IESlot.BlueprintOutput)s).recipe.output;
 				if(!ghostStack.isEmpty())
 				{
-					itemRender.renderItemAndEffectIntoGUI(ghostStack, guiLeft+s.xPos, guiTop+s.yPos);
+					itemRender.renderAndDecorateItem(ghostStack, leftPos+s.x, topPos+s.y);
 					RenderSystem.depthFunc(GL11.GL_GREATER);
-					fill(transform, guiLeft+s.xPos, guiTop+s.yPos, guiLeft+s.xPos+16, guiTop+s.yPos+16, 0xbb333333);
+					fill(transform, leftPos+s.x, topPos+s.y, leftPos+s.x+16, topPos+s.y+16, 0xbb333333);
 					RenderSystem.depthFunc(GL11.GL_LEQUAL);
 				}
 			}

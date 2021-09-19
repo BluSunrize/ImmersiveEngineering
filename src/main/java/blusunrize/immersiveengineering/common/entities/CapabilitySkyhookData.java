@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.IntNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -121,15 +121,15 @@ public class CapabilitySkyhookData
 		CapabilityManager.INSTANCE.register(SkyhookUserData.class, new Capability.IStorage<SkyhookUserData>()
 		{
 			@Override
-			public INBT writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side)
+			public Tag writeNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side)
 			{
-				return IntNBT.valueOf(instance.status.ordinal());
+				return IntTag.valueOf(instance.status.ordinal());
 			}
 
 			@Override
-			public void readNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side, INBT nbt)
+			public void readNBT(Capability<SkyhookUserData> capability, SkyhookUserData instance, Direction side, Tag nbt)
 			{
-				instance.status = SkyhookStatus.values()[((IntNBT)nbt).getInt()];
+				instance.status = SkyhookStatus.values()[((IntTag)nbt).getAsInt()];
 			}
 		}, SkyhookUserData::new);
 	}

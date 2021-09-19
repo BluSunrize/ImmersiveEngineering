@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.wires.testutils.DummyProxyProvider;
 import blusunrize.immersiveengineering.api.wires.testutils.DummySyncManager;
 import blusunrize.immersiveengineering.api.wires.testutils.DummyWireType;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.core.BlockPos;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +23,7 @@ public class GlobalWireNetworkTest
 	private GlobalWireNetwork global;
 	private final WireType wiretype = new DummyWireType(0.01);
 	private final BlockPos posA = BlockPos.ZERO;
-	private final BlockPos posB = BlockPos.ZERO.up();
+	private final BlockPos posB = BlockPos.ZERO.above();
 	private final ConnectionPoint cpA0 = new ConnectionPoint(posA, 0);
 	private final ConnectionPoint cpB0 = new ConnectionPoint(posB, 0);
 	private final ConnectionPoint cpB1 = new ConnectionPoint(posB, 1);

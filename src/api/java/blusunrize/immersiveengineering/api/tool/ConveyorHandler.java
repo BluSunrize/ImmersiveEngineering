@@ -15,29 +15,29 @@ import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.mojang.math.Transformation;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
-import net.minecraft.block.Block;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -60,8 +60,8 @@ public class ConveyorHandler
 {
 	public static final Map<ResourceLocation, Class<? extends IConveyorBelt>> classRegistry = new LinkedHashMap<>();
 	public static final Map<ResourceLocation, Set<ResourceLocation>> substituteRegistry = new HashMap<>();
-	public static final Map<ResourceLocation, Function<TileEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<>();
-	public static final Map<ResourceLocation, TileEntityType<? extends TileEntity>> tileEntities = new LinkedHashMap<>();
+	public static final Map<ResourceLocation, Function<BlockEntity, ? extends IConveyorBelt>> functionRegistry = new LinkedHashMap<>();
+	public static final Map<ResourceLocation, BlockEntityType<? extends BlockEntity>> tileEntities = new LinkedHashMap<>();
 	public static final Map<Class<? extends IConveyorBelt>, ResourceLocation> reverseClassRegistry = new LinkedHashMap<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionFunctions = new HashSet<>();
 	public static final Set<BiConsumer<Entity, IConveyorTile>> magnetSuppressionReverse = new HashSet<>();
@@ -81,7 +81,7 @@ public class ConveyorHandler
 	{
 		MutableLong currentTick;
 		IntSet entitiesHandledInCurrentTick;
-		if(e.world.isRemote)
+		if(e.level.isClientSide)
 		{
 			currentTick = currentTickClient;
 			entitiesHandledInCurrentTick = entitiesHandledInCurrentTickClient;
@@ -91,13 +91,13 @@ public class ConveyorHandler
 			currentTick = currentTickServer;
 			entitiesHandledInCurrentTick = entitiesHandledInCurrentTickServer;
 		}
-		long now = e.world.getGameTime();
+		long now = e.level.getGameTime();
 		if(now!=currentTick.getValue())
 		{
 			currentTick.setValue(now);
 			entitiesHandledInCurrentTick.clear();
 		}
-		return entitiesHandledInCurrentTick.add(e.getEntityId());
+		return entitiesHandledInCurrentTick.add(e.getId());
 	}
 
 	/**
@@ -105,7 +105,7 @@ public class ConveyorHandler
 	 * @param conveyorClass the conveyor class
 	 * @param function      a function used to create a new instance. Note that the TileEntity may be null for the inventory model. Handle accordingly.
 	 */
-	public static <T extends IConveyorBelt> boolean registerConveyorHandler(ResourceLocation key, Class<T> conveyorClass, Function<TileEntity, T> function)
+	public static <T extends IConveyorBelt> boolean registerConveyorHandler(ResourceLocation key, Class<T> conveyorClass, Function<BlockEntity, T> function)
 	{
 		if(classRegistry.containsKey(key))
 			return false;
@@ -131,7 +131,7 @@ public class ConveyorHandler
 	/**
 	 * @return a new instance of the given conveyor type
 	 */
-	public static IConveyorBelt getConveyor(ResourceLocation key, @Nullable TileEntity tile)
+	public static IConveyorBelt getConveyor(ResourceLocation key, @Nullable BlockEntity tile)
 	{
 		if(tile instanceof IConveyorTile)
 		{
@@ -139,13 +139,13 @@ public class ConveyorHandler
 			if(fromTile!=null)
 				return fromTile;
 		}
-		Function<TileEntity, ? extends IConveyorBelt> func = functionRegistry.get(key);
+		Function<BlockEntity, ? extends IConveyorBelt> func = functionRegistry.get(key);
 		if(func!=null)
 			return func.apply(tile);
 		return null;
 	}
 
-	public static TileEntityType<? extends TileEntity> getTEType(ResourceLocation typeName)
+	public static BlockEntityType<? extends BlockEntity> getTEType(ResourceLocation typeName)
 	{
 		return tileEntities.get(typeName);
 	}
@@ -176,9 +176,9 @@ public class ConveyorHandler
 	/**
 	 * @return whether the given subtype key can be found at the location. Useful for multiblocks
 	 */
-	public static boolean isConveyor(World world, BlockPos pos, @Nonnull String key, @Nullable Direction facing)
+	public static boolean isConveyor(Level world, BlockPos pos, @Nonnull String key, @Nullable Direction facing)
 	{
-		TileEntity tile = world.getTileEntity(pos);
+		BlockEntity tile = world.getBlockEntity(pos);
 		if(!(tile instanceof IConveyorTile))
 			return false;
 		if(facing!=null&&!facing.equals(((IConveyorTile)tile).getFacing()))
@@ -250,7 +250,7 @@ public class ConveyorHandler
 			return key;
 		}
 
-		TileEntity getTile();
+		BlockEntity getTile();
 
 		Direction getFacing();
 
@@ -313,7 +313,7 @@ public class ConveyorHandler
 		 *
 		 * @return true if anything happened, cancelling item use
 		 */
-		default boolean playerInteraction(PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
+		default boolean playerInteraction(Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ, Direction side)
 		{
 			return false;
 		}
@@ -326,9 +326,9 @@ public class ConveyorHandler
 		{
 			if(getConveyorDirection()!=ConveyorDirection.HORIZONTAL)
 				return true;
-			Direction side = wall==0?facing.rotateYCCW(): facing.rotateY();
-			BlockPos pos = getTile().getPos().offset(side);
-			TileEntity te = SafeChunkUtils.getSafeTE(getTile().getWorld(), pos);
+			Direction side = wall==0?facing.getCounterClockWise(): facing.getClockWise();
+			BlockPos pos = getTile().getBlockPos().relative(side);
+			BlockEntity te = SafeChunkUtils.getSafeTE(getTile().getLevel(), pos);
 			if(te instanceof IConveyorAttachable)
 			{
 				boolean b = false;
@@ -341,7 +341,7 @@ public class ConveyorHandler
 			}
 			else
 			{
-				te = SafeChunkUtils.getSafeTE(getTile().getWorld(), pos.add(0, -1, 0));
+				te = SafeChunkUtils.getSafeTE(getTile().getLevel(), pos.offset(0, -1, 0));
 				if(te instanceof IConveyorAttachable)
 				{
 					int b = 0;
@@ -371,42 +371,42 @@ public class ConveyorHandler
 		/**
 		 * @return a vector representing the movement applied to the entity
 		 */
-		default Vector3d getDirection(Entity entity, boolean outputBlocked)
+		default Vec3 getDirection(Entity entity, boolean outputBlocked)
 		{
 			ConveyorDirection conveyorDirection = getConveyorDirection();
-			BlockPos pos = getTile().getPos();
+			BlockPos pos = getTile().getBlockPos();
 
 			final Direction facing = getFacing();
 			double vBase = 1.15;
-			double vX = 0.1*vBase*facing.getXOffset();
-			double vY = entity.getMotion().y;
-			double vZ = 0.1*vBase*facing.getZOffset();
+			double vX = 0.1*vBase*facing.getStepX();
+			double vY = entity.getDeltaMovement().y;
+			double vZ = 0.1*vBase*facing.getStepZ();
 
 			if(facing==Direction.WEST||facing==Direction.EAST)
 			{
-				if(entity.getPosZ() > pos.getZ()+0.55D)
+				if(entity.getZ() > pos.getZ()+0.55D)
 					vZ = -0.1D*vBase;
-				else if(entity.getPosZ() < pos.getZ()+0.45D)
+				else if(entity.getZ() < pos.getZ()+0.45D)
 					vZ = 0.1D*vBase;
 			}
 			else if(facing==Direction.NORTH||facing==Direction.SOUTH)
 			{
-				if(entity.getPosX() > pos.getX()+0.55D)
+				if(entity.getX() > pos.getX()+0.55D)
 					vX = -0.1D*vBase;
-				else if(entity.getPosX() < pos.getX()+0.45D)
+				else if(entity.getX() < pos.getX()+0.45D)
 					vX = 0.1D*vBase;
 			}
 
 			if(conveyorDirection!=ConveyorDirection.HORIZONTAL)
 			{
 				// Attempt to fix entity to the highest point under it
-				final Vector3d centerRelative = entity.getPositionVec()
-						.subtract(new Vector3d(pos.getX(), pos.getY(), pos.getZ()))
+				final Vec3 centerRelative = entity.position()
+						.subtract(new Vec3(pos.getX(), pos.getY(), pos.getZ()))
 						.subtract(0.5+vX, 0.5, 0.5+vZ);
 				final double conveyorHeight = 2/16.;
-				final Vector3i directionVector = facing.getDirectionVec();
-				final double centerOffsetInDirection = centerRelative.dotProduct(new Vector3d(directionVector.getX(), directionVector.getY(), directionVector.getZ()));
-				final double radius = entity.getSize(entity.getPose()).width/2;
+				final Vec3i directionVector = facing.getNormal();
+				final double centerOffsetInDirection = centerRelative.dot(new Vec3(directionVector.getX(), directionVector.getY(), directionVector.getZ()));
+				final double radius = entity.getDimensions(entity.getPose()).width/2;
 				final double maxEntityPos = centerOffsetInDirection+radius;
 				double maxCenterHeightUnderEntity = maxEntityPos+conveyorHeight;
 				if(conveyorDirection==ConveyorDirection.DOWN)
@@ -421,25 +421,25 @@ public class ConveyorHandler
 				entity.setOnGround(false);
 			}
 
-			return new Vector3d(vX, vY, vZ);
+			return new Vec3(vX, vY, vZ);
 		}
 
 		default void onEntityCollision(@Nonnull Entity entity)
 		{
 			if(!isActive()||!entity.isAlive())
 				return;
-			if(entity instanceof PlayerEntity&&entity.isSneaking())
+			if(entity instanceof Player&&entity.isShiftKeyDown())
 				return;
 			PlayerUtils.resetFloatingState(entity);
 			ConveyorDirection conveyorDirection = getConveyorDirection();
 			float heightLimit = conveyorDirection==ConveyorDirection.HORIZONTAL?.25f: 1f;
-			BlockPos pos = getTile().getPos();
-			final double relativeHeight = entity.getPosY()-pos.getY();
+			BlockPos pos = getTile().getBlockPos();
+			final double relativeHeight = entity.getY()-pos.getY();
 			if(relativeHeight >= 0&&relativeHeight < heightLimit)
 			{
 				boolean hasBeenHandled = !markEntityAsHandled(entity);
 				final boolean outputBlocked = isOutputBlocked();
-				Vector3d vec = this.getDirection(entity, outputBlocked);
+				Vec3 vec = this.getDirection(entity, outputBlocked);
 				if(entity.fallDistance < 3)
 					entity.fallDistance = 0;
 				if(outputBlocked)
@@ -448,44 +448,44 @@ public class ConveyorHandler
 					double replacementZ;
 					if(hasBeenHandled)
 					{
-						replacementX = entity.getMotion().x;
-						replacementZ = entity.getMotion().z;
+						replacementX = entity.getDeltaMovement().x;
+						replacementZ = entity.getDeltaMovement().z;
 					}
 					else
 					{
 						replacementX = 0;
 						replacementZ = 0;
 					}
-					vec = new Vector3d(
+					vec = new Vec3(
 							replacementX,
 							vec.y,
 							replacementZ
 					);
 				}
-				entity.setMotion(vec);
-				double distX = Math.abs(pos.offset(getFacing()).getX()+.5-entity.getPosX());
-				double distZ = Math.abs(pos.offset(getFacing()).getZ()+.5-entity.getPosZ());
+				entity.setDeltaMovement(vec);
+				double distX = Math.abs(pos.relative(getFacing()).getX()+.5-entity.getX());
+				double distZ = Math.abs(pos.relative(getFacing()).getZ()+.5-entity.getZ());
 				double threshold = .9;
 				boolean contact = getFacing().getAxis()==Axis.Z?distZ < threshold: distX < threshold;
-				World w = Preconditions.checkNotNull(getTile().getWorld());
-				BlockPos upPos = pos.offset(getFacing()).up();
+				Level w = Preconditions.checkNotNull(getTile().getLevel());
+				BlockPos upPos = pos.relative(getFacing()).above();
 				if(contact&&conveyorDirection==ConveyorDirection.UP&&
-						!Block.doesSideFillSquare(w.getBlockState(upPos).getShape(w, upPos), Direction.DOWN))
+						!Block.isFaceFull(w.getBlockState(upPos).getShape(w, upPos), Direction.DOWN))
 				{
 					double move = .4;
-					entity.setPosition(entity.getPosX()+move*getFacing().getXOffset(), entity.getPosY()+1*move, entity.getPosZ()+move*getFacing().getZOffset());
+					entity.setPos(entity.getX()+move*getFacing().getStepX(), entity.getY()+1*move, entity.getZ()+move*getFacing().getStepZ());
 				}
 				if(!contact)
 					ConveyorHandler.applyMagnetSuppression(entity, (IConveyorTile)getTile());
 				else
 				{
-					BlockPos nextPos = getTile().getPos().offset(getFacing());
-					if(!(SafeChunkUtils.getSafeTE(getTile().getWorld(), nextPos) instanceof IConveyorTile))
+					BlockPos nextPos = getTile().getBlockPos().relative(getFacing());
+					if(!(SafeChunkUtils.getSafeTE(getTile().getLevel(), nextPos) instanceof IConveyorTile))
 						ConveyorHandler.revertMagnetSuppression(entity, (IConveyorTile)getTile());
 				}
 
 				// In the first tick this could be an entity the conveyor belt just dropped, causing #3023
-				if(entity instanceof ItemEntity&&entity.ticksExisted > 1)
+				if(entity instanceof ItemEntity&&entity.tickCount > 1)
 				{
 					ItemEntity item = (ItemEntity)entity;
 					if(!contact)
@@ -494,7 +494,7 @@ public class ConveyorHandler
 						if(access.getAgeNonsided(item) > item.lifespan-60*20&&!outputBlocked)
 							access.setAge(item, item.lifespan-60*20);
 					}
-					else if(!w.isRemote)
+					else if(!w.isClientSide)
 						handleInsertion(item, conveyorDirection, distX, distZ);
 				}
 			}
@@ -522,9 +522,9 @@ public class ConveyorHandler
 		default void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 		{
 			BlockPos invPos = getOutputInventory();
-			World world = getTile().getWorld();
+			Level world = getTile().getLevel();
 			boolean contact = getFacing().getAxis()==Axis.Z?distZ < .7: distX < .7;
-			TileEntity inventoryTile = SafeChunkUtils.getSafeTE(world, invPos);
+			BlockEntity inventoryTile = SafeChunkUtils.getSafeTE(world, invPos);
 			if(!contact||inventoryTile instanceof IConveyorTile)
 				return;
 
@@ -546,9 +546,9 @@ public class ConveyorHandler
 		default BlockPos getOutputInventory()
 		{
 			ConveyorDirection conDir = getConveyorDirection();
-			return getTile().getPos()
-					.offset(getFacing())
-					.add(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
+			return getTile().getBlockPos()
+					.relative(getFacing())
+					.offset(0, (conDir==ConveyorDirection.UP?1: conDir==ConveyorDirection.DOWN?-1: 0), 0);
 		}
 
 		default List<BlockPos> getNextConveyorCandidates()
@@ -557,7 +557,7 @@ public class ConveyorHandler
 			BlockPos basePos = getOutputInventory();
 			// Up and horizontal conveyors: handles changes to down
 			// Down conveyors: Handles changes to horizontal
-			BlockPos alternative = conDir==ConveyorDirection.DOWN?basePos.up(): basePos.down();
+			BlockPos alternative = conDir==ConveyorDirection.DOWN?basePos.above(): basePos.below();
 			return ImmutableList.of(
 					basePos,
 					alternative
@@ -569,7 +569,7 @@ public class ConveyorHandler
 		{
 			for(BlockPos pos : getNextConveyorCandidates())
 			{
-				TileEntity outputTile = SafeChunkUtils.getSafeTE(getTile().getWorld(), pos);
+				BlockEntity outputTile = SafeChunkUtils.getSafeTE(getTile().getLevel(), pos);
 				if(outputTile instanceof IConveyorTile)
 					return ((IConveyorTile)outputTile).getConveyorSubtype();
 			}
@@ -585,9 +585,9 @@ public class ConveyorHandler
 		{
 		}
 
-		VoxelShape conveyorBounds = VoxelShapes.create(0, 0, 0, 1, .125f, 1);
-		VoxelShape highConveyorBounds = VoxelShapes.create(0, 0, 0, 1, 1.125f, 1);
-		VoxelShape FULL_BLOCK = VoxelShapes.create(0, 0, 0, 1, 1, 1);
+		VoxelShape conveyorBounds = Shapes.box(0, 0, 0, 1, .125f, 1);
+		VoxelShape highConveyorBounds = Shapes.box(0, 0, 0, 1, 1.125f, 1);
+		VoxelShape FULL_BLOCK = Shapes.box(0, 0, 0, 1, 1, 1);
 
 		default VoxelShape getSelectionShape()
 		{
@@ -599,12 +599,12 @@ public class ConveyorHandler
 			return conveyorBounds;
 		}
 
-		CompoundNBT writeConveyorNBT();
+		CompoundTag writeConveyorNBT();
 
-		void readConveyorNBT(CompoundNBT nbt);
+		void readConveyorNBT(CompoundTag nbt);
 
 		@OnlyIn(Dist.CLIENT)
-		default TransformationMatrix modifyBaseRotationMatrix(TransformationMatrix matrix)
+		default Transformation modifyBaseRotationMatrix(Transformation matrix)
 		{
 			return matrix;
 		}

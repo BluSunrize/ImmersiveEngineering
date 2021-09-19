@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.api.tool;
 
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -29,18 +29,18 @@ public interface IDrillHead
 	 * Called before a block is broken by the head
 	 * Return true to prevent the block from being broken
 	 */
-	boolean beforeBlockbreak(ItemStack drill, ItemStack head, PlayerEntity player);
+	boolean beforeBlockbreak(ItemStack drill, ItemStack head, Player player);
 
 	/**
 	 * Called after a block is broken by the head
 	 * Damage should not be applied here but in the specific method.
 	 */
-	void afterBlockbreak(ItemStack drill, ItemStack head, PlayerEntity player);
+	void afterBlockbreak(ItemStack drill, ItemStack head, Player player);
 
 	/**
 	 * @return A list of BlockPos that will be dug in addition to the targeted block
 	 */
-	ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, PlayerEntity player, RayTraceResult mop);
+	ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, Level world, Player player, HitResult mop);
 
 	/**
 	 * @return The mining level of the drill

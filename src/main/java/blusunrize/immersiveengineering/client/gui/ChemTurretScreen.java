@@ -13,44 +13,44 @@ import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretChemTileEntity;
 import blusunrize.immersiveengineering.common.gui.TurretContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Inventory;
 
 import java.util.List;
 
 public class ChemTurretScreen extends TurretScreen
 {
-	public ChemTurretScreen(TurretContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ChemTurretScreen(TurretContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
 	}
 
 	@Override
-	protected void renderCustom(MatrixStack transform, List<ITextComponent> tooltipOut, int mx, int my)
+	protected void renderCustom(PoseStack transform, List<Component> tooltipOut, int mx, int my)
 	{
-		GuiHelper.handleGuiTank(transform, ((TurretChemTileEntity)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my,
+		GuiHelper.handleGuiTank(transform, ((TurretChemTileEntity)tile).tank, leftPos+134, topPos+16, 16, 47, 196, 0, 20, 51, mx, my,
 				TEXTURE, tooltipOut);
-		if(mx >= guiLeft+135&&mx < guiLeft+149&&my >= guiTop+68&&my < guiTop+82)
-			tooltipOut.add(new TranslationTextComponent(Lib.GUI_CONFIG+"turret.ignite_fluid"));
+		if(mx >= leftPos+135&&mx < leftPos+149&&my >= topPos+68&&my < topPos+82)
+			tooltipOut.add(new TranslatableComponent(Lib.GUI_CONFIG+"turret.ignite_fluid"));
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void renderBg(PoseStack transform, float f, int mx, int my)
 	{
-		super.drawGuiContainerBackgroundLayer(transform, f, mx, my);
-		this.blit(transform, guiLeft+132, guiTop+14, 176, 0, 20, 51);
-		GuiHelper.handleGuiTank(transform, ((TurretChemTileEntity)tile).tank, guiLeft+134, guiTop+16, 16, 47, 196, 0, 20, 51, mx, my, TEXTURE, null);
+		super.renderBg(transform, f, mx, my);
+		this.blit(transform, leftPos+132, topPos+14, 176, 0, 20, 51);
+		GuiHelper.handleGuiTank(transform, ((TurretChemTileEntity)tile).tank, leftPos+134, topPos+16, 16, 47, 196, 0, 20, 51, mx, my, TEXTURE, null);
 	}
 
 	@Override
 	protected void addCustomButtons()
 	{
-		this.addButton(new GuiButtonBoolean(guiLeft+135, guiTop+68, 14, 14, "", ((TurretChemTileEntity)tile).ignite, TEXTURE, 176, 51, 0,
+		this.addButton(new GuiButtonBoolean(leftPos+135, topPos+68, 14, 14, "", ((TurretChemTileEntity)tile).ignite, TEXTURE, 176, 51, 0,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;
 					((TurretChemTileEntity)tile).ignite = !btn.getState();
 					tag.putBoolean("ignite", ((TurretChemTileEntity)tile).ignite);

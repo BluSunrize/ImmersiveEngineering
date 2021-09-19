@@ -9,14 +9,14 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 
 public class InvertingVertexBuffer extends CollectingVertexBuilder
 {
 	private final int verticesPerPrimitive;
-	private final IVertexBuilder baseBuilder;
+	private final VertexConsumer baseBuilder;
 
-	public InvertingVertexBuffer(int verticesPerPrimitive, IVertexBuilder baseBuilder)
+	public InvertingVertexBuffer(int verticesPerPrimitive, VertexConsumer baseBuilder)
 	{
 		this.verticesPerPrimitive = verticesPerPrimitive;
 		this.baseBuilder = baseBuilder;

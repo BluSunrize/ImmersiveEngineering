@@ -23,26 +23,34 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.EffectInstance;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.*;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -64,12 +72,12 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 {
 	public IEShieldItem()
 	{
-		super("shield", new Properties().defaultMaxDamage(1024).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
-		GenericDeferredWork.registerDispenseBehavior(this, ArmorItem.DISPENSER_BEHAVIOR);
+		super("shield", new Properties().defaultDurability(1024).setISTER(() -> () -> IEOBJItemRenderer.INSTANCE), "SHIELD");
+		GenericDeferredWork.registerDispenseBehavior(this, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
@@ -103,7 +111,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
 		});
 		if(!sameShader.orElse(true))
@@ -113,26 +121,26 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(this.getMaxEnergyStored(stack) > 0)
 		{
 			String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-			list.add(new TranslationTextComponent(Lib.DESC+"info.energyStored", stored));
+			list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
 		}
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity ent, int slot, boolean inHand)
+	public void inventoryTick(ItemStack stack, Level world, Entity ent, int slot, boolean inHand)
 	{
 		super.inventoryTick(stack, world, ent, slot, inHand);
-		if(world.isRemote)
+		if(world.isClientSide)
 			return;
 
 		if(ent instanceof LivingEntity)
-			inHand |= ((LivingEntity)ent).getHeldItem(Hand.OFF_HAND)==stack;
+			inHand |= ((LivingEntity)ent).getItemInHand(InteractionHand.OFF_HAND)==stack;
 
-		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isActiveItemStackBlocking();
+		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isBlocking();
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
 			if(getUpgrades(stack).contains("flash_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 10, true)==10)
@@ -162,49 +170,49 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 		return true;
 	}
 
-	public void hitShield(ItemStack stack, PlayerEntity player, DamageSource source, float amount, LivingAttackEvent event)
+	public void hitShield(ItemStack stack, Player player, DamageSource source, float amount, LivingAttackEvent event)
 	{
 		if(getUpgrades(stack).getBoolean("flash")&&getUpgrades(stack).getInt("flash_cooldown") <= 0)
 		{
-			Vector3d look = player.getLookVec();
+			Vec3 look = player.getLookAngle();
 			//Offsets Player position by look backwards, then truncates cone at 1
-			List<LivingEntity> targets = Utils.getTargetsInCone(player.getEntityWorld(), player.getPositionVec().subtract(look), player.getLookVec().scale(9), 1.57079f, .5f);
+			List<LivingEntity> targets = Utils.getTargetsInCone(player.getCommandSenderWorld(), player.position().subtract(look), player.getLookAngle().scale(9), 1.57079f, .5f);
 			for(LivingEntity t : targets)
 				if(!player.equals(t))
 				{
-					t.addPotionEffect(new EffectInstance(IEPotions.flashed, 100, 1));
-					if(t instanceof MobEntity)
-						((MobEntity)t).setAttackTarget(null);
+					t.addEffect(new MobEffectInstance(IEPotions.flashed, 100, 1));
+					if(t instanceof Mob)
+						((Mob)t).setTarget(null);
 				}
 			getUpgrades(stack).putInt("flash_cooldown", 40);
 		}
 		if(getUpgrades(stack).getBoolean("shock")&&getUpgrades(stack).getInt("shock_cooldown") <= 0)
 		{
 			boolean b = false;
-			if(event.getSource().isProjectile()&&event.getSource().getImmediateSource()!=null)
+			if(event.getSource().isProjectile()&&event.getSource().getDirectEntity()!=null)
 			{
-				Entity projectile = event.getSource().getImmediateSource();
+				Entity projectile = event.getSource().getDirectEntity();
 				projectile.remove();
 				event.setCanceled(true);
 				b = true;
 			}
-			if(event.getSource().getTrueSource()!=null&&event.getSource().getTrueSource() instanceof LivingEntity&&event.getSource().getTrueSource().getDistanceSq(player) < 4)
+			if(event.getSource().getEntity()!=null&&event.getSource().getEntity() instanceof LivingEntity&&event.getSource().getEntity().distanceToSqr(player) < 4)
 			{
 				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(1, true);
-				dmgsrc.apply(event.getSource().getTrueSource());
+				dmgsrc.apply(event.getSource().getEntity());
 				b = true;
 			}
 			if(b)
 			{
 				getUpgrades(stack).putInt("shock_cooldown", 40);
-				player.world.playSound(null, player.getPosX(), player.getPosY(), player.getPosZ(), IESounds.spark,
-						SoundCategory.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
+				player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark,
+						SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
 			}
 		}
 	}
 
 	@Override
-	public boolean getIsRepairable(ItemStack stack, ItemStack material)
+	public boolean isValidRepairItem(ItemStack stack, ItemStack material)
 	{
 		return IETags.getTagsFor(EnumMetals.STEEL).ingot.contains(material.getItem());
 	}
@@ -223,18 +231,18 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, @Nonnull Hand handIn)
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, @Nonnull InteractionHand handIn)
 	{
-		ItemStack itemstack = playerIn.getHeldItem(handIn);
-		playerIn.setActiveHand(handIn);
-		return new ActionResult<>(ActionResultType.SUCCESS, itemstack);
+		ItemStack itemstack = playerIn.getItemInHand(handIn);
+		playerIn.startUsingItem(handIn);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemstack);
 	}
 
 	@Nonnull
 	@Override
-	public UseAction getUseAction(ItemStack stack)
+	public UseAnim getUseAnimation(ItemStack stack)
 	{
-		return UseAction.BLOCK;
+		return UseAnim.BLOCK;
 	}
 
 	@Override
@@ -248,20 +256,20 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public void handlePerspective(ItemStack Object, TransformType cameraTransformType, MatrixStack mat, LivingEntity entity)
+	public void handlePerspective(ItemStack Object, TransformType cameraTransformType, PoseStack mat, LivingEntity entity)
 	{
-		if(entity!=null&&entity.isHandActive())
-			if((entity.getActiveHand()==Hand.MAIN_HAND)==(entity.getPrimaryHand()==HandSide.RIGHT))
+		if(entity!=null&&entity.isUsingItem())
+			if((entity.getUsedItemHand()==InteractionHand.MAIN_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT))
 			{
 				if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
 				{
-					mat.rotate(new Quaternion(-.15F, 0, 0, false));
+					mat.mulPose(new Quaternion(-.15F, 0, 0, false));
 					mat.translate(-.25, .5, -.4375);
 				}
 				else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)
 				{
-					mat.rotate(new Quaternion(0.52359F, 0, 0, false));
-					mat.rotate(new Quaternion(0, 0.78539F, 0, false));
+					mat.mulPose(new Quaternion(0.52359F, 0, 0, false));
+					mat.mulPose(new Quaternion(0, 0.78539F, 0, false));
 					mat.translate(.40625, -.125, -.125);
 				}
 			}
@@ -269,12 +277,12 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 			{
 				if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)
 				{
-					mat.rotate(new Quaternion(.15F, 0, 0, false));
+					mat.mulPose(new Quaternion(.15F, 0, 0, false));
 					mat.translate(.25, .375, .4375);
 				}
 				else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
 				{
-					mat.rotate(new Quaternion(-0.52359F, 1, 0, false));
+					mat.mulPose(new Quaternion(-0.52359F, 1, 0, false));
 					mat.translate(.1875, .3125, .75);
 				}
 			}
@@ -287,7 +295,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer)
+	public Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer)
 	{
 		IItemHandler inv = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
 		return new Slot[]
@@ -306,7 +314,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public boolean hasEffect(ItemStack stack)
+	public boolean isFoil(ItemStack stack)
 	{
 		return false;//Remove glint effect since it doesn't work that well with models, see #2944
 	}

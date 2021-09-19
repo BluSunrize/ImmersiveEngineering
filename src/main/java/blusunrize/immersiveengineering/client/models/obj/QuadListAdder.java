@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import com.mojang.math.Transformation;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
 import net.minecraftforge.client.model.IModelBuilder;
 
 import javax.annotation.Nonnull;
@@ -29,7 +29,7 @@ public class QuadListAdder implements IModelBuilder<QuadListAdder>
 	public QuadListAdder(
 			Consumer<BakedQuad> output,
 			BiConsumer<BakedQuad, Direction> outputFace,
-			TransformationMatrix transform
+			Transformation transform
 	)
 	{
 		this.output = output;
@@ -37,7 +37,7 @@ public class QuadListAdder implements IModelBuilder<QuadListAdder>
 		this.transform = new QuadTransformer(transform, x -> x);
 	}
 
-	public QuadListAdder(Consumer<BakedQuad> output, TransformationMatrix transform)
+	public QuadListAdder(Consumer<BakedQuad> output, Transformation transform)
 	{
 		this(output, (quad, dir) -> output.accept(quad), transform);
 	}
@@ -60,7 +60,7 @@ public class QuadListAdder implements IModelBuilder<QuadListAdder>
 
 	@Nonnull
 	@Override
-	public IBakedModel build()
+	public BakedModel build()
 	{
 		throw new UnsupportedOperationException();
 	}

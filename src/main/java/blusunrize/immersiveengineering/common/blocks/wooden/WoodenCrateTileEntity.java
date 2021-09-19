@@ -19,26 +19,26 @@ import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import net.minecraft.block.Block;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameterSets;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.loot.LootTable;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -55,7 +55,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
 	public ResourceLocation lootTable;
 	public String name;
-	private ListNBT enchantments;
+	private ListTag enchantments;
 
 	public WoodenCrateTileEntity()
 	{
@@ -63,7 +63,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(nbt.contains("name", NBT.TAG_STRING))
 			this.name = nbt.getString("name");
@@ -79,7 +79,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(this.name!=null)
 			nbt.putString("name", this.name);
@@ -94,18 +94,18 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 		}
 	}
 
-	public void writeInv(CompoundNBT nbt, boolean toItem)
+	public void writeInv(CompoundTag nbt, boolean toItem)
 	{
 		boolean write = false;
-		ListNBT invList = new ListNBT();
+		ListTag invList = new ListTag();
 		for(int i = 0; i < this.inventory.size(); i++)
 			if(!this.inventory.get(i).isEmpty())
 			{
 				if(toItem)
 					write = true;
-				CompoundNBT itemTag = new CompoundNBT();
+				CompoundTag itemTag = new CompoundTag();
 				itemTag.putByte("Slot", (byte)i);
-				this.inventory.get(i).write(itemTag);
+				this.inventory.get(i).save(itemTag);
 				invList.add(itemTag);
 			}
 		if(!toItem||write)
@@ -114,22 +114,22 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 
 	@Override
 	@Nonnull
-	public ITextComponent getDisplayName()
+	public Component getDisplayName()
 	{
 		if(name!=null)
-			return new StringTextComponent(name);
+			return new TextComponent(name);
 		else
 		{
 			Block b = getBlockState().getBlock();
 			if(b instanceof CrateBlock&&((CrateBlock)b).isReinforced())
-				return new TranslationTextComponent("block.immersiveengineering.reinforced_crate");
+				return new TranslatableComponent("block.immersiveengineering.reinforced_crate");
 			else
-				return new TranslationTextComponent("block.immersiveengineering.crate");
+				return new TranslatableComponent("block.immersiveengineering.crate");
 		}
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -142,21 +142,21 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 
 	@Nonnull
 	@Override
-	public Container createMenu(int id, PlayerInventory playerInventory, PlayerEntity player)
+	public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player player)
 	{
 		if(this.lootTable!=null)
 		{
-			LootTable loottable = this.world.getServer().getLootTableManager()
-					.getLootTableFromLocation(this.lootTable);
+			LootTable loottable = this.level.getServer().getLootTables()
+					.get(this.lootTable);
 			this.lootTable = null;
-			LootContext.Builder contextBuilder = new LootContext.Builder((ServerWorld)this.world);
-			contextBuilder.withParameter(LootParameters.ORIGIN, Vector3d.copyCentered(pos));
+			LootContext.Builder contextBuilder = new LootContext.Builder((ServerLevel)this.level);
+			contextBuilder.withParameter(LootContextParams.ORIGIN, Vec3.atCenterOf(worldPosition));
 			if(player!=null)
 				contextBuilder.withLuck(player.getLuck());
-			LootContext context = contextBuilder.build(LootParameterSets.CHEST);
+			LootContext context = contextBuilder.create(LootContextParamSets.CHEST);
 			Random rand = new Random();
 
-			List<ItemStack> list = loottable.generate(context);
+			List<ItemStack> list = loottable.getRandomItems(context);
 			List<Integer> listSlots = Lists.newArrayList();
 			for(int i = 0; i < inventory.size(); i++)
 				if(inventory.get(i).isEmpty())
@@ -170,7 +170,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 					int slot = listSlots.remove(listSlots.size()-1);
 					inventory.set(slot, itemstack);
 				}
-				this.markDirty();
+				this.setChanged();
 			}
 		}
 		return IInteractionObjectIE.super.createMenu(id, playerInventory, player);
@@ -197,19 +197,19 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Override
 	public List<ItemStack> getTileDrops(LootContext context)
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		writeInv(tag, true);
 		if(!tag.isEmpty())
 			stack.setTag(tag);
 		if(this.name!=null)
-			stack.setDisplayName(new StringTextComponent(this.name));
+			stack.setHoverName(new TextComponent(this.name));
 		if(enchantments!=null&&enchantments.size() > 0)
 			stack.getOrCreateTag().put("ench", enchantments);
 		return ImmutableList.of(stack);
@@ -221,9 +221,9 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 		if(stack.hasTag())
 		{
 			readCustomNBT(stack.getOrCreateTag(), false);
-			if(stack.hasDisplayName())
-				this.name = stack.getDisplayName().getString();
-			enchantments = stack.getEnchantmentTagList();
+			if(stack.hasCustomHoverName())
+				this.name = stack.getHoverName().getString();
+			enchantments = stack.getEnchantmentTags();
 		}
 	}
 

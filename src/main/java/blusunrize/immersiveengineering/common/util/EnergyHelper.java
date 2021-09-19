@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -192,7 +192,7 @@ public class EnergyHelper
 		@Override
 		default int extractEnergy(@Nullable Direction fd, int amount, boolean simulate)
 		{
-			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=IOSideConfig.OUTPUT)
+			if(((BlockEntity)this).getLevel().isClientSide||getEnergySideConfig(fd)!=IOSideConfig.OUTPUT)
 				return 0;
 			int r = getFluxStorage().extractEnergy(amount, simulate);
 			postEnergyTransferUpdate(-r, simulate);
@@ -214,7 +214,7 @@ public class EnergyHelper
 		@Override
 		default int receiveEnergy(@Nullable Direction fd, int amount, boolean simulate)
 		{
-			if(((TileEntity)this).getWorld().isRemote||getEnergySideConfig(fd)!=IOSideConfig.INPUT)
+			if(((BlockEntity)this).getLevel().isClientSide||getEnergySideConfig(fd)!=IOSideConfig.INPUT)
 				return 0;
 			int r = getFluxStorage().receiveEnergy(amount, simulate);
 			postEnergyTransferUpdate(r, simulate);

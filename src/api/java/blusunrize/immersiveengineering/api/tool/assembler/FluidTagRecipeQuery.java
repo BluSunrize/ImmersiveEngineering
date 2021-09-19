@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api.tool.assembler;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 

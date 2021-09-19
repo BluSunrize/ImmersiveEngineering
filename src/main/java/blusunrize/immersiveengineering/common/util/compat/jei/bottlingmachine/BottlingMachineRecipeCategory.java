@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -23,8 +23,8 @@ import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
@@ -56,7 +56,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 0, 12);
 		guiItemStacks.init(1, false, 100, 12);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getItems()));
 		guiItemStacks.set(1, recipe.output);
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);
@@ -68,13 +68,13 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	}
 
 	@Override
-	public void draw(BottlingMachineRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
+	public void draw(BottlingMachineRecipe recipe, PoseStack transform, double mouseX, double mouseY)
 	{
 		GuiHelper.drawSlot(75, 15, 16, 48, transform);
 
-		transform.push();
+		transform.pushPose();
 		transform.scale(3, 3, 1);
 		this.getIcon().draw(transform, 8, 0);
-		transform.pop();
+		transform.popPose();
 	}
 }

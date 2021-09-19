@@ -17,19 +17,18 @@ import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock.TransformedMultiblock;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FourWayBlock;
-import net.minecraft.block.HopperBlock;
-import net.minecraft.state.Property;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.vector.Vector3i;
-
 import java.util.List;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CrossCollisionBlock;
+import net.minecraft.world.level.block.HopperBlock;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.properties.Property;
 
-import static net.minecraft.state.properties.BlockStateProperties.WATERLOGGED;
+import static net.minecraft.world.level.block.state.properties.BlockStateProperties.WATERLOGGED;
 
 public class IEMultiblocks
 {
@@ -64,17 +63,17 @@ public class IEMultiblocks
 		BlockMatcher.addPredicate((expected, found, world, pos) -> expected==found?Result.allow(1): Result.deny(1));
 		//FourWayBlock (fences etc): allow additional connections
 		List<Property<Boolean>> sideProperties = ImmutableList.of(
-				FourWayBlock.NORTH, FourWayBlock.EAST, FourWayBlock.SOUTH, FourWayBlock.WEST
+				CrossCollisionBlock.NORTH, CrossCollisionBlock.EAST, CrossCollisionBlock.SOUTH, CrossCollisionBlock.WEST
 		);
 		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
-			if(expected.getBlock() instanceof FourWayBlock&&expected.getBlock()==found.getBlock())
+			if(expected.getBlock() instanceof CrossCollisionBlock&&expected.getBlock()==found.getBlock())
 				for(Property<Boolean> side : sideProperties)
-					if(!expected.get(side))
-						found = found.with(side, false);
+					if(!expected.getValue(side))
+						found = found.setValue(side, false);
 			return found;
 		});
 		//Tags
-		ImmutableList.Builder<ITag<Block>> genericTagsBuilder = ImmutableList.builder();
+		ImmutableList.Builder<Tag<Block>> genericTagsBuilder = ImmutableList.builder();
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);
@@ -87,26 +86,26 @@ public class IEMultiblocks
 		genericTagsBuilder.add(IETags.treatedWood);
 		genericTagsBuilder.add(IETags.fencesSteel);
 		genericTagsBuilder.add(IETags.fencesAlu);
-		List<ITag<Block>> genericTags = genericTagsBuilder.build();
+		List<Tag<Block>> genericTags = genericTagsBuilder.build();
 		BlockMatcher.addPredicate((expected, found, world, pos) -> {
 			if(expected.getBlock()!=found.getBlock())
-				for(ITag<Block> t : genericTags)
-					if(expected.isIn(t)&&found.isIn(t))
+				for(Tag<Block> t : genericTags)
+					if(expected.is(t)&&found.is(t))
 						return Result.allow(2);
 			return Result.DEFAULT;
 		});
 		//Ignore hopper facing
 		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
 			if(expected.getBlock()==Blocks.HOPPER&&found.getBlock()==Blocks.HOPPER)
-				return found.with(HopperBlock.FACING, expected.get(HopperBlock.FACING));
+				return found.setValue(HopperBlock.FACING, expected.getValue(HopperBlock.FACING));
 			return found;
 		});
 		//Allow multiblocks to be formed under water
 		BlockMatcher.addPreprocessor((expected, found, world, pos) -> {
 			// Un-waterlog if the expected state is dry, but the found one is not
 			if(expected.hasProperty(WATERLOGGED)&&found.hasProperty(WATERLOGGED)
-					&&!expected.get(WATERLOGGED)&&found.get(WATERLOGGED))
-				return found.with(WATERLOGGED, false);
+					&&!expected.getValue(WATERLOGGED)&&found.getValue(WATERLOGGED))
+				return found.setValue(WATERLOGGED, false);
 			else
 				return found;
 		});
@@ -136,8 +135,8 @@ public class IEMultiblocks
 		SQUEEZER = new SqueezerMultiblock();
 		EXCAVATOR_DEMO = new UnionMultiblock(new ResourceLocation(ImmersiveEngineering.MODID, "excavator_demo"),
 				ImmutableList.of(
-						new TransformedMultiblock(EXCAVATOR, Vector3i.NULL_VECTOR, Rotation.NONE),
-						new TransformedMultiblock(BUCKET_WHEEL, new Vector3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
+						new TransformedMultiblock(EXCAVATOR, Vec3i.ZERO, Rotation.NONE),
+						new TransformedMultiblock(BUCKET_WHEEL, new Vec3i(1, -2, 4), Rotation.COUNTERCLOCKWISE_90)
 				));
 	}
 }

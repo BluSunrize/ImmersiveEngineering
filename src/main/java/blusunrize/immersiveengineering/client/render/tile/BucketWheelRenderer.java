@@ -19,20 +19,20 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.ArrayList;
@@ -43,7 +43,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 @SuppressWarnings("deprecation")
-public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntity>
+public class BucketWheelRenderer extends BlockEntityRenderer<BucketWheelTileEntity>
 {
 	public static DynamicModel<Void> WHEEL;
 	private static final Cache<List<String>, IVertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
@@ -52,15 +52,15 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 			.<Object, IVertexBufferHolder>removalListener(rem -> rem.getValue().reset())
 			.build();
 
-	public BucketWheelRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public BucketWheelRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(BucketWheelTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(BucketWheelTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.formed||!tile.getWorldNonnull().isBlockLoaded(tile.getPos())||tile.isDummy())
+		if(!tile.formed||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos())||tile.isDummy())
 			return;
 		Map<String, String> texMap = new HashMap<>();
 		List<String> textures = new ArrayList<>(8);
@@ -71,10 +71,10 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 				ItemStack stackAtIndex = tile.digStacks.get(i);
 				if(!stackAtIndex.isEmpty())
 				{
-					Block b = Block.getBlockFromItem(stackAtIndex.getItem());
-					BlockState digState = b!=Blocks.AIR?b.getDefaultState(): Blocks.COBBLESTONE.getDefaultState();
-					IBakedModel digModel = Minecraft.getInstance().getBlockRendererDispatcher().getBlockModelShapes().getModel(digState);
-					String texture = digModel.getParticleTexture().getName().toString();
+					Block b = Block.byItem(stackAtIndex.getItem());
+					BlockState digState = b!=Blocks.AIR?b.defaultBlockState(): Blocks.COBBLESTONE.defaultBlockState();
+					BakedModel digModel = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(digState);
+					String texture = digModel.getParticleIcon().getName().toString();
 					texMap.put("dig"+i, texture);
 					textures.add(texture);
 				}
@@ -82,22 +82,22 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 					textures.add("");
 			}
 		}
-		matrixStack.push();
+		matrixStack.pushPose();
 
 		matrixStack.translate(.5, .5, .5);
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true)); //to mirror different plane. compensate on dir rotate
+		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true)); //to mirror different plane. compensate on dir rotate
 		TileRenderUtils.mirror(tile, matrixStack);
 		float dir = tile.getFacing()==Direction.SOUTH?0: tile.getFacing()==Direction.NORTH?180: tile.getFacing()==Direction.EAST?90: -90;
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), dir, true));
+		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), dir, true));
 		float rot = tile.rotation+(float)(tile.active?IEServerConfig.MACHINES.excavator_speed.get()*partialTicks: 0);
-		matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), rot, true));
+		matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), rot, true));
 
 		matrixStack.translate(-.5, -.5, -.5);
 		try
 		{
 			CACHED_BUFFERS.get(textures, () -> IVertexBufferHolder.create(() -> {
-				IBakedModel model = WHEEL.get(null);
-				BlockState state = Multiblocks.bucketWheel.getDefaultState();
+				BakedModel model = WHEEL.get(null);
+				BlockState state = Multiblocks.bucketWheel.defaultBlockState();
 				List<String> list = Lists.newArrayList("bucketWheel");
 				list.addAll(texMap.keySet());
 				IEObjState objState = new IEObjState(VisibilityList.show(list));
@@ -105,12 +105,12 @@ public class BucketWheelRenderer extends TileEntityRenderer<BucketWheelTileEntit
 					return ((IESmartObjModel)model).getQuads(state, objState, texMap, true, EmptyModelData.INSTANCE);
 				else
 					return model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
-			})).render(RenderType.getSolid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
+			})).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
 		} catch(ExecutionException ex)
 		{
 			throw new RuntimeException(ex);
 		}
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 	public static void reset()

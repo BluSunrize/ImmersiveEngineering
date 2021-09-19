@@ -14,39 +14,39 @@ import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 
-public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEntity>
+public class ModWorkbenchRenderer extends BlockEntityRenderer<ModWorkbenchTileEntity>
 {
 
-	public ModWorkbenchRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public ModWorkbenchRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(ModWorkbenchTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(ModWorkbenchTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
+		if(te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 
 		Direction facing = te.getFacing();
 
 		float angle = facing==Direction.NORTH?0: facing==Direction.WEST?90: facing==Direction.EAST?-90: 180;
 
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), angle, true));
+		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), angle, true));
 
 		ItemStack stack = te.getInventory().get(0);
 		boolean showIngredients = true;
@@ -54,8 +54,8 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 		{
 			if(stack.getItem() instanceof EngineersBlueprintItem)
 			{
-				matrixStack.push();
-				double playerDistanceSq = ClientUtils.mc().player.getDistanceSq(Vector3d.copyCentered(te.getPos()));
+				matrixStack.pushPose();
+				double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(te.getBlockPos()));
 				if(playerDistanceSq < 120)
 				{
 					BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint"));
@@ -64,8 +64,8 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 					int l = recipes.length;
 					int perRow = l > 6?l-3: l > 4?l-2: l==1?2: l==2?3: l;
 					matrixStack.translate(0, .501, 0);
-					matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -90, true));
-					matrixStack.rotate(new Quaternion(new Vector3f(0, 0, 1), -22.5f, true));
+					matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
+					matrixStack.mulPose(new Quaternion(new Vector3f(0, 0, 1), -22.5f, true));
 					matrixStack.translate(0.39, l > 4?.72: .78, 0);
 					float scale = l > 4?.009375f: .012f;
 					matrixStack.scale(scale, -scale, scale);
@@ -90,27 +90,27 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 						}
 					}
 				}
-				matrixStack.pop();
+				matrixStack.popPose();
 			}
 			else
 			{
 				showIngredients = false;
-				matrixStack.push();
+				matrixStack.pushPose();
 				matrixStack.translate(0, .5625, 0);
 
-				matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 180, true));
-				matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 90, true));
+				matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
+				matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
 				matrixStack.translate(-.875, 0, 0);
 				matrixStack.scale(.75f, .75f, .75f);
 				try
 				{
-					ClientUtils.mc().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED,
+					ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
 							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 				} catch(Exception e)
 				{
 					e.printStackTrace();
 				}
-				matrixStack.pop();
+				matrixStack.popPose();
 			}
 		}
 		if(showIngredients)
@@ -132,27 +132,27 @@ public class ModWorkbenchRenderer extends TileEntityRenderer<ModWorkbenchTileEnt
 				stack = te.getInventory().get(i);
 				if(!stack.isEmpty())
 				{
-					matrixStack.push();
-					matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 180, true));
-					matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), 90, true));
+					matrixStack.pushPose();
+					matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 180, true));
+					matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
 					matrixStack.translate(dX, dZ, -.515);
 					matrixStack.scale(.25f, .25f, .25f);
 					{
 						try
 						{
-							ClientUtils.mc().getItemRenderer().renderItem(stack, ItemCameraTransforms.TransformType.FIXED,
+							ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
 									combinedLightIn, combinedOverlayIn, matrixStack, bufferIn);
 						} catch(Exception e)
 						{
 							e.printStackTrace();
 						}
 					}
-					matrixStack.pop();
+					matrixStack.popPose();
 				}
 			}
 		}
 
-		matrixStack.pop();
+		matrixStack.popPose();
 
 	}
 }

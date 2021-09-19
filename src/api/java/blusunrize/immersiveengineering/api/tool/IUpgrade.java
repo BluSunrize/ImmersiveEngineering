@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Set;
 
@@ -36,5 +36,5 @@ public interface IUpgrade
 	 * Applies the modifications to a HashMap. Do <b>NOT</b> apply upgrades to the target directly<br>
 	 * Valid modifications you can apply are Byte, byte[], Boolean, Integer, int[], Float, Double, String
 	 */
-	void applyUpgrades(ItemStack target, ItemStack upgrade, CompoundNBT modifications);
+	void applyUpgrades(ItemStack target, ItemStack upgrade, CompoundTag modifications);
 }

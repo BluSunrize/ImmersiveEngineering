@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.util;
 
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Mth;
 
 import java.util.function.IntConsumer;
 
@@ -43,7 +43,7 @@ public class LayeredComparatorOutput
 		for(int layer = 0; layer < numLayers; ++layer)
 		{
 			final double layerValue = newValue-layer*layerSize;
-			final int newLayerOutput = (int)MathHelper.clamp((15*layerValue)/layerSize, 0, 15);
+			final int newLayerOutput = (int)Mth.clamp((15*layerValue)/layerSize, 0, 15);
 			if(newLayerOutput!=currentLayerOutputs[layer])
 			{
 				currentLayerOutputs[layer] = newLayerOutput;

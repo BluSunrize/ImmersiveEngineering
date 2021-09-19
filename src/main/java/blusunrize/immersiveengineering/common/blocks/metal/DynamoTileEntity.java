@@ -20,16 +20,15 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 
 public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFluxConnector, IStateBasedDirectional, IRotationAcceptor
 {
@@ -46,8 +45,8 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 		int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
 		for(Direction fd : DirectionUtils.VALUES)
 		{
-			BlockPos outputPos = getPos().offset(fd);
-			TileEntity te = Utils.getExistingTileEntity(world, outputPos);
+			BlockPos outputPos = getBlockPos().relative(fd);
+			BlockEntity te = Utils.getExistingTileEntity(level, outputPos);
 			output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
 		}
 	}
@@ -71,7 +70,7 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -83,12 +82,12 @@ public class DynamoTileEntity extends IEBaseTileEntity implements IIEInternalFlu
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 	}
 

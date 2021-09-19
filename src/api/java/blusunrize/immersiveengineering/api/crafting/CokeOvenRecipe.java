@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -24,7 +24,7 @@ import java.util.Map;
  */
 public class CokeOvenRecipe extends IESerializableRecipe
 {
-	public static IRecipeType<CokeOvenRecipe> TYPE;
+	public static RecipeType<CokeOvenRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<CokeOvenRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input;
@@ -52,7 +52,7 @@ public class CokeOvenRecipe extends IESerializableRecipe
 	}
 
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return this.output;
 	}

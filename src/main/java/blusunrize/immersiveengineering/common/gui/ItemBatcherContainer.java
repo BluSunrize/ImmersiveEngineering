@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
@@ -22,7 +22,7 @@ import static blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTi
 
 public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherTileEntity>
 {
-	public ItemBatcherContainer(int id, PlayerInventory inventoryPlayer, ItemBatcherTileEntity tile)
+	public ItemBatcherContainer(int id, Inventory inventoryPlayer, ItemBatcherTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 		IItemHandler filterItemHandler = new ItemStackHandler(tile.getFilters());
@@ -43,29 +43,29 @@ public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherTileEntity>
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slotObject = this.inventorySlots.get(slot);
-		if(slotObject!=null&&slotObject.getHasStack())
+		Slot slotObject = this.slots.get(slot);
+		if(slotObject!=null&&slotObject.hasItem())
 		{
-			ItemStack itemstack1 = slotObject.getStack();
+			ItemStack itemstack1 = slotObject.getItem();
 			itemstack = itemstack1.copy();
 			if(slot < slotCount)
 			{
-				if(!this.mergeItemStack(itemstack1, slotCount, this.inventorySlots.size(), true))
+				if(!this.moveItemStackTo(itemstack1, slotCount, this.slots.size(), true))
 					return ItemStack.EMPTY;
 			}
 			// exclude ghost slots from shiftclick
-			else if(!this.mergeItemStack(itemstack1, 9, slotCount, false))
+			else if(!this.moveItemStackTo(itemstack1, 9, slotCount, false))
 			{
 				return ItemStack.EMPTY;
 			}
 
 			if(itemstack1.isEmpty())
-				slotObject.putStack(ItemStack.EMPTY);
+				slotObject.set(ItemStack.EMPTY);
 			else
-				slotObject.onSlotChanged();
+				slotObject.setChanged();
 		}
 		return itemstack;
 	}

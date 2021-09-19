@@ -10,12 +10,12 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.google.common.base.Preconditions;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.AbstractGui;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.IReorderingProcessor;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.util.FormattedCharSequence;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,7 +23,7 @@ import java.util.OptionalInt;
 
 public class ManualElementTable extends SpecialManualElements
 {
-	private final ITextComponent[][] table;
+	private final Component[][] table;
 	private int[] bars;
 	private final boolean horizontalBars;
 	private OptionalInt height = OptionalInt.empty();
@@ -34,15 +34,15 @@ public class ManualElementTable extends SpecialManualElements
 	{
 		this(manual, Arrays.stream(table)
 						.map(a -> Arrays.stream(a)
-								.map(StringTextComponent::new)
-								.toArray(ITextComponent[]::new)
+								.map(TextComponent::new)
+								.toArray(Component[]::new)
 						)
-						.toArray(ITextComponent[][]::new),
+						.toArray(Component[][]::new),
 				horizontalBars
 		);
 	}
 
-	public ManualElementTable(ManualInstance manual, ITextComponent[][] table, boolean horizontalBars)
+	public ManualElementTable(ManualInstance manual, Component[][] table, boolean horizontalBars)
 	{
 		super(manual);
 		Preconditions.checkNotNull(table);
@@ -64,16 +64,16 @@ public class ManualElementTable extends SpecialManualElements
 	}
 
 	@Override
-	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mx, int my)
+	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mx, int my)
 	{
 		if(table!=null)
 		{
 			int col = manual.getHighlightColour()|0xff000000;
-			AbstractGui.fill(transform, x, y-2, x+120, y-1, col);
+			GuiComponent.fill(transform, x, y-2, x+120, y-1, col);
 
-			final int lineHeight = manual.fontRenderer().FONT_HEIGHT;
+			final int lineHeight = manual.fontRenderer().lineHeight;
 			int yOff = 0;
-			for(ITextComponent[] line : table)
+			for(Component[] line : table)
 				if(line!=null)
 				{
 					int height = 0;
@@ -82,10 +82,10 @@ public class ManualElementTable extends SpecialManualElements
 						{
 							int xx = textOff.length > 0&&j > 0?textOff[j-1]: x;
 							int w = Math.max(10, 120-(j > 0?textOff[j-1]-x: 0));
-							ITextComponent lineText = line[j];
-							List<IReorderingProcessor> lines = manual.fontRenderer().trimStringToWidth(lineText, w);
+							Component lineText = line[j];
+							List<FormattedCharSequence> lines = manual.fontRenderer().split(lineText, w);
 							for(int i = 0; i < lines.size(); i++)
-								manual.fontRenderer().func_238422_b_(
+								manual.fontRenderer().draw(
 										transform, lines.get(i), xx, y+yOff+i*lineHeight, manual.getTextColour()
 								);
 							if(lines.size() > height)
@@ -97,7 +97,7 @@ public class ManualElementTable extends SpecialManualElements
 						float scale = .5f;
 						transform.scale(1, scale, 1);
 						int barHeight = (int)((y+yOff+height*lineHeight)/scale);
-						AbstractGui.fill(transform, x, barHeight, x+120, barHeight+1,
+						GuiComponent.fill(transform, x, barHeight, x+120, barHeight+1,
 								manual.getTextColour()|0xff000000);
 						transform.scale(1, 1/scale, 1);
 					}
@@ -107,7 +107,7 @@ public class ManualElementTable extends SpecialManualElements
 
 			if(bars!=null)
 				for(int i = 0; i < bars.length; i++)
-					AbstractGui.fill(transform, textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
+					GuiComponent.fill(transform, textOff[i]-4, y-4, textOff[i]-3, y+yOff, col);
 		}
 	}
 
@@ -120,13 +120,13 @@ public class ManualElementTable extends SpecialManualElements
 	private void recalculateLayout()
 	{
 		bars = new int[1];
-		for(ITextComponent[] tableLine : table)
+		for(Component[] tableLine : table)
 		{
 			if(tableLine.length-1 > bars.length)
 				bars = Arrays.copyOf(bars, tableLine.length-1);
 			for(int j = 0; j < tableLine.length-1; j++)
 			{
-				int fl = manual.fontRenderer().getStringPropertyWidth(tableLine[j]);
+				int fl = manual.fontRenderer().width(tableLine[j]);
 				if(fl > bars[j])
 					bars[j] = fl;
 			}
@@ -139,15 +139,15 @@ public class ManualElementTable extends SpecialManualElements
 			textOff[i] = xx;
 		}
 		int yOff = 0;
-		for(ITextComponent[] tableLine : table)
+		for(Component[] tableLine : table)
 			if(tableLine!=null)
 				for(int j = 0; j < tableLine.length; j++)
 					if(tableLine[j]!=null)
 					{
 						int w = Math.max(10, 120-(j > 0?textOff[j-1]: 0));
-						int l = manual.fontRenderer().trimStringToWidth(tableLine[j], w).size();
+						int l = manual.fontRenderer().split(tableLine[j], w).size();
 						if(j!=0)
-							yOff += l*(manual.fontRenderer().FONT_HEIGHT+1);
+							yOff += l*(manual.fontRenderer().lineHeight+1);
 					}
 		height = OptionalInt.of(yOff);
 	}

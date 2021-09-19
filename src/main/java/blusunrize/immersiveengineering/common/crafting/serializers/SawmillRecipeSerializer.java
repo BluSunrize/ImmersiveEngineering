@@ -15,11 +15,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nonnull;
@@ -37,20 +37,20 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 	public SawmillRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		ItemStack output = readOutput(json.get("result"));
-		Ingredient input = Ingredient.deserialize(json.get("input"));
+		Ingredient input = Ingredient.fromJson(json.get("input"));
 		ItemStack stripped = ItemStack.EMPTY;
 		if(json.has("stripped"))
 			stripped = readOutput(json.get("stripped"));
 
 		JsonArray array = json.getAsJsonArray("secondaries");
-		int energy = JSONUtils.getInt(json, "energy");
+		int energy = GsonHelper.getAsInt(json, "energy");
 		SawmillRecipe recipe = IEServerConfig.MACHINES.sawmillConfig.apply(new SawmillRecipe(recipeId, output, stripped, input, energy));
 		for(int i = 0; i < array.size(); i++)
 		{
 			JsonObject element = array.get(i).getAsJsonObject();
 			if(CraftingHelper.processConditions(element, "conditions"))
 			{
-				boolean stripping = JSONUtils.getBoolean(element, "stripping");
+				boolean stripping = GsonHelper.getAsBoolean(element, "stripping");
 				ItemStack stack = readOutput(element.get("output"));
 				if(stripping)
 					recipe.addToSecondaryStripping(stack);
@@ -63,34 +63,34 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 
 	@Nullable
 	@Override
-	public SawmillRecipe read(@Nonnull ResourceLocation recipeId, PacketBuffer buffer)
+	public SawmillRecipe fromNetwork(@Nonnull ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItemStack();
-		ItemStack stripped = buffer.readItemStack();
-		Ingredient input = Ingredient.read(buffer);
+		ItemStack output = buffer.readItem();
+		ItemStack stripped = buffer.readItem();
+		Ingredient input = Ingredient.fromNetwork(buffer);
 		int energy = buffer.readInt();
 		SawmillRecipe recipe = new SawmillRecipe(recipeId, output, stripped, input, energy);
 		int secondaryCount = buffer.readInt();
 		for(int i = 0; i < secondaryCount; i++)
-			recipe.addToSecondaryStripping(buffer.readItemStack());
+			recipe.addToSecondaryStripping(buffer.readItem());
 		secondaryCount = buffer.readInt();
 		for(int i = 0; i < secondaryCount; i++)
-			recipe.addToSecondaryOutput(buffer.readItemStack());
+			recipe.addToSecondaryOutput(buffer.readItem());
 		return recipe;
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, SawmillRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, SawmillRecipe recipe)
 	{
-		buffer.writeItemStack(recipe.output);
-		buffer.writeItemStack(recipe.stripped);
-		recipe.input.write(buffer);
+		buffer.writeItem(recipe.output);
+		buffer.writeItem(recipe.stripped);
+		recipe.input.toNetwork(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 		buffer.writeInt(recipe.secondaryStripping.size());
 		for(ItemStack secondaryOutput : recipe.secondaryStripping)
-			buffer.writeItemStack(secondaryOutput);
+			buffer.writeItem(secondaryOutput);
 		buffer.writeInt(recipe.secondaryOutputs.size());
 		for(ItemStack secondaryOutput : recipe.secondaryOutputs)
-			buffer.writeItemStack(secondaryOutput);
+			buffer.writeItem(secondaryOutput);
 	}
 }

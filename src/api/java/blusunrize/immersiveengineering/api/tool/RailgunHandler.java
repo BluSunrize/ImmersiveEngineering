@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
@@ -36,14 +36,14 @@ public class RailgunHandler
 		return properties;
 	}
 
-	public static StandardRailgunProjectile registerStandardProjectile(ITag<Item> tag, double damage, double gravity)
+	public static StandardRailgunProjectile registerStandardProjectile(Tag<Item> tag, double damage, double gravity)
 	{
-		return (StandardRailgunProjectile)registerProjectile(() -> Ingredient.fromTag(tag), new StandardRailgunProjectile(damage, gravity));
+		return (StandardRailgunProjectile)registerProjectile(() -> Ingredient.of(tag), new StandardRailgunProjectile(damage, gravity));
 	}
 
 	public static StandardRailgunProjectile registerStandardProjectile(ItemStack stack, double damage, double gravity)
 	{
-		return (StandardRailgunProjectile)registerProjectile(() -> Ingredient.fromStacks(stack), new StandardRailgunProjectile(damage, gravity));
+		return (StandardRailgunProjectile)registerProjectile(() -> Ingredient.of(stack), new StandardRailgunProjectile(damage, gravity));
 	}
 
 	public static IRailgunProjectile getProjectile(ItemStack stack)
@@ -62,7 +62,7 @@ public class RailgunHandler
 		 * @param defaultProjectile the default projectile that should be returned if no custom one is created
 		 * @return the given or a custom entity
 		 */
-		default Entity getProjectile(@Nullable PlayerEntity shooter, ItemStack ammo, Entity defaultProjectile)
+		default Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)
 		{
 			return defaultProjectile;
 		}
@@ -78,7 +78,7 @@ public class RailgunHandler
 		/**
 		 * @return the damage dealt when impacting an entity
 		 */
-		default double getDamage(World world, Entity target, @Nullable UUID shooter, Entity projectile)
+		default double getDamage(Level world, Entity target, @Nullable UUID shooter, Entity projectile)
 		{
 			return 0;
 		}
@@ -87,7 +87,7 @@ public class RailgunHandler
 		 * Called when the projectile hits a target, either block or entity
 		 * When hitting entities, this is executed <b>after</b> damage is applied!
 		 */
-		default void onHitTarget(World world, RayTraceResult target, @Nullable UUID shooter, Entity projectile)
+		default void onHitTarget(Level world, HitResult target, @Nullable UUID shooter, Entity projectile)
 		{
 		}
 
@@ -139,7 +139,7 @@ public class RailgunHandler
 		}
 
 		@Override
-		public double getDamage(World world, Entity target, @Nullable UUID shooter, Entity projectile)
+		public double getDamage(Level world, Entity target, @Nullable UUID shooter, Entity projectile)
 		{
 			return this.damage;
 		}

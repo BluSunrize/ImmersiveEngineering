@@ -17,8 +17,8 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
 /**
@@ -35,7 +35,7 @@ public class AlloyRecipeManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<AlloyRecipe> getRecipeType()
+	public RecipeType<AlloyRecipe> getRecipeType()
 	{
 		return AlloyRecipe.TYPE;
 	}

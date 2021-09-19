@@ -9,14 +9,14 @@
 
 package blusunrize.immersiveengineering.common.network;
 
-import net.minecraft.network.PacketBuffer;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
 
 public interface IMessage
 {
-	void toBytes(PacketBuffer buf);
+	void toBytes(FriendlyByteBuf buf);
 
 	void process(Supplier<Context> context);
 }

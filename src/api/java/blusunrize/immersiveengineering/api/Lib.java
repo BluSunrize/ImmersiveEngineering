@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.api;
 
 
-import net.minecraft.item.IItemTier;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class Lib
 {
@@ -103,43 +103,43 @@ public class Lib
 	public static String DMG_RazorShock = "ieRazorShock";
 	public static String DMG_WireShock = "ieWireShock";
 
-	public static final IItemTier MATERIAL_Steel = new IItemTier()
+	public static final Tier MATERIAL_Steel = new Tier()
 	{
 		@Override
-		public int getMaxUses()
+		public int getUses()
 		{
 			return 641;
 		}
 
 		@Override
-		public float getEfficiency()
+		public float getSpeed()
 		{
 			return 7F;
 		}
 
 		@Override
-		public float getAttackDamage()
+		public float getAttackDamageBonus()
 		{
 			return 3F;
 		}
 
 		@Override
-		public int getHarvestLevel()
+		public int getLevel()
 		{
 			return 2;
 		}
 
 		@Override
-		public int getEnchantability()
+		public int getEnchantmentValue()
 		{
 			return 10;
 		}
 
 		@Override
-		public Ingredient getRepairMaterial()
+		public Ingredient getRepairIngredient()
 		{
-			return Ingredient.fromTag(IETags.getTagsFor(EnumMetals.STEEL).ingot);
+			return Ingredient.of(IETags.getTagsFor(EnumMetals.STEEL).ingot);
 		}
 	};
-	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", TextFormatting.GOLD);
+	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", ChatFormatting.GOLD);
 }

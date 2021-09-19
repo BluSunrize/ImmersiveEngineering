@@ -8,12 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-
 import java.util.function.Supplier;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
 
 public abstract class StoneMultiblock extends IETemplateMultiblock
 {

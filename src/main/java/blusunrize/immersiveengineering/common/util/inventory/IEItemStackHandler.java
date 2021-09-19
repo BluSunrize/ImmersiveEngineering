@@ -10,11 +10,11 @@ package blusunrize.immersiveengineering.common.util.inventory;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.items.InternalStorageItem;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.Container;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -41,11 +41,11 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 	private Runnable onChange = () -> {
 	};
 
-	public void setTile(TileEntity tile)
+	public void setTile(BlockEntity tile)
 	{
 		if(tile!=null)
 		{
-			onChange = tile::markDirty;
+			onChange = tile::setChanged;
 		}
 		else
 		{
@@ -54,11 +54,11 @@ public class IEItemStackHandler extends ItemStackHandler implements ICapabilityP
 		}
 	}
 
-	public void setInventoryForUpdate(IInventory inv)
+	public void setInventoryForUpdate(Container inv)
 	{
 		if(inv!=null)
 		{
-			onChange = inv::markDirty;
+			onChange = inv::setChanged;
 		}
 		else
 		{

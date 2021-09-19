@@ -12,9 +12,9 @@ import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.category.IRecipeCategory;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 
@@ -32,7 +32,7 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory<T>
 		this.recipeClass = recipeClass;
 		this.guiHelper = guiHelper;
 		this.uid = uid;
-		this.localizedName = I18n.format(localKey);
+		this.localizedName = I18n.get(localKey);
 	}
 
 	@Override

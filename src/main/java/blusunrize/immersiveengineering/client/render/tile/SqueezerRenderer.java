@@ -10,46 +10,46 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.blocks.metal.SqueezerTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
-public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
+public class SqueezerRenderer extends BlockEntityRenderer<SqueezerTileEntity>
 {
 	public static DynamicModel<Direction> PISTON;
 
-	public SqueezerRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public SqueezerRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(SqueezerTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(SqueezerTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
+		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockPos blockPos = te.getPos();
-		BlockState state = te.getWorld().getBlockState(blockPos);
+		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+		BlockPos blockPos = te.getBlockPos();
+		BlockState state = te.getLevel().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.squeezer)
 			return;
-		IBakedModel model = PISTON.get(te.getFacing());
+		BakedModel model = PISTON.get(te.getFacing());
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 		bufferIn = TileRenderUtils.mirror(te, matrixStack, bufferIn);
-		IVertexBuilder buffer = bufferIn.getBuffer(RenderType.getSolid());
+		VertexConsumer buffer = bufferIn.getBuffer(RenderType.solid());
 
 		float piston = te.animation_piston;
 		//Smoothstep! TODO partial ticks?
@@ -58,10 +58,10 @@ public class SqueezerRenderer extends TileEntityRenderer<SqueezerTileEntity>
 		matrixStack.translate(0, piston, 0);
 
 		matrixStack.translate(-.5, -.5, -.5);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
-				buffer, true, te.getWorld().rand, 0, combinedOverlayIn,
+		blockRenderer.getModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
+				buffer, true, te.getLevel().random, 0, combinedOverlayIn,
 				EmptyModelData.INSTANCE);
 
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 }

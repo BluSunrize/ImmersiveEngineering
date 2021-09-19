@@ -10,34 +10,34 @@
 package blusunrize.immersiveengineering.data.recipebuilder;
 
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapelessRecipeBuilder;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapelessRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
 
 public class FluidAwareShapelessRecipeBuilder extends ShapelessRecipeBuilder
 {
-	public FluidAwareShapelessRecipeBuilder(IItemProvider resultIn, int countIn)
+	public FluidAwareShapelessRecipeBuilder(ItemLike resultIn, int countIn)
 	{
 		super(resultIn, countIn);
 	}
 
-	public static ShapelessRecipeBuilder builder(IItemProvider resultIn, int countIn)
+	public static ShapelessRecipeBuilder builder(ItemLike resultIn, int countIn)
 	{
 		return new FluidAwareShapelessRecipeBuilder(resultIn, countIn);
 	}
 
 	@Override
-	public void build(@Nonnull Consumer<IFinishedRecipe> consumerIn, @Nonnull ResourceLocation id)
+	public void save(@Nonnull Consumer<FinishedRecipe> consumerIn, @Nonnull ResourceLocation id)
 	{
-		Consumer<IFinishedRecipe> dummyConsumer = iFinishedRecipe -> {
+		Consumer<FinishedRecipe> dummyConsumer = iFinishedRecipe -> {
 			WrappedFinishedRecipe result = new WrappedFinishedRecipe(iFinishedRecipe, RecipeSerializers.IE_SHAPELESS_SERIALIZER);
 			consumerIn.accept(result);
 		};
-		super.build(dummyConsumer, id);
+		super.save(dummyConsumer, id);
 	}
 
 }

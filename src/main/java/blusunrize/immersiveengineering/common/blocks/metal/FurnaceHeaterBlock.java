@@ -3,9 +3,9 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.state.StateContainer.Builder;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
 public class FurnaceHeaterBlock extends GenericTileBlock<FurnaceHeaterTileEntity>
 {
@@ -15,9 +15,9 @@ public class FurnaceHeaterBlock extends GenericTileBlock<FurnaceHeaterTileEntity
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.ACTIVE, IEProperties.FACING_ALL);
 	}
 }

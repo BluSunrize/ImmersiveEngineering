@@ -11,14 +11,13 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-
 import javax.annotation.Nullable;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class ClocheFertilizerSerializer extends IERecipeSerializer<ClocheFertilizer>
 {
@@ -31,24 +30,24 @@ public class ClocheFertilizerSerializer extends IERecipeSerializer<ClocheFertili
 	@Override
 	public ClocheFertilizer readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		Ingredient input = Ingredient.deserialize(json.get("input"));
-		float growthModifier = JSONUtils.getFloat(json, "growthModifier");
+		Ingredient input = Ingredient.fromJson(json.get("input"));
+		float growthModifier = GsonHelper.getAsFloat(json, "growthModifier");
 		return new ClocheFertilizer(recipeId, input, growthModifier);
 	}
 
 	@Nullable
 	@Override
-	public ClocheFertilizer read(ResourceLocation recipeId, PacketBuffer buffer)
+	public ClocheFertilizer fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		Ingredient input = Ingredient.read(buffer);
+		Ingredient input = Ingredient.fromNetwork(buffer);
 		float growthModifier = buffer.readFloat();
 		return new ClocheFertilizer(recipeId, input, growthModifier);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, ClocheFertilizer recipe)
+	public void toNetwork(FriendlyByteBuf buffer, ClocheFertilizer recipe)
 	{
-		recipe.input.write(buffer);
+		recipe.input.toNetwork(buffer);
 		buffer.writeFloat(recipe.growthModifier);
 	}
 }

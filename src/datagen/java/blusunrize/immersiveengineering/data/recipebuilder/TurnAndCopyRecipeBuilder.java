@@ -12,10 +12,10 @@ package blusunrize.immersiveengineering.data.recipebuilder;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
@@ -27,17 +27,17 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 	private int[] nbtCopyTargetSlot = null;
 	private Pattern nbtCopyPredicate = null;
 
-	public TurnAndCopyRecipeBuilder(IItemProvider result, int count)
+	public TurnAndCopyRecipeBuilder(ItemLike result, int count)
 	{
 		super(result, count);
 	}
 
-	public static TurnAndCopyRecipeBuilder builder(IItemProvider result, int count)
+	public static TurnAndCopyRecipeBuilder builder(ItemLike result, int count)
 	{
 		return new TurnAndCopyRecipeBuilder(result, count);
 	}
 
-	public static TurnAndCopyRecipeBuilder builder(IItemProvider result)
+	public static TurnAndCopyRecipeBuilder builder(ItemLike result)
 	{
 		return new TurnAndCopyRecipeBuilder(result, 1);
 	}
@@ -67,13 +67,13 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 	}
 
 	@Override
-	public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id)
+	public void save(Consumer<FinishedRecipe> consumerIn, ResourceLocation id)
 	{
-		Consumer<IFinishedRecipe> dummyConsumer = iFinishedRecipe -> {
+		Consumer<FinishedRecipe> dummyConsumer = iFinishedRecipe -> {
 			TurnAndCopyResult result = new TurnAndCopyResult(iFinishedRecipe, allowQuarterTurn, allowEighthTurn, nbtCopyTargetSlot, nbtCopyPredicate);
 			consumerIn.accept(result);
 		};
-		super.build(dummyConsumer, id);
+		super.save(dummyConsumer, id);
 	}
 
 	public static class TurnAndCopyResult extends WrappedFinishedRecipe
@@ -83,7 +83,7 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 		private final int[] nbtCopyTargetSlot;
 		private final Pattern nbtCopyPredicate;
 
-		public TurnAndCopyResult(IFinishedRecipe base, boolean allowQuarterTurn, boolean allowEighthTurn, int[] nbtCopyTargetSlot, Pattern nbtCopyPredicate)
+		public TurnAndCopyResult(FinishedRecipe base, boolean allowQuarterTurn, boolean allowEighthTurn, int[] nbtCopyTargetSlot, Pattern nbtCopyPredicate)
 		{
 			super(base, RecipeSerializers.TURN_AND_COPY_SERIALIZER);
 			this.allowQuarterTurn = allowQuarterTurn;
@@ -93,9 +93,9 @@ public class TurnAndCopyRecipeBuilder extends ShapedRecipeBuilder
 		}
 
 		@Override
-		public void serialize(JsonObject json)
+		public void serializeRecipeData(JsonObject json)
 		{
-			super.serialize(json);
+			super.serializeRecipeData(json);
 			if(allowQuarterTurn)
 				json.addProperty("quarter_turn", true);
 			if(allowEighthTurn)

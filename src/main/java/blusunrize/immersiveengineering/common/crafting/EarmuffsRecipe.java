@@ -15,21 +15,20 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
 import javax.annotation.Nonnull;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import java.util.List;
 
-public class EarmuffsRecipe implements ICraftingRecipe
+public class EarmuffsRecipe implements CraftingRecipe
 {
 	private final ResourceLocation id;
 
@@ -39,25 +38,25 @@ public class EarmuffsRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public boolean isDynamic()
+	public boolean isSpecial()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, @Nonnull World worldIn)
+	public boolean matches(CraftingContainer inv, @Nonnull Level worldIn)
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
 		List<ItemStack> list = Lists.newArrayList();
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 				if(earmuffs.isEmpty()&&Misc.earmuffs.equals(stackInSlot.getItem()))
 					earmuffs = stackInSlot;
 				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem&&
-						((ArmorItem)stackInSlot.getItem()).getEquipmentSlot()==EquipmentSlotType.HEAD&&
+						((ArmorItem)stackInSlot.getItem()).getSlot()==EquipmentSlot.HEAD&&
 						!Misc.earmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 				else if(Utils.isDye(stackInSlot))
@@ -72,16 +71,16 @@ public class EarmuffsRecipe implements ICraftingRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv)
+	public ItemStack assemble(CraftingContainer inv)
 	{
 		ItemStack earmuffs = ItemStack.EMPTY;
 		ItemStack armor = ItemStack.EMPTY;
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 				if(earmuffs.isEmpty()&&Misc.earmuffs.equals(stackInSlot.getItem()))
 				{
@@ -98,7 +97,7 @@ public class EarmuffsRecipe implements ICraftingRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = Utils.getDye(stackInSlot).getColorComponentValues();
+					float[] afloat = Utils.getDye(stackInSlot).getTextureDiffuseColors();
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
@@ -109,7 +108,7 @@ public class EarmuffsRecipe implements ICraftingRecipe
 					++totalColourSets;
 				}
 				else if(armor.isEmpty()&&stackInSlot.getItem() instanceof ArmorItem&&
-						((ArmorItem)stackInSlot.getItem()).getEquipmentSlot()==EquipmentSlotType.HEAD&&
+						((ArmorItem)stackInSlot.getItem()).getSlot()==EquipmentSlot.HEAD&&
 						!Misc.earmuffs.equals(stackInSlot.getItem()))
 					armor = stackInSlot;
 		}
@@ -150,26 +149,26 @@ public class EarmuffsRecipe implements ICraftingRecipe
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width >= 2&&height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return new ItemStack(Misc.earmuffs, 1);
 	}
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
 	{
-		NonNullList<ItemStack> remaining = ICraftingRecipe.super.getRemainingItems(inv);
+		NonNullList<ItemStack> remaining = CraftingRecipe.super.getRemainingItems(inv);
 		for(int i = 0; i < remaining.size(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty()&&ItemNBTHelper.hasKey(stackInSlot, Lib.NBT_Earmuffs))
 				remaining.set(i, ItemNBTHelper.getItemStack(stackInSlot, Lib.NBT_Earmuffs));
 		}
@@ -184,7 +183,7 @@ public class EarmuffsRecipe implements ICraftingRecipe
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.EARMUFF_SERIALIZER.get();
 	}
@@ -192,6 +191,6 @@ public class EarmuffsRecipe implements ICraftingRecipe
 	@Override
 	public NonNullList<Ingredient> getIngredients()
 	{
-		return NonNullList.withSize(1, Ingredient.fromItems(Misc.earmuffs));
+		return NonNullList.withSize(1, Ingredient.of(Misc.earmuffs));
 	}
 }

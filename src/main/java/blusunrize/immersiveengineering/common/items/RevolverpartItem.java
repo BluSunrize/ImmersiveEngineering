@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -26,14 +26,14 @@ public class RevolverpartItem extends IEBaseItem
 {
 	public RevolverpartItem(String name)
 	{
-		super(name, new Properties().maxStackSize(1));
+		super(name, new Properties().stacksTo(1));
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName(ItemStack stack)
+	public Component getName(ItemStack stack)
 	{
-		ITextComponent name = super.getDisplayName(stack);
+		Component name = super.getName(stack);
 		if(ItemNBTHelper.hasKey(stack, "perks"))
 			return RevolverItem.RevolverPerk.getFormattedName(name, ItemNBTHelper.getTagCompound(stack, "perks"));
 		return name;
@@ -41,14 +41,14 @@ public class RevolverpartItem extends IEBaseItem
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		CompoundNBT perks = ItemNBTHelper.getTagCompound(stack, "perks");
-		for(String key : perks.keySet())
+		CompoundTag perks = ItemNBTHelper.getTagCompound(stack, "perks");
+		for(String key : perks.getAllKeys())
 		{
 			RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
 			if(perk!=null)
-				list.add(new StringTextComponent("  ").appendSibling(perk.getDisplayString(perks.getDouble(key))));
+				list.add(new TextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
 		}
 	}
 }

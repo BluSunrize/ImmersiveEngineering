@@ -10,19 +10,18 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchTileEntity;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-
 import javax.annotation.Nonnull;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEntity>
 {
-	public PlayerInventory inventoryPlayer;
+	public Inventory inventoryPlayer;
 
-	public AutoWorkbenchContainer(int id, PlayerInventory inventoryPlayer, AutoWorkbenchTileEntity tile)
+	public AutoWorkbenchContainer(int id, Inventory inventoryPlayer, AutoWorkbenchTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 
@@ -36,7 +35,7 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEnt
 		bindPlayerInv(inventoryPlayer);
 	}
 
-	private void bindPlayerInv(PlayerInventory inventoryPlayer)
+	private void bindPlayerInv(Inventory inventoryPlayer)
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -53,26 +52,26 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEnt
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot slotObject = inventorySlots.get(slot);
+		Slot slotObject = slots.get(slot);
 
-		if(slotObject!=null&&slotObject.getHasStack())
+		if(slotObject!=null&&slotObject.hasItem())
 		{
-			ItemStack stackInSlot = slotObject.getStack();
+			ItemStack stackInSlot = slotObject.getItem();
 			stack = stackInSlot.copy();
 
 			if(slot < slotCount)
 			{
-				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount+36), true))
+				if(!this.moveItemStackTo(stackInSlot, slotCount, (slotCount+36), true))
 					return ItemStack.EMPTY;
 			}
 			else if(!stackInSlot.isEmpty())
 			{
 				if(stackInSlot.getItem() instanceof EngineersBlueprintItem)
 				{
-					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
+					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
 				else
@@ -80,9 +79,9 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEnt
 					boolean b = true;
 					for(int i = 1; i < slotCount; i++)
 					{
-						Slot s = inventorySlots.get(i);
-						if(s!=null&&s.isItemValid(stackInSlot))
-							if(this.mergeItemStack(stackInSlot, i, i+1, true))
+						Slot s = slots.get(i);
+						if(s!=null&&s.mayPlace(stackInSlot))
+							if(this.moveItemStackTo(stackInSlot, i, i+1, true))
 							{
 								b = false;
 								break;
@@ -96,9 +95,9 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEnt
 			}
 
 			if(stackInSlot.getCount()==0)
-				slotObject.putStack(ItemStack.EMPTY);
+				slotObject.set(ItemStack.EMPTY);
 			else
-				slotObject.onSlotChanged();
+				slotObject.setChanged();
 
 			if(stackInSlot.getCount()==stack.getCount())
 				return ItemStack.EMPTY;
@@ -108,9 +107,9 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchTileEnt
 	}
 
 	@Override
-	public void onCraftMatrixChanged(IInventory inventoryIn)
+	public void slotsChanged(Container inventoryIn)
 	{
-		super.onCraftMatrixChanged(inventoryIn);
+		super.slotsChanged(inventoryIn);
 		tile.markContainingBlockForUpdate(null);
 	}
 }

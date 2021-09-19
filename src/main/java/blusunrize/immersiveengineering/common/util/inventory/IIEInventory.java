@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util.inventory;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 

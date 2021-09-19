@@ -8,30 +8,29 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.world.World;
-
 import javax.annotation.Nonnull;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 public class MaintenanceKitItem extends IEBaseItem
 {
 	public MaintenanceKitItem()
 	{
-		super("maintenance_kit", new Properties().maxStackSize(1).defaultMaxDamage(50));
+		super("maintenance_kit", new Properties().stacksTo(1).defaultDurability(50));
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
-		if(!world.isRemote)
-			openGui(player, hand==Hand.MAIN_HAND?EquipmentSlotType.MAINHAND: EquipmentSlotType.OFFHAND);
-		ItemStack stack = player.getHeldItem(hand);
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		if(!world.isClientSide)
+			openGui(player, hand==InteractionHand.MAIN_HAND?EquipmentSlot.MAINHAND: EquipmentSlot.OFFHAND);
+		ItemStack stack = player.getItemInHand(hand);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 }

@@ -14,13 +14,12 @@ import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-
 import javax.annotation.Nullable;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,38 +40,38 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 		for(int i = 0; i < results.size(); i++)
 			outputs.add(readOutput(results.get(i)));
 
-		Ingredient seed = Ingredient.deserialize(json.get("input"));
-		Ingredient soil = Ingredient.deserialize(json.get("soil"));
-		int time = JSONUtils.getInt(json, "time");
+		Ingredient seed = Ingredient.fromJson(json.get("input"));
+		Ingredient soil = Ingredient.fromJson(json.get("soil"));
+		int time = GsonHelper.getAsInt(json, "time");
 
-		ClocheRenderReference renderReference = ClocheRenderReference.deserialize(JSONUtils.getJsonObject(json, "render"));
+		ClocheRenderReference renderReference = ClocheRenderReference.deserialize(GsonHelper.getAsJsonObject(json, "render"));
 
 		return new ClocheRecipe(recipeId, outputs, seed, soil, time, renderReference);
 	}
 
 	@Nullable
 	@Override
-	public ClocheRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public ClocheRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
 		int outputCount = buffer.readInt();
 		List<ItemStack> outputs = new ArrayList<>(outputCount);
 		for(int i = 0; i < outputCount; i++)
-			outputs.add(buffer.readItemStack());
-		Ingredient seed = Ingredient.read(buffer);
-		Ingredient soil = Ingredient.read(buffer);
+			outputs.add(buffer.readItem());
+		Ingredient seed = Ingredient.fromNetwork(buffer);
+		Ingredient soil = Ingredient.fromNetwork(buffer);
 		int time = buffer.readInt();
 		ClocheRenderReference renderReference = ClocheRenderReference.read(buffer);
 		return new ClocheRecipe(recipeId, outputs, seed, soil, time, renderReference);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, ClocheRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, ClocheRecipe recipe)
 	{
 		buffer.writeInt(recipe.outputs.size());
 		for(ItemStack stack : recipe.outputs)
-			buffer.writeItemStack(stack);
-		recipe.seed.write(buffer);
-		recipe.soil.write(buffer);
+			buffer.writeItem(stack);
+		recipe.seed.toNetwork(buffer);
+		recipe.soil.toNetwork(buffer);
 		buffer.writeInt(recipe.time);
 		recipe.renderReference.write(buffer);
 	}

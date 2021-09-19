@@ -10,10 +10,10 @@ package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.world.World;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
@@ -24,16 +24,16 @@ public class MessageBirthdayParty implements IMessage
 
 	public MessageBirthdayParty(LivingEntity entity)
 	{
-		this.entityId = entity.getEntityId();
+		this.entityId = entity.getId();
 	}
 
-	public MessageBirthdayParty(PacketBuffer buf)
+	public MessageBirthdayParty(FriendlyByteBuf buf)
 	{
 		entityId = buf.readInt();
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeInt(this.entityId);
 	}
@@ -42,13 +42,13 @@ public class MessageBirthdayParty implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		context.get().enqueueWork(() -> {
-			World world = ImmersiveEngineering.proxy.getClientWorld();
+			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			if(world!=null) // This can happen if the task is scheduled right before leaving the world
 			{
-				Entity entity = world.getEntityByID(entityId);
+				Entity entity = world.getEntity(entityId);
 				if(entity!=null&&entity instanceof LivingEntity)
 				{
-					world.makeFireworks(entity.getPosX(), entity.getPosY(), entity.getPosZ(), 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
+					world.createFireworks(entity.getX(), entity.getY(), entity.getZ(), 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
 					entity.getPersistentData().putBoolean("headshot", true);
 				}
 			}

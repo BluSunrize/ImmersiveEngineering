@@ -13,15 +13,15 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
@@ -32,12 +32,12 @@ import java.util.List;
 
 public class IICProxy implements IImmersiveConnectable
 {
-	private final World world;
+	private final Level world;
 	private final BlockPos pos;
 	private final List<Connection> internalConns;
 	private final List<ConnectionPoint> points;
 
-	public IICProxy(World world, BlockPos pos, Collection<Connection> internal,
+	public IICProxy(Level world, BlockPos pos, Collection<Connection> internal,
 					Collection<ConnectionPoint> points)
 	{
 		this.world = world;
@@ -57,7 +57,7 @@ public class IICProxy implements IImmersiveConnectable
 	{
 		//TODO clean up
 		//this will load the chunk the TE is in for 1 tick since it needs to be notified about the removed wires
-		TileEntity te = world.getTileEntity(pos);
+		BlockEntity te = world.getBlockEntity(pos);
 		if(!(te instanceof IImmersiveConnectable))
 			return;
 		((IImmersiveConnectable)te).removeCable(connection, attachedPoint);
@@ -70,7 +70,7 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		return false;
 	}
@@ -82,13 +82,13 @@ public class IICProxy implements IImmersiveConnectable
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
 		return null;
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		return null;
 	}
@@ -99,28 +99,28 @@ public class IICProxy implements IImmersiveConnectable
 		return points;
 	}
 
-	public static IICProxy readFromNBT(World world, CompoundNBT nbt)
+	public static IICProxy readFromNBT(Level world, CompoundTag nbt)
 	{
-		ListNBT internalNBT = nbt.getList("internal", NBT.TAG_COMPOUND);
+		ListTag internalNBT = nbt.getList("internal", NBT.TAG_COMPOUND);
 		List<Connection> internal = new ArrayList<>(internalNBT.size());
-		for(INBT c : internalNBT)
-			internal.add(new Connection((CompoundNBT)c));
-		ListNBT pointNBT = nbt.getList("points", NBT.TAG_COMPOUND);
+		for(Tag c : internalNBT)
+			internal.add(new Connection((CompoundTag)c));
+		ListTag pointNBT = nbt.getList("points", NBT.TAG_COMPOUND);
 		List<ConnectionPoint> points = new ArrayList<>();
-		for(INBT c : pointNBT)
-			points.add(new ConnectionPoint((CompoundNBT)c));
-		return new IICProxy(world, NBTUtil.readBlockPos(nbt.getCompound("pos")), internal, points);
+		for(Tag c : pointNBT)
+			points.add(new ConnectionPoint((CompoundTag)c));
+		return new IICProxy(world, NbtUtils.readBlockPos(nbt.getCompound("pos")), internal, points);
 	}
 
-	public CompoundNBT writeToNBT()
+	public CompoundTag writeToNBT()
 	{
-		CompoundNBT ret = new CompoundNBT();
-		ret.put("pos", NBTUtil.writeBlockPos(pos));
-		ListNBT points = new ListNBT();
+		CompoundTag ret = new CompoundTag();
+		ret.put("pos", NbtUtils.writeBlockPos(pos));
+		ListTag points = new ListTag();
 		for(ConnectionPoint cp : this.points)
 			points.add(cp.createTag());
 		ret.put("points", points);
-		ListNBT internal = new ListNBT();
+		ListTag internal = new ListTag();
 		for(Connection conn : this.internalConns)
 			internal.add(conn.toNBT());
 		ret.put("internal", internal);

@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 

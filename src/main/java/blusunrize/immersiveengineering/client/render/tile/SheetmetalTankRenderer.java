@@ -11,30 +11,30 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraftforge.fluids.FluidStack;
 
-public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTileEntity>
+public class SheetmetalTankRenderer extends BlockEntityRenderer<SheetmetalTankTileEntity>
 {
-	public SheetmetalTankRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public SheetmetalTankRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(SheetmetalTankTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(SheetmetalTankTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
+		if(!tile.formed||tile.isDummy()||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
-		matrixStack.push();
+		matrixStack.pushPose();
 
 		matrixStack.translate(.5, 0, .5);
 
@@ -49,27 +49,27 @@ public class SheetmetalTankRenderer extends TileEntityRenderer<SheetmetalTankTil
 		zz /= baseScale;
 		for(int i = 0; i < 4; i++)
 		{
-			matrixStack.push();
+			matrixStack.pushPose();
 			matrixStack.translate(xx, 0, zz);
 
-			Matrix4f mat = matrixStack.getLast().getMatrix();
-			final IVertexBuilder builder = bufferIn.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
-			builder.pos(mat, -4, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			builder.pos(mat, -4, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			builder.pos(mat, 20, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
-			builder.pos(mat, 20, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
+			Matrix4f mat = matrixStack.last().pose();
+			final VertexConsumer builder = bufferIn.getBuffer(IERenderTypes.TRANSLUCENT_POSITION_COLOR);
+			builder.vertex(mat, -4, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
+			builder.vertex(mat, -4, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
+			builder.vertex(mat, 20, 20, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
+			builder.vertex(mat, 20, -4, 0).color(0x22, 0x22, 0x22, 0xff).endVertex();
 
 			if(!fs.isEmpty())
 			{
 				float h = fs.getAmount()/(float)tile.tank.getCapacity();
 				matrixStack.translate(0, 0, .004f);
-				GuiHelper.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.getSolid()), matrixStack, fs,
+				GuiHelper.drawRepeatedFluidSprite(bufferIn.getBuffer(RenderType.solid()), matrixStack, fs,
 						0, 0+(1-h)*16, 16, h*16);
 			}
-			matrixStack.pop();
-			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), 90, true));
+			matrixStack.popPose();
+			matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), 90, true));
 		}
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 
 }

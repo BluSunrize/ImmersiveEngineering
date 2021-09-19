@@ -8,64 +8,64 @@
 
 package blusunrize.immersiveengineering.client.fx;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.client.Camera;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.ActiveRenderInfo;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.particles.BasicParticleType;
+import net.minecraft.core.particles.SimpleParticleType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class SparksParticle extends SpriteTexturedParticle
+public class SparksParticle extends TextureSheetParticle
 {
-	public SparksParticle(ClientWorld world, double x, double y, double z, double mx, double my, double mz, IAnimatedSprite sprite)
+	public SparksParticle(ClientLevel world, double x, double y, double z, double mx, double my, double mz, SpriteSet sprite)
 	{
 		super(world, x, y, z, mx, my, mz);
-		this.setMaxAge(16);
-		this.posX = x;
-		this.posY = y;
-		this.posZ = z;
-		this.motionX = mx;
-		this.motionY = my;
-		this.motionZ = mz;
-		selectSpriteRandomly(sprite);
+		this.setLifetime(16);
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.xd = mx;
+		this.yd = my;
+		this.zd = mz;
+		pickSprite(sprite);
 		//TODO this.setParticleTextureIndex(Utils.RAND.nextInt(3));
 	}
 
 	@Override
-	public int getBrightnessForRender(float p_70070_1_)
+	public int getLightColor(float p_70070_1_)
 	{
 		return 240<<16|240;
 	}
 
 	@Override
-	public void renderParticle(IVertexBuilder buffer, ActiveRenderInfo renderInfo, float partialTicks)
+	public void render(VertexConsumer buffer, Camera renderInfo, float partialTicks)
 	{
 		int particleAge = age;
 		this.setColor(1, .2f+(16-particleAge)/16f, particleAge > 4?0: (4-particleAge)/4f);
-		super.renderParticle(buffer, renderInfo, partialTicks);
+		super.render(buffer, renderInfo, partialTicks);
 	}
 
 	@Nonnull
 	@Override
-	public IParticleRenderType getRenderType()
+	public ParticleRenderType getRenderType()
 	{
-		return IParticleRenderType.PARTICLE_SHEET_LIT;
+		return ParticleRenderType.PARTICLE_SHEET_LIT;
 	}
 
-	public static class Factory implements IParticleFactory<BasicParticleType>
+	public static class Factory implements ParticleProvider<SimpleParticleType>
 	{
-		private final IAnimatedSprite sprite;
+		private final SpriteSet sprite;
 
-		public Factory(IAnimatedSprite sprite)
+		public Factory(SpriteSet sprite)
 		{
 			this.sprite = sprite;
 		}
 
 		@Nullable
 		@Override
-		public Particle makeParticle(BasicParticleType typeIn, ClientWorld worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
+		public Particle createParticle(SimpleParticleType typeIn, ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new SparksParticle(worldIn, x, y, z, xSpeed, ySpeed, zSpeed, sprite);
 		}

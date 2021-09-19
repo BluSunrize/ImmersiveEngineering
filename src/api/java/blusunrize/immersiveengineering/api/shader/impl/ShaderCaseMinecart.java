@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.api.shader.impl;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -20,7 +20,7 @@ import java.util.Set;
 
 public class ShaderCaseMinecart extends ShaderCase
 {
-	public static Set<Class<? extends AbstractMinecartEntity>> invalidMinecartClasses = new HashSet<>();
+	public static Set<Class<? extends AbstractMinecart>> invalidMinecartClasses = new HashSet<>();
 	public boolean[][] renderSides;
 	public boolean[] mirrorSideForPass;
 

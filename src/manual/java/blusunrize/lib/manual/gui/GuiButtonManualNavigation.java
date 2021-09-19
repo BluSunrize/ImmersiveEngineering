@@ -9,10 +9,10 @@
 package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.TextComponent;
 
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
@@ -24,15 +24,15 @@ public class GuiButtonManualNavigation extends Button
 	public int type;
 	public ManualScreen gui;
 
-	public GuiButtonManualNavigation(ManualScreen gui, int x, int y, int w, int h, int type, IPressable handler)
+	public GuiButtonManualNavigation(ManualScreen gui, int x, int y, int w, int h, int type, OnPress handler)
 	{
-		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), StringTextComponent.EMPTY, handler);
+		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), TextComponent.EMPTY, handler);
 		this.gui = gui;
 		this.type = type;
 	}
 
 	@Override
-	public void renderWidget(MatrixStack transform, int mx, int my, float partial)
+	public void renderButton(PoseStack transform, int mx, int my, float partial)
 	{
 		ManualUtils.bindTexture(gui.texture);
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);

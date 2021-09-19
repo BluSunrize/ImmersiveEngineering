@@ -15,13 +15,13 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * @author Robustprogram - 26.1.2020
@@ -36,25 +36,25 @@ public class SideConfigProvider implements IProbeInfoProvider
 	}
 
 	@Override
-	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
+	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		TileEntity te = world.getTileEntity(data.getPos());
+		BlockEntity te = world.getBlockEntity(data.getPos());
 		if(te instanceof IEBlockInterfaces.IConfigurableSides&&data.getSideHit()!=null)
 		{
-			boolean flip = player.isSneaking();
+			boolean flip = player.isShiftKeyDown();
 			Direction side = flip ? data.getSideHit().getOpposite() : data.getSideHit();
 			IOSideConfig config = ((IEBlockInterfaces.IConfigurableSides)te).getSideConfig(side);
 			
-			StringTextComponent combined = new StringTextComponent("");
-			TranslationTextComponent direction =
-					new TranslationTextComponent(Lib.DESC_INFO+"blockSide." + (flip?"opposite": "facing"));
-			TranslationTextComponent connection = 
-					new TranslationTextComponent(Lib.DESC_INFO+"blockSide.io." + config.getString());
+			TextComponent combined = new TextComponent("");
+			TranslatableComponent direction =
+					new TranslatableComponent(Lib.DESC_INFO+"blockSide." + (flip?"opposite": "facing"));
+			TranslatableComponent connection = 
+					new TranslatableComponent(Lib.DESC_INFO+"blockSide.io." + config.getSerializedName());
 			
-			combined.appendSibling(direction);
-			combined.appendString(": ");
-			combined.appendSibling(connection);
+			combined.append(direction);
+			combined.append(": ");
+			combined.append(connection);
 			
 			probeInfo.text(combined);
 		}

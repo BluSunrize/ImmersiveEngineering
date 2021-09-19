@@ -9,50 +9,49 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import javax.annotation.Nonnull;
 
-public class DummyVertexBuilder implements IVertexBuilder
+public class DummyVertexBuilder implements VertexConsumer
 {
 	@Nonnull
 	@Override
-	public IVertexBuilder pos(double x, double y, double z)
+	public VertexConsumer vertex(double x, double y, double z)
 	{
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder color(int red, int green, int blue, int alpha)
+	public VertexConsumer color(int red, int green, int blue, int alpha)
 	{
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder tex(float u, float v)
+	public VertexConsumer uv(float u, float v)
 	{
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder overlay(int u, int v)
+	public VertexConsumer overlayCoords(int u, int v)
 	{
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder lightmap(int u, int v)
+	public VertexConsumer uv2(int u, int v)
 	{
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder normal(float x, float y, float z)
+	public VertexConsumer normal(float x, float y, float z)
 	{
 		return this;
 	}

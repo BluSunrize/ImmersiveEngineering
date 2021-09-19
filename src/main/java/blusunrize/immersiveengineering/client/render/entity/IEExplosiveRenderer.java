@@ -9,61 +9,61 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
+import net.minecraft.world.inventory.InventoryMenu;
 
 public class IEExplosiveRenderer extends EntityRenderer<IEExplosiveEntity>
 {
-	public IEExplosiveRenderer(EntityRendererManager renderManager)
+	public IEExplosiveRenderer(EntityRenderDispatcher renderManager)
 	{
 		super(renderManager);
-		this.shadowSize = .5f;
+		this.shadowRadius = .5f;
 	}
 
 	@Override
-	public void render(IEExplosiveEntity entity, float entityYaw, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
+	public void render(IEExplosiveEntity entity, float entityYaw, float partialTicks, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn)
 	{
 		if(entity.block==null)
 			return;
-		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
-		matrixStackIn.push();
+		BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
+		matrixStackIn.pushPose();
 		matrixStackIn.translate(0, 0.5F, 0);
-		if(entity.getFuse()-partialTicks+1 < 10)
+		if(entity.getLife()-partialTicks+1 < 10)
 		{
-			float f = 1.0F-((float)entity.getFuse()-partialTicks+1.0F)/10.0F;
-			f = MathHelper.clamp(f, 0.0F, 1.0F);
+			float f = 1.0F-((float)entity.getLife()-partialTicks+1.0F)/10.0F;
+			f = Mth.clamp(f, 0.0F, 1.0F);
 			f = f*f;
 			f = f*f;
 			float f1 = 1.0F+f*0.3F;
 			matrixStackIn.scale(f1, f1, f1);
 		}
-		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(-90.0F));
+		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(-90.0F));
 		matrixStackIn.translate(-0.5D, -0.5D, 0.5D);
-		matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90.0F));
+		matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90.0F));
 
 		int overlay;
-		if(entity.getFuse()/5%2==0)
-			overlay = OverlayTexture.getPackedUV(OverlayTexture.getU(1.0F), 10);
+		if(entity.getLife()/5%2==0)
+			overlay = OverlayTexture.pack(OverlayTexture.u(1.0F), 10);
 		else
 			overlay = OverlayTexture.NO_OVERLAY;
-		blockrendererdispatcher.renderBlock(entity.block, matrixStackIn, bufferIn, packedLightIn, overlay);
+		blockrendererdispatcher.renderSingleBlock(entity.block, matrixStackIn, bufferIn, packedLightIn, overlay);
 
-		matrixStackIn.pop();
+		matrixStackIn.popPose();
 		super.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 	}
 
 	@Override
-	public ResourceLocation getEntityTexture(IEExplosiveEntity entity)
+	public ResourceLocation getTextureLocation(IEExplosiveEntity entity)
 	{
-		return PlayerContainer.LOCATION_BLOCKS_TEXTURE;
+		return InventoryMenu.BLOCK_ATLAS;
 	}
 }

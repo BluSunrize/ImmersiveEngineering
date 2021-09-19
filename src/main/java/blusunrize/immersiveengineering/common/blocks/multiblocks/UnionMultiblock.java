@@ -10,22 +10,21 @@
 package blusunrize.immersiveengineering.common.blocks.multiblocks;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
-
+import com.mojang.blaze3d.vertex.PoseStack;
 import javax.annotation.Nullable;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,25 +46,25 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public boolean isBlockTrigger(BlockState state, Direction side, @Nullable World world)
+	public boolean isBlockTrigger(BlockState state, Direction side, @Nullable Level world)
 	{
 		return false;
 	}
 
 	@Override
-	public boolean createStructure(World world, BlockPos pos, Direction side, PlayerEntity player)
+	public boolean createStructure(Level world, BlockPos pos, Direction side, Player player)
 	{
 		return false;
 	}
 
 	@Override
-	public List<BlockInfo> getStructure(@Nullable World world)
+	public List<StructureBlockInfo> getStructure(@Nullable Level world)
 	{
-		Vector3i min = getMin(world);
-		List<BlockInfo> ret = new ArrayList<>();
+		Vec3i min = getMin(world);
+		List<StructureBlockInfo> ret = new ArrayList<>();
 		for(TransformedMultiblock part : parts)
-			for(BlockInfo i : part.multiblock.getStructure(world))
-				ret.add(new BlockInfo(part.toUnionCoords(i.pos).subtract(min), i.state, i.nbt));
+			for(StructureBlockInfo i : part.multiblock.getStructure(world))
+				ret.add(new StructureBlockInfo(part.toUnionCoords(i.pos).subtract(min), i.state, i.nbt));
 		return ret;
 	}
 
@@ -78,7 +77,7 @@ public class UnionMultiblock implements IMultiblock
 			{
 				boolean added = false;
 				for(ItemStack ex : ret)
-					if(ItemStack.areItemsEqual(ex, stack))
+					if(ItemStack.isSame(ex, stack))
 					{
 						ex.grow(stack.getCount());
 						added = true;
@@ -109,36 +108,36 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public void renderFormedStructure(MatrixStack transform, IRenderTypeBuffer buffer)
+	public void renderFormedStructure(PoseStack transform, MultiBufferSource buffer)
 	{
 
 	}
 
 	@Override
-	public Vector3i getSize(@Nullable World world)
+	public Vec3i getSize(@Nullable Level world)
 	{
-		Vector3i max = Vector3i.NULL_VECTOR;
+		Vec3i max = Vec3i.ZERO;
 		for(TransformedMultiblock part : parts)
 			max = max(max, part.toUnionCoords(part.multiblock.getSize(world)));
-		Vector3i min = getMin(world);
-		return new Vector3i(
+		Vec3i min = getMin(world);
+		return new Vec3i(
 				max.getX()-min.getX(),
 				max.getY()-min.getY(),
 				max.getZ()-min.getZ()
 		);
 	}
 
-	private Vector3i getMin(@Nullable World world)
+	private Vec3i getMin(@Nullable Level world)
 	{
-		Vector3i min = Vector3i.NULL_VECTOR;
+		Vec3i min = Vec3i.ZERO;
 		for(TransformedMultiblock part : parts)
 		{
 			//TODO more intelligent approach?
-			final Vector3i size = part.multiblock.getSize(world);
+			final Vec3i size = part.multiblock.getSize(world);
 			for(int factorX = 0; factorX < 2; ++factorX)
 				for(int factorY = 0; factorY < 2; ++factorY)
 					for(int factorZ = 0; factorZ < 2; ++factorZ)
-						min = min(min, part.toUnionCoords(new Vector3i(
+						min = min(min, part.toUnionCoords(new Vec3i(
 								size.getX()*factorX,
 								size.getY()*factorY,
 								size.getZ()*factorZ
@@ -147,18 +146,18 @@ public class UnionMultiblock implements IMultiblock
 		return min;
 	}
 
-	private Vector3i min(Vector3i a, Vector3i b)
+	private Vec3i min(Vec3i a, Vec3i b)
 	{
-		return new Vector3i(
+		return new Vec3i(
 				Math.min(a.getX(), b.getX()),
 				Math.min(a.getY(), b.getY()),
 				Math.min(a.getZ(), b.getZ())
 		);
 	}
 
-	private Vector3i max(Vector3i a, Vector3i b)
+	private Vec3i max(Vec3i a, Vec3i b)
 	{
-		return new Vector3i(
+		return new Vec3i(
 				Math.max(a.getX(), b.getX()),
 				Math.max(a.getY(), b.getY()),
 				Math.max(a.getZ(), b.getZ())
@@ -166,7 +165,7 @@ public class UnionMultiblock implements IMultiblock
 	}
 
 	@Override
-	public void disassemble(World world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation)
+	public void disassemble(Level world, BlockPos startPos, boolean mirrored, Direction clickDirectionAtCreation)
 	{
 
 	}
@@ -180,20 +179,20 @@ public class UnionMultiblock implements IMultiblock
 	public static class TransformedMultiblock
 	{
 		private final IMultiblock multiblock;
-		private final Vector3i offset;
+		private final Vec3i offset;
 		private final Rotation rotation;
 
-		public TransformedMultiblock(IMultiblock multiblock, Vector3i offset, Rotation rotation)
+		public TransformedMultiblock(IMultiblock multiblock, Vec3i offset, Rotation rotation)
 		{
 			this.multiblock = multiblock;
 			this.offset = offset;
 			this.rotation = rotation;
 		}
 
-		public BlockPos toUnionCoords(Vector3i inMultiblockCoords)
+		public BlockPos toUnionCoords(Vec3i inMultiblockCoords)
 		{
-			return Template.transformedBlockPos(new PlacementSettings()
-					.setRotation(rotation), new BlockPos(inMultiblockCoords)).add(offset);
+			return StructureTemplate.calculateRelativePosition(new StructurePlaceSettings()
+					.setRotation(rotation), new BlockPos(inMultiblockCoords)).offset(offset);
 		}
 	}
 }

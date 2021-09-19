@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.crafting.IIngredientWithSizeSerialize
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nonnull;
@@ -28,15 +28,15 @@ public class IngredientWithSizeSerializer implements IIngredientWithSizeSerializ
 
 	@Nonnull
 	@Override
-	public IngredientWithSize parse(@Nonnull PacketBuffer buffer)
+	public IngredientWithSize parse(@Nonnull FriendlyByteBuf buffer)
 	{
 		final int count = buffer.readInt();
-		final Ingredient base = Ingredient.read(buffer);
+		final Ingredient base = Ingredient.fromNetwork(buffer);
 		return new IngredientWithSize(base, count);
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull IngredientWithSize ingredient)
+	public void write(@Nonnull FriendlyByteBuf buffer, @Nonnull IngredientWithSize ingredient)
 	{
 		buffer.writeInt(ingredient.getCount());
 		CraftingHelper.write(buffer, ingredient.getBaseIngredient());
@@ -48,14 +48,14 @@ public class IngredientWithSizeSerializer implements IIngredientWithSizeSerializ
 	{
 		if(json.isJsonObject()&&json.getAsJsonObject().has(BASE_KEY))
 		{
-			final int count = JSONUtils.getInt(json.getAsJsonObject(), COUNT_KEY, 1);
+			final int count = GsonHelper.getAsInt(json.getAsJsonObject(), COUNT_KEY, 1);
 			final JsonElement baseJson = json.getAsJsonObject().get(BASE_KEY);
-			final Ingredient base = Ingredient.deserialize(baseJson);
+			final Ingredient base = Ingredient.fromJson(baseJson);
 			return new IngredientWithSize(base, count);
 		}
 		else //fallback for normal ingredients
 		{
-			final Ingredient base = Ingredient.deserialize(json);
+			final Ingredient base = Ingredient.fromJson(json);
 			return new IngredientWithSize(base, 1);
 		}
 	}
@@ -64,10 +64,10 @@ public class IngredientWithSizeSerializer implements IIngredientWithSizeSerializ
 	public JsonElement write(@Nonnull IngredientWithSize ingredient)
 	{
 		if(ingredient.getCount()==1)
-			return ingredient.getBaseIngredient().serialize();
+			return ingredient.getBaseIngredient().toJson();
 		JsonObject json = new JsonObject();
 		json.addProperty(COUNT_KEY, ingredient.getCount());
-		json.add(BASE_KEY, ingredient.getBaseIngredient().serialize());
+		json.add(BASE_KEY, ingredient.getBaseIngredient().toJson());
 		return json;
 	}
 }

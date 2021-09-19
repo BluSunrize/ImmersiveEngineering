@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
-public abstract class ClientTileScreen<T extends TileEntity> extends Screen
+public abstract class ClientTileScreen<T extends BlockEntity> extends Screen
 {
 	protected int xSize = 176;
 	protected int ySize = 166;
@@ -21,7 +21,7 @@ public abstract class ClientTileScreen<T extends TileEntity> extends Screen
 	protected int guiTop;
 	protected T tileEntity;
 
-	public ClientTileScreen(T tileEntity, ITextComponent title)
+	public ClientTileScreen(T tileEntity, Component title)
 	{
 		super(title);
 		this.tileEntity = tileEntity;
@@ -35,12 +35,12 @@ public abstract class ClientTileScreen<T extends TileEntity> extends Screen
 		this.guiTop = (this.height-this.ySize)/2;
 	}
 
-	protected abstract void drawGuiContainerBackgroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick);
+	protected abstract void drawGuiContainerBackgroundLayer(PoseStack transform, int mouseX, int mouseY, float partialTick);
 
-	protected abstract void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY, float partialTick);
+	protected abstract void drawGuiContainerForegroundLayer(PoseStack transform, int mouseX, int mouseY, float partialTick);
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	public void render(PoseStack transform, int mx, int my, float partial)
 	{
 		// Render dark background
 		this.renderBackground(transform);

@@ -12,27 +12,31 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.mixin.accessors.client.PlayerControllerAccess;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.mojang.blaze3d.vertex.MatrixApplyingVertexBuilder;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
+import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.PlayerController;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ModelBakery;
+import net.minecraft.client.multiplayer.MultiPlayerGameMode;
+import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.renderer.vertex.VertexFormat;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
-
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.EnderChestBlock;
+import net.minecraft.world.level.block.SignBlock;
+import net.minecraft.world.level.block.SkullBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.Vec3;
 import java.util.Collection;
 import java.util.List;
 
@@ -57,11 +61,11 @@ public class RenderUtils
 	 * @param useCached Whether to use cached information for world local data. Set to true if the previous call to this method was in the same tick and for the same world+pos
 	 * @param color     the render color (mostly used for plants)
 	 */
-	public static void renderModelTESRFancy(List<BakedQuad> quads, IVertexBuilder renderer, World world, BlockPos pos,
+	public static void renderModelTESRFancy(List<BakedQuad> quads, VertexConsumer renderer, Level world, BlockPos pos,
 											boolean useCached, int color, int light)
 	{//TODO include matrix transformations?, cache normals?
 		if(IEClientConfig.disableFancyTESR.get())
-			renderModelTESRFast(quads, renderer, new MatrixStack(), world.getLightSubtracted(pos, 0), color);
+			renderModelTESRFast(quads, renderer, new PoseStack(), world.getRawBrightness(pos, 0), color);
 		else
 		{
 			if(!useCached)
@@ -69,9 +73,9 @@ public class RenderUtils
 				// Calculate surrounding brighness and split into block and sky light
 				for(Direction f : DirectionUtils.VALUES)
 				{
-					int val = WorldRenderer.getCombinedLight(world, pos.offset(f));
-					neighbourBrightness[0][f.getIndex()] = (val >> 16)&255;
-					neighbourBrightness[1][f.getIndex()] = val&255;
+					int val = LevelRenderer.getLightColor(world, pos.relative(f));
+					neighbourBrightness[0][f.get3DDataValue()] = (val >> 16)&255;
+					neighbourBrightness[1][f.get3DDataValue()] = val&255;
 				}
 				// calculate the different correction factors for all 8 possible light vectors
 				for(int type = 0; type < 2; type++)
@@ -102,8 +106,8 @@ public class RenderUtils
 			}
 			for(BakedQuad quad : quads)
 			{
-				int[] vData = quad.getVertexData();
-				VertexFormat format = DefaultVertexFormats.BLOCK;
+				int[] vData = quad.getVertices();
+				VertexFormat format = DefaultVertexFormat.BLOCK;
 				int size = format.getIntegerSize();
 				int uvOffset = ClientUtils.findTextureOffset(format);
 				int posOffset = ClientUtils.findPositionOffset(format);
@@ -115,13 +119,13 @@ public class RenderUtils
 					quadCoords[i][2] = Float.intBitsToFloat(vData[size*i+posOffset+2]);
 				}
 				//generate the normal vector
-				Vector3d side1 = new Vector3d(quadCoords[1][0]-quadCoords[3][0],
+				Vec3 side1 = new Vec3(quadCoords[1][0]-quadCoords[3][0],
 						quadCoords[1][1]-quadCoords[3][1],
 						quadCoords[1][2]-quadCoords[3][2]);
-				Vector3d side2 = new Vector3d(quadCoords[2][0]-quadCoords[0][0],
+				Vec3 side2 = new Vec3(quadCoords[2][0]-quadCoords[0][0],
 						quadCoords[2][1]-quadCoords[0][1],
 						quadCoords[2][2]-quadCoords[0][2]);
-				Vector3d normal = side1.crossProduct(side2);
+				Vec3 normal = side1.cross(side2);
 				normal = normal.normalize();
 				// calculate the final light values and do the rendering
 				int l1 = getLightValue(neighbourBrightness[1], normalizationFactors[1], light&255, normal);
@@ -129,10 +133,10 @@ public class RenderUtils
 				for(int i = 0; i < 4; ++i)
 				{
 					renderer
-							.pos(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
+							.vertex(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
 							.color(rgba[0], rgba[1], rgba[2], rgba[3])
-							.tex(Float.intBitsToFloat(vData[size*i+uvOffset]), Float.intBitsToFloat(vData[size*i+uvOffset+1]))
-							.lightmap(l1, l2)
+							.uv(Float.intBitsToFloat(vData[size*i+uvOffset]), Float.intBitsToFloat(vData[size*i+uvOffset+1]))
+							.uv2(l1, l2)
 							.normal((float)normal.x, (float)normal.y, (float)normal.z)
 							.endVertex();
 				}
@@ -140,7 +144,7 @@ public class RenderUtils
 		}
 	}
 
-	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vector3d normal)
+	private static int getLightValue(int[] neighbourBrightness, float[] normalizationFactors, int localBrightness, Vec3 normal)
 	{
 		//calculate the dot product between the required light vector and the normal of the quad
 		// quad brightness is proportional to this value, see https://github.com/ssloy/tinyrenderer/wiki/Lesson-2:-Triangle-rasterization-and-back-face-culling#flat-shading-render
@@ -176,13 +180,13 @@ public class RenderUtils
 		return (val/scale)*(val/scale);
 	}
 
-	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform,
+	public static void renderModelTESRFast(List<BakedQuad> quads, VertexConsumer renderer, PoseStack transform,
 										   int light, int overlay)
 	{
 		renderModelTESRFast(quads, renderer, transform, -1, light, overlay);
 	}
 
-	public static void renderModelTESRFast(List<BakedQuad> quads, IVertexBuilder renderer, MatrixStack transform,
+	public static void renderModelTESRFast(List<BakedQuad> quads, VertexConsumer renderer, PoseStack transform,
 										   int color, int light, int overlay)
 	{
 		float red = 1;
@@ -195,80 +199,80 @@ public class RenderUtils
 			blue = (color&255)/255F;
 		}
 		for(BakedQuad quad : quads)
-			renderer.addQuad(transform.getLast(), quad, red, green, blue, light, overlay);
+			renderer.putBulkData(transform.last(), quad, red, green, blue, light, overlay);
 	}
 
 	//Cheers boni =P
-	public static void drawBlockDamageTexture(MatrixStack matrix, IRenderTypeBuffer buffers, World world, Collection<BlockPos> blocks)
+	public static void drawBlockDamageTexture(PoseStack matrix, MultiBufferSource buffers, Level world, Collection<BlockPos> blocks)
 	{
-		PlayerController controller = Minecraft.getInstance().playerController;
-		int progress = (int)(((PlayerControllerAccess)controller).getCurBlockDamageMP()*10f)-1; // 0-10
-		if(progress < 0||progress >= ModelBakery.DESTROY_RENDER_TYPES.size())
+		MultiPlayerGameMode controller = Minecraft.getInstance().gameMode;
+		int progress = (int)(((PlayerControllerAccess)controller).getDestroyProgress()*10f)-1; // 0-10
+		if(progress < 0||progress >= ModelBakery.DESTROY_TYPES.size())
 			return;
-		BlockRendererDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRendererDispatcher();
+		BlockRenderDispatcher blockrendererdispatcher = Minecraft.getInstance().getBlockRenderer();
 		for(BlockPos blockpos : blocks)
 		{
-			matrix.push();
+			matrix.pushPose();
 			matrix.translate(blockpos.getX(), blockpos.getY(), blockpos.getZ());
-			IVertexBuilder worldRendererIn = buffers.getBuffer(ModelBakery.DESTROY_RENDER_TYPES.get(progress));
-			worldRendererIn = new MatrixApplyingVertexBuilder(worldRendererIn, matrix.getLast().getMatrix(), matrix.getLast().getNormal());
+			VertexConsumer worldRendererIn = buffers.getBuffer(ModelBakery.DESTROY_TYPES.get(progress));
+			worldRendererIn = new SheetedDecalTextureGenerator(worldRendererIn, matrix.last().pose(), matrix.last().normal());
 			Block block = world.getBlockState(blockpos).getBlock();
 			boolean hasBreak = block instanceof ChestBlock||block instanceof EnderChestBlock
-					||block instanceof AbstractSignBlock||block instanceof SkullBlock;
+					||block instanceof SignBlock||block instanceof SkullBlock;
 			if(!hasBreak)
 			{
 				BlockState iblockstate = world.getBlockState(blockpos);
 				if(iblockstate.getMaterial()!=Material.AIR)
-					blockrendererdispatcher.renderBlockDamage(iblockstate, blockpos, world, matrix, worldRendererIn);
+					blockrendererdispatcher.renderBreakingTexture(iblockstate, blockpos, world, matrix, worldRendererIn);
 			}
-			matrix.pop();
+			matrix.popPose();
 		}
 	}
 
-	public static void renderBox(IVertexBuilder wr, MatrixStack m, float x0, float y0, float z0, float x1, float y1, float z1)
+	public static void renderBox(VertexConsumer wr, PoseStack m, float x0, float y0, float z0, float x1, float y1, float z1)
 	{
-		Matrix4f transform = m.getLast().getMatrix();
-		wr.pos(transform, x0, y0, z1).endVertex();
-		wr.pos(transform, x1, y0, z1).endVertex();
-		wr.pos(transform, x1, y1, z1).endVertex();
-		wr.pos(transform, x0, y1, z1).endVertex();
+		Matrix4f transform = m.last().pose();
+		wr.vertex(transform, x0, y0, z1).endVertex();
+		wr.vertex(transform, x1, y0, z1).endVertex();
+		wr.vertex(transform, x1, y1, z1).endVertex();
+		wr.vertex(transform, x0, y1, z1).endVertex();
 
-		wr.pos(transform, x0, y1, z0).endVertex();
-		wr.pos(transform, x1, y1, z0).endVertex();
-		wr.pos(transform, x1, y0, z0).endVertex();
-		wr.pos(transform, x0, y0, z0).endVertex();
+		wr.vertex(transform, x0, y1, z0).endVertex();
+		wr.vertex(transform, x1, y1, z0).endVertex();
+		wr.vertex(transform, x1, y0, z0).endVertex();
+		wr.vertex(transform, x0, y0, z0).endVertex();
 
-		wr.pos(transform, x0, y0, z0).endVertex();
-		wr.pos(transform, x1, y0, z0).endVertex();
-		wr.pos(transform, x1, y0, z1).endVertex();
-		wr.pos(transform, x0, y0, z1).endVertex();
+		wr.vertex(transform, x0, y0, z0).endVertex();
+		wr.vertex(transform, x1, y0, z0).endVertex();
+		wr.vertex(transform, x1, y0, z1).endVertex();
+		wr.vertex(transform, x0, y0, z1).endVertex();
 
-		wr.pos(transform, x0, y1, z1).endVertex();
-		wr.pos(transform, x1, y1, z1).endVertex();
-		wr.pos(transform, x1, y1, z0).endVertex();
-		wr.pos(transform, x0, y1, z0).endVertex();
+		wr.vertex(transform, x0, y1, z1).endVertex();
+		wr.vertex(transform, x1, y1, z1).endVertex();
+		wr.vertex(transform, x1, y1, z0).endVertex();
+		wr.vertex(transform, x0, y1, z0).endVertex();
 
-		wr.pos(transform, x0, y0, z0).endVertex();
-		wr.pos(transform, x0, y0, z1).endVertex();
-		wr.pos(transform, x0, y1, z1).endVertex();
-		wr.pos(transform, x0, y1, z0).endVertex();
+		wr.vertex(transform, x0, y0, z0).endVertex();
+		wr.vertex(transform, x0, y0, z1).endVertex();
+		wr.vertex(transform, x0, y1, z1).endVertex();
+		wr.vertex(transform, x0, y1, z0).endVertex();
 
-		wr.pos(transform, x1, y1, z0).endVertex();
-		wr.pos(transform, x1, y1, z1).endVertex();
-		wr.pos(transform, x1, y0, z1).endVertex();
-		wr.pos(transform, x1, y0, z0).endVertex();
+		wr.vertex(transform, x1, y1, z0).endVertex();
+		wr.vertex(transform, x1, y1, z1).endVertex();
+		wr.vertex(transform, x1, y0, z1).endVertex();
+		wr.vertex(transform, x1, y0, z0).endVertex();
 	}
 
-	public static void renderTexturedBox(IVertexBuilder wr, MatrixStack stack, float x0, float y0, float z0, float x1, float y1, float z1, TextureAtlasSprite tex, boolean yForV)
+	public static void renderTexturedBox(VertexConsumer wr, PoseStack stack, float x0, float y0, float z0, float x1, float y1, float z1, TextureAtlasSprite tex, boolean yForV)
 	{
-		float minU = tex.getInterpolatedU(x0*16);
-		float maxU = tex.getInterpolatedU(x1*16);
-		float minV = tex.getInterpolatedV((yForV?y1: z0)*16);
-		float maxV = tex.getInterpolatedV((yForV?y0: z1)*16);
+		float minU = tex.getU(x0*16);
+		float maxU = tex.getU(x1*16);
+		float minV = tex.getV((yForV?y1: z0)*16);
+		float maxV = tex.getV((yForV?y0: z1)*16);
 		renderTexturedBox(wr, stack, x0, y0, z0, x1, y1, z1, minU, minV, maxU, maxV);
 	}
 
-	public static void renderTexturedBox(IVertexBuilder wr, MatrixStack stack, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1)
+	public static void renderTexturedBox(VertexConsumer wr, PoseStack stack, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1)
 	{
 		float normalX = 0;
 		float normalY = 0;
@@ -309,13 +313,13 @@ public class RenderUtils
 		putVertex(wr, stack, x1, y0, z0, u0, v1, normalX, normalY, normalZ);
 	}
 
-	private static void putVertex(IVertexBuilder b, MatrixStack mat, float x, float y, float z, float u, float v, float nX, float nY, float nZ)
+	private static void putVertex(VertexConsumer b, PoseStack mat, float x, float y, float z, float u, float v, float nX, float nY, float nZ)
 	{
-		b.pos(mat.getLast().getMatrix(), x, y, z)
+		b.vertex(mat.last().pose(), x, y, z)
 				.color(1F, 1F, 1F, 1F)
-				.tex(u, v)
-				.lightmap(0, 0)
-				.normal(mat.getLast().getNormal(), nX, nY, nZ)
+				.uv(u, v)
+				.uv2(0, 0)
+				.normal(mat.last().normal(), nX, nY, nZ)
 				.endVertex();
 	}
 }

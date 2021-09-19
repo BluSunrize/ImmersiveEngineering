@@ -12,68 +12,67 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.entities.IEExplosiveEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.TNTBlock;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
-public class GunpowderBarrelBlock extends TNTBlock
+public class GunpowderBarrelBlock extends TntBlock
 {
 
 	public GunpowderBarrelBlock(String name)
 	{
-		super(Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2, 5));
+		super(Block.Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 5));
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEBlocks.add(this);
 		IEContent.registeredIEItems.add(new BlockItemIE(this));
 	}
 
 	@Override
-	public int getFlammability(BlockState state, IBlockReader world, BlockPos pos, Direction face)
+	public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face)
 	{
 		return 100;
 	}
 
 	@Override
-	public void catchFire(BlockState state, World world, BlockPos pos, @Nullable Direction face, @Nullable LivingEntity igniter)
+	public void catchFire(BlockState state, Level world, BlockPos pos, @Nullable Direction face, @Nullable LivingEntity igniter)
 	{
 		IEExplosiveEntity explosive = spawnExplosive(world, pos, state, igniter);
-		world.playSound(null, explosive.getPosX(), explosive.getPosY(), explosive.getPosZ(), SoundEvents.ENTITY_TNT_PRIMED, SoundCategory.BLOCKS, 1.0F, 1.0F);
+		world.playSound(null, explosive.getX(), explosive.getY(), explosive.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
 		world.removeBlock(pos, false);
 	}
 
 	@Override
-	public void onBlockExploded(BlockState state, World world, BlockPos pos, Explosion explosion)
+	public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion)
 	{
 		super.onBlockExploded(state, world, pos, explosion);
-		if(!world.isRemote)
+		if(!world.isClientSide)
 		{
-			IEExplosiveEntity explosive = spawnExplosive(world, pos, state, explosion.getExplosivePlacedBy());
-			explosive.setFuse((short)(world.rand.nextInt(explosive.getFuse()/4)+explosive.getFuse()/8));
+			IEExplosiveEntity explosive = spawnExplosive(world, pos, state, explosion.getSourceMob());
+			explosive.setFuse((short)(world.random.nextInt(explosive.getLife()/4)+explosive.getLife()/8));
 		}
 	}
 
-	private IEExplosiveEntity spawnExplosive(World world, BlockPos pos, BlockState state, @Nullable LivingEntity igniter)
+	private IEExplosiveEntity spawnExplosive(Level world, BlockPos pos, BlockState state, @Nullable LivingEntity igniter)
 	{
 		IEExplosiveEntity explosive = new IEExplosiveEntity(world, pos, igniter, state, 5);
 		explosive.setDropChance(1);
-		world.addEntity(explosive);
+		world.addFreshEntity(explosive);
 		return explosive;
 	}
 
 	@Override
-	public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn)
+	public void wasExploded(Level worldIn, BlockPos pos, Explosion explosionIn)
 	{
 
 	}

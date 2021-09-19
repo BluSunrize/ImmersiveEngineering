@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.function.Supplier;
 
@@ -29,7 +29,7 @@ public interface IUpgradeableTool
 	 * @return an NBTTagCompound containing the upgrades as keys and their values<br>
 	 * Examples include "speed" for the mining speed of the drill or "bullets" for extended magazines on the revolver
 	 */
-	CompoundNBT getUpgrades(ItemStack stack);
+	CompoundTag getUpgrades(ItemStack stack);
 
 	void clearUpgrades(ItemStack stack);
 
@@ -38,14 +38,14 @@ public interface IUpgradeableTool
 	/**
 	 * Iterate through the stored items and apply upgrades. For an example implementation, see ItemUpgradeableTool in the IE source
 	 */
-	void recalculateUpgrades(ItemStack stack, World w, PlayerEntity player);
+	void recalculateUpgrades(ItemStack stack, Level w, Player player);
 
 	/**
 	 * Called when an upgrade is removed, BEFORE recalculateUpgrades is called
 	 *
 	 * @return the upgrade removed
 	 */
-	default ItemStack removeUpgrade(ItemStack stack, PlayerEntity player, ItemStack upgrade)
+	default ItemStack removeUpgrade(ItemStack stack, Player player, ItemStack upgrade)
 	{
 		return upgrade;
 	}
@@ -55,13 +55,13 @@ public interface IUpgradeableTool
 	 */
 	boolean canTakeFromWorkbench(ItemStack stack);
 
-	void removeFromWorkbench(PlayerEntity player, ItemStack stack);
+	void removeFromWorkbench(Player player, ItemStack stack);
 
 	boolean canModify(ItemStack stack);
 
 	/**
 	 * @return an array of Slots to display in the workbench when this item is placed in it
 	 */
-	Slot[] getWorkbenchSlots(Container container, ItemStack stack, Supplier<World> getWorld, Supplier<PlayerEntity> getPlayer);
+	Slot[] getWorkbenchSlots(AbstractContainerMenu container, ItemStack stack, Supplier<Level> getWorld, Supplier<Player> getPlayer);
 
 }

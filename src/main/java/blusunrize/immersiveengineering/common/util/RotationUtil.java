@@ -8,17 +8,17 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.ChestBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.item.ArmorStandEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.state.properties.ChestType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChestBlock;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.ChestType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,16 +32,16 @@ public class RotationUtil
 		//Double chests don't implement updatePostPlacement correctly
 		blacklist.add((w, pos) -> {
 			BlockState state = w.getBlockState(pos);
-			return state.getBlock()!=Blocks.CHEST||state.get(ChestBlock.TYPE)==ChestType.SINGLE;
+			return state.getBlock()!=Blocks.CHEST||state.getValue(ChestBlock.TYPE)==ChestType.SINGLE;
 		});
 	}
 
-	public static boolean rotateBlock(World world, BlockPos pos, boolean inverse)
+	public static boolean rotateBlock(Level world, BlockPos pos, boolean inverse)
 	{
 		return rotateBlock(world, pos, inverse?Rotation.COUNTERCLOCKWISE_90: Rotation.CLOCKWISE_90);
 	}
 
-	public static boolean rotateBlock(World world, BlockPos pos, Rotation rotation) {
+	public static boolean rotateBlock(Level world, BlockPos pos, Rotation rotation) {
 		for(RotationBlacklistEntry e : blacklist)
 			if(!e.blockRotation(world, pos))
 				return false;
@@ -50,33 +50,33 @@ public class RotationUtil
 		BlockState newState = state.rotate(world, pos, rotation);
 		if(newState!=state)
 		{
-			world.setBlockState(pos, newState);
+			world.setBlockAndUpdate(pos, newState);
 			for(Direction d : DirectionUtils.VALUES)
 			{
-				final BlockPos otherPos = pos.offset(d);
+				final BlockPos otherPos = pos.relative(d);
 				final BlockState otherState = world.getBlockState(otherPos);
-				final BlockState nextState = newState.updatePostPlacement(d, otherState, world, pos, otherPos);
+				final BlockState nextState = newState.updateShape(d, otherState, world, pos, otherPos);
 				if(nextState!=newState)
 				{
 					if(!nextState.isAir())
 					{
-						world.setBlockState(pos, nextState);
+						world.setBlockAndUpdate(pos, nextState);
 						newState = nextState;
 					}
 					else
 					{
-						world.setBlockState(pos, state);
+						world.setBlockAndUpdate(pos, state);
 						return false;
 					}
 				}
 			}
 			for(Direction d : DirectionUtils.VALUES)
 			{
-				final BlockPos otherPos = pos.offset(d);
+				final BlockPos otherPos = pos.relative(d);
 				final BlockState otherState = world.getBlockState(otherPos);
-				final BlockState nextOther = otherState.updatePostPlacement(d.getOpposite(), newState, world, otherPos, pos);
+				final BlockState nextOther = otherState.updateShape(d.getOpposite(), newState, world, otherPos, pos);
 				if(nextOther!=otherState)
-					world.setBlockState(otherPos, nextOther);
+					world.setBlockAndUpdate(otherPos, nextOther);
 			}
 			return true;
 		}
@@ -84,18 +84,18 @@ public class RotationUtil
 			return false;
 	}
 
-	public static boolean rotateEntity(Entity entity, PlayerEntity player)
+	public static boolean rotateEntity(Entity entity, Player player)
 	{
-		if(entity instanceof ArmorStandEntity)
+		if(entity instanceof ArmorStand)
 		{
-			((ArmorStandEntity)entity).rotationYaw += 22.5;
-			((ArmorStandEntity)entity).rotationYaw %= 360;
+			((ArmorStand)entity).yRot += 22.5;
+			((ArmorStand)entity).yRot %= 360;
 		}
 		return false;
 	}
 
 	public interface RotationBlacklistEntry
 	{
-		boolean blockRotation(World w, BlockPos pos);
+		boolean blockRotation(Level w, BlockPos pos);
 	}
 }

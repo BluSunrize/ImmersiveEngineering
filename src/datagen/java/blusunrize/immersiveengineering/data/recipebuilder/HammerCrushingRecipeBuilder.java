@@ -12,10 +12,10 @@ package blusunrize.immersiveengineering.data.recipebuilder;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.IEFinishedRecipe;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 
 public class HammerCrushingRecipeBuilder extends IEFinishedRecipe<HammerCrushingRecipeBuilder>
 {
@@ -26,7 +26,7 @@ public class HammerCrushingRecipeBuilder extends IEFinishedRecipe<HammerCrushing
 		this.maxInputCount = 1;
 	}
 
-	public static HammerCrushingRecipeBuilder builder(IItemProvider result)
+	public static HammerCrushingRecipeBuilder builder(ItemLike result)
 	{
 		return new HammerCrushingRecipeBuilder().addResult(result);
 	}
@@ -36,7 +36,7 @@ public class HammerCrushingRecipeBuilder extends IEFinishedRecipe<HammerCrushing
 		return new HammerCrushingRecipeBuilder().addResult(result);
 	}
 
-	public static HammerCrushingRecipeBuilder builder(ITag<Item> result)
+	public static HammerCrushingRecipeBuilder builder(Tag<Item> result)
 	{
 		return new HammerCrushingRecipeBuilder().addResult(new IngredientWithSize(result));
 	}

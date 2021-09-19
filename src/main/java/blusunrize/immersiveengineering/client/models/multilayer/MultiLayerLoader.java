@@ -14,8 +14,8 @@ import com.google.common.collect.ImmutableSet;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.IResourceManager;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -35,7 +35,7 @@ public class MultiLayerLoader implements IModelLoader<MultiLayerModel>
 	);
 
 	@Override
-	public void onResourceManagerReload(@Nonnull IResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
 	}
 

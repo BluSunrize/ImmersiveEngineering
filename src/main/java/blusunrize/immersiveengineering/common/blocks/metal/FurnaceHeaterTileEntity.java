@@ -23,20 +23,19 @@ import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.vector.Vector3d;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 
-public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IActiveState,
+public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements TickableBlockEntity, IIEInternalFluxHandler, IActiveState,
 		IStateBasedDirectional, IHammerInteraction
 {
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
@@ -50,7 +49,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	@Override
 	public void tick()
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
 			boolean activeBeforeTick = getIsActive();
 			boolean redstonePower = isRSPowered();
@@ -60,7 +59,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 			if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
 				for(Direction fd : DirectionUtils.VALUES)
 				{
-					TileEntity tileEntity = Utils.getExistingTileEntity(world, getPos().offset(fd));
+					BlockEntity tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(fd));
 					int consumed = 0;
 					if(tileEntity!=null)
 						if(tileEntity instanceof IExternalHeatable)
@@ -80,26 +79,26 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 			if(newActive!=activeBeforeTick)
 			{
 				setActive(newActive);
-				this.markDirty();
+				this.setChanged();
 			}
 		}
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		this.markContainingBlockForUpdate(null);
 		return true;
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 	}
@@ -148,11 +147,11 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
-		return placer.isSneaking();
+		return placer.isShiftKeyDown();
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -164,7 +163,7 @@ public class FurnaceHeaterTileEntity extends IEBaseTileEntity implements ITickab
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		this.setFacing(side);
 		return true;

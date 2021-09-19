@@ -16,16 +16,23 @@ import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.*;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.Property;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.AttachedStemBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ChorusPlantBlock;
+import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.StemBlock;
+import net.minecraft.world.level.block.StemGrownBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
@@ -35,7 +42,7 @@ public class ClocheRenderFunctions
 	public static void init()
 	{
 		// register farmland texture
-		ClocheRecipe.registerSoilTexture(Ingredient.fromStacks(new ItemStack(Items.DIRT), new ItemStack(Items.COARSE_DIRT),
+		ClocheRecipe.registerSoilTexture(Ingredient.of(new ItemStack(Items.DIRT), new ItemStack(Items.COARSE_DIRT),
 				new ItemStack(Items.GRASS_BLOCK), new ItemStack(Items.GRASS_PATH)), new ResourceLocation("block/farmland_moist"));
 
 		// register defaults
@@ -57,18 +64,18 @@ public class ClocheRenderFunctions
 		public RenderFunctionCrop(Block cropBlock)
 		{
 			this.cropBlock = cropBlock;
-			if(cropBlock instanceof CropsBlock)
+			if(cropBlock instanceof CropBlock)
 			{
-				this.maxAge = ((CropsBlock)cropBlock).getMaxAge();
-				this.ageProperty = ((CropsBlock)cropBlock).getAgeProperty();
+				this.maxAge = ((CropBlock)cropBlock).getMaxAge();
+				this.ageProperty = ((CropBlock)cropBlock).getAgeProperty();
 			}
 			else
 			{
-				for(Property<?> prop : cropBlock.getDefaultState().getProperties())
+				for(Property<?> prop : cropBlock.defaultBlockState().getProperties())
 					if("age".equals(prop.getName())&&prop instanceof IntegerProperty)
 					{
 						int tmp = -1;
-						for(Integer allowed : ((IntegerProperty)prop).getAllowedValues())
+						for(Integer allowed : ((IntegerProperty)prop).getPossibleValues())
 							if(allowed!=null&&allowed > tmp)
 								tmp = allowed;
 						if(tmp > 0)
@@ -80,7 +87,7 @@ public class ClocheRenderFunctions
 					}
 			}
 			if(this.ageProperty==null||this.maxAge <= 0)
-				throw new IllegalArgumentException("Block "+cropBlock.getTranslationKey()+" is not a valid crop block");
+				throw new IllegalArgumentException("Block "+cropBlock.getDescriptionId()+" is not a valid crop block");
 		}
 
 		@Override
@@ -90,10 +97,10 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
 		{
 			int age = Math.min(this.maxAge, Math.round(this.maxAge*growth));
-			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState().with(this.ageProperty, age), new TransformationMatrix(null)));
+			return ImmutableList.of(Pair.of(this.cropBlock.defaultBlockState().setValue(this.ageProperty, age), new Transformation(null)));
 		}
 	}
 
@@ -113,13 +120,13 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
 		{
-			TransformationMatrix bottom = new TransformationMatrix(new Vector3f(0, growth-1, 0), null, null, null);
-			TransformationMatrix top = new TransformationMatrix(new Vector3f(0, growth, 0), null, null, null);
+			Transformation bottom = new Transformation(new Vector3f(0, growth-1, 0), null, null, null);
+			Transformation top = new Transformation(new Vector3f(0, growth, 0), null, null, null);
 			return ImmutableList.of(
-					Pair.of(this.cropBlock.getDefaultState(), bottom),
-					Pair.of(this.cropBlock.getDefaultState(), top));
+					Pair.of(this.cropBlock.defaultBlockState(), bottom),
+					Pair.of(this.cropBlock.defaultBlockState(), top));
 		}
 	}
 
@@ -144,29 +151,29 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
 		{
-			MatrixStack transform = new MatrixStack();
+			PoseStack transform = new PoseStack();
 			transform.translate(0, .0625f, 0.25f);
 
 			if(growth < .375)
 			{
 				int age = Math.round(7*growth/.375f);
-				return ImmutableList.of(Pair.of(this.stemBlock.getDefaultState().with(StemBlock.AGE, age),
-						new TransformationMatrix(transform.getLast().getMatrix())));
+				return ImmutableList.of(Pair.of(this.stemBlock.defaultBlockState().setValue(StemBlock.AGE, age),
+						new Transformation(transform.last().pose())));
 			}
 			else
 			{
 				float scale = ((growth-.375f)/.625f)*.3125f;
-				TransformationMatrix cropMatrix = new TransformationMatrix(
+				Transformation cropMatrix = new Transformation(
 						new Vector3f(0.5f-scale/2, .5625f-scale, 0.25f-scale/2),
 						null,
 						new Vector3f(scale, scale, scale),
 						null
 				);
 				return ImmutableList.of(
-						Pair.of(this.attachedStemBlock.getDefaultState(), new TransformationMatrix(transform.getLast().getMatrix())),
-						Pair.of(this.cropBlock.getDefaultState(), cropMatrix)
+						Pair.of(this.attachedStemBlock.defaultBlockState(), new Transformation(transform.last().pose())),
+						Pair.of(this.cropBlock.defaultBlockState(), cropMatrix)
 				);
 			}
 		}
@@ -188,11 +195,11 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
 		{
 			Vector3f transl = new Vector3f(0.5f-growth/2, 0, 0.5f-growth/2);
 			Vector3f scale = new Vector3f(growth, growth, growth);
-			return ImmutableList.of(Pair.of(this.cropBlock.getDefaultState(), new TransformationMatrix(transl, null, scale, null)));
+			return ImmutableList.of(Pair.of(this.cropBlock.defaultBlockState(), new Transformation(transl, null, scale, null)));
 		}
 	}
 
@@ -205,17 +212,17 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
 		{
 			growth *= 2;
-			TransformationMatrix bottom = new TransformationMatrix(new Vector3f(0, growth-2, 0), null, null, null);
-			TransformationMatrix middle = new TransformationMatrix(new Vector3f(0, growth-1, 0), null, null, null);
-			TransformationMatrix top = new TransformationMatrix(new Vector3f(0, growth, 0), null, null, null);
-			BlockState stem = Blocks.CHORUS_PLANT.getDefaultState().with(ChorusPlantBlock.DOWN, true).with(ChorusPlantBlock.UP, true);
+			Transformation bottom = new Transformation(new Vector3f(0, growth-2, 0), null, null, null);
+			Transformation middle = new Transformation(new Vector3f(0, growth-1, 0), null, null, null);
+			Transformation top = new Transformation(new Vector3f(0, growth, 0), null, null, null);
+			BlockState stem = Blocks.CHORUS_PLANT.defaultBlockState().setValue(ChorusPlantBlock.DOWN, true).setValue(ChorusPlantBlock.UP, true);
 			return ImmutableList.of(
 					Pair.of(stem, bottom),
 					Pair.of(stem, middle),
-					Pair.of(Blocks.CHORUS_FLOWER.getDefaultState(), top));
+					Pair.of(Blocks.CHORUS_FLOWER.defaultBlockState(), top));
 		}
 	}
 
@@ -228,18 +235,18 @@ public class ClocheRenderFunctions
 		}
 
 		@Override
-		public Collection<Pair<BlockState, TransformationMatrix>> getBlocks(ItemStack stack, float growth)
+		public Collection<Pair<BlockState, Transformation>> getBlocks(ItemStack stack, float growth)
 		{
 			int age = Math.min(4, Math.round(growth*4));
 			if(age==4)
 			{
-				TransformationMatrix top = new TransformationMatrix(new Vector3f(0, 1, 0), null, null, null);
+				Transformation top = new Transformation(new Vector3f(0, 1, 0), null, null, null);
 				return ImmutableList.of(
-						Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new TransformationMatrix(null)),
-						Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
+						Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.BOTTOM4), new Transformation(null)),
+						Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.TOP0), top)
 				);
 			}
-			return ImmutableList.of(Pair.of(Misc.hempPlant.getDefaultState().with(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new TransformationMatrix(null)));
+			return ImmutableList.of(Pair.of(Misc.hempPlant.defaultBlockState().setValue(HempBlock.GROWTH, EnumHempGrowth.values()[age]), new Transformation(null)));
 		}
 	}
 }

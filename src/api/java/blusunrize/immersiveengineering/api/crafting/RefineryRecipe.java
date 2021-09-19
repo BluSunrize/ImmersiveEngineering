@@ -9,9 +9,9 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import com.google.common.collect.Lists;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
@@ -27,7 +27,7 @@ import java.util.Optional;
  */
 public class RefineryRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<RefineryRecipe> TYPE;
+	public static RecipeType<RefineryRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<RefineryRecipe>> SERIALIZER;
 
 	public final FluidStack output;

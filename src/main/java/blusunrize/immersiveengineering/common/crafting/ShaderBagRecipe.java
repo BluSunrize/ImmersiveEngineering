@@ -12,17 +12,16 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
-
 import javax.annotation.Nonnull;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 
-public class ShaderBagRecipe extends SpecialRecipe
+public class ShaderBagRecipe extends CustomRecipe
 {
 	public ShaderBagRecipe(ResourceLocation id)
 	{
@@ -30,12 +29,12 @@ public class ShaderBagRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, @Nonnull World world)
+	public boolean matches(CraftingContainer inv, @Nonnull Level world)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 				if(stack.isEmpty())
 				{
@@ -52,11 +51,11 @@ public class ShaderBagRecipe extends SpecialRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv)
+	public ItemStack assemble(CraftingContainer inv)
 	{
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
 				Rarity next = ShaderRegistry.getLowerRarity(stackInSlot.getRarity());
@@ -72,20 +71,20 @@ public class ShaderBagRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width >= 2&&height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack getRecipeOutput()
+	public ItemStack getResultItem()
 	{
 		return new ItemStack(Misc.shaderBag.get(Rarity.COMMON), 2);
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.SHADER_BAG_SERIALIZER.get();
 	}

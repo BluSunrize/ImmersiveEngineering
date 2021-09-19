@@ -12,10 +12,10 @@ package blusunrize.immersiveengineering.data.recipebuilder;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.data.ShapedRecipeBuilder;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.ShapedRecipeBuilder;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.ItemLike;
 
 import javax.annotation.Nonnull;
 import java.util.function.Consumer;
@@ -24,17 +24,17 @@ public class RevolverAssemblyRecipeBuilder extends ShapedRecipeBuilder
 {
 	private int[] nbtCopyTargetSlot = null;
 
-	public RevolverAssemblyRecipeBuilder(IItemProvider result, int count)
+	public RevolverAssemblyRecipeBuilder(ItemLike result, int count)
 	{
 		super(result, count);
 	}
 
-	public static RevolverAssemblyRecipeBuilder builder(IItemProvider result, int count)
+	public static RevolverAssemblyRecipeBuilder builder(ItemLike result, int count)
 	{
 		return new RevolverAssemblyRecipeBuilder(result, count);
 	}
 
-	public static RevolverAssemblyRecipeBuilder builder(IItemProvider result)
+	public static RevolverAssemblyRecipeBuilder builder(ItemLike result)
 	{
 		return new RevolverAssemblyRecipeBuilder(result, 1);
 	}
@@ -46,29 +46,29 @@ public class RevolverAssemblyRecipeBuilder extends ShapedRecipeBuilder
 	}
 
 	@Override
-	public void build(Consumer<IFinishedRecipe> consumerIn, ResourceLocation id)
+	public void save(Consumer<FinishedRecipe> consumerIn, ResourceLocation id)
 	{
-		Consumer<IFinishedRecipe> dummyConsumer = iFinishedRecipe -> {
+		Consumer<FinishedRecipe> dummyConsumer = iFinishedRecipe -> {
 			RevolverResult result = new RevolverResult(iFinishedRecipe, nbtCopyTargetSlot);
 			consumerIn.accept(result);
 		};
-		super.build(dummyConsumer, id);
+		super.save(dummyConsumer, id);
 	}
 
 	public static class RevolverResult extends WrappedFinishedRecipe
 	{
 		final int[] nbtCopyTargetSlot;
 
-		public RevolverResult(IFinishedRecipe base, int[] nbtCopyTargetSlot)
+		public RevolverResult(FinishedRecipe base, int[] nbtCopyTargetSlot)
 		{
 			super(base, RecipeSerializers.REVOLVER_ASSEMBLY_SERIALIZER);
 			this.nbtCopyTargetSlot = nbtCopyTargetSlot;
 		}
 
 		@Override
-		public void serialize(@Nonnull JsonObject json)
+		public void serializeRecipeData(@Nonnull JsonObject json)
 		{
-			super.serialize(json);
+			super.serializeRecipeData(json);
 
 			if(nbtCopyTargetSlot!=null)
 			{

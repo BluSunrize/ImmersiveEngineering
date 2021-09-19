@@ -19,9 +19,9 @@ import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.managers.IRecipeManager;
 import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -39,7 +39,7 @@ public class RefineryRecipeManager implements IRecipeManager
 {
 
 	@Override
-	public IRecipeType<RefineryRecipe> getRecipeType()
+	public RecipeType<RefineryRecipe> getRecipeType()
 	{
 		return RefineryRecipe.TYPE;
 	}
@@ -87,7 +87,7 @@ public class RefineryRecipeManager implements IRecipeManager
 			@Override
 			public boolean shouldRemove(RefineryRecipe recipe)
 			{
-				return fluid.isEquivalentTo(recipe.output.getFluid());
+				return fluid.isSame(recipe.output.getFluid());
 			}
 		};
 

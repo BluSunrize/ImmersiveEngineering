@@ -9,14 +9,14 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector4f;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -56,13 +56,13 @@ public interface IOBJModelCallback<T>
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	default TransformationMatrix applyTransformations(T object, String group, TransformationMatrix transform)
+	default Transformation applyTransformations(T object, String group, Transformation transform)
 	{
 		return transform;
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	default void handlePerspective(T Object, TransformType cameraTransformType, MatrixStack mat, @Nullable LivingEntity entity)
+	default void handlePerspective(T Object, TransformType cameraTransformType, PoseStack mat, @Nullable LivingEntity entity)
 	{
 
 	}
@@ -95,10 +95,10 @@ public interface IOBJModelCallback<T>
 
 	@OnlyIn(Dist.CLIENT)
 	@Nonnull
-	default TransformationMatrix getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
+	default Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
 													   float partialTicks)
 	{
-		return TransformationMatrix.identity();
+		return Transformation.identity();
 	}
 
 	@OnlyIn(Dist.CLIENT)

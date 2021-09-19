@@ -9,10 +9,10 @@
 package blusunrize.lib.manual.gui;
 
 import blusunrize.lib.manual.ManualUtils;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.Component;
 
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
@@ -25,7 +25,7 @@ public class GuiButtonManual extends Button
 	public int[] colour = {0x33000000, 0x33cb7f32};
 	public int[] textColour = {0xffe0e0e0, 0xffffffa0};
 
-	public GuiButtonManual(ManualScreen gui, int x, int y, int w, int h, ITextComponent text, IPressable handler)
+	public GuiButtonManual(ManualScreen gui, int x, int y, int w, int h, Component text, OnPress handler)
 	{
 		super(x, y, w, h, text, handler);
 		this.gui = gui;
@@ -44,7 +44,7 @@ public class GuiButtonManual extends Button
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partialTicks)
+	public void render(PoseStack transform, int mx, int my, float partialTicks)
 	{
 		if(this.visible)
 		{
@@ -57,8 +57,8 @@ public class GuiButtonManual extends Button
 			int col = colour[isHovered?1: 0];
 			fill(transform, x, y, x+width, y+height, col);
 			int txtCol = textColour[isHovered?1: 0];
-			int sw = gui.manual.fontRenderer().getStringWidth(getMessage().getString());
-			gui.manual.fontRenderer().drawString(transform, getMessage().getString(), x+width/2-sw/2, y+height/2-gui.manual.fontRenderer().FONT_HEIGHT/2, txtCol);
+			int sw = gui.manual.fontRenderer().width(getMessage().getString());
+			gui.manual.fontRenderer().draw(transform, getMessage().getString(), x+width/2-sw/2, y+height/2-gui.manual.fontRenderer().lineHeight/2, txtCol);
 			//TODO this.mouseDragged(mc, mx, my);
 		}
 	}

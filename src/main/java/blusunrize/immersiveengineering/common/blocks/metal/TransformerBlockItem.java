@@ -10,13 +10,12 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 
 public class TransformerBlockItem extends BlockItemIE
 {
@@ -27,15 +26,15 @@ public class TransformerBlockItem extends BlockItemIE
 
 	@Nullable
 	@Override
-	protected BlockState getStateForPlacement(BlockItemUseContext context)
+	protected BlockState getPlacementState(BlockPlaceContext context)
 	{
-		World w = context.getWorld();
-		BlockPos possiblePost = context.getPos();
+		Level w = context.getLevel();
+		BlockPos possiblePost = context.getClickedPos();
 		if(!context.replacingClickedOnBlock())
-			possiblePost = possiblePost.offset(context.getFace(), -1);
+			possiblePost = possiblePost.relative(context.getClickedFace(), -1);
 		if(PostTransformerBlock.isAttacheablePost(possiblePost, w))
-			return Connectors.postTransformer.getDefaultState();
+			return Connectors.postTransformer.defaultBlockState();
 		else
-			return super.getStateForPlacement(context);
+			return super.getPlacementState(context);
 	}
 }

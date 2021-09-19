@@ -10,26 +10,26 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import com.google.gson.JsonObject;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Function;
 
-public class WrappingRecipeSerializer<WrappingType extends IRecipe<?>, WrappedType extends IRecipe<?>>
-		extends ForgeRegistryEntry<IRecipeSerializer<?>>
-		implements IRecipeSerializer<WrappingType>
+public class WrappingRecipeSerializer<WrappingType extends Recipe<?>, WrappedType extends Recipe<?>>
+		extends ForgeRegistryEntry<RecipeSerializer<?>>
+		implements RecipeSerializer<WrappingType>
 {
-	private final IRecipeSerializer<WrappedType> inner;
+	private final RecipeSerializer<WrappedType> inner;
 	private final Function<WrappingType, WrappedType> unwrap;
 	private final Function<WrappedType, WrappingType> wrap;
 
 	public WrappingRecipeSerializer(
-			IRecipeSerializer<WrappedType> inner, Function<WrappingType, WrappedType> unwrap,
+			RecipeSerializer<WrappedType> inner, Function<WrappingType, WrappedType> unwrap,
 			Function<WrappedType, WrappingType> wrap
 	)
 	{
@@ -40,16 +40,16 @@ public class WrappingRecipeSerializer<WrappingType extends IRecipe<?>, WrappedTy
 
 	@Nonnull
 	@Override
-	public WrappingType read(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
+	public WrappingType fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
 	{
-		return wrap.apply(inner.read(recipeId, json));
+		return wrap.apply(inner.fromJson(recipeId, json));
 	}
 
 	@Nullable
 	@Override
-	public WrappingType read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public WrappingType fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
 	{
-		WrappedType vanilla = inner.read(recipeId, buffer);
+		WrappedType vanilla = inner.fromNetwork(recipeId, buffer);
 		if(vanilla!=null)
 			return wrap.apply(vanilla);
 		else
@@ -57,8 +57,8 @@ public class WrappingRecipeSerializer<WrappingType extends IRecipe<?>, WrappedTy
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull WrappingType recipe)
+	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull WrappingType recipe)
 	{
-		inner.write(buffer, unwrap.apply(recipe));
+		inner.toNetwork(buffer, unwrap.apply(recipe));
 	}
 }

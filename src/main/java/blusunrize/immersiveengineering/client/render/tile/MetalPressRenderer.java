@@ -15,50 +15,50 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTi
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockTileEntity.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.List;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.MetalPressTileEntity.*;
 
-public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
+public class MetalPressRenderer extends BlockEntityRenderer<MetalPressTileEntity>
 {
 	public static DynamicModel<Void> PISTON;
 
-	public MetalPressRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public MetalPressRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 	@Override
-	public void render(MetalPressTileEntity te, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(MetalPressTileEntity te, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(!te.formed||te.isDummy()||!te.getWorldNonnull().isBlockLoaded(te.getPos()))
+		if(!te.formed||te.isDummy()||!te.getWorldNonnull().hasChunkAt(te.getBlockPos()))
 			return;
 
-		final BlockRendererDispatcher blockRenderer = Minecraft.getInstance().getBlockRendererDispatcher();
-		BlockPos blockPos = te.getPos();
-		BlockState state = te.getWorld().getBlockState(blockPos);
+		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
+		BlockPos blockPos = te.getBlockPos();
+		BlockState state = te.getLevel().getBlockState(blockPos);
 		if(state.getBlock()!=Multiblocks.metalPress)
 			return;
-		IBakedModel model = PISTON.get(null);
+		BakedModel model = PISTON.get(null);
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 		float piston = 0;
 		float[] shift = new float[te.processQueue.size()];
@@ -92,26 +92,26 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 				}
 		}
 
-		matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.WEST?90: te.getFacing()==Direction.EAST?-90: 0, true));
-		matrixStack.push();
+		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), te.getFacing()==Direction.SOUTH?180: te.getFacing()==Direction.WEST?90: te.getFacing()==Direction.EAST?-90: 0, true));
+		matrixStack.pushPose();
 		matrixStack.translate(0, -piston*.6875f, 0);
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(-0.5, -0.5, -0.5);
-		blockRenderer.getBlockModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
-				bufferIn.getBuffer(RenderType.getSolid()), true,
-				te.getWorld().rand, 0, combinedOverlayIn, EmptyModelData.INSTANCE);
-		matrixStack.pop();
+		blockRenderer.getModelRenderer().renderModel(te.getWorldNonnull(), model, state, blockPos, matrixStack,
+				bufferIn.getBuffer(RenderType.solid()), true,
+				te.getLevel().random, 0, combinedOverlayIn, EmptyModelData.INSTANCE);
+		matrixStack.popPose();
 
 		if(!te.mold.isEmpty())
 		{
 			matrixStack.translate(0, .34, 0);
-			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -90, true));
+			matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
 			float scale = .75f;
 			matrixStack.scale(scale, scale, 1);
-			ClientUtils.mc().getItemRenderer().renderItem(te.mold, TransformType.FIXED, combinedLightIn, combinedOverlayIn,
+			ClientUtils.mc().getItemRenderer().renderStatic(te.mold, TransformType.FIXED, combinedLightIn, combinedOverlayIn,
 					matrixStack, bufferIn);
 		}
-		matrixStack.pop();
+		matrixStack.popPose();
 		matrixStack.translate(0, -.35, 1.25);
 		for(int i = 0; i < shift.length; i++)
 		{
@@ -121,18 +121,18 @@ public class MetalPressRenderer extends TileEntityRenderer<MetalPressTileEntity>
 			List<ItemStack> displays = ((MultiblockProcessInWorld<?>)process).getDisplayItem();
 			if(displays.isEmpty())
 				continue;
-			matrixStack.push();
+			matrixStack.pushPose();
 			matrixStack.translate(0, 0, -TRANSLATION_DISTANCE*shift[i]);
 			if(piston > .92)
 				matrixStack.translate(0, .92-piston, 0);
 
-			matrixStack.rotate(new Quaternion(new Vector3f(1, 0, 0), -90, true));
+			matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -90, true));
 			float scale = .625f;
 			matrixStack.scale(scale, scale, 1);
-			ClientUtils.mc().getItemRenderer().renderItem(displays.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,
+			ClientUtils.mc().getItemRenderer().renderStatic(displays.get(0), TransformType.FIXED, combinedLightIn, combinedOverlayIn,
 					matrixStack, bufferIn);
-			matrixStack.pop();
+			matrixStack.popPose();
 		}
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 }

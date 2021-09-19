@@ -11,13 +11,13 @@ package blusunrize.immersiveengineering.common.crafting.fluidaware;
 
 import blusunrize.immersiveengineering.common.crafting.fluidaware.ShapelessFluidAwareRecipe.MatchLocation;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraftforge.common.util.RecipeMatcher;
 
 import javax.annotation.Nonnull;
@@ -37,20 +37,20 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 
 	public ShapelessFluidAwareRecipe(ShapelessRecipe in)
 	{
-		this(in.getId(), in.getGroup(), in.getIngredients(), in.getRecipeOutput());
+		this(in.getId(), in.getGroup(), in.getIngredients(), in.getResultItem());
 	}
 
 	@Nullable
 	@Override
-	protected MatchLocation findMatch(CraftingInventory inv)
+	protected MatchLocation findMatch(CraftingContainer inv)
 	{
 		List<ItemStack> inputs = new ArrayList<>();
-		int[] slotToInput = new int[inv.getSizeInventory()];
+		int[] slotToInput = new int[inv.getContainerSize()];
 		Arrays.fill(slotToInput, -1);
 
-		for(int i = 0; i < inv.getSizeInventory(); ++i)
+		for(int i = 0; i < inv.getContainerSize(); ++i)
 		{
-			ItemStack itemstack = inv.getStackInSlot(i);
+			ItemStack itemstack = inv.getItem(i);
 			if(!itemstack.isEmpty())
 			{
 				slotToInput[i] = inputs.size();
@@ -79,18 +79,18 @@ public class ShapelessFluidAwareRecipe extends AbstractFluidAwareRecipe<MatchLoc
 
 	public ShapelessRecipe toVanilla()
 	{
-		return new ShapelessRecipe(getId(), getGroup(), getRecipeOutput(), getIngredients());
+		return new ShapelessRecipe(getId(), getGroup(), getResultItem(), getIngredients());
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width*height >= getIngredients().size();
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.IE_SHAPELESS_SERIALIZER.get();
 	}

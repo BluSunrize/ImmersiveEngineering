@@ -21,52 +21,61 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
 import com.google.common.collect.Lists;
+import com.mojang.math.Vector4f;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementManager;
-import net.minecraft.advancements.PlayerAdvancements;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.monster.MonsterEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.fluid.FlowingFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.ICraftingRecipe;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.loot.*;
-import net.minecraft.loot.LootContext.Builder;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.particles.ParticleTypes;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.PlayerAdvancements;
+import net.minecraft.server.ServerAdvancementManager;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ITag;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector4f;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.tags.Tag;
+import net.minecraft.util.Mth;
+import net.minecraft.world.Container;
+import net.minecraft.world.Containers;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BucketPickup;
+import net.minecraft.world.level.block.LiquidBlockContainer;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.*;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.LootContext.Builder;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -94,7 +103,7 @@ public class Utils
 
 	public static boolean isInTag(ItemStack stack, ResourceLocation tagName)
 	{
-		ITag<Item> tag = ItemTags.getCollection().get(tagName);
+		Tag<Item> tag = ItemTags.getAllTags().getTag(tagName);
 		return tag!=null&&tag.contains(stack.getItem());
 	}
 
@@ -136,7 +145,7 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return null;
-		Collection<ResourceLocation> owners = ItemTags.getCollection().getOwningTags(stack.getItem());
+		Collection<ResourceLocation> owners = ItemTags.getAllTags().getMatchingTags(stack.getItem());
 		if(owners.contains(Tags.Items.DYES.getName()))
 		{
 			for(ResourceLocation tag : owners)
@@ -150,7 +159,7 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return false;
-		if(stack.getItem().isIn(Tags.Items.DYES))
+		if(stack.getItem().is(Tags.Items.DYES))
 			return true;
 		return false;
 	}
@@ -170,7 +179,7 @@ public class Utils
 		return uuid;
 	}
 
-	public static boolean isBlockAt(World world, BlockPos pos, Block b)
+	public static boolean isBlockAt(Level world, BlockPos pos, Block b)
 	{
 		return world.getBlockState(pos).getBlock()==b;
 	}
@@ -227,7 +236,7 @@ public class Utils
 			{
 			}
 		}
-		return I18n.format(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
+		return I18n.get(Lib.DESC_INFO+"mininglvl."+Math.max(-1, Math.min(lvl, 6)));
 	}
 
 	public static String getModName(String modid)
@@ -260,11 +269,11 @@ public class Utils
 		if(dir==Direction.NORTH)
 			return f;
 		else if(dir==Direction.SOUTH&&f.getAxis()!=Axis.Y)
-			return f.rotateY().rotateY();
+			return f.getClockWise().getClockWise();
 		else if(dir==Direction.WEST&&f.getAxis()!=Axis.Y)
-			return f.rotateYCCW();
+			return f.getCounterClockWise();
 		else if(dir==Direction.EAST&&f.getAxis()!=Axis.Y)
-			return f.rotateY();
+			return f.getClockWise();
 		else if(dir==Direction.DOWN&&f.getAxis()!=Axis.Y)
 			return DirectionUtils.rotateAround(f, Axis.X);
 		else if(dir==Direction.UP&&f.getAxis()!=Axis.X)
@@ -272,37 +281,37 @@ public class Utils
 		return f;
 	}
 
-	public static Vector3d getLivingFrontPos(LivingEntity entity, double offset, double height, HandSide hand, boolean useSteppedYaw, float partialTicks)
+	public static Vec3 getLivingFrontPos(LivingEntity entity, double offset, double height, HumanoidArm hand, boolean useSteppedYaw, float partialTicks)
 	{
-		double offsetX = hand==HandSide.LEFT?-.3125: hand==HandSide.RIGHT?.3125: 0;
+		double offsetX = hand==HumanoidArm.LEFT?-.3125: hand==HumanoidArm.RIGHT?.3125: 0;
 
-		float yaw = entity.prevRotationYaw+(entity.rotationYaw-entity.prevRotationYaw)*partialTicks;
+		float yaw = entity.yRotO+(entity.yRot-entity.yRotO)*partialTicks;
 		if(useSteppedYaw)
-			yaw = entity.prevRenderYawOffset+(entity.renderYawOffset-entity.prevRenderYawOffset)*partialTicks;
-		float pitch = entity.prevRotationPitch+(entity.rotationPitch-entity.prevRotationPitch)*partialTicks;
+			yaw = entity.yBodyRotO+(entity.yBodyRot-entity.yBodyRotO)*partialTicks;
+		float pitch = entity.xRotO+(entity.xRot-entity.xRotO)*partialTicks;
 
-		float yawCos = MathHelper.cos(-yaw*(float)Math.PI/180-(float)Math.PI);
-		float yawSin = MathHelper.sin(-yaw*(float)Math.PI/180-(float)Math.PI);
-		float pitchCos = -MathHelper.cos(-pitch*(float)Math.PI/180);
-		float pitchSin = MathHelper.sin(-pitch*(float)Math.PI/180);
+		float yawCos = Mth.cos(-yaw*(float)Math.PI/180-(float)Math.PI);
+		float yawSin = Mth.sin(-yaw*(float)Math.PI/180-(float)Math.PI);
+		float pitchCos = -Mth.cos(-pitch*(float)Math.PI/180);
+		float pitchSin = Mth.sin(-pitch*(float)Math.PI/180);
 
-		return new Vector3d(entity.getPosX()+offsetX*yawCos+offset*pitchCos*yawSin, entity.getPosY()+offset*pitchSin+height, entity.getPosZ()+offset*pitchCos*yawCos-offsetX*yawSin);
+		return new Vec3(entity.getX()+offsetX*yawCos+offset*pitchCos*yawSin, entity.getY()+offset*pitchSin+height, entity.getZ()+offset*pitchCos*yawCos-offsetX*yawSin);
 	}
 
-	public static List<LivingEntity> getTargetsInCone(World world, Vector3d start, Vector3d dir, float spreadAngle, float truncationLength)
+	public static List<LivingEntity> getTargetsInCone(Level world, Vec3 start, Vec3 dir, float spreadAngle, float truncationLength)
 	{
 		double length = dir.length();
-		Vector3d dirNorm = dir.normalize();
+		Vec3 dirNorm = dir.normalize();
 		double radius = Math.tan(spreadAngle/2)*length;
 
-		Vector3d endLow = start.add(dir).subtract(radius, radius, radius);
-		Vector3d endHigh = start.add(dir).add(radius, radius, radius);
+		Vec3 endLow = start.add(dir).subtract(radius, radius, radius);
+		Vec3 endHigh = start.add(dir).add(radius, radius, radius);
 
-		AxisAlignedBB box = new AxisAlignedBB(minInArray(start.x, endLow.x, endHigh.x), minInArray(start.y, endLow.y, endHigh.y), minInArray(start.z, endLow.z, endHigh.z),
+		AABB box = new AABB(minInArray(start.x, endLow.x, endHigh.x), minInArray(start.y, endLow.y, endHigh.y), minInArray(start.z, endLow.z, endHigh.z),
 				maxInArray(start.x, endLow.x, endHigh.x), maxInArray(start.y, endLow.y, endHigh.y), maxInArray(start.z, endLow.z, endHigh.z));
 
-		List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, box);
-		list.removeIf(e -> !isPointInCone(dirNorm, radius, length, truncationLength, e.getPositionVec().subtract(start)));
+		List<LivingEntity> list = world.getEntitiesOfClass(LivingEntity.class, box);
+		list.removeIf(e -> !isPointInCone(dirNorm, radius, length, truncationLength, e.position().subtract(start)));
 		return list;
 	}
 
@@ -315,36 +324,36 @@ public class Utils
 	 * @param truncationLength optional lenght at which the cone is truncated (flat tip)
 	 * @param relativePoint    point to be checked, relative to {@code start}
 	 */
-	public static boolean isPointInCone(Vector3d normDirection, double radius, double length, float truncationLength, Vector3d relativePoint)
+	public static boolean isPointInCone(Vec3 normDirection, double radius, double length, float truncationLength, Vec3 relativePoint)
 	{
-		double projectedDist = relativePoint.dotProduct(normDirection); //Orthogonal projection, establishing point's distance on cone direction vector
+		double projectedDist = relativePoint.dot(normDirection); //Orthogonal projection, establishing point's distance on cone direction vector
 		if(projectedDist < truncationLength||projectedDist > length) //If projected distance is before truncation or beyond length, point not contained
 			return false;
 
 		double radiusAtDist = projectedDist/length*radius; //Radius of the cone at the projected distance
-		Vector3d orthVec = relativePoint.subtract(normDirection.scale(projectedDist)); //Orthogonal vector between point and cone direction
+		Vec3 orthVec = relativePoint.subtract(normDirection.scale(projectedDist)); //Orthogonal vector between point and cone direction
 
-		return orthVec.lengthSquared() < (radiusAtDist*radiusAtDist); //Check if Vector's length is shorter than radius -> point in cone
+		return orthVec.lengthSqr() < (radiusAtDist*radiusAtDist); //Check if Vector's length is shorter than radius -> point in cone
 	}
 
-	public static boolean isPointInTriangle(Vector3d tA, Vector3d tB, Vector3d tC, Vector3d point)
+	public static boolean isPointInTriangle(Vec3 tA, Vec3 tB, Vec3 tC, Vec3 point)
 	{
 		//Distance vectors to A (focuspoint of triangle)
-		Vector3d v0 = tC.subtract(tA);
-		Vector3d v1 = tB.subtract(tA);
-		Vector3d v2 = point.subtract(tA);
+		Vec3 v0 = tC.subtract(tA);
+		Vec3 v1 = tB.subtract(tA);
+		Vec3 v2 = point.subtract(tA);
 
 		return isPointInTriangle(v0, v1, v2);
 	}
 
-	private static boolean isPointInTriangle(Vector3d leg0, Vector3d leg1, Vector3d targetVec)
+	private static boolean isPointInTriangle(Vec3 leg0, Vec3 leg1, Vec3 targetVec)
 	{
 		//Dot products
-		double dot00 = leg0.dotProduct(leg0);
-		double dot01 = leg0.dotProduct(leg1);
-		double dot02 = leg0.dotProduct(targetVec);
-		double dot11 = leg1.dotProduct(leg1);
-		double dot12 = leg1.dotProduct(targetVec);
+		double dot00 = leg0.dot(leg0);
+		double dot01 = leg0.dot(leg1);
+		double dot02 = leg0.dot(targetVec);
+		double dot11 = leg1.dot(leg1);
+		double dot12 = leg1.dot(targetVec);
 
 		//Barycentric coordinates
 		double invDenom = 1/(dot00*dot11-dot01*dot01);
@@ -359,16 +368,16 @@ public class Utils
 		attractEnemies(target, radius, null);
 	}
 
-	public static void attractEnemies(LivingEntity target, float radius, Predicate<MonsterEntity> predicate)
+	public static void attractEnemies(LivingEntity target, float radius, Predicate<Monster> predicate)
 	{
-		AxisAlignedBB aabb = new AxisAlignedBB(target.getPosX()-radius, target.getPosY()-radius, target.getPosZ()-radius, target.getPosX()+radius, target.getPosY()+radius, target.getPosZ()+radius);
+		AABB aabb = new AABB(target.getX()-radius, target.getY()-radius, target.getZ()-radius, target.getX()+radius, target.getY()+radius, target.getZ()+radius);
 
-		List<MonsterEntity> list = target.getEntityWorld().getEntitiesWithinAABB(MonsterEntity.class, aabb);
-		for(MonsterEntity mob : list)
+		List<Monster> list = target.getCommandSenderWorld().getEntitiesOfClass(Monster.class, aabb);
+		for(Monster mob : list)
 			if(predicate==null||predicate.test(mob))
 			{
-				mob.setAttackTarget(target);
-				mob.faceEntity(target, 180, 0);
+				mob.setTarget(target);
+				mob.lookAt(target, 180, 0);
 			}
 	}
 
@@ -395,21 +404,21 @@ public class Utils
 
 	public static boolean canBlockDamageSource(LivingEntity entity, DamageSource damageSourceIn)
 	{
-		if(!damageSourceIn.isUnblockable()&&entity.isActiveItemStackBlocking())
+		if(!damageSourceIn.isBypassArmor()&&entity.isBlocking())
 		{
-			Vector3d vec3d = damageSourceIn.getDamageLocation();
+			Vec3 vec3d = damageSourceIn.getSourcePosition();
 			if(vec3d!=null)
 			{
-				Vector3d vec3d1 = entity.getLook(1.0F);
-				Vector3d vec3d2 = vec3d.subtractReverse(entity.getPositionVec()).normalize();
-				vec3d2 = new Vector3d(vec3d2.x, 0.0D, vec3d2.z);
-				return vec3d2.dotProduct(vec3d1) < 0;
+				Vec3 vec3d1 = entity.getViewVector(1.0F);
+				Vec3 vec3d2 = vec3d.vectorTo(entity.position()).normalize();
+				vec3d2 = new Vec3(vec3d2.x, 0.0D, vec3d2.z);
+				return vec3d2.dot(vec3d1) < 0;
 			}
 		}
 		return false;
 	}
 
-	public static Vector3d getFlowVector(World world, BlockPos pos)
+	public static Vec3 getFlowVector(Level world, BlockPos pos)
 	{
 		BlockState bState = world.getBlockState(pos);
 		FluidState fState = bState.getFluidState();
@@ -436,31 +445,31 @@ public class Utils
 		return max;
 	}
 
-	public static boolean isVecInEntityHead(LivingEntity entity, Vector3d vec)
+	public static boolean isVecInEntityHead(LivingEntity entity, Vec3 vec)
 	{
-		if(entity.getHeight()/entity.getWidth() < 2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
+		if(entity.getBbHeight()/entity.getBbWidth() < 2)//Crude check to see if the entity is bipedal or at least upright (this should work for blazes)
 			return false;
-		double d = vec.y-(entity.getPosY()+entity.getEyeHeight());
+		double d = vec.y-(entity.getY()+entity.getEyeHeight());
 		return Math.abs(d) < .25;
 	}
 
-	public static void unlockIEAdvancement(PlayerEntity player, String name)
+	public static void unlockIEAdvancement(Player player, String name)
 	{
-		if(player instanceof ServerPlayerEntity)
+		if(player instanceof ServerPlayer)
 		{
-			PlayerAdvancements advancements = ((ServerPlayerEntity)player).getAdvancements();
-			AdvancementManager manager = ((ServerWorld)player.getEntityWorld()).getServer().getAdvancementManager();
+			PlayerAdvancements advancements = ((ServerPlayer)player).getAdvancements();
+			ServerAdvancementManager manager = ((ServerLevel)player.getCommandSenderWorld()).getServer().getAdvancements();
 			Advancement advancement = manager.getAdvancement(new ResourceLocation(ImmersiveEngineering.MODID, name));
 			if(advancement!=null)
-				advancements.grantCriterion(advancement, "code_trigger");
+				advancements.award(advancement, "code_trigger");
 		}
 	}
 
 	//TODO test! I think the NBT format is wrong
-	public static CompoundNBT getRandomFireworkExplosion(Random rand, int preType)
+	public static CompoundTag getRandomFireworkExplosion(Random rand, int preType)
 	{
-		CompoundNBT tag = new CompoundNBT();
-		CompoundNBT expl = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
+		CompoundTag expl = new CompoundTag();
 		expl.putBoolean("Flicker", true);
 		expl.putBoolean("Trail", true);
 		int[] colors = new int[rand.nextInt(8)+1];
@@ -479,7 +488,7 @@ public class Utils
 		if(preType < 0&&type==3)
 			type = 4;
 		expl.putByte("Type", (byte)type);
-		ListNBT list = new ListNBT();
+		ListTag list = new ListTag();
 		list.add(expl);
 		tag.put("Explosions", list);
 
@@ -489,10 +498,10 @@ public class Utils
 	public static int intFromRGBA(Vector4f rgba)
 	{
 		float[] array = {
-				rgba.getX(),
-				rgba.getY(),
-				rgba.getZ(),
-				rgba.getW(),
+				rgba.x(),
+				rgba.y(),
+				rgba.z(),
+				rgba.w(),
 		};
 		return intFromRGBA(array);
 	}
@@ -510,31 +519,31 @@ public class Utils
 	{
 		if(dyeColor==null)
 			return new Vector4f(1, 1, 1, 1);
-		float[] rgb = dyeColor.getColorComponentValues();
+		float[] rgb = dyeColor.getTextureDiffuseColors();
 		return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
 	}
 
-	public static FluidStack drainFluidBlock(World world, BlockPos pos, FluidAction action)
+	public static FluidStack drainFluidBlock(Level world, BlockPos pos, FluidAction action)
 	{
 		BlockState b = world.getBlockState(pos);
 		FluidState f = b.getFluidState();
 
-		if(f.isSource()&&b.getBlock() instanceof IBucketPickupHandler)
+		if(f.isSource()&&b.getBlock() instanceof BucketPickup)
 		{
 			if(action.execute())
-				((IBucketPickupHandler)b.getBlock()).pickupFluid(world, pos, b);
-			return new FluidStack(f.getFluid(), FluidAttributes.BUCKET_VOLUME);
+				((BucketPickup)b.getBlock()).takeLiquid(world, pos, b);
+			return new FluidStack(f.getType(), FluidAttributes.BUCKET_VOLUME);
 		}
 		return FluidStack.EMPTY;
 	}
 
-	public static Fluid getRelatedFluid(World w, BlockPos pos)
+	public static Fluid getRelatedFluid(Level w, BlockPos pos)
 	{
-		return w.getBlockState(pos).getFluidState().getFluid();
+		return w.getBlockState(pos).getFluidState().getType();
 	}
 
 	//Stolen from BucketItem
-	public static boolean placeFluidBlock(World worldIn, BlockPos posIn, FluidStack fluidStack)
+	public static boolean placeFluidBlock(Level worldIn, BlockPos posIn, FluidStack fluidStack)
 	{
 		Fluid fluid = fluidStack.getFluid();
 		if(!(fluid instanceof FlowingFluid)||fluidStack.getAmount() < FluidAttributes.BUCKET_VOLUME)
@@ -545,26 +554,26 @@ public class Utils
 			Material material = blockstate.getMaterial();
 			boolean flag = !material.isSolid();
 			boolean flag1 = material.isReplaceable();
-			if(worldIn.isAirBlock(posIn)||flag||flag1||blockstate.getBlock() instanceof ILiquidContainer&&((ILiquidContainer)blockstate.getBlock()).canContainFluid(worldIn, posIn, blockstate, fluid))
+			if(worldIn.isEmptyBlock(posIn)||flag||flag1||blockstate.getBlock() instanceof LiquidBlockContainer&&((LiquidBlockContainer)blockstate.getBlock()).canPlaceLiquid(worldIn, posIn, blockstate, fluid))
 			{
-				if(worldIn.getDimensionType().isUltrawarm()&&fluid.isIn(FluidTags.WATER))
+				if(worldIn.dimensionType().ultraWarm()&&fluid.is(FluidTags.WATER))
 				{
 					int i = posIn.getX();
 					int j = posIn.getY();
 					int k = posIn.getZ();
-					worldIn.playSound(null, posIn, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F+(worldIn.rand.nextFloat()-worldIn.rand.nextFloat())*0.8F);
+					worldIn.playSound(null, posIn, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F+(worldIn.random.nextFloat()-worldIn.random.nextFloat())*0.8F);
 
 					for(int l = 0; l < 8; ++l)
 						worldIn.addParticle(ParticleTypes.LARGE_SMOKE, i+Math.random(), j+Math.random(), k+Math.random(), 0.0D, 0.0D, 0.0D);
 				}
-				else if(blockstate.getBlock() instanceof ILiquidContainer&&fluid==Fluids.WATER)
-					((ILiquidContainer)blockstate.getBlock()).receiveFluid(worldIn, posIn, blockstate, ((FlowingFluid)fluid).getStillFluidState(false));
+				else if(blockstate.getBlock() instanceof LiquidBlockContainer&&fluid==Fluids.WATER)
+					((LiquidBlockContainer)blockstate.getBlock()).placeLiquid(worldIn, posIn, blockstate, ((FlowingFluid)fluid).getSource(false));
 				else
 				{
-					if(!worldIn.isRemote&&(flag||flag1)&&!material.isLiquid())
+					if(!worldIn.isClientSide&&(flag||flag1)&&!material.isLiquid())
 						worldIn.destroyBlock(posIn, true);
 
-					worldIn.setBlockState(posIn, fluid.getDefaultState().getBlockState(), 11);
+					worldIn.setBlock(posIn, fluid.defaultFluidState().createLegacyBlock(), 11);
 				}
 				fluidStack.shrink(FluidAttributes.BUCKET_VOLUME);
 				return true;
@@ -578,9 +587,9 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return null;
-		Block block = Block.getBlockFromItem(stack.getItem());
+		Block block = Block.byItem(stack.getItem());
 		if(block!=Blocks.AIR)
-			return block.getDefaultState();
+			return block.defaultBlockState();
 		return null;
 	}
 
@@ -600,28 +609,28 @@ public class Utils
 	}
 
 
-	public static void dropStackAtPos(World world, DirectionalBlockPos pos, ItemStack stack)
+	public static void dropStackAtPos(Level world, DirectionalBlockPos pos, ItemStack stack)
 	{
 		dropStackAtPos(world, pos.getPosition(), stack, pos.getSide());
 	}
 
-	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack, @Nonnull Direction facing)
+	public static void dropStackAtPos(Level world, BlockPos pos, ItemStack stack, @Nonnull Direction facing)
 	{
 
 		if(!stack.isEmpty())
 		{
 			ItemEntity ei = new ItemEntity(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, stack.copy());
-			ei.setMotion(0.075*facing.getXOffset(), 0.025, 0.075*facing.getZOffset());
-			world.addEntity(ei);
+			ei.setDeltaMovement(0.075*facing.getStepX(), 0.025, 0.075*facing.getStepZ());
+			world.addFreshEntity(ei);
 		}
 	}
 
-	public static void dropStackAtPos(World world, BlockPos pos, ItemStack stack)
+	public static void dropStackAtPos(Level world, BlockPos pos, ItemStack stack)
 	{
-		InventoryHelper.spawnItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
+		Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
 	}
 
-	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable PlayerEntity player)
+	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable Player player)
 	{
 		if(containerIn==null||containerIn.isEmpty())
 			return ItemStack.EMPTY;
@@ -692,9 +701,9 @@ public class Utils
 		return stack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY).isPresent();
 	}
 
-	public static Optional<ICraftingRecipe> findCraftingRecipe(CraftingInventory crafting, World world)
+	public static Optional<CraftingRecipe> findCraftingRecipe(CraftingContainer crafting, Level world)
 	{
-		return world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, crafting, world);
+		return world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, crafting, world);
 	}
 
 	public static NonNullList<ItemStack> createNonNullItemStackListFromItemStack(ItemStack stack)
@@ -713,24 +722,24 @@ public class Utils
 			for(int j = 0; j < 3; j++)
 			{
 				if(j==0)
-					ret[i+j] = in[i+0]*facing.getZOffset()+
-							in[i+1]*facing.getXOffset()+
-							in[i+2]*facing.getYOffset();
+					ret[i+j] = in[i+0]*facing.getStepZ()+
+							in[i+1]*facing.getStepX()+
+							in[i+2]*facing.getStepY();
 				else if(j==1)
-					ret[i+j] = in[i+0]*facing.getXOffset()+
-							in[i+1]*facing.getYOffset()+
-							in[i+2]*facing.getZOffset();
+					ret[i+j] = in[i+0]*facing.getStepX()+
+							in[i+1]*facing.getStepY()+
+							in[i+2]*facing.getStepZ();
 				else
-					ret[i+j] = in[i+0]*facing.getYOffset()+
-							in[i+1]*facing.getZOffset()+
-							in[i+2]*facing.getXOffset();
+					ret[i+j] = in[i+0]*facing.getStepY()+
+							in[i+1]*facing.getStepZ()+
+							in[i+2]*facing.getStepX();
 			}
 		for(int i = 0; i < in.length; i++)
 			ret[i] += .5;
 		return ret;
 	}
 
-	public static boolean isVecInBlock(Vector3d vec3d, BlockPos pos, BlockPos offset, double eps)
+	public static boolean isVecInBlock(Vec3 vec3d, BlockPos pos, BlockPos offset, double eps)
 	{
 		return vec3d.x >= pos.getX()-offset.getX()-eps&&
 				vec3d.x <= pos.getX()-offset.getX()+1+eps&&
@@ -740,31 +749,31 @@ public class Utils
 				vec3d.z <= pos.getZ()-offset.getZ()+1+eps;
 	}
 
-	public static Vector3d withCoordinate(Vector3d vertex, Axis axis, double value)
+	public static Vec3 withCoordinate(Vec3 vertex, Axis axis, double value)
 	{
 		switch(axis)
 		{
 			case X:
-				return new Vector3d(value, vertex.y, vertex.z);
+				return new Vec3(value, vertex.y, vertex.z);
 			case Y:
-				return new Vector3d(vertex.x, value, vertex.z);
+				return new Vec3(vertex.x, value, vertex.z);
 			case Z:
-				return new Vector3d(vertex.x, vertex.y, value);
+				return new Vec3(vertex.x, vertex.y, value);
 		}
 		return vertex;
 	}
 
-	public static class InventoryCraftingFalse extends CraftingInventory
+	public static class InventoryCraftingFalse extends CraftingContainer
 	{
-		private static final Container nullContainer = new Container(ContainerType.CRAFTING, 0)
+		private static final AbstractContainerMenu nullContainer = new AbstractContainerMenu(MenuType.CRAFTING, 0)
 		{
 			@Override
-			public void onCraftMatrixChanged(IInventory paramIInventory)
+			public void slotsChanged(Container paramIInventory)
 			{
 			}
 
 			@Override
-			public boolean canInteractWith(@Nonnull PlayerEntity playerIn)
+			public boolean stillValid(@Nonnull Player playerIn)
 			{
 				return false;
 			}
@@ -775,17 +784,17 @@ public class Utils
 			super(nullContainer, w, h);
 		}
 
-		public static CraftingInventory createFilledCraftingInventory(int w, int h, NonNullList<ItemStack> stacks)
+		public static CraftingContainer createFilledCraftingInventory(int w, int h, NonNullList<ItemStack> stacks)
 		{
-			CraftingInventory invC = new Utils.InventoryCraftingFalse(w, h);
+			CraftingContainer invC = new Utils.InventoryCraftingFalse(w, h);
 			for(int j = 0; j < w*h; j++)
 				if(!stacks.get(j).isEmpty())
-					invC.setInventorySlotContents(j, stacks.get(j).copy());
+					invC.setItem(j, stacks.get(j).copy());
 			return invC;
 		}
 	}
 
-	public static BlockPos rayTraceForFirst(Vector3d start, Vector3d end, World w, Set<BlockPos> ignore)
+	public static BlockPos rayTraceForFirst(Vec3 start, Vec3 end, Level w, Set<BlockPos> ignore)
 	{
 		Set<BlockPos> trace = Raytracer.rayTrace(start, end, w);
 		for(BlockPos cc : ignore)
@@ -825,62 +834,62 @@ public class Utils
 	/**
 	 * get tile entity without loading currently unloaded chunks
 	 *
-	 * @return return value of {@link World#getTileEntity(BlockPos)} or always null if chunk is not loaded
+	 * @return return value of {@link Level#getBlockEntity(BlockPos)} or always null if chunk is not loaded
 	 */
 	// TODO change this to use SafeChunkUtils
-	public static TileEntity getExistingTileEntity(World world, BlockPos pos)
+	public static BlockEntity getExistingTileEntity(Level world, BlockPos pos)
 	{
 		if(world==null)
 			return null;
-		if(world.isBlockLoaded(pos))
-			return world.getTileEntity(pos);
+		if(world.hasChunkAt(pos))
+			return world.getBlockEntity(pos);
 		return null;
 	}
 
 
 	//TODO use vanilla helpers instead (ItemStackHelper)
 	@Deprecated
-	public static NonNullList<ItemStack> readInventory(ListNBT nbt, int size)
+	public static NonNullList<ItemStack> readInventory(ListTag nbt, int size)
 	{
 		NonNullList<ItemStack> inv = NonNullList.withSize(size, ItemStack.EMPTY);
 		int max = nbt.size();
 		for(int i = 0; i < max; i++)
 		{
-			CompoundNBT itemTag = nbt.getCompound(i);
+			CompoundTag itemTag = nbt.getCompound(i);
 			int slot = itemTag.getByte("Slot")&255;
 			if(slot >= 0&&slot < size)
-				inv.set(slot, ItemStack.read(itemTag));
+				inv.set(slot, ItemStack.of(itemTag));
 		}
 		return inv;
 	}
 
 	@Deprecated
-	public static ListNBT writeInventory(ItemStack[] inv)
+	public static ListTag writeInventory(ItemStack[] inv)
 	{
-		ListNBT invList = new ListNBT();
+		ListTag invList = new ListTag();
 		for(int i = 0; i < inv.length; i++)
 			if(!inv[i].isEmpty())
 			{
-				CompoundNBT itemTag = new CompoundNBT();
+				CompoundTag itemTag = new CompoundTag();
 				itemTag.putByte("Slot", (byte)i);
-				inv[i].write(itemTag);
+				inv[i].save(itemTag);
 				invList.add(itemTag);
 			}
 		return invList;
 	}
 
 	@Deprecated
-	public static ListNBT writeInventory(Collection<ItemStack> inv)
+	public static ListTag writeInventory(Collection<ItemStack> inv)
 	{
-		ListNBT invList = new ListNBT();
+		ListTag invList = new ListTag();
 		byte slot = 0;
 		for(ItemStack s : inv)
 		{
 			if(!s.isEmpty())
 			{
-				CompoundNBT itemTag = new CompoundNBT();
+				CompoundTag itemTag = new CompoundTag();
 				itemTag.putByte("Slot", slot);
-				s.write(itemTag);
+				s.save(itemTag);
 				invList.add(itemTag);
 			}
 			slot++;
@@ -889,18 +898,18 @@ public class Utils
 	}
 
 	@Deprecated
-	public static NonNullList<ItemStack> loadItemStacksFromNBT(INBT nbt)
+	public static NonNullList<ItemStack> loadItemStacksFromNBT(net.minecraft.nbt.Tag nbt)
 	{
 		NonNullList<ItemStack> itemStacks = NonNullList.create();
-		if(nbt instanceof CompoundNBT)
+		if(nbt instanceof CompoundTag)
 		{
-			ItemStack stack = ItemStack.read((CompoundNBT)nbt);
+			ItemStack stack = ItemStack.of((CompoundTag)nbt);
 			itemStacks.add(stack);
 			return itemStacks;
 		}
-		else if(nbt instanceof ListNBT)
+		else if(nbt instanceof ListTag)
 		{
-			ListNBT list = (ListNBT)nbt;
+			ListTag list = (ListTag)nbt;
 			return readInventory(list, list.size());
 		}
 		return itemStacks;
@@ -934,8 +943,8 @@ public class Utils
 		slotAmount = slotAmount-stacks.size();
 		while(slotAmount > 0&&list.size() > 0)
 		{
-			ItemStack itemstack2 = list.remove(MathHelper.nextInt(rand, 0, list.size()-1));
-			int i = MathHelper.nextInt(rand, 1, itemstack2.getCount()/2);
+			ItemStack itemstack2 = list.remove(Mth.nextInt(rand, 0, list.size()-1));
+			int i = Mth.nextInt(rand, 1, itemstack2.getCount()/2);
 			itemstack2.shrink(i);
 			ItemStack itemstack1 = itemstack2.copy();
 			itemstack1.setCount(i);
@@ -973,59 +982,59 @@ public class Utils
 				}
 			}
 			f = f/(float)max;
-			return MathHelper.floor(f*14.0F)+(i > 0?1: 0);
+			return Mth.floor(f*14.0F)+(i > 0?1: 0);
 		}
 	}
 
 	public static List<ItemStack> getDrops(BlockState state, Builder builder)
 	{
 		ResourceLocation resourcelocation = state.getBlock().getLootTable();
-		if(resourcelocation==LootTables.EMPTY)
+		if(resourcelocation==BuiltInLootTables.EMPTY)
 			return Collections.emptyList();
 		else
 		{
-			LootContext lootcontext = builder.withParameter(LootParameters.BLOCK_STATE, state).build(LootParameterSets.BLOCK);
-			ServerWorld serverworld = lootcontext.getWorld();
-			LootTable loottable = serverworld.getServer().getLootTableManager().getLootTableFromLocation(resourcelocation);
-			return loottable.generate(lootcontext);
+			LootContext lootcontext = builder.withParameter(LootContextParams.BLOCK_STATE, state).create(LootContextParamSets.BLOCK);
+			ServerLevel serverworld = lootcontext.getLevel();
+			LootTable loottable = serverworld.getServer().getLootTables().get(resourcelocation);
+			return loottable.getRandomItems(lootcontext);
 		}
 	}
 
-	public static ItemStack getPickBlock(BlockState state, RayTraceResult rtr, PlayerEntity player)
+	public static ItemStack getPickBlock(BlockState state, HitResult rtr, Player player)
 	{
-		IBlockReader w = getSingleBlockWorldAccess(state);
+		BlockGetter w = getSingleBlockWorldAccess(state);
 		return state.getBlock().getPickBlock(state, rtr, w, BlockPos.ZERO, player);
 	}
 
-	public static List<AxisAlignedBB> flipBoxes(boolean flipFront, boolean flipRight, List<AxisAlignedBB> boxes)
+	public static List<AABB> flipBoxes(boolean flipFront, boolean flipRight, List<AABB> boxes)
 	{
-		return flipBoxes(flipFront, flipRight, boxes.toArray(new AxisAlignedBB[0]));
+		return flipBoxes(flipFront, flipRight, boxes.toArray(new AABB[0]));
 	}
 
-	public static List<AxisAlignedBB> flipBoxes(boolean flipFront, boolean flipRight, AxisAlignedBB... boxes)
+	public static List<AABB> flipBoxes(boolean flipFront, boolean flipRight, AABB... boxes)
 	{
-		List<AxisAlignedBB> ret = new ArrayList<>(boxes.length);
-		for(AxisAlignedBB aabb : boxes)
+		List<AABB> ret = new ArrayList<>(boxes.length);
+		for(AABB aabb : boxes)
 			ret.add(flipBox(flipFront, flipRight, aabb));
 		return ret;
 	}
 
-	public static AxisAlignedBB flipBox(boolean flipFront, boolean flipRight, AxisAlignedBB aabb)
+	public static AABB flipBox(boolean flipFront, boolean flipRight, AABB aabb)
 	{
-		AxisAlignedBB result = aabb;
+		AABB result = aabb;
 		if(flipRight)
-			result = new AxisAlignedBB(1-result.maxX, result.minY, result.minZ, 1-result.minX, result.maxY, result.maxZ);
+			result = new AABB(1-result.maxX, result.minY, result.minZ, 1-result.minX, result.maxY, result.maxZ);
 		if(flipFront)
-			result = new AxisAlignedBB(result.minX, result.minY, 1-result.maxZ, result.maxX, result.maxY, 1-result.minZ);
+			result = new AABB(result.minX, result.minY, 1-result.maxZ, result.maxX, result.maxY, 1-result.minZ);
 		return result;
 	}
 
-	public static IBlockReader getSingleBlockWorldAccess(BlockState state)
+	public static BlockGetter getSingleBlockWorldAccess(BlockState state)
 	{
 		return new SingleBlockAcess(state);
 	}
 
-	private static class SingleBlockAcess implements IBlockReader
+	private static class SingleBlockAcess implements BlockGetter
 	{
 		BlockState state;
 
@@ -1037,7 +1046,7 @@ public class Utils
 
 		@Nullable
 		@Override
-		public TileEntity getTileEntity(@Nonnull BlockPos pos)
+		public BlockEntity getBlockEntity(@Nonnull BlockPos pos)
 		{
 			return null;
 		}
@@ -1046,7 +1055,7 @@ public class Utils
 		@Override
 		public BlockState getBlockState(@Nonnull BlockPos pos)
 		{
-			return pos.equals(BlockPos.ZERO)?state: Blocks.AIR.getDefaultState();
+			return pos.equals(BlockPos.ZERO)?state: Blocks.AIR.defaultBlockState();
 		}
 
 		@Nonnull

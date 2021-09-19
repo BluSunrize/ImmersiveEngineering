@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api;
 
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.context.UseOnContext;
 
 /**
  * @author BluSunrize - 11.03.2015
@@ -24,9 +24,9 @@ public class TargetingInfo
 	public final float hitY;
 	public final float hitZ;
 
-	public TargetingInfo(ItemUseContext ctx)
+	public TargetingInfo(UseOnContext ctx)
 	{
-		this(ctx.getFace(), (float)ctx.getHitVec().x, (float)ctx.getHitVec().y, (float)ctx.getHitVec().z);
+		this(ctx.getClickedFace(), (float)ctx.getClickLocation().x, (float)ctx.getClickLocation().y, (float)ctx.getClickLocation().z);
 	}
 
 	public TargetingInfo(Direction side, float hitX, float hitY, float hitZ)
@@ -37,7 +37,7 @@ public class TargetingInfo
 		this.hitZ = hitZ;
 	}
 
-	public void writeToNBT(CompoundNBT tag)
+	public void writeToNBT(CompoundTag tag)
 	{
 		tag.putInt("side", side.ordinal());
 		tag.putFloat("hitX", hitX);
@@ -45,8 +45,8 @@ public class TargetingInfo
 		tag.putFloat("hitZ", hitZ);
 	}
 
-	public static TargetingInfo readFromNBT(CompoundNBT tag)
+	public static TargetingInfo readFromNBT(CompoundTag tag)
 	{
-		return new TargetingInfo(Direction.byIndex(tag.getInt("side")), tag.getFloat("hitX"), tag.getFloat("hitY"), tag.getFloat("hitZ"));
+		return new TargetingInfo(Direction.from3DDataValue(tag.getInt("side")), tag.getFloat("hitX"), tag.getFloat("hitY"), tag.getFloat("hitZ"));
 	}
 }

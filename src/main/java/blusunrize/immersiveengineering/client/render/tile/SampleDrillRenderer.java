@@ -12,39 +12,39 @@ import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.blocks.metal.SampleDrillTileEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
-import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
+import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
-public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntity>
+public class SampleDrillRenderer extends BlockEntityRenderer<SampleDrillTileEntity>
 {
 	public static DynamicModel<Void> DRILL;
 
-	public SampleDrillRenderer(TileEntityRendererDispatcher rendererDispatcherIn)
+	public SampleDrillRenderer(BlockEntityRenderDispatcher rendererDispatcherIn)
 	{
 		super(rendererDispatcherIn);
 	}
 
 
 	@Override
-	public void render(SampleDrillTileEntity tile, float partialTicks, MatrixStack matrixStack, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+	public void render(SampleDrillTileEntity tile, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, int combinedLightIn, int combinedOverlayIn)
 	{
-		if(tile.isDummy()||!tile.getWorldNonnull().isBlockLoaded(tile.getPos()))
+		if(tile.isDummy()||!tile.getWorldNonnull().hasChunkAt(tile.getBlockPos()))
 			return;
 
-		BlockState state = tile.getWorldNonnull().getBlockState(tile.getPos());
+		BlockState state = tile.getWorldNonnull().getBlockState(tile.getBlockPos());
 		if(state.getBlock()!=MetalDevices.sampleDrill)
 			return;
 
-		matrixStack.push();
+		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 
 		int max = IEServerConfig.MACHINES.coredrill_time.get();
@@ -53,7 +53,7 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 			float currentProcess = tile.process;
 			if (tile.isRunning)
 				currentProcess += partialTicks;
-			matrixStack.rotate(new Quaternion(new Vector3f(0, 1, 0), (currentProcess*22.5f)%360f, true));
+			matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), (currentProcess*22.5f)%360f, true));
 			float push = tile.process/(float)max;
 			if(tile.process > max/2)
 				push = 1-push;
@@ -63,8 +63,8 @@ public class SampleDrillRenderer extends TileEntityRenderer<SampleDrillTileEntit
 		matrixStack.translate(-0.5, -0.5, -0.5);
 		List<BakedQuad> quads = DRILL.getNullQuads(null, state);
 		RenderUtils.renderModelTESRFast(
-				quads, bufferIn.getBuffer(RenderType.getSolid()), matrixStack, combinedLightIn, combinedOverlayIn
+				quads, bufferIn.getBuffer(RenderType.solid()), matrixStack, combinedLightIn, combinedOverlayIn
 		);
-		matrixStack.pop();
+		matrixStack.popPose();
 	}
 }

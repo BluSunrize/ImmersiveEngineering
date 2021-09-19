@@ -1,7 +1,7 @@
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 
 import javax.annotation.Nullable;
 
@@ -9,18 +9,26 @@ public class PlayerUtils
 {
 	public static void resetFloatingState(@Nullable Entity player)
 	{
-		if(player instanceof ServerPlayerEntity)
+		if(player instanceof ServerPlayer)
 		{
-			ConnectionAccess access = (ConnectionAccess)((ServerPlayerEntity)player).connection;
-			access.setFloating(false);
-			access.setFloatingTickCount(0);
+			ConnectionAccess access = (ConnectionAccess)((ServerPlayer)player).connection;
+			access.setClientIsFloating(false);
+			access.setAboveGroundTickCount(0);
 		}
 	}
 
 	public interface ConnectionAccess
 	{
-		void setFloating(boolean shouldFloat);
+		default void setFloating(boolean shouldFloat) {
+			setClientIsFloating(shouldFloat);
+		}
 
-		void setFloatingTickCount(int ticks);
+		default void setFloatingTickCount(int ticks) {
+			setAboveGroundTickCount(ticks);
+		}
+
+		void setClientIsFloating(boolean shouldFloat);
+
+		void setAboveGroundTickCount(int ticks);
 	}
 }

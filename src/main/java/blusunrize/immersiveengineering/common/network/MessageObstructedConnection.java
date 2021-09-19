@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 
@@ -25,7 +25,7 @@ import java.util.function.Supplier;
 
 public class MessageObstructedConnection implements IMessage
 {
-	private Vector3d start, end;
+	private Vec3 start, end;
 	private BlockPos startB, endB;
 	private Collection<BlockPos> blocking;
 	private WireType wireType;
@@ -40,21 +40,21 @@ public class MessageObstructedConnection implements IMessage
 		wireType = conn.type;
 	}
 
-	public MessageObstructedConnection(PacketBuffer buf)
+	public MessageObstructedConnection(FriendlyByteBuf buf)
 	{
-		start = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
-		end = new Vector3d(buf.readDouble(), buf.readDouble(), buf.readDouble());
+		start = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+		end = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
 		startB = buf.readBlockPos();
 		endB = buf.readBlockPos();
 		int count = buf.readInt();
 		blocking = new ArrayList<>(count);
 		for(int i = 0; i < count; ++i)
 			blocking.add(buf.readBlockPos());
-		wireType = WireType.getValue(buf.readString(100));
+		wireType = WireType.getValue(buf.readUtf(100));
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		buf.writeDouble(start.x).writeDouble(start.y).writeDouble(start.z);
 		buf.writeDouble(end.x).writeDouble(end.y).writeDouble(end.z);
@@ -63,7 +63,7 @@ public class MessageObstructedConnection implements IMessage
 		buf.writeInt(blocking.size());
 		for(BlockPos b : blocking)
 			buf.writeBlockPos(b);
-		buf.writeString(wireType.getUniqueName());
+		buf.writeUtf(wireType.getUniqueName());
 	}
 
 	@Override

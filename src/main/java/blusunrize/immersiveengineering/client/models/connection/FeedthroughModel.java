@@ -28,30 +28,34 @@ import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
-import net.minecraft.client.renderer.color.ItemColors;
-import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTUtil;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.NbtUtils;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.data.EmptyModelData;
@@ -73,7 +77,7 @@ import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.MIDDLE_STATE;
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughTileEntity.WIRE;
-import static net.minecraft.util.Direction.Axis.Y;
+import static net.minecraft.core.Direction.Axis.Y;
 
 public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<FeedthroughCacheKey>
 {
@@ -99,11 +103,11 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> ret = new ArrayList<>();
 		ret.add(tileData);
-		TileEntity te = world.getTileEntity(pos);
+		BlockEntity te = world.getBlockEntity(pos);
 		if(te instanceof FeedthroughTileEntity)
 		{
 			FeedthroughTileEntity feedthrough = (FeedthroughTileEntity)te;
@@ -111,7 +115,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			FeedthroughData d = new FeedthroughData(
 					feedthrough.stateForMiddle,
 					feedthrough.reference,
-					state.get(IEProperties.FACING_ALL),
+					state.getValue(IEProperties.FACING_ALL),
 					feedthrough.offset,
 					color
 			);
@@ -121,7 +125,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	}
 
 	@Override
-	public boolean isAmbientOcclusion()
+	public boolean useAmbientOcclusion()
 	{
 		return true;
 	}
@@ -133,31 +137,31 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	}
 
 	@Override
-	public boolean isBuiltInRenderer()
+	public boolean isCustomRenderer()
 	{
 		return false;
 	}
 
 	@Nonnull
 	@Override
-	public TextureAtlasSprite getParticleTexture()
+	public TextureAtlasSprite getParticleIcon()
 	{
 		return ModelLoader.White.instance();
 	}
 
-	private static final ItemCameraTransforms transform = new ItemCameraTransforms(
-			new ItemTransformVec3f(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Left
-			new ItemTransformVec3f(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Right
-			new ItemTransformVec3f(new Vector3f(0, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.4F, .4F, .4F)),//1Left
-			new ItemTransformVec3f(new Vector3f(0, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.4F, .4F, .4F)),//1Right
-			new ItemTransformVec3f(new Vector3f(), new Vector3f(), new Vector3f()),//Head?
-			new ItemTransformVec3f(new Vector3f(30, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.6F, .6F, .6F)),//GUI
-			new ItemTransformVec3f(new Vector3f(), new Vector3f(0, .3F, 0), new Vector3f(.25F, .25F, .25F)),//Ground
-			new ItemTransformVec3f(new Vector3f(0, 180, 45), new Vector3f(0, 0, -.1875F), new Vector3f(.5F, .5F, .5F)));
+	private static final ItemTransforms transform = new ItemTransforms(
+			new ItemTransform(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Left
+			new ItemTransform(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Right
+			new ItemTransform(new Vector3f(0, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.4F, .4F, .4F)),//1Left
+			new ItemTransform(new Vector3f(0, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.4F, .4F, .4F)),//1Right
+			new ItemTransform(new Vector3f(), new Vector3f(), new Vector3f()),//Head?
+			new ItemTransform(new Vector3f(30, 225, 0), new Vector3f(0, 0, 0), new Vector3f(.6F, .6F, .6F)),//GUI
+			new ItemTransform(new Vector3f(), new Vector3f(0, .3F, 0), new Vector3f(.25F, .25F, .25F)),//Ground
+			new ItemTransform(new Vector3f(0, 180, 45), new Vector3f(0, 0, -.1875F), new Vector3f(.5F, .5F, .5F)));
 
 	@Nonnull
 	@Override
-	public ItemCameraTransforms getItemCameraTransforms()
+	public ItemTransforms getTransforms()
 	{
 		return transform;
 	}
@@ -166,7 +170,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 	@Nonnull
 	@Override
-	public ItemOverrideList getOverrides()
+	public ItemOverrides getOverrides()
 	{
 		return INSTANCE;
 	}
@@ -177,7 +181,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData
 	)
 	{
-		BlockState baseState = Blocks.STONE.getDefaultState();
+		BlockState baseState = Blocks.STONE.defaultBlockState();
 		WireType wire = WireType.COPPER;
 		Direction facing = Direction.NORTH;
 		int offset = 1;
@@ -198,7 +202,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		);
 	}
 
-	private static class FeedthroughItemOverride extends ItemOverrideList
+	private static class FeedthroughItemOverride extends ItemOverrides
 	{
 		private static final Cache<ItemStack, FeedthroughModel> ITEM_MODEL_CACHE = CacheBuilder.newBuilder()
 				.maximumSize(100)
@@ -207,10 +211,10 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 		@Nonnull
 		@Override
-		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, ItemStack stack,
-											@Nullable ClientWorld world, @Nullable LivingEntity entity)
+		public BakedModel resolve(@Nonnull BakedModel originalModel, ItemStack stack,
+											@Nullable ClientLevel world, @Nullable LivingEntity entity)
 		{
-			Item connItem = Item.getItemFromBlock(Connectors.feedthrough);
+			Item connItem = Item.byBlock(Connectors.feedthrough);
 			if(stack.getItem()==connItem)
 			{
 				try
@@ -279,18 +283,18 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	private static class SpecificFeedthroughModel extends FeedthroughModel
 	{
 		private static final float[] WHITE = {1, 1, 1, 1};
-		private static final Vector3d[] vertices = {
-				new Vector3d(.75F, .001F, .75F), new Vector3d(.75F, .001F, .25F),
-				new Vector3d(.25F, .001F, .25F), new Vector3d(.25F, .001F, .75F)
+		private static final Vec3[] vertices = {
+				new Vec3(.75F, .001F, .75F), new Vec3(.75F, .001F, .25F),
+				new Vec3(.25F, .001F, .25F), new Vec3(.25F, .001F, .75F)
 		};
 		List<List<BakedQuad>> quads = new ArrayList<>(6);
 
 		public SpecificFeedthroughModel(ItemStack stack)
 		{
 			WireType w = WireType.getValue(ItemNBTHelper.getString(stack, WIRE));
-			BlockState state = NBTUtil.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
+			BlockState state = NbtUtils.readBlockState(ItemNBTHelper.getTagCompound(stack, MIDDLE_STATE));
 			if(state.getBlock()==Blocks.AIR)
-				state = Blocks.BOOKSHELF.getDefaultState();
+				state = Blocks.BOOKSHELF.defaultBlockState();
 			init(new FeedthroughCacheKey(w, state, Integer.MAX_VALUE, Direction.NORTH, null),
 					i -> mc().getItemColors().getColor(stack, i));
 		}
@@ -302,8 +306,8 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 		private void init(FeedthroughCacheKey k, Int2IntFunction colorMultiplierBasic)
 		{
-			IBakedModel model = mc().getBlockRendererDispatcher().getBlockModelShapes()
-					.getModel(k.baseState);
+			BakedModel model = mc().getBlockRenderer().getBlockModelShaper()
+					.getBlockModel(k.baseState);
 			if(colorMultiplierBasic==null)
 			{
 				ItemColors colors = mc().getItemColors();
@@ -323,9 +327,9 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 				switch(k.offset)
 				{
 					case 0:
-						if(k.layer==null||RenderTypeLookup.canRenderInLayer(k.baseState, k.layer))
+						if(k.layer==null||ItemBlockRenderTypes.canRenderInLayer(k.baseState, k.layer))
 						{
-							Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(TransformationMatrix.identity(),
+							Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(Transformation.identity(),
 									colorMultiplier);
 							quads.add(model.getQuads(k.baseState, side, Utils.RAND, EmptyModelData.INSTANCE)
 									.stream()
@@ -336,7 +340,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 					case 1:
 						facing = facing.getOpposite();
 					case -1:
-						if(k.layer==RenderType.getSolid())
+						if(k.layer==RenderType.solid())
 							quads.add(getConnQuads(facing, side, k.type, new Matrix4()));
 						break;
 					case Integer.MAX_VALUE:
@@ -346,7 +350,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 						mat = new Matrix4();
 						mat.translate(0, 0, -1);
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
-						Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(TransformationMatrix.identity(),
+						Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(Transformation.identity(),
 								colorMultiplier);
 						all.addAll(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
 								.collect(Collectors.toCollection(ArrayList::new)));
@@ -371,16 +375,16 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			else
 			{
 				Direction rotateAround = DirectionUtils.rotateAround(facing, Y);
-				mat.rotate(Math.PI/2, rotateAround.getXOffset(), rotateAround.getYOffset(),
-						rotateAround.getZOffset());
+				mat.rotate(Math.PI/2, rotateAround.getStepX(), rotateAround.getStepY(),
+						rotateAround.getStepZ());
 			}
 			mat.translate(-.5, -.5, -.5);
-			IBakedModel model = mc().getBlockRendererDispatcher().getBlockModelShapes()
-					.getModel(info.conn.get().with(IEProperties.FACING_ALL, Direction.DOWN));
+			BakedModel model = mc().getBlockRenderer().getBlockModelShaper()
+					.getBlockModel(info.conn.get().setValue(IEProperties.FACING_ALL, Direction.DOWN));
 			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
-				conn.add(ModelUtils.createBakedQuad(DefaultVertexFormats.BLOCK, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
-			Function<BakedQuad, BakedQuad> transf = new QuadTransformer(new TransformationMatrix(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
+				conn.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
+			Function<BakedQuad, BakedQuad> transf = new QuadTransformer(new Transformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else
@@ -391,7 +395,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		@Override
 		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 		{
-			return quads.get(side==null?6: side.getIndex());
+			return quads.get(side==null?6: side.get3DDataValue());
 		}
 	}
 }

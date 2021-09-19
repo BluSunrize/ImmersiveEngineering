@@ -14,17 +14,17 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
-public class FlareBulletColorRecipe extends SpecialRecipe
+public class FlareBulletColorRecipe extends CustomRecipe
 {
 	public FlareBulletColorRecipe(ResourceLocation resourceLocation)
 	{
@@ -32,13 +32,13 @@ public class FlareBulletColorRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, @Nonnull World world)
+	public boolean matches(CraftingContainer inv, @Nonnull Level world)
 	{
 		boolean hasBullet = false;
 		boolean hasDye = false;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
 				if(isFlareBullet(stackInSlot))
@@ -58,15 +58,15 @@ public class FlareBulletColorRecipe extends SpecialRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv)
+	public ItemStack assemble(CraftingContainer inv)
 	{
 		int[] colourArray = new int[3];
 		int j = 0;
 		int totalColourSets = 0;
 		ItemStack bullet = ItemStack.EMPTY;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 				if(bullet.isEmpty()&&isFlareBullet(stackInSlot))
 				{
@@ -84,7 +84,7 @@ public class FlareBulletColorRecipe extends SpecialRecipe
 				}
 				else if(Utils.isDye(stackInSlot))
 				{
-					float[] afloat = Utils.getDye(stackInSlot).getColorComponentValues();
+					float[] afloat = Utils.getDye(stackInSlot).getTextureDiffuseColors();
 					int r = (int)(afloat[0]*255.0F);
 					int g = (int)(afloat[1]*255.0F);
 					int b = (int)(afloat[2]*255.0F);
@@ -116,14 +116,14 @@ public class FlareBulletColorRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.FLARE_BULLET_COLOR.get();
 	}

@@ -9,23 +9,22 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-
 import javax.annotation.Nonnull;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 
-public class ShaderInventory implements IInventory
+public class ShaderInventory implements Container
 {
 	private ShaderWrapper wrapper;
-	private Container container;
+	private AbstractContainerMenu container;
 	@Nonnull
 	public ItemStack shader;
 	private ResourceLocation name;
 
-	public ShaderInventory(Container par1Container, ShaderWrapper wrapper)
+	public ShaderInventory(AbstractContainerMenu par1Container, ShaderWrapper wrapper)
 	{
 		this.container = par1Container;
 		this.wrapper = wrapper;
@@ -35,7 +34,7 @@ public class ShaderInventory implements IInventory
 
 
 	@Override
-	public int getSizeInventory()
+	public int getContainerSize()
 	{
 		return 1;
 	}
@@ -47,13 +46,13 @@ public class ShaderInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack getStackInSlot(int i)
+	public ItemStack getItem(int i)
 	{
 		return this.shader;
 	}
 
 	@Override
-	public ItemStack removeStackFromSlot(int i)
+	public ItemStack removeItemNoUpdate(int i)
 	{
 		if(!this.shader.isEmpty())
 		{
@@ -65,7 +64,7 @@ public class ShaderInventory implements IInventory
 	}
 
 	@Override
-	public ItemStack decrStackSize(int i, int j)
+	public ItemStack removeItem(int i, int j)
 	{
 		if(!this.shader.isEmpty())
 		{
@@ -74,15 +73,15 @@ public class ShaderInventory implements IInventory
 			{
 				itemstack = this.shader.copy();
 				this.shader = ItemStack.EMPTY;
-				this.markDirty();
-				this.container.onCraftMatrixChanged(this);
+				this.setChanged();
+				this.container.slotsChanged(this);
 				return itemstack;
 			}
 			itemstack = this.shader.split(j);
 
 			if(shader.getCount()==0)
 				this.shader = ItemStack.EMPTY;
-			this.container.onCraftMatrixChanged(this);
+			this.container.slotsChanged(this);
 			return itemstack;
 		}
 		return ItemStack.EMPTY;
@@ -90,51 +89,51 @@ public class ShaderInventory implements IInventory
 
 
 	@Override
-	public void setInventorySlotContents(int i, ItemStack stack)
+	public void setItem(int i, ItemStack stack)
 	{
 		this.shader = stack;
-		if(!stack.isEmpty()&&stack.getCount() > this.getInventoryStackLimit())
-			stack.setCount(this.getInventoryStackLimit());
-		this.container.onCraftMatrixChanged(this);
+		if(!stack.isEmpty()&&stack.getCount() > this.getMaxStackSize())
+			stack.setCount(this.getMaxStackSize());
+		this.container.slotsChanged(this);
 	}
 
 	@Override
-	public int getInventoryStackLimit()
+	public int getMaxStackSize()
 	{
 		return 64;
 	}
 
 	@Override
-	public void markDirty()
+	public void setChanged()
 	{
 		if(wrapper!=null)
 			wrapper.setShaderItem(shader);
 	}
 
 	@Override
-	public boolean isUsableByPlayer(PlayerEntity entityplayer)
+	public boolean stillValid(Player entityplayer)
 	{
 		return true;
 	}
 
 	@Override
-	public void openInventory(PlayerEntity player)
+	public void startOpen(Player player)
 	{
 	}
 
 	@Override
-	public void closeInventory(PlayerEntity player)
+	public void stopOpen(Player player)
 	{
 	}
 
 	@Override
-	public boolean isItemValidForSlot(int i, ItemStack itemstack)
+	public boolean canPlaceItem(int i, ItemStack itemstack)
 	{
 		return true;
 	}
 
 	@Override
-	public void clear()
+	public void clearContent()
 	{
 	}
 }

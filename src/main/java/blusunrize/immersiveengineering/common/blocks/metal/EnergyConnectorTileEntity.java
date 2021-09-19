@@ -31,18 +31,18 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fml.RegistryObject;
@@ -60,13 +60,13 @@ import java.util.Map;
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
 
 public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity implements IStateBasedDirectional,
-		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, ITickableTileEntity
+		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, TickableBlockEntity
 {
-	public static final Map<Pair<String, Boolean>, RegistryObject<TileEntityType<EnergyConnectorTileEntity>>>
+	public static final Map<Pair<String, Boolean>, RegistryObject<BlockEntityType<EnergyConnectorTileEntity>>>
 			SPEC_TO_TYPE = new HashMap<>();
 	public static final Map<ResourceLocation, Pair<String, Boolean>> NAME_TO_SPEC = new HashMap<>();
 
-	public static void registerConnectorTEs(DeferredRegister<TileEntityType<?>> event)
+	public static void registerConnectorTEs(DeferredRegister<BlockEntityType<?>> event)
 	{
 		for(String type : new String[]{LV_CATEGORY, MV_CATEGORY, HV_CATEGORY})
 			for(int b = 0; b < 2; ++b)
@@ -74,8 +74,8 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 				boolean relay = b!=0;
 				ImmutablePair<String, Boolean> key = new ImmutablePair<>(type, relay);
 				String name = type.toLowerCase(Locale.US)+"_"+(relay?"relay": "conn");
-				RegistryObject<TileEntityType<EnergyConnectorTileEntity>> teType = event.register(
-						name, () -> new TileEntityType<>(
+				RegistryObject<BlockEntityType<EnergyConnectorTileEntity>> teType = event.register(
+						name, () -> new BlockEntityType<>(
 								() -> new EnergyConnectorTileEntity(type, relay),
 								ImmutableSet.of(Connectors.ENERGY_CONNECTORS.get(key)), null)
 				);
@@ -93,7 +93,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 
 	private CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(this, CapabilityEnergy.ENERGY, this::getFacing);
 
-	public EnergyConnectorTileEntity(TileEntityType<? extends EnergyConnectorTileEntity> type)
+	public EnergyConnectorTileEntity(BlockEntityType<? extends EnergyConnectorTileEntity> type)
 	{
 		super(type);
 		Pair<String, Boolean> data = NAME_TO_SPEC.get(type.getRegistryName());
@@ -111,7 +111,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public void tick()
 	{
-		if(!world.isRemote)
+		if(!level.isClientSide)
 		{
 			int maxOut = Math.min(storageToMachine.getEnergyStored(), getMaxOutput()-currentTickToMachine);
 			if(maxOut > 0&&output.isPresent())
@@ -144,7 +144,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -156,47 +156,47 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(!relay)
 		{
-			LocalWireNetwork local = globalNet.getNullableLocalNet(new ConnectionPoint(pos, 0));
-			if(local!=null&&!local.getConnections(pos).isEmpty())
+			LocalWireNetwork local = globalNet.getNullableLocalNet(new ConnectionPoint(worldPosition, 0));
+			if(local!=null&&!local.getConnections(worldPosition).isEmpty())
 				return false;
 		}
 		return voltage.equals(cableType.getCategory());
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		CompoundNBT toNet = new CompoundNBT();
+		CompoundTag toNet = new CompoundTag();
 		storageToNet.writeToNBT(toNet);
 		nbt.put("toNet", toNet);
-		CompoundNBT toMachine = new CompoundNBT();
+		CompoundTag toMachine = new CompoundTag();
 		storageToMachine.writeToNBT(toMachine);
 		nbt.put("toMachine", toMachine);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		CompoundNBT toMachine = nbt.getCompound("toMachine");
+		CompoundTag toMachine = nbt.getCompound("toMachine");
 		storageToMachine.readFromNBT(toMachine);
-		CompoundNBT toNet = nbt.getCompound("toNet");
+		CompoundTag toNet = nbt.getCompound("toNet");
 		storageToNet.readFromNBT(toNet);
 	}
 
 	@Override
-	public Vector3d getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
 		double lengthFromHalf = LENGTH.getFloat(new ImmutablePair<>(voltage, relay))-con.type.getRenderDiameter()/2-.5;
-		return new Vector3d(.5+lengthFromHalf*side.getXOffset(),
-				.5+lengthFromHalf*side.getYOffset(),
-				.5+lengthFromHalf*side.getZOffset());
+		return new Vec3(.5+lengthFromHalf*side.getStepX(),
+				.5+lengthFromHalf*side.getStepY(),
+				.5+lengthFromHalf*side.getStepZ());
 	}
 
 	IEForgeEnergyWrapper energyWrapper;
@@ -234,7 +234,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public int receiveEnergy(Direction from, int energy, boolean simulate)
 	{
-		if(world.isRemote||relay)
+		if(level.isClientSide||relay)
 			return 0;
 		energy = Math.min(getMaxInput()-currentTickToNet, energy);
 		if(energy <= 0)
@@ -249,7 +249,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 		{
 			storageToNet.modifyEnergyStored(accepted);
 			currentTickToNet += accepted;
-			markDirty();
+			setChanged();
 		}
 
 		return accepted;
@@ -313,23 +313,23 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 		switch(facing.getOpposite())
 		{
 			case UP:
-				return VoxelShapes.create(wMin, 0, wMin, wMax, length, wMax);
+				return Shapes.box(wMin, 0, wMin, wMax, length, wMax);
 			case DOWN:
-				return VoxelShapes.create(wMin, 1-length, wMin, wMax, 1, wMax);
+				return Shapes.box(wMin, 1-length, wMin, wMax, 1, wMax);
 			case SOUTH:
-				return VoxelShapes.create(wMin, wMin, 0, wMax, wMax, length);
+				return Shapes.box(wMin, wMin, 0, wMax, wMax, length);
 			case NORTH:
-				return VoxelShapes.create(wMin, wMin, 1-length, wMax, wMax, 1);
+				return Shapes.box(wMin, wMin, 1-length, wMax, wMax, 1);
 			case EAST:
-				return VoxelShapes.create(0, wMin, wMin, length, wMax, wMax);
+				return Shapes.box(0, wMin, wMin, length, wMax, wMax);
 			case WEST:
-				return VoxelShapes.create(1-length, wMin, wMin, 1, wMax, wMax);
+				return Shapes.box(1-length, wMin, wMin, 1, wMax, wMax);
 		}
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		float length = LENGTH.getFloat(new ImmutablePair<>(voltage, relay));
 		float wMin = .3125f;

@@ -18,17 +18,16 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import java.util.Arrays;
 
 public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
@@ -108,7 +107,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	}
 
 	@Override
-	public void draw(ArcFurnaceRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
+	public void draw(ArcFurnaceRecipe recipe, PoseStack transform, double mouseX, double mouseY)
 	{
 		JEIHelper.slotDrawable.draw(transform, 20, 0);
 		for(int j = 0; j < 4; j++)
@@ -120,9 +119,9 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 		float time = recipe.getTotalProcessTime();
 		float energy = recipe.getTotalProcessEnergy()/time;
 		Utils.formatDouble(energy, "#.##");
-		String s = I18n.format("desc.immersiveengineering.info.ift", Utils.formatDouble(energy, "#.##"));
-		ClientUtils.font().drawString(transform, s, 54, 38, 0x777777);
-		s = I18n.format("desc.immersiveengineering.info.seconds", Utils.formatDouble(time/20, "#.##"));
-		ClientUtils.font().drawString(transform, s, 54, 48, 0x777777);
+		String s = I18n.get("desc.immersiveengineering.info.ift", Utils.formatDouble(energy, "#.##"));
+		ClientUtils.font().draw(transform, s, 54, 38, 0x777777);
+		s = I18n.get("desc.immersiveengineering.info.seconds", Utils.formatDouble(time/20, "#.##"));
+		ClientUtils.font().draw(transform, s, 54, 48, 0x777777);
 	}
 }

@@ -21,19 +21,19 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.block.BlockState;
-import net.minecraft.enchantment.Enchantment;
-import net.minecraft.enchantment.Enchantments;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.ToolType;
 
@@ -48,7 +48,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 
 	public WirecutterItem()
 	{
-		super("wirecutter", new Properties().defaultMaxDamage(100));
+		super("wirecutter", new Properties().defaultDurability(100));
 	}
 
 	@Override
@@ -62,7 +62,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		if(container.attemptDamageItem(1, Utils.RAND, null))
+		if(container.hurt(1, Utils.RAND, null))
 			return ItemStack.EMPTY;
 		else
 			return container;
@@ -75,7 +75,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 	}
 
 	@Override
-	public boolean isDamageable()
+	public boolean canBeDepleted()
 	{
 		return true;
 	}
@@ -87,7 +87,7 @@ public class WirecutterItem extends IEBaseItem implements ITool
 	}
 
 	@Override
-	public int getItemEnchantability()
+	public int getEnchantmentValue()
 	{
 		return 14;
 	}
@@ -95,13 +95,13 @@ public class WirecutterItem extends IEBaseItem implements ITool
 	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
 	{
-		return enchantment==Enchantments.EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
+		return enchantment==Enchantments.BLOCK_EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
 	}
 
 	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, PlayerEntity player)
+	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player)
 	{
-		BlockState state = player.world.getBlockState(pos);
+		BlockState state = player.level.getBlockState(pos);
 		boolean effective = false;
 		for(ToolType tool : getToolTypes(itemstack))
 			if(state.getBlock().isToolEffective(state, tool))
@@ -109,37 +109,37 @@ public class WirecutterItem extends IEBaseItem implements ITool
 				effective = true;
 				break;
 			}
-		itemstack.attemptDamageItem(1, Utils.RAND, null);
+		itemstack.hurt(1, Utils.RAND, null);
 		return effective;
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context)
+	public InteractionResult useOn(UseOnContext context)
 	{
-		World world = context.getWorld();
-		BlockPos pos = context.getPos();
-		TileEntity tileEntity = world.getTileEntity(pos);
-		TargetingInfo target = new TargetingInfo(context.getFace(),
-				(float)context.getHitVec().x,
-				(float)context.getHitVec().y,
-				(float)context.getHitVec().z);
-		ItemStack stack = context.getItem();
-		PlayerEntity player = context.getPlayer();
+		Level world = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		BlockEntity tileEntity = world.getBlockEntity(pos);
+		TargetingInfo target = new TargetingInfo(context.getClickedFace(),
+				(float)context.getClickLocation().x,
+				(float)context.getClickLocation().y,
+				(float)context.getClickLocation().z);
+		ItemStack stack = context.getItemInHand();
+		Player player = context.getPlayer();
 		if(player!=null&&tileEntity instanceof IImmersiveConnectable)
 		{
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(null, target);
-			tileEntity = world.getTileEntity(masterPos);
+			tileEntity = world.getBlockEntity(masterPos);
 			if(!(tileEntity instanceof IImmersiveConnectable))
-				return ActionResultType.PASS;
+				return InteractionResult.PASS;
 
-			if(!world.isRemote)
+			if(!world.isClientSide)
 			{
 				IImmersiveConnectable nodeHere = (IImmersiveConnectable)tileEntity;
 				GlobalWireNetwork net = GlobalWireNetwork.getNetwork(world);
 				AtomicBoolean cut = new AtomicBoolean(false);
 				net.removeAllConnectionsAt(nodeHere, conn -> {
 					ItemStack coil = conn.type.getWireCoil(conn);
-					world.addEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), coil));
+					world.addFreshEntity(new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), coil));
 					cut.set(true);
 				});
 				if(cut.get())
@@ -148,43 +148,43 @@ public class WirecutterItem extends IEBaseItem implements ITool
 		}
 		else if(player!=null)
 		{
-			return onItemRightClick(world, player, context.getHand()).getType();
+			return use(world, player, context.getHand()).getResult();
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
-	private void damageStack(ItemStack stack, PlayerEntity player, Hand hand)
+	private void damageStack(ItemStack stack, Player player, InteractionHand hand)
 	{
 		int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
 		if(nbtDamage < IEServerConfig.TOOLS.cutterDurabiliy.get())
 			ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
 		else
 		{
-			player.sendBreakAnimation(hand);
-			player.setHeldItem(hand, ItemStack.EMPTY);
+			player.broadcastBreakEvent(hand);
+			player.setItemInHand(hand, ItemStack.EMPTY);
 		}
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World world, PlayerEntity player, @Nonnull Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
-		ItemStack stack = player.getHeldItem(hand);
-		if(!world.isRemote)
+		ItemStack stack = player.getItemInHand(hand);
+		if(!world.isClientSide)
 		{
 			double reachDistance = player.getAttribute(ForgeMod.REACH_DISTANCE.get()).getValue();
 			Connection target = WireUtils.getTargetConnection(world, player, null, reachDistance);
 			if(target!=null)
 			{
-				GlobalWireNetwork.getNetwork(world).removeAndDropConnection(target, player.getPosition(), world);
+				GlobalWireNetwork.getNetwork(world).removeAndDropConnection(target, player.blockPosition(), world);
 				damageStack(stack, player, hand);
 			}
 		}
-		return new ActionResult<>(ActionResultType.SUCCESS, stack);
+		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
 	@Override
-	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable PlayerEntity player, @Nullable BlockState blockState)
+	public int getHarvestLevel(ItemStack stack, @Nonnull ToolType tool, @Nullable Player player, @Nullable BlockState blockState)
 	{
 		if(getToolTypes(stack).contains(tool))
 			return 2;

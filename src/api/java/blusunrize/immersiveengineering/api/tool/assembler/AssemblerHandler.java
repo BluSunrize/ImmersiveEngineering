@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.api.tool.assembler;
 
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.NonNullList;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -30,24 +30,24 @@ import java.util.function.Function;
  */
 public class AssemblerHandler
 {
-	private static final HashMap<Class<? extends IRecipe>, IRecipeAdapter> registry = new LinkedHashMap<>();
+	private static final HashMap<Class<? extends Recipe>, IRecipeAdapter> registry = new LinkedHashMap<>();
 	private static final List<Function<Object, RecipeQuery>> specialQueryConverters = new ArrayList<>();
 	private static final List<Function<Ingredient, RecipeQuery>> specialIngredientConverters = new ArrayList<>();
 	private static final List<Function<ItemStack, RecipeQuery>> specialItemStackConverters = new ArrayList<>();
-	public static IRecipeAdapter<IRecipe<CraftingInventory>> defaultAdapter;
+	public static IRecipeAdapter<Recipe<CraftingContainer>> defaultAdapter;
 
-	public static void registerRecipeAdapter(Class<? extends IRecipe> recipeClass, IRecipeAdapter adapter)
+	public static void registerRecipeAdapter(Class<? extends Recipe> recipeClass, IRecipeAdapter adapter)
 	{
 		registry.put(recipeClass, adapter);
 	}
 
 	@Nonnull
-	public static IRecipeAdapter<?> findAdapterForClass(Class<? extends IRecipe> recipeClass)
+	public static IRecipeAdapter<?> findAdapterForClass(Class<? extends Recipe> recipeClass)
 	{
 		IRecipeAdapter adapter = registry.get(recipeClass);
-		boolean isSuperIRecipe = IRecipe.class.isAssignableFrom(recipeClass.getSuperclass());
-		if(adapter==null&&recipeClass!=IRecipe.class&&isSuperIRecipe)
-			adapter = findAdapterForClass((Class<? extends IRecipe>)recipeClass.getSuperclass());
+		boolean isSuperIRecipe = Recipe.class.isAssignableFrom(recipeClass.getSuperclass());
+		if(adapter==null&&recipeClass!=Recipe.class&&isSuperIRecipe)
+			adapter = findAdapterForClass((Class<? extends Recipe>)recipeClass.getSuperclass());
 		else
 			adapter = defaultAdapter;
 		registry.put(recipeClass, adapter);
@@ -55,7 +55,7 @@ public class AssemblerHandler
 	}
 
 	@Nonnull
-	public static IRecipeAdapter<?> findAdapter(IRecipe recipe)
+	public static IRecipeAdapter<?> findAdapter(Recipe recipe)
 	{
 		return findAdapterForClass(recipe.getClass());
 	}
@@ -70,10 +70,10 @@ public class AssemblerHandler
 		specialItemStackConverters.add(func);
 	}
 
-	public interface IRecipeAdapter<R extends IRecipe<CraftingInventory>>
+	public interface IRecipeAdapter<R extends Recipe<CraftingContainer>>
 	{
 		@Nullable
-		RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input, World world);
+		RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input, Level world);
 	}
 
 	private static <T> RecipeQuery fromFunctions(T in, List<Function<T, RecipeQuery>> converters)
@@ -95,7 +95,7 @@ public class AssemblerHandler
 			special = fromFunctions(ingr, specialQueryConverters);
 		if(special!=null)
 			return special;
-		if(ingr.hasNoMatchingItems())
+		if(ingr.isEmpty())
 			return null;
 		else
 			return new IngredientRecipeQuery(ingr, 1);

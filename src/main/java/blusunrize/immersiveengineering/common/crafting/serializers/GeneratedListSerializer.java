@@ -16,11 +16,11 @@ import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.fml.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -44,12 +44,12 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 
 	@Nullable
 	@Override
-	public GeneratedListRecipe read(@Nonnull ResourceLocation recipeId, @Nonnull PacketBuffer buffer)
+	public GeneratedListRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
 	{
 		int length = buffer.readVarInt();
 		List<IESerializableRecipe> subRecipes = new ArrayList<>(length);
 		ResourceLocation recipeCategory = buffer.readResourceLocation();
-		IRecipeSerializer<?> deserializer = RecipeSerializers.RECIPE_SERIALIZERS.getEntries()
+		RecipeSerializer<?> deserializer = RecipeSerializers.RECIPE_SERIALIZERS.getEntries()
 				.stream()
 				.map(RegistryObject::get)
 				.filter(ser -> recipeCategory.equals(ser.getRegistryName()))
@@ -58,14 +58,14 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 		for(int i = 0; i < length; ++i)
 		{
 			ResourceLocation recipeName = buffer.readResourceLocation();
-			IRecipe<?> subRecipe = deserializer.read(recipeName, buffer);
+			Recipe<?> subRecipe = deserializer.fromNetwork(recipeName, buffer);
 			subRecipes.add((IESerializableRecipe)subRecipe);
 		}
 		return new GeneratedListRecipe(recipeId, subRecipes);
 	}
 
 	@Override
-	public void write(@Nonnull PacketBuffer buffer, @Nonnull GeneratedListRecipe recipe)
+	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull GeneratedListRecipe recipe)
 	{
 		List<? extends IESerializableRecipe> recipes = recipe.getSubRecipes();
 		buffer.writeVarInt(recipes.size());
@@ -73,7 +73,7 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 		for(IESerializableRecipe r : recipes)
 		{
 			buffer.writeResourceLocation(r.getId());
-			((IERecipeSerializer)r.getSerializer()).write(buffer, r);
+			((IERecipeSerializer)r.getSerializer()).toNetwork(buffer, r);
 		}
 	}
 }

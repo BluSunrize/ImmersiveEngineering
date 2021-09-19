@@ -21,23 +21,23 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.ByteNBT;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.FloatNBT;
-import net.minecraft.nbt.INBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.ByteTag;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -56,26 +56,26 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.put("inventory", Utils.writeInventory(inventory));
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
+	private AABB renderAABB;
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-			renderAABB = new AxisAlignedBB(getPos().getX()-1, getPos().getY(), getPos().getZ()-1, getPos().getX()+2, getPos().getY()+2, getPos().getZ()+2);
+			renderAABB = new AABB(getBlockPos().getX()-1, getBlockPos().getY(), getBlockPos().getZ()-1, getBlockPos().getX()+2, getBlockPos().getY()+2, getBlockPos().getZ()+2);
 		return renderAABB;
 	}
 
@@ -115,7 +115,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -127,29 +127,29 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		applyConfigTo(inventory.get(0), message);
 	}
 
-	public static void applyConfigTo(ItemStack stack, CompoundNBT message)
+	public static void applyConfigTo(ItemStack stack, CompoundTag message)
 	{
 		if(!(stack.getItem() instanceof IConfigurableTool))
 			return;
-		for(String key : message.keySet())
+		for(String key : message.getAllKeys())
 		{
-			INBT tag = message.get(key);
-			if(tag instanceof ByteNBT)
-				((IConfigurableTool)stack.getItem()).applyConfigOption(stack, key, ((ByteNBT)tag).getByte()!=0);
-			else if(tag instanceof FloatNBT)
-				((IConfigurableTool)stack.getItem()).applyConfigOption(stack, key, ((FloatNBT)tag).getFloat());
+			Tag tag = message.get(key);
+			if(tag instanceof ByteTag)
+				((IConfigurableTool)stack.getItem()).applyConfigOption(stack, key, ((ByteTag)tag).getAsByte()!=0);
+			else if(tag instanceof FloatTag)
+				((IConfigurableTool)stack.getItem()).applyConfigOption(stack, key, ((FloatTag)tag).getAsFloat());
 		}
 	}
 
 	@Override
 	public boolean isDummy()
 	{
-		return getState().get(IEProperties.MULTIBLOCKSLAVE);
+		return getState().getValue(IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Nullable
@@ -161,28 +161,28 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 		// Used to provide tile-dependant drops after breaking
 		if(tempMasterTE!=null)
 			return (ModWorkbenchTileEntity)tempMasterTE;
-		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
-		BlockPos masterPos = getPos().offset(dummyDir);
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		Direction dummyDir = isDummy()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+		BlockPos masterPos = getBlockPos().relative(dummyDir);
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return (te instanceof ModWorkbenchTileEntity)?(ModWorkbenchTileEntity)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		DeskBlock.placeDummies(getBlockState(), world, pos, ctx);
+		DeskBlock.placeDummies(getBlockState(), level, worldPosition, ctx);
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		tempMasterTE = master();
-		Direction dummyDir = isDummy()?getFacing().rotateYCCW(): getFacing().rotateY();
-		world.removeBlock(pos.offset(dummyDir), false);
+		Direction dummyDir = isDummy()?getFacing().getCounterClockWise(): getFacing().getClockWise();
+		level.removeBlock(pos.relative(dummyDir), false);
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -192,8 +192,8 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	{
 		if(!isDummy())
 			return this;
-		Direction dummyDir = getFacing().rotateYCCW();
-		TileEntity tileEntityModWorkbench = world.getTileEntity(pos.offset(dummyDir));
+		Direction dummyDir = getFacing().getCounterClockWise();
+		BlockEntity tileEntityModWorkbench = level.getBlockEntity(worldPosition.relative(dummyDir));
 		if(tileEntityModWorkbench instanceof ModWorkbenchTileEntity)
 			return (ModWorkbenchTileEntity)tileEntityModWorkbench;
 		return null;
@@ -218,7 +218,7 @@ public class ModWorkbenchTileEntity extends IEBaseTileEntity implements IIEInven
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		if(isDummy())
 			return DUMMY_POS;

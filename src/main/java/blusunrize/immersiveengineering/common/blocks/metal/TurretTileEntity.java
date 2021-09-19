@@ -23,37 +23,37 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.monster.IMob;
-import net.minecraft.entity.passive.AnimalEntity;
-import net.minecraft.entity.passive.TameableEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.loot.LootContext;
-import net.minecraft.loot.LootParameters;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.nbt.StringNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.StringTag;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.animal.Animal;
+import net.minecraft.world.entity.monster.Enemy;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -65,7 +65,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-public abstract class TurretTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IIEInventory,
+public abstract class TurretTileEntity extends IEBaseTileEntity implements TickableBlockEntity, IIEInternalFluxHandler, IIEInventory,
 		IHasDummyBlocks, ITileDrop, IStateBasedDirectional, IBlockBounds, IInteractionObjectIE, IEntityProof, IScrewdriverInteraction,
 		IHasObjProperty, IModelOffsetProvider
 {
@@ -86,7 +86,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 
 	private UUID targetId;
 
-	public TurretTileEntity(TileEntityType<? extends TurretTileEntity> type)
+	public TurretTileEntity(BlockEntityType<? extends TurretTileEntity> type)
 	{
 		super(type);
 	}
@@ -100,10 +100,10 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		double range = getRange();
 		if(targetId!=null)
 		{
-			AxisAlignedBB validBox = VoxelShapes.fullCube().getBoundingBox().offset(pos).grow(range);
-			List<LivingEntity> entities = world.getEntitiesWithinAABB(LivingEntity.class, validBox);
+			AABB validBox = Shapes.block().bounds().move(worldPosition).inflate(range);
+			List<LivingEntity> entities = level.getEntitiesOfClass(LivingEntity.class, validBox);
 			for(LivingEntity entity : entities)
-				if(entity.getUniqueID().equals(targetId)&&isValidTarget(entity, true))
+				if(entity.getUUID().equals(targetId)&&isValidTarget(entity, true))
 				{
 					target = entity;
 					break;
@@ -113,14 +113,14 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 
 		if(target!=null)
 		{
-			Vector3d delta = getGunToTargetVec(target);
-			double dSq = delta.lengthSquared();
+			Vec3 delta = getGunToTargetVec(target);
+			double dSq = delta.lengthSqr();
 			if(dSq > range*range)
 				this.target = null;
-			else if(world.isRemote)
+			else if(level.isClientSide)
 			{
 				float facingYaw = getFacing()==Direction.NORTH?180: getFacing()==Direction.WEST?-90: getFacing()==Direction.EAST?90: 0;
-				double yaw = (MathHelper.atan2(delta.x, delta.z)*(180/Math.PI))-facingYaw;
+				double yaw = (Mth.atan2(delta.x, delta.z)*(180/Math.PI))-facingYaw;
 				this.rotationPitch = (float)(Math.atan2(Math.sqrt(delta.x*delta.x+delta.z*delta.z), delta.y)*(180/Math.PI))-90;
 				if(this.rotationYaw==0)//moving from default
 					this.rotationYaw = (float)(yaw*.5);
@@ -128,7 +128,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 					this.rotationYaw = (float)yaw;
 			}
 		}
-		else if(world.isRemote)
+		else if(level.isClientSide)
 		{
 			this.rotationYaw *= .75;
 			if(Math.abs(rotationYaw) < 10)
@@ -139,9 +139,9 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		}
 
 
-		if(world.isRemote)
+		if(level.isClientSide)
 			return;
-		if(world.getGameTime()%64==((getPos().getX()^getPos().getZ())&63))
+		if(level.getGameTime()%64==((getBlockPos().getX()^getBlockPos().getZ())&63))
 			markContainingBlockForUpdate(null);
 
 		int energy = IEServerConfig.MACHINES.turret_consumption.get();
@@ -150,12 +150,12 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 			if(energyStorage.extractEnergy(energy, true)==energy)
 			{
 				energyStorage.extractEnergy(energy, false);
-				if(target==null||!target.isAlive()||world.getEntityByID(target.getEntityId())==null||target.getHealth() <= 0||!canShootEntity(target))
+				if(target==null||!target.isAlive()||level.getEntity(target.getId())==null||target.getHealth() <= 0||!canShootEntity(target))
 				{
 					target = getTarget();
 					if(target!=null)
 					{
-						this.markDirty();
+						this.setChanged();
 						markContainingBlockForUpdate(null);
 					}
 				}
@@ -185,45 +185,45 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 
 	private boolean canShootEntity(LivingEntity entity)
 	{
-		Vector3d start = getGunPosition();
-		Vector3d end = getTargetVector(entity);
+		Vec3 start = getGunPosition();
+		Vec3 end = getTargetVector(entity);
 		//Don't shoot through walls
-		if(Utils.rayTraceForFirst(start, end, world, Collections.singleton(getPos().up()))
+		if(Utils.rayTraceForFirst(start, end, level, Collections.singleton(getBlockPos().above()))
 				!=null)
 			return false;
 		//Don't shoot non-targeted entities between the turret and the target
-		AxisAlignedBB potentialCollateralArea = entity.getBoundingBox().union(new AxisAlignedBB(pos.up()));
-		List<LivingEntity> potentialCollateral = world.getEntitiesWithinAABB(LivingEntity.class, potentialCollateralArea);
+		AABB potentialCollateralArea = entity.getBoundingBox().minmax(new AABB(worldPosition.above()));
+		List<LivingEntity> potentialCollateral = level.getEntitiesOfClass(LivingEntity.class, potentialCollateralArea);
 		for(LivingEntity coll : potentialCollateral)
 		{
-			AxisAlignedBB entityBB = coll.getBoundingBox().grow(.125f/2+.4);//Add the range of a revolver bullet in all directions
-			if(!isValidTarget(coll, false)&&entityBB.rayTrace(start, end).isPresent())
+			AABB entityBB = coll.getBoundingBox().inflate(.125f/2+.4);//Add the range of a revolver bullet in all directions
+			if(!isValidTarget(coll, false)&&entityBB.clip(start, end).isPresent())
 				return false;
 		}
 		return true;
 	}
 
-	protected Vector3d getTargetVector(LivingEntity e)
+	protected Vec3 getTargetVector(LivingEntity e)
 	{
-		return new Vector3d(e.getPosX(), e.getPosY()+.5*e.getEyeHeight(), e.getPosZ());
+		return new Vec3(e.getX(), e.getY()+.5*e.getEyeHeight(), e.getZ());
 	}
 
-	protected Vector3d getGunPosition()
+	protected Vec3 getGunPosition()
 	{
-		return new Vector3d(pos.getX()+.5, pos.getY()+1.375, pos.getZ()+.5);
+		return new Vec3(worldPosition.getX()+.5, worldPosition.getY()+1.375, worldPosition.getZ()+.5);
 	}
 
-	protected Vector3d getGunToTargetVec(LivingEntity target)
+	protected Vec3 getGunToTargetVec(LivingEntity target)
 	{
 		//target-gun
-		return getGunPosition().subtractReverse(getTargetVector(target));
+		return getGunPosition().vectorTo(getTargetVector(target));
 	}
 
 	@Nullable
 	private LivingEntity getTarget()
 	{
 		double range = getRange();
-		List<LivingEntity> list = world.getEntitiesWithinAABB(LivingEntity.class, new AxisAlignedBB(getPos().getX()-range, getPos().getY(), getPos().getZ()-range, getPos().getX()+range, getPos().getY()+3, getPos().getZ()+range));
+		List<LivingEntity> list = level.getEntitiesOfClass(LivingEntity.class, new AABB(getBlockPos().getX()-range, getBlockPos().getY(), getBlockPos().getZ()-range, getBlockPos().getX()+range, getBlockPos().getY()+3, getBlockPos().getZ()+range));
 		if(list.isEmpty())
 			return null;
 		for(LivingEntity entity : list)
@@ -240,21 +240,21 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		if(whitelist^isListedName(targetList, entity.getName().getString()))
 			return false;
 		//Same as above but for the owner of the pet, to prevent shooting wolves
-		if(entity instanceof TameableEntity)
+		if(entity instanceof TamableAnimal)
 		{
-			Entity entityOwner = ((TameableEntity)entity).getOwner();
+			Entity entityOwner = ((TamableAnimal)entity).getOwner();
 			if(entityOwner!=null&&(whitelist^isListedName(targetList, entityOwner.getName().getString())))
 				return false;
 		}
 
-		if(entity instanceof AnimalEntity&&!attackAnimals)
+		if(entity instanceof Animal&&!attackAnimals)
 			return false;
-		if(entity instanceof PlayerEntity&&!attackPlayers)
+		if(entity instanceof Player&&!attackPlayers)
 			return false;
-		if(!(entity instanceof PlayerEntity)&&!(entity instanceof AnimalEntity)&&!(entity instanceof IMob)&&!attackNeutrals)
+		if(!(entity instanceof Player)&&!(entity instanceof Animal)&&!(entity instanceof Enemy)&&!attackNeutrals)
 			return false;
 
-		if(target==null||getPos().distanceSq(entity.getPositionVec(), true) < getPos().distanceSq(target.getPositionVec(), true))
+		if(target==null||getBlockPos().distSqr(entity.position(), true) < getBlockPos().distSqr(target.position(), true))
 			return true;
 		return !checkCanShoot||canShootEntity(entity);
 	}
@@ -279,15 +279,15 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 
 	protected abstract void activate();
 
-	protected boolean hasOwnerRights(PlayerEntity player)
+	protected boolean hasOwnerRights(Player player)
 	{
-		if(player.abilities.isCreativeMode||owner==null||owner.isEmpty())
+		if(player.abilities.instabuild||owner==null||owner.isEmpty())
 			return true;
 		return owner.equalsIgnoreCase(player.getName().getString());
 	}
 
 	@Override
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		if(message.contains("add", NBT.TAG_STRING))
 			targetList.add(message.getString("add"));
@@ -302,18 +302,18 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		if(message.contains("attackNeutrals", NBT.TAG_BYTE))
 			attackNeutrals = message.getBoolean("attackNeutrals");
 		target = null;
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		energyStorage.readFromNBT(nbt);
 
 		if(nbt.contains("owner", NBT.TAG_STRING))
 			owner = nbt.getString("owner");
-		ListNBT list = nbt.getList("targetList", 8);
+		ListTag list = nbt.getList("targetList", 8);
 		targetList.clear();
 		for(int i = 0; i < list.size(); i++)
 			targetList.add(list.getString(i));
@@ -328,16 +328,16 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		energyStorage.writeToNBT(nbt);
 
 		if(owner!=null)
 			nbt.putString("owner", owner);
-		ListNBT list = new ListNBT();
+		ListTag list = new ListTag();
 		for(String s : targetList)
-			list.add(StringNBT.valueOf(s));
+			list.add(StringTag.valueOf(s));
 		nbt.put("targetList", list);
 		nbt.putBoolean("whitelist", whitelist);
 		nbt.putBoolean("attackAnimals", attackAnimals);
@@ -345,57 +345,57 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		nbt.putBoolean("attackNeutrals", attackNeutrals);
 
 		if(target!=null)
-			nbt.putString("target", target.getUniqueID().toString());
+			nbt.putString("target", target.getUUID().toString());
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		if(!isDummy())
-			return VoxelShapes.fullCube();
+			return Shapes.block();
 		switch(getFacing())
 		{
 			case NORTH:
-				return VoxelShapes.create(.125f, .0625f, .125f, .875f, .875f, 1);
+				return Shapes.box(.125f, .0625f, .125f, .875f, .875f, 1);
 			case SOUTH:
-				return VoxelShapes.create(.125f, .0625f, 0, .875f, .875f, .875f);
+				return Shapes.box(.125f, .0625f, 0, .875f, .875f, .875f);
 			case WEST:
-				return VoxelShapes.create(.125f, .0625f, .125f, 1, .875f, .875f);
+				return Shapes.box(.125f, .0625f, .125f, 1, .875f, .875f);
 			case EAST:
-				return VoxelShapes.create(0, .0625f, .125f, .875f, .875f, .875f);
+				return Shapes.box(0, .0625f, .125f, .875f, .875f, .875f);
 		}
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
-	AxisAlignedBB renderBB;
+	AABB renderBB;
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(renderBB==null)
-			renderBB = new AxisAlignedBB(getPos().add(-8, -8, -8), getPos().add(8, 8, 8));
+			renderBB = new AABB(getBlockPos().offset(-8, -8, -8), getBlockPos().offset(8, 8, 8));
 		return renderBB;
 	}
 
 	@Override
-	public ActionResultType screwdriverUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public InteractionResult screwdriverUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		if(isDummy())
 		{
-			TileEntity te = world.getTileEntity(getPos().down());
+			BlockEntity te = level.getBlockEntity(getBlockPos().below());
 			if(te instanceof TurretTileEntity)
 				return ((TurretTileEntity)te).screwdriverUseSide(side, player, hand, hitVec);
-			return ActionResultType.FAIL;
+			return InteractionResult.FAIL;
 		}
-		if(player.isSneaking()&&!world.isRemote)
+		if(player.isShiftKeyDown()&&!level.isClientSide)
 		{
 			redstoneControlInverted = !redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
-			markDirty();
+			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
-		return ActionResultType.SUCCESS;
+		return InteractionResult.SUCCESS;
 	}
 
 	@Override
@@ -422,11 +422,11 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		if(hasOwnerRights(player))
 			return true;
-		ChatUtils.sendServerNoSpamMessages(player, new TranslationTextComponent(Lib.CHAT_INFO+"notOwner", owner));
+		ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"notOwner", owner));
 		return false;
 	}
 
@@ -435,7 +435,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		if(!isDummy())
 			return this;
-		TileEntity te = world.getTileEntity(getPos().down());
+		BlockEntity te = level.getBlockEntity(getBlockPos().below());
 		if(te instanceof TurretTileEntity)
 			return (IInteractionObjectIE)te;
 		return null;
@@ -460,7 +460,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
 	}
@@ -476,19 +476,19 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		if(isDummy())
 		{
-			TileEntity te = world.getTileEntity(getPos().down());
+			BlockEntity te = level.getBlockEntity(getBlockPos().below());
 			if(te instanceof TurretTileEntity)
 				return ((TurretTileEntity)te).canEntityDestroy(entity);
 		}
-		if(entity instanceof PlayerEntity)
-			return hasOwnerRights((PlayerEntity)entity);
+		if(entity instanceof Player)
+			return hasOwnerRights((Player)entity);
 		return true;
 	}
 
 	@Override
 	public boolean isDummy()
 	{
-		return getBlockState().get(IEProperties.MULTIBLOCKSLAVE);
+		return getBlockState().getValue(IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Nullable
@@ -500,52 +500,52 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 		// Used to provide tile-dependant drops after breaking
 		if(tempMasterTE!=null)
 			return tempMasterTE;
-		BlockPos masterPos = getPos().down();
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		BlockPos masterPos = getBlockPos().below();
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		world.setBlockState(pos.up(), state);
-		((TurretTileEntity)world.getTileEntity(pos.up())).setDummy(true);
-		((TurretTileEntity)world.getTileEntity(pos.up())).setFacing(getFacing());
+		level.setBlockAndUpdate(worldPosition.above(), state);
+		((TurretTileEntity)level.getBlockEntity(worldPosition.above())).setDummy(true);
+		((TurretTileEntity)level.getBlockEntity(worldPosition.above())).setFacing(getFacing());
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		tempMasterTE = master();
-		if(world.getTileEntity(isDummy()?getPos().down(): getPos().up()) instanceof TurretTileEntity)
-			world.removeBlock(isDummy()?getPos().down(): getPos().up(), false);
+		if(level.getBlockEntity(isDummy()?getBlockPos().below(): getBlockPos().above()) instanceof TurretTileEntity)
+			level.removeBlock(isDummy()?getBlockPos().below(): getBlockPos().above(), false);
 	}
 
 	@Override
 	public List<ItemStack> getTileDrops(LootContext context)
 	{
-		BlockState state = context.get(LootParameters.BLOCK_STATE);
-		Entity player = context.get(LootParameters.THIS_ENTITY);
+		BlockState state = context.getParamOrNull(LootContextParams.BLOCK_STATE);
+		Entity player = context.getParamOrNull(LootContextParams.THIS_ENTITY);
 		ItemStack stack = new ItemStack(state.getBlock(), 1);
 		TurretTileEntity turret = this;
 		if(isDummy())
 		{
-			TileEntity t = world.getTileEntity(getPos().down());
+			BlockEntity t = level.getBlockEntity(getBlockPos().below());
 			if(t instanceof TurretTileEntity)
 				turret = (TurretTileEntity)t;
 			else
 				return ImmutableList.of(stack);
 		}
 
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		//Only writing values when they are different from defaults
 		if(turret.owner!=null&&(player==null||!player.getName().getString().equalsIgnoreCase(turret.owner)))
 			tag.putString("owner", turret.owner);
 		if(turret.targetList.size()!=1||!isListedName(turret.targetList, turret.owner))
 		{
-			ListNBT list = new ListNBT();
+			ListTag list = new ListTag();
 			for(String s : turret.targetList)
-				list.add(StringNBT.valueOf(s));
+				list.add(StringTag.valueOf(s));
 			tag.put("targetList", list);
 		}
 		if(turret.whitelist)
@@ -569,14 +569,14 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		if(stack.hasTag())
 		{
-			CompoundNBT tag = stack.getOrCreateTag();
+			CompoundTag tag = stack.getOrCreateTag();
 			if(tag.contains("owner", NBT.TAG_STRING))
 				this.owner = tag.getString("owner");
 			else if(placer!=null)
 				this.owner = placer.getName().getString();
 			if(tag.contains("targetList", NBT.TAG_LIST))
 			{
-				ListNBT list = tag.getList("targetList", 8);
+				ListTag list = tag.getList("targetList", 8);
 				targetList.clear();
 				for(int i = 0; i < list.size(); i++)
 					targetList.add(list.getString(i));
@@ -607,7 +607,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	{
 		if(isDummy())
 		{
-			TileEntity te = world.getTileEntity(getPos().down());
+			BlockEntity te = level.getBlockEntity(getBlockPos().below());
 			if(te instanceof TurretTileEntity)
 				return ((TurretTileEntity)te).getFluxStorage();
 		}
@@ -642,12 +642,12 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements ITick
 	public void setDummy(boolean dummy)
 	{
 		BlockState old = getBlockState();
-		BlockState newState = old.with(IEProperties.MULTIBLOCKSLAVE, dummy);
-		world.setBlockState(pos, newState);
+		BlockState newState = old.setValue(IEProperties.MULTIBLOCKSLAVE, dummy);
+		level.setBlockAndUpdate(worldPosition, newState);
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		if(isDummy())
 			return new BlockPos(0, 1, 0);

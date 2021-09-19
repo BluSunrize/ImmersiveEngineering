@@ -18,24 +18,24 @@ import blusunrize.immersiveengineering.common.gui.IESlot.BlueprintOutput;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import blusunrize.immersiveengineering.mixin.accessors.ContainerAccess;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ClickType;
-import net.minecraft.inventory.container.Slot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 
 public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntity>
 {
-	private final World world;
-	public PlayerInventory inventoryPlayer;
+	private final Level world;
+	public Inventory inventoryPlayer;
 	private BlueprintInventory inventoryBPoutput;
 	public ShaderInventory shaderInv;
 
-	public ModWorkbenchContainer(int id, PlayerInventory inventoryPlayer, ModWorkbenchTileEntity tile)
+	public ModWorkbenchContainer(int id, Inventory inventoryPlayer, ModWorkbenchTileEntity tile)
 	{
 		super(inventoryPlayer, tile, id);
 		this.world = tile.getWorldNonnull();
@@ -43,7 +43,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 		rebindSlots();
 	}
 
-	private void bindPlayerInv(PlayerInventory inventoryPlayer)
+	private void bindPlayerInv(Inventory inventoryPlayer)
 	{
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -54,12 +54,12 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 
 	public void rebindSlots()
 	{
-		this.inventorySlots.clear();
-		((ContainerAccess)this).getInventoryItemStacks().clear();
+		this.slots.clear();
+		((ContainerAccess)this).getLastSlots().clear();
 		this.addSlot(new IESlot.ModWorkbench(this, this.inv, 0, 24, 22, 1));
 		slotCount = 1;
 
-		ItemStack tool = this.getSlot(0).getStack();
+		ItemStack tool = this.getSlot(0).getItem();
 		if(tool.getItem() instanceof IUpgradeableTool)
 		{
 			tool.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
@@ -119,36 +119,36 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 
 	@Nonnull
 	@Override
-	public ItemStack transferStackInSlot(PlayerEntity player, int slot)
+	public ItemStack quickMoveStack(Player player, int slot)
 	{
 		ItemStack stack = ItemStack.EMPTY;
-		Slot slotObject = inventorySlots.get(slot);
+		Slot slotObject = slots.get(slot);
 
-		if(slotObject!=null&&slotObject.getHasStack())
+		if(slotObject!=null&&slotObject.hasItem())
 		{
-			ItemStack stackInSlot = slotObject.getStack();
+			ItemStack stackInSlot = slotObject.getItem();
 			stack = stackInSlot.copy();
 
 			if(slot < slotCount)
 			{
-				if(!this.mergeItemStack(stackInSlot, slotCount, (slotCount+36), true))
+				if(!this.moveItemStackTo(stackInSlot, slotCount, (slotCount+36), true))
 					return ItemStack.EMPTY;
 			}
 			else if(!stackInSlot.isEmpty())
 			{
 				if(stackInSlot.getItem() instanceof EngineersBlueprintItem)
 				{
-					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
+					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
 				else if(stackInSlot.getItem() instanceof IUpgradeableTool&&((IUpgradeableTool)stackInSlot.getItem()).canModify(stackInSlot))
 				{
-					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
+					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
 				else if(stackInSlot.getItem() instanceof IConfigurableTool&&((IConfigurableTool)stackInSlot.getItem()).canConfigure(stackInSlot))
 				{
-					if(!this.mergeItemStack(stackInSlot, 0, 1, true))
+					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
 						return ItemStack.EMPTY;
 				}
 				else if(slotCount > 1)
@@ -156,9 +156,9 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 					boolean b = true;
 					for(int i = 1; i < slotCount; i++)
 					{
-						Slot s = inventorySlots.get(i);
-						if(s!=null&&s.isItemValid(stackInSlot))
-							if(this.mergeItemStack(stackInSlot, i, i+1, true))
+						Slot s = slots.get(i);
+						if(s!=null&&s.mayPlace(stackInSlot))
+							if(this.moveItemStackTo(stackInSlot, i, i+1, true))
 							{
 								b = false;
 								break;
@@ -170,27 +170,27 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 			}
 
 			if(stackInSlot.getCount()==0)
-				slotObject.putStack(ItemStack.EMPTY);
+				slotObject.set(ItemStack.EMPTY);
 			else
-				slotObject.onSlotChanged();
+				slotObject.setChanged();
 
 			if(stackInSlot.getCount()==stack.getCount())
 				return ItemStack.EMPTY;
 			ItemStack remainderStack = slotObject.onTake(player, stackInSlot);
 			if(slotObject instanceof BlueprintOutput)
-				player.dropItem(remainderStack, false);
+				player.drop(remainderStack, false);
 		}
 		return stack;
 	}
 
 	@Nonnull
 	@Override
-	public ItemStack slotClick(int id, int dragType, ClickType clickType, PlayerEntity player)
+	public ItemStack clicked(int id, int dragType, ClickType clickType, Player player)
 	{
-		ItemStack ret = super.slotClick(id, dragType, clickType, player);
+		ItemStack ret = super.clicked(id, dragType, clickType, player);
 		tile.markContainingBlockForUpdate(null);
-		if(!world.isRemote)
-			detectAndSendChanges();
+		if(!world.isClientSide)
+			broadcastChanges();
 		return ret;
 	}
 }

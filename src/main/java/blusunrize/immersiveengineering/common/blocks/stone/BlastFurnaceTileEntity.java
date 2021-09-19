@@ -21,19 +21,19 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMulti
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -59,13 +59,13 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		super(IEMultiblocks.BLAST_FURNACE, IETileTypes.BLAST_FURNACE.get(), false);
 	}
 
-	protected BlastFurnaceTileEntity(IETemplateMultiblock mb, TileEntityType<? extends BlastFurnaceTileEntity> type)
+	protected BlastFurnaceTileEntity(IETemplateMultiblock mb, BlockEntityType<? extends BlastFurnaceTileEntity> type)
 	{
 		super(mb, type, false);
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed;
 	}
@@ -77,16 +77,16 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	@Override
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(!world.isRemote&&formed&&!isDummy())
+		if(!level.isClientSide&&formed&&!isDummy())
 		{
 			boolean activeBeforeTick = getIsActive();
 
@@ -176,13 +176,13 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 			if(activeBeforeTick!=activeAfterTick)
 			{
 
-				this.markDirty();
+				this.setChanged();
 				for(int x = 0; x < 3; ++x)
 					for(int y = 0; y < 3; ++y)
 						for(int z = 0; z < 3; ++z)
 						{
 							BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
-							TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+							BlockEntity te = Utils.getExistingTileEntity(level, actualPos);
 							if(te instanceof BlastFurnaceTileEntity)
 								((BlastFurnaceTileEntity)te).setActive(activeAfterTick);
 						}
@@ -196,8 +196,8 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		BlastFurnaceRecipe recipe = cachedRecipe.get();
 		if(recipe==null)
 			return null;
-		if((inventory.get(2).isEmpty()||(ItemStack.areItemsEqual(inventory.get(2), recipe.output)&&inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
-				&&(inventory.get(3).isEmpty()||(ItemStack.areItemsEqual(inventory.get(3), recipe.slag)&&inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
+		if((inventory.get(2).isEmpty()||(ItemStack.isSame(inventory.get(2), recipe.output)&&inventory.get(2).getCount()+recipe.output.getCount() <= getSlotLimit(2)))
+				&&(inventory.get(3).isEmpty()||(ItemStack.isSame(inventory.get(3), recipe.slag)&&inventory.get(3).getCount()+recipe.slag.getCount() <= getSlotLimit(3))))
 			return recipe;
 		return null;
 	}
@@ -226,17 +226,17 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 			this.formed = arg==1;
-		markDirty();
+		setChanged();
 		markContainingBlockForUpdate(null);
 		return true;
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
@@ -245,12 +245,12 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 			processMax = nbt.getInt("processMax");
 			burnTime = nbt.getInt("burnTime");
 			lastBurnTime = nbt.getInt("lastBurnTime");
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 		}
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!descPacket)
@@ -259,7 +259,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 			nbt.putInt("processMax", processMax);
 			nbt.putInt("burnTime", burnTime);
 			nbt.putInt("lastBurnTime", lastBurnTime);
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 		}
 	}
 
@@ -309,7 +309,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		return state;
 	}
 
-	public class BlastFurnaceState implements IIntArray
+	public class BlastFurnaceState implements ContainerData
 	{
 		public static final int LAST_BURN_TIME = 0;
 		public static final int BURN_TIME = 1;
@@ -377,7 +377,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 		}
 
 		@Override
-		public int size()
+		public int getCount()
 		{
 			return 4;
 		}

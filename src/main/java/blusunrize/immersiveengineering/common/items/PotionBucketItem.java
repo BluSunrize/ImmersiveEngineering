@@ -2,24 +2,24 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.util.fluids.PotionFluid;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.level.ClipContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -43,7 +43,7 @@ public class PotionBucketItem extends IEBaseItem
 {
 	public PotionBucketItem()
 	{
-		super("potion_bucket", new Properties().maxStackSize(1), ItemGroup.BREWING);
+		super("potion_bucket", new Properties().stacksTo(1), CreativeModeTab.TAB_BREWING);
 	}
 
 	public static ItemStack forPotion(Potion type)
@@ -61,9 +61,9 @@ public class PotionBucketItem extends IEBaseItem
 	}
 
 	@Override
-	public void fillItemGroup(@Nonnull ItemGroup group, @Nonnull NonNullList<ItemStack> items)
+	public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items)
 	{
-		if(!isInGroup(group))
+		if(!allowdedIn(group))
 			return;
 		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTION_TYPES.getValues());
 		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
@@ -74,45 +74,45 @@ public class PotionBucketItem extends IEBaseItem
 
 	@Nullable
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
 	{
 		return new FluidHandler(stack);
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getDisplayName(@Nonnull ItemStack stack)
+	public Component getName(@Nonnull ItemStack stack)
 	{
-		return new TranslationTextComponent(
+		return new TranslatableComponent(
 				"item.immersiveengineering.potion_bucket", getPotionName(getPotion(stack))
 		);
 	}
 
-	private static ITextComponent getPotionName(Potion potion)
+	private static Component getPotionName(Potion potion)
 	{
-		String potionKey = potion.getNamePrefixed(Items.POTION.getTranslationKey()+".effect.");
-		return new TranslationTextComponent(potionKey);
+		String potionKey = potion.getName(Items.POTION.getDescriptionId()+".effect.");
+		return new TranslatableComponent(potionKey);
 	}
 
 	@Nonnull
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(
-			@Nonnull World worldIn, @Nonnull PlayerEntity playerIn, @Nonnull Hand handIn
+	public InteractionResultHolder<ItemStack> use(
+			@Nonnull Level worldIn, @Nonnull Player playerIn, @Nonnull InteractionHand handIn
 	)
 	{
-		RayTraceResult rayTraceResult = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.NONE);
-		ItemStack stack = playerIn.getHeldItem(handIn);
-		ActionResult<ItemStack> forgeResult = ForgeEventFactory.onBucketUse(playerIn, worldIn, stack, rayTraceResult);
+		HitResult rayTraceResult = getPlayerPOVHitResult(worldIn, playerIn, ClipContext.Fluid.NONE);
+		ItemStack stack = playerIn.getItemInHand(handIn);
+		InteractionResultHolder<ItemStack> forgeResult = ForgeEventFactory.onBucketUse(playerIn, worldIn, stack, rayTraceResult);
 		if(forgeResult!=null)
 			return forgeResult;
 		else
-			return ActionResult.resultPass(stack);
+			return InteractionResultHolder.pass(stack);
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(
-			@Nonnull ItemStack stack, @Nullable World worldIn, @Nonnull List<ITextComponent> tooltip, @Nonnull ITooltipFlag flagIn
+	public void appendHoverText(
+			@Nonnull ItemStack stack, @Nullable Level worldIn, @Nonnull List<Component> tooltip, @Nonnull TooltipFlag flagIn
 	)
 	{
 		PotionUtils.addPotionTooltip(stack, tooltip, 1.0F);

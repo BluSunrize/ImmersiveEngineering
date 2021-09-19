@@ -17,25 +17,25 @@ import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags.Items;
@@ -59,41 +59,41 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 
 	public DrillheadItem(DrillHeadPerm perms)
 	{
-		super("drillhead_"+perms.name, new Properties().maxStackSize(1));
+		super("drillhead_"+perms.name, new Properties().stacksTo(1));
 		this.perms = perms;
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth));
-		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))));
-		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drillhead.speed", Utils.formatDouble(getMiningSpeed(stack), "0.###")));
-		list.add(new TranslationTextComponent(Lib.DESC_FLAVOUR+"drillhead.damage", Utils.formatDouble(getAttackDamage(stack), "0.###")));
+		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth));
+		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"drillhead.level", Utils.getHarvestLevelName(getMiningLevel(stack))));
+		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"drillhead.speed", Utils.formatDouble(getMiningSpeed(stack), "0.###")));
+		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"drillhead.damage", Utils.formatDouble(getAttackDamage(stack), "0.###")));
 
 		int maxDmg = getMaximumHeadDamage(stack);
 		int dmg = maxDmg-getHeadDamage(stack);
 		float quote = dmg/(float)maxDmg;
-		String status = ""+(quote < .1?TextFormatting.RED: quote < .3?TextFormatting.GOLD: quote < .6?TextFormatting.YELLOW: TextFormatting.GREEN);
+		String status = ""+(quote < .1?ChatFormatting.RED: quote < .3?ChatFormatting.GOLD: quote < .6?ChatFormatting.YELLOW: ChatFormatting.GREEN);
 		String s = status+(getMaximumHeadDamage(stack)-getHeadDamage(stack))+"/"+getMaximumHeadDamage(stack);
-		list.add(new TranslationTextComponent(Lib.DESC_INFO+"durability", s));
+		list.add(new TranslatableComponent(Lib.DESC_INFO+"durability", s));
 	}
 
 	@Override
-	public boolean getIsRepairable(ItemStack stack, ItemStack material)
+	public boolean isValidRepairItem(ItemStack stack, ItemStack material)
 	{
 		return perms.repairMaterial.contains(material.getItem());
 	}
 
 	@Override
-	public boolean beforeBlockbreak(ItemStack drill, ItemStack head, PlayerEntity player)
+	public boolean beforeBlockbreak(ItemStack drill, ItemStack head, Player player)
 	{
 		return false;
 	}
 
 	@Override
-	public void afterBlockbreak(ItemStack drill, ItemStack head, PlayerEntity player)
+	public void afterBlockbreak(ItemStack drill, ItemStack head, Player player)
 	{
 	}
 
@@ -120,7 +120,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	{
 		if(head.hasTag())
 		{
-			CompoundNBT nbt = head.getOrCreateTag();
+			CompoundTag nbt = head.getOrCreateTag();
 			if(nbt.contains(DAMAGE_KEY_OLD, NBT.TAG_INT))
 				return nbt.getInt(DAMAGE_KEY_OLD);
 			else
@@ -144,7 +144,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 
 	public static void setHeadDamage(ItemStack head, int totalDamage)
 	{
-		CompoundNBT nbt = head.getOrCreateTag();
+		CompoundTag nbt = head.getOrCreateTag();
 		nbt.remove(DAMAGE_KEY_OLD);
 		nbt.putInt(DAMAGE_KEY, totalDamage);
 	}
@@ -173,7 +173,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		public static final Set<DrillHeadPerm> ALL_PERMS = new HashSet<>();
 
 		final String name;
-		final ITag<Item> repairMaterial;
+		final Tag<Item> repairMaterial;
 		final int drillSize;
 		final int drillDepth;
 		final int drillLevel;
@@ -184,7 +184,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		@OnlyIn(Dist.CLIENT)
 		public TextureAtlasSprite sprite;
 
-		public DrillHeadPerm(String name, ITag<Item> repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
+		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, int drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
 		{
 			this.name = name;
 			this.repairMaterial = repairMaterial;
@@ -201,49 +201,49 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	}
 
 	@Override
-	public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, World world, PlayerEntity player, RayTraceResult rtr)
+	public ImmutableList<BlockPos> getExtraBlocksDug(ItemStack head, Level world, Player player, HitResult rtr)
 	{
-		if(!(rtr instanceof BlockRayTraceResult))
+		if(!(rtr instanceof BlockHitResult))
 			return ImmutableList.of();
-		BlockRayTraceResult brtr = (BlockRayTraceResult)rtr;
-		Direction side = brtr.getFace();
+		BlockHitResult brtr = (BlockHitResult)rtr;
+		Direction side = brtr.getDirection();
 		int diameter = perms.drillSize;
 		int depth = perms.drillDepth;
 
-		BlockPos startPos = brtr.getPos();
+		BlockPos startPos = brtr.getBlockPos();
 		BlockState state = world.getBlockState(startPos);
 		Block block = state.getBlock();
 		float maxHardness = 1;
 		if(block!=null&&!block.isAir(state, world, startPos))
-			maxHardness = state.getPlayerRelativeBlockHardness(player, world, startPos)*0.6F;
+			maxHardness = state.getDestroyProgress(player, world, startPos)*0.6F;
 		if(maxHardness < 0)
 			maxHardness = 0;
 
 		if(diameter%2==0)//even numbers
 		{
-			float hx = (float)brtr.getHitVec().x-brtr.getPos().getX();
-			float hy = (float)brtr.getHitVec().y-brtr.getPos().getY();
-			float hz = (float)brtr.getHitVec().z-brtr.getPos().getZ();
+			float hx = (float)brtr.getLocation().x-brtr.getBlockPos().getX();
+			float hy = (float)brtr.getLocation().y-brtr.getBlockPos().getY();
+			float hz = (float)brtr.getLocation().z-brtr.getBlockPos().getZ();
 			if((side.getAxis()==Axis.Y&&hx < .5)||(side.getAxis()==Axis.Z&&hx < .5))
-				startPos = startPos.add(-diameter/2, 0, 0);
+				startPos = startPos.offset(-diameter/2, 0, 0);
 			if(side.getAxis()!=Axis.Y&&hy < .5)
-				startPos = startPos.add(0, -diameter/2, 0);
+				startPos = startPos.offset(0, -diameter/2, 0);
 			if((side.getAxis()==Axis.Y&&hz < .5)||(side.getAxis()==Axis.X&&hz < .5))
-				startPos = startPos.add(0, 0, -diameter/2);
+				startPos = startPos.offset(0, 0, -diameter/2);
 		}
 		else//odd numbers
-			startPos = startPos.add(-(side.getAxis()==Axis.X?0: diameter/2), -(side.getAxis()==Axis.Y?0: diameter/2), -(side.getAxis()==Axis.Z?0: diameter/2));
+			startPos = startPos.offset(-(side.getAxis()==Axis.X?0: diameter/2), -(side.getAxis()==Axis.Y?0: diameter/2), -(side.getAxis()==Axis.Z?0: diameter/2));
 		Builder<BlockPos> b = ImmutableList.builder();
 		for(int dd = 0; dd < depth; dd++)
 			for(int dw = 0; dw < diameter; dw++)
 				for(int dh = 0; dh < diameter; dh++)
 				{
-					BlockPos pos = startPos.add((side.getAxis()==Axis.X?dd: dw), (side.getAxis()==Axis.Y?dd: dh), (side.getAxis()==Axis.Y?dh: side.getAxis()==Axis.X?dw: dd));
-					if(pos.equals(brtr.getPos()))
+					BlockPos pos = startPos.offset((side.getAxis()==Axis.X?dd: dw), (side.getAxis()==Axis.Y?dd: dh), (side.getAxis()==Axis.Y?dh: side.getAxis()==Axis.X?dw: dd));
+					if(pos.equals(brtr.getBlockPos()))
 						continue;
 					state = world.getBlockState(pos);
 					block = state.getBlock();
-					float h = state.getPlayerRelativeBlockHardness(player, world, pos);
+					float h = state.getDestroyProgress(player, world, pos);
 					boolean canHarvest = block.canHarvestBlock(world.getBlockState(pos), world, pos, player);
 					boolean drillMat = ((DrillItem)Tools.drill).isEffective(ItemStack.EMPTY, state.getMaterial());
 					boolean hardness = h > maxHardness;

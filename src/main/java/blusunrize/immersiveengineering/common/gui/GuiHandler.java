@@ -23,17 +23,17 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import com.google.common.base.Preconditions;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.ContainerType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -49,10 +49,10 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 @EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class GuiHandler
 {
-	private static final Map<Class<? extends TileEntity>, TileContainer<?, ?>> TILE_CONTAINERS = new HashMap<>();
+	private static final Map<Class<? extends BlockEntity>, TileContainer<?, ?>> TILE_CONTAINERS = new HashMap<>();
 	private static final Map<Class<? extends Item>, ItemContainer<?>> ITEM_CONTAINERS = new HashMap<>();
 	private static final Map<Class<? extends Entity>, EntityContainer<?, ?>> ENTITY_CONTAINERS = new HashMap<>();
-	private static final Map<ResourceLocation, ContainerType<?>> ALL_TYPES = new HashMap<>();
+	private static final Map<ResourceLocation, MenuType<?>> ALL_TYPES = new HashMap<>();
 
 	public static void commonInit()
 	{
@@ -87,20 +87,20 @@ public class GuiHandler
 
 
 		register(CrateMinecartEntity.class, Lib.GUIID_CartCrate,
-				(EntityContainerConstructor<CrateMinecartEntity, Container>)(windowId, inventoryPlayer, entity)
+				(EntityContainerConstructor<CrateMinecartEntity, AbstractContainerMenu>)(windowId, inventoryPlayer, entity)
 						-> new CrateEntityContainer(windowId, inventoryPlayer, entity.getContainedTileEntity(), entity));
 		register(ReinforcedCrateMinecartEntity.class, Lib.GUIID_CartReinforcedCrate,
-				(EntityContainerConstructor<CrateMinecartEntity, Container>)(windowId, inventoryPlayer, entity)
+				(EntityContainerConstructor<CrateMinecartEntity, AbstractContainerMenu>)(windowId, inventoryPlayer, entity)
 						-> new CrateEntityContainer(windowId, inventoryPlayer, entity.getContainedTileEntity(), entity));
 	}
 
-	public static <T extends TileEntity, C extends IEBaseContainer<? super T>>
+	public static <T extends BlockEntity, C extends IEBaseContainer<? super T>>
 	void register(Class<T> tileClass, ResourceLocation name, TileContainerConstructor<T, C> container)
 	{
-		ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
-			World world = ImmersiveEngineering.proxy.getClientWorld();
+		MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
+			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			BlockPos pos = data.readBlockPos();
-			TileEntity te = world.getTileEntity(pos);
+			BlockEntity te = world.getBlockEntity(pos);
 			return container.construct(windowId, inv, (T)te);
 		});
 		type.setRegistryName(name);
@@ -108,21 +108,21 @@ public class GuiHandler
 		ALL_TYPES.put(name, type);
 	}
 
-	public static void useSameContainerTile(Class<? extends TileEntity> existing, Class<? extends TileEntity> toAdd)
+	public static void useSameContainerTile(Class<? extends BlockEntity> existing, Class<? extends BlockEntity> toAdd)
 	{
 		Preconditions.checkArgument(TILE_CONTAINERS.containsKey(existing));
 		TILE_CONTAINERS.put(toAdd, TILE_CONTAINERS.get(existing));
 	}
 
-	public static <C extends Container>
+	public static <C extends AbstractContainerMenu>
 	void register(Class<? extends Item> itemClass, ResourceLocation name,
 				  ItemContainerConstructor<C> container)
 	{
-		ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
-			World world = ImmersiveEngineering.proxy.getClientWorld();
+		MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
+			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			int slotOrdinal = data.readInt();
-			EquipmentSlotType slot = EquipmentSlotType.values()[slotOrdinal];
-			ItemStack stack = ImmersiveEngineering.proxy.getClientPlayer().getItemStackFromSlot(slot);
+			EquipmentSlot slot = EquipmentSlot.values()[slotOrdinal];
+			ItemStack stack = ImmersiveEngineering.proxy.getClientPlayer().getItemBySlot(slot);
 			return container.construct(windowId, inv, world, slot, stack);
 		});
 		type.setRegistryName(name);
@@ -136,14 +136,14 @@ public class GuiHandler
 		ITEM_CONTAINERS.put(toAdd, ITEM_CONTAINERS.get(existing));
 	}
 
-	public static <E extends Entity, C extends Container>
+	public static <E extends Entity, C extends AbstractContainerMenu>
 	void register(Class<? extends Entity> entityClass, ResourceLocation name,
 				  EntityContainerConstructor<E, C> container)
 	{
-		ContainerType<C> type = new ContainerType<>((IContainerFactory<C>)(windowId, inv, data) -> {
-			World world = ImmersiveEngineering.proxy.getClientWorld();
+		MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
+			Level world = ImmersiveEngineering.proxy.getClientWorld();
 			int entityId = data.readInt();
-			Entity entity = ImmersiveEngineering.proxy.getClientWorld().getEntityByID(entityId);
+			Entity entity = ImmersiveEngineering.proxy.getClientWorld().getEntity(entityId);
 			return container.construct(windowId, inv, (E)entity);
 		});
 		type.setRegistryName(name);
@@ -151,43 +151,43 @@ public class GuiHandler
 		ALL_TYPES.put(name, type);
 	}
 
-	public static <T extends TileEntity> Container createContainer(PlayerInventory inv, T te, int id)
+	public static <T extends BlockEntity> AbstractContainerMenu createContainer(Inventory inv, T te, int id)
 	{
 		return ((TileContainer<T, ?>)TILE_CONTAINERS.get(te.getClass())).factory.construct(id, inv, te);
 	}
 
-	public static Container createContainer(PlayerInventory inv, World w, EquipmentSlotType slot, ItemStack stack, int id)
+	public static AbstractContainerMenu createContainer(Inventory inv, Level w, EquipmentSlot slot, ItemStack stack, int id)
 	{
 		return ITEM_CONTAINERS.get(stack.getItem().getClass()).factory.construct(id, inv, w, slot, stack);
 	}
 
-	public static <E extends Entity> Container createContainer(PlayerInventory inv, E entity, int id)
+	public static <E extends Entity> AbstractContainerMenu createContainer(Inventory inv, E entity, int id)
 	{
 		return ((EntityContainer<E, ?>)ENTITY_CONTAINERS.get(entity.getClass())).factory.construct(id, inv, entity);
 	}
 
-	public static ContainerType<?> getContainerTypeFor(TileEntity te)
+	public static MenuType<?> getContainerTypeFor(BlockEntity te)
 	{
 		return TILE_CONTAINERS.get(te.getClass()).type;
 	}
 
-	public static ContainerType<?> getContainerTypeFor(ItemStack stack)
+	public static MenuType<?> getContainerTypeFor(ItemStack stack)
 	{
 		return ITEM_CONTAINERS.get(stack.getItem().getClass()).type;
 	}
 
-	public static ContainerType<?> getContainerTypeFor(Entity entity)
+	public static MenuType<?> getContainerTypeFor(Entity entity)
 	{
 		return ENTITY_CONTAINERS.get(entity.getClass()).type;
 	}
 
-	public static ContainerType<?> getContainerType(ResourceLocation name)
+	public static MenuType<?> getContainerType(ResourceLocation name)
 	{
 		return ALL_TYPES.get(name);
 	}
 
 	@SubscribeEvent
-	public static void registerContainers(RegistryEvent.Register<ContainerType<?>> evt)
+	public static void registerContainers(RegistryEvent.Register<MenuType<?>> evt)
 	{
 		for(TileContainer<?, ?> tc : new HashSet<>(TILE_CONTAINERS.values()))
 			evt.getRegistry().register(tc.type);
@@ -197,51 +197,51 @@ public class GuiHandler
 			evt.getRegistry().register(ec.type);
 	}
 
-	public interface ItemContainerConstructor<C extends Container>
+	public interface ItemContainerConstructor<C extends AbstractContainerMenu>
 	{
-		C construct(int windowId, PlayerInventory inventoryPlayer, World world, EquipmentSlotType slot, ItemStack stack);
+		C construct(int windowId, Inventory inventoryPlayer, Level world, EquipmentSlot slot, ItemStack stack);
 	}
 
-	public interface TileContainerConstructor<T extends TileEntity, C extends IEBaseContainer<? super T>>
+	public interface TileContainerConstructor<T extends BlockEntity, C extends IEBaseContainer<? super T>>
 	{
-		C construct(int windowId, PlayerInventory inventoryPlayer, T te);
+		C construct(int windowId, Inventory inventoryPlayer, T te);
 	}
 
-	public interface EntityContainerConstructor<E extends Entity, C extends Container>
+	public interface EntityContainerConstructor<E extends Entity, C extends AbstractContainerMenu>
 	{
-		C construct(int windowId, PlayerInventory inventoryPlayer, E entity);
+		C construct(int windowId, Inventory inventoryPlayer, E entity);
 	}
 
-	private static class TileContainer<T extends TileEntity, C extends IEBaseContainer<? super T>>
+	private static class TileContainer<T extends BlockEntity, C extends IEBaseContainer<? super T>>
 	{
-		final ContainerType<C> type;
+		final MenuType<C> type;
 		final TileContainerConstructor<T, C> factory;
 
-		private TileContainer(ContainerType<C> type, TileContainerConstructor<T, C> factory)
+		private TileContainer(MenuType<C> type, TileContainerConstructor<T, C> factory)
 		{
 			this.type = type;
 			this.factory = factory;
 		}
 	}
 
-	private static class ItemContainer<C extends Container>
+	private static class ItemContainer<C extends AbstractContainerMenu>
 	{
-		final ContainerType<C> type;
+		final MenuType<C> type;
 		final ItemContainerConstructor<C> factory;
 
-		private ItemContainer(ContainerType<C> type, ItemContainerConstructor<C> factory)
+		private ItemContainer(MenuType<C> type, ItemContainerConstructor<C> factory)
 		{
 			this.type = type;
 			this.factory = factory;
 		}
 	}
 
-	private static class EntityContainer<E extends Entity, C extends Container>
+	private static class EntityContainer<E extends Entity, C extends AbstractContainerMenu>
 	{
-		final ContainerType<C> type;
+		final MenuType<C> type;
 		final EntityContainerConstructor<E, C> factory;
 
-		private EntityContainer(ContainerType<C> type, EntityContainerConstructor<E, C> factory)
+		private EntityContainer(MenuType<C> type, EntityContainerConstructor<E, C> factory)
 		{
 			this.type = type;
 			this.factory = factory;

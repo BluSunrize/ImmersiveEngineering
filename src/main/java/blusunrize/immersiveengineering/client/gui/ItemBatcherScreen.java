@@ -18,16 +18,16 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntit
 import blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherTileEntity.BatchMode;
 import blusunrize.immersiveengineering.common.gui.ItemBatcherContainer;
 import blusunrize.immersiveengineering.common.network.MessageTileSync;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import java.util.ArrayList;
@@ -42,25 +42,25 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	private GuiButtonState<BatchMode> buttonBatchMode;
 	private final GuiButtonDyeColor[] buttonsRedstone = new GuiButtonDyeColor[9];
 
-	public ItemBatcherScreen(ItemBatcherContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public ItemBatcherScreen(ItemBatcherContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
 		this.tile = container.tile;
-		this.ySize = 199;
+		this.imageHeight = 199;
 	}
 
 	@Override
 	public void init()
 	{
 		super.init();
-		mc().keyboardListener.enableRepeatEvents(true);
+		mc().keyboardHandler.setSendRepeatsToGui(true);
 
 		this.buttons.clear();
-		buttonBatchMode = new GuiButtonState<>(guiLeft+7, guiTop+92, 18, 18, StringTextComponent.EMPTY,
+		buttonBatchMode = new GuiButtonState<>(leftPos+7, topPos+92, 18, 18, TextComponent.EMPTY,
 				ItemBatcherTileEntity.BatchMode.values(), tile.batchMode.ordinal(), TEXTURE,
 				176, 36, 1,
 				btn -> {
-					CompoundNBT tag = new CompoundNBT();
+					CompoundTag tag = new CompoundTag();
 					tile.batchMode = btn.getNextState();
 					tag.putByte("batchMode", (byte)tile.batchMode.ordinal());
 					handleButtonClick(tag);
@@ -70,9 +70,9 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 		for(int slot = 0; slot < 9; slot++)
 		{
 			int finalSlot = slot;
-			buttonsRedstone[slot] = new GuiButtonDyeColor(guiLeft+12+slot*18, guiTop+77, "", tile.redstoneColors.get(slot),
+			buttonsRedstone[slot] = new GuiButtonDyeColor(leftPos+12+slot*18, topPos+77, "", tile.redstoneColors.get(slot),
 					btn -> {
-						CompoundNBT tag = new CompoundNBT();
+						CompoundTag tag = new CompoundTag();
 						tile.redstoneColors.set(finalSlot, btn.getNextState());
 						tag.putInt("redstoneColor_slot", finalSlot);
 						tag.putInt("redstoneColor_val", tile.redstoneColors.get(finalSlot).getId());
@@ -83,7 +83,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 
 	}
 
-	protected void handleButtonClick(CompoundNBT nbt)
+	protected void handleButtonClick(CompoundTag nbt)
 	{
 		if(!nbt.isEmpty())
 		{
@@ -93,37 +93,37 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY)
+	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
-		TileEntity te = container.tile;
-		this.font.drawString(transform, I18n.format("block.immersiveengineering.item_batcher"), 8, 6, 0x190b06);
+		BlockEntity te = menu.tile;
+		this.font.draw(transform, I18n.get("block.immersiveengineering.item_batcher"), 8, 6, 0x190b06);
 
-		this.font.drawString(transform, I18n.format(Lib.GUI_CONFIG+"item_batcher.filter"), 8, 20, 0xE0E0E0);
-		this.font.drawString(transform, I18n.format(Lib.GUI_CONFIG+"item_batcher.buffer"), 8, 49, 0xE0E0E0);
+		this.font.draw(transform, I18n.get(Lib.GUI_CONFIG+"item_batcher.filter"), 8, 20, 0xE0E0E0);
+		this.font.draw(transform, I18n.get(Lib.GUI_CONFIG+"item_batcher.buffer"), 8, 49, 0xE0E0E0);
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	public void render(PoseStack transform, int mx, int my, float partial)
 	{
 		super.render(transform, mx, my, partial);
-		ArrayList<ITextComponent> tooltip = new ArrayList<>();
+		ArrayList<Component> tooltip = new ArrayList<>();
 
 		if(buttonBatchMode.isHovered())
 		{
-			tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode"));
+			tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"item_batcher.batchmode"));
 			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.batchmode."+buttonBatchMode.getState().name()),
-					TextFormatting.GRAY
+					new TranslatableComponent(Lib.GUI_CONFIG+"item_batcher.batchmode."+buttonBatchMode.getState().name()),
+					ChatFormatting.GRAY
 			));
 		}
 
 		for(GuiButtonDyeColor b : buttonsRedstone)
 			if(b.isHovered())
 			{
-				tooltip.add(new TranslationTextComponent(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
+				tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
 				tooltip.add(TextUtils.applyFormat(
-						new TranslationTextComponent("color.minecraft."+b.getState().getTranslationKey()),
-						TextFormatting.GRAY
+						new TranslatableComponent("color.minecraft."+b.getState().getName()),
+						ChatFormatting.GRAY
 				));
 			}
 
@@ -132,10 +132,10 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void renderBg(PoseStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture(TEXTURE);
 		// Background
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 }

@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.data.resources;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.item.Items;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.ItemLike;
 
 /**
  * An Enum of  non-metal ores from Vanilla, IE and other mods. Used for generating Crusher recipes
@@ -38,15 +38,15 @@ public enum RecipeWoods
 
 	private final String name;
 	private final boolean produceSawdust;
-	private final IItemProvider plank;
-	private final IItemProvider log;
-	private final IItemProvider stripped;
-	private final IItemProvider wood;
-	private final IItemProvider door;
-	private final IItemProvider stairs;
+	private final ItemLike plank;
+	private final ItemLike log;
+	private final ItemLike stripped;
+	private final ItemLike wood;
+	private final ItemLike door;
+	private final ItemLike stairs;
 
-	RecipeWoods(String name, boolean produceSawdust, IItemProvider plank, IItemProvider log, IItemProvider stripped,
-				IItemProvider wood, IItemProvider door, IItemProvider stairs)
+	RecipeWoods(String name, boolean produceSawdust, ItemLike plank, ItemLike log, ItemLike stripped,
+				ItemLike wood, ItemLike door, ItemLike stairs)
 	{
 		Preconditions.checkNotNull(name);
 		Preconditions.checkNotNull(plank);
@@ -70,32 +70,32 @@ public enum RecipeWoods
 		return produceSawdust;
 	}
 
-	public IItemProvider getLog()
+	public ItemLike getLog()
 	{
 		return log;
 	}
 
-	public IItemProvider getStripped()
+	public ItemLike getStripped()
 	{
 		return stripped;
 	}
 
-	public IItemProvider getPlank()
+	public ItemLike getPlank()
 	{
 		return plank;
 	}
 
-	public IItemProvider getWood()
+	public ItemLike getWood()
 	{
 		return wood;
 	}
 
-	public IItemProvider getDoor()
+	public ItemLike getDoor()
 	{
 		return door;
 	}
 
-	public IItemProvider getStairs()
+	public ItemLike getStairs()
 	{
 		return stairs;
 	}

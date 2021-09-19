@@ -11,41 +11,40 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.state.Property;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.world.IBlockReader;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.material.Material;
 import java.util.function.Supplier;
 
 public class MetalMultiblockBlock<T extends MultiblockPartTileEntity<T>> extends IEMultiblockBlock
 {
-	private final Supplier<TileEntityType<T>> tileType;
+	private final Supplier<BlockEntityType<T>> tileType;
 
-	public MetalMultiblockBlock(String name, Supplier<TileEntityType<T>> te, Property<?>... additionalProperties)
+	public MetalMultiblockBlock(String name, Supplier<BlockEntityType<T>> te, Property<?>... additionalProperties)
 	{
-		super(name, Block.Properties.create(Material.IRON).sound(SoundType.METAL).hardnessAndResistance(3, 15).notSolid());
+		super(name, Block.Properties.of(Material.METAL).sound(SoundType.METAL).strength(3, 15).noOcclusion());
 		tileType = te;
 		lightOpacity = 0;
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.MIRRORED);
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
+	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
 	{
 		return tileType.get().create();
 	}

@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.*;
@@ -27,7 +27,7 @@ import java.util.*;
  */
 public class MetalPressRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<MetalPressRecipe> TYPE;
+	public static RecipeType<MetalPressRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
 
 	public IngredientWithSize input;
@@ -43,7 +43,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 		setTimeAndEnergy(60, energy);
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
-		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
+		this.outputList = NonNullList.of(ItemStack.EMPTY, this.output);
 	}
 
 	@Override
@@ -58,12 +58,12 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public boolean matches(ItemStack mold, ItemStack input, World world)
+	public boolean matches(ItemStack mold, ItemStack input, Level world)
 	{
 		return this.input.test(input);
 	}
 
-	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input, World world)
+	public MetalPressRecipe getActualRecipe(ItemStack mold, ItemStack input, Level world)
 	{
 		return this;
 	}
@@ -78,7 +78,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 		recipeList.values().forEach(recipe -> recipesByMold.put(recipe.mold, recipe));
 	}
 
-	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, World world)
+	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, Level world)
 	{
 		if(mold.isEmpty()||input.isEmpty())
 			return null;
@@ -100,7 +100,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 			while(it.hasNext())
 			{
 				MetalPressRecipe ir = it.next();
-				if(ItemStack.areItemsEqual(ir.output, output))
+				if(ItemStack.isSame(ir.output, output))
 				{
 					list.add(ir);
 					it.remove();

@@ -11,19 +11,12 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
-import mcjty.theoneprobe.api.IProbeConfig;
-import mcjty.theoneprobe.api.IProbeConfigProvider;
-import mcjty.theoneprobe.api.IProbeHitData;
-import mcjty.theoneprobe.api.IProbeHitEntityData;
-import mcjty.theoneprobe.api.IProbeInfo;
-import mcjty.theoneprobe.api.IProbeInfoProvider;
-import mcjty.theoneprobe.api.NumberFormat;
-import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
+import mcjty.theoneprobe.api.*;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * @author Robustprogram - 26.1.2020
@@ -38,10 +31,10 @@ public class EnergyInfoProvider implements IProbeInfoProvider, IProbeConfigProvi
 	}
 
 	@Override
-	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
+	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		TileEntity tileEntity = world.getTileEntity(data.getPos());
+		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
 		int cur = 0;
 		int max = 0;
 		if (tileEntity instanceof IFluxReceiver)
@@ -67,16 +60,16 @@ public class EnergyInfoProvider implements IProbeInfoProvider, IProbeConfigProvi
 	}
 
 	@Override
-	public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world, Entity entity,
+	public void getProbeConfig(IProbeConfig config, Player player, Level world, Entity entity,
 		IProbeHitEntityData data)
 	{
 	}
 
 	@Override
-	public void getProbeConfig(IProbeConfig config, PlayerEntity player, World world,
+	public void getProbeConfig(IProbeConfig config, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		TileEntity tileEntity = world.getTileEntity(data.getPos());
+		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
 		if(tileEntity instanceof IFluxReceiver||tileEntity instanceof IFluxProvider)
 		{
 			config.setRFMode(0);				

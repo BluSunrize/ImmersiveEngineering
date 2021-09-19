@@ -20,11 +20,10 @@ import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,7 +48,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 
 	@Nullable
 	@Override
-	public IRecipeTransferError transferRecipe(@Nonnull AssemblerContainer container, @Nonnull IRecipeLayout recipeLayout, @Nonnull PlayerEntity player, boolean maxTransfer, boolean doTransfer)
+	public IRecipeTransferError transferRecipe(@Nonnull AssemblerContainer container, @Nonnull IRecipeLayout recipeLayout, @Nonnull Player player, boolean maxTransfer, boolean doTransfer)
 	{
 		for(int i = 0; i < 3; i++)
 			if(container.tile.patterns[i].recipe==null)
@@ -76,6 +75,6 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 				}
 				return null;
 			}
-		return this.transferHandlerHelper.createUserErrorWithTooltip(I18n.format(Lib.GUI+"assembler.nospace"));
+		return this.transferHandlerHelper.createUserErrorWithTooltip(I18n.get(Lib.GUI+"assembler.nospace"));
 	}
 }

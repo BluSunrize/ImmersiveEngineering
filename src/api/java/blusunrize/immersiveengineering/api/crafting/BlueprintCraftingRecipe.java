@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeType;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
-	public static IRecipeType<BlueprintCraftingRecipe> TYPE;
+	public static RecipeType<BlueprintCraftingRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
 	@Nonnull
@@ -54,7 +54,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		this.inputs = inputs;
 
 		setInputListWithSizes(Lists.newArrayList(this.inputs));
-		this.outputList = NonNullList.from(ItemStack.EMPTY, this.output);
+		this.outputList = NonNullList.of(ItemStack.EMPTY, this.output);
 
 		//Time and energy values are for the automatic workbench
 		setTimeAndEnergy(180, 23040);

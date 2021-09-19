@@ -10,22 +10,22 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Cloth;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.IFormattableTextComponent;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 
 public class BlockItemBalloon extends BlockItemIE
 {
@@ -35,66 +35,66 @@ public class BlockItemBalloon extends BlockItemIE
 	}
 
 	@Override
-	public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand hand)
+	public InteractionResultHolder<ItemStack> use(Level worldIn, Player playerIn, InteractionHand hand)
 	{
-		ItemStack itemStackIn = playerIn.getHeldItem(hand);
-		if(playerIn.isSneaking())
+		ItemStack itemStackIn = playerIn.getItemInHand(hand);
+		if(playerIn.isShiftKeyDown())
 			increaseOffset(itemStackIn);
 		else
 		{
-			Vector3d pos = playerIn.getPositionVec().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookVec());
+			Vec3 pos = playerIn.position().add(0, playerIn.getEyeHeight(), 0).add(playerIn.getLookAngle());
 			BlockPos bPos = new BlockPos(pos);
 			int offset = getOffset(itemStackIn);
-			bPos = bPos.up(offset);
-			if(worldIn.isAirBlock(bPos))
+			bPos = bPos.above(offset);
+			if(worldIn.isEmptyBlock(bPos))
 			{
-				if(!worldIn.isRemote)
+				if(!worldIn.isClientSide)
 				{
-					worldIn.setBlockState(bPos, Cloth.balloon.getDefaultState());
+					worldIn.setBlockAndUpdate(bPos, Cloth.balloon.defaultBlockState());
 					itemStackIn.shrink(1);
 					if(itemStackIn.getCount() <= 0)
-						playerIn.setHeldItem(hand, ItemStack.EMPTY);
+						playerIn.setItemInHand(hand, ItemStack.EMPTY);
 				}
-				return new ActionResult<>(ActionResultType.SUCCESS, itemStackIn);
+				return new InteractionResultHolder<>(InteractionResult.SUCCESS, itemStackIn);
 			}
 		}
-		return new ActionResult<>(ActionResultType.PASS, itemStackIn);
+		return new InteractionResultHolder<>(InteractionResult.PASS, itemStackIn);
 	}
 
 	@Override
-	public ActionResultType onItemUse(ItemUseContext context)
+	public InteractionResult useOn(UseOnContext context)
 	{
-		PlayerEntity player = context.getPlayer();
-		if(player!=null&&player.isSneaking())
+		Player player = context.getPlayer();
+		if(player!=null&&player.isShiftKeyDown())
 		{
-			ItemStack stack = player.getHeldItem(context.getHand());
+			ItemStack stack = player.getItemInHand(context.getHand());
 			increaseOffset(stack);
-			return ActionResultType.SUCCESS;
+			return InteractionResult.SUCCESS;
 		}
-		return super.onItemUse(context);
+		return super.useOn(context);
 	}
 
 	@Override
-	protected boolean placeBlock(BlockItemUseContext context, BlockState newState)
+	protected boolean placeBlock(BlockPlaceContext context, BlockState newState)
 	{
-		int offset = getOffset(context.getItem());
-		context = BlockItemUseContext.func_221536_a(context, context.getPos().up(offset), context.getFace());
+		int offset = getOffset(context.getItemInHand());
+		context = BlockPlaceContext.at(context, context.getClickedPos().above(offset), context.getClickedFace());
 		return super.placeBlock(context, newState);
 	}
 
 	@Override
-	public ITextComponent getDisplayName(ItemStack stack)
+	public Component getName(ItemStack stack)
 	{
-		IFormattableTextComponent ret = super.getDisplayName(stack).deepCopy();
-		CompoundNBT nbt = stack.getOrCreateTag();
+		MutableComponent ret = super.getName(stack).copy();
+		CompoundTag nbt = stack.getOrCreateTag();
 		if(nbt.getByte("offset")!=0)
-			ret.appendString(" (+"+nbt.getByte("offset")+")");
+			ret.append(" (+"+nbt.getByte("offset")+")");
 		return ret;
 	}
 
 	private void increaseOffset(ItemStack s)
 	{
-		CompoundNBT tag = s.getOrCreateTag();
+		CompoundTag tag = s.getOrCreateTag();
 		tag.putByte("offset", (byte)((getOffset(s)+1)%5));
 	}
 

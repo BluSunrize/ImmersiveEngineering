@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.client.renderer.model.BakedQuad;
-import net.minecraft.client.renderer.model.IBakedModel;
-import net.minecraft.util.Direction;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -20,7 +20,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Random;
 
-public abstract class BakedIEModel implements IBakedModel
+public abstract class BakedIEModel implements BakedModel
 {
 	@Nonnull
 	@Override
@@ -34,7 +34,7 @@ public abstract class BakedIEModel implements IBakedModel
 
 	//TODO isSideLit (Figure out what needs this set)
 	@Override
-	public boolean isSideLit()
+	public boolean usesBlockLight()
 	{
 		return true;
 	}

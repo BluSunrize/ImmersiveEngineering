@@ -10,10 +10,11 @@ package blusunrize.immersiveengineering.client.models.split;
 
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.renderer.model.*;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.client.resources.model.*;
+import net.minecraft.core.Vec3i;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -26,11 +27,11 @@ import java.util.function.Function;
 public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 {
 	private final IModelGeometry<?> baseModel;
-	private final Set<Vector3i> parts;
+	private final Set<Vec3i> parts;
 	private final boolean dynamic;
-	private final Vector3i size;
+	private final Vec3i size;
 
-	public UnbakedSplitModel(IModelGeometry<?> baseModel, List<Vector3i> parts, boolean dynamic, Vector3i size)
+	public UnbakedSplitModel(IModelGeometry<?> baseModel, List<Vec3i> parts, boolean dynamic, Vec3i size)
 	{
 		this.baseModel = baseModel;
 		this.parts = new HashSet<>(parts);
@@ -39,10 +40,10 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 	}
 
 	@Override
-	public IBakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<RenderMaterial, TextureAtlasSprite> spriteGetter,
-							IModelTransform modelTransform, ItemOverrideList overrides, ResourceLocation modelLocation)
+	public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
+							ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 	{
-		IBakedModel bakedBase = baseModel.bake(owner, bakery, spriteGetter, ModelRotation.X0_Y0, overrides, modelLocation);
+		BakedModel bakedBase = baseModel.bake(owner, bakery, spriteGetter, BlockModelRotation.X0_Y0, overrides, modelLocation);
 		if(dynamic)
 			return new BakedDynamicSplitModel<>(
 					(ICacheKeyProvider<?>)bakedBase, parts, modelTransform, size
@@ -52,7 +53,7 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 	}
 
 	@Override
-	public Collection<RenderMaterial> getTextures(IModelConfiguration owner, Function<ResourceLocation, IUnbakedModel> modelGetter,
+	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter,
 												  Set<Pair<String, String>> missingTextureErrors)
 	{
 		return baseModel.getTextures(owner, modelGetter, missingTextureErrors);

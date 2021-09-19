@@ -13,17 +13,17 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.BipedModel;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -32,21 +32,21 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E>> extends LayerRenderer<E, M>
+public class IEBipedLayerRenderer<E extends LivingEntity, M extends HumanoidModel<E>> extends RenderLayer<E, M>
 {
 	public static boolean rendersAssigned = false;
 	public static Map<UUID, Pair<ItemStack, Integer>> POWERPACK_PLAYERS = new HashMap<>();
 
-	public IEBipedLayerRenderer(IEntityRenderer<E, M> entityRendererIn)
+	public IEBipedLayerRenderer(RenderLayerParent<E, M> entityRendererIn)
 	{
 		super(entityRendererIn);
 	}
 
 	@Override
 	@ParametersAreNonnullByDefault
-	public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
+	public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
 	{
-		ItemStack head = living.getItemStackFromSlot(EquipmentSlotType.HEAD);
+		ItemStack head = living.getItemBySlot(EquipmentSlot.HEAD);
 		ItemStack earmuffs = ItemStack.EMPTY;
 		if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
 			earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
@@ -55,17 +55,17 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 
 		if(!earmuffs.isEmpty())
 		{
-			BipedModel<E> model = Misc.earmuffs.getArmorModel(living, earmuffs, EquipmentSlotType.HEAD, null);
-			model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			RenderType type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, "overlay")));
-			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+			HumanoidModel<E> model = Misc.earmuffs.getArmorModel(living, earmuffs, EquipmentSlot.HEAD, null);
+			model.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			RenderType type = model.renderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlot.HEAD, "overlay")));
+			model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 			int colour = ((IColouredItem)earmuffs.getItem()).getColourForIEItem(earmuffs, 0);
-			type = model.getRenderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlotType.HEAD, null)));
-			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
+			type = model.renderType(new ResourceLocation(Misc.earmuffs.getArmorTexture(earmuffs, living, EquipmentSlot.HEAD, null)));
+			model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY,
 					(colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
 		}
 
-		ItemStack chest = living.getItemStackFromSlot(EquipmentSlotType.CHEST);
+		ItemStack chest = living.getItemBySlot(EquipmentSlot.CHEST);
 		if(!chest.isEmpty()&&(chest.getItem()==Misc.powerpack||ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack)))
 		{
 			ItemStack powerpack = chest.getItem()==Misc.powerpack?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
@@ -78,33 +78,33 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends BipedModel<E
 				addWornPowerpack(living, powerpack);
 		}
 
-		if(POWERPACK_PLAYERS.containsKey(living.getUniqueID()))
+		if(POWERPACK_PLAYERS.containsKey(living.getUUID()))
 		{
-			Pair<ItemStack, Integer> entry = POWERPACK_PLAYERS.get(living.getUniqueID());
+			Pair<ItemStack, Integer> entry = POWERPACK_PLAYERS.get(living.getUUID());
 			renderPowerpack(entry.getLeft(), matrixStackIn, bufferIn, packedLightIn, living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 			int time = entry.getValue()-1;
 			if(time <= 0)
-				POWERPACK_PLAYERS.remove(living.getUniqueID());
+				POWERPACK_PLAYERS.remove(living.getUUID());
 			else
-				POWERPACK_PLAYERS.put(living.getUniqueID(), Pair.of(entry.getLeft(), time));
+				POWERPACK_PLAYERS.put(living.getUUID(), Pair.of(entry.getLeft(), time));
 		}
 	}
 
 	public static void addWornPowerpack(LivingEntity living, ItemStack powerpack)
 	{
-		POWERPACK_PLAYERS.put(living.getUniqueID(), Pair.of(powerpack, 5));
+		POWERPACK_PLAYERS.put(living.getUUID(), Pair.of(powerpack, 5));
 	}
 
-	private void renderPowerpack(ItemStack powerpack, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+	private void renderPowerpack(ItemStack powerpack, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		if(!powerpack.isEmpty())
 		{
-			BipedModel<E> model = Misc.powerpack.getArmorModel(living, powerpack, EquipmentSlotType.CHEST, null);
-			model.setRotationAngles(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			RenderType type = model.getRenderType(
-					new ResourceLocation(Misc.powerpack.getArmorTexture(powerpack, living, EquipmentSlotType.CHEST, null))
+			HumanoidModel<E> model = Misc.powerpack.getArmorModel(living, powerpack, EquipmentSlot.CHEST, null);
+			model.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			RenderType type = model.renderType(
+					new ResourceLocation(Misc.powerpack.getArmorTexture(powerpack, living, EquipmentSlot.CHEST, null))
 			);
-			model.render(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
+			model.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
 		}
 	}
 }

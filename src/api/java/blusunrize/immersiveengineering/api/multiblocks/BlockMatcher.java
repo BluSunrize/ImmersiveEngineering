@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.api.multiblocks;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.eventbus.api.Event;
 
 import javax.annotation.Nullable;
@@ -35,12 +35,12 @@ public class BlockMatcher
 		PREPROCESSING.add(preprocessor);
 	}
 
-	public static Result matches(BlockState expected, BlockState found, World world, BlockPos pos)
+	public static Result matches(BlockState expected, BlockState found, Level world, BlockPos pos)
 	{
 		return matches(expected, found, world, pos, ImmutableList.of());
 	}
 
-	public static Result matches(BlockState expected, BlockState found, World world, BlockPos pos,
+	public static Result matches(BlockState expected, BlockState found, Level world, BlockPos pos,
 								 List<MatcherPredicate> additional)
 	{
 		for(Preprocessor p : PREPROCESSING)
@@ -53,13 +53,13 @@ public class BlockMatcher
 
 	public interface MatcherPredicate
 	{
-		Result matches(BlockState expected, BlockState found, @Nullable World world, @Nullable BlockPos pos);
+		Result matches(BlockState expected, BlockState found, @Nullable Level world, @Nullable BlockPos pos);
 	}
 
 	public interface Preprocessor
 	{
 		BlockState preprocessFoundState(
-				BlockState expected, BlockState found, @Nullable World world, @Nullable BlockPos pos
+				BlockState expected, BlockState found, @Nullable Level world, @Nullable BlockPos pos
 		);
 	}
 

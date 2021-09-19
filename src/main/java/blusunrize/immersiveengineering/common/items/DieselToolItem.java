@@ -19,24 +19,24 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.material.Material;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.attributes.Attribute;
-import net.minecraft.entity.ai.attributes.AttributeModifier;
-import net.minecraft.entity.ai.attributes.AttributeModifier.Operation;
-import net.minecraft.entity.ai.attributes.Attributes;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.UseAction;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.world.World;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -73,39 +73,39 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public int getItemEnchantability()
+	public int getEnchantmentValue()
 	{
 		return 0;
 	}
 
 	@Nullable
 	@Override
-	public CompoundNBT getShareTag(ItemStack stack)
+	public CompoundTag getShareTag(ItemStack stack)
 	{
-		CompoundNBT ret = super.getShareTag(stack);
+		CompoundTag ret = super.getShareTag(stack);
 		if(ret==null)
-			ret = new CompoundNBT();
+			ret = new CompoundTag();
 		else
 			ret = ret.copy();
 		ItemStack head = getHead(stack);
 		if(!head.isEmpty())
-			ret.put("head", head.write(new CompoundNBT()));
+			ret.put("head", head.save(new CompoundTag()));
 		return ret;
 	}
 
 	@Override
-	public void readShareTag(ItemStack stack, @Nullable CompoundNBT nbt)
+	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
 	{
 		if(nbt!=null)
 		{
-			setHead(stack, ItemStack.read(nbt.getCompound("head")));
+			setHead(stack, ItemStack.of(nbt.getCompound("head")));
 			nbt.remove("head");
 		}
 		super.readShareTag(stack, nbt);
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
 			return new IEItemStackHandler(stack)
@@ -158,16 +158,16 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public boolean hitEntity(ItemStack stack, LivingEntity target, LivingEntity player)
+	public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity player)
 	{
-		consumeDurability(stack, target.getEntityWorld(), null, null, player);
+		consumeDurability(stack, target.getCommandSenderWorld(), null, null, player);
 		return true;
 	}
 
 	@Override
-	public UseAction getUseAction(ItemStack stack)
+	public UseAnim getUseAnimation(ItemStack stack)
 	{
-		return UseAction.BOW;
+		return UseAnim.BOW;
 	}
 
 	/* ------------- FLUID ------------- */
@@ -191,19 +191,19 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	}
 
 	@Override
-	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlotType slot, ItemStack stack)
+	public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack)
 	{
 		Builder<Attribute, AttributeModifier> builder = ImmutableMultimap.builder();
-		if(slot==EquipmentSlotType.MAINHAND)
+		if(slot==EquipmentSlot.MAINHAND)
 		{
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty()&&canToolBeUsed(stack, null))
 			{
 				builder.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(
-						ATTACK_DAMAGE_MODIFIER, "Tool modifier", getAttackDamage(stack, head), Operation.ADDITION
+						BASE_ATTACK_DAMAGE_UUID, "Tool modifier", getAttackDamage(stack, head), Operation.ADDITION
 				));
 				builder.put(Attributes.ATTACK_SPEED, new AttributeModifier(
-						ATTACK_SPEED_MODIFIER, "Tool modifier", -2.5D, Operation.ADDITION
+						BASE_ATTACK_SPEED_UUID, "Tool modifier", -2.5D, Operation.ADDITION
 				));
 			}
 		}
@@ -218,7 +218,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 		LazyOptional<ShaderWrapper> wrapperOld = oldStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
 		Optional<Boolean> sameShader = wrapperOld.map(wOld -> {
 			LazyOptional<ShaderWrapper> wrapperNew = newStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			return wrapperNew.map(w -> ItemStack.areItemStacksEqual(wOld.getShaderItem(), w.getShaderItem()))
+			return wrapperNew.map(w -> ItemStack.matches(wOld.getShaderItem(), w.getShaderItem()))
 					.orElse(true);
 		});
 		if(!sameShader.orElse(true))
@@ -233,20 +233,20 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	{
 		if(canToolBeUsed(stack, entity))
 		{
-			if(!animationTimer.containsKey(entity.getUniqueID()))
-				animationTimer.put(entity.getUniqueID(), 40);
-			else if(animationTimer.get(entity.getUniqueID()) < 20)
-				animationTimer.put(entity.getUniqueID(), 20);
+			if(!animationTimer.containsKey(entity.getUUID()))
+				animationTimer.put(entity.getUUID(), 40);
+			else if(animationTimer.get(entity.getUUID()) < 20)
+				animationTimer.put(entity.getUUID(), 20);
 		}
 		return true;
 	}
 
 	protected void consumeDurability(
-			ItemStack stack, World world, @Nullable BlockState state, @Nullable BlockPos pos, LivingEntity living
+			ItemStack stack, Level world, @Nullable BlockState state, @Nullable BlockPos pos, LivingEntity living
 	)
 	{
 		Preconditions.checkArgument((pos==null)==(state==null));
-		if(state==null||state.getBlockHardness(world, pos)!=0.0f)
+		if(state==null||state.getDestroySpeed(world, pos)!=0.0f)
 		{
 			int dmg = state==null||ForgeHooks.isToolEffective(world, pos, stack)||isEffective(stack, state.getMaterial())?1: 3;
 			ItemStack head = getHead(stack);
@@ -261,11 +261,11 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
 				if(shader!=null)
 				{
-					Vector3d particlePos;
+					Vec3 particlePos;
 					if(pos!=null)
-						particlePos = Vector3d.copyCentered(pos);
+						particlePos = Vec3.atCenterOf(pos);
 					else
-						particlePos = living.getPositionVec();
+						particlePos = living.position();
 					shader.getMiddle().getEffectFunction().execute(
 							world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(),
 							particlePos, null, .375f
@@ -278,7 +278,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 	protected boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
 	{
 		return entity!=null&&canToolBeUsed(stack, entity)&&
-				(entity.getHeldItem(Hand.MAIN_HAND)==stack||entity.getHeldItem(Hand.OFF_HAND)==stack)&&
+				(entity.getItemInHand(InteractionHand.MAIN_HAND)==stack||entity.getItemInHand(InteractionHand.OFF_HAND)==stack)&&
 				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
 						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
 	}

@@ -14,15 +14,15 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.mixin.accessors.MixPredicateAccess;
 import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionBrewing.MixPredicate;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.potion.Potions;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionBrewing.Mix;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.item.alchemy.Potions;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.brewing.BrewingRecipe;
 import net.minecraftforge.common.brewing.BrewingRecipeRegistry;
 import net.minecraftforge.common.brewing.IBrewingRecipe;
@@ -35,7 +35,7 @@ public class PotionHelper
 			return new FluidTagInput(FluidTags.WATER.getName(), amount);
 		else
 		{
-			CompoundNBT nbt = new CompoundNBT();
+			CompoundTag nbt = new CompoundTag();
 			nbt.putString("Potion", type.getRegistryName().toString());
 			return new FluidTagInput(IETags.fluidPotion.getName(), amount, nbt);
 		}
@@ -44,10 +44,10 @@ public class PotionHelper
 	public static void applyToAllPotionRecipes(PotionRecipeProcessor out)
 	{
 		// Vanilla
-		for(MixPredicate<Potion> mixPredicate : PotionBrewingAccess.getConversions())
+		for(Mix<Potion> mixPredicate : PotionBrewingAccess.getConversions())
 			out.apply(
-					mixPredicate.output.get(), mixPredicate.input.get(),
-					new IngredientWithSize(((MixPredicateAccess)mixPredicate).getReagent())
+					mixPredicate.to.get(), mixPredicate.from.get(),
+					new IngredientWithSize(((MixPredicateAccess)mixPredicate).getIngredient())
 			);
 
 		// Modded
@@ -58,8 +58,8 @@ public class PotionHelper
 				Ingredient input = ((BrewingRecipe)recipe).getInput();
 				ItemStack output = ((BrewingRecipe)recipe).getOutput();
 				if(output.getItem()==Items.POTION)
-					out.apply(PotionUtils.getPotionFromItem(output),
-							PotionUtils.getPotionFromItem(input.getMatchingStacks()[0]), ingredient);
+					out.apply(PotionUtils.getPotion(output),
+							PotionUtils.getPotion(input.getItems()[0]), ingredient);
 			}
 	}
 

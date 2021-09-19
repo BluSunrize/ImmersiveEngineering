@@ -12,39 +12,38 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ArmorItem;
-import net.minecraft.item.IArmorMaterial;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import java.util.Locale;
 import java.util.Map;
 
 public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 {
-	public static IArmorMaterial mat = new FaradayArmorMaterial();
+	public static ArmorMaterial mat = new FaradayArmorMaterial();
 
-	public FaradaySuitItem(EquipmentSlotType type)
+	public FaradaySuitItem(EquipmentSlot type)
 	{
-		super(mat, type, new Properties().maxStackSize(1).group(ImmersiveEngineering.ITEM_GROUP));
+		super(mat, type, new Properties().stacksTo(1).tab(ImmersiveEngineering.ITEM_GROUP));
 		String name = "armor_faraday_"+type.getName().toLowerCase(Locale.ENGLISH);
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEItems.add(this);
 	}
 
 	@Override
-	public void onStrike(ItemStack equipped, EquipmentSlotType eqSlot, LivingEntity owner, Map<String, Object> cache,
+	public void onStrike(ItemStack equipped, EquipmentSlot eqSlot, LivingEntity owner, Map<String, Object> cache,
 						 @Nullable DamageSource dSource, ElectricSource eSource)
 	{
 		if(!(dSource instanceof ElectricDamageSource))
@@ -62,23 +61,23 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 		else
 		{
 			dmg.dmg *= 1.2;
-			if((!(owner instanceof PlayerEntity)||!((PlayerEntity)owner).abilities.isCreativeMode)&&
-					equipped.attemptDamageItem(2, Item.random, (dmg.getTrueSource() instanceof ServerPlayerEntity)?(ServerPlayerEntity)dmg.getTrueSource(): null))
-				owner.setItemStackToSlot(eqSlot, ItemStack.EMPTY);
+			if((!(owner instanceof Player)||!((Player)owner).abilities.instabuild)&&
+					equipped.hurt(2, Item.random, (dmg.getEntity() instanceof ServerPlayer)?(ServerPlayer)dmg.getEntity(): null))
+				owner.setItemSlot(eqSlot, ItemStack.EMPTY);
 		}
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
 	{
-		return ImmersiveEngineering.MODID+":textures/models/armor_faraday"+(slot==EquipmentSlotType.LEGS?"_legs": "")+".png";
+		return ImmersiveEngineering.MODID+":textures/models/armor_faraday"+(slot==EquipmentSlot.LEGS?"_legs": "")+".png";
 	}
 
-	private static class FaradayArmorMaterial implements IArmorMaterial
+	private static class FaradayArmorMaterial implements ArmorMaterial
 	{
 
 		@Override
-		public int getDurability(@Nonnull EquipmentSlotType slotIn)
+		public int getDurabilityForSlot(@Nonnull EquipmentSlot slotIn)
 		{
 			switch(slotIn)
 			{
@@ -95,7 +94,7 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 		}
 
 		@Override
-		public int getDamageReductionAmount(EquipmentSlotType slotIn)
+		public int getDefenseForSlot(EquipmentSlot slotIn)
 		{
 			switch(slotIn)
 			{
@@ -111,21 +110,21 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 		}
 
 		@Override
-		public int getEnchantability()
+		public int getEnchantmentValue()
 		{
 			return 0;
 		}
 
 		@Nonnull
 		@Override
-		public SoundEvent getSoundEvent()
+		public SoundEvent getEquipSound()
 		{
-			return SoundEvents.ITEM_ARMOR_EQUIP_CHAIN;
+			return SoundEvents.ARMOR_EQUIP_CHAIN;
 		}
 
 		@Nonnull
 		@Override
-		public Ingredient getRepairMaterial()
+		public Ingredient getRepairIngredient()
 		{
 			return Ingredient.EMPTY;
 		}

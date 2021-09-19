@@ -19,20 +19,20 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.FurnaceTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.IIntArray;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -60,7 +60,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return formed;
 	}
@@ -72,16 +72,16 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	@Override
 	public void tick()
 	{
 		checkForNeedlessTicking();
-		if(!world.isRemote&&formed&&!isDummy())
+		if(!level.isClientSide&&formed&&!isDummy())
 		{
 			final boolean activeBeforeTick = getIsActive();
 
@@ -171,13 +171,13 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 			if(activeBeforeTick!=activeAfterTick)
 			{
 
-				this.markDirty();
+				this.setChanged();
 				for(int x = 0; x < 2; ++x)
 					for(int y = 0; y < 2; ++y)
 						for(int z = 0; z < 2; ++z)
 						{
 							BlockPos actualPos = getBlockPosForPos(new BlockPos(x, y, z));
-							TileEntity te = Utils.getExistingTileEntity(world, actualPos);
+							BlockEntity te = Utils.getExistingTileEntity(level, actualPos);
 							if(te instanceof AlloySmelterTileEntity)
 								((AlloySmelterTileEntity)te).setActive(activeAfterTick);
 						}
@@ -193,7 +193,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 		if(recipe==null)
 			return null;
 		ItemStack output = inventory.get(3);
-		if(output.isEmpty()||(ItemStack.areItemsEqual(output, recipe.output)&&
+		if(output.isEmpty()||(ItemStack.isSame(output, recipe.output)&&
 				output.getCount()+recipe.output.getCount() <= getSlotLimit(3)))
 			return recipe;
 		return null;
@@ -218,22 +218,22 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	}
 
 	@Override
-	public boolean receiveClientEvent(int id, int arg)
+	public boolean triggerEvent(int id, int arg)
 	{
 		if(id==0)
 			this.formed = arg==1;
-		markDirty();
+		setChanged();
 		markContainingBlockForUpdate(null);
 		return true;
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		if(!descPacket)
 		{
-			ItemStackHelper.loadAllItems(nbt, inventory);
+			ContainerHelper.loadAllItems(nbt, inventory);
 			process = nbt.getInt("process");
 			processMax = nbt.getInt("processMax");
 			burnTime = nbt.getInt("burnTime");
@@ -242,7 +242,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		if(!descPacket)
@@ -251,7 +251,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 			nbt.putInt("processMax", processMax);
 			nbt.putInt("burnTime", burnTime);
 			nbt.putInt("lastBurnTime", lastBurnTime);
-			ItemStackHelper.saveAllItems(nbt, inventory);
+			ContainerHelper.saveAllItems(nbt, inventory);
 		}
 	}
 
@@ -264,7 +264,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0||slot==1&&FurnaceTileEntity.isFuel(stack);
+		return slot==0||slot==1&&FurnaceBlockEntity.isFuel(stack);
 	}
 
 	@Override
@@ -307,7 +307,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 		}
 	}
 
-	public class AlloySmelterState implements IIntArray
+	public class AlloySmelterState implements ContainerData
 	{
 		public static final int LAST_BURN_TIME = 0;
 		public static final int BURN_TIME = 1;
@@ -375,7 +375,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 		}
 
 		@Override
-		public int size()
+		public int getCount()
 		{
 			return 4;
 		}

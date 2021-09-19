@@ -14,17 +14,17 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Direction.AxisDirection;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Rotation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.block.Rotation;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 
 public class TurntableTileEntity extends IEBaseTileEntity implements IStateBasedDirectional, IHammerInteraction
 {
@@ -39,7 +39,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		byte redstoneByte = nbt.getByte("redstone");
 		byte rotationMapValue = nbt.getByte("rotationMapping");
@@ -51,7 +51,7 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		byte rotationMapValue = 0;
 		byte redstoneByte = 0;
@@ -70,11 +70,11 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	{
 		super.onNeighborBlockChange(otherPos);
 		Direction facing = getFacing();
-		BlockPos difference = otherPos.subtract(pos);
-		Direction otherDir = Direction.getFacingFromVector(difference.getX(), difference.getY(), difference.getZ());
+		BlockPos difference = otherPos.subtract(worldPosition);
+		Direction otherDir = Direction.getNearest(difference.getX(), difference.getY(), difference.getZ());
 		if(otherDir.getAxis()!=facing.getAxis())
 		{
-			boolean r = this.world.isSidePowered(pos.offset(otherDir), otherDir);
+			boolean r = this.level.hasSignal(worldPosition.relative(otherDir), otherDir);
 
 			int directionIndex = getRotationDirectionIndexFromFacing(otherDir, facing);
 
@@ -83,8 +83,8 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 				this.redstone[directionIndex] = r;
 				if(this.redstone[directionIndex])
 				{
-					BlockPos target = pos.offset(facing);
-					RotationUtil.rotateBlock(this.world, target, rotationMapping[directionIndex]);
+					BlockPos target = worldPosition.relative(facing);
+					RotationUtil.rotateBlock(this.level, target, rotationMapping[directionIndex]);
 				}
 			}
 		}
@@ -99,13 +99,13 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
-		return placer.isSneaking();
+		return placer.isShiftKeyDown();
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
-		return !entity.isSneaking();
+		return !entity.isShiftKeyDown();
 	}
 
 	@Override
@@ -115,17 +115,17 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 	}
 
 	@Override
-	public boolean hammerUseSide(Direction side, PlayerEntity player, Hand hand, Vector3d hitVec)
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		Direction facing = getFacing();
-		if(player.isSneaking()&&side.getAxis()!=facing.getAxis())
+		if(player.isShiftKeyDown()&&side.getAxis()!=facing.getAxis())
 		{
-			if(!world.isRemote)
+			if(!level.isClientSide)
 			{
 				int directionIndex = getRotationDirectionIndexFromFacing(side, facing);
 				rotationMapping[directionIndex] = intToRotation((rotationToInt(rotationMapping[directionIndex])%3)+1); //looks strange, but made to avoid values of <1 and >3
-				markDirty();
-				world.addBlockEvent(getPos(), this.getBlockState().getBlock(), 254, 0);
+				setChanged();
+				level.blockEvent(getBlockPos(), this.getBlockState().getBlock(), 254, 0);
 			}
 			return true;
 		}
@@ -170,8 +170,8 @@ public class TurntableTileEntity extends IEBaseTileEntity implements IStateBased
 
 	private int getRotationDirectionIndexFromFacing(Direction indexee, Direction facing)
 	{
-		int index = indexee.getIndex();
-		if (facing.getIndex()<index)
+		int index = indexee.get3DDataValue();
+		if (facing.get3DDataValue()<index)
 			index -= 2;
 		if (index >= 2 && ((facing.getAxisDirection()==AxisDirection.POSITIVE) != (facing.getAxis()==Axis.Z)))
 			index++;

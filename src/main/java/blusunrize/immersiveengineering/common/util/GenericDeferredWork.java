@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.DispenserBlock;
-import net.minecraft.dispenser.IDispenseItemBehavior;
-import net.minecraft.util.IItemProvider;
+import net.minecraft.core.dispenser.DispenseItemBehavior;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -37,9 +37,9 @@ public class GenericDeferredWork
 		TO_RUN_ON_THREAD.add(toRun);
 	}
 
-	public static void registerDispenseBehavior(IItemProvider item, IDispenseItemBehavior behavior)
+	public static void registerDispenseBehavior(ItemLike item, DispenseItemBehavior behavior)
 	{
-		enqueue(() -> DispenserBlock.registerDispenseBehavior(item, behavior));
+		enqueue(() -> DispenserBlock.registerBehavior(item, behavior));
 	}
 
 	@SubscribeEvent

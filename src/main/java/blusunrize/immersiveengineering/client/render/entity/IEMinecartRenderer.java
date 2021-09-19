@@ -9,12 +9,12 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
-import net.minecraft.client.renderer.entity.EntityRendererManager;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.MinecartRenderer;
 
 public class IEMinecartRenderer extends MinecartRenderer<IEMinecartEntity>
 {
-	public IEMinecartRenderer(EntityRendererManager renderManagerIn)
+	public IEMinecartRenderer(EntityRenderDispatcher renderManagerIn)
 	{
 		super(renderManagerIn);
 	}

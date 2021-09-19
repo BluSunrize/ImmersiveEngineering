@@ -17,16 +17,16 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.data.IFinishedRecipe;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.tags.ITag;
-import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.fluids.FluidStack;
@@ -36,7 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishedRecipe
+public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements FinishedRecipe
 {
 	private final IERecipeSerializer<?> serializer;
 	private final List<Consumer<JsonObject>> writerFunctions;
@@ -63,7 +63,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 		return true;
 	}
 
-	public void build(Consumer<IFinishedRecipe> out, ResourceLocation id)
+	public void build(Consumer<FinishedRecipe> out, ResourceLocation id)
 	{
 		Preconditions.checkArgument(isComplete(), "This recipe is incomplete");
 		this.id = id;
@@ -121,7 +121,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 		return (R)this;
 	}
 
-	public R addResult(IItemProvider itemProvider)
+	public R addResult(ItemLike itemProvider)
 	{
 		return addResult(new ItemStack(itemProvider));
 	}
@@ -137,9 +137,9 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 	public R addResult(Ingredient ingredient)
 	{
 		if(resultArray!=null)
-			return addMultiResult(ingredient.serialize());
+			return addMultiResult(ingredient.toJson());
 		else
-			return addWriter(jsonObject -> jsonObject.add("result", ingredient.serialize()));
+			return addWriter(jsonObject -> jsonObject.add("result", ingredient.toJson()));
 	}
 
 	public R addResult(IngredientWithSize ingredientWithSize)
@@ -176,7 +176,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 
 	public R addMultiInput(Ingredient ingredient)
 	{
-		return addMultiInput(ingredient.serialize());
+		return addMultiInput(ingredient.toJson());
 	}
 
 	public R addMultiInput(IngredientWithSize ingredient)
@@ -192,10 +192,10 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 		return key;
 	}
 
-	public R addInput(IItemProvider... itemProviders)
+	public R addInput(ItemLike... itemProviders)
 	{
 		if(inputArray!=null)
-			return addMultiInput(Ingredient.fromItems(itemProviders));
+			return addMultiInput(Ingredient.of(itemProviders));
 		else
 			return addIngredient(generateSafeInputKey(), itemProviders);
 	}
@@ -203,15 +203,15 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 	public R addInput(ItemStack... itemStacks)
 	{
 		if(inputArray!=null)
-			return addMultiInput(Ingredient.fromStacks(itemStacks));
+			return addMultiInput(Ingredient.of(itemStacks));
 		else
 			return addIngredient(generateSafeInputKey(), itemStacks);
 	}
 
-	public R addInput(ITag<Item> tag)
+	public R addInput(Tag<Item> tag)
 	{
 		if(inputArray!=null)
-			return addMultiInput(Ingredient.fromTag(tag));
+			return addMultiInput(Ingredient.of(tag));
 		else
 			return addIngredient(generateSafeInputKey(), tag);
 	}
@@ -245,7 +245,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 		return obj;
 	}
 
-	public R addItem(String key, IItemProvider item)
+	public R addItem(String key, ItemLike item)
 	{
 		return addItem(key, new ItemStack(item));
 	}
@@ -258,24 +258,24 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 
 	/* =============== Ingredients =============== */
 
-	public R addIngredient(String key, IItemProvider... itemProviders)
+	public R addIngredient(String key, ItemLike... itemProviders)
 	{
-		return addIngredient(key, Ingredient.fromItems(itemProviders));
+		return addIngredient(key, Ingredient.of(itemProviders));
 	}
 
 	public R addIngredient(String key, ItemStack... itemStacks)
 	{
-		return addIngredient(key, Ingredient.fromStacks(itemStacks));
+		return addIngredient(key, Ingredient.of(itemStacks));
 	}
 
-	public R addIngredient(String key, ITag<Item> tag)
+	public R addIngredient(String key, Tag<Item> tag)
 	{
-		return addIngredient(key, Ingredient.fromTag(tag));
+		return addIngredient(key, Ingredient.of(tag));
 	}
 
 	public R addIngredient(String key, Ingredient ingredient)
 	{
-		return addWriter(jsonObject -> jsonObject.add(key, ingredient.serialize()));
+		return addWriter(jsonObject -> jsonObject.add(key, ingredient.toJson()));
 	}
 
 	public R addIngredient(String key, IngredientWithSize ingredient)
@@ -305,12 +305,12 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 		return addWriter(jsonObject -> jsonObject.add(key, fluidTag.serialize()));
 	}
 
-	public R addFluidTag(String key, INamedTag<Fluid> fluidTag, int amount)
+	public R addFluidTag(String key, Named<Fluid> fluidTag, int amount)
 	{
 		return addFluidTag(key, new FluidTagInput(fluidTag, amount, null));
 	}
 
-	public R addFluidTag(INamedTag<Fluid> fluidTag, int amount)
+	public R addFluidTag(Named<Fluid> fluidTag, int amount)
 	{
 		return addFluidTag("fluid", new FluidTagInput(fluidTag, amount, null));
 	}
@@ -318,34 +318,34 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements IFinishe
 	/* =============== IFinishedRecipe =============== */
 
 	@Override
-	public void serialize(JsonObject jsonObject)
+	public void serializeRecipeData(JsonObject jsonObject)
 	{
 		for(Consumer<JsonObject> writer : this.writerFunctions)
 			writer.accept(jsonObject);
 	}
 
 	@Override
-	public ResourceLocation getID()
+	public ResourceLocation getId()
 	{
 		return id;
 	}
 
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getType()
 	{
 		return serializer;
 	}
 
 	@Nullable
 	@Override
-	public JsonObject getAdvancementJson()
+	public JsonObject serializeAdvancement()
 	{
 		return null;
 	}
 
 	@Nullable
 	@Override
-	public ResourceLocation getAdvancementID()
+	public ResourceLocation getAdvancementId()
 	{
 		return null;
 	}

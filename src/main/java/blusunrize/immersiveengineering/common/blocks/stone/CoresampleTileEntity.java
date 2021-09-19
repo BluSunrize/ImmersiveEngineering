@@ -15,33 +15,32 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.FilledMapItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.loot.LootContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.ColumnPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.storage.MapData;
-import net.minecraft.world.storage.MapDecoration;
-
 import javax.annotation.Nullable;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ColumnPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.MapItem;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.level.saveddata.maps.MapDecoration;
+import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
+import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,15 +55,15 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		coresample = ItemStack.read(nbt.getCompound("coresample"));
+		coresample = ItemStack.of(nbt.getCompound("coresample"));
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		nbt.put("coresample", coresample.write(new CompoundNBT()));
+		nbt.put("coresample", coresample.save(new CompoundTag()));
 	}
 
 	@Override
@@ -86,7 +85,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -98,46 +97,46 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		ColumnPos coords = CoresampleItem.getCoords(coresample);
-		if(player.isSneaking())
+		if(player.isShiftKeyDown())
 		{
-			if(!world.isRemote)
+			if(!level.isClientSide)
 			{
-				ItemEntity entityitem = new ItemEntity(world, getPos().getX()+.5, getPos().getY()+.5, getPos().getZ()+.5,
+				ItemEntity entityitem = new ItemEntity(level, getBlockPos().getX()+.5, getBlockPos().getY()+.5, getBlockPos().getZ()+.5,
 						coresample);
-				entityitem.setDefaultPickupDelay();
-				world.removeBlock(pos, false);
-				world.addEntity(entityitem);
+				entityitem.setDefaultPickUpDelay();
+				level.removeBlock(worldPosition, false);
+				level.addFreshEntity(entityitem);
 			}
 			return true;
 		}
 		else if(!heldItem.isEmpty()&&heldItem.getItem()==Items.FILLED_MAP&&coords!=null)
 		{
-			if(!world.isRemote)
+			if(!level.isClientSide)
 			{
-				MapData mapData = FilledMapItem.getMapData(heldItem, player.getEntityWorld());
+				MapItemSavedData mapData = MapItem.getOrCreateSavedData(heldItem, player.getCommandSenderWorld());
 				if(mapData!=null)
 				{
 					if(mapData.dimension!=CoresampleItem.getDimension(coresample))
 					{
-						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapDimension"), Util.DUMMY_UUID);
+						player.sendMessage(new TranslatableComponent(Lib.CHAT_INFO+"coresample.mapDimension"), Util.NIL_UUID);
 						return true;
 					}
 
 					String ident = "ie:coresample_"+coords.toString();
-					CompoundNBT mapTagCompound = heldItem.getOrCreateTag();
-					ListNBT nbttaglist = mapTagCompound.getList("Decorations", 10);
+					CompoundTag mapTagCompound = heldItem.getOrCreateTag();
+					ListTag nbttaglist = mapTagCompound.getList("Decorations", 10);
 
 					for(int i = 0; i < nbttaglist.size(); i++)
 					{
-						CompoundNBT tagCompound = (CompoundNBT)nbttaglist.get(i);
+						CompoundTag tagCompound = (CompoundTag)nbttaglist.get(i);
 						if(ident.equalsIgnoreCase(tagCompound.getString("id")))
 						{
 							nbttaglist.remove(i);
 							mapTagCompound.put("Decorations", nbttaglist);
-							mapData.mapDecorations.remove(ident);
+							mapData.decorations.remove(ident);
 							return true;
 						}
 					}
@@ -146,11 +145,11 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 					double sampleZ = coords.z+.5;
 
 					int mapScale = 1<<mapData.scale;
-					float distX = (float)(sampleX-mapData.xCenter)/(float)mapScale;
-					float distZ = (float)(sampleZ-mapData.zCenter)/(float)mapScale;
+					float distX = (float)(sampleX-mapData.x)/(float)mapScale;
+					float distZ = (float)(sampleZ-mapData.z)/(float)mapScale;
 					if(distX >= -63&&distX <= 63&&distZ >= -63&&distZ <= 63)
 					{
-						CompoundNBT tagCompound = new CompoundNBT();
+						CompoundTag tagCompound = new CompoundTag();
 						tagCompound.putString("id", ident);
 						tagCompound.putByte("type", MapDecoration.Type.TARGET_POINT.getIcon());
 						tagCompound.putDouble("x", sampleX);
@@ -162,7 +161,7 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 						mapTagCompound.put("Decorations", nbttaglist);
 					}
 					else
-						player.sendMessage(new TranslationTextComponent(Lib.CHAT_INFO+"coresample.mapFail"), Util.DUMMY_UUID);
+						player.sendMessage(new TranslatableComponent(Lib.CHAT_INFO+"coresample.mapFail"), Util.NIL_UUID);
 				}
 			}
 			return true;
@@ -172,12 +171,12 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 
 	//TODO @Override
 	@Nullable
-	public ITextComponent getDisplayName()
+	public Component getDisplayName()
 	{
-		if(coresample.hasDisplayName())
-			return coresample.getDisplayName();
+		if(coresample.hasCustomHoverName())
+			return coresample.getHoverName();
 		else
-			return new TranslationTextComponent("item.immersiveengineering.coresample.name");
+			return new TranslatableComponent("item.immersiveengineering.coresample.name");
 	}
 
 	@Override
@@ -192,31 +191,31 @@ public class CoresampleTileEntity extends IEBaseTileEntity implements IStateBase
 		this.coresample = stack.copy();
 	}
 
-	private ITextComponent[] overlay = null;
+	private Component[] overlay = null;
 
 	@Override
-	public ITextComponent[] getOverlayText(PlayerEntity player, RayTraceResult mop, boolean hammer)
+	public Component[] getOverlayText(Player player, HitResult mop, boolean hammer)
 	{
 		if(overlay==null)
 		{
-			List<ITextComponent> list = new ArrayList<>();
-			CoresampleItem.getCoresampleInfo(coresample, list, TextFormatting.WHITE, world, false, false);
-			overlay = list.toArray(new ITextComponent[0]);
+			List<Component> list = new ArrayList<>();
+			CoresampleItem.getCoresampleInfo(coresample, list, ChatFormatting.WHITE, level, false, false);
+			overlay = list.toArray(new Component[0]);
 		}
 		return overlay;
 	}
 
 	@Override
-	public boolean useNixieFont(PlayerEntity player, RayTraceResult mop)
+	public boolean useNixieFont(Player player, HitResult mop)
 	{
 		return false;
 	}
 
-	private static final VoxelShape AABB_CORESAMPLE_X = VoxelShapes.create(0, 0, .28125f, 1, 1, .71875f);
-	private static final VoxelShape AABB_CORESAMPLE_Z = VoxelShapes.create(.28125f, 0, 0, .71875f, 1, 1);
+	private static final VoxelShape AABB_CORESAMPLE_X = Shapes.box(0, 0, .28125f, 1, 1, .71875f);
+	private static final VoxelShape AABB_CORESAMPLE_Z = Shapes.box(.28125f, 0, 0, .71875f, 1, 1);
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return getFacing().getAxis()==Axis.Z?AABB_CORESAMPLE_Z: AABB_CORESAMPLE_X;
 	}

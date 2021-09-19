@@ -31,29 +31,33 @@ import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.wires.CapabilityInit;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.LecternBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.MobEntity;
-import net.minecraft.entity.boss.WitherEntity;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.item.minecart.AbstractMinecartEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Rarity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.SectionPos;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.LecternTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.SectionPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.world.World;
-import net.minecraft.world.chunk.Chunk;
-import net.minecraft.world.chunk.ChunkSection;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.boss.wither.WitherBoss;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.vehicle.AbstractMinecart;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Rarity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.LecternBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.LecternBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.LevelChunkSection;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
@@ -79,8 +83,8 @@ import java.util.*;
 public class EventHandler
 {
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
-	public static final Queue<Pair<RegistryKey<World>, BlockPos>> requestedBlockUpdates = new LinkedList<>();
-	public static final Set<TileEntity> REMOVE_FROM_TICKING = new HashSet<>();
+	public static final Queue<Pair<ResourceKey<Level>, BlockPos>> requestedBlockUpdates = new LinkedList<>();
+	public static final Set<BlockEntity> REMOVE_FROM_TICKING = new HashSet<>();
 	public static final Queue<Runnable> SERVER_TASKS = new ArrayDeque<>();
 
 	@SubscribeEvent
@@ -92,16 +96,16 @@ public class EventHandler
 	@SubscribeEvent
 	public void onCapabilitiesAttachEntity(AttachCapabilitiesEvent<Entity> event)
 	{
-		if(event.getObject() instanceof AbstractMinecartEntity)
+		if(event.getObject() instanceof AbstractMinecart)
 			event.addCapability(new ResourceLocation("immersiveengineering:shader"),
 					new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "minecart")));
-		if(event.getObject() instanceof PlayerEntity)
+		if(event.getObject() instanceof Player)
 			event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "skyhook_data"),
 					new SimpleSkyhookProvider());
 	}
 
 	@SubscribeEvent
-	public void onCapabilitiesAttachWorld(AttachCapabilitiesEvent<World> event)
+	public void onCapabilitiesAttachWorld(AttachCapabilitiesEvent<Level> event)
 	{
 		event.addCapability(new ResourceLocation(ImmersiveEngineering.MODID, "wire_network"),
 				new CapabilityInit.Provider(event.getObject()));
@@ -110,22 +114,22 @@ public class EventHandler
 	@SubscribeEvent
 	public void onMinecartInteraction(EntityInteractSpecific event)
 	{
-		PlayerEntity player = event.getPlayer();
+		Player player = event.getPlayer();
 		ItemStack stack = event.getItemStack();
-		if(!(event.getTarget() instanceof AbstractMinecartEntity))
+		if(!(event.getTarget() instanceof AbstractMinecart))
 			return;
-		AbstractMinecartEntity cart = (AbstractMinecartEntity)event.getTarget();
+		AbstractMinecart cart = (AbstractMinecart)event.getTarget();
 		if(!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
 		{
 			cart.getCapability(CapabilityShader.SHADER_CAPABILITY).ifPresent(wrapper ->
 			{
 				wrapper.setShaderItem(ItemHandlerHelper.copyStackWithSize(stack, 1));
-				if(!player.world.isRemote)
-					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
+				if(!player.level.isClientSide)
+					ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
 							new MessageMinecartShaderSync(cart, wrapper));
 			});
 			event.setCanceled(true);
-			event.setCancellationResult(ActionResultType.SUCCESS);
+			event.setCancellationResult(InteractionResult.SUCCESS);
 		}
 	}
 
@@ -155,14 +159,14 @@ public class EventHandler
 	@SubscribeEvent
 	public void onWorldTick(WorldTickEvent event)
 	{
-		if(event.phase==TickEvent.Phase.START&&!event.world.isRemote)
+		if(event.phase==TickEvent.Phase.START&&!event.world.isClientSide)
 		{
 			GlobalWireNetwork.getNetwork(event.world).update(event.world);
 
 			if(!REMOVE_FROM_TICKING.isEmpty())
 			{
-				event.world.tickableTileEntities.removeAll(REMOVE_FROM_TICKING);
-				REMOVE_FROM_TICKING.removeIf((te) -> te.getWorld()==event.world);
+				event.world.tickableBlockEntities.removeAll(REMOVE_FROM_TICKING);
+				REMOVE_FROM_TICKING.removeIf((te) -> te.getLevel()==event.world);
 			}
 			// Explicitly support tasks adding more tasks to be delayed
 			int numToRun = SERVER_TASKS.size();
@@ -186,19 +190,19 @@ public class EventHandler
 						itExplosion.remove();
 				}
 			}
-			Iterator<Pair<RegistryKey<World>, BlockPos>> it = requestedBlockUpdates.iterator();
+			Iterator<Pair<ResourceKey<Level>, BlockPos>> it = requestedBlockUpdates.iterator();
 			while(it.hasNext())
 			{
-				Pair<RegistryKey<World>, BlockPos> curr = it.next();
-				if(curr.getLeft().equals(event.world.getDimensionKey()))
+				Pair<ResourceKey<Level>, BlockPos> curr = it.next();
+				if(curr.getLeft().equals(event.world.dimension()))
 				{
-					Chunk chunk = event.world.getChunkAt(curr.getRight());
-					int sectionId = SectionPos.from(curr.getRight()).getSectionY();
-					ChunkSection[] sections = chunk.getSections();
+					LevelChunk chunk = event.world.getChunkAt(curr.getRight());
+					int sectionId = SectionPos.of(curr.getRight()).y();
+					LevelChunkSection[] sections = chunk.getSections();
 					if(sectionId >= 0&&sectionId < sections.length&&sections[sectionId]!=null)
 					{
 						BlockState state = event.world.getBlockState(curr.getRight());
-						event.world.notifyBlockUpdate(curr.getRight(), state, state, 3);
+						event.world.sendBlockUpdated(curr.getRight(), state, state, 3);
 					}
 					it.remove();
 				}
@@ -207,25 +211,25 @@ public class EventHandler
 	}
 
 	public static HashMap<UUID, CrusherTileEntity> crusherMap = new HashMap<>();
-	public static HashSet<Class<? extends MobEntity>> listOfBoringBosses = new HashSet<>();
+	public static HashSet<Class<? extends Mob>> listOfBoringBosses = new HashSet<>();
 
 	static
 	{
-		listOfBoringBosses.add(WitherEntity.class);
+		listOfBoringBosses.add(WitherBoss.class);
 	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingDropsLowest(LivingDropsEvent event)
 	{
-		if(!event.isCanceled()&&Lib.DMG_Crusher.equals(event.getSource().getDamageType()))
+		if(!event.isCanceled()&&Lib.DMG_Crusher.equals(event.getSource().getMsgId()))
 		{
-			CrusherTileEntity crusher = crusherMap.get(event.getEntityLiving().getUniqueID());
+			CrusherTileEntity crusher = crusherMap.get(event.getEntityLiving().getUUID());
 			if(crusher!=null)
 			{
 				for(ItemEntity item : event.getDrops())
 					if(item!=null&&!item.getItem().isEmpty())
 						crusher.doProcessOutput(item.getItem());
-				crusherMap.remove(event.getEntityLiving().getUniqueID());
+				crusherMap.remove(event.getEntityLiving().getUUID());
 				event.setCanceled(true);
 			}
 		}
@@ -234,24 +238,24 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingDrops(LivingDropsEvent event)
 	{
-		if(!event.isCanceled()&&!event.getEntityLiving().canChangeDimension())
+		if(!event.isCanceled()&&!event.getEntityLiving().canChangeDimensions())
 		{
 			Rarity r = Rarity.EPIC;
-			for(Class<? extends MobEntity> boring : listOfBoringBosses)
+			for(Class<? extends Mob> boring : listOfBoringBosses)
 				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
 					return;
 			ItemStack bag = new ItemStack(Misc.shaderBag.get(r));
-			event.getDrops().add(new ItemEntity(event.getEntityLiving().world, event.getEntityLiving().getPosX(), event.getEntityLiving().getPosY(), event.getEntityLiving().getPosZ(), bag));
+			event.getDrops().add(new ItemEntity(event.getEntityLiving().level, event.getEntityLiving().getX(), event.getEntityLiving().getY(), event.getEntityLiving().getZ(), bag));
 		}
 	}
 
 	@SubscribeEvent
 	public void onLivingAttacked(LivingAttackEvent event)
 	{
-		if(event.getEntityLiving() instanceof PlayerEntity)
+		if(event.getEntityLiving() instanceof Player)
 		{
-			PlayerEntity player = (PlayerEntity)event.getEntityLiving();
-			ItemStack activeStack = player.getActiveItemStack();
+			Player player = (Player)event.getEntityLiving();
+			ItemStack activeStack = player.getUseItem();
 			if(!activeStack.isEmpty()&&activeStack.getItem() instanceof IEShieldItem&&event.getAmount() >= 3&&Utils.canBlockDamageSource(player, event.getSource()))
 			{
 				float amount = event.getAmount();
@@ -264,51 +268,51 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingHurt(LivingHurtEvent event)
 	{
-		if(event.getSource().isFireDamage()&&event.getEntityLiving().getActivePotionEffect(IEPotions.flammable)!=null)
+		if(event.getSource().isFire()&&event.getEntityLiving().getEffect(IEPotions.flammable)!=null)
 		{
-			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.flammable).getAmplifier();
+			int amp = event.getEntityLiving().getEffect(IEPotions.flammable).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(("flux".equals(event.getSource().getDamageType())||IEDamageSources.razorShock.equals(event.getSource())||
-				event.getSource() instanceof ElectricDamageSource)&&event.getEntityLiving().getActivePotionEffect(IEPotions.conductive)!=null)
+		if(("flux".equals(event.getSource().getMsgId())||IEDamageSources.razorShock.equals(event.getSource())||
+				event.getSource() instanceof ElectricDamageSource)&&event.getEntityLiving().getEffect(IEPotions.conductive)!=null)
 		{
-			int amp = event.getEntityLiving().getActivePotionEffect(IEPotions.conductive).getAmplifier();
+			int amp = event.getEntityLiving().getEffect(IEPotions.conductive).getAmplifier();
 			float mod = 1.5f+((amp*amp)*.5f);
 			event.setAmount(event.getAmount()*mod);
 		}
-		if(!event.isCanceled()&&!event.getEntityLiving().canChangeDimension()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getTrueSource() instanceof PlayerEntity&&((PlayerEntity)event.getSource().getTrueSource()).getHeldItem(Hand.MAIN_HAND).getItem() instanceof DrillItem)
-			Utils.unlockIEAdvancement((PlayerEntity)event.getSource().getTrueSource(), "main/secret_drillbreak");
+		if(!event.isCanceled()&&!event.getEntityLiving().canChangeDimensions()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getEntity() instanceof Player&&((Player)event.getSource().getEntity()).getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof DrillItem)
+			Utils.unlockIEAdvancement((Player)event.getSource().getEntity(), "main/secret_drillbreak");
 	}
 
 	@SubscribeEvent
 	public void onLivingJump(LivingJumpEvent event)
 	{
-		Vector3d motion = event.getEntity().getMotion();
-		if(event.getEntityLiving().getActivePotionEffect(IEPotions.sticky)!=null)
-			motion = motion.subtract(0, (event.getEntityLiving().getActivePotionEffect(IEPotions.sticky).getAmplifier()+1)*0.3F, 0);
-		else if(event.getEntityLiving().getActivePotionEffect(IEPotions.concreteFeet)!=null)
-			motion = Vector3d.ZERO;
-		event.getEntity().setMotion(motion);
+		Vec3 motion = event.getEntity().getDeltaMovement();
+		if(event.getEntityLiving().getEffect(IEPotions.sticky)!=null)
+			motion = motion.subtract(0, (event.getEntityLiving().getEffect(IEPotions.sticky).getAmplifier()+1)*0.3F, 0);
+		else if(event.getEntityLiving().getEffect(IEPotions.concreteFeet)!=null)
+			motion = Vec3.ZERO;
+		event.getEntity().setDeltaMovement(motion);
 	}
 
 	@SubscribeEvent
 	public void onLivingUpdate(LivingUpdateEvent event)
 	{
-		if(event.getEntityLiving() instanceof PlayerEntity&&!event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST).isEmpty()&&ItemNBTHelper.hasKey(event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST), Lib.NBT_Powerpack))
+		if(event.getEntityLiving() instanceof Player&&!event.getEntityLiving().getItemBySlot(EquipmentSlot.CHEST).isEmpty()&&ItemNBTHelper.hasKey(event.getEntityLiving().getItemBySlot(EquipmentSlot.CHEST), Lib.NBT_Powerpack))
 		{
-			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getEntityLiving().getItemStackFromSlot(EquipmentSlotType.CHEST), Lib.NBT_Powerpack);
+			ItemStack powerpack = ItemNBTHelper.getItemStack(event.getEntityLiving().getItemBySlot(EquipmentSlot.CHEST), Lib.NBT_Powerpack);
 			if(!powerpack.isEmpty())
-				powerpack.getItem().onArmorTick(powerpack, event.getEntityLiving().getEntityWorld(), (PlayerEntity)event.getEntityLiving());
+				powerpack.getItem().onArmorTick(powerpack, event.getEntityLiving().getCommandSenderWorld(), (Player)event.getEntityLiving());
 		}
 	}
 
 	@SubscribeEvent()
 	public void digSpeedEvent(PlayerEvent.BreakSpeed event)
 	{
-		ItemStack current = event.getPlayer().getHeldItem(Hand.MAIN_HAND);
+		ItemStack current = event.getPlayer().getItemInHand(InteractionHand.MAIN_HAND);
 		//Stop the combustion drill from working underwater
-		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getPlayer().areEyesInFluid(FluidTags.WATER))
+		if(!current.isEmpty()&&current.getItem()==Tools.drill&&event.getPlayer().isEyeInFluid(FluidTags.WATER))
 			if(((DrillItem)Tools.drill).getUpgrades(current).getBoolean("waterproof"))
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
@@ -321,7 +325,7 @@ public class EventHandler
 			}
 		if(event.getPos()!=null) // Avoid a potential NPE for invalid positions passed
 		{
-			TileEntity te = event.getPlayer().getEntityWorld().getTileEntity(event.getPos());
+			BlockEntity te = event.getPlayer().getCommandSenderWorld().getBlockEntity(event.getPos());
 			if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getPlayer()))
 				event.setCanceled(true);
 		}
@@ -332,7 +336,7 @@ public class EventHandler
 	{
 		if(!event.getLeft().isEmpty()&&event.getLeft().getItem() instanceof IDrillHead&&((IDrillHead)event.getLeft().getItem()).getHeadDamage(event.getLeft()) > 0)
 		{
-			if(!event.getRight().isEmpty()&&event.getLeft().getItem().getIsRepairable(event.getLeft(), event.getRight()))
+			if(!event.getRight().isEmpty()&&event.getLeft().getItem().isValidRepairItem(event.getLeft(), event.getRight()))
 			{
 				event.setOutput(event.getLeft().copy());
 				int repair = Math.min(
@@ -351,18 +355,18 @@ public class EventHandler
 
 				if(event.getName()==null||event.getName().isEmpty())
 				{
-					if(event.getLeft().hasDisplayName())
+					if(event.getLeft().hasCustomHoverName())
 					{
 						event.setCost(event.getCost()+5);
-						event.getOutput().clearCustomName();
+						event.getOutput().resetHoverName();
 					}
 				}
-				else if(!event.getName().equals(event.getLeft().getDisplayName().getString()))
+				else if(!event.getName().equals(event.getLeft().getHoverName().getString()))
 				{
 					event.setCost(event.getCost()+5);
-					if(event.getLeft().hasDisplayName())
+					if(event.getLeft().hasCustomHoverName())
 						event.setCost(event.getCost()+2);
-					event.getOutput().setDisplayName(new StringTextComponent(event.getName()));
+					event.getOutput().setHoverName(new TextComponent(event.getName()));
 				}
 			}
 		}
@@ -375,25 +379,25 @@ public class EventHandler
 		BlockState state = event.getWorld().getBlockState(pos);
 		if(!(state.getBlock() instanceof LecternBlock)||event.getPlayer()==null)
 			return;
-		TileEntity tile = event.getWorld().getTileEntity(pos);
-		if(tile instanceof LecternTileEntity&&((LecternTileEntity)tile).getBook().getItem() instanceof ManualItem)
+		BlockEntity tile = event.getWorld().getBlockEntity(pos);
+		if(tile instanceof LecternBlockEntity&&((LecternBlockEntity)tile).getBook().getItem() instanceof ManualItem)
 		{
-			if(!event.getPlayer().isSneaking())
+			if(!event.getPlayer().isShiftKeyDown())
 			{
 				ImmersiveEngineering.proxy.openManual();
 				event.setCanceled(true);
 			}
-			else if(!event.getWorld().isRemote)
+			else if(!event.getWorld().isClientSide)
 			{
-				Direction direction = state.get(LecternBlock.FACING);
-				ItemStack itemstack = ((LecternTileEntity)tile).getBook().copy();
-				float f = 0.25F*(float)direction.getXOffset();
-				float f1 = 0.25F*(float)direction.getZOffset();
+				Direction direction = state.getValue(LecternBlock.FACING);
+				ItemStack itemstack = ((LecternBlockEntity)tile).getBook().copy();
+				float f = 0.25F*(float)direction.getStepX();
+				float f1 = 0.25F*(float)direction.getStepZ();
 				ItemEntity itementity = new ItemEntity(event.getWorld(), pos.getX()+0.5D+f, pos.getY()+1, pos.getZ()+0.5D+f1, itemstack);
-				itementity.setDefaultPickupDelay();
-				event.getWorld().addEntity(itementity);
-				((LecternTileEntity)tile).clear();
-				LecternBlock.setHasBook(event.getWorld(), pos, state, false);
+				itementity.setDefaultPickUpDelay();
+				event.getWorld().addFreshEntity(itementity);
+				((LecternBlockEntity)tile).clearContent();
+				LecternBlock.resetBookState(event.getWorld(), pos, state, false);
 				event.setCanceled(true);
 			}
 		}
@@ -404,9 +408,9 @@ public class EventHandler
 	{
 		if(event.getState().getBlock() instanceof IEMultiblockBlock)
 		{
-			TileEntity te = event.getWorld().getTileEntity(event.getPos());
+			BlockEntity te = event.getWorld().getBlockEntity(event.getPos());
 			if(te instanceof MultiblockPartTileEntity)
-				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getWorldInfo().getGameTime();
+				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getLevelData().getGameTime();
 		}
 	}
 }

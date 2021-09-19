@@ -37,30 +37,30 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.block.BlockState;
+import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.particles.RedstoneParticleData;
-import net.minecraft.state.Property;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.Vec3i;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.MinecraftForgeClient;
@@ -84,7 +84,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
+public class ClocheTileEntity extends IEBaseTileEntity implements TickableBlockEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
 		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE, IOBJModelCallback<BlockState>, IModelOffsetProvider
 {
 	public static final int SLOT_SOIL = 0;
@@ -125,7 +125,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	}
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
-			() -> new DirectionalBlockPos(pos.up().offset(getFacing().getOpposite()), getFacing()),
+			() -> new DirectionalBlockPos(worldPosition.above().relative(getFacing().getOpposite()), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
@@ -136,7 +136,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			return;
 		ItemStack seed = inventory.get(SLOT_SEED);
 		ItemStack soil = inventory.get(SLOT_SOIL);
-		if(world.isRemote)
+		if(level.isClientSide)
 		{
 			particles.get().clientTick();
 			if(energyStorage.getEnergyStored() > IEServerConfig.MACHINES.cloche_consumption.get()&&fertilizerAmount > 0&&renderActive)
@@ -152,7 +152,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 					else
 						renderGrowth = 0;
 					if(Utils.RAND.nextInt(8)==0)
-						particles.get().add(new RedstoneParticleData(.55f, .1f, .1f, 1), .5, 2.6875, .5, .25, .25, .25, 20);
+						particles.get().add(new DustParticleOptions(.55f, .1f, .1f, 1), .5, 2.6875, .5, .25, .25, .25, 20);
 				}
 			}
 		}
@@ -208,7 +208,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 					{
 						growth += IEServerConfig.MACHINES.cloche_growth_mod.get()*fertilizerMod;
 						consume = true;
-						if(world.getGameTime()%32==((getPos().getX()^getPos().getZ())&31))
+						if(level.getGameTime()%32==((getBlockPos().getX()^getBlockPos().getZ())&31))
 							sendSyncPacket(0);
 					}
 					if(consume)
@@ -254,7 +254,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			else
 				growth = 0;
 
-			if(world.getGameTime()%8==0)
+			if(level.getGameTime()%8==0)
 			{
 				if(output.isPresent())
 					for(int j = 3; j < 7; j++)
@@ -278,7 +278,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 
 	protected void sendSyncPacket(int type)
 	{
-		CompoundNBT nbt = new CompoundNBT();
+		CompoundTag nbt = new CompoundTag();
 		if(type==0)
 		{
 			nbt.putFloat("growth", growth);
@@ -291,13 +291,13 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 			nbt.putFloat("fertilizerMod", fertilizerMod);
 		}
 		else if(type==2)
-			nbt.put("tank", tank.writeToNBT(new CompoundNBT()));
-		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> world.getChunkAt(pos)),
+			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+		ImmersiveEngineering.packetHandler.send(PacketDistributor.TRACKING_CHUNK.with(() -> level.getChunkAt(worldPosition)),
 				new MessageTileSync(this, nbt));
 	}
 
 	@Override
-	public void receiveMessageFromServer(CompoundNBT message)
+	public void receiveMessageFromServer(CompoundTag message)
 	{
 		if(message.contains("growth", NBT.TAG_FLOAT))
 			renderGrowth = message.getFloat("growth");
@@ -314,7 +314,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
 		inventory = Utils.readInventory(nbt.getList("inventory", 10), 7);
@@ -327,12 +327,12 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putInt("dummy", dummy);
 		nbt.put("inventory", Utils.writeInventory(inventory));
 		energyStorage.writeToNBT(nbt);
-		CompoundNBT tankTag = tank.writeToNBT(new CompoundNBT());
+		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
 		nbt.put("tank", tankTag);
 		nbt.putInt("fertilizerAmount", fertilizerAmount);
 		nbt.putFloat("fertilizerMod", fertilizerMod);
@@ -358,7 +358,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -372,20 +372,20 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	@Override
 	public void setFacing(Direction facing)
 	{
-		BlockPos lowest = pos.down(dummy);
+		BlockPos lowest = worldPosition.below(dummy);
 		for(int i = 0; i < 3; ++i)
 		{
-			BlockPos pos = lowest.up(i);
+			BlockPos pos = lowest.above(i);
 			BlockState state = getWorldNonnull().getBlockState(pos);
 			if(state.getBlock()==MetalDevices.cloche)
-				getWorldNonnull().setBlockState(pos, state.with(getFacingProperty(), facing));
+				getWorldNonnull().setBlockAndUpdate(pos, state.setValue(getFacingProperty(), facing));
 		}
 	}
 
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return VoxelShapes.fullCube();
+		return Shapes.block();
 	}
 
 	@Override
@@ -403,20 +403,20 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		// Used to provide tile-dependant drops after breaking
 		if(tempMasterTE instanceof ClocheTileEntity)
 			return (ClocheTileEntity)tempMasterTE;
-		BlockPos masterPos = getPos().down(dummy);
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		BlockPos masterPos = getBlockPos().below(dummy);
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return te instanceof ClocheTileEntity?(ClocheTileEntity)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
+		state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
-			world.setBlockState(pos.up(i), state);
-			((ClocheTileEntity)world.getTileEntity(pos.up(i))).dummy = i;
-			((ClocheTileEntity)world.getTileEntity(pos.up(i))).setFacing(getFacing());
+			level.setBlockAndUpdate(worldPosition.above(i), state);
+			((ClocheTileEntity)level.getBlockEntity(worldPosition.above(i))).dummy = i;
+			((ClocheTileEntity)level.getBlockEntity(worldPosition.above(i))).setFacing(getFacing());
 		}
 	}
 
@@ -426,9 +426,9 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 		tempMasterTE = master();
 		for(int i = 0; i <= 2; i++)
 		{
-			BlockPos p = getPos().down(dummy).up(i);
-			if(world.getTileEntity(p) instanceof ClocheTileEntity)
-				world.removeBlock(p, false);
+			BlockPos p = getBlockPos().below(dummy).above(i);
+			if(level.getBlockEntity(p) instanceof ClocheTileEntity)
+				level.removeBlock(p, false);
 		}
 	}
 
@@ -458,7 +458,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	{
 		if(slot==0)
 		{
-			this.markDirty();
+			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
 	}
@@ -480,7 +480,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			if(dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().rotateY().getAxis()))
+			if(dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
 				return inputHandler.cast();
 			if(dummy==1&&(facing==null||facing==this.getFacing().getOpposite()))
 			{
@@ -489,13 +489,13 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 					return te.outputHandler.cast();
 			}
 		}
-		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().rotateY().getAxis()))
+		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
 			return tankCap.cast();
 		return super.getCapability(capability, facing);
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -505,7 +505,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	{
 		if(dummy==0)
 			return this;
-		TileEntity te = world.getTileEntity(getPos().down(dummy));
+		BlockEntity te = level.getBlockEntity(getBlockPos().below(dummy));
 		if(te instanceof ClocheTileEntity)
 			return (ClocheTileEntity)te;
 		return null;
@@ -534,12 +534,12 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	@OnlyIn(Dist.CLIENT)
 	public boolean shouldRenderGroup(BlockState object, String group)
 	{
-		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.getTranslucent());
+		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.translucent());
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public TransformationMatrix applyTransformations(BlockState object, String group, TransformationMatrix transform)
+	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
 	{
 		return transform;
 	}
@@ -594,7 +594,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	{
 		if(dummy!=0)
 		{
-			TileEntity te = world.getTileEntity(getPos().down(dummy));
+			BlockEntity te = level.getBlockEntity(getBlockPos().below(dummy));
 			if(te instanceof ClocheTileEntity)
 				return ((ClocheTileEntity)te).energyStorage;
 		}
@@ -605,7 +605,7 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	@Override
 	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
 	{
-		return facing==null||(dummy==0&&facing.getAxis()==this.getFacing().rotateY().getAxis())||(dummy==2&&facing==Direction.UP)?IOSideConfig.INPUT: IOSideConfig.NONE;
+		return facing==null||(dummy==0&&facing.getAxis()==this.getFacing().getClockWise().getAxis())||(dummy==2&&facing==Direction.UP)?IOSideConfig.INPUT: IOSideConfig.NONE;
 	}
 
 	IEForgeEnergyWrapper energyWrapper = new IEForgeEnergyWrapper(this, null);
@@ -613,23 +613,23 @@ public class ClocheTileEntity extends IEBaseTileEntity implements ITickableTileE
 	@Override
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
-		if(facing==null||(dummy==0&&facing.getAxis()==this.getFacing().rotateY().getAxis())||(dummy==2&&facing==Direction.UP))
+		if(facing==null||(dummy==0&&facing.getAxis()==this.getFacing().getClockWise().getAxis())||(dummy==2&&facing==Direction.UP))
 			return energyWrapper;
 		return null;
 	}
 
-	AxisAlignedBB renderBB;
+	AABB renderBB;
 
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(renderBB==null)
-			renderBB = new AxisAlignedBB(0, 0, 0, 1, 2, 1).offset(pos);
+			renderBB = new AABB(0, 0, 0, 1, 2, 1).move(worldPosition);
 		return renderBB;
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		return new BlockPos(0, dummy, 0);
 	}

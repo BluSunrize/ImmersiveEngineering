@@ -15,12 +15,11 @@ import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-
 import javax.annotation.Nullable;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
 
 public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRecipe>
 {
@@ -36,7 +35,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 		ItemStack output = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 		ItemStack mold = readOutput(json.get("mold"));
-		int energy = JSONUtils.getInt(json, "energy");
+		int energy = GsonHelper.getAsInt(json, "energy");
 		return IEServerConfig.MACHINES.metalPressConfig.apply(
 				new MetalPressRecipe(recipeId, output, input, new ComparableItemStack(mold), energy)
 		);
@@ -44,21 +43,21 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 
 	@Nullable
 	@Override
-	public MetalPressRecipe read(ResourceLocation recipeId, PacketBuffer buffer)
+	public MetalPressRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItemStack();
+		ItemStack output = buffer.readItem();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		ItemStack mold = buffer.readItemStack();
+		ItemStack mold = buffer.readItem();
 		int energy = buffer.readInt();
 		return new MetalPressRecipe(recipeId, output, input, new ComparableItemStack(mold), energy);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, MetalPressRecipe recipe)
+	public void toNetwork(FriendlyByteBuf buffer, MetalPressRecipe recipe)
 	{
-		buffer.writeItemStack(recipe.output);
+		buffer.writeItem(recipe.output);
 		recipe.input.write(buffer);
-		buffer.writeItemStack(recipe.mold.stack);
+		buffer.writeItem(recipe.mold.stack);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }

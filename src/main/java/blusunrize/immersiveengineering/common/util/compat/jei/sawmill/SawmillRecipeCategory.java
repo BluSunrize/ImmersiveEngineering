@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -23,10 +23,9 @@ import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import java.util.Arrays;
 
 public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
@@ -68,7 +67,7 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 	{
 		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		guiItemStacks.init(0, true, 2, 6);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
+		guiItemStacks.set(0, Arrays.asList(recipe.input.getItems()));
 
 		int slot = 1;
 		if(!recipe.stripped.isEmpty())
@@ -101,7 +100,7 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 	}
 
 	@Override
-	public void draw(SawmillRecipe recipe, MatrixStack transform, double mouseX, double mouseY)
+	public void draw(SawmillRecipe recipe, PoseStack transform, double mouseX, double mouseY)
 	{
 		if(recipe.stripped.isEmpty())
 		{

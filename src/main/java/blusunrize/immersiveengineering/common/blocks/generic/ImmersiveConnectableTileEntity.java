@@ -18,11 +18,11 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
@@ -33,7 +33,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 {
 	protected GlobalWireNetwork globalNet;
 
-	public ImmersiveConnectableTileEntity(TileEntityType<? extends ImmersiveConnectableTileEntity> type)
+	public ImmersiveConnectableTileEntity(BlockEntityType<? extends ImmersiveConnectableTileEntity> type)
 	{
 		super(type);
 	}
@@ -47,7 +47,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	@Override
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
 	{
-		return getPos();
+		return getBlockPos();
 	}
 
 	@Override
@@ -58,30 +58,30 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	@Override
 	public void removeCable(Connection connection, ConnectionPoint attachedPoint)
 	{
-		this.markDirty();
+		this.setChanged();
 	}
 
 	@Override
-	public void setWorldAndPos(@Nonnull World worldIn, @Nonnull BlockPos pos)
+	public void setLevelAndPosition(@Nonnull Level worldIn, @Nonnull BlockPos pos)
 	{
-		super.setWorldAndPos(worldIn, pos);
+		super.setLevelAndPosition(worldIn, pos);
 		globalNet = GlobalWireNetwork.getNetwork(worldIn);
 	}
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vector3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo info, Vec3i offset)
 	{
-		return new ConnectionPoint(pos, 0);
+		return new ConnectionPoint(worldPosition, 0);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 	}
 
 	@Override
-	public void writeCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 	}
 
@@ -91,7 +91,7 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	{
 		return CombinedModelData.combine(
 				new SinglePropertyModelData<>(
-						ConnectorTileHelper.genConnBlockState(world, this), Model.CONNECTIONS
+						ConnectorTileHelper.genConnBlockState(level, this), Model.CONNECTIONS
 				), super.getModelData()
 		);
 	}
@@ -107,32 +107,32 @@ public abstract class ImmersiveConnectableTileEntity extends IEBaseTileEntity im
 	public void onLoad()
 	{
 		super.onLoad();
-		ConnectorTileHelper.onChunkLoad(this, world);
+		ConnectorTileHelper.onChunkLoad(this, level);
 	}
 
 	@Override
-	public void remove()
+	public void setRemoved()
 	{
-		super.remove();
-		ConnectorTileHelper.remove(world, this);
+		super.setRemoved();
+		ConnectorTileHelper.remove(level, this);
 	}
 
 	@Override
 	public Collection<ConnectionPoint> getConnectionPoints()
 	{
-		return ImmutableList.of(new ConnectionPoint(pos, 0));
+		return ImmutableList.of(new ConnectionPoint(worldPosition, 0));
 	}
 
 	private final Int2ObjectMap<LocalWireNetwork> cachedLocalNets = new Int2ObjectArrayMap<>();
 
 	protected LocalWireNetwork getLocalNet(int cpIndex)
 	{
-		return ConnectorTileHelper.getLocalNetWithCache(globalNet, getPos(), cpIndex, cachedLocalNets);
+		return ConnectorTileHelper.getLocalNetWithCache(globalNet, getBlockPos(), cpIndex, cachedLocalNets);
 	}
 
 	@Override
 	public BlockPos getPosition()
 	{
-		return pos;
+		return worldPosition;
 	}
 }

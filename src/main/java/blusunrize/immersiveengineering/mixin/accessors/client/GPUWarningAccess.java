@@ -10,16 +10,16 @@
 package blusunrize.immersiveengineering.mixin.accessors.client;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.renderer.GPUWarning;
+import net.minecraft.client.renderer.GpuWarnlistManager;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(GPUWarning.class)
+@Mixin(GpuWarnlistManager.class)
 public interface GPUWarningAccess
 {
-	@Accessor("field_241688_c_")
-	ImmutableMap<String, String> getWarningStrings();
+	@Accessor
+	ImmutableMap<String, String> getWarnings();
 
-	@Accessor("field_241688_c_")
-	void setWarningStrings(ImmutableMap<String, String> newMap);
+	@Accessor
+	void setWarnings(ImmutableMap<String, String> newMap);
 }

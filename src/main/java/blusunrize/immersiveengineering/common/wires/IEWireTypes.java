@@ -23,10 +23,10 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.WireCo
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -69,16 +69,16 @@ public class IEWireTypes
 	{
 		registerFeedthroughForWiretype(COPPER, new ResourceLocation(MODID, "block/connector/connector_lv"),
 				new float[]{0, 4, 8, 12}, .5,
-				() -> Connectors.getEnergyConnector(LV_CATEGORY, false).getDefaultState());
+				() -> Connectors.getEnergyConnector(LV_CATEGORY, false).defaultBlockState());
 		registerFeedthroughForWiretype(ELECTRUM, new ResourceLocation(MODID, "block/connector/connector_mv"),
 				new float[]{0, 4, 8, 12}, .5625,
-				() -> Connectors.getEnergyConnector(MV_CATEGORY, false).getDefaultState());
+				() -> Connectors.getEnergyConnector(MV_CATEGORY, false).defaultBlockState());
 		registerFeedthroughForWiretype(STEEL, new ResourceLocation(MODID, "block/connector/connector_hv"),
 				new float[]{0, 4, 8, 12}, .75,
-				() -> Connectors.getEnergyConnector(HV_CATEGORY, false).getDefaultState());
+				() -> Connectors.getEnergyConnector(HV_CATEGORY, false).defaultBlockState());
 		registerFeedthroughForWiretype(REDSTONE, new ResourceLocation(MODID, "block/connector/connector_redstone"),
 				new float[]{3, 8, 11, 16}, .5625, .5,
-				() -> Connectors.connectorRedstone.getDefaultState()
+				() -> Connectors.connectorRedstone.defaultBlockState()
 		);
 	}
 
@@ -218,7 +218,7 @@ public class IEWireTypes
 		@Override
 		public double getBasicLossRate(Connection c)
 		{
-			double length = Math.sqrt(c.getEndA().getPosition().distanceSq(Vector3d.copy(c.getEndB().getPosition()), false));
+			double length = Math.sqrt(c.getEndA().getPosition().distSqr(Vec3.atLowerCornerOf(c.getEndB().getPosition()), false));
 			return getLossRatio()*length/getMaxLength();
 		}
 

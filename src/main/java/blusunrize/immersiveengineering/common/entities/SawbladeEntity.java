@@ -11,30 +11,29 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
-
 import javax.annotation.Nonnull;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class SawbladeEntity extends IEProjectileEntity
 {
 	public static final EntityType<SawbladeEntity> TYPE = Builder
-			.<SawbladeEntity>create(SawbladeEntity::new, EntityClassification.MISC)
-			.size(.75F, .2F)
+			.<SawbladeEntity>of(SawbladeEntity::new, MobCategory.MISC)
+			.sized(.75F, .2F)
 			.build(ImmersiveEngineering.MODID+":sawblade");
 
 	static
@@ -43,33 +42,33 @@ public class SawbladeEntity extends IEProjectileEntity
 	}
 
 	private ItemStack ammo = ItemStack.EMPTY;
-	private static final DataParameter<ItemStack> dataMarker_ammo = EntityDataManager.createKey(SawbladeEntity.class, DataSerializers.ITEMSTACK);
+	private static final EntityDataAccessor<ItemStack> dataMarker_ammo = SynchedEntityData.defineId(SawbladeEntity.class, EntityDataSerializers.ITEM_STACK);
 
-	public SawbladeEntity(EntityType<SawbladeEntity> type, World world)
+	public SawbladeEntity(EntityType<SawbladeEntity> type, Level world)
 	{
 		super(type, world);
-		this.pickupStatus = PickupStatus.ALLOWED;
+		this.pickup = Pickup.ALLOWED;
 	}
 
-	public SawbladeEntity(World world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
+	public SawbladeEntity(Level world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
 	{
 		super(TYPE, world, living, ax, ay, az);
 		this.ammo = ammo;
 		this.setAmmoSynced();
-		this.pickupStatus = PickupStatus.ALLOWED;
+		this.pickup = Pickup.ALLOWED;
 		this.setPierceLevel((byte)3);
 	}
 
 	@Override
-	protected void registerData()
+	protected void defineSynchedData()
 	{
-		super.registerData();
-		this.dataManager.register(dataMarker_ammo, ItemStack.EMPTY);
+		super.defineSynchedData();
+		this.entityData.define(dataMarker_ammo, ItemStack.EMPTY);
 	}
 
 	@Nonnull
 	@Override
-	protected ItemStack getArrowStack()
+	protected ItemStack getPickupItem()
 	{
 		return ammo;
 	}
@@ -77,12 +76,12 @@ public class SawbladeEntity extends IEProjectileEntity
 	public void setAmmoSynced()
 	{
 		if(!this.getAmmo().isEmpty())
-			this.dataManager.set(dataMarker_ammo, getAmmo());
+			this.entityData.set(dataMarker_ammo, getAmmo());
 	}
 
 	public ItemStack getAmmoSynced()
 	{
-		return this.dataManager.get(dataMarker_ammo);
+		return this.entityData.get(dataMarker_ammo);
 	}
 
 	public ItemStack getAmmo()
@@ -105,29 +104,29 @@ public class SawbladeEntity extends IEProjectileEntity
 	@Override
 	public void baseTick()
 	{
-		if(this.getAmmo().isEmpty()&&this.world.isRemote)
+		if(this.getAmmo().isEmpty()&&this.level.isClientSide)
 			this.ammo = getAmmoSynced();
 		super.baseTick();
 	}
 
 	@Override
-	public void onImpact(RayTraceResult mop)
+	public void onHit(HitResult mop)
 	{
-		if(!this.world.isRemote&&!getAmmo().isEmpty())
+		if(!this.level.isClientSide&&!getAmmo().isEmpty())
 		{
-			if(mop instanceof EntityRayTraceResult)
+			if(mop instanceof EntityHitResult)
 			{
-				Entity hit = ((EntityRayTraceResult)mop).getEntity();
-				Entity shooter = getShooter();
+				Entity hit = ((EntityHitResult)mop).getEntity();
+				Entity shooter = getOwner();
 				// todo: make this configurable?
-				hit.attackEntityFrom(IEDamageSources.causeSawbladeDamage(this, shooter), 12.0f);
+				hit.hurt(IEDamageSources.causeSawbladeDamage(this, shooter), 12.0f);
 			}
 			int dmg = Math.round(getAmmo().getMaxDamage()*.05f);
-			Entity shooter = getShooter();
-			if(getAmmo().attemptDamageItem(dmg, world.rand, shooter instanceof ServerPlayerEntity?(ServerPlayerEntity)shooter: null))
+			Entity shooter = getOwner();
+			if(getAmmo().hurt(dmg, level.random, shooter instanceof ServerPlayer?(ServerPlayer)shooter: null))
 				this.remove();
-			if(mop instanceof BlockRayTraceResult)
-				this.onHitBlock((BlockRayTraceResult)mop);
+			if(mop instanceof BlockHitResult)
+				this.onHitBlock((BlockHitResult)mop);
 		}
 	}
 
@@ -137,24 +136,24 @@ public class SawbladeEntity extends IEProjectileEntity
 		super.handlePiecing(target);
 		if(this.piercedEntities.size() >= 3 && getShooterUUID() != null)
 		{
-			PlayerEntity shooter = world.getPlayerByUuid(this.getShooterUUID());
+			Player shooter = level.getPlayerByUUID(this.getShooterUUID());
 			if(shooter!=null)
 				Utils.unlockIEAdvancement(shooter, "main/secret_ravenholm");
 		}
 	}
 
 	@Override
-	public void writeAdditional(CompoundNBT nbt)
+	public void addAdditionalSaveData(CompoundTag nbt)
 	{
-		super.writeAdditional(nbt);
+		super.addAdditionalSaveData(nbt);
 		if(!this.ammo.isEmpty())
-			nbt.put("ammo", this.ammo.write(new CompoundNBT()));
+			nbt.put("ammo", this.ammo.save(new CompoundTag()));
 	}
 
 	@Override
-	public void readAdditional(CompoundNBT nbt)
+	public void readAdditionalSaveData(CompoundTag nbt)
 	{
-		super.readAdditional(nbt);
-		this.ammo = ItemStack.read(nbt.getCompound("ammo"));
+		super.readAdditionalSaveData(nbt);
+		this.ammo = ItemStack.of(nbt.getCompound("ammo"));
 	}
 }

@@ -13,18 +13,18 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
-import net.minecraft.client.renderer.entity.model.BipedModel;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Direction;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
@@ -44,58 +44,58 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 {
 	public PowerpackItem()
 	{
-		super("powerpack", new Properties().maxStackSize(1));
+		super("powerpack", new Properties().stacksTo(1));
 	}
 
 	@Nullable
 	@Override
-	public EquipmentSlotType getEquipmentSlot(ItemStack stack)
+	public EquipmentSlot getEquipmentSlot(ItemStack stack)
 	{
-		return EquipmentSlotType.CHEST;
+		return EquipmentSlot.CHEST;
 	}
 
 	@Override
-	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlotType slot, String type)
+	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
 	{
 		return "immersiveengineering:textures/models/powerpack.png";
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public BipedModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlotType armorSlot, BipedModel _default)
+	public HumanoidModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default)
 	{
 		return ModelPowerpack.getModel();
 	}
 
 	@Override
 	@OnlyIn(Dist.CLIENT)
-	public void addInformation(ItemStack stack, @Nullable World world, List<ITextComponent> list, ITooltipFlag flag)
+	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-		list.add(new TranslationTextComponent(Lib.DESC+"info.energyStored", stored));
+		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
 	}
 
 	@Override
-	public void onArmorTick(ItemStack itemStack, World world, PlayerEntity player)
+	public void onArmorTick(ItemStack itemStack, Level world, Player player)
 	{
 		int energy = getEnergyStored(itemStack);
 		if(energy > 0)
 		{
 			int pre = energy;
-			for(EquipmentSlotType slot : EquipmentSlotType.values())
-				if(EnergyHelper.isFluxReceiver(player.getItemStackFromSlot(slot))&&!(player.getItemStackFromSlot(slot).getItem() instanceof PowerpackItem))
-					energy -= EnergyHelper.insertFlux(player.getItemStackFromSlot(slot), Math.min(energy, 256), false);
+			for(EquipmentSlot slot : EquipmentSlot.values())
+				if(EnergyHelper.isFluxReceiver(player.getItemBySlot(slot))&&!(player.getItemBySlot(slot).getItem() instanceof PowerpackItem))
+					energy -= EnergyHelper.insertFlux(player.getItemBySlot(slot), Math.min(energy, 256), false);
 			if(pre!=energy)
 				EnergyHelper.extractFlux(itemStack, pre-energy, false);
 		}
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, World world, Entity entity, int itemSlot, boolean isSelected)
+	public void inventoryTick(ItemStack stack, Level world, Entity entity, int itemSlot, boolean isSelected)
 	{
 		// We'll just have to assume that's Curios which sets the slot of -1
-		if(itemSlot==-1&&entity instanceof PlayerEntity)
-			onArmorTick(stack, world, (PlayerEntity)entity);
+		if(itemSlot==-1&&entity instanceof Player)
+			onArmorTick(stack, world, (Player)entity);
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	}
 
 	@Override
-	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundNBT nbt)
+	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
 			return new ICapabilityProvider()

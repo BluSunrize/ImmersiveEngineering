@@ -10,21 +10,21 @@
 package blusunrize.immersiveengineering.mixin.coremods;
 
 import blusunrize.immersiveengineering.common.wires.WireCollisions;
-import net.minecraft.block.BlockState;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-@Mixin(ServerWorld.class)
+@Mixin(ServerLevel.class)
 public class ServerWorldMixin
 {
-	@Inject(method = "notifyBlockUpdate", at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
+	@Inject(method = "sendBlockUpdated", at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;"))
 	public void wireBlockCallback(BlockPos pos, BlockState oldState, BlockState newState, int flags, CallbackInfo ci)
 	{
-		WireCollisions.notifyBlockUpdate((World)(Object)this, pos, oldState, newState, flags);
+		WireCollisions.notifyBlockUpdate((Level)(Object)this, pos, oldState, newState, flags);
 	}
 }

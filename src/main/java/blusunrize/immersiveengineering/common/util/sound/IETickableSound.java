@@ -8,35 +8,35 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
-import net.minecraft.client.audio.TickableSound;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
+import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class IETickableSound extends TickableSound
+public class IETickableSound extends AbstractTickableSoundInstance
 {
 	protected final Supplier<Boolean> tickFunction;
 	protected final Consumer<IETickableSound> onDoneFunction;
 
-	public IETickableSound(SoundEvent event, SoundCategory category, float volume, float pitch, Supplier<Boolean> tickFunction, Consumer<IETickableSound> onDoneFunction)
+	public IETickableSound(SoundEvent event, SoundSource category, float volume, float pitch, Supplier<Boolean> tickFunction, Consumer<IETickableSound> onDoneFunction)
 	{
 		super(event, category);
 		this.volume = volume;
 		this.pitch = pitch;
 		this.tickFunction = tickFunction;
 		this.onDoneFunction = onDoneFunction;
-		this.repeat = true;
+		this.looping = true;
 	}
 
 	@Override
 	public void tick()
 	{
-		if(!this.isDonePlaying())
+		if(!this.isStopped())
 			if(this.tickFunction.get())
 			{
-				this.finishPlaying();
+				this.stop();
 				this.onDoneFunction.accept(this);
 			}
 	}

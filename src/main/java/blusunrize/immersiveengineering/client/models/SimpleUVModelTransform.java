@@ -10,26 +10,26 @@
 package blusunrize.immersiveengineering.client.models;
 
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.renderer.model.IModelTransform;
-import net.minecraft.util.math.vector.TransformationMatrix;
+import com.mojang.math.Transformation;
+import net.minecraft.client.resources.model.ModelState;
 import net.minecraftforge.client.model.SimpleModelTransform;
 
 import javax.annotation.Nonnull;
 
-public class SimpleUVModelTransform implements IModelTransform
+public class SimpleUVModelTransform implements ModelState
 {
-	public static final SimpleModelTransform IDENTITY = new SimpleModelTransform(TransformationMatrix.identity());
+	public static final SimpleModelTransform IDENTITY = new SimpleModelTransform(Transformation.identity());
 
-	private final ImmutableMap<?, TransformationMatrix> map;
-	private final TransformationMatrix base;
+	private final ImmutableMap<?, Transformation> map;
+	private final Transformation base;
 	private final boolean uvLock;
 
-	public SimpleUVModelTransform(ImmutableMap<?, TransformationMatrix> map, boolean uvLock)
+	public SimpleUVModelTransform(ImmutableMap<?, Transformation> map, boolean uvLock)
 	{
-		this(map, TransformationMatrix.identity(), uvLock);
+		this(map, Transformation.identity(), uvLock);
 	}
 
-	public SimpleUVModelTransform(ImmutableMap<?, TransformationMatrix> map, TransformationMatrix base, boolean uvLock)
+	public SimpleUVModelTransform(ImmutableMap<?, Transformation> map, Transformation base, boolean uvLock)
 	{
 		this.map = map;
 		this.base = base;
@@ -37,21 +37,21 @@ public class SimpleUVModelTransform implements IModelTransform
 	}
 
 	@Override
-	public boolean isUvLock()
+	public boolean isUvLocked()
 	{
 		return uvLock;
 	}
 
 	@Override
 	@Nonnull
-	public TransformationMatrix getRotation()
+	public Transformation getRotation()
 	{
 		return base;
 	}
 
 	@Override
-	public TransformationMatrix getPartTransformation(Object part)
+	public Transformation getPartTransformation(Object part)
 	{
-		return map.getOrDefault(part, TransformationMatrix.identity());
+		return map.getOrDefault(part, Transformation.identity());
 	}
 }

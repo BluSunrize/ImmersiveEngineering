@@ -15,27 +15,27 @@ import blusunrize.immersiveengineering.common.items.EarmuffsItem;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
-import net.minecraft.client.audio.ITickableSound;
-import net.minecraft.client.audio.Sound;
-import net.minecraft.client.audio.SoundEventAccessor;
-import net.minecraft.client.audio.SoundHandler;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.BlockPos;
+import net.minecraft.client.resources.sounds.Sound;
+import net.minecraft.client.resources.sounds.TickableSoundInstance;
+import net.minecraft.client.sounds.SoundManager;
+import net.minecraft.client.sounds.WeighedSoundEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fml.ModList;
 
 import javax.annotation.Nullable;
 
-public class IETileSound implements ITickableSound
+public class IETileSound implements TickableSoundInstance
 {
 	protected Sound sound;
-	private SoundEventAccessor soundEvent;
-	private SoundCategory category;
-	public AttenuationType attenuation;
+	private WeighedSoundEvents soundEvent;
+	private SoundSource category;
+	public Attenuation attenuation;
 	public final ResourceLocation resource;
 	public float volume;
 	public float pitch;
@@ -48,12 +48,12 @@ public class IETileSound implements ITickableSound
 	public float volumeAjustment = 1;
 
 
-	public IETileSound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, AttenuationType attenuation, SoundCategory category)
+	public IETileSound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, Attenuation attenuation, SoundSource category)
 	{
-		this(event.getName(), volume, pitch, repeat, repeatDelay, x, y, z, attenuation, category);
+		this(event.getLocation(), volume, pitch, repeat, repeatDelay, x, y, z, attenuation, category);
 	}
 
-	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, AttenuationType attenuation, SoundCategory category)
+	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, int x, int y, int z, Attenuation attenuation, SoundSource category)
 	{
 		this.attenuation = attenuation;
 		this.resource = sound;
@@ -68,12 +68,12 @@ public class IETileSound implements ITickableSound
 		this.category = category;
 	}
 
-	public IETileSound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, AttenuationType attenuation, SoundCategory category)
+	public IETileSound(SoundEvent event, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, Attenuation attenuation, SoundSource category)
 	{
-		this(event.getName(), volume, pitch, repeat, repeatDelay, pos.getX(), pos.getY(), pos.getZ(), attenuation, category);
+		this(event.getLocation(), volume, pitch, repeat, repeatDelay, pos.getX(), pos.getY(), pos.getZ(), attenuation, category);
 	}
 
-	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, AttenuationType attenuation, SoundCategory category)
+	public IETileSound(ResourceLocation sound, float volume, float pitch, boolean repeat, int repeatDelay, BlockPos pos, Attenuation attenuation, SoundSource category)
 	{
 		this(sound, volume, pitch, repeat, repeatDelay, pos.getX(), pos.getY(), pos.getZ(), attenuation, category);
 	}
@@ -81,26 +81,26 @@ public class IETileSound implements ITickableSound
 	public float[] origPos;
 
 	@Override
-	public AttenuationType getAttenuationType()
+	public Attenuation getAttenuation()
 	{
 		return attenuation;
 	}
 
 	@Override
-	public ResourceLocation getSoundLocation()
+	public ResourceLocation getLocation()
 	{
 		return resource;
 	}
 
 	@Nullable
 	@Override
-	public SoundEventAccessor createAccessor(SoundHandler handler)
+	public WeighedSoundEvents resolve(SoundManager handler)
 	{
-		this.soundEvent = handler.getAccessor(this.resource);
+		this.soundEvent = handler.getSoundEvent(this.resource);
 		if(this.soundEvent==null)
-			this.sound = SoundHandler.MISSING_SOUND;
+			this.sound = SoundManager.EMPTY_SOUND;
 		else
-			this.sound = this.soundEvent.cloneEntry();
+			this.sound = this.soundEvent.getSound();
 		return this.soundEvent;
 	}
 
@@ -111,7 +111,7 @@ public class IETileSound implements ITickableSound
 	}
 
 	@Override
-	public SoundCategory getCategory()
+	public SoundSource getSource()
 	{
 		return category;
 	}
@@ -147,19 +147,19 @@ public class IETileSound implements ITickableSound
 	}
 
 	@Override
-	public boolean canRepeat()
+	public boolean isLooping()
 	{
 		return canRepeat;
 	}
 
 	@Override
-	public boolean isGlobal()
+	public boolean isRelative()
 	{
 		return false;
 	}
 
 	@Override
-	public int getRepeatDelay()
+	public int getDelay()
 	{
 		return repeatDelay;
 	}
@@ -167,9 +167,9 @@ public class IETileSound implements ITickableSound
 	public void evaluateVolume()
 	{
 		volumeAjustment = 1f;
-		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD).isEmpty())
+		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemBySlot(EquipmentSlot.HEAD).isEmpty())
 		{
-			ItemStack head = ClientUtils.mc().player.getItemStackFromSlot(EquipmentSlotType.HEAD);
+			ItemStack head = ClientUtils.mc().player.getItemBySlot(EquipmentSlot.HEAD);
 			ItemStack earmuffs = ItemStack.EMPTY;
 			if(!head.isEmpty()&&(head.getItem()==Misc.earmuffs||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
 				earmuffs = head.getItem()==Misc.earmuffs?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
@@ -198,7 +198,7 @@ public class IETileSound implements ITickableSound
 		//			}
 		//		}
 
-		TileEntity tile = ClientUtils.mc().player.world.getTileEntity(new BlockPos(tileX, tileY, tileZ));
+		BlockEntity tile = ClientUtils.mc().player.level.getBlockEntity(new BlockPos(tileX, tileY, tileZ));
 		if(!(tile instanceof ISoundTile))
 			donePlaying = true;
 		else
@@ -209,7 +209,7 @@ public class IETileSound implements ITickableSound
 				float radiusSq = ((ISoundTile)tile).getSoundRadiusSq();
 				if(ClientUtils.mc().player!=null)
 				{
-					double distSq = ClientUtils.mc().player.getDistanceSq(tileX, tileY, tileZ);
+					double distSq = ClientUtils.mc().player.distanceToSqr(tileX, tileY, tileZ);
 					if(distSq>radiusSq)
 						donePlaying = true;
 					else
@@ -223,14 +223,14 @@ public class IETileSound implements ITickableSound
 	@Override
 	public void tick()
 	{
-		if(ClientUtils.mc().player!=null&&ClientUtils.mc().player.world.getGameTime()%40==0)
+		if(ClientUtils.mc().player!=null&&ClientUtils.mc().player.level.getGameTime()%40==0)
 			evaluateVolume();
 	}
 
 	public boolean donePlaying = false;
 
 	@Override
-	public boolean isDonePlaying()
+	public boolean isStopped()
 	{
 		return donePlaying;
 	}

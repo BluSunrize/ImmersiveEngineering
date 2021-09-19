@@ -9,11 +9,11 @@
 
 package blusunrize.immersiveengineering.api.excavator;
 
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.ResourceLocationException;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.ColumnPos;
+import net.minecraft.ResourceLocationException;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ColumnPos;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
@@ -83,9 +83,9 @@ public class MineralVein
 		return ExcavatorHandler.mineralVeinYield > 0&&getDepletion() >= ExcavatorHandler.mineralVeinYield;
 	}
 
-	public CompoundNBT writeToNBT()
+	public CompoundTag writeToNBT()
 	{
-		CompoundNBT tag = new CompoundNBT();
+		CompoundTag tag = new CompoundTag();
 		tag.putInt("x", pos.x);
 		tag.putInt("z", pos.z);
 		tag.putString("mineral", mineralName.toString());
@@ -95,7 +95,7 @@ public class MineralVein
 	}
 
 	@Nullable
-	public static MineralVein readFromNBT(CompoundNBT tag)
+	public static MineralVein readFromNBT(CompoundTag tag)
 	{
 		try
 		{

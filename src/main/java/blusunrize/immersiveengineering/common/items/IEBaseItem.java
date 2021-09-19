@@ -12,17 +12,17 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.gui.GuiHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fml.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -44,9 +44,9 @@ public class IEBaseItem extends Item implements IColouredItem
 		this(name, props, ImmersiveEngineering.ITEM_GROUP);
 	}
 
-	public IEBaseItem(String name, Properties props, ItemGroup group)
+	public IEBaseItem(String name, Properties props, CreativeModeTab group)
 	{
-		super(props.group(group));
+		super(props.tab(group));
 		this.itemName = name;
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEItems.add(this);
@@ -79,23 +79,23 @@ public class IEBaseItem extends Item implements IColouredItem
 		isHidden = false;
 	}
 
-	protected void openGui(PlayerEntity player, EquipmentSlotType slot)
+	protected void openGui(Player player, EquipmentSlot slot)
 	{
-		ItemStack stack = player.getItemStackFromSlot(slot);
-		NetworkHooks.openGui((ServerPlayerEntity)player, new INamedContainerProvider()
+		ItemStack stack = player.getItemBySlot(slot);
+		NetworkHooks.openGui((ServerPlayer)player, new MenuProvider()
 		{
 			@Nonnull
 			@Override
-			public ITextComponent getDisplayName()
+			public Component getDisplayName()
 			{
-				return new StringTextComponent("");
+				return new TextComponent("");
 			}
 
 			@Nullable
 			@Override
-			public Container createMenu(int i, PlayerInventory playerInventory, PlayerEntity playerEntity)
+			public AbstractContainerMenu createMenu(int i, Inventory playerInventory, Player playerEntity)
 			{
-				return GuiHandler.createContainer(playerInventory, playerEntity.world, slot, stack, i);
+				return GuiHandler.createContainer(playerInventory, playerEntity.level, slot, stack, i);
 			}
 		}, buffer -> buffer.writeInt(slot.ordinal()));
 	}

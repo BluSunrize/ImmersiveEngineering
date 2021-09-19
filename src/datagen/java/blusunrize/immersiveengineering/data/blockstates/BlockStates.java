@@ -33,16 +33,16 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonObject;
-import net.minecraft.block.Block;
-import net.minecraft.block.FenceBlock;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.item.DyeColor;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.FenceBlock;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -80,13 +80,13 @@ public class BlockStates extends ExtendedBlockstateProvider
 	private void postBlock(Block b, ResourceLocation texture)
 	{
 		ResourceLocation model = rl("block/wooden_device/wooden_post.obj.ie");
-		ImmutableList.Builder<Vector3i> parts = ImmutableList.builder();
-		parts.add(new Vector3i(0, 0, 0))
-				.add(new Vector3i(0, 1, 0))
-				.add(new Vector3i(0, 2, 0))
-				.add(new Vector3i(0, 3, 0));
+		ImmutableList.Builder<Vec3i> parts = ImmutableList.builder();
+		parts.add(new Vec3i(0, 0, 0))
+				.add(new Vec3i(0, 1, 0))
+				.add(new Vec3i(0, 2, 0))
+				.add(new Vec3i(0, 3, 0));
 		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
-			parts.add(new BlockPos(0, 3, 0).offset(d));
+			parts.add(new BlockPos(0, 3, 0).relative(d));
 		ModelFile baseModel = ieObj(name(b), model)
 				.texture("texture", texture);
 		BlockModelBuilder builder = splitModel(
@@ -131,7 +131,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		}
 		for(DyeColor dye : DyeColor.values())
 		{
-			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+dye.getTranslationKey());
+			ResourceLocation sheetmetalName = modLoc("block/metal/sheetmetal_"+dye.getName());
 			cubeAll(MetalDecoration.coloredSheetmetal.get(dye), sheetmetalName);
 			slabFor(MetalDecoration.coloredSheetmetal.get(dye), sheetmetalName);
 		}
@@ -487,7 +487,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		VariantBlockStateBuilder stateBuilder = getVariantBuilder(block);
 		forEachState(stateBuilder.partialState(), additionalProps, state -> {
 			ModelFile modelLoc = model.apply(state);
-			for(Direction d : facing.getAllowedValues())
+			for(Direction d : facing.getPossibleValues())
 			{
 				int x;
 				int y;
@@ -587,7 +587,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 	public static <T extends Comparable<T>> void forEach(PartialBlockstate base, Property<T> prop,
 														 List<Property<?>> remaining, Consumer<PartialBlockstate> out)
 	{
-		for(T value : prop.getAllowedValues())
+		for(T value : prop.getPossibleValues())
 			forEachState(base, remaining, map -> {
 				map = map.with(prop, value);
 				out.accept(map);
@@ -623,7 +623,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(Misc.hempPlant);
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
-			ModelFile model = models().withExistingParent("block/hemp/"+g.getString(),
+			ModelFile model = models().withExistingParent("block/hemp/"+g.getSerializedName(),
 					new ResourceLocation("block/crop"))
 					.texture("crop", g.getTextureName());
 			builder.partialState()
@@ -637,7 +637,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		VariantBlockStateBuilder builder = getVariantBuilder(WoodenDecoration.sawdust);
 		ResourceLocation sawdustTexture = new ResourceLocation(ImmersiveEngineering.MODID, "block/wooden_decoration/sawdust");
 		ModelFile singleModel = null;
-		for(int layer : SawdustBlock.LAYERS.getAllowedValues())
+		for(int layer : SawdustBlock.LAYERS.getPossibleValues())
 		{
 			String name = "block/sawdust_"+layer;
 			ModelFile model;
@@ -672,7 +672,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 	{
 		BlockModelBuilder builder = models().withExistingParent(outName, modLoc("block/ie_six_sides"));
 		for(Direction d : DirectionUtils.VALUES)
-			builder.texture(d.getString(), new ResourceLocation(baseTexName.getNamespace(),
+			builder.texture(d.getSerializedName(), new ResourceLocation(baseTexName.getNamespace(),
 					baseTexName.getPath()+"_"+d.ordinal()));
 		builder.texture("particle", new ResourceLocation(baseTexName.getNamespace(),
 				baseTexName.getPath()+"_0"));

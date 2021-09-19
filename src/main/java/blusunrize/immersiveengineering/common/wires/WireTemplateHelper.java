@@ -10,16 +10,16 @@ package blusunrize.immersiveengineering.common.wires;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.nbt.ListNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MutableBoundingBox;
-import net.minecraft.util.math.vector.Vector3i;
-import net.minecraft.world.IServerWorld;
-import net.minecraft.world.World;
-import net.minecraft.world.gen.feature.template.PlacementSettings;
-import net.minecraft.world.gen.feature.template.Template;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
@@ -29,19 +29,19 @@ public class WireTemplateHelper
 	private static final String CONNECTIONS_KEY = Lib.MODID+":connections";
 
 	public static void fillConnectionsInArea(
-			World worldIn, BlockPos startPos, BlockPos size, IConnectionTemplate template
+			Level worldIn, BlockPos startPos, BlockPos size, IConnectionTemplate template
 	)
 	{
 		template.getStoredConnections().clear();
 		GlobalWireNetwork net = getNetwork(worldIn);
 		if (net == null)
 			return;
-		BlockPos endPos = startPos.add(size).add(-1, -1, -1);
-		MutableBoundingBox box = new MutableBoundingBox(startPos, endPos);
-		Vector3i offset = new Vector3i(box.minX, box.minY, box.minZ);
-		for(BlockPos pos : BlockPos.getAllInBoxMutable(startPos, endPos))
+		BlockPos endPos = startPos.offset(size).offset(-1, -1, -1);
+		BoundingBox box = new BoundingBox(startPos, endPos);
+		Vec3i offset = new Vec3i(box.x0, box.y0, box.z0);
+		for(BlockPos pos : BlockPos.betweenClosed(startPos, endPos))
 		{
-			TileEntity te = worldIn.getTileEntity(pos);
+			BlockEntity te = worldIn.getBlockEntity(pos);
 			if(!(te instanceof IImmersiveConnectable))
 				continue;
 			for(ConnectionPoint cp : ((IImmersiveConnectable)te).getConnectionPoints())
@@ -50,7 +50,7 @@ public class WireTemplateHelper
 					if(conn.isInternal())
 						continue;
 					ConnectionPoint otherEnd = conn.getOtherEnd(cp);
-					if(otherEnd.compareTo(cp) < 0||!box.isVecInside(otherEnd.getPosition()))
+					if(otherEnd.compareTo(cp) < 0||!box.isInside(otherEnd.getPosition()))
 						// only add once and only if fully in captured area
 						continue;
 					template.getStoredConnections().add(new Connection(
@@ -63,12 +63,12 @@ public class WireTemplateHelper
 	}
 
 	public static void addConnectionsFromTemplate(
-			IServerWorld iworld, IConnectionTemplate template, PlacementSettings orientation, BlockPos startPos
+			ServerLevelAccessor iworld, IConnectionTemplate template, StructurePlaceSettings orientation, BlockPos startPos
 	)
 	{
 		if(template.getStoredConnections().isEmpty())
 			return;
-		World world = iworld.getWorld();
+		Level world = iworld.getLevel();
 		GlobalWireNetwork net = getNetwork(world);
 		if (net == null)
 			return;
@@ -82,19 +82,19 @@ public class WireTemplateHelper
 		}
 	}
 
-	public static void addConnectionsToNBT(IConnectionTemplate template, CompoundNBT out)
+	public static void addConnectionsToNBT(IConnectionTemplate template, CompoundTag out)
 	{
 		if(template.getStoredConnections().isEmpty())
 			return;
-		ListNBT connectionsNBT = new ListNBT();
+		ListTag connectionsNBT = new ListTag();
 		for(Connection c : template.getStoredConnections())
 			connectionsNBT.add(c.toNBT());
 		out.put(CONNECTIONS_KEY, connectionsNBT);
 	}
 
-	public static void readConnectionsFromNBT(CompoundNBT compound, IConnectionTemplate template)
+	public static void readConnectionsFromNBT(CompoundTag compound, IConnectionTemplate template)
 	{
-		ListNBT connectionsNBT = compound.getList(CONNECTIONS_KEY, NBT.TAG_COMPOUND);
+		ListTag connectionsNBT = compound.getList(CONNECTIONS_KEY, NBT.TAG_COMPOUND);
 		template.getStoredConnections().clear();
 		for(int i = 0; i < connectionsNBT.size(); i++)
 			template.getStoredConnections().add(new Connection(connectionsNBT.getCompound(i)));
@@ -102,11 +102,11 @@ public class WireTemplateHelper
 
 	@Nullable
 	private static ConnectionPoint getAbsolutePoint(
-			ConnectionPoint relative, PlacementSettings orientation, World world, BlockPos base
+			ConnectionPoint relative, StructurePlaceSettings orientation, Level world, BlockPos base
 	)
 	{
-		BlockPos absolutePos = Template.transformedBlockPos(orientation, relative.getPosition()).add(base);
-		TileEntity connector = world.getTileEntity(absolutePos);
+		BlockPos absolutePos = StructureTemplate.calculateRelativePosition(orientation, relative.getPosition()).offset(base);
+		BlockEntity connector = world.getBlockEntity(absolutePos);
 		if(!(connector instanceof IImmersiveConnectable))
 			return null;
 		ConnectionPoint point = new ConnectionPoint(absolutePos, relative.getIndex());
@@ -116,7 +116,7 @@ public class WireTemplateHelper
 	}
 
 	@Nullable
-	private static GlobalWireNetwork getNetwork(World world) {
+	private static GlobalWireNetwork getNetwork(Level world) {
 		return world.getCapability(NetHandlerCapability.NET_CAPABILITY)
 				.resolve()
 				.orElse(null);

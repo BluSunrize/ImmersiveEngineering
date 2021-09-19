@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.TurnAndCopyRecipe;
 import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
@@ -30,20 +30,20 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull CraftingInventory matrix)
+	public ItemStack assemble(@Nonnull CraftingContainer matrix)
 	{
 		if(nbtCopyTargetSlot!=null)
 		{
-			ItemStack out = getRecipeOutput().copy();
-			CompoundNBT tag = new CompoundNBT();
+			ItemStack out = getResultItem().copy();
+			CompoundTag tag = new CompoundTag();
 			for(int targetSlot : nbtCopyTargetSlot)
 			{
-				ItemStack s = matrix.getStackInSlot(targetSlot);
+				ItemStack s = matrix.getItem(targetSlot);
 				if(!s.isEmpty()&&s.hasTag())
 				{
-					CompoundNBT perks = ItemNBTHelper.getTagCompound(s, "perks");
-					for(String key : perks.keySet())
-						if(perks.getTagId(key)==NBT.TAG_DOUBLE)
+					CompoundTag perks = ItemNBTHelper.getTagCompound(s, "perks");
+					for(String key : perks.getAllKeys())
+						if(perks.getTagType(key)==NBT.TAG_DOUBLE)
 						{
 							RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
 							if(!tag.contains(key))
@@ -58,6 +58,6 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 			return out;
 		}
 		else
-			return super.getCraftingResult(matrix);
+			return super.assemble(matrix);
 	}
 }

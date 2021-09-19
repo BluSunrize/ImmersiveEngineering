@@ -9,33 +9,32 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateTileEntity;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.container.ContainerType;
-
 import javax.annotation.Nonnull;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 
 public class CrateEntityContainer extends CrateContainer
 {
 	protected final Entity wrappingEntity;
 
-	public CrateEntityContainer(int id, PlayerInventory inventoryPlayer, WoodenCrateTileEntity tile, Entity entity)
+	public CrateEntityContainer(int id, Inventory inventoryPlayer, WoodenCrateTileEntity tile, Entity entity)
 	{
 		super(id, inventoryPlayer, tile);
 		this.wrappingEntity = entity;
 	}
 
 	@Override
-	public ContainerType<?> getType()
+	public MenuType<?> getType()
 	{
 		return GuiHandler.getContainerTypeFor(wrappingEntity);
 	}
 
 	@Override
-	public boolean canInteractWith(@Nonnull PlayerEntity player)
+	public boolean stillValid(@Nonnull Player player)
 	{
-		return wrappingEntity.isAlive()&&wrappingEntity.getDistanceSq(player.getPosX(), player.getPosY(), player.getPosZ()) < 64;
+		return wrappingEntity.isAlive()&&wrappingEntity.distanceToSqr(player.getX(), player.getY(), player.getZ()) < 64;
 	}
 
 }

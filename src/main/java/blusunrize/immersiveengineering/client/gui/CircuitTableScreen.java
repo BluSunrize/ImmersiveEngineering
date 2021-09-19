@@ -23,15 +23,15 @@ import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEnti
 import blusunrize.immersiveengineering.common.gui.CircuitTableContainer;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.item.DyeColor;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.DyeColor;
 import net.minecraftforge.fml.client.gui.GuiUtils;
 
 import javax.annotation.Nullable;
@@ -68,28 +68,28 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		return Optional.of(new LogicCircuitInstruction(operator, outputButton.getState(), inputs));
 	});
 
-	public CircuitTableScreen(CircuitTableContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public CircuitTableScreen(CircuitTableContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
 		this.tile = container.tile;
-		this.xSize = 234;
-		this.ySize = 182;
+		this.imageWidth = 234;
+		this.imageHeight = 182;
 	}
 
 	@Override
 	public void init()
 	{
 		super.init();
-		mc().keyboardListener.enableRepeatEvents(true);
+		mc().keyboardHandler.setSendRepeatsToGui(true);
 
-		this.operatorList = (GuiSelectingList)this.addButton(new GuiSelectingList(this, guiLeft+58, guiTop+16, 36, 56, btn -> {
-			this.minecraft.enqueue(this::updateButtons);
-			this.minecraft.enqueue(this::updateInstruction);
+		this.operatorList = (GuiSelectingList)this.addButton(new GuiSelectingList(this, leftPos+58, topPos+16, 36, 56, btn -> {
+			this.minecraft.tell(this::updateButtons);
+			this.minecraft.tell(this::updateInstruction);
 		}, Arrays.stream(LogicCircuitOperator.values()).map(Enum::name).toArray(String[]::new)).setPadding(1, 1, 2, 0));
 
 		this.outputButton = this.addButton(new GuiButtonLogicCircuitRegister(
-				guiLeft+121, guiTop+56,
-				new StringTextComponent("Output"), btn -> this.minecraft.enqueue(this::updateInstruction))
+				leftPos+121, topPos+56,
+				new TextComponent("Output"), btn -> this.minecraft.tell(this::updateInstruction))
 		);
 		this.updateButtons();
 	}
@@ -104,8 +104,8 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	{
 		this.instruction.reset();
 		this.instruction.get().ifPresent(instr -> {
-			this.container.instruction = instr;
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(this.container.windowId, instr.serialize()));
+			this.menu.instruction = instr;
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(this.menu.containerId, instr.serialize()));
 		});
 	}
 
@@ -124,7 +124,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 				while(it.hasNext())
 				{
 					GuiButtonState btn = it.next();
-					btn.x = guiLeft+inputStart+20*i;
+					btn.x = leftPos+inputStart+20*i;
 					if(++i > inputCount)
 					{
 						this.buttons.remove(btn);
@@ -138,11 +138,11 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 				for(int i = 0; i < inputCount; i++)
 				{
 					if(i < this.inputButtons.size()) // Reposition buttons
-						this.inputButtons.get(i).x = guiLeft+inputStart+20*i;
+						this.inputButtons.get(i).x = leftPos+inputStart+20*i;
 					else // Add new ones
 						this.inputButtons.add(this.addButton(new GuiButtonLogicCircuitRegister(
-								guiLeft+inputStart+20*i, guiTop+18,
-								new StringTextComponent("Input "+(i+1)), btn -> this.minecraft.enqueue(this::updateInstruction))
+								leftPos+inputStart+20*i, topPos+18,
+								new TextComponent("Input "+(i+1)), btn -> this.minecraft.tell(this::updateInstruction))
 						));
 				}
 			}
@@ -150,41 +150,41 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partial)
+	public void render(PoseStack transform, int mx, int my, float partial)
 	{
 		super.render(transform, mx, my, partial);
 
-		List<ITextComponent> tooltip = new ArrayList<>();
+		List<Component> tooltip = new ArrayList<>();
 
-		if(this.hoveredSlot!=null&&this.hoveredSlot.slotNumber < SLOT_TYPES.length&&!this.hoveredSlot.getHasStack())
+		if(this.hoveredSlot!=null&&this.hoveredSlot.index < SLOT_TYPES.length&&!this.hoveredSlot.hasItem())
 		{
-			int slotNum = this.hoveredSlot.slotNumber;
+			int slotNum = this.hoveredSlot.index;
 			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]),
-					TextFormatting.GRAY
+					new TranslatableComponent(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]),
+					ChatFormatting.GRAY
 			));
 		}
 		if(isMouseIn(mx, my, 217, 16, 7, 46))
-			tooltip.add(new StringTextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
+			tooltip.add(new TextComponent(tile.getEnergyStored(null)+"/"+tile.getMaxEnergyStored(null)+" IF"));
 
-		if(isMouseIn(mx, my, 52, 7, 100, 70)&&this.playerInventory.getItemStack().getItem() instanceof LogicCircuitBoardItem)
+		if(isMouseIn(mx, my, 52, 7, 100, 70)&&this.inventory.getCarried().getItem() instanceof LogicCircuitBoardItem)
 			tooltip.add(TextUtils.applyFormat(
-					new TranslationTextComponent(Lib.DESC_INFO+"circuit_table.copy"),
-					TextFormatting.GRAY
+					new TranslatableComponent(Lib.DESC_INFO+"circuit_table.copy"),
+					ChatFormatting.GRAY
 			));
 
 		for(GuiButtonState<LogicCircuitRegister> input : this.inputButtons)
 			if(input.isHovered())
-				tooltip.add(TextUtils.applyFormat(input.getState().getDescription(), TextFormatting.GRAY));
+				tooltip.add(TextUtils.applyFormat(input.getState().getDescription(), ChatFormatting.GRAY));
 		if(this.outputButton.isHovered())
-			tooltip.add(TextUtils.applyFormat(outputButton.getState().getDescription(), TextFormatting.GRAY));
+			tooltip.add(TextUtils.applyFormat(outputButton.getState().getDescription(), ChatFormatting.GRAY));
 
 		if(!tooltip.isEmpty())
 			GuiUtils.drawHoveringText(transform, tooltip, mx, my, width, height, -1, font);
 	}
 
 	@Override
-	protected void drawGuiContainerForegroundLayer(MatrixStack transform, int mouseX, int mouseY)
+	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
 		drawCenteredString(transform, this.font, "Operator:", 76, 4, DyeColor.LIGHT_GRAY.getColorValue());
 		drawCenteredString(transform, this.font, "Inputs:", 130, 8, DyeColor.LIGHT_GRAY.getColorValue());
@@ -197,24 +197,24 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 			if(this.instruction.get().isPresent())
 			{
 				amount = CircuitTableTileEntity.getIngredientAmount(this.instruction.get().get(), i);
-				if(this.container.inventorySlots.get(i).getStack().getCount() >= amount)
+				if(this.menu.slots.get(i).getItem().getCount() >= amount)
 					col = DyeColor.GREEN;
 				else
 					col = DyeColor.RED;
 			}
-			this.font.drawString(transform, "x "+amount, 30, 18+20*i, col.getColorValue());
+			this.font.draw(transform, "x "+amount, 30, 18+20*i, col.getColorValue());
 		}
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void renderBg(PoseStack transform, float f, int mx, int my)
 	{
 		RenderSystem.color3f(1.0F, 1.0F, 1.0F);
 		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		int stored = (int)(46*(tile.getEnergyStored(null)/(float)tile.getMaxEnergyStored(null)));
-		fillGradient(transform, guiLeft+217, guiTop+16+(46-stored), guiLeft+224, guiTop+62, 0xffb51500, 0xff600b00);
+		fillGradient(transform, leftPos+217, topPos+16+(46-stored), leftPos+224, topPos+62, 0xffb51500, 0xff600b00);
 	}
 
 	@Override
@@ -231,9 +231,9 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	@Override
 	public boolean mouseClicked(double mouseX, double mouseY, int button)
 	{
-		if(isMouseIn((int)mouseX, (int)mouseY, 52, 7, 100, 70)&&this.playerInventory.getItemStack().getItem() instanceof LogicCircuitBoardItem)
+		if(isMouseIn((int)mouseX, (int)mouseY, 52, 7, 100, 70)&&this.inventory.getCarried().getItem() instanceof LogicCircuitBoardItem)
 		{
-			LogicCircuitInstruction instr = LogicCircuitBoardItem.getInstruction(this.playerInventory.getItemStack());
+			LogicCircuitInstruction instr = LogicCircuitBoardItem.getInstruction(this.inventory.getCarried());
 			if(instr!=null)
 			{
 				this.operatorList.setSelectedString(instr.getOperator().name());

@@ -21,19 +21,18 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.Property;
+import net.minecraft.world.phys.Vec3;
 
 public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements IIEInternalFluxHandler,
 		IStateBasedDirectional, IHasDummyBlocks, IModelOffsetProvider
@@ -80,20 +79,20 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	@Override
 	public IGeneralMultiblock master()
 	{
-		BlockPos masterPos = getPos().down(dummy);
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		BlockPos masterPos = getBlockPos().below(dummy);
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
+		state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
-			world.setBlockState(pos.add(0, i, 0), state);
-			((BlastFurnacePreheaterTileEntity)world.getTileEntity(pos.add(0, i, 0))).dummy = i;
-			((BlastFurnacePreheaterTileEntity)world.getTileEntity(pos.add(0, i, 0))).setFacing(this.getFacing());
+			level.setBlockAndUpdate(worldPosition.offset(0, i, 0), state);
+			((BlastFurnacePreheaterTileEntity)level.getBlockEntity(worldPosition.offset(0, i, 0))).dummy = i;
+			((BlastFurnacePreheaterTileEntity)level.getBlockEntity(worldPosition.offset(0, i, 0))).setFacing(this.getFacing());
 		}
 	}
 
@@ -101,12 +100,12 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 2; i++)
-			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof BlastFurnacePreheaterTileEntity)
-				world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
+			if(level.getBlockEntity(getBlockPos().offset(0, -dummy, 0).offset(0, i, 0)) instanceof BlastFurnacePreheaterTileEntity)
+				level.removeBlock(getBlockPos().offset(0, -dummy, 0).offset(0, i, 0), false);
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
 		energyStorage.readFromNBT(nbt);
@@ -116,7 +115,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putInt("dummy", dummy);
 		nbt.putBoolean("active", active);
@@ -129,7 +128,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	{
 		if(dummy > 0)
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0, -dummy, 0));
+			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -dummy, 0));
 			if(te instanceof BlastFurnacePreheaterTileEntity)
 				return ((BlastFurnacePreheaterTileEntity)te).getFluxStorage();
 		}
@@ -172,7 +171,7 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vector3d hit, LivingEntity entity)
+	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}
@@ -188,18 +187,18 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 	{
 		for(int i = 0; i <= 2; i++)
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0, -dummy+i, 0));
+			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -dummy+i, 0));
 			if(te instanceof BlastFurnacePreheaterTileEntity)
 			{
 				((BlastFurnacePreheaterTileEntity)te).setFacing(newDir);
-				te.markDirty();
+				te.setChanged();
 				((BlastFurnacePreheaterTileEntity)te).markContainingBlockForUpdate(null);
 			}
 		}
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		return new BlockPos(0, dummy, 0);
 	}

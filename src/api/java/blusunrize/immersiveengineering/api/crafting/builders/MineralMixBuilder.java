@@ -14,13 +14,13 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.RegistryKey;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.DimensionType;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 
@@ -36,7 +36,7 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		addWriter(jsonObject -> jsonObject.add("dimensions", dimensionsArray));
 	}
 
-	public static MineralMixBuilder builder(RegistryKey<DimensionType> dimension)
+	public static MineralMixBuilder builder(ResourceKey<DimensionType> dimension)
 	{
 		return new MineralMixBuilder().addDimension(dimension);
 	}
@@ -61,9 +61,9 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return addWriter(jsonObject -> jsonObject.addProperty("sample_background", resourceLocation.toString()));
 	}
 
-	public MineralMixBuilder addDimension(RegistryKey<DimensionType> dimension)
+	public MineralMixBuilder addDimension(ResourceKey<DimensionType> dimension)
 	{
-		return addDimension(dimension.getLocation());
+		return addDimension(dimension.location());
 	}
 
 	public MineralMixBuilder addDimension(ResourceLocation dimension)
@@ -72,7 +72,7 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return this;
 	}
 
-	public MineralMixBuilder addOre(IItemProvider itemProvider, float chance)
+	public MineralMixBuilder addOre(ItemLike itemProvider, float chance)
 	{
 		return this.addOre(new ItemStack(itemProvider), chance);
 	}
@@ -86,12 +86,12 @@ public class MineralMixBuilder extends IEFinishedRecipe<MineralMixBuilder>
 		return this;
 	}
 
-	public MineralMixBuilder addOre(ITag<Item> tag, float chance)
+	public MineralMixBuilder addOre(Tag<Item> tag, float chance)
 	{
 		return addOre(new IngredientWithSize(tag), chance, null);
 	}
 
-	public MineralMixBuilder addOre(ITag<Item> tag, float chance, ICondition condition)
+	public MineralMixBuilder addOre(Tag<Item> tag, float chance, ICondition condition)
 	{
 		return addOre(new IngredientWithSize(tag), chance, condition);
 	}

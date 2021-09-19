@@ -12,13 +12,12 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.items.IEItems;
 import com.google.gson.JsonObject;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.ResourceLocation;
-
 import javax.annotation.Nullable;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 
 public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceFuel>
 {
@@ -31,24 +30,24 @@ public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceF
 	@Override
 	public BlastFurnaceFuel readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		Ingredient input = Ingredient.deserialize(json.getAsJsonObject("input"));
-		int time = JSONUtils.getInt(json, "time", 1200);
+		Ingredient input = Ingredient.fromJson(json.getAsJsonObject("input"));
+		int time = GsonHelper.getAsInt(json, "time", 1200);
 		return new BlastFurnaceFuel(recipeId, input, time);
 	}
 
 	@Nullable
 	@Override
-	public BlastFurnaceFuel read(ResourceLocation recipeId, PacketBuffer buffer)
+	public BlastFurnaceFuel fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		Ingredient input = Ingredient.read(buffer);
+		Ingredient input = Ingredient.fromNetwork(buffer);
 		int time = buffer.readInt();
 		return new BlastFurnaceFuel(recipeId, input, time);
 	}
 
 	@Override
-	public void write(PacketBuffer buffer, BlastFurnaceFuel recipe)
+	public void toNetwork(FriendlyByteBuf buffer, BlastFurnaceFuel recipe)
 	{
-		recipe.input.write(buffer);
+		recipe.input.toNetwork(buffer);
 		buffer.writeInt(recipe.burnTime);
 	}
 }

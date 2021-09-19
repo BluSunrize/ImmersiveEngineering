@@ -8,16 +8,16 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import net.minecraft.block.Block;
-import net.minecraft.block.Blocks;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.*;
-import net.minecraft.tags.ITag.INamedTag;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.tags.Tag.Named;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags.Items;
 
 import java.util.Collection;
@@ -27,69 +27,69 @@ import java.util.function.Supplier;
 public class TagUtils
 {
 	// These will be overriden on the client side, because TagCollectionManager doesn't work there
-	public static Supplier<ITagCollection<Item>> GET_ITEM_TAG_COLLECTION;
-	public static Supplier<ITagCollection<Block>> GET_BLOCK_TAG_COLLECTION;
+	public static Supplier<TagCollection<Item>> GET_ITEM_TAG_COLLECTION;
+	public static Supplier<TagCollection<Block>> GET_BLOCK_TAG_COLLECTION;
 
 	static
 	{
 		setTagCollectionGetters(
-				() -> TagCollectionManager.getManager().getItemTags(),
-				() -> TagCollectionManager.getManager().getBlockTags()
+				() -> SerializationTags.getInstance().getItems(),
+				() -> SerializationTags.getInstance().getBlocks()
 		);
 	}
 
 	public static void setTagCollectionGetters(
-			Supplier<ITagCollection<Item>> items, Supplier<ITagCollection<Block>> blocks
+			Supplier<TagCollection<Item>> items, Supplier<TagCollection<Block>> blocks
 	)
 	{
 		GET_ITEM_TAG_COLLECTION = items;
 		GET_BLOCK_TAG_COLLECTION = blocks;
 	}
 
-	public static ITag<Item> getItemTag(ResourceLocation key)
+	public static Tag<Item> getItemTag(ResourceLocation key)
 	{
-		return GET_ITEM_TAG_COLLECTION.get().get(key);
+		return GET_ITEM_TAG_COLLECTION.get().getTag(key);
 	}
 
-	public static ITag<Block> getBlockTag(ResourceLocation key)
+	public static Tag<Block> getBlockTag(ResourceLocation key)
 	{
-		return GET_BLOCK_TAG_COLLECTION.get().get(key);
+		return GET_BLOCK_TAG_COLLECTION.get().getTag(key);
 	}
 
 	public static Collection<ResourceLocation> getTagsForItem(Item item)
 	{
-		return GET_ITEM_TAG_COLLECTION.get().getOwningTags(item);
+		return GET_ITEM_TAG_COLLECTION.get().getMatchingTags(item);
 	}
 
 	public static Collection<ResourceLocation> getTagsForBlock(Block block)
 	{
-		return GET_BLOCK_TAG_COLLECTION.get().getOwningTags(block);
+		return GET_BLOCK_TAG_COLLECTION.get().getMatchingTags(block);
 	}
 
 	public static boolean isInBlockOrItemTag(ItemStack stack, ResourceLocation oreName)
 	{
 		if(!isNonemptyBlockOrItemTag(oreName))
 			return false;
-		ITag<Item> itemTag = getItemTag(oreName);
-		if(itemTag!=null&&itemTag.getAllElements().contains(stack.getItem()))
+		Tag<Item> itemTag = getItemTag(oreName);
+		if(itemTag!=null&&itemTag.getValues().contains(stack.getItem()))
 			return true;
-		ITag<Block> blockTag = getBlockTag(oreName);
-		return blockTag!=null&&blockTag.getAllElements()
+		Tag<Block> blockTag = getBlockTag(oreName);
+		return blockTag!=null&&blockTag.getValues()
 				.stream()
-				.map(IItemProvider::asItem)
+				.map(ItemLike::asItem)
 				.anyMatch(i -> stack.getItem()==i);
 	}
 
 	public static boolean isNonemptyItemTag(ResourceLocation name)
 	{
-		ITag<Item> t = getItemTag(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		Tag<Item> t = getItemTag(name);
+		return t!=null&&!t.getValues().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockTag(ResourceLocation name)
 	{
-		ITag<Block> t = getBlockTag(name);
-		return t!=null&&!t.getAllElements().isEmpty();
+		Tag<Block> t = getBlockTag(name);
+		return t!=null&&!t.getValues().isEmpty();
 	}
 
 	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)
@@ -105,10 +105,10 @@ public class TagUtils
 		return ret;
 	}
 
-	private static <T extends IItemProvider> void addItemsInTag(NonNullList<ItemStack> out, ITag<T> in)
+	private static <T extends ItemLike> void addItemsInTag(NonNullList<ItemStack> out, Tag<T> in)
 	{
 		if(in!=null)
-			in.getAllElements().stream()
+			in.getValues().stream()
 					.map(ItemStack::new)
 					.forEach(out::add);
 	}
@@ -130,7 +130,7 @@ public class TagUtils
 	public static Collection<ResourceLocation> getMatchingTagNames(ItemStack stack)
 	{
 		Collection<ResourceLocation> ret = new HashSet<>(getTagsForItem(stack.getItem()));
-		Block b = Block.getBlockFromItem(stack.getItem());
+		Block b = Block.byItem(stack.getItem());
 		if(b!=Blocks.AIR)
 			ret.addAll(getTagsForBlock(b));
 		return ret;
@@ -163,18 +163,18 @@ public class TagUtils
 		return isInPrefixedTag(stack, "plates/");
 	}
 
-	public static INamedTag<Item> createItemWrapper(ResourceLocation name)
+	public static Named<Item> createItemWrapper(ResourceLocation name)
 	{
-		return ItemTags.makeWrapperTag(name.toString());
+		return ItemTags.bind(name.toString());
 	}
 
-	public static INamedTag<Block> createBlockWrapper(ResourceLocation name)
+	public static Named<Block> createBlockWrapper(ResourceLocation name)
 	{
-		return BlockTags.makeWrapperTag(name.toString());
+		return BlockTags.bind(name.toString());
 	}
 
-	public static INamedTag<Fluid> createFluidWrapper(ResourceLocation name)
+	public static Named<Fluid> createFluidWrapper(ResourceLocation name)
 	{
-		return FluidTags.makeWrapperTag(name.toString());
+		return FluidTags.bind(name.toString());
 	}
 }

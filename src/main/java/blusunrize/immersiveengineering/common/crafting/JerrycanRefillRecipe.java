@@ -11,14 +11,14 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -28,7 +28,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
-public class JerrycanRefillRecipe extends SpecialRecipe
+public class JerrycanRefillRecipe extends CustomRecipe
 {
 	private final int jerrycanIndex = 0;
 	private final int containerIndex = 1;
@@ -39,7 +39,7 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean matches(@Nonnull CraftingInventory inv, World world)
+	public boolean matches(@Nonnull CraftingContainer inv, Level world)
 	{
 		ItemStack[] components = getComponents(inv);
 		if(!components[jerrycanIndex].isEmpty()&&!components[containerIndex].isEmpty()&&countOccupiedSlots(inv)==2)
@@ -56,7 +56,7 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(@Nonnull CraftingInventory inv)
+	public ItemStack assemble(@Nonnull CraftingContainer inv)
 	{
 		ItemStack[] components = getComponents(inv);
 		ItemStack newContainer = ItemHandlerHelper.copyStackWithSize(components[containerIndex], 1);
@@ -68,12 +68,12 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 		return newContainer;
 	}
 
-	private ItemStack[] getComponents(IInventory inv)
+	private ItemStack[] getComponents(Container inv)
 	{
 		ItemStack[] ret = {ItemStack.EMPTY, ItemStack.EMPTY};
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
 				if(ret[0].isEmpty()&&Misc.jerrycan.equals(stackInSlot.getItem())
@@ -88,30 +88,30 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 		return ret;
 	}
 
-	private int countOccupiedSlots(IInventory inv)
+	private int countOccupiedSlots(Container inv)
 	{
 		int c = 0;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
-			if(!inv.getStackInSlot(i).isEmpty())
+		for(int i = 0; i < inv.getContainerSize(); i++)
+			if(!inv.getItem(i).isEmpty())
 				c++;
 		return c;
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public NonNullList<ItemStack> getRemainingItems(CraftingInventory inv)
+	public NonNullList<ItemStack> getRemainingItems(CraftingContainer inv)
 	{
 		NonNullList<ItemStack> remaining = super.getRemainingItems(inv);
 		boolean foundJerrycan = false;
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			ItemStack stackInSlot = inv.getStackInSlot(i);
+			ItemStack stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
 				if(Misc.jerrycan.equals(stackInSlot.getItem())&&!foundJerrycan)
@@ -125,7 +125,7 @@ public class JerrycanRefillRecipe extends SpecialRecipe
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.JERRYCAN_REFILL.get();
 	}

@@ -11,18 +11,18 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.SpeedloaderItem;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.core.NonNullList;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 
-public class SpeedloaderLoadRecipe extends SpecialRecipe
+public class SpeedloaderLoadRecipe extends CustomRecipe
 {
 	private final byte[] offsetPattern = {0, 1, 1, 1, 0, -1, -1, -1};
 
@@ -32,7 +32,7 @@ public class SpeedloaderLoadRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean matches(CraftingInventory inv, @Nonnull World world)
+	public boolean matches(CraftingContainer inv, @Nonnull Level world)
 	{
 		ItemStack stackInSlot;
 		int speedloaderX = -1;
@@ -41,9 +41,9 @@ public class SpeedloaderLoadRecipe extends SpecialRecipe
 		NonNullList<ItemStack> speedloaderBullets = null;
 		boolean hasBullets = false;
 		int width = inv.getWidth();
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			stackInSlot = inv.getStackInSlot(i);
+			stackInSlot = inv.getItem(i);
 			if(!stackInSlot.isEmpty())
 			{
 				if(stackInSlot.getItem() instanceof SpeedloaderItem)
@@ -64,9 +64,9 @@ public class SpeedloaderLoadRecipe extends SpecialRecipe
 		}
 		if(hasSpeedloader&&hasBullets)
 		{
-			for(int i = 0; i < inv.getSizeInventory(); i++)
+			for(int i = 0; i < inv.getContainerSize(); i++)
 			{
-				stackInSlot = inv.getStackInSlot(i);
+				stackInSlot = inv.getItem(i);
 				if(!stackInSlot.isEmpty())
 				{
 					int curOffsetY = (i/width)-speedloaderY;
@@ -86,18 +86,18 @@ public class SpeedloaderLoadRecipe extends SpecialRecipe
 
 	@Nonnull
 	@Override
-	public ItemStack getCraftingResult(CraftingInventory inv)
+	public ItemStack assemble(CraftingContainer inv)
 	{
 		ItemStack speedloader = null;
 		int speedloaderX = -1;
 		int speedloaderY = -1;
 		int width = inv.getWidth();
 		int height = inv.getHeight();
-		for(int i = 0; i < inv.getSizeInventory(); i++)
+		for(int i = 0; i < inv.getContainerSize(); i++)
 		{
-			if(inv.getStackInSlot(i).getItem() instanceof SpeedloaderItem)
+			if(inv.getItem(i).getItem() instanceof SpeedloaderItem)
 			{
-				speedloader = inv.getStackInSlot(i);
+				speedloader = inv.getItem(i);
 				speedloaderX = i%width;
 				speedloaderY = i/width;
 				break;
@@ -115,7 +115,7 @@ public class SpeedloaderLoadRecipe extends SpecialRecipe
 			int curX = speedloaderX+offsetPattern[i];
 			if(curX < 0||curX >= width)
 				continue;
-			ItemStack curBullet = inv.getStackInSlot(width*curY+curX);
+			ItemStack curBullet = inv.getItem(width*curY+curX);
 			if(!curBullet.isEmpty())
 				fill.set(i, ItemHandlerHelper.copyStackWithSize(curBullet, 1));
 		}
@@ -124,14 +124,14 @@ public class SpeedloaderLoadRecipe extends SpecialRecipe
 	}
 
 	@Override
-	public boolean canFit(int width, int height)
+	public boolean canCraftInDimensions(int width, int height)
 	{
 		return width*height >= 2;
 	}
 
 	@Nonnull
 	@Override
-	public IRecipeSerializer<?> getSerializer()
+	public RecipeSerializer<?> getSerializer()
 	{
 		return RecipeSerializers.SPEEDLOADER_LOAD.get();
 	}

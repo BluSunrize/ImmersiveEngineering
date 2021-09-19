@@ -26,24 +26,23 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.block.BlockState;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Direction.AxisDirection;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.math.vector.Vector3i;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
@@ -58,20 +57,20 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 		super(IETileTypes.TRANSFORMER.get());
 	}
 
-	public TransformerTileEntity(TileEntityType<? extends TransformerTileEntity> type)
+	public TransformerTileEntity(BlockEntityType<? extends TransformerTileEntity> type)
 	{
 		super(type);
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("dummy", dummy);
 	}
 
 	@Override
-	public void readCustomNBT(@Nonnull CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
 		dummy = nbt.getInt("dummy");
@@ -80,17 +79,17 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	@Override
 	public BlockPos getConnectionMaster(WireType cableType, TargetingInfo target)
 	{
-		return getPos().add(0, -dummy, 0);
+		return getBlockPos().offset(0, -dummy, 0);
 	}
 
 	@Override
-	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vector3i offset)
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(dummy==2)
 		{
-			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
+			BlockEntity master = level.getBlockEntity(getBlockPos().offset(0, -dummy, 0));
 			return master instanceof TransformerTileEntity&&((TransformerTileEntity)master).canConnectCable(cableType, target,
-					new Vector3i(0, 2, 0));
+					new Vec3i(0, 2, 0));
 		}
 		else
 			return super.canConnectCable(cableType, target, offset);
@@ -101,7 +100,7 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	{
 		if(dummy!=0)
 		{
-			TileEntity master = world.getTileEntity(getPos().add(0, -dummy, 0));
+			BlockEntity master = level.getBlockEntity(getBlockPos().offset(0, -dummy, 0));
 			if(master instanceof TransformerTileEntity)
 				((TransformerTileEntity)master).connectCable(cableType, target, other, otherTarget);
 		}
@@ -110,29 +109,29 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	}
 
 	@Override
-	protected Vector3d getConnectionOffset(Connection con, boolean right)
+	protected Vec3 getConnectionOffset(Connection con, boolean right)
 	{
 		double conRadius = con.type.getRenderDiameter()/2;
 		double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
 		if(getFacing()==Direction.NORTH)
-			return new Vector3d(right?.8125: .1875, 2+offset-conRadius, .5);
+			return new Vec3(right?.8125: .1875, 2+offset-conRadius, .5);
 		if(getFacing()==Direction.SOUTH)
-			return new Vector3d(right?.1875: .8125, 2+offset-conRadius, .5);
+			return new Vec3(right?.1875: .8125, 2+offset-conRadius, .5);
 		if(getFacing()==Direction.WEST)
-			return new Vector3d(.5, 2+offset-conRadius, right?.1875: .8125);
+			return new Vec3(.5, 2+offset-conRadius, right?.1875: .8125);
 		if(getFacing()==Direction.EAST)
-			return new Vector3d(.5, 2+offset-conRadius, right?.8125: .1875);
-		return new Vector3d(.5, .5, .5);
+			return new Vec3(.5, 2+offset-conRadius, right?.8125: .1875);
+		return new Vec3(.5, .5, .5);
 	}
 
 	@Nullable
 	@Override
-	public ConnectionPoint getTargetedPoint(TargetingInfo target, Vector3i offset)
+	public ConnectionPoint getTargetedPoint(TargetingInfo target, Vec3i offset)
 	{
 		if(offset.getY()!=2)
 			return null;
-		ConnectionPoint leftCP = new ConnectionPoint(pos, LEFT_INDEX);
-		ConnectionPoint rightCP = new ConnectionPoint(pos, RIGHT_INDEX);
+		ConnectionPoint leftCP = new ConnectionPoint(worldPosition, LEFT_INDEX);
+		ConnectionPoint rightCP = new ConnectionPoint(worldPosition, RIGHT_INDEX);
 		boolean leftEmpty = getLocalNet(LEFT_INDEX).getConnections(leftCP).stream().allMatch(Connection::isInternal);
 		boolean rightEmpty = getLocalNet(RIGHT_INDEX).getConnections(rightCP).stream().allMatch(Connection::isInternal);
 		// Special case: If one side is already connected, target the other side
@@ -158,7 +157,7 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	{
 		if(dummy!=0)
 		{
-			TileEntity master = world.getTileEntity(pos.down(dummy));
+			BlockEntity master = level.getBlockEntity(worldPosition.below(dummy));
 			if(master instanceof TransformerTileEntity)
 				((TransformerTileEntity)master).updateMirrorState();
 		}
@@ -169,7 +168,7 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 					(leftType!=null&&!higher.equals(leftType.getCategory()));
 			for(int i = 0; i < 3; ++i)
 			{
-				TileEntity te = world.getTileEntity(pos.up(i));
+				BlockEntity te = level.getBlockEntity(worldPosition.above(i));
 				if(te instanceof TransformerTileEntity)
 					((TransformerTileEntity)te).setMirrored(intendedState);
 			}
@@ -194,21 +193,21 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	{
 		if(!isDummy())
 			return this;
-		BlockPos masterPos = getPos().down(dummy);
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		BlockPos masterPos = getBlockPos().below(dummy);
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
+		state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
-			BlockPos dummyPos = pos.up(i);
-			world.setBlockState(dummyPos, IEBaseBlock.applyLocationalWaterlogging(state, world, dummyPos));
-			((TransformerTileEntity)world.getTileEntity(dummyPos)).dummy = i;
-			((TransformerTileEntity)world.getTileEntity(dummyPos)).setFacing(this.getFacing());
+			BlockPos dummyPos = worldPosition.above(i);
+			level.setBlockAndUpdate(dummyPos, IEBaseBlock.applyLocationalWaterlogging(state, level, dummyPos));
+			((TransformerTileEntity)level.getBlockEntity(dummyPos)).dummy = i;
+			((TransformerTileEntity)level.getBlockEntity(dummyPos)).setFacing(this.getFacing());
 		}
 	}
 
@@ -216,32 +215,32 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 2; i++)
-			world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
+			level.removeBlock(getBlockPos().offset(0, -dummy, 0).offset(0, i, 0), false);
 	}
 
 	private static final CachedShapesWithTransform<ShapeKey, Pair<Direction, Boolean>> SHAPES =
 			new CachedShapesWithTransform<>(
 					key -> ImmutableList.of(
-							new AxisAlignedBB(0, 0, .3125, .375, key.lowerHeight, .6875),
-							new AxisAlignedBB(.625, 0, .3125, 1, key.higherHeight, .6875)
+							new AABB(0, 0, .3125, .375, key.lowerHeight, .6875),
+							new AABB(.625, 0, .3125, 1, key.higherHeight, .6875)
 					),
 					(pair, aabb) -> CachedShapesWithTransform.withFacingAndMirror(aabb, pair.getFirst(), pair.getSecond())
 			);
 
 	@Nonnull
 	@Override
-	public VoxelShape getBlockBounds(@Nullable ISelectionContext ctx)
+	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		if(dummy==2)
 			return SHAPES.get(new ShapeKey(getLowerOffset(), getHigherOffset()), Pair.of(getFacing(), !getIsMirrored()));
 		else
-			return VoxelShapes.fullCube();
+			return Shapes.block();
 	}
 
 	@Override
 	public Set<BlockPos> getIgnored(IImmersiveConnectable other)
 	{
-		return ImmutableSet.of(pos.up(2));
+		return ImmutableSet.of(worldPosition.above(2));
 	}
 
 	protected float getLowerOffset()
@@ -273,7 +272,7 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		return new BlockPos(0, dummy, 0);
 	}

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.wires.testutils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 

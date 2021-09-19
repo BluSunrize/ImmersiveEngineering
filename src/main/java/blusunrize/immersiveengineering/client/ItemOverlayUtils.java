@@ -8,17 +8,17 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.Hand;
-import net.minecraft.util.HandSide;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.vector.Matrix4f;
-import net.minecraft.util.math.vector.Quaternion;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
+import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.HumanoidArm;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -30,28 +30,28 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class ItemOverlayUtils
 {
-	public static IVertexBuilder getHudElementsBuilder(IRenderTypeBuffer.Impl buffer)
+	public static VertexConsumer getHudElementsBuilder(MultiBufferSource.BufferSource buffer)
 	{
 		return buffer.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 	}
 
-	public static void renderRevolverOverlay(IRenderTypeBuffer.Impl buffer, MatrixStack transform, int scaledWidth, int scaledHeight,
-											 PlayerEntity player, Hand hand, ItemStack equipped)
+	public static void renderRevolverOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
+											 Player player, InteractionHand hand, ItemStack equipped)
 	{
 		NonNullList<ItemStack> bullets = ((IBulletContainer)equipped.getItem()).getBullets(equipped, true);
 		if(bullets!=null)
 		{
 			int bulletAmount = ((IBulletContainer)equipped.getItem()).getBulletCount(equipped);
-			HandSide side = ItemUtils.getLivingHand(player, hand);
-			boolean right = side==HandSide.RIGHT;
+			HumanoidArm side = ItemUtils.getLivingHand(player, hand);
+			boolean right = side==HumanoidArm.RIGHT;
 			float dx = right?scaledWidth-32-48: 48;
 			float dy = scaledHeight-64;
-			transform.push();
-			transform.push();
+			transform.pushPose();
+			transform.pushPose();
 			transform.translate(dx, dy, 0);
 			transform.scale(.5f, .5f, 1);
 			RevolverScreen.drawExternalGUI(bullets, bulletAmount, transform);
-			transform.pop();
+			transform.popPose();
 
 			if(equipped.getItem() instanceof RevolverItem)
 			{
@@ -71,43 +71,43 @@ public class ItemOverlayUtils
 					float vMin1 = (112+(right?h1: h2)*15)/256f;
 					float vMin2 = (112+(right?h2: h1)*15)/256f;
 
-					IVertexBuilder builder = getHudElementsBuilder(buffer);
-					Matrix4f mat = transform.getLast().getMatrix();
-					builder.pos(mat, (right?0: 1-x2)*7, 15, 0)
+					VertexConsumer builder = getHudElementsBuilder(buffer);
+					Matrix4f mat = transform.last().pose();
+					builder.vertex(mat, (right?0: 1-x2)*7, 15, 0)
 							.color(1F, 1F, 1F, 1F)
-							.tex(uMin, 127/256f)
+							.uv(uMin, 127/256f)
 							.endVertex();
-					builder.pos(mat, (right?x2: 1)*7, 15, 0)
+					builder.vertex(mat, (right?x2: 1)*7, 15, 0)
 							.color(1F, 1F, 1F, 1F)
-							.tex(uMax, 127/256f)
+							.uv(uMax, 127/256f)
 							.endVertex();
-					builder.pos(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0)
+					builder.vertex(mat, (right?x2: 1)*7, (right?h2: h1)*15, 0)
 							.color(1F, 1F, 1F, 1F)
-							.tex(uMax, vMin2)
+							.uv(uMax, vMin2)
 							.endVertex();
-					builder.pos(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0)
+					builder.vertex(mat, (right?0: 1-x2)*7, (right?h1: h2)*15, 0)
 							.color(1F, 1F, 1F, 1F)
-							.tex(uMin, vMin1)
+							.uv(uMin, vMin1)
 							.endVertex();
 				}
 			}
-			transform.pop();
+			transform.popPose();
 		}
 	}
 
-	public static void renderRailgunOverlay(IRenderTypeBuffer.Impl buffer, MatrixStack transform, int scaledWidth, int scaledHeight,
-											PlayerEntity player, Hand hand, ItemStack equipped)
+	public static void renderRailgunOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
+											Player player, InteractionHand hand, ItemStack equipped)
 	{
-		int duration = 72000-(player.isHandActive()&&player.getActiveHand()==hand?player.getItemInUseCount(): 0);
+		int duration = 72000-(player.isUsingItem()&&player.getUsedItemHand()==hand?player.getUseItemRemainingTicks(): 0);
 		int chargeTime = ((RailgunItem)equipped.getItem()).getChargeTime(equipped);
 		int chargeLevel = duration < 72000?Math.min(99, (int)(duration/(float)chargeTime*100)): 0;
 		float scale = 1.5f;
 
-		IVertexBuilder builder = getHudElementsBuilder(buffer);
-		boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
+		VertexConsumer builder = getHudElementsBuilder(buffer);
+		boolean boundLeft = (player.getMainArm()==HumanoidArm.RIGHT)==(hand==InteractionHand.OFF_HAND);
 		float dx = boundLeft?24: (scaledWidth-24-64);
 		float dy = scaledHeight-16;
-		transform.push();
+		transform.pushPose();
 		transform.translate(dx, dy, 0);
 		GuiHelper.drawTexturedColoredRect(builder, transform, 0, -32, 64, 32, 1, 1, 1, 1, 0, 64/256f, 96/256f, 128/256f);
 
@@ -118,25 +118,25 @@ public class ItemOverlayUtils
 		transform.translate(30, -27.5, 0);
 		transform.scale(scale, scale, 1);
 		String chargeTxt = chargeLevel < 10?"0 "+chargeLevel: chargeLevel/10+" "+chargeLevel%10;
-		ClientUtils.font().renderString(
+		ClientUtils.font().drawInBatch(
 				chargeTxt, 0, 0, Lib.COLOUR_I_ImmersiveOrange,
-				true, transform.getLast().getMatrix(), buffer, false,
+				true, transform.last().pose(), buffer, false,
 				0, 0xf000f0
 		);
-		transform.pop();
+		transform.popPose();
 	}
 
-	public static void renderFluidTankOverlay(IRenderTypeBuffer.Impl buffer, MatrixStack transform, int scaledWidth, int scaledHeight,
-											  PlayerEntity player, Hand hand, ItemStack equipped, boolean renderFluidUse,
-											  BiConsumer<IVertexBuilder, IFluidHandlerItem> additionalRender)
+	public static void renderFluidTankOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
+											  Player player, InteractionHand hand, ItemStack equipped, boolean renderFluidUse,
+											  BiConsumer<VertexConsumer, IFluidHandlerItem> additionalRender)
 	{
-		IVertexBuilder builder = getHudElementsBuilder(buffer);
+		VertexConsumer builder = getHudElementsBuilder(buffer);
 		int rightOffset = 0;
-		if(ClientUtils.mc().gameSettings.showSubtitles)
+		if(ClientUtils.mc().options.showSubtitles)
 			rightOffset += 100;
 		float dx = scaledWidth-rightOffset-16;
 		float dy = scaledHeight;
-		transform.push();
+		transform.pushPose();
 		transform.translate(dx, dy, 0);
 		int w = 31;
 		int h = 62;
@@ -156,28 +156,28 @@ public class ItemOverlayUtils
 			{
 				FluidStack fuel = handler.getFluidInTank(0);
 				int amount = fuel.getAmount();
-				if(renderFluidUse&&player.isHandActive()&&player.getActiveHand()==hand)
+				if(renderFluidUse&&player.isUsingItem()&&player.getUsedItemHand()==hand)
 				{
-					int use = player.getItemInUseMaxCount();
+					int use = player.getTicksUsingItem();
 					amount -= use*IEServerConfig.TOOLS.chemthrower_consumption.get();
 				}
 				float cap = (float)capacity;
 				float angle = 83-(166*amount/cap);
-				transform.push();
-				transform.rotate(new Quaternion(0, 0, angle, true));
+				transform.pushPose();
+				transform.mulPose(new Quaternion(0, 0, angle, true));
 				GuiHelper.drawTexturedColoredRect(builder, transform, 6, -2, 24, 4, 1, 1, 1, 1, 91/256f, 123/256f, 80/256f, 87/256f);
-				transform.pop();
+				transform.popPose();
 				transform.translate(23, 37, 0);
 
 				additionalRender.accept(builder, handler);
 			}
 		});
-		transform.pop();
+		transform.popPose();
 	}
 
 
-	public static void renderDrillOverlay(IRenderTypeBuffer.Impl buffer, MatrixStack transform, int scaledWidth, int scaledHeight,
-										  PlayerEntity player, Hand hand, ItemStack equipped)
+	public static void renderDrillOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
+										  Player player, InteractionHand hand, ItemStack equipped)
 	{
 		renderFluidTankOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
 			GuiHelper.drawTexturedColoredRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
@@ -187,8 +187,8 @@ public class ItemOverlayUtils
 		});
 	}
 
-	public static void renderBuzzsawOverlay(IRenderTypeBuffer.Impl buffer, MatrixStack transform, int scaledWidth, int scaledHeight,
-											PlayerEntity player, Hand hand, ItemStack equipped)
+	public static void renderBuzzsawOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
+											Player player, InteractionHand hand, ItemStack equipped)
 	{
 		renderFluidTankOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped, false, (builder, handler) -> {
 			GuiHelper.drawTexturedColoredRect(builder, transform, -54, -73, 66, 72, 1, 1, 1, 1, 108/256f, 174/256f, 4/256f, 76/256f);
@@ -198,8 +198,8 @@ public class ItemOverlayUtils
 		});
 	}
 
-	public static void renderChemthrowerOverlay(IRenderTypeBuffer.Impl buffer, MatrixStack transform, int scaledWidth, int scaledHeight,
-												PlayerEntity player, Hand hand, ItemStack equipped)
+	public static void renderChemthrowerOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
+												Player player, InteractionHand hand, ItemStack equipped)
 	{
 		renderFluidTankOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped, true, (builder, handler) -> {
 			GuiHelper.drawTexturedColoredRect(builder, transform, -41, -73, 53, 72, 1, 1, 1, 1, 8/256f, 61/256f, 4/256f, 76/256f);
@@ -210,27 +210,27 @@ public class ItemOverlayUtils
 			FluidStack fuel = handler.getFluidInTank(0);
 			if(!fuel.isEmpty())
 			{
-				String name = ClientUtils.font().func_238417_a_(fuel.getDisplayName(), 50).getString().trim();
-				ClientUtils.font().renderString(
-						name, -68-ClientUtils.font().getStringWidth(name)/2, -15, 0,
-						false, transform.getLast().getMatrix(), buffer, false,
+				String name = ClientUtils.font().substrByWidth(fuel.getDisplayName(), 50).getString().trim();
+				ClientUtils.font().drawInBatch(
+						name, -68-ClientUtils.font().width(name)/2, -15, 0,
+						false, transform.last().pose(), buffer, false,
 						0, 0xf000f0
 				);
 			}
 		});
 	}
 
-	public static void renderShieldOverlay(IRenderTypeBuffer.Impl buffer, MatrixStack transform, int scaledWidth, int scaledHeight,
-										   PlayerEntity player, Hand hand, ItemStack equipped)
+	public static void renderShieldOverlay(MultiBufferSource.BufferSource buffer, PoseStack transform, int scaledWidth, int scaledHeight,
+										   Player player, InteractionHand hand, ItemStack equipped)
 	{
-		CompoundNBT upgrades = ((IEShieldItem)equipped.getItem()).getUpgrades(equipped);
+		CompoundTag upgrades = ((IEShieldItem)equipped.getItem()).getUpgrades(equipped);
 		if(!upgrades.isEmpty())
 		{
-			IVertexBuilder builder = getHudElementsBuilder(buffer);
-			boolean boundLeft = (player.getPrimaryHand()==HandSide.RIGHT)==(hand==Hand.OFF_HAND);
+			VertexConsumer builder = getHudElementsBuilder(buffer);
+			boolean boundLeft = (player.getMainArm()==HumanoidArm.RIGHT)==(hand==InteractionHand.OFF_HAND);
 			float dx = boundLeft?16: (scaledWidth-16-64);
 			float dy = scaledHeight;
-			transform.push();
+			transform.pushPose();
 			transform.translate(dx, dy, 0);
 			GuiHelper.drawTexturedColoredRect(builder, transform, 0, -22, 64, 22, 1, 1, 1, 1, 0, 64/256f, 176/256f, 198/256f);
 
@@ -252,7 +252,7 @@ public class ItemOverlayUtils
 					GuiHelper.drawTexturedColoredRect(builder, transform, 40, -22-h, 12, h, 1, 1, 1, 1, 40/256f, 52/256f, (214-h)/256f, 214/256f);
 				}
 			}
-			transform.pop();
+			transform.popPose();
 		}
 	}
 }

@@ -10,15 +10,14 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.IBlockReader;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
 
 public class SorterBlock extends IETileProviderBlock
 {
@@ -26,14 +25,14 @@ public class SorterBlock extends IETileProviderBlock
 
 	public SorterBlock(String name, boolean fluid)
 	{
-		super(name, Block.Properties.create(Material.WOOD).sound(SoundType.WOOD).hardnessAndResistance(2F, 5F),
+		super(name, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2F, 5F),
 				BlockItemIE::new);
 		this.fluid = fluid;
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
+	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
 	{
 		if(fluid)
 			return new FluidSorterTileEntity();

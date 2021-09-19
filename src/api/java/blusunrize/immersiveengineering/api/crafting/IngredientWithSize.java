@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.gson.JsonElement;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.tags.ITag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
@@ -39,12 +39,12 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		this(basePredicate, 1);
 	}
 
-	public IngredientWithSize(ITag<Item> basePredicate, int count)
+	public IngredientWithSize(Tag<Item> basePredicate, int count)
 	{
-		this(Ingredient.fromTag(basePredicate), count);
+		this(Ingredient.of(basePredicate), count);
 	}
 
-	public IngredientWithSize(ITag<Item> basePredicate)
+	public IngredientWithSize(Tag<Item> basePredicate)
 	{
 		this(basePredicate, 1);
 	}
@@ -54,7 +54,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		return SERIALIZER.getValue().parse(input);
 	}
 
-	public static IngredientWithSize read(PacketBuffer input)
+	public static IngredientWithSize read(FriendlyByteBuf input)
 	{
 		return SERIALIZER.getValue().parse(input);
 	}
@@ -70,7 +70,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 	@Nonnull
 	public ItemStack[] getMatchingStacks()
 	{
-		ItemStack[] baseStacks = basePredicate.getMatchingStacks();
+		ItemStack[] baseStacks = basePredicate.getItems();
 		ItemStack[] ret = new ItemStack[baseStacks.length];
 		for(int i = 0; i < baseStacks.length; ++i)
 			ret[i] = ItemHandlerHelper.copyStackWithSize(baseStacks[i], this.count);
@@ -85,7 +85,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 
 	public boolean hasNoMatchingItems()
 	{
-		return basePredicate.hasNoMatchingItems();
+		return basePredicate.isEmpty();
 	}
 
 	public int getCount()
@@ -105,7 +105,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 
 	public static IngredientWithSize of(ItemStack stack)
 	{
-		return new IngredientWithSize(Ingredient.fromStacks(stack), stack.getCount());
+		return new IngredientWithSize(Ingredient.of(stack), stack.getCount());
 	}
 
 	public ItemStack getRandomizedExampleStack(int rand)
@@ -122,7 +122,7 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		return basePredicate.test(itemstack);
 	}
 
-	public void write(PacketBuffer out)
+	public void write(FriendlyByteBuf out)
 	{
 		SERIALIZER.getValue().write(out, this);
 	}

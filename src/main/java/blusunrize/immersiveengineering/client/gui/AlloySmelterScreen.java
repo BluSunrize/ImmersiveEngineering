@@ -11,10 +11,10 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterTileEntity;
 import blusunrize.immersiveengineering.common.gui.AlloySmelterContainer;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 
 public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 {
@@ -22,7 +22,7 @@ public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 
 	private final AlloySmelterTileEntity tile;
 
-	public AlloySmelterScreen(AlloySmelterContainer container, PlayerInventory inventoryPlayer, ITextComponent title)
+	public AlloySmelterScreen(AlloySmelterContainer container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title);
 		this.tile = container.tile;
@@ -30,20 +30,20 @@ public class AlloySmelterScreen extends IEContainerScreen<AlloySmelterContainer>
 	}
 
 	@Override
-	protected void drawGuiContainerBackgroundLayer(MatrixStack transform, float f, int mx, int my)
+	protected void renderBg(PoseStack transform, float f, int mx, int my)
 	{
 		ClientUtils.bindTexture(TEXTURE);
-		this.blit(transform, guiLeft, guiTop, 0, 0, xSize, ySize);
+		this.blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 
 		if(tile.lastBurnTime > 0)
 		{
 			int h = (int)(12*(tile.burnTime/(float)tile.lastBurnTime));
-			this.blit(transform, guiLeft+56, guiTop+37+12-h, 179, 1+12-h, 9, h);
+			this.blit(transform, leftPos+56, topPos+37+12-h, 179, 1+12-h, 9, h);
 		}
 		if(tile.processMax > 0)
 		{
 			int w = (int)(22*((tile.processMax-tile.process)/(float)tile.processMax));
-			this.blit(transform, guiLeft+84, guiTop+35, 177, 14, w, 16);
+			this.blit(transform, leftPos+84, topPos+35, 177, 14, w, 16);
 		}
 	}
 }

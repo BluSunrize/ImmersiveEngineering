@@ -16,22 +16,27 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.math.Quaternion;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.client.renderer.BlockRendererDispatcher;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Quaternion;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector3f;
-import net.minecraft.util.text.*;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -50,8 +55,8 @@ public class ManualElementMultiblock extends SpecialManualElements
 	private float scale = 50f;
 	private float transX = 0;
 	private float transY = 0;
-	private TransformationMatrix additionalTransform;
-	private List<ITextComponent> componentTooltip;
+	private Transformation additionalTransform;
+	private List<Component> componentTooltip;
 	private final MultiblockRenderInfo renderInfo;
 	private final TemplateWorld structureWorld;
 	private final int yOffTotal;
@@ -63,7 +68,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	{
 		super(manual);
 		this.multiblock = multiblock;
-		List<BlockInfo> structure = multiblock.getStructure(Minecraft.getInstance().world);
+		List<StructureBlockInfo> structure = multiblock.getStructure(Minecraft.getInstance().level);
 		renderInfo = new MultiblockRenderInfo(structure);
 		float diagLength = (float)Math.sqrt(renderInfo.structureHeight*renderInfo.structureHeight+
 				renderInfo.structureWidth*renderInfo.structureWidth+
@@ -71,7 +76,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		structureWorld = new TemplateWorld(structure, renderInfo);
 		transX = 60+renderInfo.structureWidth/2F;
 		transY = 35+diagLength/2;
-		additionalTransform = new TransformationMatrix(
+		additionalTransform = new Transformation(
 				null,
 				new Quaternion(25, 0, 0, true),
 				null,
@@ -81,9 +86,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 		yOffTotal = (int)(transY+scale*diagLength/2);
 	}
 
-	private static final ITextComponent greenTick = applyFormat(
-			new StringTextComponent("\u2713"), TextFormatting.GREEN, TextFormatting.BOLD
-	).appendString(" ");
+	private static final Component greenTick = applyFormat(
+			new TextComponent("\u2713"), ChatFormatting.GREEN, ChatFormatting.BOLD
+	).append(" ");
 
 	@Override
 	public void onOpened(ManualScreen gui, int x, int y, List<Button> pageButtons)
@@ -123,7 +128,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		if(totalMaterials!=null)
 		{
 			componentTooltip = new ArrayList<>();
-			componentTooltip.add(new TranslationTextComponent("desc.immersiveengineering.info.reqMaterial"));
+			componentTooltip.add(new TranslatableComponent("desc.immersiveengineering.info.reqMaterial"));
 			int maxOff = 1;
 			boolean hasAnyItems = false;
 			boolean[] hasItems = new boolean[totalMaterials.length];
@@ -132,10 +137,10 @@ public class ManualElementMultiblock extends SpecialManualElements
 				{
 					ItemStack req = totalMaterials[ss];
 					int reqSize = req.getCount();
-					for(int slot = 0; slot < ManualUtils.mc().player.inventory.getSizeInventory(); slot++)
+					for(int slot = 0; slot < ManualUtils.mc().player.inventory.getContainerSize(); slot++)
 					{
-						ItemStack inSlot = ManualUtils.mc().player.inventory.getStackInSlot(slot);
-						if(!inSlot.isEmpty()&&ItemStack.areItemsEqual(inSlot, req))
+						ItemStack inSlot = ManualUtils.mc().player.inventory.getItem(slot);
+						if(!inSlot.isEmpty()&&ItemStack.isSame(inSlot, req))
 							if((reqSize -= inSlot.getCount()) <= 0)
 								break;
 					}
@@ -156,30 +161,30 @@ public class ManualElementMultiblock extends SpecialManualElements
 					if(indent > 0)
 						for(int ii = 0; ii < indent; ii++)
 							sIndent.append("0");
-					IFormattableTextComponent s;
+					MutableComponent s;
 					if(hasItems[ss])
-						s = greenTick.deepCopy();
+						s = greenTick.copy();
 					else
-						s = new StringTextComponent(hasAnyItems?"   ": "");
-					s.appendSibling(applyFormat(
-							new StringTextComponent(sIndent.toString()+req.getCount()+"x "), TextFormatting.GRAY
+						s = new TextComponent(hasAnyItems?"   ": "");
+					s.append(applyFormat(
+							new TextComponent(sIndent.toString()+req.getCount()+"x "), ChatFormatting.GRAY
 					));
 					if(!req.isEmpty())
-						s.appendSibling(applyFormat(req.getDisplayName().deepCopy(), req.getRarity().color));
+						s.append(applyFormat(req.getHoverName().copy(), req.getRarity().color));
 					else
-						s.appendString("???");
+						s.append("???");
 					componentTooltip.add(s);
 				}
 		}
 	}
 
 	@Override
-	public void render(MatrixStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
+	public void render(PoseStack transform, ManualScreen gui, int x, int y, int mouseX, int mouseY)
 	{
 		if(multiblock.getStructure(null)!=null)
 		{
-			IRenderTypeBuffer.Impl buffer = IRenderTypeBuffer.getImpl(Tessellator.getInstance().getBuffer());
-			MatrixStack.Entry lastEntryBeforeTry = transform.getLast();
+			MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+			PoseStack.Pose lastEntryBeforeTry = transform.last();
 			try
 			{
 				long currentTime = System.currentTimeMillis();
@@ -195,23 +200,23 @@ public class ManualElementMultiblock extends SpecialManualElements
 				int structureWidth = renderInfo.structureWidth;
 				int structureHeight = renderInfo.structureHeight;
 
-				transform.push();
+				transform.pushPose();
 
-				final BlockRendererDispatcher blockRender = Minecraft.getInstance().getBlockRendererDispatcher();
+				final BlockRenderDispatcher blockRender = Minecraft.getInstance().getBlockRenderer();
 
 				transform.translate(transX, transY, Math.max(structureHeight, Math.max(structureWidth, structureLength)));
 				transform.scale(scale, -scale, 1);
 				additionalTransform.push(transform);
-				transform.rotate(new Quaternion(0, 90, 0, true));
+				transform.mulPose(new Quaternion(0, 90, 0, true));
 
 				transform.translate(structureLength/-2f, structureHeight/-2f, structureWidth/-2f);
 
 				int idx = 0;
 				if(showCompleted&&multiblock.canRenderFormedStructure())
 				{
-					transform.push();
+					transform.pushPose();
 					multiblock.renderFormedStructure(transform, IERenderTypes.disableLighting(buffer));
-					transform.pop();
+					transform.popPose();
 				}
 				else
 					for(int h = 0; h < structureHeight; h++)
@@ -222,18 +227,18 @@ public class ManualElementMultiblock extends SpecialManualElements
 								BlockState state = structureWorld.getBlockState(pos);
 								if(!state.isAir(structureWorld, pos))
 								{
-									transform.push();
+									transform.pushPose();
 									transform.translate(l, h, w);
 									boolean b = multiblock.overwriteBlockRender(state, idx++);
 									if(!b)
 									{
 										int overlay;
 										if(pos.equals(multiblock.getTriggerOffset()))
-											overlay = OverlayTexture.getPackedUV(0, true);
+											overlay = OverlayTexture.pack(0, true);
 										else
 											overlay = OverlayTexture.NO_OVERLAY;
 										IModelData modelData = EmptyModelData.INSTANCE;
-										TileEntity te = structureWorld.getTileEntity(pos);
+										BlockEntity te = structureWorld.getBlockEntity(pos);
 										if(te!=null)
 											modelData = te.getModelData();
 
@@ -241,11 +246,11 @@ public class ManualElementMultiblock extends SpecialManualElements
 												IERenderTypes.disableLighting(buffer),
 												0xf000f0, overlay, modelData);
 									}
-									transform.pop();
+									transform.popPose();
 								}
 							}
-				transform.pop();
-				transform.pop();
+				transform.popPose();
+				transform.popPose();
 			} catch(Exception e)
 			{
 				final long now = System.currentTimeMillis();
@@ -254,16 +259,16 @@ public class ManualElementMultiblock extends SpecialManualElements
 					e.printStackTrace();
 					lastPrintedErrorTimeMs = now;
 				}
-				while(lastEntryBeforeTry!=transform.getLast())
-					transform.pop();
+				while(lastEntryBeforeTry!=transform.last())
+					transform.popPose();
 			}
-			buffer.finish();
+			buffer.endBatch();
 
 			if(componentTooltip!=null)
 			{
-				manual.fontRenderer().drawString(transform, "?", 116, yOffTotal/2-4, manual.getTextColour());
+				manual.fontRenderer().draw(transform, "?", 116, yOffTotal/2-4, manual.getTextColour());
 				if(mouseX >= 116&&mouseX < 122&&mouseY >= yOffTotal/2-4&&mouseY < yOffTotal/2+4)
-					gui.renderToolTip(transform, LanguageMap.getInstance().func_244260_a(
+					gui.renderToolTip(transform, Language.getInstance().getVisualOrder(
 							Collections.unmodifiableList(componentTooltip)
 					), mouseX, mouseY, manual.fontRenderer());
 			}
@@ -281,13 +286,13 @@ public class ManualElementMultiblock extends SpecialManualElements
 		}
 	}
 
-	private TransformationMatrix forRotation(double rX, double rY)
+	private Transformation forRotation(double rX, double rY)
 	{
 		Vector3f axis = new Vector3f((float)rY, (float)rX, 0);
 		float angle = (float)Math.sqrt(axis.dot(axis));
 		if(!axis.normalize())
-			return TransformationMatrix.identity();
-		return new TransformationMatrix(
+			return Transformation.identity();
+		return new Transformation(
 				null,
 				new Quaternion(axis, angle, true),
 				null,
@@ -315,7 +320,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	//Stolen back from boni's StructureInfo
 	static class MultiblockRenderInfo implements Predicate<BlockPos>
 	{
-		public Map<BlockPos, BlockInfo> data = new HashMap<>();
+		public Map<BlockPos, StructureBlockInfo> data = new HashMap<>();
 		private final int structureHeight;
 		private final int structureLength;
 		private final int structureWidth;
@@ -324,12 +329,12 @@ public class ManualElementMultiblock extends SpecialManualElements
 		private int showLayer = -1;
 		private int blockIndex;
 
-		MultiblockRenderInfo(List<BlockInfo> structure)
+		MultiblockRenderInfo(List<StructureBlockInfo> structure)
 		{
 			int structureHeight = 0;
 			int structureWidth = 0;
 			int structureLength = 0;
-			for(BlockInfo block : structure)
+			for(StructureBlockInfo block : structure)
 			{
 				structureHeight = Math.max(structureHeight, block.pos.getY()+1);
 				structureWidth = Math.max(structureWidth, block.pos.getZ()+1);

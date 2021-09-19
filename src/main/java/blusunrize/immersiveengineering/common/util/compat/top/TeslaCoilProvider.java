@@ -14,12 +14,12 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * @author Robustprogram - 26.1.2020
@@ -34,17 +34,17 @@ public class TeslaCoilProvider implements IProbeInfoProvider
 	}
 
 	@Override
-	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, PlayerEntity player, World world,
+	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		TileEntity tileEntity = world.getTileEntity(data.getPos());
+		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
 		
 		if(tileEntity instanceof TeslaCoilTileEntity)
 		{
 			TeslaCoilTileEntity teslaCoil = (TeslaCoilTileEntity) tileEntity;
 			if(teslaCoil.isDummy())
 			{
-				tileEntity = world.getTileEntity(data.getPos().offset(teslaCoil.getFacing(), -1));
+				tileEntity = world.getBlockEntity(data.getPos().relative(teslaCoil.getFacing(), -1));
 
 				if(tileEntity instanceof TeslaCoilTileEntity)
 				{
@@ -52,17 +52,17 @@ public class TeslaCoilProvider implements IProbeInfoProvider
 				}
 				else
 				{
-					probeInfo.text(new StringTextComponent("<ERROR>"));
+					probeInfo.text(new TextComponent("<ERROR>"));
 					return;
 				}
 			}
 
-			probeInfo.text(new TranslationTextComponent(
+			probeInfo.text(new TranslatableComponent(
 				Lib.CHAT_INFO+"rsControl." + 
 				(teslaCoil.redstoneControlInverted?"invertedOn": "invertedOff")
 			));
 
-			probeInfo.text(new TranslationTextComponent(
+			probeInfo.text(new TranslatableComponent(
 				Lib.CHAT_INFO+"tesla." + 
 				(teslaCoil.lowPower?"lowPower": "highPower")
 			));

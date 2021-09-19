@@ -12,24 +12,24 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.pathfinding.PathType;
-import net.minecraft.state.IntegerProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.IWorldReader;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.ToolType;
 
 import javax.annotation.Nullable;
@@ -43,87 +43,87 @@ public class SawdustBlock extends IEBaseBlock
 				if(layer==0) // First layer
 					return null;
 				if(layer==MAX_LAYER) // Full block
-					return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 1, 1));
-				return ImmutableList.of(new AxisAlignedBB(0, 0, 0, 1, 0.0625+0.125*(layer-1), 1));
+					return ImmutableList.of(new AABB(0, 0, 0, 1, 1, 1));
+				return ImmutableList.of(new AABB(0, 0, 0, 1, 0.0625+0.125*(layer-1), 1));
 			}
 	);
 
 	public SawdustBlock()
 	{
 		super("sawdust",
-				Block.Properties.create(Material.WOOD, MaterialColor.SAND).sound(SoundType.SAND)
-						.harvestTool(ToolType.SHOVEL).hardnessAndResistance(0.5F).doesNotBlockMovement().notSolid(),
+				Block.Properties.of(Material.WOOD, MaterialColor.SAND).sound(SoundType.SAND)
+						.harvestTool(ToolType.SHOVEL).strength(0.5F).noCollission().noOcclusion(),
 				BlockItemIE::new);
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(LAYERS);
 	}
 
 	@Override
-	public int getFireSpreadSpeed(BlockState state, IBlockReader world, BlockPos pos, Direction face)
+	public int getFireSpreadSpeed(BlockState state, BlockGetter world, BlockPos pos, Direction face)
 	{
 		return 60;
 	}
 
 	@Override
-	public int getFlammability(BlockState state, IBlockReader world, BlockPos pos, Direction face)
+	public int getFlammability(BlockState state, BlockGetter world, BlockPos pos, Direction face)
 	{
 		return 60;
 	}
 
 	@Override
-	public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type)
+	public boolean isPathfindable(BlockState state, BlockGetter worldIn, BlockPos pos, PathComputationType type)
 	{
-		if(type==PathType.LAND)
-			return state.get(LAYERS) < 5;
+		if(type==PathComputationType.LAND)
+			return state.getValue(LAYERS) < 5;
 		return false;
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
 	{
-		return SHAPES.get(state.get(LAYERS));
+		return SHAPES.get(state.getValue(LAYERS));
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
 	{
-		return SHAPES.get(state.get(LAYERS)-1);
+		return SHAPES.get(state.getValue(LAYERS)-1);
 	}
 
 	@Override
-	public boolean isTransparent(BlockState state)
+	public boolean useShapeForLightOcclusion(BlockState state)
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isValidPosition(BlockState state, IWorldReader worldIn, BlockPos pos)
+	public boolean canSurvive(BlockState state, LevelReader worldIn, BlockPos pos)
 	{
-		BlockState blockstate = worldIn.getBlockState(pos.down());
+		BlockState blockstate = worldIn.getBlockState(pos.below());
 		Block block = blockstate.getBlock();
-		return Block.doesSideFillSquare(blockstate.getCollisionShapeUncached(worldIn, pos.down()), Direction.UP)
-				||block==this&&blockstate.get(LAYERS)==MAX_LAYER;
+		return Block.isFaceFull(blockstate.getCollisionShape(worldIn, pos.below()), Direction.UP)
+				||block==this&&blockstate.getValue(LAYERS)==MAX_LAYER;
 	}
 
 	@Override
-	public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos)
 	{
-		return !stateIn.isValidPosition(worldIn, currentPos)?Blocks.AIR.getDefaultState(): super.updatePostPlacement(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+		return !stateIn.canSurvive(worldIn, currentPos)?Blocks.AIR.defaultBlockState(): super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 
 	@Override
-	public boolean isReplaceable(BlockState state, BlockItemUseContext useContext)
+	public boolean canBeReplaced(BlockState state, BlockPlaceContext useContext)
 	{
-		int i = state.get(LAYERS);
-		if(useContext.getItem().getItem()==this.asItem()&&i < MAX_LAYER)
+		int i = state.getValue(LAYERS);
+		if(useContext.getItemInHand().getItem()==this.asItem()&&i < MAX_LAYER)
 		{
 			if(useContext.replacingClickedOnBlock())
-				return useContext.getFace()==Direction.UP;
+				return useContext.getClickedFace()==Direction.UP;
 			else
 				return true;
 		}
@@ -133,11 +133,11 @@ public class SawdustBlock extends IEBaseBlock
 
 	@Nullable
 	@Override
-	public BlockState getStateForPlacement(BlockItemUseContext context)
+	public BlockState getStateForPlacement(BlockPlaceContext context)
 	{
-		BlockState blockstate = context.getWorld().getBlockState(context.getPos());
+		BlockState blockstate = context.getLevel().getBlockState(context.getClickedPos());
 		if(blockstate.getBlock()==this)
-			return blockstate.with(LAYERS, Math.min(MAX_LAYER, blockstate.get(LAYERS)+1));
+			return blockstate.setValue(LAYERS, Math.min(MAX_LAYER, blockstate.getValue(LAYERS)+1));
 		else
 			return super.getStateForPlacement(context);
 	}

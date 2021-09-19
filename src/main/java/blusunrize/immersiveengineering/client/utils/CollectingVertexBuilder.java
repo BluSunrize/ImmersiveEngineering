@@ -9,29 +9,28 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import com.mojang.blaze3d.vertex.IVertexBuilder;
-
 import javax.annotation.Nonnull;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class CollectingVertexBuilder implements IVertexBuilder
+public class CollectingVertexBuilder implements VertexConsumer
 {
-	protected final List<List<Consumer<IVertexBuilder>>> vertices = new ArrayList<>();
-	private List<Consumer<IVertexBuilder>> nextVertex = new ArrayList<>();
+	protected final List<List<Consumer<VertexConsumer>>> vertices = new ArrayList<>();
+	private List<Consumer<VertexConsumer>> nextVertex = new ArrayList<>();
 
 	@Nonnull
 	@Override
-	public IVertexBuilder pos(double x, double y, double z)
+	public VertexConsumer vertex(double x, double y, double z)
 	{
-		nextVertex.add(vb -> vb.pos(x, y, z));
+		nextVertex.add(vb -> vb.vertex(x, y, z));
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder color(int red, int green, int blue, int alpha)
+	public VertexConsumer color(int red, int green, int blue, int alpha)
 	{
 		nextVertex.add(vb -> vb.color(red, green, blue, alpha));
 		return this;
@@ -39,31 +38,31 @@ public class CollectingVertexBuilder implements IVertexBuilder
 
 	@Nonnull
 	@Override
-	public IVertexBuilder tex(float u, float v)
+	public VertexConsumer uv(float u, float v)
 	{
-		nextVertex.add(vb -> vb.tex(u, v));
+		nextVertex.add(vb -> vb.uv(u, v));
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder overlay(int u, int v)
+	public VertexConsumer overlayCoords(int u, int v)
 	{
-		nextVertex.add(vb -> vb.overlay(u, v));
+		nextVertex.add(vb -> vb.overlayCoords(u, v));
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder lightmap(int u, int v)
+	public VertexConsumer uv2(int u, int v)
 	{
-		nextVertex.add(vb -> vb.lightmap(u, v));
+		nextVertex.add(vb -> vb.uv2(u, v));
 		return this;
 	}
 
 	@Nonnull
 	@Override
-	public IVertexBuilder normal(float x, float y, float z)
+	public VertexConsumer normal(float x, float y, float z)
 	{
 		nextVertex.add(vb -> vb.normal(x, y, z));
 		return this;
@@ -72,15 +71,15 @@ public class CollectingVertexBuilder implements IVertexBuilder
 	@Override
 	public void endVertex()
 	{
-		nextVertex.add(IVertexBuilder::endVertex);
+		nextVertex.add(VertexConsumer::endVertex);
 		vertices.add(nextVertex);
 		nextVertex = new ArrayList<>();
 	}
 
-	public void pipeAndClear(IVertexBuilder out)
+	public void pipeAndClear(VertexConsumer out)
 	{
-		for(List<Consumer<IVertexBuilder>> l : vertices)
-			for(Consumer<IVertexBuilder> c : l)
+		for(List<Consumer<VertexConsumer>> l : vertices)
+			for(Consumer<VertexConsumer> c : l)
 				c.accept(out);
 		vertices.clear();
 	}

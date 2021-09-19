@@ -18,10 +18,10 @@ import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
-import net.minecraft.block.Block;
-import net.minecraft.block.SlabBlock;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.RenderTypeLookup;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -37,92 +37,92 @@ public class BlockRenderLayers
 	@SubscribeEvent
 	public static void clientSetup(FMLClientSetupEvent ev)
 	{
-		RenderTypeLookup.setRenderLayer(StoneDecoration.insulatingGlass, RenderType.getTranslucent());
-		RenderTypeLookup.setRenderLayer(StoneDecoration.concreteSprayed, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(StoneDecoration.insulatingGlass, RenderType.translucent());
+		ItemBlockRenderTypes.setRenderLayer(StoneDecoration.concreteSprayed, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(
 				Connectors.getEnergyConnector(WireType.HV_CATEGORY, true),
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(
 				MetalDevices.floodlight,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
 
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
 		{
-			RenderTypeLookup.setRenderLayer(MetalDecoration.steelScaffoldingStair.get(type), RenderType.getCutout());
-			RenderTypeLookup.setRenderLayer(MetalDecoration.aluScaffoldingStair.get(type), RenderType.getCutout());
-			RenderTypeLookup.setRenderLayer(MetalDecoration.aluScaffolding.get(type), RenderType.getCutout());
-			RenderTypeLookup.setRenderLayer(MetalDecoration.steelScaffolding.get(type), RenderType.getCutout());
+			ItemBlockRenderTypes.setRenderLayer(MetalDecoration.steelScaffoldingStair.get(type), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(MetalDecoration.aluScaffoldingStair.get(type), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(MetalDecoration.aluScaffolding.get(type), RenderType.cutout());
+			ItemBlockRenderTypes.setRenderLayer(MetalDecoration.steelScaffolding.get(type), RenderType.cutout());
 		}
-		RenderTypeLookup.setRenderLayer(WoodenDecoration.treatedScaffolding, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(WoodenDecoration.treatedScaffolding, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(
 				WoodenDevices.logicUnit,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(
 				Connectors.ENERGY_CONNECTORS.get(ImmutablePair.of(WireType.HV_CATEGORY, true)),
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(
 				Connectors.connectorBundled,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()||rt==RenderType.getCutout()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()||rt==RenderType.cutout()
 		);
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(
 				Connectors.connectorProbe,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()||rt==RenderType.getCutout()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()||rt==RenderType.cutout()
 		);
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(
 				Connectors.feedthrough,
 				rt -> true
 		);
-		RenderTypeLookup.setRenderLayer(MetalDevices.razorWire, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(MetalDevices.fluidPlacer, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(MetalDevices.furnaceHeater, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(MetalDevices.fluidPipe, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(MetalDevices.cloche, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(MetalDevices.sampleDrill, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(MetalDevices.razorWire, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(MetalDevices.fluidPlacer, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(MetalDevices.furnaceHeater, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(MetalDevices.fluidPipe, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(MetalDevices.cloche, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(MetalDevices.sampleDrill, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(
 				MetalDevices.cloche,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
-		RenderTypeLookup.setRenderLayer(MetalDecoration.slopeAlu, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(MetalDecoration.slopeSteel, RenderType.getCutout());
+		ItemBlockRenderTypes.setRenderLayer(MetalDecoration.slopeAlu, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(MetalDecoration.slopeSteel, RenderType.cutout());
 		for(Block b : MetalDevices.CONVEYORS.values())
-			RenderTypeLookup.setRenderLayer(b, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(
+			ItemBlockRenderTypes.setRenderLayer(b, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(
 				MetalDevices.chargingStation,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
-		RenderTypeLookup.setRenderLayer(Multiblocks.tank, RenderType.getCutoutMipped());
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(Multiblocks.tank, RenderType.cutoutMipped());
+		ItemBlockRenderTypes.setRenderLayer(
 				Multiblocks.bottlingMachine,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
 
 		for(Entry<Block, SlabBlock> slab : IEBlocks.toSlab.entrySet())
-			RenderTypeLookup.setRenderLayer(
+			ItemBlockRenderTypes.setRenderLayer(
 					slab.getValue(),
-					rt -> RenderTypeLookup.canRenderInLayer(slab.getKey().getDefaultState(), rt)
+					rt -> ItemBlockRenderTypes.canRenderInLayer(slab.getKey().defaultBlockState(), rt)
 			);
-		RenderTypeLookup.setRenderLayer(
+		ItemBlockRenderTypes.setRenderLayer(
 				Cloth.balloon,
-				rt -> rt==RenderType.getSolid()||rt==RenderType.getTranslucent()
+				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
 		for(CoverType cover : CoverType.values())
-			RenderTypeLookup.setRenderLayer(
+			ItemBlockRenderTypes.setRenderLayer(
 					MetalDecoration.metalLadder.get(cover),
-					RenderType.getCutout()
+					RenderType.cutout()
 			);
 
-		RenderTypeLookup.setRenderLayer(Misc.hempPlant, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(Misc.pottedHemp, RenderType.getCutout());
-		RenderTypeLookup.setRenderLayer(IEContent.fluidPotion, RenderType.getTranslucent());
+		ItemBlockRenderTypes.setRenderLayer(Misc.hempPlant, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(Misc.pottedHemp, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(IEContent.fluidPotion, RenderType.translucent());
 		for(IEFluid fluid : IEFluid.IE_FLUIDS)
 			if(fluid!=IEContent.fluidConcrete)
 			{
-				RenderTypeLookup.setRenderLayer(fluid, RenderType.getTranslucent());
-				RenderTypeLookup.setRenderLayer(fluid.getFlowingFluid(), RenderType.getTranslucent());
+				ItemBlockRenderTypes.setRenderLayer(fluid, RenderType.translucent());
+				ItemBlockRenderTypes.setRenderLayer(fluid.getFlowing(), RenderType.translucent());
 			}
 	}
 }

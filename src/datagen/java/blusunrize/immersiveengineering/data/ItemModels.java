@@ -31,13 +31,13 @@ import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
 import blusunrize.immersiveengineering.data.models.TRSRItemModelProvider;
 import blusunrize.immersiveengineering.data.models.TRSRModelBuilder;
 import com.google.common.base.Preconditions;
-import net.minecraft.block.Block;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.Item;
-import net.minecraft.resources.ResourcePackType;
-import net.minecraft.util.IItemProvider;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -292,7 +292,7 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private void createBucket(Fluid f)
 	{
-		withExistingParent(name(f.getFilledBucket()), forgeLoc("item/bucket"))
+		withExistingParent(name(f.getBucket()), forgeLoc("item/bucket"))
 				.customLoader(DynamicBucketModelBuilder::begin)
 				.fluid(f);
 	}
@@ -365,9 +365,9 @@ public class ItemModels extends TRSRItemModelProvider
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION));
 	}
 
-	private TRSRModelBuilder obj(IItemProvider item, ResourceLocation model)
+	private TRSRModelBuilder obj(ItemLike item, ResourceLocation model)
 	{
-		Preconditions.checkArgument(existingFileHelper.exists(model, ResourcePackType.CLIENT_RESOURCES, "", "models"));
+		Preconditions.checkArgument(existingFileHelper.exists(model, PackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
 				.customLoader(OBJLoaderBuilder::begin)
 				.flipV(true)
@@ -375,26 +375,26 @@ public class ItemModels extends TRSRItemModelProvider
 				.end();
 	}
 
-	private IEOBJBuilder<TRSRModelBuilder> ieObjBuilder(IItemProvider item, ResourceLocation model)
+	private IEOBJBuilder<TRSRModelBuilder> ieObjBuilder(ItemLike item, ResourceLocation model)
 	{
-		Preconditions.checkArgument(existingFileHelper.exists(model, ResourcePackType.CLIENT_RESOURCES, "", "models"));
+		Preconditions.checkArgument(existingFileHelper.exists(model, PackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
 				.customLoader(IEOBJBuilder::begin)
 				.flipV(true)
 				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()));
 	}
 
-	private TRSRModelBuilder ieObj(IItemProvider item, ResourceLocation model)
+	private TRSRModelBuilder ieObj(ItemLike item, ResourceLocation model)
 	{
 		return ieObjBuilder(item, model).end();
 	}
 
-	private TRSRModelBuilder getBuilder(IItemProvider item)
+	private TRSRModelBuilder getBuilder(ItemLike item)
 	{
 		return getBuilder(name(item));
 	}
 
-	private String name(IItemProvider item)
+	private String name(ItemLike item)
 	{
 		return item.asItem().getRegistryName().getPath();
 	}

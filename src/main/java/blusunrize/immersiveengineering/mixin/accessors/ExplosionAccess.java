@@ -11,9 +11,9 @@ package blusunrize.immersiveengineering.mixin.accessors;
 
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.Explosion;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Explosion;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
@@ -21,7 +21,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface ExplosionAccess
 {
 	@Invoker
-	static void callHandleExplosionDrops(
+	static void callAddBlockDrops(
 			ObjectArrayList<Pair<ItemStack, BlockPos>> dropPositionArray, ItemStack stack, BlockPos pos
 	)
 	{

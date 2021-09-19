@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -34,7 +34,7 @@ public interface IMultiblockRecipe
 
 	NonNullList<ItemStack> getItemOutputs();
 
-	default NonNullList<ItemStack> getActualItemOutputs(TileEntity tile)
+	default NonNullList<ItemStack> getActualItemOutputs(BlockEntity tile)
 	{
 		return getItemOutputs();
 	}
@@ -54,7 +54,7 @@ public interface IMultiblockRecipe
 		return ItemStack.EMPTY;
 	}
 
-	default List<FluidStack> getActualFluidOutputs(TileEntity tile)
+	default List<FluidStack> getActualFluidOutputs(BlockEntity tile)
 	{
 		return getFluidOutputs();
 	}

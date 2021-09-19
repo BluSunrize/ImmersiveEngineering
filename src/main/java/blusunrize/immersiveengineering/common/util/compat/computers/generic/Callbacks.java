@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.owners.*;
 import com.google.common.base.Preconditions;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.fml.RegistryObject;
 
 import java.util.Collections;
@@ -21,10 +21,10 @@ import java.util.Map;
 
 public class Callbacks
 {
-	private static final Map<TileEntityType<?>, CallbackOwner<?>> CALLBACKS = new HashMap<>();
+	private static final Map<BlockEntityType<?>, CallbackOwner<?>> CALLBACKS = new HashMap<>();
 	private static boolean initialized = false;
 
-	private static <T extends TileEntity> void register(RegistryObject<TileEntityType<T>> type, CallbackOwner<T> owner)
+	private static <T extends BlockEntity> void register(RegistryObject<BlockEntityType<T>> type, CallbackOwner<T> owner)
 	{
 		Preconditions.checkState(!CALLBACKS.containsKey(type.get()));
 		CALLBACKS.put(type.get(), owner);
@@ -57,7 +57,7 @@ public class Callbacks
 		initialized = true;
 	}
 
-	public static Map<TileEntityType<?>, CallbackOwner<?>> getCallbacks()
+	public static Map<BlockEntityType<?>, CallbackOwner<?>> getCallbacks()
 	{
 		ensureInitialized();
 		return Collections.unmodifiableMap(CALLBACKS);

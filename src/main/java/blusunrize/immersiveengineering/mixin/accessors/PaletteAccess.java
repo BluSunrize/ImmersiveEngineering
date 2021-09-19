@@ -9,19 +9,19 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
-import net.minecraft.world.gen.feature.template.Template.Palette;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.Palette;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;
 
 import java.util.List;
 
-@Mixin(Template.Palette.class)
+@Mixin(StructureTemplate.Palette.class)
 public interface PaletteAccess
 {
 	@Invoker("<init>")
-	static Palette construct(List<BlockInfo> blocks)
+	static Palette construct(List<StructureBlockInfo> blocks)
 	{
 		throw new UnsupportedOperationException("This will be replaced by Mixin");
 	}

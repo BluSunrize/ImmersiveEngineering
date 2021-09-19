@@ -16,14 +16,14 @@ import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.mixin.accessors.PaletteAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
-import net.minecraft.block.BlockState;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ObjectIntIdentityMap;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.gen.feature.template.Template;
-import net.minecraft.world.gen.feature.template.Template.BlockInfo;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.IdMapper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
+import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraftforge.fml.network.NetworkEvent.Context;
 import net.minecraftforge.registries.GameData;
 
@@ -40,13 +40,13 @@ public class MessageMultiblockSync implements IMessage
 		this.templates = templatesToSync;
 	}
 
-	public MessageMultiblockSync(PacketBuffer buf)
+	public MessageMultiblockSync(FriendlyByteBuf buf)
 	{
 		templates = PacketUtils.readList(buf, SyncedTemplate::new);
 	}
 
 	@Override
-	public void toBytes(PacketBuffer buf)
+	public void toBytes(FriendlyByteBuf buf)
 	{
 		PacketUtils.writeList(buf, templates, SyncedTemplate::writeTo);
 	}
@@ -57,10 +57,10 @@ public class MessageMultiblockSync implements IMessage
 		context.get().enqueueWork(() -> {
 			for(SyncedTemplate synced : templates)
 			{
-				Template template = new Template();
+				StructureTemplate template = new StructureTemplate();
 				TemplateAccess access = (TemplateAccess)template;
 				access.setSize(synced.size);
-				access.getBlocks().add(synced.parts);
+				access.getPalettes().add(synced.parts);
 				StaticTemplateManager.SYNCED_CLIENT_TEMPLATES.put(synced.name, template);
 			}
 			for(IMultiblock mb : MultiblockHandler.getMultiblocks())
@@ -74,44 +74,44 @@ public class MessageMultiblockSync implements IMessage
 	{
 		private final BlockPos size;
 		private final ResourceLocation name;
-		private final Template.Palette parts;
+		private final StructureTemplate.Palette parts;
 
-		public SyncedTemplate(Template template, ResourceLocation name)
+		public SyncedTemplate(StructureTemplate template, ResourceLocation name)
 		{
 			this.size = template.getSize();
-			this.parts = ((TemplateAccess)template).getBlocks().get(0);
+			this.parts = ((TemplateAccess)template).getPalettes().get(0);
 			this.name = name;
 		}
 
-		public SyncedTemplate(PacketBuffer buffer)
+		public SyncedTemplate(FriendlyByteBuf buffer)
 		{
 			this.size = buffer.readBlockPos();
 			this.name = buffer.readResourceLocation();
 			this.parts = PaletteAccess.construct(PacketUtils.readList(buffer, SyncedTemplate::readPart));
 		}
 
-		public void writeTo(PacketBuffer buffer)
+		public void writeTo(FriendlyByteBuf buffer)
 		{
 			buffer.writeBlockPos(size);
 			buffer.writeResourceLocation(name);
-			PacketUtils.writeList(buffer, parts.func_237157_a_(), SyncedTemplate::writePart);
+			PacketUtils.writeList(buffer, parts.blocks(), SyncedTemplate::writePart);
 		}
 
-		private static BlockInfo readPart(PacketBuffer buffer)
+		private static StructureBlockInfo readPart(FriendlyByteBuf buffer)
 		{
-			ObjectIntIdentityMap<BlockState> stateIds = GameData.getBlockStateIDMap();
-			BlockState state = stateIds.getByValue(buffer.readVarInt());
+			IdMapper<BlockState> stateIds = GameData.getBlockStateIDMap();
+			BlockState state = stateIds.byId(buffer.readVarInt());
 			BlockPos pos = buffer.readBlockPos();
-			CompoundNBT nbt = buffer.readCompoundTag();
-			return new BlockInfo(pos, Objects.requireNonNull(state), nbt);
+			CompoundTag nbt = buffer.readNbt();
+			return new StructureBlockInfo(pos, Objects.requireNonNull(state), nbt);
 		}
 
-		private static void writePart(BlockInfo info, PacketBuffer buffer)
+		private static void writePart(StructureBlockInfo info, FriendlyByteBuf buffer)
 		{
-			ObjectIntIdentityMap<BlockState> stateIds = GameData.getBlockStateIDMap();
+			IdMapper<BlockState> stateIds = GameData.getBlockStateIDMap();
 			buffer.writeVarInt(stateIds.getId(info.state));
 			buffer.writeBlockPos(info.pos);
-			buffer.writeCompoundTag(info.nbt);
+			buffer.writeNbt(info.nbt);
 		}
 	}
 }

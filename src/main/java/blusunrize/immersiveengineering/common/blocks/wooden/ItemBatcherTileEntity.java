@@ -21,16 +21,16 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.ItemStackHelper;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.state.Property;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -43,7 +43,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInventory,
+public class ItemBatcherTileEntity extends IEBaseTileEntity implements TickableBlockEntity, IIEInventory,
 		IInteractionObjectIE, IStateBasedDirectional
 {
 	public static final int NUM_SLOTS = 9;
@@ -72,17 +72,17 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
 	{
-		return placer.isSneaking();
+		return placer.isShiftKeyDown();
 	}
 
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
-			() -> new DirectionalBlockPos(pos.offset(getFacing()), getFacing().getOpposite()),
+			() -> new DirectionalBlockPos(worldPosition.relative(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
 	public void tick()
 	{
-		if(!world.isRemote&&world.getGameTime()%8==0&&output.isPresent()&&isActive())
+		if(!level.isClientSide&&level.getGameTime()%8==0&&output.isPresent()&&isActive())
 		{
 			boolean matched = true;
 			if(this.batchMode==BatchMode.ALL)
@@ -123,7 +123,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 
 	protected boolean isFilterMatched(int slot)
 	{
-		return ItemStack.areItemsEqualIgnoreDurability(this.filters.get(slot), this.buffers.get(slot))
+		return ItemStack.isSameIgnoreDurability(this.filters.get(slot), this.buffers.get(slot))
 				&&this.buffers.get(slot).getCount() >= this.filters.get(slot).getCount();
 	}
 
@@ -141,12 +141,12 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(!descPacket)
 		{
 			NonNullList<ItemStack> merged = NonNullList.withSize(2*NUM_SLOTS, ItemStack.EMPTY);
-			ItemStackHelper.loadAllItems(nbt, merged);
+			ContainerHelper.loadAllItems(nbt, merged);
 			for(int i = 0; i < NUM_SLOTS; ++i)
 			{
 				this.buffers.set(i, merged.get(i+NUM_SLOTS));
@@ -161,7 +161,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(!descPacket)
 		{
@@ -171,7 +171,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 				merged.set(i+NUM_SLOTS, this.buffers.get(i));
 				merged.set(i, this.filters.get(i));
 			}
-			ItemStackHelper.saveAllItems(nbt, merged);
+			ContainerHelper.saveAllItems(nbt, merged);
 		}
 		nbt.putByte("batchMode", (byte)this.batchMode.ordinal());
 		int[] redstoneConfig = new int[NUM_SLOTS];
@@ -180,7 +180,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 		nbt.putIntArray("redstoneColors", redstoneConfig);
 	}
 
-	public void receiveMessageFromClient(CompoundNBT message)
+	public void receiveMessageFromClient(CompoundTag message)
 	{
 		if(message.contains("batchMode"))
 			this.batchMode = BatchMode.values()[message.getByte("batchMode")];
@@ -189,7 +189,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public boolean canUseGui(PlayerEntity player)
+	public boolean canUseGui(Player player)
 	{
 		return true;
 	}
@@ -209,7 +209,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return ItemStack.areItemsEqualIgnoreDurability(this.filters.get(slot), stack);
+		return ItemStack.isSameIgnoreDurability(this.filters.get(slot), stack);
 	}
 
 	@Override
@@ -221,7 +221,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements ITickable
 	@Override
 	public void doGraphicalUpdates(int slot)
 	{
-		this.markDirty();
+		this.setChanged();
 		redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
 	}
 

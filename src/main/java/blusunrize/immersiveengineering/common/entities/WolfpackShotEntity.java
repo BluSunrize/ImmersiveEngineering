@@ -12,20 +12,20 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.util.math.EntityRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.EntityHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public class WolfpackShotEntity extends RevolvershotHomingEntity
 {
 	public static final EntityType<WolfpackShotEntity> TYPE = Builder
-			.<WolfpackShotEntity>create(WolfpackShotEntity::new, EntityClassification.MISC)
-			.size(0.125f, 0.125f)
+			.<WolfpackShotEntity>of(WolfpackShotEntity::new, MobCategory.MISC)
+			.sized(0.125f, 0.125f)
 			.build(ImmersiveEngineering.MODID+":revolver_shot_wolfpack");
 
 	static
@@ -33,21 +33,21 @@ public class WolfpackShotEntity extends RevolvershotHomingEntity
 		TYPE.setRegistryName(ImmersiveEngineering.MODID, "revolver_shot_wolfpack");
 	}
 
-	public WolfpackShotEntity(EntityType<WolfpackShotEntity> type, World world)
+	public WolfpackShotEntity(EntityType<WolfpackShotEntity> type, Level world)
 	{
 		super(type, world);
 		trackCountdown = 15;
 		redirectionSpeed = .1875;
 	}
 
-	public WolfpackShotEntity(World world, double x, double y, double z, double ax, double ay, double az, IBullet type)
+	public WolfpackShotEntity(Level world, double x, double y, double z, double ax, double ay, double az, IBullet type)
 	{
 		super(TYPE, world, x, y, z, ax, ay, az, type);
 		trackCountdown = 15;
 		redirectionSpeed = .1875;
 	}
 
-	public WolfpackShotEntity(World world, LivingEntity living, double ax, double ay, double az, IBullet type)
+	public WolfpackShotEntity(Level world, LivingEntity living, double ax, double ay, double az, IBullet type)
 	{
 		super(TYPE, world, living, ax, ay, az, type);
 		trackCountdown = 15;
@@ -55,15 +55,15 @@ public class WolfpackShotEntity extends RevolvershotHomingEntity
 	}
 
 	@Override
-	public void onImpact(RayTraceResult mop)
+	public void onHit(HitResult mop)
 	{
-		if(!this.world.isRemote&&mop instanceof EntityRayTraceResult)
+		if(!this.level.isClientSide&&mop instanceof EntityHitResult)
 		{
-			Entity hit = ((EntityRayTraceResult)mop).getEntity();
-			if(hit.hurtResistantTime > 0)
-				hit.hurtResistantTime = 0;
-			Entity shooter = shooterUUID!=null?world.getPlayerByUuid(shooterUUID): null;
-			hit.attackEntityFrom(IEDamageSources.causeWolfpackDamage(this, shooter),
+			Entity hit = ((EntityHitResult)mop).getEntity();
+			if(hit.invulnerableTime > 0)
+				hit.invulnerableTime = 0;
+			Entity shooter = shooterUUID!=null?level.getPlayerByUUID(shooterUUID): null;
+			hit.hurt(IEDamageSources.causeWolfpackDamage(this, shooter),
 					IEServerConfig.TOOLS.bulletDamage_WolfpackPart.get().floatValue());
 		}
 		this.remove();

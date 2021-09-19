@@ -9,12 +9,13 @@
 package blusunrize.immersiveengineering.api.energy;
 
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import net.minecraft.block.Block;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tags.ITag;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.Tag;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -37,12 +38,12 @@ public class ThermoelectricHandler
 		temperatureMap.add(new ThermoelectricSource(b, value, TemperatureScale.KELVIN));
 	}
 
-	public static void registerSourceInKelvin(ITag<Block> tag, int value)
+	public static void registerSourceInKelvin(Tag<Block> tag, int value)
 	{
 		temperatureMap.add(new ThermoelectricSource(tag, value, TemperatureScale.KELVIN));
 	}
 
-	public static void registerSourceInCelsius(ITag<Block> tag, int value)
+	public static void registerSourceInCelsius(Tag<Block> tag, int value)
 	{
 		temperatureMap.add(new ThermoelectricSource(tag, value, TemperatureScale.CELSIUS));
 	}
@@ -55,11 +56,11 @@ public class ThermoelectricHandler
 		return -1;
 	}
 
-	public static SortedMap<ITextComponent, Integer> getThermalValuesSorted(boolean inverse)
+	public static SortedMap<Component, Integer> getThermalValuesSorted(boolean inverse)
 	{
-		SortedMap<ITextComponent, Integer> existingMap = new TreeMap<>(
+		SortedMap<Component, Integer> existingMap = new TreeMap<>(
 				Comparator.comparing(
-						ITextComponent::getString,
+						(Function<Component, String>)Component::getString,
 						inverse?Comparator.reverseOrder(): Comparator.naturalOrder()
 				)
 		);
@@ -67,7 +68,7 @@ public class ThermoelectricHandler
 		{
 			Optional<Block> exampleOpt = ingr.getExample.get();
 			exampleOpt.ifPresent(example ->
-					existingMap.put(new ItemStack(example).getDisplayName(), ingr.temperature));
+					existingMap.put(new ItemStack(example).getHoverName(), ingr.temperature));
 		}
 		return existingMap;
 	}
@@ -83,10 +84,10 @@ public class ThermoelectricHandler
 			this(b2 -> b2==b, temperature, () -> Optional.of(b), s);
 		}
 
-		public ThermoelectricSource(ITag<Block> tag, int temperature, TemperatureScale scale)
+		public ThermoelectricSource(Tag<Block> tag, int temperature, TemperatureScale scale)
 		{
-			this(b -> b.isIn(tag), temperature, () -> {
-				Collection<Block> allMatching = tag.getAllElements();
+			this(b -> b.is(tag), temperature, () -> {
+				Collection<Block> allMatching = tag.getValues();
 				return allMatching.stream().findAny();
 			}, scale);
 		}

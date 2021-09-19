@@ -11,17 +11,17 @@ package blusunrize.immersiveengineering.common.util.commands;
 import blusunrize.immersiveengineering.common.network.MessageClientCommand;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.command.CommandSource;
-import net.minecraft.command.Commands;
+import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.commands.Commands;
 
 /**
  * @author BluSunrize - 05.09.2016
  */
 public class RemoteClientCommand
 {
-	public static LiteralArgumentBuilder<CommandSource> clientComamnd(String name, MessageClientCommand.Type type)
+	public static LiteralArgumentBuilder<CommandSourceStack> clientComamnd(String name, MessageClientCommand.Type type)
 	{
-		LiteralArgumentBuilder<CommandSource> ret = Commands.literal(name);
+		LiteralArgumentBuilder<CommandSourceStack> ret = Commands.literal(name);
 		ret.executes(context -> {
 			MessageClientCommand.send(context, type);
 			return Command.SINGLE_SUCCESS;

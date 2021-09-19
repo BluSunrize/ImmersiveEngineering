@@ -10,17 +10,17 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
-import net.minecraft.block.Block;
-import net.minecraft.block.StairsBlock;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.StairBlock;
 
-public class IEStairsBlock extends StairsBlock implements IIEBlock
+public class IEStairsBlock extends StairBlock implements IIEBlock
 {
 	private final IIEBlock base;
 
 	public <T extends Block & IIEBlock> IEStairsBlock(String name, Properties properties, T base)
 	{
-		super(base.getDefaultState(), properties);
+		super(base.defaultBlockState(), properties);
 		this.base = base;
 		setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, name));
 		IEContent.registeredIEBlocks.add(this);

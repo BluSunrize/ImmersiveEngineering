@@ -10,12 +10,12 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import com.google.common.base.Preconditions;
-import net.minecraft.client.renderer.model.BakedQuad;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector4f;
+import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.util.Direction;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector2f;
-import net.minecraft.util.math.vector.Vector4f;
+import net.minecraft.core.Direction;
+import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.model.obj.MaterialLibrary;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
@@ -48,7 +48,7 @@ public class OBJHelper
 			OBJModel2_texCoords = OBJModel.class.getDeclaredField("texCoords");
 			OBJModel2_texCoords.setAccessible(true);
 			OBJModel2_makeQuad = OBJModel.class.getDeclaredMethod("makeQuad", int[][].class, int.class, Vector4f.class,
-					Vector4f.class, TextureAtlasSprite.class, TransformationMatrix.class);
+					Vector4f.class, TextureAtlasSprite.class, Transformation.class);
 			OBJModel2_makeQuad.setAccessible(true);
 			ModelGroup_parts = ModelGroup.class.getDeclaredField("parts");
 			ModelGroup_parts.setAccessible(true);
@@ -71,7 +71,7 @@ public class OBJHelper
 		return get(OBJModel2_parts, model);
 	}
 
-	public static List<Vector2f> getTexCoords(OBJModel model)
+	public static List<Vec2> getTexCoords(OBJModel model)
 	{
 		return get(OBJModel2_texCoords, model);
 	}
@@ -110,7 +110,7 @@ public class OBJHelper
 
 	public static Pair<BakedQuad, Direction> makeQuad(OBJModel model, int[][] indices, int tintIndex, Vector4f colorTint,
 													  Vector4f ambientColor, TextureAtlasSprite texture,
-													  TransformationMatrix transform)
+													  Transformation transform)
 	{
 		return invoke(OBJModel2_makeQuad, model, indices, tintIndex, colorTint, ambientColor, texture, transform);
 	}

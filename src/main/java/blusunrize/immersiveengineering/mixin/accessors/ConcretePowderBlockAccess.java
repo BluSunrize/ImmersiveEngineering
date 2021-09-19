@@ -9,8 +9,8 @@
 
 package blusunrize.immersiveengineering.mixin.accessors;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.ConcretePowderBlock;
+import net.minecraft.world.level.block.ConcretePowderBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -18,5 +18,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 public interface ConcretePowderBlockAccess
 {
 	@Accessor
-	BlockState getSolidifiedState();
+	BlockState getConcrete();
 }

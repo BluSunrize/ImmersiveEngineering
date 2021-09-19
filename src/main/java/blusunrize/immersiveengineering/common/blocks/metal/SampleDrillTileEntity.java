@@ -27,19 +27,19 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWra
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.tileentity.ITickableTileEntity;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -48,7 +48,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickableTileEntity, IIEInternalFluxHandler, IHasDummyBlocks,
+public class SampleDrillTileEntity extends IEBaseTileEntity implements TickableBlockEntity, IIEInternalFluxHandler, IHasDummyBlocks,
 		IPlayerInteraction, IModelOffsetProvider
 {
 	public FluxStorage energyStorage = new FluxStorage(8000);
@@ -69,7 +69,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 		checkForNeedlessTicking();
 		if(dummy!=0||!sample.isEmpty())
 			return;
-		if(world.isRemote)
+		if(level.isClientSide)
 		{
 			if(isRunning)
 				process++;
@@ -82,14 +82,14 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 				&&process < totalTime
 				&&energyStorage.getEnergyStored() >= consumption
 				&&!isRSPowered()
-				&&!world.isAirBlock(getPos().add(0, -1, 0));
+				&&!level.isEmptyBlock(getBlockPos().offset(0, -1, 0));
 
 		if(canRun&&energyStorage.extractEnergy(consumption, false)==consumption)
 		{
 			process++;
 			if(process >= totalTime)
 			{
-				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(world, getPos());
+				MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(level, getBlockPos());
 				this.sample = createCoreSample(info);
 				this.process = 0;
 				canRun = false;
@@ -128,49 +128,49 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	public ItemStack createCoreSample(@Nullable MineralWorldInfo info)
 	{
 		ItemStack stack = new ItemStack(Misc.coresample);
-		ItemNBTHelper.putLong(stack, "timestamp", world.getGameTime());
-		CoresampleItem.setDimension(stack, world.getDimensionKey());
-		CoresampleItem.setCoords(stack, getPos());
-		CoresampleItem.setMineralInfo(stack, info, getPos());
+		ItemNBTHelper.putLong(stack, "timestamp", level.getGameTime());
+		CoresampleItem.setDimension(stack, level.dimension());
+		CoresampleItem.setCoords(stack, getBlockPos());
+		CoresampleItem.setMineralInfo(stack, info, getBlockPos());
 		return stack;
 	}
 
 	@Override
-	public void writeCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		energyStorage.writeToNBT(nbt);
 		nbt.putInt("dummy", dummy);
 		nbt.putInt("process", process);
 		nbt.putBoolean("isRunning", isRunning);
 		if(!sample.isEmpty())
-			nbt.put("sample", sample.write(new CompoundNBT()));
+			nbt.put("sample", sample.save(new CompoundTag()));
 	}
 
 	@Override
-	public void readCustomNBT(CompoundNBT nbt, boolean descPacket)
+	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		energyStorage.readFromNBT(nbt);
 		dummy = nbt.getInt("dummy");
 		process = nbt.getInt("process");
 		isRunning = nbt.getBoolean("isRunning");
 		if(nbt.contains("sample", NBT.TAG_COMPOUND))
-			sample = ItemStack.read(nbt.getCompound("sample"));
+			sample = ItemStack.of(nbt.getCompound("sample"));
 		else
 			sample = ItemStack.EMPTY;
 	}
 
 	@OnlyIn(Dist.CLIENT)
-	private AxisAlignedBB renderAABB;
+	private AABB renderAABB;
 
 	@OnlyIn(Dist.CLIENT)
 	@Override
-	public AxisAlignedBB getRenderBoundingBox()
+	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
 			if(dummy==0)
-				renderAABB = new AxisAlignedBB(getPos(), getPos().add(1, 3, 1));
+				renderAABB = new AABB(getBlockPos(), getBlockPos().offset(1, 3, 1));
 			else
-				renderAABB = new AxisAlignedBB(getPos(), getPos());
+				renderAABB = new AABB(getBlockPos(), getBlockPos());
 		return renderAABB;
 	}
 
@@ -181,7 +181,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		if(dummy > 0)
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0, -dummy, 0));
+			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -dummy, 0));
 			if(te instanceof SampleDrillTileEntity)
 				return ((SampleDrillTileEntity)te).getFluxStorage();
 		}
@@ -222,19 +222,19 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	{
 		if(!isDummy())
 			return this;
-		BlockPos masterPos = getPos().down(dummy);
-		TileEntity te = Utils.getExistingTileEntity(world, masterPos);
+		BlockPos masterPos = getBlockPos().below(dummy);
+		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
 		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
 	}
 
 	@Override
-	public void placeDummies(BlockItemUseContext ctx, BlockState state)
+	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		state = state.with(IEProperties.MULTIBLOCKSLAVE, true);
+		state = state.setValue(IEProperties.MULTIBLOCKSLAVE, true);
 		for(int i = 1; i <= 2; i++)
 		{
-			world.setBlockState(pos.add(0, i, 0), state);
-			((SampleDrillTileEntity)world.getTileEntity(pos.add(0, i, 0))).dummy = i;
+			level.setBlockAndUpdate(worldPosition.offset(0, i, 0), state);
+			((SampleDrillTileEntity)level.getBlockEntity(worldPosition.offset(0, i, 0))).dummy = i;
 		}
 	}
 
@@ -242,37 +242,37 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		for(int i = 0; i <= 2; i++)
-			if(world.getTileEntity(getPos().add(0, -dummy, 0).add(0, i, 0)) instanceof SampleDrillTileEntity)
-				world.removeBlock(getPos().add(0, -dummy, 0).add(0, i, 0), false);
+			if(level.getBlockEntity(getBlockPos().offset(0, -dummy, 0).offset(0, i, 0)) instanceof SampleDrillTileEntity)
+				level.removeBlock(getBlockPos().offset(0, -dummy, 0).offset(0, i, 0), false);
 	}
 
 	@Override
-	public boolean interact(Direction side, PlayerEntity player, Hand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		if(dummy!=0)
 		{
-			TileEntity te = world.getTileEntity(getPos().add(0, -dummy, 0));
+			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -dummy, 0));
 			if(te instanceof SampleDrillTileEntity)
 				return ((SampleDrillTileEntity)te).interact(side, player, hand, heldItem, hitX, hitY, hitZ);
 		}
 
 		if(!this.sample.isEmpty())
 		{
-			if(!world.isRemote)
+			if(!level.isClientSide)
 			{
-				player.entityDropItem(this.sample.copy(), .5f);
+				player.spawnAtLocation(this.sample.copy(), .5f);
 				this.sample = ItemStack.EMPTY;
-				markDirty();
+				setChanged();
 				this.markContainingBlockForUpdate(null);
 			}
 			return true;
 		}
 		else if(this.process <= 0)
 		{
-			if(!world.isRemote&&energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get())
+			if(!level.isClientSide&&energyStorage.getEnergyStored() >= IEServerConfig.MACHINES.coredrill_consumption.get())
 			{
 				this.process = 1;
-				markDirty();
+				setChanged();
 				this.markContainingBlockForUpdate(null);
 			}
 			return true;
@@ -281,7 +281,7 @@ public class SampleDrillTileEntity extends IEBaseTileEntity implements ITickable
 	}
 
 	@Override
-	public BlockPos getModelOffset(BlockState state, @Nullable Vector3i size)
+	public BlockPos getModelOffset(BlockState state, @Nullable Vec3i size)
 	{
 		return new BlockPos(0, dummy, 0);
 	}

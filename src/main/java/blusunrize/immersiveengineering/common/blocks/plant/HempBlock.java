@@ -12,41 +12,46 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
-import net.minecraft.block.*;
-import net.minecraft.block.material.Material;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer.Builder;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorldReader;
-import net.minecraft.world.World;
-import net.minecraft.world.server.ServerWorld;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.BushBlock;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition.Builder;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.PlantType;
 
 import java.util.EnumMap;
 import java.util.Random;
 
-public class HempBlock extends BushBlock implements IGrowable
+public class HempBlock extends BushBlock implements BonemealableBlock
 {
 	public final String name;
 	public final static EnumProperty<EnumHempGrowth> GROWTH = EnumProperty.create("growth", EnumHempGrowth.class);
 
 	public HempBlock(String name)
 	{
-		super(Block.Properties.create(Material.PLANTS)
+		super(Block.Properties.of(Material.PLANT)
 				.sound(SoundType.CROP)
-				.doesNotBlockMovement()
-				.hardnessAndResistance(0)
-				.tickRandomly());
+				.noCollission()
+				.strength(0)
+				.randomTicks());
 		this.name = name;
 		setRegistryName(ImmersiveEngineering.MODID, name);
 		IEContent.registeredIEBlocks.add(this);
@@ -54,15 +59,15 @@ public class HempBlock extends BushBlock implements IGrowable
 	}
 
 	@Override
-	public void fillItemGroup(ItemGroup group, NonNullList<ItemStack> items)
+	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{
 		//NOP
 	}
 
 	@Override
-	protected void fillStateContainer(Builder<Block, BlockState> builder)
+	protected void createBlockStateDefinition(Builder<Block, BlockState> builder)
 	{
-		super.fillStateContainer(builder);
+		super.createBlockStateDefinition(builder);
 		builder.add(GROWTH);
 	}
 
@@ -83,26 +88,26 @@ public class HempBlock extends BushBlock implements IGrowable
 	}
 
 	@Override
-	public boolean isValidPosition(BlockState state, IWorldReader world, BlockPos pos)
+	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos)
 	{
-		boolean b = super.isValidPosition(state, world, pos);
-		if(state.get(GROWTH)==EnumHempGrowth.TOP0)
+		boolean b = super.canSurvive(state, world, pos);
+		if(state.getValue(GROWTH)==EnumHempGrowth.TOP0)
 		{
-			BlockState stateBelow = world.getBlockState(pos.down());
-			b = stateBelow.getBlock().equals(this)&&stateBelow.get(GROWTH)==getMaxGrowth(EnumHempGrowth.BOTTOM0);
+			BlockState stateBelow = world.getBlockState(pos.below());
+			b = stateBelow.getBlock().equals(this)&&stateBelow.getValue(GROWTH)==getMaxGrowth(EnumHempGrowth.BOTTOM0);
 		}
 		return b;
 	}
 
 	@Override
-	protected boolean isValidGround(BlockState state, IBlockReader world, BlockPos pos)
+	protected boolean mayPlaceOn(BlockState state, BlockGetter world, BlockPos pos)
 	{
 		//TODO improve once CropsBlock is improved
 		return state.getBlock()==Blocks.FARMLAND;
 	}
 
 	@Override
-	public PlantType getPlantType(IBlockReader world, BlockPos pos)
+	public PlantType getPlantType(BlockGetter world, BlockPos pos)
 	{
 		return PlantType.CROP;
 	}
@@ -111,39 +116,39 @@ public class HempBlock extends BushBlock implements IGrowable
 
 	static
 	{
-		shapes.put(EnumHempGrowth.BOTTOM0, VoxelShapes.create(
-				new AxisAlignedBB(0, 0, 0, 1, .375f, 1)));
-		shapes.put(EnumHempGrowth.BOTTOM1, VoxelShapes.create(
-				new AxisAlignedBB(0, 0, 0, 1, .625f, 1)));
-		shapes.put(EnumHempGrowth.BOTTOM2, VoxelShapes.create(
-				new AxisAlignedBB(0, 0, 0, 1, .875f, 1)));
+		shapes.put(EnumHempGrowth.BOTTOM0, Shapes.create(
+				new AABB(0, 0, 0, 1, .375f, 1)));
+		shapes.put(EnumHempGrowth.BOTTOM1, Shapes.create(
+				new AABB(0, 0, 0, 1, .625f, 1)));
+		shapes.put(EnumHempGrowth.BOTTOM2, Shapes.create(
+				new AABB(0, 0, 0, 1, .875f, 1)));
 	}
 
 	@Override
 	@SuppressWarnings("deprecation")
-	public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
 	{
-		return shapes.getOrDefault(state.get(GROWTH), VoxelShapes.fullCube());
+		return shapes.getOrDefault(state.getValue(GROWTH), Shapes.block());
 	}
 
 	@Override
-	public void onNeighborChange(BlockState state, IWorldReader world, BlockPos pos, BlockPos neighbor)
+	public void onNeighborChange(BlockState state, LevelReader world, BlockPos pos, BlockPos neighbor)
 	{
 		super.onNeighborChange(state, world, pos, neighbor);
 		//TODO is this what this was intended to do?
-		if(world.getBlockState(pos).get(GROWTH)!=EnumHempGrowth.TOP0)
+		if(world.getBlockState(pos).getValue(GROWTH)!=EnumHempGrowth.TOP0)
 			//FIXME: TEST THIS.
-			if(world instanceof World)
-				((World)world).notifyNeighborsOfStateChange(pos.add(0, 1, 0), this);
+			if(world instanceof Level)
+				((Level)world).updateNeighborsAt(pos.offset(0, 1, 0), this);
 	}
 
 	@Override
-	public void tick(BlockState state, ServerWorld world, BlockPos pos, Random random)
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random)
 	{
-		int light = world.getLight(pos);
+		int light = world.getMaxLocalRawBrightness(pos);
 		if(light >= 12)
 		{
-			EnumHempGrowth growth = state.get(GROWTH);
+			EnumHempGrowth growth = state.getValue(GROWTH);
 			if(growth==EnumHempGrowth.TOP0)
 				return;
 			float speed = this.getGrowthSpeed(world, pos, state, light);
@@ -151,46 +156,46 @@ public class HempBlock extends BushBlock implements IGrowable
 			{
 				if(this.getMaxGrowth(growth)!=growth)
 				{
-					world.setBlockState(pos, state.with(GROWTH, growth.next()));
+					world.setBlockAndUpdate(pos, state.setValue(GROWTH, growth.next()));
 				}
-				if(growth==getMaxGrowth(growth)&&world.isAirBlock(pos.add(0, 1, 0)))
-					world.setBlockState(pos.add(0, 1, 0), state.with(GROWTH, EnumHempGrowth.TOP0));
+				if(growth==getMaxGrowth(growth)&&world.isEmptyBlock(pos.offset(0, 1, 0)))
+					world.setBlockAndUpdate(pos.offset(0, 1, 0), state.setValue(GROWTH, EnumHempGrowth.TOP0));
 			}
 		}
 	}
 
-	private float getGrowthSpeed(World world, BlockPos pos, BlockState state, int light)
+	private float getGrowthSpeed(Level world, BlockPos pos, BlockState state, int light)
 	{
 		float growth = 0.125f*(light-11);
-		if(world.canBlockSeeSky(pos))
+		if(world.canSeeSkyFromBelowWater(pos))
 			growth += 2f;
-		BlockState soil = world.getBlockState(pos.add(0, -1, 0));
-		if(soil.getBlock().isFertile(soil, world, pos.add(0, -1, 0)))
+		BlockState soil = world.getBlockState(pos.offset(0, -1, 0));
+		if(soil.getBlock().isFertile(soil, world, pos.offset(0, -1, 0)))
 			growth *= 1.5f;
 		return 1f+growth;
 	}
 
 	@Override
-	public boolean canGrow(IBlockReader world, BlockPos pos, BlockState state, boolean isClient)
+	public boolean isValidBonemealTarget(BlockGetter world, BlockPos pos, BlockState state, boolean isClient)
 	{
-		EnumHempGrowth growth = state.get(GROWTH);
+		EnumHempGrowth growth = state.getValue(GROWTH);
 		if(growth!=getMaxGrowth(growth))
 			return true;
 		else
-			return growth==EnumHempGrowth.BOTTOM4&&world.getBlockState(pos.add(0, 1, 0)).getBlock()!=this;
+			return growth==EnumHempGrowth.BOTTOM4&&world.getBlockState(pos.offset(0, 1, 0)).getBlock()!=this;
 	}
 
 	//canBonemeal
 	@Override
-	public boolean canUseBonemeal(World world, Random rand, BlockPos pos, BlockState state)
+	public boolean isBonemealSuccess(Level world, Random rand, BlockPos pos, BlockState state)
 	{
-		return canGrow(world, pos, world.getBlockState(pos), world.isRemote);
+		return isValidBonemealTarget(world, pos, world.getBlockState(pos), world.isClientSide);
 	}
 
 	@Override
-	public void grow(ServerWorld world, Random rand, BlockPos pos, BlockState state)
+	public void performBonemeal(ServerLevel world, Random rand, BlockPos pos, BlockState state)
 	{
-		EnumHempGrowth growth = state.get(GROWTH);
+		EnumHempGrowth growth = state.getValue(GROWTH);
 		if(growth!=getMaxGrowth(growth))
 		{
 			int span = getMaxGrowth(growth).ordinal()-growth.ordinal();
@@ -198,15 +203,15 @@ public class HempBlock extends BushBlock implements IGrowable
 			int growBy = RANDOM.nextInt(span)+1;
 			for(int i = 0; i < growBy; ++i)
 				newGrowth = newGrowth.next();
-			world.setBlockState(pos, state.with(GROWTH, newGrowth));
+			world.setBlockAndUpdate(pos, state.setValue(GROWTH, newGrowth));
 			growth = newGrowth;
 		}
-		if(growth==EnumHempGrowth.BOTTOM4&&world.isAirBlock(pos.add(0, 1, 0)))
-			world.setBlockState(pos.add(0, 1, 0), state.with(GROWTH, EnumHempGrowth.TOP0));
+		if(growth==EnumHempGrowth.BOTTOM4&&world.isEmptyBlock(pos.offset(0, 1, 0)))
+			world.setBlockAndUpdate(pos.offset(0, 1, 0), state.setValue(GROWTH, EnumHempGrowth.TOP0));
 	}
 
 	@Override
-	public ItemStack getPickBlock(BlockState state, RayTraceResult target, IBlockReader world, BlockPos pos, PlayerEntity player)
+	public ItemStack getPickBlock(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player)
 	{
 		return new ItemStack(Misc.hempSeeds);
 	}

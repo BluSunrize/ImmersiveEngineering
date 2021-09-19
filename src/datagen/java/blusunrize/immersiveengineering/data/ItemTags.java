@@ -19,12 +19,12 @@ import blusunrize.immersiveengineering.common.items.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.items.IEItems.Metals;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.items.IEItems.Tools;
-import net.minecraft.data.BlockTagsProvider;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.ItemTagsProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.data.tags.BlockTagsProvider;
+import net.minecraft.data.tags.ItemTagsProvider;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -37,7 +37,7 @@ class ItemTags extends ItemTagsProvider
 	}
 
 	@Override
-	protected void registerTags()
+	protected void addTags()
 	{
 		for(EnumMetals metal : EnumMetals.values())
 		{
@@ -48,67 +48,67 @@ class ItemTags extends ItemTagsProvider
 			MetalTags tags = IETags.getTagsFor(metal);
 			if(!metal.isVanillaMetal())
 			{
-				getOrCreateBuilder(tags.ingot).addItemEntry(ingot);
-				getOrCreateBuilder(Tags.Items.INGOTS).addItemEntry(ingot);
-				getOrCreateBuilder(tags.nugget).addItemEntry(nugget);
-				getOrCreateBuilder(Tags.Items.NUGGETS).addItemEntry(nugget);
-				getOrCreateBuilder(Tags.Items.STORAGE_BLOCKS).addItemEntry(IEBlocks.Metals.storage.get(metal).asItem());
+				tag(tags.ingot).add(ingot);
+				tag(Tags.Items.INGOTS).add(ingot);
+				tag(tags.nugget).add(nugget);
+				tag(Tags.Items.NUGGETS).add(nugget);
+				tag(Tags.Items.STORAGE_BLOCKS).add(IEBlocks.Metals.storage.get(metal).asItem());
 				if(metal.shouldAddOre())
-					getOrCreateBuilder(Tags.Items.ORES).addItemEntry(IEBlocks.Metals.ores.get(metal).asItem());
+					tag(Tags.Items.ORES).add(IEBlocks.Metals.ores.get(metal).asItem());
 			}
-			getOrCreateBuilder(tags.plate).addItemEntry(plate);
-			getOrCreateBuilder(IETags.plates).addItemEntry(plate);
-			getOrCreateBuilder(tags.dust).addItemEntry(dust);
-			getOrCreateBuilder(Tags.Items.DUSTS).addItemEntry(dust);
+			tag(tags.plate).add(plate);
+			tag(IETags.plates).add(plate);
+			tag(tags.dust).add(dust);
+			tag(Tags.Items.DUSTS).add(dust);
 		}
 
 		IETags.forAllBlocktags(this::copy);
 
-		getOrCreateBuilder(IETags.clay).addItemEntry(Items.CLAY_BALL);
-		getOrCreateBuilder(IETags.charCoal).addItemEntry(Items.CHARCOAL);
+		tag(IETags.clay).add(Items.CLAY_BALL);
+		tag(IETags.charCoal).add(Items.CHARCOAL);
 
-		getOrCreateBuilder(net.minecraft.tags.ItemTags.LECTERN_BOOKS).addItemEntry(Tools.manual);
-		getOrCreateBuilder(Tags.Items.SEEDS).addItemEntry(Misc.hempSeeds);
-		getOrCreateBuilder(Tags.Items.RODS_WOODEN).addItemEntry(Ingredients.stickTreated);
-		getOrCreateBuilder(IETags.treatedStick).addItemEntry(Ingredients.stickTreated);
-		getOrCreateBuilder(IETags.slag).addItemEntry(Ingredients.slag);
-		getOrCreateBuilder(IETags.ironRod).addItemEntry(Ingredients.stickIron);
-		getOrCreateBuilder(IETags.steelRod).addItemEntry(Ingredients.stickSteel);
-		getOrCreateBuilder(IETags.aluminumRod).addItemEntry(Ingredients.stickAluminum);
-		getOrCreateBuilder(IETags.fiberHemp).addItemEntry(Ingredients.hempFiber);
-		getOrCreateBuilder(IETags.fabricHemp).addItemEntry(Ingredients.hempFabric);
-		getOrCreateBuilder(IETags.coalCoke).addItemEntry(Ingredients.coalCoke);
-		getOrCreateBuilder(IETags.coalCokeDust).addItemEntry(Ingredients.dustCoke);
-		getOrCreateBuilder(IETags.hopGraphiteDust).addItemEntry(Ingredients.dustHopGraphite);
-		getOrCreateBuilder(IETags.hopGraphiteIngot).addItemEntry(Ingredients.ingotHopGraphite);
-		getOrCreateBuilder(IETags.copperWire).addItemEntry(Ingredients.wireCopper);
-		getOrCreateBuilder(IETags.electrumWire).addItemEntry(Ingredients.wireElectrum);
-		getOrCreateBuilder(IETags.aluminumWire).addItemEntry(Ingredients.wireAluminum);
-		getOrCreateBuilder(IETags.steelWire).addItemEntry(Ingredients.wireSteel);
-		getOrCreateBuilder(IETags.leadWire).addItemEntry(Ingredients.wireLead);
-		getOrCreateBuilder(IETags.saltpeterDust).addItemEntry(Ingredients.dustSaltpeter);
-		getOrCreateBuilder(IETags.sulfurDust).addItemEntry(Ingredients.dustSulfur);
-		getOrCreateBuilder(IETags.sawdust).addItemEntry(Ingredients.dustWood);
-		getOrCreateBuilder(IETags.metalRods)
+		tag(net.minecraft.tags.ItemTags.LECTERN_BOOKS).add(Tools.manual);
+		tag(Tags.Items.SEEDS).add(Misc.hempSeeds);
+		tag(Tags.Items.RODS_WOODEN).add(Ingredients.stickTreated);
+		tag(IETags.treatedStick).add(Ingredients.stickTreated);
+		tag(IETags.slag).add(Ingredients.slag);
+		tag(IETags.ironRod).add(Ingredients.stickIron);
+		tag(IETags.steelRod).add(Ingredients.stickSteel);
+		tag(IETags.aluminumRod).add(Ingredients.stickAluminum);
+		tag(IETags.fiberHemp).add(Ingredients.hempFiber);
+		tag(IETags.fabricHemp).add(Ingredients.hempFabric);
+		tag(IETags.coalCoke).add(Ingredients.coalCoke);
+		tag(IETags.coalCokeDust).add(Ingredients.dustCoke);
+		tag(IETags.hopGraphiteDust).add(Ingredients.dustHopGraphite);
+		tag(IETags.hopGraphiteIngot).add(Ingredients.ingotHopGraphite);
+		tag(IETags.copperWire).add(Ingredients.wireCopper);
+		tag(IETags.electrumWire).add(Ingredients.wireElectrum);
+		tag(IETags.aluminumWire).add(Ingredients.wireAluminum);
+		tag(IETags.steelWire).add(Ingredients.wireSteel);
+		tag(IETags.leadWire).add(Ingredients.wireLead);
+		tag(IETags.saltpeterDust).add(Ingredients.dustSaltpeter);
+		tag(IETags.sulfurDust).add(Ingredients.dustSulfur);
+		tag(IETags.sawdust).add(Ingredients.dustWood);
+		tag(IETags.metalRods)
 				.addTag(IETags.aluminumRod)
 				.addTag(IETags.ironRod)
 				.addTag(IETags.steelRod);
-		getOrCreateBuilder(IETags.sawblades).addItemEntry(Tools.sawblade);
-		getOrCreateBuilder(IETags.forbiddenInCrates).addItemEntry(Tools.toolbox)
-				.addItemEntry(WoodenDevices.crate.asItem())
-				.addItemEntry(WoodenDevices.reinforcedCrate.asItem())
-				.addItemEntry(Misc.cartWoodenCrate)
-				.addItemEntry(Misc.cartReinforcedCrate);
-		getOrCreateBuilder(IETags.circuitPCB).addItemEntry(Ingredients.circuitBoard);
-		getOrCreateBuilder(IETags.circuitLogic).addItemEntry(Ingredients.electronTube);
-		getOrCreateBuilder(IETags.circuitSolder).addTag(IETags.copperWire).addTag(IETags.leadWire);
+		tag(IETags.sawblades).add(Tools.sawblade);
+		tag(IETags.forbiddenInCrates).add(Tools.toolbox)
+				.add(WoodenDevices.crate.asItem())
+				.add(WoodenDevices.reinforcedCrate.asItem())
+				.add(Misc.cartWoodenCrate)
+				.add(Misc.cartReinforcedCrate);
+		tag(IETags.circuitPCB).add(Ingredients.circuitBoard);
+		tag(IETags.circuitLogic).add(Ingredients.electronTube);
+		tag(IETags.circuitSolder).addTag(IETags.copperWire).addTag(IETags.leadWire);
 
 		/* MOD COMPAT STARTS HERE */
 
 		// Curios
-		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
-				.addItemEntry(Misc.powerpack);
-		getOrCreateBuilder(TagUtils.createItemWrapper(new ResourceLocation("curios:head")))
-				.addItemEntry(Misc.earmuffs);
+		tag(TagUtils.createItemWrapper(new ResourceLocation("curios:back")))
+				.add(Misc.powerpack);
+		tag(TagUtils.createItemWrapper(new ResourceLocation("curios:head")))
+				.add(Misc.earmuffs);
 	}
 }

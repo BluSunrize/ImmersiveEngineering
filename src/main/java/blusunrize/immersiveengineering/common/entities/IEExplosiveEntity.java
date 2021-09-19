@@ -11,27 +11,27 @@ package blusunrize.immersiveengineering.common.entities;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.IEExplosion;
 import blusunrize.immersiveengineering.mixin.accessors.TNTEntityAccess;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.entity.EntityClassification;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.EntityType.Builder;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.MoverType;
-import net.minecraft.entity.item.TNTEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.IPacket;
-import net.minecraft.network.datasync.DataParameter;
-import net.minecraft.network.datasync.DataSerializers;
-import net.minecraft.network.datasync.EntityDataManager;
-import net.minecraft.particles.ParticleTypes;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.world.Explosion;
-import net.minecraft.world.Explosion.Mode;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.network.syncher.EntityDataSerializers;
+import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntityType.Builder;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.MobCategory;
+import net.minecraft.world.entity.MoverType;
+import net.minecraft.world.entity.item.PrimedTnt;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Explosion.BlockInteraction;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fml.network.NetworkHooks;
@@ -39,12 +39,12 @@ import net.minecraftforge.fml.network.NetworkHooks;
 import javax.annotation.Nonnull;
 import java.util.Optional;
 
-public class IEExplosiveEntity extends TNTEntity
+public class IEExplosiveEntity extends PrimedTnt
 {
 	public static final EntityType<IEExplosiveEntity> TYPE = Builder
-			.<IEExplosiveEntity>create(IEExplosiveEntity::new, EntityClassification.MISC)
-			.immuneToFire()
-			.size(0.98F, 0.98F)
+			.<IEExplosiveEntity>of(IEExplosiveEntity::new, MobCategory.MISC)
+			.fireImmune()
+			.sized(0.98F, 0.98F)
 			.build(ImmersiveEngineering.MODID+":explosive");
 
 	static
@@ -53,43 +53,43 @@ public class IEExplosiveEntity extends TNTEntity
 	}
 
 	private float size;
-	private Explosion.Mode mode = Mode.BREAK;
+	private Explosion.BlockInteraction mode = BlockInteraction.BREAK;
 	private boolean isFlaming = false;
 	private float explosionDropChance;
 	public BlockState block;
-	private ITextComponent name;
+	private Component name;
 
-	private static final DataParameter<Optional<BlockState>> dataMarker_block = EntityDataManager.createKey(IEExplosiveEntity.class, DataSerializers.OPTIONAL_BLOCK_STATE);
-	private static final DataParameter<Integer> dataMarker_fuse = EntityDataManager.createKey(IEExplosiveEntity.class, DataSerializers.VARINT);
+	private static final EntityDataAccessor<Optional<BlockState>> dataMarker_block = SynchedEntityData.defineId(IEExplosiveEntity.class, EntityDataSerializers.BLOCK_STATE);
+	private static final EntityDataAccessor<Integer> dataMarker_fuse = SynchedEntityData.defineId(IEExplosiveEntity.class, EntityDataSerializers.INT);
 
-	public IEExplosiveEntity(EntityType<IEExplosiveEntity> type, World world)
+	public IEExplosiveEntity(EntityType<IEExplosiveEntity> type, Level world)
 	{
 		super(type, world);
 	}
 
-	public IEExplosiveEntity(World world, double x, double y, double z, LivingEntity igniter, BlockState blockstate, float size)
+	public IEExplosiveEntity(Level world, double x, double y, double z, LivingEntity igniter, BlockState blockstate, float size)
 	{
 		super(TYPE, world);
-		this.setPosition(x, y, z);
-		double jumpingDirection = world.rand.nextDouble()*2*Math.PI;
-		this.setMotion(-Math.sin(jumpingDirection)*0.02D, 0.2, -Math.cos(jumpingDirection)*0.02D);
+		this.setPos(x, y, z);
+		double jumpingDirection = world.random.nextDouble()*2*Math.PI;
+		this.setDeltaMovement(-Math.sin(jumpingDirection)*0.02D, 0.2, -Math.cos(jumpingDirection)*0.02D);
 		this.setFuse(80);
-		this.prevPosX = x;
-		this.prevPosY = y;
-		this.prevPosZ = z;
-		((TNTEntityAccess)this).setIgniter(igniter);
+		this.xo = x;
+		this.yo = y;
+		this.zo = z;
+		((TNTEntityAccess)this).setOwner(igniter);
 		this.size = size;
 		this.block = blockstate;
 		this.explosionDropChance = 1/size;
 		this.setBlockSynced();
 	}
 
-	public IEExplosiveEntity(World world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float size)
+	public IEExplosiveEntity(Level world, BlockPos pos, LivingEntity igniter, BlockState blockstate, float size)
 	{
 		this(world, pos.getX()+.5, pos.getY()+.5, pos.getZ()+.5, igniter, blockstate, size);
 	}
 
-	public IEExplosiveEntity setMode(Mode smoke)
+	public IEExplosiveEntity setMode(BlockInteraction smoke)
 	{
 		this.mode = smoke;
 		return this;
@@ -108,37 +108,37 @@ public class IEExplosiveEntity extends TNTEntity
 	}
 
 	@Override
-	protected void registerData()
+	protected void defineSynchedData()
 	{
-		super.registerData();
-		this.dataManager.register(dataMarker_block, Optional.empty());
-		this.dataManager.register(dataMarker_fuse, 0);
+		super.defineSynchedData();
+		this.entityData.define(dataMarker_block, Optional.empty());
+		this.entityData.define(dataMarker_fuse, 0);
 	}
 
 	private void setBlockSynced()
 	{
 		if(this.block!=null)
 		{
-			this.dataManager.set(dataMarker_block, Optional.of(this.block));
-			this.dataManager.set(dataMarker_fuse, this.getFuse());
+			this.entityData.set(dataMarker_block, Optional.of(this.block));
+			this.entityData.set(dataMarker_fuse, this.getLife());
 		}
 	}
 
 	private void getBlockSynced()
 	{
-		this.block = this.dataManager.get(dataMarker_block).orElse(null);
-		this.setFuse(this.dataManager.get(dataMarker_fuse));
+		this.block = this.entityData.get(dataMarker_block).orElse(null);
+		this.setFuse(this.entityData.get(dataMarker_fuse));
 	}
 
 	@Nonnull
 	@Override
-	public ITextComponent getName()
+	public Component getName()
 	{
 		if(this.block!=null&&name==null)
 		{
 			ItemStack s = new ItemStack(this.block.getBlock(), 1);
 			if(!s.isEmpty()&&s.getItem()!=Items.AIR)
-				name = s.getDisplayName();
+				name = s.getHoverName();
 		}
 		if(name!=null)
 			return name;
@@ -146,66 +146,66 @@ public class IEExplosiveEntity extends TNTEntity
 	}
 
 	@Override
-	protected void writeAdditional(CompoundNBT tagCompound)
+	protected void addAdditionalSaveData(CompoundTag tagCompound)
 	{
-		super.writeAdditional(tagCompound);
+		super.addAdditionalSaveData(tagCompound);
 		tagCompound.putFloat("explosionPower", size);
 		tagCompound.putInt("explosionSmoke", mode.ordinal());
 		tagCompound.putBoolean("explosionFire", isFlaming);
 		if(this.block!=null)
-			tagCompound.putInt("block", Block.getStateId(this.block));
+			tagCompound.putInt("block", Block.getId(this.block));
 	}
 
 	@Override
-	protected void readAdditional(CompoundNBT tagCompound)
+	protected void readAdditionalSaveData(CompoundTag tagCompound)
 	{
-		super.readAdditional(tagCompound);
+		super.readAdditionalSaveData(tagCompound);
 		size = tagCompound.getFloat("explosionPower");
-		mode = Mode.values()[tagCompound.getInt("explosionSmoke")];
+		mode = BlockInteraction.values()[tagCompound.getInt("explosionSmoke")];
 		isFlaming = tagCompound.getBoolean("explosionFire");
 		if(tagCompound.contains("block", NBT.TAG_INT))
-			this.block = Block.getStateById(tagCompound.getInt("block"));
+			this.block = Block.stateById(tagCompound.getInt("block"));
 	}
 
 
 	@Override
 	public void tick()
 	{
-		if(world.isRemote&&this.block==null)
+		if(level.isClientSide&&this.block==null)
 			this.getBlockSynced();
 
-		this.prevPosX = this.getPosX();
-		this.prevPosY = this.getPosY();
-		this.prevPosZ = this.getPosZ();
-		if(!this.hasNoGravity())
+		this.xo = this.getX();
+		this.yo = this.getY();
+		this.zo = this.getZ();
+		if(!this.isNoGravity())
 		{
-			this.setMotion(this.getMotion().add(0.0D, -0.04D, 0.0D));
+			this.setDeltaMovement(this.getDeltaMovement().add(0.0D, -0.04D, 0.0D));
 		}
 
-		this.move(MoverType.SELF, this.getMotion());
-		this.setMotion(this.getMotion().scale(0.98D));
+		this.move(MoverType.SELF, this.getDeltaMovement());
+		this.setDeltaMovement(this.getDeltaMovement().scale(0.98D));
 		if(this.onGround)
 		{
-			this.setMotion(this.getMotion().mul(0.7D, -0.5D, 0.7D));
+			this.setDeltaMovement(this.getDeltaMovement().multiply(0.7D, -0.5D, 0.7D));
 		}
-		int newFuse = this.getFuse()-1;
+		int newFuse = this.getLife()-1;
 		this.setFuse(newFuse);
 		if(newFuse <= 0)
 		{
 			this.remove();
 
-			Explosion explosion = new IEExplosion(world, this, getPosX(), getPosY()+(getHeight()/16f), getPosZ(), size, isFlaming, mode)
+			Explosion explosion = new IEExplosion(level, this, getX(), getY()+(getBbHeight()/16f), getZ(), size, isFlaming, mode)
 					.setDropChance(explosionDropChance);
-			if(!ForgeEventFactory.onExplosionStart(world, explosion))
+			if(!ForgeEventFactory.onExplosionStart(level, explosion))
 			{
-				explosion.doExplosionA();
-				explosion.doExplosionB(true);
+				explosion.explode();
+				explosion.finalizeExplosion(true);
 			}
 		}
 		else
 		{
-			this.func_233566_aG_();
-			this.world.addParticle(ParticleTypes.SMOKE, this.getPosX(), this.getPosY()+0.5D, this.getPosZ(), 0.0D, 0.0D, 0.0D);
+			this.updateInWaterStateAndDoFluidPushing();
+			this.level.addParticle(ParticleTypes.SMOKE, this.getX(), this.getY()+0.5D, this.getZ(), 0.0D, 0.0D, 0.0D);
 		}
 	}
 
@@ -217,7 +217,7 @@ public class IEExplosiveEntity extends TNTEntity
 	}
 
 	@Override
-	public IPacket<?> createSpawnPacket()
+	public Packet<?> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}

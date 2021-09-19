@@ -16,25 +16,24 @@ import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorTileEntity;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Util;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.World;
-
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
+import net.minecraft.Util;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.HitResult;
 
 public abstract class ConnectorBlock extends IETileProviderBlock
 {
@@ -45,14 +44,14 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 	}
 
 	public ConnectorBlock(
-			String name, BiFunction<Block, Item.Properties, Item> item, Consumer<AbstractBlock.Properties> extraSetup
+			String name, BiFunction<Block, Item.Properties, Item> item, Consumer<BlockBehaviour.Properties> extraSetup
 	)
 	{
 		super(name, Util.make(
-				Block.Properties.create(Material.IRON)
+				Block.Properties.of(Material.METAL)
 						.sound(SoundType.METAL)
-						.hardnessAndResistance(3.0F, 15.0F)
-						.notSolid(),
+						.strength(3.0F, 15.0F)
+						.noOcclusion(),
 				extraSetup), item);
 		lightOpacity = 0;
 		setMobility(PushReaction.BLOCK);
@@ -64,42 +63,42 @@ public abstract class ConnectorBlock extends IETileProviderBlock
 	}
 
 	@Override
-	public void neighborChanged(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
+	public void neighborChanged(BlockState state, Level world, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving)
 	{
 		super.neighborChanged(state, world, pos, block, fromPos, isMoving);
-		TileEntity te = world.getTileEntity(pos);
+		BlockEntity te = world.getBlockEntity(pos);
 		if(te instanceof EnergyConnectorTileEntity)
 		{
 			EnergyConnectorTileEntity connector = (EnergyConnectorTileEntity)te;
-			if(world.isAirBlock(pos.offset(connector.getFacing())))
+			if(world.isEmptyBlock(pos.relative(connector.getFacing())))
 			{
-				spawnAsEntity(world, pos, new ItemStack(this));
+				popResource(world, pos, new ItemStack(this));
 				connector.getWorldNonnull().removeBlock(pos, false);
 			}
 		}
 	}
 
 	@Override
-	public ItemStack getPickBlock(BlockState state, RayTraceResult targetIn, IBlockReader world, BlockPos pos, PlayerEntity player)
+	public ItemStack getPickBlock(BlockState state, HitResult targetIn, BlockGetter world, BlockPos pos, Player player)
 	{
 		//Select the wire if the player is sneaking
 		//TODO alternative to world instaceof World
-		if(player!=null&&player.isSneaking()&&world instanceof World&&targetIn instanceof BlockRayTraceResult)
+		if(player!=null&&player.isShiftKeyDown()&&world instanceof Level&&targetIn instanceof BlockHitResult)
 		{
-			BlockRayTraceResult target = (BlockRayTraceResult)targetIn;
-			TileEntity te = world.getTileEntity(pos);
+			BlockHitResult target = (BlockHitResult)targetIn;
+			BlockEntity te = world.getBlockEntity(pos);
 			if(te instanceof IImmersiveConnectable)
 			{
-				TargetingInfo subTarget = new TargetingInfo(target.getFace(), (float)target.getHitVec().x-pos.getX(),
-						(float)target.getHitVec().y-pos.getY(), (float)target.getHitVec().z-pos.getZ());
+				TargetingInfo subTarget = new TargetingInfo(target.getDirection(), (float)target.getLocation().x-pos.getX(),
+						(float)target.getLocation().y-pos.getY(), (float)target.getLocation().z-pos.getZ());
 				BlockPos masterPos = ((IImmersiveConnectable)te).getConnectionMaster(null, subTarget);
 				if(masterPos!=pos)
-					te = world.getTileEntity(masterPos);
+					te = world.getBlockEntity(masterPos);
 				if(te instanceof IImmersiveConnectable)
 				{
 					ConnectionPoint cp = ((IImmersiveConnectable)te).getTargetedPoint(subTarget, masterPos.subtract(pos));
 					if(cp!=null)
-						for(Connection c : GlobalWireNetwork.getNetwork((World)world).getLocalNet(cp).getConnections(cp))
+						for(Connection c : GlobalWireNetwork.getNetwork((Level)world).getLocalNet(cp).getConnections(cp))
 							if(!c.isInternal())
 								return c.type.getWireCoil(c);
 				}

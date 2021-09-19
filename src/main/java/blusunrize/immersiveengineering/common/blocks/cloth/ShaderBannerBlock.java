@@ -9,48 +9,47 @@
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.world.IBlockReader;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 public abstract class ShaderBannerBlock extends IETileProviderBlock
 {
-	private static final VoxelShape SHAPE = Block.makeCuboidShape(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
+	private static final VoxelShape SHAPE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
 	public ShaderBannerBlock(String name)
 	{
-		super(name, Block.Properties.create(Material.WOOL).hardnessAndResistance(1.0F).sound(SoundType.CLOTH).doesNotBlockMovement().notSolid(), (b, p) -> null);
+		super(name, Block.Properties.of(Material.WOOL).strength(1.0F).sound(SoundType.WOOL).noCollission().noOcclusion(), (b, p) -> null);
 	}
 
 	@Nullable
 	@Override
-	public TileEntity createTileEntity(@Nonnull BlockState state, @Nonnull IBlockReader world)
+	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
 	{
 		return new ShaderBannerTileEntity();
 	}
 
 	@Override
-	public VoxelShape getShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+	public VoxelShape getShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
 	{
 		return SHAPE;
 	}
 
 	@Override
-	public VoxelShape getCollisionShape(BlockState state, IBlockReader world, BlockPos pos, ISelectionContext context)
+	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
 	{
-		return VoxelShapes.empty();
+		return Shapes.empty();
 	}
 
 	@Nonnull

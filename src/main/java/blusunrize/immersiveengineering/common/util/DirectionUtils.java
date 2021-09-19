@@ -9,19 +9,19 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import net.minecraft.util.Direction;
+import net.minecraft.core.Direction;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
-import static net.minecraft.util.Direction.*;
+import static net.minecraft.core.Direction.*;
 
 public class DirectionUtils
 {
 	public static final Direction[] VALUES = Direction.values();
 	public static final Direction[] BY_HORIZONTAL_INDEX = Arrays.stream(VALUES)
 			.filter((direction) -> direction.getAxis().isHorizontal())
-			.sorted(Comparator.comparingInt(Direction::getHorizontalIndex))
+			.sorted(Comparator.comparingInt(Direction::get2DDataValue))
 			.toArray(Direction[]::new);
 
 	public static Direction rotateAround(Direction d, Direction.Axis axis)
@@ -34,7 +34,7 @@ public class DirectionUtils
 				return d;
 			case Y:
 				if(d!=UP&&d!=DOWN)
-					return d.rotateY();
+					return d.getClockWise();
 
 				return d;
 			case Z:

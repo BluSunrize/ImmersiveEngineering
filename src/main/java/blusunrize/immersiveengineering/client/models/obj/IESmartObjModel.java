@@ -29,22 +29,27 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.matrix.MatrixStack;
-import net.minecraft.block.BlockState;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
+import com.mojang.math.Vector4f;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.model.*;
-import net.minecraft.client.renderer.model.ItemCameraTransforms.TransformType;
+import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.world.ClientWorld;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.TransformationMatrix;
-import net.minecraft.util.math.vector.Vector4f;
-import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.ModelBakery;
+import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
@@ -71,7 +76,7 @@ import java.util.stream.Stream;
 @SuppressWarnings("deprecation")
 public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 {
-	public static Cache<ComparableItemStack, IBakedModel> cachedBakedItemModels = CacheBuilder.newBuilder()
+	public static Cache<ComparableItemStack, BakedModel> cachedBakedItemModels = CacheBuilder.newBuilder()
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
 	public static Cache<RenderCacheKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
@@ -86,16 +91,16 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	private final Map<String, String> texReplacements;
 
 	public final OBJModel baseModel;
-	private final IBakedModel baseBaked;
+	private final BakedModel baseBaked;
 	private final IModelConfiguration owner;
 	private final ModelBakery bakery;
-	private final Function<RenderMaterial, TextureAtlasSprite> spriteGetter;
-	private final IModelTransform sprite;
+	private final Function<Material, TextureAtlasSprite> spriteGetter;
+	private final ModelState sprite;
 
 	private final IEObjState state;
 
-	public IESmartObjModel(OBJModel baseModel, IBakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
-						   Function<RenderMaterial, TextureAtlasSprite> spriteGetter, IModelTransform sprite,
+	public IESmartObjModel(OBJModel baseModel, BakedModel baseBaked, IModelConfiguration owner, ModelBakery bakery,
+						   Function<Material, TextureAtlasSprite> spriteGetter, ModelState sprite,
 						   IEObjState state, boolean dynamic, Map<String, String> texReplacements)
 	{
 
@@ -124,10 +129,10 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	}
 
 	@Override
-	public IBakedModel handlePerspective(TransformType cameraTransformType, MatrixStack mat)
+	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat)
 	{
-		TransformationMatrix matrix =
-				PerspectiveMapWrapper.getTransforms(owner.getCombinedTransform()).getOrDefault(cameraTransformType, TransformationMatrix.identity());
+		Transformation matrix =
+				PerspectiveMapWrapper.getTransforms(owner.getCombinedTransform()).getOrDefault(cameraTransformType, Transformation.identity());
 
 		matrix.push(mat);
 		if(!this.tempStack.isEmpty()&&this.tempStack.getItem() instanceof IOBJModelCallback)
@@ -161,7 +166,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	}
 
 	@Override
-	public boolean isAmbientOcclusion()
+	public boolean useAmbientOcclusion()
 	{
 		return true;
 	}
@@ -173,42 +178,42 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	}
 
 	@Override
-	public boolean isSideLit()
+	public boolean usesBlockLight()
 	{
 		return true;
 	}
 
 	@Override
-	public boolean isBuiltInRenderer()
+	public boolean isCustomRenderer()
 	{
 		return isDynamic;
 	}
 
 	@Nonnull
 	@Override
-	public TextureAtlasSprite getParticleTexture()
+	public TextureAtlasSprite getParticleIcon()
 	{
-		return baseBaked.getParticleTexture();
+		return baseBaked.getParticleIcon();
 	}
 
 	@Nonnull
 	@Override
-	public ItemOverrideList getOverrides()
+	public ItemOverrides getOverrides()
 	{
 		return overrideList;
 	}
 
-	ItemOverrideList overrideList = new ItemOverrideList()
+	ItemOverrides overrideList = new ItemOverrides()
 	{
 		@Override
-		public IBakedModel getOverrideModel(@Nonnull IBakedModel originalModel, @Nonnull ItemStack stack,
-												 @Nullable ClientWorld world, @Nullable LivingEntity entity)
+		public BakedModel resolve(@Nonnull BakedModel originalModel, @Nonnull ItemStack stack,
+												 @Nullable ClientLevel world, @Nullable LivingEntity entity)
 		{
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ComparableItemStack.create(stack, false, true);
 			if(comp==null)
 				return originalModel;
-			IBakedModel model = cachedBakedItemModels.getIfPresent(comp);
+			BakedModel model = cachedBakedItemModels.getIfPresent(comp);
 			if(model==null)
 			{
 					/*TODO
@@ -302,7 +307,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull IBlockDisplayReader world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> customData = new ArrayList<>();
 		if(state.getBlock() instanceof IAdvancedHasObjProperty)
@@ -314,7 +319,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			customData.add(((IModelDataBlock)state.getBlock()).getModelData(world, pos, state, tileData));
 		else
 		{
-			TileEntity te = world.getTileEntity(pos);
+			BlockEntity te = world.getBlockEntity(pos);
 			if(te instanceof IOBJModelCallback)
 				customData.add(new SinglePropertyModelData<>((IOBJModelCallback<?>)te, IOBJModelCallback.PROPERTY));
 			if(te instanceof IAdvancedHasObjProperty)
@@ -467,8 +472,8 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			numPasses = 1;
 		ModelGroup g = OBJHelper.getGroups(baseModel).get(groupName);
 		List<ShadedQuads> ret = new ArrayList<>();
-		TransformationMatrix transform = state.transform;
-		TransformationMatrix optionalTransform = sprite.getRotation();
+		Transformation transform = state.transform;
+		Transformation optionalTransform = sprite.getRotation();
 		if(callback!=null)
 			optionalTransform = callback.applyTransformations(callbackObject, groupName, optionalTransform);
 
@@ -488,7 +493,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 					IModelBuilder modelBuilder = new QuadListAdder(quads::add, transform);
 					Optional<String> texOverride = Optional.ofNullable(texReplacements.get(groupName));
 					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform, texOverride);
-					final TransformationMatrix finalTransform = optionalTransform;
+					final Transformation finalTransform = optionalTransform;
 					g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
 							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter,
 									colorGetter, coordinateRemapper, finalTransform, texOverride));
@@ -513,7 +518,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
 									 MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
 									 TextureCoordinateRemapper coordinateRemapper,
-									 TransformationMatrix transform, Optional<String> textureOverride)
+									 Transformation transform, Optional<String> textureOverride)
 	{
 		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
 		for(MeshWrapper mesh : meshes)

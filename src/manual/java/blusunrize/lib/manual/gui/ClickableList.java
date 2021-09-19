@@ -12,12 +12,12 @@ import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.Tree;
 import blusunrize.lib.manual.Tree.AbstractNode;
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.FontRenderer;
-import net.minecraft.client.gui.widget.button.Button;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.StringTextComponent;
+import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -47,7 +47,7 @@ public class ClickableList extends Button
 				  @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes,
 				  Consumer<Tree.AbstractNode<ResourceLocation, ManualEntry>> handler)
 	{
-		super(x, y, w, h, StringTextComponent.EMPTY, btn -> {
+		super(x, y, w, h, TextComponent.EMPTY, btn -> {
 		});
 		this.gui = gui;
 		this.textScale = textScale;
@@ -58,18 +58,18 @@ public class ClickableList extends Button
 
 	int getFontHeight()
 	{
-		return (int)(gui.manual.fontRenderer().FONT_HEIGHT*textScale);
+		return (int)(gui.manual.fontRenderer().lineHeight*textScale);
 	}
 
 	@Override
-	public void render(MatrixStack transform, int mx, int my, float partialTicks)
+	public void render(PoseStack transform, int mx, int my, float partialTicks)
 	{
 		if(!visible)
 			return;
-		FontRenderer fr = gui.manual.fontRenderer();
+		Font fr = gui.manual.fontRenderer();
 
 		int mmY = my-this.y;
-		transform.push();
+		transform.pushPose();
 		transform.scale(textScale, textScale, textScale);
 		transform.translate(x/textScale, y/textScale, 0);
 		isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
@@ -92,10 +92,10 @@ public class ClickableList extends Button
 				RenderSystem.blendFuncSeparate(SRC_ALPHA, ONE_MINUS_SRC_ALPHA, ONE, ZERO);
 				this.blit(transform, 0, 0, 11, 226+(currEntryHovered?20: 0), 5, 10);
 			}
-			fr.drawString(transform, s, isCategory[j]?7: 0, 0, col);
+			fr.draw(transform, s, isCategory[j]?7: 0, 0, col);
 		}
 		transform.scale(1/textScale, 1/textScale, 1/textScale);
-		transform.pop();
+		transform.popPose();
 		if(maxOffset > 0)
 		{
 			final int minVisibleBlack = 0x1B<<24;

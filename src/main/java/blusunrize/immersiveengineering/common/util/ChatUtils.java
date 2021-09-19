@@ -12,10 +12,10 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.network.MessageNoSpamChatComponents;
 import blusunrize.immersiveengineering.mixin.accessors.client.NewChatGuiAccess;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.NewChatGui;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.text.ITextComponent;
+import net.minecraft.client.gui.components.ChatComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fml.network.PacketDistributor;
@@ -26,21 +26,21 @@ public class ChatUtils
 	private static int lastAdded;
 
 	@OnlyIn(Dist.CLIENT)//Credit goes to WayOfFlowingTime
-	public static void sendClientNoSpamMessages(ITextComponent[] messages)
+	public static void sendClientNoSpamMessages(Component[] messages)
 	{
-		NewChatGui chat = Minecraft.getInstance().ingameGUI.getChatGUI();
+		ChatComponent chat = Minecraft.getInstance().gui.getChat();
 		NewChatGuiAccess chatAccess = (NewChatGuiAccess)chat;
 		for(int i = DELETION_ID+messages.length-1; i <= lastAdded; i++)
-			chatAccess.callDeleteChatLine(i);
+			chatAccess.callRemoveById(i);
 		for(int i = 0; i < messages.length; i++)
-			chatAccess.callPrintChatMessageWithOptionalDeletion(messages[i], DELETION_ID+i);
+			chatAccess.callAddMessage(messages[i], DELETION_ID+i);
 		lastAdded = DELETION_ID+messages.length-1;
 	}
 
-	public static void sendServerNoSpamMessages(PlayerEntity player, ITextComponent... messages)
+	public static void sendServerNoSpamMessages(Player player, Component... messages)
 	{
-		if(messages.length > 0&&player instanceof ServerPlayerEntity)
-			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player),
+		if(messages.length > 0&&player instanceof ServerPlayer)
+			ImmersiveEngineering.packetHandler.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
 					new MessageNoSpamChatComponents(messages));
 	}
 }

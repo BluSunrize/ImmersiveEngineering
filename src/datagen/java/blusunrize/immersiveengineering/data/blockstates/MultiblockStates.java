@@ -10,15 +10,15 @@ import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchTileEnti
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.block.Block;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Vec3i;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.Property;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Direction.Axis;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.vector.Vector3i;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
@@ -36,11 +36,11 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class MultiblockStates extends ExtendedBlockstateProvider
 {
-	private static final List<Vector3i> CUBE_THREE = BlockPos.getAllInBox(-1, -1, -1, 1, 1, 1)
-			.map(BlockPos::toImmutable)
+	private static final List<Vec3i> CUBE_THREE = BlockPos.betweenClosedStream(-1, -1, -1, 1, 1, 1)
+			.map(BlockPos::immutable)
 			.collect(Collectors.toList());
-	private static final List<Vector3i> CUBE_TWO = BlockPos.getAllInBox(0, 0, -1, 1, 1, 0)
-			.map(BlockPos::toImmutable)
+	private static final List<Vec3i> CUBE_TWO = BlockPos.betweenClosedStream(0, 0, -1, 1, 1, 0)
+			.map(BlockPos::immutable)
 			.collect(Collectors.toList());
 
 	public ModelFile blastFurnaceOff;
@@ -175,7 +175,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(MetalDevices.sampleDrill,
 				split(
 						obj("block/metal_device/core_drill.obj"),
-						ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.up(), BlockPos.ZERO.up(2))
+						ImmutableList.of(BlockPos.ZERO, BlockPos.ZERO.above(), BlockPos.ZERO.above(2))
 				),
 				null, null);
 		createMultiblock(Multiblocks.autoWorkbench,
@@ -239,13 +239,13 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		else
 			possibleMirrorStates = new boolean[1];
 		for(boolean mirrored : possibleMirrorStates)
-			for(Direction dir : facing.getAllowedValues())
+			for(Direction dir : facing.getPossibleValues())
 			{
 				final int angleY;
 				final int angleX;
-				if(facing.getAllowedValues().contains(Direction.UP))
+				if(facing.getPossibleValues().contains(Direction.UP))
 				{
-					angleX = -90*dir.getYOffset();
+					angleX = -90*dir.getStepY();
 					if(dir.getAxis()!=Axis.Y)
 						angleY = getAngle(dir, 180);
 					else
@@ -285,7 +285,7 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		UnaryOperator<BlockPos> transform = UnaryOperator.identity();
 		if(mirror)
 		{
-			Vector3i size = mb.getSize(null);
+			Vec3i size = mb.getSize(null);
 			transform = p -> new BlockPos(size.getX()-p.getX()-1, p.getY(), p.getZ());
 		}
 		return split(loc, mb, transform, dynamic);
@@ -295,8 +295,8 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 			ModelFile name, TemplateMultiblock multiblock, UnaryOperator<BlockPos> transform, boolean dynamic
 	)
 	{
-		final Vector3i offset = multiblock.getMasterFromOriginOffset();
-		Stream<Vector3i> partsStream = multiblock.getStructure(null)
+		final Vec3i offset = multiblock.getMasterFromOriginOffset();
+		Stream<Vec3i> partsStream = multiblock.getStructure(null)
 				.stream()
 				.filter(info -> !info.state.isAir())
 				.map(info -> info.pos)
