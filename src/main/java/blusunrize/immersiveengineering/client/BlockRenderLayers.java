@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
-import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.util.fluids.IEFluid;
@@ -95,6 +94,7 @@ public class BlockRenderLayers
 				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
 		);
 		ItemBlockRenderTypes.setRenderLayer(Multiblocks.tank, RenderType.cutoutMipped());
+		ItemBlockRenderTypes.setRenderLayer(Multiblocks.dieselGenerator, RenderType.cutoutMipped());
 		ItemBlockRenderTypes.setRenderLayer(
 				Multiblocks.bottlingMachine,
 				rt -> rt==RenderType.solid()||rt==RenderType.translucent()
