@@ -2224,14 +2224,15 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.save(out, toRL(toPath(Tools.rockcutter)));
 
-		ShapedRecipeBuilder.shaped(Tools.surveyTools)
+		ShapedRecipeBuilder surveyToolRecipe = ShapedRecipeBuilder.shaped(Tools.surveyTools)
 				.pattern("cbh")
 				.pattern("fff")
 				.define('b', Items.GLASS_BOTTLE)
 				.define('h', Tools.hammer)
 				.define('c', Items.WRITABLE_BOOK)
 				.define('f', IETags.fabricHemp)
-				.unlockedBy("has_"+toPath(Tools.hammer), has(Tools.hammer))
+				.unlockedBy("has_"+toPath(Tools.hammer), has(Tools.hammer));
+		new NoContainerRecipeBuilder(surveyToolRecipe::save)
 				.save(out, toRL(toPath(Tools.surveyTools)));
 	}
 
@@ -2814,13 +2815,14 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(MetalDevices.capacitorLV), has(MetalDevices.capacitorLV))
 				.unlockedBy("has_"+toPath(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)), has(IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false)))
 				.save(out, toRL(toPath(Misc.powerpack)));
-		ShapedRecipeBuilder.shaped(Misc.maintenanceKit)
+		ShapedRecipeBuilder maintenanceBaseRecipe = ShapedRecipeBuilder.shaped(Misc.maintenanceKit)
 				.pattern("sc ")
 				.pattern("fff")
 				.define('c', Tools.wirecutter)
 				.define('s', Tools.screwdriver)
 				.define('f', IETags.fabricHemp)
-				.unlockedBy("has_"+toPath(Tools.wirecutter), has(Tools.wirecutter))
+				.unlockedBy("has_"+toPath(Tools.wirecutter), has(Tools.wirecutter));
+		new NoContainerRecipeBuilder(maintenanceBaseRecipe::save)
 				.save(out, toRL(toPath(Misc.maintenanceKit)));
 		ShapedRecipeBuilder.shaped(Misc.shield)
 				.pattern("sws")
