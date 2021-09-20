@@ -105,11 +105,11 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	@Override
 	protected void prepareBlockForDisassembly(Level world, BlockPos pos)
 	{
-		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof MultiblockPartBlockEntity)
-			((MultiblockPartBlockEntity<?>)te).formed = false;
-		else if (te != null)
-			IELogger.logger.error("Expected multiblock TE at {}, got {}", pos, te);
+		BlockEntity be = world.getBlockEntity(pos);
+		if(be instanceof MultiblockPartBlockEntity<?> multiblockBE)
+			multiblockBE.formed = false;
+		else if(be!=null)
+			IELogger.logger.error("Expected multiblock TE at {}, got {}", pos, be);
 	}
 
 	@Override

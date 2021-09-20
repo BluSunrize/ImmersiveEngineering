@@ -62,15 +62,16 @@ public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? su
 	{
 		if(state.getBlock()!=newState.getBlock())
 		{
-			BlockEntity tileEntity = world.getBlockEntity(pos);
-			if(tileEntity instanceof IEBaseBlockEntity)
-				((IEBaseBlockEntity)tileEntity).setOverrideState(state);
-			if(tileEntity instanceof MultiblockPartBlockEntity)
+			BlockEntity blockEntity = world.getBlockEntity(pos);
+			if(blockEntity instanceof IEBaseBlockEntity ieBaseBE)
+				ieBaseBE.setOverrideState(state);
+			if(blockEntity instanceof MultiblockPartBlockEntity<?> multiblockBE)
 			{
 				// Remove the BE here before disassembling: The block is already gone, so setting the block state here
 				// to a block providing a BE will produce strange results otherwise
-				world.removeBlockEntity(pos);
-				((MultiblockPartBlockEntity<?>)tileEntity).disassemble();
+				super.onRemove(state, world, pos, newState, isMoving);
+				multiblockBE.disassemble();
+				return;
 			}
 		}
 		super.onRemove(state, world, pos, newState, isMoving);
