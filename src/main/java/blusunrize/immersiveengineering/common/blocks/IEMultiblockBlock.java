@@ -52,8 +52,9 @@ public abstract class IEMultiblockBlock extends IETileProviderBlock
 			{
 				// Remove the BE here before disassembling: The block is already gone, so setting the block state here
 				// to a block providing a BE will produce strange results otherwise
-				world.removeBlockEntity(pos);
+				super.onRemove(state, world, pos, newState, isMoving);
 				((MultiblockPartTileEntity<?>)tileEntity).disassemble();
+				return;
 			}
 		}
 		super.onRemove(state, world, pos, newState, isMoving);
