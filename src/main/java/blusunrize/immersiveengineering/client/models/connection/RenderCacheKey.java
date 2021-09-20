@@ -12,11 +12,24 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Arrays;
+import java.util.List;
+
 public record RenderCacheKey(
 		BlockState state,
 		ModelState modelTransform,
 		RenderType layer,
-		Object... additionalProperties
+		// Do *not* make this an array/varargs, otherwise the record uses Object[]::equals and everything breaks
+		List<Object> additionalProperties
 )
 {
+	public RenderCacheKey(
+			BlockState state,
+			ModelState modelTransform,
+			RenderType layer,
+			Object... additional
+	)
+	{
+		this(state, modelTransform, layer, Arrays.asList(additional));
+	}
 }

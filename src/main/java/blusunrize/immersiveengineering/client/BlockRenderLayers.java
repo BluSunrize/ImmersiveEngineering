@@ -61,7 +61,6 @@ public class BlockRenderLayers
 		setRenderLayer(MetalDevices.FLUID_PLACER, RenderType.cutout());
 		setRenderLayer(MetalDevices.FURNACE_HEATER, RenderType.cutout());
 		setRenderLayer(MetalDevices.FLUID_PIPE, RenderType.cutout());
-		setRenderLayer(MetalDevices.CLOCHE, RenderType.cutout());
 		setRenderLayer(MetalDevices.SAMPLE_DRILL, RenderType.cutout());
 		setRenderLayer(MetalDevices.CLOCHE, RenderType.solid(), RenderType.translucent());
 		setRenderLayer(MetalDecoration.ALU_SLOPE, RenderType.cutout());
