@@ -1,24 +1,27 @@
 {
-  "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "cbh",
-    "fff"
-  ],
-  "key": {
-    "b": {
-      "item": "minecraft:glass_bottle"
+  "type": "immersiveengineering:no_container_item",
+  "baseRecipe": {
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+      "cbh",
+      "fff"
+    ],
+    "key": {
+      "b": {
+        "item": "minecraft:glass_bottle"
+      },
+      "h": {
+        "item": "immersiveengineering:hammer"
+      },
+      "c": {
+        "item": "minecraft:writable_book"
+      },
+      "f": {
+        "tag": "forge:fabric_hemp"
+      }
     },
-    "h": {
-      "item": "immersiveengineering:hammer"
-    },
-    "c": {
-      "item": "minecraft:writable_book"
-    },
-    "f": {
-      "tag": "forge:fabric_hemp"
+    "result": {
+      "item": "immersiveengineering:survey_tools"
     }
-  },
-  "result": {
-    "item": "immersiveengineering:survey_tools"
   }
 }

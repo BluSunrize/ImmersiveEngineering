@@ -125,8 +125,8 @@ public class RecipeReloadListener implements ResourceManagerReloadListener
 		return recipes.stream()
 				.filter(iRecipe -> iRecipe.getType()==recipeType)
 				.flatMap(r -> {
-					if(r instanceof GeneratedListRecipe)
-						return ((GeneratedListRecipe)r).getSubRecipes().stream();
+					if(r instanceof GeneratedListRecipe genList)
+						return genList.getSubRecipes().stream();
 					else
 						return Stream.of(r);
 				})

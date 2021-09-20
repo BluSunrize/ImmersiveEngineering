@@ -85,6 +85,9 @@ public class RecipeSerializers
 					RecipeSerializer.SHAPELESS_RECIPE, ShapelessFluidAwareRecipe::toVanilla, ShapelessFluidAwareRecipe::new
 			)
 	);
+	public static final RegistryObject<NoContainerSerializer> NO_CONTAINER_SERIALIZER = RECIPE_SERIALIZERS.register(
+			"no_container_item", NoContainerSerializer::new
+	);
 
 	static
 	{
