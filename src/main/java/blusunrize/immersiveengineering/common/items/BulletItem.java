@@ -186,7 +186,6 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 		BulletHandler.registerBullet(WOLFPACK_PART, new WolfpackPartBullet());
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{

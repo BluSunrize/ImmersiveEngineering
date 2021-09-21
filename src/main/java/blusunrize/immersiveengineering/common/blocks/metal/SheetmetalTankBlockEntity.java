@@ -35,8 +35,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -195,11 +193,9 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 		return false;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private AABB renderAABB;
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)

@@ -121,7 +121,6 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		//TODO proper translation

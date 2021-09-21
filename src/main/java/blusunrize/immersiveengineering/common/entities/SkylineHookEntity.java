@@ -122,7 +122,6 @@ public class SkylineHookEntity extends Entity
 	}
 
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderAtSqrDistance(double distance)
 	{

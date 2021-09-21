@@ -30,7 +30,6 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		float integrity = 100-(float)getDurabilityForDisplay(stack)*100f;

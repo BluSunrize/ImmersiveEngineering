@@ -13,8 +13,6 @@ import com.google.common.base.Preconditions;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class ShaderLayer
 {
@@ -88,7 +86,6 @@ public class ShaderLayer
 		return texture;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public Vector4f getColor()
 	{
 		return new Vector4f((color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f);

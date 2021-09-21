@@ -43,8 +43,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -276,10 +274,9 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		return super.triggerEvent(id, type);
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//TODO cache
 	private AABB renderAABB;
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AABB getRenderBoundingBox()
 	{

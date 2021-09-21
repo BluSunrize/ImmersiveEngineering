@@ -41,7 +41,6 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);

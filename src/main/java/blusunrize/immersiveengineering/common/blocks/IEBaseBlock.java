@@ -36,8 +36,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlock
 {
@@ -153,7 +151,6 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		super.setPlacedBy(worldIn, pos, state, placer, stack);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{

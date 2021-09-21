@@ -25,7 +25,7 @@ public class ChatUtils
 	private static final int DELETION_ID = 3718126;
 	private static int lastAdded;
 
-	@OnlyIn(Dist.CLIENT)//Credit goes to WayOfFlowingTime
+	//Credit goes to WayOfFlowingTime
 	public static void sendClientNoSpamMessages(Component[] messages)
 	{
 		ChatComponent chat = Minecraft.getInstance().gui.getChat();

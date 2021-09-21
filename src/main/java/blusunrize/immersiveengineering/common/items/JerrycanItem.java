@@ -46,7 +46,6 @@ public class JerrycanItem extends IEBaseItem
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY!=null) //cap is null until after ForgeMod.preInit, and Minecraft.init calls this method before that

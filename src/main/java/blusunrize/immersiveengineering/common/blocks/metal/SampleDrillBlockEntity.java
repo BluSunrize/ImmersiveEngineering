@@ -40,8 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
@@ -162,18 +160,18 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IETicka
 			sample = ItemStack.EMPTY;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private AABB renderAABB;
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
+		{
 			if(dummy==0)
 				renderAABB = new AABB(getBlockPos(), getBlockPos().offset(1, 3, 1));
 			else
 				renderAABB = new AABB(getBlockPos(), getBlockPos());
+		}
 		return renderAABB;
 	}
 

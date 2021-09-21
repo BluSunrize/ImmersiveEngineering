@@ -40,8 +40,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -117,10 +115,8 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 			this.inventory.get(i).shrink(getIngredientAmount(instruction, i));
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private AABB renderAABB;
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AABB getRenderBoundingBox()
 	{

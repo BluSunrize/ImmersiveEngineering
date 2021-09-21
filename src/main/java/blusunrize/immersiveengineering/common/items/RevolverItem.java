@@ -266,7 +266,6 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String tag = getRevolverDisplayTag(stack);

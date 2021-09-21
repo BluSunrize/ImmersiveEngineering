@@ -154,7 +154,6 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 		return config.name;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{

@@ -247,7 +247,6 @@ public class IEShaders
 		}
 
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public Vector4f getColor()
 		{
 			if(func_getColour!=null)

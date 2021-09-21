@@ -511,7 +511,6 @@ public abstract class IESlot extends Slot
 
 
 		@Override
-		@OnlyIn(Dist.CLIENT)
 		public boolean isActive()
 		{
 			return this.hasItem();

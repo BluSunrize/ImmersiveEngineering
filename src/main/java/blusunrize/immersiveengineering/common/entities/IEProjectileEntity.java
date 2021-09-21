@@ -33,8 +33,6 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
@@ -344,7 +342,6 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 			this.discard();
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderAtSqrDistance(double distSq)
 	{

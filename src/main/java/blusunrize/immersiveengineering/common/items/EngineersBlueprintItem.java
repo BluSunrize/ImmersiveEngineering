@@ -43,7 +43,6 @@ public class EngineersBlueprintItem extends IEBaseItem
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String key = getCategory(stack);

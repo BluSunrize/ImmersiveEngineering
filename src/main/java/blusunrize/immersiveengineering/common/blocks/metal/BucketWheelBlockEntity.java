@@ -35,8 +35,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -181,22 +179,17 @@ public class BucketWheelBlockEntity extends MultiblockPartBlockEntity<BucketWhee
 		return true;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private AABB renderAABB;
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)
-//			if(pos==24)
 			renderAABB = new AABB(getBlockPos().offset(-(getFacing().getAxis()==Axis.Z?3: 0), -3, -(getFacing().getAxis()==Axis.X?3: 0)), getBlockPos().offset((getFacing().getAxis()==Axis.Z?4: 1), 4, (getFacing().getAxis()==Axis.X?4: 1)));
-//			else
-//				renderAABB = new AxisAlignedBB(getPos(), getPos());
 		return renderAABB;
 	}
 
-	private static CachedShapesWithTransform<BlockPos, Direction> SHAPES = CachedShapesWithTransform.createDirectional(BucketWheelBlockEntity::getBoxes);
+	private static final CachedShapesWithTransform<BlockPos, Direction> SHAPES = CachedShapesWithTransform.createDirectional(BucketWheelBlockEntity::getBoxes);
 
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)

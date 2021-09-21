@@ -54,8 +54,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
@@ -376,7 +374,6 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	AABB renderBB;
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public AABB getRenderBoundingBox()
 	{
 		if(renderBB==null)

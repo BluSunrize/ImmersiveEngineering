@@ -28,8 +28,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -182,11 +180,9 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		return BLOCK_BOUNDS.get(posInMultiblock, getFacing());
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private AABB renderAABB;
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public AABB getRenderBoundingBox()
 	{
 		if(renderAABB==null)

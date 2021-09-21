@@ -34,8 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -172,7 +170,6 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			this.updateMasterBlock(null, energy!=0);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AABB getRenderBoundingBox()
 	{

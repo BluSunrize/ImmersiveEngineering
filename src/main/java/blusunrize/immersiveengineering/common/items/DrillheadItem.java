@@ -62,7 +62,6 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"drillhead.size", perms.drillSize, perms.drillDepth));

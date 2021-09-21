@@ -43,8 +43,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -81,10 +79,9 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//TODO cache
 	private AABB renderAABB;
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AABB getRenderBoundingBox()
 	{

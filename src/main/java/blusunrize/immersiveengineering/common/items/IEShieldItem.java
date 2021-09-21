@@ -128,7 +128,6 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(this.getMaxEnergyStored(stack) > 0)

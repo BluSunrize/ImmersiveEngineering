@@ -85,7 +85,6 @@ public class IEFluid extends FlowingFluid
 		this.buildAttributes = buildAttributes;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public void addTooltipInfo(FluidStack fluidStack, @Nullable Player player, List<Component> tooltip)
 	{
 	}

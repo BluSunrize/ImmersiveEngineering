@@ -52,7 +52,6 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(shouldLimitSpeed(stack))

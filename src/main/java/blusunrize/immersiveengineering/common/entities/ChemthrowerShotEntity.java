@@ -30,8 +30,6 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Optional;
@@ -166,7 +164,6 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public int getBrightnessForRender()
 	{
 		FluidStack fluidStack = getFluid();

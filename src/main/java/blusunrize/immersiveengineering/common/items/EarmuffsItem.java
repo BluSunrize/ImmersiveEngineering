@@ -92,7 +92,6 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		int color = this.getColourForIEItem(stack, 0);

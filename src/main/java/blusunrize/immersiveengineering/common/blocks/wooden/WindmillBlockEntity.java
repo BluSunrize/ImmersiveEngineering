@@ -35,8 +35,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -160,10 +158,8 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IETickable
 		nbt.putFloat("turnSpeed", turnSpeed);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	private AABB renderAABB;
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AABB getRenderBoundingBox()
 	{

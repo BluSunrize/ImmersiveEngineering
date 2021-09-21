@@ -17,8 +17,6 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nonnull;
@@ -27,7 +25,6 @@ import java.util.function.IntFunction;
 
 import static com.mojang.blaze3d.platform.NativeImage.*;
 
-@OnlyIn(Dist.CLIENT)
 public class IEShaderLayerCompositeTexture extends AbstractTexture
 {
 	/**

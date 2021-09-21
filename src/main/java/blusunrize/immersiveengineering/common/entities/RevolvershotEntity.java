@@ -33,8 +33,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
@@ -77,7 +75,6 @@ public class RevolvershotEntity extends IEProjectileEntity
 		setDeltaMovement(Vec3.ZERO);
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public boolean shouldRenderAtSqrDistance(double distance)
 	{

@@ -63,7 +63,6 @@ public class CoresampleItem extends IEBaseItem
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		getCoresampleInfo(stack, list, ChatFormatting.GRAY, world, true, true);
