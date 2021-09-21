@@ -167,24 +167,14 @@ public class IEWireTypes
 		@Override
 		public String getCategory()
 		{
-			switch(type)
-			{
-				case COPPER:
-				case COPPER_INSULATED:
-					return LV_CATEGORY;
-				case ELECTRUM:
-				case ELECTRUM_INSULATED:
-					return MV_CATEGORY;
-				case STEEL:
-					return HV_CATEGORY;
-				case STRUCTURE_ROPE:
-				case STRUCTURE_STEEL:
-					return STRUCTURE_CATEGORY;
-				case REDSTONE:
-					return REDSTONE_CATEGORY;
-				default:
-					throw new IllegalStateException("Ordinal "+type+" is not valid");
-			}
+			return switch(type)
+					{
+						case COPPER, COPPER_INSULATED -> LV_CATEGORY;
+						case ELECTRUM, ELECTRUM_INSULATED -> MV_CATEGORY;
+						case STEEL -> HV_CATEGORY;
+						case STRUCTURE_ROPE, STRUCTURE_STEEL -> STRUCTURE_CATEGORY;
+						case REDSTONE -> REDSTONE_CATEGORY;
+					};
 		}
 
 		@Override

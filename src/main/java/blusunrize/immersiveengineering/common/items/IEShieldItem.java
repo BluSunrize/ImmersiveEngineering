@@ -51,9 +51,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
@@ -172,9 +172,9 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public boolean isShield(ItemStack stack, @Nullable LivingEntity entity)
+	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
 	{
-		return true;
+		return ToolActions.DEFAULT_SHIELD_ACTIONS.contains(toolAction);
 	}
 
 	public void hitShield(ItemStack stack, Player player, DamageSource source, float amount, LivingAttackEvent event)

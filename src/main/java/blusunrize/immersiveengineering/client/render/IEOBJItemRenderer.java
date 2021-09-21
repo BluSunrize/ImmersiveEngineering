@@ -73,12 +73,11 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 		if(stack.getItem() instanceof IOBJModelCallback)
 		{
 			IOBJModelCallback<ItemStack> callback = (IOBJModelCallback<ItemStack>)stack.getItem();
-			Level w = IESmartObjModel.tempEntityStatic!=null?IESmartObjModel.tempEntityStatic.level: null;
-			BakedModel model = mc().getItemRenderer().getModel(stack, w, IESmartObjModel.tempEntityStatic, 0);
-			if(model instanceof IESmartObjModel)
+			Level level = Minecraft.getInstance().level;
+			BakedModel model = mc().getItemRenderer().getModel(stack, level, IESmartObjModel.tempEntityStatic, 0);
+			if(model instanceof IESmartObjModel obj)
 			{
 
-				ItemStack shader;
 				ShaderCase sCase;
 				{
 					Pair<ItemStack, ShaderCase> tmp = stack.getCapability(CapabilityShader.SHADER_CAPABILITY)
@@ -91,10 +90,8 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 								return new ImmutablePair<>(shaderInner, sCaseInner);
 							})
 							.orElse(new ImmutablePair<>(ItemStack.EMPTY, null));
-					shader = tmp.getLeft();
 					sCase = tmp.getRight();
 				}
-				IESmartObjModel obj = (IESmartObjModel)model;
 				Set<String> visible = new HashSet<>();
 				for(String g : OBJHelper.getGroups(obj.baseModel).keySet())
 					if(callback.shouldRenderGroup(stack, g))
@@ -134,17 +131,15 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			ResourceLocation atlas = InventoryMenu.BLOCK_ATLAS;
 			if(bright)
 				baseType = IERenderTypes.getFullbrightTranslucent(atlas);
-			else if(quadsForLayer.layer.isTranslucent())
+			else if(quadsForLayer.layer().isTranslucent())
 				baseType = RenderType.entityTranslucent(atlas);
 			else
 				baseType = RenderType.entityCutout(atlas);
-			RenderType actualType = quadsForLayer.layer.getRenderType(baseType);
+			RenderType actualType = quadsForLayer.layer().getRenderType(baseType);
 			VertexConsumer builder = buffer.getBuffer(actualType);
-			Vector4f color = quadsForLayer.layer.getColor();
-			for(BakedQuad quad : quadsForLayer.quadsInLayer)
-				builder.putBulkData(
-						matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay
-				);
+			Vector4f color = quadsForLayer.layer().getColor();
+			for(BakedQuad quad : quadsForLayer.quadsInLayer())
+				builder.putBulkData(matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay);
 			matrix.scale(1.01F, 1.01F, 1.01F);
 		}
 		matrix.popPose();

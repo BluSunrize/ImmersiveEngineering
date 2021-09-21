@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
@@ -23,8 +22,6 @@ import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("deprecation")
@@ -44,15 +41,6 @@ public interface IOBJModelCallback<T>
 	default boolean shouldRenderGroup(T object, String group)
 	{
 		return true;
-	}
-
-	default VisibilityList getVisibility(Collection<String> allGroups, T object)
-	{
-		List<String> visible = new ArrayList<>();
-		for(String g : allGroups)
-			if(shouldRenderGroup(object, g))
-				visible.add(g);
-		return VisibilityList.show(visible);
 	}
 
 	@OnlyIn(Dist.CLIENT)

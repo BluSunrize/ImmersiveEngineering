@@ -92,13 +92,13 @@ public class BakedConnectionModel<T> extends BakedIEModel
 			Set<Connection.RenderData> data = new HashSet<>();
 			ConnectionModelData orig = extraData.getData(Model.CONNECTIONS);
 			assert (orig!=null);
-			for(Connection c : orig.connections)
+			for(Connection c : orig.connections())
 			{
-				ConnectionPoint here = c.getEndFor(orig.here);
+				ConnectionPoint here = c.getEndFor(orig.here());
 				data.add(new Connection.RenderData(c, c.getEndB().equals(here),
 						getSolidVertexCountForSide(here, c, RenderData.POINTS_PER_WIRE)));
 			}
-			ModelKey key = new ModelKey(data, ad, orig.here);
+			ModelKey key = new ModelKey(data, ad, orig.here());
 			try
 			{
 				SpecificConnectionModel ret = cache.get(key, () -> new SpecificConnectionModel(key, textureAtlasSprite.get()));
@@ -132,14 +132,20 @@ public class BakedConnectionModel<T> extends BakedIEModel
 		return false;
 	}
 
+	@Override
+	public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data)
+	{
+		if(base!=null)
+			return base.getParticleIcon(data);
+		else
+			return White.instance();
+	}
+
 	@Nonnull
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
-		if(base!=null)
-			return base.getParticleIcon();
-		else
-			return White.instance();
+		return getParticleIcon(EmptyModelData.INSTANCE);
 	}
 
 	@Nonnull

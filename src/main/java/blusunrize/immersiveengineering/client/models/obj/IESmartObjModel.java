@@ -82,10 +82,10 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
 
 	//TODO check which ones are still needed
-	ImmutableList<BakedQuad> bakedQuads;
-	ItemStack tempStack = ItemStack.EMPTY;
-	BlockState tempState;
-	public LivingEntity tempEntity;
+	private ImmutableList<BakedQuad> bakedQuads;
+	private ItemStack tempStack = ItemStack.EMPTY;
+	private BlockState tempState;
+	private LivingEntity tempEntity;
 	public static LivingEntity tempEntityStatic;
 	public boolean isDynamic;
 	private final Map<String, String> texReplacements;
@@ -230,10 +230,10 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 				comp.copy();
 				cachedBakedItemModels.put(comp, model);
 			}
-			if(model instanceof IESmartObjModel)
+			if(model instanceof IESmartObjModel smartModel)
 			{
-				((IESmartObjModel)model).tempStack = stack;
-				((IESmartObjModel)model).tempEntity = entity;
+				smartModel.tempStack = stack;
+				smartModel.tempEntity = entity;
 			}
 			return model;
 		}
@@ -356,8 +356,8 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		{
 			ShaderWrapper wrapper = shaderOpt.orElseThrow(NullPointerException::new);
 			shader = wrapper.getShaderItem();
-			if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, tempStack, wrapper.getShaderType());
+			if(shader.getItem() instanceof IShaderItem shaderItem)
+				sCase = shaderItem.getShaderCase(shader, tempStack, wrapper.getShaderType());
 		}
 		else if(data.hasProperty(CapabilityShader.MODEL_PROPERTY))
 		{
@@ -365,8 +365,8 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			if(wrapper!=null)
 			{
 				shader = wrapper.getShaderItem();
-				if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-					sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, wrapper.getShaderType());
+				if(shader.getItem() instanceof IShaderItem shaderItem)
+					sCase = shaderItem.getShaderCase(shader, null, wrapper.getShaderType());
 			}
 		}
 
@@ -397,7 +397,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		return ImmutableList.copyOf(quads);
 	}
 
-	private Cache<Pair<String, String>, List<ShadedQuads>> groupCache = CacheBuilder.newBuilder()
+	private final Cache<Pair<String, String>, List<ShadedQuads>> groupCache = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.build();
 
@@ -421,7 +421,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			numPasses = 1;
 		ModelGroup g = OBJHelper.getGroups(baseModel).get(groupName);
 		List<ShadedQuads> ret = new ArrayList<>();
-		Transformation transform = state.transform;
+		Transformation transform = state.transform();
 		Transformation optionalTransform = sprite.getRotation();
 		if(callback!=null)
 			optionalTransform = callback.applyTransformations(callbackObject, groupName, optionalTransform);
@@ -430,7 +430,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		final MaterialColorGetter<T> colorGetter = new MaterialColorGetter<>(groupName, callback, callbackObject, sCase);
 		final TextureCoordinateRemapper coordinateRemapper = new TextureCoordinateRemapper(this.baseModel, sCase);
 
-		if(state.visibility.isVisible(groupName)&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
+		if(state.visibility().isVisible(groupName)&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
 			for(int pass = 0; pass < numPasses; ++pass)
 				if(sCase==null||sCase.shouldRenderGroupForPass(groupName, pass))
 				{
@@ -439,7 +439,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 					colorGetter.setRenderPass(pass);
 					coordinateRemapper.setRenderPass(pass);
 					//g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
-					IModelBuilder modelBuilder = new QuadListAdder(quads::add, transform);
+					IModelBuilder<?> modelBuilder = new QuadListAdder(quads::add, transform);
 					Optional<String> texOverride = Optional.ofNullable(texReplacements.get(groupName));
 					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform, texOverride);
 					final Transformation finalTransform = optionalTransform;
@@ -499,15 +499,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		}
 	}
 
-	public static class ShadedQuads
+	public record ShadedQuads(ShaderLayer layer, List<BakedQuad> quadsInLayer)
 	{
-		public final ShaderLayer layer;
-		public final List<BakedQuad> quadsInLayer;
-
-		public ShadedQuads(ShaderLayer layer, List<BakedQuad> quadsInLayer)
-		{
-			this.layer = layer;
-			this.quadsInLayer = quadsInLayer;
-		}
 	}
 }

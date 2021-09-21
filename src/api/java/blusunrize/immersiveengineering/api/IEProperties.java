@@ -13,17 +13,19 @@ import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.data.ModelProperty;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 
 public class IEProperties
 {
@@ -31,86 +33,21 @@ public class IEProperties
 	public static final DirectionProperty FACING_HORIZONTAL = DirectionProperty.create("facing", Direction.Plane.HORIZONTAL);
 	public static final DirectionProperty FACING_TOP_DOWN = DirectionProperty.create("facing", Direction.UP, Direction.DOWN);
 
-	public static final PropertyBoolInverted MULTIBLOCKSLAVE = PropertyBoolInverted.create("multiblockslave");
-	public static final PropertyBoolInverted ACTIVE = PropertyBoolInverted.create("active");
-	public static final PropertyBoolInverted IS_SECOND_STATE = PropertyBoolInverted.create("issecondstate");
-	public static final PropertyBoolInverted MIRRORED = PropertyBoolInverted.create("mirrored");
+	public static final BooleanProperty MULTIBLOCKSLAVE = BooleanProperty.create("multiblockslave");
+	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
+	public static final BooleanProperty MIRRORED = BooleanProperty.create("mirrored");
 
-	public static final Map<Direction, PropertyBoolInverted> SIDECONNECTION =
-			ImmutableMap.<Direction, PropertyBoolInverted>builder()
-					.put(Direction.DOWN, PropertyBoolInverted.create("sideconnection_down"))
-					.put(Direction.UP, PropertyBoolInverted.create("sideconnection_up"))
-					.put(Direction.NORTH, PropertyBoolInverted.create("sideconnection_north"))
-					.put(Direction.SOUTH, PropertyBoolInverted.create("sideconnection_south"))
-					.put(Direction.WEST, PropertyBoolInverted.create("sideconnection_west"))
-					.put(Direction.EAST, PropertyBoolInverted.create("sideconnection_east"))
-					.build();
-
-
-	public static final IntegerProperty INT_4 = IntegerProperty.create("int_4", 0, 3);
 	public static final IntegerProperty INT_16 = IntegerProperty.create("int_16", 0, 15);
 
-
-	public static class PropertyBoolInverted extends Property<Boolean>
+	public record ConnectionModelData(Set<Connection> connections, BlockPos here)
 	{
-		private static final ImmutableList<Boolean> ALLOWED_VALUES = ImmutableList.of(false, true);
-
-		protected PropertyBoolInverted(String name)
-		{
-			super(name, Boolean.class);
-		}
-
-		@Override
-		public Collection<Boolean> getPossibleValues()
-		{
-			return ALLOWED_VALUES;
-		}
-
-		@Override
-		public Optional<Boolean> getValue(String value)
-		{
-			return Optional.of(Boolean.parseBoolean(value));
-		}
-
-		public static PropertyBoolInverted create(String name)
-		{
-			return new PropertyBoolInverted(name);
-		}
-
-		@Override
-		public String getName(Boolean value)
-		{
-			return value.toString();
-		}
 	}
 
-	public static class ConnectionModelData
+	public static record VisibilityList(Set<String> selected, boolean showSelected)
 	{
-		public final Set<Connection> connections;
-		public final BlockPos here;
-
-		public ConnectionModelData(Set<Connection> connections, BlockPos here)
-		{
-			this.connections = connections;
-			this.here = here;
-		}
-
-		@Override
-		public String toString()
-		{
-			return connections+" at "+here;
-		}
-	}
-
-	public static class VisibilityList
-	{
-		private final Set<String> selected;
-		private final boolean showSelected;
-
 		private VisibilityList(Collection<String> selected, boolean show)
 		{
-			this.selected = new HashSet<>(selected);
-			this.showSelected = show;
+			this(ImmutableSet.copyOf(selected), show);
 		}
 
 		public static VisibilityList show(String... visible)
@@ -142,54 +79,13 @@ public class IEProperties
 		{
 			return showSelected==selected.contains(group);
 		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this==o) return true;
-			if(o==null||getClass()!=o.getClass()) return false;
-			VisibilityList that = (VisibilityList)o;
-			return showSelected==that.showSelected&&
-					selected.equals(that.selected);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return Objects.hash(selected, showSelected);
-		}
 	}
 
-	public static class IEObjState
+	public static record IEObjState(VisibilityList visibility, Transformation transform)
 	{
-		public final VisibilityList visibility;
-		public final Transformation transform;
-
 		public IEObjState(VisibilityList visibility)
 		{
 			this(visibility, Transformation.identity());
-		}
-
-		public IEObjState(VisibilityList visibility, Transformation transform)
-		{
-			this.visibility = visibility;
-			this.transform = transform;
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this==o) return true;
-			if(o==null||getClass()!=o.getClass()) return false;
-			IEObjState that = (IEObjState)o;
-			return visibility.equals(that.visibility)&&
-					transform.equals(that.transform);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return Objects.hash(visibility, transform);
 		}
 	}
 
