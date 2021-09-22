@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-@SuppressWarnings("deprecation")
+@Deprecated
 //T must be ItemStack for Items or IBlockState for TileEntities implementing this
 public interface IOBJModelCallback<T>
 {

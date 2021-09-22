@@ -31,6 +31,10 @@ import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoade
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.BuzzsawCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.DrillCallbacks;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
@@ -103,6 +107,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MODID, bus = Bus.MOD)
@@ -110,6 +115,10 @@ public class ClientProxy extends CommonProxy
 {
 	public static void modConstruction()
 	{
+		IEOBJCallbacks.register(rl("drill"), DrillCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("buzzsaw"), BuzzsawCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("default"), DefaultCallback.INSTANCE);
+
 		// Apparently this runs in data generation runs... but registering model loaders causes NPEs there
 		if(Minecraft.getInstance()!=null)
 		{

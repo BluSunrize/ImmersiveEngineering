@@ -1,12 +1,19 @@
 package blusunrize.immersiveengineering.data.models;
 
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+
+import javax.annotation.Nullable;
+
+import static blusunrize.immersiveengineering.client.models.obj.IEOBJLoader.CALLBACKS_KEY;
+import static blusunrize.immersiveengineering.client.models.obj.IEOBJLoader.DYNAMIC_KEY;
 
 public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder<T>
 {
@@ -17,6 +24,8 @@ public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder
 
 	private final OBJLoaderBuilder<T> internal;
 	private boolean dynamic = false;
+	@Nullable
+	private IEOBJCallback<?> callback;
 
 	protected IEOBJBuilder(T parent, ExistingFileHelper existingFileHelper)
 	{
@@ -30,33 +39,9 @@ public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder
 		return this;
 	}
 
-	public IEOBJBuilder<T> detectCullableFaces(boolean detectCullableFaces)
-	{
-		internal.detectCullableFaces(detectCullableFaces);
-		return this;
-	}
-
-	public IEOBJBuilder<T> diffuseLighting(boolean diffuseLighting)
-	{
-		internal.diffuseLighting(diffuseLighting);
-		return this;
-	}
-
 	public IEOBJBuilder<T> flipV(boolean flipV)
 	{
 		internal.flipV(flipV);
-		return this;
-	}
-
-	public IEOBJBuilder<T> ambientToFullbright(boolean ambientToFullbright)
-	{
-		internal.ambientToFullbright(ambientToFullbright);
-		return this;
-	}
-
-	public IEOBJBuilder<T> overrideMaterialLibrary(ResourceLocation materialLibraryOverrideLocation)
-	{
-		internal.overrideMaterialLibrary(materialLibraryOverrideLocation);
 		return this;
 	}
 
@@ -66,13 +51,21 @@ public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder
 		json = internal.toJson(json);
 		json = super.toJson(json);
 		if(dynamic)
-			json.addProperty("dynamic", true);
+			json.addProperty(DYNAMIC_KEY, true);
+		if(callback!=null)
+			json.addProperty(CALLBACKS_KEY, IEOBJCallbacks.getName(callback).toString());
 		return json;
 	}
 
 	public IEOBJBuilder<T> dynamic(boolean dynamic)
 	{
 		this.dynamic = dynamic;
+		return this;
+	}
+
+	public IEOBJBuilder<T> callback(IEOBJCallback<?> callback)
+	{
+		this.callback = callback;
 		return this;
 	}
 }

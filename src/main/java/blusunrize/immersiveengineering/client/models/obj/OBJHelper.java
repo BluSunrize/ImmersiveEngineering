@@ -139,6 +139,7 @@ public class OBJHelper
 		}
 	}
 
+	// TODO replace with Mixin duck?
 	public static class MeshWrapper
 	{
 		private final Object mesh;

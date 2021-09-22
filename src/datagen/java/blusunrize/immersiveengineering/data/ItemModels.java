@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.BuzzsawCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.DrillCallbacks;
 import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
@@ -264,10 +266,12 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(modLoc("item/revolver"));
 		ieObjBuilder(Tools.DRILL, modLoc("item/drill/drill_diesel.obj.ie"))
 				.dynamic(true)
+				.callback(DrillCallbacks.INSTANCE)
 				.end()
 				.transforms(modLoc("item/drill"));
 		ieObjBuilder(Tools.BUZZSAW, modLoc("item/buzzsaw_diesel.obj.ie"))
 				.dynamic(true)
+				.callback(BuzzsawCallbacks.INSTANCE)
 				.end()
 				.transforms(modLoc("item/buzzsaw"));
 		ieObj(Weapons.RAILGUN, modLoc("item/railgun.obj.ie"))

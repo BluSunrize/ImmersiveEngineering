@@ -81,5 +81,6 @@ public interface IDrillHead
 	 * This IIcon should be stitched in the item sheet
 	 */
 	@OnlyIn(Dist.CLIENT)
+	//TODO only return RL(?)
 	TextureAtlasSprite getDrillTexture(ItemStack drill, ItemStack head);
 }

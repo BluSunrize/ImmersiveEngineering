@@ -31,9 +31,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
@@ -44,23 +42,17 @@ import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.obj.MaterialLibrary;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
-import net.minecraftforge.client.model.obj.OBJModel.ModelObject;
 import net.minecraftforge.common.util.LazyOptional;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -87,15 +79,15 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	private BlockState tempState;
 	private LivingEntity tempEntity;
 	public static LivingEntity tempEntityStatic;
-	public boolean isDynamic;
-	private final Map<String, String> texReplacements;
 
+	private final Map<String, String> texReplacements;
 	public final OBJModel baseModel;
 	private final BakedModel baseBaked;
 	private final IModelConfiguration owner;
 	private final ModelBakery bakery;
 	private final Function<Material, TextureAtlasSprite> spriteGetter;
 	private final ModelState sprite;
+	private final boolean isDynamic;
 
 	private final IEObjState state;
 
@@ -209,6 +201,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		public BakedModel resolve(@Nonnull BakedModel originalModel, @Nonnull ItemStack stack,
 												 @Nullable ClientLevel world, @Nullable LivingEntity entity, int unused)
 		{
+			// TODO get cache key here and return a "fixed key" model
 			tempEntityStatic = entity;
 			ComparableItemStack comp = ComparableItemStack.create(stack, false, true);
 			if(comp==null)
@@ -404,99 +397,7 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	public <T> List<ShadedQuads> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName,
 												  ShaderCase sCase, boolean allowCaching)
 	{
-		String objCacheKey = callback!=null?callback.getCacheKey(callbackObject): "<none>";
-		if(sCase!=null)
-			objCacheKey += ";"+sCase.getShaderType().toString();
-		Pair<String, String> cacheKey = Pair.of(groupName, objCacheKey);
-		if(allowCaching)
-		{
-			List<ShadedQuads> cached = groupCache.getIfPresent(cacheKey);
-			if(cached!=null)
-				return cached;
-		}
-		final int numPasses;
-		if(sCase!=null)
-			numPasses = sCase.getLayers().length;
-		else
-			numPasses = 1;
-		ModelGroup g = OBJHelper.getGroups(baseModel).get(groupName);
-		List<ShadedQuads> ret = new ArrayList<>();
-		Transformation transform = state.transform();
-		Transformation optionalTransform = sprite.getRotation();
-		if(callback!=null)
-			optionalTransform = callback.applyTransformations(callbackObject, groupName, optionalTransform);
-
-		final MaterialSpriteGetter<T> spriteGetter = new MaterialSpriteGetter<>(this.spriteGetter, groupName, callback, callbackObject, sCase);
-		final MaterialColorGetter<T> colorGetter = new MaterialColorGetter<>(groupName, callback, callbackObject, sCase);
-		final TextureCoordinateRemapper coordinateRemapper = new TextureCoordinateRemapper(this.baseModel, sCase);
-
-		if(state.visibility().isVisible(groupName)&&(callback==null||callback.shouldRenderGroup(callbackObject, groupName)))
-			for(int pass = 0; pass < numPasses; ++pass)
-				if(sCase==null||sCase.shouldRenderGroupForPass(groupName, pass))
-				{
-					List<BakedQuad> quads = new ArrayList<>();
-					spriteGetter.setRenderPass(pass);
-					colorGetter.setRenderPass(pass);
-					coordinateRemapper.setRenderPass(pass);
-					//g.addQuads(owner, new QuadListAdder(quads::add, transform), bakery, spriteGetter, sprite, format);
-					IModelBuilder<?> modelBuilder = new QuadListAdder(quads::add, transform);
-					Optional<String> texOverride = Optional.ofNullable(texReplacements.get(groupName));
-					addModelObjectQuads(g, owner, modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform, texOverride);
-					final Transformation finalTransform = optionalTransform;
-					g.getParts().stream().filter(part -> owner.getPartVisibility(part)&&part instanceof ModelObject)
-							.forEach(part -> addModelObjectQuads((ModelObject)part, owner, modelBuilder, spriteGetter,
-									colorGetter, coordinateRemapper, finalTransform, texOverride));
-					ShaderLayer layer = sCase!=null?sCase.getLayers()[pass]: new ShaderLayer(new ResourceLocation("missing/no"), -1)
-					{
-						@Override
-						public RenderType getRenderType(RenderType baseType)
-						{
-							return baseType;
-						}
-					};
-					ret.add(new ShadedQuads(layer, quads));
-				}
-		if(allowCaching)
-			groupCache.put(cacheKey, ret);
-		return ret;
-	}
-
-	/**
-	 * Yep, this is 90% a copy of ModelObject.addQuads. We need custom hooks in there, so we copy the rest around it.
-	 */
-	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
-									 MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
-									 TextureCoordinateRemapper coordinateRemapper,
-									 Transformation transform, Optional<String> textureOverride)
-	{
-		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
-		for(MeshWrapper mesh : meshes)
-		{
-			MaterialLibrary.Material mat = mesh.getMaterial();
-			if(mat==null)
-				continue;
-			TextureAtlasSprite texture = spriteGetter.apply(
-					mat.name,
-					ModelLoaderRegistry.resolveTexture(textureOverride.orElse(mat.diffuseColorMap), owner)
-			);
-			int tintIndex = mat.diffuseTintIndex;
-			Vector4f colorTint = colorGetter.apply(mat.name, mat.diffuseColor);
-
-			for(int[][] face : mesh.getFaces())
-			{
-				boolean drawFace = coordinateRemapper.remapCoord(face);
-				if(drawFace)
-				{
-					Pair<BakedQuad, Direction> quad = OBJHelper.makeQuad(baseModel, face, tintIndex, colorTint,
-							mat.ambientColor, texture, transform);
-					if(quad.getRight()==null)
-						modelBuilder.addGeneralQuad(quad.getLeft());
-					else
-						modelBuilder.addFaceQuad(quad.getRight(), quad.getLeft());
-				}
-				coordinateRemapper.resetCoords();
-			}
-		}
+		return new ArrayList<>();
 	}
 
 	public record ShadedQuads(ShaderLayer layer, List<BakedQuad> quadsInLayer)
