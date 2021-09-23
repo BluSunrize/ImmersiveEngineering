@@ -12,17 +12,11 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
-import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.models.connection.RenderCacheKey;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IAdvancedHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -53,8 +47,6 @@ import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.common.util.LazyOptional;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -62,7 +54,6 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @SuppressWarnings("deprecation")
@@ -252,11 +243,6 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
 	{
 		List<IModelData> customData = new ArrayList<>();
-		if(state.getBlock() instanceof IAdvancedHasObjProperty)
-			customData.add(new SinglePropertyModelData<>(
-					((IAdvancedHasObjProperty)state.getBlock()).getIEObjState(state),
-					Model.IE_OBJ_STATE
-			));
 		if(state.getBlock() instanceof IModelDataBlock)
 			customData.add(((IModelDataBlock)state.getBlock()).getModelData(world, pos, state, tileData));
 		else
@@ -264,16 +250,6 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			BlockEntity te = world.getBlockEntity(pos);
 			if(te instanceof IOBJModelCallback)
 				customData.add(new SinglePropertyModelData<>((IOBJModelCallback<?>)te, IOBJModelCallback.PROPERTY));
-			if(te instanceof IAdvancedHasObjProperty)
-				customData.add(new SinglePropertyModelData<>(((IAdvancedHasObjProperty)te).getIEObjState(state),
-						Model.IE_OBJ_STATE));
-			if(te!=null)
-			{
-				LazyOptional<ShaderWrapper> shaderCap = te.getCapability(CapabilityShader.SHADER_CAPABILITY);
-				if(shaderCap.isPresent())
-					customData.add(new SinglePropertyModelData<>(shaderCap.orElseThrow(RuntimeException::new),
-							CapabilityShader.MODEL_PROPERTY));
-			}
 		}
 		customData.add(tileData);
 		return CombinedModelData.combine(customData.toArray(new IModelData[0]));
@@ -339,68 +315,6 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 
 	private ImmutableList<BakedQuad> buildQuads(IModelData data)
 	{
-		List<BakedQuad> quads = Lists.newArrayList();
-		ItemStack shader = ItemStack.EMPTY;
-		ShaderCase sCase = null;
-		IOBJModelCallback callback = null;
-		Object callbackObject = null;
-		LazyOptional<ShaderWrapper> shaderOpt = tempStack.getCapability(CapabilityShader.SHADER_CAPABILITY);
-		if(shaderOpt.isPresent())
-		{
-			ShaderWrapper wrapper = shaderOpt.orElseThrow(NullPointerException::new);
-			shader = wrapper.getShaderItem();
-			if(shader.getItem() instanceof IShaderItem shaderItem)
-				sCase = shaderItem.getShaderCase(shader, tempStack, wrapper.getShaderType());
-		}
-		else if(data.hasProperty(CapabilityShader.MODEL_PROPERTY))
-		{
-			ShaderWrapper wrapper = data.getData(CapabilityShader.MODEL_PROPERTY);
-			if(wrapper!=null)
-			{
-				shader = wrapper.getShaderItem();
-				if(shader.getItem() instanceof IShaderItem shaderItem)
-					sCase = shaderItem.getShaderCase(shader, null, wrapper.getShaderType());
-			}
-		}
-
-		if(!this.tempStack.isEmpty()&&tempStack.getItem() instanceof IOBJModelCallback)
-		{
-			callback = (IOBJModelCallback)tempStack.getItem();
-			callbackObject = this.tempStack;
-		}
-		else if(data.hasProperty(IOBJModelCallback.PROPERTY))
-		{
-			callback = data.getData(IOBJModelCallback.PROPERTY);
-			callbackObject = this.tempState;
-		}
-		for(String groupName : OBJHelper.getGroups(baseModel).keySet())
-		{
-			List<ShadedQuads> temp = addQuadsForGroup(callback, callbackObject, groupName, sCase, true);
-			quads.addAll(
-					temp.stream()
-							.map(s -> s.quadsInLayer)
-							.flatMap(List::stream)
-							.filter(Objects::nonNull)
-							.collect(Collectors.toList())
-			);
-		}
-
-		if(callback!=null)
-			quads = callback.modifyQuads(callbackObject, quads);
-		return ImmutableList.copyOf(quads);
-	}
-
-	private final Cache<Pair<String, String>, List<ShadedQuads>> groupCache = CacheBuilder.newBuilder()
-			.maximumSize(100)
-			.build();
-
-	public <T> List<ShadedQuads> addQuadsForGroup(IOBJModelCallback<T> callback, T callbackObject, String groupName,
-												  ShaderCase sCase, boolean allowCaching)
-	{
-		return new ArrayList<>();
-	}
-
-	public record ShadedQuads(ShaderLayer layer, List<BakedQuad> quadsInLayer)
-	{
+		return ImmutableList.of();
 	}
 }

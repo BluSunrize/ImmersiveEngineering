@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
 import blusunrize.immersiveengineering.common.items.BuzzsawItem;
 import blusunrize.immersiveengineering.common.items.SawbladeItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;

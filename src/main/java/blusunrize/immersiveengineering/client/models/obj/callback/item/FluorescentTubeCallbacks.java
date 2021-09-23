@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
-import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.math.Vector4f;

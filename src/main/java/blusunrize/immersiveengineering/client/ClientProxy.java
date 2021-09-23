@@ -32,7 +32,9 @@ import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
@@ -46,7 +48,6 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyor;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConveyor;
@@ -121,6 +122,15 @@ public class ClientProxy extends CommonProxy
 		IEOBJCallbacks.register(rl("chemthrower"), ChemthrowerCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("railgun"), RailgunCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("shield"), ShieldCallbacks.INSTANCE);
+
+		IEOBJCallbacks.register(rl("chute"), ChuteCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("lantern"), LanternCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("logic_unit"), LogicUnitCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("pipe"), PipeCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("turret"), TurretCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("workbench"), WorkbenchCallbacks.INSTANCE);
+
+		IEOBJCallbacks.register(rl("submodel"), DynamicSubmodelCallbacks.INSTANCE);
 
 		// Apparently this runs in data generation runs... but registering model loaders causes NPEs there
 		if(Minecraft.getInstance()!=null)
@@ -293,7 +303,6 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(IESmartObjModel.cachedBakedItemModels::invalidateAll);
 		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::invalidateAll);
-		IEApi.renderCacheClearers.add(FluidPipeBlockEntity.cachedOBJStates::clear);
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
@@ -492,6 +501,7 @@ public class ClientProxy extends CommonProxy
 		WindmillRenderer.MODEL = new DynamicModel(WindmillRenderer.NAME);
 		RedstoneConveyorRender.MODEL_PANEL = new DynamicModel(RedstoneConveyorRender.MODEL_NAME);
 		SawbladeRenderer.MODEL = new DynamicModel(SawbladeRenderer.NAME);
+		TurretRenderer.fillModels();
 		BasicClientProperties.initModels();
 	}
 

@@ -8,13 +8,12 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
-import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -31,7 +30,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -91,14 +89,10 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 		{
 			CACHED_BUFFERS.get(textures, () -> IVertexBufferHolder.create(() -> {
 				BakedModel model = WHEEL.get();
-				BlockState state = Multiblocks.BUCKET_WHEEL.defaultBlockState();
 				List<String> list = Lists.newArrayList("bucketWheel");
 				list.addAll(texMap.keySet());
-				IEObjState objState = new IEObjState(VisibilityList.show(list));
-				if(model instanceof IESmartObjModel)
-					return ((IESmartObjModel)model).getQuads(state, objState, texMap, true, EmptyModelData.INSTANCE);
-				else
-					return model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
+				VisibilityList objState = VisibilityList.show(list);
+				return model.getQuads(null, null, Utils.RAND, new SinglePropertyModelData<>(objState, DynamicSubmodelCallbacks.getProperty()));
 			})).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
 		} catch(ExecutionException ex)
 		{

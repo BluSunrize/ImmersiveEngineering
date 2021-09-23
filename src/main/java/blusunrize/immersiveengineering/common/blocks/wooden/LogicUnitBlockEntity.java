@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.ILogicCircuitHandler;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
@@ -19,7 +18,6 @@ import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetw
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
@@ -29,8 +27,6 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContai
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -43,17 +39,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.storage.loot.LootContext;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInventory, IBlockEntityDrop,
-		IInteractionObjectIE<LogicUnitBlockEntity>, IStateBasedDirectional, ILogicCircuitHandler, IHasObjProperty
+		IInteractionObjectIE<LogicUnitBlockEntity>, IStateBasedDirectional, ILogicCircuitHandler
 {
 	private final static int SIZE_COLORS = DyeColor.values().length;
 	private final static int SIZE_REGISTERS = LogicCircuitRegister.values().length-SIZE_COLORS;
@@ -246,27 +239,5 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 			this.outputs[register.ordinal()] = state;
 		else
 			this.registers[register.ordinal()-SIZE_COLORS] = state;
-	}
-
-	private final Map<String, VisibilityList> visibilityListMap = new ConcurrentHashMap<>();
-	private static VisibilityList visibilityTransparent = VisibilityList.show("tubes");
-
-	private String getVisibilityKey()
-	{
-		return this.inventory.stream().map(itemStack -> !itemStack.isEmpty()?"1": "0").collect(Collectors.joining());
-	}
-
-	@Override
-	public VisibilityList compileDisplayList(BlockState state)
-	{
-		if(MinecraftForgeClient.getRenderLayer()==RenderType.translucent())
-			return visibilityTransparent;
-		return visibilityListMap.computeIfAbsent(getVisibilityKey(), key -> {
-			List<String> parts = Lists.newArrayList("base");
-			for(int i = 0; i < key.length(); i++)
-				if(key.charAt(i)=='1')
-					parts.add("board_"+i);
-			return VisibilityList.show(parts);
-		});
 	}
 }

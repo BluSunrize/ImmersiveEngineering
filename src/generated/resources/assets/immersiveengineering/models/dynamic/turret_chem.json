@@ -1,6 +1,6 @@
 {
   "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/block/metal_multiblock/arc_furnace_electrodes.obj.ie",
+  "model": "immersiveengineering:models/block/metal_device/chem_turret.obj.ie",
   "flip-v": true,
   "callbacks": "immersiveengineering:submodel"
 }

@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 
 public interface IShaderItem
 {
-	ShaderCase getShaderCase(ItemStack shader, ItemStack item, ResourceLocation shaderType);
+	ShaderCase getShaderCase(ItemStack shader, ResourceLocation shaderType);
 
 	ResourceLocation getShaderName(ItemStack shader);
 }

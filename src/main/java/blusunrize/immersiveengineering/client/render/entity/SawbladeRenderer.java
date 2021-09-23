@@ -9,11 +9,10 @@
 package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -41,6 +40,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 	public static DynamicModel MODEL;
 
 	public static final ResourceLocation SAWBLADE = new ResourceLocation(ImmersiveEngineering.MODID, "item/sawblade_blade");
+	private static final VisibilityList DYNAMIC_GROUPS = VisibilityList.show("blade");
 
 	public SawbladeRenderer(Context renderManager)
 	{
@@ -55,8 +55,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 		final BlockRenderDispatcher blockRenderer = Minecraft.getInstance().getBlockRenderer();
 		BlockPos blockPos = entity.blockPosition();
 		BlockState state = entity.getCommandSenderWorld().getBlockState(blockPos);
-		BakedModel model = this.MODEL.get();
-		IEObjState objState = new IEObjState(VisibilityList.show("blade"));
+		BakedModel model = MODEL.get();
 
 		matrixStackIn.pushPose();
 		matrixStackIn.scale(.75f, .75f, .75f);
@@ -79,7 +78,8 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 				matrixStackIn.last(), builder, state, model,
 				// Tint color
 				1, 1, 1,
-				packedLightIn, OverlayTexture.NO_OVERLAY, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE)
+				packedLightIn, OverlayTexture.NO_OVERLAY,
+				new SinglePropertyModelData<>(DYNAMIC_GROUPS, DynamicSubmodelCallbacks.getProperty())
 		);
 
 		ClientUtils.mc().options.ambientOcclusion = aoStat;

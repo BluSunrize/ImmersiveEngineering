@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
-import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
 import blusunrize.immersiveengineering.common.items.RailgunItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;

@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
-import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import com.mojang.math.Quaternion;

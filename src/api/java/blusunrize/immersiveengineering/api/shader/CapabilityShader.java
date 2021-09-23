@@ -55,6 +55,15 @@ public class CapabilityShader
 
 		@Nonnull
 		public abstract ItemStack getShaderItem();
+
+		public ShaderCase getCase()
+		{
+			ItemStack shaderStack = getShaderItem();
+			if(shaderStack.getItem() instanceof IShaderItem shaderItem)
+				return shaderItem.getShaderCase(shaderStack, getShaderType());
+			else
+				return null;
+		}
 	}
 
 	public static class ShaderWrapper_Item extends ShaderWrapper
@@ -151,5 +160,5 @@ public class CapabilityShader
 		}
 	}
 
-	public static ModelProperty<ShaderWrapper> MODEL_PROPERTY = new ModelProperty<>();
+	public static ModelProperty<ShaderCase> MODEL_PROPERTY = new ModelProperty<>();
 }

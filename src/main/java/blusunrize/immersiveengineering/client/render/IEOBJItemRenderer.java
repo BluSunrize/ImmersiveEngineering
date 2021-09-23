@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
 import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
-import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;

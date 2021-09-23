@@ -9,15 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
@@ -45,7 +42,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 
 public class ModWorkbenchBlockEntity extends IEBaseBlockEntity implements IIEInventory, IStateBasedDirectional,
-		IHasDummyBlocks, IInteractionObjectIE<ModWorkbenchBlockEntity>, IHasObjProperty, IModelOffsetProvider
+		IHasDummyBlocks, IInteractionObjectIE<ModWorkbenchBlockEntity>, IModelOffsetProvider
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
@@ -202,18 +199,6 @@ public class ModWorkbenchBlockEntity extends IEBaseBlockEntity implements IIEInv
 	public BEContainer<ModWorkbenchBlockEntity, ?> getContainerType()
 	{
 		return IEContainerTypes.MOD_WORKBENCH;
-	}
-
-	private static final VisibilityList normalDisplayList = VisibilityList.show("cube0");
-	private static final VisibilityList blueprintDisplayList = VisibilityList.show("cube0", "blueprint");
-
-	@Override
-	public VisibilityList compileDisplayList(BlockState state)
-	{
-		ModWorkbenchBlockEntity master = master();
-		if(master!=null&&master.inventory.get(0).getItem() instanceof EngineersBlueprintItem)
-			return blueprintDisplayList;
-		return normalDisplayList;
 	}
 
 	@Override

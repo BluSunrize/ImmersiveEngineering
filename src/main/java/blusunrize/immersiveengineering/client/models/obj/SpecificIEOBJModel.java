@@ -9,11 +9,12 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
-import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -51,16 +52,18 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	private final T key;
 	@Nullable
 	private final ShaderCase shader;
+	private final IEObjState state;
 	private List<BakedQuad> quads;
 
 	public SpecificIEOBJModel(
-			GeneralIEOBJModel<T> baseModel, @Nonnull IEOBJCallback<T> callback, T key, @Nullable ShaderCase shader
+			GeneralIEOBJModel<T> baseModel, T key, @Nullable ShaderCase shader
 	)
 	{
 		this.baseModel = baseModel;
-		this.callback = callback;
+		this.callback = baseModel.getCallback();
 		this.key = key;
 		this.shader = shader;
+		this.state = callback.getIEOBJState(key);
 	}
 
 	@Nonnull
@@ -168,6 +171,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		List<ShadedQuads> ret = new ArrayList<>();
 		Transformation optionalTransform = baseModel.getSprite().getRotation();
 		optionalTransform = callback.applyTransformations(key, groupName, optionalTransform);
+		Transformation transform = state.transform();
 
 		final MaterialSpriteGetter<T> spriteGetter = new MaterialSpriteGetter<>(
 				baseModel.getSpriteGetter(), groupName, callback, key, shader
@@ -177,7 +181,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 				this.baseModel.getBaseModel(), shader
 		);
 
-		if(callback.shouldRenderGroup(key, groupName))
+		if(state.visibility().isVisible(groupName)&&callback.shouldRenderGroup(key, groupName))
 			for(int pass = 0; pass < numPasses; ++pass)
 				if(shader==null||shader.shouldRenderGroupForPass(groupName, pass))
 				{
@@ -185,8 +189,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 					spriteGetter.setRenderPass(pass);
 					colorGetter.setRenderPass(pass);
 					coordinateRemapper.setRenderPass(pass);
-					//TODO can we just get rid of half of this due to Transformation.identity?
-					IModelBuilder<?> modelBuilder = new QuadListAdder(quads::add, Transformation.identity());
+					IModelBuilder<?> modelBuilder = new QuadListAdder(quads::add, transform);
 					addModelObjectQuads(
 							g, baseModel.getOwner(), modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform
 					);

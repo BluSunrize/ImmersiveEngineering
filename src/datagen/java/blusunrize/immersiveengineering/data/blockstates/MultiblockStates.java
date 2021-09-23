@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.data.blockstates;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.WorkbenchCallbacks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
@@ -167,9 +168,10 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(Multiblocks.LIGHTNING_ROD,
 				split(obj("block/metal_multiblock/lightningrod.obj"), IEMultiblocks.LIGHTNING_ROD));
 		createMultiblock(WoodenDevices.WORKBENCH,
-				splitDynamic(ieObj("block/wooden_device/workbench.obj.ie"), ImmutableList.of(
-						ModWorkbenchBlockEntity.MASTER_POS, ModWorkbenchBlockEntity.DUMMY_POS
-				)),
+				splitDynamic(
+						ieObjBuilder("block/wooden_device/workbench.obj.ie").callback(WorkbenchCallbacks.INSTANCE).end(),
+						ImmutableList.of(ModWorkbenchBlockEntity.MASTER_POS, ModWorkbenchBlockEntity.DUMMY_POS)
+				),
 				null, null);
 		createMultiblock(WoodenDevices.CIRCUIT_TABLE,
 				split(obj("block/wooden_device/circuit_table.obj"), ImmutableList.of(

@@ -10,12 +10,9 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import com.google.common.base.Preconditions;
-import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -394,22 +391,6 @@ public class IEBlockInterfaces
 			else
 				return true;
 		}
-	}
-
-	public interface IHasObjProperty extends IAdvancedHasObjProperty
-	{
-		VisibilityList compileDisplayList(BlockState state);
-
-		@Override
-		default IEObjState getIEObjState(BlockState state)
-		{
-			return new IEObjState(compileDisplayList(state), Transformation.identity());
-		}
-	}
-
-	public interface IAdvancedHasObjProperty
-	{
-		IEObjState getIEObjState(BlockState state);
 	}
 
 	public interface IInteractionObjectIE<T extends BlockEntity & IInteractionObjectIE<T>> extends MenuProvider

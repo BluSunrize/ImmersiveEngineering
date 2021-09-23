@@ -1,14 +1,12 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorCacheData;
-import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.RedstoneConveyor;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -21,7 +19,6 @@ import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
 import net.minecraftforge.client.model.ModelLoader;
@@ -90,10 +87,9 @@ public class RedstoneConveyorRender extends BasicConveyorRender<RedstoneConveyor
 		if(model!=null)
 		{
 			String[] parts = context.isActiveOr(false)?new String[]{"panel", "lamp"}: new String[]{"panel"};
-			IEObjState objState = new IEObjState(VisibilityList.show(parts));
-			BlockState state = ConveyorHandler.getBlock(RedstoneConveyor.TYPE).defaultBlockState();
-			baseModel.addAll(model.getQuads(state, null, Utils.RAND,
-					new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE)));
+			baseModel.addAll(model.getQuads(null, null, Utils.RAND, new SinglePropertyModelData<>(
+					VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty()
+			)));
 		}
 		return baseModel;
 	}

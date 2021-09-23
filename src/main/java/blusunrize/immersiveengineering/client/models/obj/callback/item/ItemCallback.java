@@ -7,8 +7,10 @@
  *
  */
 
-package blusunrize.immersiveengineering.client.models.obj.callback;
+package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
+import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;

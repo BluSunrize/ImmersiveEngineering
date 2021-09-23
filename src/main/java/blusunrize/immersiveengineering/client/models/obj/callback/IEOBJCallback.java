@@ -9,6 +9,8 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback;
 
+import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
+import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -43,5 +45,10 @@ public interface IEOBJCallback<Key>
 	default List<BakedQuad> modifyQuads(Key object, List<BakedQuad> quads)
 	{
 		return quads;
+	}
+
+	default IEObjState getIEOBJState(Key key)
+	{
+		return new IEObjState(VisibilityList.showAll());
 	}
 }

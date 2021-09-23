@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
@@ -65,8 +64,7 @@ import java.util.UUID;
 
 public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends IEBaseBlockEntity implements
 		IETickableBlockEntity, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, IBlockEntityDrop, IStateBasedDirectional,
-		IBlockBounds, IInteractionObjectIE<T>, IEntityProof, IScrewdriverInteraction, IHasObjProperty,
-		IModelOffsetProvider
+		IBlockBounds, IInteractionObjectIE<T>, IEntityProof, IScrewdriverInteraction, IModelOffsetProvider
 {
 	public FluxStorage energyStorage = new FluxStorage(16000);
 	public boolean redstoneControlInverted = false;
@@ -122,8 +120,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 				this.target = null;
 			else if(level.isClientSide)
 			{
-				float facingYaw = getFacing()==Direction.NORTH?180: getFacing()==Direction.WEST?-90: getFacing()==Direction.EAST?90: 0;
-				double yaw = (Mth.atan2(delta.x, delta.z)*(180/Math.PI))-facingYaw;
+				double yaw = (Mth.atan2(delta.x, delta.z)*(180/Math.PI))-180;
 				this.rotationPitch = (float)(Math.atan2(Math.sqrt(delta.x*delta.x+delta.z*delta.z), delta.y)*(180/Math.PI))-90;
 				if(this.rotationYaw==0)//moving from default
 					this.rotationYaw = (float)(yaw*.5);
@@ -632,14 +629,6 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		if(!isDummy())
 			return wrappers[facing==null?0: facing.ordinal()];
 		return null;
-	}
-
-	static VisibilityList displayList = VisibilityList.show("base");
-
-	@Override
-	public VisibilityList compileDisplayList(BlockState state)
-	{
-		return displayList;
 	}
 
 	public void setDummy(boolean dummy)

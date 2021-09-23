@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
-import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;

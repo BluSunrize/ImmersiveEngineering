@@ -9,15 +9,13 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -29,10 +27,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
 
@@ -66,14 +62,10 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceBlockEnt
 		if(te.shouldRenderAsActive())
 			renderedParts.add("active");
 
-		BlockPos blockPos = te.getBlockPos();
-		BlockState state = te.getLevel().getBlockState(blockPos);
-		if(state.getBlock()!=Multiblocks.ARC_FURNACE.get())
-			return;
-		IEObjState objState = new IEObjState(VisibilityList.show(renderedParts));
-
 		matrixStack.pushPose();
-		List<BakedQuad> quads = ELECTRODES.get().getQuads(state, null, Utils.RAND, new SinglePropertyModelData<>(objState, Model.IE_OBJ_STATE));
+		List<BakedQuad> quads = ELECTRODES.get().getQuads(null, null, Utils.RAND, new SinglePropertyModelData<>(
+				VisibilityList.show(renderedParts), DynamicSubmodelCallbacks.getProperty()
+		));
 		matrixStack.pushPose();
 		rotateForFacing(matrixStack, te.getFacing());
 		RenderUtils.renderModelTESRFast(
