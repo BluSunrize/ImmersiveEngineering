@@ -33,7 +33,7 @@ public class BuzzsawCallbacks implements ItemCallback<BuzzsawCallbacks.Key>
 	public static final BuzzsawCallbacks INSTANCE = new BuzzsawCallbacks();
 
 	@Override
-	public Key extractKey(ItemStack stack)
+	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
 		CompoundTag upgrades = BuzzsawItem.getUpgradesStatic(stack);
 		final boolean hasQuiver = BuzzsawItem.hasQuiverUpgrade(stack);

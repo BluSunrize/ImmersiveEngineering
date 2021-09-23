@@ -3,6 +3,7 @@
   "model": "immersiveengineering:models/item/revolver.obj.ie",
   "flip-v": true,
   "dynamic": true,
+  "callbacks": "immersiveengineering:revolver",
   "transform": {
     "thirdperson_righthand": {
       "translation": [

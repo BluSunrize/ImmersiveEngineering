@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEPotions;
@@ -24,9 +23,6 @@ import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -39,7 +35,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
@@ -69,7 +64,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, IOBJModelCallback<ItemStack>
+public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem
 {
 	public IEShieldItem()
 	{
@@ -253,49 +248,6 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 	}
 
 	@Override
-	public boolean shouldRenderGroup(ItemStack object, String group)
-	{
-		if("flash".equals(group))
-			return getUpgrades(object).getBoolean("flash");
-		else if("shock".equals(group))
-			return getUpgrades(object).getBoolean("shock");
-		return true;
-	}
-
-	@Override
-	public void handlePerspective(ItemStack Object, TransformType cameraTransformType, PoseStack mat, LivingEntity entity)
-	{
-		if(entity!=null&&entity.isUsingItem())
-			if((entity.getUsedItemHand()==InteractionHand.MAIN_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT))
-			{
-				if(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND)
-				{
-					mat.mulPose(new Quaternion(-.15F, 0, 0, false));
-					mat.translate(-.25, .5, -.4375);
-				}
-				else if(cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)
-				{
-					mat.mulPose(new Quaternion(0.52359F, 0, 0, false));
-					mat.mulPose(new Quaternion(0, 0.78539F, 0, false));
-					mat.translate(.40625, -.125, -.125);
-				}
-			}
-			else
-			{
-				if(cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND)
-				{
-					mat.mulPose(new Quaternion(.15F, 0, 0, false));
-					mat.translate(.25, .375, .4375);
-				}
-				else if(cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND)
-				{
-					mat.mulPose(new Quaternion(-0.52359F, 1, 0, false));
-					mat.translate(.1875, .3125, .75);
-				}
-			}
-	}
-
-	@Override
 	public boolean canModify(ItemStack stack)
 	{
 		return true;
@@ -308,7 +260,6 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem, 
 				new IESlot.Upgrades(container, toolInventory, 0, 80, 32, "SHIELD", stack, true, level, getPlayer),
 				new IESlot.Upgrades(container, toolInventory, 1, 100, 32, "SHIELD", stack, true, level, getPlayer)
 		};
-
 	}
 
 	@Override

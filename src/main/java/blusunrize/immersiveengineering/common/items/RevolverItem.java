@@ -20,12 +20,9 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.gui.RevolverContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
@@ -39,14 +36,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -66,8 +56,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
-import net.minecraft.world.entity.HumanoidArm;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
@@ -79,10 +67,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
-import net.minecraftforge.client.event.TextureStitchEvent;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -98,7 +83,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.*;
 
-public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallback<ItemStack>, ITool, IBulletContainer
+public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletContainer
 {
 	public RevolverItem()
 	{
@@ -114,34 +99,6 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	public static UUID speedModUUID = Utils.generateNewUUID();
 	public static UUID luckModUUID = Utils.generateNewUUID();
-	public static HashMap<String, TextureAtlasSprite> revolverIcons = new HashMap<>();
-	public static TextureAtlasSprite revolverDefaultTexture;
-
-	public static void addRevolverTextures(TextureStitchEvent.Pre evt)
-	{
-		evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver"));
-		for(String key : specialRevolversByTag.keySet())
-			if(!key.isEmpty()&&!specialRevolversByTag.get(key).tag.isEmpty())
-			{
-				int split = key.lastIndexOf("_");
-				if(split < 0)
-					split = key.length();
-				evt.addSprite(new ResourceLocation(ImmersiveEngineering.MODID, "revolvers/revolver_"+key.substring(0, split).toLowerCase(Locale.US)));
-			}
-	}
-
-	public static void retrieveRevolverTextures(TextureAtlas map)
-	{
-		revolverDefaultTexture = map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver"));
-		for(String key : specialRevolversByTag.keySet())
-			if(!key.isEmpty()&&!specialRevolversByTag.get(key).tag.isEmpty())
-			{
-				int split = key.lastIndexOf("_");
-				if(split < 0)
-					split = key.length();
-				revolverIcons.put(key, map.getSprite(new ResourceLocation("immersiveengineering:revolvers/revolver_"+key.substring(0, split).toLowerCase(Locale.US))));
-			}
-	}
 
 	/* ------------- CORE ITEM METHODS ------------- */
 
@@ -661,185 +618,6 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 		return false;
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String group, String material)
-	{
-		String tag = ItemNBTHelper.getString(stack, "elite");
-		if(!tag.isEmpty())
-			return revolverIcons.get(tag);
-		else
-			return revolverDefaultTexture;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public boolean shouldRenderGroup(ItemStack stack, String group)
-	{
-		if(group.equals("frame")||group.equals("cylinder")||group.equals("barrel")||group.equals("cosmetic_compensator"))
-			return true;
-
-		HashSet<String> render = new HashSet<String>();
-		String tag = ItemNBTHelper.getString(stack, "elite");
-		String flavour = ItemNBTHelper.getString(stack, "flavour");
-		if(!tag.isEmpty()&&specialRevolversByTag.containsKey(tag))
-		{
-			SpecialRevolver r = specialRevolversByTag.get(tag);
-			if(r!=null&&r.renderAdditions!=null)
-				Collections.addAll(render, r.renderAdditions);
-		}
-		else if(!flavour.isEmpty()&&specialRevolversByTag.containsKey(flavour))
-		{
-			SpecialRevolver r = specialRevolversByTag.get(flavour);
-			if(r!=null&&r.renderAdditions!=null)
-				Collections.addAll(render, r.renderAdditions);
-		}
-		CompoundTag upgrades = this.getUpgrades(stack);
-		if(upgrades.getInt("bullets") > 0&&!render.contains("dev_mag"))
-			render.add("player_mag");
-		if(upgrades.getDouble("melee") > 0&&!render.contains("dev_bayonet"))
-		{
-			render.add("bayonet_attachment");
-			render.add("player_bayonet");
-		}
-		if(upgrades.getBoolean("electro"))
-		{
-			render.add("player_electro_0");
-			render.add("player_electro_1");
-		}
-		return render.contains(group);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public void handlePerspective(ItemStack stack, TransformType cameraTransformType, PoseStack mat, @Nullable LivingEntity entity)
-	{
-		if(entity instanceof Player&&(cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND))
-		{
-			boolean main = (cameraTransformType==TransformType.FIRST_PERSON_RIGHT_HAND||cameraTransformType==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT);
-			boolean left = cameraTransformType==TransformType.FIRST_PERSON_LEFT_HAND||cameraTransformType==TransformType.THIRD_PERSON_LEFT_HAND;
-			if(getUpgrades(stack).getBoolean("fancyAnimation")&&main)
-			{
-				float f = ((Player)entity).getAttackStrengthScale(ClientUtils.mc().getFrameTime());
-				if(f < 1)
-				{
-					float angle = f*-6.28318f;
-					if(left)
-						angle *= -1;
-					mat.translate(0, 1.5-f, 0);
-					mat.mulPose(new Quaternion(new Vector3f(0, 0, 1), angle, false));
-				}
-			}
-
-			//Re-grab stack because the other one doesn't do reloads properly
-			stack = main?entity.getMainHandItem(): entity.getOffhandItem();
-			if(ItemNBTHelper.hasKey(stack, "reload"))
-			{
-				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
-				if(f > .35&&f < 1.95)
-					if(f < .5)
-					{
-						mat.translate((.35-f)*2, 0, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(f-.35F), false));
-					}
-					else if(f < .6)
-					{
-						mat.translate((f-.5)*6, (.5-f)*1, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
-					}
-					else if(f < 1.7)
-					{
-						mat.translate(0, -.6, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
-					}
-					else if(f < 1.8)
-					{
-						mat.translate((1.8-f)*6, (f-1.8)*1, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
-					}
-					else
-					{
-						mat.translate((f-1.95f)*2, 0, 0);
-						mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), 2.64F*(1.95F-f), false));
-					}
-			}
-			else if(((Player)entity).containerMenu instanceof RevolverContainer)
-			{
-				mat.translate(left?.4: -.4, .4, 0);
-				mat.mulPose(new Quaternion(new Vector3f(0, 0, left?-1: 1), .87266F, false));
-			}
-		}
-	}
-
-	private static final String[][] groups = {{"frame"}, {"cylinder"}};
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
-	{
-		return groups;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private static Transformation matOpen;
-	@OnlyIn(Dist.CLIENT)
-	private static Transformation matClose;
-	@OnlyIn(Dist.CLIENT)
-	private static Transformation matCylinder;
-
-	@Nonnull
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
-													  float partialTicks)
-	{
-		if(matOpen==null)
-			matOpen = new Transformation(new Vector3f(-.625F, .25F, 0), new Quaternion(0, 0, -.87266f, false), null, null);
-		if(matClose==null)
-			matClose = new Transformation(new Vector3f(-.625F, .25F, 0), null, null, null);
-		if(matCylinder==null)
-			matCylinder = new Transformation(new Vector3f(0, .6875F, 0), null, null, null);
-		if(entity instanceof Player&&(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND))
-		{
-			boolean main = (transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_RIGHT_HAND)==(entity.getMainArm()==HumanoidArm.RIGHT);
-			boolean left = transform==TransformType.FIRST_PERSON_LEFT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND;
-			//Re-grab stack because the other one doesn't do reloads properly
-			stack = main?entity.getMainHandItem(): entity.getOffhandItem();
-			if(ItemNBTHelper.hasKey(stack, "reload"))
-			{
-				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
-				if("frame".equals(groups[0]))
-				{
-					if(f < .35||f > 1.95)
-						return matClose;
-					else if(f < .5)
-						return new Transformation(
-								new Vector3f(-.625f, .25f, 0),
-								new Quaternion(0, 0, -2.64F*(f-.35F), false),
-								null, null);
-					else if(f < 1.8)
-						return matOpen;
-					else
-						return new Transformation(
-								new Vector3f(-.625f, .25f, 0),
-								new Quaternion(0, 0, -2.64f*(1.95f-f), false),
-								null, null);
-				}
-				else if(f > 2.5&&f < 2.9)
-				{
-					float angle = (left?-1: 1)*-15.70795f*(f-2.5f);
-					return new Transformation(
-							new Vector3f(0, .6875f, 0),
-							new Quaternion(angle, 0, 0, false),
-							null, null);
-				}
-			}
-			else if("frame".equals(groups[0])&&((Player)entity).containerMenu instanceof RevolverContainer)
-				return matOpen;
-		}
-		return "frame".equals(groups[0])?matClose: matCylinder;
-	}
-
 	@Nullable
 	@Override
 	protected ItemContainerType<?> getContainerType()
@@ -849,7 +627,7 @@ public class RevolverItem extends UpgradeableToolItem implements IOBJModelCallba
 
 	/* ------------- INNER CLASSES ------------- */
 
-	public static final ArrayListMultimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
+	public static final Multimap<String, SpecialRevolver> specialRevolvers = ArrayListMultimap.create();
 	public static final Map<String, SpecialRevolver> specialRevolversByTag = new HashMap<>();
 
 	public static class SpecialRevolver

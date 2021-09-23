@@ -16,7 +16,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 public interface ItemCallback<Key> extends IEOBJCallback<Key>
 {
@@ -40,9 +39,17 @@ public interface ItemCallback<Key> extends IEOBJCallback<Key>
 		return false;
 	}
 
-	Key extractKey(ItemStack stack);
+	Key extractKey(ItemStack stack, LivingEntity owner);
 
-	default void handlePerspective(Key Object, TransformType cameraTransformType, PoseStack mat, @Nullable LivingEntity entity)
+	default void handlePerspective(Key key, LivingEntity holder, TransformType cameraTransformType, PoseStack mat)
 	{
+	}
+
+	static <T> ItemCallback<T> castOrDefault(IEOBJCallback<T> generic)
+	{
+		if(generic instanceof ItemCallback<T> itemCB)
+			return itemCB;
+		else
+			return DefaultCallback.cast();
 	}
 }

@@ -29,7 +29,7 @@ public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
 	public static final DrillCallbacks INSTANCE = new DrillCallbacks();
 
 	@Override
-	public Key extractKey(ItemStack stack)
+	public Key extractKey(ItemStack stack, LivingEntity owner)
 	{
 		CompoundTag upgrades = DrillItem.getUpgradesStatic(stack);
 		ItemStack head = DrillItem.getHeadStatic(stack);

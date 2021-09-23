@@ -16,11 +16,12 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -42,10 +43,10 @@ import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 public class GeneralIEOBJModel<T> implements ICacheKeyProvider<String>
@@ -148,6 +149,13 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<String>
 		return overrides;
 	}
 
+	@Override
+	public boolean doesHandlePerspectives()
+	{
+		// Done in SpecificIEOBJModel
+		return true;
+	}
+
 	public Cache<Triple<T, ShaderCase, String>, List<ShadedQuads>> getGroupCache()
 	{
 		return groupCache;
@@ -181,10 +189,17 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<String>
 	private class Overrides extends ItemOverrides
 	{
 		private final ItemCallback<T> callback;
+		private final LoadingCache<Pair<T, ShaderCase>, SpecificIEOBJModel<T>> modelCache;
 
-		private Overrides(ItemCallback<T> callback)
+		private Overrides(IEOBJCallback<T> callback)
 		{
-			this.callback = callback;
+			this.callback = ItemCallback.castOrDefault(callback);
+			modelCache = CacheBuilder.newBuilder()
+					.maximumSize(100)
+					.expireAfterAccess(60, TimeUnit.SECONDS)
+					.build(CacheLoader.from(p -> new SpecificIEOBJModel<>(
+							GeneralIEOBJModel.this, callback, p.getFirst(), p.getSecond()
+					)));
 		}
 
 		@Nullable
@@ -193,9 +208,8 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<String>
 				@Nonnull BakedModel baseModel, @Nonnull ItemStack stack, @Nullable ClientLevel level, @Nullable LivingEntity holder, int p_173469_
 		)
 		{
-			if(RenderSystem.isOnRenderThread())
-				IEOBJItemRenderer.currentEntity = new WeakReference<>(holder);
-			T key = callback.extractKey(stack);
+			GlobalTempData.setActiveHolder(holder);
+			T key = callback.extractKey(stack, holder);
 			ShaderCase shader = stack.getCapability(CapabilityShader.SHADER_CAPABILITY).resolve()
 					.map(wrapper -> {
 						ItemStack shaderStack = wrapper.getShaderItem();
@@ -205,7 +219,7 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<String>
 							return null;
 					})
 					.orElse(null);
-			return new SpecificIEOBJModel<>(GeneralIEOBJModel.this, callback, key, shader);
+			return modelCache.getUnchecked(Pair.of(key, shader));
 		}
 	}
 }

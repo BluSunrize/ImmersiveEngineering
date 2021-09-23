@@ -33,8 +33,7 @@ import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
-import blusunrize.immersiveengineering.client.models.obj.callback.item.BuzzsawCallbacks;
-import blusunrize.immersiveengineering.client.models.obj.callback.item.DrillCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
@@ -57,7 +56,6 @@ import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
-import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
@@ -115,9 +113,14 @@ public class ClientProxy extends CommonProxy
 {
 	public static void modConstruction()
 	{
+		IEOBJCallbacks.register(rl("default"), DefaultCallback.INSTANCE);
 		IEOBJCallbacks.register(rl("drill"), DrillCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("buzzsaw"), BuzzsawCallbacks.INSTANCE);
-		IEOBJCallbacks.register(rl("default"), DefaultCallback.INSTANCE);
+		IEOBJCallbacks.register(rl("fluorescent_tube"), FluorescentTubeCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("revolver"), RevolverCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("chemthrower"), ChemthrowerCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("railgun"), RailgunCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("shield"), ShieldCallbacks.INSTANCE);
 
 		// Apparently this runs in data generation runs... but registering model loaders causes NPEs there
 		if(Minecraft.getInstance()!=null)
@@ -175,7 +178,7 @@ public class ClientProxy extends CommonProxy
 		if(!event.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		IELogger.info("Stitching Revolver Textures!");
-		RevolverItem.addRevolverTextures(event);
+		RevolverCallbacks.addRevolverTextures(event);
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			for(ShaderCase sCase : entry.getCases())
 				if(sCase.stitchIntoSheet())
@@ -191,7 +194,7 @@ public class ClientProxy extends CommonProxy
 		if(!event.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
-		RevolverItem.retrieveRevolverTextures(event.getMap());
+		RevolverCallbacks.retrieveRevolverTextures(event.getMap());
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
 		{
 			p.sprite = event.getMap().getSprite(p.texture);

@@ -13,14 +13,16 @@ import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
+import blusunrize.immersiveengineering.client.models.obj.callback.ItemCallback;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -29,6 +31,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.obj.MaterialLibrary;
 import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
 import net.minecraftforge.client.model.obj.OBJModel.ModelObject;
@@ -90,7 +93,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	@Override
 	public boolean isCustomRenderer()
 	{
-		IEOBJItemRenderer.currentModel = this;
+		GlobalTempData.setActiveModel(this);
 		return baseModel.isCustomRenderer();
 	}
 
@@ -108,7 +111,24 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		return baseModel.getOverrides();
 	}
 
-	// Based on old IEOBJ code
+	@Override
+	public boolean doesHandlePerspectives()
+	{
+		return true;
+	}
+
+	@Override
+	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack transforms)
+	{
+		Transformation matrix = PerspectiveMapWrapper.getTransforms(baseModel.getOwner().getCombinedTransform())
+				.getOrDefault(cameraTransformType, Transformation.identity());
+
+		matrix.push(transforms);
+		ItemCallback.castOrDefault(callback).handlePerspective(
+				key, GlobalTempData.getActiveHolder(), cameraTransformType, transforms
+		);
+		return this;
+	}
 
 	private List<BakedQuad> buildQuads()
 	{

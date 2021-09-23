@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render;
 
+import blusunrize.immersiveengineering.client.models.obj.GlobalTempData;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
 import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
@@ -34,7 +35,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.IItemRenderProperties;
 
 import javax.annotation.Nonnull;
-import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -56,8 +56,6 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			return INSTANCE.get();
 		}
 	};
-	public static SpecificIEOBJModel<?> currentModel;
-	public static WeakReference<LivingEntity> currentEntity;
 
 	public IEOBJItemRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_)
 	{
@@ -68,7 +66,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 	public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull PoseStack matrixStackIn, @Nonnull MultiBufferSource bufferIn,
 							 int combinedLightIn, int combinedOverlayIn)
 	{
-		renderByItem(stack, transformType, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, currentModel);
+		renderByItem(stack, transformType, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, GlobalTempData.getActiveModel());
 	}
 
 	public <T> void renderByItem(
@@ -89,7 +87,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 		for(String g : model.getGroups().keySet())
 			if(callback.shouldRenderGroup(model.getKey(), g))
 				visible.add(g);
-		LivingEntity entity = currentEntity.get();
+		LivingEntity entity = GlobalTempData.getActiveHolder();
 		for(String[] groups : callback.getSpecialGroups(stack, transformType, entity))
 		{
 			Transformation mat = callback.getTransformForGroups(stack, groups, transformType, entity,

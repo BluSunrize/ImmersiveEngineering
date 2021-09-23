@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback;
 
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 public class DefaultCallback<T> implements ItemCallback<T>//TODO , BlockCallback<Unit>
@@ -16,7 +17,7 @@ public class DefaultCallback<T> implements ItemCallback<T>//TODO , BlockCallback
 	public static final DefaultCallback<?> INSTANCE = new DefaultCallback<>();
 
 	@Override
-	public T extractKey(ItemStack stack)
+	public T extractKey(ItemStack stack, LivingEntity owner)
 	{
 		throw null;
 	}
