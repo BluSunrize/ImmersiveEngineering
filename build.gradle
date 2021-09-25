@@ -69,10 +69,7 @@ loom {
         }
         launches {
             data {
-                arg "--existing", file("src/main/resources").absolutePath,
-                        // TODO why are these necessary?
-                        '--assetsDir', '/media/data/gradle_cache/caches/fabric-loom/assets',
-                        '--assetIndex', '1.16.5-1.16'
+                arg "--existing", file("src/main/resources").absolutePath
             }
         }
     }
