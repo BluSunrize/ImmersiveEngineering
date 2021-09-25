@@ -4,7 +4,7 @@ import net.fabricmc.loom.task.RemapJarTask;
 
 // TODO any missing custom features?
 plugins {
-    id 'dev.architectury.loom' version '0.7.2.9999'
+    id 'dev.architectury.loom' version '0.10.0-SNAPSHOT'
     id 'maven-publish'
     id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
@@ -44,31 +44,37 @@ sourceSets {
 loom {
     silentMojangMappingsLicense()
 
-    mixinConfigs = [
-            //TODO constant, and fix silly cast errors
-            "immersiveengineering.mixins.json"
-    ]
-
-    dataGen {
-        mod project.modid
-    }
-
-    launches {
-        data {
-            arg "--existing", file("src/main/resources").absolutePath,
-                    // TODO why are these necessary?
-                    '--assetsDir', '/media/data/gradle_cache/caches/fabric-loom/assets',
-                    '--assetIndex', '1.16.5-1.16'
-        }
-    }
     runs {
         data {
             source sourceSets.datagen
+            data()
         }
     }
-
-    localMods {
-        addMod(project.modid, sourceSets.main, sourceSets.manual, sourceSets.api, sourceSets.datagen)
+    forge {
+        mixinConfigs = [
+                //TODO constant, and fix silly cast errors
+                "immersiveengineering.mixins.json"
+        ]
+        dataGen {
+            mod project.modid
+        }
+        localMods.clear()
+        localMods {
+            immersiveengineering {
+                add project.sourceSets.main
+                add project.sourceSets.manual
+                add project.sourceSets.api
+                add project.sourceSets.datagen
+            }
+        }
+        launches {
+            data {
+                arg "--existing", file("src/main/resources").absolutePath,
+                        // TODO why are these necessary?
+                        '--assetsDir', '/media/data/gradle_cache/caches/fabric-loom/assets',
+                        '--assetIndex', '1.16.5-1.16'
+            }
+        }
     }
 }
 
