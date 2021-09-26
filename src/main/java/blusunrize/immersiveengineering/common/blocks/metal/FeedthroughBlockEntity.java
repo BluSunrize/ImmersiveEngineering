@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPropertyPassthrough;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
@@ -51,7 +50,7 @@ import java.util.Set;
 import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 
 public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity implements IBlockEntityDrop,
-		IPropertyPassthrough, IBlockBounds, IStateBasedDirectional
+		IBlockBounds, IStateBasedDirectional
 {
 	public static final String WIRE = "wire";
 	private static final String OFFSET = "offset";

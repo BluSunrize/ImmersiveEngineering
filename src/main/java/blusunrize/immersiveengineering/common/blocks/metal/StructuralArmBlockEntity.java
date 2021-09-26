@@ -9,8 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
@@ -18,13 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -36,23 +28,18 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 import net.minecraftforge.common.util.Constants.NBT;
 import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
 
-import static blusunrize.immersiveengineering.client.utils.ModelUtils.putVertexData;
-import static net.minecraft.core.Direction.*;
+import static net.minecraft.core.Direction.DOWN;
+import static net.minecraft.core.Direction.UP;
 
-public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IOBJModelCallback<BlockState>,
-		IStateBasedDirectional, ICollisionBounds, ISelectionBounds, IBlockBounds
+public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, ICollisionBounds,
+		ISelectionBounds, IBlockBounds
 {
 	private int totalLength = 1;
 	private int slopePosition = 0;
@@ -300,131 +287,18 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IOBJM
 			);
 	}
 
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(BlockState object, List<BakedQuad> quads)
+	public int getSlopePosition()
 	{
-		float lowerHeight = slopePosition/(float)totalLength;
-		float upperHeight = (slopePosition+1F)/totalLength;
-		double lowerV = 16*lowerHeight;
-		double upperV = 16*upperHeight;
-		TextureAtlasSprite tas = quads.get(0).getSprite();
-		VertexFormat format = DefaultVertexFormat.BLOCK;
-		quads = new ArrayList<>();
-		Matrix4 mat = new Matrix4(getFacing());
-
-		Vec3[] vertices;
-		{
-			float y03 = onCeiling?1: upperHeight;
-			float y12 = onCeiling?1: lowerHeight;
-			float y47 = onCeiling?1-upperHeight: 0;
-			float y56 = onCeiling?1-lowerHeight: 0;
-			vertices = new Vec3[]{
-					new Vec3(0, y03, 0),//0
-					new Vec3(0, y12, 1),//1
-					new Vec3(1, y12, 1),//2
-					new Vec3(1, y03, 0),//3
-					new Vec3(0, y47, 0),//4
-					new Vec3(0, y56, 1),//5
-					new Vec3(1, y56, 1),//6
-					new Vec3(1, y47, 0),//7
-			};
-		}
-		for(int i = 0; i < vertices.length; i++)
-			vertices[i] = mat.apply(vertices[i]);
-		//TOP
-		addCulledQuad(quads, format, Arrays.copyOf(vertices, 4),
-				UP, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
-		//BOTTOM
-		addCulledQuad(quads, format, getArrayByIndices(vertices, 7, 6, 5, 4),
-				DOWN, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
-		//SIDES
-		addSides(quads, vertices, tas, lowerV, upperV, false);
-		addSides(quads, vertices, tas, lowerV, upperV, true);
-		if(isAtEnd(true))
-			//HIGHER END
-			addCulledQuad(quads, format, getArrayByIndices(vertices, 0, 3, 7, 4),
-					NORTH, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1});
-		return quads;
+		return slopePosition;
 	}
 
-	private static final Matrix4 SHRINK;
-
-	static
+	public int getTotalLength()
 	{
-		SHRINK = new Matrix4();
-		SHRINK.translate(.5, .5, .5);
-		SHRINK.scale(.999, .999, .999);
-		SHRINK.translate(-.5, -.5, -.5);
+		return totalLength;
 	}
 
-	private void addCulledQuad(List<BakedQuad> quads, VertexFormat format, Vec3[] vertices, Direction side,
-							   TextureAtlasSprite tas, double[] uvs, float[] alpha)
+	public boolean isOnCeiling()
 	{
-		side = Utils.rotateFacingTowardsDir(side, this.getFacing());
-		quads.add(ModelUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, false));
-		for(int i = 0; i < vertices.length; i++)
-			vertices[i] = SHRINK.apply(vertices[i]);
-		quads.add(ModelUtils.createBakedQuad(format, vertices, side.getOpposite(), tas, uvs, alpha, true));
-	}
-
-	private void addSides(List<BakedQuad> quads, Vec3[] vertices, TextureAtlasSprite tas, double lowerV,
-						  double upperV, boolean invert)
-	{
-		if(invert)
-		{
-			for(int i = 0; i < vertices.length; i++)
-				vertices[i] = SHRINK.apply(vertices[i]);
-		}
-		quads.add(createSide(DefaultVertexFormat.BLOCK, getArrayByIndices(vertices, 5, 1, 0, 4),
-				WEST, tas, lowerV, upperV, invert));
-		quads.add(createSide(DefaultVertexFormat.BLOCK, getArrayByIndices(vertices, 7, 3, 2, 6),
-				EAST, tas, upperV, lowerV, invert));
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private BakedQuad createSide(VertexFormat format, Vec3[] vertices, Direction facing, TextureAtlasSprite sprite,
-								 double leftV, double rightV, boolean invert)
-	{
-		facing = Utils.rotateFacingTowardsDir(facing, this.getFacing());
-		if(invert)
-		{
-			double tmp = leftV;
-			leftV = rightV;
-			rightV = tmp;
-		}
-		if(invert)
-			facing = facing.getOpposite();
-		float[] colour = {1, 1, 1, 1};
-		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
-		builder.setQuadOrientation(facing);
-		Vec3 faceNormal = Vec3.atLowerCornerOf(facing.getNormal());
-		int vertexId = invert?3: 0;
-		double v = onCeiling?16-leftV: 0;
-		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
-		vertexId = invert?2: 1;
-		v = onCeiling?16: leftV;
-		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
-		vertexId = invert?1: 2;
-		v = onCeiling?16: rightV;
-		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
-		vertexId = invert?0: 3;
-		v = onCeiling?16-rightV: 0;
-		putVertexData(format, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
-		return builder.build();
-	}
-
-	private Vec3[] getArrayByIndices(Vec3[] in, int... indices)
-	{
-		Vec3[] ret = new Vec3[indices.length];
-		for(int i = 0; i < indices.length; i++)
-			ret[i] = in[indices[i]];
-		return ret;
-	}
-
-	@Override
-	public String getCacheKey(BlockState object)
-	{
-		return totalLength+","+slopePosition+","+getFacing().name()+","+(onCeiling?"1": "0");
+		return onCeiling;
 	}
 }

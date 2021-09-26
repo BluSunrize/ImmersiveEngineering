@@ -22,16 +22,15 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
 
-public record IEOBJModel(OBJModel base, boolean dynamic,
-						 IEOBJCallback<?> callback) implements IModelGeometry<IEOBJModel>
+public record IEOBJModel(OBJModel base, boolean dynamic, IEOBJCallback<?> callback)
+		implements IModelGeometry<IEOBJModel>
 {
 
 	@Override
 	public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
 						   ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 	{
-		BakedModel baseBaked = base.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
-		return new GeneralIEOBJModel<>(callback, base, baseBaked, owner, spriteGetter, modelTransform, dynamic);
+		return new GeneralIEOBJModel<>(callback, base, owner, spriteGetter, modelTransform, dynamic);
 	}
 
 	@Override

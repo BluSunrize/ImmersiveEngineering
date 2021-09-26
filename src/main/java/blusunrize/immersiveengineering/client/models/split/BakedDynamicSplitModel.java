@@ -12,8 +12,9 @@ package blusunrize.immersiveengineering.client.models.split;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -27,7 +28,6 @@ import net.minecraftforge.client.model.data.IModelData;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & BakedModel> extends AbstractSplitModel<T>
@@ -37,18 +37,18 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & BakedMod
 		IEApi.renderCacheClearers.add(() -> WEAK_INSTANCES.forEach(m -> m.subModelCache.invalidateAll()));
 	}
 
-	private final Set<Vec3i> parts;
-	private final ModelState transform;
-	private final Cache<K, Map<Vec3i, List<BakedQuad>>> subModelCache = CacheBuilder.newBuilder()
-			.maximumSize(10)
-			.expireAfterAccess(1, TimeUnit.MINUTES)
-			.build();
+	private final LoadingCache<K, Map<Vec3i, List<BakedQuad>>> subModelCache;
 
 	public BakedDynamicSplitModel(T base, Set<Vec3i> parts, ModelState transform, Vec3i size)
 	{
 		super(base, size);
-		this.parts = parts;
-		this.transform = transform;
+		this.subModelCache = CacheBuilder.newBuilder()
+				.maximumSize(10)
+				.expireAfterAccess(1, TimeUnit.MINUTES)
+				.build(CacheLoader.from(key -> {
+					List<BakedQuad> baseQuads = base.getQuads(key);
+					return split(baseQuads, parts, transform);
+				}));
 	}
 
 	@Nonnull
@@ -61,18 +61,6 @@ public class BakedDynamicSplitModel<K, T extends ICacheKeyProvider<K> & BakedMod
 		K key = base.getKey(state, side, rand, extraData);
 		if(key==null)
 			return ImmutableList.of();
-		try
-		{
-			return subModelCache.get(
-					key,
-					() -> {
-						List<BakedQuad> baseQuads = base.getQuads(state, side, rand, extraData);
-						return split(baseQuads, parts, transform);
-					}
-			).getOrDefault(offset, ImmutableList.of());
-		} catch(ExecutionException e)
-		{
-			throw new RuntimeException(e);
-		}
+		return subModelCache.getUnchecked(key).getOrDefault(offset, ImmutableList.of());
 	}
 }

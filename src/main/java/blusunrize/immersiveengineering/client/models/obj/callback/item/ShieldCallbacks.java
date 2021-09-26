@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.item;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -31,7 +32,7 @@ public class ShieldCallbacks implements ItemCallback<ShieldCallbacks.Key>
 	}
 
 	@Override
-	public boolean shouldRenderGroup(Key object, String group)
+	public boolean shouldRenderGroup(Key object, String group, RenderType layer)
 	{
 		if("flash".equals(group))
 			return object.flash();

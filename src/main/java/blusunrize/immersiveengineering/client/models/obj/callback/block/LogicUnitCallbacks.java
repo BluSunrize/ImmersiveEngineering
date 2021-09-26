@@ -23,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.MinecraftForgeClient;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -35,32 +34,38 @@ public class LogicUnitCallbacks implements BlockCallback<LogicUnitCallbacks.Key>
 	@Override
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
-		RenderType renderType = MinecraftForgeClient.getRenderLayer();
 		if(!(blockEntity instanceof LogicUnitBlockEntity logicUnit))
-			return new Key(renderType, IntLists.EMPTY_LIST);
+			return new Key(IntLists.EMPTY_LIST);
 		IntList nonEmptySlots = new IntArrayList();
 		NonNullList<ItemStack> inventory = logicUnit.getInventory();
 		for(int i = 0; i < inventory.size(); i++)
 			if(!inventory.get(i).isEmpty())
 				nonEmptySlots.add(i);
-		return new Key(renderType, nonEmptySlots);
+		return new Key(nonEmptySlots);
 	}
 
-	private static final IEObjState visibilityTransparent = new IEObjState(VisibilityList.show("tubes"));
+	@Override
+	public boolean dependsOnLayer()
+	{
+		return true;
+	}
+
+	@Override
+	public boolean shouldRenderGroup(Key key, String group, RenderType layer)
+	{
+		return (layer==RenderType.translucent())==group.equals("tubes");
+	}
 
 	@Override
 	public IEObjState getIEOBJState(Key key)
 	{
-		if(key.renderType()==RenderType.translucent())
-			return visibilityTransparent;
-		List<String> parts = Lists.newArrayList("base");
+		List<String> parts = Lists.newArrayList("base", "tubes");
 		for(int i : key.presentBoards())
 			parts.add("board_"+i);
 		return new IEObjState(VisibilityList.show(parts));
 	}
 
-	//TODO test rendertype caching
-	public record Key(RenderType renderType, IntList presentBoards)
+	public record Key(IntList presentBoards)
 	{
 	}
 }

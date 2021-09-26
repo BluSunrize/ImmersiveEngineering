@@ -85,7 +85,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 		float partialTicks = mc().getFrameTime();
 		Set<String> visible = new HashSet<>();
 		for(String g : model.getGroups().keySet())
-			if(callback.shouldRenderGroup(model.getKey(), g))
+			if(callback.shouldRenderGroup(model.getKey(), g, null))
 				visible.add(g);
 		LivingEntity entity = GlobalTempData.getActiveHolder();
 		for(String[] groups : callback.getSpecialGroups(stack, transformType, entity))
@@ -108,7 +108,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 		List<ShadedQuads> quadsByLayer = new ArrayList<>();
 		for(String g : groups)
 		{
-			if(visible.contains(g)&&callback.shouldRenderGroup(model.getKey(), g))
+			if(visible.contains(g)&&callback.shouldRenderGroup(model.getKey(), g, null))
 				quadsByLayer.addAll(model.addQuadsForGroup(g, true)
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);

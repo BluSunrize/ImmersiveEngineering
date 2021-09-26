@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
@@ -26,8 +25,6 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -56,7 +53,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.wires.WireType.HV_CATEGORY;
 
 public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity implements IBlockBounds, IAdvancedDirectionalBE,
-		IActiveState, IHammerInteraction, IScrewdriverInteraction, IPlayerInteraction, IRedstoneOutput, IOBJModelCallback<BlockState>, IStateBasedDirectional
+		IActiveState, IHammerInteraction, IScrewdriverInteraction, IPlayerInteraction, IRedstoneOutput, IStateBasedDirectional
 {
 	public static final int LEFT_INDEX = 0;
 	public static final int RIGHT_INDEX = 1;
@@ -281,22 +278,6 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 	public boolean canConnectRedstone(@Nonnull Direction side)
 	{
 		return true;
-	}
-
-	@Override
-	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
-	{
-		return transform.compose(new Transformation(
-				null,
-				new Quaternion(0, 90*rotation, 0, true),
-				null, null
-		));
-	}
-
-	@Override
-	public String getCacheKey(BlockState object)
-	{
-		return rotation+","+getFacing().get3DDataValue();
 	}
 
 	@Override

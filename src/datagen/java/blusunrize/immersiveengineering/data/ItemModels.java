@@ -392,11 +392,6 @@ public class ItemModels extends TRSRItemModelProvider
 				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()));
 	}
 
-	private TRSRModelBuilder ieObj(ItemLike item, ResourceLocation model)
-	{
-		return ieObjBuilder(item, model).end();
-	}
-
 	private TRSRModelBuilder getBuilder(ItemLike item)
 	{
 		return getBuilder(name(item));

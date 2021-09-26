@@ -15,19 +15,21 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.client.models.obj.GeneralIEOBJModel.ModelKey;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BlockCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
+import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -41,6 +43,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
@@ -48,7 +51,6 @@ import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.client.model.obj.OBJModel;
 import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
 import net.minecraftforge.common.util.LazyOptional;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,21 +58,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-public class GeneralIEOBJModel<T> implements ICacheKeyProvider<T>
+public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 {
-	private final Cache<Triple<T, ShaderCase, String>, List<ShadedQuads>> groupCache = CacheBuilder.newBuilder()
+	private final Cache<GroupKey<T>, List<ShadedQuads>> groupCache = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.build();
-	private final LoadingCache<Pair<T, ShaderCase>, SpecificIEOBJModel<T>> modelCache = CacheBuilder.newBuilder()
+	private final LoadingCache<ModelKey<T>, SpecificIEOBJModel<T>> modelCache = CacheBuilder.newBuilder()
 			.maximumSize(100)
-			.build(CacheLoader.from(p -> new SpecificIEOBJModel<>(this, p.getFirst(), p.getSecond())));
+			.build(CacheLoader.from(p -> new SpecificIEOBJModel<>(this, p.callbackKey(), p.shader(), p.renderTypeIfRelevant())));
 	private final IEOBJCallback<T> callback;
-	//TODO copied from old IEOBJ
 	private final OBJModel baseModel;
-	private final BakedModel baseBaked;
+	private final TextureAtlasSprite particles;
 	private final IModelConfiguration owner;
 	private final Function<Material, TextureAtlasSprite> spriteGetter;
 	private final ModelState sprite;
@@ -78,11 +78,11 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<T>
 	private final ItemOverrides overrides;
 	private final ModelProperty<T> keyProperty;
 
-	public GeneralIEOBJModel(IEOBJCallback<T> callback, OBJModel baseModel, BakedModel baseBaked, IModelConfiguration owner, Function<Material, TextureAtlasSprite> spriteGetter, ModelState sprite, boolean isDynamic)
+	public GeneralIEOBJModel(IEOBJCallback<T> callback, OBJModel baseModel, IModelConfiguration owner, Function<Material, TextureAtlasSprite> spriteGetter, ModelState sprite, boolean isDynamic)
 	{
 		this.callback = callback;
 		this.baseModel = baseModel;
-		this.baseBaked = baseBaked;
+		this.particles = spriteGetter.apply(owner.resolveTexture("particle"));
 		this.owner = owner;
 		this.spriteGetter = spriteGetter;
 		this.sprite = sprite;
@@ -103,31 +103,30 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<T>
 		this.keyProperty = IEOBJCallbacks.getModelProperty(callback);
 	}
 
-	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pSide, @Nonnull Random pRand)
+	public List<BakedQuad> getQuads(ModelKey<T> key)
 	{
-		return getQuads(pState, pSide, pRand, EmptyModelData.INSTANCE);
-	}
-
-	@Nonnull
-	@Override
-	public List<BakedQuad> getQuads(
-			@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData
-	)
-	{
-		if(!extraData.hasProperty(keyProperty))
+		if(key==null)
 			return ImmutableList.of();
-		T key = extraData.getData(keyProperty);
-		ShaderCase shader = extraData.getData(CapabilityShader.MODEL_PROPERTY);
-		return modelCache.getUnchecked(Pair.of(key, shader)).getQuads(state, side, rand, extraData);
+		return modelCache.getUnchecked(key).getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
 	}
 
 	@Nullable
 	@Override
-	public T getKey(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+	public ModelKey<T> getKey(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
-		return extraData.getData(keyProperty);
+		if(side!=null)
+			return null;
+		if(!extraData.hasProperty(keyProperty))
+			return null;
+		T key = extraData.getData(keyProperty);
+		RenderType layerToCheck;
+		if(BlockCallback.castOrDefault(callback).dependsOnLayer())
+			layerToCheck = MinecraftForgeClient.getRenderLayer();
+		else
+			layerToCheck = null;
+		ShaderCase shader = extraData.getData(CapabilityShader.MODEL_PROPERTY);
+		return new ModelKey<>(key, shader, layerToCheck);
 	}
 
 	@Nonnull
@@ -187,10 +186,8 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<T>
 	@Override
 	public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data)
 	{
-		//TODO do we actually need baseBaked?
-		return baseBaked.getParticleIcon(data);
+		return particles;
 	}
-
 
 	@Nonnull
 	@Override
@@ -206,7 +203,7 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<T>
 		return true;
 	}
 
-	public Cache<Triple<T, ShaderCase, String>, List<ShadedQuads>> getGroupCache()
+	public Cache<GroupKey<T>, List<ShadedQuads>> getGroupCache()
 	{
 		return groupCache;
 	}
@@ -244,17 +241,10 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<T>
 	private class Overrides extends ItemOverrides
 	{
 		private final ItemCallback<T> callback;
-		private final LoadingCache<Pair<T, ShaderCase>, SpecificIEOBJModel<T>> modelCache;
 
 		private Overrides(IEOBJCallback<T> callback)
 		{
 			this.callback = ItemCallback.castOrDefault(callback);
-			modelCache = CacheBuilder.newBuilder()
-					.maximumSize(100)
-					.expireAfterAccess(60, TimeUnit.SECONDS)
-					.build(CacheLoader.from(p -> new SpecificIEOBJModel<>(
-							GeneralIEOBJModel.this, p.getFirst(), p.getSecond()
-					)));
 		}
 
 		@Nullable
@@ -268,7 +258,19 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<T>
 			ShaderCase shader = stack.getCapability(CapabilityShader.SHADER_CAPABILITY).resolve()
 					.map(ShaderWrapper::getCase)
 					.orElse(null);
-			return modelCache.getUnchecked(Pair.of(key, shader));
+			return modelCache.getUnchecked(new ModelKey<>(key, shader, null));
 		}
+	}
+
+	public record ModelKey<T>(
+			T callbackKey, ShaderCase shader, @Nullable RenderType renderTypeIfRelevant
+	)
+	{
+	}
+
+	public record GroupKey<T>(
+			T callbackKey, ShaderCase shader, @Nullable RenderType renderTypeIfRelevant, String group
+	)
+	{
 	}
 }

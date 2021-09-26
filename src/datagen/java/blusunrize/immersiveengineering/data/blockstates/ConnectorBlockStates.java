@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.data.blockstates;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
@@ -33,7 +34,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 	{
 		createConnector(
 				MetalDevices.FLOODLIGHT,
-				ieObj("block/metal_device/floodlight.obj.ie"),
+				ieObjBuilder("block/metal_device/floodlight.obj.ie").callback(FloodlightCallbacks.INSTANCE).end(),
 				RenderType.translucent(), RenderType.solid()
 		);
 		createConnector(
@@ -61,12 +62,21 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"),
 				RenderType.translucent());
 
-		createConnector(Connectors.CONNECTOR_STRUCTURAL, ieObj("block/connector/connector_structural.obj.ie"),
-				RenderType.solid());
-		createConnector(Connectors.CONNECTOR_REDSTONE, ieObj("block/connector/connector_redstone.obj.ie"),
-				RenderType.solid());
-		createConnector(Connectors.CONNECTOR_PROBE, ieObj("block/connector/connector_probe.obj.ie"),
-				RenderType.cutout(), RenderType.translucent());
+		createConnector(
+				Connectors.CONNECTOR_STRUCTURAL,
+				ieObjBuilder("block/connector/connector_structural.obj.ie").callback(StructuralConnectorCallbacks.INSTANCE).end(),
+				RenderType.solid()
+		);
+		createConnector(
+				Connectors.CONNECTOR_REDSTONE,
+				ieObjBuilder("block/connector/connector_redstone.obj.ie").callback(RSConnectorCallbacks.INSTANCE).end(),
+				RenderType.solid()
+		);
+		createConnector(
+				Connectors.CONNECTOR_PROBE,
+				ieObjBuilder("block/connector/connector_probe.obj.ie").callback(ProbeConnectorCallbacks.INSTANCE).end(),
+				RenderType.cutout(), RenderType.translucent()
+		);
 		createConnector(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj"),
 				RenderType.cutout());
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
@@ -86,13 +96,15 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				.build();
 
 		createConnector(
-				Connectors.REDSTONE_BREAKER, ieObj("block/connector/redstone_breaker.obj.ie"), RenderType.solid()
+				Connectors.REDSTONE_BREAKER,
+				ieObjBuilder("block/connector/redstone_breaker.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end(),
+				RenderType.solid()
 		);
 		buildConnector(Connectors.BREAKER_SWITCH)
 				.binaryModel(
 						IEProperties.ACTIVE,
-						ieObj("block/connector/breaker_switch_off.obj.ie"),
-						ieObj("block/connector/breaker_switch_on.obj.ie"))
+						ieObjBuilder("block/connector/breaker_switch_off.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end(),
+						ieObjBuilder("block/connector/breaker_switch_on.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end())
 				.rotationProperty(IEProperties.FACING_ALL)
 				.layers(RenderType.solid())
 				.build();
@@ -103,8 +115,8 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 
 		ModelFile ctModel = split(obj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
 		createConnector(Connectors.CURRENT_TRANSFORMER, ctModel, RenderType.solid());
-		createConnector(MetalDevices.RAZOR_WIRE, ieObj("block/razor_wire.obj.ie"), RenderType.cutout());
-		createConnector(Cloth.BALLOON, ieObj("block/balloon.obj.ie"), RenderType.translucent());
+		createConnector(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end(), RenderType.cutout());
+		createConnector(Cloth.BALLOON, ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end(), RenderType.translucent());
 	}
 
 	private void transformerModel(String baseName, Supplier<? extends Block> transformer)

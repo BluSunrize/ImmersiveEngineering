@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity.ConnectionStyle;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -334,7 +335,7 @@ public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, Vector4f original)
+	public Vector4f getRenderColor(Key key, String group, ShaderCase shaderCase, Vector4f original)
 	{
 		if(key.color()!=null)
 		{

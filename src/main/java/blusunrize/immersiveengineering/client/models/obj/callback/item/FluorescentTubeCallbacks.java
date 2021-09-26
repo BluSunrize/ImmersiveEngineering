@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
+import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.math.Vector4f;
@@ -50,7 +51,7 @@ public class FluorescentTubeCallbacks implements ItemCallback<FluorescentTubeCal
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key object, String group, Vector4f original)
+	public Vector4f getRenderColor(Key object, String group, ShaderCase shaderCase, Vector4f original)
 	{
 		if("tube".equals(group))
 			return object.color();

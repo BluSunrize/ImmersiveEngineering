@@ -238,11 +238,6 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 				"Model \""+name+"\" does not exist");
 	}
 
-	protected BlockModelBuilder ieObj(String loc)
-	{
-		return ieObjBuilder(loc).end();
-	}
-
 	protected IEOBJBuilder<BlockModelBuilder> ieObjBuilder(String loc)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj.ie"));

@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
@@ -63,7 +64,7 @@ public class BuzzsawCallbacks implements ItemCallback<BuzzsawCallbacks.Key>
 	}
 
 	@Override
-	public boolean shouldRenderGroup(Key key, String group)
+	public boolean shouldRenderGroup(Key key, String group, RenderType layer)
 	{
 		if("body".equals(group))
 			return true;

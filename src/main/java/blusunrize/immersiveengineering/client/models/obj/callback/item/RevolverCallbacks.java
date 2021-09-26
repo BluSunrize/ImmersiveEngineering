@@ -19,6 +19,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -93,7 +94,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 	}
 
 	@Override
-	public boolean shouldRenderGroup(Key stack, String group)
+	public boolean shouldRenderGroup(Key stack, String group, RenderType layer)
 	{
 		if(group.equals("frame")||group.equals("cylinder")||group.equals("barrel")||group.equals("cosmetic_compensator"))
 			return true;

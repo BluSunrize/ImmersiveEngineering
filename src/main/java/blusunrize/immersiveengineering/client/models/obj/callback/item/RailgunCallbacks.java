@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.common.items.RailgunItem;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,7 @@ public class RailgunCallbacks implements ItemCallback<RailgunCallbacks.Key>
 	}
 
 	@Override
-	public boolean shouldRenderGroup(Key stack, String group)
+	public boolean shouldRenderGroup(Key stack, String group, RenderType layer)
 	{
 		if(group.equals("upgrade_scope"))
 			return stack.scope();

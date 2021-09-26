@@ -47,7 +47,7 @@ public class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vect
 	{
 		Vector4f color = originalColor;
 		if(callback!=null)
-			color = callback.getRenderColor(callbackObject, groupName, color);
+			color = callback.getRenderColor(callbackObject, groupName, shaderCase, color);
 		if(shaderCase!=null)
 			color = shaderCase.getRenderColor(groupName, renderPass, color);
 		return color;

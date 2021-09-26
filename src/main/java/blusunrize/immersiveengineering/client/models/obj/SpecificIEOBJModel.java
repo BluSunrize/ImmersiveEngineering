@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.client.models.obj;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.client.models.obj.GeneralIEOBJModel.GroupKey;
 import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
@@ -37,7 +38,6 @@ import net.minecraftforge.client.model.obj.MaterialLibrary;
 import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
 import net.minecraftforge.client.model.obj.OBJModel.ModelObject;
 import org.apache.commons.lang3.tuple.Pair;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -53,10 +53,12 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	@Nullable
 	private final ShaderCase shader;
 	private final IEObjState state;
+	@Nullable
+	private final RenderType layer;
 	private List<BakedQuad> quads;
 
 	public SpecificIEOBJModel(
-			GeneralIEOBJModel<T> baseModel, T key, @Nullable ShaderCase shader
+			GeneralIEOBJModel<T> baseModel, T key, @Nullable ShaderCase shader, @Nullable RenderType layer
 	)
 	{
 		this.baseModel = baseModel;
@@ -64,6 +66,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		this.key = key;
 		this.shader = shader;
 		this.state = callback.getIEOBJState(key);
+		this.layer = layer;
 	}
 
 	@Nonnull
@@ -155,7 +158,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 
 	public List<ShadedQuads> addQuadsForGroup(String groupName, boolean allowCaching)
 	{
-		Triple<T, ShaderCase, String> cacheKey = Triple.of(key, shader, groupName);
+		GroupKey<T> cacheKey = new GroupKey<>(key, shader, layer, groupName);
 		if(allowCaching)
 		{
 			List<ShadedQuads> cached = baseModel.getGroupCache().getIfPresent(cacheKey);
@@ -181,7 +184,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 				this.baseModel.getBaseModel(), shader
 		);
 
-		if(state.visibility().isVisible(groupName)&&callback.shouldRenderGroup(key, groupName))
+		if(state.visibility().isVisible(groupName)&&callback.shouldRenderGroup(key, groupName, layer))
 			for(int pass = 0; pass < numPasses; ++pass)
 				if(shader==null||shader.shouldRenderGroupForPass(groupName, pass))
 				{

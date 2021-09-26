@@ -17,11 +17,8 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.utils.DistField;
-import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
@@ -39,17 +36,13 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
-import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
@@ -65,15 +58,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -89,8 +78,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class ClocheBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
-		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE<ClocheBlockEntity>, IOBJModelCallback<BlockState>,
-		IModelOffsetProvider
+		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE<ClocheBlockEntity>, IModelOffsetProvider
 {
 	public static final int SLOT_SOIL = 0;
 	public static final int SLOT_SEED = 1;
@@ -526,82 +514,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IETickableBl
 		return IEContainerTypes.CLOCHE;
 	}
 
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	@Nullable
-	public TextureAtlasSprite getTextureReplacement(BlockState object, String group, String material)
-	{
-		ClocheBlockEntity master = master();
-		if(master==null)
-			return null;
-		ItemStack soil = master.inventory.get(SLOT_SOIL);
-		if(!soil.isEmpty()&&"farmland".equals(material))
-		{
-			ResourceLocation rl = getSoilTexture(soil);
-			if(rl!=null)
-				return ClientUtils.getSprite(rl);
-		}
-		return null;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean shouldRenderGroup(BlockState object, String group)
-	{
-		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.translucent());
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
-	{
-		return transform;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public String getCacheKey(BlockState object)
-	{
-		ResourceLocation rl = getSoilTexture();
-		if(rl!=null)
-			return rl.toString();
-		else
-			return null;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Nullable
-	private ResourceLocation getSoilTexture()
-	{
-		ClocheBlockEntity master = master();
-		if(master!=null)
-			return getSoilTexture(master.inventory.get(SLOT_SOIL));
-		else
-			return null;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Nullable
-	private static ResourceLocation getSoilTexture(ItemStack soil)
-	{
-		ResourceLocation rl = ClocheRecipe.getSoilTexture(soil);
-		if(rl==null)
-		{
-			try
-			{
-				BlockState state = Utils.getStateFromItemStack(soil);
-				if(state!=null)
-					rl = ModelUtils.getSideTexture(state, Direction.UP);
-			} catch(Exception e)
-			{
-				rl = ModelUtils.getSideTexture(soil, Direction.UP);
-			}
-		}
-		if(rl==null&&!soil.isEmpty()&&Utils.isFluidRelatedItemStack(soil))
-			rl = FluidUtil.getFluidContained(soil).map(fs -> fs.getFluid().getAttributes().getStillTexture(fs)).orElse(rl);
-		return rl;
-	}
 
 	@Nonnull
 	@Override

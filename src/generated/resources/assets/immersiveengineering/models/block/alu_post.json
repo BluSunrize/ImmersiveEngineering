@@ -6,5 +6,6 @@
   },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/wooden_device/wooden_post.obj.ie",
-  "flip-v": true
+  "flip-v": true,
+  "callbacks": "immersiveengineering:post"
 }

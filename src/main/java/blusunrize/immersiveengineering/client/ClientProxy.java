@@ -30,7 +30,6 @@ import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
-import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
 import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
@@ -123,10 +122,21 @@ public class ClientProxy extends CommonProxy
 		IEOBJCallbacks.register(rl("railgun"), RailgunCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("shield"), ShieldCallbacks.INSTANCE);
 
+		IEOBJCallbacks.register(rl("balloon"), BalloonCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("bottling_machine"), BottlingMachineCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("breaker"), BreakerSwitchCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("chute"), ChuteCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("cloche"), ClocheCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("floodlight"), FloodlightCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("lantern"), LanternCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("logic_unit"), LogicUnitCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("pipe"), PipeCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("probe"), ProbeConnectorCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("post"), PostCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("razor_wire"), RazorWireCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("connector_rs"), RSConnectorCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("structural_arm"), StructuralArmCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("structural_connector"), StructuralConnectorCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("turret"), TurretCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("workbench"), WorkbenchCallbacks.INSTANCE);
 
@@ -299,8 +309,6 @@ public class ClientProxy extends CommonProxy
 
 	static
 	{
-		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::invalidateAll);
-		IEApi.renderCacheClearers.add(IESmartObjModel.cachedBakedItemModels::invalidateAll);
 		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::invalidateAll);
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);

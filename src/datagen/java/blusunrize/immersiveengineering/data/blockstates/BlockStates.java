@@ -91,7 +91,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 				.add(new Vec3i(0, 3, 0));
 		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			parts.add(new BlockPos(0, 3, 0).relative(d));
-		ModelFile baseModel = ieObjBuilder(name(b), model).end()
+		ModelFile baseModel = ieObjBuilder(name(b), model)
+				.callback(PostCallbacks.INSTANCE)
+				.end()
 				.texture("texture", texture);
 		BlockModelBuilder builder = splitModel(
 				name(b)+"_split", baseModel, parts.build(), true
@@ -267,7 +269,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 		createWallmount(MetalDecoration.ALU_WALLMOUNT, rl("block/metal_decoration/aluminum_wallmount"));
 		createWallmount(MetalDecoration.STEEL_WALLMOUNT, rl("block/metal_decoration/steel_wallmount"));
 		{
-			ModelFile steelModel = ieObj("block/slope.obj.ie")
+			ModelFile steelModel = ieObjBuilder("block/slope.obj.ie")
+					.callback(StructuralArmCallbacks.INSTANCE)
+					.end()
 					.texture("texture", modLoc("block/metal_decoration/steel_scaffolding"))
 					.texture("particle", modLoc("block/metal_decoration/steel_scaffolding"))
 					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));

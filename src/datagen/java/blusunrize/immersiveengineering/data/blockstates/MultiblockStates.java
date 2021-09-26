@@ -2,6 +2,8 @@ package blusunrize.immersiveengineering.data.blockstates;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.BottlingMachineCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.ClocheCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.WorkbenchCallbacks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.wooden.ModWorkbenchBlockEntity;
@@ -68,7 +70,10 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 
 		createMultiblock(
 				MetalDevices.CLOCHE,
-				splitDynamic(ieObj("block/metal_device/cloche.obj.ie"), COLUMN_THREE)
+				splitDynamic(
+						ieObjBuilder("block/metal_device/cloche.obj.ie").callback(ClocheCallbacks.INSTANCE).end(),
+						COLUMN_THREE
+				)
 		);
 		createMultiblock(
 				MetalDevices.TESLA_COIL,
@@ -148,8 +153,14 @@ public class MultiblockStates extends ExtendedBlockstateProvider
 		createMultiblock(Multiblocks.SILO, split(obj("block/metal_multiblock/silo.obj"), IEMultiblocks.SILO));
 		createMultiblock(Multiblocks.TANK, split(obj("block/metal_multiblock/tank.obj"), IEMultiblocks.SHEETMETAL_TANK));
 		createMultiblock(Multiblocks.BOTTLING_MACHINE,
-				splitDynamic(ieObj("block/metal_multiblock/bottling_machine.obj.ie"), IEMultiblocks.BOTTLING_MACHINE, false),
-				splitDynamic(ieObj("block/metal_multiblock/bottling_machine_mirrored.obj.ie"), IEMultiblocks.BOTTLING_MACHINE, true));
+				splitDynamic(
+						ieObjBuilder("block/metal_multiblock/bottling_machine.obj.ie").callback(BottlingMachineCallbacks.INSTANCE).end(),
+						IEMultiblocks.BOTTLING_MACHINE, false
+				),
+				splitDynamic(
+						ieObjBuilder("block/metal_multiblock/bottling_machine_mirrored.obj.ie").callback(BottlingMachineCallbacks.INSTANCE).end(),
+						IEMultiblocks.BOTTLING_MACHINE, true
+				));
 		createMultiblock(Multiblocks.FERMENTER,
 				split(obj("block/metal_multiblock/fermenter.obj"), IEMultiblocks.FERMENTER),
 				split(obj("block/metal_multiblock/fermenter_mirrored.obj"), IEMultiblocks.FERMENTER, true));

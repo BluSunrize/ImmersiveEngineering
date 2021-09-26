@@ -12,15 +12,11 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -41,7 +37,7 @@ import javax.annotation.Nullable;
 import static blusunrize.immersiveengineering.api.wires.WireType.STRUCTURE_CATEGORY;
 
 public class ConnectorStructuralBlockEntity extends ImmersiveConnectableBlockEntity implements IHammerInteraction,
-		IOBJModelCallback<BlockState>, IBlockBounds, IStateBasedDirectional
+		IBlockBounds, IStateBasedDirectional
 {
 	public float rotation = 0;
 
@@ -99,22 +95,6 @@ public class ConnectorStructuralBlockEntity extends ImmersiveConnectableBlockEnt
 	{
 		//TODO are ropes and cables meant to be mixed?
 		return STRUCTURE_CATEGORY.equals(cableType.getCategory());
-	}
-
-	@Override
-	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
-	{
-		return transform.compose(new Transformation(
-				new Vector3f(0, 0, 0),
-				new Quaternion(0, rotation, 0, true),
-				null, null
-		));
-	}
-
-	@Override
-	public String getCacheKey(BlockState object)
-	{
-		return Float.toString(rotation);
 	}
 
 	@Override

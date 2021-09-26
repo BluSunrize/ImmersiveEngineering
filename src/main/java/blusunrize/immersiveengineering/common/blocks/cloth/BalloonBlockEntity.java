@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.math.Vector4f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -132,37 +131,6 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
 			return shaderCap.cast();
 		return super.getCapability(capability, facing);
-	}
-
-	@Nonnull
-	@Override
-	public String getCacheKey(@Nonnull BlockState object)
-	{
-		if(shader!=null&&!shader.getShaderItem().isEmpty()&&shader.getShaderItem().getItem() instanceof IShaderItem)
-			return ((IShaderItem)shader.getShaderItem().getItem()).getShaderName(shader.getShaderItem()).toString();
-		return colour0+":"+colour1+":"+style;
-	}
-
-	@Override
-	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
-	{
-		if(shader!=null&&!shader.getShaderItem().isEmpty()&&shader.getShaderItem().getItem() instanceof IShaderItem)
-			return original;
-		if(style==0)
-		{
-			if(group.startsWith("balloon1_"))
-				return Utils.vec4fFromDye(colour1);
-			if(group.startsWith("balloon0_"))
-				return Utils.vec4fFromDye(colour0);
-		}
-		else
-		{
-			if(group.endsWith("_1"))
-				return Utils.vec4fFromDye(colour1);
-			if(group.endsWith("_0"))
-				return Utils.vec4fFromDye(colour0);
-		}
-		return original;
 	}
 
 	@Override

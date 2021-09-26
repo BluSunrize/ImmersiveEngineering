@@ -14,8 +14,6 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
-import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
@@ -28,9 +26,6 @@ import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -48,9 +43,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.MinecraftForgeClient;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -61,7 +53,7 @@ import java.util.List;
 
 public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity implements IETickableBlockEntity, IAdvancedDirectionalBE,
 		IHammerInteraction, IScrewdriverInteraction, ISpawnInterdiction, IBlockBounds, IActiveState,
-		IOBJModelCallback<BlockState>, EnergyConnector, IStateBasedDirectional
+		EnergyConnector, IStateBasedDirectional
 {
 	public int energyStorage = 0;
 	private final int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
@@ -475,86 +467,6 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 			f = placer.getXRot() > 0?Direction.DOWN: Direction.UP;
 		facing = f;
 	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public boolean shouldRenderGroup(BlockState object, String group)
-	{
-		if("glass".equals(group))
-			return MinecraftForgeClient.getRenderLayer()==RenderType.translucent();
-		else
-			return MinecraftForgeClient.getRenderLayer()==RenderType.solid();
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
-	{
-		Vector3f transl = new Vector3f(.5f, .5f, .5f);
-
-		double yaw = 0;
-		double pitch = 0;
-		double roll = 0;
-
-		//		pitch, yaw, roll
-		if(getFacing().getAxis()==Axis.Y)
-		{
-			yaw = facing==Direction.SOUTH?180: facing==Direction.WEST?90: facing==Direction.EAST?-90: 0;
-			if(getFacing()==Direction.DOWN)
-				roll = 180;
-		}
-		else //It's a mess, but it works!
-		{
-			if(getFacing()==Direction.NORTH)
-			{
-				pitch = 90;
-				yaw = 180;
-			}
-			if(getFacing()==Direction.SOUTH)
-				pitch = 90;
-			if(getFacing()==Direction.WEST)
-			{
-				pitch = 90;
-				yaw = -90;
-			}
-			if(getFacing()==Direction.EAST)
-			{
-				pitch = 90;
-				yaw = 90;
-			}
-
-			if(facing==Direction.DOWN)
-				roll += 180;
-			else if(getFacing().getAxis()==Axis.X&&facing.getAxis()==Axis.Z)
-				roll += 90*facing.getAxisDirection().getStep()*getFacing().getAxisDirection().getStep();
-			else if(getFacing().getAxis()==Axis.Z&&facing.getAxis()==Axis.X)
-				roll += -90*facing.getAxisDirection().getStep()*getFacing().getAxisDirection().getStep();
-		}
-
-		transl.add(new Vector3f(getFacing().getStepX()*.125f, getFacing().getStepY()*.125f, getFacing().getStepZ()*.125f));
-		if("axis".equals(group)||"light".equals(group)||"off".equals(group)||"glass".equals(group))
-		{
-			if(getFacing().getAxis()==Axis.Y)
-				yaw += rotY;
-			else
-				roll += rotY;
-			if("light".equals(group)||"off".equals(group)||"glass".equals(group))
-				pitch += rotX;
-		}
-		return new Transformation(
-				transl,
-				ClientUtils.degreeToQuaterion(pitch, yaw, roll),
-				null, null
-		).blockCornerToCenter();
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public String getCacheKey(BlockState object)
-	{
-		return getFacing()+":"+facing+":"+rotX+":"+rotY;
-	}
-
 	//computer stuff
 	public boolean canComputerTurn()
 	{
