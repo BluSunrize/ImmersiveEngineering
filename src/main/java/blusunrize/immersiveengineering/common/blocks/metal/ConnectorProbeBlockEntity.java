@@ -62,7 +62,7 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 	public void tickServer()
 	{
 		super.tickServer();
-		if(level.getGameTime()%8==((getBlockPos().getX()^getBlockPos().getZ())&8))
+		if(level.getGameTime()%8==((getBlockPos().getX()^getBlockPos().getZ())&7))
 		{
 			int out = getComparatorSignal();
 			if(out!=lastOutput)
