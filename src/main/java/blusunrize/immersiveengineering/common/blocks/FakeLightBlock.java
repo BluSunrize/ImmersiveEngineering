@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
@@ -32,7 +31,7 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.function.Supplier;
 
-public class FakeLightBlock extends GenericEntityBlock<FakeLightBlockEntity>
+public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.AIR)
 			.noOcclusion()

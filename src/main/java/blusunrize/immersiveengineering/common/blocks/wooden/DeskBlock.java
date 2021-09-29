@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,15 +36,15 @@ import net.minecraftforge.fmllegacy.RegistryObject;
 
 import java.util.function.Supplier;
 
-public class DeskBlock<T extends BlockEntity> extends GenericEntityBlock<T>
+public class DeskBlock<T extends BlockEntity> extends IEEntityBlock<T>
 {
 	private static final CachedShapesWithTransform<Boolean, Direction> SHAPES = CachedShapesWithTransform.createDirectional(
 			b -> {
 				double xMin = b?0: 1/16.;
-				double xMax = xMin + 15 / 16.;
+				double xMax = xMin+15/16.;
 				return ImmutableList.of(
-						new AABB(0, 13 / 16., 0, 1, 1, 1),
-						new AABB(xMin, 0, 1 / 16., xMax, 13 / 16., 15 / 16.)
+						new AABB(0, 13/16., 0, 1, 1, 1),
+						new AABB(xMin, 0, 1/16., xMax, 13/16., 15/16.)
 				);
 			}
 	);

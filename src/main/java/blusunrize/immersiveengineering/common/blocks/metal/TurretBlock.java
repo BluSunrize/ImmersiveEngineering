@@ -10,14 +10,14 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class TurretBlock<T extends TurretBlockEntity<T>> extends GenericEntityBlock<T>
+public class TurretBlock<T extends TurretBlockEntity<T>> extends IEEntityBlock<T>
 {
 	public TurretBlock(MultiblockBEType<T> tileType, Properties props)
 	{

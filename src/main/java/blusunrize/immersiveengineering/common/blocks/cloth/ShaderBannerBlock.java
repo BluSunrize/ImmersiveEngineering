@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
@@ -25,7 +25,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
-public abstract class ShaderBannerBlock extends GenericEntityBlock<ShaderBannerBlockEntity>
+public abstract class ShaderBannerBlock extends IEEntityBlock<ShaderBannerBlockEntity>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.WOOL)
 			.strength(1.0F)

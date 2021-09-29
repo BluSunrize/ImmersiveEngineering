@@ -44,12 +44,11 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.IConveyorBlock
+public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> implements ConveyorHandler.IConveyorBlock
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
@@ -62,7 +61,7 @@ public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.ICon
 
 	public ConveyorBlock(IConveyorType<?> type, Properties props)
 	{
-		super(props);
+		super((pos, state) -> new ConveyorBeltBlockEntity<>(type, pos, state), props);
 		this.type = type;
 		lightOpacity = 0;
 	}
@@ -128,12 +127,6 @@ public class ConveyorBlock extends IEEntityBlock implements ConveyorHandler.ICon
 			return result;
 		else
 			return Blocks.AIR;
-	}
-
-	@Override
-	public BlockEntity newBlockEntity(@Nonnull BlockPos pos, @Nonnull BlockState state)
-	{
-		return new ConveyorBeltBlockEntity<>(type, pos, state);
 	}
 
 	@Override

@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.data.loot;
 
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
@@ -85,7 +85,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 		register(Cloth.SHADER_BANNER, tileDrop());
 		register(Cloth.SHADER_BANNER_WALL, tileDrop());
 		register(Cloth.STRIP_CURTAIN, tileDrop());
-		for(BlockEntry<? extends GenericEntityBlock<? extends CapacitorBlockEntity>> cap : ImmutableList.of(
+		for(BlockEntry<? extends IEEntityBlock<? extends CapacitorBlockEntity>> cap : ImmutableList.of(
 				MetalDevices.CAPACITOR_LV, MetalDevices.CAPACITOR_MV, MetalDevices.CAPACITOR_HV, MetalDevices.CAPACITOR_CREATIVE
 		))
 			register(cap, tileDrop());

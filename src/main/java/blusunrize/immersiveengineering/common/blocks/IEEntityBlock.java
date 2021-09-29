@@ -42,24 +42,40 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.function.BiFunction;
 
-public abstract class IEEntityBlock extends IEBaseBlock implements IColouredBlock, EntityBlock
+public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements IColouredBlock, EntityBlock
 {
 	private boolean hasColours = false;
+	private final BiFunction<BlockPos, BlockState, T> makeEntity;
 
-	public IEEntityBlock(Block.Properties blockProps)
+	public IEEntityBlock(BiFunction<BlockPos, BlockState, T> makeEntity, Properties blockProps)
 	{
 		super(blockProps);
+		this.makeEntity = makeEntity;
+	}
+
+	public IEEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
+	{
+		this((bp, state) -> tileType.get().create(bp, state), blockProps);
 	}
 
 	@Nullable
 	@Override
-	public <T extends BlockEntity>
-	BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type)
+	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState)
+	{
+		return makeEntity.apply(pPos, pState);
+	}
+
+	@Nullable
+	@Override
+	public <T2 extends BlockEntity>
+	BlockEntityTicker<T2> getTicker(Level world, BlockState state, BlockEntityType<T2> type)
 	{
 		//TODO proper implementation
 		BlockEntity tempBE = type.create(BlockPos.ZERO, state);

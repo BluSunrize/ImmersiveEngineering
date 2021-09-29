@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
@@ -17,11 +17,12 @@ import net.minecraft.world.level.material.Material;
 
 public class BarrelBlock
 {
-	public static GenericEntityBlock<? extends WoodenBarrelBlockEntity> make(BlockBehaviour.Properties props, boolean metal) {
-		if (metal)
-			return new GenericEntityBlock<>(IEBlockEntities.METAL_BARREL, props);
+	public static IEEntityBlock<? extends WoodenBarrelBlockEntity> make(BlockBehaviour.Properties props, boolean metal)
+	{
+		if(metal)
+			return new IEEntityBlock<>(IEBlockEntities.METAL_BARREL, props);
 		else
-			return new GenericEntityBlock<>(IEBlockEntities.WOODEN_BARREL, props);
+			return new IEEntityBlock<>(IEBlockEntities.WOODEN_BARREL, props);
 	}
 
 	public static Block.Properties getProperties(boolean metal)
