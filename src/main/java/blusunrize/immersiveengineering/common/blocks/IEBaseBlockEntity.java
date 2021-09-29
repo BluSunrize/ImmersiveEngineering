@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstoneOutput;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
@@ -306,10 +305,8 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 			BlockState state = this.level.getBlockState(this.worldPosition);
 			((BlockEntityAccess)this).setBlockState(state);
 			markChunkDirty();
-			if(this instanceof IComparatorOverride&&!state.isAir())
-			{
+			if(state.hasAnalogOutputSignal())
 				this.level.updateNeighbourForOutputSignal(this.worldPosition, state.getBlock());
-			}
 		}
 	}
 

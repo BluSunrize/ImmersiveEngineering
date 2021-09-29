@@ -88,9 +88,9 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 	@Override
 	public int getStrongRSOutput(@Nonnull Direction side)
 	{
-		if(!isRSOutput()||side!=this.getFacing().getOpposite())
-			return 0;
-		return output;
+		if(side==this.getFacing().getOpposite())
+			return getWeakRSOutput(side);
+		return 0;
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 	@Override
 	public boolean canConnectRedstone(@Nonnull Direction side)
 	{
-		return true;
+		return side!=getFacing().getOpposite();
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 				setChanged();
 				BlockState stateHere = level.getBlockState(worldPosition);
 				markContainingBlockForUpdate(stateHere);
-				markBlockForUpdate(worldPosition.relative(getFacing()), level.getBlockState(worldPosition.relative(getFacing())));
+				level.updateNeighborsAt(worldPosition, stateHere.getBlock());
 			}
 		}
 	}
@@ -141,13 +141,13 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 		BlockPos offset = worldPosition.relative(side);
 		BlockEntity te = SafeChunkUtils.getSafeBE(level, offset);
 		// If it's not a connector, exit early
-		if(!(te instanceof ConnectorRedstoneBlockEntity))
+		if(!(te instanceof ConnectorRedstoneBlockEntity rsConnector))
 			return true;
 		// If it's not the same net, exit early
 		if(!this.getLocalNet(0).getConnectors().contains(offset))
 			return true;
 		// Allow connection if they are different colors
-		return ((ConnectorRedstoneBlockEntity)te).redstoneChannel!=this.redstoneChannel;
+		return rsConnector.redstoneChannel!=this.redstoneChannel;
 	}
 
 	@Override
