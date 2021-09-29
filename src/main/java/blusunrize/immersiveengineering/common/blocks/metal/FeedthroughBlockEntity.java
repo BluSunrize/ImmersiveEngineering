@@ -204,7 +204,7 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 			return Shapes.block();
 		if(aabb==null)
 			aabb = EnergyConnectorBlockEntity.getConnectorBounds(
-					offset > 0?getFacing(): getFacing().getOpposite(), (float)INFOS.get(reference).connLength
+					offset < 0?getFacing(): getFacing().getOpposite(), (float)INFOS.get(reference).connLength
 			);
 		return aabb;
 	}
