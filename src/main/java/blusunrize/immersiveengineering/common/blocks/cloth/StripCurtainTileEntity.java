@@ -69,15 +69,12 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements Tickable
 			if(!isCeilingAttached()&&!entities.isEmpty()&&redstoneSignal==0)
 			{
 				redstoneSignal = 15;
-				setChanged();
-				level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
-				level.updateNeighborsAt(getBlockPos().relative(getFacing()), getBlockState().getBlock());
+				sendRSUpdates();
 			}
 			if(entities.isEmpty()&&redstoneSignal!=0)
 			{
 				redstoneSignal = 0;
-				level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
-				level.updateNeighborsAt(getBlockPos().relative(getFacing()), getBlockState().getBlock());
+				sendRSUpdates();
 			}
 		}
 	}
@@ -87,24 +84,38 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements Tickable
 	{
 		if(isCeilingAttached()&&entity.isAlive()&&redstoneSignal==0)
 		{
-			AABB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
-			aabb = new AABB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).move(getBlockPos());
-			if(entity.getBoundingBox().intersects(aabb))
-			{
-				redstoneSignal = 15;
-				setChanged();
-				world.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
-				world.updateNeighborsAt(getBlockPos().relative(Direction.UP), getBlockState().getBlock());
-			}
+			redstoneSignal = 15;
+			sendRSUpdates();
 		}
+	}
+
+	private void sendRSUpdates()
+	{
+		setChanged();
+		level.updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
+		level.updateNeighborsAt(getBlockPos().relative(getStrongSignalSide()), getBlockState().getBlock());
+	}
+
+	private Direction getStrongSignalSide()
+	{
+		if(isCeilingAttached())
+			return Direction.UP;
+		else
+			return getFacing();
+	}
+
+	private AABB getEntityCollectionBox()
+	{
+		AABB aabb = bounds[isCeilingAttached()?(getFacing().getAxis()==Axis.Z?4: 5): ((getFacing().ordinal()-2)%4)];
+		return new AABB(aabb.minX, aabb.minY-.8125, aabb.minZ, aabb.maxX, aabb.maxY, aabb.maxZ).move(getBlockPos());
 	}
 
 	@Override
 	public int getStrongRSOutput(@Nonnull Direction side)
 	{
-		if(!strongSignal)
+		if(!strongSignal||side!=getStrongSignalSide().getOpposite())
 			return 0;
-		return getWeakRSOutput(getFacing());
+		return getWeakRSOutput(side);
 	}
 
 	@Override
@@ -238,6 +249,7 @@ public class StripCurtainTileEntity extends IEBaseTileEntity implements Tickable
 		{
 			strongSignal = !strongSignal;
 			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
+			sendRSUpdates();
 		}
 		return InteractionResult.SUCCESS;
 	}
