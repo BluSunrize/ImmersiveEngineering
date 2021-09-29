@@ -88,9 +88,9 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public int getStrongRSOutput(@Nonnull Direction side)
 	{
-		if(!isRSOutput()||side!=this.getFacing().getOpposite())
-			return 0;
-		return output;
+		if(side==this.getFacing().getOpposite())
+			return getWeakRSOutput(side);
+		return 0;
 	}
 
 	@Override
@@ -104,7 +104,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 	@Override
 	public boolean canConnectRedstone(@Nonnull Direction side)
 	{
-		return true;
+		return side!=getFacing().getOpposite();
 	}
 
 	@Override
@@ -118,7 +118,7 @@ public class ConnectorRedstoneTileEntity extends ImmersiveConnectableTileEntity 
 				setChanged();
 				BlockState stateHere = level.getBlockState(worldPosition);
 				markContainingBlockForUpdate(stateHere);
-				markBlockForUpdate(worldPosition.relative(getFacing()), level.getBlockState(worldPosition.relative(getFacing())));
+				level.updateNeighborsAt(worldPosition, stateHere.getBlock());
 			}
 		}
 	}

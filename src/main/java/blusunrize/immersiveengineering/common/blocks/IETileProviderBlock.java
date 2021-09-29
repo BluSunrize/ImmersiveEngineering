@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.EmptyBlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
@@ -51,6 +52,7 @@ public class IETileProviderBlock<T extends BlockEntity> extends IEBaseBlock impl
 {
 	private boolean hasColours = false;
 	private final Supplier<BlockEntityType<T>> tileType;
+	private Boolean hasComparatorOutput;
 
 	public IETileProviderBlock(String name, Supplier<BlockEntityType<T>> tileType, Properties blockProps)
 	{
@@ -397,13 +399,14 @@ public class IETileProviderBlock<T extends BlockEntity> extends IEBaseBlock impl
 	@SuppressWarnings("deprecation")
 	public boolean hasAnalogOutputSignal(BlockState state)
 	{
-		return true;
+		if (hasComparatorOutput == null)
+			hasComparatorOutput = tileType.get().getBlockEntity(EmptyBlockGetter.INSTANCE, BlockPos.ZERO) instanceof IEBlockInterfaces.IComparatorOverride;
+		return hasComparatorOutput;
 	}
 
-	// final: If any block wants to override this in the future, make sure to adjust IEBaseTE#markDirty as required
 	@Override
 	@SuppressWarnings("deprecation")
-	public final int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos)
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
 		if(te instanceof IEBlockInterfaces.IComparatorOverride)

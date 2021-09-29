@@ -322,9 +322,8 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 			BlockState state = this.level.getBlockState(this.worldPosition);
 			((TileEntityAccess) this).setBlockState(state);
 			markChunkDirty();
-			if (this instanceof IComparatorOverride && !state.isAir(this.level, this.worldPosition)) {
+			if(state.hasAnalogOutputSignal())
 				this.level.updateNeighbourForOutputSignal(this.worldPosition, state.getBlock());
-			}
 		}
 	}
 
