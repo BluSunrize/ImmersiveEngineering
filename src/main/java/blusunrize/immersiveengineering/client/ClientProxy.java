@@ -55,7 +55,6 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
-import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
@@ -65,7 +64,6 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
 import blusunrize.lib.manual.gui.ManualScreen;
-import com.google.common.base.Preconditions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
@@ -215,11 +213,6 @@ public class ClientProxy extends CommonProxy
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
 		RevolverCallbacks.retrieveRevolverTextures(event.getMap());
-		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
-		{
-			p.sprite = event.getMap().getSprite(p.texture);
-			Preconditions.checkNotNull(p.sprite);
-		}
 		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "block/wire"));
 	}
 
@@ -472,8 +465,6 @@ public class ClientProxy extends CommonProxy
 		DynamicModelLoader.requestTexture(SawbladeRenderer.SAWBLADE);
 		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_FLOW);
 		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_STILL);
-		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
-			DynamicModelLoader.requestTexture(p.texture);
 		DynamicModelLoader.requestTexture(RockcutterItem.texture);
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/wire"));
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));

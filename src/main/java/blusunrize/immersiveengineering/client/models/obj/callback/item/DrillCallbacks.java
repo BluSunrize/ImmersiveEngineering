@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import com.mojang.math.Quaternion;
@@ -19,6 +20,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
@@ -33,7 +35,7 @@ public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
 	{
 		CompoundTag upgrades = DrillItem.getUpgradesStatic(stack);
 		ItemStack head = DrillItem.getHeadStatic(stack);
-		TextureAtlasSprite headTexture;
+		ResourceLocation headTexture;
 		if(head.getItem() instanceof IDrillHead headItem)
 			headTexture = headItem.getDrillTexture(stack, head);
 		else
@@ -53,7 +55,7 @@ public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
 		if(!"head".equals(material))
 			return null;
 		else
-			return key.headTexture();
+			return ClientUtils.getSprite(key.headTexture());
 	}
 
 	@Override
@@ -132,7 +134,7 @@ public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
 		return new Transformation(translation, rotation, null, null);
 	}
 
-	public record Key(TextureAtlasSprite headTexture, int damage, boolean waterproof, boolean oiled)
+	public record Key(ResourceLocation headTexture, int damage, boolean waterproof, boolean oiled)
 	{
 	}
 }

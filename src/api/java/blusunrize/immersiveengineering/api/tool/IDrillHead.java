@@ -9,15 +9,13 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 /**
  * @author BluSunrize - 28.05.2015
@@ -79,8 +77,8 @@ public interface IDrillHead
 	 * Return the texture of the drill head
 	 * Look at IE's default texture for the UV layout
 	 * This IIcon should be stitched in the item sheet
+	 *
+	 * @return
 	 */
-	@OnlyIn(Dist.CLIENT)
-	//TODO only return RL(?)
-	TextureAtlasSprite getDrillTexture(ItemStack drill, ItemStack head);
+	ResourceLocation getDrillTexture(ItemStack drill, ItemStack head);
 }

@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
+import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableList.Builder;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -34,15 +34,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.Tags.Items;
 import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class DrillheadItem extends IEBaseItem implements IDrillHead
 {
@@ -147,10 +143,9 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public TextureAtlasSprite getDrillTexture(ItemStack drill, ItemStack head)
+	public ResourceLocation getDrillTexture(ItemStack drill, ItemStack head)
 	{
-		return perms.sprite;
+		return perms.texture;
 	}
 
 	@Override
@@ -167,8 +162,6 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 
 	public static class DrillHeadPerm
 	{
-		public static final Set<DrillHeadPerm> ALL_PERMS = new HashSet<>();
-
 		final String name;
 		final Tag<Item> repairMaterial;
 		final int drillSize;
@@ -178,8 +171,6 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		final float drillAttack;
 		final int maxDamage;
 		public final ResourceLocation texture;
-		@OnlyIn(Dist.CLIENT)
-		public TextureAtlasSprite sprite;
 
 		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, Tier drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
 		{
@@ -192,8 +183,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 			this.drillAttack = drillAttack;
 			this.maxDamage = maxDamage;
 			this.texture = texture;
-
-			ALL_PERMS.add(this);
+			DynamicModelLoader.requestTexture(texture);
 		}
 	}
 
