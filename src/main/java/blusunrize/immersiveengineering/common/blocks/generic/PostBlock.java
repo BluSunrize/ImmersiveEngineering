@@ -8,14 +8,9 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IModelDataBlock;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -31,7 +26,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -50,15 +44,13 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBlock, IModelOffsetProvider
+public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetProvider
 {
 	public static final IntegerProperty POST_SLAVE = IntegerProperty.create("post_slave", 0, 3);
 	public static final EnumProperty<HorizontalOffset> HORIZONTAL_OFFSET = EnumProperty.create(
@@ -150,14 +142,14 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		return true;
 	}
 
-	private boolean hasArmFor(BlockPos center, Direction side, BlockGetter world)
+	private static boolean hasArmFor(BlockPos center, Direction side, BlockGetter world, Block expected)
 	{
 		final int highest = 3;
 		BlockState centerState = world.getBlockState(center);
-		if(centerState.getBlock()!=this||centerState.getValue(POST_SLAVE)!=highest||centerState.getValue(HORIZONTAL_OFFSET)!=HorizontalOffset.NONE)
+		if(centerState.getBlock()!=expected||centerState.getValue(POST_SLAVE)!=highest||centerState.getValue(HORIZONTAL_OFFSET)!=HorizontalOffset.NONE)
 			return false;
 		BlockState armState = world.getBlockState(center.relative(side));
-		return armState.getBlock()==this&&armState.getValue(POST_SLAVE)==highest
+		return armState.getBlock()==expected&&armState.getValue(POST_SLAVE)==highest
 				&&armState.getValue(HORIZONTAL_OFFSET).getOffset().equals(side.getNormal());
 	}
 
@@ -177,7 +169,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 				return InteractionResult.FAIL;
 			//No Arms if perpendicular arms exist
 			for(Direction forbidden : ImmutableList.of(side.getClockWise(), side.getCounterClockWise()))
-				if(hasArmFor(pos, forbidden, world))
+				if(hasArmFor(pos, forbidden, world, this))
 					return InteractionResult.FAIL;
 
 			BlockState arm_state = this.getStateForPlacement(context).setValue(POST_SLAVE, 3)
@@ -301,9 +293,9 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		}
 	}
 
-	ThreadLocal<Boolean> recursionLock = new ThreadLocal<>();
+	private static final ThreadLocal<Boolean> recursionLock = new ThreadLocal<>();
 
-	public boolean hasConnection(BlockState stateHere, Direction dir, BlockGetter world, BlockPos pos)
+	public static boolean hasConnection(BlockState stateHere, Direction dir, BlockGetter world, BlockPos pos)
 	{
 		if(recursionLock.get()!=null&&recursionLock.get())
 			return true;
@@ -335,7 +327,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		{
 			HorizontalOffset offset = stateHere.getValue(HORIZONTAL_OFFSET);
 			if(offset==HorizontalOffset.NONE)
-				ret = hasArmFor(pos, dir, world);
+				ret = hasArmFor(pos, dir, world, stateHere.getBlock());
 			else
 			{
 				if(world.getBlockState(neighborPos).isAir()||dir.getAxis()!=Axis.Y)
@@ -357,47 +349,13 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		return ret;
 	}
 
-	private boolean shapeReachesBlockFace(VoxelShape shape, Direction face)
+	private static boolean shapeReachesBlockFace(VoxelShape shape, Direction face)
 	{
 		//TODO is 1 and 0 correct? Or is that 1 pixel/0 pixels?
 		if(face.getAxisDirection()==AxisDirection.POSITIVE)
 			return shape.max(face.getAxis())==1;
 		else
 			return shape.min(face.getAxis())==0;
-	}
-
-	@Nonnull
-	@Override
-	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData entityData)
-	{
-		ArrayList<String> visible = new ArrayList<>();
-		visible.add("base");
-		final int height = state.getValue(POST_SLAVE);
-		BlockPos centerPos = pos.subtract(state.getValue(HORIZONTAL_OFFSET).getOffset());
-		BlockState centerState = world.getBlockState(centerPos);
-		if(centerState.getBlock()==this)
-		{
-			// With model splitting it's enough to check the model state for the current layer, since none of the arm
-			// models extend into other layers
-			for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
-				if(hasConnection(centerState, f, world, centerPos))
-				{
-					String name = f.getOpposite().getSerializedName();
-					if(height==3)//Arms
-					{
-						BlockPos armPos = centerPos.relative(f);
-						boolean down = hasConnection(world.getBlockState(armPos), Direction.DOWN, world, armPos);
-						if(down)
-							visible.add("arm_"+name+"_down");
-						else
-							visible.add("arm_"+name+"_up");
-					}
-					else//Simple Connectors
-						visible.add("con_"+(height-1)+"_"+name);
-				}
-		}
-		IEObjState modelState = new IEObjState(VisibilityList.show(visible));
-		return new SinglePropertyModelData<>(modelState, Model.IE_OBJ_STATE);
 	}
 
 	@Override
@@ -421,7 +379,7 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 		return 0;
 	}
 
-	enum HorizontalOffset implements StringRepresentable
+	public enum HorizontalOffset implements StringRepresentable
 	{
 		NONE,
 		NORTH,
@@ -431,38 +389,26 @@ public class PostBlock extends IEBaseBlock implements IModelDataBlock, IPostBloc
 
 		public static HorizontalOffset get(Direction side)
 		{
-			switch(side)
-			{
-				case NORTH:
-					return NORTH;
-				case SOUTH:
-					return SOUTH;
-				case WEST:
-					return WEST;
-				case EAST:
-					return EAST;
-				default:
-					throw new IllegalArgumentException("No horizontal offset for "+side.name());
-			}
+			return switch(side)
+					{
+						case NORTH -> NORTH;
+						case SOUTH -> SOUTH;
+						case WEST -> WEST;
+						case EAST -> EAST;
+						default -> throw new IllegalArgumentException("No horizontal offset for "+side.name());
+					};
 		}
 
-		Vec3i getOffset()
+		public Vec3i getOffset()
 		{
-			switch(this)
-			{
-				case NORTH:
-					return Direction.NORTH.getNormal();
-				case SOUTH:
-					return Direction.SOUTH.getNormal();
-				case EAST:
-					return Direction.EAST.getNormal();
-				case WEST:
-					return Direction.WEST.getNormal();
-				case NONE:
-					return BlockPos.ZERO;
-				default:
-					throw new IllegalStateException();
-			}
+			return switch(this)
+					{
+						case NORTH -> Direction.NORTH.getNormal();
+						case SOUTH -> Direction.SOUTH.getNormal();
+						case EAST -> Direction.EAST.getNormal();
+						case WEST -> Direction.WEST.getNormal();
+						case NONE -> BlockPos.ZERO;
+					};
 		}
 
 		@Override

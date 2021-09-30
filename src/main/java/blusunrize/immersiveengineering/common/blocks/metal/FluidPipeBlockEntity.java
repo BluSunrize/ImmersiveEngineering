@@ -8,15 +8,12 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock.IELadderBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -27,18 +24,11 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.WorldMap;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector4f;
 import it.unimi.dsi.fastutil.HashCommon;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -61,11 +51,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -86,9 +71,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
-public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPipe, IAdvancedHasObjProperty,
-		IOBJModelCallback<BlockState>, IColouredBE, IPlayerInteraction, IHammerInteraction, IPlacementInteraction,
-		ISelectionBounds, ICollisionBounds, IAdditionalDrops
+public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPipe, IColouredBE, IPlayerInteraction,
+		IHammerInteraction, IPlacementInteraction, ISelectionBounds, ICollisionBounds, IAdditionalDrops
 {
 	static WorldMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new WorldMap<>();
 	public static ArrayList<Predicate<Block>> validPipeCovers = new ArrayList<>();
@@ -312,47 +296,6 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
-	public List<BakedQuad> modifyQuads(BlockState object, List<BakedQuad> quads)
-	{
-		if(hasCover())
-		{
-			BlockState state = cover.defaultBlockState();
-			BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
-			RenderType curL = MinecraftForgeClient.getRenderLayer();
-			if(model!=null)
-				for(RenderType layer : new RenderType[]{
-						RenderType.solid(),
-						RenderType.translucent(),
-						RenderType.cutout(),
-						RenderType.cutoutMipped(),
-				})
-				{
-					ForgeHooksClient.setRenderLayer(layer);
-					for(Direction direction : Direction.values())
-						quads.addAll(model.getQuads(state, direction, level.random, EmptyModelData.INSTANCE));
-					quads.addAll(model.getQuads(state, null, level.random, EmptyModelData.INSTANCE));
-				}
-			ForgeHooksClient.setRenderLayer(curL);
-		}
-		return quads;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public String getCacheKey(BlockState object)
-	{
-		return getRenderCacheKey();
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
-	{
-		return transform;
-	}
-
-	@Override
 	public Collection<ItemStack> getExtraDrops(Player player, BlockState state)
 	{
 		if(hasCover())
@@ -566,20 +509,21 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		return availableConnections;
 	}
 
-	public int getConnectionStyle(Direction connection)
+	public ConnectionStyle getConnectionStyle(Direction connection)
 	{
-		int styleConnections = connections|(1<<connection.get3DDataValue());//for previewing connection styles
+		if((connections&(1<<connection.get3DDataValue()))==0)
+			return ConnectionStyle.NO_CONNECTION;
 
-		if(styleConnections!=3&&styleConnections!=12&&styleConnections!=48) //add flange if not a straight pipe
-			return 1;
+		if(connections!=3&&connections!=12&&connections!=48) //add flange if not a straight pipe
+			return ConnectionStyle.FLANGE;
 		BlockEntity con = Utils.getExistingTileEntity(level, getBlockPos().relative(connection));
-		if(con instanceof FluidPipeBlockEntity)
+		if(con instanceof FluidPipeBlockEntity pipe)
 		{
-			int tileConnections = ((FluidPipeBlockEntity)con).connections|(1<<connection.getOpposite().get3DDataValue());
-			if(styleConnections==tileConnections) //if neighbor pipe is also straight and in same direction, don't add flanges
-				return 0;
+			int tileConnections = pipe.connections|(1<<connection.getOpposite().get3DDataValue());
+			if(connections==tileConnections) //if neighbor pipe is also straight and in same direction, don't add flanges
+				return ConnectionStyle.PLAIN;
 		}
-		return 1;
+		return ConnectionStyle.FLANGE;
 	}
 
 	public void toggleSide(Direction side)
@@ -660,7 +604,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 							i==4?0: i==5?0.75: 0.25, i==0?0: i==1?0.75: 0.25, i==2?0: i==3?0.75: 0.25,
 							i==4?0.25: i==5?1: 0.75, i==0?0.25: i==1?1: 0.75, i==2?0.25: i==3?1: 0.75
 					));
-					if(key.connectionStyles.get(d)==1)
+					if(key.connectionStyles.get(d)==ConnectionStyle.FLANGE)
 						list.add(new AABB(
 								i==4?0: i==5?0.875: 0.125, i==0?0: i==1?0.875: 0.125, i==2?0: i==3?0.875: 0.125,
 								i==4?0.125: i==5?1: 0.875, i==0?0.125: i==1?1: 0.875, i==2?0.125: i==3?1: 0.875
@@ -680,7 +624,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		private final byte connections;
 		private final byte availableConnections;
 		private final boolean hasCover;
-		private final Map<Direction, Integer> connectionStyles = new EnumMap<>(Direction.class);
+		private final Map<Direction, ConnectionStyle> connectionStyles = new EnumMap<>(Direction.class);
 
 		private BoundingBoxKey(boolean showToolView, FluidPipeBlockEntity te)
 		{
@@ -711,310 +655,6 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			return Objects.hash(showToolView, connections, availableConnections, hasCover, connectionStyles);
 		}
 
-	}
-
-	public static HashMap<String, IEObjState> cachedOBJStates = new HashMap<>();
-
-	String getRenderCacheKey()
-	{
-		StringBuilder key = new StringBuilder();
-		for(int i = 0; i < 6; i++)
-		{
-			if((connections&(1<<i))!=0)
-				key.append(getConnectionStyle(Direction.from3DDataValue(i))==1?"2": "1");
-			else
-				key.append("0");
-		}
-		if(hasCover())
-			key.append("scaf:").append(ForgeRegistries.BLOCKS.getKey(cover).toString());
-		key.append(color);
-		return key.toString();
-	}
-
-	// Lowest 6 bits are conns, bits 8 to 14 (1&(b>>8)) ore conn style
-	private static short getConnectionsFromKey(String key)
-	{
-		short ret = 0;
-		for(int i = 0; i < 6; i++)
-		{
-			char c = key.charAt(i);
-			switch(c)
-			{
-				case '0':
-					//NOP
-					break;
-				case '2':
-					ret |= (1<<i)|(1<<(i+8));
-					break;
-				case '1':
-					ret |= (1<<i);
-					break;
-			}
-		}
-		return ret;
-	}
-
-	private static int getConnectionStyle(int dir, short conns)
-	{
-		return 1&(conns >> (dir+8));
-	}
-
-	@Override
-	public IEObjState getIEObjState(BlockState state)
-	{
-		String key = getRenderCacheKey();
-		return getStateFromKey(key);
-	}
-
-	public static IEObjState getStateFromKey(String key)
-	{
-		if(!cachedOBJStates.containsKey(key))
-		{
-			ArrayList<String> parts = new ArrayList<>();
-			Matrix4 rotationMatrix = new Matrix4();
-			rotationMatrix.translate(0.5, 0.5, 0.5);
-			short connections = getConnectionsFromKey(key);
-			if(key.contains("scaf:"))
-				parts.add("cover");
-			int totalConnections = Integer.bitCount(connections&255);
-			boolean straightY = (connections&3)==3;
-			boolean straightZ = (connections&12)==12;
-			boolean straightX = (connections&48)==48;
-			switch(totalConnections)
-			{
-				case 0://stub
-					parts.add("center");
-					break;
-				case 1://stopper
-					parts.add("stopper");
-
-					//default: y-
-					if((connections&2)!=0)//y+
-						rotationMatrix.rotate(Math.PI, 0, 0, 1);
-					else if((connections&4)!=0)//z-
-						rotationMatrix.rotate(Math.PI/2, 1, 0, 0);
-					else if((connections&8)!=0)//z+
-						rotationMatrix.rotate(-Math.PI/2, 1, 0, 0);
-					else if((connections&16)!=0)//x-
-						rotationMatrix.rotate(-Math.PI/2, 0, 0, 1);
-					else if((connections&32)!=0)//x+
-						rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-					parts.add("con_yMin");
-					break;
-				case 2://straight or curve
-					if(straightY)
-					{
-						parts.add("pipe_y");
-						if(getConnectionStyle(0, connections)==1)
-							parts.add("con_yMin");
-						if(getConnectionStyle(1, connections)==1)
-							parts.add("con_yMax");
-					}
-					else if(straightZ)
-					{
-						parts.add("pipe_z");
-						if(getConnectionStyle(2, connections)==1)
-							parts.add("con_zMin");
-						if(getConnectionStyle(3, connections)==1)
-							parts.add("con_zMax");
-					}
-					else if(straightX)
-					{
-						parts.add("pipe_x");
-						if(getConnectionStyle(4, connections)==1)
-							parts.add("con_xMin");
-						if(getConnectionStyle(5, connections)==1)
-							parts.add("con_xMax");
-					}
-					else
-					{
-						parts.add("curve");
-						parts.add("con_yMin");
-						parts.add("con_zMin");
-						byte connectTo = (byte)(connections&60);
-						if((connections&3)!=0)//curve to top or bottom
-						{
-							if(connectTo==16)//x-
-								rotationMatrix.rotate(Math.PI/2, 0, 1, 0);
-							else if(connectTo==32)//x+
-								rotationMatrix.rotate(-Math.PI/2, 0, 1, 0);
-							else if(connectTo==8)//z+
-								rotationMatrix.rotate(Math.PI, 0, 1, 0);
-							if((connections&2)!=0)//flip to top
-								rotationMatrix.rotate(Math.PI, 0, 0, 1);
-
-							//default: Curve to z-
-						}
-						else//curve to horizontal
-						{
-							rotationMatrix.rotate(-Math.PI/2, 0, 0, 1);
-							if(connectTo==40)//z+ to x+
-								rotationMatrix.rotate(Math.PI, 1, 0, 0);
-							else if(connectTo==24)//z+ to x-
-								rotationMatrix.rotate(-Math.PI/2, 1, 0, 0);
-							else if(connectTo==36)//z- to x+
-								rotationMatrix.rotate(Math.PI/2, 1, 0, 0);
-							//default: z- to x-
-						}
-					}
-					break;
-				case 3://tcross or tcurve
-					if(straightX||straightZ||straightY)//has straight connect
-					{
-						parts.add("tcross");
-						parts.add("con_yMin");
-						parts.add("con_zMin");
-						parts.add("con_zMax");
-						if(straightX)
-						{
-							rotationMatrix.rotate(Math.PI/2, 0, 1, 0);
-							if((connections&4)!=0)//z-
-								rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-							else if((connections&8)!=0)//z+
-								rotationMatrix.rotate(-Math.PI/2, 0, 0, 1);
-							else if((connections&2)!=0)//y+
-								rotationMatrix.rotate(Math.PI, 0, 0, 1);
-							//default: Curve to y-
-						}
-						else if(straightY)
-						{
-							rotationMatrix.rotate(Math.PI/2, 1, 0, 0);
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(-Math.PI/2, 0, 0, 1);
-							else if((connections&32)!=0)//x+
-								rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-							else if((connections&8)!=0)//z+
-								rotationMatrix.rotate(Math.PI, 0, 0, 1);
-							//default: Curve to z-
-						}
-						else //default:z straight
-						{
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(-Math.PI/2, 0, 0, 1);
-							else if((connections&32)!=0)//x+
-								rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-							else if((connections&2)!=0)//y+
-								rotationMatrix.rotate(Math.PI, 0, 0, 1);
-							//default: Curve to y-
-						}
-					}
-					else //tcurve
-					{
-						parts.add("tcurve");
-						parts.add("con_yMin");
-						parts.add("con_zMin");
-						parts.add("con_xMax");
-						//default y-, z-, x+
-						if((connections&8)!=0)//z+
-						{
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI, 0, 1, 0);
-							else
-								rotationMatrix.rotate(-Math.PI/2, 0, 1, 0);
-						}
-						else//z-
-						{
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI/2, 0, 1, 0);
-						}
-						if((connections&2)!=0)//y+
-							rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-					}
-					break;
-				case 4://cross or complex tcross
-					boolean cross = (straightX&&straightZ)||(straightX&&straightY)||(straightZ&&straightY);
-					if(cross)
-					{
-						parts.add("cross");
-						parts.add("con_yMin");
-						parts.add("con_yMax");
-						parts.add("con_zMin");
-						parts.add("con_zMax");
-						if(!straightY)//x and z
-							rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-						else if(straightX)//x and y
-							rotationMatrix.rotate(Math.PI/2, 0, 1, 0);
-					}
-					else
-					{
-						parts.add("tcross2");
-						parts.add("con_yMin");
-						parts.add("con_zMin");
-						parts.add("con_zMax");
-						parts.add("con_xMax");
-						if(straightZ)
-						{
-							//default y- z+- x+
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI, 0, 1, 0);
-							if((connections&2)!=0)//y+
-								rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-						}
-						else if(straightY)
-						{
-							rotationMatrix.rotate(Math.PI/2, 1, 0, 0);
-							//default y+- z- x+
-							if((connections&8)!=0)//z+
-							{
-								rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-								if((connections&16)!=0)//x-
-									rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-							}
-							else if((connections&16)!=0)//x-
-								rotationMatrix.rotate(-Math.PI/2, 0, 0, 1);
-						}
-						else
-						{
-							rotationMatrix.rotate(Math.PI/2, 0, 1, 0);
-							//default y- z- x+-
-							if((connections&8)!=0)//z+
-								rotationMatrix.rotate(Math.PI, 0, 1, 0);
-							if((connections&2)!=0)//y+
-								rotationMatrix.rotate(Math.PI/2, 0, 0, 1);
-						}
-					}
-					break;
-				case 5://complete tcross
-					parts.add("tcross3");
-					parts.add("con_yMin");
-					parts.add("con_yMax");
-					parts.add("con_zMin");
-					parts.add("con_zMax");
-					parts.add("con_xMax");
-					//default y+- z+- x+
-					if(straightZ)
-					{
-						if(straightY)
-						{
-							if((connections&16)!=0)//x-
-								rotationMatrix.rotate(Math.PI, 0, 1, 0);
-						}
-						else if(straightX)
-							rotationMatrix.rotate(((connections&2)!=0)?(Math.PI/2): (-Math.PI/2), 0, 0, 1);
-					}
-					else if(straightX)
-					{
-						rotationMatrix.rotate(Math.PI/2, 0, 1, 0);
-						if((connections&8)!=0)//z+
-							rotationMatrix.rotate(Math.PI, 0, 1, 0);
-					}
-					break;
-				case 6://Full Crossing
-					parts.add("con_yMin");
-					parts.add("con_yMax");
-					parts.add("con_zMin");
-					parts.add("con_zMax");
-					parts.add("con_xMin");
-					parts.add("con_xMax");
-
-					break;
-			}
-			rotationMatrix.translate(-0.5, -0.5, -0.5);
-
-			cachedOBJStates.put(key, new IEObjState(VisibilityList.show(parts),
-					new Transformation(rotationMatrix.toMatrix4f())));
-		}
-		return cachedOBJStates.get(key);
 	}
 
 	@Override
@@ -1132,21 +772,23 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		return side!=null&&sideConfig.getBoolean(side);
 	}
 
-	@Override
-	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
-	{
-		if(color!=null)
-		{
-			float[] rgb = color.getTextureDiffuseColors();
-			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
-		}
-		return original;
-	}
-
 	@SubscribeEvent
 	public static void onWorldUnload(WorldEvent.Unload ev)
 	{
-		if(!ev.getWorld().isClientSide()&&ev.getWorld() instanceof Level)
-			indirectConnections.clearDimension((Level)ev.getWorld());
+		if(!ev.getWorld().isClientSide()&&ev.getWorld() instanceof Level level)
+			indirectConnections.clearDimension(level);
+	}
+
+	@Nullable
+	public DyeColor getColor()
+	{
+		return color;
+	}
+
+	public enum ConnectionStyle
+	{
+		NO_CONNECTION,
+		PLAIN,
+		FLANGE
 	}
 }

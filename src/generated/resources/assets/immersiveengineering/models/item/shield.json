@@ -2,6 +2,7 @@
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/shield.obj.ie",
   "flip-v": true,
+  "callbacks": "immersiveengineering:shield",
   "transform": {
     "thirdperson_righthand": {
       "translation": [

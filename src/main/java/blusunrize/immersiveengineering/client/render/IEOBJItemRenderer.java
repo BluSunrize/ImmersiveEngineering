@@ -8,13 +8,12 @@
 
 package blusunrize.immersiveengineering.client.render;
 
-import blusunrize.immersiveengineering.api.shader.CapabilityShader;
-import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
-import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
-import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel.ShadedQuads;
-import blusunrize.immersiveengineering.client.models.obj.OBJHelper;
+import blusunrize.immersiveengineering.client.models.obj.GlobalTempData;
+import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel;
+import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
+import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -29,15 +28,13 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.client.IItemRenderProperties;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
+import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -66,63 +63,53 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 	}
 
 	@Override
-	public void renderByItem(ItemStack stack, TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn,
+	public void renderByItem(@Nonnull ItemStack stack, @Nonnull TransformType transformType, @Nonnull PoseStack matrixStackIn, @Nonnull MultiBufferSource bufferIn,
 							 int combinedLightIn, int combinedOverlayIn)
 	{
-		float partialTicks = mc().getFrameTime();
-		if(stack.getItem() instanceof IOBJModelCallback)
-		{
-			IOBJModelCallback<ItemStack> callback = (IOBJModelCallback<ItemStack>)stack.getItem();
-			Level w = IESmartObjModel.tempEntityStatic!=null?IESmartObjModel.tempEntityStatic.level: null;
-			BakedModel model = mc().getItemRenderer().getModel(stack, w, IESmartObjModel.tempEntityStatic, 0);
-			if(model instanceof IESmartObjModel)
-			{
-
-				ItemStack shader;
-				ShaderCase sCase;
-				{
-					Pair<ItemStack, ShaderCase> tmp = stack.getCapability(CapabilityShader.SHADER_CAPABILITY)
-							.map(wrapper ->
-							{
-								ItemStack shaderInner = wrapper.getShaderItem();
-								ShaderCase sCaseInner = null;
-								if(!shaderInner.isEmpty()&&shaderInner.getItem() instanceof IShaderItem)
-									sCaseInner = ((IShaderItem)shaderInner.getItem()).getShaderCase(shaderInner, stack, wrapper.getShaderType());
-								return new ImmutablePair<>(shaderInner, sCaseInner);
-							})
-							.orElse(new ImmutablePair<>(ItemStack.EMPTY, null));
-					shader = tmp.getLeft();
-					sCase = tmp.getRight();
-				}
-				IESmartObjModel obj = (IESmartObjModel)model;
-				Set<String> visible = new HashSet<>();
-				for(String g : OBJHelper.getGroups(obj.baseModel).keySet())
-					if(callback.shouldRenderGroup(stack, g))
-						visible.add(g);
-				for(String[] groups : callback.getSpecialGroups(stack, transformType, IESmartObjModel.tempEntityStatic))
-				{
-					Transformation mat = callback.getTransformForGroups(stack, groups, transformType, mc().player,
-							partialTicks);
-					mat.push(matrixStackIn);
-					renderQuadsForGroups(groups, callback, obj, stack, sCase, matrixStackIn, bufferIn, visible,
-							combinedLightIn, combinedOverlayIn);
-					matrixStackIn.popPose();
-				}
-				renderQuadsForGroups(visible.toArray(new String[0]), callback, obj, stack,
-						sCase, matrixStackIn, bufferIn, visible, combinedLightIn, combinedOverlayIn);
-			}
-		}
+		renderByItem(stack, transformType, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn, GlobalTempData.getActiveModel());
 	}
 
-	private void renderQuadsForGroups(String[] groups, IOBJModelCallback<ItemStack> callback, IESmartObjModel model,
-									  ItemStack stack, ShaderCase sCase, PoseStack matrix, MultiBufferSource buffer,
-									  Set<String> visible, int light, int overlay)
+	public <T> void renderByItem(
+			ItemStack stack, TransformType transformType, PoseStack matrixStackIn, MultiBufferSource bufferIn,
+			int combinedLightIn, int combinedOverlayIn, SpecificIEOBJModel<T> model
+	)
+	{
+		ItemCallback<T> callback;
+		{
+			IEOBJCallback<T> baseCallback = model.getCallback();
+			if(baseCallback instanceof ItemCallback<T> itemCB)
+				callback = itemCB;
+			else
+				callback = DefaultCallback.cast();
+		}
+		float partialTicks = mc().getFrameTime();
+		Set<String> visible = new HashSet<>();
+		for(String g : model.getGroups().keySet())
+			if(callback.shouldRenderGroup(model.getKey(), g, null))
+				visible.add(g);
+		LivingEntity entity = GlobalTempData.getActiveHolder();
+		for(String[] groups : callback.getSpecialGroups(stack, transformType, entity))
+		{
+			Transformation mat = callback.getTransformForGroups(stack, groups, transformType, entity,
+					partialTicks);
+			mat.push(matrixStackIn);
+			renderQuadsForGroups(groups, model, callback, stack, matrixStackIn, bufferIn, visible,
+					combinedLightIn, combinedOverlayIn);
+			matrixStackIn.popPose();
+		}
+		renderQuadsForGroups(visible.toArray(new String[0]), model, callback, stack, matrixStackIn,
+				bufferIn, visible, combinedLightIn, combinedOverlayIn);
+	}
+
+	private <T> void renderQuadsForGroups(String[] groups, SpecificIEOBJModel<T> model, ItemCallback<T> callback,
+										  ItemStack stack, PoseStack matrix, MultiBufferSource buffer,
+										  Set<String> visible, int light, int overlay)
 	{
 		List<ShadedQuads> quadsByLayer = new ArrayList<>();
 		for(String g : groups)
 		{
-			if(visible.contains(g)&&callback.shouldRenderGroup(stack, g))
-				quadsByLayer.addAll(model.addQuadsForGroup(callback, stack, g, sCase, true)
+			if(visible.contains(g)&&callback.shouldRenderGroup(model.getKey(), g, null))
+				quadsByLayer.addAll(model.addQuadsForGroup(g, true)
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
 			visible.remove(g);
 		}
@@ -134,17 +121,15 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			ResourceLocation atlas = InventoryMenu.BLOCK_ATLAS;
 			if(bright)
 				baseType = IERenderTypes.getFullbrightTranslucent(atlas);
-			else if(quadsForLayer.layer.isTranslucent())
+			else if(quadsForLayer.layer().isTranslucent())
 				baseType = RenderType.entityTranslucent(atlas);
 			else
 				baseType = RenderType.entityCutout(atlas);
-			RenderType actualType = quadsForLayer.layer.getRenderType(baseType);
+			RenderType actualType = quadsForLayer.layer().getRenderType(baseType);
 			VertexConsumer builder = buffer.getBuffer(actualType);
-			Vector4f color = quadsForLayer.layer.getColor();
-			for(BakedQuad quad : quadsForLayer.quadsInLayer)
-				builder.putBulkData(
-						matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay
-				);
+			Vector4f color = quadsForLayer.layer().getColor();
+			for(BakedQuad quad : quadsForLayer.quadsInLayer())
+				builder.putBulkData(matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay);
 			matrix.scale(1.01F, 1.01F, 1.01F);
 		}
 		matrix.popPose();

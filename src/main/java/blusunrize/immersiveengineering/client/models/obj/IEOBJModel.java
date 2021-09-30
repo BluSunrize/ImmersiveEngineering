@@ -8,8 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import com.google.common.collect.ImmutableMap;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -23,26 +22,15 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
 
-public class IEOBJModel implements IModelGeometry<IEOBJModel>
+public record IEOBJModel(OBJModel base, boolean dynamic, IEOBJCallback<?> callback)
+		implements IModelGeometry<IEOBJModel>
 {
-	private final boolean dynamic;
-	private final OBJModel base;
-	private final IEObjState state;
-
-	public IEOBJModel(OBJModel base, boolean dynamic, IEObjState state)
-	{
-		this.dynamic = dynamic;
-		this.base = base;
-		this.state = state;
-	}
 
 	@Override
 	public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-							ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+						   ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 	{
-		BakedModel baseBaked = base.bake(owner, bakery, spriteGetter, modelTransform, overrides, modelLocation);
-		return new IESmartObjModel(base, baseBaked, owner, bakery, spriteGetter, modelTransform, state, dynamic,
-				ImmutableMap.of());
+		return new GeneralIEOBJModel<>(callback, base, owner, spriteGetter, modelTransform, dynamic);
 	}
 
 	@Override

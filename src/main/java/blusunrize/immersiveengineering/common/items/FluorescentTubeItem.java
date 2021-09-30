@@ -13,14 +13,10 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.math.Vector4f;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -37,8 +33,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 
 import javax.annotation.Nonnull;
@@ -48,8 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool, IElectricEquipment,
-		IOBJModelCallback<ItemStack>
+public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool, IElectricEquipment
 {
 
 	public FluorescentTubeItem()
@@ -191,7 +184,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	}
 
 	private static final String LIT_TIME = "litTime";
-	private static final String LIT_STRENGTH = "litStrength";
+	public static final String LIT_STRENGTH = "litStrength";
 
 	public static boolean isLit(ItemStack stack)
 	{
@@ -233,36 +226,5 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	public boolean shouldCauseReequipAnimation(ItemStack oldStack, @Nonnull ItemStack newStack, boolean slotChanged)
 	{
 		return !ItemStack.isSame(oldStack, newStack)||!Arrays.equals(getRGB(oldStack), getRGB(newStack));
-	}
-
-	private static final String[][] special = {{"tube"}};
-
-	@Override
-	public String[][] getSpecialGroups(ItemStack stack, ItemTransforms.TransformType transform, LivingEntity entity)
-	{
-		if(isLit(stack))
-			return special;
-		return IOBJModelCallback.EMPTY_STRING_A;
-	}
-
-	@Override
-	public boolean areGroupsFullbright(ItemStack stack, String[] groups)
-	{
-		return groups.length==1&&"tube".equals(groups[0])&&isLit(stack);
-	}
-
-	@Override
-	public Vector4f getRenderColor(ItemStack object, String group, Vector4f original)
-	{
-		if("tube".equals(group))
-		{
-			boolean lit = isLit(object);
-			float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F: 0);
-			float mult = min+(lit?Utils.RAND.nextFloat()*Mth.clamp(1-min, 0, .1F): 0);
-			float[] colors = getRGBFloat(object, mult);
-			return new Vector4f(colors[0], colors[1], colors[2], colors[3]);
-		}
-		else
-			return new Vector4f(.067f, .067f, .067f, 1);
 	}
 }

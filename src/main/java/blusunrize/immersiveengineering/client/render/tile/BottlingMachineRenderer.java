@@ -8,11 +8,10 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
@@ -192,7 +191,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 	public static void renderModelPart(PoseStack matrixStack, VertexConsumer builder, Direction facing,
 									   int combinedLightIn, int combinedOverlayIn, String... parts)
 	{
-		IModelData data = new SinglePropertyModelData<>(new IEObjState(VisibilityList.show(parts)), Model.IE_OBJ_STATE);
+		IModelData data = new SinglePropertyModelData<>(VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty());
 		matrixStack.pushPose();
 		matrixStack.translate(-.5, -.5, -.5);
 		List<BakedQuad> quads = DYNAMIC.getNullQuads(data);

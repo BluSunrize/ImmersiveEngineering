@@ -30,7 +30,11 @@ import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
-import blusunrize.immersiveengineering.client.models.obj.IESmartObjModel;
+import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
@@ -43,7 +47,6 @@ import blusunrize.immersiveengineering.common.CommonProxy;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorRedstoneBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyor;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConveyor;
@@ -53,7 +56,6 @@ import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.items.DrillheadItem.DrillHeadPerm;
-import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
@@ -103,6 +105,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
+import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 @Mod.EventBusSubscriber(value = Dist.CLIENT, modid = MODID, bus = Bus.MOD)
@@ -110,6 +113,35 @@ public class ClientProxy extends CommonProxy
 {
 	public static void modConstruction()
 	{
+		IEOBJCallbacks.register(rl("default"), DefaultCallback.INSTANCE);
+		IEOBJCallbacks.register(rl("drill"), DrillCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("buzzsaw"), BuzzsawCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("fluorescent_tube"), FluorescentTubeCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("revolver"), RevolverCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("chemthrower"), ChemthrowerCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("railgun"), RailgunCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("shield"), ShieldCallbacks.INSTANCE);
+
+		IEOBJCallbacks.register(rl("balloon"), BalloonCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("bottling_machine"), BottlingMachineCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("breaker"), BreakerSwitchCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("chute"), ChuteCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("cloche"), ClocheCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("floodlight"), FloodlightCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("lantern"), LanternCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("logic_unit"), LogicUnitCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("pipe"), PipeCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("probe"), ProbeConnectorCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("post"), PostCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("razor_wire"), RazorWireCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("connector_rs"), RSConnectorCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("structural_arm"), StructuralArmCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("structural_connector"), StructuralConnectorCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("turret"), TurretCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("workbench"), WorkbenchCallbacks.INSTANCE);
+
+		IEOBJCallbacks.register(rl("submodel"), DynamicSubmodelCallbacks.INSTANCE);
+
 		// Apparently this runs in data generation runs... but registering model loaders causes NPEs there
 		if(Minecraft.getInstance()!=null)
 		{
@@ -166,7 +198,7 @@ public class ClientProxy extends CommonProxy
 		if(!event.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		IELogger.info("Stitching Revolver Textures!");
-		RevolverItem.addRevolverTextures(event);
+		RevolverCallbacks.addRevolverTextures(event);
 		for(ShaderRegistry.ShaderRegistryEntry entry : ShaderRegistry.shaderRegistry.values())
 			for(ShaderCase sCase : entry.getCases())
 				if(sCase.stitchIntoSheet())
@@ -182,7 +214,7 @@ public class ClientProxy extends CommonProxy
 		if(!event.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
-		RevolverItem.retrieveRevolverTextures(event.getMap());
+		RevolverCallbacks.retrieveRevolverTextures(event.getMap());
 		for(DrillHeadPerm p : DrillHeadPerm.ALL_PERMS)
 		{
 			p.sprite = event.getMap().getSprite(p.texture);
@@ -277,11 +309,8 @@ public class ClientProxy extends CommonProxy
 
 	static
 	{
-		IEApi.renderCacheClearers.add(IESmartObjModel.modelCache::invalidateAll);
-		IEApi.renderCacheClearers.add(IESmartObjModel.cachedBakedItemModels::invalidateAll);
 		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::invalidateAll);
-		IEApi.renderCacheClearers.add(FluidPipeBlockEntity.cachedOBJStates::clear);
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
@@ -480,6 +509,7 @@ public class ClientProxy extends CommonProxy
 		WindmillRenderer.MODEL = new DynamicModel(WindmillRenderer.NAME);
 		RedstoneConveyorRender.MODEL_PANEL = new DynamicModel(RedstoneConveyorRender.MODEL_NAME);
 		SawbladeRenderer.MODEL = new DynamicModel(SawbladeRenderer.NAME);
+		TurretRenderer.fillModels();
 		BasicClientProperties.initModels();
 	}
 

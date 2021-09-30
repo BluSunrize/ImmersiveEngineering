@@ -67,7 +67,7 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 		{
 			shader = shadedCarts.get(entity.getId());
 			if(shader!=null&&!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
-				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, null, new ResourceLocation(ImmersiveEngineering.MODID, "minecart"));
+				sCase = ((IShaderItem)shader.getItem()).getShaderCase(shader, new ResourceLocation(ImmersiveEngineering.MODID, "minecart"));
 		}
 		baseRenderer.render(entity, entityYaw, partialTicks, matrixStackIn, bufferIn, packedLightIn);
 		if(sCase!=null)

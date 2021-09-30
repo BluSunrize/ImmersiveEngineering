@@ -34,8 +34,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.AbstractFurnaceBlockEntity;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
@@ -300,7 +298,7 @@ public abstract class IESlot extends Slot
 			if(itemStack.isEmpty()||!(itemStack.getItem() instanceof IShaderItem)||tool.isEmpty())
 				return false;
 			return tool.getCapability(CapabilityShader.SHADER_CAPABILITY).map(
-					wrapper -> ((IShaderItem)itemStack.getItem()).getShaderCase(itemStack, tool, wrapper.getShaderType())!=null
+					wrapper -> ((IShaderItem)itemStack.getItem()).getShaderCase(itemStack, wrapper.getShaderType())!=null
 			).orElse(false);
 		}
 

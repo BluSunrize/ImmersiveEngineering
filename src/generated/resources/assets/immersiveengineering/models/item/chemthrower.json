@@ -2,6 +2,7 @@
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/chemthrower.obj.ie",
   "flip-v": true,
+  "callbacks": "immersiveengineering:chemthrower",
   "transform": {
     "thirdperson_righthand": {
       "translation": [

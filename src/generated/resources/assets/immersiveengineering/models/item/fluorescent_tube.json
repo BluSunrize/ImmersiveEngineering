@@ -2,6 +2,7 @@
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/fluorescent_tube.obj.ie",
   "flip-v": true,
+  "callbacks": "immersiveengineering:fluorescent_tube",
   "transform": {
     "thirdperson_righthand": {
       "translation": [

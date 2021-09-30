@@ -9,7 +9,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -57,8 +56,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class DieselToolItem extends UpgradeableToolItem
-		implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool
+public abstract class DieselToolItem extends UpgradeableToolItem implements IAdvancedFluidItem, ITool
 {
 	protected static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
 
@@ -280,7 +278,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem
 		}
 	}
 
-	protected boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
+	public boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
 	{
 		return entity!=null&&canToolBeUsed(stack)&&
 				(entity.getItemInHand(InteractionHand.MAIN_HAND)==stack||entity.getItemInHand(InteractionHand.OFF_HAND)==stack)&&

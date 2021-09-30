@@ -3,6 +3,7 @@
   "model": "immersiveengineering:models/item/drill/drill_diesel.obj.ie",
   "flip-v": true,
   "dynamic": true,
+  "callbacks": "immersiveengineering:drill",
   "transform": {
     "thirdperson_righthand": {
       "translation": [

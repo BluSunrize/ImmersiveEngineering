@@ -119,7 +119,7 @@ public class ShaderBannerRenderer extends IEBlockEntityRenderer<ShaderBannerBloc
 			name = iShaderItem.getShaderName(shader);
 			if(CACHE.containsKey(name))
 				return CACHE.get(name);
-			sCase = iShaderItem.getShaderCase(shader, null, bannerObj.shader.getShaderType());
+			sCase = iShaderItem.getShaderCase(shader, bannerObj.shader.getShaderType());
 		}
 
 		if(sCase!=null)

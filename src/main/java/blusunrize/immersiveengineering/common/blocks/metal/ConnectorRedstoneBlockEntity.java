@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.redstone.IRedstoneConnector;
 import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
@@ -25,7 +24,6 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import com.mojang.math.Vector4f;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,8 +45,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -57,8 +53,7 @@ import java.util.Collection;
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
 public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntity implements IETickableBlockEntity, IStateBasedDirectional,
-		IRedstoneOutput, IScrewdriverInteraction, IBlockBounds, IBlockOverlayText, IOBJModelCallback<BlockState>,
-		IRedstoneConnector
+		IRedstoneOutput, IScrewdriverInteraction, IBlockBounds, IBlockOverlayText, IRedstoneConnector
 {
 	public IOSideConfig ioMode = IOSideConfig.INPUT;
 	public DyeColor redstoneChannel = DyeColor.WHITE;
@@ -257,35 +252,6 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return EnergyConnectorBlockEntity.getConnectorBounds(getFacing(), .625f);
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public boolean shouldRenderGroup(BlockState object, String group)
-	{
-		if("io_out".equals(group))
-			return this.ioMode==IOSideConfig.OUTPUT;
-		else if("io_in".equals(group))
-			return this.ioMode==IOSideConfig.INPUT;
-		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public Vector4f getRenderColor(BlockState object, String group, Vector4f original)
-	{
-		if("coloured".equals(group))
-		{
-			float[] rgb = redstoneChannel.getTextureDiffuseColors();
-			return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
-		}
-		return original;
-	}
-
-	@Override
-	public String getCacheKey(BlockState object)
-	{
-		return redstoneChannel+";"+ioMode;
 	}
 
 	@Override

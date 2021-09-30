@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -20,20 +19,13 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.BlockTags;
@@ -48,8 +40,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
@@ -172,7 +162,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		return getSawblade(itemStack, 0);
 	}
 
-	public ItemStack getSawblade(ItemStack itemStack, int spare)
+	public static ItemStack getSawblade(ItemStack itemStack, int spare)
 	{
 		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
 			return ItemStack.EMPTY;
@@ -518,95 +508,6 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 				player.connection.send(new ClientboundBlockUpdatePacket(world, pos));
 			}
 		}
-	}
-	/* ------------- RENDERING ------------- */
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String group, String material)
-	{
-		if("blade".equals(material))
-		{
-			int spare = "upgrade_blades1".equals(group)?1: "upgrade_blades2".equals(group)?2: 0;
-			ItemStack sawblade = getSawblade(stack, spare);
-			if(sawblade.getItem() instanceof SawbladeItem)
-			{
-				ResourceLocation rl = ((SawbladeItem)sawblade.getItem()).getSawbladeTexture();
-				if(rl!=null)
-					return ClientUtils.getSprite(rl);
-			}
-		}
-		return null;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public boolean shouldRenderGroup(ItemStack stack, String group)
-	{
-		if("body".equals(group))
-			return true;
-		if("blade".equals(group))
-			return !this.getHead(stack).isEmpty();
-
-		CompoundTag upgrades = this.getUpgrades(stack);
-		if("upgrade_lube".equals(group))
-			return upgrades.getBoolean("oiled");
-		if("upgrade_launcher".equals(group))
-			return upgrades.getBoolean("launcher");
-		if("upgrade_blades0".equals(group))
-			return hasQuiverUpgrade(stack);
-		if("upgrade_blades1".equals(group))
-			return hasQuiverUpgrade(stack)&&!this.getSawblade(stack, 1).isEmpty();
-		if("upgrade_blades2".equals(group))
-			return hasQuiverUpgrade(stack)&&!this.getSawblade(stack, 2).isEmpty();
-		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public Transformation applyTransformations(ItemStack stack, String group, Transformation transform)
-	{
-//		CompoundNBT upgrades = this.getUpgrades(stack);
-//		if(group.equals("drill_sawblade")&&upgrades.getInt("damage") <= 0)
-//		{
-//			Matrix4 mat = new Matrix4(transform.getMatrixVec());
-//			mat.translate(-.25f, 0, 0);
-//			return new TransformationMatrix(mat.toMatrix4f());
-//		}
-//		Matrix4 mat = new Matrix4(transform.getMatrixVec());
-//		mat.translate(.25f, -0.25f, 0);
-//		return new TransformationMatrix(mat.toMatrix4f());
-		return transform;
-	}
-
-
-	private static final String[][] GROUP_BLADE = {{"blade"}};
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
-	{
-		return GROUP_BLADE;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private static Transformation MAT_FIXED;
-
-	@Nonnull
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
-	{
-		if(MAT_FIXED==null)
-			MAT_FIXED = new Transformation(new Vector3f(0.60945f, 0, 0), null, null, null);
-		if(!shouldRotate(entity, stack, transform))
-			return MAT_FIXED;
-		float ticksPerRotation = 10f;
-		float angle = (entity.tickCount%ticksPerRotation+partialTicks)/ticksPerRotation*(float)(2*Math.PI);
-		return new Transformation(
-				new Vector3f(0.60945f, 0, 0),
-				new Quaternion(0, angle, 0, false),
-				null, null);
 	}
 
 	public static boolean hasQuiverUpgrade(ItemStack stack)

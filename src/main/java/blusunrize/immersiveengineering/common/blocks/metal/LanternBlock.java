@@ -9,9 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -32,7 +30,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.function.Supplier;
 
-public class LanternBlock extends IEBaseBlock implements IHasObjProperty
+public class LanternBlock extends IEBaseBlock
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Properties.of(Material.METAL)
 			.sound(SoundType.METAL)
@@ -40,7 +38,7 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 			.lightLevel(b -> 14)
 			.noOcclusion();
 
-	private static final Property<Direction> FACING = IEProperties.FACING_ALL;
+	public static final Property<Direction> FACING = IEProperties.FACING_ALL;
 
 	public LanternBlock(Properties props)
 	{
@@ -63,25 +61,10 @@ public class LanternBlock extends IEBaseBlock implements IHasObjProperty
 			.put(Direction.WEST, Shapes.box(0.25, 0.0625, 0.25, 1, 0.875, 0.75))
 			.build();
 
-	private static final Map<Direction, VisibilityList> DISPLAY_LISTS = ImmutableMap.<Direction, VisibilityList>builder()
-			.put(Direction.DOWN, VisibilityList.show("base", "attach_t"))
-			.put(Direction.UP, VisibilityList.show("base", "attach_b"))
-			.put(Direction.NORTH, VisibilityList.show("base", "attach_n"))
-			.put(Direction.SOUTH, VisibilityList.show("base", "attach_s"))
-			.put(Direction.WEST, VisibilityList.show("base", "attach_w"))
-			.put(Direction.EAST, VisibilityList.show("base", "attach_e"))
-			.build();
-
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
 	{
 		return SHAPES.get(state.getValue(FACING));
-	}
-
-	@Override
-	public VisibilityList compileDisplayList(BlockState state)
-	{
-		return DISPLAY_LISTS.get(state.getValue(FACING));
 	}
 
 	@Nullable

@@ -62,7 +62,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	}
 
 	@Override
-	public ShaderCase getShaderCase(ItemStack shader, ItemStack item, ResourceLocation shaderType)
+	public ShaderCase getShaderCase(ItemStack shader, ResourceLocation shaderType)
 	{
 		return ShaderRegistry.getShader(getShaderName(shader), shaderType);
 	}

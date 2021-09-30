@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
@@ -40,8 +39,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,7 +47,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implements IStateBasedDirectional, ICollisionBounds,
-		IOBJModelCallback<BlockState>, EnergyConnector, ISelectionBounds
+		EnergyConnector, ISelectionBounds
 {
 	public RazorWireBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -135,7 +132,7 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 		return list;
 	}
 
-	private boolean renderWall(boolean left)
+	public boolean renderWall(boolean left)
 	{
 		Direction dir = left?getFacing().getClockWise(): getFacing().getCounterClockWise();
 		BlockPos neighbourPos = getBlockPos().relative(dir, -1);
@@ -184,51 +181,19 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 		}
 	}
 
-	private boolean isOnGround()
+	public boolean isOnGround()
 	{
 		BlockPos down = getBlockPos().below();
 		return Block.isFaceFull(level.getBlockState(down).getShape(level, down), Direction.UP);
 	}
 
-	private boolean isStacked()
+	public boolean isStacked()
 	{
 		BlockPos down = getBlockPos().below();
 		BlockEntity te = level.getBlockEntity(down);
-		if(te instanceof RazorWireBlockEntity)
-			return ((RazorWireBlockEntity)te).isOnGround();
+		if(te instanceof RazorWireBlockEntity razorWire)
+			return razorWire.isOnGround();
 		return false;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public boolean shouldRenderGroup(BlockState object, String group)
-	{
-		if(group==null)
-			return false;
-		boolean stack = isStacked();
-		if(!stack&&!isOnGround())
-			return !group.startsWith("wood");
-		if(group.startsWith("wood")&&!(group.endsWith("inverted")==stack))
-			return false;
-		if(group.startsWith("wood_left"))
-			return renderWall(true);
-		else if("wire_left".equals(group)||"barbs_left".equals(group))
-			return !renderWall(true);
-		else if(group.startsWith("wood_right"))
-			return renderWall(false);
-		else if("wire_right".equals(group)||"barbs_right".equals(group))
-			return !renderWall(false);
-		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public String getCacheKey(BlockState object)
-	{
-		boolean stack = isStacked();
-		if(!stack&&!isOnGround())
-			return "default";
-		return (renderWall(true)?"L": " ")+(renderWall(false)?"R": " ")+(stack?"_stack": "");
 	}
 
 	@Override

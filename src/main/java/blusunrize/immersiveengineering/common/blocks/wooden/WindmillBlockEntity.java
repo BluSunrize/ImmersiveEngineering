@@ -9,12 +9,14 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IReadOnPlacement;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
@@ -41,7 +43,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 public class WindmillBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IStateBasedDirectional,
-		IReadOnPlacement, IPlayerInteraction, IHasObjProperty, IBlockBounds
+		IReadOnPlacement, IPlayerInteraction, IBlockBounds
 {
 	public float rotation = 0;
 	public float turnSpeed = 0;
@@ -206,12 +208,6 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IETickable
 	public boolean canRotate(Direction axis)
 	{
 		return false;
-	}
-
-	@Override
-	public VisibilityList compileDisplayList(BlockState state)
-	{
-		return VisibilityList.hideAll();
 	}
 
 	@Override

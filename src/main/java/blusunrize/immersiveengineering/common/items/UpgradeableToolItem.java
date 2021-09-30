@@ -37,7 +37,12 @@ public abstract class UpgradeableToolItem extends InternalStorageItem implements
 	}
 
 	@Override
-	public CompoundTag getUpgrades(ItemStack stack)
+	public final CompoundTag getUpgrades(ItemStack stack)
+	{
+		return getUpgradesStatic(stack);
+	}
+
+	public static CompoundTag getUpgradesStatic(ItemStack stack)
 	{
 		return ItemNBTHelper.getTagCompound(stack, "upgrades");
 	}

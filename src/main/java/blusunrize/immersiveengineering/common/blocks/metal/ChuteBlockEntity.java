@@ -9,21 +9,19 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -54,7 +52,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional, IAdvancedHasObjProperty,
+public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional,
 		IHammerInteraction, ISelectionBounds, ICollisionBounds
 {
 	private static final String NBT_POS = "immersiveengineering:chutePos";
@@ -306,61 +304,24 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 		return selectionShape;
 	}
 
-	@Override
-	public IEObjState getIEObjState(BlockState state)
-	{
-		String key = getRenderCacheKey();
-		return getStateFromKey(key);
-	}
-
-	public static HashMap<String, IEObjState> cachedOBJStates = new HashMap<>();
-
-	private String getRenderCacheKey()
-	{
-		if(diagonal)
-			return "diagonal:"+getFacing().name();
-		String s = "base";
-		for(Direction dir : DirectionUtils.BY_HORIZONTAL_INDEX)
-			if(!isInwardConveyor(dir))
-				s += ":"+dir.name().toLowerCase(Locale.US);
-		return s;
-	}
-
-	public static IEObjState getStateFromKey(String key)
-	{
-		if(!cachedOBJStates.containsKey(key))
-		{
-			String[] split = key.split(":");
-			if("diagonal".equals(split[0]))
-			{
-				Direction dir = Direction.valueOf(split[1]).getOpposite();
-				Matrix4f matrix = new Matrix4(dir).toMatrix4f();
-				cachedOBJStates.put(key, new IEObjState(VisibilityList.show("diagonal"), new Transformation(matrix)));
-			}
-			else
-				cachedOBJStates.put(key, new IEObjState(VisibilityList.show(split)));
-		}
-		return cachedOBJStates.get(key);
-	}
-
-	protected boolean isInwardConveyor(Direction f)
+	public boolean isInwardConveyor(Direction f)
 	{
 		BlockEntity te = level.getBlockEntity(getBlockPos().relative(f));
-		if(te instanceof IConveyorBlockEntity)
+		if(te instanceof IConveyorBlockEntity<?> conveyorBE)
 		{
-			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorInstance();
+			IConveyorBelt sub = conveyorBE.getConveyorInstance();
 			if(sub!=null)
 				for(Direction f2 : sub.sigTransportDirections())
 					if(f==f2.getOpposite())
 						return true;
 		}
-		else if(te instanceof ChuteBlockEntity)
-			return ((ChuteBlockEntity)te).diagonal&&((ChuteBlockEntity)te).getFacing()==f.getOpposite();
+		else if(te instanceof ChuteBlockEntity chute)
+			return chute.diagonal&&chute.getFacing()==f.getOpposite();
 
 		te = level.getBlockEntity(getBlockPos().offset(0, -1, 0).relative(f));
-		if(te instanceof IConveyorBlockEntity)
+		if(te instanceof IConveyorBlockEntity<?> conveyorBE)
 		{
-			IConveyorBelt sub = ((IConveyorBlockEntity)te).getConveyorInstance();
+			IConveyorBelt sub = conveyorBE.getConveyorInstance();
 			if(sub!=null)
 			{
 				int b = 0;
@@ -406,7 +367,12 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 		return false;
 	}
 
-	private LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ChuteBlockEntity.ChuteInventoryHandler(this));
+	public boolean isDiagonal()
+	{
+		return diagonal;
+	}
+
+	private final LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ChuteBlockEntity.ChuteInventoryHandler(this));
 
 	@Nonnull
 	@Override

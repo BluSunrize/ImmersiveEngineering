@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
@@ -48,8 +47,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -67,7 +64,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IOBJModelCallback<ItemStack>, ITool, IScrollwheel
+public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, ITool, IScrollwheel
 {
 	private static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
 
@@ -254,21 +251,6 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			fs.setAmount(getCapacity(stack, CAPACITY));
 			ItemNBTHelper.setFluidStack(stack, FluidHandlerItemStack.FLUID_NBT_KEY, fs);
 		}
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean shouldRenderGroup(ItemStack stack, String group)
-	{
-		if("base".equals(group)||"grip".equals(group)||"cage".equals(group)||"tanks".equals(group))
-			return true;
-		CompoundTag upgrades = this.getUpgrades(stack);
-		if("large_tank".equals(group)&&upgrades.getInt("capacity") > 0)
-			return true;
-		else if("multi_tank".equals(group)&&upgrades.getBoolean("multitank"))
-			return true;
-		else
-			return "tank".equals(group);
 	}
 
 	@Override

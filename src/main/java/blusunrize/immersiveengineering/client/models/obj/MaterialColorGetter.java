@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import com.mojang.math.Vector4f;
 
 import java.util.function.BiFunction;
@@ -18,13 +18,13 @@ import java.util.function.BiFunction;
 public class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vector4f>
 {
 	private final String groupName;
-	private final IOBJModelCallback<T> callback;
+	private final IEOBJCallback<T> callback;
 	private final T callbackObject;
 	private final ShaderCase shaderCase;
 
 	private int renderPass = 0;
 
-	public MaterialColorGetter(String groupName, IOBJModelCallback<T> callback, T callbackObject, ShaderCase shaderCase)
+	public MaterialColorGetter(String groupName, IEOBJCallback<T> callback, T callbackObject, ShaderCase shaderCase)
 	{
 		this.groupName = groupName;
 		this.callback = callback;
@@ -47,7 +47,7 @@ public class MaterialColorGetter<T> implements BiFunction<String, Vector4f, Vect
 	{
 		Vector4f color = originalColor;
 		if(callback!=null)
-			color = callback.getRenderColor(callbackObject, groupName, color);
+			color = callback.getRenderColor(callbackObject, groupName, shaderCase, color);
 		if(shaderCase!=null)
 			color = shaderCase.getRenderColor(groupName, renderPass, color);
 		return color;

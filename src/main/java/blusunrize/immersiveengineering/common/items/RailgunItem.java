@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectil
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
@@ -34,9 +33,6 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Transformation;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -57,8 +53,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -76,7 +70,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, IScrollwheel, ITool, IOBJModelCallback<ItemStack>
+public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, IScrollwheel, ITool
 {
 	public RailgunItem()
 	{
@@ -422,31 +416,5 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	public boolean isTool(ItemStack item)
 	{
 		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public boolean shouldRenderGroup(ItemStack stack, String group)
-	{
-		if(group.equals("upgrade_scope"))
-			return getUpgrades(stack).getBoolean("scope");
-		if(group.equals("upgrade_speed"))
-			return getUpgrades(stack).getDouble("speed") > 0;
-		if(group.equals("barrel_top"))
-			return getUpgrades(stack).getDouble("speed") <= 0;
-		return true;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public Transformation applyTransformations(ItemStack stack, String group, Transformation transform)
-	{
-		return transform;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public void handlePerspective(ItemStack stack, TransformType cameraTransformType, PoseStack mat, LivingEntity entity)
-	{
 	}
 }

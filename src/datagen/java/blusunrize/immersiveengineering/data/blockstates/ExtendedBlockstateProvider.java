@@ -238,22 +238,21 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 				"Model \""+name+"\" does not exist");
 	}
 
-	protected BlockModelBuilder ieObj(String loc)
+	protected IEOBJBuilder<BlockModelBuilder> ieObjBuilder(String loc)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj.ie"));
-		return ieObj(loc.substring(0, loc.length()-7), modLoc(loc));
+		return ieObjBuilder(loc.substring(0, loc.length()-7), modLoc(loc));
 	}
 
-	protected BlockModelBuilder ieObj(String name, ResourceLocation model)
+	protected IEOBJBuilder<BlockModelBuilder> ieObjBuilder(String name, ResourceLocation model)
 	{
 		final String particle = DataGenUtils.getTextureFromObj(model, existingFileHelper);
 		generatedParticleTextures.put(modLoc(name), particle);
 		return models().withExistingParent(name, mcLoc("block"))
+				.texture("particle", particle)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(addModelsPrefix(model))
-				.flipV(true)
-				.end()
-				.texture("particle", particle);
+				.flipV(true);
 	}
 
 	protected int getAngle(Direction dir, int offset)

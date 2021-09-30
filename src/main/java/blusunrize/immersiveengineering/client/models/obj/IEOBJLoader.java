@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -20,40 +20,38 @@ import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.client.model.obj.OBJModel;
 
 import javax.annotation.Nonnull;
-import java.util.*;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
 public class IEOBJLoader implements IModelLoader<IEOBJModel>
 {
 	public static final ResourceLocation LOADER_NAME = new ResourceLocation(MODID, "ie_obj");
+	public static final String CALLBACKS_KEY = "callbacks";
+	public static final String DYNAMIC_KEY = "dynamic";
 	public static final IEOBJLoader instance = new IEOBJLoader();
 
-	private final Set<String> enabledDomains = new HashSet<>();
-	private final Map<ResourceLocation, IEOBJModel> cache = new HashMap<>();
-	private final Map<ResourceLocation, Exception> errors = new HashMap<>();
-
-	public void addDomain(String domain)
-	{
-		enabledDomains.add(domain.toLowerCase(Locale.ENGLISH));
-		IELogger.info("Custom OBJLoader: Domain has been added: "+domain.toLowerCase(Locale.ENGLISH));
-	}
-
+	@Nonnull
 	@Override
-	public IEOBJModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
+	public IEOBJModel read(
+			@Nonnull JsonDeserializationContext deserializationContext, @Nonnull JsonObject modelContents
+	)
 	{
 		OBJModel model = OBJLoader.INSTANCE.read(deserializationContext, modelContents);
+		IEOBJCallback<?> callback;
+		if(modelContents.has(CALLBACKS_KEY))
+		{
+			String key = modelContents.get(CALLBACKS_KEY).getAsString();
+			callback = IEOBJCallbacks.getCallback(new ResourceLocation(key));
+		}
+		else
+			callback = DefaultCallback.INSTANCE;
 		return new IEOBJModel(
-				model,
-				modelContents.has("dynamic")&&modelContents.get("dynamic").getAsBoolean(),
-				new IEObjState(VisibilityList.showAll())
+				model, modelContents.has(DYNAMIC_KEY)&&modelContents.get(DYNAMIC_KEY).getAsBoolean(), callback
 		);
 	}
 
 	@Override
-	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
+	public void onResourceManagerReload(@Nonnull ResourceManager pResourceManager)
 	{
-		cache.clear();
-		errors.clear();
 	}
 }

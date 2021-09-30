@@ -89,16 +89,15 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+	public List<BakedQuad> getQuads(FeedthroughCacheKey key)
 	{
-		FeedthroughCacheKey key = getKey(state, side, rand, extraData);
 		SpecificFeedthroughModel ret = CACHE.getIfPresent(key);
 		if(ret==null)
 		{
 			ret = new SpecificFeedthroughModel(key, s -> key.defaultColorMultipliers);
 			CACHE.put(key, ret);
 		}
-		return ret.getQuads(state, side, rand);
+		return ret.getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
 	}
 
 	@Nonnull
@@ -108,9 +107,8 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		List<IModelData> ret = new ArrayList<>();
 		ret.add(tileData);
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof FeedthroughBlockEntity)
+		if(te instanceof FeedthroughBlockEntity feedthrough)
 		{
-			FeedthroughBlockEntity feedthrough = (FeedthroughBlockEntity)te;
 			int color = Minecraft.getInstance().getBlockColors().getColor(feedthrough.stateForMiddle, world, pos, 0);
 			FeedthroughData d = new FeedthroughData(
 					feedthrough.stateForMiddle,
@@ -175,7 +173,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		return INSTANCE;
 	}
 
-	@Nonnull
+	@Nullable
 	@Override
 	public FeedthroughCacheKey getKey(
 			@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData
@@ -200,6 +198,13 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		return new FeedthroughCacheKey(
 				wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier
 		);
+	}
+
+	@Nonnull
+	@Override
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+	{
+		return ICacheKeyProvider.super.getQuads(state, side, rand, extraData);
 	}
 
 	private static class FeedthroughItemOverride extends ItemOverrides

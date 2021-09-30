@@ -60,7 +60,7 @@ import java.util.function.Supplier;
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBlockEntity
 		implements IStateBasedDirectional, ICollisionBounds, ISelectionBounds, IHammerInteraction,
-		IPlayerInteraction, IConveyorBlockEntity<T>, IPropertyPassthrough, IETickableBlockEntity
+		IPlayerInteraction, IConveyorBlockEntity<T>, IETickableBlockEntity
 {
 	public static final Map<IConveyorType<?>, Supplier<BlockEntityType<?>>> BE_TYPES = new Reference2ObjectOpenHashMap<>();
 

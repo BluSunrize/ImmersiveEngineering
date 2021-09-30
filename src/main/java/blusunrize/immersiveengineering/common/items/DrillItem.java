@@ -17,14 +17,8 @@ import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
@@ -45,8 +39,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.LazyOptional;
@@ -111,7 +103,12 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public ItemStack getHead(ItemStack drill)
+	public final ItemStack getHead(ItemStack drill)
+	{
+		return getHeadStatic(drill);
+	}
+
+	public static ItemStack getHeadStatic(ItemStack drill)
 	{
 		if(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY==null)
 			return ItemStack.EMPTY;
@@ -307,106 +304,5 @@ public class DrillItem extends DieselToolItem
 			}
 		}
 		return false;
-	}
-
-	/* ------------- RENDERING ------------- */
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public TextureAtlasSprite getTextureReplacement(ItemStack stack, String group, String material)
-	{
-		if(!"head".equals(material))
-			return null;
-		ItemStack head = this.getHead(stack);
-		if(head.getItem() instanceof IDrillHead)
-			return ((IDrillHead)head.getItem()).getDrillTexture(stack, this.getHead(stack));
-		return null;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public boolean shouldRenderGroup(ItemStack stack, String group)
-	{
-		if(group.equals("drill_frame")||group.equals("drill_grip"))
-			return true;
-		CompoundTag upgrades = this.getUpgrades(stack);
-		if(group.equals("upgrade_waterproof"))
-			return upgrades.getBoolean("waterproof");
-		if(group.equals("upgrade_speed"))
-			return upgrades.getBoolean("oiled");
-		if(!this.getHead(stack).isEmpty())
-		{
-			if(group.equals("drill_head"))
-				return true;
-
-			if(group.equals("upgrade_damage0"))
-				return upgrades.getInt("damage") > 0;
-			if(group.equals("upgrade_damage1")||group.equals("upgrade_damage2"))
-				return upgrades.getInt("damage") > 1;
-			if(group.equals("upgrade_damage3")||group.equals("upgrade_damage4"))
-				return upgrades.getInt("damage") > 2;
-		}
-		return false;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	@Override
-	public Transformation applyTransformations(ItemStack stack, String group, Transformation transform)
-	{
-		CompoundTag upgrades = this.getUpgrades(stack);
-		if(group.equals("drill_head")&&upgrades.getInt("damage") <= 0)
-			return transform.compose(new Transformation(
-					new Vector3f(-.25f, 0, 0), null, null, null
-			));
-		return transform;
-	}
-
-	private static final String[][] ROTATING = {
-			{"drill_head", "upgrade_damage0"},
-			{"upgrade_damage1", "upgrade_damage2"},
-			{"upgrade_damage3", "upgrade_damage4"}
-	};
-	private static final String[][] FIXED = {
-			{"upgrade_damage1", "upgrade_damage2", "upgrade_damage3", "upgrade_damage4"}
-	};
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
-	{
-		if(shouldRotate(entity, stack, transform))
-			return ROTATING;
-		else
-			return FIXED;
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	private static Transformation matAugers;
-
-	@Nonnull
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
-	{
-		if(matAugers==null)
-			matAugers = new Transformation(new Vector3f(.441f, 0, 0), null, null, null);
-		if(groups==FIXED[0])
-			return matAugers;
-		float angle = (entity.tickCount%60+partialTicks)/60f*(float)(2*Math.PI);
-		Quaternion rotation = null;
-		Vector3f translation = null;
-		if("drill_head".equals(groups[0]))
-			rotation = new Quaternion(angle, 0, 0, false);
-		else if("upgrade_damage1".equals(groups[0]))
-		{
-			translation = new Vector3f(.441f, 0, 0);
-			rotation = new Quaternion(0, angle, 0, false);
-		}
-		else if("upgrade_damage3".equals(groups[0]))
-		{
-			translation = new Vector3f(.441f, 0, 0);
-			rotation = new Quaternion(0, 0, angle, false);
-		}
-		return new Transformation(translation, rotation, null, null);
 	}
 }

@@ -13,14 +13,12 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -38,9 +36,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
@@ -62,7 +57,7 @@ import java.util.List;
 import java.util.Set;
 
 public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<BottlingMachineBlockEntity, MultiblockRecipe>
-		implements IConveyorAttachable, IBlockBounds, IOBJModelCallback<BlockState>
+		implements IConveyorAttachable, IBlockBounds
 {
 	public static final float TRANSLATION_DISTANCE = 2.5f;
 	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
@@ -106,13 +101,6 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	@Override
 	public void receiveMessageFromClient(CompoundTag message)
 	{
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public boolean shouldRenderGroup(BlockState object, String group)
-	{
-		return "glass".equals(group)==(MinecraftForgeClient.getRenderLayer()==RenderType.translucent());
 	}
 
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(this, () -> {

@@ -10,12 +10,9 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import com.google.common.base.Preconditions;
-import com.mojang.math.Transformation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -32,7 +29,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -46,7 +42,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -396,22 +391,6 @@ public class IEBlockInterfaces
 		}
 	}
 
-	public interface IHasObjProperty extends IAdvancedHasObjProperty
-	{
-		VisibilityList compileDisplayList(BlockState state);
-
-		@Override
-		default IEObjState getIEObjState(BlockState state)
-		{
-			return new IEObjState(compileDisplayList(state), Transformation.identity());
-		}
-	}
-
-	public interface IAdvancedHasObjProperty
-	{
-		IEObjState getIEObjState(BlockState state);
-	}
-
 	public interface IInteractionObjectIE<T extends BlockEntity & IInteractionObjectIE<T>> extends MenuProvider
 	{
 		@Nullable
@@ -448,15 +427,5 @@ public class IEBlockInterfaces
 		int[] getCurrentProcessesStep();
 
 		int[] getCurrentProcessesMax();
-	}
-
-	public interface IPropertyPassthrough
-	{
-	}
-
-	public interface IModelDataBlock
-	{
-		IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state,
-								@Nonnull IModelData entityData);
 	}
 }

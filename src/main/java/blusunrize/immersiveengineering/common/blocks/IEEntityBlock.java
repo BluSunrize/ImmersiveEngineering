@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
@@ -36,6 +37,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -48,6 +50,7 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.function.BiFunction;
+import java.util.List;
 
 public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements IColouredBlock, EntityBlock
 {
@@ -89,9 +92,14 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	public static <E extends BlockEntity, A extends BlockEntity>
 	BlockEntityTicker<A> createTickerHelper(
 			BlockEntityType<A> presentType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker
-	) {
-		return expectedType == presentType ? (BlockEntityTicker<A>)ticker : null;
+	)
+	{
+		return expectedType==presentType?(BlockEntityTicker<A>)ticker: null;
 	}
+
+	private static final List<BooleanProperty> DEFAULT_OFF = ImmutableList.of(
+			IEProperties.MULTIBLOCKSLAVE, IEProperties.ACTIVE, IEProperties.MIRRORED
+	);
 
 	@Override
 	protected BlockState getInitDefaultState()
@@ -101,6 +109,9 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 			ret = ret.setValue(IEProperties.FACING_ALL, getDefaultFacing());
 		else if(ret.hasProperty(IEProperties.FACING_HORIZONTAL))
 			ret = ret.setValue(IEProperties.FACING_HORIZONTAL, getDefaultFacing());
+		for(BooleanProperty defaultOff : DEFAULT_OFF)
+			if(ret.hasProperty(defaultOff))
+				ret = ret.setValue(defaultOff, false);
 		return ret;
 	}
 

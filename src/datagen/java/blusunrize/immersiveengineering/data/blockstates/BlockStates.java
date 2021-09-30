@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.client.models.ModelConfigurableSides.Type;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
+import blusunrize.immersiveengineering.client.render.tile.TurretRenderer;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.StripCurtainBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.WallmountBlock;
@@ -89,7 +91,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 				.add(new Vec3i(0, 3, 0));
 		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			parts.add(new BlockPos(0, 3, 0).relative(d));
-		ModelFile baseModel = ieObj(name(b), model)
+		ModelFile baseModel = ieObjBuilder(name(b), model)
+				.callback(PostCallbacks.INSTANCE)
+				.end()
 				.texture("texture", texture);
 		BlockModelBuilder builder = splitModel(
 				name(b)+"_split", baseModel, parts.build(), true
@@ -204,13 +208,17 @@ public class BlockStates extends ExtendedBlockstateProvider
 		postBlock(MetalDecoration.ALU_POST, rl("block/metal_decoration/aluminum_post"));
 
 		simpleBlock(Multiblocks.BUCKET_WHEEL.get(), emptyWithParticles("block/bucket_wheel", "block/multiblocks/bucket_wheel"));
-		simpleBlock(MetalDevices.FLUID_PIPE.get(), ieObj("block/metal_device/fluid_pipe.obj.ie"));
+		simpleBlock(
+				MetalDevices.FLUID_PIPE.get(),
+				ieObjBuilder("block/metal_device/fluid_pipe.obj.ie").callback(PipeCallbacks.INSTANCE).end()
+		);
 
-		turret(MetalDevices.TURRET_CHEM, ieObj("block/metal_device/chem_turret.obj.ie"));
-		turret(MetalDevices.TURRET_GUN, ieObj("block/metal_device/gun_turret.obj.ie"));
+		TurretRenderer.MODEL_FILE_BY_BLOCK.forEach(this::turret);
 		for(Entry<EnumMetals, BlockEntry<ChuteBlock>> chute : MetalDevices.CHUTES.entrySet())
 		{
-			ModelFile model = ieObj("block/metal_device/chute_"+chute.getKey().tagName(), rl("block/metal_device/chute.obj.ie"))
+			ModelFile model = ieObjBuilder("block/metal_device/chute_"+chute.getKey().tagName(), rl("block/metal_device/chute.obj.ie"))
+					.callback(ChuteCallbacks.INSTANCE)
+					.end()
 					.texture("texture", rl("block/metal/sheetmetal_"+chute.getKey().tagName()))
 					.texture("particle", rl("block/metal/sheetmetal_"+chute.getKey().tagName()));
 			simpleBlock(chute.getValue().get(), model);
@@ -224,8 +232,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 		createMultistateSingleModel(WoodenDevices.WATERMILL, emptyWithParticles(
 				"block/watermill", "block/wooden_device/watermill"
 		));
-		createMultistateSingleModel(MetalDecoration.LANTERN,
-				new ConfiguredModel(ieObj("block/lantern.obj.ie")));
+		createMultistateSingleModel(MetalDecoration.LANTERN, new ConfiguredModel(
+				ieObjBuilder("block/lantern.obj.ie").callback(LanternCallbacks.INSTANCE).end()
+		));
 
 		{
 			ModelFile noneModel = createMetalLadder("metal_ladder", null, null);
@@ -260,11 +269,14 @@ public class BlockStates extends ExtendedBlockstateProvider
 		createWallmount(MetalDecoration.ALU_WALLMOUNT, rl("block/metal_decoration/aluminum_wallmount"));
 		createWallmount(MetalDecoration.STEEL_WALLMOUNT, rl("block/metal_decoration/steel_wallmount"));
 		{
-			ModelFile steelModel = ieObj("block/slope.obj.ie")
+			ModelFile steelModel = ieObjBuilder("block/slope.obj.ie")
+					.callback(StructuralArmCallbacks.INSTANCE)
+					.end()
 					.texture("texture", modLoc("block/metal_decoration/steel_scaffolding"))
 					.texture("particle", modLoc("block/metal_decoration/steel_scaffolding"))
 					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
-			ModelFile aluModel = ieObj("slope_alu", modLoc("block/slope.obj.ie"))
+			ModelFile aluModel = ieObjBuilder("slope_alu", modLoc("block/slope.obj.ie"))
+					.end()
 					.texture("texture", modLoc("block/metal_decoration/aluminum_scaffolding"))
 					.texture("particle", modLoc("block/metal_decoration/aluminum_scaffolding"))
 					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
@@ -314,7 +326,10 @@ public class BlockStates extends ExtendedBlockstateProvider
 						.baseName(modLoc("block/wooden_device/barrel"))
 						.end()
 		);
-		createRotatedBlock(WoodenDevices.LOGIC_UNIT, state -> ieObj("block/wooden_device/logic_unit.obj.ie"), ImmutableList.of());
+		createRotatedBlock(
+				WoodenDevices.LOGIC_UNIT,
+				state -> ieObjBuilder("block/wooden_device/logic_unit.obj.ie").callback(LogicUnitCallbacks.INSTANCE).end(),
+				ImmutableList.of());
 
 		createRotatedBlock(Cloth.STRIP_CURTAIN,
 				state -> new ExistingModelFile(rl(
@@ -428,8 +443,9 @@ public class BlockStates extends ExtendedBlockstateProvider
 				ImmutableList.of());
 	}
 
-	public void turret(Supplier<? extends Block> b, ModelFile masterModel)
+	public void turret(Supplier<? extends Block> b, String loc)
 	{
+		BlockModelBuilder masterModel = ieObjBuilder(loc).callback(TurretCallbacks.INSTANCE).end();
 		ModelFile top = models().withExistingParent(name(b)+"_top", EMPTY_MODEL.model.getLocation())
 				.texture("particle", generatedParticleTextures.get(masterModel.getLocation()));
 		createRotatedBlock(

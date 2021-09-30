@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.ResourceLocation;
@@ -23,19 +23,19 @@ public class MaterialSpriteGetter<T> implements BiFunction<String, Material, Tex
 {
 	private final Function<Material, TextureAtlasSprite> getter;
 	private final String groupName;
-	private final IOBJModelCallback<T> callback;
-	private final T callbackObject;
+	private final IEOBJCallback<T> callback;
+	private final T key;
 	private final ShaderCase shaderCase;
 
 	private int renderPass = 0;
 
 	public MaterialSpriteGetter(Function<Material, TextureAtlasSprite> getter, String groupName,
-								IOBJModelCallback<T> callback, T callbackObject, ShaderCase shaderCase)
+								IEOBJCallback<T> callback, T key, ShaderCase shaderCase)
 	{
 		this.getter = getter;
 		this.groupName = groupName;
 		this.callback = callback;
-		this.callbackObject = callbackObject;
+		this.key = key;
 		this.shaderCase = shaderCase;
 	}
 
@@ -54,7 +54,7 @@ public class MaterialSpriteGetter<T> implements BiFunction<String, Material, Tex
 	{
 		TextureAtlasSprite sprite = null;
 		if(callback!=null)
-			sprite = callback.getTextureReplacement(callbackObject, groupName, material);
+			sprite = callback.getTextureReplacement(key, groupName, material);
 		if(shaderCase!=null)
 		{
 			ResourceLocation rl = shaderCase.getTextureReplacement(groupName, renderPass);

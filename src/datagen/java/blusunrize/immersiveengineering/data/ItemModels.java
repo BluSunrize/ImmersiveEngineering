@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
+import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
 import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
@@ -256,23 +257,32 @@ public class ItemModels extends TRSRItemModelProvider
 				.transforms(rl("item/voltmeter"));
 		obj(Tools.TOOLBOX, rl("item/toolbox.obj"))
 				.transforms(rl("item/toolbox"));
-		ieObj(IEItems.Misc.SHIELD, rl("item/shield.obj.ie"))
+		ieObjBuilder(IEItems.Misc.SHIELD, rl("item/shield.obj.ie"))
+				.callback(ShieldCallbacks.INSTANCE)
+				.end()
 				.transforms(rl("item/shield"));
 		ieObjBuilder(Weapons.REVOLVER, modLoc("item/revolver.obj.ie"))
 				.dynamic(true)
+				.callback(RevolverCallbacks.INSTANCE)
 				.end()
 				.transforms(modLoc("item/revolver"));
 		ieObjBuilder(Tools.DRILL, modLoc("item/drill/drill_diesel.obj.ie"))
 				.dynamic(true)
+				.callback(DrillCallbacks.INSTANCE)
 				.end()
 				.transforms(modLoc("item/drill"));
 		ieObjBuilder(Tools.BUZZSAW, modLoc("item/buzzsaw_diesel.obj.ie"))
 				.dynamic(true)
+				.callback(BuzzsawCallbacks.INSTANCE)
 				.end()
 				.transforms(modLoc("item/buzzsaw"));
-		ieObj(Weapons.RAILGUN, modLoc("item/railgun.obj.ie"))
+		ieObjBuilder(Weapons.RAILGUN, modLoc("item/railgun.obj.ie"))
+				.callback(RailgunCallbacks.INSTANCE)
+				.end()
 				.transforms(modLoc("item/railgun"));
-		ieObj(Weapons.CHEMTHROWER, modLoc("item/chemthrower.obj.ie"))
+		ieObjBuilder(Weapons.CHEMTHROWER, modLoc("item/chemthrower.obj.ie"))
+				.callback(ChemthrowerCallbacks.INSTANCE)
+				.end()
 				.transforms(modLoc("item/chemthrower"));
 
 		IEFluids.ALL_ENTRIES.forEach(this::createBucket);
@@ -280,7 +290,9 @@ public class ItemModels extends TRSRItemModelProvider
 				.customLoader(SpecialModelBuilder.forLoader(Loader.LOADER_NAME))
 				.end();
 
-		ieObj(IEItems.Misc.FLUORESCENT_TUBE, rl("item/fluorescent_tube.obj.ie"))
+		ieObjBuilder(IEItems.Misc.FLUORESCENT_TUBE, rl("item/fluorescent_tube.obj.ie"))
+				.callback(FluorescentTubeCallbacks.INSTANCE)
+				.end()
 				.transforms(modLoc("item/fluorescent_tube"));
 		getBuilder(IEItems.Misc.CORESAMPLE)
 				.customLoader(SpecialModelBuilder.forLoader(CoresampleLoader.LOCATION));
@@ -378,11 +390,6 @@ public class ItemModels extends TRSRItemModelProvider
 				.customLoader(IEOBJBuilder::begin)
 				.flipV(true)
 				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()));
-	}
-
-	private TRSRModelBuilder ieObj(ItemLike item, ResourceLocation model)
-	{
-		return ieObjBuilder(item, model).end();
 	}
 
 	private TRSRModelBuilder getBuilder(ItemLike item)
