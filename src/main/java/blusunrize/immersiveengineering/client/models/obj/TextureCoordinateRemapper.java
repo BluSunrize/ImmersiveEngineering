@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
+import blusunrize.immersiveengineering.mixin.accessors.client.obj.OBJModelAccess;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.client.model.obj.OBJModel;
 
@@ -29,7 +30,7 @@ public class TextureCoordinateRemapper
 
 	public TextureCoordinateRemapper(OBJModel model, ShaderCase shaderCase)
 	{
-		this.texCoords = OBJHelper.getTexCoords(model);
+		this.texCoords = ((OBJModelAccess)model).getTexCoords();
 		this.shaderCase = shaderCase;
 		this.backup = new HashMap<>();
 		this.flipV = model.flipV;

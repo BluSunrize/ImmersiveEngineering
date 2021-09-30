@@ -13,9 +13,11 @@ import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.models.obj.GeneralIEOBJModel.GroupKey;
-import blusunrize.immersiveengineering.client.models.obj.OBJHelper.MeshWrapper;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
+import blusunrize.immersiveengineering.mixin.accessors.client.obj.ModelMeshAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.obj.ModelObjectAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.obj.OBJModelAccess;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -225,10 +227,10 @@ public class SpecificIEOBJModel<T> implements BakedModel
 									 TextureCoordinateRemapper coordinateRemapper,
 									 Transformation transform)
 	{
-		List<MeshWrapper> meshes = OBJHelper.getMeshes(modelObject);
-		for(MeshWrapper mesh : meshes)
+		List<ModelMeshAccess> meshes = ((ModelObjectAccess)modelObject).getMeshes();
+		for(ModelMeshAccess mesh : meshes)
 		{
-			MaterialLibrary.Material mat = mesh.getMaterial();
+			MaterialLibrary.Material mat = mesh.getMat();
 			if(mat==null)
 				continue;
 			TextureAtlasSprite texture = spriteGetter.apply(
@@ -242,8 +244,8 @@ public class SpecificIEOBJModel<T> implements BakedModel
 				boolean drawFace = coordinateRemapper.remapCoord(face);
 				if(drawFace)
 				{
-					Pair<BakedQuad, Direction> quad = OBJHelper.makeQuad(
-							baseModel.getBaseModel(), face, tintIndex, colorTint, mat.ambientColor, texture, transform
+					Pair<BakedQuad, Direction> quad = ((OBJModelAccess)baseModel.getBaseModel()).invokeMakeQuad(
+							face, tintIndex, colorTint, mat.ambientColor, texture, transform
 					);
 					if(quad.getRight()==null)
 						modelBuilder.addGeneralQuad(quad.getLeft());

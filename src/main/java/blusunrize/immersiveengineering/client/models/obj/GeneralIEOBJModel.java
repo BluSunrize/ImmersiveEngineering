@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BlockCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.mixin.accessors.client.obj.OBJModelAccess;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -210,7 +211,7 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 
 	public Map<String, ModelGroup> getGroups()
 	{
-		return OBJHelper.getGroups(baseModel);
+		return ((OBJModelAccess)baseModel).getParts();
 	}
 
 	public OBJModel getBaseModel()

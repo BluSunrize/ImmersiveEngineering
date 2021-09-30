@@ -38,6 +38,10 @@
     "accessors.client.PlayerControllerAccess",
     "accessors.client.RenderTypeAccess",
     "accessors.client.WorldRendererAccess",
+    "accessors.client.obj.ModelGroupAccess",
+    "accessors.client.obj.ModelMeshAccess",
+    "accessors.client.obj.ModelObjectAccess",
+    "accessors.client.obj.OBJModelAccess",
     "coremods.client.BipedModelMixin",
     "coremods.client.WorldRendererMixin"
   ],
