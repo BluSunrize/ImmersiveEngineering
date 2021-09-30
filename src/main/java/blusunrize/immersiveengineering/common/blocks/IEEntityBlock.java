@@ -44,29 +44,45 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
+import java.util.function.BiFunction;
 import java.util.List;
 
-public abstract class IEEntityBlock extends IEBaseBlock implements IColouredBlock, EntityBlock
+public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements IColouredBlock, EntityBlock
 {
 	private boolean hasColours = false;
+	private final BiFunction<BlockPos, BlockState, T> makeEntity;
+	private BEClassInspectedData classData;
 
-	public IEEntityBlock(Block.Properties blockProps)
+	public IEEntityBlock(BiFunction<BlockPos, BlockState, T> makeEntity, Properties blockProps)
 	{
 		super(blockProps);
+		this.makeEntity = makeEntity;
+	}
+
+	public IEEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
+	{
+		this((bp, state) -> tileType.get().create(bp, state), blockProps);
 	}
 
 	@Nullable
 	@Override
-	public <T extends BlockEntity>
-	BlockEntityTicker<T> getTicker(Level world, BlockState state, BlockEntityType<T> type)
+	public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState)
+	{
+		return makeEntity.apply(pPos, pState);
+	}
+
+	@Nullable
+	@Override
+	public <T2 extends BlockEntity>
+	BlockEntityTicker<T2> getTicker(Level world, BlockState state, BlockEntityType<T2> type)
 	{
 		//TODO proper implementation
-		BlockEntity tempBE = type.create(BlockPos.ZERO, state);
-		if(tempBE instanceof IETickableBlockEntity)
+		if(getClassData().ticking())
 			return (level, pos, state1, be) -> ((IETickableBlockEntity)be).tick();
 		else
 			return null;
@@ -408,17 +424,16 @@ public abstract class IEEntityBlock extends IEBaseBlock implements IColouredBloc
 	@SuppressWarnings("deprecation")
 	public boolean hasAnalogOutputSignal(BlockState state)
 	{
-		return true;
+		return getClassData().hasComparatorOutput;
 	}
 
-	// final: If any block wants to override this in the future, make sure to adjust IEBaseTE#markDirty as required
 	@Override
 	@SuppressWarnings("deprecation")
-	public final int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos)
+	public int getAnalogOutputSignal(BlockState state, Level world, BlockPos pos)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof IEBlockInterfaces.IComparatorOverride)
-			return ((IEBlockInterfaces.IComparatorOverride)te).getComparatorInputOverride();
+		if(te instanceof IEBlockInterfaces.IComparatorOverride compOverride)
+			return compOverride.getComparatorInputOverride();
 		return 0;
 	}
 
@@ -428,8 +443,8 @@ public abstract class IEEntityBlock extends IEBaseBlock implements IColouredBloc
 	public int getSignal(BlockState blockState, BlockGetter world, BlockPos pos, Direction side)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput)te).getWeakRSOutput(side);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput rsOutput)
+			return rsOutput.getWeakRSOutput(side);
 		return 0;
 	}
 
@@ -438,8 +453,8 @@ public abstract class IEEntityBlock extends IEBaseBlock implements IColouredBloc
 	public int getDirectSignal(BlockState blockState, BlockGetter world, BlockPos pos, Direction side)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput)te).getStrongRSOutput(side);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput rsOutput)
+			return rsOutput.getStrongRSOutput(side);
 		return 0;
 	}
 
@@ -454,8 +469,8 @@ public abstract class IEEntityBlock extends IEBaseBlock implements IColouredBloc
 	public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
-			return ((IEBlockInterfaces.IRedstoneOutput)te).canConnectRedstone(side);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput rsOutput)
+			return rsOutput.canConnectRedstone(side);
 		return false;
 	}
 
@@ -476,5 +491,21 @@ public abstract class IEEntityBlock extends IEBaseBlock implements IColouredBloc
 					BlockPlaceContext subContext = BlockPlaceContext.at(context, pos, context.getClickedFace());
 					return w.getBlockState(pos).canBeReplaced(subContext);
 				});
+	}
+
+	private BEClassInspectedData getClassData()
+	{
+		if(this.classData==null)
+		{
+			T tempBE = makeEntity.apply(BlockPos.ZERO, getInitDefaultState());
+			this.classData = new BEClassInspectedData(
+					tempBE instanceof IETickableBlockEntity, tempBE instanceof IComparatorOverride
+			);
+		}
+		return this.classData;
+	}
+
+	private record BEClassInspectedData(boolean ticking, boolean hasComparatorOutput)
+	{
 	}
 }

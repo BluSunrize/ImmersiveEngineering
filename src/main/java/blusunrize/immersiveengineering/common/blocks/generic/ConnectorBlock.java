@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.EnergyConnectorBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +37,7 @@ import net.minecraftforge.fmllegacy.RegistryObject;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends GenericEntityBlock<T>
+public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends IEEntityBlock<T>
 {
 	public static final Supplier<Properties> PROPERTIES = () -> Block.Properties.of(Material.METAL)
 			.sound(SoundType.METAL)

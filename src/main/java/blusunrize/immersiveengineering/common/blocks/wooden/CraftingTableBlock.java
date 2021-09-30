@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
@@ -21,11 +21,11 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public class CraftingTableBlock extends GenericEntityBlock<CraftingTableBlockEntity>
+public class CraftingTableBlock extends IEEntityBlock<CraftingTableBlockEntity>
 {
 	private static final VoxelShape SHAPE = Shapes.or(
-			Shapes.box(0, 13 / 16., 0, 1, 1, 1),
-			Shapes.box(1 / 16., 0, 1 / 16., 15 / 16., 13 / 16., 15 / 16.)
+			Shapes.box(0, 13/16., 0, 1, 1, 1),
+			Shapes.box(1/16., 0, 1/16., 15/16., 13/16., 15/16.)
 	);
 
 	public CraftingTableBlock(Properties blockProps)

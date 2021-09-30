@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
@@ -311,6 +312,7 @@ public class RenderUtils
 		b.vertex(mat.last().pose(), x, y, z)
 				.color(1F, 1F, 1F, 1F)
 				.uv(u, v)
+				.overlayCoords(OverlayTexture.NO_OVERLAY)
 				.uv2(0, 0)
 				.normal(mat.last().normal(), nX, nY, nZ)
 				.endVertex();

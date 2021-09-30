@@ -156,6 +156,7 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	private boolean runCircuits()
 	{
 		boolean[] outPre = Arrays.copyOf(outputs, SIZE_COLORS);
+		Arrays.fill(registers, false);
 		this.inventory.stream().map(LogicCircuitBoardItem::getInstruction).filter(Objects::nonNull)
 				.forEachOrdered(instruction -> {
 					instruction.apply(this);

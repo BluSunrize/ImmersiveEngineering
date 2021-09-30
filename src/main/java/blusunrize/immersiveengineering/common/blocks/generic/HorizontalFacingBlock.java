@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -8,7 +9,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraftforge.fmllegacy.RegistryObject;
 
-public class HorizontalFacingBlock<T extends BlockEntity> extends GenericEntityBlock<T>
+public class HorizontalFacingBlock<T extends BlockEntity> extends IEEntityBlock<T>
 {
 	public HorizontalFacingBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
 	{

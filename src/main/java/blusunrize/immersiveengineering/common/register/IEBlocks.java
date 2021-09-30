@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.plant.PottedHempBlock;
 import blusunrize.immersiveengineering.common.blocks.stone.*;
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity.CrudeBlastFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
+import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.Util;
@@ -302,8 +303,8 @@ public final class IEBlocks
 
 	public static final class WoodenDevices
 	{
-		public static final BlockEntry<HorizontalFacingBlock<CraftingTableBlockEntity>> CRAFTING_TABLE = new BlockEntry<>(
-				"craftingtable", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, p -> new HorizontalFacingBlock<>(IEBlockEntities.CRAFTING_TABLE, p)
+		public static final BlockEntry<CraftingTableBlock> CRAFTING_TABLE = new BlockEntry<>(
+				"craftingtable", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, CraftingTableBlock::new
 		);
 		public static final BlockEntry<DeskBlock<ModWorkbenchBlockEntity>> WORKBENCH = new BlockEntry<>(
 				"workbench", DeskBlock.PROPERTIES, p -> new DeskBlock<>(IEBlockEntities.MOD_WORKBENCH, p)
@@ -314,24 +315,24 @@ public final class IEBlocks
 		public static final BlockEntry<GunpowderBarrelBlock> GUNPOWDER_BARREL = new BlockEntry<>(
 				"gunpowder_barrel", GunpowderBarrelBlock.PROPERTIES, GunpowderBarrelBlock::new
 		);
-		public static final BlockEntry<GenericEntityBlock<?>> WOODEN_BARREL = BlockEntry.barrel("wooden_barrel", false);
+		public static final BlockEntry<IEEntityBlock<?>> WOODEN_BARREL = BlockEntry.barrel("wooden_barrel", false);
 		public static final BlockEntry<TurntableBlock> TURNTABLE = new BlockEntry<>("turntable", STANDARD_WOOD_PROPERTIES, TurntableBlock::new);
-		public static final BlockEntry<GenericEntityBlock<WoodenCrateBlockEntity>> CRATE = new BlockEntry<>(
-				"crate", STANDARD_WOOD_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p)
+		public static final BlockEntry<IEEntityBlock<WoodenCrateBlockEntity>> CRATE = new BlockEntry<>(
+				"crate", STANDARD_WOOD_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p)
 		);
-		public static final BlockEntry<GenericEntityBlock<WoodenCrateBlockEntity>> REINFORCED_CRATE = new BlockEntry<>(
+		public static final BlockEntry<IEEntityBlock<WoodenCrateBlockEntity>> REINFORCED_CRATE = new BlockEntry<>(
 				"reinforced_crate",
 				() -> Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 1200000),
-				p -> new GenericEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p)
+				p -> new IEEntityBlock<>(IEBlockEntities.WOODEN_CRATE, p)
 		);
-		public static final BlockEntry<GenericEntityBlock<SorterBlockEntity>> SORTER = new BlockEntry<>(
-				"sorter", STANDARD_WOOD_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.SORTER, p)
+		public static final BlockEntry<IEEntityBlock<SorterBlockEntity>> SORTER = new BlockEntry<>(
+				"sorter", STANDARD_WOOD_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.SORTER, p)
 		);
 		public static final BlockEntry<ItemBatcherBlock> ITEM_BATCHER = new BlockEntry<>(
 				"item_batcher", STANDARD_WOOD_PROPERTIES, ItemBatcherBlock::new
 		);
-		public static final BlockEntry<GenericEntityBlock<FluidSorterBlockEntity>> FLUID_SORTER = new BlockEntry<>(
-				"fluid_sorter", STANDARD_WOOD_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.FLUID_SORTER, p)
+		public static final BlockEntry<IEEntityBlock<FluidSorterBlockEntity>> FLUID_SORTER = new BlockEntry<>(
+				"fluid_sorter", STANDARD_WOOD_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.FLUID_SORTER, p)
 		);
 		public static final BlockEntry<WindmillBlock> WINDMILL = new BlockEntry<>(
 				"windmill", STANDARD_WOOD_PROPERTIES_NO_OCCLUSION, WindmillBlock::new
@@ -418,24 +419,24 @@ public final class IEBlocks
 		public static final BlockEntry<HorizontalFacingBlock<ToolboxBlockEntity>> TOOLBOX = new BlockEntry<>(
 				"toolbox_block", METAL_PROPERTIES_NO_OVERLAY, p -> new HorizontalFacingBlock<>(IEBlockEntities.TOOLBOX, p)
 		);
-		public static final BlockEntry<GenericEntityBlock<CapacitorBlockEntity>> CAPACITOR_LV = new BlockEntry<>(
-				"capacitor_lv", DEFAULT_METAL_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.CAPACITOR_LV, p)
+		public static final BlockEntry<IEEntityBlock<CapacitorBlockEntity>> CAPACITOR_LV = new BlockEntry<>(
+				"capacitor_lv", DEFAULT_METAL_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.CAPACITOR_LV, p)
 		);
-		public static final BlockEntry<GenericEntityBlock<CapacitorBlockEntity>> CAPACITOR_MV = new BlockEntry<>(
-				"capacitor_mv", DEFAULT_METAL_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.CAPACITOR_MV, p)
+		public static final BlockEntry<IEEntityBlock<CapacitorBlockEntity>> CAPACITOR_MV = new BlockEntry<>(
+				"capacitor_mv", DEFAULT_METAL_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.CAPACITOR_MV, p)
 		);
-		public static final BlockEntry<GenericEntityBlock<CapacitorBlockEntity>> CAPACITOR_HV = new BlockEntry<>(
-				"capacitor_hv", DEFAULT_METAL_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.CAPACITOR_HV, p)
+		public static final BlockEntry<IEEntityBlock<CapacitorBlockEntity>> CAPACITOR_HV = new BlockEntry<>(
+				"capacitor_hv", DEFAULT_METAL_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.CAPACITOR_HV, p)
 		);
-		public static final BlockEntry<GenericEntityBlock<CapacitorCreativeBlockEntity>> CAPACITOR_CREATIVE = new BlockEntry<>(
-				"capacitor_creative", DEFAULT_METAL_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.CAPACITOR_CREATIVE, p)
+		public static final BlockEntry<IEEntityBlock<CapacitorCreativeBlockEntity>> CAPACITOR_CREATIVE = new BlockEntry<>(
+				"capacitor_creative", DEFAULT_METAL_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.CAPACITOR_CREATIVE, p)
 		);
-		public static final BlockEntry<GenericEntityBlock<?>> BARREL = BlockEntry.barrel("metal_barrel", true);
+		public static final BlockEntry<IEEntityBlock<?>> BARREL = BlockEntry.barrel("metal_barrel", true);
 		public static final BlockEntry<FluidPumpBlock> FLUID_PUMP = new BlockEntry<>(
 				"fluid_pump", METAL_PROPERTIES_NO_OCCLUSION, FluidPumpBlock::new
 		);
-		public static final BlockEntry<GenericEntityBlock<FluidPlacerBlockEntity>> FLUID_PLACER = new BlockEntry<>(
-				"fluid_placer", METAL_PROPERTIES_NO_OCCLUSION, p -> new GenericEntityBlock<>(IEBlockEntities.FLUID_PLACER, p)
+		public static final BlockEntry<IEEntityBlock<FluidPlacerBlockEntity>> FLUID_PLACER = new BlockEntry<>(
+				"fluid_placer", METAL_PROPERTIES_NO_OCCLUSION, p -> new IEEntityBlock<>(IEBlockEntities.FLUID_PLACER, p)
 		);
 		public static final BlockEntry<BlastFurnacePreheaterBlock> BLAST_FURNACE_PREHEATER = new BlockEntry<>(
 				"blastfurnace_preheater", METAL_PROPERTIES_NO_OCCLUSION, BlastFurnacePreheaterBlock::new
@@ -446,8 +447,8 @@ public final class IEBlocks
 		public static final BlockEntry<HorizontalFacingBlock<DynamoBlockEntity>> DYNAMO = new BlockEntry<>(
 				"dynamo", DEFAULT_METAL_PROPERTIES, p -> new HorizontalFacingBlock<>(IEBlockEntities.DYNAMO, p)
 		);
-		public static final BlockEntry<GenericEntityBlock<ThermoelectricGenBlockEntity>> THERMOELECTRIC_GEN = new BlockEntry<>(
-				"thermoelectric_generator", DEFAULT_METAL_PROPERTIES, p -> new GenericEntityBlock<>(IEBlockEntities.THERMOELECTRIC_GEN, p)
+		public static final BlockEntry<IEEntityBlock<ThermoelectricGenBlockEntity>> THERMOELECTRIC_GEN = new BlockEntry<>(
+				"thermoelectric_generator", DEFAULT_METAL_PROPERTIES, p -> new IEEntityBlock<>(IEBlockEntities.THERMOELECTRIC_GEN, p)
 		);
 		public static final BlockEntry<ElectricLanternBlock> ELECTRIC_LANTERN = new BlockEntry<>(
 				"electric_lantern", ElectricLanternBlock.PROPERTIES, ElectricLanternBlock::new
@@ -652,7 +653,7 @@ public final class IEBlocks
 			return simple(name, properties, $ -> {});
 		}
 
-		public static BlockEntry<GenericEntityBlock<?>> barrel(String name, boolean metal)
+		public static BlockEntry<IEEntityBlock<?>> barrel(String name, boolean metal)
 		{
 			return new BlockEntry<>(name, () -> BarrelBlock.getProperties(metal), p -> BarrelBlock.make(p, metal));
 		}

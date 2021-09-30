@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -31,7 +30,7 @@ import net.minecraft.world.phys.HitResult;
 
 import javax.annotation.Nullable;
 
-public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? super T>> extends GenericEntityBlock<T>
+public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? super T>> extends IEEntityBlock<T>
 {
 	private final MultiblockBEType<T> entityType;
 

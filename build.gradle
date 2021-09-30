@@ -100,7 +100,8 @@ task copyResourcesForIntelliJ(type: Copy) {
     into "$projectDir/out/production/resources"
 }
 
-processResources.finalizedBy replaceInModsToml, copyResourcesForIntelliJ
+processResources.finalizedBy copyResourcesForIntelliJ
+copyResourcesForIntelliJ.dependsOn replaceInModsToml
 
 minecraft {
     mappings channel: 'parchment', version: version_parchment

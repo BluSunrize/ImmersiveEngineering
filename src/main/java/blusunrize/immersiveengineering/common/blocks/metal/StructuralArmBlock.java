@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericEntityBlock;
+import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
@@ -18,7 +18,7 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
 
-public class StructuralArmBlock extends GenericEntityBlock<StructuralArmBlockEntity>
+public class StructuralArmBlock extends IEEntityBlock<StructuralArmBlockEntity>
 {
 	public static final Property<Direction> FACING = IEProperties.FACING_HORIZONTAL;
 
