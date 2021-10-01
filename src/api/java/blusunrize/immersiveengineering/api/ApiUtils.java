@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api;
 
+import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
@@ -21,6 +22,7 @@ import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.JsonUtils;
@@ -34,6 +36,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.Map;
 import java.util.Random;
 import java.util.TreeMap;
+import java.util.function.Predicate;
 
 import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
@@ -44,6 +47,11 @@ public class ApiUtils
 	 * ghostloading (in some cases the seed is set directly), this instance does not have this problem.
 	 */
 	public static final Random RANDOM = new Random();
+
+	/**
+	 * Only use during {@link BlockEntity#setRemoved()}, will be deprecated once Forge implements onChunkUnloaded again
+	 */
+	public static final SetRestrictedField<Predicate<Level>> IS_UNLOADING_BLOCK_ENTITIES = SetRestrictedField.common();
 
 	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
 	{

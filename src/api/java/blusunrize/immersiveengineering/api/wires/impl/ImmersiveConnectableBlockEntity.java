@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.api.wires.impl;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
@@ -74,7 +75,10 @@ public abstract class ImmersiveConnectableBlockEntity extends BlockEntity implem
 	public void setRemoved()
 	{
 		super.setRemoved();
-		ConnectorBlockEntityHelper.remove(level, this);
+		if(ApiUtils.IS_UNLOADING_BLOCK_ENTITIES.getValue().test(level))
+			ConnectorBlockEntityHelper.onChunkUnload(globalNet, this);
+		else
+			ConnectorBlockEntityHelper.remove(level, this);
 	}
 
 	private final Int2ObjectMap<LocalWireNetwork> cachedLocalNets = new Int2ObjectArrayMap<>();

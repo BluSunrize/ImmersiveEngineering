@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstone
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.ServerLevelDuck;
 import blusunrize.immersiveengineering.mixin.accessors.BETypeAccess;
 import blusunrize.immersiveengineering.mixin.accessors.BlockEntityAccess;
 import com.google.common.base.Preconditions;
@@ -193,7 +192,7 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	@Override
 	public final void setRemoved()
 	{
-		if(level instanceof ServerLevelDuck duck&&duck.immersiveengineering$isUnloadingBlockEntities())
+		if(ApiUtils.IS_UNLOADING_BLOCK_ENTITIES.getValue().test(level))
 			onChunkUnloadedIE();
 		else
 			setRemovedIE();

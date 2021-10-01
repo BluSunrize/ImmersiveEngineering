@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.*;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
@@ -29,7 +26,6 @@ import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidStackRecipeQuery;
 import blusunrize.immersiveengineering.api.tool.assembler.FluidTagRecipeQuery;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
-import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ItemAgeAccessor;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.utils.TemplateWorldCreator;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
@@ -65,6 +61,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEShaders;
+import blusunrize.immersiveengineering.common.util.ServerLevelDuck;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
@@ -78,7 +75,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
@@ -342,17 +338,13 @@ public class IEContent
 		WireDamageHandler.GET_WIRE_DAMAGE.setValue(IEDamageSources::causeWireDamage);
 		GlobalWireNetwork.SANITIZE_CONNECTIONS.setValue(IEServerConfig.WIRES.sanitizeConnections::get);
 		GlobalWireNetwork.VALIDATE_CONNECTIONS.setValue(IECommonConfig.validateNet::get);
-		ConveyorHandler.ITEM_AGE_ACCESS.setValue(new ItemAgeAccessor()
-		{
-			@Override
-			public void setAge(ItemEntity entity, int newAge)
-			{
-				((ItemEntityAccess)entity).setAge(newAge);
-			}
-		});
+		ConveyorHandler.ITEM_AGE_ACCESS.setValue((entity, newAge) -> ((ItemEntityAccess)entity).setAge(newAge));
 		TemplateWorldCreator.CREATOR.setValue(TemplateWorld::new);
 		ConveyorHandler.CONVEYOR_BLOCKS.setValue(rl -> MetalDevices.CONVEYORS.get(rl).get());
 		ConveyorHandler.BLOCK_ENTITY_TYPES.setValue(rl -> ConveyorBeltBlockEntity.BE_TYPES.get(rl).get());
+		ApiUtils.IS_UNLOADING_BLOCK_ENTITIES.setValue(
+				l -> l instanceof ServerLevelDuck duck&&duck.immersiveengineering$isUnloadingBlockEntities()
+		);
 		SetRestrictedField.lock(false);
 	}
 }
