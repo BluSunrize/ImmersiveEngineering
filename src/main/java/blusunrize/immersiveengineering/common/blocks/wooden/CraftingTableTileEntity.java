@@ -127,7 +127,7 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IIEInve
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 	}

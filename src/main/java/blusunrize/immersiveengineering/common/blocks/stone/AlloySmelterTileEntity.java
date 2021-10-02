@@ -274,7 +274,7 @@ public class AlloySmelterTileEntity extends MultiblockPartTileEntity<AlloySmelte
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 	}
 

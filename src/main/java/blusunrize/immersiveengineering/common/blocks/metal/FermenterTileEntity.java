@@ -376,7 +376,7 @@ public class FermenterTileEntity extends PoweredMultiblockTileEntity<FermenterTi
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);

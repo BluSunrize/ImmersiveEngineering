@@ -454,13 +454,10 @@ public class ClocheTileEntity extends IEBaseTileEntity implements TickableBlockE
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
-		if(slot==0)
-		{
-			this.setChanged();
-			this.markContainingBlockForUpdate(null);
-		}
+		this.setChanged();
+		this.markContainingBlockForUpdate(null);
 	}
 
 

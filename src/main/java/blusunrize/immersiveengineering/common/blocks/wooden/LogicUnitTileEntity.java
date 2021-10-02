@@ -151,7 +151,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements TickableBlo
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		redstoneCaps.values().forEach(cap -> cap.ifPresent(RedstoneBundleConnection::markDirty));

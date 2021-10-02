@@ -219,7 +219,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements TickableB
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);

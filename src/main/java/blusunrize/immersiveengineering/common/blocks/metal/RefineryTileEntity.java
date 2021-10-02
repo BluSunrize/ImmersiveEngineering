@@ -394,7 +394,7 @@ public class RefineryTileEntity extends PoweredMultiblockTileEntity<RefineryTile
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);

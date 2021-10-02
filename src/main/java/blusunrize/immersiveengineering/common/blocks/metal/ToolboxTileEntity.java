@@ -134,7 +134,7 @@ public class ToolboxTileEntity extends IEBaseTileEntity implements IStateBasedDi
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 	}

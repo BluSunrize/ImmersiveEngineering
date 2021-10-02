@@ -120,8 +120,7 @@ public class TileInventory implements Container
 	@Override
 	public void stopOpen(Player player)
 	{
-		for(int i = 0; i < getContainerSize(); i++)
-			inv.doGraphicalUpdates(i);
+		inv.doGraphicalUpdates();
 	}
 
 	@Override

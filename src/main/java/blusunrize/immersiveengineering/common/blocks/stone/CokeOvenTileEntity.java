@@ -305,7 +305,7 @@ public class CokeOvenTileEntity extends MultiblockPartTileEntity<CokeOvenTileEnt
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 	}
 

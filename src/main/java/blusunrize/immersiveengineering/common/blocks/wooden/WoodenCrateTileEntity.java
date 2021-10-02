@@ -195,7 +195,7 @@ public class WoodenCrateTileEntity extends IEBaseTileEntity implements IIEInvent
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 	}

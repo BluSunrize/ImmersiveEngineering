@@ -282,7 +282,7 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 	}
 

@@ -461,7 +461,7 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 	}
 

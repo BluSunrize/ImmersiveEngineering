@@ -403,7 +403,7 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);

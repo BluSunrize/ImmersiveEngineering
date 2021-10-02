@@ -88,7 +88,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 				if(!simulate)
 				{
 					inv.getInventory().set(offsetSlot, stack.split(accepted));
-					inv.doGraphicalUpdates(offsetSlot);
+					inv.doGraphicalUpdates();
 				}
 				else
 					stack.shrink(accepted);
@@ -99,7 +99,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 				if(!simulate)
 				{
 					inv.getInventory().set(offsetSlot, stack.copy());
-					inv.doGraphicalUpdates(offsetSlot);
+					inv.doGraphicalUpdates();
 				}
 				return ItemStack.EMPTY;
 			}
@@ -118,7 +118,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 					ItemStack newStack = stack.split(accepted);
 					newStack.grow(currentStack.getCount());
 					inv.getInventory().set(offsetSlot, newStack);
-					inv.doGraphicalUpdates(offsetSlot);
+					inv.doGraphicalUpdates();
 				}
 				else
 					stack.shrink(accepted);
@@ -131,7 +131,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 					ItemStack newStack = stack.copy();
 					newStack.grow(currentStack.getCount());
 					inv.getInventory().set(offsetSlot, newStack);
-					inv.doGraphicalUpdates(offsetSlot);
+					inv.doGraphicalUpdates();
 				}
 				return ItemStack.EMPTY;
 			}
@@ -161,7 +161,7 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 			else
 				currentStack = ItemStack.EMPTY;
 			inv.getInventory().set(offsetSlot, currentStack);
-			inv.doGraphicalUpdates(offsetSlot);
+			inv.doGraphicalUpdates();
 		}
 		return copy;
 	}
@@ -182,6 +182,6 @@ public class IEInventoryHandler implements IItemHandlerModifiable
 	public void setStackInSlot(int slot, @Nonnull ItemStack stack)
 	{
 		inv.getInventory().set(this.slotOffset+slot, stack);
-		inv.doGraphicalUpdates(this.slotOffset+slot);
+		inv.doGraphicalUpdates();
 	}
 }

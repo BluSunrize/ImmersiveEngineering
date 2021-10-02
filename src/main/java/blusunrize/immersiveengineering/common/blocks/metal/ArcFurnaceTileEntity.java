@@ -616,7 +616,7 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 	}
 

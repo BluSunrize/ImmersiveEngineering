@@ -417,7 +417,7 @@ public abstract class TurretTileEntity extends IEBaseTileEntity implements Ticka
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 	}
 

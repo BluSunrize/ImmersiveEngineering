@@ -414,7 +414,6 @@ public class IETileProviderBlock<T extends BlockEntity> extends IEBaseBlock impl
 		return 0;
 	}
 
-
 	@Override
 	@SuppressWarnings("deprecation")
 	public int getSignal(BlockState blockState, BlockGetter world, BlockPos pos, Direction side)

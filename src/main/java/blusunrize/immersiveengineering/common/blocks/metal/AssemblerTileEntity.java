@@ -521,7 +521,7 @@ public class AssemblerTileEntity extends PoweredMultiblockTileEntity<AssemblerTi
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);

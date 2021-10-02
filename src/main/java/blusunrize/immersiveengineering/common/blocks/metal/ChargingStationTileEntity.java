@@ -266,7 +266,7 @@ public class ChargingStationTileEntity extends IEBaseTileEntity implements Ticka
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);
