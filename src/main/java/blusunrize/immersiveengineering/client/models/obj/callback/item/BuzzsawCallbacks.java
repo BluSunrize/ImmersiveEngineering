@@ -98,7 +98,7 @@ public class BuzzsawCallbacks implements ItemCallback<BuzzsawCallbacks.Key>
 	@Override
 	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
-		if(!Tools.BUZZSAW.get().shouldRotate(entity, stack, transform))
+		if(!DrillCallbacks.shouldRotate(Tools.BUZZSAW, entity, stack, transform))
 			return MAT_FIXED;
 		float ticksPerRotation = 10f;
 		float angle = (entity.tickCount%ticksPerRotation+partialTicks)/ticksPerRotation*(float)(2*Math.PI);

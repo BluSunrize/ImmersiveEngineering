@@ -18,11 +18,9 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.ImmutableMultimap.Builder;
 import com.google.common.collect.Multimap;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -278,14 +276,6 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 		}
 	}
 
-	public boolean shouldRotate(LivingEntity entity, ItemStack stack, TransformType transform)
-	{
-		return entity!=null&&canToolBeUsed(stack)&&
-				(entity.getItemInHand(InteractionHand.MAIN_HAND)==stack||entity.getItemInHand(InteractionHand.OFF_HAND)==stack)&&
-				(transform==TransformType.FIRST_PERSON_RIGHT_HAND||transform==TransformType.FIRST_PERSON_LEFT_HAND||
-						transform==TransformType.THIRD_PERSON_RIGHT_HAND||transform==TransformType.THIRD_PERSON_LEFT_HAND);
-	}
-
 	protected abstract void damageHead(ItemStack head, int amount, LivingEntity living);
 
 	protected abstract double getAttackDamage(ItemStack stack, ItemStack head);
@@ -294,7 +284,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 
 	public abstract Tier getHarvestLevel(ItemStack stack, @Nullable Player player);
 
-	protected abstract boolean canToolBeUsed(ItemStack stack);
+	public abstract boolean canToolBeUsed(ItemStack stack);
 
 	protected abstract ItemStack getHead(ItemStack tool);
 
