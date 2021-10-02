@@ -154,18 +154,21 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements TickableBlo
 	public void doGraphicalUpdates()
 	{
 		this.setChanged();
-		redstoneCaps.values().forEach(cap -> cap.ifPresent(RedstoneBundleConnection::markDirty));
+		updateOutputs();
+		markContainingBlockForUpdate(null);
 	}
 
-	private boolean runCircuits()
+	private void updateOutputs()
 	{
 		boolean[] outPre = Arrays.copyOf(outputs, SIZE_COLORS);
 		Arrays.fill(registers, false);
-		this.inventory.stream().map(LogicCircuitBoardItem::getInstruction).filter(Objects::nonNull)
-				.forEachOrdered(instruction -> {
-					instruction.apply(this);
-				});
-		return !Arrays.equals(outPre, outputs);
+		Arrays.fill(outputs, false);
+		this.inventory.stream()
+				.map(LogicCircuitBoardItem::getInstruction)
+				.filter(Objects::nonNull)
+				.forEachOrdered(instruction -> instruction.apply(this));
+		if(!Arrays.equals(outPre, outputs))
+			markConnectorsDirty();
 	}
 
 	private void markConnectorsDirty()
@@ -173,7 +176,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements TickableBlo
 		redstoneCaps.values().forEach(cap -> cap.ifPresent(RedstoneBundleConnection::markDirty));
 	}
 
-	private Map<Direction, LazyOptional<RedstoneBundleConnection>> redstoneCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, LazyOptional<RedstoneBundleConnection>> redstoneCaps = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
@@ -194,8 +197,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements TickableBlo
 							{
 								inputs.put(side, sideInputs);
 								combinedInputs.reset();
-								if(runCircuits())
-									markConnectorsDirty();
+								updateOutputs();
 							}
 						}
 
