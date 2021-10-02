@@ -105,7 +105,7 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IIEIn
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 	}

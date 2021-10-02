@@ -190,7 +190,7 @@ public class WoodenCrateBlockEntity extends IEBaseBlockEntity implements IIEInve
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 	}

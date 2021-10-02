@@ -411,7 +411,7 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);

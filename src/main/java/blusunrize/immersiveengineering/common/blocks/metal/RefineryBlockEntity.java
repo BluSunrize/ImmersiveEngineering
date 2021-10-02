@@ -395,7 +395,7 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);

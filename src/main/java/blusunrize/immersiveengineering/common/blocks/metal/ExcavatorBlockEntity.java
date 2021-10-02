@@ -505,7 +505,7 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);

@@ -94,7 +94,7 @@ public class ModWorkbenchBlockEntity extends IEBaseBlockEntity implements IIEInv
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 	}
 

@@ -22,7 +22,7 @@ public interface IIEInventory
 
 	int getSlotLimit(int slot);
 
-	void doGraphicalUpdates(int slot);
+	void doGraphicalUpdates();
 
 	default NonNullList<ItemStack> getDroppedItems()
 	{

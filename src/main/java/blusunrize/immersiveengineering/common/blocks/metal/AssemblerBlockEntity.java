@@ -523,7 +523,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);

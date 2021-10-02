@@ -451,13 +451,10 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IETickableBl
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
-		if(slot==0)
-		{
-			this.setChanged();
-			this.markContainingBlockForUpdate(null);
-		}
+		this.setChanged();
+		this.markContainingBlockForUpdate(null);
 	}
 
 

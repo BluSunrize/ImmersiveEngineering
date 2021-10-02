@@ -168,7 +168,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 	}

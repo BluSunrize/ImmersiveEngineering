@@ -229,7 +229,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IETicka
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);

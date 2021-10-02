@@ -144,7 +144,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 	}

@@ -328,7 +328,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	}
 
 	@Override
-	public void doGraphicalUpdates(int slot)
+	public void doGraphicalUpdates()
 	{
 		this.setChanged();
 		this.markContainingBlockForUpdate(null);
