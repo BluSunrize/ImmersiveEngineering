@@ -92,13 +92,15 @@ public class CoresampleItem extends IEBaseItem
 						list.add(component.withStyle(ChatFormatting.DARK_GRAY));
 
 						component = new TextComponent("  ");
-						int yield = ExcavatorHandler.mineralVeinYield-data.getDepletion();
-						yield *= (1-mineral.failChance);
+						// Used to be called "yield", but apparently IntelliJ gets confused over whether we're in a
+						// switch-case or nor
+						int yield_ = ExcavatorHandler.mineralVeinYield-data.getDepletion();
+						yield_ *= (1-mineral.failChance);
 						if(ExcavatorHandler.mineralVeinYield==0)
 							component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.infinite"));
 						else
 							component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.yield",
-									yield));
+									yield_));
 						list.add(component.withStyle(ChatFormatting.DARK_GRAY));
 					}
 				});
