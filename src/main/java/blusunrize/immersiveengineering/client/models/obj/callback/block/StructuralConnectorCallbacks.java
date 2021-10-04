@@ -27,7 +27,13 @@ public class StructuralConnectorCallbacks implements BlockCallback<Float>
 	@Override
 	public Float extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
-		return blockEntity instanceof ConnectorStructuralBlockEntity connector?connector.rotation: 0F;
+		return blockEntity instanceof ConnectorStructuralBlockEntity connector?connector.rotation: getDefaultKey();
+	}
+
+	@Override
+	public Float getDefaultKey()
+	{
+		return 0F;
 	}
 
 	@Override

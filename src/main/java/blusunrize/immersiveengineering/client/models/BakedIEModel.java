@@ -27,7 +27,8 @@ public abstract class BakedIEModel implements BakedModel
 	public abstract List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData);
 
 	@Override
-	public final List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, Random rand)
+	@Nonnull
+	public final List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand)
 	{
 		return getQuads(state, side, rand, EmptyModelData.INSTANCE);
 	}

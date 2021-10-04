@@ -30,8 +30,14 @@ public class ProbeConnectorCallbacks implements BlockCallback<ProbeConnectorCall
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof ConnectorProbeBlockEntity probe))
-			return INVALID;
+			return getDefaultKey();
 		return new Key(probe.redstoneChannel, probe.redstoneChannelSending);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

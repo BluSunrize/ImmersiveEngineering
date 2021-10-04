@@ -22,6 +22,8 @@ public interface BlockCallback<T> extends IEOBJCallback<T>
 {
 	T extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity);
 
+	T getDefaultKey();
+
 	default boolean dependsOnLayer()
 	{
 		return false;

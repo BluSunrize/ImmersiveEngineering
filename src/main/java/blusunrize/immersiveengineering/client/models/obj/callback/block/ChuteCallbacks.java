@@ -38,12 +38,18 @@ public class ChuteCallbacks implements BlockCallback<ChuteCallbacks.Key>
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof ChuteBlockEntity chuteBE))
-			return INVALID;
+			return getDefaultKey();
 		List<Direction> solidWalls = new ArrayList<>();
 		for(Direction dir : DirectionUtils.BY_HORIZONTAL_INDEX)
 			if(!chuteBE.isInwardConveyor(dir))
 				solidWalls.add(dir);
 		return new Key(chuteBE.isDiagonal(), chuteBE.getFacing(), solidWalls);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

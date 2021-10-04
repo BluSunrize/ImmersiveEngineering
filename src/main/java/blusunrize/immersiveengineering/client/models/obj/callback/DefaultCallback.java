@@ -31,6 +31,12 @@ public class DefaultCallback<T> implements ItemCallback<T>, BlockCallback<T>
 	}
 
 	@Override
+	public T getDefaultKey()
+	{
+		return null;
+	}
+
+	@Override
 	public T extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		return null;

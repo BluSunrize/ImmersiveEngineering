@@ -27,8 +27,11 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
@@ -49,6 +52,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -79,25 +83,19 @@ import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlo
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.WIRE;
 import static net.minecraft.core.Direction.Axis.Y;
 
-public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<FeedthroughCacheKey>
+public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<Pair<FeedthroughCacheKey, Direction>>
 {
-	public static final Cache<FeedthroughCacheKey, SpecificFeedthroughModel> CACHE = CacheBuilder.newBuilder()
+	public static final LoadingCache<FeedthroughCacheKey, SpecificFeedthroughModel> CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(2, TimeUnit.MINUTES)
 			.maximumSize(100)
-			.build();
+			.build(CacheLoader.from(key -> new SpecificFeedthroughModel(key, s -> key.defaultColorMultipliers)));
 	private static final ModelProperty<FeedthroughData> FEEDTHROUGH = new ModelProperty<>();
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(FeedthroughCacheKey key)
+	public List<BakedQuad> getQuads(Pair<FeedthroughCacheKey, Direction> key)
 	{
-		SpecificFeedthroughModel ret = CACHE.getIfPresent(key);
-		if(ret==null)
-		{
-			ret = new SpecificFeedthroughModel(key, s -> key.defaultColorMultipliers);
-			CACHE.put(key, ret);
-		}
-		return ret.getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
+		return CACHE.getUnchecked(key.getFirst()).getQuads(null, key.getSecond(), Utils.RAND, EmptyModelData.INSTANCE);
 	}
 
 	@Nonnull
@@ -175,7 +173,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 	@Nullable
 	@Override
-	public FeedthroughCacheKey getKey(
+	public Pair<FeedthroughCacheKey, Direction> getKey(
 			@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData
 	)
 	{
@@ -195,9 +193,9 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			offset = data.offset;
 			colorMultiplier = data.colorMultiplier;
 		}
-		return new FeedthroughCacheKey(
+		return Pair.of(new FeedthroughCacheKey(
 				wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier
-		);
+		), side);
 	}
 
 	@Nonnull
@@ -291,7 +289,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 				new Vec3(.75F, .001F, .75F), new Vec3(.75F, .001F, .25F),
 				new Vec3(.25F, .001F, .25F), new Vec3(.25F, .001F, .75F)
 		};
-		List<List<BakedQuad>> quads = new ArrayList<>(6);
+		List<List<BakedQuad>> quads = new ArrayList<>(7);
 
 		public SpecificFeedthroughModel(ItemStack stack)
 		{

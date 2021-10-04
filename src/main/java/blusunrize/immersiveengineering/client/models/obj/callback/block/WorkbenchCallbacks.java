@@ -33,6 +33,12 @@ public class WorkbenchCallbacks implements BlockCallback<Boolean>
 		return master!=null&&master.getInventory().get(0).getItem() instanceof EngineersBlueprintItem;
 	}
 
+	@Override
+	public Boolean getDefaultKey()
+	{
+		return false;
+	}
+
 	private static final IEObjState normalDisplayList = new IEObjState(VisibilityList.show("cube0"));
 	private static final IEObjState blueprintDisplayList = new IEObjState(VisibilityList.show("cube0", "blueprint"));
 

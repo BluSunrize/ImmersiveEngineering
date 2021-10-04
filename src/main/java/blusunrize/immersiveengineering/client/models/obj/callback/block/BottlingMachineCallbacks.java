@@ -25,6 +25,12 @@ public class BottlingMachineCallbacks implements BlockCallback<Unit>
 	@Override
 	public Unit extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
+		return getDefaultKey();
+	}
+
+	@Override
+	public Unit getDefaultKey()
+	{
 		return Unit.INSTANCE;
 	}
 

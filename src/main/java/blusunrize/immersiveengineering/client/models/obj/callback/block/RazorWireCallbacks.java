@@ -27,10 +27,16 @@ public class RazorWireCallbacks implements BlockCallback<RazorWireCallbacks.Key>
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof RazorWireBlockEntity razorWire))
-			return INVALID;
+			return getDefaultKey();
 		return new Key(
 				razorWire.isStacked(), razorWire.isOnGround(), razorWire.renderWall(true), razorWire.renderWall(false)
 		);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

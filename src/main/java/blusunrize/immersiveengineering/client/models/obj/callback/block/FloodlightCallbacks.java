@@ -32,10 +32,16 @@ public class FloodlightCallbacks implements BlockCallback<FloodlightCallbacks.Ke
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof FloodlightBlockEntity floodlight))
-			return INVALID;
+			return getDefaultKey();
 		return new Key(
 				floodlight.facing, floodlight.getFacing(), floodlight.rotX, floodlight.rotY
 		);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

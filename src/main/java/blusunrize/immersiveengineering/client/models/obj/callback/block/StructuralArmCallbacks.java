@@ -48,13 +48,19 @@ public class StructuralArmCallbacks implements BlockCallback<StructuralArmCallba
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof StructuralArmBlockEntity structuralArm))
-			return INVALID;
+			return getDefaultKey();
 		return new Key(
 				structuralArm.getSlopePosition(),
 				structuralArm.getTotalLength(),
 				structuralArm.isOnCeiling(),
 				structuralArm.getFacing()
 		);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

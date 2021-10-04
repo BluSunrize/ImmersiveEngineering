@@ -57,11 +57,17 @@ public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof FluidPipeBlockEntity pipeBE))
-			return INVALID;
+			return getDefaultKey();
 		Map<Direction, ConnectionStyle> connections = new EnumMap<>(Direction.class);
 		for(Direction face : DirectionUtils.VALUES)
 			connections.put(face, pipeBE.getConnectionStyle(face));
 		return new Key(connections, pipeBE.cover==Blocks.AIR?null: pipeBE.cover, pipeBE.getColor());
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

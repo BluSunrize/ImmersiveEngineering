@@ -40,12 +40,18 @@ public class ClocheCallbacks implements BlockCallback<ClocheCallbacks.Key>
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof ClocheBlockEntity clocheHere))
-			return INVALID;
+			return getDefaultKey();
 		ClocheBlockEntity mainCloche = clocheHere.master();
 		if(mainCloche==null)
-			return INVALID;
+			return getDefaultKey();
 		ItemStack soil = mainCloche.getInventory().get(SLOT_SOIL);
 		return new Key(new ComparableItemStack(soil, true));
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

@@ -118,9 +118,11 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 	{
 		if(side!=null)
 			return null;
-		if(!extraData.hasProperty(keyProperty))
-			return null;
-		T key = extraData.getData(keyProperty);
+		T key;
+		if(extraData.hasProperty(keyProperty))
+			key = extraData.getData(keyProperty);
+		else
+			key = BlockCallback.castOrDefault(callback).getDefaultKey();
 		RenderType layerToCheck;
 		if(BlockCallback.castOrDefault(callback).dependsOnLayer())
 			layerToCheck = MinecraftForgeClient.getRenderLayer();

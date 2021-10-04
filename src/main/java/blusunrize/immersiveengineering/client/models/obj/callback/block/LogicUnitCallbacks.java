@@ -30,18 +30,25 @@ import java.util.List;
 public class LogicUnitCallbacks implements BlockCallback<LogicUnitCallbacks.Key>
 {
 	public static final LogicUnitCallbacks INSTANCE = new LogicUnitCallbacks();
+	private static final Key INVALID = new Key(IntLists.EMPTY_LIST);
 
 	@Override
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof LogicUnitBlockEntity logicUnit))
-			return new Key(IntLists.EMPTY_LIST);
+			return getDefaultKey();
 		IntList nonEmptySlots = new IntArrayList();
 		NonNullList<ItemStack> inventory = logicUnit.getInventory();
 		for(int i = 0; i < inventory.size(); i++)
 			if(!inventory.get(i).isEmpty())
 				nonEmptySlots.add(i);
 		return new Key(nonEmptySlots);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

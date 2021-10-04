@@ -31,8 +31,14 @@ public class RSConnectorCallbacks implements BlockCallback<RSConnectorCallbacks.
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof ConnectorRedstoneBlockEntity connector))
-			return INVALID;
+			return getDefaultKey();
 		return new Key(connector.ioMode, connector.redstoneChannel);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

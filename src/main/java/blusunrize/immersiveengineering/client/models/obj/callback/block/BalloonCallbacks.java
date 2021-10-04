@@ -30,8 +30,14 @@ public class BalloonCallbacks implements BlockCallback<BalloonCallbacks.Key>
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
 		if(!(blockEntity instanceof BalloonBlockEntity balloon))
-			return INVALID;
+			return getDefaultKey();
 		return new Key(balloon.style, balloon.colour0, balloon.colour1);
+	}
+
+	@Override
+	public Key getDefaultKey()
+	{
+		return INVALID;
 	}
 
 	@Override

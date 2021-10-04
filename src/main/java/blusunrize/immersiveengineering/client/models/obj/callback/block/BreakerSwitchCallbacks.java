@@ -26,7 +26,13 @@ public class BreakerSwitchCallbacks implements BlockCallback<Integer>
 	@Override
 	public Integer extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
 	{
-		return blockEntity instanceof BreakerSwitchBlockEntity breaker?breaker.rotation: 0;
+		return blockEntity instanceof BreakerSwitchBlockEntity breaker?breaker.rotation: getDefaultKey();
+	}
+
+	@Override
+	public Integer getDefaultKey()
+	{
+		return 0;
 	}
 
 	@Override

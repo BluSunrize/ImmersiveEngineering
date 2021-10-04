@@ -50,6 +50,12 @@ public class LanternCallbacks implements BlockCallback<Direction>
 	}
 
 	@Override
+	public Direction getDefaultKey()
+	{
+		return Direction.NORTH;
+	}
+
+	@Override
 	public IEObjState getIEOBJState(Direction direction)
 	{
 		return DISPLAY_LISTS.get(direction);
