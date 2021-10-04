@@ -188,11 +188,11 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		{
 			FeedthroughData data = extraData.getData(FEEDTHROUGH);
 			assert (data!=null);
-			baseState = data.baseState;
-			wire = data.wire;
-			facing = data.facing;
-			offset = data.offset;
-			colorMultiplier = data.colorMultiplier;
+			baseState = data.baseState();
+			wire = data.wire();
+			facing = data.facing();
+			offset = data.offset();
+			colorMultiplier = data.colorMultiplier();
 		}
 		return Pair.of(new FeedthroughCacheKey(
 				wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier

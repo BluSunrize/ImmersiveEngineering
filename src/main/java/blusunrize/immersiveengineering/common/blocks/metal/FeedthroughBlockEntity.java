@@ -271,21 +271,13 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 			return -1;
 	}
 
-	public static class FeedthroughData
+	public record FeedthroughData(
+			BlockState baseState,
+			WireType wire,
+			Direction facing,
+			int offset,
+			int colorMultiplier
+	)
 	{
-		public final BlockState baseState;
-		public final WireType wire;
-		public final Direction facing;
-		public final int offset;
-		public final int colorMultiplier;
-
-		public FeedthroughData(BlockState baseState, WireType wire, Direction facing, int offset, int colorMultiplier)
-		{
-			this.baseState = baseState;
-			this.wire = wire;
-			this.facing = facing;
-			this.offset = offset;
-			this.colorMultiplier = colorMultiplier;
-		}
 	}
 }
