@@ -22,13 +22,10 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.WireCo
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -130,13 +127,6 @@ public class IEWireTypes
 		public double getSlack()
 		{
 			return 1.005;
-		}
-
-		@Override
-		@OnlyIn(Dist.CLIENT)
-		public TextureAtlasSprite getIcon(Connection connection)
-		{
-			return iconDefaultWire;
 		}
 
 		@Override
@@ -291,12 +281,6 @@ public class IEWireTypes
 		public double getSlack()
 		{
 			return 1.001;
-		}
-
-		@Override
-		public TextureAtlasSprite getIcon(Connection connection)
-		{
-			return null;
 		}
 
 		@Override

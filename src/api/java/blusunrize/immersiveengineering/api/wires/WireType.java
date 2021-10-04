@@ -64,9 +64,6 @@ public abstract class WireType implements ILocalHandlerProvider
 	 */
 	public abstract double getSlack();
 
-	@OnlyIn(Dist.CLIENT)
-	public abstract TextureAtlasSprite getIcon(Connection connection);
-
 	public abstract int getMaxLength();
 
 	public abstract ItemStack getWireCoil(Connection con);
