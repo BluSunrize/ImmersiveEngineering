@@ -70,7 +70,7 @@ public class FeedthroughBlock extends ConnectorBlock<FeedthroughBlockEntity>
 						world.setBlockAndUpdate(posForOffset, feedthrough.stateForMiddle);
 					else
 					{
-						BlockState connector = WireApi.INFOS.get(feedthrough.reference).conn.get()
+						BlockState connector = WireApi.INFOS.get(feedthrough.reference).connector()
 								.setValue(IEProperties.FACING_ALL, offset < 0?dir: dir.getOpposite());
 						ConnectionPoint cpOnFeedthrough = new ConnectionPoint(centerPos,
 								FeedthroughBlockEntity.getIndexForOffset(offset));

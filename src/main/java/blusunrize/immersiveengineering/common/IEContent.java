@@ -145,7 +145,6 @@ public class IEContent
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;
-		IEWireTypes.setup();
 		EntityDataSerializers.registerSerializer(IEFluid.OPTIONAL_FLUID_STACK);
 
 		ClocheRenderFunctions.init();
@@ -182,6 +181,7 @@ public class IEContent
 	public static void init(ParallelDispatchEvent ev)
 	{
 		IEFluids.fixFluidFields();
+		IEWireTypes.setup();
 		/*WORLDGEN*/
 		ev.enqueueWork(
 				() -> {

@@ -90,7 +90,7 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	@Override
 	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
-		double l = INFOS.get(reference).connOffset;
+		double l = INFOS.get(reference).connOffset();
 		int factor;
 		if(here.equals(getPositivePoint()))
 			factor = 1;
@@ -151,7 +151,7 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 		else
 		{
 			return NonNullList.of(ItemStack.EMPTY,
-					new ItemStack(info.conn.get().getBlock(), 1));
+					new ItemStack(info.connector().getBlock(), 1));
 		}
 	}
 
@@ -203,7 +203,7 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 			return Shapes.block();
 		if(aabb==null)
 			aabb = EnergyConnectorBlockEntity.getConnectorBounds(
-					offset < 0?getFacing(): getFacing().getOpposite(), (float)INFOS.get(reference).connLength
+					offset < 0?getFacing(): getFacing().getOpposite(), (float)INFOS.get(reference).connLength()
 			);
 		return aabb;
 	}

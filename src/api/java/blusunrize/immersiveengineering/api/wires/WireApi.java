@@ -11,40 +11,31 @@ package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
 
 public final class WireApi
 {
 	public static final Map<WireType, FeedthroughModelInfo> INFOS = new HashMap<>();
 
-	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation texLoc, float[] uvs,
-													  double connLength, Supplier<BlockState> conn)
+	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation texLoc, double[] uvs,
+													  double connLength, BlockState conn)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(texLoc, uvs, connLength, connLength, conn));
+		INFOS.put(w, new FeedthroughModelInfo(conn, texLoc, uvs, connLength, connLength));
 	}
 
-	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation texLoc, float[] uvs,
-													  double connLength, double connOffset, Supplier<BlockState> conn)
+	public static void registerFeedthroughForWiretype(WireType w, ResourceLocation texLoc, double[] uvs,
+													  double connLength, double connOffset, BlockState conn)
 	{
-		INFOS.put(w, new FeedthroughModelInfo(texLoc, uvs, connLength, connOffset, conn));
+		INFOS.put(w, new FeedthroughModelInfo(conn, texLoc, uvs, connLength, connOffset));
 	}
 
 	@Nullable
@@ -82,45 +73,22 @@ public final class WireApi
 		return WIRES_BY_CATEGORY.get(category);
 	}
 
-	public static class FeedthroughModelInfo
+	public static record FeedthroughModelInfo(
+			BlockState connector,
+			ResourceLocation texture,
+			double[] uvs,
+			double connLength,
+			double connOffset
+	)
 	{
-		public Supplier<BlockState> conn;
-		final ResourceLocation texLoc;
-		@OnlyIn(Dist.CLIENT)
-		public TextureAtlasSprite tex;
-		public final double[] uvs = new double[4];
-		public final double connLength;
-		public final double connOffset;
-
-		public FeedthroughModelInfo(ResourceLocation texLoc, float[] uvs,
-									double connLength, double connOffset, Supplier<BlockState> conn)
-		{
-			this.texLoc = texLoc;
-			for(int i = 0; i < 4; i++)
-				this.uvs[i] = uvs[i];
-			this.connLength = connLength;
-			this.connOffset = connOffset;
-			this.conn = conn;
-			DistExecutor.runWhenOn(Dist.CLIENT,
-					() -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onModelBake));
-		}
-
 		public boolean isValidConnector(BlockState state)
 		{
-			BlockState conn = this.conn.get();
-			if(state.getBlock()!=conn.getBlock())
+			if(state.getBlock()!=connector.getBlock())
 				return false;
 			for(Property<?> p : state.getProperties())
-				if(p!=IEProperties.FACING_ALL&&p!=BlockStateProperties.WATERLOGGED&&!state.getValue(p).equals(conn.getValue(p)))
+				if(p!=IEProperties.FACING_ALL&&p!=BlockStateProperties.WATERLOGGED&&!state.getValue(p).equals(connector.getValue(p)))
 					return false;
 			return true;
-		}
-
-		@OnlyIn(Dist.CLIENT)
-		//TODO use more appropriate event
-		public void onModelBake(ModelBakeEvent evt)
-		{
-			tex = Minecraft.getInstance().getModelManager().getAtlas(InventoryMenu.BLOCK_ATLAS).getSprite(texLoc);
 		}
 	}
 }

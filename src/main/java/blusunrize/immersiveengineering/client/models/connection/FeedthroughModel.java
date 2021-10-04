@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.api.wires.WireApi;
+import blusunrize.immersiveengineering.api.wires.WireApi.FeedthroughModelInfo;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.models.BakedIEModel;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel.FeedthroughCacheKey;
@@ -382,15 +383,24 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			}
 			mat.translate(-.5, -.5, -.5);
 			BakedModel model = mc().getBlockRenderer().getBlockModelShaper()
-					.getBlockModel(info.conn.get().setValue(IEProperties.FACING_ALL, Direction.DOWN));
+					.getBlockModel(info.connector().setValue(IEProperties.FACING_ALL, Direction.DOWN));
 			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
-				conn.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.UP, info.tex, info.uvs, WHITE, false));
+				conn.add(ModelUtils.createBakedQuad(
+						DefaultVertexFormat.BLOCK, vertices, Direction.UP, getTexture(info), info.uvs(), WHITE, false
+				));
 			Function<BakedQuad, BakedQuad> transf = new QuadTransformer(new Transformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)
 				return conn.stream().map(transf).collect(Collectors.toList());
 			else
 				return conn;
+		}
+
+		private static TextureAtlasSprite getTexture(FeedthroughModelInfo info)
+		{
+			return Minecraft.getInstance()
+					.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+					.apply(info.texture());
 		}
 
 		@Nonnull
