@@ -9,8 +9,10 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
+import blusunrize.immersiveengineering.common.register.IEParticles;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.serialization.Codec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -18,6 +20,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleOptions.Deserializer;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,10 +29,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,7 +39,6 @@ import javax.annotation.Nullable;
 /**
  * @author BluSunrize - 21.02.2017
  */
-@OnlyIn(Dist.CLIENT)
 public class FluidSplashParticle extends TextureSheetParticle
 {
 	public FluidSplashParticle(Fluid fluid, ClientLevel worldIn, double xCoordIn, double yCoordIn, double zCoordIn,
@@ -115,7 +116,6 @@ public class FluidSplashParticle extends TextureSheetParticle
 		return ParticleRenderType.TERRAIN_SHEET;
 	}
 
-	@OnlyIn(Dist.CLIENT)
 	public static class Factory implements ParticleProvider<FluidSplashOptions>
 	{
 		@Nullable
@@ -141,6 +141,38 @@ public class FluidSplashParticle extends TextureSheetParticle
 		public FluidSplashOptions fromNetwork(@Nonnull ParticleType<FluidSplashOptions> particleTypeIn, FriendlyByteBuf buffer)
 		{
 			return new FluidSplashOptions(buffer.readResourceLocation());
+		}
+	}
+
+	public static record FluidSplashOptions(Fluid fluid) implements ParticleOptions
+	{
+		public static final Codec<FluidSplashOptions> CODEC = ResourceLocation.CODEC.xmap(
+				FluidSplashOptions::new, d -> d.fluid.getRegistryName()
+		);
+
+		public FluidSplashOptions(ResourceLocation name)
+		{
+			this(ForgeRegistries.FLUIDS.getValue(name));
+		}
+
+		@Nonnull
+		@Override
+		public ParticleType<?> getType()
+		{
+			return IEParticles.FLUID_SPLASH.get();
+		}
+
+		@Override
+		public void writeToNetwork(FriendlyByteBuf buffer)
+		{
+			buffer.writeResourceLocation(fluid.getRegistryName());
+		}
+
+		@Nonnull
+		@Override
+		public String writeToString()
+		{
+			return fluid.getRegistryName().toString();
 		}
 	}
 }

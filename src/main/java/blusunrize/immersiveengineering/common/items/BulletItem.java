@@ -19,12 +19,10 @@ import blusunrize.immersiveengineering.common.entities.RevolvershotFlareEntity;
 import blusunrize.immersiveengineering.common.entities.RevolvershotHomingEntity;
 import blusunrize.immersiveengineering.common.entities.WolfpackShotEntity;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -43,8 +41,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,7 +48,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.DoubleSupplier;
 
-public class BulletItem extends IEBaseItem implements ITextureOverride
+public class BulletItem extends IEBaseItem
 {
 	public static final ResourceLocation CASULL = new ResourceLocation(ImmersiveEngineering.MODID, "casull");
 	public static final ResourceLocation ARMOR_PIERCING = new ResourceLocation(ImmersiveEngineering.MODID, "armor_piercing");
@@ -213,21 +209,6 @@ public class BulletItem extends IEBaseItem implements ITextureOverride
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		return type.getColour(stack, pass);
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public String getModelCacheKey(ItemStack stack)
-	{
-		return null;
-	}
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public List<ResourceLocation> getTextures(ItemStack stack, String key)
-	{
-		//TODO is this still necessary?
-		return ImmutableList.copyOf(type.getTextures());
 	}
 
 	public IBullet getType()

@@ -10,14 +10,10 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 
-import java.util.List;
 import java.util.Optional;
 
 public class IEItemInterfaces
@@ -52,15 +48,6 @@ public class IEItemInterfaces
 			else
 				return null;
 		}
-	}
-
-	public interface ITextureOverride
-	{
-		@OnlyIn(Dist.CLIENT)
-		String getModelCacheKey(ItemStack stack);
-
-		@OnlyIn(Dist.CLIENT)
-		List<ResourceLocation> getTextures(ItemStack stack, String key);
 	}
 
 	public interface IBulletContainer

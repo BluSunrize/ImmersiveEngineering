@@ -12,6 +12,8 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.fx.*;
 import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.DataDeserializer;
+import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.FluidSplashOptions;
+import blusunrize.immersiveengineering.client.fx.FractalParticle.FractalOptions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleType;

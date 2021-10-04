@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseItem;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.ITextureOverride;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -43,18 +42,14 @@ import net.minecraft.world.level.block.WallBannerBlock;
 import net.minecraft.world.level.block.entity.BannerBlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverride
+public class ShaderItem extends IEBaseItem implements IShaderItem
 {
 	public ShaderItem()
 	{
@@ -170,7 +165,6 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 	}
 
 	@Override
-	@OnlyIn(Dist.CLIENT)
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list)
 	{
 		if(this.allowdedIn(tab))
@@ -204,33 +198,5 @@ public class ShaderItem extends IEBaseItem implements IShaderItem, ITextureOverr
 			}
 		}
 		return super.getColourForIEItem(stack, pass);
-	}
-
-	@Override
-	public String getModelCacheKey(ItemStack stack)
-	{
-		if(ItemNBTHelper.hasKey(stack, "shader_name"))
-			return ItemNBTHelper.getString(stack, "shader_name");
-		return null;
-	}
-
-	@Override
-	public List<ResourceLocation> getTextures(ItemStack stack, String key)
-	{
-		ResourceLocation name = getShaderName(stack);
-		if(ShaderRegistry.shaderRegistry.containsKey(name))
-		{
-			ShaderCase sCase = ShaderRegistry.shaderRegistry.get(name).getCase(new ResourceLocation(ImmersiveEngineering.MODID, "item"));
-			if(sCase!=null)
-			{
-				ShaderLayer[] layers = sCase.getLayers();
-				ArrayList<ResourceLocation> list = new ArrayList<>(layers.length);
-				for(ShaderLayer layer : layers)
-					list.add(layer.getTexture());
-				return list;
-			}
-		}
-//		return Arrays.asList(new ResourceLocation("immersiveengineering:item/shader_0"));
-		return Arrays.asList(new ResourceLocation("immersiveengineering:item/shader_0"), new ResourceLocation("immersiveengineering:item/shader_1"), new ResourceLocation("immersiveengineering:item/shader_2"));
 	}
 }
