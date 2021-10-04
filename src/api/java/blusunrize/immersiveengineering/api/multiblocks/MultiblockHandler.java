@@ -37,12 +37,10 @@ import java.util.function.Consumer;
  */
 public class MultiblockHandler
 {
-	private static final Direction[] DIRECTIONS = Direction.values();
-
 	static ArrayList<IMultiblock> multiblocks = new ArrayList<>();
 	static Map<ResourceLocation, IMultiblock> byUniqueName = new HashMap<>();
 
-	public static void registerMultiblock(IMultiblock multiblock)
+	public static synchronized void registerMultiblock(IMultiblock multiblock)
 	{
 		multiblocks.add(multiblock);
 		byUniqueName.put(multiblock.getUniqueName(), multiblock);

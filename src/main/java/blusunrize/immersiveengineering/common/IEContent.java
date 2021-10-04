@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.energy.DieselHandler;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
-import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
@@ -261,31 +260,6 @@ public class IEContent
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/yellorium"), 2000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/plutonium"), 4000);
 		//ThermoelectricHandler.registerSourceInKelvin(new ResourceLocation("forge:storage_blocks/blutonium"), 4000);
-
-		/*MULTIBLOCKS*/
-		MultiblockHandler.registerMultiblock(IEMultiblocks.FEEDTHROUGH);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.LIGHTNING_ROD);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.DIESEL_GENERATOR);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.REFINERY);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.MIXER);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.SQUEEZER);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.FERMENTER);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.BOTTLING_MACHINE);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.COKE_OVEN);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.ALLOY_SMELTER);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.BLAST_FURNACE);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.CRUSHER);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.SAWMILL);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.METAL_PRESS);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.ASSEMBLER);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.AUTO_WORKBENCH);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.BUCKET_WHEEL);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.ARC_FURNACE);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.SILO);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.SHEETMETAL_TANK);
-		MultiblockHandler.registerMultiblock(IEMultiblocks.EXCAVATOR_DEMO);
 
 		/*BLOCK ITEMS FROM CRATES*/
 		IEApi.forbiddenInCrates.add(

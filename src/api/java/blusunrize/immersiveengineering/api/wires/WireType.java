@@ -10,10 +10,7 @@ package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.wires.localhandlers.ILocalHandlerProvider;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -76,9 +73,6 @@ public abstract class WireType implements ILocalHandlerProvider
 	 */
 	@Nonnull
 	public abstract String getCategory();
-
-	@OnlyIn(Dist.CLIENT)
-	public static TextureAtlasSprite iconDefaultWire;
 
 	public static WireType COPPER;
 	public static WireType ELECTRUM;

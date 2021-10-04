@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
-import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
@@ -213,7 +212,6 @@ public class ClientProxy extends CommonProxy
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
 		RevolverCallbacks.retrieveRevolverTextures(event.getMap());
-		WireType.iconDefaultWire = event.getMap().getSprite(new ResourceLocation(MODID, "block/wire"));
 	}
 
 	private final Map<BlockPos, IEBlockEntitySound> tileSoundMap = new HashMap<>();

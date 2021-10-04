@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher;
 import blusunrize.immersiveengineering.api.multiblocks.BlockMatcher.Result;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock.TransformedMultiblock;
 import com.google.common.collect.ImmutableList;
@@ -143,6 +144,7 @@ public class IEMultiblocks
 	private static <T extends IMultiblock>
 	T register(T multiblock) {
 		IE_MULTIBLOCKS.add(multiblock);
+		MultiblockHandler.registerMultiblock(multiblock);
 		return multiblock;
 	}
 }
