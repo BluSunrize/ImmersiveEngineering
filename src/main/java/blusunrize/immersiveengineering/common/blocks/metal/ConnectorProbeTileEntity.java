@@ -57,7 +57,7 @@ public class ConnectorProbeTileEntity extends ConnectorRedstoneTileEntity
 	@Override
 	public void tick()
 	{
-		if(!level.isClientSide&&level.getGameTime()%8!=((getBlockPos().getX()^getBlockPos().getZ())&8))
+		if(!level.isClientSide&&level.getGameTime()%8==((getBlockPos().getX()^getBlockPos().getZ())&7))
 		{
 			int out = getComparatorSignal();
 			if(out!=lastOutput)
