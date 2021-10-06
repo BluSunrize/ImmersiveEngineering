@@ -10,23 +10,37 @@ package blusunrize.immersiveengineering.api.wires.redstone;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.localhandlers.IWorldTickable;
 import blusunrize.immersiveengineering.api.wires.localhandlers.LocalNetworkHandler;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.Level;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class RedstoneNetworkHandler extends LocalNetworkHandler
+public class RedstoneNetworkHandler extends LocalNetworkHandler implements IWorldTickable
 {
 	public static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "redstone");
 	private byte[] totalValues = new byte[16];
 	private final Map<ConnectionPoint, byte[]> emittedValues = new HashMap<>();
+	private boolean updateNextTick = false;
 
 	public RedstoneNetworkHandler(LocalWireNetwork local, GlobalWireNetwork global)
 	{
 		super(local, global);
+	}
+
+
+	@Override
+	public void update(Level w)
+	{
+		if(updateNextTick)
+		{
+			updateValues();
+			updateNextTick = false;
+		}
 	}
 
 	@Override
@@ -87,13 +101,13 @@ public class RedstoneNetworkHandler extends LocalNetworkHandler
 	@Override
 	public void onConnectorUnloaded(BlockPos p, IImmersiveConnectable iic)
 	{
-		updateValues();
+		updateNextTick = true;
 	}
 
 	@Override
 	public void onConnectorRemoved(BlockPos p, IImmersiveConnectable iic)
 	{
-		updateValues();
+		updateNextTick = true;
 	}
 
 	@Override
