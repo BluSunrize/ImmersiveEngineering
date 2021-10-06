@@ -60,7 +60,7 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
 		if(!recipe.itemOutput.isEmpty())
 			guiItemStacks.set(1, recipe.itemOutput);
-		if(recipe.fluidOutput!=null)
+		if(recipe.fluidOutput!=null && !recipe.fluidOutput.isEmpty())
 		{
 			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
 			guiFluidStacks.init(0, false, 106, 9, 16, 47, FluidAttributes.BUCKET_VOLUME/2, false, tankOverlay);
