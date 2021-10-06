@@ -400,8 +400,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public int getSignal(BlockState blockState, BlockGetter world, BlockPos pos, Direction side)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof IEBlockInterfaces.IRedstoneOutput rsOutput)
-			return rsOutput.getWeakRSOutput(side);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
+			return ((IEBlockInterfaces.IRedstoneOutput)te).getWeakRSOutput(side);
 		return 0;
 	}
 
@@ -410,8 +410,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public int getDirectSignal(BlockState blockState, BlockGetter world, BlockPos pos, Direction side)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof IEBlockInterfaces.IRedstoneOutput rsOutput)
-			return rsOutput.getStrongRSOutput(side);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
+			return ((IEBlockInterfaces.IRedstoneOutput)te).getStrongRSOutput(side);
 		return 0;
 	}
 
@@ -426,8 +426,8 @@ public abstract class IETileProviderBlock extends IEBaseBlock implements IColour
 	public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
-		if(te instanceof IEBlockInterfaces.IRedstoneOutput rsOutput)
-			return rsOutput.canConnectRedstone(side);
+		if(te instanceof IEBlockInterfaces.IRedstoneOutput)
+			return ((IEBlockInterfaces.IRedstoneOutput)te).canConnectRedstone(side);
 		return false;
 	}
 
