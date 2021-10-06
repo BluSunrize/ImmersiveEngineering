@@ -95,9 +95,8 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.flipV(true)
 				.end();
 		getBuilder(WatermillRenderer.NAME)
-				.customLoader(IEOBJBuilder::begin)
-				.modelLocation(rl("models/block/wooden_device/watermill.obj.ie"))
-				.callback(DynamicSubmodelCallbacks.INSTANCE)
+				.customLoader(OBJLoaderBuilder::begin)
+				.modelLocation(rl("models/block/wooden_device/watermill.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(WindmillRenderer.NAME)

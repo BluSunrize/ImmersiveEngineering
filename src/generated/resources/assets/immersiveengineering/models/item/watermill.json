@@ -1,6 +1,6 @@
 {
   "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/wooden_device/watermill.obj.ie",
+  "model": "immersiveengineering:models/block/wooden_device/watermill.obj",
   "flip-v": true,
   "transform": {
     "thirdperson_righthand": {

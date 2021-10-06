@@ -190,7 +190,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.texture("texture", modLoc("block/wooden_device/wallmount"))
 				.transforms(modLoc("item/wallmount"));
 
-		obj(WoodenDevices.WATERMILL, modLoc("block/wooden_device/watermill.obj.ie"))
+		obj(WoodenDevices.WATERMILL, modLoc("block/wooden_device/watermill.obj"))
 				.transforms(modLoc("item/watermill"));
 		obj(WoodenDevices.WINDMILL, modLoc("block/wooden_device/windmill.obj.ie"))
 				.transforms(modLoc("item/windmill"));
