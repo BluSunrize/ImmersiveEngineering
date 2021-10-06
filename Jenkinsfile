@@ -20,7 +20,7 @@ pipeline {
             steps {
                 echo 'Building and Deploying to Maven'
                 script {
-                    sh './gradlew publish --refresh-dependencies'
+                    sh './gradlew publish'
                 }
             }
         }
