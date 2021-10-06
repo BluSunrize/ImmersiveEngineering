@@ -213,6 +213,6 @@ public class ModelUtils
 			quads = model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
 		if(quads.isEmpty())//no quads at all D:
 			return null;
-		return quads.get(0).func_187508_a().getName();
+		return quads.get(0).a().getName();
 	}
 }

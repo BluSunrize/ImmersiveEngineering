@@ -131,11 +131,11 @@ public class VerticalCoveredConveyor extends VerticalConveyor
 
 			for(Direction f : DirectionUtils.VALUES)
 				for(BakedQuad q : model.getQuads(state, f, Utils.RAND))
-					if(q!=null&&q.func_187508_a()!=null)
-						sprites.put(f, q.func_187508_a());
+					if(q!=null&&q.a()!=null)
+						sprites.put(f, q.a());
 			for(BakedQuad q : model.getQuads(state, null, Utils.RAND))
-				if(q!=null&&q.func_187508_a()!=null&&q.getDirection()!=null)
-					sprites.put(q.getDirection(), q.func_187508_a());
+				if(q!=null&&q.a()!=null&&q.getDirection()!=null)
+					sprites.put(q.getDirection(), q.a());
 
 			Function<Direction, TextureAtlasSprite> getSprite = f -> sprites.getOrDefault(f, sprite);
 

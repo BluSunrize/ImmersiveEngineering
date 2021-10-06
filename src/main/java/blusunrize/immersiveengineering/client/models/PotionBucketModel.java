@@ -68,7 +68,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 			List<BakedQuad> newQuads = new ArrayList<>(baseQuads.size());
 			for(BakedQuad baseQuad : baseQuads)
 			{
-				if(baseQuad.func_187508_a().getName().equals(fluidMaskLocation))
+				if(baseQuad.a().getName().equals(fluidMaskLocation))
 					newQuads.add(recolorTransformer.apply(baseQuad));
 				else
 					newQuads.add(baseQuad);

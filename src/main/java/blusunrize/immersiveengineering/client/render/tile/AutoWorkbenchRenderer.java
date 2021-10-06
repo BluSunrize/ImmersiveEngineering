@@ -359,8 +359,8 @@ public class AutoWorkbenchRenderer extends BlockEntityRenderer<AutoWorkbenchTile
 			HashSet<String> textures = new HashSet<>();
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, EmptyModelData.INSTANCE);
 			for(BakedQuad quad : quads)
-				if(quad!=null&&quad.func_187508_a()!=null)
-					textures.add(quad.func_187508_a().getName().toString());
+				if(quad!=null&&quad.a()!=null)
+					textures.add(quad.a().getName().toString());
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);

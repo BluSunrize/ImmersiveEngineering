@@ -308,7 +308,7 @@ public class StructuralArmTileEntity extends IEBaseTileEntity implements IOBJMod
 		float upperHeight = (slopePosition+1F)/totalLength;
 		double lowerV = 16*lowerHeight;
 		double upperV = 16*upperHeight;
-		TextureAtlasSprite tas = quads.get(0).func_187508_a();
+		TextureAtlasSprite tas = quads.get(0).a();
 		VertexFormat format = DefaultVertexFormat.BLOCK;
 		quads = new ArrayList<>();
 		Matrix4 mat = new Matrix4(getFacing());
