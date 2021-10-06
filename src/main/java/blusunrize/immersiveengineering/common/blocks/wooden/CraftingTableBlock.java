@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
+import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -22,7 +22,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fml.RegistryObject;
 
-public class CraftingTableBlock extends GenericTileBlock<CraftingTableTileEntity>
+public class CraftingTableBlock extends IETileProviderBlock<CraftingTableTileEntity>
 {
 	private static final VoxelShape SHAPE = Shapes.or(
 			Shapes.box(0, 13 / 16., 0, 1, 1, 1),

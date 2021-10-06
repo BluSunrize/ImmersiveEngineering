@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.common.IETileTypes;
+import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightTileEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightTileEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
@@ -29,13 +30,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants.NBT;
 
-import javax.annotation.Nonnull;
-
-public class FakeLightBlock extends IETileProviderBlock
+public class FakeLightBlock extends IETileProviderBlock<FakeLightTileEntity>
 {
 	public FakeLightBlock()
 	{
-		super("fake_light", Properties.of(Material.AIR).noOcclusion().lightLevel(b -> 15), (b, p) -> null);
+		super("fake_light", IETileTypes.FAKE_LIGHT, Properties.of(Material.AIR).noOcclusion().lightLevel(b -> 15), (b, p) -> null);
 	}
 
 	@Override
@@ -60,12 +59,6 @@ public class FakeLightBlock extends IETileProviderBlock
 	public boolean canBeReplacedByLeaves(BlockState state, LevelReader world, BlockPos pos)
 	{
 		return true;
-	}
-
-	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		return new FakeLightTileEntity();
 	}
 
 	@Override

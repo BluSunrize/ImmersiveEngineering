@@ -29,6 +29,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -36,12 +37,12 @@ import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Lazy;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandler.IConveyorBlock
+public class ConveyorBlock extends IETileProviderBlock<ConveyorBeltTileEntity> implements ConveyorHandler.IConveyorBlock
 {
 	private final ResourceLocation typeName;
 	public static final EnumProperty<Direction> FACING = IEProperties.FACING_HORIZONTAL;
@@ -49,6 +50,7 @@ public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandle
 	public ConveyorBlock(ResourceLocation type)
 	{
 		super(ConveyorHandler.getRegistryNameFor(type).getPath(),
+				Lazy.of(() -> (BlockEntityType<ConveyorBeltTileEntity>)ConveyorHandler.getTEType(type)),
 				Properties.of(Material.METAL).sound(SoundType.METAL).strength(3.0F, 15.0F).noOcclusion(),
 				BlockItemIE::new);
 		this.typeName = type;
@@ -91,12 +93,6 @@ public class ConveyorBlock extends IETileProviderBlock implements ConveyorHandle
 					&&world.isEmptyBlock(pos.offset(0, 1, 0)))
 				subType.setConveyorDirection(ConveyorDirection.UP);
 		}
-	}
-
-	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		return new ConveyorBeltTileEntity(typeName);
 	}
 
 	@Override

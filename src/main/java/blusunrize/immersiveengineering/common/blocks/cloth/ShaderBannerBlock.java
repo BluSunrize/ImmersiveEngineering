@@ -8,36 +8,29 @@
 
 package blusunrize.immersiveengineering.common.blocks.cloth;
 
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-public abstract class ShaderBannerBlock extends IETileProviderBlock
+import javax.annotation.Nonnull;
+
+public abstract class ShaderBannerBlock extends IETileProviderBlock<ShaderBannerTileEntity>
 {
 	private static final VoxelShape SHAPE = Block.box(4.0D, 0.0D, 4.0D, 12.0D, 16.0D, 12.0D);
 
 	public ShaderBannerBlock(String name)
 	{
-		super(name, Block.Properties.of(Material.WOOL).strength(1.0F).sound(SoundType.WOOL).noCollission().noOcclusion(), (b, p) -> null);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		return new ShaderBannerTileEntity();
+		super(name, IETileTypes.SHADER_BANNER, Block.Properties.of(Material.WOOL).strength(1.0F).sound(SoundType.WOOL).noCollission().noOcclusion(), (b, p) -> null);
 	}
 
 	@Override

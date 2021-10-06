@@ -20,16 +20,19 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
 
-public abstract class IEMultiblockBlock extends IETileProviderBlock
+import java.util.function.Supplier;
+
+public abstract class IEMultiblockBlock<T extends BlockEntity> extends IETileProviderBlock<T>
 {
-	public IEMultiblockBlock(String name, Properties props)
+	public IEMultiblockBlock(String name, Properties props, Supplier<BlockEntityType<T>> bEntityType)
 	{
-		super(name, props, BlockItemIE::new);
+		super(name, bEntityType, props, BlockItemIE::new);
 		setMobility(PushReaction.BLOCK);
 	}
 

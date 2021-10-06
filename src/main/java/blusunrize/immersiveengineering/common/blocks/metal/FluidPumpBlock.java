@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
+import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
@@ -21,7 +21,7 @@ import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Material;
 
-public class FluidPumpBlock extends GenericTileBlock<FluidPumpTileEntity>
+public class FluidPumpBlock extends IETileProviderBlock<FluidPumpTileEntity>
 {
 	public FluidPumpBlock()
 	{

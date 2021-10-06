@@ -14,9 +14,7 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import java.util.ArrayList;
-import java.util.List;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -29,7 +27,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class FeedthroughBlock extends MiscConnectableBlock<FeedthroughTileEntity>
+import java.util.ArrayList;
+import java.util.List;
+
+public class FeedthroughBlock extends ConnectorBlock<FeedthroughTileEntity>
 {
 	public FeedthroughBlock()
 	{

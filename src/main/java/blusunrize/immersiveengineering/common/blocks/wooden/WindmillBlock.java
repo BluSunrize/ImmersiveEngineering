@@ -9,23 +9,20 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.material.Material;
 
-public class WindmillBlock extends IETileProviderBlock
+public class WindmillBlock extends IETileProviderBlock<WindmillTileEntity>
 {
 	public WindmillBlock(String name)
 	{
-		super(name, Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 5).noOcclusion(),
+		super(name, IETileTypes.WINDMILL, Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 5).noOcclusion(),
 				BlockItemIE::new);
 	}
 
@@ -34,12 +31,5 @@ public class WindmillBlock extends IETileProviderBlock
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		return new WindmillTileEntity();
 	}
 }

@@ -21,8 +21,8 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -128,7 +128,7 @@ public class EnergyConnectorTileEntity extends ImmersiveConnectableTileEntity im
 	@Override
 	public Property<Direction> getFacingProperty()
 	{
-		return MiscConnectableBlock.DEFAULT_FACING_PROP;
+		return ConnectorBlock.DEFAULT_FACING_PROP;
 	}
 
 	@Override

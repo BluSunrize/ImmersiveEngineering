@@ -12,22 +12,15 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEMultiblockBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartTileEntity;
 import net.minecraft.Util;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.fml.RegistryObject;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock
+public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> extends IEMultiblockBlock<T>
 {
-	private final RegistryObject<BlockEntityType<T>> type;
-
 	public StoneMultiBlock(String name, RegistryObject<BlockEntityType<T>> type, boolean solid)
 	{
 		super(name, Util.make(
@@ -37,8 +30,7 @@ public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> exte
 						base = base.noOcclusion();
 					return base;
 				}
-		));
-		this.type = type;
+		), type);
 		lightOpacity = 0;
 	}
 
@@ -47,12 +39,5 @@ public class StoneMultiBlock<T extends MultiblockPartTileEntity<? super T>> exte
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.ACTIVE);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		return type.get().create();
 	}
 }

@@ -11,9 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
@@ -22,7 +20,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 
-public class TransformerHVBlock extends MiscConnectableBlock<TransformerHVTileEntity>
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+public class TransformerHVBlock extends ConnectorBlock<TransformerHVTileEntity>
 {
 	public TransformerHVBlock()
 	{

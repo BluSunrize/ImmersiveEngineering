@@ -360,16 +360,16 @@ public class IEContent
 		WoodenDevices.workbench = new DeskBlock<>("workbench", IETileTypes.MOD_WORKBENCH);
 		WoodenDevices.circuitTable = new DeskBlock<>("circuit_table", IETileTypes.CIRCUIT_TABLE);
 		WoodenDevices.gunpowderBarrel = new GunpowderBarrelBlock("gunpowder_barrel");
-		WoodenDevices.woodenBarrel = new BarrelBlock("wooden_barrel", false);
+		WoodenDevices.woodenBarrel = BarrelBlock.make("wooden_barrel", false);
 		WoodenDevices.turntable = new TurntableBlock("turntable");
 		WoodenDevices.crate = new CrateBlock("crate", false);
 		WoodenDevices.reinforcedCrate = new CrateBlock("reinforced_crate", true);
 		WoodenDevices.logicUnit = new HorizontalFacingBlock<>("logic_unit", IETileTypes.LOGIC_UNIT,
 				standardWoodPropertiesNotSolid);
 
-		WoodenDevices.sorter = new SorterBlock("sorter", false);
+		WoodenDevices.sorter = SorterBlock.make("sorter", false);
 		WoodenDevices.itemBatcher = new ItemBatcherBlock(standardWoodProperties);
-		WoodenDevices.fluidSorter = new SorterBlock("fluid_sorter", true);
+		WoodenDevices.fluidSorter = SorterBlock.make("fluid_sorter", true);
 		WoodenDevices.windmill = new WindmillBlock("windmill");
 		WoodenDevices.watermill = new WatermillBlock("watermill");
 		WoodenDecoration.treatedPost = new PostBlock("treated_post", standardWoodPropertiesNoOverlay);
@@ -457,20 +457,20 @@ public class IEContent
 
 		Connectors.feedthrough = new FeedthroughBlock();
 
-		MetalDevices.fluidPlacer = new GenericTileBlock<>("fluid_placer", IETileTypes.FLUID_PLACER,
+		MetalDevices.fluidPlacer = new IETileProviderBlock<>("fluid_placer", IETileTypes.FLUID_PLACER,
 				metalPropertiesNotSolid);
 		MetalDevices.razorWire = new RazorWireBlock();
 		MetalDevices.toolbox = new HorizontalFacingBlock<>("toolbox_block", IETileTypes.TOOLBOX, metalPropertiesNoOverlay, ($1, $2) -> null);
-		MetalDevices.capacitorLV = new GenericTileBlock<>("capacitor_lv", IETileTypes.CAPACITOR_LV, defaultMetalProperties);
-		MetalDevices.capacitorMV = new GenericTileBlock<>("capacitor_mv", IETileTypes.CAPACITOR_MV, defaultMetalProperties);
-		MetalDevices.capacitorHV = new GenericTileBlock<>("capacitor_hv", IETileTypes.CAPACITOR_HV, defaultMetalProperties);
-		MetalDevices.capacitorCreative = new GenericTileBlock<>("capacitor_creative", IETileTypes.CAPACITOR_CREATIVE, defaultMetalProperties);
-		MetalDevices.barrel = new BarrelBlock("metal_barrel", true);
+		MetalDevices.capacitorLV = new IETileProviderBlock<>("capacitor_lv", IETileTypes.CAPACITOR_LV, defaultMetalProperties);
+		MetalDevices.capacitorMV = new IETileProviderBlock<>("capacitor_mv", IETileTypes.CAPACITOR_MV, defaultMetalProperties);
+		MetalDevices.capacitorHV = new IETileProviderBlock<>("capacitor_hv", IETileTypes.CAPACITOR_HV, defaultMetalProperties);
+		MetalDevices.capacitorCreative = new IETileProviderBlock<>("capacitor_creative", IETileTypes.CAPACITOR_CREATIVE, defaultMetalProperties);
+		MetalDevices.barrel = BarrelBlock.make("metal_barrel", true);
 		MetalDevices.fluidPump = new FluidPumpBlock();
 		MetalDevices.blastFurnacePreheater = new BlastFurnacePreheaterBlock();
 		MetalDevices.furnaceHeater = new FurnaceHeaterBlock(defaultMetalProperties);
 		MetalDevices.dynamo = new HorizontalFacingBlock<>("dynamo", IETileTypes.DYNAMO, defaultMetalProperties);
-		MetalDevices.thermoelectricGen = new GenericTileBlock<>("thermoelectric_generator", IETileTypes.THERMOELECTRIC_GEN,
+		MetalDevices.thermoelectricGen = new IETileProviderBlock<>("thermoelectric_generator", IETileTypes.THERMOELECTRIC_GEN,
 				defaultMetalProperties);
 		MetalDevices.electricLantern = new ElectricLanternBlock("electric_lantern");
 		MetalDevices.chargingStation = new HorizontalFacingBlock<>("charging_station", IETileTypes.CHARGING_STATION,

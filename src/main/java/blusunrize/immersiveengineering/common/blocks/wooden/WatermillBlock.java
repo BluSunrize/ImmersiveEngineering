@@ -9,30 +9,27 @@
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.shapes.CollisionContext;
 
-public class WatermillBlock extends IETileProviderBlock
+public class WatermillBlock extends IETileProviderBlock<WatermillTileEntity>
 {
 	public WatermillBlock(String name)
 	{
-		super(name, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 5).noOcclusion(),
+		super(name, IETileTypes.WATERMILL, Block.Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 5).noOcclusion(),
 				BlockItemIE::new);
 	}
 
@@ -41,13 +38,6 @@ public class WatermillBlock extends IETileProviderBlock
 	{
 		super.createBlockStateDefinition(builder);
 		builder.add(IEProperties.MULTIBLOCKSLAVE, IEProperties.FACING_HORIZONTAL);
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		return new WatermillTileEntity();
 	}
 
 	@Override

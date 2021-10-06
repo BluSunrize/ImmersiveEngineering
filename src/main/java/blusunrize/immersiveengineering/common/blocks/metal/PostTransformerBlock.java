@@ -12,9 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IPostBlock;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -26,9 +25,11 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+
+import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class PostTransformerBlock extends MiscConnectableBlock<PostTransformerTileEntity>
+public class PostTransformerBlock extends ConnectorBlock<PostTransformerTileEntity>
 {
 	public PostTransformerBlock()
 	{

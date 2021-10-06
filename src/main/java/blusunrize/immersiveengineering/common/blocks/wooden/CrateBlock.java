@@ -8,35 +8,23 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
-public class CrateBlock extends IETileProviderBlock
+public class CrateBlock extends IETileProviderBlock<WoodenCrateTileEntity>
 {
-
-	private boolean reinforced;
+	private final boolean reinforced;
 
 	public CrateBlock(String name, boolean reinforced)
 	{
-		super(name, Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 5),
-				BlockItemIE::new);
+		super(name, IETileTypes.WOODEN_CRATE, Properties.of(Material.WOOD).sound(SoundType.WOOD).strength(2, 5));
 		this.reinforced = reinforced;
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		return new WoodenCrateTileEntity();
 	}
 
 	@Override

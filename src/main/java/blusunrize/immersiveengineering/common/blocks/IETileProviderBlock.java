@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.*;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -32,6 +31,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
@@ -41,17 +41,34 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.fml.network.NetworkHooks;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
-public abstract class IETileProviderBlock extends IEBaseBlock implements IColouredBlock
+public class IETileProviderBlock<T extends BlockEntity> extends IEBaseBlock implements IColouredBlock
 {
 	private boolean hasColours = false;
+	private final Supplier<BlockEntityType<T>> tileType;
 
-	public IETileProviderBlock(String name, Block.Properties blockProps, BiFunction<Block, Item.Properties, Item> itemBlock)
+	public IETileProviderBlock(String name, Supplier<BlockEntityType<T>> tileType, Properties blockProps)
+	{
+		this(name, tileType, blockProps, BlockItemIE::new);
+	}
+
+	public IETileProviderBlock(String name, Supplier<BlockEntityType<T>> tileType, Properties blockProps,
+							   BiFunction<Block, Item.Properties, Item> itemBlock)
 	{
 		super(name, blockProps, itemBlock);
+		this.tileType = tileType;
+	}
+
+	@Nullable
+	@Override
+	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
+	{
+		return tileType.get().create();
 	}
 
 	@Override

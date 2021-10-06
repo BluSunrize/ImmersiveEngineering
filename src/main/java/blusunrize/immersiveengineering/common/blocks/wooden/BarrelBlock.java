@@ -8,45 +8,24 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.common.blocks.BlockItemIE;
+import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
-import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelTileEntity;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
-public class BarrelBlock extends IETileProviderBlock
+public class BarrelBlock
 {
-	private final boolean metal;
-
-	public BarrelBlock(String name, boolean metal)
-	{
-		super(name, getProperties(metal), BlockItemIE::new);
-		this.metal = metal;
-	}
-
-	@Nullable
-	@Override
-	public BlockEntity createTileEntity(@Nonnull BlockState state, @Nonnull BlockGetter world)
-	{
-		if(metal)
-			return new MetalBarrelTileEntity();
-		else
-			return new WoodenBarrelTileEntity();
-	}
-
-	private static Block.Properties getProperties(boolean metal)
-	{
+	public static IETileProviderBlock<?> make(String name, boolean metal) {
 		Block.Properties base;
 		if(metal)
 			base = Block.Properties.of(Material.METAL).sound(SoundType.METAL);
 		else
 			base = Block.Properties.of(Material.WOOD).sound(SoundType.WOOD);
-		return base.strength(2, 5);
+		base = base.strength(2, 5);
+		if (metal)
+			return new IETileProviderBlock<>(name, IETileTypes.METAL_BARREL, base);
+		else
+			return new IETileProviderBlock<>(name, IETileTypes.WOODEN_BARREL, base);
 	}
 }

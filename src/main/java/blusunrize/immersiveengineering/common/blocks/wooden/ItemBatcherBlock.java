@@ -2,12 +2,12 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.IETileTypes;
-import blusunrize.immersiveengineering.common.blocks.generic.GenericTileBlock;
+import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 
-public class ItemBatcherBlock extends GenericTileBlock<ItemBatcherTileEntity>
+public class ItemBatcherBlock extends IETileProviderBlock<ItemBatcherTileEntity>
 {
 	public ItemBatcherBlock(Properties blockProps)
 	{

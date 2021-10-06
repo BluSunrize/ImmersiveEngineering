@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -22,7 +22,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Locale;
 
-public class BasicConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends MiscConnectableBlock<T>
+public class BasicConnectorBlock<T extends BlockEntity & IImmersiveConnectable> extends ConnectorBlock<T>
 {
 	public BasicConnectorBlock(String name, RegistryObject<BlockEntityType<T>> type)
 	{

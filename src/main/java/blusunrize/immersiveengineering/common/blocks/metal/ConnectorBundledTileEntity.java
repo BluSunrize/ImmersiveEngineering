@@ -20,11 +20,9 @@ import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.MiscConnectableBlock;
 import com.google.common.collect.ImmutableList;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -39,6 +37,9 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -132,7 +133,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	@Override
 	public Property<Direction> getFacingProperty()
 	{
-		return MiscConnectableBlock.DEFAULT_FACING_PROP;
+		return ConnectorBlock.DEFAULT_FACING_PROP;
 	}
 
 	@Override
