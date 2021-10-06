@@ -111,9 +111,9 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 			if(!isRemoved()&&isRSOutput())
 			{
 				setChanged();
-				BlockState stateHere = level.getBlockState(worldPosition);
-				markContainingBlockForUpdate(stateHere);
-				level.updateNeighborsAt(worldPosition, stateHere.getBlock());
+				markContainingBlockForUpdate(getBlockState());
+				BlockPos offsetPos = worldPosition.relative(getFacing());
+				level.updateNeighborsAt(offsetPos, level.getBlockState(offsetPos).getBlock());
 			}
 		}
 	}
