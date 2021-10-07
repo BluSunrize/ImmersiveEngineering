@@ -1,4 +1,4 @@
-##### Version 1.16.5-5.0.4-pre
+##### Version 1.16.5-5.0.4-139
 - Improve behavior of conveyors near unloaded/non-ticking chunks (Malte)
 - Fix inconsistent redstone behavior of strip curtains (Malte)
 - Fix redstone connectors not working on the main input of comparators (Malte)
@@ -17,7 +17,7 @@
 - Fix pump vanishing when the bottling machine is broken (Malte)
 - Reduce block updates on multiblocks (Malte)
 - Fix Spanish translation for lightning rods (TwistedGate)
-- Fix recipes for graphite dust not loading with newer versions of JEI, closes #4954
+- Fix recipes for graphite dust not loading with newer versions of JEI (BluSunrize)
 
 ##### Version 1.16.5-5.0.3-138
 - Add Nether Fungi to the sawmill's recipes (BluSunrize)
