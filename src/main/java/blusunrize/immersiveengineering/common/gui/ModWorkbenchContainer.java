@@ -204,7 +204,8 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 	}
 
 	@Override
-	public boolean canTakeItemForPickAll(ItemStack pStack, Slot pSlot) {
-		return pSlot.container != this.inventoryBPoutput && super.canTakeItemForPickAll(pStack, pSlot);
+	public boolean canTakeItemForPickAll(ItemStack pStack, Slot pSlot)
+	{
+		return pSlot.container!=this.inventoryBPoutput&&super.canTakeItemForPickAll(pStack, pSlot);
 	}
 }
