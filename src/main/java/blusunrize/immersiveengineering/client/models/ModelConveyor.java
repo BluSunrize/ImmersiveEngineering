@@ -153,6 +153,8 @@ public class ModelConveyor extends BakedIEModel
 		float[] colourStripes = {1, 1, 1, 1};
 		if(stripeColour!=null)
 			System.arraycopy(stripeColour.getTextureDiffuseColors(), 0, colourStripes, 0, 3);
+		final TextureAtlasSprite topTexture = tex_conveyor_colour!=null?tex_conveyor_colour: tex_casing2;
+		final float[] topColor = stripeColour!=null?colourStripes: colour;
 
 		/**
 		 * Bottom & Top
@@ -185,7 +187,7 @@ public class ModelConveyor extends BakedIEModel
 						i==0||i==3?(conDir==ConveyorDirection.UP?.0625f: conDir==ConveyorDirection.DOWN?length-.0625f: 0): (conDir==ConveyorDirection.DOWN?length: 0),
 						0);
 			//Draw top casing back
-			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_casing0, new double[]{0, 1, 16, 0}, colour, false));
+			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), topTexture, new double[]{0, 1, 16, 0}, topColor, false));
 		}
 		if(corners[1])
 		{
@@ -194,7 +196,7 @@ public class ModelConveyor extends BakedIEModel
 			for(int i = 0; i < 4; i++)
 				vertices[i] = vertices[i].add(0, i==1||i==2?(conDir==ConveyorDirection.UP?length-.0625f: conDir==ConveyorDirection.DOWN?.0625f: 0): (conDir==ConveyorDirection.UP?length: 0), 0);
 			//Draw top casing front
-			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_casing0, new double[]{0, 1, 16, 0}, colour, false));
+			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), topTexture, new double[]{0, 1, 16, 0}, topColor, false));
 		}
 
 		/**
@@ -350,12 +352,6 @@ public class ModelConveyor extends BakedIEModel
 				new Vec3(.0625f, .1875f, .9375f),
 				new Vec3(.0625f, .1875f, .9375f-wallLength)
 		};
-		Vec3[] verticesColour = new Vec3[]{
-				new Vec3(0, .1876f, corners[1]?(1-length): (.9375f-wallLength)),
-				new Vec3(0, .1876f, corners[0]?1: .9375f),
-				new Vec3(.0625f, .1876f, corners[0]?1: .9375f),
-				new Vec3(.0625f, .1876f, corners[1]?(1-length): (.9375f-wallLength))
-		};
 		for(int i = 0; i < 4; i++)
 			if(conDir!=ConveyorDirection.HORIZONTAL)
 			{
@@ -363,14 +359,11 @@ public class ModelConveyor extends BakedIEModel
 				vertices[i] = vertices[i].add(0, f, 0);
 				vertices2[i] = vertices2[i].add(0, f, 0);
 				vertices3[i] = vertices3[i].add(0, f, 0);
-				verticesColour[i] = verticesColour[i].add(0, f, 0);
 			}
 		//Draw left walls
 		if(walls[0])
 		{
-			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_casing2, new double[]{0, 15, 1, 1}, colour, false));
-			if(tex_conveyor_colour!=null&&stripeColour!=null)
-				quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor_colour, new double[]{0, 15, 1, 1}, colourStripes, false));
+			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), topTexture, new double[]{0, 15, 1, 1}, topColor, false));
 			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, false));
 			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, true));
 		}
@@ -379,14 +372,11 @@ public class ModelConveyor extends BakedIEModel
 			vertices[i] = vertices[i].add(.9375f, 0, 0);
 			vertices2[i] = vertices2[i].add(.9375f, 0, 0);
 			vertices3[i] = vertices3[i].add(.9375f, 0, 0);
-			verticesColour[i] = verticesColour[i].add(.9375f, 0, 0);
 		}
 		//Draw right walls
 		if(walls[1])
 		{
-			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_casing2, new double[]{15, 15, 16, 1}, colour, false));
-			if(tex_conveyor_colour!=null&&stripeColour!=null)
-				quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, verticesColour), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor_colour, new double[]{15, 15, 16, 1}, colourStripes, false));
+			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), topTexture, new double[]{15, 15, 16, 1}, topColor, false));
 			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices2), Utils.rotateFacingTowardsDir(Direction.WEST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, false));
 			quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertices3), Utils.rotateFacingTowardsDir(Direction.EAST, facing), tex_casing1, new double[]{2, 15, 3, 1}, colour, true));
 		}
