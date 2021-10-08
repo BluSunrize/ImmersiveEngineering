@@ -23,6 +23,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -91,15 +92,30 @@ public class WirecutterItem extends IEBaseItem implements ITool
 		return enchantment==Enchantments.BLOCK_EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
 	}
 
+	// Block breaking
 	@Override
-	public boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player)
+	public boolean mineBlock(ItemStack itemstack, Level pLevel, BlockState state, BlockPos pPos, LivingEntity pEntityLiving)
 	{
-		BlockState state = player.level.getBlockState(pos);
 		boolean effective = state.is(IETags.wirecutterHarvestable);
 		itemstack.hurt(1, Utils.RAND, null);
 		return effective;
 	}
 
+	@Override
+	public float getDestroySpeed(ItemStack stack, BlockState state)
+	{
+		if(isCorrectToolForDrops(stack, state))
+			return 6;
+		return super.getDestroySpeed(stack, state);
+	}
+
+	@Override
+	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
+	{
+		return state.is(IETags.wirecutterHarvestable);
+	}
+
+	// Wire breaking
 	@Override
 	public InteractionResult useOn(UseOnContext context)
 	{
@@ -140,18 +156,6 @@ public class WirecutterItem extends IEBaseItem implements ITool
 		return InteractionResult.SUCCESS;
 	}
 
-	private void damageStack(ItemStack stack, Player player, InteractionHand hand)
-	{
-		int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
-		if(nbtDamage < IEServerConfig.TOOLS.cutterDurabiliy.get())
-			ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
-		else
-		{
-			player.broadcastBreakEvent(hand);
-			player.setItemInHand(hand, ItemStack.EMPTY);
-		}
-	}
-
 	@Nonnull
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
@@ -170,18 +174,16 @@ public class WirecutterItem extends IEBaseItem implements ITool
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 	}
 
-	@Override
-	public float getDestroySpeed(ItemStack stack, BlockState state)
+	private void damageStack(ItemStack stack, Player player, InteractionHand hand)
 	{
-		if(isCorrectToolForDrops(stack, state))
-			return 6;
-		return super.getDestroySpeed(stack, state);
-	}
-
-	@Override
-	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
-	{
-		return state.is(IETags.wirecutterHarvestable);
+		int nbtDamage = ItemNBTHelper.getInt(stack, Lib.NBT_DAMAGE)+1;
+		if(nbtDamage < IEServerConfig.TOOLS.cutterDurabiliy.get())
+			ItemNBTHelper.putInt(stack, Lib.NBT_DAMAGE, nbtDamage);
+		else
+		{
+			player.broadcastBreakEvent(hand);
+			player.setItemInHand(hand, ItemStack.EMPTY);
+		}
 	}
 
 	@Override
