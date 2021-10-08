@@ -34,7 +34,7 @@ import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEnt
 public class ClocheCallbacks implements BlockCallback<ClocheCallbacks.Key>
 {
 	public static final ClocheCallbacks INSTANCE = new ClocheCallbacks();
-	private static final Key INVALID = new Key(null);
+	private static final Key INVALID = new Key(new ComparableItemStack(ItemStack.EMPTY));
 
 	@Override
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
