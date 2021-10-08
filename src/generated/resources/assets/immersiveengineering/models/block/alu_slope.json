@@ -1,0 +1,11 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "immersiveengineering:block/metal_decoration/aluminum_scaffolding",
+    "texture": "immersiveengineering:block/metal_decoration/aluminum_scaffolding"
+  },
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/slope.obj.ie",
+  "flip-v": true,
+  "callbacks": "immersiveengineering:structural_arm"
+}

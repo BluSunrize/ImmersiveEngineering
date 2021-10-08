@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/slope_alu"
+      "model": "immersiveengineering:block/alu_slope"
     }
   }
 }

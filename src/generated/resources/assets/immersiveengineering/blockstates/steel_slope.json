@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/slope"
+      "model": "immersiveengineering:block/steel_slope"
     }
   }
 }

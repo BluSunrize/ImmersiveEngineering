@@ -3,6 +3,7 @@ package blusunrize.immersiveengineering.data.models;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
+import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
@@ -48,12 +49,12 @@ public class IEOBJBuilder<T extends ModelBuilder<T>> extends CustomLoaderBuilder
 	@Override
 	public JsonObject toJson(JsonObject json)
 	{
+		Preconditions.checkNotNull(callback);
 		json = internal.toJson(json);
 		json = super.toJson(json);
 		if(dynamic)
 			json.addProperty(DYNAMIC_KEY, true);
-		if(callback!=null)
-			json.addProperty(CALLBACKS_KEY, IEOBJCallbacks.getName(callback).toString());
+		json.addProperty(CALLBACKS_KEY, IEOBJCallbacks.getName(callback).toString());
 		return json;
 	}
 

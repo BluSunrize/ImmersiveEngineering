@@ -370,10 +370,10 @@ public final class IEBlocks
 		public static final BlockEntry<PostBlock> ALU_POST = BlockEntry.post("alu_post", METAL_PROPERTIES_NO_OVERLAY);
 		public static final BlockEntry<LanternBlock> LANTERN = new BlockEntry<>("lantern", LanternBlock.PROPERTIES, LanternBlock::new);
 		public static final BlockEntry<StructuralArmBlock> STEEL_SLOPE = new BlockEntry<>(
-				"steel_slope", DEFAULT_METAL_PROPERTIES, StructuralArmBlock::new
+				"steel_slope", METAL_PROPERTIES_NO_OCCLUSION, StructuralArmBlock::new
 		);
 		public static final BlockEntry<StructuralArmBlock> ALU_SLOPE = new BlockEntry<>(
-				"alu_slope", DEFAULT_METAL_PROPERTIES, StructuralArmBlock::new
+				"alu_slope", METAL_PROPERTIES_NO_OCCLUSION, StructuralArmBlock::new
 		);
 		public static final Map<CoverType, BlockEntry<MetalLadderBlock>> METAL_LADDER = new EnumMap<>(CoverType.class);
 		public static final Map<MetalScaffoldingType, BlockEntry<ScaffoldingBlock>> STEEL_SCAFFOLDING = new EnumMap<>(MetalScaffoldingType.class);

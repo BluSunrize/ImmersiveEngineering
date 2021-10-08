@@ -268,23 +268,8 @@ public class BlockStates extends ExtendedBlockstateProvider
 		}
 		createWallmount(MetalDecoration.ALU_WALLMOUNT, rl("block/metal_decoration/aluminum_wallmount"));
 		createWallmount(MetalDecoration.STEEL_WALLMOUNT, rl("block/metal_decoration/steel_wallmount"));
-		{
-			ModelFile steelModel = ieObjBuilder("block/slope.obj.ie")
-					.callback(StructuralArmCallbacks.INSTANCE)
-					.end()
-					.texture("texture", modLoc("block/metal_decoration/steel_scaffolding"))
-					.texture("particle", modLoc("block/metal_decoration/steel_scaffolding"))
-					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
-			ModelFile aluModel = ieObjBuilder("slope_alu", modLoc("block/slope.obj.ie"))
-					.end()
-					.texture("texture", modLoc("block/metal_decoration/aluminum_scaffolding"))
-					.texture("particle", modLoc("block/metal_decoration/aluminum_scaffolding"))
-					.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
-			createMultistateSingleModel(MetalDecoration.STEEL_SLOPE, new ConfiguredModel(steelModel));
-			itemModel(MetalDecoration.STEEL_SLOPE, steelModel);
-			createMultistateSingleModel(MetalDecoration.ALU_SLOPE, new ConfiguredModel(aluModel));
-			itemModel(MetalDecoration.ALU_SLOPE, aluModel);
-		}
+		createStructuralArm("block/metal_decoration/steel_scaffolding", MetalDecoration.STEEL_SLOPE);
+		createStructuralArm("block/metal_decoration/aluminum_scaffolding", MetalDecoration.ALU_SLOPE);
 
 		createRotatedBlock(StoneDecoration.CORESAMPLE, map -> obj("block/coresample.obj"),
 				ImmutableList.of());
@@ -441,6 +426,20 @@ public class BlockStates extends ExtendedBlockstateProvider
 		}
 		createRotatedBlock(MetalDevices.TOOLBOX, state -> obj("block/toolbox.obj"),
 				ImmutableList.of());
+	}
+
+	public void createStructuralArm(String texture, Supplier<? extends Block> block)
+	{
+		ResourceLocation objFile = modLoc("block/slope.obj.ie");
+		ResourceLocation textureRL = modLoc(texture);
+		ModelFile steelModel = ieObjBuilder(name(block), objFile)
+				.callback(StructuralArmCallbacks.INSTANCE)
+				.end()
+				.texture("texture", textureRL)
+				.texture("particle", textureRL)
+				.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
+		createMultistateSingleModel(block, new ConfiguredModel(steelModel));
+		itemModel(block, obj(name(block)+"_item", objFile, ImmutableMap.of("texture", textureRL)));
 	}
 
 	public void turret(Supplier<? extends Block> b, String loc)
