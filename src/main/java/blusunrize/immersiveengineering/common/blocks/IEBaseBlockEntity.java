@@ -200,10 +200,19 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	}
 
 	@Override
+	public void invalidateCaps()
+	{
+		super.invalidateCaps();
+		for(LazyOptional<?> cap : caps)
+			if(cap.isPresent())
+				cap.invalidate();
+		caps.clear();
+	}
+
+	@Override
 	public final void onChunkUnloaded()
 	{
 		onChunkUnloadedIE();
-		super.onChunkUnloaded();
 	}
 
 	public void onChunkUnloadedIE()
@@ -213,11 +222,6 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 
 	public void setRemovedIE()
 	{
-		super.setRemoved();
-		for(LazyOptional<?> cap : caps)
-			if(cap.isPresent())
-				cap.invalidate();
-		caps.clear();
 	}
 
 	@Nonnull
