@@ -57,7 +57,7 @@ public class BlockRenderLayers
 		setRenderLayer(Connectors.CONNECTOR_BUNDLED, RenderType.solid(), RenderType.translucent(), RenderType.cutout());
 		setRenderLayer(Connectors.CONNECTOR_PROBE, RenderType.solid(), RenderType.translucent(), RenderType.cutout());
 		ItemBlockRenderTypes.setRenderLayer(Connectors.FEEDTHROUGH.get(), rt -> true);
-		setRenderLayer(MetalDevices.RAZOR_WIRE, RenderType.cutout());
+		setRenderLayer(MetalDevices.RAZOR_WIRE, RenderType.cutout(), RenderType.solid());
 		setRenderLayer(MetalDevices.FLUID_PLACER, RenderType.cutout());
 		setRenderLayer(MetalDevices.FURNACE_HEATER, RenderType.cutout());
 		setRenderLayer(MetalDevices.FLUID_PIPE, RenderType.cutout());
