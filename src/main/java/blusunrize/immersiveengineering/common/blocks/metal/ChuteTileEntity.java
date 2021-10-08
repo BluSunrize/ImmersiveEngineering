@@ -351,9 +351,19 @@ public class ChuteTileEntity extends IEBaseTileEntity implements IStateBasedDire
 		{
 			IConveyorBelt sub = ((IConveyorTile)te).getConveyorSubtype();
 			if(sub!=null)
+			{
+				boolean isInputting = false;
 				for(Direction f2 : sub.sigTransportDirections())
 					if(f==f2.getOpposite())
-						return true;
+						isInputting = true;
+					else if(f2==Direction.UP)
+					{
+						isInputting = false;
+						break;
+					}
+				if(isInputting)
+					return true;
+			}
 		}
 		else if(te instanceof ChuteTileEntity)
 			return ((ChuteTileEntity)te).diagonal&&((ChuteTileEntity)te).getFacing()==f.getOpposite();
