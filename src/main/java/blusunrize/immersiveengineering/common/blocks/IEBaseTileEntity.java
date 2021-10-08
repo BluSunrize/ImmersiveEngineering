@@ -213,9 +213,9 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	}
 
 	@Override
-	public void setRemoved()
+	public void invalidateCaps()
 	{
-		super.setRemoved();
+		super.invalidateCaps();
 		for(LazyOptional<?> cap : caps)
 			if(cap.isPresent())
 				cap.invalidate();
