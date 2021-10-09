@@ -67,11 +67,9 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	public ItemStack mold = ItemStack.EMPTY;
 
 	@Override
-	public void tick()
+	public void tickClient()
 	{
-		super.tick();
-		if(isRSDisabled())
-			return;
+		super.tickClient();
 		for(MultiblockProcess<?> process : processQueue)
 		{
 			float maxTicks = process.maxTicks;
