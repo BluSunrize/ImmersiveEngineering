@@ -312,7 +312,7 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 		T master = master();
 		if(master!=null)
 		{
-			master.setChanged();
+			master.markChunkDirty();
 			if(blockUpdate)
 				master.markContainingBlockForUpdate(state);
 		}
