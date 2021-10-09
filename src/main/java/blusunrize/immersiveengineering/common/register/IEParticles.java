@@ -11,9 +11,6 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.fx.*;
-import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.DataDeserializer;
-import blusunrize.immersiveengineering.client.fx.FluidSplashParticle.FluidSplashOptions;
-import blusunrize.immersiveengineering.client.fx.FractalParticle.FractalOptions;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleType;
@@ -34,10 +31,10 @@ public class IEParticles
 	);
 
 	public static final RegistryObject<ParticleType<FluidSplashOptions>> FLUID_SPLASH = REGISTER.register(
-			"fluid_splash", () -> new IEParticleType<>(false, new DataDeserializer(), FluidSplashOptions.CODEC)
+			"fluid_splash", () -> new IEParticleType<>(false, new FluidSplashOptions.DataDeserializer(), FluidSplashOptions.CODEC)
 	);
 	public static final RegistryObject<ParticleType<FractalOptions>> FRACTAL = REGISTER.register(
-			"fractal", () -> new IEParticleType<>(false, new FractalParticle.DataDeserializer(), FractalOptions.CODEC)
+			"fractal", () -> new IEParticleType<>(false, new FractalOptions.DataDeserializer(), FractalOptions.CODEC)
 	);
 	public static final RegistryObject<SimpleParticleType> IE_BUBBLE = REGISTER.register(
 			"ie_bubble", () -> new SimpleParticleType(false)

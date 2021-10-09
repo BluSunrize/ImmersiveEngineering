@@ -9,10 +9,6 @@
 package blusunrize.immersiveengineering.client.fx;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.register.IEParticles;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.serialization.Codec;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
@@ -20,18 +16,12 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleOptions.Deserializer;
-import net.minecraft.core.particles.ParticleType;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -123,56 +113,6 @@ public class FluidSplashParticle extends TextureSheetParticle
 		public Particle createParticle(FluidSplashOptions typeIn, @Nonnull ClientLevel worldIn, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed)
 		{
 			return new FluidSplashParticle(typeIn.fluid(), worldIn, x, y, z, xSpeed, ySpeed, zSpeed);
-		}
-	}
-
-	public static class DataDeserializer implements Deserializer<FluidSplashOptions>
-	{
-		@Nonnull
-		@Override
-		public FluidSplashOptions fromCommand(@Nonnull ParticleType<FluidSplashOptions> particleTypeIn, StringReader reader) throws CommandSyntaxException
-		{
-			String name = reader.getString();
-			return new FluidSplashOptions(new ResourceLocation(name));
-		}
-
-		@Nonnull
-		@Override
-		public FluidSplashOptions fromNetwork(@Nonnull ParticleType<FluidSplashOptions> particleTypeIn, FriendlyByteBuf buffer)
-		{
-			return new FluidSplashOptions(buffer.readResourceLocation());
-		}
-	}
-
-	public static record FluidSplashOptions(Fluid fluid) implements ParticleOptions
-	{
-		public static final Codec<FluidSplashOptions> CODEC = ResourceLocation.CODEC.xmap(
-				FluidSplashOptions::new, d -> d.fluid.getRegistryName()
-		);
-
-		public FluidSplashOptions(ResourceLocation name)
-		{
-			this(ForgeRegistries.FLUIDS.getValue(name));
-		}
-
-		@Nonnull
-		@Override
-		public ParticleType<?> getType()
-		{
-			return IEParticles.FLUID_SPLASH.get();
-		}
-
-		@Override
-		public void writeToNetwork(FriendlyByteBuf buffer)
-		{
-			buffer.writeResourceLocation(fluid.getRegistryName());
-		}
-
-		@Nonnull
-		@Override
-		public String writeToString()
-		{
-			return fluid.getRegistryName().toString();
 		}
 	}
 }

@@ -25,8 +25,8 @@
 
 package blusunrize.immersiveengineering.common;
 
+import blusunrize.immersiveengineering.client.fx.FractalOptions;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
-import blusunrize.immersiveengineering.client.fx.FractalParticle.FractalOptions;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.player.Player;
