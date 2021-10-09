@@ -93,6 +93,7 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements TickableB
 			}
 			if(matched)
 			{
+				boolean anySent = false;
 				for(int slot = 0; slot < NUM_SLOTS; slot++)
 				{
 					ItemStack filterStack = this.filters.get(slot);
@@ -109,9 +110,11 @@ public class ItemBatcherTileEntity extends IEBaseTileEntity implements TickableB
 						outStack.shrink(outSize);
 						if(outStack.getCount() <= 0)
 							this.buffers.set(slot, ItemStack.EMPTY);
+						anySent = true;
 					}
 				}
-				redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
+				if(anySent)
+					redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
 			}
 		}
 	}

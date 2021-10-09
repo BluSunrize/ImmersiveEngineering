@@ -200,7 +200,7 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 	{
 		super.onNeighborBlockChange(otherPos);
 		DirectionalBlockPos attachedTo = getAttachedFace();
-		if(!otherPos.equals(attachedTo.getPosition()))
+		if(!otherPos.equals(attachedTo.getPosition())||attached.isPresent())
 			return;
 		byte[] overrideState = null;
 		for(IBundledProvider source : EXTRA_SOURCES)
