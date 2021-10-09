@@ -198,7 +198,7 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	{
 		super.onNeighborBlockChange(otherPos);
 		DirectionalBlockPos attachedTo = getAttachedFace();
-		if(!otherPos.equals(attachedTo.position()))
+		if(!otherPos.equals(attachedTo.position())||attached.isPresent())
 			return;
 		byte[] overrideState = null;
 		for(IBundledProvider source : EXTRA_SOURCES)
