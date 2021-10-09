@@ -144,6 +144,9 @@ minecraft {
                 immersiveengineering {
                     source sourceSets.main
                     source sourceSets.api
+                    // Never actually used on the server, but not having it apparently breaks cpw's silly "let's just
+                    // load the wrong supplier in DistExecutor"
+                    source sourceSets.manual
                 }
             }
         }
