@@ -88,12 +88,6 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public boolean canTickAny()
-	{
-		return !isDummy();
-	}
-
-	@Override
 	public void tickServer()
 	{
 		if(((level.getGameTime()&31)==(worldPosition.asLong()&31)||compVal < 0))

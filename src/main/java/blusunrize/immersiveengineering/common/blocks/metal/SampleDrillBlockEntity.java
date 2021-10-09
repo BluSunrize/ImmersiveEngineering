@@ -64,7 +64,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IETicka
 	@Override
 	public boolean canTickAny()
 	{
-		return dummy==0&&sample.isEmpty();
+		return sample.isEmpty();
 	}
 
 	@Override

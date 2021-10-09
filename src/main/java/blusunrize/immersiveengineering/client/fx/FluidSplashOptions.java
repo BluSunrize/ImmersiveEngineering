@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 
 public record FluidSplashOptions(Fluid fluid) implements ParticleOptions
 {
-	//TODO this is spammy on server startup
 	public static final Codec<FluidSplashOptions> CODEC = ResourceLocation.CODEC.xmap(
 			FluidSplashOptions::new, d -> d.fluid.getRegistryName()
 	);

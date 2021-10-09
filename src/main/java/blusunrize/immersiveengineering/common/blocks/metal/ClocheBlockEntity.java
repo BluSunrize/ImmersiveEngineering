@@ -124,7 +124,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IETickableBl
 	@Override
 	public boolean canTickAny()
 	{
-		return dummy == 0 && !isRSPowered();
+		return !isRSPowered();
 	}
 
 	@Override

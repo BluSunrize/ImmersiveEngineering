@@ -88,12 +88,6 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		super(type, pos, state);
 	}
 
-	@Override
-	public boolean canTickAny()
-	{
-		return !isDummy();
-	}
-
 	//TODO split sides more
 	@Override
 	public void tickCommon()

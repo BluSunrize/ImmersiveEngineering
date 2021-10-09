@@ -52,12 +52,6 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 	}
 
 	@Override
-	public boolean canTickAny()
-	{
-		return offset[0]==0&&offset[1]==0;
-	}
-
-	@Override
 	public void tickClient()
 	{
 		rotation += perTick;
