@@ -16,6 +16,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
@@ -177,10 +178,22 @@ public class ClientUtils
 
 	public static Transformation rotateTo(Direction d)
 	{
-		return new Transformation(null)
-				.blockCornerToCenter()
-				.compose(toModelRotation(d).getRotation())
+		return composeFixed(new Transformation(null).blockCornerToCenter(), toModelRotation(d).getRotation())
 				.blockCenterToCorner();
+	}
+
+	/**
+	 * Forge does weird things to the compose method, resulting in different classes between bin- and source-patched
+	 * environments. Specifically arch-loom compiles Transformation#compose into something that works fine when
+	 * binpatching, but crashes when source-patching. So re-implement the whole thing, that way nothing can go wrong.
+	 */
+	public static Transformation composeFixed(Transformation _this, Transformation arg)
+	{
+		if(_this.isIdentity()) return arg;
+		if(arg.isIdentity()) return _this;
+		Matrix4f m = _this.getMatrix();
+		m.multiply(arg.getMatrix());
+		return new Transformation(m);
 	}
 
 	public static BlockModelRotation toModelRotation(Direction d)

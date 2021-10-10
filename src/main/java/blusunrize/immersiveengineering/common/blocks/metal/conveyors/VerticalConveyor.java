@@ -338,13 +338,12 @@ public class VerticalConveyor extends BasicConveyor
 	@OnlyIn(Dist.CLIENT)
 	public Transformation modifyBaseRotationMatrix(Transformation matrix)
 	{
-		return matrix
-				.compose(new Transformation(
-						new Vector3f(0, 1, 0),
-						new Quaternion((float)Math.PI/2, 0, 0, false),
-						null,
-						null
-				));
+		return ClientUtils.composeFixed(matrix, new Transformation(
+				new Vector3f(0, 1, 0),
+				new Quaternion((float)Math.PI/2, 0, 0, false),
+				null,
+				null
+		));
 	}
 
 	public static ResourceLocation texture_on = new ResourceLocation("immersiveengineering:block/conveyor/vertical");

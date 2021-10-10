@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.lib.manual.ManualInstance;
@@ -282,7 +283,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		{
 			double dx = mouseX-lastX;
 			double dy = mouseY-lastY;
-			additionalTransform = forRotation(dx*80D/104, dy*0.8).compose(additionalTransform);
+			additionalTransform = ClientUtils.composeFixed(forRotation(dx*80D/104, dy*0.8), additionalTransform);
 		}
 	}
 

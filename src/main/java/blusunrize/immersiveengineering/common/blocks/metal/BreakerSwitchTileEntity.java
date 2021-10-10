@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
@@ -285,7 +286,7 @@ public class BreakerSwitchTileEntity extends ImmersiveConnectableTileEntity impl
 	@Override
 	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
 	{
-		return transform.compose(new Transformation(
+		return ClientUtils.composeFixed(transform, new Transformation(
 				null,
 				new Quaternion(0, 90*rotation, 0, true),
 				null, null

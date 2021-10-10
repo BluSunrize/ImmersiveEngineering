@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.data.models;
 
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.gson.*;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
@@ -106,23 +106,9 @@ public class TransformationMap
 			baseTransform = Transformation.identity();
 		for(Entry<Perspective, Transformation> e : transforms.entrySet())
 		{
-			Transformation transform = composeForgeLike(e.getValue(), baseTransform);
+			Transformation transform = ClientUtils.composeFixed(e.getValue(), baseTransform);
 			this.transforms.put(e.getKey(), transform);
 		}
-	}
-
-	/**
-	 * Composes two matrices, with special cases for one being the identity. There's a method for that in Forge in
-	 * principle, but calling it is rather inconsistent due to a naming conflict with official names and Forge making
-	 * an absolute mess of mappings and patches.
-	 */
-	private static Transformation composeForgeLike(Transformation a, Transformation b)
-	{
-		if(a.isIdentity()) return b;
-		if(b.isIdentity()) return a;
-		Matrix4f m = a.getMatrix();
-		m.multiply(b.getMatrix());
-		return new Transformation(m);
 	}
 
 	private Transformation readMatrix(JsonObject json, Gson GSON)

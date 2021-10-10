@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.IOBJModelCallback;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -102,7 +104,7 @@ public class ConnectorStructuralTileEntity extends ImmersiveConnectableTileEntit
 	@Override
 	public Transformation applyTransformations(BlockState object, String group, Transformation transform)
 	{
-		return transform.compose(new Transformation(
+		return ClientUtils.composeFixed(transform, new Transformation(
 				new Vector3f(0, 0, 0),
 				new Quaternion(0, rotation, 0, true),
 				null, null
