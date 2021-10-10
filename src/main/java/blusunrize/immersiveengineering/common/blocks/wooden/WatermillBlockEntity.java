@@ -97,7 +97,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 				if(watermill.rotation!=rotation)
 				{
 					watermill.rotation = rotation;
-					markContainingBlockForUpdate(null);
+					watermill.markContainingBlockForUpdate(null);
 				}
 				watermill.multiblock = true;
 			}
