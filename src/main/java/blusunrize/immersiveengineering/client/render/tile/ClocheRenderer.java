@@ -20,6 +20,7 @@ import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -54,7 +55,7 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 		ClocheRecipe recipe = tile.cachedRecipe.get();
 		if(recipe!=null)
 		{
-			RenderType type = RenderType.cutout();
+			RenderType type = Sheets.cutoutBlockSheet();
 			VertexConsumer baseBuilder = bufferIn.getBuffer(type);
 			matrixStack.pushPose();
 			matrixStack.translate(0, 1.0625, 0);

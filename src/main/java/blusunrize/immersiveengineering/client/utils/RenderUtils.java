@@ -130,6 +130,7 @@ public class RenderUtils
 							.vertex(quadCoords[i][0], quadCoords[i][1], quadCoords[i][2])
 							.color(rgba[0], rgba[1], rgba[2], rgba[3])
 							.uv(Float.intBitsToFloat(vData[size*i+uvOffset]), Float.intBitsToFloat(vData[size*i+uvOffset+1]))
+							.overlayCoords(OverlayTexture.NO_OVERLAY)
 							.uv2(l1, l2)
 							.normal((float)normal.x, (float)normal.y, (float)normal.z)
 							.endVertex();
