@@ -231,7 +231,7 @@ String buildVersionString() {
         }
         // Now use describe to get the number of commits since the last tag
         exec {
-            commandLine 'git', 'fetch', '-t'
+            commandLine 'git', 'fetch', '--force', '--tags'
         }
         def stdout = new ByteArrayOutputStream()
         exec {
