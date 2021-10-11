@@ -132,4 +132,10 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEn
 		}
 		return itemstack;
 	}
+
+	@Override
+	public boolean canTakeItemForPickAll(ItemStack pStack, Slot pSlot)
+	{
+		return pSlot.container!=this.craftResultInventory&&super.canTakeItemForPickAll(pStack, pSlot);
+	}
 }

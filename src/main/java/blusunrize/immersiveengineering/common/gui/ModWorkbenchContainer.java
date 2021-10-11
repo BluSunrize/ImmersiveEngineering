@@ -202,4 +202,10 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 		if(!world.isClientSide)
 			broadcastChanges();
 	}
+
+	@Override
+	public boolean canTakeItemForPickAll(ItemStack pStack, Slot pSlot)
+	{
+		return pSlot.container!=this.inventoryBPoutput&&super.canTakeItemForPickAll(pStack, pSlot);
+	}
 }
