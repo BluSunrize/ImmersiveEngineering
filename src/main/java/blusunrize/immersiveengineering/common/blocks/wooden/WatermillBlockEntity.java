@@ -54,7 +54,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	private final CapabilityReference<IRotationAcceptor> reverseOutputCap = CapabilityReference.forNeighbor(
 			this, IRotationAcceptor.CAPABILITY, this::getFacing
 	);
-	private static final int globalSyncDelay = 10*20;
+	private static final int globalSyncDelay = 20*20;
 	private int globalSyncDelayCounter = 1;
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
@@ -127,6 +127,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 
 	private void setPerTickAndAdvance(double newValue)
 	{
+		if(isDummy())
+			return;
 		if(newValue!=perTick)
 		{
 			globalSyncDelayCounter = globalSyncDelay;
@@ -138,7 +140,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 
 		if(globalSyncDelayCounter==0)
 		{
-			float newrot = syncedRot();
+			float newrot = (float)(level.getGameTime()*perTick);
 			if(rotation!=newrot)
 			{
 				rotation = newrot;
@@ -147,7 +149,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			}
 		}
 		else
-			rotation = (float)(rotation+perTick)%1;
+			rotation += perTick;
+		rotation %= 1;
 	}
 
 	private boolean canUse(@Nullable BlockEntity tileEntity)
@@ -358,10 +361,5 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 						level.removeBlock(pos2, false);
 					}
 				}
-	}
-
-	private float syncedRot()
-	{
-		return ((float)(level.getGameTime()*perTick))%1;
 	}
 }
