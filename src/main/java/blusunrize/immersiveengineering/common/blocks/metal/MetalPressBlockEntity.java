@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
@@ -22,7 +22,6 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -80,7 +79,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 			float transportTime = getTransportTime(maxTicks);
 			float pressTime = getPressTime(maxTicks);
 			float fProcess = process.processTick;
-			LocalPlayer localPlayer = ClientUtils.mc().player;
+			Player localPlayer = ImmersiveEngineering.proxy.getClientPlayer();
 			//Note: the >= and < check instead of a single == is because fProcess is an int and transportTime and pressTime are floats. Because of that it has to be windowed
 			if(fProcess >= transportTime&&fProcess < transportTime+1f)
 				level.playSound(localPlayer, getBlockPos(), IESounds.metalpress_piston, SoundSource.BLOCKS, .3F, 1);
