@@ -127,8 +127,6 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 
 	private void setPerTickAndAdvance(double newValue)
 	{
-		if(isDummy())
-			return;
 		if(newValue!=perTick)
 		{
 			globalSyncDelayCounter = globalSyncDelay;
