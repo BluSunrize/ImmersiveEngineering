@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -21,32 +20,18 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.HitResult;
 
-import javax.annotation.Nullable;
-
 public abstract class IEMultiblockBlock<T extends MultiblockPartBlockEntity<? super T>> extends IEEntityBlock<T>
 {
-	private final MultiblockBEType<T> entityType;
-
 	public IEMultiblockBlock(Properties props, MultiblockBEType<T> entityType)
 	{
 		super(entityType, props);
-		this.entityType = entityType;
 		setMobility(PushReaction.BLOCK);
 		lightOpacity = 0;
-	}
-
-	@Nullable
-	@Override
-	public <T2 extends BlockEntity> BlockEntityTicker<T2> getTicker(Level world, BlockState state, BlockEntityType<T2> type)
-	{
-		return entityType.getTicker(type, IETickableBlockEntity::tickStatic);
 	}
 
 	@Override

@@ -49,8 +49,8 @@ import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.function.BiFunction;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements IColouredBlock, EntityBlock
 {
@@ -81,9 +81,11 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	public <T2 extends BlockEntity>
 	BlockEntityTicker<T2> getTicker(Level world, BlockState state, BlockEntityType<T2> type)
 	{
+		if(makeEntity instanceof MultiblockBEType<?> multiBEType)
+			return multiBEType.getTicker(type, IETickableBlockEntity.makeTicker());
 		//TODO proper implementation
 		if(getClassData().ticking())
-			return (level, pos, state1, be) -> ((IETickableBlockEntity)be).tick();
+			return IETickableBlockEntity.makeTicker();
 		else
 			return null;
 	}
