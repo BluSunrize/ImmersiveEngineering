@@ -65,7 +65,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < 8; i++)
 			{
-				if(getSlotArea(side, i).contains((int) mouseX, (int) mouseY))
+				if(getSlotArea(side, i).contains((int)mouseX, (int)mouseY))
 				{
 					ItemStack stack = menu.getCarried();
 					if(stack.isEmpty())
@@ -150,7 +150,8 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 	}
 
-	protected Rect2i getSlotArea(int side, int i) {
+	protected Rect2i getSlotArea(int side, int i)
+	{
 		int x = leftPos+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 		int y = topPos+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 		return new Rect2i(x, y, 16, 16);
