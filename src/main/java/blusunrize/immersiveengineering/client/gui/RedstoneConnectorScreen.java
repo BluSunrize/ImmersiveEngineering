@@ -26,9 +26,9 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
@@ -109,7 +109,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 			}
 
 		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
+			renderTooltip(transform, tooltip, Optional.empty(), mouseX, mouseY);
 	}
 
 	@Override

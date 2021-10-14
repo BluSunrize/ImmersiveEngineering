@@ -25,11 +25,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerData;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -75,7 +75,7 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 				mouseX, mouseY, tooltip::add, t -> tooltip.add(TextUtils.applyFormat(t, ChatFormatting.GRAY))
 		);
 		if (!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
+			renderTooltip(transform, tooltip, Optional.empty(), mouseX, mouseY);
 		else
 			this.renderTooltip(transform, mouseX, mouseY);
 	}

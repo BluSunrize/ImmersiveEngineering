@@ -316,13 +316,13 @@ public class ManualScreen extends Screen
 	}
 
 	@Override
-	public void renderToolTip(PoseStack transform, List<? extends FormattedCharSequence> text, int x, int y, Font font)
+	public void renderTooltip(PoseStack transform, List<? extends FormattedCharSequence> text, int x, int y, Font font)
 	{
 		// Unscale the Z axis here, because otherwise the tooltip is out of view
 		transform.pushPose();
 		transform.scale(1, 1, 1/scaleFactor);
 		manual.tooltipRenderPre();
-		super.renderToolTip(transform, text, x, y, font);
+		super.renderTooltip(transform, text, x, y, font);
 		manual.tooltipRenderPost();
 		transform.popPose();
 	}
@@ -511,5 +511,12 @@ public class ManualScreen extends Screen
 	public boolean isPauseScreen()
 	{
 		return false;
+	}
+
+	// Override to make public
+	@Override
+	public void renderTooltip(PoseStack pPoseStack, ItemStack pItemStack, int pMouseX, int pMouseY)
+	{
+		super.renderTooltip(pPoseStack, pItemStack, pMouseX, pMouseY);
 	}
 }

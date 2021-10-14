@@ -20,9 +20,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -96,6 +96,6 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 			}
 
 		if(!tooltip.isEmpty())
-			GuiUtils.drawHoveringText(transform, tooltip, mouseX, mouseY, width, height, -1, font);
+			renderTooltip(transform, tooltip, Optional.empty(), mouseX, mouseY);
 	}
 }

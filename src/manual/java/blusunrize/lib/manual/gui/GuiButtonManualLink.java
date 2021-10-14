@@ -49,14 +49,14 @@ public class GuiButtonManualLink extends Button
 		isHovered = mx >= this.x&&my >= this.y&&mx < this.x+this.width&&my < this.y+this.height;
 		if(isHovered)
 		{
-			drawHovered(transform, mc, true, mx, my);
+			drawHovered(transform, mx, my);
 			for(GuiButtonManualLink btn : otherParts)
 				if(btn!=this)
-					btn.drawHovered(transform, mc, false, mx, my);
+					btn.drawHovered(transform, mx, my);
 		}
 	}
 
-	private void drawHovered(PoseStack transform, Minecraft mc, boolean mouse, int mx, int my)
+	private void drawHovered(PoseStack transform, int mx, int my)
 	{
 		Font font = gui.manual.fontRenderer();
 		font.draw(transform, localized, x, y, gui.manual.getHighlightColour());
@@ -65,7 +65,7 @@ public class GuiButtonManualLink extends Button
 			tooltip = gui.manual.formatLink(link);
 		else
 			tooltip = "Invalid link";
-		gui.renderToolTip(transform, Language.getInstance().getVisualOrder(
+		gui.renderTooltip(transform, Language.getInstance().getVisualOrder(
 				ImmutableList.of(new TextComponent(tooltip))
 		), mx+8, my+4, font);
 	}

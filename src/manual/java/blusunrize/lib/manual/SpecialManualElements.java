@@ -10,18 +10,11 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.locale.Language;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.RenderProperties;
-import net.minecraftforge.fmlclient.gui.GuiUtils;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public abstract class SpecialManualElements extends SpecialManualElement
@@ -66,18 +59,7 @@ public abstract class SpecialManualElements extends SpecialManualElement
 	protected void renderHighlightedTooltip(PoseStack transform, ManualScreen gui, int mx, int my)
 	{
 		if(!highlighted.isEmpty())
-		{
-			Font font = RenderProperties.get(highlighted.getItem()).getFont(highlighted);
-			GuiUtils.preItemToolTip(highlighted);
-			List<FormattedCharSequence> tooltip = Language.getInstance().getVisualOrder(
-					Collections.unmodifiableList(gui.getTooltipFromItem(highlighted))
-			);
-			transform.pushPose();
-			transform.translate(0, 0, 100);
-			gui.renderToolTip(transform, tooltip, mx, my, font!=null?font: Minecraft.getInstance().font);
-			transform.popPose();
-			GuiUtils.postItemToolTip();
-		}
+			gui.renderTooltip(transform, highlighted, mx, my);
 	}
 
 	public void addProvidedItem(ItemStack s)

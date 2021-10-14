@@ -30,10 +30,10 @@ import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.fmllegacy.network.PacketDistributor.PacketTarget;
-import net.minecraftforge.fmllegacy.packs.ModFileResourcePack;
 import net.minecraftforge.fmllegacy.packs.ResourcePackLoader;
 import net.minecraftforge.fmllegacy.server.ServerLifecycleHooks;
 import net.minecraftforge.forgespi.language.IModInfo;
+import net.minecraftforge.resource.PathResourcePack;
 
 import javax.annotation.Nullable;
 import java.io.IOException;
@@ -83,7 +83,7 @@ public class StaticTemplateManager
 			IELogger.error("Falling back to mod resource packs for resource {}", name);
 			return ModList.get().getMods().stream()
 					.map(IModInfo::getModId)
-					.map(ResourcePackLoader::getResourcePackFor)
+					.map(ResourcePackLoader::getPackFor)
 					.filter(Optional::isPresent)
 					.map(Optional::get)
 					.filter(mfrp -> mfrp.hasResource(type, name))
@@ -92,7 +92,7 @@ public class StaticTemplateManager
 		}
 	}
 
-	private static InputStream getInputStreamOrThrow(PackType type, ResourceLocation name, ModFileResourcePack source)
+	private static InputStream getInputStreamOrThrow(PackType type, ResourceLocation name, PathResourcePack source)
 	{
 		try
 		{
@@ -130,9 +130,8 @@ public class StaticTemplateManager
 	{
 		List<MessageMultiblockSync.SyncedTemplate> toSync = new ArrayList<>();
 		for(IMultiblock mb : MultiblockHandler.getMultiblocks())
-			if(mb instanceof TemplateMultiblock)
+			if(mb instanceof TemplateMultiblock templateMB)
 			{
-				TemplateMultiblock templateMB = (TemplateMultiblock)mb;
 				if(resetMBs)
 					templateMB.reset();
 				StructureTemplate template = templateMB.getTemplate(ServerLifecycleHooks.getCurrentServer());
