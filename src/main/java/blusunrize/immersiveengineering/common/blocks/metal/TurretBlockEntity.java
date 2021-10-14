@@ -502,17 +502,16 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	@Override
 	public void placeDummies(BlockPlaceContext ctx, BlockState state)
 	{
-		level.setBlockAndUpdate(worldPosition.above(), state);
-		((TurretBlockEntity<?>)level.getBlockEntity(worldPosition.above())).setDummy(true);
-		((TurretBlockEntity<?>)level.getBlockEntity(worldPosition.above())).setFacing(getFacing());
+		level.setBlockAndUpdate(worldPosition.above(), getBlockState().setValue(IEProperties.MULTIBLOCKSLAVE, true));
 	}
 
 	@Override
 	public void breakDummies(BlockPos pos, BlockState state)
 	{
 		tempMasterBE = master();
-		if(level.getBlockEntity(isDummy()?getBlockPos().below(): getBlockPos().above()) instanceof TurretBlockEntity<?>)
-			level.removeBlock(isDummy()?getBlockPos().below(): getBlockPos().above(), false);
+		BlockPos otherPos = isDummy()?getBlockPos().below(): getBlockPos().above();
+		if(level.getBlockEntity(otherPos) instanceof TurretBlockEntity<?>)
+			level.removeBlock(otherPos, false);
 	}
 
 	@Override

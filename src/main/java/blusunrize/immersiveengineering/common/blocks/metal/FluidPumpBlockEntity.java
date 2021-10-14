@@ -506,11 +506,8 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IETickabl
 	{
 		BlockPos dummyPos = worldPosition.above();
 		getLevelNonnull().setBlockAndUpdate(dummyPos, IEBaseBlock.applyLocationalWaterlogging(
-				state, getLevelNonnull(), dummyPos
+				state.setValue(IEProperties.MULTIBLOCKSLAVE, true), getLevelNonnull(), dummyPos
 		));
-		BlockEntity tile = getLevelNonnull().getBlockEntity(dummyPos);
-		if(tile instanceof FluidPumpBlockEntity)
-			((FluidPumpBlockEntity)tile).setDummy(true);
 	}
 
 	@Override
