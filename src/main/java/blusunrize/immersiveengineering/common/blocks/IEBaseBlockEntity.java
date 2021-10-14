@@ -355,12 +355,4 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 				return true;
 		return false;
 	}
-
-	//TODO Workaround for Forge#7926
-	@Override
-	public void clearRemoved()
-	{
-		super.clearRemoved();
-		ApiUtils.addFutureServerTask(level, this::onLoad);
-	}
 }
