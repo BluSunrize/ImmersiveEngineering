@@ -172,19 +172,6 @@ minecraft {
     }
 }
 
-// Workaround to make Mixins and BMS work with the mess that is FG
-configurations {
-    library
-    implementation.extendsFrom library
-}
-
-minecraft.runs.all {
-    lazyToken('minecraft_classpath') {
-        configurations.library.copyRecursive().resolve().collect { it.absolutePath }.join(File.pathSeparator)
-    }
-}
-// End of workaround
-
 repositories {
 	maven { // TOP (The one probe)
         name 'tterrag maven'
@@ -223,7 +210,7 @@ dependencies {
     //compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api")
     //compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
 
-    library "malte0811:BlockModelSplitter:1.2.0"
+    implementation "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13.2')
     annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
 }
