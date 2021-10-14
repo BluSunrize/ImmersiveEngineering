@@ -55,7 +55,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 			for(int i = 0; i < 8; i++)
 				if(tile.filters[side][i]!=null&&!tile.filters[side][i].isEmpty())
 					if(getSlotArea(side, i).contains(mouseX, mouseY))
-						FluidInfoArea.fillTooltip(tile.filters[side][i], 0, addLine);
+						FluidInfoArea.fillTooltip(tile.filters[side][i], -1, addLine);
 	}
 
 	@Override
@@ -137,12 +137,16 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 
 	public void setFluidInSlot(int side, int slot, FluidStack fluid)
 	{
-		tile.filters[side][slot] = fluid;
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("filter_side", side);
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
+		{
+			if(!fluid.isEmpty())
+				fluid.setAmount(1);//normalizes amount, neat, maybe saves space idk
 			tag.put("filter", fluid.writeToNBT(new CompoundTag()));
+		}
+		tile.filters[side][slot] = fluid;
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 	}
 

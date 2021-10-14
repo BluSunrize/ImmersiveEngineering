@@ -95,8 +95,9 @@ public class FluidInfoArea extends InfoArea
 
 		if(tankCapacity > 0)
 			tooltip.accept(applyFormat(new TextComponent(fluid.getAmount()+"/"+tankCapacity+"mB"), ChatFormatting.GRAY));
-		else
+		else if (tankCapacity == 0)
 			tooltip.accept(applyFormat(new TextComponent(fluid.getAmount()+"mB"), ChatFormatting.GRAY));
+		//don't display amount for tankCapacity < 0, i.e. for ghost fluid stacks
 	}
 
 	@Override
