@@ -138,12 +138,14 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		for(int i = pStartIndex; i < pEndIndex; i++)
 		{
 			boolean mayplace = this.slots.get(i).mayPlace(pStack);
-			if(inAllowedRange && (!mayplace || i == pEndIndex-1)) {
+			if(inAllowedRange&&(!mayplace||i==pEndIndex-1))
+			{
 				if(moveItemStackTo(pStack, allowedStart, i, pReverseDirection))
 					return true;
 				inAllowedRange = false;
 			}
-			else if (!inAllowedRange && mayplace) {
+			else if(!inAllowedRange&&mayplace)
+			{
 				allowedStart = i;
 				inAllowedRange = true;
 			}
