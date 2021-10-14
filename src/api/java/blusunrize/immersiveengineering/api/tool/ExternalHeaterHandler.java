@@ -9,7 +9,8 @@
 package blusunrize.immersiveengineering.api.tool;
 
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class ExternalHeaterHandler
 {
@@ -17,8 +18,9 @@ public class ExternalHeaterHandler
 	public static int defaultFurnaceEnergyCost;
 	public static int defaultFurnaceSpeedupCost;
 
-	@CapabilityInject(IExternalHeatable.class)
-	public static Capability<IExternalHeatable> CAPABILITY;
+	public static final Capability<IExternalHeatable> CAPABILITY = CapabilityManager.get(new CapabilityToken<>()
+	{
+	});
 
 	/**
 	 * Expose this interface on the null side to allow the external heater to work with your block entity

@@ -15,7 +15,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -29,8 +30,9 @@ import javax.annotation.Nullable;
  */
 public class CapabilityShader
 {
-	@CapabilityInject(ShaderWrapper.class)
-	public static Capability<ShaderWrapper> SHADER_CAPABILITY = null;
+	public static final Capability<ShaderWrapper> SHADER_CAPABILITY = CapabilityManager.get(new CapabilityToken<>()
+	{
+	});
 
 	public abstract static class ShaderWrapper
 	{

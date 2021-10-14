@@ -13,7 +13,8 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.IntTag;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
@@ -26,8 +27,9 @@ import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookD
 
 public class CapabilitySkyhookData
 {
-	@CapabilityInject(SkyhookUserData.class)
-	public static Capability<SkyhookUserData> SKYHOOK_USER_DATA = null;
+	public static final Capability<SkyhookUserData> SKYHOOK_USER_DATA = CapabilityManager.get(new CapabilityToken<>()
+	{
+	});
 
 	public static class SkyhookUserData
 	{

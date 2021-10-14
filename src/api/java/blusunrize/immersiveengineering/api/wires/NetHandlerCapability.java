@@ -9,10 +9,12 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class NetHandlerCapability
 {
-	@CapabilityInject(GlobalWireNetwork.class)
-	public static Capability<GlobalWireNetwork> NET_CAPABILITY = null;
+	public static final Capability<GlobalWireNetwork> NET_CAPABILITY = CapabilityManager.get(new CapabilityToken<>()
+	{
+	});
 }

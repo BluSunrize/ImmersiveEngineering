@@ -11,12 +11,14 @@ package blusunrize.immersiveengineering.api.wires.redstone;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public class CapabilityRedstoneNetwork
 {
-	@CapabilityInject(RedstoneBundleConnection.class)
-	public static Capability<RedstoneBundleConnection> REDSTONE_BUNDLE_CONNECTION = null;
+	public static final Capability<RedstoneBundleConnection> REDSTONE_BUNDLE_CONNECTION = CapabilityManager.get(new CapabilityToken<>()
+	{
+	});
 
 	public static class RedstoneBundleConnection
 	{
