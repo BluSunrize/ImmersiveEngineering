@@ -28,6 +28,7 @@ group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini
 archivesBaseName = 'ImmersiveEngineering'
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+jar.enabled = false
 
 sourceSets {
     manual {
@@ -42,7 +43,7 @@ sourceSets {
         resources {
             srcDirs = [
                     "$rootDir/src/main/resources",
-                    "$rootDir/src/generated/resources"
+                    "$rootDir/src/generated/resources",
             ]
         }
         compileClasspath += manual.output + api.output
@@ -70,10 +71,7 @@ def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.FAIL
-    exclude 'META-INF/mods.toml'
-    from(sourceSets.main.resources.srcDirs) {
-        include 'META-INF/mods.toml'
-
+    filesMatching("META-INF/mods.toml") {
         expand version_replaces
     }
     //Minify json resources
@@ -84,24 +82,19 @@ processResources {
     }
 }
 
-task replaceInModsToml(type: Copy) {
-    outputs.upToDateWhen { false }
-    from(sourceSets.main.resources) {
-        include "META-INF/mods.toml"
-        expand version_replaces
-    }
-    into "$buildDir/resources/main/"
-}
-
 // When using "Run using IntelliJ" (the only option with well-working hotswapping) the used "resources" directory is
 // different from the one used by gradle/the processResources task
-task copyResourcesForIntelliJ(type: Copy) {
+task copyModsTomlForIntelliJ(type: Copy) {
     from processResources.destinationDir
     into "$projectDir/out/production/resources"
+    include "META-INF/mods.toml"
 }
 
-processResources.finalizedBy copyResourcesForIntelliJ
-copyResourcesForIntelliJ.dependsOn replaceInModsToml
+copyModsTomlForIntelliJ.dependsOn processResources
+afterEvaluate {
+    // prepareRuns doesn't exist before afterEvaluate
+    prepareRuns.dependsOn copyModsTomlForIntelliJ
+}
 
 minecraft {
     mappings channel: 'parchment', version: version_parchment
@@ -239,13 +232,7 @@ if (customGradle.exists()) {
     apply from: customGradle;
 }
 
-def reobfFile = file("$buildDir/reobfJar/output.jar")
-def reobfArtifact = artifacts.add('default', reobfFile) {
-    type 'jar'
-    builtBy 'reobfJar'
-}
-
-task signJar(type: SignJar, dependsOn: jar) {
+task signJar(type: SignJar) {
     onlyIf {
         project.hasProperty('keyStore')
     }
@@ -254,14 +241,19 @@ task signJar(type: SignJar, dependsOn: jar) {
         alias = project.storeAlias
         storePass = project.storePass
         keyPass = project.storePass
-        inputFile = jar.archivePath
-        outputFile = jar.archivePath
+        inputFile = shadowJar.archiveFile
+        outputFile = shadowJar.archiveFile
     } else {
         logger.warn("No key store found, not signing the output jar\n")
     }
 }
 
 build.dependsOn signJar
+
+afterEvaluate {
+    signJar.dependsOn reobfShadowJar
+    reobfJar.enabled = false
+}
 
 String buildVersionString() {
     String ie_output_version = "${version_ie}-${version_buildnumber}"
@@ -335,6 +327,11 @@ shadowJar {
     dependencies {
         include(dependency('malte0811:BlockModelSplitter:.*'))
     }
+    manifest {
+        attributes([
+                "MixinConfigs": "${modid}.mixins.json"
+        ])
+    }
     from(sourceSets.manual.output)
     from(sourceSets.api.output)
 }
@@ -366,14 +363,6 @@ task optimizePng {
         for (dir in sourceSets.main.resources.srcDirs) {
             fileTree(dir: dir, includes: pngPatterns).each { minimizePNGFile(it) }
         }
-    }
-}
-
-jar {
-    manifest {
-        attributes([
-                "MixinConfigs": "${modid}.mixins.json"
-        ])
     }
 }
 
