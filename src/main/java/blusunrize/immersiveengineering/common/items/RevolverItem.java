@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
+import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
@@ -64,6 +65,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -214,7 +216,7 @@ public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletC
 
 	@Nonnull
 	@Override
-	public String getDescriptionId(ItemStack stack)
+	public String getDescriptionId(@Nonnull ItemStack stack)
 	{
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())
@@ -223,7 +225,7 @@ public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletC
 	}
 
 	@Override
-	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
+	public void appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> list, @Nonnull TooltipFlag flag)
 	{
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())
@@ -240,6 +242,13 @@ public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletC
 			if(perk!=null)
 				list.add(new TextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
 		}
+	}
+
+	@Nonnull
+	@Override
+	public Optional<TooltipComponent> getTooltipImage(@Nonnull ItemStack pStack)
+	{
+		return Optional.of(new RevolverServerTooltip(getBullets(pStack), getBulletCount(pStack)));
 	}
 
 	/* ------------- ATTRIBUTES, UPDATE, RIGHTCLICK ------------- */
@@ -273,7 +282,7 @@ public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletC
 	}
 
 	@Override
-	public void inventoryTick(ItemStack stack, Level world, Entity ent, int slot, boolean inHand)
+	public void inventoryTick(@Nonnull ItemStack stack, @Nonnull Level world, @Nonnull Entity ent, int slot, boolean inHand)
 	{
 		super.inventoryTick(stack, world, ent, slot, inHand);
 		{
@@ -296,8 +305,9 @@ public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletC
 		}
 	}
 
+	@Nonnull
 	@Override
-	public UseAnim getUseAnimation(ItemStack stack)
+	public UseAnim getUseAnimation(@Nonnull ItemStack stack)
 	{
 		return UseAnim.BOW;
 	}
@@ -537,7 +547,7 @@ public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletC
 	/* ------------- CRAFTING ------------- */
 
 	@Override
-	public void onCraftedBy(ItemStack stack, Level world, Player player)
+	public void onCraftedBy(ItemStack stack, @Nonnull Level world, @Nonnull Player player)
 	{
 		if(stack.isEmpty()||player==null)
 			return;

@@ -40,6 +40,8 @@ import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRe
 import blusunrize.immersiveengineering.client.render.conveyor.SplitConveyorRender;
 import blusunrize.immersiveengineering.client.render.entity.*;
 import blusunrize.immersiveengineering.client.render.tile.*;
+import blusunrize.immersiveengineering.client.render.tooltip.RevolverClientTooltip;
+import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.client.utils.BasicClientProperties;
 import blusunrize.immersiveengineering.client.utils.VertexBufferHolder;
 import blusunrize.immersiveengineering.common.CommonProxy;
@@ -86,6 +88,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
 import net.minecraftforge.client.event.ModelRegistryEvent;
@@ -151,6 +154,7 @@ public class ClientProxy extends CommonProxy
 			reloadableManager.registerReloadListener(handler);
 
 			IEModelLayers.registerDefinitions();
+			MinecraftForgeClient.registerTooltipComponentFactory(RevolverServerTooltip.class, RevolverClientTooltip::new);
 		}
 	}
 

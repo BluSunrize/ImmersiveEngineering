@@ -30,7 +30,6 @@ import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.client.fx.FractalParticle;
 import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
-import blusunrize.immersiveengineering.client.gui.RevolverScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.client.utils.*;
@@ -41,7 +40,6 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.items.*;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
@@ -75,9 +73,7 @@ import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
@@ -112,7 +108,6 @@ import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -124,7 +119,6 @@ import java.util.*;
 import java.util.Map.Entry;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
@@ -133,7 +127,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	private static final boolean ENABLE_VEIN_DEBUG = false;
 	private boolean shieldToggleButton = false;
 	private int shieldToggleTimer = 0;
-	private static final String[] BULLET_TOOLTIP = {"  IE ", "  AMMO ", "  HERE ", "  -- "};
 
 	@Override
 	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
@@ -261,38 +254,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						new TextComponent(oid.toString()),
 						ChatFormatting.GRAY
 				));
-		}
-
-		if(event.getItemStack().getItem() instanceof IBulletContainer)
-			for(String s : BULLET_TOOLTIP)
-				event.getToolTip().add(new TextComponent(s));
-	}
-
-	@SubscribeEvent
-	public void onRenderTooltip(RenderTooltipEvent.PostText event)
-	{
-		ItemStack stack = event.getStack();
-		if(stack.getItem() instanceof IBulletContainer)
-		{
-			NonNullList<ItemStack> bullets = ((IBulletContainer)stack.getItem()).getBullets(stack);
-			if(bullets!=null)
-			{
-				int bulletAmount = ((IBulletContainer)stack.getItem()).getBulletCount(stack);
-				List<String> linesString = event.getLines().stream()
-						.map(FormattedText::getString)
-						.collect(Collectors.toList());
-				int line = event.getLines().size()-Utils.findSequenceInList(linesString, BULLET_TOOLTIP, (a, b) -> b.endsWith(a));
-
-				int currentX = event.getX();
-				int currentY = line > 0?event.getY()+(event.getHeight()+1-line*10): event.getY()-42;
-
-				PoseStack transform = new PoseStack();
-				transform.pushPose();
-				transform.translate(currentX, currentY, 700);
-				transform.scale(.5f, .5f, 1);
-
-				RevolverScreen.drawExternalGUI(bullets, bulletAmount, transform);
-			}
 		}
 	}
 
@@ -991,11 +952,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		}
 		transform.popPose();
 		buffers.endBatch();
-	}
-
-	@SubscribeEvent()
-	public void onClientDeath(LivingDeathEvent event)
-	{
 	}
 
 	@SubscribeEvent()

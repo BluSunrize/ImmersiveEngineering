@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
@@ -19,12 +20,14 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Optional;
 
 public class SpeedloaderItem extends InternalStorageItem implements ITool, IBulletContainer
 {
@@ -100,5 +103,12 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 	{
 		super.readShareTag(stack, nbt);
 		RevolverItem.readBulletsFromShareTag(stack, nbt);
+	}
+
+	@Nonnull
+	@Override
+	public Optional<TooltipComponent> getTooltipImage(@Nonnull ItemStack pStack)
+	{
+		return Optional.of(new RevolverServerTooltip(getBullets(pStack), getBulletCount(pStack)));
 	}
 }
