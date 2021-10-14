@@ -15,4 +15,6 @@ import javax.annotation.Nonnull;
 public interface IRotationAcceptor
 {
 	void inputRotation(double rotation, @Nonnull Direction side);
+
+	boolean sideAcceptsRotation(@Nonnull Direction side);
 }

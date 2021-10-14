@@ -30,10 +30,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import org.antlr.v4.runtime.misc.Triple;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IStateBasedDirectional, IHasDummyBlocks
 {
@@ -42,9 +44,11 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 	private Vec3 rotationVec = null;
 	// Indicates that the next tick should be skipped since the waterwheel is being controlled by another waterwheel
 	// attached to it
-	public boolean multiblock = false;
+	public byte linkElementNumber = 0;
+	private static final byte maxLinked = 3;
 	private boolean beingBroken = false;
 	public double perTick;
+	private static final float speedFactor = 1f/1440;
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -64,52 +68,134 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 		if(isBlocked())//TODO throttle?
 		{
 			setPerTickAndAdvance(0);
+			if(linkElementNumber >0)
+				dissolveLink();
 			return;
 		}
 		if(level.getGameTime()%64==((getBlockPos().getX()^getBlockPos().getZ())&63))
 			rotationVec = null;
-		if(multiblock)
+		if(linkElementNumber > 1)
 		{
-			multiblock = false;
 			return;
 		}
 
 		BlockEntity acc = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing().getOpposite()));
-		if(acc instanceof IRotationAcceptor)
+		boolean hasRotAcceptor = false;
+		Triple<Boolean, List<WatermillBlockEntity>, Double> linkedWheels = null;
+		if(acc instanceof IRotationAcceptor rotAcc && rotAcc.sideAcceptsRotation(getFacing().getOpposite()))
 		{
-			double power = getPower();
-			List<WatermillBlockEntity> connectedWheels = new ArrayList<>();
-			for(int i = 1; i < 3; ++i)
+			linkedWheels = searchAndSetLink((byte)1, getFacing()); //linkedWheels.a is always gonna be true at this point
+			hasRotAcceptor = true;
+		}
+		else if(linkElementNumber==0)
+		{
+			acc = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing()));
+			if(acc instanceof IRotationAcceptor rotAcc && rotAcc.sideAcceptsRotation(getFacing()))
 			{
-				BlockEntity blockEntity = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing(), i));
-				if(!canUse(blockEntity))
-					break;
-				WatermillBlockEntity asWatermill = (WatermillBlockEntity)blockEntity;
-				connectedWheels.add(asWatermill);
-				power += asWatermill.getPower();
+				linkedWheels = searchAndSetLink((byte)1, getFacing().getOpposite());
+				hasRotAcceptor = linkedWheels.a; //could be indirectly linked to another RotationAcceptor
 			}
+		}
 
-			// +1: Self is not included in list of connected wheels
-			setPerTickAndAdvance(1f/1440*power/(connectedWheels.size()+1));
-			for(WatermillBlockEntity watermill : connectedWheels)
+		if(!hasRotAcceptor)
+			setPerTickAndAdvance(speedFactor*getPower());
+		else if(linkedWheels.a)
+		{
+			double power = linkedWheels.c;
+			List<WatermillBlockEntity> connectedWheels = linkedWheels.b;
+			double newPerTick = speedFactor*power/connectedWheels.size();
+			for(ListIterator<WatermillBlockEntity> i = connectedWheels.listIterator(connectedWheels.size()); i.hasPrevious(); ) //last element is this, which imposes its rotation on the other wheels and should be updated first
 			{
-				watermill.setPerTickAndAdvance(perTick);
+				WatermillBlockEntity watermill = i.previous();
+				watermill.setPerTickAndAdvance(newPerTick);
 				if(watermill.rotation!=rotation)
 				{
 					watermill.rotation = rotation;
 					watermill.markContainingBlockForUpdate(null);
 				}
-				watermill.multiblock = true;
 			}
-
 			((IRotationAcceptor)acc).inputRotation(Math.abs(power*.75), getFacing().getOpposite());
 		}
-		else
-			setPerTickAndAdvance(1f/1440*getPower());
+
 	}
 
-	private void setPerTickAndAdvance(double newValue) {
-		if (newValue != perTick) {
+	private Triple<Boolean, List<WatermillBlockEntity>, Double> searchAndSetLink(byte depth, Direction searchDirection)
+	{
+		boolean facingAligned = getFacing()==searchDirection;
+		boolean linkableChecker = facingAligned;
+		double power = 0;
+		List<WatermillBlockEntity> connectedWheels = new ArrayList<WatermillBlockEntity>();
+
+		if(depth < maxLinked||!facingAligned) //keep searching when not facingAligned, it might lead to a RotationAcceptor
+		{
+			BlockEntity blockEntity = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(searchDirection));
+			if(canUse(blockEntity))
+			{
+				if(depth >= maxLinked*2)//stop searching forward for a second RotationAcceptor
+					linkableChecker = true;
+				else
+				{
+					Triple<Boolean, List<WatermillBlockEntity>, Double> trickleValues = ((WatermillBlockEntity)blockEntity).searchAndSetLink((byte)(depth+1), searchDirection);
+					if(trickleValues.a)
+					{
+						linkableChecker = true;
+						connectedWheels = trickleValues.b;
+						power = trickleValues.c;
+					}
+				}
+			}
+			else if(!(blockEntity instanceof IRotationAcceptor rotationAcceptor&&rotationAcceptor.sideAcceptsRotation(searchDirection)))
+				linkableChecker = true; //sets true for !facingAligned unless it found a RotationAcceptor
+		}
+
+		if(linkableChecker&&depth <= maxLinked)
+		{
+			connectedWheels.add(this);
+			power += getPower();
+			linkElementNumber = depth;
+			if(!facingAligned)
+			{
+				setFacing(searchDirection);
+				markContainingBlockForUpdate(null);
+			}
+		}
+
+		return new Triple<Boolean, List<WatermillBlockEntity>, Double>(linkableChecker, connectedWheels, power);
+	}
+
+	private void dissolveLink()
+	{
+		BlockEntity be = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing()));
+		if(be instanceof WatermillBlockEntity watermill&&watermill.getFacing()==getFacing()&&watermill.linkElementNumber==linkElementNumber+1)
+			watermill.dissolveLink();
+		linkElementNumber = 0;
+	}
+
+	@Override
+	protected void onNeighborBlockChange(BlockPos otherPos)
+	{
+		super.onNeighborBlockChange(otherPos);
+		if(linkElementNumber > 0&&getBlockPos().relative(getFacing().getOpposite()).equals(otherPos)) //if connection downward changed
+		{
+			BlockEntity be = SafeChunkUtils.getSafeBE(level, otherPos);
+			if(linkElementNumber > 1)
+			{
+				if(be instanceof WatermillBlockEntity watermill&&(watermill.linkElementNumber==0||(watermill.getFacing()==this.getFacing()&&watermill.linkElementNumber==linkElementNumber-1)))
+					return;
+			}
+			else
+			{
+				if(be instanceof IRotationAcceptor rotationAcceptor&&rotationAcceptor.sideAcceptsRotation(getFacing()))
+					return;
+			}
+			dissolveLink();
+		}
+	}
+
+	private void setPerTickAndAdvance(double newValue)
+	{
+		if(newValue!=perTick)
+		{
 			perTick = newValue;
 			markContainingBlockForUpdate(null);
 		}
@@ -121,9 +207,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 	{
 		if(!(tileEntity instanceof WatermillBlockEntity watermill))
 			return false;
-		return watermill.offset[0]==0&&watermill.offset[1]==0
-				&&(watermill.getFacing()==getFacing()||watermill.getFacing()==getFacing().getOpposite())
-				&&!watermill.isBlocked()&&!watermill.multiblock;
+		return !isDummy()&&(watermill.getFacing()==getFacing()||(watermill.getFacing()==getFacing().getOpposite()&&watermill.linkElementNumber==0))
+				&&!watermill.isBlocked();
 	}
 
 	public boolean isBlocked()

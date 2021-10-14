@@ -42,7 +42,7 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IIEInternalF
 	@Override
 	public void inputRotation(double rotation, @Nonnull Direction side)
 	{
-		if(side!=this.getFacing().getOpposite())
+		if(!sideAcceptsRotation(side))
 			return;
 		int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
 		for(Direction fd : DirectionUtils.VALUES)
@@ -51,6 +51,12 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IIEInternalF
 			BlockEntity te = Utils.getExistingTileEntity(level, outputPos);
 			output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
 		}
+	}
+
+	@Override
+	public boolean sideAcceptsRotation(@Nonnull Direction side)
+	{
+		return side==this.getFacing().getOpposite();
 	}
 
 	@Override
