@@ -68,7 +68,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 		if(isBlocked())//TODO throttle?
 		{
 			setPerTickAndAdvance(0);
-			if(linkElementNumber >0)
+			if(linkElementNumber > 0)
 				dissolveLink();
 			return;
 		}
@@ -82,7 +82,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 		BlockEntity acc = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing().getOpposite()));
 		boolean hasRotAcceptor = false;
 		Triple<Boolean, List<WatermillBlockEntity>, Double> linkedWheels = null;
-		if(acc instanceof IRotationAcceptor rotAcc && rotAcc.sideAcceptsRotation(getFacing().getOpposite()))
+		if(acc instanceof IRotationAcceptor rotAcc&&rotAcc.sideAcceptsRotation(getFacing().getOpposite()))
 		{
 			linkedWheels = searchAndSetLink((byte)1, getFacing()); //linkedWheels.a is always gonna be true at this point
 			hasRotAcceptor = true;
@@ -90,7 +90,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IETickabl
 		else if(linkElementNumber==0)
 		{
 			acc = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing()));
-			if(acc instanceof IRotationAcceptor rotAcc && rotAcc.sideAcceptsRotation(getFacing()))
+			if(acc instanceof IRotationAcceptor rotAcc&&rotAcc.sideAcceptsRotation(getFacing()))
 			{
 				linkedWheels = searchAndSetLink((byte)1, getFacing().getOpposite());
 				hasRotAcceptor = linkedWheels.a; //could be indirectly linked to another RotationAcceptor
