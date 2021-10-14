@@ -23,6 +23,8 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
@@ -31,12 +33,13 @@ public class TransformingVertexBuilder implements VertexConsumer
 {
 	private final VertexConsumer base;
 	private final PoseStack transform;
-	private final ObjectWithGlobal<Vec2> uv = new ObjectWithGlobal<>();
-	private final ObjectWithGlobal<Vec3> pos = new ObjectWithGlobal<>();
-	private final ObjectWithGlobal<Vec2i> overlay = new ObjectWithGlobal<>();
-	private final ObjectWithGlobal<Vec2i> lightmap = new ObjectWithGlobal<>();
-	private final ObjectWithGlobal<Vector3f> normal = new ObjectWithGlobal<>();
-	private final ObjectWithGlobal<Vector4f> color = new ObjectWithGlobal<>();
+	private final List<ObjectWithGlobal<?>> allObjects = new ArrayList<>();
+	private final ObjectWithGlobal<Vec2> uv = new ObjectWithGlobal<>(this);
+	private final ObjectWithGlobal<Vec3> pos = new ObjectWithGlobal<>(this);
+	private final ObjectWithGlobal<Vec2i> overlay = new ObjectWithGlobal<>(this);
+	private final ObjectWithGlobal<Vec2i> lightmap = new ObjectWithGlobal<>(this);
+	private final ObjectWithGlobal<Vector3f> normal = new ObjectWithGlobal<>(this);
+	private final ObjectWithGlobal<Vector4f> color = new ObjectWithGlobal<>(this);
 	private final VertexFormat format;
 
 	public TransformingVertexBuilder(VertexConsumer base, PoseStack transform, VertexFormat format)
@@ -125,6 +128,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 				);
 		}
 		base.endVertex();
+		allObjects.forEach(ObjectWithGlobal::clear);
 	}
 
 	public void defaultColor(float r, float g, float b, float a)
@@ -164,15 +168,8 @@ public class TransformingVertexBuilder implements VertexConsumer
 		));
 	}
 
-	private static class Vec2i
+	private record Vec2i(int x, int y)
 	{
-		final int x, y;
-
-		private Vec2i(int x, int y)
-		{
-			this.x = x;
-			this.y = y;
-		}
 	}
 
 	private static class ObjectWithGlobal<T>
@@ -180,6 +177,11 @@ public class TransformingVertexBuilder implements VertexConsumer
 		@Nullable
 		T obj;
 		boolean isGlobal;
+
+		public ObjectWithGlobal(TransformingVertexBuilder builder)
+		{
+			builder.allObjects.add(this);
+		}
 
 		public void putData(T newVal)
 		{
@@ -210,6 +212,11 @@ public class TransformingVertexBuilder implements VertexConsumer
 		{
 			if(hasValue())
 				out.accept(read());
+		}
+
+		public void clear()
+		{
+			obj = null;
 		}
 	}
 }
