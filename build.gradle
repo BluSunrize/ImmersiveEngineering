@@ -1,6 +1,7 @@
 import groovy.json.JsonOutput
 import groovy.json.JsonSlurper
 import net.fabricmc.loom.task.RemapJarTask;
+import org.gradle.work.Incremental
 
 // TODO any missing custom features?
 plugins {
@@ -294,7 +295,7 @@ publishing {
 publish.dependsOn build
 
 //Code for automatic update JSON generation
-class GenerateUpdateJSON extends DefaultTask {
+abstract class GenerateUpdateJSON extends DefaultTask {
     static def initVersions = { mcFromIEVersion ->
         mcFromIEVersion.put("0.8", "1.8.9")
         mcFromIEVersion.put("0.9", "1.9.4")
@@ -306,12 +307,21 @@ class GenerateUpdateJSON extends DefaultTask {
         mcFromIEVersion.put("0.16", "1.16.1")
     }
     static def VERSION_PREFIX = "##### Version "
-    static def CHANGELOG_FOR_MANUAL = "src/main/resources/assets/immersiveengineering/changelog.json"
     static def BUILT_SUFFIX = " - BUILT"
     static def PRE_SUFFIX = "-pre"
     static def RECOMMENDED = "-recommended"
     static def LATEST = "-latest"
     static def CF_URL = "https://minecraft.curseforge.com/projects/immersive-engineering"
+    @Incremental
+    @PathSensitive(PathSensitivity.NAME_ONLY)
+    @InputFile
+    abstract RegularFileProperty getMarkdown()
+
+    @OutputFile
+    abstract RegularFileProperty getOnlineJSON()
+
+    @OutputFile
+    abstract RegularFileProperty getIncludedJSON()
 
     static int compareVersions(String vA, String vB) {
         String[] vPartsA = vA.split("[\\D]")
@@ -340,7 +350,7 @@ class GenerateUpdateJSON extends DefaultTask {
     def generate() {
         Map<String, String> mcFromIEVersion = new HashMap<>()
         initVersions(mcFromIEVersion)
-        File changelog = new File("changelog.md")
+        File changelog = getMarkdown().get().asFile;
         if (!changelog.exists())
             println "Changelog does not exist! Aborting!"
         else {
@@ -398,7 +408,7 @@ class GenerateUpdateJSON extends DefaultTask {
             //JSON for the Forge update checker
             def updateJson = JsonOutput.toJson(mainMap)
             updateJson = JsonOutput.prettyPrint(updateJson)
-            File outF = new File("changelog.json")
+            File outF = getOnlineJSON().get().asFile;
             outF.delete()
             outF << updateJson
 
@@ -406,13 +416,17 @@ class GenerateUpdateJSON extends DefaultTask {
             def mapForCurrent = changelogForVersions.getOrDefault(project.ext.version_minecraft, new HashMap<>())
             def manualJson = JsonOutput.toJson(mapForCurrent)
             manualJson = JsonOutput.prettyPrint(manualJson)
-            outF = new File(CHANGELOG_FOR_MANUAL)
+            outF = getIncludedJSON().get().asFile;
             outF.delete()
             outF << manualJson
         }
     }
 }
 
-task updateJson(type: GenerateUpdateJSON)
+task updateJson(type: GenerateUpdateJSON) {
+    markdown = file("changelog.md")
+    includedJSON = file("src/main/resources/assets/immersiveengineering/changelog.json")
+    onlineJSON = file("changelog.json")
+}
 
 processResources.dependsOn updateJson
