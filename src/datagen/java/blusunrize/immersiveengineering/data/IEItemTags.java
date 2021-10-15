@@ -92,6 +92,11 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.aluminumWire).add(Ingredients.WIRE_ALUMINUM.get());
 		tag(IETags.steelWire).add(Ingredients.WIRE_STEEL.get());
 		tag(IETags.leadWire).add(Ingredients.WIRE_LEAD.get());
+		tag(IETags.allWires).addTag(IETags.copperWire)
+				.addTag(IETags.electrumWire)
+				.addTag(IETags.aluminumWire)
+				.addTag(IETags.steelWire)
+				.addTag(IETags.leadWire);
 		tag(IETags.saltpeterDust).add(Ingredients.DUST_SALTPETER.get());
 		tag(IETags.sulfurDust).add(Ingredients.DUST_SULFUR.get());
 		tag(IETags.sawdust).add(Ingredients.DUST_WOOD.get());
