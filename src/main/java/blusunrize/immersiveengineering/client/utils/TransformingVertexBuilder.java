@@ -216,7 +216,8 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 		public void clear()
 		{
-			obj = null;
+			if(!isGlobal)
+				obj = null;
 		}
 	}
 }
