@@ -19,7 +19,6 @@
     "accessors.MixPredicateAccess",
     "accessors.PaletteAccess",
     "accessors.PotionBrewingAccess",
-    "accessors.RecipeManagerAccess",
     "accessors.ServerPlayNetHandlerAccess",
     "accessors.SingleJigsawAccess",
     "accessors.TemplateAccess",
