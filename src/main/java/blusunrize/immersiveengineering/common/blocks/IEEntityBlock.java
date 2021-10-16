@@ -11,7 +11,8 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE.PlacementLimitation;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -81,22 +82,10 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	public <T2 extends BlockEntity>
 	BlockEntityTicker<T2> getTicker(Level world, BlockState state, BlockEntityType<T2> type)
 	{
-		if(makeEntity instanceof MultiblockBEType<?> multiBEType)
-			return multiBEType.getTicker(type, IETickableBlockEntity.makeTicker());
-		//TODO proper implementation
-		if(getClassData().ticking())
-			return IETickableBlockEntity.makeTicker();
-		else
+		BlockEntityTicker<T2> baseTicker = getClassData().makeBaseTicker(world.isClientSide);
+		if(makeEntity instanceof MultiblockBEType<?> multiBEType && type != multiBEType.master())
 			return null;
-	}
-
-	@Nullable
-	public static <E extends BlockEntity, A extends BlockEntity>
-	BlockEntityTicker<A> createTickerHelper(
-			BlockEntityType<A> presentType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> ticker
-	)
-	{
-		return expectedType==presentType?(BlockEntityTicker<A>)ticker: null;
+		return baseTicker;
 	}
 
 	private static final List<BooleanProperty> DEFAULT_OFF = ImmutableList.of(
@@ -501,13 +490,24 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 		{
 			T tempBE = makeEntity.apply(BlockPos.ZERO, getInitDefaultState());
 			this.classData = new BEClassInspectedData(
-					tempBE instanceof IETickableBlockEntity, tempBE instanceof IComparatorOverride
+					tempBE instanceof IEServerTickableBE,
+					tempBE instanceof IEClientTickableBE,
+					tempBE instanceof IComparatorOverride
 			);
 		}
 		return this.classData;
 	}
 
-	private record BEClassInspectedData(boolean ticking, boolean hasComparatorOutput)
+	private record BEClassInspectedData(boolean serverTicking, boolean clientTicking, boolean hasComparatorOutput)
 	{
+		@Nullable
+		public <T extends BlockEntity> BlockEntityTicker<T> makeBaseTicker(boolean isClient) {
+			if (serverTicking && !isClient)
+				return IEServerTickableBE.makeTicker();
+			else if (clientTicking && isClient)
+				return IEClientTickableBE.makeTicker();
+			else
+				return null;
+		}
 	}
 }

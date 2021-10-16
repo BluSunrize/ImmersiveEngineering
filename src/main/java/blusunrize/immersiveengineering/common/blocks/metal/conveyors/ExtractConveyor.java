@@ -136,42 +136,39 @@ public class ExtractConveyor extends ConveyorBase
 	}
 
 	@Override
-	public void onUpdate()
+	public void tickServer()
 	{
-		if(!getBlockEntity().getLevel().isClientSide)
+		if(this.transferCooldown > 0)
 		{
-			if(this.transferCooldown > 0)
+			this.transferCooldown--;
+		}
+		if(!isPowered()&&this.transferCooldown <= 0)
+		{
+			Level world = getBlockEntity().getLevel();
+			BlockPos neighbour = getBlockEntity().getBlockPos().relative(this.getExtractDirection());
+			if(!world.isEmptyBlock(neighbour))
 			{
-				this.transferCooldown--;
-			}
-			if(!isPowered()&&this.transferCooldown <= 0)
-			{
-				Level world = getBlockEntity().getLevel();
-				BlockPos neighbour = getBlockEntity().getBlockPos().relative(this.getExtractDirection());
-				if(!world.isEmptyBlock(neighbour))
+				LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, neighbour, this.getExtractDirection().getOpposite(), true);
+				cap.ifPresent(itemHandler ->
 				{
-					LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, neighbour, this.getExtractDirection().getOpposite(), true);
-					cap.ifPresent(itemHandler ->
+					for(int i = 0; i < itemHandler.getSlots(); i++)
 					{
-						for(int i = 0; i < itemHandler.getSlots(); i++)
+						ItemStack extractItem = itemHandler.extractItem(i, 1, true);
+						if(!extractItem.isEmpty())
 						{
-							ItemStack extractItem = itemHandler.extractItem(i, 1, true);
-							if(!extractItem.isEmpty())
-							{
-								extractItem = itemHandler.extractItem(i, 1, false);
-								ItemEntity entity = new ItemEntity(world,
-										getBlockEntity().getBlockPos().getX()+.5,
-										getBlockEntity().getBlockPos().getY()+.1875,
-										getBlockEntity().getBlockPos().getZ()+.5, extractItem);
-								entity.setDeltaMovement(Vec3.ZERO);
-								world.addFreshEntity(entity);
-								this.onItemDeployed(entity);
-								this.transferCooldown = this.transferTickrate;
-								return;
-							}
+							extractItem = itemHandler.extractItem(i, 1, false);
+							ItemEntity entity = new ItemEntity(world,
+									getBlockEntity().getBlockPos().getX()+.5,
+									getBlockEntity().getBlockPos().getY()+.1875,
+									getBlockEntity().getBlockPos().getZ()+.5, extractItem);
+							entity.setDeltaMovement(Vec3.ZERO);
+							world.addFreshEntity(entity);
+							this.onItemDeployed(entity);
+							this.transferCooldown = this.transferTickrate;
+							return;
 						}
-					});
-				}
+					}
+				});
 			}
 		}
 	}

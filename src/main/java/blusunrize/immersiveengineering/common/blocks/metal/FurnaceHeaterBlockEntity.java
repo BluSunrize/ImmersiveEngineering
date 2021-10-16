@@ -16,9 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -37,7 +37,7 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IActiveState,
+public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IIEInternalFluxHandler, IActiveState,
 		IStateBasedDirectional, IHammerInteraction
 {
 	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,

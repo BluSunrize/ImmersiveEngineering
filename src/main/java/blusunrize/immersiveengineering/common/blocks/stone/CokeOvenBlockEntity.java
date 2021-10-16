@@ -101,7 +101,6 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	@Override
 	public void tickServer()
 	{
-		super.tickServer();
 		final boolean activeBeforeTick = getIsActive();
 		if(process > 0)
 		{

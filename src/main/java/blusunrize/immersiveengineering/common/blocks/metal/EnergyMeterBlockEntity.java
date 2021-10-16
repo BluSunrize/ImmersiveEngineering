@@ -20,7 +20,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -54,8 +54,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity implements IETickableBlockEntity, IStateBasedDirectional,
-		IHasDummyBlocks, IPlayerInteraction, IComparatorOverride, EnergyConnector, IBlockBounds, IModelOffsetProvider
+public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity implements IEServerTickableBE,
+		IStateBasedDirectional, IHasDummyBlocks, IPlayerInteraction, IComparatorOverride, EnergyConnector, IBlockBounds,
+		IModelOffsetProvider
 {
 	public final DoubleList lastPackets = new DoubleArrayList(20);
 	private int nextPacketIndex = 0;

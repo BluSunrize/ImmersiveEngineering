@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightBlo
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -66,7 +66,7 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		return true;
 	}
 
-	public static class FakeLightBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, ISpawnInterdiction
+	public static class FakeLightBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, ISpawnInterdiction
 	{
 		public BlockPos floodlightCoords = null;
 

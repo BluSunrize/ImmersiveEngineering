@@ -24,12 +24,13 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -77,8 +78,9 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ClocheBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IStateBasedDirectional, IBlockBounds, IHasDummyBlocks,
-		IIEInventory, IIEInternalFluxHandler, IInteractionObjectIE<ClocheBlockEntity>, IModelOffsetProvider
+public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
+		IStateBasedDirectional, IBlockBounds, IHasDummyBlocks, IIEInventory, IIEInternalFluxHandler,
+		IInteractionObjectIE<ClocheBlockEntity>, IModelOffsetProvider
 {
 	public static final int SLOT_SOIL = 0;
 	public static final int SLOT_SEED = 1;

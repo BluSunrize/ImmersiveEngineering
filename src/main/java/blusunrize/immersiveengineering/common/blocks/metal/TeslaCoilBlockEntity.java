@@ -22,7 +22,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEPotions;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -62,7 +63,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IHasDummyBlocks,
+public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE, IIEInternalFluxHandler, IHasDummyBlocks,
 		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction, IModelOffsetProvider
 {
 	public FluxStorage energyStorage = new FluxStorage(48000);
@@ -79,7 +80,6 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IETickabl
 	@Override
 	public void tickClient()
 	{
-		IETickableBlockEntity.super.tickClient();
 		effectMap.removeIf(LightningAnimation::tick);
 	}
 

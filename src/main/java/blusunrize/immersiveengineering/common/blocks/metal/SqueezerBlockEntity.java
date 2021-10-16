@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableList;
@@ -58,7 +59,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBlockEntity, SqueezerRecipe> implements
-		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<SqueezerBlockEntity>, IBlockBounds
+		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<SqueezerBlockEntity>, IBlockBounds,
+		IEClientTickableBE
 {
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
@@ -101,7 +103,6 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 	@Override
 	public void tickClient()
 	{
-		super.tickClient();
 		if(this.processQueue.isEmpty()&&animation_piston < .6875)
 			animation_piston = Math.min(.6875f, animation_piston+.03125f);
 		else if(shouldRenderAsActive())

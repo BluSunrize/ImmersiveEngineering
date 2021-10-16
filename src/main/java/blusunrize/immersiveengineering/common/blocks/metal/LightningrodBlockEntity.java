@@ -58,7 +58,6 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 	@Override
 	public void tickServer()
 	{
-		super.tickServer();
 		if(energyStorage.getEnergyStored() > 0)
 		{
 			BlockEntity tileEntity;

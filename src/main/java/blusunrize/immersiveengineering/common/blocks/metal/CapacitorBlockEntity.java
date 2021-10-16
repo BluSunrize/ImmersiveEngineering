@@ -17,9 +17,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEnt
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
@@ -44,7 +44,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 
-public class CapacitorBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IBlockOverlayText,
+public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IIEInternalFluxHandler, IBlockOverlayText,
 		IConfigurableSides, IComparatorOverride, IBlockEntityDrop
 {
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);

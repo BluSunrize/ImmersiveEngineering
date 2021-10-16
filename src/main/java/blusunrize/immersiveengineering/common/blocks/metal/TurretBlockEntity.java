@@ -16,7 +16,8 @@ import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -63,8 +64,9 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends IEBaseBlockEntity implements
-		IETickableBlockEntity, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, IBlockEntityDrop, IStateBasedDirectional,
-		IBlockBounds, IInteractionObjectIE<T>, IEntityProof, IScrewdriverInteraction, IModelOffsetProvider
+		IEServerTickableBE, IEClientTickableBE, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, IBlockEntityDrop,
+		IStateBasedDirectional, IBlockBounds, IInteractionObjectIE<T>, IEntityProof, IScrewdriverInteraction,
+		IModelOffsetProvider
 {
 	public FluxStorage energyStorage = new FluxStorage(16000);
 	public boolean redstoneControlInverted = false;
@@ -88,8 +90,13 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		super(type, pos, state);
 	}
 
-	//TODO split sides more
 	@Override
+	public void tickClient()
+	{
+		tickCommon();
+	}
+
+	//TODO split sides more
 	public void tickCommon()
 	{
 		double range = getRange();
@@ -136,6 +143,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	@Override
 	public void tickServer()
 	{
+		tickCommon();
 		if(level.getGameTime()%64==((getBlockPos().getX()^getBlockPos().getZ())&63))
 			markContainingBlockForUpdate(null);
 

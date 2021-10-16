@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransfor
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
@@ -58,7 +58,7 @@ import java.util.EnumMap;
 import java.util.Set;
 
 public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEntity<T>> extends IEBaseBlockEntity
-		implements IETickableBlockEntity, IStateBasedDirectional, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
+		implements IEServerTickableBE, IStateBasedDirectional, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
 		IModelOffsetProvider
 {
 	public boolean formed = false;

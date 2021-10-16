@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,7 +36,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity implements ISpawnInterdiction, IETickableBlockEntity,
+public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity implements ISpawnInterdiction, IEServerTickableBE,
 		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
 {
 	public int energyStorage = 0;

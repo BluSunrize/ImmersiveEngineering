@@ -44,13 +44,6 @@ public class MultiblockBEType<T extends BlockEntity & IGeneralMultiblock> implem
 			return dummy.get().create(pos, state);
 	}
 
-	@Nullable
-	public <T2 extends BlockEntity>
-	BlockEntityTicker<T2> getTicker(BlockEntityType<T2> type, BlockEntityTicker<T> ticker)
-	{
-		return IEEntityBlock.createTickerHelper(type, master.get(), ticker);
-	}
-
 	public static <T extends BlockEntity> Supplier<BlockEntityType<T>> makeType(BEWithTypeConstructor<T> create, Supplier<? extends Block> valid)
 	{
 		return () -> {

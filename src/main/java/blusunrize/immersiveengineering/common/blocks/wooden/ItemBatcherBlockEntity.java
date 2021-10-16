@@ -20,7 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -47,7 +47,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IIEInventory,
+public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IIEInventory,
 		IInteractionObjectIE<ItemBatcherBlockEntity>, IStateBasedDirectional
 {
 	public static final int NUM_SLOTS = 9;

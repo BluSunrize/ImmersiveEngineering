@@ -334,7 +334,7 @@ public interface IConveyorBelt
 		return null;
 	}
 
-	default void onUpdate()
+	default void tickServer()
 	{
 	}
 

@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -65,7 +66,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBlockEntity, MultiblockRecipe>
-		implements IConveyorAttachable, IBlockBounds, IPlayerInteraction
+		implements IConveyorAttachable, IBlockBounds, IPlayerInteraction, IEClientTickableBE
 {
 	public float animation_bladeRotation = 0;
 	public ItemStack sawblade = ItemStack.EMPTY;
@@ -130,7 +131,6 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	@Override
 	public void tickClient()
 	{
-		super.tickClient();
 		if(shouldRenderAsActive())
 		{
 			animation_bladeRotation += 36f;

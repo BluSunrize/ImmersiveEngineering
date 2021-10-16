@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
@@ -59,7 +60,8 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurnaceBlockEntity, ArcFurnaceRecipe>
-		implements ISoundBE, IInteractionObjectIE<ArcFurnaceBlockEntity>, ISelectionBounds, ICollisionBounds
+		implements ISoundBE, IInteractionObjectIE<ArcFurnaceBlockEntity>, ISelectionBounds, ICollisionBounds,
+		IEClientTickableBE
 {
 	public static final int FIRST_IN_SLOT = 0;
 	public static final int IN_SLOT_COUNT = 12;
@@ -83,10 +85,10 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
 	public int pouringMetal = 0;
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).relative(getFacing(), -1), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-	private CapabilityReference<IItemHandler> slagOut = CapabilityReference.forBlockEntityAt(this,
+	private final CapabilityReference<IItemHandler> slagOut = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(SLAG_OUT_POS).relative(getFacing()), getFacing().getOpposite()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
@@ -141,7 +143,6 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	@Override
 	public void tickClient()
 	{
-		super.tickClient();
 		if(isDummy())
 			return;
 		if(pouringMetal > 0)

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
@@ -58,7 +59,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEntity, MixerRecipe> implements
-		IInteractionObjectIE<MixerBlockEntity>, IBlockBounds
+		IInteractionObjectIE<MixerBlockEntity>, IBlockBounds, IEClientTickableBE
 {
 	public final MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
@@ -108,7 +109,6 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	@Override
 	public void tickClient()
 	{
-		super.tickClient();
 		if(shouldRenderAsActive())
 		{
 			if(Utils.RAND.nextInt(8)==0&&!tank.fluids.isEmpty())

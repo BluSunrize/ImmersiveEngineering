@@ -21,8 +21,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -47,7 +47,7 @@ import java.util.Objects;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
-public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity implements IETickableBlockEntity, IStateBasedDirectional,
+public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity implements IEServerTickableBE, IStateBasedDirectional,
 		IBlockBounds, IRedstoneConnector
 {
 	public static final List<IBundledProvider> EXTRA_SOURCES = new ArrayList<>();

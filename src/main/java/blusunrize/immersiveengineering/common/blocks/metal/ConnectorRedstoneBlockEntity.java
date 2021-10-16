@@ -20,8 +20,8 @@ import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.resources.language.I18n;
@@ -52,7 +52,7 @@ import java.util.Collection;
 
 import static blusunrize.immersiveengineering.api.wires.WireType.REDSTONE_CATEGORY;
 
-public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntity implements IETickableBlockEntity, IStateBasedDirectional,
+public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntity implements IEServerTickableBE, IStateBasedDirectional,
 		IRedstoneOutput, IScrewdriverInteraction, IBlockBounds, IBlockOverlayText, IRedstoneConnector
 {
 	public IOSideConfig ioMode = IOSideConfig.INPUT;

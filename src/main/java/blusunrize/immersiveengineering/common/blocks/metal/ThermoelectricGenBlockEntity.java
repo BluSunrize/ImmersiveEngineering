@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
@@ -33,7 +33,7 @@ import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IIEInternalFluxConnector
+public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IIEInternalFluxConnector
 {
 	private int energyOutput = -1;
 	private final Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = new EnumMap<>(Direction.class);

@@ -44,7 +44,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> implements IComparatorOverride, IBlockBounds
+public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> implements IComparatorOverride,
+		IBlockBounds
 {
 	public ItemStack identStack = ItemStack.EMPTY;
 	public int storageAmount = 0;
@@ -84,7 +85,6 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 	@Override
 	public void tickServer()
 	{
-		super.tickServer();
 		if(!this.identStack.isEmpty()&&storageAmount > 0&&level.getGameTime()%8==0&&!isRSDisabled())
 		{
 			for(CapabilityReference<IItemHandler> output : outputCaps)

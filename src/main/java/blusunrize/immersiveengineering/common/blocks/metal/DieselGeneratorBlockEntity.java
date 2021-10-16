@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
@@ -53,7 +54,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<DieselGeneratorBlockEntity>
-		implements IBlockBounds, ISoundBE
+		implements IBlockBounds, ISoundBE, IEClientTickableBE
 {
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
 	public boolean active = false;
@@ -103,10 +104,8 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 					CapabilityEnergy.ENERGY)
 	);
 
-	@Override
 	public void tickCommon()
 	{
-		super.tickCommon();
 		if(active||animation_fanFadeIn > 0||animation_fanFadeOut > 0)
 		{
 			float base = 18f;
@@ -130,7 +129,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	@Override
 	public void tickClient()
 	{
-		super.tickClient();
+		tickCommon();
 		ImmersiveEngineering.proxy.handleTileSound(IESounds.dieselGenerator, this, active, .5f, 1);
 		if(active&&level.getGameTime()%4==0)
 		{
@@ -147,7 +146,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	@Override
 	public void tickServer()
 	{
-		super.tickServer();
+		tickCommon();
 		boolean prevActive = active;
 
 		if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())

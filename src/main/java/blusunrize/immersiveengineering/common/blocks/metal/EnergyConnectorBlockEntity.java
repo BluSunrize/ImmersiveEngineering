@@ -22,9 +22,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
@@ -62,7 +62,7 @@ import java.util.Map;
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
 
 public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity implements IStateBasedDirectional,
-		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, IETickableBlockEntity
+		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, IEServerTickableBE
 {
 	public static final Map<Pair<String, Boolean>, RegistryObject<BlockEntityType<EnergyConnectorBlockEntity>>>
 			SPEC_TO_TYPE = new HashMap<>();
@@ -90,10 +90,12 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	private final boolean relay;
 	public int currentTickToMachine = 0;
 	public int currentTickToNet = 0;
-	private FluxStorage storageToNet;
-	private FluxStorage storageToMachine;
+	private final FluxStorage storageToNet;
+	private final FluxStorage storageToMachine;
 
-	private CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(this, CapabilityEnergy.ENERGY, this::getFacing);
+	private final CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(
+			this, CapabilityEnergy.ENERGY, this::getFacing
+	);
 
 	public EnergyConnectorBlockEntity(BlockEntityType<? extends EnergyConnectorBlockEntity> type, BlockPos pos, BlockState state)
 	{

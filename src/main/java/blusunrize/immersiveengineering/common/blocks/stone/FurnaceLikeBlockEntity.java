@@ -89,7 +89,6 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 	@Override
 	public void tickServer()
 	{
-		super.tickServer();
 		final boolean activeBeforeTick = getIsActive();
 
 		if(burnTime > 0)

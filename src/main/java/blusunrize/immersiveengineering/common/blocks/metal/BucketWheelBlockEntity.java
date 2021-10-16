@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransfor
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.google.common.collect.ImmutableList;
@@ -43,7 +44,7 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class BucketWheelBlockEntity extends MultiblockPartBlockEntity<BucketWheelBlockEntity> implements IBlockBounds
+public class BucketWheelBlockEntity extends MultiblockPartBlockEntity<BucketWheelBlockEntity> implements IBlockBounds, IEClientTickableBE
 {
 	public float rotation = 0;
 	public final NonNullList<ItemStack> digStacks = NonNullList.withSize(8, ItemStack.EMPTY);
@@ -92,9 +93,8 @@ public class BucketWheelBlockEntity extends MultiblockPartBlockEntity<BucketWhee
 	}
 
 	@Override
-	public void tickCommon()
+	public void tickClient()
 	{
-		super.tickCommon();
 		if(active)
 		{
 			rotation += IEServerConfig.MACHINES.excavator_speed.get();
@@ -105,7 +105,7 @@ public class BucketWheelBlockEntity extends MultiblockPartBlockEntity<BucketWhee
 	@Override
 	public void tickServer()
 	{
-		super.tickServer();
+		tickClient();
 		if(active&&level.getGameTime()%20==0)
 		{
 			CompoundTag nbt = new CompoundTag();

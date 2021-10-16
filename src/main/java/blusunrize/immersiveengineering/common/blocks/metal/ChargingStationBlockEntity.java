@@ -19,9 +19,10 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
@@ -52,8 +53,8 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IIEInventory,
-		IStateBasedDirectional, IBlockBounds, IComparatorOverride, IPlayerInteraction
+public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEClientTickableBE, IEServerTickableBE,
+		IIEInternalFluxHandler, IIEInventory, IStateBasedDirectional, IBlockBounds, IComparatorOverride, IPlayerInteraction
 {
 	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);

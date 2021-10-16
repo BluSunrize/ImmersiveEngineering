@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdriverInteraction;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import net.minecraft.core.BlockPos;
@@ -51,7 +51,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
-public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IConfigurableSides, IBlockOverlayText, IScrewdriverInteraction
+public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IConfigurableSides,
+		IBlockOverlayText, IScrewdriverInteraction
 {
 	private final Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 

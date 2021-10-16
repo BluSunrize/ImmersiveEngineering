@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -56,7 +56,8 @@ import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.NONE;
 import static blusunrize.immersiveengineering.api.IEEnums.IOSideConfig.OUTPUT;
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
-public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IBlockOverlayText, IConfigurableSides, IPlayerInteraction, IBlockEntityDrop, IComparatorOverride
+public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IBlockOverlayText,
+		IConfigurableSides, IPlayerInteraction, IBlockEntityDrop, IComparatorOverride
 {
 	public static final int IGNITION_TEMPERATURE = 573;
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(ImmutableMap.of(

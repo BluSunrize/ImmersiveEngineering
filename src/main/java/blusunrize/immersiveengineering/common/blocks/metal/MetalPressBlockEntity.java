@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -53,7 +54,7 @@ import javax.annotation.Nullable;
 import java.util.Set;
 
 public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPressBlockEntity, MetalPressRecipe> implements
-		IPlayerInteraction, IConveyorAttachable, IBlockBounds
+		IPlayerInteraction, IConveyorAttachable, IBlockBounds, IEClientTickableBE
 {
 	public static final float TRANSLATION_DISTANCE = 2.5f;
 	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
@@ -70,7 +71,6 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	@Override
 	public void tickClient()
 	{
-		super.tickClient();
 		if(isRSDisabled())
 			return;
 		for(MultiblockProcess<?> process : processQueue)

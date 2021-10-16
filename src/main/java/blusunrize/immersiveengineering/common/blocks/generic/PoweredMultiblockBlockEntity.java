@@ -209,7 +209,6 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	@Override
 	public void tickServer()
 	{
-		super.tickServer();
 		if(isRSDisabled())
 			return;
 

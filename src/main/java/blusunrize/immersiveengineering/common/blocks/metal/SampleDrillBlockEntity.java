@@ -18,11 +18,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -46,8 +47,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IIEInternalFluxHandler, IHasDummyBlocks,
-		IPlayerInteraction, IModelOffsetProvider
+public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
+		IIEInternalFluxHandler, IHasDummyBlocks, IPlayerInteraction, IModelOffsetProvider
 {
 	public FluxStorage energyStorage = new FluxStorage(8000);
 	public int dummy = 0;

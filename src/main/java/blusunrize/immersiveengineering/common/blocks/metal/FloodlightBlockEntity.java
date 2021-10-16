@@ -17,10 +17,10 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -51,9 +51,9 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 
-public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity implements IETickableBlockEntity, IAdvancedDirectionalBE,
-		IHammerInteraction, IScrewdriverInteraction, ISpawnInterdiction, IBlockBounds, IActiveState,
-		EnergyConnector, IStateBasedDirectional
+public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity implements IEServerTickableBE,
+		IAdvancedDirectionalBE, IHammerInteraction, IScrewdriverInteraction, ISpawnInterdiction, IBlockBounds,
+		IActiveState, EnergyConnector, IStateBasedDirectional
 {
 	public int energyStorage = 0;
 	private final int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();

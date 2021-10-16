@@ -15,9 +15,9 @@ import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -60,7 +60,7 @@ import java.util.function.Supplier;
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBlockEntity
 		implements IStateBasedDirectional, ICollisionBounds, ISelectionBounds, IHammerInteraction,
-		IPlayerInteraction, IConveyorBlockEntity<T>, IETickableBlockEntity
+		IPlayerInteraction, IConveyorBlockEntity<T>, IEServerTickableBE
 {
 	public static final Map<IConveyorType<?>, Supplier<BlockEntityType<?>>> BE_TYPES = new Reference2ObjectOpenHashMap<>();
 
@@ -147,10 +147,10 @@ public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBloc
 	}
 
 	@Override
-	public void tickCommon()
+	public void tickServer()
 	{
 		if(this.conveyorBeltSubtype!=null)
-			this.conveyorBeltSubtype.onUpdate();
+			this.conveyorBeltSubtype.tickServer();
 	}
 
 	@Override

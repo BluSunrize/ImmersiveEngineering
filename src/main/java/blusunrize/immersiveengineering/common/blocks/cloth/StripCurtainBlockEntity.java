@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.cloth;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
@@ -45,8 +45,9 @@ import java.util.List;
 /**
  * @author BluSunrize - 01.10.2016
  */
-public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IRedstoneOutput, IScrewdriverInteraction,
-		IAdvancedDirectionalBE, IStateBasedDirectional, IColouredBE, IBlockEntityDrop, IBlockBounds
+public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IRedstoneOutput,
+		IScrewdriverInteraction, IAdvancedDirectionalBE, IStateBasedDirectional, IColouredBE, IBlockEntityDrop,
+		IBlockBounds
 {
 	public int colour = 0xffffff;
 	private int redstoneSignal = 0;

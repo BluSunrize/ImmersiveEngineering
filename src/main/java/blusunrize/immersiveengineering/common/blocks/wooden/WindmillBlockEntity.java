@@ -19,7 +19,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IReadOnPl
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
@@ -42,8 +43,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class WindmillBlockEntity extends IEBaseBlockEntity implements IETickableBlockEntity, IStateBasedDirectional,
-		IReadOnPlacement, IPlayerInteraction, IBlockBounds
+public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
+		IStateBasedDirectional, IReadOnPlacement, IPlayerInteraction, IBlockBounds
 {
 	public float rotation = 0;
 	public float turnSpeed = 0;
@@ -55,7 +56,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IETickable
 	}
 
 	@Override
-	public void tickCommon()
+	public void tickClient()
 	{
 		rotation += getActualTurnSpeed();
 		rotation %= 1;
@@ -76,6 +77,7 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IETickable
 	@Override
 	public void tickServer()
 	{
+		tickClient();
 		if(level.getGameTime()%128==((getBlockPos().getX()^getBlockPos().getZ())&127))
 		{
 			final float oldTurnSpeed = turnSpeed;
@@ -87,9 +89,8 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IETickable
 			return;
 
 		BlockEntity tileEntity = SafeChunkUtils.getSafeBE(level, worldPosition.relative(getFacing().getOpposite()));
-		if(tileEntity instanceof IRotationAcceptor)
+		if(tileEntity instanceof IRotationAcceptor dynamo)
 		{
-			IRotationAcceptor dynamo = (IRotationAcceptor)tileEntity;
 			double power = getActualTurnSpeed()*800;
 			dynamo.inputRotation(Math.abs(power), getFacing().getOpposite());
 		}

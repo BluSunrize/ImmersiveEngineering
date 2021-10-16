@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.temp.IETickableBlockEntity;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,7 +28,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class RedstoneBreakerBlockEntity extends BreakerSwitchBlockEntity implements IETickableBlockEntity
+public class RedstoneBreakerBlockEntity extends BreakerSwitchBlockEntity implements IEServerTickableBE
 {
 	public RedstoneBreakerBlockEntity(BlockPos pos, BlockState state)
 	{
