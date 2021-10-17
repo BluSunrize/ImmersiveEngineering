@@ -1,3 +1,12 @@
+##### Version 1.16.5-5.0.4-pre
+- Fix comparators not working on IE blocks (Malte)
+- Fix rendering of wires connected to razor wire (Malte)
+- Fix rendering of colored conveyor stripes (Malte)
+- Fix additional open spot on chutes with upward-sloping conveyors (Malte)
+- Reduce redstone wire network update spam (Malte)
+- Fix wrong branch being used for update JSON (Malte)
+- Add wires to forge:wires tag (Malte)
+
 ##### Version 1.16.5-5.0.4-139
 - Improve behavior of conveyors near unloaded/non-ticking chunks (Malte)
 - Fix inconsistent redstone behavior of strip curtains (Malte)
