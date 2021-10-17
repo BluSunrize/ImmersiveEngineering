@@ -75,7 +75,9 @@ public class BlockRenderLayers
 				Connectors.feedthrough,
 				rt -> true
 		);
-		ItemBlockRenderTypes.setRenderLayer(MetalDevices.razorWire, RenderType.cutout());
+		ItemBlockRenderTypes.setRenderLayer(
+				MetalDevices.razorWire, rt -> rt==RenderType.cutout()||rt==RenderType.solid()
+		);
 		ItemBlockRenderTypes.setRenderLayer(MetalDevices.fluidPlacer, RenderType.cutout());
 		ItemBlockRenderTypes.setRenderLayer(MetalDevices.furnaceHeater, RenderType.cutout());
 		ItemBlockRenderTypes.setRenderLayer(MetalDevices.fluidPipe, RenderType.cutout());

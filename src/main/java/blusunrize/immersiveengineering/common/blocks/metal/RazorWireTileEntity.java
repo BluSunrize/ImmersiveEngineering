@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -42,6 +43,7 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.MinecraftForgeClient;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -203,7 +205,7 @@ public class RazorWireTileEntity extends ImmersiveConnectableTileEntity implemen
 	@Override
 	public boolean shouldRenderGroup(BlockState object, String group)
 	{
-		if(group==null)
+		if(group==null||MinecraftForgeClient.getRenderLayer()!=RenderType.cutout())
 			return false;
 		boolean stack = isStacked();
 		if(!stack&&!isOnGround())
