@@ -42,7 +42,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchTileEntit
 
 	public ModWorkbenchContainer(int id, Inventory inventoryPlayer, ModWorkbenchTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(tile, id);
 		this.world = tile.getWorldNonnull();
 		this.inventoryPlayer = inventoryPlayer;
 		rebindSlots();

@@ -26,7 +26,7 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxTileEntity> im
 
 	public ToolboxBlockContainer(int id, Inventory inventoryPlayer, ToolboxTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(tile, id);
 		this.tile = tile;
 		inv = new ItemStackHandler(tile.getInventory());
 		if(inv instanceof IEItemStackHandler)

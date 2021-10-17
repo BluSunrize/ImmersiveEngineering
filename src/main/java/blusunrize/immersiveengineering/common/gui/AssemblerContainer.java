@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerTileEntity;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
@@ -22,7 +23,7 @@ public class AssemblerContainer extends IEBaseContainer<AssemblerTileEntity>
 {
 	public AssemblerContainer(int id, Inventory inventoryPlayer, AssemblerTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(tile, id);
 		this.tile = tile;
 		for(int i = 0; i < tile.patterns.length; i++)
 		{
@@ -45,6 +46,7 @@ public class AssemblerContainer extends IEBaseContainer<AssemblerTileEntity>
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 13+j*18, 137+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 13+i*18, 195));
+		addGenericData(GenericContainerData.energy(tile.energyStorage));
 	}
 
 	@Nonnull

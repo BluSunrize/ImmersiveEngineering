@@ -20,7 +20,7 @@ public class CrateContainer extends IEBaseContainer<WoodenCrateTileEntity>
 {
 	public CrateContainer(int id, Inventory inventoryPlayer, WoodenCrateTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)
 			this.addSlot(new Slot(this.inv, i, 8+(i%9)*18, 18+(i/9)*18)
 			{

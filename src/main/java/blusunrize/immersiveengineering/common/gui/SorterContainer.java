@@ -21,7 +21,7 @@ public class SorterContainer extends IEBaseContainer<SorterTileEntity>
 
 	public SorterContainer(int windowId, Inventory inventoryPlayer, SorterTileEntity tile)
 	{
-		super(inventoryPlayer, tile, windowId);
+		super(tile, windowId);
 		this.tile = tile;
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < SorterTileEntity.filterSlotsPerSide; i++)

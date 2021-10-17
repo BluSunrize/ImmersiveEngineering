@@ -19,7 +19,7 @@ public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceTileEntit
 	public final BlastFurnaceTileEntity.BlastFurnaceState state;
 	public BlastFurnaceContainer(int id, Inventory inventoryPlayer, BlastFurnaceTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(tile, id);
 
 		this.addSlot(new IESlot(this, this.inv, 0, 52, 17)
 		{

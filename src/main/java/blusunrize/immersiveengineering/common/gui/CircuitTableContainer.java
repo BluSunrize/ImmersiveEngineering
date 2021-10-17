@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.gui;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableTileEntity;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
@@ -28,7 +29,7 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 
 	public CircuitTableContainer(int id, Inventory inventoryPlayer, CircuitTableTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(tile, id);
 
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 14, IETags.circuitPCB));
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 34, IETags.circuitLogic));
@@ -56,6 +57,7 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableTileEntit
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
+		addGenericData(GenericContainerData.energy(tile.getFluxStorage()));
 	}
 
 	private void consumeInputs()

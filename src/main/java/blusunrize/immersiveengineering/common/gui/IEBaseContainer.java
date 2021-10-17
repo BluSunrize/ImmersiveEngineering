@@ -8,20 +8,30 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
+import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
+import blusunrize.immersiveengineering.common.network.MessageContainerData;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerListener;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fml.network.NetworkDirection;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMenu
 {
@@ -29,8 +39,10 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 	@Nullable
 	public Container inv;
 	public int slotCount;
+	private final List<GenericContainerData<?>> genericData = new ArrayList<>();
+	private final List<ServerPlayer> usingPlayers = new ArrayList<>();
 
-	public IEBaseContainer(Inventory inventoryPlayer, T tile, int id)
+	public IEBaseContainer(T tile, int id)
 	{
 		super(GuiHandler.getContainerTypeFor(tile), id);
 		this.tile = tile;
@@ -44,7 +56,35 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		return inv!=null&&inv.stillValid(player);//Override for TE's that don't implement IIEInventory
 	}
 
-	@Nonnull
+	public void addGenericData(GenericContainerData<?> newData)
+	{
+		genericData.add(newData);
+	}
+
+	@Override
+	public void broadcastChanges()
+	{
+		super.broadcastChanges();
+		List<Pair<Integer, DataPair<?>>> toSync = new ArrayList<>();
+		for(int i = 0; i < genericData.size(); i++)
+		{
+			GenericContainerData<?> data = genericData.get(i);
+			if(data.needsUpdate())
+				toSync.add(Pair.of(i, data.dataPair()));
+		}
+		if(!toSync.isEmpty())
+			for(ServerPlayer player : usingPlayers)
+				ImmersiveEngineering.packetHandler.sendTo(
+						new MessageContainerData(toSync), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT
+				);
+	}
+
+	public void receiveSync(List<Pair<Integer, DataPair<?>>> synced)
+	{
+		for(Pair<Integer, DataPair<?>> syncElement : synced)
+			genericData.get(syncElement.getFirst()).processSync(syncElement.getSecond().data());
+	}
+
 	@Override
 	public ItemStack clicked(int id, int dragType, ClickType clickType, Player player)
 	{
@@ -149,6 +189,29 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 
 	public void receiveMessageFromScreen(CompoundTag nbt)
 	{
+	}
 
+	@Override
+	public void addSlotListener(ContainerListener listener)
+	{
+		super.addSlotListener(listener);
+		if(!(listener instanceof ServerPlayer))
+			return;
+		final ServerPlayer serverPlayer = (ServerPlayer)listener;
+		usingPlayers.add(serverPlayer);
+		List<Pair<Integer, DataPair<?>>> list = new ArrayList<>();
+		for(int i = 0; i < genericData.size(); i++)
+			list.add(Pair.of(i, genericData.get(i).dataPair()));
+		ImmersiveEngineering.packetHandler.sendTo(
+				new MessageContainerData(list), serverPlayer.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT
+		);
+	}
+
+	@Override
+	public void removeSlotListener(ContainerListener listener)
+	{
+		super.removeSlotListener(listener);
+		if(listener instanceof ServerPlayer)
+			usingPlayers.remove((ServerPlayer)listener);
 	}
 }

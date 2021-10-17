@@ -16,7 +16,7 @@ public class LogicUnitContainer extends IEBaseContainer<LogicUnitTileEntity>
 {
 	public LogicUnitContainer(int id, Inventory inventoryPlayer, LogicUnitTileEntity tile)
 	{
-		super(inventoryPlayer, tile, id);
+		super(tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)
 			this.addSlot(new Slot(this.inv, i, 44+(i%5)*18, 19+(i/5)*18));
 		this.slotCount = tile.getInventory().size();
