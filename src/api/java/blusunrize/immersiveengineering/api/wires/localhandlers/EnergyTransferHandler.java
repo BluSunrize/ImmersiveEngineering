@@ -289,8 +289,8 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 	{
 		if(c.isInternal())
 			return 0;
-		else if(c.type instanceof IEnergyWire energyWire)
-			return energyWire.getBasicLossRate(c);
+		else if(c.type instanceof IEnergyWire)
+			return ((IEnergyWire)c.type).getBasicLossRate(c);
 		else
 			return Double.POSITIVE_INFINITY;
 	}
