@@ -34,7 +34,7 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEn
 
 	public CraftingTableContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CraftingTableBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 		this.player = inventoryPlayer.player;
 
 		this.addSlot(new ResultSlot(player, craftingInventory, craftResultInventory, 0, 124, 35));

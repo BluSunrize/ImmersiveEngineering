@@ -8,10 +8,16 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
+import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
+import blusunrize.immersiveengineering.common.network.MessageContainerData;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
@@ -19,19 +25,29 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.event.entity.player.PlayerContainerEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fmllegacy.network.NetworkDirection;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMenu
 {
 	public T tile;
 	@Nullable
 	public Container inv;
 	public int slotCount;
+	private final List<GenericContainerData<?>> genericData = new ArrayList<>();
+	private final List<ServerPlayer> usingPlayers = new ArrayList<>();
 
-	public IEBaseContainer(MenuType<?> type, Inventory inventoryPlayer, T tile, int id)
+	public IEBaseContainer(MenuType<?> type, T tile, int id)
 	{
 		super(type, id);
 		this.tile = tile;
@@ -43,6 +59,35 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 	public boolean stillValid(@Nonnull Player player)
 	{
 		return inv!=null&&inv.stillValid(player);//Override for TE's that don't implement IIEInventory
+	}
+
+	public void addGenericData(GenericContainerData<?> newData)
+	{
+		genericData.add(newData);
+	}
+
+	@Override
+	public void broadcastChanges()
+	{
+		super.broadcastChanges();
+		List<Pair<Integer, DataPair<?>>> toSync = new ArrayList<>();
+		for(int i = 0; i < genericData.size(); i++)
+		{
+			GenericContainerData<?> data = genericData.get(i);
+			if(data.needsUpdate())
+				toSync.add(Pair.of(i, data.dataPair()));
+		}
+		if(!toSync.isEmpty())
+			for(var player : usingPlayers)
+				ImmersiveEngineering.packetHandler.sendTo(
+						new MessageContainerData(toSync), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT
+				);
+	}
+
+	public void receiveSync(List<Pair<Integer, DataPair<?>>> synced)
+	{
+		for(Pair<Integer, DataPair<?>> syncElement : synced)
+			genericData.get(syncElement.getFirst()).processSync(syncElement.getSecond().data());
 	}
 
 	@Override
@@ -141,6 +186,27 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 
 	public void receiveMessageFromScreen(CompoundTag nbt)
 	{
+	}
 
+	@SubscribeEvent
+	public static void onContainerOpened(PlayerContainerEvent.Open ev)
+	{
+		if(ev.getContainer() instanceof IEBaseContainer<?> ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
+		{
+			ieContainer.usingPlayers.add(serverPlayer);
+			List<Pair<Integer, DataPair<?>>> list = new ArrayList<>();
+			for(int i = 0; i < ieContainer.genericData.size(); i++)
+				list.add(Pair.of(i, ieContainer.genericData.get(i).dataPair()));
+			ImmersiveEngineering.packetHandler.sendTo(
+					new MessageContainerData(list), serverPlayer.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT
+			);
+		}
+	}
+
+	@SubscribeEvent
+	public static void onContainerClosed(PlayerContainerEvent.Close ev)
+	{
+		if(ev.getContainer() instanceof IEBaseContainer<?> ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
+			ieContainer.usingPlayers.remove(serverPlayer);
 	}
 }

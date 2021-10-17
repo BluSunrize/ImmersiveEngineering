@@ -24,7 +24,7 @@ public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceBlockEnti
 			MenuType<?> type, int id, Inventory inventoryPlayer, BlastFurnaceBlockEntity<?> tile
 	)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 
 		this.addSlot(new IESlot(this, this.inv, 0, 52, 17)
 		{

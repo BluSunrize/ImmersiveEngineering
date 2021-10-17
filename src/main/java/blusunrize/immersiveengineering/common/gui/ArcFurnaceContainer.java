@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -17,7 +18,7 @@ public class ArcFurnaceContainer extends IEBaseContainer<ArcFurnaceBlockEntity>
 {
 	public ArcFurnaceContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ArcFurnaceBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 		this.tile = tile;
 		for(int i = 0; i < 12; i++)
 			this.addSlot(new IESlot.ArcInput(this, this.inv, i, 10+i%3*21, 34+i/3*18));
@@ -38,5 +39,6 @@ public class ArcFurnaceContainer extends IEBaseContainer<ArcFurnaceBlockEntity>
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 126+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 184));
+		addGenericData(GenericContainerData.energy(tile.energyStorage));
 	}
 }

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.Cloche;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -18,9 +19,9 @@ import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEnt
 
 public class ClocheContainer extends IEBaseContainer<ClocheBlockEntity>
 {
-	public ClocheContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ClocheBlockEntity tile)
+	public ClocheContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ClocheBlockEntity bEntity)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, bEntity, id);
 		this.addSlot(new Cloche(SLOT_SOIL, this, this.inv, SLOT_SOIL, 62, 54));
 		this.addSlot(new Cloche(SLOT_SEED, this, this.inv, SLOT_SEED, 62, 34));
 		this.addSlot(new Cloche(SLOT_FERTILIZER, this, this.inv, SLOT_FERTILIZER, 8, 59));
@@ -29,12 +30,13 @@ public class ClocheContainer extends IEBaseContainer<ClocheBlockEntity>
 			this.addSlot(new IESlot.Output(this, this.inv, 3+i, 116+i%2*18, 34+i/2*18));
 
 		this.slotCount = 7;
-		this.tile = tile;
+		this.tile = bEntity;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 85+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
+		addGenericData(GenericContainerData.energy(bEntity.energyStorage));
 	}
 }

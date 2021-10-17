@@ -25,7 +25,7 @@ public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherBlockEntity
 {
 	public ItemBatcherContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ItemBatcherBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 		IItemHandler filterItemHandler = new ItemStackHandler(tile.getFilters());
 		for(int i = 0; i < NUM_SLOTS; i++)
 			this.addSlot(new IESlot.ItemHandlerGhost(filterItemHandler, i, 8+i*18, 30));

@@ -17,7 +17,7 @@ public class AlloySmelterContainer extends IEBaseContainer<AlloySmelterBlockEnti
 {
 	public AlloySmelterContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AlloySmelterBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 
 		this.addSlot(new Slot(this.inv, 0, 38, 17));
 		this.addSlot(new Slot(this.inv, 1, 66, 17));

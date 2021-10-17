@@ -23,7 +23,7 @@ public class SorterContainer extends IEBaseContainer<SorterBlockEntity>
 
 	public SorterContainer(MenuType<?> type, int windowId, Inventory inventoryPlayer, SorterBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, windowId);
+		super(type, tile, windowId);
 		this.tile = tile;
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < SorterBlockEntity.filterSlotsPerSide; i++)

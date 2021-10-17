@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBl
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -25,7 +26,7 @@ public class MixerContainer extends IEBaseContainer<MixerBlockEntity> implements
 {
 	public MixerContainer(MenuType<?> type, int id, Inventory inventoryPlayer, MixerBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 
 		IItemHandler inv = tile.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null)
 				.orElseThrow(RuntimeException::new);
@@ -38,6 +39,7 @@ public class MixerContainer extends IEBaseContainer<MixerBlockEntity> implements
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 86+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 144));
+		addGenericData(GenericContainerData.energy(tile.energyStorage));
 	}
 
 	@Override

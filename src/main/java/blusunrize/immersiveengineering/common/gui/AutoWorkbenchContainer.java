@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -25,7 +26,7 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchBlockEn
 
 	public AutoWorkbenchContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AutoWorkbenchBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 
 		this.inventoryPlayer = inventoryPlayer;
 		this.addSlot(new IESlot.AutoBlueprint(this, this.inv, 0, 102, 69));
@@ -35,6 +36,7 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchBlockEn
 		slotCount = 17;
 
 		bindPlayerInv(inventoryPlayer);
+		addGenericData(GenericContainerData.energy(tile.energyStorage));
 	}
 
 	private void bindPlayerInv(Inventory inventoryPlayer)

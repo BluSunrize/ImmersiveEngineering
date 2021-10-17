@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretChemBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
@@ -22,7 +23,7 @@ public abstract class TurretContainer<T extends TurretBlockEntity<T>> extends IE
 {
 	public TurretContainer(MenuType<?> type, int id, Inventory inventoryPlayer, T tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 		this.tile = tile;
 
 		if(tile instanceof TurretGunBlockEntity)
@@ -48,6 +49,7 @@ public abstract class TurretContainer<T extends TurretBlockEntity<T>> extends IE
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 109+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 167));
+		addGenericData(GenericContainerData.energy(tile.energyStorage));
 	}
 
 	public static class ChemTurretContainer extends TurretContainer<TurretChemBlockEntity> {

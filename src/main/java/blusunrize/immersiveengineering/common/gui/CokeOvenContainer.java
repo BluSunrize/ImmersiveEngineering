@@ -21,7 +21,7 @@ public class CokeOvenContainer extends IEBaseContainer<CokeOvenBlockEntity>
 
 	public CokeOvenContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CokeOvenBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 
 		this.addSlot(new IESlot(this, this.inv, 0, 30, 35)
 		{

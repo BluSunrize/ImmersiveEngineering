@@ -25,7 +25,7 @@ public class FluidSorterContainer extends IEBaseContainer<FluidSorterBlockEntity
 
 	public FluidSorterContainer(MenuType<?> type, int id, Inventory inventoryPlayer, FluidSorterBlockEntity tile)
 	{
-		super(type, inventoryPlayer, tile, id);
+		super(type, tile, id);
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 163+i*18));
