@@ -1343,6 +1343,7 @@ fa9e47f67f3c3197133a6c0039c4af4faef3f9ae data/forge/tags/items/storage_blocks/el
 a1f91eee7330736ce5dbc80b0a1a99348b91074e data/forge/tags/items/storage_blocks/uranium.json
 49f4fa9a0a04b15ebd37bf168056c8539f0af186 data/forge/tags/items/treated_wood.json
 e0e475c66854f71d61117171224d586e62e3fecd data/forge/tags/items/treated_wood_slab.json
+86454f7465aca2c6e67f2bce9d78befec56b2bc7 data/forge/tags/items/wires.json
 7b891c6090496558adada1644a334f31b76cf155 data/forge/tags/items/wires/aluminum.json
 a6dd6465e05b05ae697b5de791d7b619139978e7 data/forge/tags/items/wires/copper.json
 204d0b252764b772dc8a9de87f150256281c0347 data/forge/tags/items/wires/electrum.json

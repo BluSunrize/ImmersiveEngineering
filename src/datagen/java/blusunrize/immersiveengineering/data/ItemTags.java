@@ -86,6 +86,11 @@ class ItemTags extends ItemTagsProvider
 		tag(IETags.aluminumWire).add(Ingredients.wireAluminum);
 		tag(IETags.steelWire).add(Ingredients.wireSteel);
 		tag(IETags.leadWire).add(Ingredients.wireLead);
+		tag(IETags.allWires).addTag(IETags.copperWire)
+				.addTag(IETags.electrumWire)
+				.addTag(IETags.aluminumWire)
+				.addTag(IETags.steelWire)
+				.addTag(IETags.leadWire);
 		tag(IETags.saltpeterDust).add(Ingredients.dustSaltpeter);
 		tag(IETags.sulfurDust).add(Ingredients.dustSulfur);
 		tag(IETags.sawdust).add(Ingredients.dustWood);

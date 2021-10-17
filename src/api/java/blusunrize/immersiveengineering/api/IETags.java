@@ -64,6 +64,7 @@ public class IETags
 	public static final Named<Item> aluminumWire = createItemWrapper(getWire("aluminum"));
 	public static final Named<Item> steelWire = createItemWrapper(getWire("steel"));
 	public static final Named<Item> leadWire = createItemWrapper(getWire("lead"));
+	public static final Named<Item> allWires = createItemWrapper(forgeLoc("wires"));
 	public static final Named<Item> saltpeterDust = createItemWrapper(getDust("saltpeter"));
 	public static final Named<Item> sulfurDust = createItemWrapper(getDust("sulfur"));
 	public static final Named<Item> sawdust = createItemWrapper(getDust("wood"));
