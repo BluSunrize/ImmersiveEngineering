@@ -6,6 +6,8 @@
 - Reduce redstone wire network update spam (Malte)
 - Fix wrong branch being used for update JSON (Malte)
 - Add wires to forge:wires tag (Malte)
+- Add potion effect descriptions for compat with Just Enough Effect Descriptions (BeepSterr)
+- Translations Added/Updated: ko_kr (Taki_B, PixelQuest), es_* (FrannDzs), en_us (Tiyth, hechtiQ)
 
 ##### Version 1.16.5-5.0.4-139
 - Improve behavior of conveyors near unloaded/non-ticking chunks (Malte)
