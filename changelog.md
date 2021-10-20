@@ -1,4 +1,4 @@
-##### Version 1.16.5-5.0.4-pre
+##### Version 1.16.5-5.0.5-140
 - Fix comparators not working on IE blocks (Malte)
 - Fix rendering of wires connected to razor wire (Malte)
 - Fix rendering of colored conveyor stripes (Malte)
