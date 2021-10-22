@@ -13,19 +13,16 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.ITool;
-import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
-import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -70,16 +67,6 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 		if("overlay".equals(type))
 			return "immersiveengineering:textures/models/earmuffs_overlay.png";
 		return "immersiveengineering:textures/models/earmuffs.png";
-	}
-
-	@OnlyIn(Dist.CLIENT)
-	HumanoidModel armorModel;
-
-	@Override
-	@OnlyIn(Dist.CLIENT)
-	public HumanoidModel getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel _default)
-	{
-		return ModelEarmuffs.getModel();
 	}
 
 	@Override
