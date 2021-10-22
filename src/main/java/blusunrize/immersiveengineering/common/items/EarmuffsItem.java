@@ -49,7 +49,7 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 
 	public EarmuffsItem()
 	{
-		super();
+		super(new Properties().stacksTo(1));
 	}
 
 	@Nullable
