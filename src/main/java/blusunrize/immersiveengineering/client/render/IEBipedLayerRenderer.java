@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.client.render.entity.IEModelLayers;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -28,6 +29,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -59,9 +61,8 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 		ItemStack earmuffs = ItemStack.EMPTY;
 		if(!head.isEmpty()&&(head.getItem()==Misc.EARMUFFS.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
 			earmuffs = head.getItem()==Misc.EARMUFFS.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
-		// TODO reenable
-		//else if(ModList.get().isLoaded("curios"))
-		//	earmuffs = CuriosCompatModule.getEarmuffs(living);
+		else if(ModList.get().isLoaded("curios"))
+			earmuffs = CuriosCompatModule.getEarmuffs(living);
 
 		if(!earmuffs.isEmpty())
 		{
@@ -80,13 +81,12 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 			ItemStack powerpack = chest.getItem()==Misc.POWERPACK.asItem()?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
 			addWornPowerpack(living, powerpack);
 		}
-		//TODO reenable
-		//else if(ModList.get().isLoaded("curios"))
-		//{
-		//	ItemStack powerpack = CuriosCompatModule.getPowerpack(living);
-		//	if(!powerpack.isEmpty())
-		//		addWornPowerpack(living, powerpack);
-		//}
+		else if(ModList.get().isLoaded("curios"))
+		{
+			ItemStack powerpack = CuriosCompatModule.getPowerpack(living);
+			if(!powerpack.isEmpty())
+				addWornPowerpack(living, powerpack);
+		}
 
 		if(POWERPACK_PLAYERS.containsKey(living.getUUID()))
 		{

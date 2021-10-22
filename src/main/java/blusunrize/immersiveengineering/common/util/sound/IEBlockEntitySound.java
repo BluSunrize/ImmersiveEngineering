@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -25,6 +26,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.fml.ModList;
 
 import javax.annotation.Nullable;
 
@@ -159,9 +161,8 @@ public class IEBlockEntitySound implements TickableSoundInstance
 			ItemStack earmuffs = ItemStack.EMPTY;
 			if(!head.isEmpty()&&(head.getItem()==Misc.EARMUFFS.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
 				earmuffs = head.getItem()==Misc.EARMUFFS.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
-			//TODO
-			//else if(ModList.get().isLoaded("curios"))
-			//	earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
+			else if(ModList.get().isLoaded("curios"))
+				earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
 
 			if(!earmuffs.isEmpty())
 				volumeAjustment = EarmuffsItem.getVolumeMod(earmuffs);

@@ -25,17 +25,7 @@ import java.util.function.Predicate;
 public class CuriosCompatModule extends IECompatModule
 {
 	@Override
-	public void preInit()
-	{
-	}
-
-	@Override
 	public void init()
-	{
-	}
-
-	@Override
-	public void postInit()
 	{
 	}
 

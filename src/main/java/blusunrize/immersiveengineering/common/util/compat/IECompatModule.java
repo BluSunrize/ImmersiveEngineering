@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
 import net.minecraftforge.fml.ModList;
 
 import java.util.HashMap;
@@ -25,6 +26,8 @@ public abstract class IECompatModule
 
 	static
 	{
+		moduleClasses.put("computercraft", ComputerCraftCompatModule.class);
+		moduleClasses.put("curios", CuriosCompatModule.class);
 	}
 
 	public static void doModulesPreInit()
@@ -40,9 +43,8 @@ public abstract class IECompatModule
 					BooleanValue enabled = IECommonConfig.compat.get(e.getKey());
 					if(enabled==null||!enabled.get())
 						continue;
-					IECompatModule m = e.getValue().newInstance();
+					IECompatModule m = e.getValue().getConstructor().newInstance();
 					modules.add(m);
-					m.preInit();
 				} catch(Exception exception)
 				{
 					IELogger.logger.error("Compat module for "+e.getKey()+" could not be preInitialized. Report this and include the error message below!", exception);
@@ -61,18 +63,6 @@ public abstract class IECompatModule
 			}
 	}
 
-	public static void doModulesPostInit()
-	{
-		for(IECompatModule compat : IECompatModule.modules)
-			try
-			{
-				compat.postInit();
-			} catch(Exception exception)
-			{
-				IELogger.logger.error("Compat module for "+compat+" could not be postInitialized. Report this and include the error message below!", exception);
-			}
-	}
-
 	public static void doModulesIMCs()
 	{
 		for(IECompatModule compat : IECompatModule.modules)
@@ -85,11 +75,7 @@ public abstract class IECompatModule
 			}
 	}
 
-	public abstract void preInit();
-
 	public abstract void init();
-
-	public abstract void postInit();
 
 	public void sendIMCs()
 	{
