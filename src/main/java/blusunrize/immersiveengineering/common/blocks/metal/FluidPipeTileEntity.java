@@ -90,6 +90,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		ISelectionBounds, ICollisionBounds, IAdditionalDrops
 {
 	static WorldMap<BlockPos, Set<DirectionalFluidOutput>> indirectConnections = new WorldMap<>();
+	// TODO tags?
 	public static ArrayList<Predicate<Block>> validPipeCovers = new ArrayList<>();
 	public static ArrayList<Predicate<Block>> climbablePipeCovers = new ArrayList<>();
 

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeTileEntity;
-import com.google.common.collect.ImmutableList;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.fml.InterModComms.IMCMessage;
@@ -19,6 +18,7 @@ import net.minecraftforge.fml.InterModComms.IMCMessage;
 import java.util.HashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 /**
  * @author BluSunrize - 27.05.2018
@@ -43,9 +43,9 @@ public class IEIMCHandler
 			String s = (String)imcMessage.getMessageSupplier().get();
 			try
 			{
-				Class clazz = Class.forName(s);
+				Class<?> clazz = Class.forName(s);
 				if(Mob.class.isAssignableFrom(clazz))
-					EventHandler.listOfBoringBosses.add(clazz);
+					EventHandler.listOfBoringBosses.add((Class<? extends Mob>)clazz);
 				else
 					IELogger.error("IMC Handling: "+s+" is not an instance of EntityLiving.");
 			} catch(ClassNotFoundException e)
@@ -55,14 +55,15 @@ public class IEIMCHandler
 		});
 	}
 
-	public static void handleIMCMessages(ImmutableList<IMCMessage> messages)
+	public static void handleIMCMessages(Stream<IMCMessage> messages)
 	{
-		for(IMCMessage message : messages)
+		messages.forEach(message -> {
 			if(MESSAGE_HANDLERS.containsKey(message.getMethod()))
 			{
 				Consumer<IMCMessage> handler = MESSAGE_HANDLERS.get(message.getMethod());
 				handler.accept(message);
 			}
+		});
 	}
 
 }
