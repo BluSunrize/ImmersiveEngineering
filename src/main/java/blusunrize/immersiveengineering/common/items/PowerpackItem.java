@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
+import blusunrize.immersiveengineering.common.util.ItemGetterList;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -42,6 +44,16 @@ import java.util.List;
  */
 public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 {
+	public static final ItemGetterList POWERPACK_GETTER = new ItemGetterList(player -> {
+		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
+		if(chest.getItem() instanceof PowerpackItem)
+			return chest;
+		else if(ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack))
+			return ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
+		else
+			return ItemStack.EMPTY;
+	});
+
 	public PowerpackItem()
 	{
 		super("powerpack", new Properties().stacksTo(1));
