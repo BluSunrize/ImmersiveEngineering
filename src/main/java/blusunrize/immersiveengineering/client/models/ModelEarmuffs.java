@@ -15,9 +15,8 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.world.entity.LivingEntity;
 
-public class ModelEarmuffs<T extends LivingEntity> extends ModelIEArmorBase<T>
+public class ModelEarmuffs extends ModelIEArmorBase
 {
 	public ModelEarmuffs(ModelPart part)
 	{

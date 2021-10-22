@@ -24,9 +24,8 @@ public class IEBipedRotations
 		if(!IEClientConfig.fancyItemHolding.get())
 			return;
 
-		if(entity instanceof Player)
+		if(entity instanceof Player player)
 		{
-			Player player = (Player)entity;
 			for(InteractionHand hand : InteractionHand.values())
 			{
 				ItemStack heldItem = player.getItemInHand(hand);

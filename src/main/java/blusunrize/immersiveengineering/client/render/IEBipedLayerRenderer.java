@@ -26,24 +26,18 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<E>> extends RenderLayer<E, M>
 {
-	public static Map<UUID, Pair<ItemStack, Integer>> POWERPACK_PLAYERS = new HashMap<>();
-	private final ModelPowerpack<E> powerpackModel;
-	private final ModelEarmuffs<E> earmuffModel;
+	private static ModelEarmuffs earmuffModel;
 
 	public IEBipedLayerRenderer(RenderLayerParent<E, M> entityRendererIn, EntityModelSet models)
 	{
 		super(entityRendererIn);
-		this.powerpackModel = new ModelPowerpack<>(models.bakeLayer(IEModelLayers.POWERPACK));
-		this.earmuffModel = new ModelEarmuffs<>(models.bakeLayer(IEModelLayers.EARMUFFS));
+		if(earmuffModel==null)
+			earmuffModel = new ModelEarmuffs(models.bakeLayer(IEModelLayers.EARMUFFS));
 	}
 
 	private static final ResourceLocation EARMUFF_OVERLAY = ImmersiveEngineering.rl("textures/models/earmuffs_overlay.png");
@@ -67,34 +61,16 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 
 		ItemStack powerpack = PowerpackItem.POWERPACK_GETTER.getFrom(living);
 		if(!powerpack.isEmpty())
-			addWornPowerpack(living, powerpack);
-
-		if(POWERPACK_PLAYERS.containsKey(living.getUUID()))
-		{
-			Pair<ItemStack, Integer> entry = POWERPACK_PLAYERS.get(living.getUUID());
-			renderPowerpack(entry.getLeft(), matrixStackIn, bufferIn, packedLightIn, living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			int time = entry.getValue()-1;
-			if(time <= 0)
-				POWERPACK_PLAYERS.remove(living.getUUID());
-			else
-				POWERPACK_PLAYERS.put(living.getUUID(), Pair.of(entry.getLeft(), time));
-		}
+			renderPowerpack(powerpack, matrixStackIn, bufferIn, packedLightIn, living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 	}
-
-	public static void addWornPowerpack(LivingEntity living, ItemStack powerpack)
-	{
-		POWERPACK_PLAYERS.put(living.getUUID(), Pair.of(powerpack, 5));
-	}
-
-	private static final ResourceLocation POWERPACK_TEXTURE = ImmersiveEngineering.rl("textures/models/powerpack.png");
 
 	private void renderPowerpack(ItemStack powerpack, PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		if(!powerpack.isEmpty())
-		{
-			powerpackModel.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-			RenderType type = powerpackModel.renderType(POWERPACK_TEXTURE);
-			powerpackModel.renderToBuffer(matrixStackIn, bufferIn.getBuffer(type), packedLightIn, OverlayTexture.NO_OVERLAY, 1F, 1F, 1F, 1F);
-		}
+			ModelPowerpack.render(
+					living, powerpack,
+					matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY, 1, 1, 1, 1,
+					limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch
+			);
 	}
 }

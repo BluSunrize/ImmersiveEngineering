@@ -9,8 +9,6 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.RenderType;
@@ -23,41 +21,29 @@ import net.minecraft.world.entity.monster.Zombie;
 
 import java.util.function.Function;
 
-public abstract class ModelIEArmorBase<T extends LivingEntity> extends HumanoidModel<T>
+public abstract class ModelIEArmorBase extends HumanoidModel<LivingEntity>
 {
-	T entityTemp;
-
 	public ModelIEArmorBase(ModelPart p_170679_, Function<ResourceLocation, RenderType> p_170680_)
 	{
 		super(p_170679_, p_170680_);
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
+	public void setupAnim(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
-		if(entityTemp!=null)
-		{
-			young = entityTemp.isBaby();
-			crouching = entityTemp.isShiftKeyDown();
-			riding = entityTemp.isPassenger()&&(entityTemp.getVehicle()!=null&&entityTemp.getVehicle().shouldRiderSit());
-		}
-		super.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-	}
-
-	@Override
-	public void setupAnim(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
-	{
-		entityTemp = entity;
 		attackTime = entity.getAttackAnim(ClientUtils.partialTicks());
 		if(entity instanceof ArmorStand)
-			setRotationAnglesStand(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+			setRotationAnglesStand(entity);
 		else if(entity instanceof Skeleton||entity instanceof Zombie)
 			setRotationAnglesZombie(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		else
 			super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		young = entity.isBaby();
+		crouching = entity.isShiftKeyDown();
+		riding = entity.isPassenger()&&(entity.getVehicle()!=null&&entity.getVehicle().shouldRiderSit());
 	}
 
-	public void setRotationAnglesZombie(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+	public void setRotationAnglesZombie(LivingEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
 	{
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		float f6 = Mth.sin(this.attackTime*3.141593F);
@@ -76,11 +62,10 @@ public abstract class ModelIEArmorBase<T extends LivingEntity> extends HumanoidM
 		this.leftArm.xRot -= Mth.sin(ageInTicks*0.067F)*0.05F;
 	}
 
-	public void setRotationAnglesStand(T entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch)
+	private void setRotationAnglesStand(LivingEntity entity)
 	{
-		if(entity instanceof ArmorStand)
+		if(entity instanceof ArmorStand entityarmorstand)
 		{
-			ArmorStand entityarmorstand = (ArmorStand)entity;
 			this.head.xRot = (0.01745329F*entityarmorstand.getHeadPose().getX());
 			this.head.yRot = (0.01745329F*entityarmorstand.getHeadPose().getY());
 			this.head.zRot = (0.01745329F*entityarmorstand.getHeadPose().getZ());

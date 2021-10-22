@@ -8,186 +8,174 @@
 
 package blusunrize.immersiveengineering.client.models;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.entity.IEModelLayers;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import com.google.common.cache.Cache;
+import com.google.common.base.Function;
+import com.google.common.base.Suppliers;
 import com.google.common.cache.CacheBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 
-import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /**
  * @author BluSunrize
  * @since 15.06.2017
  */
-public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
+public class ModelPowerpack
 {
-	private final ModelPart meterNeedle;
+	private static final Supplier<ArmorModel> MODEL = Suppliers.memoize(() -> {
+		EntityModelSet models = Minecraft.getInstance().getEntityModels();
+		ModelPart layer = models.bakeLayer(IEModelLayers.POWERPACK);
+		return new ArmorModel(layer);
+	});
+	private static final ResourceLocation POWERPACK_TEXTURE = ImmersiveEngineering.rl("textures/models/powerpack.png");
 
-	public ModelPowerpack(ModelPart part)
+	public static void render(
+			LivingEntity toRender, ItemStack powerpack,
+			PoseStack matrixStackIn, MultiBufferSource buffers,
+			int packedLightIn, int packedOverlayIn,
+			float red, float green, float blue, float alpha,
+			float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch
+	)
 	{
-		super(part, RenderType::entityTranslucent);
-		this.meterNeedle = part.getChild("body").getChild("meterNeedle");
-	}
-
-	@Override
-	public void renderToBuffer(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
-	{
-		if(entityTemp!=null)
+		ArmorModel model = MODEL.get();
+		model.setupAnim(toRender, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+		if(powerpack!=null)
 		{
-			ItemStack chest = entityTemp.getItemBySlot(EquipmentSlot.CHEST);
-			ItemStack powerpack = null;
-			float storage = 0;
-			if(!chest.isEmpty()&&chest.getItem() instanceof PowerpackItem)
-				powerpack = chest;
-			else if(!chest.isEmpty()&&chest.getItem() instanceof ArmorItem&&ItemNBTHelper.hasKey(chest, "IE:Powerpack"))
-				powerpack = ItemNBTHelper.getItemStack(chest, "IE:Powerpack");
-			else if(IEBipedLayerRenderer.POWERPACK_PLAYERS.containsKey(entityTemp.getUUID()))
-				powerpack = IEBipedLayerRenderer.POWERPACK_PLAYERS.get(entityTemp.getUUID()).getLeft();
-
-			if(powerpack!=null)
-			{
-				float max = EnergyHelper.getMaxEnergyStored(powerpack);
-				storage = max <= 0?0: EnergyHelper.getEnergyStored(powerpack)/max;
-				meterNeedle.zRot = 0.5235987f-(1.047197f*storage);
-			}
+			float max = EnergyHelper.getMaxEnergyStored(powerpack);
+			float storage = Math.max(0, EnergyHelper.getEnergyStored(powerpack)/max);
+			model.meterNeedle.zRot = 0.5235987f-(1.047197f*storage);
 		}
 
-		super.renderToBuffer(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+		RenderType type = model.renderType(POWERPACK_TEXTURE);
+		model.renderToBuffer(
+				matrixStackIn, buffers.getBuffer(type), packedLightIn, packedOverlayIn, red, green, blue, alpha
+		);
 
-		if(entityTemp!=null)
+		TextureAtlasSprite wireTexture = Minecraft.getInstance()
+				.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
+				.apply(ImmersiveEngineering.rl("block/wire"));
+		for(InteractionHand hand : InteractionHand.values())
 		{
-			TextureAtlasSprite wireTexture = Minecraft.getInstance()
-					.getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
-					.apply(new ResourceLocation(Lib.MODID, "textures/block/wire"));
-			for(InteractionHand hand : InteractionHand.values())
+			ItemStack stack = toRender.getItemInHand(hand);
+			if(!stack.isEmpty()&&EnergyHelper.isFluxRelated(stack))
 			{
-				ItemStack stack = entityTemp.getItemInHand(hand);
-				if(!stack.isEmpty()&&EnergyHelper.isFluxRelated(stack))
-				{
-					boolean right = (hand==InteractionHand.MAIN_HAND)==(entityTemp.getMainArm()==HumanoidArm.RIGHT);
-					float angleX = (right?rightArm: leftArm).xRot;
-					float angleZ = (right?rightArm: leftArm).zRot;
-					String cacheKey = keyFormat.format(angleX)+"_"+keyFormat.format(angleZ);
-					Vec3[] vex;
-					try
+				boolean right = (hand==InteractionHand.MAIN_HAND)==(toRender.getMainArm()==HumanoidArm.RIGHT);
+				float angleX = (right?model.rightArm: model.leftArm).xRot;
+				float angleZ = (right?model.rightArm: model.leftArm).zRot;
+				Vec3[] vex = (right?catenaryCacheRight: catenaryCacheLeft).getUnchecked(
+						new CatenaryKey((int)(angleX*1024), (int)(angleZ*1024))
+				);
+
+				float vStep = 1f/vex.length;
+
+				TransformingVertexBuilder builder = new TransformingVertexBuilder(
+						buffers, RenderType.entitySolid(InventoryMenu.BLOCK_ATLAS), matrixStackIn
+				);
+				double scaleX = right?-1: 1;
+				builder.defaultColor(.93f, .63f, .27f, 1);
+				builder.setLight(packedLightIn);
+				builder.setOverlay(packedOverlayIn);
+				final float v0 = wireTexture.getV0();
+				final float v1 = wireTexture.getV1();
+				for(int i = 1; i < vex.length; i++)
+					//TODO UVs or indices are probably twisted somewhere
+					for(int offset = 0; offset < 2; ++offset)
 					{
-						vex = (right?catenaryCacheRight: catenaryCacheLeft).get(cacheKey, () ->
+						int iHere = i-offset;
+						int iThere = i-1+offset;
+						Vec3 vecHere = vex[iHere];
+						Vec3 vecThere = vex[iThere];
+						builder.setNormal((float)(vecThere.z-vecHere.z), 0, (float)(vecHere.x-vecThere.x));
+						for(int index : new int[]{iHere, iThere})
 						{
-							double armLength = .75f;
-							double x = .3125+(right?1: -1)*armLength*Math.sin(angleZ);
-							double y = armLength*Math.cos(angleX);
-							double z = armLength*Math.sin(angleX);
-
-							return WireUtils.getConnectionCatenary(new Vec3(.484375, -.75, .25), new Vec3(x, -y, z), 1.5);
-						});
-					} catch(Exception e)
-					{
-						throw new RuntimeException(e);
-					}
-
-					float vStep = 1f/vex.length;
-
-					TransformingVertexBuilder builder = new TransformingVertexBuilder(bufferIn, matrixStackIn, DefaultVertexFormat.NEW_ENTITY);
-					double scaleX = right?-1: 1;
-					builder.defaultColor(.93f, .63f, .27f, 1);
-					builder.setLight(packedLightIn);
-					builder.setOverlay(packedOverlayIn);
-					final float v0 = wireTexture.getV0();
-					final float v1 = wireTexture.getV1();
-					for(int i = 1; i < vex.length; i++)
-						for(int offset = 0; offset < 2; ++offset)
-						{
-							int iHere = i-offset;
-							int iThere = i-1+offset;
-							Vec3 vecHere = vex[iHere];
-							Vec3 vecThere = vex[iThere];
-							builder.setNormal((float)(vecThere.z-vecHere.z), 0, (float)(vecHere.x-vecThere.x));
-							for(int index : new int[]{iHere, iThere})
+							Vec3 vec = vex[index];
+							double xA = scaleX*vec.x-.015625;
+							double xB = scaleX*vec.x+.015625;
+							if(index==iHere)
 							{
-								Vec3 vec = vex[index];
-								double xA = scaleX*vec.x-.015625;
-								double xB = scaleX*vec.x+.015625;
-								if(index==iHere)
-								{
-									double tmp = xA;
-									xA = xB;
-									xB = tmp;
-								}
-								builder.vertex(xA, -vec.y, vec.z)
-										.uv(wireTexture.getU(vStep*index), v0)
-										.endVertex();
-								builder.vertex(xB, -vec.y, vec.z)
-										.uv(wireTexture.getU(vStep*index), v1)
-										.endVertex();
+								double tmp = xA;
+								xA = xB;
+								xB = tmp;
 							}
-							builder.setNormal((float)(vecThere.y-vecHere.y), (float)(vecHere.x-vecThere.x), 0);
-							for(int index : new int[]{iHere, iThere})
-							{
-								Vec3 vec = vex[index];
-								double yA = -vec.y-.015625;
-								double yB = -vec.y;
-								if(index==iThere)
-								{
-									double tmp = yA;
-									yA = yB;
-									yB = tmp;
-								}
-								builder.vertex(scaleX*vec.x, yA, vec.z)
-										.uv(wireTexture.getU(vStep*index), v0)
-										.endVertex();
-								builder.vertex(scaleX*vec.x, yB, vec.z)
-										.uv(wireTexture.getU(vStep*index), v1)
-										.endVertex();
-							}
+							builder.vertex(xA, -vec.y, vec.z)
+									.uv(wireTexture.getU(vStep*index), v0)
+									.endVertex();
+							builder.vertex(xB, -vec.y, vec.z)
+									.uv(wireTexture.getU(vStep*index), v1)
+									.endVertex();
 						}
-				}
+						builder.setNormal((float)(vecThere.y-vecHere.y), (float)(vecHere.x-vecThere.x), 0);
+						for(int index : new int[]{iHere, iThere})
+						{
+							Vec3 vec = vex[index];
+							double yA = -vec.y-.015625;
+							double yB = -vec.y;
+							if(index==iThere)
+							{
+								double tmp = yA;
+								yA = yB;
+								yB = tmp;
+							}
+							builder.vertex(scaleX*vec.x, yA, vec.z)
+									.uv(wireTexture.getU(vStep*index), v0)
+									.endVertex();
+							builder.vertex(scaleX*vec.x, yB, vec.z)
+									.uv(wireTexture.getU(vStep*index), v1)
+									.endVertex();
+						}
+					}
 			}
 		}
 	}
 
-	static final DecimalFormat keyFormat = new DecimalFormat("0.0000");
-	public static final Cache<String, Vec3[]> catenaryCacheLeft = CacheBuilder.newBuilder()
-			.expireAfterAccess(5, TimeUnit.MINUTES)
-			.build();
-	public static final Cache<String, Vec3[]> catenaryCacheRight = CacheBuilder.newBuilder()
-			.expireAfterAccess(5, TimeUnit.MINUTES)
-			.build();
-
-	static ModelPowerpack<?> modelInstance;
-
-	public static <T extends LivingEntity>
-	ModelPowerpack<T> getModel(EntityModelSet modelSet)
+	private static record CatenaryKey(int xTimes1024, int zTimes1024)
 	{
-		if(modelInstance==null)
-			modelInstance = new ModelPowerpack<>(modelSet.bakeLayer(IEModelLayers.POWERPACK));
-		return (ModelPowerpack<T>)modelInstance;
+	}
+
+	public static final LoadingCache<CatenaryKey, Vec3[]> catenaryCacheLeft = CacheBuilder.newBuilder()
+			.expireAfterAccess(5, TimeUnit.MINUTES)
+			.build(CacheLoader.from(makeCacheCreator(false)));
+	public static final LoadingCache<CatenaryKey, Vec3[]> catenaryCacheRight = CacheBuilder.newBuilder()
+			.expireAfterAccess(5, TimeUnit.MINUTES)
+			.build(CacheLoader.from(makeCacheCreator(true)));
+
+	// Using Guava caches, which still want Guava Functions
+	@SuppressWarnings("Guava")
+	private static Function<CatenaryKey, Vec3[]> makeCacheCreator(boolean right)
+	{
+		return key -> {
+			double angleX = key.xTimes1024/1024.;
+			double angleZ = key.zTimes1024/1024.;
+			double armLength = .75f;
+			double x = .3125+(right?1: -1)*armLength*Math.sin(angleZ);
+			double y = armLength*Math.cos(angleX);
+			double z = armLength*Math.sin(angleX);
+
+			return WireUtils.getConnectionCatenary(new Vec3(.484375, -.75, .25), new Vec3(x, -y, z), 1.5);
+		};
 	}
 
 	public static LayerDefinition createLayers()
@@ -324,5 +312,16 @@ public class ModelPowerpack<T extends LivingEntity> extends ModelIEArmorBase<T>
 			);
 		}
 		return LayerDefinition.create(data, 64, 32);
+	}
+
+	private static class ArmorModel extends ModelIEArmorBase
+	{
+		private final ModelPart meterNeedle;
+
+		public ArmorModel(ModelPart part)
+		{
+			super(part, RenderType::entityTranslucent);
+			this.meterNeedle = part.getChild("body").getChild("meterNeedle");
+		}
 	}
 }
