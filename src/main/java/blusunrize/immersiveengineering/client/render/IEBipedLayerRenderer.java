@@ -9,14 +9,12 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.models.ModelEarmuffs;
 import blusunrize.immersiveengineering.client.models.ModelPowerpack;
 import blusunrize.immersiveengineering.client.render.entity.IEModelLayers;
+import blusunrize.immersiveengineering.common.items.EarmuffsItem;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
+import blusunrize.immersiveengineering.common.items.PowerpackItem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -26,10 +24,8 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -57,13 +53,7 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 	@ParametersAreNonnullByDefault
 	public void render(PoseStack matrixStackIn, MultiBufferSource bufferIn, int packedLightIn, E living, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
 	{
-		ItemStack head = living.getItemBySlot(EquipmentSlot.HEAD);
-		ItemStack earmuffs = ItemStack.EMPTY;
-		if(!head.isEmpty()&&(head.getItem()==Misc.EARMUFFS.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
-			earmuffs = head.getItem()==Misc.EARMUFFS.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
-		else if(ModList.get().isLoaded("curios"))
-			earmuffs = CuriosCompatModule.getEarmuffs(living);
-
+		ItemStack earmuffs = EarmuffsItem.EARMUFF_GETTERS.getFrom(living);
 		if(!earmuffs.isEmpty())
 		{
 			earmuffModel.setupAnim(living, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
@@ -75,18 +65,9 @@ public class IEBipedLayerRenderer<E extends LivingEntity, M extends EntityModel<
 					(colour >> 16&255)/255f, (colour >> 8&255)/255f, (colour&255)/255f, 1F);
 		}
 
-		ItemStack chest = living.getItemBySlot(EquipmentSlot.CHEST);
-		if(!chest.isEmpty()&&(chest.getItem()==Misc.POWERPACK.asItem()||ItemNBTHelper.hasKey(chest, Lib.NBT_Powerpack)))
-		{
-			ItemStack powerpack = chest.getItem()==Misc.POWERPACK.asItem()?chest: ItemNBTHelper.getItemStack(chest, Lib.NBT_Powerpack);
+		ItemStack powerpack = PowerpackItem.POWERPACK_GETTER.getFrom(living);
+		if(!powerpack.isEmpty())
 			addWornPowerpack(living, powerpack);
-		}
-		else if(ModList.get().isLoaded("curios"))
-		{
-			ItemStack powerpack = CuriosCompatModule.getPowerpack(living);
-			if(!powerpack.isEmpty())
-				addWornPowerpack(living, powerpack);
-		}
 
 		if(POWERPACK_PLAYERS.containsKey(living.getUUID()))
 		{

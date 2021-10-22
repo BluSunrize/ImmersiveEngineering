@@ -214,8 +214,8 @@ public class EventHandler
 		}
 	}
 
-	public static HashMap<UUID, CrusherBlockEntity> crusherMap = new HashMap<>();
-	public static HashSet<Class<? extends Mob>> listOfBoringBosses = new HashSet<>();
+	public static Map<UUID, CrusherBlockEntity> crusherMap = new HashMap<>();
+	public static Set<Class<? extends Mob>> listOfBoringBosses = new HashSet<>();
 
 	static
 	{

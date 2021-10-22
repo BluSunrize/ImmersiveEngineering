@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.Too
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
+import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
 import net.minecraft.client.resources.language.I18n;
@@ -34,6 +35,18 @@ import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendC
 
 public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, IConfigurableTool, ITool, IColouredItem
 {
+	public static ItemGetterList EARMUFF_GETTERS = new ItemGetterList(
+			entity -> {
+				ItemStack head = entity.getItemBySlot(EquipmentSlot.HEAD);
+				if(head.getItem() instanceof EarmuffsItem)
+					return head;
+				else if(ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs))
+					return ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
+				else
+					return ItemStack.EMPTY;
+			}
+	);
+
 	public EarmuffsItem()
 	{
 		super();

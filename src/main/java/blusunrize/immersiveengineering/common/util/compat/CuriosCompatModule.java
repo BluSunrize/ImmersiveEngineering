@@ -36,16 +36,12 @@ public class CuriosCompatModule extends IECompatModule
 				() -> SlotTypePreset.BACK.getMessageBuilder().build());
 		InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE,
 				() -> SlotTypePreset.HEAD.getMessageBuilder().build());
-	}
-
-	public static ItemStack getPowerpack(LivingEntity living)
-	{
-		return getCuriosIfVisible(living, SlotTypePreset.BACK, stack -> stack.getItem() instanceof PowerpackItem);
-	}
-
-	public static ItemStack getEarmuffs(LivingEntity living)
-	{
-		return getCuriosIfVisible(living, SlotTypePreset.HEAD, stack -> stack.getItem() instanceof EarmuffsItem);
+		PowerpackItem.POWERPACK_GETTER.addGetter(living -> getCuriosIfVisible(
+				living, SlotTypePreset.BACK, stack -> stack.getItem() instanceof PowerpackItem
+		));
+		EarmuffsItem.EARMUFF_GETTERS.addGetter(living -> getCuriosIfVisible(
+				living, SlotTypePreset.HEAD, stack -> stack.getItem() instanceof EarmuffsItem
+		));
 	}
 
 	public static ItemStack getCuriosIfVisible(LivingEntity living, SlotTypePreset slot, Predicate<ItemStack> predicate)

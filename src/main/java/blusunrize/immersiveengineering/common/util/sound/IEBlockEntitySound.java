@@ -8,13 +8,9 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem;
-import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.compat.CuriosCompatModule;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
@@ -23,10 +19,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.fml.ModList;
 
 import javax.annotation.Nullable;
 
@@ -155,28 +149,22 @@ public class IEBlockEntitySound implements TickableSoundInstance
 	public void evaluateVolume()
 	{
 		volumeAjustment = 1f;
-		if(ClientUtils.mc().player!=null&&!ClientUtils.mc().player.getItemBySlot(EquipmentSlot.HEAD).isEmpty())
+		if(ClientUtils.mc().player!=null)
 		{
-			ItemStack head = ClientUtils.mc().player.getItemBySlot(EquipmentSlot.HEAD);
-			ItemStack earmuffs = ItemStack.EMPTY;
-			if(!head.isEmpty()&&(head.getItem()==Misc.EARMUFFS.get()||ItemNBTHelper.hasKey(head, Lib.NBT_Earmuffs)))
-				earmuffs = head.getItem()==Misc.EARMUFFS.get()?head: ItemNBTHelper.getItemStack(head, Lib.NBT_Earmuffs);
-			else if(ModList.get().isLoaded("curios"))
-				earmuffs = CuriosCompatModule.getEarmuffs(ClientUtils.mc().player);
-
+			ItemStack earmuffs = EarmuffsItem.EARMUFF_GETTERS.getFrom(ClientUtils.mc().player);
 			if(!earmuffs.isEmpty())
 				volumeAjustment = EarmuffsItem.getVolumeMod(earmuffs);
 		}
 
 		BlockEntity tile = ClientUtils.mc().player.level.getBlockEntity(new BlockPos(tileX, tileY, tileZ));
-		if(!(tile instanceof ISoundBE))
+		if(!(tile instanceof ISoundBE soundBE))
 			donePlaying = true;
 		else
 		{
-			donePlaying = !((ISoundBE)tile).shouldPlaySound(resource.toString());
+			donePlaying = !soundBE.shouldPlaySound(resource.toString());
 			if(!donePlaying)
 			{
-				float radiusSq = ((ISoundBE)tile).getSoundRadiusSq();
+				float radiusSq = soundBE.getSoundRadiusSq();
 				if(ClientUtils.mc().player!=null)
 				{
 					double distSq = ClientUtils.mc().player.distanceToSqr(tileX, tileY, tileZ);
