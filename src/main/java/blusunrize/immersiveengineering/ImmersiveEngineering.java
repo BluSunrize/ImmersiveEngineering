@@ -221,7 +221,7 @@ public class ImmersiveEngineering
 		registerMessage(MessageContainerData.class, MessageContainerData::new, PLAY_TO_CLIENT);
 
 		IEIMCHandler.init();
-		//TODO IEIMCHandler.handleIMCMessages(FMLInterModComms.fetchRuntimeMessages(this));
+		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));
 
 		event.enqueueWork(Villages::init);
 		ShaderRegistry.compileWeight();
