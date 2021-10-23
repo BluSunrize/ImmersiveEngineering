@@ -185,9 +185,11 @@ repositories {
         name 'Jared maven'
         url 'https://maven.blamejared.com/'
     }
-    maven {//Curseforge maven, in case some other maven goes offline and for mods that don't have a maven
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+    maven {//Curse maven, in case some other maven goes offline and for mods that don't have a maven
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
     maven { // CC-Tweaked
         url 'https://squiddev.cc/maven/'
@@ -200,12 +202,11 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
-    //TODO update as necessary
     compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.0.0.14:api")
     compileOnly fg.deobf("org.squiddev:cc-tweaked-1.17.1:1.98.2")
-    //TODO curse maven? or just skip for now?
-    //compileOnly fg.deobf("mcjty.theoneprobe:TheOneProbe-1.17:1.16-3.+")
+    compileOnly fg.deobf("curse.maven:the-one-probe-245211:3430022")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.1.0:api")
+    //TODO port compat once available
     //compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
 
     implementation "malte0811:BlockModelSplitter:1.2.0"

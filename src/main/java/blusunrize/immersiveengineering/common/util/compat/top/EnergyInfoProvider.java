@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
 import mcjty.theoneprobe.api.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -23,32 +24,30 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class EnergyInfoProvider implements IProbeInfoProvider, IProbeConfigProvider
 {
-
 	@Override
-	public String getID()
+	public ResourceLocation getID()
 	{
-		return ImmersiveEngineering.MODID+":"+"EnergyInfo";
+		return ImmersiveEngineering.rl("energy_info");
 	}
 
 	@Override
 	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
+		BlockEntity blockEntity = world.getBlockEntity(data.getPos());
 		int cur = 0;
 		int max = 0;
-		if (tileEntity instanceof IFluxReceiver)
+		if(blockEntity instanceof IFluxReceiver fluxReceiver)
 		{
-			cur = ((IFluxReceiver) tileEntity).getEnergyStored(null);
-			max = ((IFluxReceiver) tileEntity).getMaxEnergyStored(null);
+			cur = fluxReceiver.getEnergyStored(null);
+			max = fluxReceiver.getMaxEnergyStored(null);
 		}
-		else if (tileEntity instanceof IFluxProvider)
+		else if(blockEntity instanceof IFluxProvider fluxProvider)
 		{
-			cur = ((IFluxProvider) tileEntity).getEnergyStored(null);
-			max = ((IFluxProvider) tileEntity).getMaxEnergyStored(null);
+			cur = fluxProvider.getEnergyStored(null);
+			max = fluxProvider.getMaxEnergyStored(null);
 		}
-		if (max > 0)
-		{
+		if(max > 0)
 			probeInfo.progress(cur, max,
 					probeInfo.defaultProgressStyle()
 							.suffix("IF")
@@ -56,7 +55,6 @@ public class EnergyInfoProvider implements IProbeInfoProvider, IProbeConfigProvi
 							.alternateFilledColor(0xff994f20)
 							.borderColor(Lib.COLOUR_I_ImmersiveOrangeShadow)
 							.numberFormat(NumberFormat.COMPACT));
-		}
 	}
 
 	@Override
@@ -69,10 +67,8 @@ public class EnergyInfoProvider implements IProbeInfoProvider, IProbeConfigProvi
 	public void getProbeConfig(IProbeConfig config, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
-		if(tileEntity instanceof IFluxReceiver||tileEntity instanceof IFluxProvider)
-		{
-			config.setRFMode(0);				
-		}
+		BlockEntity blockEntity = world.getBlockEntity(data.getPos());
+		if(blockEntity instanceof IFluxReceiver||blockEntity instanceof IFluxProvider)
+			config.setRFMode(0);
 	}
 }

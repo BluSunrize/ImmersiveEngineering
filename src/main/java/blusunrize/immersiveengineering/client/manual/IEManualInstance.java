@@ -85,7 +85,7 @@ public class IEManualInstance extends ManualInstance
 	{
 		String splitKey = ";";
 
-		s = s.replaceAll("<br>", "\n");
+		s = s.replace("<br>", "\n");
 		int start;
 		int overflow = 0;
 		while((start = s.indexOf("<config")) >= 0&&overflow < 50)

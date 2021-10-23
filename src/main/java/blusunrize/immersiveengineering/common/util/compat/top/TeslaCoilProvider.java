@@ -9,13 +9,14 @@ package blusunrize.immersiveengineering.common.util.compat.top;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -28,45 +29,33 @@ public class TeslaCoilProvider implements IProbeInfoProvider
 {
 
 	@Override
-	public String getID()
+	public ResourceLocation getID()
 	{
-		return ImmersiveEngineering.MODID+":"+"TeslaCoilInfo";
+		return ImmersiveEngineering.rl("teslacoil_info");
 	}
 
 	@Override
 	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
-		
-		if(tileEntity instanceof TeslaCoilTileEntity)
-		{
-			TeslaCoilTileEntity teslaCoil = (TeslaCoilTileEntity) tileEntity;
-			if(teslaCoil.isDummy())
-			{
-				tileEntity = world.getBlockEntity(data.getPos().relative(teslaCoil.getFacing(), -1));
+		BlockEntity blockEntity = world.getBlockEntity(data.getPos());
 
-				if(tileEntity instanceof TeslaCoilTileEntity)
-				{
-					teslaCoil = (TeslaCoilTileEntity) tileEntity;
-				}
-				else
-				{
-					probeInfo.text(new TextComponent("<ERROR>"));
-					return;
-				}
+		if(blockEntity instanceof TeslaCoilBlockEntity teslaCoil)
+		{
+			teslaCoil = teslaCoil.master();
+			if(teslaCoil==null)
+			{
+				probeInfo.text(new TextComponent("<ERROR>"));
+				return;
 			}
 
 			probeInfo.text(new TranslatableComponent(
-				Lib.CHAT_INFO+"rsControl." + 
-				(teslaCoil.redstoneControlInverted?"invertedOn": "invertedOff")
+					Lib.CHAT_INFO+"rsControl."+(teslaCoil.redstoneControlInverted?"invertedOn": "invertedOff")
 			));
 
 			probeInfo.text(new TranslatableComponent(
-				Lib.CHAT_INFO+"tesla." + 
-				(teslaCoil.lowPower?"lowPower": "highPower")
+					Lib.CHAT_INFO+"tesla."+(teslaCoil.lowPower?"lowPower": "highPower")
 			));
-
 		}
 	}
 }

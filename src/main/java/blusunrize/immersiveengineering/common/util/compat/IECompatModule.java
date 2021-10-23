@@ -28,6 +28,7 @@ public abstract class IECompatModule
 	{
 		moduleClasses.put("computercraft", ComputerCraftCompatModule.class);
 		moduleClasses.put("curios", CuriosCompatModule.class);
+		moduleClasses.put("theoneprobe", OneProbeCompatModule.class);
 	}
 
 	public static void doModulesPreInit()
@@ -75,7 +76,9 @@ public abstract class IECompatModule
 			}
 	}
 
-	public abstract void init();
+	public void init()
+	{
+	}
 
 	public void sendIMCs()
 	{

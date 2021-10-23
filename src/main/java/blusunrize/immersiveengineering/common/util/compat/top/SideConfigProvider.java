@@ -18,6 +18,7 @@ import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -30,27 +31,29 @@ public class SideConfigProvider implements IProbeInfoProvider
 {
 
 	@Override
-	public String getID()
+	public ResourceLocation getID()
 	{
-		return ImmersiveEngineering.MODID+":"+"SideConfigInfo";
+		return ImmersiveEngineering.rl("side_config_info");
 	}
 
 	@Override
 	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
+		if(data.getSideHit()==null)
+			return;
 		BlockEntity te = world.getBlockEntity(data.getPos());
-		if(te instanceof IEBlockInterfaces.IConfigurableSides&&data.getSideHit()!=null)
+		if(te instanceof IEBlockInterfaces.IConfigurableSides configSides)
 		{
 			boolean flip = player.isShiftKeyDown();
-			Direction side = flip ? data.getSideHit().getOpposite() : data.getSideHit();
-			IOSideConfig config = ((IEBlockInterfaces.IConfigurableSides)te).getSideConfig(side);
-			
+			Direction side = flip?data.getSideHit().getOpposite(): data.getSideHit();
+			IOSideConfig config = configSides.getSideConfig(side);
+
 			TextComponent combined = new TextComponent("");
 			TranslatableComponent direction =
-					new TranslatableComponent(Lib.DESC_INFO+"blockSide." + (flip?"opposite": "facing"));
-			TranslatableComponent connection = 
-					new TranslatableComponent(Lib.DESC_INFO+"blockSide.io." + config.getSerializedName());
+					new TranslatableComponent(Lib.DESC_INFO+"blockSide."+(flip?"opposite": "facing"));
+			TranslatableComponent connection =
+					new TranslatableComponent(Lib.DESC_INFO+"blockSide.io."+config.getSerializedName());
 			
 			combined.append(direction);
 			combined.append(": ");

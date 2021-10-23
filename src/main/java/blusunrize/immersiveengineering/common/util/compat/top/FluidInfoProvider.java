@@ -8,8 +8,9 @@
 package blusunrize.immersiveengineering.common.util.compat.top;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankTileEntity;
+import blusunrize.immersiveengineering.common.blocks.metal.SheetmetalTankBlockEntity;
 import mcjty.theoneprobe.api.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,29 +23,32 @@ public class FluidInfoProvider implements IProbeInfoProvider
 {
 
 	@Override
-	public String getID()
+	public ResourceLocation getID()
 	{
-		return ImmersiveEngineering.MODID+":"+"FluidInfo";
+		return ImmersiveEngineering.rl("fluid_info");
 	}
 
 	@Override
 	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 			BlockState blockState, IProbeHitData data)
 	{
-		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
-		if(tileEntity instanceof SheetmetalTankTileEntity)
+		BlockEntity blockEntity = world.getBlockEntity(data.getPos());
+		if(blockEntity instanceof SheetmetalTankBlockEntity sheetmetalTank)
 		{
-			SheetmetalTankTileEntity master = ((SheetmetalTankTileEntity) tileEntity).master();
+			SheetmetalTankBlockEntity master = sheetmetalTank.master();
+			if(master==null)
+			{
+				probeInfo.text("<ERROR>");
+				return;
+			}
 			int current = master.tank.getFluidAmount();
 			int max = master.tank.getCapacity();
 
 			if(current > 0)
-			{
 				probeInfo.progress(current, max,
 						probeInfo.defaultProgressStyle()
 								.suffix("mB")
 								.numberFormat(NumberFormat.COMPACT));
-			}
 		}
 	}
 }

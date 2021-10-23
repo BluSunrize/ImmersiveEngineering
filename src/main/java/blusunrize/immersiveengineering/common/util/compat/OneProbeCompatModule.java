@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.common.util.compat.top.*;
 import com.google.common.base.Function;
+import com.google.common.base.Preconditions;
 import mcjty.theoneprobe.api.ITheOneProbe;
 import net.minecraftforge.fml.InterModComms;
 
@@ -22,22 +23,17 @@ import java.util.function.Supplier;
 public class OneProbeCompatModule extends IECompatModule implements Function<ITheOneProbe, Void>
 {
 	@Override
-	public void preInit()
+	public void sendIMCs()
 	{
 		Supplier<Function<ITheOneProbe, Void>> supplier = () -> this;
 		InterModComms.sendTo("theoneprobe", "getTheOneProbe", supplier);
 	}
 
-	@Override
-	public void init() { }
-
-	@Override
-	public void postInit() { }
-
 	@Nullable
 	@Override
 	public Void apply(@Nullable ITheOneProbe input)
 	{
+		Preconditions.checkNotNull(input);
 		EnergyInfoProvider energyInfo = new EnergyInfoProvider();
 		input.registerProvider(energyInfo);
 		input.registerProbeConfigProvider(energyInfo);

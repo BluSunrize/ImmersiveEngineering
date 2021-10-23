@@ -13,6 +13,7 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -25,20 +26,20 @@ public class ProcessProvider implements IProbeInfoProvider
 {
 
 	@Override
-	public String getID()
+	public ResourceLocation getID()
 	{
-		return ImmersiveEngineering.MODID+":"+"ProcessInfo";
+		return ImmersiveEngineering.rl("process_info");
 	}
 
 	@Override
 	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		BlockEntity tileEntity = world.getBlockEntity(data.getPos());
-		if(tileEntity instanceof IEBlockInterfaces.IProcessTile)
+		BlockEntity blockEntity = world.getBlockEntity(data.getPos());
+		if(blockEntity instanceof IEBlockInterfaces.IProcessBE processBE)
 		{
-			int[] curTicks = ((IEBlockInterfaces.IProcessTile) tileEntity).getCurrentProcessesStep();
-			int[] maxTicks = ((IEBlockInterfaces.IProcessTile) tileEntity).getCurrentProcessesMax();
+			int[] curTicks = processBE.getCurrentProcessesStep();
+			int[] maxTicks = processBE.getCurrentProcessesMax();
 			int h = Math.max(4, (int)Math.ceil(12/(float)curTicks.length));
 
 			for(int i = 0; i < curTicks.length; i++)
@@ -46,9 +47,9 @@ public class ProcessProvider implements IProbeInfoProvider
 				{
 					float current = curTicks[i]/(float)maxTicks[i]*100;
 					probeInfo.progress(
-						(int)current,
-						100,
-						probeInfo.defaultProgressStyle().showText(h >= 10).suffix("%").height(h)
+							(int)current,
+							100,
+							probeInfo.defaultProgressStyle().showText(h >= 10).suffix("%").height(h)
 					);
 				}
 		}
