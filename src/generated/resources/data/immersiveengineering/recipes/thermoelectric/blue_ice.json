@@ -1,0 +1,5 @@
+{
+  "type": "immersiveengineering:thermoelectric_source",
+  "singleBlock": "minecraft:blue_ice",
+  "tempKelvin": 200
+}

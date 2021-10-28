@@ -211,8 +211,10 @@ public class Recipes extends RecipeProvider
 		recipesMultiblockMachines(out);
 
 		mineralMixes(out);
+
 		GeneratorFuelBuilder.builder(IETags.fluidBiodiesel, 250).build(out, toRL("generator_fuel/biodiesel"));
 		GeneratorFuelBuilder.builder(IETags.fluidCreosote, 20).build(out, toRL("generator_fuel/creosote"));
+		thermoelectricFuels(out);
 	}
 
 	private void recipesBlast(@Nonnull Consumer<FinishedRecipe> out)
@@ -1083,6 +1085,26 @@ public class Recipes extends RecipeProvider
 		//	Lapis
 		//	Cinnabar
 	}
+
+	private void thermoelectricFuels(@Nonnull Consumer<FinishedRecipe> out)
+	{
+		ThermoelectricSourceBuilder.builder(Blocks.MAGMA_BLOCK)
+				.kelvin(1300)
+				.build(out, toRL("thermoelectric/magma"));
+		ThermoelectricSourceBuilder.builder(Blocks.ICE)
+				.celsius(0)
+				.build(out, toRL("thermoelectric/ice"));
+		ThermoelectricSourceBuilder.builder(Blocks.PACKED_ICE)
+				.kelvin(240)
+				.build(out, toRL("thermoelectric/packed_ice"));
+		ThermoelectricSourceBuilder.builder(Blocks.BLUE_ICE)
+				.kelvin(200)
+				.build(out, toRL("thermoelectric/blue_ice"));
+		ThermoelectricSourceBuilder.builder(IETags.getTagsFor(EnumMetals.URANIUM).storage)
+				.kelvin(2000)
+				.build(out, toRL("thermoelectric/uranium"));
+	}
+
 
 	private void recipesStoneDecorations(@Nonnull Consumer<FinishedRecipe> out)
 	{

@@ -9,21 +9,22 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -32,6 +33,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 
 public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IIEInternalFluxConnector
 {
@@ -77,8 +79,8 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 		for(Direction fd : new Direction[]{Direction.DOWN, Direction.NORTH, Direction.WEST})
 			if(!level.isEmptyBlock(getBlockPos().relative(fd))&&!level.isEmptyBlock(getBlockPos().relative(fd.getOpposite())))
 			{
-				int temp0 = getTemperature(getBlockPos().relative(fd));
-				int temp1 = getTemperature(getBlockPos().relative(fd.getOpposite()));
+				int temp0 = getTemperature(fd);
+				int temp1 = getTemperature(fd.getOpposite());
 				if(temp0 > -1&&temp1 > -1)
 				{
 					int diff = Math.abs(temp0-temp1);
@@ -88,21 +90,28 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 		this.energyOutput = energy==0?-1: energy;
 	}
 
-	private int getTemperature(BlockPos pos)
+	private final Map<Direction, Function<Block, Integer>> temperatureGetters = new EnumMap<>(Direction.class);
+
 	{
-		Fluid f = getFluid(pos);
-		if(f!=Fluids.EMPTY)
-			return f.getAttributes().getTemperature(level, pos);
-		BlockState state = level.getBlockState(pos);
-		return ThermoelectricHandler.getTemperature(state.getBlock());
+		for(Direction d : DirectionUtils.VALUES)
+			temperatureGetters.put(d, CachedRecipe.cached(ThermoelectricSource::getSource).andThen(
+					source -> source==null?-1: source.getTemperature()
+			));
 	}
 
-	@Nullable
-	Fluid getFluid(BlockPos pos)
+	private int getTemperature(Direction offset)
 	{
+		BlockPos pos = worldPosition.relative(offset);
 		BlockState state = level.getBlockState(pos);
-		FluidState fState = state.getFluidState();
-		return fState.getType();
+		Fluid f = getFluid(state);
+		if(f!=Fluids.EMPTY)
+			return f.getAttributes().getTemperature(level, pos);
+		return temperatureGetters.get(offset).apply(state.getBlock());
+	}
+
+	Fluid getFluid(BlockState state)
+	{
+		return state.getFluidState().getType();
 	}
 
 	@Override

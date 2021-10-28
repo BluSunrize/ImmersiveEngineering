@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
+import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import net.minecraft.client.Minecraft;
@@ -113,6 +114,7 @@ public class RecipeReloadListener implements ResourceManagerReloadListener
 		MixerRecipe.recipeList = filterRecipes(recipes, MixerRecipe.class, MixerRecipe.TYPE);
 		MineralMix.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
 		GeneratorFuel.ALL_FUELS = filterRecipes(recipes, GeneratorFuel.class, GeneratorFuel.TYPE).values();
+		ThermoelectricSource.ALL_SOURCES = filterRecipes(recipes, ThermoelectricSource.class, ThermoelectricSource.TYPE).values();
 		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 	}
 

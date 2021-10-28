@@ -1,0 +1,5 @@
+{
+  "type": "immersiveengineering:thermoelectric_source",
+  "singleBlock": "minecraft:magma_block",
+  "tempKelvin": 1300
+}

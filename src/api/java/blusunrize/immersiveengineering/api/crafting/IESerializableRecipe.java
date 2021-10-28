@@ -71,7 +71,7 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 		return getIESerializer();
 	}
 
-	protected abstract IERecipeSerializer getIESerializer();
+	protected abstract IERecipeSerializer<?> getIESerializer();
 
 	@Override
 	public RecipeType<?> getType()

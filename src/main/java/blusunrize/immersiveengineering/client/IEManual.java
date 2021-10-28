@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricHandler;
+import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
@@ -124,7 +124,7 @@ public class IEManual
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement(new SpecialElementData("values", 0, addDynamicTable(
-					() -> ThermoelectricHandler.getThermalValuesSorted(true), "K"
+					() -> ThermoelectricSource.getThermalValuesSorted(true), "K"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
 			ieMan.addEntry(energyCat, builder.create(), ieMan.atOffsetFrom(energyCat, "redstone_wire", 0.5));
