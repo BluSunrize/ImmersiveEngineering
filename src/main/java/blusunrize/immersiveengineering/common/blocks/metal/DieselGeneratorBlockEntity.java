@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -33,6 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -51,6 +53,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<DieselGeneratorBlockEntity>
@@ -143,6 +146,8 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 		}
 	}
 
+	private final Function<Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
+
 	@Override
 	public void tickServer()
 	{
@@ -151,9 +156,10 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 
 		if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
 		{
-			int burnTime = DieselHandler.getBurnTime(tanks[0].getFluid().getFluid());
-			if(burnTime > 0)
+			GeneratorFuel recipe = recipeGetter.apply(tanks[0].getFluid().getFluid());
+			if(recipe!=null)
 			{
+				int burnTime = recipe.getBurnTime();
 				int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
 				int output = IEServerConfig.MACHINES.dieselGen_output.get();
 				List<IEnergyStorage> presentOutputs = outputs.stream()
@@ -321,9 +327,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	@Override
 	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
 	{
-		if(resources==null)
-			return false;
-		return DieselHandler.isValidFuel(resources.getFluid());
+		return recipeGetter.apply(resources.getFluid())!=null;
 	}
 
 	@Override

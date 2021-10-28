@@ -211,6 +211,8 @@ public class Recipes extends RecipeProvider
 		recipesMultiblockMachines(out);
 
 		mineralMixes(out);
+		GeneratorFuelBuilder.builder(IETags.fluidBiodiesel, 250).build(out, toRL("generator_fuel/biodiesel"));
+		GeneratorFuelBuilder.builder(IETags.fluidCreosote, 20).build(out, toRL("generator_fuel/creosote"));
 	}
 
 	private void recipesBlast(@Nonnull Consumer<FinishedRecipe> out)
