@@ -1,6 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
@@ -178,7 +178,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	@Override
 	public boolean allowFluid(ItemStack container, FluidStack fluid)
 	{
-		return fluid!=null&&DieselHandler.isValidDrillFuel(fluid.getFluid());
+		return fluid!=null&&fluid.getFluid().is(IETags.drillFuel);
 	}
 
 	@Override

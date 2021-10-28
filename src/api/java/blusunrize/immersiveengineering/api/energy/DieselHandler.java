@@ -8,12 +8,13 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * @author BluSunrize - 23.04.2015
@@ -23,7 +24,6 @@ import java.util.*;
 public class DieselHandler
 {
 	static final List<Pair<Tag<Fluid>, Integer>> dieselGenBurnTime = new ArrayList<>();
-	static final Set<Tag<Fluid>> drillFuel = new HashSet<>();
 
 	/**
 	 * @param fuel the fluidtag to be used as fuel
@@ -38,12 +38,9 @@ public class DieselHandler
 	public static int getBurnTime(Fluid fuel)
 	{
 		if(fuel!=null)
-		{
-			ResourceLocation s = fuel.getRegistryName();
 			for(Map.Entry<Tag<Fluid>, Integer> entry : dieselGenBurnTime)
 				if(entry.getKey().contains(fuel))
 					return entry.getValue();
-		}
 		return 0;
 	}
 
@@ -58,16 +55,4 @@ public class DieselHandler
 	{
 		return dieselGenBurnTime;
 	}
-
-	public static void registerDrillFuel(Tag<Fluid> fuel)
-	{
-		if(fuel!=null)
-			drillFuel.add(fuel);
-	}
-
-	public static boolean isValidDrillFuel(Fluid fuel)
-	{
-		return fuel!=null&&drillFuel.stream().anyMatch(fluidTag -> fluidTag.contains(fuel));
-	}
-
 }

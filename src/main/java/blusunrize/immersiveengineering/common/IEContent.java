@@ -238,7 +238,6 @@ public class IEContent
 		});
 
 		DieselHandler.registerFuel(IETags.fluidBiodiesel, 250);
-		DieselHandler.registerDrillFuel(IETags.fluidBiodiesel);
 		DieselHandler.registerFuel(IETags.fluidCreosote, 20);
 
 		// TODO move to IEFluids/constructors?
