@@ -9,12 +9,14 @@
 package blusunrize.immersiveengineering.api.energy;
 
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.material.Fluid;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
+import java.util.function.Function;
 
 /**
  * @author BluSunrize - 23.04.2015
@@ -34,40 +36,64 @@ public class DieselHandler
 	/**
 	 * @param fuel the fluidtag to be used as fuel
 	 * @param time the total burn time gained from one bucket
+	 * @deprecated use JSON recipes instead
 	 */
+	@Deprecated
 	public static void registerFuel(Tag<Fluid> fuel, int time)
 	{
 		if(fuel!=null)
 			dieselGenBurnTime.add(Pair.of(fuel, time));
 	}
 
+	@Deprecated
 	public static int getBurnTime(Fluid fuel)
 	{
 		if(fuel!=null)
 		{
-			ResourceLocation s = fuel.getRegistryName();
-			for(Map.Entry<Tag<Fluid>, Integer> entry : dieselGenBurnTime)
-				if(entry.getKey().contains(fuel))
-					return entry.getValue();
+			GeneratorFuel recipe = GeneratorFuel.getRecipeFor(fuel, null);
+			if(recipe!=null)
+				return recipe.getBurnTime();
 		}
 		return 0;
 	}
 
+	@Deprecated
 	public static boolean isValidFuel(Fluid fuel)
 	{
 		if(fuel!=null)
-			return dieselGenBurnTime.stream().anyMatch(pair -> pair.getLeft().contains(fuel));
+			return GeneratorFuel.getRecipeFor(fuel, null)!=null;
 		return false;
 	}
 
+	@Deprecated
 	public static List<Pair<Tag<Fluid>, Integer>> getFuelValues()
 	{
-		return dieselGenBurnTime;
+		List<Pair<Tag<Fluid>, Integer>> values = new ArrayList<>(dieselGenBurnTime);
+		for(GeneratorFuel recipe : GeneratorFuel.ALL_FUELS)
+			values.add(Pair.of(
+					recipe.fluids.map(Function.identity(), DieselHandler::makeFakeTag), recipe.getBurnTime()
+			));
+		return values;
 	}
 
-	/**
-	 * @deprecated use tag in IETags instead
-	 */
+	private static <T> Tag<T> makeFakeTag(List<T> elements)
+	{
+		return new Tag<T>()
+		{
+			@Override
+			public boolean contains(T object)
+			{
+				return elements.contains(object);
+			}
+
+			@Override
+			public List<T> getValues()
+			{
+				return Collections.unmodifiableList(elements);
+			}
+		};
+	}
+
 	@Deprecated
 	public static void registerDrillFuel(Tag<Fluid> fuel)
 	{
@@ -80,4 +106,16 @@ public class DieselHandler
 		return fuel!=null&&drillFuel.stream().anyMatch(fluidTag -> fluidTag.contains(fuel));
 	}
 
+	@Deprecated
+	public static List<GeneratorFuel> getLegacyRecipes()
+	{
+		List<GeneratorFuel> list = new ArrayList<>();
+		int i = 0;
+		for(Pair<Tag<Fluid>, Integer> p : dieselGenBurnTime)
+		{
+			list.add(new GeneratorFuel(new ResourceLocation(Lib.MODID, "legacy_"+i), p.getLeft(), p.getRight()));
+			++i;
+		}
+		return list;
+	}
 }

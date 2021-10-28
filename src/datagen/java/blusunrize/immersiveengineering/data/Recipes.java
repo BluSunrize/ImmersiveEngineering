@@ -199,6 +199,7 @@ public class Recipes extends RecipeProvider
 		GeneratedListRecipeBuilder.build(out, rl("arc_recycling_list"));
 		GeneratedListRecipeBuilder.build(out, rl("mixer_potion_list"));
 		GeneratedListRecipeBuilder.build(out, rl("potion_bottling_list"));
+		GeneratedListRecipeBuilder.build(out, rl("legacy_generator_fuels"));
 		addRGBRecipe(out, toRL("curtain_colour"), Ingredient.of(Cloth.curtain), "colour");
 
 		recipesBlast(out);
@@ -208,6 +209,8 @@ public class Recipes extends RecipeProvider
 		recipesMultiblockMachines(out);
 
 		mineralMixes(out);
+		GeneratorFuelBuilder.builder(IETags.fluidBiodiesel, 250).build(out, toRL("generator_fuel/biodiesel"));
+		GeneratorFuelBuilder.builder(IETags.fluidCreosote, 20).build(out, toRL("generator_fuel/creosote"));
 	}
 
 	private void recipesBlast(@Nonnull Consumer<FinishedRecipe> out)

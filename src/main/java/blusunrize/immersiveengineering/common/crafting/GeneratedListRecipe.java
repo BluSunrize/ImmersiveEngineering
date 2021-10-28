@@ -10,6 +10,8 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.energy.DieselHandler;
+import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import com.google.common.base.Preconditions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -33,17 +35,20 @@ public class GeneratedListRecipe extends IESerializableRecipe
 	public static void init()
 	{
 		LIST_GENERATORS.put(rl("mixer_potion_list"), new RecipeListGenerator<>(
-				PotionRecipeGenerators::initPotionRecipes, MixerRecipe.SERIALIZER.getId(),
-				MixerRecipe.TYPE
+				PotionRecipeGenerators::initPotionRecipes, MixerRecipe.SERIALIZER, MixerRecipe.TYPE
 		));
 		LIST_GENERATORS.put(rl("potion_bottling_list"), new RecipeListGenerator<>(
-				PotionRecipeGenerators::getPotionBottlingRecipes, BottlingMachineRecipe.SERIALIZER.getId(),
+				PotionRecipeGenerators::getPotionBottlingRecipes, BottlingMachineRecipe.SERIALIZER,
 				BottlingMachineRecipe.TYPE
 		));
 		LIST_GENERATORS.put(rl("arc_recycling_list"), new RecipeListGenerator<>(
-				ArcRecyclingCalculator::getRecipesFromRunningThreads, ArcFurnaceRecipe.SERIALIZER.getId(),
+				ArcRecyclingCalculator::getRecipesFromRunningThreads, ArcFurnaceRecipe.SERIALIZER,
 				ArcFurnaceRecipe.TYPE
 		));
+		LIST_GENERATORS.put(rl("legacy_generator_fuels"), new RecipeListGenerator<>(
+				DieselHandler::getLegacyRecipes, GeneratorFuel.SERIALIZER, GeneratorFuel.TYPE
+		));
+
 	}
 
 	@Nullable
@@ -90,19 +95,21 @@ public class GeneratedListRecipe extends IESerializableRecipe
 
 	public ResourceLocation getSubSerializer()
 	{
-		return generator.serialized;
+		return generator.serializer.getId();
 	}
 
 	public static class RecipeListGenerator<T extends IESerializableRecipe>
 	{
 		private final Supplier<List<T>> generator;
-		private final ResourceLocation serialized;
+		private final RegistryObject<IERecipeSerializer<T>> serializer;
 		private final RecipeType<T> recipeType;
 
-		public RecipeListGenerator(Supplier<List<T>> generator, ResourceLocation serializer, RecipeType<T> recipeType)
+		public RecipeListGenerator(
+				Supplier<List<T>> generator, RegistryObject<IERecipeSerializer<T>> serializer, RecipeType<T> recipeType
+		)
 		{
 			this.generator = generator;
-			this.serialized = serializer;
+			this.serializer = serializer;
 			this.recipeType = recipeType;
 		}
 	}
