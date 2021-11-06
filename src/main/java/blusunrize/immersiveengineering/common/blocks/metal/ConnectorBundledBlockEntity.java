@@ -221,6 +221,15 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 		}
 	}
 
+	@Override
+	public void setRemovedIE()
+	{
+		super.setRemovedIE();
+		RedstoneBundleConnection connection = attached.getNullable();
+		if(connection!=null)
+			connection.onChange(new byte[16], getFacing().getOpposite());
+	}
+
 	public interface IBundledProvider
 	{
 		@Nullable
