@@ -65,7 +65,7 @@ public class ModelUtils
 		};
 		TextureAtlasSprite sprite = textureGetter.apply(Direction.DOWN);
 		if(sprite!=null)
-			quads.add(createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), sprite, new double[]{from.x*16, 16-from.z*16, to.x*16, 16-to.z*16}, colour, true));
+			quads.add(createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), sprite, new double[]{from.x*16, 16-from.z*16, to.x*16, 16-to.z*16}, colour, true));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
@@ -74,7 +74,7 @@ public class ModelUtils
 		}
 		sprite = textureGetter.apply(Direction.UP);
 		if(sprite!=null)
-			quads.add(createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
+			quads.add(createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.UP, facing), sprite, new double[]{from.x*16, from.z*16, to.x*16, to.z*16}, colour, false));
 
 		vertices = new Vec3[]{
 				new Vec3(to.x, to.y, from.z),
@@ -84,7 +84,7 @@ public class ModelUtils
 		};
 		sprite = textureGetter.apply(Direction.NORTH);
 		if(sprite!=null)
-			quads.add(createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
+			quads.add(createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), sprite, new double[]{from.x*16, 16-to.y*16, to.x*16, 16-from.y*16}, colour, false));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
@@ -93,7 +93,7 @@ public class ModelUtils
 		}
 		sprite = textureGetter.apply(Direction.SOUTH);
 		if(sprite!=null)
-			quads.add(createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
+			quads.add(createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), sprite, new double[]{to.x*16, 16-to.y*16, from.x*16, 16-from.y*16}, colour, true));
 
 		vertices = new Vec3[]{
 				new Vec3(from.x, to.y, to.z),
@@ -103,7 +103,7 @@ public class ModelUtils
 		};
 		sprite = textureGetter.apply(Direction.WEST);
 		if(sprite!=null)
-			quads.add(createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.WEST, facing), sprite, new double[]{to.z*16, 16-to.y*16, from.z*16, 16-from.y*16}, colour, true));
+			quads.add(createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.WEST, facing), sprite, new double[]{to.z*16, 16-to.y*16, from.z*16, 16-from.y*16}, colour, true));
 
 		for(int i = 0; i < vertices.length; i++)
 		{
@@ -112,7 +112,7 @@ public class ModelUtils
 		}
 		sprite = textureGetter.apply(Direction.EAST);
 		if(sprite!=null)
-			quads.add(createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.EAST, facing), sprite, new double[]{16-to.z*16, 16-to.y*16, 16-from.z*16, 16-from.y*16}, colour, false));
+			quads.add(createBakedQuad(ClientUtils.applyMatrixToVertices(matrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.EAST, facing), sprite, new double[]{16-to.z*16, 16-to.y*16, 16-from.z*16, 16-from.y*16}, colour, false));
 
 		return quads;
 	}
@@ -124,9 +124,9 @@ public class ModelUtils
 		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, FOUR_ONES, true, base);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
+	public static BakedQuad createBakedQuad(Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
 	{
-		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, FOUR_ONES);
+		return createBakedQuad(DefaultVertexFormat.BLOCK, vertices, facing, sprite, uvs, colour, invert, FOUR_ONES);
 	}
 
 	public static BakedQuad createBakedQuad(VertexFormat format, Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)

@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.StructuralArmBlockEnt
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -74,7 +73,6 @@ public class StructuralArmCallbacks implements BlockCallback<StructuralArmCallba
 		double lowerV = 16*lowerHeight;
 		double upperV = 16*upperHeight;
 		TextureAtlasSprite tas = quads.get(0).getSprite();
-		VertexFormat format = DefaultVertexFormat.BLOCK;
 		quads = new ArrayList<>();
 		Matrix4 mat = new Matrix4(object.facing());
 
@@ -98,28 +96,28 @@ public class StructuralArmCallbacks implements BlockCallback<StructuralArmCallba
 		for(int i = 0; i < vertices.length; i++)
 			vertices[i] = mat.apply(vertices[i]);
 		//TOP
-		addCulledQuad(quads, format, Arrays.copyOf(vertices, 4),
+		addCulledQuad(quads, Arrays.copyOf(vertices, 4),
 				UP, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1}, object.facing());
 		//BOTTOM
-		addCulledQuad(quads, format, getArrayByIndices(vertices, 7, 6, 5, 4),
+		addCulledQuad(quads, getArrayByIndices(vertices, 7, 6, 5, 4),
 				DOWN, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1}, object.facing());
 		//SIDES
 		addSides(quads, vertices, tas, lowerV, upperV, false, object.facing(), object.onCeiling());
 		addSides(quads, vertices, tas, lowerV, upperV, true, object.facing(), object.onCeiling());
 		if(object.slopePosition()+1==object.totalLength())
-			addCulledQuad(quads, format, getArrayByIndices(vertices, 0, 3, 7, 4),
+			addCulledQuad(quads, getArrayByIndices(vertices, 0, 3, 7, 4),
 					NORTH, tas, new double[]{0, 0, 16, 16}, new float[]{1, 1, 1, 1}, object.facing);
 		return quads;
 	}
 
-	private void addCulledQuad(List<BakedQuad> quads, VertexFormat format, Vec3[] vertices, Direction side,
+	private void addCulledQuad(List<BakedQuad> quads, Vec3[] vertices, Direction side,
 							   TextureAtlasSprite tas, double[] uvs, float[] alpha, Direction facing)
 	{
 		side = Utils.rotateFacingTowardsDir(side, facing);
-		quads.add(ModelUtils.createBakedQuad(format, vertices, side, tas, uvs, alpha, false));
+		quads.add(ModelUtils.createBakedQuad(vertices, side, tas, uvs, alpha, false));
 		for(int i = 0; i < vertices.length; i++)
 			vertices[i] = SHRINK.apply(vertices[i]);
-		quads.add(ModelUtils.createBakedQuad(format, vertices, side.getOpposite(), tas, uvs, alpha, true));
+		quads.add(ModelUtils.createBakedQuad(vertices, side.getOpposite(), tas, uvs, alpha, true));
 	}
 
 	private void addSides(List<BakedQuad> quads, Vec3[] vertices, TextureAtlasSprite tas, double lowerV,

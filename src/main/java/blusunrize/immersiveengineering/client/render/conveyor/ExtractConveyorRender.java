@@ -10,7 +10,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBas
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ExtractConveyor;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -73,19 +72,19 @@ public class ExtractConveyorRender extends BasicConveyorRender<ExtractConveyor>
 			Function<Direction, TextureAtlasSprite> getExtensionSprite = enumFacing -> enumFacing.getAxis()==Axis.Y?null: enumFacing.getAxis()==Axis.Z?texture_steel: texture_casing;
 
 			Vec3[] vertices = {new Vec3(.0625f, 0, -extend), new Vec3(.0625f, 0, 0), new Vec3(.9375f, 0, 0), new Vec3(.9375f, 0, -extend)};
-			baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), tex_conveyor, new double[]{15, extend*16, 1, 0}, colour, true));
+			baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), tex_conveyor, new double[]{15, extend*16, 1, 0}, colour, true));
 			for(int i = 0; i < vertices.length; i++)
 				vertices[i] = Utils.withCoordinate(vertices[i], Axis.Y, .125);
-			baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor, new double[]{15, (1-extend)*16, 1, 16}, colour, false));
+			baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.UP, facing), tex_conveyor, new double[]{15, (1-extend)*16, 1, 16}, colour, false));
 			baseModel.addAll(ModelUtils.createBakedBox(new Vec3(.0625f, .25f, .625f), new Vec3(.9375f, .375f, .625f+extend), matrix, facing, casingTransformer, getExtensionSprite, colour));
 		}
 
 
 		Vec3[] vertices = new Vec3[]{new Vec3(.8125f, .625f, .03125f), new Vec3(.8125f, .125f, .03125f), new Vec3(.1875f, .125f, .03125f), new Vec3(.1875f, .625f, .03125f)};
-		baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), texture_assembler, new double[]{15.25, 13.25, 12.75, 15.25}, colour, false));
+		baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.NORTH, facing), texture_assembler, new double[]{15.25, 13.25, 12.75, 15.25}, colour, false));
 		for(int i = 0; i < vertices.length; i++)
 			vertices[i] = Utils.withCoordinate(vertices[i], Axis.Z, .0625);
-		baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), texture_assembler, new double[]{12.75, 13.25, 15.25, 15.25}, colour, true));
+		baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertexTransformer.apply(vertices)), Utils.rotateFacingTowardsDir(Direction.SOUTH, facing), texture_assembler, new double[]{12.75, 13.25, 15.25, 15.25}, colour, true));
 
 		for(int i = 0; i < 5; i++)
 		{

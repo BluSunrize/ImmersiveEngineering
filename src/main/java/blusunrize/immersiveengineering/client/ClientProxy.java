@@ -305,7 +305,6 @@ public class ClientProxy extends CommonProxy
 	static
 	{
 		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
-		IEApi.renderCacheClearers.add(ModelConfigurableSides.modelCache::invalidateAll);
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);

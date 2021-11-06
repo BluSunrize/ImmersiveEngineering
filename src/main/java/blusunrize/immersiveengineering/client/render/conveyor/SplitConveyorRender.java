@@ -7,7 +7,6 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConveyor;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -46,13 +45,13 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 		Vec3[] vertices = {new Vec3(.0625f, 0, 0), new Vec3(.0625f, 0, 1), new Vec3(.9375f, 0, 1), new Vec3(.9375f, 0, 0)};
 
 		// replace bottom with casing
-		baseModel.set(0, ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), ClientUtils.getSprite(ModelConveyor.rl_casing[3]), new double[]{1, 0, 15, 16}, colour, true));
+		baseModel.set(0, ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), Utils.rotateFacingTowardsDir(Direction.DOWN, facing), ClientUtils.getSprite(ModelConveyor.rl_casing[3]), new double[]{1, 0, 15, 16}, colour, true));
 
 		vertices = new Vec3[]{new Vec3(.0625f, .1875f, 0), new Vec3(.0625f, .1875f, 1), new Vec3(.9375f, .1875f, 1), new Vec3(.9375f, .1875f, 0)};
-		baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
+		baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), Direction.UP, tex_casing0, new double[]{1, 16, 15, 0}, colour, false));
 
 		vertices = new Vec3[]{new Vec3(.0625f, 0, 0), new Vec3(.0625f, .1875f, 0), new Vec3(.9375f, .1875f, 0), new Vec3(.9375f, 0, 0)};
-		baseModel.set(15, ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), facing, ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
+		baseModel.set(15, ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), facing, ClientUtils.getSprite(ModelConveyor.rl_casing[1]), new double[]{1, 16, 15, 13}, colour, false));
 
 		vertices = new Vec3[]{new Vec3(.0625f, .125f, 0), new Vec3(.0625f, .1875f, 0), new Vec3(.9375f, .1875f, 0), new Vec3(.9375f, .125f, 0)};
 		Vec3[] vertices2 = new Vec3[]{new Vec3(.5f, .125f, 0), new Vec3(.5f, .125f, .5f), new Vec3(.5f, .1875f, .5f), new Vec3(.5f, .1875f, 0)};
@@ -66,12 +65,12 @@ public class SplitConveyorRender extends BasicConveyorRender<SplitConveyor>
 				vertices3[iv] = vertices3[iv].add(-.0625f, 0, 0);
 			}
 			double v = 16-i;
-			baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices), facing, tex_casing0, new double[]{1, v-1, 15, v}, colour, true));
+			baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices), facing, tex_casing0, new double[]{1, v-1, 15, v}, colour, true));
 			if(i < 7)
 			{
 				double u = 8-i;
-				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices2), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, true));
-				baseModel.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, ClientUtils.applyMatrixToVertices(tMatrix, vertices3), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
+				baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices2), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, true));
+				baseModel.add(ModelUtils.createBakedQuad(ClientUtils.applyMatrixToVertices(tMatrix, vertices3), facing, tex_casing0, new double[]{u-1, 16, u, 8}, colour, false));
 			}
 		}
 		super.modifyQuads(baseModel, context);

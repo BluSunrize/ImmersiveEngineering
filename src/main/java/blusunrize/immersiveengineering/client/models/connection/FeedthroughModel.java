@@ -31,7 +31,6 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
@@ -387,7 +386,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
 			if(side==facing)
 				conn.add(ModelUtils.createBakedQuad(
-						DefaultVertexFormat.BLOCK, vertices, Direction.UP, getTexture(info), info.uvs(), WHITE, false
+						vertices, Direction.UP, getTexture(info), info.uvs(), WHITE, false
 				));
 			Function<BakedQuad, BakedQuad> transf = new QuadTransformer(new Transformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
 			if(transf!=null)

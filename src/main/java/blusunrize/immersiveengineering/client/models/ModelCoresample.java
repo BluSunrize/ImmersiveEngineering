@@ -21,9 +21,7 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -63,13 +61,11 @@ public class ModelCoresample extends BakedIEModel
 			.build();
 	@Nullable
 	private final MineralMix[] minerals;
-	private final VertexFormat format;
 	private List<BakedQuad> bakedQuads;
 
-	public ModelCoresample(@Nullable MineralMix[] minerals, VertexFormat format)
+	public ModelCoresample(@Nullable MineralMix[] minerals)
 	{
 		this.minerals = minerals;
-		this.format = format;
 	}
 
 	public static void clearCache()
@@ -236,7 +232,7 @@ public class ModelCoresample extends BakedIEModel
 	protected final void putVertexData(Vec3 normal, Vec3[] vertices, double[] uvs, TextureAtlasSprite sprite, List<BakedQuad> out)
 	{
 		float d = LightUtil.diffuseLight((float)normal.x, (float)normal.y, (float)normal.z);
-		BakedQuad quad = ModelUtils.createBakedQuad(format, vertices, Direction.getNearest(normal.x, normal.y, normal.z),
+		BakedQuad quad = ModelUtils.createBakedQuad(vertices, Direction.getNearest(normal.x, normal.y, normal.z),
 				sprite,
 				uvs,
 				new float[]{d, d, d, 1},
@@ -296,14 +292,7 @@ public class ModelCoresample extends BakedIEModel
 					String cacheKey = "";
 					for(int i = 0; i < minerals.length; i++)
 						cacheKey += (i > 0?"_": "")+minerals[i].getId().toString();
-					return modelCache.get(cacheKey, () -> {
-						VertexFormat format;
-						if(originalModel instanceof ModelCoresample)
-							format = ((ModelCoresample)originalModel).format;
-						else
-							format = DefaultVertexFormat.BLOCK;
-						return new ModelCoresample(minerals, format);
-					});
+					return modelCache.get(cacheKey, () -> new ModelCoresample(minerals));
 				} catch(ExecutionException e)
 				{
 					throw new RuntimeException(e);
@@ -343,7 +332,7 @@ public class ModelCoresample extends BakedIEModel
 		@Override
 		public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
-			return new ModelCoresample(null, DefaultVertexFormat.BLOCK);
+			return new ModelCoresample(null);
 		}
 
 		@Override
