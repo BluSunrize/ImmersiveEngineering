@@ -60,14 +60,6 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 		builder.add(GROWTH);
 	}
 
-	public static EnumHempGrowth getMaxGrowth(EnumHempGrowth current)
-	{
-		if(current==EnumHempGrowth.TOP0)
-			return EnumHempGrowth.TOP0;
-		else
-			return EnumHempGrowth.BOTTOM4;
-	}
-
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos)
 	{
@@ -75,7 +67,7 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 		if(state.getValue(GROWTH)==EnumHempGrowth.TOP0)
 		{
 			BlockState stateBelow = world.getBlockState(pos.below());
-			b = stateBelow.getBlock().equals(this)&&stateBelow.getValue(GROWTH)==getMaxGrowth(EnumHempGrowth.BOTTOM0);
+			b = stateBelow.getBlock().equals(this)&&stateBelow.getValue(GROWTH)==EnumHempGrowth.BOTTOM0.getMax();
 		}
 		return b;
 	}
@@ -135,11 +127,9 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 			float speed = this.getGrowthSpeed(world, pos, state, light);
 			if(random.nextInt((int)(50F/speed)+1)==0)
 			{
-				if(this.getMaxGrowth(growth)!=growth)
-				{
+				if(growth.getMax()!=growth)
 					world.setBlockAndUpdate(pos, state.setValue(GROWTH, growth.next()));
-				}
-				if(growth==getMaxGrowth(growth)&&world.isEmptyBlock(pos.offset(0, 1, 0)))
+				else if(world.isEmptyBlock(pos.offset(0, 1, 0)))
 					world.setBlockAndUpdate(pos.offset(0, 1, 0), state.setValue(GROWTH, EnumHempGrowth.TOP0));
 			}
 		}
@@ -160,7 +150,7 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 	public boolean isValidBonemealTarget(BlockGetter world, BlockPos pos, BlockState state, boolean isClient)
 	{
 		EnumHempGrowth growth = state.getValue(GROWTH);
-		if(growth!=getMaxGrowth(growth))
+		if(growth!=growth.getMax())
 			return true;
 		else
 			return growth==EnumHempGrowth.BOTTOM4&&world.getBlockState(pos.offset(0, 1, 0)).getBlock()!=this;
@@ -177,9 +167,9 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 	public void performBonemeal(ServerLevel world, Random rand, BlockPos pos, BlockState state)
 	{
 		EnumHempGrowth growth = state.getValue(GROWTH);
-		if(growth!=getMaxGrowth(growth))
+		if(growth!=growth.getMax())
 		{
-			int span = getMaxGrowth(growth).ordinal()-growth.ordinal();
+			int span = growth.getMax().ordinal()-growth.ordinal();
 			EnumHempGrowth newGrowth = growth;
 			int growBy = RANDOM.nextInt(span)+1;
 			for(int i = 0; i < growBy; ++i)

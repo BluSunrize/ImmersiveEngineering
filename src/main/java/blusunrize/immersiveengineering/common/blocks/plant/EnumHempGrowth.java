@@ -42,20 +42,23 @@ public enum EnumHempGrowth implements StringRepresentable
 
 	public EnumHempGrowth next()
 	{
-		switch(this)
-		{
-			case BOTTOM0:
-				return BOTTOM1;
-			case BOTTOM1:
-				return BOTTOM2;
-			case BOTTOM2:
-				return BOTTOM3;
-			case BOTTOM3:
-				return BOTTOM4;
-			case BOTTOM4:
-			case TOP0:
-			default:
-				return this;
-		}
+		return switch(this)
+				{
+					case BOTTOM0 -> BOTTOM1;
+					case BOTTOM1 -> BOTTOM2;
+					case BOTTOM2 -> BOTTOM3;
+					case BOTTOM3 -> BOTTOM4;
+					case BOTTOM4, TOP0 -> this;
+				};
+	}
+
+	public EnumHempGrowth getMin()
+	{
+		return TOP0==this?TOP0: BOTTOM0;
+	}
+
+	public EnumHempGrowth getMax()
+	{
+		return TOP0==this?TOP0: BOTTOM4;
 	}
 }

@@ -233,7 +233,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 		LootTable.Builder ret = LootTable.lootTable()
 				.withPool(singleItem(Misc.HEMP_SEEDS));
 		for(EnumHempGrowth g : EnumHempGrowth.values())
-			if(g==HempBlock.getMaxGrowth(g))
+			if(g==g.getMax())
 			{
 				ret.withPool(
 						binBonusLootPool(Ingredients.HEMP_FIBER, Enchantments.BLOCK_FORTUNE, g.ordinal()/8f, 3)
