@@ -229,7 +229,7 @@ public class BlockLoot extends LootGenerator
 		LootTable.Builder ret = LootTable.lootTable()
 				.withPool(singleItem(Misc.hempSeeds));
 		for(EnumHempGrowth g : EnumHempGrowth.values())
-			if(g==HempBlock.getMaxGrowth(g))
+			if(g==g.getMax())
 			{
 				ret.withPool(
 						binBonusLootPool(Ingredients.hempFiber, Enchantments.BLOCK_FORTUNE, g.ordinal()/8f, 3)

@@ -16,10 +16,11 @@ import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -33,7 +34,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -51,7 +51,6 @@ import net.minecraftforge.resource.VanillaResourceType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -121,14 +120,19 @@ public class ModelConfigurableSides extends BakedIEModel
 			TYPES.put(type.getName(), type.nameMapper);
 	}
 
-	public static Cache<ModelKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder().expireAfterAccess(60, TimeUnit.SECONDS).build();
+	private final LoadingCache<Map<Direction, IOSideConfig>, Map<Direction, BakedQuad>> modelCache = CacheBuilder.newBuilder()
+			.expireAfterAccess(60, TimeUnit.SECONDS)
+			.build(CacheLoader.from(key -> {
+				Map<Direction, TextureAtlasSprite> tex = new EnumMap<>(Direction.class);
+				for(Direction d : DirectionUtils.VALUES)
+					tex.put(d, this.textures.get(d).get(key.get(d)));
+				return bakeQuads(tex);
+			}));
 
-	final String name;
 	public Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> textures;
 
-	public ModelConfigurableSides(String name, Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> textures)
+	public ModelConfigurableSides(Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> textures)
 	{
-		this.name = name;
 		this.textures = textures;
 	}
 
@@ -136,6 +140,8 @@ public class ModelConfigurableSides extends BakedIEModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
 	{
+		if(side==null)
+			return ImmutableList.of();
 		Map<Direction, IOSideConfig> config;
 		if(extraData.hasProperty(Model.SIDECONFIG))
 			config = extraData.getData(Model.SIDECONFIG);
@@ -146,19 +152,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				config.put(d, IOSideConfig.NONE);
 		}
 		assert (config!=null);
-		ModelKey key = new ModelKey(name, config);
-		try
-		{
-			return modelCache.get(key, () -> {
-				Map<Direction, TextureAtlasSprite> tex = new EnumMap<>(Direction.class);
-				for(Direction d : DirectionUtils.VALUES)
-					tex.put(d, this.textures.get(d).get(config.get(d)));
-				return bakeQuads(tex);
-			});
-		} catch(ExecutionException e)
-		{
-			throw new RuntimeException(e);
-		}
+		return ImmutableList.of(modelCache.getUnchecked(config).get(side));
 	}
 
 	@Nonnull
@@ -172,7 +166,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		if(te instanceof IConfigurableSides)
 		{
 			IConfigurableSides confTE = (IConfigurableSides)te;
-			Map<Direction, IOSideConfig> conf = new HashMap<>();
+			Map<Direction, IOSideConfig> conf = new EnumMap<>(Direction.class);
 			for(Direction d : DirectionUtils.VALUES)
 				conf.put(d, confTE.getSideConfig(d));
 			data.add(new SinglePropertyModelData<>(conf, Model.SIDECONFIG));
@@ -180,25 +174,35 @@ public class ModelConfigurableSides extends BakedIEModel
 		return CombinedModelData.combine(data.toArray(new IModelData[0]));
 	}
 
-	private static List<BakedQuad> bakeQuads(Map<Direction, TextureAtlasSprite> sprites)
+	private static Map<Direction, BakedQuad> bakeQuads(Map<Direction, TextureAtlasSprite> sprites)
 	{
-		List<BakedQuad> quads = Lists.newArrayListWithExpectedSize(6);
-		float[] colour = {1, 1, 1, 1};
+		Map<Direction, BakedQuad> quads = new EnumMap<>(Direction.class);
 		Vec3[] vertices = {new Vec3(0, 0, 0), new Vec3(0, 0, 1), new Vec3(1, 0, 1), new Vec3(1, 0, 0)};
-		quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, vertices, DOWN, sprites.get(DOWN), new double[]{0, 16, 16, 0}, colour, true));
+		addQuad(quads, sprites, DOWN, vertices, new double[]{0, 16, 16, 0});
 		vertices = new Vec3[]{new Vec3(0, 1, 0), new Vec3(0, 1, 1), new Vec3(1, 1, 1), new Vec3(1, 1, 0)};
-		quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, vertices, UP, sprites.get(UP), new double[]{0, 0, 16, 16}, colour, false));
+		addQuad(quads, sprites, UP, vertices, new double[]{0, 0, 16, 16});
 
 		vertices = new Vec3[]{new Vec3(1, 0, 0), new Vec3(1, 1, 0), new Vec3(0, 1, 0), new Vec3(0, 0, 0)};
-		quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, vertices, NORTH, sprites.get(NORTH), new double[]{0, 16, 16, 0}, colour, true));
+		addQuad(quads, sprites, NORTH, vertices, new double[]{0, 16, 16, 0});
 		vertices = new Vec3[]{new Vec3(1, 0, 1), new Vec3(1, 1, 1), new Vec3(0, 1, 1), new Vec3(0, 0, 1)};
-		quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, vertices, SOUTH, sprites.get(SOUTH), new double[]{16, 16, 0, 0}, colour, false));
+		addQuad(quads, sprites, SOUTH, vertices, new double[]{16, 16, 0, 0});
 
 		vertices = new Vec3[]{new Vec3(0, 0, 0), new Vec3(0, 1, 0), new Vec3(0, 1, 1), new Vec3(0, 0, 1)};
-		quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, vertices, WEST, sprites.get(WEST), new double[]{0, 16, 16, 0}, colour, true));
+		addQuad(quads, sprites, WEST, vertices, new double[]{0, 16, 16, 0});
 		vertices = new Vec3[]{new Vec3(1, 0, 0), new Vec3(1, 1, 0), new Vec3(1, 1, 1), new Vec3(1, 0, 1)};
-		quads.add(ModelUtils.createBakedQuad(DefaultVertexFormat.BLOCK, vertices, EAST, sprites.get(EAST), new double[]{16, 16, 0, 0}, colour, false));
+		addQuad(quads, sprites, EAST, vertices, new double[]{16, 16, 0, 0});
 		return quads;
+	}
+
+	private static void addQuad(
+			Map<Direction, BakedQuad> out, Map<Direction, TextureAtlasSprite> sprites,
+			Direction side, Vec3[] vertices, double[] uv
+	)
+	{
+		out.put(side, ModelUtils.createBakedQuad(
+				DefaultVertexFormat.BLOCK, vertices, side, sprites.get(side), uv, new float[]{1, 1, 1, 1},
+				side.getAxisDirection()==AxisDirection.NEGATIVE
+		));
 	}
 
 	@Override
@@ -259,7 +263,6 @@ public class ModelConfigurableSides extends BakedIEModel
 		@Override
 		public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 		{
-			modelCache.invalidateAll();
 		}
 
 		@Override
@@ -284,19 +287,17 @@ public class ModelConfigurableSides extends BakedIEModel
 					String tex = name+"_"+namer.getTextureName(f, cfg);
 					builder.put(key, new Material(InventoryMenu.BLOCK_ATLAS, new ResourceLocation(tex)));
 				}
-			return new ConfigSidesModelBase(name, type, builder.build());
+			return new ConfigSidesModelBase(type, builder.build());
 		}
 	}
 
 	private static class ConfigSidesModelBase implements IModelGeometry<ConfigSidesModelBase>
 	{
-		final String name;
 		final String type;
 		Map<String, Material> textures;
 
-		public ConfigSidesModelBase(String name, String type, Map<String, Material> textures)
+		public ConfigSidesModelBase(String type, Map<String, Material> textures)
 		{
-			this.name = name;
 			this.type = type;
 			this.textures = textures;
 		}
@@ -316,7 +317,7 @@ public class ModelConfigurableSides extends BakedIEModel
 				}
 				tex.put(f, forSide);
 			}
-			return new ModelConfigurableSides(name, tex);
+			return new ModelConfigurableSides(tex);
 		}
 
 		@Override
@@ -349,36 +350,6 @@ public class ModelConfigurableSides extends BakedIEModel
 		default String nameFromCfg(Direction side, IOSideConfig cfg)
 		{
 			return cfg.getTextureName();
-		}
-	}
-
-	private static class ModelKey
-	{
-		@Nonnull
-		final String name;
-		@Nonnull
-		final Map<Direction, IOSideConfig> config;
-
-		private ModelKey(@Nonnull String name, @Nonnull Map<Direction, IOSideConfig> config)
-		{
-			this.name = name;
-			this.config = config;
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this==o) return true;
-			if(o==null||getClass()!=o.getClass()) return false;
-			ModelKey modelKey = (ModelKey)o;
-			return name.equals(modelKey.name)&&
-					config.equals(modelKey.config);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return Objects.hash(name, config);
 		}
 	}
 }
