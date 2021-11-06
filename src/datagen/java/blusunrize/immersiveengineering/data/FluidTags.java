@@ -32,5 +32,6 @@ class FluidTags extends FluidTagsProvider
 		tag(IETags.fluidConcrete).add(IEContent.fluidConcrete);
 		tag(IETags.fluidHerbicide).add(IEContent.fluidHerbicide);
 		tag(IETags.fluidPotion).add(IEContent.fluidPotion);
+		tag(IETags.drillFuel).addTag(IETags.fluidBiodiesel);
 	}
 }

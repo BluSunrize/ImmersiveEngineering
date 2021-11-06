@@ -1237,6 +1237,7 @@ e0e475c66854f71d61117171224d586e62e3fecd data/forge/tags/blocks/treated_wood_sla
 e15c6709da011ab4db2870c03d5389ede6ac07db data/forge/tags/fluids/biodiesel.json
 78c589be750116d81c1da70d1c0280341f2a9e3e data/forge/tags/fluids/concrete.json
 b46f3689b2eb6bd21026c7c86a2a913d14d8a78e data/forge/tags/fluids/creosote.json
+d98f761646df2a0942d85e7d195872e167b2c816 data/forge/tags/fluids/drill_fuel.json
 2e471a1233d2199068ce1d46a5dd27fc89467c40 data/forge/tags/fluids/ethanol.json
 0f755ce3a43db9cab8a318f6dca1e0314a7f6cfc data/forge/tags/fluids/herbicide.json
 208d7f4b976e935cc1058bdb34c82854fb5455c9 data/forge/tags/fluids/plantoil.json

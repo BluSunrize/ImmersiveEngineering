@@ -83,6 +83,7 @@ public class IETags
 	public static final Named<Fluid> fluidConcrete = createFluidWrapper(forgeLoc("concrete"));
 	public static final Named<Fluid> fluidHerbicide = createFluidWrapper(forgeLoc("herbicide"));
 	public static final Named<Fluid> fluidPotion = createFluidWrapper(forgeLoc("potion"));
+	public static final Named<Fluid> drillFuel = createFluidWrapper(forgeLoc("drill_fuel"));
 
 	static
 	{

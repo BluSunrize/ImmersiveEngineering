@@ -827,7 +827,6 @@ public class IEContent
 		});
 
 		DieselHandler.registerFuel(IETags.fluidBiodiesel, 250);
-		DieselHandler.registerDrillFuel(IETags.fluidBiodiesel);
 		DieselHandler.registerFuel(IETags.fluidCreosote, 20);
 
 		fluidCreosote.block.setEffect(IEPotions.flammable, 100, 0);

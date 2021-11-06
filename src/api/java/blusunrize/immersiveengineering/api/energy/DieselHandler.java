@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
+import blusunrize.immersiveengineering.api.IETags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.Tag;
 import net.minecraft.world.level.material.Fluid;
@@ -22,8 +23,13 @@ import java.util.*;
  */
 public class DieselHandler
 {
-	static final List<Pair<Tag<Fluid>, Integer>> dieselGenBurnTime = new ArrayList<>();
-	static final Set<Tag<Fluid>> drillFuel = new HashSet<>();
+	private static final List<Pair<Tag<Fluid>, Integer>> dieselGenBurnTime = new ArrayList<>();
+	private static final Set<Tag<Fluid>> drillFuel = new HashSet<>();
+
+	static
+	{
+		drillFuel.add(IETags.drillFuel);
+	}
 
 	/**
 	 * @param fuel the fluidtag to be used as fuel
@@ -59,6 +65,10 @@ public class DieselHandler
 		return dieselGenBurnTime;
 	}
 
+	/**
+	 * @deprecated use tag in IETags instead
+	 */
+	@Deprecated
 	public static void registerDrillFuel(Tag<Fluid> fuel)
 	{
 		if(fuel!=null)
