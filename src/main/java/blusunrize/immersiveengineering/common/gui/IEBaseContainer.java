@@ -78,7 +78,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 				toSync.add(Pair.of(i, data.dataPair()));
 		}
 		if(!toSync.isEmpty())
-			for(var player : usingPlayers)
+			for(ServerPlayer player : usingPlayers)
 				ImmersiveEngineering.packetHandler.sendTo(
 						new MessageContainerData(toSync), player.connection.getConnection(), NetworkDirection.PLAY_TO_CLIENT
 				);
