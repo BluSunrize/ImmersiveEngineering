@@ -89,10 +89,11 @@ repositories {
         name 'Jared maven'
         url 'https://maven.blamejared.com/'
     }
-    //Curseforge maven, in case some other maven goes offline and for mods that don't have a maven
-    maven {
-        name = "CurseForge"
-        url = "https://minecraft.curseforge.com/api/maven/"
+    maven {//Curse maven, in case some other maven goes offline and for mods that don't have a maven
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
     maven { // CC-Tweaked
         url 'https://squiddev.cc/maven/'
@@ -111,6 +112,7 @@ dependencies {
     modCompileOnly "mcjty.theoneprobe:TheOneProbe-1.16:1.16-3.+"
     modCompileOnly "top.theillusivec4.curios:curios-forge:1.16.5-4.0.4.0:api"
     modCompileOnly group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245"
+    modCompileOnly "curse.maven:jade-324717:3467445"
 
     testImplementation('junit:junit:4.13')
     implementation "malte0811:BlockModelSplitter:1.2.0"

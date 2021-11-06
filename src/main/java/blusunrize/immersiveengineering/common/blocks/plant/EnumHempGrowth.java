@@ -57,4 +57,14 @@ public enum EnumHempGrowth implements StringRepresentable
 				return this;
 		}
 	}
+
+	public EnumHempGrowth getMin()
+	{
+		return TOP0==this?TOP0: BOTTOM0;
+	}
+
+	public EnumHempGrowth getMax()
+	{
+		return TOP0==this?TOP0: BOTTOM4;
+	}
 }
