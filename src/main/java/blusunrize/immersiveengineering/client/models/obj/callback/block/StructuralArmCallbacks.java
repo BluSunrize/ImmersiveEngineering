@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.StructuralArmBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import net.minecraft.Util;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -152,16 +151,16 @@ public class StructuralArmCallbacks implements BlockCallback<StructuralArmCallba
 		Vec3 faceNormal = Vec3.atLowerCornerOf(facing.getNormal());
 		int vertexId = invert?3: 0;
 		double v = onCeiling?16-leftV: 0;
-		putVertexData(DefaultVertexFormat.BLOCK, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
+		putVertexData(builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
 		vertexId = invert?2: 1;
 		v = onCeiling?16: leftV;
-		putVertexData(DefaultVertexFormat.BLOCK, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
+		putVertexData(builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
 		vertexId = invert?1: 2;
 		v = onCeiling?16: rightV;
-		putVertexData(DefaultVertexFormat.BLOCK, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
+		putVertexData(builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
 		vertexId = invert?0: 3;
 		v = onCeiling?16-rightV: 0;
-		putVertexData(DefaultVertexFormat.BLOCK, builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
+		putVertexData(builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
 		return builder.build();
 	}
 

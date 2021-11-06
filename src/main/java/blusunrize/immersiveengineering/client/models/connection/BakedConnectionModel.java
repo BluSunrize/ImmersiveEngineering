@@ -22,7 +22,6 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
@@ -207,8 +206,8 @@ public class BakedConnectionModel<T> extends BakedIEModel
 						segmentEnd.subtract(cross),
 						segmentStart.subtract(cross),
 						segmentStart.add(cross)};
-				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.DOWN, t, rgb, false, here));
-				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.UP, t, rgb, true, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(vertices, Direction.DOWN, t, rgb, false, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(vertices, Direction.UP, t, rgb, true, here));
 
 				if(!vertical)
 				{
@@ -221,8 +220,8 @@ public class BakedConnectionModel<T> extends BakedIEModel
 						segmentEnd.subtract(cross),
 						segmentStart.subtract(cross),
 						segmentStart.add(cross)};
-				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.WEST, t, rgb, false, here));
-				ret.add(ModelUtils.createSmartLightingBakedQuad(DefaultVertexFormat.BLOCK, vertices, Direction.EAST, t, rgb, true, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(vertices, Direction.WEST, t, rgb, false, here));
+				ret.add(ModelUtils.createSmartLightingBakedQuad(vertices, Direction.EAST, t, rgb, true, here));
 			}
 		}
 		return ret;

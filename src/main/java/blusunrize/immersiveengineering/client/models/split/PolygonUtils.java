@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.models.split;
 
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
@@ -78,7 +77,7 @@ public class PolygonUtils
 		return new Polygon<>(vertices, quad.getSprite());
 	}
 
-	public static BakedQuad toBakedQuad(Polygon<TextureAtlasSprite> poly, ModelState transform, VertexFormat format)
+	public static BakedQuad toBakedQuad(Polygon<TextureAtlasSprite> poly, ModelState transform)
 	{
 		Preconditions.checkArgument(poly.getPoints().size()==4);
 		BakedQuadBuilder quadBuilder = new BakedQuadBuilder(poly.getTexture());
@@ -86,7 +85,7 @@ public class PolygonUtils
 		Vector3f normal = new Vector3f();
 		for(Vertex v : poly.getPoints())
 		{
-			List<VertexFormatElement> elements = format.getElements();
+			List<VertexFormatElement> elements = DefaultVertexFormat.BLOCK.getElements();
 			Vector4f pos = new Vector4f();
 			pos.set(toArray(v.getPosition(), 4));
 			normal.set(toArray(v.getNormal(), 3));

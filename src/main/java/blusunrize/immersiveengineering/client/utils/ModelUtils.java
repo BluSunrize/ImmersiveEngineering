@@ -119,22 +119,17 @@ public class ModelUtils
 
 	private static final float[] FOUR_ONES = {1, 1, 1, 1};
 
-	public static BakedQuad createSmartLightingBakedQuad(VertexFormat format, Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, BlockPos base)
+	public static BakedQuad createSmartLightingBakedQuad(Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, BlockPos base)
 	{
-		return createBakedQuad(format, vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, FOUR_ONES, true, base);
+		return createBakedQuad(vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, FOUR_ONES, true, base);
 	}
 
 	public static BakedQuad createBakedQuad(Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
 	{
-		return createBakedQuad(DefaultVertexFormat.BLOCK, vertices, facing, sprite, uvs, colour, invert, FOUR_ONES);
+		return createBakedQuad(vertices, facing, sprite, uvs, colour, invert, FOUR_ONES, false, null);
 	}
 
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha)
-	{
-		return createBakedQuad(format, vertices, facing, sprite, uvs, colour, invert, alpha, false, null);
-	}
-
-	public static BakedQuad createBakedQuad(VertexFormat format, Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
+	public static BakedQuad createBakedQuad(Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
@@ -143,22 +138,23 @@ public class ModelUtils
 		Vec3 faceNormal = new Vec3(normalInt.getX(), normalInt.getY(), normalInt.getZ());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
-		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
+		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
 		vId = invert?2: 1;
 		u = vId > 1?2: 0;
-		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[vId]);
+		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[vId]);
 		vId = invert?1: 2;
 		u = vId > 1?2: 0;
-		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[vId]);
+		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[vId]);
 		vId = invert?0: 3;
 		u = vId > 1?2: 0;
-		putVertexData(format, builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
+		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
 		BakedQuad tmp = builder.build();
 		return smartLighting?new SmartLightingQuad(tmp.getVertices(), -1, facing, sprite, basePos): tmp;
 	}
 
-	public static void putVertexData(VertexFormat format, BakedQuadBuilder builder, Vec3 pos, Vec3 faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
+	public static void putVertexData(BakedQuadBuilder builder, Vec3 pos, Vec3 faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
 	{
+		VertexFormat format = DefaultVertexFormat.BLOCK;
 		for(int e = 0; e < format.getElements().size(); e++)
 			switch(format.getElements().get(e).getUsage())
 			{

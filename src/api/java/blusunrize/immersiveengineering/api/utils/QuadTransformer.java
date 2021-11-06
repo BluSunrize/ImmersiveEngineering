@@ -33,7 +33,7 @@ public class QuadTransformer implements Function<BakedQuad, BakedQuad>
 	@Nullable
 	private final Int2IntFunction colorTransform;
 	private BakedQuadBuilder currentQuadBuilder;
-	private final IVertexConsumer transformer = createConsumer(DefaultVertexFormat.BLOCK);
+	private final IVertexConsumer transformer = createConsumer();
 
 	public QuadTransformer(Transformation transform, @Nullable Int2IntFunction colorTransform)
 	{
@@ -49,17 +49,18 @@ public class QuadTransformer implements Function<BakedQuad, BakedQuad>
 		return currentQuadBuilder.build();
 	}
 
-	private IVertexConsumer createConsumer(VertexFormat f)
+	private IVertexConsumer createConsumer()
 	{
+		VertexFormat format = DefaultVertexFormat.BLOCK;
 		int posPos = -1;
 		int normPos = -1;
 		int colorPos = -1;
-		for(int i = 0; i < f.getElements().size(); i++)
-			if(f.getElements().get(i).getUsage()==VertexFormatElement.Usage.POSITION)
+		for(int i = 0; i < format.getElements().size(); i++)
+			if(format.getElements().get(i).getUsage()==VertexFormatElement.Usage.POSITION)
 				posPos = i;
-			else if(f.getElements().get(i).getUsage()==VertexFormatElement.Usage.NORMAL)
+			else if(format.getElements().get(i).getUsage()==VertexFormatElement.Usage.NORMAL)
 				normPos = i;
-			else if(f.getElements().get(i).getUsage()==VertexFormatElement.Usage.COLOR)
+			else if(format.getElements().get(i).getUsage()==VertexFormatElement.Usage.COLOR)
 				colorPos = i;
 		if(posPos==-1)
 			return null;
@@ -74,7 +75,7 @@ public class QuadTransformer implements Function<BakedQuad, BakedQuad>
 			@Override
 			public VertexFormat getVertexFormat()
 			{
-				return f;
+				return format;
 			}
 
 			@Override

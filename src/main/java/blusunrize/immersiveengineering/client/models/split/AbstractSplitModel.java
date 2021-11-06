@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.CompositeBakedModel;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import malte0811.modelsplitter.ClumpedModel;
 import malte0811.modelsplitter.SplitModel;
 import malte0811.modelsplitter.math.ModelSplitterVec3i;
@@ -84,7 +83,7 @@ public abstract class AbstractSplitModel<T extends BakedModel> extends Composite
 		{
 			List<BakedQuad> subModelFaces = new ArrayList<>(e.getValue().getFaces().size());
 			for(Polygon<TextureAtlasSprite> p : e.getValue().getFaces())
-				subModelFaces.add(PolygonUtils.toBakedQuad(p, transform, DefaultVertexFormat.BLOCK));
+				subModelFaces.add(PolygonUtils.toBakedQuad(p, transform));
 			Vec3i mcKey = new Vec3i(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ());
 			map.put(mcKey, subModelFaces);
 		}
