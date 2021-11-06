@@ -14,10 +14,7 @@ import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlocks;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.MetalDecoration;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.Misc;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.StoneDecoration;
-import blusunrize.immersiveengineering.common.blocks.IEBlocks.WoodenDecoration;
+import blusunrize.immersiveengineering.common.blocks.IEBlocks.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
 import net.minecraft.data.DataGenerator;
@@ -109,5 +106,22 @@ class IEBlockTags extends BlockTagsProvider
 		// TConstruct
 		tag(TagUtils.createBlockWrapper(new ResourceLocation("tconstruct:harvestable/stackable")))
 				.add(Misc.hempPlant);
+		tag(TagUtils.createBlockWrapper(new ResourceLocation("chiselsandbits:chiselable/forced")))
+				.add(StoneDecoration.insulatingGlass)
+				.add(WoodenDevices.woodenBarrel)
+				.add(WoodenDevices.turntable)
+				.add(WoodenDevices.crate)
+				.add(WoodenDevices.reinforcedCrate)
+				.add(WoodenDevices.itemBatcher)
+				.add(WoodenDevices.fluidSorter)
+				.add(WoodenDevices.sorter)
+				.add(MetalDevices.capacitorLV)
+				.add(MetalDevices.capacitorMV)
+				.add(MetalDevices.capacitorHV)
+				.add(MetalDevices.capacitorCreative)
+				.add(MetalDevices.barrel)
+				.add(MetalDevices.furnaceHeater)
+				.add(MetalDevices.dynamo)
+				.add(MetalDevices.thermoelectricGen);
 	}
 }
