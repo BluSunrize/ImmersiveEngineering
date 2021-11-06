@@ -55,7 +55,7 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 
 	public EarmuffsItem()
 	{
-		super("earmuffs");
+		super("earmuffs", new Properties().stacksTo(1));
 	}
 
 	@Override
