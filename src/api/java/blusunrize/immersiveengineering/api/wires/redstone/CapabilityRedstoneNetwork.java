@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.api.wires.redstone;
 
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import net.minecraft.core.Direction;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
@@ -48,11 +47,11 @@ public class CapabilityRedstoneNetwork
 		/**
 		 * Called whenever the RedstoneWireNetwork is changed in some way (both adding/removing connectors and changes in RS values).
 		 *
-		 * @param cp      the connectionpoint within the network
-		 * @param handler the redstone network to which the connector belongs
-		 * @param side    the side the redstone connector is attached to
+		 * @param externalInputs the signals produced by all connectors in the RedstoneWireNetwork *except* for this
+		 *                       one
+		 * @param side           the side the redstone connector is attached to
 		 */
-		public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler, Direction side)
+		public void onChange(byte[] externalInputs, Direction side)
 		{
 		}
 
@@ -62,10 +61,9 @@ public class CapabilityRedstoneNetwork
 		 * a channel in this method.
 		 *
 		 * @param signals the values of the RS channels up to this point. Modify this array to change output values.
-		 * @param cp      the connectionpoint within the network
 		 * @param side    the side the redstone connector is attached to
 		 */
-		public void updateInput(byte[] signals, ConnectionPoint cp, Direction side)
+		public void updateInput(byte[] signals, Direction side)
 		{
 		}
 	}

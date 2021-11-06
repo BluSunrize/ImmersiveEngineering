@@ -75,7 +75,8 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	@Override
 	public void tickServer()
 	{
-		if(attached.isPresent()&&attached.get().pollDirty()||dirtyExtraSource)
+		RedstoneBundleConnection connection = attached.getNullable();
+		if((connection!=null&&connection.pollDirty())||dirtyExtraSource)
 		{
 			getHandler().updateValues();
 			dirtyExtraSource = false;
@@ -99,8 +100,9 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	{
 		if(!level.isClientSide)
 		{
-			if(attached.isPresent())
-				attached.get().onChange(cp, handler, getFacing().getOpposite());
+			RedstoneBundleConnection connection = attached.getNullable();
+			if(connection!=null)
+				connection.onChange(handler.getValuesExcluding(cp), getFacing().getOpposite());
 			BlockState stateHere = level.getBlockState(worldPosition);
 			markContainingBlockForUpdate(stateHere);
 			markBlockForUpdate(worldPosition.relative(getFacing()), level.getBlockState(worldPosition.relative(getFacing())));
@@ -110,8 +112,9 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	@Override
 	public void updateInput(byte[] signals, ConnectionPoint cp)
 	{
-		if(attached.isPresent())
-			attached.get().updateInput(signals, cp, getFacing().getOpposite());
+		RedstoneBundleConnection connection = attached.getNullable();
+		if(connection!=null)
+			connection.updateInput(signals, getFacing().getOpposite());
 		DirectionalBlockPos attachedTo = getAttachedFace();
 		for(IBundledProvider source : EXTRA_SOURCES)
 		{

@@ -12,10 +12,8 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.ILogicCircuitHandler;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitRegister;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
-import blusunrize.immersiveengineering.api.wires.redstone.RedstoneNetworkHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -181,13 +179,12 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 					new RedstoneBundleConnection()
 					{
 						@Override
-						public void onChange(ConnectionPoint cp, RedstoneNetworkHandler handler, Direction side)
+						public void onChange(byte[] externalInputs, Direction side)
 						{
-							byte[] foreignInputs = handler.getValuesExcluding(cp);
 							boolean[] sideInputs = inputs.getOrDefault(side, new boolean[SIZE_COLORS]);
 							boolean[] preInput = Arrays.copyOf(sideInputs, SIZE_COLORS);
 							for(int i = 0; i < SIZE_COLORS; i++)
-								sideInputs[i] = foreignInputs[i] > 0;
+								sideInputs[i] = externalInputs[i] > 0;
 							// if the input changed, update and run circuits
 							if(!Arrays.equals(preInput, sideInputs))
 							{
@@ -198,7 +195,7 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 						}
 
 						@Override
-						public void updateInput(byte[] signals, ConnectionPoint cp, Direction side)
+						public void updateInput(byte[] signals, Direction side)
 						{
 							for(DyeColor dye : DyeColor.values())
 								if(outputs[dye.getId()])
