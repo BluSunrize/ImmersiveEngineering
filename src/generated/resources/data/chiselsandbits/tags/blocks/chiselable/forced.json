@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "immersiveengineering:insulating_glass",
+    "immersiveengineering:wooden_barrel",
+    "immersiveengineering:turntable",
+    "immersiveengineering:crate",
+    "immersiveengineering:reinforced_crate",
+    "immersiveengineering:item_batcher",
+    "immersiveengineering:fluid_sorter",
+    "immersiveengineering:sorter",
+    "immersiveengineering:capacitor_lv",
+    "immersiveengineering:capacitor_mv",
+    "immersiveengineering:capacitor_hv",
+    "immersiveengineering:capacitor_creative",
+    "immersiveengineering:metal_barrel",
+    "immersiveengineering:furnace_heater",
+    "immersiveengineering:dynamo",
+    "immersiveengineering:thermoelectric_generator"
+  ]
+}

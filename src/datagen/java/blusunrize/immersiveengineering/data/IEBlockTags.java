@@ -154,6 +154,23 @@ class IEBlockTags extends BlockTagsProvider
 		// TConstruct
 		tag(TagUtils.createBlockWrapper(new ResourceLocation("tconstruct:harvestable/stackable")))
 				.add(Misc.HEMP_PLANT.get());
+		tag(TagUtils.createBlockWrapper(new ResourceLocation("chiselsandbits:chiselable/forced")))
+				.add(StoneDecoration.INSULATING_GLASS.get())
+				.add(WoodenDevices.WOODEN_BARREL.get())
+				.add(WoodenDevices.TURNTABLE.get())
+				.add(WoodenDevices.CRATE.get())
+				.add(WoodenDevices.REINFORCED_CRATE.get())
+				.add(WoodenDevices.ITEM_BATCHER.get())
+				.add(WoodenDevices.FLUID_SORTER.get())
+				.add(WoodenDevices.SORTER.get())
+				.add(MetalDevices.CAPACITOR_LV.get())
+				.add(MetalDevices.CAPACITOR_MV.get())
+				.add(MetalDevices.CAPACITOR_HV.get())
+				.add(MetalDevices.CAPACITOR_CREATIVE.get())
+				.add(MetalDevices.BARREL.get())
+				.add(MetalDevices.FURNACE_HEATER.get())
+				.add(MetalDevices.DYNAMO.get())
+				.add(MetalDevices.THERMOELECTRIC_GEN.get());
 	}
 
 	private void registerHammerMineable()
