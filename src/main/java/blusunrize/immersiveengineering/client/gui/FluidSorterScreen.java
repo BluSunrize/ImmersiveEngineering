@@ -55,7 +55,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 			for(int i = 0; i < 8; i++)
 				if(tile.filters[side][i]!=null&&!tile.filters[side][i].isEmpty())
 					if(getSlotArea(side, i).contains(mouseX, mouseY))
-						FluidInfoArea.fillTooltip(tile.filters[side][i], 0, addLine);
+						FluidInfoArea.fillTooltip(tile.filters[side][i], -1, addLine);
 	}
 
 	@Override
@@ -65,7 +65,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < 8; i++)
 			{
-				if(getSlotArea(side, i).contains((int) mouseX, (int) mouseY))
+				if(getSlotArea(side, i).contains((int)mouseX, (int)mouseY))
 				{
 					ItemStack stack = menu.getCarried();
 					if(stack.isEmpty())
@@ -137,16 +137,17 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 
 	public void setFluidInSlot(int side, int slot, FluidStack fluid)
 	{
-		tile.filters[side][slot] = fluid;
 		CompoundTag tag = new CompoundTag();
 		tag.putInt("filter_side", side);
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
 			tag.put("filter", fluid.writeToNBT(new CompoundTag()));
+		tile.filters[side][slot] = fluid;
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 	}
 
-	protected Rect2i getSlotArea(int side, int i) {
+	protected Rect2i getSlotArea(int side, int i)
+	{
 		int x = leftPos+4+(side/2)*58+(i < 3?i*18: i > 4?(i-5)*18: i==3?0: 36);
 		int y = topPos+22+(side%2)*76+(i < 3?0: i > 4?36: 18);
 		return new Rect2i(x, y, 16, 16);

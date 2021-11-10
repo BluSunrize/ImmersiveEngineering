@@ -74,7 +74,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			Direction[][] validOutputs = getValidOutputs(inputSide, stack);
 			stack = doInsert(stack, validOutputs[0], simulate);
 			// Only if no filtered outputs were found, use unfiltered
-			if(validOutputs[0].length==0 || !stack.isEmpty())
+			if(validOutputs[0].length==0||!stack.isEmpty())
 				stack = doInsert(stack, validOutputs[1], simulate);
 			if(first)
 				routed = null;
@@ -415,6 +415,12 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		public int getSlotId(Direction side, int slotOnSide)
 		{
 			return side.ordinal()*filterSlotsPerSide+slotOnSide;
+		}
+
+		@Override
+		public int getSlotLimit(int slot)
+		{
+			return 1;
 		}
 
 		public Iterable<ItemStack> getFilterStacksOnSide(Direction side)

@@ -151,7 +151,10 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		{
 			int side = message.getInt("filter_side");
 			int slot = message.getInt("filter_slot");
-			this.filters[side][slot] = FluidStack.loadFluidStackFromNBT(message.getCompound("filter"));
+			FluidStack newFilter = FluidStack.loadFluidStackFromNBT(message.getCompound("filter"));
+			if (!newFilter.isEmpty())
+				newFilter.setAmount(1); // Not strictly necessary, but also doesn't hurt
+			this.filters[side][slot] = newFilter;
 		}
 		this.setChanged();
 	}

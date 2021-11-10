@@ -62,7 +62,8 @@ public class FluidInfoArea extends InfoArea
 		fillTooltip(tank.getFluid(), tank.getCapacity(), tooltip::add);
 	}
 
-	public static void fillTooltip(FluidStack fluid, int tankCapacity, Consumer<Component> tooltip) {
+	public static void fillTooltip(FluidStack fluid, int tankCapacity, Consumer<Component> tooltip)
+	{
 
 		if(!fluid.isEmpty())
 			tooltip.accept(applyFormat(
@@ -95,8 +96,9 @@ public class FluidInfoArea extends InfoArea
 
 		if(tankCapacity > 0)
 			tooltip.accept(applyFormat(new TextComponent(fluid.getAmount()+"/"+tankCapacity+"mB"), ChatFormatting.GRAY));
-		else
+		else if(tankCapacity==0)
 			tooltip.accept(applyFormat(new TextComponent(fluid.getAmount()+"mB"), ChatFormatting.GRAY));
+		//don't display amount for tankCapacity < 0, i.e. for ghost fluid stacks
 	}
 
 	@Override
