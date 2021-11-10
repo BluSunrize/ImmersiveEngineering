@@ -113,7 +113,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 					return ItemStack.EMPTY;
 				}
 			}
-			else if(!this.moveItemStackToWithMayPlace(itemstack1, 0, slotCount, false))
+			else if(!this.moveItemStackToWithMayPlace(itemstack1, 0, slotCount))
 			{
 				return ItemStack.EMPTY;
 			}
@@ -131,7 +131,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		return itemstack;
 	}
 
-	protected boolean moveItemStackToWithMayPlace(ItemStack pStack, int pStartIndex, int pEndIndex, boolean pReverseDirection)
+	protected boolean moveItemStackToWithMayPlace(ItemStack pStack, int pStartIndex, int pEndIndex)
 	{
 		boolean inAllowedRange = true;
 		int allowedStart = pStartIndex;
@@ -140,7 +140,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 			boolean mayplace = this.slots.get(i).mayPlace(pStack);
 			if(inAllowedRange&&(!mayplace||i==pEndIndex-1))
 			{
-				if(moveItemStackTo(pStack, allowedStart, i, pReverseDirection))
+				if(moveItemStackTo(pStack, allowedStart, i, false))
 					return true;
 				inAllowedRange = false;
 			}
