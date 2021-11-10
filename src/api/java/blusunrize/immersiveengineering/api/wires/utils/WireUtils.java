@@ -28,8 +28,6 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang3.mutable.MutableDouble;
-import org.apache.commons.lang3.tuple.ImmutableTriple;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nullable;
 import java.util.Collection;
@@ -103,11 +101,11 @@ public class WireUtils
 			Vec3i offsetEndInt = conn.getEndB().getPosition().subtract(conn.getEndA().getPosition());
 			Vec3 offsetEnd = new Vec3(offsetEndInt.getX(), offsetEndInt.getY(), offsetEndInt.getZ());
 			WireUtils.raytraceAlongCatenaryRelative(conn, (p) -> {
-				if(!ignore.contains(p.getLeft()))
+				if(!ignore.contains(p.block()))
 				{
-					BlockState state = world.getBlockState(p.getLeft());
-					if(WireUtils.preventsConnection(world, p.getLeft(), state, p.getMiddle(), p.getRight()))
-						obstructions.add(p.getLeft());
+					BlockState state = world.getBlockState(p.block());
+					if(WireUtils.preventsConnection(world, p.block(), state, p.entersAt(), p.leavesAt()))
+						obstructions.add(p.block());
 				}
 			}, (p) -> {
 			}, start, end.add(offsetEnd));
@@ -120,16 +118,16 @@ public class WireUtils
 		return WireType.getValue(tag.getString(key));
 	}
 
-	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<Triple<BlockPos, Vec3, Vec3>> in,
-											 Consumer<Triple<BlockPos, Vec3, Vec3>> close)
+	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<BlockIntersection> in,
+											 Consumer<BlockIntersection> close)
 	{
 		Vec3 vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
 		Vec3 vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
 		raytraceAlongCatenaryRelative(conn, in, close, vStart, vEnd);
 	}
 
-	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<Triple<BlockPos, Vec3, Vec3>> in,
-													 Consumer<Triple<BlockPos, Vec3, Vec3>> close, Vec3 vStart,
+	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<BlockIntersection> in,
+													 Consumer<BlockIntersection> close, Vec3 vStart,
 													 Vec3 vEnd)
 	{
 		conn.generateCatenaryData(vStart, vEnd);
@@ -137,17 +135,14 @@ public class WireUtils
 		raytraceAlongCatenary(conn.getCatenaryData(), offset, in, close);
 	}
 
-	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<Triple<BlockPos, Vec3, Vec3>> in,
-											 Consumer<Triple<BlockPos, Vec3, Vec3>> close)
+	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<BlockIntersection> in,
+											 Consumer<BlockIntersection> close)
 	{
 		CatenaryTracer ct = new CatenaryTracer(data, offset);
 		ct.calculateIntegerIntersections();
-		ct.forEachSegment(segment -> {
-			if(segment.inBlock)
-				in.accept(new ImmutableTriple<>(segment.mainPos, segment.relativeSegmentStart, segment.relativeSegmentEnd));
-			else
-				close.accept(new ImmutableTriple<>(segment.mainPos, segment.relativeSegmentStart, segment.relativeSegmentEnd));
-		});
+		ct.forEachSegment(segment -> (segment.inBlock?in: close).accept(new BlockIntersection(
+				segment.mainPos, segment.relativeSegmentStart, segment.relativeSegmentEnd
+		)));
 	}
 
 	public static Vec3[] getConnectionCatenary(Vec3 start, Vec3 end, double slack)
@@ -238,5 +233,9 @@ public class WireUtils
 			if(!global.getLocalNet(cp).getConnections(cp).stream().allMatch(Connection::isInternal))
 				return true;
 		return false;
+	}
+
+	public static record BlockIntersection(BlockPos block, Vec3 entersAt, Vec3 leavesAt)
+	{
 	}
 }

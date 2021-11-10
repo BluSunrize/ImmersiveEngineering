@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -597,23 +596,26 @@ public class ShaderRegistry
 		return list;
 	}
 
-	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(ItemStack itemStack)
+	public static ShaderAndCase getStoredShaderAndCase(ItemStack itemStack)
 	{
 		ShaderWrapper shaderCap = itemStack.getCapability(CapabilityShader.SHADER_CAPABILITY).orElse(null);
 		return shaderCap!=null?getStoredShaderAndCase(shaderCap): null;
 	}
 
-	public static Triple<ItemStack, ShaderRegistryEntry, ShaderCase> getStoredShaderAndCase(CapabilityShader.ShaderWrapper wrapper)
+	public static ShaderAndCase getStoredShaderAndCase(CapabilityShader.ShaderWrapper wrapper)
 	{
 		ItemStack shader = wrapper.getShaderItem();
-		if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem)
+		if(!shader.isEmpty()&&shader.getItem() instanceof IShaderItem iShaderItem)
 		{
-			IShaderItem iShaderItem = ((IShaderItem)shader.getItem());
 			ShaderRegistryEntry registryEntry = shaderRegistry.get(iShaderItem.getShaderName(shader));
 			if(registryEntry!=null)
-				return Triple.of(shader, registryEntry, registryEntry.getCase(wrapper.getShaderType()));
+				return new ShaderAndCase(shader, registryEntry, registryEntry.getCase(wrapper.getShaderType()));
 		}
 		return null;
+	}
+
+	public static record ShaderAndCase(ItemStack shader, ShaderRegistryEntry registryEntry, ShaderCase sCase)
+	{
 	}
 
 	public static class ShaderRegistryEntry

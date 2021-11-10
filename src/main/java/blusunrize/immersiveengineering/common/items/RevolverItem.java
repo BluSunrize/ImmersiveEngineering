@@ -13,9 +13,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
@@ -77,7 +76,6 @@ import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -410,13 +408,13 @@ public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletC
 			NonNullList<ItemStack> bullets = getBullets(revolver);
 			if(!bullets.get(0).isEmpty()&&bullets.get(0).getItem() instanceof BulletItem)
 			{
-				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(revolver);
+				ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(revolver);
 				if(shader!=null)
 				{
 
 					Vec3 pos = Utils.getLivingFrontPos(player, .75, player.getBbHeight()*.75, ItemUtils.getLivingHand(player, hand), false, 1);
-					shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), revolver,
-							shader.getRight().getShaderType().toString(), pos,
+					shader.registryEntry().getEffectFunction().execute(world, shader.shader(), revolver,
+							shader.sCase().getShaderType().toString(), pos,
 							Vec3.directionFromRotation(player.getRotationVector()), .125f);
 				}
 			}

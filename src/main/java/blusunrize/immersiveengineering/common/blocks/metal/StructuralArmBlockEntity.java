@@ -29,7 +29,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants.NBT;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -260,15 +259,19 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStat
 		return false;
 	}
 
-	private static final CachedShapesWithTransform<Triple<Integer, Integer, Boolean>, Direction> SHAPES =
+	private static final record ShapeKey(int slopePos, int slopeLength, boolean onCeiling)
+	{
+	}
+
+	private static final CachedShapesWithTransform<ShapeKey, Direction> SHAPES =
 			CachedShapesWithTransform.createDirectional(
-					triple -> getBounds(triple.getLeft(), triple.getMiddle(), triple.getRight())
+					key -> getBounds(key.slopePos(), key.slopeLength(), key.onCeiling())
 			);
 
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		return SHAPES.get(Triple.of(slopePosition, totalLength, onCeiling), getFacing());
+		return SHAPES.get(new ShapeKey(slopePosition, totalLength, onCeiling), getFacing());
 	}
 
 	private static List<AABB> getBounds(int slopePosition, int totalLength, boolean onCeiling)

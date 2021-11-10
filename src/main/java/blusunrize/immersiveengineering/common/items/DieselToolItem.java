@@ -4,9 +4,8 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
@@ -45,7 +44,6 @@ import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -259,7 +257,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);
 				handler.drain(1, FluidAction.EXECUTE);
 
-				Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
+				ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(stack);
 				if(shader!=null)
 				{
 					Vec3 particlePos;
@@ -267,8 +265,8 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 						particlePos = Vec3.atCenterOf(pos);
 					else
 						particlePos = living.position();
-					shader.getMiddle().getEffectFunction().execute(
-							world, shader.getLeft(), stack, shader.getRight().getShaderType().toString(),
+					shader.registryEntry().getEffectFunction().execute(
+							world, shader.shader(), stack, shader.sCase().getShaderType().toString(),
 							particlePos, null, .375f
 					);
 				}

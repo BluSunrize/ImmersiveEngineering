@@ -13,9 +13,8 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
@@ -60,7 +59,6 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -215,11 +213,11 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		if(inUse > getChargeTime(stack)&&inUse%20==user.getRandom().nextInt(20))
 		{
 			user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark, SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
-			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
+			ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
 				Vec3 pos = Utils.getLivingFrontPos(user, .4375, user.getBbHeight()*.75, ItemUtils.getLivingHand(user, user.getUsedItemHand()), false, 1);
-				shader.getMiddle().getEffectFunction().execute(user.level, shader.getLeft(), stack, shader.getRight().getShaderType().toString(), pos, null, .0625f);
+				shader.registryEntry().getEffectFunction().execute(user.level, shader.shader(), stack, shader.sCase().getShaderType().toString(), pos, null, .0625f);
 			}
 		}
 	}
@@ -252,15 +250,15 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					if(!world.isClientSide)
 						user.level.addFreshEntity(shot);
 
-					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(stack);
+					ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(stack);
 					if(shader!=null)
 					{
 						HumanoidArm handside = user.getMainArm();
 						if(user.getUsedItemHand()!=InteractionHand.MAIN_HAND)
 							handside = handside==HumanoidArm.LEFT?HumanoidArm.RIGHT: HumanoidArm.LEFT;
 						Vec3 pos = Utils.getLivingFrontPos(user, .75, user.getBbHeight()*.75, handside, false, 1);
-						shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), stack,
-								shader.getRight().getShaderType().toString(), pos,
+						shader.registryEntry().getEffectFunction().execute(world, shader.shader(), stack,
+								shader.sCase().getShaderType().toString(), pos,
 								Vec3.directionFromRotation(user.getRotationVector()), .125f);
 					}
 				}

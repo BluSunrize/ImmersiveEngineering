@@ -13,9 +13,8 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -47,7 +46,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.apache.commons.lang3.tuple.Triple;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -220,9 +218,9 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 					SoundSource.BLOCKS, 1.5f, 0.7f);
 			world.removeBlock(getBlockPos(), false);
 			world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
-			Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(this.shader);
+			ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(this.shader);
 			if(shader!=null)
-				shader.getMiddle().getEffectFunction().execute(world, shader.getLeft(), null, shader.getRight().getShaderType().toString(), pos, null, .375f);
+				shader.registryEntry().getEffectFunction().execute(world, shader.shader(), null, shader.sCase().getShaderType().toString(), pos, null, .375f);
 
 		}
 	}
