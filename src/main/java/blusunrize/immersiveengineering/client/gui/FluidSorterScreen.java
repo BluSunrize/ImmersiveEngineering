@@ -141,11 +141,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		tag.putInt("filter_side", side);
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
-		{
-			if(!fluid.isEmpty())
-				fluid.setAmount(1);//normalizes amount, neat, maybe saves space idk
 			tag.put("filter", fluid.writeToNBT(new CompoundTag()));
-		}
 		tile.filters[side][slot] = fluid;
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
 	}
