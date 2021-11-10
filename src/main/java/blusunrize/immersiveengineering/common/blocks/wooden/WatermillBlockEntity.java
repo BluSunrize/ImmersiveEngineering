@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
+import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
@@ -46,6 +47,9 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public boolean multiblock = false;
 	private boolean beingBroken = false;
 	public double perTick;
+	private final CapabilityReference<IRotationAcceptor> outputCap = CapabilityReference.forNeighbor(
+			this, IRotationAcceptor.CAPABILITY, () -> getFacing().getOpposite()
+	);
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -75,8 +79,8 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			return;
 		}
 
-		BlockEntity acc = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing().getOpposite()));
-		if(acc instanceof IRotationAcceptor)
+		IRotationAcceptor dynamo = outputCap.getNullable();
+		if(dynamo!=null)
 		{
 			double power = getPower();
 			List<WatermillBlockEntity> connectedWheels = new ArrayList<>();
@@ -103,7 +107,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 				watermill.multiblock = true;
 			}
 
-			((IRotationAcceptor)acc).inputRotation(Math.abs(power*.75), getFacing().getOpposite());
+			dynamo.inputRotation(Math.abs(power*.75));
 		}
 		else
 			setPerTickAndAdvance(1f/1440*getPower());

@@ -8,11 +8,15 @@
 
 package blusunrize.immersiveengineering.api.energy;
 
-import net.minecraft.core.Direction;
-
-import javax.annotation.Nonnull;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 
 public interface IRotationAcceptor
 {
-	void inputRotation(double rotation, @Nonnull Direction side);
+	Capability<IRotationAcceptor> CAPABILITY = CapabilityManager.get(new CapabilityToken<>()
+	{
+	});
+
+	void inputRotation(double rotation);
 }

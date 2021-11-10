@@ -10,17 +10,17 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
-import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
+import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IReadOnPlacement;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
@@ -31,7 +31,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.AABB;
@@ -49,6 +48,9 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 	public float rotation = 0;
 	public float turnSpeed = 0;
 	public int sails = 0;
+	private final CapabilityReference<IRotationAcceptor> outputCap = CapabilityReference.forNeighbor(
+			this, IRotationAcceptor.CAPABILITY, () -> getFacing().getOpposite()
+	);
 
 	public WindmillBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -85,14 +87,14 @@ public class WindmillBlockEntity extends IEBaseBlockEntity implements IEServerTi
 			if(oldTurnSpeed!=turnSpeed)
 				markContainingBlockForUpdate(null);
 		}
-		if(turnSpeed == 0)
+		if(turnSpeed==0)
 			return;
 
-		BlockEntity tileEntity = SafeChunkUtils.getSafeBE(level, worldPosition.relative(getFacing().getOpposite()));
-		if(tileEntity instanceof IRotationAcceptor dynamo)
+		IRotationAcceptor dynamo = outputCap.getNullable();
+		if(dynamo!=null)
 		{
 			double power = getActualTurnSpeed()*800;
-			dynamo.inputRotation(Math.abs(power), getFacing().getOpposite());
+			dynamo.inputRotation(Math.abs(power));
 		}
 	}
 

@@ -28,29 +28,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class DynamoBlockEntity extends IEBaseBlockEntity implements IIEInternalFluxConnector, IStateBasedDirectional, IRotationAcceptor
+public class DynamoBlockEntity extends IEBaseBlockEntity implements IIEInternalFluxConnector, IStateBasedDirectional
 {
 	public DynamoBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.DYNAMO.get(), pos, state);
-	}
-
-	@Override
-	public void inputRotation(double rotation, @Nonnull Direction side)
-	{
-		if(side!=this.getFacing().getOpposite())
-			return;
-		int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
-		for(Direction fd : DirectionUtils.VALUES)
-		{
-			BlockPos outputPos = getBlockPos().relative(fd);
-			BlockEntity te = Utils.getExistingTileEntity(level, outputPos);
-			output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
-		}
 	}
 
 	@Override
@@ -112,5 +100,31 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IIEInternalF
 	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
 	{
 		return wrapper;
+	}
+
+	private final LazyOptional<IRotationAcceptor> rotationCap = registerConstantCap(new RotationAcceptor());
+
+	@Nonnull
+	@Override
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	{
+		if(cap==IRotationAcceptor.CAPABILITY&&side==getFacing())
+			return rotationCap.cast();
+		return super.getCapability(cap, side);
+	}
+
+	private class RotationAcceptor implements IRotationAcceptor
+	{
+		@Override
+		public void inputRotation(double rotation)
+		{
+			int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
+			for(Direction fd : DirectionUtils.VALUES)
+			{
+				BlockPos outputPos = getBlockPos().relative(fd);
+				BlockEntity te = Utils.getExistingTileEntity(level, outputPos);
+				output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
+			}
+		}
 	}
 }
