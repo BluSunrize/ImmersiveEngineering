@@ -50,6 +50,9 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	private final CapabilityReference<IRotationAcceptor> outputCap = CapabilityReference.forNeighbor(
 			this, IRotationAcceptor.CAPABILITY, () -> getFacing().getOpposite()
 	);
+	private final CapabilityReference<IRotationAcceptor> reverseOutputCap = CapabilityReference.forNeighbor(
+			this, IRotationAcceptor.CAPABILITY, this::getFacing
+	);
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -80,13 +83,19 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		}
 
 		IRotationAcceptor dynamo = outputCap.getNullable();
+		Direction expandTo = getFacing();
+		if(dynamo==null)
+		{
+			dynamo = reverseOutputCap.getNullable();
+			expandTo = expandTo.getOpposite();
+		}
 		if(dynamo!=null)
 		{
 			double power = getPower();
 			List<WatermillBlockEntity> connectedWheels = new ArrayList<>();
 			for(int i = 1; i < 3; ++i)
 			{
-				BlockEntity blockEntity = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(getFacing(), i));
+				BlockEntity blockEntity = SafeChunkUtils.getSafeBE(level, getBlockPos().relative(expandTo, i));
 				if(!canUse(blockEntity))
 					break;
 				WatermillBlockEntity asWatermill = (WatermillBlockEntity)blockEntity;
@@ -113,8 +122,10 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 			setPerTickAndAdvance(1f/1440*getPower());
 	}
 
-	private void setPerTickAndAdvance(double newValue) {
-		if (newValue != perTick) {
+	private void setPerTickAndAdvance(double newValue)
+	{
+		if(newValue!=perTick)
+		{
 			perTick = newValue;
 			markContainingBlockForUpdate(null);
 		}
