@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasObjProperty;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -72,18 +73,19 @@ public class WatermillTileEntity extends IEBaseTileEntity implements TickableBlo
 		}
 		prevRotation = rotation;
 
-		BlockEntity acc = Utils.getExistingTileEntity(level, getBlockPos().relative(getFacing().getOpposite()));
-		if(!multiblock&&acc instanceof IRotationAcceptor)
+		Pair<IRotationAcceptor, Direction> acc = getRotationAcceptor();
+		if(!multiblock&&acc!=null)
 		{
 			double power = getPower();
 			int l = 1;
-			BlockEntity tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(getFacing(), l));
+			Direction moveTo = acc.getSecond();
+			BlockEntity tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(moveTo, l));
 			while(l < 3
 					&&canUse(tileEntity))
 			{
 				power += ((WatermillTileEntity)tileEntity).getPower();
 				l++;
-				tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(getFacing(), l));
+				tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(moveTo, l));
 			}
 
 			perTick = 1f/1440*power/l;
@@ -92,7 +94,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements TickableBlo
 			rotation %= 1;
 			for(int l2 = 1; l2 < l; l2++)
 			{
-				tileEntity = level.getBlockEntity(getBlockPos().relative(getFacing(), l2));
+				tileEntity = level.getBlockEntity(getBlockPos().relative(moveTo, l2));
 				if(tileEntity instanceof WatermillTileEntity)
 				{
 					((WatermillTileEntity)tileEntity).rotation = rotation;
@@ -103,14 +105,7 @@ public class WatermillTileEntity extends IEBaseTileEntity implements TickableBlo
 			}
 
 			if(!level.isClientSide)
-			{
-				IRotationAcceptor dynamo = (IRotationAcceptor)acc;
-				//				if((facing.getAxis()==Axis.Z)&&dynamo.facing!=2&&dynamo.facing!=3)
-				//					return;
-				//				else if((facing.getAxis()==Axis.X)&&dynamo.facing!=4&&dynamo.facing!=5)
-				//					return;
-				dynamo.inputRotation(Math.abs(power*.75), getFacing().getOpposite());
-			}
+				acc.getFirst().inputRotation(Math.abs(power*.75), moveTo.getOpposite());
 		}
 		else if(!multiblock)
 		{
@@ -121,6 +116,21 @@ public class WatermillTileEntity extends IEBaseTileEntity implements TickableBlo
 		}
 		if(multiblock)
 			multiblock = false;
+	}
+
+	@Nullable
+	private Pair<IRotationAcceptor, Direction> getRotationAcceptor()
+	{
+		if(multiblock)
+			return null;
+		Direction facing = getFacing();
+		BlockEntity acc = Utils.getExistingTileEntity(level, getBlockPos().relative(facing.getOpposite()));
+		if(acc instanceof IRotationAcceptor)
+			return Pair.of((IRotationAcceptor)acc, facing);
+		acc = Utils.getExistingTileEntity(level, getBlockPos().relative(facing));
+		if(acc instanceof IRotationAcceptor)
+			return Pair.of((IRotationAcceptor)acc, facing.getOpposite());
+		return null;
 	}
 
 	private boolean canUse(@Nullable BlockEntity tileEntity)
