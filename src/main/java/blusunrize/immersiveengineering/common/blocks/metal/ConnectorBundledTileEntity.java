@@ -10,9 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
-import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.proxy.DefaultProxyProvider;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork.RedstoneBundleConnection;
 import blusunrize.immersiveengineering.api.wires.redstone.IRedstoneConnector;
@@ -22,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableTileEntity;
+import blusunrize.immersiveengineering.common.wires.DummySyncManager;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -217,6 +217,23 @@ public class ConnectorBundledTileEntity extends ImmersiveConnectableTileEntity i
 				dirtyExtraSource = current==overrideState[color];
 			else
 				dirtyExtraSource = current!=0;
+		}
+	}
+
+	@Override
+	public void setRemoved()
+	{
+		super.setRemoved();
+		RedstoneBundleConnection attachedConnection = attached.getNullable();
+		if(!level.isClientSide&&attachedConnection!=null)
+		{
+			// This is a complete hack, but we somehow need to tell the connected handler that the bundled connector
+			// providing signals was removed. Without an API break (done on 1.17) this isn't cleanly possible.
+			GlobalWireNetwork tempGlobal = new GlobalWireNetwork(false, new DefaultProxyProvider(level), DummySyncManager.INSTANCE);
+			tempGlobal.onConnectorLoad(this, false);
+			LocalWireNetwork tempLocal = tempGlobal.getLocalNet(worldPosition);
+			RedstoneNetworkHandler tempHandler = new RedstoneNetworkHandler(tempLocal, tempGlobal);
+			attachedConnection.onChange(new ConnectionPoint(worldPosition, 0), tempHandler, getFacing().getOpposite());
 		}
 	}
 

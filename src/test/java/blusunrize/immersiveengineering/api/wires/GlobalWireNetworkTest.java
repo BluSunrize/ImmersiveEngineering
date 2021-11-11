@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.wires.testutils.DummyIIC;
 import blusunrize.immersiveengineering.api.wires.testutils.DummyProxyProvider;
-import blusunrize.immersiveengineering.api.wires.testutils.DummySyncManager;
 import blusunrize.immersiveengineering.api.wires.testutils.DummyWireType;
+import blusunrize.immersiveengineering.common.wires.DummySyncManager;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import org.junit.Assert;
