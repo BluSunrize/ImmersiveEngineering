@@ -9,3 +9,4 @@ LOCALIZATION
 	- zh_TW: xaxa123, vongola12324
 	- es_ES: FrannDzs, docanuto
 	- de_DE: astrutz
+	- it_IT: [maicol07](https://maicol07.it) (xMaicx in-game)
