@@ -195,8 +195,9 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter worldIn, BlockPos pos, CollisionContext context)
 	{
-		return Shapes.joinUnoptimized(getMainShape(state, worldIn, pos),
-				getConnectionShapes(state, worldIn, pos), BooleanOp.OR);
+		return Shapes.joinUnoptimized(
+				getMainShape(state, worldIn, pos), getConnectionShapes(state, worldIn, pos), BooleanOp.OR
+		);
 	}
 
 	private VoxelShape getMainShape(BlockState state, BlockGetter world, BlockPos pos)
@@ -300,6 +301,20 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 		if(recursionLock.get()!=null&&recursionLock.get())
 			return true;
 		recursionLock.set(true);
+		try
+		{
+			return hasConnectionInner(stateHere, dir, world, pos);
+		} finally
+		{
+			// If something crashes while checking connections (e.g. because someone decides to pass a null world…)
+			// we still need to clear the recursion lock, otherwise it can't ever get cleared again and will break post
+			// shapes until MC is restarted
+			recursionLock.set(false);
+		}
+	}
+
+	private static boolean hasConnectionInner(BlockState stateHere, Direction dir, BlockGetter world, BlockPos pos)
+	{
 		BlockPos neighborPos = pos.relative(dir);
 		int dummy = stateHere.getValue(POST_SLAVE);
 		boolean ret = false;
@@ -345,7 +360,6 @@ public class PostBlock extends IEBaseBlock implements IPostBlock, IModelOffsetPr
 				}
 			}
 		}
-		recursionLock.set(false);
 		return ret;
 	}
 
