@@ -33,7 +33,7 @@ public class GlobalWireNetworkTest
 	@Before
 	public void setupNetwork()
 	{
-		global = new GlobalWireNetwork(false, new DummyProxyProvider(), new DummySyncManager());
+		global = new GlobalWireNetwork(false, new DummyProxyProvider(), DummySyncManager.INSTANCE);
 	}
 
 	@Test
