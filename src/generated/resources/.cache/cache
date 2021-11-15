@@ -1021,6 +1021,11 @@ b36fee7854bfa6c7490416eb5481991918e698c3 assets/immersiveengineering/models/item
 8b3b5a657d59cac3da2e5d7d75b248c9f4e48491 assets/immersiveengineering/models/item/potion_bucket.json
 d58dfb39f1670ed8afb6b4765eaa1e9b36e78a7f assets/immersiveengineering/models/item/radiator.json
 4ff5255a450c2aa19e4489168289f2ad3c4af6d9 assets/immersiveengineering/models/item/railgun.json
+006e06c2f52e4eaee48bab1e14a384c2d4ddd14b assets/immersiveengineering/models/item/raw_aluminum.json
+0e8a7b5c70b2c02f1da1417b38bbc920b07e1a25 assets/immersiveengineering/models/item/raw_lead.json
+a4cab401f495dbde68b49ffaf44a71da13398095 assets/immersiveengineering/models/item/raw_nickel.json
+5b6f05f1a3327358fbe4a801fc2b960ffa4ecc06 assets/immersiveengineering/models/item/raw_silver.json
+d1ad8019a9cf5ee9dbb2d7ae295fc9ab92797cd1 assets/immersiveengineering/models/item/raw_uranium.json
 781585d00b67f028f1362c4deb51a0ac508ec6e8 assets/immersiveengineering/models/item/razor_wire.json
 117289bf9570701d592c7b5c32ddc81b460b4e32 assets/immersiveengineering/models/item/redstone_breaker.json
 9e507d341569f4bce941e973a3894f536277ed0a assets/immersiveengineering/models/item/refinery.json
@@ -1349,9 +1354,14 @@ ef3248f2dc5550b9be8fa1f17599a81d386bdba1 data/forge/tags/items/plates/lead.json
 3a347ba39051434314e8e45dfd10ee3ee0b652eb data/forge/tags/items/plates/silver.json
 484dc7b7156ea52b51ce52642a4e8b8e95f3f83e data/forge/tags/items/plates/steel.json
 dad252e39930194806bf537e8e89f6c48ac56cf8 data/forge/tags/items/plates/uranium.json
+6b84ed939456c9220fb56ada94c15313a022a6fa data/forge/tags/items/raw_ores/aluminum.json
 af3cbaf58f66a90a874c497d0d98a3254ae02cb4 data/forge/tags/items/raw_ores/copper.json
 baa1d875edbc9b3ef5b78ba89a70d56e806a28c0 data/forge/tags/items/raw_ores/gold.json
 3562c6f6e61e11b53df76224fc681e510178d1cf data/forge/tags/items/raw_ores/iron.json
+de7f1a11d160f7058ca369af1d6aeac649297b63 data/forge/tags/items/raw_ores/lead.json
+04b8f9946c20526919ec35c54875e344fcebed93 data/forge/tags/items/raw_ores/nickel.json
+12e5caba90c8e742f1f154462211caecf40c14c2 data/forge/tags/items/raw_ores/silver.json
+0e129bf83740594628e09b329a02c99c5ea9c40a data/forge/tags/items/raw_ores/uranium.json
 9f7eeb4080c9ff0803942a9669bacc9e491446ea data/forge/tags/items/rods/all_metal.json
 aa708708071f7bad45e073eee78d80fd4922ef36 data/forge/tags/items/rods/aluminum.json
 7d5ca138da9b91ba26a42dc5c8f09cd2cb31128b data/forge/tags/items/rods/iron.json

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.data.loot;
 
+import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.common.blocks.IEEntityBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
@@ -16,13 +17,19 @@ import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.SawdustBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
+import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.loot.*;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.advancements.critereon.EnchantmentPredicate;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
@@ -37,12 +44,14 @@ import net.minecraft.world.level.storage.loot.entries.AlternativesEntry;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
+import net.minecraft.world.level.storage.loot.functions.ApplyExplosionDecay;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.predicates.ExplosionCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
+import net.minecraft.world.level.storage.loot.predicates.MatchTool;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
 import java.util.Arrays;
@@ -109,6 +118,11 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 		{
 			ConveyorBlock block = entry.get();
 			register(entry, singleItem(block).apply(ConveyorCoverLootFunction.builder()));
+		}
+		for(EnumMetals metal : EnumMetals.values())
+		{
+			if(metal.shouldAddOre())
+				registerOre(metal);
 		}
 
 		registerAllRemainingAsDefault();
@@ -241,6 +255,29 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 				);
 			}
 		register(IEBlocks.Misc.HEMP_PLANT, ret);
+	}
+
+	private void registerOre(EnumMetals metal)
+	{
+		BlockEntry<?> oreBlock = IEBlocks.Metals.ORES.get(metal);
+		ItemRegObject<Item> rawOre = IEItems.Metals.RAW_ORES.get(metal);
+		LootTable.Builder ret = LootTable.lootTable().withPool(
+			LootPool.lootPool()
+			.setRolls(ConstantValue.exactly(1.0F))
+			.add(LootItem.lootTableItem(oreBlock)
+				// if silk touch
+				.when(MatchTool.toolMatches(
+					ItemPredicate.Builder.item()
+					.hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))))
+				// else
+				).otherwise(
+					LootItem.lootTableItem(rawOre)
+					.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
+					.apply(ApplyExplosionDecay.explosionDecay())
+				)
+			)
+		);
+		register(oreBlock, ret);
 	}
 
 	private void registerSawdust()

@@ -125,6 +125,8 @@ public class IETags
 	{
 		public final Named<Item> ingot;
 		public final Named<Item> nugget;
+		@Nullable
+		public final Named<Item> raw_ore;
 		public final Named<Item> plate;
 		public final Named<Item> dust;
 		public final Named<Block> storage;
@@ -136,8 +138,12 @@ public class IETags
 		{
 			String name = m.tagName();
 			Named<Block> ore = null;
+			Named<Item> raw_ore = null;
 			if(m.shouldAddOre())
+			{
 				ore = createBlockTag(getOre(name));
+				raw_ore = createItemWrapper(getRawOre(name));
+			}
 			if(!m.isVanillaMetal())
 				storage = createBlockTag(getStorageBlock(name));
 			else if(m==EnumMetals.COPPER)
@@ -164,6 +170,7 @@ public class IETags
 			plate = createItemWrapper(getPlate(name));
 			dust = createItemWrapper(getDust(name));
 			this.ore = ore;
+			this.raw_ore = raw_ore;
 		}
 	}
 
