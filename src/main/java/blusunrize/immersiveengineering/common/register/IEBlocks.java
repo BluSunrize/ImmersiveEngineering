@@ -217,6 +217,7 @@ public final class IEBlocks
 	public static final class Metals
 	{
 		public static final Map<EnumMetals, BlockEntry<Block>> ORES = new EnumMap<>(EnumMetals.class);
+		public static final Map<EnumMetals, BlockEntry<Block>> DEEPSLATE_ORES = new EnumMap<>(EnumMetals.class);
 		public static final Map<EnumMetals, BlockEntry<Block>> STORAGE = new EnumMap<>(EnumMetals.class);
 		public static final Map<EnumMetals, BlockEntry<IEBaseBlock>> SHEETMETAL = new EnumMap<>(EnumMetals.class);
 
@@ -227,6 +228,7 @@ public final class IEBlocks
 				String name = m.tagName();
 				BlockEntry<Block> storage;
 				BlockEntry<Block> ore = null;
+				BlockEntry<Block> deepslateOre = null;
 				BlockEntry<IEBaseBlock> sheetmetal = BlockEntry.simple("sheetmetal_"+name, SHEETMETAL_PROPERTIES);
 				registerSlab(sheetmetal);
 				SHEETMETAL.put(m, sheetmetal);
@@ -234,7 +236,13 @@ public final class IEBlocks
 				{
 					ore = new BlockEntry<>(BlockEntry.simple("ore_"+name,
 							() -> Block.Properties.of(Material.STONE)
-									.strength(3, 5)
+									.strength(3, 3)
+									.requiresCorrectToolForDrops()));
+					deepslateOre = new BlockEntry<>(BlockEntry.simple("deepslate_ore_"+name,
+							() -> Block.Properties.of(Material.STONE)
+									.color(MaterialColor.DEEPSLATE)
+									.sound(SoundType.DEEPSLATE)
+									.strength(4.5f, 3)
 									.requiresCorrectToolForDrops()));
 				}
 				if(!m.isVanillaMetal())
@@ -251,22 +259,27 @@ public final class IEBlocks
 				{
 					storage = new BlockEntry<>(Blocks.IRON_BLOCK);
 					ore = new BlockEntry<>(Blocks.IRON_ORE);
+					deepslateOre = new BlockEntry<>(Blocks.DEEPSLATE_IRON_ORE);
 				}
 				else if(m==EnumMetals.GOLD)
 				{
 					storage = new BlockEntry<>(Blocks.GOLD_BLOCK);
 					ore = new BlockEntry<>(Blocks.GOLD_ORE);
+					deepslateOre = new BlockEntry<>(Blocks.DEEPSLATE_GOLD_ORE);
 				}
 				else if(m==EnumMetals.COPPER)
 				{
 					storage = new BlockEntry<>(Blocks.COPPER_BLOCK);
 					ore = new BlockEntry<>(Blocks.COPPER_ORE);
+					deepslateOre = new BlockEntry<>(Blocks.DEEPSLATE_COPPER_ORE);
 				}
 				else
 					throw new RuntimeException("Unkown vanilla metal: "+m.name());
 				STORAGE.put(m, storage);
 				if(ore!=null)
 					ORES.put(m, ore);
+				if(deepslateOre!=null)
+					DEEPSLATE_ORES.put(m, deepslateOre);
 			}
 		}
 	}

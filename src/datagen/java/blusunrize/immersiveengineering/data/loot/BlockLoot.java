@@ -257,25 +257,27 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 		register(IEBlocks.Misc.HEMP_PLANT, ret);
 	}
 
+
 	private void registerOre(EnumMetals metal)
 	{
-		BlockEntry<?> oreBlock = IEBlocks.Metals.ORES.get(metal);
+		registerOre(metal, IEBlocks.Metals.ORES.get(metal));
+		registerOre(metal, IEBlocks.Metals.DEEPSLATE_ORES.get(metal));
+	}
+
+	private void registerOre(EnumMetals metal, BlockEntry<?> oreBlock)
+	{
 		ItemRegObject<Item> rawOre = IEItems.Metals.RAW_ORES.get(metal);
-		LootTable.Builder ret = LootTable.lootTable().withPool(
-			LootPool.lootPool()
-			.setRolls(ConstantValue.exactly(1.0F))
-			.add(LootItem.lootTableItem(oreBlock)
-				// if silk touch
-				.when(MatchTool.toolMatches(
-					ItemPredicate.Builder.item()
-					.hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1))))
-				// else
-				).otherwise(
-					LootItem.lootTableItem(rawOre)
-					.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
-					.apply(ApplyExplosionDecay.explosionDecay())
+		LootTable.Builder ret = LootTable.lootTable().withPool(LootPool.lootPool()
+				.setRolls(ConstantValue.exactly(1.0F))
+				.add(LootItem.lootTableItem(oreBlock)
+						// if silk touch
+						.when(MatchTool.toolMatches(ItemPredicate.Builder.item().hasEnchantment(new EnchantmentPredicate(Enchantments.SILK_TOUCH, MinMaxBounds.Ints.atLeast(1)))))
+						// else
+						.otherwise(LootItem.lootTableItem(rawOre)
+								.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE))
+								.apply(ApplyExplosionDecay.explosionDecay())
+						)
 				)
-			)
 		);
 		register(oreBlock, ret);
 	}

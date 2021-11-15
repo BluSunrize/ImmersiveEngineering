@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "immersiveengineering:deepslate_ore_aluminum"
+  },
+  "result": "immersiveengineering:ingot_aluminum",
+  "experience": 0.3,
+  "cookingtime": 100
+}

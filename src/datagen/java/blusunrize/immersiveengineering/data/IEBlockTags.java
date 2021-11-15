@@ -95,6 +95,7 @@ class IEBlockTags extends BlockTagsProvider
 				{
 					assert tags.ore!=null;
 					tag(tags.ore).add(IEBlocks.Metals.ORES.get(metal).get());
+					tag(tags.ore).add(IEBlocks.Metals.DEEPSLATE_ORES.get(metal).get());
 					tag(Tags.Blocks.ORES).addTag(tags.ore);
 				}
 			}
@@ -229,6 +230,7 @@ class IEBlockTags extends BlockTagsProvider
 	private void setOreMiningLevel(EnumMetals metal, Tiers level)
 	{
 		setMiningLevel(Metals.ORES.get(metal), level);
+		setMiningLevel(Metals.DEEPSLATE_ORES.get(metal), level);
 	}
 
 	private void setStorageMiningLevel(EnumMetals metal, Tiers level)

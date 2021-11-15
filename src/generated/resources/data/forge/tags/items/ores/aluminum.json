@@ -1,6 +1,7 @@
 {
   "replace": false,
   "values": [
-    "immersiveengineering:ore_aluminum"
+    "immersiveengineering:ore_aluminum",
+    "immersiveengineering:deepslate_ore_aluminum"
   ]
 }

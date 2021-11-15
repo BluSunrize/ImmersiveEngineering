@@ -2,7 +2,9 @@
   "replace": false,
   "values": [
     "minecraft:copper_ore",
+    "minecraft:deepslate_copper_ore",
     "immersiveengineering:ore_aluminum",
+    "immersiveengineering:deepslate_ore_aluminum",
     "minecraft:copper_block",
     "immersiveengineering:storage_aluminum"
   ]
