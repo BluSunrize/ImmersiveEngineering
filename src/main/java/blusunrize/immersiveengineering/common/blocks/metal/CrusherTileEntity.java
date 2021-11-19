@@ -36,6 +36,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -83,10 +84,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
+	//TODO cache
 	private AABB renderAABB;
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AABB getRenderBoundingBox()
 	{
@@ -342,7 +342,13 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return true;
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
+	@Override
+	protected boolean shouldSyncProcessQueue()
+	{
+		return false;
+	}
+
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(getBlockPos().offset(0, -1, 0).relative(getFacing(), -2), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 

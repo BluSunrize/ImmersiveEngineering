@@ -306,7 +306,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	}
 
 	@Override
-	public boolean shouldRenderAsActive()
+	public boolean shouldRenderAsActiveImpl()
 	{
 		return getEnergyStored(null) > 0&&!isRSDisabled()&&!this.sawblade.isEmpty();
 	}
