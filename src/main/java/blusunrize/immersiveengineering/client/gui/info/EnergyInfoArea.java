@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.client.gui.info;
 
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
+import blusunrize.immersiveengineering.common.immersiveflux.IFluxProvider;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;

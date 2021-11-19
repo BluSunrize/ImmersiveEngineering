@@ -9,9 +9,9 @@
 
 package blusunrize.immersiveengineering.common.gui.sync;
 
-import blusunrize.immersiveengineering.api.energy.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataSerializer;
+import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 
 import java.util.Objects;
 import java.util.function.Consumer;

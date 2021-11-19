@@ -10,8 +10,8 @@
 package blusunrize.immersiveengineering.common.util.compat.jade;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxProvider;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.common.immersiveflux.IFluxProvider;
+import blusunrize.immersiveengineering.common.immersiveflux.IFluxReceiver;
 import mcp.mobius.waila.api.BlockAccessor;
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IServerDataProvider;

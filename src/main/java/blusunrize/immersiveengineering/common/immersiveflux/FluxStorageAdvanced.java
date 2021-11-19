@@ -6,13 +6,14 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.immersiveflux;
+package blusunrize.immersiveengineering.common.immersiveflux;
 
 /**
  * An advanced implementation of {@link IFluxStorage}, keeps track of the average in/output to allow transfer evaluation.
  *
  * @author BluSunrize - 02.02.2016
  */
+@Deprecated(forRemoval = true)
 public class FluxStorageAdvanced extends FluxStorage
 {
 	int averageInsertion = 0;

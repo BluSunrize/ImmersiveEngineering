@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.api.energy.immersiveflux;
+package blusunrize.immersiveengineering.common.immersiveflux;
 
 import net.minecraft.core.Direction;
 
@@ -17,6 +17,7 @@ import javax.annotation.Nullable;
  *
  * @author BluSunrize - 18.01.2016
  */
+@Deprecated(forRemoval = true)
 public interface IFluxReceiver extends IFluxConnection
 {
 	/**

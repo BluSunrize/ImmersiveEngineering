@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
-import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
+import blusunrize.immersiveengineering.common.immersiveflux.*;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -179,6 +179,7 @@ public class EnergyHelper
 		return amount;
 	}
 
+	@Deprecated(forRemoval = true)
 	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IFluxProvider
 	{
 		@Nonnull
@@ -222,6 +223,7 @@ public class EnergyHelper
 		}
 	}
 
+	@Deprecated(forRemoval = true)
 	public interface IIEInternalFluxConnector extends IFluxConnection
 	{
 		@Nonnull
@@ -237,6 +239,7 @@ public class EnergyHelper
 		IEForgeEnergyWrapper getCapabilityWrapper(Direction facing);
 	}
 
+	@Deprecated(forRemoval = true)
 	public static class IEForgeEnergyWrapper implements IEnergyStorage
 	{
 		final IIEInternalFluxConnector fluxHandler;
@@ -309,6 +312,7 @@ public class EnergyHelper
 		}
 	}
 
+	@Deprecated(forRemoval = true)
 	public interface IIEEnergyItem extends IFluxContainerItem
 	{
 		@Override
@@ -330,6 +334,7 @@ public class EnergyHelper
 		}
 	}
 
+	@Deprecated(forRemoval = true)
 	public static class ItemEnergyStorage implements IEnergyStorage
 	{
 		ItemStack stack;
