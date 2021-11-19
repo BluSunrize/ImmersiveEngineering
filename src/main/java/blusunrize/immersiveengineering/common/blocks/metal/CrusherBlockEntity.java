@@ -85,13 +85,16 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	@Override
 	public AABB getRenderBoundingBox()
 	{
-		//		if(renderAABB==null)
-		//			if(pos==17)
-		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
-		//			else
-		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
-		//		return renderAABB;
-		return new AABB(getBlockPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getBlockPos().getY(), getBlockPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getBlockPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getBlockPos().getY()+3, getBlockPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
+		if(renderAABB==null||renderAABB.getFirst()!=getBlockState())
+			renderAABB = Pair.of(getBlockState(), new AABB(
+					getBlockPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1),
+					getBlockPos().getY(),
+					getBlockPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1),
+					getBlockPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2),
+					getBlockPos().getY()+3,
+					getBlockPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2)
+			));
+		return renderAABB.getSecond();
 	}
 
 	public static VoxelShape getBasicShape(BlockPos posInMultiblock)
@@ -280,7 +283,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 				if(recipe==null)
 					return;
 				ItemStack displayStack = recipe.getDisplayStack(stack);
-				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<CrusherRecipe>(recipe, .5f, Utils.createNonNullItemStackListFromItemStack(displayStack));
+				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<>(recipe, .5f, Utils.createNonNullItemStackListFromItemStack(displayStack));
 				if(master.addProcessToQueue(process, true, true))
 				{
 					master.addProcessToQueue(process, false, true);
@@ -289,7 +292,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 						entity.discard();
 				}
 			}
-			else if(entity instanceof LivingEntity&&(!(entity instanceof Player)||!((Player)entity).getAbilities().invulnerable))
+			else if(entity instanceof LivingEntity&&(!(entity instanceof Player player)||!player.getAbilities().invulnerable))
 			{
 				int consumed = master.energyStorage.extractEnergy(80, true);
 				if(consumed > 0)
