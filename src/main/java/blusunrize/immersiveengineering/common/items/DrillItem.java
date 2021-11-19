@@ -37,7 +37,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeHooks;
@@ -59,9 +58,6 @@ import java.util.function.Supplier;
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public class DrillItem extends DieselToolItem
 {
-	public static Material[] validMaterials = {Material.HEAVY_METAL, Material.CLAY, Material.GLASS, Material.GRASS, Material.DIRT,
-			Material.ICE, Material.METAL, Material.ICE_SOLID, Material.PISTON, Material.STONE, Material.SAND, Material.TOP_SNOW};
-
 	public DrillItem()
 	{
 		super(new Properties().stacksTo(1), "DRILL");
