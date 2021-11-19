@@ -11,12 +11,10 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.energy.IEnergyStorage;
 
 public class CapacitorCreativeBlockEntity extends CapacitorBlockEntity
 {
@@ -28,39 +26,49 @@ public class CapacitorCreativeBlockEntity extends CapacitorBlockEntity
 	}
 
 	@Override
-	public int receiveEnergy(Direction from, int maxReceive, boolean simulate)
+	protected IEnergyStorage makeMainEnergyStorage()
 	{
-		if(level.isClientSide||sideConfig.get(from)!=IOSideConfig.INPUT)
-			return 0;
-		return maxReceive;
+		return InfiniteEnergyStorage.INSTANCE;
 	}
 
-	@Override
-	public int extractEnergy(Direction from, int maxExtract, boolean simulate)
+	private static class InfiniteEnergyStorage implements IEnergyStorage
 	{
-		if(level.isClientSide||sideConfig.get(from)!=IOSideConfig.OUTPUT)
-			return 0;
-		return maxExtract;
-	}
+		public static final IEnergyStorage INSTANCE = new InfiniteEnergyStorage();
 
-	@Override
-	public int getEnergyStored(Direction from)
-	{
-		return Integer.MAX_VALUE;
-	}
+		@Override
+		public int receiveEnergy(int maxReceive, boolean simulate)
+		{
+			return maxReceive;
+		}
 
-	@Override
-	public int getMaxEnergyStored(Direction from)
-	{
-		return Integer.MAX_VALUE;
-	}
+		@Override
+		public int extractEnergy(int maxExtract, boolean simulate)
+		{
+			return maxExtract;
+		}
 
-	@Override
-	protected void transferEnergy(Direction side)
-	{
-		if(sideConfig.get(side)!=IOSideConfig.OUTPUT)
-			return;
-		BlockEntity te = Utils.getExistingTileEntity(level, worldPosition.relative(side));
-		EnergyHelper.insertFlux(te, side.getOpposite(), Integer.MAX_VALUE, false);
+		@Override
+		public int getEnergyStored()
+		{
+			return Integer.MAX_VALUE;
+		}
+
+		@Override
+		public int getMaxEnergyStored()
+		{
+			return Integer.MAX_VALUE;
+		}
+
+		@Override
+		public boolean canExtract()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean canReceive()
+		{
+			return true;
+		}
 	}
 }

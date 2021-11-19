@@ -46,7 +46,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	@Override
 	protected List<InfoArea> makeInfoAreas()
 	{
-		return ImmutableList.of(new EnergyInfoArea(leftPos+157, topPos+22, tile));
+		return ImmutableList.of(new EnergyInfoArea(leftPos+157, topPos+22, tile.energyStorage));
 	}
 
 	@Override

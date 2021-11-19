@@ -1,38 +1,23 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2021
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
- */
-
-package blusunrize.immersiveengineering.common.immersiveflux;
-
-/**
- * An advanced implementation of {@link IFluxStorage}, keeps track of the average in/output to allow transfer evaluation.
  *
- * @author BluSunrize - 02.02.2016
  */
-@Deprecated(forRemoval = true)
-public class FluxStorageAdvanced extends FluxStorage
+
+package blusunrize.immersiveengineering.api.energy;
+
+public class AveragingEnergyStorage extends MutableEnergyStorage
 {
 	int averageInsertion = 0;
 	int averageExtraction = 0;
 	double averageDecayFactor = .5;
 
-	public FluxStorageAdvanced(int capacity, int limitReceive, int limitExtract)
+	public AveragingEnergyStorage(int capacity)
 	{
-		super(capacity, limitReceive, limitExtract);
-	}
-
-	public FluxStorageAdvanced(int capacity, int limitTransfer)
-	{
-		super(capacity, limitTransfer);
-	}
-
-	public FluxStorageAdvanced(int capacity)
-	{
-		super(capacity, capacity, capacity);
+		super(capacity);
 	}
 
 	@Override
@@ -56,16 +41,5 @@ public class FluxStorageAdvanced extends FluxStorage
 	public int getAverageInsertion()
 	{
 		return averageInsertion;
-	}
-
-	public int getAverageExtraction()
-	{
-		return averageExtraction;
-	}
-
-	public FluxStorageAdvanced setDecayFactor(double factor)
-	{
-		this.averageDecayFactor = factor;
-		return this;
 	}
 }

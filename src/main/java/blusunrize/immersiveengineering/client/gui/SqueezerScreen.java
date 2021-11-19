@@ -40,7 +40,7 @@ public class SqueezerScreen extends IEContainerScreen<SqueezerContainer>
 	{
 		return ImmutableList.of(
 				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+112, topPos+21, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new EnergyInfoArea(leftPos+158, topPos+22, tile)
+				new EnergyInfoArea(leftPos+158, topPos+22, tile.energyStorage)
 		);
 	}
 }

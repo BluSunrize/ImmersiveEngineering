@@ -9,9 +9,9 @@
 
 package blusunrize.immersiveengineering.common.gui.sync;
 
+import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataSerializer;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -36,9 +36,9 @@ public class GenericContainerData<T>
 		return new GenericContainerData<>(GenericDataSerializers.INT32, get, set);
 	}
 
-	public static GenericContainerData<?> energy(FluxStorage storage)
+	public static GenericContainerData<?> energy(IMutableEnergyStorage storage)
 	{
-		return int32(storage::getEnergyStored, storage::setEnergy);
+		return int32(storage::getEnergyStored, storage::setStoredEnergy);
 	}
 
 	public boolean needsUpdate()

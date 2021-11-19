@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
@@ -26,14 +26,12 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -62,6 +60,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -79,7 +79,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
-		IStateBasedDirectional, IBlockBounds, IHasDummyBlocks, IIEInventory, IIEInternalFluxHandler,
+		IStateBasedDirectional, IBlockBounds, IHasDummyBlocks, IIEInventory,
 		IInteractionObjectIE<ClocheBlockEntity>, IModelOffsetProvider
 {
 	public static final int SLOT_SOIL = 0;
@@ -102,7 +102,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			return FluidTags.WATER.contains(fluid.getFluid());
 		}
 	};
-	public FluxStorage energyStorage = new FluxStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	public final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(
 			ClocheRecipe::findRecipe, () -> inventory.get(SLOT_SEED), () -> inventory.get(SLOT_SOIL)
@@ -281,7 +281,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		if(type==0)
 		{
 			nbt.putFloat("growth", growth);
-			nbt.putInt("energy", energyStorage.getEnergyStored());
 			nbt.putBoolean("renderActive", renderActive);
 		}
 		else if(type==1)
@@ -302,8 +301,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			renderGrowth = message.getFloat("growth");
 		if(message.contains("renderActive", NBT.TAG_BYTE))
 			renderActive = message.getBoolean("renderActive");
-		if(message.contains("energy", NBT.TAG_INT))
-			energyStorage.setEnergy(message.getInt("energy"));
 		if(message.contains("fertilizerAmount", NBT.TAG_INT))
 			fertilizerAmount = message.getInt("fertilizerAmount");
 		if(message.contains("fertilizerMod", NBT.TAG_FLOAT))
@@ -317,7 +314,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	{
 		dummy = nbt.getInt("dummy");
 		ContainerHelper.loadAllItems(nbt, inventory);
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		tank.readFromNBT(nbt.getCompound("tank"));
 		fertilizerAmount = nbt.getInt("fertilizerAmount");
 		fertilizerMod = nbt.getFloat("fertilizerMod");
@@ -330,7 +327,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	{
 		nbt.putInt("dummy", dummy);
 		ContainerHelper.saveAllItems(nbt, inventory);
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
 		nbt.put("tank", tankTag);
 		nbt.putInt("fertilizerAmount", fertilizerAmount);
@@ -460,20 +457,27 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	}
 
 
-	private LazyOptional<IItemHandler> inputHandler = registerConstantCap(
+	private final LazyOptional<IItemHandler> inputHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 2, true, false)
 	);
 
-	private LazyOptional<IItemHandler> outputHandler = registerConstantCap(
+	private final LazyOptional<IItemHandler> outputHandler = registerConstantCap(
 			new IEInventoryHandler(4, this, 3, false, true)
 	);
+	private final LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
+	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+			be -> be.energyCap, ClocheBlockEntity::master, this, registerEnergyInput(energyStorage)
+	);
 
-	private LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
+		if(capability==CapabilityEnergy.ENERGY&&(facing==null||
+				(dummy==0&&facing.getAxis()==this.getFacing().getClockWise().getAxis())||
+				(dummy==2&&facing==Direction.UP)))
+			return energyCap.getAndCast();
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			if(dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
@@ -513,38 +517,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		return IEContainerTypes.CLOCHE;
 	}
 
-
-	@Nonnull
-	@Override
-	public FluxStorage getFluxStorage()
-	{
-		if(dummy!=0)
-		{
-			BlockEntity te = level.getBlockEntity(getBlockPos().below(dummy));
-			if(te instanceof ClocheBlockEntity)
-				return ((ClocheBlockEntity)te).energyStorage;
-		}
-		return this.energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
-	{
-		return facing==null||(dummy==0&&facing.getAxis()==this.getFacing().getClockWise().getAxis())||(dummy==2&&facing==Direction.UP)?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper energyWrapper = new IEForgeEnergyWrapper(this, null);
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(facing==null||(dummy==0&&facing.getAxis()==this.getFacing().getClockWise().getAxis())||(dummy==2&&facing==Direction.UP))
-			return energyWrapper;
-		return null;
-	}
-
-	AABB renderBB;
+	private AABB renderBB;
 
 	@Override
 	public AABB getRenderBoundingBox()

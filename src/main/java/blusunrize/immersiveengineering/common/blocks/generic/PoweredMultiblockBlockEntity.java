@@ -8,19 +8,16 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
 import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessBE;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorageAdvanced;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
@@ -35,6 +32,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -50,17 +51,21 @@ import java.util.List;
 import java.util.Set;
 
 public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBlockEntity<T, R>, R extends MultiblockRecipe>
-		extends MultiblockPartBlockEntity<T> implements IIEInventory, IIEInternalFluxHandler,
-		IProcessBE, IComparatorOverride
+		extends MultiblockPartBlockEntity<T> implements IIEInventory, IProcessBE, IComparatorOverride
 {
-	public final FluxStorageAdvanced energyStorage;
+	public final AveragingEnergyStorage energyStorage;
+	protected final MultiblockCapability<?, IEnergyStorage> energyCap;
+
 	private final MutableInt cachedComparatorValue = new MutableInt(-1);
 
 	public PoweredMultiblockBlockEntity(IETemplateMultiblock multiblockInstance, int energyCapacity, boolean redstoneControl,
 										BlockEntityType<? extends T> type, BlockPos pos, BlockState state)
 	{
 		super(multiblockInstance, type, redstoneControl, pos, state);
-		this.energyStorage = new FluxStorageAdvanced(energyCapacity);
+		this.energyStorage = new AveragingEnergyStorage(energyCapacity);
+		this.energyCap = new MultiblockCapability<>(
+				be -> be.energyCap, PoweredMultiblockBlockEntity::master, this, registerEnergyInput(this.energyStorage)
+		);
 	}
 
 	//	=================================
@@ -70,7 +75,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		if(!descPacket||shouldSyncProcessQueue())
 		{
 			ListTag processNBT = nbt.getList("processQueue", Tag.TAG_COMPOUND);
@@ -98,7 +103,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 		if(!descPacket||shouldSyncProcessQueue())
 		{
 			ListTag processNBT = new ListTag();
@@ -145,40 +150,13 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		return getEnergyPos().contains(posInMultiblock);
 	}
 
-
 	@Nonnull
 	@Override
-	public FluxStorage getFluxStorage()
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
-		T master = this.master();
-		if(master!=null)
-			return master.energyStorage;
-		return energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
-	{
-		return this.formed&&this.isEnergyPos()?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
-
-	@Override
-	@Nullable
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(this.formed&&this.isEnergyPos())
-			return wrapper;
-		return null;
-	}
-
-	@Override
-	public void postEnergyTransferUpdate(int energy, boolean simulate)
-	{
-		if(!simulate)
-			this.updateMasterBlock(null, energy!=0);
+		if(capability==CapabilityEnergy.ENERGY&&isEnergyPos())
+			return energyCap.getAndCast();
+		return super.getCapability(capability, facing);
 	}
 
 	@Override
@@ -384,7 +362,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 
 	protected boolean shouldRenderAsActiveImpl()
 	{
-		return getEnergyStored(null) > 0&&!isRSDisabled()&&!processQueue.isEmpty();
+		return energyStorage.getEnergyStored() > 0&&!isRSDisabled()&&!processQueue.isEmpty();
 	}
 
 	public abstract static class MultiblockProcess<R extends MultiblockRecipe>
@@ -481,7 +459,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			{
 				//Average Insertion, tracked by the advanced flux storage
 				int averageInsertion = multiblock.energyStorage.getAverageInsertion();
-				//Average Insertion musn'T be greater than possible extraction
+				//Average Insertion mustn't be greater than possible extraction
 				averageInsertion = multiblock.energyStorage.extractEnergy(averageInsertion, true);
 				if(averageInsertion > energyExtracted)
 				{

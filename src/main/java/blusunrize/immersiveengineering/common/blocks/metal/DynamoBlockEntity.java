@@ -8,17 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
+import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -30,11 +28,13 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class DynamoBlockEntity extends IEBaseBlockEntity implements IIEInternalFluxConnector, IStateBasedDirectional
+public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional
 {
 	public DynamoBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -81,33 +81,15 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IIEInternalF
 	{
 	}
 
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
-	{
-		return IOSideConfig.OUTPUT;
-	}
-
-	@Override
-	public boolean canConnectEnergy(Direction from)
-	{
-		return true;
-	}
-
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		return wrapper;
-	}
-
+	private final LazyOptional<IEnergyStorage> energyCap = registerConstantCap(NullEnergyStorage.INSTANCE);
 	private final LazyOptional<IRotationAcceptor> rotationCap = registerConstantCap(new RotationAcceptor());
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
+		if(cap==CapabilityEnergy.ENERGY)
+			return energyCap.cast();
 		if(cap==IRotationAcceptor.CAPABILITY&&side==getFacing())
 			return rotationCap.cast();
 		return super.getCapability(cap, side);

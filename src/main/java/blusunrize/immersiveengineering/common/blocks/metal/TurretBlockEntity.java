@@ -8,19 +8,17 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
@@ -54,7 +52,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -64,11 +66,11 @@ import java.util.List;
 import java.util.UUID;
 
 public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends IEBaseBlockEntity implements
-		IEServerTickableBE, IEClientTickableBE, IIEInternalFluxHandler, IIEInventory, IHasDummyBlocks, IBlockEntityDrop,
+		IEServerTickableBE, IEClientTickableBE, IIEInventory, IHasDummyBlocks, IBlockEntityDrop,
 		IStateBasedDirectional, IBlockBounds, IInteractionObjectIE<T>, IEntityProof, IScrewdriverInteraction,
 		IModelOffsetProvider
 {
-	public FluxStorage energyStorage = new FluxStorage(16000);
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(16000);
 	public boolean redstoneControlInverted = false;
 
 	public String owner;
@@ -312,7 +314,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 
 		if(nbt.contains("owner", NBT.TAG_STRING))
 			owner = nbt.getString("owner");
@@ -334,7 +336,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 
 		if(owner!=null)
 			nbt.putString("owner", owner);
@@ -495,16 +497,16 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 
 	@Nullable
 	@Override
-	public IGeneralMultiblock master()
+	public TurretBlockEntity<T> master()
 	{
 		if(!isDummy())
 			return this;
 		// Used to provide tile-dependant drops after breaking
-		if(tempMasterBE!=null)
-			return tempMasterBE;
+		if(tempMasterBE instanceof TurretBlockEntity<?> turret)
+			return (TurretBlockEntity<T>)turret;
 		BlockPos masterPos = getBlockPos().below();
 		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
-		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+		return this.getClass().isInstance(te)?(TurretBlockEntity<T>)te: null;
 	}
 
 	@Override
@@ -602,34 +604,17 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		}
 	}
 
-	@Nonnull
-	@Override
-	public FluxStorage getFluxStorage()
-	{
-		if(isDummy())
-		{
-			BlockEntity te = level.getBlockEntity(getBlockPos().below());
-			if(te instanceof TurretBlockEntity<?>)
-				return ((TurretBlockEntity<?>)te).getFluxStorage();
-		}
-		return energyStorage;
-	}
+	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+			be -> be.energyCap, TurretBlockEntity::master, this, registerEnergyInput(energyStorage)
+	);
 
 	@Nonnull
 	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
+	public <T2> LazyOptional<T2> getCapability(@Nonnull Capability<T2> cap, @Nullable Direction side)
 	{
-		return !isDummy()?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(!isDummy())
-			return wrappers[facing==null?0: facing.ordinal()];
-		return null;
+		if(cap==CapabilityEnergy.ENERGY&&(side!=null||!isDummy()))
+			return energyCap.getAndCast();
+		return super.getCapability(cap, side);
 	}
 
 	public void setDummy(boolean dummy)

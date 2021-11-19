@@ -9,10 +9,10 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment.ElectricSource;
 import blusunrize.immersiveengineering.api.tool.ITeslaEntity;
@@ -24,12 +24,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.*;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.mixin.accessors.EntityAccess;
 import net.minecraft.client.Minecraft;
@@ -56,7 +53,11 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
@@ -66,10 +67,13 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 
-public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE, IIEInternalFluxHandler, IHasDummyBlocks,
+public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE, IHasDummyBlocks,
 		IStateBasedDirectional, IBlockBounds, IScrewdriverInteraction, IModelOffsetProvider
 {
-	public FluxStorage energyStorage = new FluxStorage(48000);
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(48000);
+	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+			be -> be.energyCap, TeslaCoilBlockEntity::master, this, registerEnergyInput(energyStorage)
+	);
 	public boolean redstoneControlInverted = false;
 	public boolean lowPower = false;
 	public final List<LightningAnimation> effectMap = new ArrayList<>();
@@ -351,7 +355,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		lowPower = nbt.getBoolean("lowPower");
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 	}
 
 	@Override
@@ -359,7 +363,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.putBoolean("lowPower", lowPower);
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 	}
 
 	@Override
@@ -491,32 +495,11 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 
 	@Nonnull
 	@Override
-	public FluxStorage getFluxStorage()
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(isDummy())
-		{
-			BlockEntity te = level.getBlockEntity(getBlockPos().relative(getFacing(), -1));
-			if(te instanceof TeslaCoilBlockEntity)
-				return ((TeslaCoilBlockEntity)te).getFluxStorage();
-		}
-		return energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
-	{
-		return !isDummy()?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper[] wrappers = IEForgeEnergyWrapper.getDefaultWrapperArray(this);
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(!isDummy())
-			return wrappers[facing==null?0: facing.ordinal()];
-		return null;
+		if(cap==CapabilityEnergy.ENERGY&&(side==null||!isDummy()))
+			return energyCap.getAndCast();
+		return super.getCapability(cap, side);
 	}
 
 	public boolean canRun(int energyDrain)

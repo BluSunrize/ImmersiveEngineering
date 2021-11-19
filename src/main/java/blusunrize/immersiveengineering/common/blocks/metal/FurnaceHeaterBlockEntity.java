@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
@@ -17,11 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,15 +30,20 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IIEInternalFluxHandler, IActiveState,
+public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IActiveState,
 		IStateBasedDirectional, IHammerInteraction
 {
-	public FluxStorage energyStorage = new FluxStorage(32000, Math.max(256,
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000, Math.max(256,
 			Math.max(IEServerConfig.MACHINES.heater_consumption.get(), IEServerConfig.MACHINES.heater_speedupConsumption.get())));
+	private final LazyOptional<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
 
 	public FurnaceHeaterBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -88,42 +90,22 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 	}
 
 	@Nonnull
 	@Override
-	public FluxStorage getFluxStorage()
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		return energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
-	{
-		return facing==this.getFacing()?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	@Nullable
-	IEForgeEnergyWrapper wrapper;
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(facing==this.getFacing())
-		{
-			if(wrapper==null||wrapper.side!=this.getFacing())
-				wrapper = new IEForgeEnergyWrapper(this, this.getFacing());
-			return wrapper;
-		}
-		return null;
+		if(cap==CapabilityEnergy.ENERGY&&(side==null||side==getFacing()))
+			return energyCap.cast();
+		return super.getCapability(cap, side);
 	}
 
 	@Override

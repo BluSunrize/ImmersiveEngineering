@@ -42,7 +42,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 	@Override
 	protected List<InfoArea> makeInfoAreas()
 	{
-		return ImmutableList.of(new EnergyInfoArea(leftPos+80, topPos+36, tile));
+		return ImmutableList.of(new EnergyInfoArea(leftPos+80, topPos+36, tile.energyStorage));
 	}
 
 	@Override

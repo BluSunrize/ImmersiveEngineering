@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
+import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -17,8 +17,6 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxConnector;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +24,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -35,7 +35,7 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.Function;
 
-public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IIEInternalFluxConnector
+public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE
 {
 	private int energyOutput = -1;
 	private final Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = new EnumMap<>(Direction.class);
@@ -126,25 +126,14 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 		nbt.putInt("enegyOutput", this.energyOutput);
 	}
 
+	private final LazyOptional<IEnergyStorage> energyCap = registerConstantCap(NullEnergyStorage.INSTANCE);
 
 	@Nonnull
 	@Override
-	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		return IOSideConfig.OUTPUT;
-	}
-
-	@Override
-	public boolean canConnectEnergy(Direction from)
-	{
-		return true;
-	}
-
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		return wrapper;
+		if(cap==CapabilityEnergy.ENERGY)
+			return energyCap.cast();
+		return super.getCapability(cap, side);
 	}
 }

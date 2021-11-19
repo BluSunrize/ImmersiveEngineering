@@ -87,7 +87,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new EnergyInfoArea(leftPos+217, topPos+16, tile),
+				new EnergyInfoArea(leftPos+217, topPos+16, tile.energyStorage),
 				new TooltipArea(copyArea, l -> {
 					if(this.menu.getCarried().getItem() instanceof LogicCircuitBoardItem)
 						l.add(TextUtils.applyFormat(

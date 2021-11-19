@@ -8,19 +8,19 @@
 
 package blusunrize.immersiveengineering.client.gui.info;
 
-import blusunrize.immersiveengineering.common.immersiveflux.IFluxProvider;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
 
 public class EnergyInfoArea extends InfoArea
 {
-	private final IFluxProvider energy;
+	private final IEnergyStorage energy;
 
-	public EnergyInfoArea(int xMin, int yMin, IFluxProvider energy)
+	public EnergyInfoArea(int xMin, int yMin, IEnergyStorage energy)
 	{
 		super(new Rect2i(xMin, yMin, 7, 46));
 		this.energy = energy;
@@ -29,14 +29,14 @@ public class EnergyInfoArea extends InfoArea
 	@Override
 	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
-		tooltip.add(new TextComponent(energy.getEnergyStored(null)+"/"+energy.getMaxEnergyStored(null)+" IF"));
+		tooltip.add(new TextComponent(energy.getEnergyStored()+"/"+energy.getMaxEnergyStored()+" IF"));
 	}
 
 	@Override
 	public void draw(PoseStack transform)
 	{
 		final int height = area.getHeight();
-		int stored = (int)(height*(energy.getEnergyStored(null)/(float)energy.getMaxEnergyStored(null)));
+		int stored = (int)(height*(energy.getEnergyStored()/(float)energy.getMaxEnergyStored()));
 		fillGradient(
 				transform,
 				area.getX(), area.getY()+(height-stored),

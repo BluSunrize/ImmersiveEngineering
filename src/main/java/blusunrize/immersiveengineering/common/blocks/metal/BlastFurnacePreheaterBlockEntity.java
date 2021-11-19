@@ -8,18 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,18 +28,24 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implements IIEInternalFluxHandler,
-		IStateBasedDirectional, IHasDummyBlocks, IModelOffsetProvider
+public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional,
+		IHasDummyBlocks, IModelOffsetProvider
 {
 	public boolean active;
 	public int dummy = 0;
-	public FluxStorage energyStorage = new FluxStorage(8000);
+	public final MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
 	public float angle = 0;
-	public long lastRenderTick = -1;
+	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+			be -> be.energyCap, BlastFurnacePreheaterBlockEntity::master, this, registerEnergyInput(energyStorage)
+	);
 
 	public BlastFurnacePreheaterBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -78,11 +81,11 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 
 	@Nullable
 	@Override
-	public IGeneralMultiblock master()
+	public BlastFurnacePreheaterBlockEntity master()
 	{
 		BlockPos masterPos = getBlockPos().below(dummy);
 		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
-		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+		return te instanceof BlastFurnacePreheaterBlockEntity heater?heater: null;
 	}
 
 	@Override
@@ -109,7 +112,7 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		active = nbt.getBoolean("active");
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
@@ -119,38 +122,17 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putInt("dummy", dummy);
+		nbt.put("energy", energyStorage.serializeNBT());
 		nbt.putBoolean("active", active);
-		energyStorage.writeToNBT(nbt);
 	}
 
 	@Nonnull
 	@Override
-	public FluxStorage getFluxStorage()
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(dummy > 0)
-		{
-			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -dummy, 0));
-			if(te instanceof BlastFurnacePreheaterBlockEntity)
-				return ((BlastFurnacePreheaterBlockEntity)te).getFluxStorage();
-		}
-		return energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
-	{
-		return dummy==2&&facing==Direction.UP?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, Direction.UP);
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(dummy==2&&facing==Direction.UP)
-			return wrapper;
-		return null;
+		if(cap==CapabilityEnergy.ENERGY&&(side==null||(dummy==2&&side==Direction.UP)))
+			return energyCap.get().cast();
+		return super.getCapability(cap, side);
 	}
 
 	@Override
@@ -189,11 +171,11 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 		for(int i = 0; i <= 2; i++)
 		{
 			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -dummy+i, 0));
-			if(te instanceof BlastFurnacePreheaterBlockEntity)
+			if(te instanceof BlastFurnacePreheaterBlockEntity dummy)
 			{
-				((BlastFurnacePreheaterBlockEntity)te).setFacing(newDir);
-				te.setChanged();
-				((BlastFurnacePreheaterBlockEntity)te).markContainingBlockForUpdate(null);
+				dummy.setFacing(newDir);
+				dummy.setChanged();
+				dummy.markContainingBlockForUpdate(null);
 			}
 		}
 	}

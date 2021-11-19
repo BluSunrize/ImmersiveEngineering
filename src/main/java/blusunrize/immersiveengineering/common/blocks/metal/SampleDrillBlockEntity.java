@@ -8,29 +8,25 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
@@ -41,21 +37,28 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
 public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE,
-		IIEInternalFluxHandler, IHasDummyBlocks, IPlayerInteraction, IModelOffsetProvider
+		IHasDummyBlocks, IPlayerInteraction, IModelOffsetProvider
 {
-	public FluxStorage energyStorage = new FluxStorage(8000);
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
 	public int dummy = 0;
 	public int process = 0;
 	public boolean isRunning = false;
 	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
+	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+			be -> be.energyCap, SampleDrillBlockEntity::master, this, registerEnergyInput(energyStorage)
+	);
 
 	public SampleDrillBlockEntity(BlockEntityType<SampleDrillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -140,7 +143,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 		nbt.putInt("dummy", dummy);
 		nbt.putInt("process", process);
 		nbt.putBoolean("isRunning", isRunning);
@@ -151,7 +154,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		dummy = nbt.getInt("dummy");
 		process = nbt.getInt("process");
 		isRunning = nbt.getBoolean("isRunning");
@@ -176,40 +179,13 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 		return renderAABB;
 	}
 
-
 	@Nonnull
 	@Override
-	public FluxStorage getFluxStorage()
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(dummy > 0)
-		{
-			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -dummy, 0));
-			if(te instanceof SampleDrillBlockEntity)
-				return ((SampleDrillBlockEntity)te).getFluxStorage();
-		}
-		return energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
-	{
-		return dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper[] wrappers = {
-			new IEForgeEnergyWrapper(this, Direction.NORTH),
-			new IEForgeEnergyWrapper(this, Direction.SOUTH),
-			new IEForgeEnergyWrapper(this, Direction.WEST),
-			new IEForgeEnergyWrapper(this, Direction.EAST)
-	};
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(dummy==0&&facing!=null&&facing.getAxis()!=Axis.Y)
-			return wrappers[facing.ordinal()-2];
-		return null;
+		if(cap==CapabilityEnergy.ENERGY&&(side==null||(dummy==0&&side.getAxis().isHorizontal())))
+			return energyCap.getAndCast();
+		return super.getCapability(cap, side);
 	}
 
 	@Override
@@ -220,13 +196,13 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 
 	@Nullable
 	@Override
-	public IGeneralMultiblock master()
+	public SampleDrillBlockEntity master()
 	{
 		if(!isDummy())
 			return this;
 		BlockPos masterPos = getBlockPos().below(dummy);
 		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
-		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+		return te instanceof SampleDrillBlockEntity drill?drill: null;
 	}
 
 	@Override

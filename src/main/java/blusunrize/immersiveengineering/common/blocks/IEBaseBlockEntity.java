@@ -9,13 +9,12 @@
 package blusunrize.immersiveengineering.common.blocks;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstoneOutput;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.mixin.accessors.BETypeAccess;
 import blusunrize.immersiveengineering.mixin.accessors.BlockEntityAccess;
 import com.google.common.base.Preconditions;
@@ -31,15 +30,16 @@ import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
-import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public abstract class IEBaseBlockEntity extends BlockEntity implements BlockstateProvider
 {
@@ -144,7 +144,6 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	}
 
 	private final Set<LazyOptional<?>> caps = new HashSet<>();
-	private final Map<Direction, LazyOptional<IEnergyStorage>> energyCaps = new HashMap<>();
 
 	protected <T> LazyOptional<T> registerConstantCap(T val)
 	{
@@ -168,25 +167,14 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 		caps.remove(cap);
 	}
 
-	@Nonnull
-	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+	protected LazyOptional<IEnergyStorage> registerEnergyInput(IEnergyStorage directStorage)
 	{
-		if(cap==CapabilityEnergy.ENERGY&&this instanceof EnergyHelper.IIEInternalFluxConnector)
-		{
-			if(!energyCaps.containsKey(side))
-			{
-				IEForgeEnergyWrapper wrapper = ((EnergyHelper.IIEInternalFluxConnector)this).getCapabilityWrapper(side);
-				if(wrapper!=null)
-					energyCaps.put(side, registerConstantCap(wrapper));
-				else
-					energyCaps.put(side, LazyOptional.empty());
-			}
-			return energyCaps
-					.get(side)
-					.cast();
-		}
-		return super.getCapability(cap, side);
+		return registerConstantCap(new WrappingEnergyStorage(directStorage, true, false, this::setChanged));
+	}
+
+	protected LazyOptional<IEnergyStorage> registerEnergyOutput(IEnergyStorage directStorage)
+	{
+		return registerConstantCap(new WrappingEnergyStorage(directStorage, false, true, this::setChanged));
 	}
 
 	@Override

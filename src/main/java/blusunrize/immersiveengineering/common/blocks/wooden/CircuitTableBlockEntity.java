@@ -8,21 +8,18 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
@@ -40,11 +37,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInventory, IIEInternalFluxHandler, IStateBasedDirectional,
+public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInventory, IStateBasedDirectional,
 		IHasDummyBlocks, IInteractionObjectIE<CircuitTableBlockEntity>, IModelOffsetProvider
 {
 	public static final BlockPos MASTER_POS = BlockPos.ZERO;
@@ -53,7 +54,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 
 	private static final int ASSEMBLY_ENERGY = 5000;
 
-	private final FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
+	public final MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
 
 	public CircuitTableBlockEntity(BlockPos pos, BlockState state)
@@ -64,40 +65,36 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		if(!descPacket)
-		{
 			ContainerHelper.loadAllItems(nbt, inventory);
-		}
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 		if(!descPacket)
-		{
 			ContainerHelper.saveAllItems(nbt, inventory);
-		}
 	}
 
 	public static int getIngredientAmount(LogicCircuitInstruction instruction, int slot)
 	{
-		switch(slot)
-		{
-			case 0: // backplane
-				return 1;
-			case 1: // logic
-				return instruction.getOperator().getComplexity();
-			case 2: // solder
-				return (int)Math.ceil((instruction.getOperator().getComplexity()+instruction.getInputs().length+1)/2f);
-		}
-		return -1;
+		return switch(slot)
+				{
+					case 0 -> // backplane
+							1;
+					case 1 -> // logic
+							instruction.getOperator().getComplexity();
+					case 2 -> // solder
+							(int)Math.ceil((instruction.getOperator().getComplexity()+instruction.getInputs().length+1)/2f);
+					default -> -1;
+				};
 	}
 
 	public boolean canAssemble(LogicCircuitInstruction instruction)
 	{
-		if(this.getFluxStorage().getEnergyStored() < ASSEMBLY_ENERGY)
+		if(energyStorage.getEnergyStored() < ASSEMBLY_ENERGY)
 			return false;
 		for(int i = 0; i < SLOT_TYPES.length; i++)
 		{
@@ -110,7 +107,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 
 	public void consumeInputs(LogicCircuitInstruction instruction)
 	{
-		this.getFluxStorage().extractEnergy(ASSEMBLY_ENERGY, false);
+		energyStorage.extractEnergy(ASSEMBLY_ENERGY, false);
 		for(int i = 0; i < SLOT_TYPES.length; i++)
 			this.inventory.get(i).shrink(getIngredientAmount(instruction, i));
 	}
@@ -134,13 +131,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public CircuitTableBlockEntity getGuiMaster()
 	{
-		if(!isDummy())
-			return this;
-		Direction dummyDir = getFacing().getCounterClockWise();
-		BlockEntity tileEntity = level.getBlockEntity(worldPosition.relative(dummyDir));
-		if(tileEntity instanceof CircuitTableBlockEntity)
-			return (CircuitTableBlockEntity)tileEntity;
-		return null;
+		return master();
 	}
 
 	@Override
@@ -241,53 +232,16 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 			return MASTER_POS;
 	}
 
-	@Nonnull
-	@Override
-	public FluxStorage getFluxStorage()
-	{
-		if(this.isDummy())
-		{
-			CircuitTableBlockEntity te = master();
-			if(te!=null)
-				return te.getFluxStorage();
-		}
-		return this.energyStorage;
-	}
-
-	@Override
-	public void postEnergyTransferUpdate(int energy, boolean simulate)
-	{
-		if(this.isDummy())
-		{
-			CircuitTableBlockEntity te = master();
-			if(te!=null)
-				te.postEnergyTransferUpdate(energy, simulate);
-		}
-		else if(!simulate&&energy!=0)
-		{
-			this.setChanged();
-			this.markContainingBlockForUpdate(null);
-		}
-	}
+	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+			be -> be.energyCap, CircuitTableBlockEntity::master, this, registerEnergyInput(energyStorage)
+	);
 
 	@Nonnull
 	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		return this.isDummy()&&facing==this.getFacing()?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper wrapper = null;
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(this.isDummy()&&facing==this.getFacing())
-		{
-			if(wrapper==null||wrapper.side!=this.getFacing())
-				wrapper = new IEForgeEnergyWrapper(this, this.getFacing());
-			return wrapper;
-		}
-		return null;
+		if(cap==CapabilityEnergy.ENERGY&&(side==null||(side==getFacing()&&isDummy())))
+			return energyCap.getAndCast();
+		return super.getCapability(cap, side);
 	}
 }

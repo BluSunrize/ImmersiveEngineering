@@ -42,7 +42,7 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+13, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
 				new FluidInfoArea(tile.tanks[1], new Rect2i(leftPos+61, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
 				new FluidInfoArea(tile.tanks[2], new Rect2i(leftPos+109, topPos+20, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new EnergyInfoArea(leftPos+157, topPos+21, tile)
+				new EnergyInfoArea(leftPos+157, topPos+21, tile.energyStorage)
 		);
 	}
 }

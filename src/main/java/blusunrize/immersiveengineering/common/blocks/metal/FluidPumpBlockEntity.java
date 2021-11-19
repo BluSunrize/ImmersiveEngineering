@@ -11,22 +11,24 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.metal.FluidPipeBlockEntity.DirectionalFluidOutput;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -51,6 +53,8 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -63,7 +67,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 
 public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IBlockBounds, IHasDummyBlocks,
-		IConfigurableSides, IFluidPipe, IIEInternalFluxHandler, IBlockOverlayText
+		IConfigurableSides, IFluidPipe, IBlockOverlayText
 {
 	public Map<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 
@@ -78,8 +82,11 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
-	public FluxStorage energyStorage = new FluxStorage(8000);
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
 	public boolean placeCobble = true;
+	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+			be -> be.energyCap, FluidPumpBlockEntity::master, this, registerEnergyInput(energyStorage)
+	);
 
 	private boolean checkingArea = false;
 	private Fluid searchFluid = null;
@@ -302,7 +309,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		if(nbt.contains("placeCobble", NBT.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(nbt.getCompound("tank"));
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
@@ -316,7 +323,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		nbt.putIntArray("sideConfig", sideConfigArray);
 		nbt.putBoolean("placeCobble", placeCobble);
 		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 	}
 
 	@Override
@@ -352,12 +359,14 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		return false;
 	}
 
-	private Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new EnumMap<>(Direction.class);
+	private final Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new EnumMap<>(Direction.class);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
+		if(capability==CapabilityEnergy.ENERGY&&(facing==null||(facing==Direction.UP&&isDummy())))
+			return energyCap.getAndCast();
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!isDummy())
 		{
 			if(!sidedFluidHandler.containsKey(facing))
@@ -454,36 +463,6 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		}
 	}
 
-	@Nonnull
-	@Override
-	public FluxStorage getFluxStorage()
-	{
-		if(isDummy())
-		{
-			BlockEntity te = level.getBlockEntity(getBlockPos().offset(0, -1, 0));
-			if(te instanceof FluidPumpBlockEntity)
-				return ((FluidPumpBlockEntity)te).getFluxStorage();
-		}
-		return energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
-	{
-		return isDummy()&&facing==Direction.UP?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, Direction.UP);
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(!isDummy()&&facing==Direction.UP)
-			return null;
-		return wrapper;
-	}
-
 	@Override
 	public boolean isDummy()
 	{
@@ -492,13 +471,13 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 
 	@Nullable
 	@Override
-	public IGeneralMultiblock master()
+	public FluidPumpBlockEntity master()
 	{
 		if(!isDummy())
 			return this;
 		BlockPos masterPos = getBlockPos().below();
 		BlockEntity te = Utils.getExistingTileEntity(level, masterPos);
-		return this.getClass().isInstance(te)?(IGeneralMultiblock)te: null;
+		return te instanceof FluidPumpBlockEntity pump?pump: null;
 	}
 
 	@Override

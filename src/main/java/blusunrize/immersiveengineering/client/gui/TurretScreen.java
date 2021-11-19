@@ -53,7 +53,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 	@Override
 	protected List<InfoArea> makeInfoAreas()
 	{
-		return ImmutableList.of(new EnergyInfoArea(leftPos+158, topPos+16, tile));
+		return ImmutableList.of(new EnergyInfoArea(leftPos+158, topPos+16, tile.energyStorage));
 	}
 
 	@Override

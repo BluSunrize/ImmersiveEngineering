@@ -54,7 +54,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new EnergyInfoArea(leftPos+158, topPos+22, tile),
+				new EnergyInfoArea(leftPos+158, topPos+22, tile.energyStorage),
 				new TooltipArea(
 						new Rect2i(leftPos+106, topPos+61, 30, 16),
 						() -> new TranslatableComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single"))

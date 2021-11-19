@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties;
+import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.client.fx.CustomParticleManager;
 import blusunrize.immersiveengineering.client.utils.DistField;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -20,12 +20,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorageAdvanced;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.mojang.math.Vector3f;
@@ -47,6 +43,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -54,13 +52,14 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEClientTickableBE, IEServerTickableBE,
-		IIEInternalFluxHandler, IIEInventory, IStateBasedDirectional, IBlockBounds, IComparatorOverride, IPlayerInteraction
+		IIEInventory, IStateBasedDirectional, IBlockBounds, IComparatorOverride, IPlayerInteraction
 {
-	public FluxStorageAdvanced energyStorage = new FluxStorageAdvanced(32000);
+	public AveragingEnergyStorage energyStorage = new AveragingEnergyStorage(32000);
 	public NonNullList<ItemStack> inventory = NonNullList.withSize(1, ItemStack.EMPTY);
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	private boolean charging = true;
 	public int comparatorOutput = 0;
+	private final LazyOptional<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
 
 	public ChargingStationBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -152,7 +151,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 		inventory.set(0, ItemStack.of(nbt.getCompound("inventory")));
 		charging = nbt.getBoolean("charging");
 	}
@@ -160,7 +159,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 		nbt.putBoolean("charging", charging);
 		if(!inventory.get(0).isEmpty())
 			nbt.put("inventory", inventory.get(0).save(new CompoundTag()));
@@ -175,37 +174,6 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 			return true;
 		}
 		return false;
-	}
-
-	@Nonnull
-	@Override
-	public FluxStorage getFluxStorage()
-	{
-		return energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
-	{
-		return facing==Direction.DOWN||facing==this.getFacing().getOpposite()?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	IEForgeEnergyWrapper wrapperDown = new IEForgeEnergyWrapper(this, Direction.DOWN);
-	IEForgeEnergyWrapper wrapperDir = null;
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(facing==Direction.DOWN)
-			return wrapperDown;
-		else if(facing==this.getFacing().getOpposite())
-		{
-			if(wrapperDir==null||wrapperDir.side!=this.getFacing().getOpposite())
-				wrapperDir = new IEForgeEnergyWrapper(this, this.getFacing().getOpposite());
-			return wrapperDir;
-		}
-		return null;
 	}
 
 	@Override
@@ -284,6 +252,8 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
+		if(capability==CapabilityEnergy.ENERGY&&(facing==null||facing==Direction.DOWN||facing==getFacing().getOpposite()))
+			return energyCap.cast();
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 			return insertionHandler.cast();
 		return super.getCapability(capability, facing);

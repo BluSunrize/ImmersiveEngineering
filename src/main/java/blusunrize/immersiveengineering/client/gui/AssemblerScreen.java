@@ -61,7 +61,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+204, topPos+13, 16, 46), 230, 0, 20, 50, TEXTURE),
 				new FluidInfoArea(tile.tanks[1], new Rect2i(leftPos+182, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
 				new FluidInfoArea(tile.tanks[2], new Rect2i(leftPos+204, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new EnergyInfoArea(leftPos+187, topPos+13, tile),
+				new EnergyInfoArea(leftPos+187, topPos+13, tile.energyStorage),
 				new TooltipArea(
 						new Rect2i(leftPos+162, topPos+69, 16, 16),
 						() -> new TranslatableComponent(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients"))

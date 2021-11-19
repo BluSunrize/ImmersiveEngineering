@@ -8,18 +8,15 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.*;
+import blusunrize.immersiveengineering.common.immersiveflux.IFluxContainerItem;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Comparator;
@@ -177,139 +174,6 @@ public class EnergyHelper
 			remainingOutputs--;
 		}
 		return amount;
-	}
-
-	@Deprecated(forRemoval = true)
-	public interface IIEInternalFluxHandler extends IIEInternalFluxConnector, IFluxReceiver, IFluxProvider
-	{
-		@Nonnull
-		FluxStorage getFluxStorage();
-
-		default void postEnergyTransferUpdate(int energy, boolean simulate)
-		{
-
-		}
-
-		@Override
-		default int extractEnergy(@Nullable Direction fd, int amount, boolean simulate)
-		{
-			if(((BlockEntity)this).getLevel().isClientSide||getEnergySideConfig(fd)!=IOSideConfig.OUTPUT)
-				return 0;
-			int r = getFluxStorage().extractEnergy(amount, simulate);
-			postEnergyTransferUpdate(-r, simulate);
-			return r;
-		}
-
-		@Override
-		default int getEnergyStored(@Nullable Direction fd)
-		{
-			return getFluxStorage().getEnergyStored();
-		}
-
-		@Override
-		default int getMaxEnergyStored(@Nullable Direction fd)
-		{
-			return getFluxStorage().getMaxEnergyStored();
-		}
-
-		@Override
-		default int receiveEnergy(@Nullable Direction fd, int amount, boolean simulate)
-		{
-			if(((BlockEntity)this).getLevel().isClientSide||getEnergySideConfig(fd)!=IOSideConfig.INPUT)
-				return 0;
-			int r = getFluxStorage().receiveEnergy(amount, simulate);
-			postEnergyTransferUpdate(r, simulate);
-			return r;
-		}
-	}
-
-	@Deprecated(forRemoval = true)
-	public interface IIEInternalFluxConnector extends IFluxConnection
-	{
-		@Nonnull
-		IOSideConfig getEnergySideConfig(@Nullable Direction facing);
-
-		@Override
-		default boolean canConnectEnergy(@Nullable Direction fd)
-		{
-			return getEnergySideConfig(fd)!=IOSideConfig.NONE;
-		}
-
-		@Nullable
-		IEForgeEnergyWrapper getCapabilityWrapper(Direction facing);
-	}
-
-	@Deprecated(forRemoval = true)
-	public static class IEForgeEnergyWrapper implements IEnergyStorage
-	{
-		final IIEInternalFluxConnector fluxHandler;
-		public final Direction side;
-
-		public IEForgeEnergyWrapper(IIEInternalFluxConnector fluxHandler, Direction side)
-		{
-			this.fluxHandler = fluxHandler;
-			this.side = side;
-		}
-
-		@Override
-		public int receiveEnergy(int maxReceive, boolean simulate)
-		{
-			if(fluxHandler instanceof IIEInternalFluxHandler)
-				return ((IIEInternalFluxHandler)fluxHandler).receiveEnergy(side, maxReceive, simulate);
-			return 0;
-		}
-
-		@Override
-		public int extractEnergy(int maxExtract, boolean simulate)
-		{
-			if(fluxHandler instanceof IIEInternalFluxHandler)
-				return ((IIEInternalFluxHandler)fluxHandler).extractEnergy(side, maxExtract, simulate);
-			return 0;
-		}
-
-		@Override
-		public int getEnergyStored()
-		{
-			if(fluxHandler instanceof IIEInternalFluxHandler)
-				return ((IIEInternalFluxHandler)fluxHandler).getEnergyStored(side);
-			return 0;
-		}
-
-		@Override
-		public int getMaxEnergyStored()
-		{
-			if(fluxHandler instanceof IIEInternalFluxHandler)
-				return ((IIEInternalFluxHandler)fluxHandler).getMaxEnergyStored(side);
-			return 0;
-		}
-
-		@Override
-		public boolean canExtract()
-		{
-			if(fluxHandler instanceof IIEInternalFluxHandler)
-				return ((IIEInternalFluxHandler)fluxHandler).getFluxStorage().getLimitExtract() > 0;
-			return false;
-		}
-
-		@Override
-		public boolean canReceive()
-		{
-			if(fluxHandler instanceof IIEInternalFluxHandler)
-				return ((IIEInternalFluxHandler)fluxHandler).getFluxStorage().getLimitReceive() > 0;
-			return false;
-		}
-
-		public static IEForgeEnergyWrapper[] getDefaultWrapperArray(IIEInternalFluxConnector handler)
-		{
-			return new IEForgeEnergyWrapper[]{
-					new IEForgeEnergyWrapper(handler, Direction.DOWN),
-					new IEForgeEnergyWrapper(handler, Direction.UP),
-					new IEForgeEnergyWrapper(handler, Direction.NORTH),
-					new IEForgeEnergyWrapper(handler, Direction.SOUTH),
-					new IEForgeEnergyWrapper(handler, Direction.WEST),
-					new IEForgeEnergyWrapper(handler, Direction.EAST)
-			};
-		}
 	}
 
 	@Deprecated(forRemoval = true)

@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
@@ -23,10 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -46,6 +43,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fmllegacy.RegistryObject;
@@ -61,7 +60,7 @@ import java.util.Map;
 import static blusunrize.immersiveengineering.api.wires.WireType.*;
 
 public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity implements IStateBasedDirectional,
-		IIEInternalFluxHandler, IBlockBounds, EnergyConnector, IEServerTickableBE
+		IBlockBounds, EnergyConnector, IEServerTickableBE
 {
 	public static final Map<Pair<String, Boolean>, RegistryObject<BlockEntityType<EnergyConnectorBlockEntity>>>
 			SPEC_TO_TYPE = new HashMap<>();
@@ -89,8 +88,9 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	private final boolean relay;
 	public int currentTickToMachine = 0;
 	public int currentTickToNet = 0;
-	private final FluxStorage storageToNet;
-	private final FluxStorage storageToMachine;
+	private final MutableEnergyStorage storageToNet;
+	private final MutableEnergyStorage storageToMachine;
+	private final LazyOptional<IEnergyStorage> energyCap;
 
 	private final CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(
 			this, CapabilityEnergy.ENERGY, this::getFacing
@@ -102,8 +102,9 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 		Pair<String, Boolean> data = NAME_TO_SPEC.get(type.getRegistryName());
 		this.voltage = data.getFirst();
 		this.relay = data.getSecond();
-		this.storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
-		this.storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
+		this.storageToMachine = new MutableEnergyStorage(getMaxInput(), getMaxInput(), getMaxInput());
+		this.storageToNet = new MutableEnergyStorage(getMaxInput(), getMaxInput(), getMaxInput());
+		this.energyCap = registerConstantCap(new ConnectorEnergyStorage());
 	}
 
 	public EnergyConnectorBlockEntity(String voltage, boolean relay, BlockPos pos, BlockState state)
@@ -171,22 +172,16 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		CompoundTag toNet = new CompoundTag();
-		storageToNet.writeToNBT(toNet);
-		nbt.put("toNet", toNet);
-		CompoundTag toMachine = new CompoundTag();
-		storageToMachine.writeToNBT(toMachine);
-		nbt.put("toMachine", toMachine);
+		nbt.put("energyToNet", storageToNet.serializeNBT());
+		nbt.put("energyToMachine", storageToNet.serializeNBT());
 	}
 
 	@Override
 	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		CompoundTag toMachine = nbt.getCompound("toMachine");
-		storageToMachine.readFromNBT(toMachine);
-		CompoundTag toNet = nbt.getCompound("toNet");
-		storageToNet.readFromNBT(toNet);
+		storageToMachine.deserializeNBT(nbt.get("energyToMachine"));
+		storageToMachine.deserializeNBT(nbt.get("energyToNet"));
 	}
 
 	@Override
@@ -199,82 +194,13 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 				.5+lengthFromHalf*side.getStepZ());
 	}
 
-	IEForgeEnergyWrapper energyWrapper;
-
+	@Nonnull
 	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
 	{
-		if(facing!=this.getFacing()||relay)
-			return null;
-		if(energyWrapper==null||energyWrapper.side!=this.getFacing())
-			energyWrapper = new IEForgeEnergyWrapper(this, this.getFacing());
-		return energyWrapper;
-	}
-
-	@Override
-	public FluxStorage getFluxStorage()
-	{
-		return storageToNet;
-	}
-
-	@Override
-	public IOSideConfig getEnergySideConfig(Direction facing)
-	{
-		return (!relay&&facing==this.getFacing())?IOSideConfig.INPUT: IOSideConfig.NONE;
-	}
-
-	@Override
-	public boolean canConnectEnergy(Direction from)
-	{
-		if(relay)
-			return false;
-		return from==getFacing();
-	}
-
-	@Override
-	public int receiveEnergy(Direction from, int energy, boolean simulate)
-	{
-		if(level.isClientSide||relay)
-			return 0;
-		energy = Math.min(getMaxInput()-currentTickToNet, energy);
-		if(energy <= 0)
-			return 0;
-
-		int accepted = Math.min(Math.min(getMaxOutput(), getMaxInput()), energy);
-		accepted = Math.min(getMaxOutput()-storageToNet.getEnergyStored(), accepted);
-		if(accepted <= 0)
-			return 0;
-
-		if(!simulate)
-		{
-			storageToNet.modifyEnergyStored(accepted);
-			currentTickToNet += accepted;
-			setChanged();
-		}
-
-		return accepted;
-	}
-
-	@Override
-	public int getEnergyStored(Direction from)
-	{
-		if(relay)
-			return 0;
-		return storageToNet.getEnergyStored();
-	}
-
-	@Override
-	public int getMaxEnergyStored(Direction from)
-	{
-		if(relay)
-			return 0;
-		return getMaxInput();
-	}
-
-	@Override
-	public int extractEnergy(Direction from, int energy, boolean simulate)
-	{
-		return 0;
+		if(cap==CapabilityEnergy.ENERGY&&!relay&&(side==null||side==getFacing()))
+			return energyCap.cast();
+		return super.getCapability(cap, side);
 	}
 
 	private IEWireType getWireType()
@@ -369,5 +295,63 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public Collection<ResourceLocation> getRequestedHandlers()
 	{
 		return ImmutableList.of(EnergyTransferHandler.ID);
+	}
+
+	private class ConnectorEnergyStorage implements IEnergyStorage
+	{
+
+		@Override
+		public int receiveEnergy(int maxReceive, boolean simulate)
+		{
+			if(level.isClientSide||relay)
+				return 0;
+			maxReceive = Math.min(getMaxInput()-currentTickToNet, maxReceive);
+			if(maxReceive <= 0)
+				return 0;
+
+			int accepted = Math.min(Math.min(getMaxOutput(), getMaxInput()), maxReceive);
+			accepted = Math.min(getMaxOutput()-storageToNet.getEnergyStored(), accepted);
+			if(accepted <= 0)
+				return 0;
+
+			if(!simulate)
+			{
+				storageToNet.modifyEnergyStored(accepted);
+				currentTickToNet += accepted;
+				setChanged();
+			}
+
+			return accepted;
+		}
+
+		@Override
+		public int extractEnergy(int maxExtract, boolean simulate)
+		{
+			return storageToMachine.extractEnergy(maxExtract, simulate);
+		}
+
+		@Override
+		public int getEnergyStored()
+		{
+			return storageToNet.getEnergyStored();
+		}
+
+		@Override
+		public int getMaxEnergyStored()
+		{
+			return storageToNet.getMaxEnergyStored();
+		}
+
+		@Override
+		public boolean canExtract()
+		{
+			return true;
+		}
+
+		@Override
+		public boolean canReceive()
+		{
+			return true;
+		}
 	}
 }

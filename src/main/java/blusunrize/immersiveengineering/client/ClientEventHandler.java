@@ -38,7 +38,6 @@ import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
-import blusunrize.immersiveengineering.common.immersiveflux.IFluxReceiver;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.network.*;
@@ -105,6 +104,10 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -524,48 +527,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						ItemOverlayUtils.renderChemthrowerOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					else if(equipped.getItem() instanceof IEShieldItem)
 						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					if(equipped.getItem()==Tools.VOLTMETER.get())
-					{
-						HitResult rrt = ClientUtils.mc().hitResult;
-						IFluxReceiver receiver = null;
-						Direction side = null;
-						if(rrt instanceof BlockHitResult mop)
-						{
-							BlockEntity tileEntity = player.level.getBlockEntity(mop.getBlockPos());
-							if(tileEntity instanceof IFluxReceiver)
-								receiver = (IFluxReceiver)tileEntity;
-							side = mop.getDirection();
-							if(player.level.getGameTime()%20==0)
-								ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getBlockPos()));
-						}
-						else if(rrt instanceof EntityHitResult&&((EntityHitResult)rrt).getEntity() instanceof IFluxReceiver)
-							receiver = (IFluxReceiver)((EntityHitResult)rrt).getEntity();
-						if(receiver!=null)
-						{
-							String[] text = new String[0];
-							int maxStorage = receiver.getMaxEnergyStored(side);
-							int storage = receiver.getEnergyStored(side);
-							if(maxStorage > 0)
-								text = I18n.get(Lib.DESC_INFO+"energyStored", "<br>"+Utils.toScientificNotation(storage, "0##", 100000)+" / "+Utils.toScientificNotation(maxStorage, "0##", 100000)).split("<br>");
-							int col = 0xffffff;
-							int i = 0;
-							RenderSystem.enableBlend();
-							for(String s : text)
-								if(s!=null)
-								{
-									s = s.trim();
-									int w = ClientUtils.font().width(s);
-									ClientUtils.font().drawInBatch(
-											s, scaledWidth/2-w/2,
-											scaledHeight/2-4-text.length*(ClientUtils.font().lineHeight+2)+
-													(i++)*(ClientUtils.font().lineHeight+2), col,
-											false, transform.last().pose(), buffer, false,
-											0, 0xf000f0
-									);
-								}
-							RenderSystem.disableBlend();
-						}
-					}
+					else if(equipped.getItem()==Tools.VOLTMETER.get())
+						renderVoltmeterOverlay(player, scaledWidth, scaledHeight, transform, buffer);
 					buffer.endBatch();
 				}
 			if(ClientUtils.mc().hitResult!=null)
@@ -593,9 +556,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					BlockPos pos = ((BlockHitResult)mop).getBlockPos();
 					Direction face = ((BlockHitResult)mop).getDirection();
 					BlockEntity tileEntity = player.level.getBlockEntity(pos);
-					if(tileEntity instanceof IBlockOverlayText)
+					if(tileEntity instanceof IBlockOverlayText overlayBlock)
 					{
-						IBlockOverlayText overlayBlock = (IBlockOverlayText)tileEntity;
 						Component[] text = overlayBlock.getOverlayText(ClientUtils.mc().player, mop, hammer);
 						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 					}
@@ -609,6 +571,52 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				}
 
 			}
+		}
+	}
+
+	private void renderVoltmeterOverlay(Player player, float scaledWidth, float scaledHeight, PoseStack transform, MultiBufferSource buffer)
+	{
+		HitResult rrt = ClientUtils.mc().hitResult;
+		ICapabilityProvider capSource = null;
+		if(rrt instanceof BlockHitResult mop)
+		{
+			capSource = player.level.getBlockEntity(mop.getBlockPos());
+			if(player.level.getGameTime()%20==0)
+				ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getBlockPos()));
+		}
+		else if(rrt instanceof EntityHitResult ehr)
+			capSource = ehr.getEntity();
+		if(capSource==null)
+			return;
+		LazyOptional<IEnergyStorage> energyCap = capSource.getCapability(CapabilityEnergy.ENERGY);
+		if(!energyCap.isPresent())
+			return;
+		IEnergyStorage receiver = energyCap.orElseThrow(RuntimeException::new);
+		int maxStorage = receiver.getMaxEnergyStored();
+		int storage = receiver.getEnergyStored();
+		if(maxStorage > 0)
+		{
+			String storageText = Utils.toScientificNotation(storage, "0##", 100000);
+			String capacityText = Utils.toScientificNotation(maxStorage, "0##", 100000);
+			String[] text = I18n.get(Lib.DESC_INFO+"energyStored", "<br>"+storageText+" / "+capacityText)
+					.split("<br>");
+			int col = 0xffffff;
+			int i = 0;
+			RenderSystem.enableBlend();
+			for(String s : text)
+				if(s!=null)
+				{
+					s = s.trim();
+					int w = ClientUtils.font().width(s);
+					ClientUtils.font().drawInBatch(
+							s, scaledWidth/2-w/2f,
+							scaledHeight/2-4-text.length*(ClientUtils.font().lineHeight+2)+
+									(i++)*(ClientUtils.font().lineHeight+2), col,
+							false, transform.last().pose(), buffer, false,
+							0, 0xf000f0
+					);
+				}
+			RenderSystem.disableBlend();
 		}
 	}
 

@@ -8,17 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.immersiveflux.FluxStorage;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,6 +31,10 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
@@ -41,10 +43,12 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class LightningrodBlockEntity extends MultiblockPartBlockEntity<LightningrodBlockEntity> implements
-		IIEInternalFluxHandler, IBlockBounds
+public class LightningrodBlockEntity extends MultiblockPartBlockEntity<LightningrodBlockEntity> implements IBlockBounds
 {
-	FluxStorage energyStorage = new FluxStorage(IEServerConfig.MACHINES.lightning_output.get());
+	private final MutableEnergyStorage energyStorage = new MutableEnergyStorage(IEServerConfig.MACHINES.lightning_output.get());
+	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+			be -> be.energyCap, LightningrodBlockEntity::master, this, registerEnergyOutput(energyStorage)
+	);
 
 	@Nullable
 	private List<BlockPos> fenceNet = null;
@@ -64,7 +68,7 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 			for(Direction f : DirectionUtils.BY_HORIZONTAL_INDEX)
 			{
 				tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(f, 2));
-				int output = EnergyHelper.insertFlux(tileEntity, f.getOpposite(), energyStorage.getLimitExtract(), true);
+				int output = EnergyHelper.insertFlux(tileEntity, f.getOpposite(), energyStorage.getMaxEnergyStored(), true);
 				output = energyStorage.extractEnergy(output, false);
 				EnergyHelper.insertFlux(tileEntity, f.getOpposite(), output, false);
 			}
@@ -81,7 +85,7 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 			int i = this.height+this.fenceNet.size();
 			if(Utils.RAND.nextInt(4096*level.getMaxBuildHeight()) < i*(getBlockPos().getY()+i))
 			{
-				this.energyStorage.setEnergy(IEServerConfig.MACHINES.lightning_output.get());
+				this.energyStorage.setStoredEnergy(IEServerConfig.MACHINES.lightning_output.get());
 				BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
 				LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(level);
 				lightningboltentity.moveTo(Vec3.atBottomCenterOf(pos));
@@ -145,14 +149,14 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		energyStorage.readFromNBT(nbt);
+		energyStorage.deserializeNBT(nbt.get("energy"));
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		energyStorage.writeToNBT(nbt);
+		nbt.put("energy", energyStorage.serializeNBT());
 	}
 
 	@Override
@@ -225,29 +229,11 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 
 	@Nonnull
 	@Override
-	public FluxStorage getFluxStorage()
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
-		LightningrodBlockEntity master = this.master();
-		if(master!=null)
-			return master.energyStorage;
-		return energyStorage;
-	}
-
-	@Nonnull
-	@Override
-	public IOSideConfig getEnergySideConfig(@Nullable Direction facing)
-	{
-		return this.formed&&this.isEnergyPos()?IOSideConfig.OUTPUT: IOSideConfig.NONE;
-	}
-
-	private IEForgeEnergyWrapper wrapper = new IEForgeEnergyWrapper(this, null);
-
-	@Override
-	public IEForgeEnergyWrapper getCapabilityWrapper(Direction facing)
-	{
-		if(this.formed&&this.isEnergyPos())
-			return wrapper;
-		return null;
+		if(capability==CapabilityEnergy.ENERGY&&isEnergyPos())
+			return energyCap.getAndCast();
+		return super.getCapability(capability, facing);
 	}
 
 	private boolean isEnergyPos()

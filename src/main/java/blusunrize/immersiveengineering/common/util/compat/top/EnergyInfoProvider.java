@@ -8,15 +8,12 @@
 package blusunrize.immersiveengineering.common.util.compat.top;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.immersiveflux.IFluxProvider;
-import blusunrize.immersiveengineering.common.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import mcjty.theoneprobe.api.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
@@ -34,27 +31,6 @@ public class EnergyInfoProvider implements IProbeInfoProvider, IProbeConfigProvi
 	public void addProbeInfo(ProbeMode mode, IProbeInfo probeInfo, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		BlockEntity blockEntity = world.getBlockEntity(data.getPos());
-		int cur = 0;
-		int max = 0;
-		if(blockEntity instanceof IFluxReceiver fluxReceiver)
-		{
-			cur = fluxReceiver.getEnergyStored(null);
-			max = fluxReceiver.getMaxEnergyStored(null);
-		}
-		else if(blockEntity instanceof IFluxProvider fluxProvider)
-		{
-			cur = fluxProvider.getEnergyStored(null);
-			max = fluxProvider.getMaxEnergyStored(null);
-		}
-		if(max > 0)
-			probeInfo.progress(cur, max,
-					probeInfo.defaultProgressStyle()
-							.suffix("IF")
-							.filledColor(Lib.COLOUR_I_ImmersiveOrange)
-							.alternateFilledColor(0xff994f20)
-							.borderColor(Lib.COLOUR_I_ImmersiveOrangeShadow)
-							.numberFormat(NumberFormat.COMPACT));
 	}
 
 	@Override
@@ -67,8 +43,7 @@ public class EnergyInfoProvider implements IProbeInfoProvider, IProbeConfigProvi
 	public void getProbeConfig(IProbeConfig config, Player player, Level world,
 		BlockState blockState, IProbeHitData data)
 	{
-		BlockEntity blockEntity = world.getBlockEntity(data.getPos());
-		if(blockEntity instanceof IFluxReceiver||blockEntity instanceof IFluxProvider)
-			config.setRFMode(0);
+		if(config.getRFMode()==0&&world.getBlockEntity(data.getPos()) instanceof IEBaseBlockEntity)
+			config.setRFMode(1);
 	}
 }

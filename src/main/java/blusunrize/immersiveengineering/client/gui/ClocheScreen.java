@@ -42,7 +42,7 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 	{
 		return ImmutableList.of(
 				new FluidInfoArea(tile.tank, new Rect2i(leftPos+8, topPos+8, 16, 47), 176, 30, 20, 51, TEXTURE),
-				new EnergyInfoArea(leftPos+158, topPos+22, tile),
+				new EnergyInfoArea(leftPos+158, topPos+22, tile.energyStorage),
 				new FertilizerInfoArea(leftPos+30, topPos+22, tile)
 		);
 	}

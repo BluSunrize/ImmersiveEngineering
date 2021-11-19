@@ -10,8 +10,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jade;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.immersiveflux.IFluxProvider;
-import blusunrize.immersiveengineering.common.immersiveflux.IFluxReceiver;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import mcp.mobius.waila.api.BlockAccessor;
 import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.IServerDataProvider;
@@ -23,6 +22,9 @@ import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 public class FluxDataProvider implements IComponentProvider, IServerDataProvider<BlockEntity>
 {
@@ -45,20 +47,15 @@ public class FluxDataProvider implements IComponentProvider, IServerDataProvider
 	@Override
 	public void appendServerData(CompoundTag compoundTag, ServerPlayer serverPlayer, Level level, BlockEntity blockEntity, boolean b)
 	{
-		CompoundTag fluxData = null;
-		if(blockEntity instanceof IFluxReceiver receiver)
-		{
-			fluxData = new CompoundTag();
-			fluxData.putInt(STORED_KEY, receiver.getEnergyStored(null));
-			fluxData.putInt(MAX_STORED_KEY, receiver.getMaxEnergyStored(null));
-		}
-		else if(blockEntity instanceof IFluxProvider provider)
-		{
-			fluxData = new CompoundTag();
-			fluxData.putInt(STORED_KEY, provider.getEnergyStored(null));
-			fluxData.putInt(MAX_STORED_KEY, provider.getMaxEnergyStored(null));
-		}
-		if(fluxData!=null)
-			compoundTag.put(DATA_KEY, fluxData);
+		if(!(blockEntity instanceof IEBaseBlockEntity))
+			return;
+		LazyOptional<IEnergyStorage> energyCap = blockEntity.getCapability(CapabilityEnergy.ENERGY);
+		if(!energyCap.isPresent())
+			return;
+		IEnergyStorage storage = energyCap.orElseThrow(RuntimeException::new);
+		CompoundTag fluxData = new CompoundTag();
+		fluxData.putInt(STORED_KEY, storage.getEnergyStored());
+		fluxData.putInt(MAX_STORED_KEY, storage.getMaxEnergyStored());
+		compoundTag.put(DATA_KEY, fluxData);
 	}
 }
