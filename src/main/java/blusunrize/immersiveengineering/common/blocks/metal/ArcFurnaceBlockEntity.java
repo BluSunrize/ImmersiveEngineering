@@ -496,9 +496,9 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	}
 
 	@Override
-	public boolean shouldRenderAsActive()
+	public boolean shouldRenderAsActiveImpl()
 	{
-		return hasElectrodes()&&super.shouldRenderAsActive();
+		return hasElectrodes()&&super.shouldRenderAsActiveImpl();
 	}
 
 	@Override

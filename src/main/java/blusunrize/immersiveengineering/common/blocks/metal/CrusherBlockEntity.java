@@ -80,8 +80,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 		}
 	}
 
-	//TODO cache
-	private AABB renderAABB;
+	private Pair<BlockState, AABB> renderAABB;
 
 	@Override
 	public AABB getRenderBoundingBox()
@@ -338,7 +337,13 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 		return true;
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
+	@Override
+	protected boolean shouldSyncProcessQueue()
+	{
+		return false;
+	}
+
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(getBlockPos().offset(0, -1, 0).relative(getFacing(), -2), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
