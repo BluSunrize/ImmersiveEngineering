@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.api.tool;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -32,10 +33,12 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.fluids.FluidStack;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 public class ChemthrowerHandler
@@ -56,9 +59,9 @@ public class ChemthrowerHandler
 	public static ChemthrowerEffect getEffect(Fluid fluid)
 	{
 		if(fluid!=null)
-			for(Map.Entry<Tag<Fluid>, ChemthrowerEffect> entry : effectList)
-				if(entry.getKey().contains(fluid))
-					return entry.getValue();
+			for(Pair<Tag<Fluid>, ChemthrowerEffect> entry : effectList)
+				if(entry.getFirst().contains(fluid))
+					return entry.getSecond();
 		return null;
 	}
 

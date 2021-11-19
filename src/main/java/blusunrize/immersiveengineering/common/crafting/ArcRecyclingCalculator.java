@@ -19,6 +19,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagContainer;
@@ -27,7 +28,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -47,9 +47,9 @@ public class ArcRecyclingCalculator
 		this.tags = tags;
 		this.startTime = System.currentTimeMillis();
 		Pair<Predicate<Recipe<?>>, ArcRecyclingChecker> pair = ArcRecyclingChecker.assembleRecyclingFilter(tags);
-		this.checker = pair.getRight();
+		this.checker = pair.getSecond();
 		this.recipeList = allRecipes.stream()
-				.filter(pair.getLeft())
+				.filter(pair.getFirst())
 				.collect(Collectors.toList());
 	}
 
@@ -141,9 +141,9 @@ public class ArcRecyclingCalculator
 		{
 			// Check if recipe output is among the items that have fixed returns
 			Pair<ItemStack, Double> brokenDown = ApiUtils.breakStackIntoPreciseIngots(tags, stack);
-			if(brokenDown!=null&&ArcRecyclingChecker.isValidRecyclingOutput(tags, brokenDown.getLeft())&&brokenDown.getRight() > 0)
+			if(brokenDown!=null&&ArcRecyclingChecker.isValidRecyclingOutput(tags, brokenDown.getFirst())&&brokenDown.getSecond() > 0)
 				return new RecyclingCalculation(recipe, ItemHandlerHelper.copyStackWithSize(stack, 1),
-						ImmutableMap.of(brokenDown.getLeft(), brokenDown.getRight()));
+						ImmutableMap.of(brokenDown.getFirst(), brokenDown.getSecond()));
 
 			// Else check recipe inputs
 			NonNullList<Ingredient> inputs = recipe.getIngredients();
@@ -181,20 +181,20 @@ public class ArcRecyclingCalculator
 							}
 							continue;
 						}
-						if(!brokenDown.getLeft().isEmpty()&&brokenDown.getRight() > 0)
+						if(!brokenDown.getFirst().isEmpty()&&brokenDown.getSecond() > 0)
 						{
-							boolean invalidOutput = !ArcRecyclingChecker.isValidRecyclingOutput(tags, brokenDown.getLeft());
+							boolean invalidOutput = !ArcRecyclingChecker.isValidRecyclingOutput(tags, brokenDown.getFirst());
 							if(!invalidOutput)
 							{
 								boolean b = false;
 								for(ItemStack storedOut : outputs.keySet())
-									if(ItemStack.isSame(brokenDown.getLeft(), storedOut))
+									if(ItemStack.isSame(brokenDown.getFirst(), storedOut))
 									{
-										outputs.put(storedOut, outputs.get(storedOut)+brokenDown.getRight());
+										outputs.put(storedOut, outputs.get(storedOut)+brokenDown.getSecond());
 										b = true;
 									}
 								if(!b)
-									outputs.put(ItemHandlerHelper.copyStackWithSize(brokenDown.getLeft(), 1), brokenDown.getRight());
+									outputs.put(ItemHandlerHelper.copyStackWithSize(brokenDown.getFirst(), 1), brokenDown.getSecond());
 							}
 						}
 					}

@@ -13,13 +13,13 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.synth.SurfaceNoise;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -93,8 +93,8 @@ public class ExcavatorHandler
 				}
 				final double finalTotalSaturation = totalSaturation;
 				worldInfo = new MineralWorldInfo(inVeins.stream()
-						.map(pair -> Pair.of(pair.getLeft(), (int)(pair.getRight()/finalTotalSaturation*1000)))
-						.filter(p -> p.getLeft().getMineral()!=null)
+						.map(pair -> Pair.of(pair.getFirst(), (int)(pair.getSecond()/finalTotalSaturation*1000)))
+						.filter(p -> p.getFirst().getMineral()!=null)
 						.collect(Collectors.toList())
 				);
 				MINERAL_INFO_CACHE.put(cacheKey, worldInfo);

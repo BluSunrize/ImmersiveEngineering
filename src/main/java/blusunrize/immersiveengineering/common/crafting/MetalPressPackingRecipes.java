@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -25,7 +26,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -118,7 +118,7 @@ public class MetalPressPackingRecipes
 			Pair<CraftingRecipe, ItemStack> out = getPackedOutput(size, input, world);
 			if(out==null)
 				return null;
-			ItemStack outStack = out.getRight();
+			ItemStack outStack = out.getSecond();
 			if(outStack.isEmpty())
 			{
 				PACKING_CACHE.put(comp, null);
@@ -140,16 +140,16 @@ public class MetalPressPackingRecipes
 
 		public static RecipeDelegate getPacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input, boolean big)
 		{
-			ItemStack output = originalRecipe.getRight();
-			ResourceLocation originalId = originalRecipe.getLeft().getId();
+			ItemStack output = originalRecipe.getSecond();
+			ResourceLocation originalId = originalRecipe.getFirst().getId();
 			String id = "metalpress/packing_"+originalId.getNamespace()+".."+originalId.getPath();
 			return new RecipeDelegate(id, output, input, (big?Molds.MOLD_PACKING_9: Molds.MOLD_PACKING_4).get());
 		}
 
 		public static RecipeDelegate getUnpacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input)
 		{
-			ItemStack output = originalRecipe.getRight();
-			ResourceLocation originalId = originalRecipe.getLeft().getId();
+			ItemStack output = originalRecipe.getSecond();
+			ResourceLocation originalId = originalRecipe.getFirst().getId();
 			String id = "metalpress/unpacking_"+originalId.getNamespace()+".."+originalId.getPath();
 			return new RecipeDelegate(id, output, input, Molds.MOLD_UNPACKING.get());
 		}
@@ -212,7 +212,7 @@ public class MetalPressPackingRecipes
 		Pair<CraftingRecipe, ItemStack> out = getPackedOutput(1, input, world);
 		if(out==null)
 			return null;
-		ItemStack outStack = out.getRight();
+		ItemStack outStack = out.getSecond();
 
 		int count = outStack.getCount();
 		if(count!=4&&count!=9)
@@ -222,7 +222,7 @@ public class MetalPressPackingRecipes
 		}
 
 		Pair<CraftingRecipe, ItemStack> rePacked = getPackedOutput(count==4?2: 3, outStack, world);
-		if(rePacked==null||rePacked.getRight().isEmpty()||!ItemStack.matches(input, rePacked.getRight()))
+		if(rePacked==null||rePacked.getSecond().isEmpty()||!ItemStack.matches(input, rePacked.getSecond()))
 		{
 			UNPACKING_CACHE.put(comp, null);
 			return null;

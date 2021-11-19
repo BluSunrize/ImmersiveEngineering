@@ -38,7 +38,7 @@ import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Pair;
+import com.mojang.datafixers.util.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -400,8 +400,8 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 	{
 		for(Pair<List<ResourceLocation>, ManualEntry> toRemove : autoloadedEntries)
 		{
-			getOrCreatePath(toRemove.getLeft(), p -> {
-			}, 0).removeLeaf(toRemove.getRight());
+			getOrCreatePath(toRemove.getFirst(), p -> {
+			}, 0).removeLeaf(toRemove.getSecond());
 		}
 		for(List<ResourceLocation> toRemove : autoloadedSections)
 		{
@@ -422,7 +422,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 		try
 		{
 			List<Resource> autoload = Minecraft.getInstance().getResourceManager().getResources(autoLoc);
-			NavigableSet<Pair<Double, JsonObject>> autoloadSources = new TreeSet<>(Comparator.comparingDouble(Pair::getLeft));
+			NavigableSet<Pair<Double, JsonObject>> autoloadSources = new TreeSet<>(Comparator.comparingDouble(Pair::getFirst));
 			for(Resource r : autoload)
 			{
 				JsonObject autoloadJson = GsonHelper.parse(new InputStreamReader(r.getInputStream()));
@@ -433,7 +433,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 				autoloadSources.add(Pair.of(priority, autoloadJson));
 			}
 			for(Pair<Double, JsonObject> p : autoloadSources.descendingSet())
-				autoloadEntriesFromJson(p.getRight(), new ArrayList<>());
+				autoloadEntriesFromJson(p.getSecond(), new ArrayList<>());
 		} catch(IOException e)
 		{
 			throw new RuntimeException(e);

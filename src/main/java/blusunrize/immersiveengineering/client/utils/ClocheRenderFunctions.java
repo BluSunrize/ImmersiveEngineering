@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +28,6 @@ import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.level.block.state.properties.Property;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Collection;
 

@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.world.IECountPlacement.IEFeatureSpreadConfig;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import blusunrize.immersiveengineering.common.world.IERangePlacement.IETopSolidRangeConfig;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
@@ -52,7 +53,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -92,7 +92,7 @@ public class IEWorldGen
 	{
 		anyRetrogenEnabled = false;
 		for(Pair<OreConfig, BlockState> config : retroFeatures.values())
-			anyRetrogenEnabled |= config.getLeft().retrogenEnabled.get();
+			anyRetrogenEnabled |= config.getFirst().retrogenEnabled.get();
 	}
 
 	@SubscribeEvent
@@ -107,8 +107,8 @@ public class IEWorldGen
 	{
 		for(Entry<String, Pair<OreConfig, BlockState>> gen : retroFeatures.entrySet())
 		{
-			OreConfig config = gen.getValue().getKey();
-			BlockState state = gen.getValue().getRight();
+			OreConfig config = gen.getValue().getFirst();
+			BlockState state = gen.getValue().getSecond();
 			if(config.retrogenEnabled.get())
 			{
 				ConfiguredFeature<?, ?> retroFeature = IEContent.ORE_RETROGEN

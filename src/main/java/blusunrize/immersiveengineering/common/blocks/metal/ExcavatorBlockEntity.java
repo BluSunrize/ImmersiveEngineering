@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -57,7 +58,6 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -108,7 +108,7 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 			if(veins.isEmpty())
 				return 0;
 			for(Pair<MineralVein, Integer> pair : veins)
-				totalDepletion += pair.getLeft().getDepletion();
+				totalDepletion += pair.getFirst().getDepletion();
 			totalDepletion /= veins.size();
 			float remain = (ExcavatorHandler.mineralVeinYield-totalDepletion)/(float)ExcavatorHandler.mineralVeinYield;
 			return Mth.floor(Math.max(remain, 0)*15);

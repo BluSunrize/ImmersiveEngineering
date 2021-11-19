@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
@@ -30,8 +31,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
 import java.util.Random;
@@ -85,7 +84,7 @@ public class ApiUtils
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return new ImmutablePair<>(IEApi.getPreferredTagStack(tags, getIngot(type[1])), val);
+				return Pair.of(IEApi.getPreferredTagStack(tags, getIngot(type[1])), val);
 			}
 		}
 		return null;

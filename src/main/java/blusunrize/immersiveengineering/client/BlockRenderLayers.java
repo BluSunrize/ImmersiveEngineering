@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
@@ -31,13 +32,12 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
-@EventBusSubscriber(modid = ImmersiveEngineering.MODID, value = {Dist.CLIENT}, bus = Bus.MOD)
+@EventBusSubscriber(modid = ImmersiveEngineering.MODID, value = Dist.CLIENT, bus = Bus.MOD)
 public class BlockRenderLayers
 {
 	@SubscribeEvent
@@ -53,7 +53,7 @@ public class BlockRenderLayers
 				setRenderLayer(block, RenderType.cutout());
 		setRenderLayer(WoodenDecoration.TREATED_SCAFFOLDING, RenderType.cutout());
 		setRenderLayer(WoodenDevices.LOGIC_UNIT, RenderType.solid(), RenderType.translucent());
-		setRenderLayer(Connectors.ENERGY_CONNECTORS.get(ImmutablePair.of(WireType.HV_CATEGORY, true)), RenderType.solid(), RenderType.translucent());
+		setRenderLayer(Connectors.ENERGY_CONNECTORS.get(Pair.of(WireType.HV_CATEGORY, true)), RenderType.solid(), RenderType.translucent());
 		setRenderLayer(Connectors.CONNECTOR_BUNDLED, RenderType.solid(), RenderType.translucent(), RenderType.cutout());
 		setRenderLayer(Connectors.CONNECTOR_PROBE, RenderType.solid(), RenderType.translucent(), RenderType.cutout());
 		ItemBlockRenderTypes.setRenderLayer(Connectors.FEEDTHROUGH.get(), rt -> true);

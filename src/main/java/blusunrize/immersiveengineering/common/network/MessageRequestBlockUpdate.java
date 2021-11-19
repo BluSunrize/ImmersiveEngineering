@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.common.EventHandler;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.Objects;
 import java.util.function.Supplier;
@@ -45,7 +45,7 @@ public class MessageRequestBlockUpdate implements IMessage
 		ServerLevel world = Objects.requireNonNull(ctx.getSender()).getLevel();
 		ctx.enqueueWork(() -> {
 			if(world.isAreaLoaded(pos, 1))
-				EventHandler.requestedBlockUpdates.offer(new ImmutablePair<>(world.dimension(), pos));
+				EventHandler.requestedBlockUpdates.offer(Pair.of(world.dimension(), pos));
 		});
 	}
 }

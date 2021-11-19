@@ -26,6 +26,7 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -39,7 +40,6 @@ import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.phys.Vec3;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -109,8 +109,8 @@ public class CommandMineral
 			ret.append(new TranslatableComponent(Lib.CHAT_COMMAND+"mineral.get", pos.x, pos.z));
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
 			{
-				MineralVein vein = pair.getLeft();
-				double percentage = pair.getRight()/(double)info.getTotalWeight();
+				MineralVein vein = pair.getFirst();
+				double percentage = pair.getSecond()/(double)info.getTotalWeight();
 				MutableComponent component = new TextComponent("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
 				component.append(new TranslatableComponent(vein.getMineral().getTranslationKey()));
 				ret.append(component.withStyle(ChatFormatting.GRAY));
@@ -194,7 +194,7 @@ public class CommandMineral
 		{
 			int depletion = IntegerArgumentType.getInteger(context, "depletion");
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
-				pair.getLeft().setDepletion(depletion);
+				pair.getFirst().setDepletion(depletion);
 			IESaveData.markInstanceDirty();
 			sender.sendSuccess(new TranslatableComponent(Lib.CHAT_COMMAND+
 					"mineral.set_depletion.success", depletion), true);

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.energy.immersiveflux.*;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +18,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -162,9 +162,9 @@ public class EnergyHelper
 				// Map to how much each storage can accept
 				.map(storage -> Pair.of(storage, storage.receiveEnergy(finalAmount, true)))
 				// Sort ascending by acceptance
-				.sorted(Comparator.comparingInt(Pair::getRight))
+				.sorted(Comparator.comparingInt(Pair::getSecond))
 				// Unmap them
-				.map(Pair::getLeft)
+				.map(Pair::getFirst)
 				// Collect
 				.collect(Collectors.toList());
 

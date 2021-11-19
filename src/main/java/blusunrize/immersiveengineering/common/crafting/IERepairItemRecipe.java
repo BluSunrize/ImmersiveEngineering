@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.common.items.IEBaseItem;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -17,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -43,7 +43,7 @@ public class IERepairItemRecipe extends CustomRecipe
 	public ItemStack assemble(@Nonnull CraftingContainer inv)
 	{
 		return findInputSlots(inv)
-				.map(p -> combineStacks(p.getLeft(), p.getRight()))
+				.map(p -> combineStacks(p.getFirst(), p.getSecond()))
 				.orElse(ItemStack.EMPTY);
 	}
 

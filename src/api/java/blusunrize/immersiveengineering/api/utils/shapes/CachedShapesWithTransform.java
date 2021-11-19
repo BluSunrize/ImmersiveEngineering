@@ -9,11 +9,11 @@
 package blusunrize.immersiveengineering.api.utils.shapes;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,12 +27,12 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 			BiFunction<TransformKey, AABB, AABB> transform)
 	{
 		super(p -> {
-			List<AABB> base = creator.apply(p.getLeft());
+			List<AABB> base = creator.apply(p.getFirst());
 			if(base==null)
 				return ImmutableList.of();
 			List<AABB> ret = new ArrayList<>(base.size());
 			for(AABB aabb : base)
-				ret.add(transform.apply(p.getRight(), aabb));
+				ret.add(transform.apply(p.getSecond(), aabb));
 			return ret;
 		});
 	}
@@ -46,7 +46,7 @@ public class CachedShapesWithTransform<ShapeKey, TransformKey> extends CachedVox
 	createForMultiblock(Function<BlockPos, List<AABB>> create)
 	{
 		return new CachedShapesWithTransform<>(create,
-				(key, box) -> withFacingAndMirror(box, key.getLeft(), key.getRight())
+				(key, box) -> withFacingAndMirror(box, key.getFirst(), key.getSecond())
 		);
 	}
 

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -19,7 +20,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.fmllegacy.RegistryObject;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Locale;
 

@@ -11,12 +11,12 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fmllegacy.RegistryObject;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class ClocheRecipe extends IESerializableRecipe
 
 	// Initialized by reload listener
 	public static Map<ResourceLocation, ClocheRecipe> recipeList = Collections.emptyMap();
-	private static List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
+	private static final List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
 	public ClocheRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
 	{
@@ -112,8 +112,8 @@ public class ClocheRecipe extends IESerializableRecipe
 	public static ResourceLocation getSoilTexture(ItemStack soil)
 	{
 		for(Pair<Ingredient, ResourceLocation> entry : soilTextureList)
-			if(entry.getKey().test(soil))
-				return entry.getValue();
+			if(entry.getFirst().test(soil))
+				return entry.getSecond();
 		return null;
 	}
 }

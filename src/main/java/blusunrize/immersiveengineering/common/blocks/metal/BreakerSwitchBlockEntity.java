@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -44,7 +45,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -249,8 +249,8 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 	private static final CachedVoxelShapes<Pair<Direction, Integer>> SHAPES = new CachedVoxelShapes<>(pair -> {
 		Vec3 start = new Vec3(.25, .1875, 0);
 		Vec3 end = new Vec3(.75, .8125, .5);
-		Matrix4 mat = new Matrix4(pair.getLeft());
-		mat.translate(.5, .5, 0).rotate(Math.PI/2*pair.getRight(), 0, 0, 1).translate(-.5, -.5, 0);
+		Matrix4 mat = new Matrix4(pair.getFirst());
+		mat.translate(.5, .5, 0).rotate(Math.PI/2*pair.getSecond(), 0, 0, 1).translate(-.5, -.5, 0);
 		start = mat.apply(start);
 		end = mat.apply(end);
 		return ImmutableList.of(new AABB(start, end));

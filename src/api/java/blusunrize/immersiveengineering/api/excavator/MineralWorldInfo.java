@@ -9,7 +9,7 @@
 
 package blusunrize.immersiveengineering.api.excavator;
 
-import org.apache.commons.lang3.tuple.Pair;
+import com.mojang.datafixers.util.Pair;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -23,7 +23,7 @@ public class MineralWorldInfo
 	public MineralWorldInfo(List<Pair<MineralVein, Integer>> mineralVeins)
 	{
 		this.mineralVeins = mineralVeins;
-		this.totalWeight = mineralVeins.stream().map(Pair::getRight).reduce(Integer::sum).orElse(0);
+		this.totalWeight = mineralVeins.stream().map(Pair::getSecond).reduce(Integer::sum).orElse(0);
 	}
 
 	@Nullable
@@ -35,10 +35,10 @@ public class MineralWorldInfo
 		int weight = rand.nextInt(this.totalWeight);
 		for(Pair<MineralVein, Integer> pair : this.mineralVeins)
 		{
-			weight -= pair.getRight();
+			weight -= pair.getSecond();
 			if(weight < 0)
 			{
-				vein = pair.getLeft();
+				vein = pair.getFirst();
 				break;
 			}
 		}

@@ -30,7 +30,8 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxH
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import it.unimi.dsi.fastutil.objects.Object2FloatAVLTreeMap;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2FloatArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,8 +50,6 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -74,7 +73,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 			for(int b = 0; b < 2; ++b)
 			{
 				boolean relay = b!=0;
-				ImmutablePair<String, Boolean> key = new ImmutablePair<>(type, relay);
+				Pair<String, Boolean> key = Pair.of(type, relay);
 				String name = type.toLowerCase(Locale.US)+"_"+(relay?"relay": "conn");
 				RegistryObject<BlockEntityType<EnergyConnectorBlockEntity>> teType = event.register(
 						name, () -> new BlockEntityType<>(
@@ -101,15 +100,15 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	{
 		super(type, pos, state);
 		Pair<String, Boolean> data = NAME_TO_SPEC.get(type.getRegistryName());
-		this.voltage = data.getKey();
-		this.relay = data.getValue();
+		this.voltage = data.getFirst();
+		this.relay = data.getSecond();
 		this.storageToMachine = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 		this.storageToNet = new FluxStorage(getMaxInput(), getMaxInput(), getMaxInput());
 	}
 
 	public EnergyConnectorBlockEntity(String voltage, boolean relay, BlockPos pos, BlockState state)
 	{
-		this(SPEC_TO_TYPE.get(new ImmutablePair<>(voltage, relay)).get(), pos, state);
+		this(SPEC_TO_TYPE.get(Pair.of(voltage, relay)).get(), pos, state);
 	}
 
 	@Override
@@ -194,7 +193,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
 	{
 		Direction side = getFacing().getOpposite();
-		double lengthFromHalf = LENGTH.getFloat(new ImmutablePair<>(voltage, relay))-con.type.getRenderDiameter()/2-.5;
+		double lengthFromHalf = LENGTH.getFloat(Pair.of(voltage, relay))-con.type.getRenderDiameter()/2-.5;
 		return new Vec3(.5+lengthFromHalf*side.getStepX(),
 				.5+lengthFromHalf*side.getStepY(),
 				.5+lengthFromHalf*side.getStepZ());
@@ -298,13 +297,13 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 		return IEServerConfig.WIRES.energyWireConfigs.get(getWireType()).connectorRate.get();
 	}
 
-	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatAVLTreeMap<>();
+	private static final Object2FloatMap<Pair<String, Boolean>> LENGTH = new Object2FloatArrayMap<>();
 
 	static
 	{
-		LENGTH.put(new ImmutablePair<>("HV", false), 0.75F);
-		LENGTH.put(new ImmutablePair<>("HV", true), 0.875F);
-		LENGTH.put(new ImmutablePair<>("MV", false), 0.5625F);
+		LENGTH.put(Pair.of("HV", false), 0.75F);
+		LENGTH.put(Pair.of("HV", true), 0.875F);
+		LENGTH.put(Pair.of("MV", false), 0.5625F);
 		LENGTH.defaultReturnValue(0.5F);
 	}
 
@@ -326,7 +325,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
-		float length = LENGTH.getFloat(new ImmutablePair<>(voltage, relay));
+		float length = LENGTH.getFloat(Pair.of(voltage, relay));
 		return getConnectorBounds(getFacing(), length);
 	}
 

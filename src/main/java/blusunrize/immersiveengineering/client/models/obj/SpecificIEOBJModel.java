@@ -39,7 +39,6 @@ import net.minecraftforge.client.model.PerspectiveMapWrapper;
 import net.minecraftforge.client.model.obj.MaterialLibrary;
 import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
 import net.minecraftforge.client.model.obj.OBJModel.ModelObject;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -244,13 +243,13 @@ public class SpecificIEOBJModel<T> implements BakedModel
 				boolean drawFace = coordinateRemapper.remapCoord(face);
 				if(drawFace)
 				{
-					Pair<BakedQuad, Direction> quad = ((OBJModelAccess)baseModel.getBaseModel()).invokeMakeQuad(
+					Map.Entry<BakedQuad, Direction> quad = ((OBJModelAccess)baseModel.getBaseModel()).invokeMakeQuad(
 							face, tintIndex, colorTint, mat.ambientColor, texture, transform
 					);
-					if(quad.getRight()==null)
-						modelBuilder.addGeneralQuad(quad.getLeft());
+					if(quad.getValue()==null)
+						modelBuilder.addGeneralQuad(quad.getKey());
 					else
-						modelBuilder.addFaceQuad(quad.getRight(), quad.getLeft());
+						modelBuilder.addFaceQuad(quad.getValue(), quad.getKey());
 				}
 				coordinateRemapper.resetCoords();
 			}

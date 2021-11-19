@@ -33,6 +33,7 @@ import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.wires.GlobalNetProvider;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
@@ -79,7 +80,6 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.ItemHandlerHelper;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 
@@ -158,7 +158,7 @@ public class EventHandler
 					movVec = movVec.normalize();
 					Triple<ItemStack, ShaderRegistryEntry, ShaderCase> shader = ShaderRegistry.getStoredShaderAndCase(wrapper);
 					if(shader!=null)
-						shader.getMiddle().getEffectFunction().execute(event.getMinecart().world, shader.getLeft(), null, shader.getRight().getShaderType(), prevPosVec.add(0, .25, 0).add(movVec), movVec.scale(1.5f), .25f);
+						shader.getMiddle().getEffectFunction().execute(event.getMinecart().world, shader.getFirst(), null, shader.getSecond().getShaderType(), prevPosVec.add(0, .25, 0).add(movVec), movVec.scale(1.5f), .25f);
 				}
 			}
 		}
@@ -198,15 +198,15 @@ public class EventHandler
 			while(it.hasNext())
 			{
 				Pair<ResourceKey<Level>, BlockPos> curr = it.next();
-				if(curr.getLeft().equals(event.world.dimension()))
+				if(curr.getFirst().equals(event.world.dimension()))
 				{
-					LevelChunk chunk = event.world.getChunkAt(curr.getRight());
-					int sectionId = SectionPos.of(curr.getRight()).y();
+					LevelChunk chunk = event.world.getChunkAt(curr.getSecond());
+					int sectionId = SectionPos.of(curr.getSecond()).y();
 					LevelChunkSection[] sections = chunk.getSections();
 					if(sectionId >= 0&&sectionId < sections.length&&sections[sectionId]!=null)
 					{
-						BlockState state = event.world.getBlockState(curr.getRight());
-						event.world.sendBlockUpdated(curr.getRight(), state, state, 3);
+						BlockState state = event.world.getBlockState(curr.getSecond());
+						event.world.sendBlockUpdated(curr.getSecond(), state, state, 3);
 					}
 					it.remove();
 				}

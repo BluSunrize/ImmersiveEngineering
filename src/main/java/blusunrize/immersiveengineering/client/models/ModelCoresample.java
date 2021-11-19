@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -44,7 +45,6 @@ import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 import net.minecraftforge.client.model.pipeline.LightUtil;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -174,8 +174,8 @@ public class ModelCoresample extends BakedIEModel
 					float h = 0;
 					for(Pair<TextureAtlasSprite, Integer> pair : textureOre)
 					{
-						TextureAtlasSprite sprite = pair.getLeft();
-						int weight = pair.getRight();
+						TextureAtlasSprite sprite = pair.getFirst();
+						int weight = pair.getSecond();
 						int v = weight > 8?16-weight: 8;
 						double[][] uvs = new double[4][];
 						for(int j = 0; j < 4; j++)

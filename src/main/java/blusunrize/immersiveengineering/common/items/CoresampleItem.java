@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,7 +47,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.Constants.NBT;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -201,10 +201,10 @@ public class CoresampleItem extends IEBaseItem
 		ListTag nbtList = new ListTag();
 		veins.forEach(pair -> {
 			VeinSampleData sampleData = new VeinSampleData(
-					pair.getLeft().getMineral(),
-					pair.getRight()/(double)info.getTotalWeight(),
-					1-pair.getLeft().getFailChance(pos),
-					pair.getLeft().getDepletion()
+					pair.getFirst().getMineral(),
+					pair.getSecond()/(double)info.getTotalWeight(),
+					1-pair.getFirst().getFailChance(pos),
+					pair.getFirst().getDepletion()
 			);
 			nbtList.add(sampleData.toNBT());
 		});

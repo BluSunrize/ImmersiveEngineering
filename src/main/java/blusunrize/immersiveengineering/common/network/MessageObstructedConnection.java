@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientEventHandler;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
-import org.apache.commons.lang3.tuple.ImmutablePair;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -74,7 +74,7 @@ public class MessageObstructedConnection implements IMessage
 					new ConnectionPoint(endB, 0));
 			conn.generateCatenaryData(start, end);
 			ClientEventHandler.FAILED_CONNECTIONS.put(conn,
-					new ImmutablePair<>(blocking, new AtomicInteger(200)));
+					Pair.of(blocking, new AtomicInteger(200)));
 		});
 	}
 }

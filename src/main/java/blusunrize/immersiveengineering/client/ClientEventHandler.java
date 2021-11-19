@@ -56,6 +56,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Matrix3f;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
@@ -111,7 +112,6 @@ import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.loading.FMLLoader;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -200,7 +200,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent
 	public void onClientTick(TickEvent.ClientTickEvent event)
 	{
-		FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getValue().decrementAndGet() <= 0);
+		FAILED_CONNECTIONS.entrySet().removeIf(entry -> entry.getValue().getSecond().decrementAndGet() <= 0);
 	}
 
 	@SubscribeEvent
@@ -295,7 +295,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		builder.defaultColor(255, 0, 0, 128);
 		for(Entry<Connection, Pair<Collection<BlockPos>, AtomicInteger>> entry : FAILED_CONNECTIONS.entrySet())
 		{
-			for(BlockPos obstruction : entry.getValue().getKey())
+			for(BlockPos obstruction : entry.getValue().getFirst())
 			{
 				transform.pushPose();
 				transform.translate(obstruction.getX(), obstruction.getY(), obstruction.getZ());
@@ -813,23 +813,23 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		{
 			List<Pair<RenderType, List<Consumer<VertexConsumer>>>> renders = new ArrayList<>();
 			for(FractalParticle p : FractalParticle.PARTICLE_FRACTAL_DEQUE)
-				for(Entry<RenderType, Consumer<VertexConsumer>> r : p.render(partial, transform))
+				for(Pair<RenderType, Consumer<VertexConsumer>> r : p.render(partial, transform))
 				{
 					boolean added = false;
-					for(Entry<RenderType, List<Consumer<VertexConsumer>>> e : renders)
-						if(e.getKey().equals(r.getKey()))
+					for(Pair<RenderType, List<Consumer<VertexConsumer>>> e : renders)
+						if(e.getFirst().equals(r.getFirst()))
 						{
-							e.getValue().add(r.getValue());
+							e.getSecond().add(r.getSecond());
 							added = true;
 							break;
 						}
 					if(!added)
-						renders.add(Pair.of(r.getKey(), new ArrayList<>(ImmutableList.of(r.getValue()))));
+						renders.add(Pair.of(r.getFirst(), new ArrayList<>(ImmutableList.of(r.getSecond()))));
 				}
-			for(Entry<RenderType, List<Consumer<VertexConsumer>>> entry : renders)
+			for(Pair<RenderType, List<Consumer<VertexConsumer>>> entry : renders)
 			{
-				VertexConsumer bb = buffers.getBuffer(entry.getKey());
-				for(Consumer<VertexConsumer> render : entry.getValue())
+				VertexConsumer bb = buffers.getBuffer(entry.getFirst());
+				for(Consumer<VertexConsumer> render : entry.getSecond())
 					render.accept(bb);
 			}
 			FractalParticle.PARTICLE_FRACTAL_DEQUE.clear();
@@ -920,7 +920,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				transform.translate(conn.getEndA().getX(), conn.getEndA().getY(), conn.getEndA().getZ());
 				Matrix4f mat = transform.last().pose();
 				Matrix3f matN = transform.last().normal();
-				int time = entry.getValue().getValue().get();
+				int time = entry.getValue().getSecond().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
 				Vec3 prev = conn.getPoint(0, conn.getEndA());
 				for(int i = 0; i < RenderData.POINTS_PER_WIRE; i++)

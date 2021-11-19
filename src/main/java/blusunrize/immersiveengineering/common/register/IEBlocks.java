@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.blocks.wooden.BarrelBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlock;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.Util;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
@@ -42,8 +43,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -525,19 +524,15 @@ public final class IEBlocks
 
 		public static BlockEntry<BasicConnectorBlock<?>> getEnergyConnector(String cat, boolean relay)
 		{
-			return ENERGY_CONNECTORS.get(new ImmutablePair<>(cat, relay));
+			return ENERGY_CONNECTORS.get(Pair.of(cat, relay));
 		}
 
 		private static void init()
 		{
 			for(String cat : new String[]{WireType.LV_CATEGORY, WireType.MV_CATEGORY, WireType.HV_CATEGORY})
 			{
-				ENERGY_CONNECTORS.put(
-						new ImmutablePair<>(cat, false), BasicConnectorBlock.forPower(cat, false)
-				);
-				ENERGY_CONNECTORS.put(
-						new ImmutablePair<>(cat, true), BasicConnectorBlock.forPower(cat, true)
-				);
+				ENERGY_CONNECTORS.put(Pair.of(cat, false), BasicConnectorBlock.forPower(cat, false));
+				ENERGY_CONNECTORS.put(Pair.of(cat, true), BasicConnectorBlock.forPower(cat, true));
 			}
 		}
 	}

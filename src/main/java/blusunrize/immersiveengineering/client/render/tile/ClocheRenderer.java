@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -31,7 +32,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.data.EmptyModelData;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -71,7 +71,7 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 			Collection<Pair<BlockState, Transformation>> blocks = recipe.renderFunction.getBlocks(seed, growth);
 			for(Pair<BlockState, Transformation> block : blocks)
 			{
-				BlockState state = block.getLeft();
+				BlockState state = block.getFirst();
 				List<BakedQuad> plantQuadList = plantQuads.get(state);
 				if(plantQuadList==null)
 				{
@@ -82,7 +82,7 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 					plantQuads.put(state, plantQuadList);
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);
-				block.getRight().push(matrixStack);
+				block.getSecond().push(matrixStack);
 				RenderUtils.renderModelTESRFancy(plantQuadList, new TransformingVertexBuilder(baseBuilder, matrixStack, type.format()),
 						tile.getLevelNonnull(), blockPos, false, col, combinedLightIn);
 				matrixStack.popPose();

@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.HashMultimap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -46,7 +47,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -471,8 +471,8 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		Set<Pair<Point, Point>> complete_lines = new HashSet<>();
 		for(Pair<TexturePoint, TexturePoint> line : lines)
 		{
-			TexturePoint p1 = line.getKey();
-			TexturePoint p2 = line.getValue();
+			TexturePoint p1 = line.getFirst();
+			TexturePoint p2 = line.getSecond();
 			complete_lines.add(Pair.of(new Point((int)(p1.x/(float)p1.scale*wMax), (int)(p1.y/(float)p1.scale*wMax)), new Point((int)(p2.x/(float)p2.scale*wMax), (int)(p2.y/(float)p2.scale*wMax))));
 		}
 		return new BlueprintLines(wMax, complete_lines, complete_areaMap);
@@ -504,7 +504,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder, matrixStack, type.format());
 			builder.defaultColor(255, 255, 255, 255);
 			for(Pair<Point, Point> line : lines)
-				line2d(builder, line.getKey().x, line.getKey().y, line.getValue().x, line.getValue().y);
+				line2d(builder, line.getFirst().x, line.getFirst().y, line.getSecond().x, line.getSecond().y);
 
 			if(lineWidth >= 1)//Draw shading if player is close enough
 				for(ShadeStyle style : areas.keySet())
