@@ -37,7 +37,7 @@ import java.util.function.Consumer;
  */
 public class MultiblockHandler
 {
-	static ArrayList<IMultiblock> multiblocks = new ArrayList<>();
+	static List<IMultiblock> multiblocks = new ArrayList<>();
 	static Map<ResourceLocation, IMultiblock> byUniqueName = new HashMap<>();
 
 	public static synchronized void registerMultiblock(IMultiblock multiblock)
@@ -46,7 +46,7 @@ public class MultiblockHandler
 		byUniqueName.put(multiblock.getUniqueName(), multiblock);
 	}
 
-	public static ArrayList<IMultiblock> getMultiblocks()
+	public static List<IMultiblock> getMultiblocks()
 	{
 		return multiblocks;
 	}

@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
@@ -21,17 +22,15 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RotationUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -54,8 +53,8 @@ import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class HammerItem extends IEBaseItem implements ITool
 {
@@ -74,32 +73,30 @@ public class HammerItem extends IEBaseItem implements ITool
 	public void appendHoverText(ItemStack stack, @Nullable Level worldIn, List<Component> tooltip, TooltipFlag flagIn)
 	{
 		super.appendHoverText(stack, worldIn, tooltip, flagIn);
-		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
-		{
-			ListTag tagList = stack.getOrCreateTag().getList("multiblockPermission", 8);
-			String s = I18n.get(Lib.DESC_INFO+"multiblocksAllowed");
-			addInfo(tooltip, s, tagList);
-		}
-		if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
-		{
-			ListTag tagList = stack.getOrCreateTag().getList("multiblockInterdiction", 8);
-			String s = I18n.get(Lib.DESC_INFO+"multiblockForbidden");
-			addInfo(tooltip, s, tagList);
-		}
+		addInfo(tooltip, Lib.DESC_INFO+"multiblocksAllowed", stack, "multiblockPermission");
+		addInfo(tooltip, Lib.DESC_INFO+"multiblockForbidden", stack, "multiblockInterdiction");
 	}
 
-	private void addInfo(List<Component> list, String s, ListTag tagList)
+	private void addInfo(List<Component> list, String titleKey, ItemStack stack, String nbtKey)
 	{
+		if(!ItemNBTHelper.hasKey(stack, nbtKey, Tag.TAG_LIST))
+			return;
+		MutableComponent title = new TranslatableComponent(titleKey);
+		ListTag tagList = stack.getOrCreateTag().getList(nbtKey, Tag.TAG_STRING);
 		if(!Screen.hasShiftDown())
-			list.add(new TranslatableComponent(Lib.DESC_INFO+"holdShift", s));
+			list.add(title.append(" ").append(new TranslatableComponent(Lib.DESC_INFO+"holdShift")));
 		else
 		{
-			list.add(new TextComponent(s));
+			list.add(title);
 			for(int i = 0; i < tagList.size(); i++)
-				list.add(TextUtils.applyFormat(
-						new TranslatableComponent(Lib.DESC_INFO+"multiblock."+tagList.getString(i)),
-						ChatFormatting.DARK_GRAY
-				));
+			{
+				ResourceLocation mbName = ResourceLocation.tryParse(tagList.getString(i));
+				if(mbName==null)
+					continue;
+				IMultiblock multiblock = MultiblockHandler.getByUniqueName(mbName);
+				if(multiblock!=null)
+					list.add(TextUtils.applyFormat(multiblock.getDisplayName(), ChatFormatting.DARK_GRAY));
+			}
 		}
 	}
 
@@ -119,20 +116,16 @@ public class HammerItem extends IEBaseItem implements ITool
 		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 		{
 			ListTag list = stack.getOrCreateTag().getList("multiblockPermission", NBT.TAG_STRING);
-			Optional<List<ResourceLocation>> permittedMultiblocksResult = parseUserDefinedRLs(list, player, "permission");
-			if(!permittedMultiblocksResult.isPresent())
+			permittedMultiblocks = parseMultiblockNames(list, player, "permission");
+			if(permittedMultiblocks==null)
 				return InteractionResult.FAIL;
-			else
-				permittedMultiblocks = permittedMultiblocksResult.get();
 		}
 		if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 		{
 			ListTag list = stack.getOrCreateTag().getList("multiblockInterdiction", NBT.TAG_STRING);
-			Optional<List<ResourceLocation>> interdictedMultiblocksResult = parseUserDefinedRLs(list, player, "interdiction");
-			if(!interdictedMultiblocksResult.isPresent())
+			interdictedMultiblocks = parseMultiblockNames(list, player, "interdiction");
+			if(interdictedMultiblocks==null)
 				return InteractionResult.FAIL;
-			else
-				interdictedMultiblocks = interdictedMultiblocksResult.get();
 		}
 		final Direction multiblockSide;
 		if(side.getAxis()==Axis.Y&&player!=null)
@@ -155,8 +148,8 @@ public class HammerItem extends IEBaseItem implements ITool
 					continue;
 				if(mb.createStructure(world, pos, multiblockSide, player))
 				{
-					if(player instanceof ServerPlayer)
-						IEAdvancements.TRIGGER_MULTIBLOCK.trigger((ServerPlayer)player, mb, stack);
+					if(player instanceof ServerPlayer sPlayer)
+						IEAdvancements.TRIGGER_MULTIBLOCK.trigger(sPlayer, mb, stack);
 					return InteractionResult.SUCCESS;
 				}
 			}
@@ -165,10 +158,10 @@ public class HammerItem extends IEBaseItem implements ITool
 			Side Configs & Rotation Handling
 		 */
 		BlockEntity tile = world.getBlockEntity(pos);
-		if(tile instanceof IConfigurableSides)
+		if(tile instanceof IConfigurableSides sideConfig)
 		{
 			Direction activeSide = ((player!=null)&&player.isShiftKeyDown())?side.getOpposite(): side;
-			if(((IConfigurableSides)tile).toggleSide(activeSide, player))
+			if(sideConfig.toggleSide(activeSide, player))
 				return InteractionResult.SUCCESS;
 			else
 				return InteractionResult.FAIL;
@@ -176,33 +169,36 @@ public class HammerItem extends IEBaseItem implements ITool
 		else
 		{
 			boolean rotate = !(tile instanceof IDirectionalBE)&&!(tile instanceof IHammerInteraction);
-			if(!rotate&&tile instanceof IDirectionalBE)
-				rotate = ((IDirectionalBE)tile).canHammerRotate(side, context.getClickLocation().subtract(Vec3.atLowerCornerOf(pos)), player);
+			if(!rotate&&tile instanceof IDirectionalBE dirBE)
+				rotate = dirBE.canHammerRotate(side, context.getClickLocation().subtract(Vec3.atLowerCornerOf(pos)), player);
 			if(rotate&&RotationUtil.rotateBlock(world, pos, player!=null&&(player.isShiftKeyDown()!=side.equals(Direction.DOWN))))
 				return InteractionResult.SUCCESS;
-			else if(!rotate&&tile instanceof IHammerInteraction)
+			else if(!rotate&&tile instanceof IHammerInteraction hammerInteraction)
 			{
-				if(((IHammerInteraction)tile).hammerUseSide(side, player, context.getHand(), context.getClickLocation()))
+				if(hammerInteraction.hammerUseSide(side, player, context.getHand(), context.getClickLocation()))
 					return InteractionResult.SUCCESS;
 			}
 		}
 		return InteractionResult.PASS;
 	}
 
-	private static Optional<List<ResourceLocation>> parseUserDefinedRLs(ListTag data, Player player, String prefix)
+	@Nullable
+	private static List<ResourceLocation> parseMultiblockNames(ListTag data, @Nullable Player player, String prefix)
 	{
-		DataResult<List<ResourceLocation>> result = parseUserDefinedRLs(data);
-		return result.resultOrPartial(err -> {
-			if(player!=null&&!player.getCommandSenderWorld().isClientSide)
-				player.displayClientMessage(
-						new TextComponent("Invalid "+prefix+" entry: "+err), false
-				);
-		});
-	}
-
-	private static DataResult<List<ResourceLocation>> parseUserDefinedRLs(ListTag data)
-	{
-		return Codec.list(ResourceLocation.CODEC).parse(NbtOps.INSTANCE, data);
+		List<ResourceLocation> result = new ArrayList<>();
+		for(int i = 0; i < data.size(); ++i)
+		{
+			String listEntry = data.getString(i);
+			ResourceLocation asRL = ResourceLocation.tryParse(listEntry);
+			if(asRL==null||MultiblockHandler.getByUniqueName(asRL)==null)
+			{
+				if(player!=null&&!player.getCommandSenderWorld().isClientSide)
+					player.displayClientMessage(new TextComponent("Invalid "+prefix+" entry: "+listEntry), false);
+				return null;
+			}
+			result.add(asRL);
+		}
+		return result;
 	}
 
 	@Override
