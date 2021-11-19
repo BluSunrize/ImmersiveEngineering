@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util;
 
-import blusunrize.immersiveengineering.common.immersiveflux.IFluxContainerItem;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.Item;
@@ -22,6 +21,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.function.ToIntFunction;
 import java.util.stream.Collectors;
 
 /**
@@ -176,63 +176,53 @@ public class EnergyHelper
 		return amount;
 	}
 
-	@Deprecated(forRemoval = true)
-	public interface IIEEnergyItem extends IFluxContainerItem
-	{
-		@Override
-		default int receiveEnergy(ItemStack container, int energy, boolean simulate)
-		{
-			return ItemNBTHelper.insertFluxItem(container, energy, getMaxEnergyStored(container), simulate);
-		}
-
-		@Override
-		default int extractEnergy(ItemStack container, int energy, boolean simulate)
-		{
-			return ItemNBTHelper.extractFluxFromItem(container, energy, simulate);
-		}
-
-		@Override
-		default int getEnergyStored(ItemStack container)
-		{
-			return ItemNBTHelper.getFluxStoredInItem(container);
-		}
-	}
-
-	@Deprecated(forRemoval = true)
 	public static class ItemEnergyStorage implements IEnergyStorage
 	{
-		ItemStack stack;
-		IIEEnergyItem ieEnergyItem;
+		private final ItemStack stack;
+		private final ToIntFunction<ItemStack> getCapacity;
 
-		public ItemEnergyStorage(ItemStack item)
+		public ItemEnergyStorage(ItemStack item, ToIntFunction<ItemStack> getCapacity)
 		{
-			assert (item.getItem() instanceof IIEEnergyItem);
 			this.stack = item;
-			this.ieEnergyItem = (IIEEnergyItem)item.getItem();
+			this.getCapacity = getCapacity;
 		}
 
 		@Override
 		public int receiveEnergy(int maxReceive, boolean simulate)
 		{
-			return this.ieEnergyItem.receiveEnergy(stack, maxReceive, simulate);
+			int stored = getEnergyStored();
+			int accepted = Math.min(maxReceive, getMaxEnergyStored()-stored);
+			if(!simulate)
+			{
+				stored += accepted;
+				ItemNBTHelper.putInt(stack, "energy", stored);
+			}
+			return accepted;
 		}
 
 		@Override
 		public int extractEnergy(int maxExtract, boolean simulate)
 		{
-			return this.ieEnergyItem.extractEnergy(stack, maxExtract, simulate);
+			int stored = getEnergyStored();
+			int extracted = Math.min(maxExtract, stored);
+			if(!simulate)
+			{
+				stored -= extracted;
+				ItemNBTHelper.putInt(stack, "energy", stored);
+			}
+			return extracted;
 		}
 
 		@Override
 		public int getEnergyStored()
 		{
-			return this.ieEnergyItem.getEnergyStored(stack);
+			return ItemNBTHelper.getInt(stack, "energy");
 		}
 
 		@Override
 		public int getMaxEnergyStored()
 		{
-			return this.ieEnergyItem.getMaxEnergyStored(stack);
+			return getCapacity.applyAsInt(stack);
 		}
 
 		@Override
@@ -247,5 +237,4 @@ public class EnergyHelper
 			return true;
 		}
 	}
-
 }

@@ -9,8 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SimpleCapProvider;
@@ -25,15 +24,18 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
 import java.util.List;
+
+import static blusunrize.immersiveengineering.common.util.EnergyHelper.*;
 
 /**
  * @author BluSunrize
  * @since 15.06.2017
  */
-public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
+public class PowerpackItem extends IEBaseItem
 {
 	public static final ItemGetterList POWERPACK_GETTER = new ItemGetterList(player -> {
 		ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
@@ -53,7 +55,8 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
 		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
 	}
 
@@ -74,11 +77,11 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 			for(EquipmentSlot slot : EquipmentSlot.values())
 			{
 				ItemStack equipped = player.getItemBySlot(slot);
-				if(EnergyHelper.isFluxReceiver(equipped)&&!(equipped.getItem() instanceof PowerpackItem))
-					energy -= EnergyHelper.insertFlux(equipped, Math.min(energy, 256), false);
+				if(isFluxReceiver(equipped)&&!(equipped.getItem() instanceof PowerpackItem))
+					energy -= insertFlux(equipped, Math.min(energy, 256), false);
 			}
 			if(pre!=energy)
-				EnergyHelper.extractFlux(itemStack, pre-energy, false);
+				extractFlux(itemStack, pre-energy, false);
 		}
 	}
 
@@ -90,8 +93,7 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 			onArmorTick(stack, world, (Player)entity);
 	}
 
-	@Override
-	public int getMaxEnergyStored(ItemStack container)
+	public static int getMaxEnergyStored(ItemStack container)
 	{
 		return 100000;
 	}
@@ -100,7 +102,9 @@ public class PowerpackItem extends IEBaseItem implements IIEEnergyItem
 	public ICapabilityProvider initCapabilities(ItemStack stack, CompoundTag nbt)
 	{
 		if(!stack.isEmpty())
-			return new SimpleCapProvider<>(() -> CapabilityEnergy.ENERGY, new EnergyHelper.ItemEnergyStorage(stack));
+			return new SimpleCapProvider<>(
+					() -> CapabilityEnergy.ENERGY, new ItemEnergyStorage(stack, PowerpackItem::getMaxEnergyStored)
+			);
 		else
 			return super.initCapabilities(stack, nbt);
 	}

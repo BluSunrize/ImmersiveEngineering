@@ -27,7 +27,6 @@ import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -57,6 +56,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -68,7 +68,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, IZoomTool, IScrollwheel, ITool
+public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScrollwheel, ITool
 {
 	public RailgunItem()
 	{
@@ -107,7 +107,8 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	public void recalculateUpgrades(ItemStack stack, Level w, Player player)
 	{
 		super.recalculateUpgrades(stack, w, player);
-		if(this.getEnergyStored(stack) > this.getMaxEnergyStored(stack))
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		if(energy.getEnergyStored() > this.getMaxEnergyStored(stack))
 			ItemNBTHelper.putInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
 
@@ -115,7 +116,8 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	public void clearUpgrades(ItemStack stack)
 	{
 		super.clearUpgrades(stack);
-		if(this.getEnergyStored(stack) > this.getMaxEnergyStored(stack))
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		if(energy.getEnergyStored() > this.getMaxEnergyStored(stack))
 			ItemNBTHelper.putInt(stack, "energy", this.getMaxEnergyStored(stack));
 	}
 
@@ -142,7 +144,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			return new IEItemStackHandler(stack)
 			{
 				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = CapabilityUtils.constantOptional(
-						new EnergyHelper.ItemEnergyStorage(stack)
+						new EnergyHelper.ItemEnergyStorage(stack, RailgunItem::getMaxEnergyStored)
 				);
 				final LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(
 						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "railgun"), stack)
@@ -165,21 +167,9 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
 		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
-	}
-
-	@Nonnull
-	@Override
-	public String getDescriptionId(ItemStack stack)
-	{
-		//		if(stack.getItemDamage()!=1)
-		//		{
-		//			String tag = getRevolverDisplayTag(stack);
-		//			if(!tag.isEmpty())
-		//				return this.getTranslationKey()+"."+tag;
-		//		}
-		return super.getDescriptionId(stack);
 	}
 
 	@Nonnull
@@ -194,10 +184,11 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 	public InteractionResultHolder<ItemStack> use(Level world, Player player, @Nonnull InteractionHand hand)
 	{
 		ItemStack stack = player.getItemInHand(hand);
-		int energy = IEServerConfig.TOOLS.railgun_consumption.get();
+		int consumption = IEServerConfig.TOOLS.railgun_consumption.get();
 		float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
-		energy = (int)(energy*energyMod);
-		if(this.extractEnergy(stack, energy, true)==energy&&!findAmmo(stack, player).isEmpty())
+		consumption = (int)(consumption*energyMod);
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		if(energy.extractEnergy(consumption, true)==consumption&&!findAmmo(stack, player).isEmpty())
 		{
 			player.startUsingItem(hand);
 			player.level.playSound(null, player.getX(), player.getY(), player.getZ(), getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundSource.PLAYERS, 1.5f, 1f);
@@ -231,10 +222,11 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 			ItemNBTHelper.remove(stack, "inUse");
 			if(inUse < getChargeTime(stack))
 				return;
-			int energy = IEServerConfig.TOOLS.railgun_consumption.get();
+			int consumption = IEServerConfig.TOOLS.railgun_consumption.get();
 			float energyMod = 1+this.getUpgrades(stack).getFloat("consumption");
-			energy = (int)(energy*energyMod);
-			if(this.extractEnergy(stack, energy, true)==energy)
+			consumption = (int)(consumption*energyMod);
+			IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+			if(energy.extractEnergy(consumption, true)==consumption)
 			{
 				ItemStack ammo = findAmmo(stack, (Player)user);
 				if(!ammo.isEmpty())
@@ -246,7 +238,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 					Entity shot = new RailgunShotEntity(user.level, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
 					shot = projectileProperties.getProjectile((Player)user, ammoConsumed, shot);
 					user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire, SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
-					this.extractEnergy(stack, energy, false);
+					energy.extractEnergy(consumption, false);
 					if(!world.isClientSide)
 						user.level.addFreshEntity(shot);
 
@@ -372,8 +364,7 @@ public class RailgunItem extends UpgradeableToolItem implements IIEEnergyItem, I
 		});
 	}
 
-	@Override
-	public int getMaxEnergyStored(ItemStack container)
+	public static int getMaxEnergyStored(ItemStack container)
 	{
 		return 8000;
 	}

@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.*;
-import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEEnergyItem;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.core.Direction;
@@ -54,6 +53,7 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.items.IItemHandler;
 
@@ -64,7 +64,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem
+public class IEShieldItem extends UpgradeableToolItem
 {
 	public IEShieldItem()
 	{
@@ -86,7 +86,7 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem
 			return new IEItemStackHandler(stack)
 			{
 				final LazyOptional<EnergyHelper.ItemEnergyStorage> energyStorage = CapabilityUtils.constantOptional(
-						new EnergyHelper.ItemEnergyStorage(stack)
+						new EnergyHelper.ItemEnergyStorage(stack, IEShieldItem::getMaxEnergyStored)
 				);
 				final LazyOptional<ShaderWrapper_Item> shaders = CapabilityUtils.constantOptional(
 						new ShaderWrapper_Item(new ResourceLocation(ImmersiveEngineering.MODID, "shield"), stack)
@@ -125,10 +125,14 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		if(this.getMaxEnergyStored(stack) > 0)
+		if(getMaxEnergyStored(stack) > 0)
 		{
-			String stored = this.getEnergyStored(stack)+"/"+this.getMaxEnergyStored(stack);
-			list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
+			IEnergyStorage energyStorage = CapabilityUtils.getCapability(stack, CapabilityEnergy.ENERGY);
+			if(energyStorage!=null)
+			{
+				String stored = energyStorage.getEnergyStored()+"/"+getMaxEnergyStored(stack);
+				list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
+			}
 		}
 	}
 
@@ -143,20 +147,21 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem
 			inHand |= ((LivingEntity)ent).getItemInHand(InteractionHand.OFF_HAND)==stack;
 
 		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isBlocking();
-		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
+		IEnergyStorage energy = CapabilityUtils.getCapability(stack, CapabilityEnergy.ENERGY);
+		if(energy!=null&&(!inHand||!blocking))//Don't recharge if in use, to avoid flickering
 		{
-			if(getUpgrades(stack).contains("flash_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 10, true)==10)
+			if(getUpgrades(stack).contains("flash_cooldown", NBT.TAG_INT)&&energy.extractEnergy(10, true)==10)
 			{
-				this.extractEnergy(stack, 20, false);
+				energy.extractEnergy(20, false);
 				int cooldown = getUpgrades(stack).getInt("flash_cooldown");
 				if(--cooldown <= 0)
 					getUpgrades(stack).remove("flash_cooldown");
 				else
 					getUpgrades(stack).putInt("flash_cooldown", cooldown);
 			}
-			if(getUpgrades(stack).contains("shock_cooldown", NBT.TAG_INT)&&this.extractEnergy(stack, 10, true)==10)
+			if(getUpgrades(stack).contains("shock_cooldown", NBT.TAG_INT)&&energy.extractEnergy(10, true)==10)
 			{
-				this.extractEnergy(stack, 20, false);
+				energy.extractEnergy(20, false);
 				int cooldown = getUpgrades(stack).getInt("shock_cooldown");
 				if(--cooldown <= 0)
 					getUpgrades(stack).remove("shock_cooldown");
@@ -219,10 +224,9 @@ public class IEShieldItem extends UpgradeableToolItem implements IIEEnergyItem
 		return IETags.getTagsFor(EnumMetals.STEEL).ingot.contains(material.getItem());
 	}
 
-	@Override
-	public int getMaxEnergyStored(ItemStack container)
+	public static int getMaxEnergyStored(ItemStack container)
 	{
-		return (getUpgrades(container).getBoolean("flash")||getUpgrades(container).getBoolean("shock"))?3200: 0;
+		return (getUpgradesStatic(container).getBoolean("flash")||getUpgradesStatic(container).getBoolean("shock"))?3200: 0;
 	}
 
 	@Override
