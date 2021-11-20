@@ -26,10 +26,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
-import blusunrize.immersiveengineering.common.util.DirectionUtils;
-import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -309,7 +306,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		if(nbt.contains("placeCobble", NBT.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(nbt.getCompound("tank"));
-		energyStorage.deserializeNBT(nbt.get("energy"));
+		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
 	}
@@ -323,7 +320,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		nbt.putIntArray("sideConfig", sideConfigArray);
 		nbt.putBoolean("placeCobble", placeCobble);
 		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-		nbt.put("energy", energyStorage.serializeNBT());
+		EnergyHelper.serializeTo(energyStorage, nbt);
 	}
 
 	@Override

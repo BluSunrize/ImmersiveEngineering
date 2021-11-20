@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummy
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
@@ -112,7 +113,7 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
-		energyStorage.deserializeNBT(nbt.get("energy"));
+		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		active = nbt.getBoolean("active");
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
@@ -122,7 +123,7 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putInt("dummy", dummy);
-		nbt.put("energy", energyStorage.serializeNBT());
+		EnergyHelper.serializeTo(energyStorage, nbt);
 		nbt.putBoolean("active", active);
 	}
 

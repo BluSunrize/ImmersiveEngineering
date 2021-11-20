@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -65,7 +66,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.deserializeNBT(nbt.get("energy"));
+		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		if(!descPacket)
 			ContainerHelper.loadAllItems(nbt, inventory);
 	}
@@ -73,7 +74,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		nbt.put("energy", energyStorage.serializeNBT());
+		EnergyHelper.serializeTo(energyStorage, nbt);
 		if(!descPacket)
 			ContainerHelper.saveAllItems(nbt, inventory);
 	}

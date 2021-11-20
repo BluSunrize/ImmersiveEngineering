@@ -355,7 +355,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		lowPower = nbt.getBoolean("lowPower");
-		energyStorage.deserializeNBT(nbt.get("energy"));
+		EnergyHelper.deserializeFrom(energyStorage, nbt);
 	}
 
 	@Override
@@ -363,7 +363,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
 		nbt.putBoolean("lowPower", lowPower);
-		nbt.put("energy", energyStorage.serializeNBT());
+		EnergyHelper.serializeTo(energyStorage, nbt);
 	}
 
 	@Override

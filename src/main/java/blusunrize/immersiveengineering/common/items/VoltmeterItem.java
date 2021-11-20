@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
@@ -32,7 +33,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -79,10 +79,9 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 		BlockEntity bEntity = world.getBlockEntity(pos);
 		if((player==null||!player.isShiftKeyDown())&&bEntity!=null)
 		{
-			LazyOptional<IEnergyStorage> energyCapOpt = bEntity.getCapability(CapabilityEnergy.ENERGY);
-			if(energyCapOpt.isPresent())
+			IEnergyStorage energyCap = CapabilityUtils.getCapability(bEntity, CapabilityEnergy.ENERGY);
+			if(energyCap!=null)
 			{
-				IEnergyStorage energyCap = energyCapOpt.orElseThrow(RuntimeException::new);
 				int max = energyCap.getMaxEnergyStored();
 				int stored = energyCap.getEnergyStored();
 				if(max > 0)

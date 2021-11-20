@@ -127,12 +127,9 @@ public class IEShieldItem extends UpgradeableToolItem
 	{
 		if(getMaxEnergyStored(stack) > 0)
 		{
-			IEnergyStorage energyStorage = CapabilityUtils.getCapability(stack, CapabilityEnergy.ENERGY);
-			if(energyStorage!=null)
-			{
-				String stored = energyStorage.getEnergyStored()+"/"+getMaxEnergyStored(stack);
-				list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
-			}
+			IEnergyStorage energyStorage = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+			String stored = energyStorage.getEnergyStored()+"/"+getMaxEnergyStored(stack);
+			list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
 		}
 	}
 
@@ -147,8 +144,8 @@ public class IEShieldItem extends UpgradeableToolItem
 			inHand |= ((LivingEntity)ent).getItemInHand(InteractionHand.OFF_HAND)==stack;
 
 		boolean blocking = ent instanceof LivingEntity&&((LivingEntity)ent).isBlocking();
-		IEnergyStorage energy = CapabilityUtils.getCapability(stack, CapabilityEnergy.ENERGY);
-		if(energy!=null&&(!inHand||!blocking))//Don't recharge if in use, to avoid flickering
+		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
+		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
 			if(getUpgrades(stack).contains("flash_cooldown", NBT.TAG_INT)&&energy.extractEnergy(10, true)==10)
 			{

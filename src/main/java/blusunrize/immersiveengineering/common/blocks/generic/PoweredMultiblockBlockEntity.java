@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessBE;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -75,7 +76,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		energyStorage.deserializeNBT(nbt.get("energy"));
+		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		if(!descPacket||shouldSyncProcessQueue())
 		{
 			ListTag processNBT = nbt.getList("processQueue", Tag.TAG_COMPOUND);
@@ -103,7 +104,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.put("energy", energyStorage.serializeNBT());
+		EnergyHelper.serializeTo(energyStorage, nbt);
 		if(!descPacket||shouldSyncProcessQueue())
 		{
 			ListTag processNBT = new ListTag();
@@ -152,11 +153,11 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 
 	@Nonnull
 	@Override
-	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction side)
 	{
-		if(capability==CapabilityEnergy.ENERGY&&isEnergyPos())
+		if(capability==CapabilityEnergy.ENERGY&&(side==null||isEnergyPos()))
 			return energyCap.getAndCast();
-		return super.getCapability(capability, facing);
+		return super.getCapability(capability, side);
 	}
 
 	@Override

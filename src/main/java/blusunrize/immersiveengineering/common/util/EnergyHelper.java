@@ -10,10 +10,14 @@ package blusunrize.immersiveengineering.common.util;
 
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.energy.CapabilityEnergy;
+import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nullable;
@@ -29,8 +33,26 @@ import java.util.stream.Collectors;
  */
 public class EnergyHelper
 {
-
+	public static final String LEGACY_ENERGY_KEY = "ifluxEnergy";
+	public static final String ENERGY_KEY = "energy";
 	static HashMap<Item, Boolean> reverseInsertion = new HashMap<>();
+
+	public static void deserializeFrom(EnergyStorage storage, CompoundTag mainTag)
+	{
+		Tag subtag;
+		if(mainTag.contains(LEGACY_ENERGY_KEY, Tag.TAG_INT))
+			subtag = mainTag.get(LEGACY_ENERGY_KEY);
+		else if(mainTag.contains(ENERGY_KEY, Tag.TAG_INT))
+			subtag = mainTag.get(ENERGY_KEY);
+		else
+			subtag = IntTag.valueOf(0);
+		storage.deserializeNBT(subtag);
+	}
+
+	public static void serializeTo(EnergyStorage storage, CompoundTag mainTag)
+	{
+		mainTag.put(ENERGY_KEY, storage.serializeNBT());
+	}
 
 	public static int forceExtractFlux(ItemStack stack, int energy, boolean simulate)
 	{

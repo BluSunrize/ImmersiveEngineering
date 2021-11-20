@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -314,7 +315,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	{
 		dummy = nbt.getInt("dummy");
 		ContainerHelper.loadAllItems(nbt, inventory);
-		energyStorage.deserializeNBT(nbt.get("energy"));
+		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		tank.readFromNBT(nbt.getCompound("tank"));
 		fertilizerAmount = nbt.getInt("fertilizerAmount");
 		fertilizerMod = nbt.getFloat("fertilizerMod");
@@ -327,7 +328,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	{
 		nbt.putInt("dummy", dummy);
 		ContainerHelper.saveAllItems(nbt, inventory);
-		nbt.put("energy", energyStorage.serializeNBT());
+		EnergyHelper.serializeTo(energyStorage, nbt);
 		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
 		nbt.put("tank", tankTag);
 		nbt.putInt("fertilizerAmount", fertilizerAmount);

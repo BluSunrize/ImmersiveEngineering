@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.items.CoresampleItem.VeinSampleData;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -143,7 +144,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		nbt.put("energy", energyStorage.serializeNBT());
+		EnergyHelper.serializeTo(energyStorage, nbt);
 		nbt.putInt("dummy", dummy);
 		nbt.putInt("process", process);
 		nbt.putBoolean("isRunning", isRunning);
@@ -154,7 +155,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		energyStorage.deserializeNBT(nbt.get("energy"));
+		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		dummy = nbt.getInt("dummy");
 		process = nbt.getInt("process");
 		isRunning = nbt.getBoolean("isRunning");

@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -314,7 +315,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
-		energyStorage.deserializeNBT(nbt.get("energy"));
+		EnergyHelper.deserializeFrom(energyStorage, nbt);
 
 		if(nbt.contains("owner", NBT.TAG_STRING))
 			owner = nbt.getString("owner");
@@ -336,7 +337,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putBoolean("redstoneInverted", redstoneControlInverted);
-		nbt.put("energy", energyStorage.serializeNBT());
+		EnergyHelper.serializeTo(energyStorage, nbt);
 
 		if(owner!=null)
 			nbt.putString("owner", owner);

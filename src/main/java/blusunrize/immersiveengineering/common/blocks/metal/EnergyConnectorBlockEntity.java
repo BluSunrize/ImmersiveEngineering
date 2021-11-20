@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectabl
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -172,16 +173,22 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.put("energyToNet", storageToNet.serializeNBT());
-		nbt.put("energyToMachine", storageToNet.serializeNBT());
+		CompoundTag toNet = new CompoundTag();
+		EnergyHelper.serializeTo(storageToNet, toNet);
+		nbt.put("toNet", toNet);
+		CompoundTag toMachine = new CompoundTag();
+		EnergyHelper.serializeTo(storageToMachine, toMachine);
+		nbt.put("toMachine", toMachine);
 	}
 
 	@Override
 	public void readCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		storageToMachine.deserializeNBT(nbt.get("energyToMachine"));
-		storageToMachine.deserializeNBT(nbt.get("energyToNet"));
+		CompoundTag toMachine = nbt.getCompound("toMachine");
+		EnergyHelper.deserializeFrom(storageToMachine, toMachine);
+		CompoundTag toNet = nbt.getCompound("toNet");
+		EnergyHelper.deserializeFrom(storageToNet, toNet);
 	}
 
 	@Override

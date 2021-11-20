@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
@@ -105,7 +106,6 @@ import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.TickEvent;
@@ -527,7 +527,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						ItemOverlayUtils.renderChemthrowerOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
 					else if(equipped.getItem() instanceof IEShieldItem)
 						ItemOverlayUtils.renderShieldOverlay(buffer, transform, scaledWidth, scaledHeight, player, hand, equipped);
-					else if(equipped.getItem()==Tools.VOLTMETER.get())
+					if(equipped.getItem()==Tools.VOLTMETER.get())
 						renderVoltmeterOverlay(player, scaledWidth, scaledHeight, transform, buffer);
 					buffer.endBatch();
 				}
@@ -588,10 +588,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			capSource = ehr.getEntity();
 		if(capSource==null)
 			return;
-		LazyOptional<IEnergyStorage> energyCap = capSource.getCapability(CapabilityEnergy.ENERGY);
-		if(!energyCap.isPresent())
+		IEnergyStorage receiver = CapabilityUtils.getCapability(capSource, CapabilityEnergy.ENERGY);
+		if(receiver==null)
 			return;
-		IEnergyStorage receiver = energyCap.orElseThrow(RuntimeException::new);
 		int maxStorage = receiver.getMaxEnergyStored();
 		int storage = receiver.getEnergyStored();
 		if(maxStorage > 0)
