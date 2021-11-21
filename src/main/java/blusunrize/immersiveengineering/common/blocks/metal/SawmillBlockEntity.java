@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
@@ -288,11 +289,9 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	}
 
 	@Override
-	public Set<BlockPos> getEnergyPos()
+	public Set<MultiblockFace> getEnergyPos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(2, 1, 0)
-		);
+		return ImmutableSet.of(new MultiblockFace(2, 1, 0, RelativeBlockFace.UP));
 	}
 
 	@Override

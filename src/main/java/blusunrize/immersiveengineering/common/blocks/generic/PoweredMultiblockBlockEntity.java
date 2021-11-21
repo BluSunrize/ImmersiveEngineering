@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
+import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -144,18 +145,20 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	//	=================================
 	//		ENERGY MANAGEMENT
 	//	=================================
-	public abstract Set<BlockPos> getEnergyPos();
+	public abstract Set<MultiblockFace> getEnergyPos();
 
-	public boolean isEnergyPos()
+	public boolean isEnergyPos(Direction absoluteFace)
 	{
-		return getEnergyPos().contains(posInMultiblock);
+		return getEnergyPos().contains(new MultiblockFace(
+				posInMultiblock, RelativeBlockFace.from(getFacing().getOpposite(), getIsMirrored(), absoluteFace)
+		));
 	}
 
 	@Nonnull
 	@Override
 	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction side)
 	{
-		if(capability==CapabilityEnergy.ENERGY&&(side==null||isEnergyPos()))
+		if(capability==CapabilityEnergy.ENERGY&&(side==null||isEnergyPos(side)))
 			return energyCap.getAndCast();
 		return super.getCapability(capability, side);
 	}
@@ -364,6 +367,14 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	protected boolean shouldRenderAsActiveImpl()
 	{
 		return energyStorage.getEnergyStored() > 0&&!isRSDisabled()&&!processQueue.isEmpty();
+	}
+
+	protected record MultiblockFace(BlockPos posInMultiblock, RelativeBlockFace face)
+	{
+		public MultiblockFace(int x, int y, int z, RelativeBlockFace face)
+		{
+			this(new BlockPos(x, y, z), face);
+		}
 	}
 
 	public abstract static class MultiblockProcess<R extends MultiblockRecipe>

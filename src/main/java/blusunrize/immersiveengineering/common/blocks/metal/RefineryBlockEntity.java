@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Pair;
@@ -246,11 +247,9 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	}
 
 	@Override
-	public Set<BlockPos> getEnergyPos()
+	public Set<MultiblockFace> getEnergyPos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(2, 1, 0)
-		);
+		return ImmutableSet.of(new MultiblockFace(2, 1, 0, RelativeBlockFace.UP));
 	}
 
 	@Override

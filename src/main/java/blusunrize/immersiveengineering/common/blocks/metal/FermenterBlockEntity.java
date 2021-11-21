@@ -245,11 +245,9 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	}
 
 	@Override
-	public Set<BlockPos> getEnergyPos()
+	public Set<MultiblockFace> getEnergyPos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(0, 1, 2)
-		);
+		return ImmutableSet.of(new MultiblockFace(0, 1, 2, RelativeBlockFace.UP));
 	}
 
 	@Override

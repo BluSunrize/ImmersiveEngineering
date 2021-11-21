@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
@@ -306,11 +307,9 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	}
 
 	@Override
-	public Set<BlockPos> getEnergyPos()
+	public Set<MultiblockFace> getEnergyPos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(4, 1, 1)
-		);
+		return ImmutableSet.of(new MultiblockFace(4, 1, 1, RelativeBlockFace.UP));
 	}
 
 	@Override

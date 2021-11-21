@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -193,11 +194,9 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	}
 
 	@Override
-	public Set<BlockPos> getEnergyPos()
+	public Set<MultiblockFace> getEnergyPos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(1, 2, 0)
-		);
+		return ImmutableSet.of(new MultiblockFace(1, 2, 0, RelativeBlockFace.UP));
 	}
 
 	@Override

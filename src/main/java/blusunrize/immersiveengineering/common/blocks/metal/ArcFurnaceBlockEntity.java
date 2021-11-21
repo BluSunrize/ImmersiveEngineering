@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -449,12 +450,12 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	}
 
 	@Override
-	public Set<BlockPos> getEnergyPos()
+	public Set<MultiblockFace> getEnergyPos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(1, 1, 0),
-				new BlockPos(2, 1, 0),
-				new BlockPos(3, 1, 0)
+				new MultiblockFace(1, 1, 0, RelativeBlockFace.BACK),
+				new MultiblockFace(2, 1, 0, RelativeBlockFace.BACK),
+				new MultiblockFace(3, 1, 0, RelativeBlockFace.BACK)
 		);
 	}
 

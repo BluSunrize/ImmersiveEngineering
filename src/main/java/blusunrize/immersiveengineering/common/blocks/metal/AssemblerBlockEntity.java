@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContai
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
+import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.booleans.BooleanArrayList;
@@ -405,11 +406,9 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	}
 
 	@Override
-	public Set<BlockPos> getEnergyPos()
+	public Set<MultiblockFace> getEnergyPos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(1, 2, 1)
-		);
+		return ImmutableSet.of(new MultiblockFace(1, 2, 1, RelativeBlockFace.UP));
 	}
 
 	@Override

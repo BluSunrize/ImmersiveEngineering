@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -381,12 +382,12 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 	}
 
 	@Override
-	public Set<BlockPos> getEnergyPos()
+	public Set<MultiblockFace> getEnergyPos()
 	{
 		return ImmutableSet.of(
-				new BlockPos(2, 0, 4),
-				new BlockPos(2, 1, 4),
-				new BlockPos(2, 2, 4)
+				new MultiblockFace(2, 0, 4, RelativeBlockFace.RIGHT),
+				new MultiblockFace(2, 1, 4, RelativeBlockFace.RIGHT),
+				new MultiblockFace(2, 2, 4, RelativeBlockFace.RIGHT)
 		);
 	}
 
