@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
+import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
-import blusunrize.immersiveengineering.common.util.DirectionUtils;
 import blusunrize.immersiveengineering.mixin.accessors.client.PlayerControllerAccess;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
