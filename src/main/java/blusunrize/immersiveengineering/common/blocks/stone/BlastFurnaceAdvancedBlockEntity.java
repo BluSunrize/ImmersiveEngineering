@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableSet;
@@ -160,13 +161,13 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 		return Optional.empty();
 	}
 
-	private final LazyOptional<IItemHandler> inputHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> inputHandler = registerCapability(
 			new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false})
 	);
-	private final LazyOptional<IItemHandler> outputHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> outputHandler = registerCapability(
 			new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true})
 	);
-	private final LazyOptional<IItemHandler> slagHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> slagHandler = registerCapability(
 			new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true})
 	);
 	//TODO output is facing, 2

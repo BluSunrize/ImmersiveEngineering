@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -117,7 +118,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 					}
 				}
 				if(anySent)
-					redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
+					redstoneCap.get().markDirty();
 			}
 		}
 	}
@@ -234,14 +235,14 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	public void doGraphicalUpdates()
 	{
 		this.setChanged();
-		redstoneCap.ifPresent(RedstoneBundleConnection::markDirty);
+		redstoneCap.get().markDirty();
 	}
 
-	private final LazyOptional<IItemHandler> insertionCap = registerConstantCap(
+	private final ResettableCapability<IItemHandler> insertionCap = registerCapability(
 			new IEInventoryHandler(NUM_SLOTS, this, 0, true, false)
 	);
 
-	private final LazyOptional<RedstoneBundleConnection> redstoneCap = registerConstantCap(
+	private final ResettableCapability<RedstoneBundleConnection> redstoneCap = registerCapability(
 			new RedstoneBundleConnection()
 			{
 				@Override

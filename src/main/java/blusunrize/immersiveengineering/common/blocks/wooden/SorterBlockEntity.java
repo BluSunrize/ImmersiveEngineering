@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.ints.IntIterators;
@@ -322,12 +323,12 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		}
 	}
 
-	private EnumMap<Direction, LazyOptional<IItemHandler>> insertionHandlers = new EnumMap<>(Direction.class);
+	private final EnumMap<Direction, ResettableCapability<IItemHandler>> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
 		{
-			LazyOptional<IItemHandler> forSide = registerConstantCap(new SorterInventoryHandler(this, f));
+			ResettableCapability<IItemHandler> forSide = registerCapability(new SorterInventoryHandler(this, f));
 			insertionHandlers.put(f, forSide);
 		}
 	}

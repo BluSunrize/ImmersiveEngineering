@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -126,7 +127,7 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 		nbt.putInt("enegyOutput", this.energyOutput);
 	}
 
-	private final LazyOptional<IEnergyStorage> energyCap = registerConstantCap(NullEnergyStorage.INSTANCE);
+	private final ResettableCapability<IEnergyStorage> energyCap = registerCapability(NullEnergyStorage.INSTANCE);
 
 	@Nonnull
 	@Override

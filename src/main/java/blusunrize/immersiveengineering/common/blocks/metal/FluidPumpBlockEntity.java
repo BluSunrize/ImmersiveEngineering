@@ -27,10 +27,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -360,7 +357,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		return false;
 	}
 
-	private final Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new EnumMap<>(Direction.class);
+	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedFluidHandler = new EnumMap<>(Direction.class);
 
 	@Nonnull
 	@Override
@@ -371,7 +368,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&!isDummy())
 		{
 			if(!sidedFluidHandler.containsKey(facing))
-				sidedFluidHandler.put(facing, registerConstantCap(new SidedFluidHandler(this, facing)));
+				sidedFluidHandler.put(facing, registerCapability(new SidedFluidHandler(this, facing)));
 			return sidedFluidHandler.get(facing).cast();
 		}
 		return super.getCapability(capability, facing);

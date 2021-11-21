@@ -16,18 +16,12 @@ import java.util.function.Function;
 public abstract class MultiblockCapability<T>
 {
 	public static <BE, T> MultiblockCapability<T> make(
-			Function<BE, MultiblockCapability<T>> getCap, Function<BE, BE> getMaster, BE owner, LazyOptional<T> ownValue
+			Function<BE, MultiblockCapability<T>> getCap, Function<BE, BE> getMaster, BE owner, ResettableCapability<T> ownValue
 	)
 	{
 		return new Impl<>(getCap, getMaster, owner, ownValue);
 	}
 
-	private final LazyOptional<T> ownValue;
-
-	private MultiblockCapability(LazyOptional<T> ownValue)
-	{
-		this.ownValue = ownValue;
-	}
 
 	public abstract LazyOptional<T> get();
 
@@ -40,19 +34,24 @@ public abstract class MultiblockCapability<T>
 	private static final class Impl<T, BE> extends MultiblockCapability<T>
 	{
 		private final BE owner;
+		private final ResettableCapability<T> ownValue;
 		private final Function<BE, MultiblockCapability<T>> getCap;
 		private final Function<BE, BE> getMaster;
 		private LazyOptional<T> cached = LazyOptional.empty();
 
 		public Impl(
 				Function<BE, MultiblockCapability<T>> getCap, Function<BE, BE> getMaster,
-				BE owner, LazyOptional<T> ownValue
+				BE owner, ResettableCapability<T> ownValue
 		)
 		{
-			super(ownValue);
 			this.owner = owner;
 			this.getCap = getCap;
 			this.getMaster = getMaster;
+			this.ownValue = ownValue;
+			// Hack, kind of but not: When a dummy is broken or unloaded, invalidate the cap it provided.
+			// ResettableCapability ensures that a new LO will be created if the cap is queried again (e.g. if only the
+			// dummy and not the master unloaded)
+			this.ownValue.addResetListener(cached::invalidate);
 		}
 
 		@Override
@@ -62,7 +61,7 @@ public abstract class MultiblockCapability<T>
 			{
 				BE master = getMaster.apply(owner);
 				if(master!=null)
-					cached = getCap.apply(master).ownValue;
+					cached = ((Impl<T, ?>)getCap.apply(master)).ownValue.getLO();
 			}
 			return cached;
 		}

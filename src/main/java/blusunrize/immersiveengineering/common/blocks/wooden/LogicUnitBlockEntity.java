@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -167,15 +168,15 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 
 	private void markConnectorsDirty()
 	{
-		redstoneCaps.values().forEach(cap -> cap.ifPresent(RedstoneBundleConnection::markDirty));
+		redstoneCaps.values().forEach(cap -> cap.get().markDirty());
 	}
 
-	private final Map<Direction, LazyOptional<RedstoneBundleConnection>> redstoneCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, ResettableCapability<RedstoneBundleConnection>> redstoneCaps = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
 		{
-			LazyOptional<RedstoneBundleConnection> forSide = registerConstantCap(
+			ResettableCapability<RedstoneBundleConnection> forSide = registerCapability(
 					new RedstoneBundleConnection()
 					{
 						@Override

@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +41,6 @@ public class ShaderBannerBlockEntity extends IEBaseBlockEntity implements IBlock
 	public ShaderBannerBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.SHADER_BANNER.get(), pos, state);
-		reInitCapability();
 	}
 
 	@Override
@@ -81,14 +81,7 @@ public class ShaderBannerBlockEntity extends IEBaseBlockEntity implements IBlock
 		return super.triggerEvent(id, arg);
 	}
 
-	private LazyOptional<ShaderWrapper> shaderCap;
-
-	private void reInitCapability()
-	{
-		if(shaderCap!=null)
-			unregisterCap(shaderCap);
-		shaderCap = registerConstantCap(shader);
-	}
+	private final ResettableCapability<ShaderWrapper> shaderCap = registerCapability(shader);
 
 	@Nonnull
 	@Override

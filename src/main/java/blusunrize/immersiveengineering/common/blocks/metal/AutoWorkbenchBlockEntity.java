@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -327,7 +328,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
 			new IEInventoryHandler(16, this, 1, true, false)
 	);
 

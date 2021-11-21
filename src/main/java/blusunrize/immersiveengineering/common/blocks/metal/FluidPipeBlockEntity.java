@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.WorldMap;
 import com.google.common.collect.ImmutableSet;
@@ -253,32 +254,32 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		return false;
 	}
 
-	private final Map<Direction, LazyOptional<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
+	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
 	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
 		{
-			sidedHandlers.put(f, registerConstantCap(new PipeFluidHandler(this, f)));
+			sidedHandlers.put(f, registerCapability(new PipeFluidHandler(this, f)));
 			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
 		}
 	}
 
 	private void invalidateHandler(Direction side)
 	{
-		LazyOptional<IFluidHandler> handler = sidedHandlers.get(side);
-		if(handler!=null&&handler.isPresent())
+		ResettableCapability<IFluidHandler> handler = sidedHandlers.get(side);
+		if(handler!=null)
 		{
-			handler.invalidate();
 			sidedHandlers.put(side, null);
+			handler.reset();
 		}
 	}
 
 	private void setValidHandler(Direction side)
 	{
-		LazyOptional<IFluidHandler> handler = sidedHandlers.get(side);
-		if(handler==null||!handler.isPresent())
-			sidedHandlers.put(side, registerConstantCap(new PipeFluidHandler(this, side)));
+		ResettableCapability<IFluidHandler> handler = sidedHandlers.get(side);
+		if(handler==null)
+			sidedHandlers.put(side, registerCapability(new PipeFluidHandler(this, side)));
 	}
 
 	@Nonnull

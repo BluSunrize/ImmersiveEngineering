@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
@@ -452,7 +453,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	{
 	}
 
-	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
 			new MultiblockInventoryHandler_DirectProcessing<>(this).setProcessStacking(true)
 	);
 

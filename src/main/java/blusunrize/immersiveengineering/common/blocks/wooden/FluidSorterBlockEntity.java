@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -228,12 +229,12 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	}
 
 
-	private EnumMap<Direction, LazyOptional<IFluidHandler>> insertionHandlers = new EnumMap<>(Direction.class);
+	private final EnumMap<Direction, ResettableCapability<IFluidHandler>> insertionHandlers = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
 		{
-			LazyOptional<IFluidHandler> forSide = registerConstantCap(new SorterFluidHandler(this, f));
+			ResettableCapability<IFluidHandler> forSide = registerCapability(new SorterFluidHandler(this, f));
 			insertionHandlers.put(f, forSide);
 		}
 	}

@@ -30,10 +30,7 @@ import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
-import blusunrize.immersiveengineering.common.util.CachedRecipe;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.mojang.math.Vector3f;
@@ -458,14 +455,14 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	}
 
 
-	private final LazyOptional<IItemHandler> inputHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> inputHandler = registerCapability(
 			new IEInventoryHandler(1, this, 2, true, false)
 	);
 
-	private final LazyOptional<IItemHandler> outputHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> outputHandler = registerCapability(
 			new IEInventoryHandler(4, this, 3, false, true)
 	);
-	private final LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
+	private final ResettableCapability<IFluidHandler> tankCap = registerCapability(tank);
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
 			be -> be.energyCap, ClocheBlockEntity::master, this, registerEnergyInput(energyStorage)
 	);

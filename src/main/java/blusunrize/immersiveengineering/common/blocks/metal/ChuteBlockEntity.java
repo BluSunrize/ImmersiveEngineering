@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -382,7 +383,7 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 		return diagonal;
 	}
 
-	private final LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ChuteBlockEntity.ChuteInventoryHandler(this));
+	private final ResettableCapability<IItemHandler> insertionCap = registerCapability(new ChuteBlockEntity.ChuteInventoryHandler(this));
 
 	@Nonnull
 	@Override

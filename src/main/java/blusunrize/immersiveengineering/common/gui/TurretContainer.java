@@ -26,10 +26,9 @@ public abstract class TurretContainer<T extends TurretBlockEntity<T>> extends IE
 		super(type, tile, id);
 		this.tile = tile;
 
-		if(tile instanceof TurretGunBlockEntity)
+		if(tile instanceof TurretGunBlockEntity gunTurret)
 		{
-			this.addSlot(new IESlot.Bullet(
-					((TurretGunBlockEntity)tile).containerHandler.orElseThrow(RuntimeException::new), 0, 134, 13, 64)
+			this.addSlot(new IESlot.Bullet(gunTurret.containerHandler.get(), 0, 134, 13, 64)
 			{
 				@Override
 				public boolean mayPlace(ItemStack itemStack)

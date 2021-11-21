@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -147,7 +148,7 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 		nbt.putBoolean("ignite", ignite);
 	}
 
-	private LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
+	private final ResettableCapability<IFluidHandler> tankCap = registerCapability(tank);
 
 	@Nonnull
 	@Override

@@ -16,10 +16,11 @@ import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
@@ -171,20 +172,20 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 			nbt.put("tank", tankTag);
 	}
 
-	private final Map<Direction, LazyOptional<IFluidHandler>> sidedFluidHandler = new HashMap<>();
+	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedFluidHandler = new HashMap<>();
 
 	{
-		sidedFluidHandler.put(Direction.DOWN, registerCap(() -> new SidedFluidHandler(this, Direction.DOWN)));
-		sidedFluidHandler.put(Direction.UP, registerCap(() -> new SidedFluidHandler(this, Direction.UP)));
-		sidedFluidHandler.put(null, registerCap(() -> new SidedFluidHandler(this, null)));
+		sidedFluidHandler.put(Direction.DOWN, registerCapability(new SidedFluidHandler(this, Direction.DOWN)));
+		sidedFluidHandler.put(Direction.UP, registerCapability(new SidedFluidHandler(this, Direction.UP)));
+		sidedFluidHandler.put(null, registerCapability(new SidedFluidHandler(this, null)));
 	}
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
-		if(capability==FLUID_HANDLER_CAPABILITY&&(facing==null||facing.getAxis()==Axis.Y))
-			return sidedFluidHandler.getOrDefault(facing, LazyOptional.empty()).cast();
+		if(capability==FLUID_HANDLER_CAPABILITY&&sidedFluidHandler.containsKey(facing))
+			return sidedFluidHandler.get(facing).cast();
 		return super.getCapability(capability, facing);
 	}
 

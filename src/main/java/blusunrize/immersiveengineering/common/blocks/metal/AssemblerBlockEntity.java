@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -532,9 +533,9 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
 			new IEInventoryHandler(18, this, 0, true, false));
-	private LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> extractionHandler = registerCapability(
 			new IEInventoryHandler(3, this, 18, false, true));
 
 	private static final BlockPos inputPos = new BlockPos(1, 1, 2);

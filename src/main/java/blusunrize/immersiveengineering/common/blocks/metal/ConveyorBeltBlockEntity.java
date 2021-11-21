@@ -18,6 +18,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableSet;
@@ -212,7 +213,7 @@ public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBloc
 		return COLISIONBB;
 	}
 
-	private final LazyOptional<IItemHandler> insertionCap = registerCap(() -> new ConveyorInventoryHandler(this));
+	private final ResettableCapability<IItemHandler> insertionCap = registerCapability(new ConveyorInventoryHandler(this));
 
 	@Nonnull
 	@Override

@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.mojang.math.Vector3f;
@@ -59,7 +60,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	private boolean charging = true;
 	public int comparatorOutput = 0;
-	private final LazyOptional<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
+	private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
 
 	public ChargingStationBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -246,7 +247,7 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private final LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new IEInventoryHandler(1, this));
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(new IEInventoryHandler(1, this));
 
 	@Nonnull
 	@Override

@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
@@ -319,7 +320,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
 			new MultiblockInventoryHandler_DirectProcessing<>(this)
 	);
 

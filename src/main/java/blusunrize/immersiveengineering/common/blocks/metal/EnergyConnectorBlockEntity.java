@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -91,7 +92,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public int currentTickToNet = 0;
 	private final MutableEnergyStorage storageToNet;
 	private final MutableEnergyStorage storageToMachine;
-	private final LazyOptional<IEnergyStorage> energyCap;
+	private final ResettableCapability<IEnergyStorage> energyCap;
 
 	private final CapabilityReference<IEnergyStorage> output = CapabilityReference.forNeighbor(
 			this, CapabilityEnergy.ENERGY, this::getFacing
@@ -105,7 +106,7 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 		this.relay = data.getSecond();
 		this.storageToMachine = new MutableEnergyStorage(getMaxInput(), getMaxInput(), getMaxInput());
 		this.storageToNet = new MutableEnergyStorage(getMaxInput(), getMaxInput(), getMaxInput());
-		this.energyCap = registerConstantCap(new ConnectorEnergyStorage());
+		this.energyCap = registerCapability(new ConnectorEnergyStorage());
 	}
 
 	public EnergyConnectorBlockEntity(String voltage, boolean relay, BlockPos pos, BlockState state)

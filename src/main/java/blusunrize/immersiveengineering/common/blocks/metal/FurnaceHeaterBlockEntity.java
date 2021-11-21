@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,7 +45,7 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 {
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000, Math.max(256,
 			Math.max(IEServerConfig.MACHINES.heater_consumption.get(), IEServerConfig.MACHINES.heater_speedupConsumption.get())));
-	private final LazyOptional<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
+	private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
 
 	public FurnaceHeaterBlockEntity(BlockPos pos, BlockState state)
 	{

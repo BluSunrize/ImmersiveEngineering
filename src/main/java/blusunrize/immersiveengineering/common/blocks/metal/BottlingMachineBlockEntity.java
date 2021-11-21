@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
@@ -370,7 +371,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		return null;
 	}
 
-	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new BottlingMachineInventoryHandler(this));
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(new BottlingMachineInventoryHandler(this));
 	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
 			be -> be.fluidCap, BottlingMachineBlockEntity::master, this, registerFluidInput(tanks)
 	);

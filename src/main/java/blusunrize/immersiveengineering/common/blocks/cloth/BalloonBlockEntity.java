@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerIn
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,7 +61,6 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 	public BalloonBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.BALLOON.get(), pos, state);
-		reInitCapability();
 	}
 
 	@Override
@@ -113,13 +113,11 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 		return super.triggerEvent(id, arg);
 	}
 
-	LazyOptional<ShaderWrapper> shaderCap;
+	private final ResettableCapability<ShaderWrapper> shaderCap = registerCapability(shader);
 
 	private void reInitCapability()
 	{
-		if(shaderCap!=null)
-			unregisterCap(shaderCap);
-		shaderCap = registerConstantCap(shader);
+		shaderCap.reset();
 	}
 
 	@Nonnull

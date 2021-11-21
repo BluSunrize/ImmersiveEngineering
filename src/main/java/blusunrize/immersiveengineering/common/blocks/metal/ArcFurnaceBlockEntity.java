@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEParticles;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -613,7 +614,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	}
 
 
-	private LazyOptional<IItemHandler> inputHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> inputHandler = registerCapability(
 			new IEInventoryHandler(IN_SLOT_COUNT, this, FIRST_IN_SLOT, true, false)
 			{
 				//ignore the given slot and spread it out
@@ -652,11 +653,11 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 					return stack;
 				}
 			});
-	private LazyOptional<IItemHandler> additiveHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> additiveHandler = registerCapability(
 			new IEInventoryHandler(ADDITIVE_SLOT_COUNT, this, FIRST_ADDITIVE_SLOT, true, false));
-	private LazyOptional<IItemHandler> outputHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> outputHandler = registerCapability(
 			new IEInventoryHandler(OUT_SLOT_COUNT, this, FIRST_OUT_SLOT, false, true));
-	private LazyOptional<IItemHandler> slagHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> slagHandler = registerCapability(
 			new IEInventoryHandler(1, this, SLAG_SLOT, false, true));
 	
 	@Nonnull

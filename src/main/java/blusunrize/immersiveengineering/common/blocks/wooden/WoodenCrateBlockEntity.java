@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -228,7 +229,7 @@ public class WoodenCrateBlockEntity extends IEBaseBlockEntity implements IIEInve
 		return Utils.calcRedstoneFromInventory(this);
 	}
 
-	private final LazyOptional<IItemHandler> insertionCap = registerConstantCap(new IEInventoryHandler(27, this));
+	private final ResettableCapability<IItemHandler> insertionCap = registerCapability(new IEInventoryHandler(27, this));
 
 	@Nonnull
 	@Override

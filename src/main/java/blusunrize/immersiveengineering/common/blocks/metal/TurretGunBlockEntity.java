@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.core.BlockPos;
@@ -222,10 +223,10 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 			ContainerHelper.saveAllItems(nbt, inventory);
 	}
 
-	private final LazyOptional<IItemHandler> itemHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> itemHandler = registerCapability(
 			new IEInventoryHandler(2, this, 0, new boolean[]{true, false}, new boolean[]{false, true})
 	);
-	public LazyOptional<IItemHandler> containerHandler = registerConstantCap(
+	public final ResettableCapability<IItemHandler> containerHandler = registerCapability(
 			new IEInventoryHandler(2, this)
 	);
 

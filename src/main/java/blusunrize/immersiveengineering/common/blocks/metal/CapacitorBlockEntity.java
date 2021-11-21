@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Machines.CapacitorConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -55,8 +56,8 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public EnumMap<Direction, IOSideConfig> sideConfig = new EnumMap<>(Direction.class);
 	private final CapacitorConfig configValues;
 	private final IEnergyStorage energyStorage;
-	private final Map<Direction, LazyOptional<IEnergyStorage>> energyCaps = new EnumMap<>(Direction.class);
-	private final LazyOptional<IEnergyStorage> nullEnergyCap;
+	private final Map<Direction, ResettableCapability<IEnergyStorage>> energyCaps = new EnumMap<>(Direction.class);
+	private final ResettableCapability<IEnergyStorage> nullEnergyCap;
 
 	public int comparatorOutput = 0;
 
@@ -71,9 +72,9 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 				sideConfig.put(f, IOSideConfig.INPUT);
 			else
 				sideConfig.put(f, IOSideConfig.NONE);
-			energyCaps.put(f, registerConstantCap(new CapacitorEnergyHandler(f, sideConfig, energyStorage)));
+			energyCaps.put(f, registerCapability(new CapacitorEnergyHandler(f, sideConfig, energyStorage)));
 		}
-		nullEnergyCap = registerConstantCap(new WrappingEnergyStorage(energyStorage, false, false));
+		nullEnergyCap = registerCapability(new WrappingEnergyStorage(energyStorage, false, false));
 	}
 
 	@Override

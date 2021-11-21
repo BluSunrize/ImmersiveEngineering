@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,8 +82,8 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 	{
 	}
 
-	private final LazyOptional<IEnergyStorage> energyCap = registerConstantCap(NullEnergyStorage.INSTANCE);
-	private final LazyOptional<IRotationAcceptor> rotationCap = registerConstantCap(new RotationAcceptor());
+	private final ResettableCapability<IEnergyStorage> energyCap = registerCapability(NullEnergyStorage.INSTANCE);
+	private final ResettableCapability<IRotationAcceptor> rotationCap = registerCapability(new RotationAcceptor());
 
 	@Nonnull
 	@Override

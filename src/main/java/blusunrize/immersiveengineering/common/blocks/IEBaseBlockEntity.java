@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.Blockstat
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstoneOutput;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.mixin.accessors.BETypeAccess;
 import blusunrize.immersiveengineering.mixin.accessors.BlockEntityAccess;
 import com.google.common.base.Preconditions;
@@ -31,18 +32,16 @@ import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public abstract class IEBaseBlockEntity extends BlockEntity implements BlockstateProvider
 {
@@ -152,65 +151,50 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 		level.updateNeighborsAt(pos, newState.getBlock());
 	}
 
-	private final Set<LazyOptional<?>> caps = new HashSet<>();
+	private final List<ResettableCapability<?>> caps = new ArrayList<>();
 
-	protected <T> LazyOptional<T> registerConstantCap(T val)
+	protected <T> ResettableCapability<T> registerCapability(T val)
 	{
-		return registerCap(() -> val);
-	}
-
-	protected <T> LazyOptional<T> registerCap(NonNullSupplier<T> cap)
-	{
-		return registerCap(LazyOptional.of(cap));
-	}
-
-	protected <T> LazyOptional<T> registerCap(LazyOptional<T> cap)
-	{
+		ResettableCapability<T> cap = new ResettableCapability<>(val);
 		caps.add(cap);
 		return cap;
 	}
 
-	protected <T> void unregisterCap(LazyOptional<T> cap)
+	protected ResettableCapability<IEnergyStorage> registerEnergyInput(IEnergyStorage directStorage)
 	{
-		cap.invalidate();
-		caps.remove(cap);
+		return registerCapability(new WrappingEnergyStorage(directStorage, true, false, this::setChanged));
 	}
 
-	protected LazyOptional<IEnergyStorage> registerEnergyInput(IEnergyStorage directStorage)
+	protected ResettableCapability<IEnergyStorage> registerEnergyOutput(IEnergyStorage directStorage)
 	{
-		return registerConstantCap(new WrappingEnergyStorage(directStorage, true, false, this::setChanged));
+		return registerCapability(new WrappingEnergyStorage(directStorage, false, true, this::setChanged));
 	}
 
-	protected LazyOptional<IEnergyStorage> registerEnergyOutput(IEnergyStorage directStorage)
+	private ResettableCapability<IFluidHandler> registerFluidHandler(IFluidTank[] tanks, boolean allowDrain, boolean allowFill)
 	{
-		return registerConstantCap(new WrappingEnergyStorage(directStorage, false, true, this::setChanged));
-	}
-
-	private LazyOptional<IFluidHandler> registerFluidHandler(IFluidTank[] tanks, boolean allowDrain, boolean allowFill)
-	{
-		return registerConstantCap(new ArrayFluidHandler(
+		return registerCapability(new ArrayFluidHandler(
 				// TODO the global forced update is a hack and should be replaced by updates on the machines that render
 				//  the fluid in world and screen sync for those that do not
 				tanks, allowDrain, allowFill, () -> markContainingBlockForUpdate(null)
 		));
 	}
 
-	protected final LazyOptional<IFluidHandler> registerFluidHandler(IFluidTank... tanks)
+	protected final ResettableCapability<IFluidHandler> registerFluidHandler(IFluidTank... tanks)
 	{
 		return registerFluidHandler(tanks, true, true);
 	}
 
-	protected final LazyOptional<IFluidHandler> registerFluidInput(IFluidTank... tanks)
+	protected final ResettableCapability<IFluidHandler> registerFluidInput(IFluidTank... tanks)
 	{
 		return registerFluidHandler(tanks, false, true);
 	}
 
-	protected final LazyOptional<IFluidHandler> registerFluidOutput(IFluidTank... tanks)
+	protected final ResettableCapability<IFluidHandler> registerFluidOutput(IFluidTank... tanks)
 	{
 		return registerFluidHandler(tanks, true, false);
 	}
 
-	protected final LazyOptional<IFluidHandler> registerFluidView(IFluidTank... tanks)
+	protected final ResettableCapability<IFluidHandler> registerFluidView(IFluidTank... tanks)
 	{
 		return registerFluidHandler(tanks, false, false);
 	}
@@ -229,10 +213,13 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	public void invalidateCaps()
 	{
 		super.invalidateCaps();
-		for(LazyOptional<?> cap : caps)
-			if(cap.isPresent())
-				cap.invalidate();
+		resetAllCaps();
 		caps.clear();
+	}
+
+	protected void resetAllCaps()
+	{
+		caps.forEach(ResettableCapability::reset);
 	}
 
 	@Override
@@ -292,6 +279,9 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 			setOverrideState(old);
 		else if(getType().isValid(newState))
 			setOverrideState(null);
+		// Reset caps after e.g. rotating a block, so users get the cap for the logical side of the block now facing
+		// them
+		resetAllCaps();
 	}
 
 	@Override

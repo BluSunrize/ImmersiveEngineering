@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ListUtils;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
@@ -537,7 +538,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		return null;
 	}
 
-	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new MultiblockInventoryHandler_DirectProcessing<>(this)
+	final ResettableCapability<IItemHandler> insertionHandler = registerCapability(new MultiblockInventoryHandler_DirectProcessing<>(this)
 	{
 		@Nonnull
 		@Override

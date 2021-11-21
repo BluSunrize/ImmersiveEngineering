@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
@@ -397,7 +398,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
 			new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8])
 	);
 	private final MultiblockCapability<IFluidHandler> fluidInputCap = MultiblockCapability.make(

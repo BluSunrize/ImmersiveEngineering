@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContai
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -296,7 +297,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	{
 	}
 
-	LazyOptional<IItemHandler> invHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> invHandler = registerCapability(
 			new IEInventoryHandler(4, this, 0, new boolean[]{true, false, true, false},
 					new boolean[]{false, true, false, true})
 	);

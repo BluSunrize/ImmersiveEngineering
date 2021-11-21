@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -255,7 +256,7 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 		return InteractionResult.SUCCESS;
 	}
 
-	private final LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
+	private final ResettableCapability<IFluidHandler> tankCap = registerCapability(tank);
 
 	@Nonnull
 	@Override

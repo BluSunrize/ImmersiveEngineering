@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -401,10 +402,10 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
 			new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8])
 	);
-	private LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
+	private final ResettableCapability<IItemHandler> extractionHandler = registerCapability(
 			new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true})
 	);
 	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(

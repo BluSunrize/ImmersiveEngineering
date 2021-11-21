@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -172,7 +173,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		return renderAABB;
 	}
 
-	private final LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new SiloInventoryHandler(this));
+	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(new SiloInventoryHandler(this));
 
 	private static final BlockPos bottomIoOffset = new BlockPos(1, 0, 1);
 	private static final BlockPos topIoOffset = new BlockPos(1, 6, 1);
