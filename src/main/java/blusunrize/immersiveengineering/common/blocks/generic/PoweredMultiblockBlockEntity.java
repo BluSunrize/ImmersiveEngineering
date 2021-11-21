@@ -52,7 +52,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		extends MultiblockPartBlockEntity<T> implements IIEInventory, IProcessBE, IComparatorOverride
 {
 	public final AveragingEnergyStorage energyStorage;
-	protected final MultiblockCapability<?, IEnergyStorage> energyCap;
+	protected final MultiblockCapability<IEnergyStorage> energyCap;
 
 	private final MutableInt cachedComparatorValue = new MutableInt(-1);
 
@@ -61,7 +61,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	{
 		super(multiblockInstance, type, redstoneControl, pos, state);
 		this.energyStorage = new AveragingEnergyStorage(energyCapacity);
-		this.energyCap = new MultiblockCapability<>(
+		this.energyCap = MultiblockCapability.make(
 				be -> be.energyCap, PoweredMultiblockBlockEntity::master, this, registerEnergyInput(this.energyStorage)
 		);
 	}
@@ -145,9 +145,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 
 	public boolean isEnergyPos(Direction absoluteFace)
 	{
-		return getEnergyPos().contains(new MultiblockFace(
-				posInMultiblock, RelativeBlockFace.from(getFacing().getOpposite(), getIsMirrored(), absoluteFace)
-		));
+		return getEnergyPos().contains(asRelativeFace(absoluteFace));
 	}
 
 	@Nonnull
@@ -365,7 +363,14 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		return energyStorage.getEnergyStored() > 0&&!isRSDisabled()&&!processQueue.isEmpty();
 	}
 
-	protected record MultiblockFace(BlockPos posInMultiblock, RelativeBlockFace face)
+	protected final MultiblockFace asRelativeFace(Direction absoluteFace)
+	{
+		return new MultiblockFace(
+				posInMultiblock, RelativeBlockFace.from(getFacing().getOpposite(), getIsMirrored(), absoluteFace)
+		);
+	}
+
+	protected static record MultiblockFace(BlockPos posInMultiblock, RelativeBlockFace face)
 	{
 		public MultiblockFace(int x, int y, int z, RelativeBlockFace face)
 		{

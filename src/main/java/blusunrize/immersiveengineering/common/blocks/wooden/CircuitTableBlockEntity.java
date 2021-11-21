@@ -233,7 +233,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 			return MASTER_POS;
 	}
 
-	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
 			be -> be.energyCap, CircuitTableBlockEntity::master, this, registerEnergyInput(energyStorage)
 	);
 

@@ -466,7 +466,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			new IEInventoryHandler(4, this, 3, false, true)
 	);
 	private final LazyOptional<IFluidHandler> tankCap = registerConstantCap(tank);
-	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
 			be -> be.energyCap, ClocheBlockEntity::master, this, registerEnergyInput(energyStorage)
 	);
 

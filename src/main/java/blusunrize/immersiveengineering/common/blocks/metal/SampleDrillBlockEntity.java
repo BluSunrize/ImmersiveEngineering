@@ -57,7 +57,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 	public boolean isRunning = false;
 	@Nonnull
 	public ItemStack sample = ItemStack.EMPTY;
-	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
 			be -> be.energyCap, SampleDrillBlockEntity::master, this, registerEnergyInput(energyStorage)
 	);
 

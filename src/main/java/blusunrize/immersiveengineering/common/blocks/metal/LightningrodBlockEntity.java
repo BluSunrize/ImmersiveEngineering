@@ -46,7 +46,7 @@ import java.util.List;
 public class LightningrodBlockEntity extends MultiblockPartBlockEntity<LightningrodBlockEntity> implements IBlockBounds
 {
 	private final MutableEnergyStorage energyStorage = new MutableEnergyStorage(IEServerConfig.MACHINES.lightning_output.get());
-	private final MultiblockCapability<?, IEnergyStorage> energyCap = new MultiblockCapability<>(
+	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
 			be -> be.energyCap, LightningrodBlockEntity::master, this, registerEnergyOutput(energyStorage)
 	);
 
