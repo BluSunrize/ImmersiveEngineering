@@ -5,7 +5,6 @@
   "refmap": "immersiveengineering.refmap.json",
   "mixins": [
     "accessors.BETypeAccess",
-    "accessors.BlockEntityAccess",
     "accessors.ConcretePowderBlockAccess",
     "accessors.ContainerAccess",
     "accessors.DimensionTypeAccessor",

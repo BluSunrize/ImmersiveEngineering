@@ -17,8 +17,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralM
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstoneOutput;
 import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.mixin.accessors.BETypeAccess;
-import blusunrize.immersiveengineering.mixin.accessors.BlockEntityAccess;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -261,8 +259,6 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	@Override
 	public BlockState getBlockState()
 	{
-		if(level==null&&((BlockEntityAccess)this).getCachedBlockStateDirectly()==null)
-			return ((BETypeAccess)getType()).getValidBlocks().iterator().next().defaultBlockState();
 		if(overrideBlockState!=null)
 			return overrideBlockState;
 		else
@@ -321,9 +317,8 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	{
 		if(this.level!=null)
 		{
-			BlockState state = this.level.getBlockState(this.worldPosition);
-			((BlockEntityAccess)this).setBlockState(state);
 			markChunkDirty();
+			BlockState state = getBlockState();
 			if(state.hasAnalogOutputSignal())
 				this.level.updateNeighbourForOutputSignal(this.worldPosition, state.getBlock());
 		}
