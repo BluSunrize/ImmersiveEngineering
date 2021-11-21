@@ -35,8 +35,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -207,24 +205,6 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 			zMax = offsetToMaster.getZ() > 0?.625f: 1;
 		}
 		return Shapes.box(xMin, yMin, zMin, xMax, yMax, zMax);
-	}
-
-	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		return new IFluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
-	{
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return false;
 	}
 
 	@Nonnull

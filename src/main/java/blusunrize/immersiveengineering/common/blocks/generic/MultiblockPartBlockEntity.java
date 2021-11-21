@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -42,19 +41,12 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
-import java.util.EnumMap;
 import java.util.Set;
 
 public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEntity<T>> extends IEBaseBlockEntity
@@ -145,154 +137,6 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 		nbt.put("posInMultiblock", NbtUtils.writeBlockPos(new BlockPos(posInMultiblock)));
 		nbt.put("offset", NbtUtils.writeBlockPos(new BlockPos(offsetToMaster)));
 		nbt.putBoolean("redstoneControlInverted", redstoneControlInverted);
-	}
-
-	private EnumMap<Direction, LazyOptional<IFluidHandler>> fluidCaps = new EnumMap<>(Direction.class);
-
-	{
-		for(Direction f : DirectionUtils.VALUES)
-		{
-			LazyOptional<IFluidHandler> forSide = registerConstantCap(new MultiblockFluidWrapper(this, f));
-			fluidCaps.put(f, forSide);
-		}
-	}
-	@Nonnull
-	@Override
-	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
-	{
-		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&facing!=null&&
-				this.getAccessibleFluidTanks(facing).length > 0)
-			return fluidCaps.get(facing).cast();
-		return super.getCapability(capability, facing);
-	}
-
-	//	=================================
-	//		FLUID MANAGEMENT
-	//	=================================
-	@Nonnull
-	protected abstract IFluidTank[] getAccessibleFluidTanks(Direction side);
-
-	protected abstract boolean canFillTankFrom(int iTank, Direction side, FluidStack resource);
-
-	protected abstract boolean canDrainTankFrom(int iTank, Direction side);
-
-	public static class MultiblockFluidWrapper implements IFluidHandler
-	{
-		final MultiblockPartBlockEntity<?> multiblock;
-		final Direction side;
-
-		public MultiblockFluidWrapper(MultiblockPartBlockEntity<?> multiblock, Direction side)
-		{
-			this.multiblock = multiblock;
-			this.side = side;
-		}
-
-		@Override
-		public int getTanks()
-		{
-			return multiblock.getAccessibleFluidTanks(side).length;
-		}
-
-		@Nonnull
-		@Override
-		public FluidStack getFluidInTank(int tank)
-		{
-			return multiblock.getAccessibleFluidTanks(side)[tank].getFluid();
-		}
-
-		@Override
-		public int getTankCapacity(int tank)
-		{
-			return multiblock.getAccessibleFluidTanks(side)[tank].getCapacity();
-		}
-
-		@Override
-		public boolean isFluidValid(int tank, @Nonnull FluidStack stack)
-		{
-			return multiblock.getAccessibleFluidTanks(side)[tank].isFluidValid(stack);
-		}
-
-		@Override
-		public int fill(FluidStack resource, FluidAction doFill)
-		{
-			if(!this.multiblock.formed||resource==null)
-				return 0;
-			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
-			int fill = -1;
-			for(int i = 0; i < tanks.length; i++)
-			{
-				IFluidTank tank = tanks[i];
-				if(tank!=null&&this.multiblock.canFillTankFrom(i, side, resource)&&tank.getFluid()!=null&&tank.getFluid().isFluidEqual(resource))
-				{
-					fill = tank.fill(resource, doFill);
-					if(fill > 0)
-						break;
-				}
-			}
-			if(fill==-1)
-				for(int i = 0; i < tanks.length; i++)
-				{
-					IFluidTank tank = tanks[i];
-					if(tank!=null&&this.multiblock.canFillTankFrom(i, side, resource))
-					{
-						fill = tank.fill(resource, doFill);
-						if(fill > 0)
-							break;
-					}
-				}
-			if(fill > 0&&doFill.execute())
-				this.multiblock.updateMasterBlock(null, true);
-			return Math.max(fill, 0);
-		}
-
-		@Nonnull
-		@Override
-		public FluidStack drain(FluidStack resource, FluidAction doDrain)
-		{
-			if(!this.multiblock.formed||resource==null)
-				return FluidStack.EMPTY;
-			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
-			FluidStack drain = FluidStack.EMPTY;
-			for(int i = 0; i < tanks.length; i++)
-			{
-				IFluidTank tank = tanks[i];
-				if(tank!=null&&this.multiblock.canDrainTankFrom(i, side))
-				{
-					if(tank instanceof IFluidHandler)
-						drain = ((IFluidHandler)tank).drain(resource, doDrain);
-					else
-						drain = tank.drain(resource.getAmount(), doDrain);
-					if(!drain.isEmpty())
-						break;
-				}
-			}
-			if(!drain.isEmpty())
-				this.multiblock.updateMasterBlock(null, true);
-			return drain;
-		}
-
-		@Nonnull
-		@Override
-		public FluidStack drain(int maxDrain, FluidAction doDrain)
-		{
-			if(!this.multiblock.formed||maxDrain==0)
-				return FluidStack.EMPTY;
-			IFluidTank[] tanks = this.multiblock.getAccessibleFluidTanks(side);
-			FluidStack drain = FluidStack.EMPTY;
-			for(int i = 0; i < tanks.length; i++)
-			{
-				IFluidTank tank = tanks[i];
-				if(tank!=null&&this.multiblock.canDrainTankFrom(i, side))
-				{
-					drain = tank.drain(maxDrain, doDrain);
-					if(!drain.isEmpty())
-						break;
-				}
-			}
-			if(!drain.isEmpty())
-				this.multiblock.updateMasterBlock(null, true);
-			return drain;
-		}
 	}
 
 	@Override

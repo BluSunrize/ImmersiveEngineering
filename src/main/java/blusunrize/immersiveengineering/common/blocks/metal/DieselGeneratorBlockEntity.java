@@ -20,10 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.ScaffoldingBlock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.util.CachedRecipe;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
-import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.*;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
@@ -40,14 +37,17 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
@@ -70,6 +70,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	public DieselGeneratorBlockEntity(BlockEntityType<DieselGeneratorBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(IEMultiblocks.DIESEL_GENERATOR, type, true, pos, state);
+		tanks[0].setValidator(fs -> recipeGetter.apply(fs.getFluid())!=null);
 	}
 
 	@Override
@@ -314,26 +315,24 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 		);
 	}
 
+	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
+			be -> be.fluidCap, DieselGeneratorBlockEntity::master, this, registerFluidInput(tanks)
+	);
+
+	@Nonnull
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
-		DieselGeneratorBlockEntity master = master();
-		if(master!=null&&(posInMultiblock.getZ()==4&&posInMultiblock.getY()==0&&posInMultiblock.getX()%2==0)
-				&&(side==null||side.getAxis()==getFacing().getCounterClockWise().getAxis()))
-			return master.tanks;
-		return new FluidTank[0];
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			if(facing==null||isFluidInput(facing))
+				return fluidCap.getAndCast();
+		return super.getCapability(capability, facing);
 	}
 
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
+	private boolean isFluidInput(Direction side)
 	{
-		return recipeGetter.apply(resources.getFluid())!=null;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return false;
+		return (posInMultiblock.getZ()==4&&posInMultiblock.getY()==0&&posInMultiblock.getX()%2==0)
+				&&side.getAxis()==getFacing().getCounterClockWise().getAxis();
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -40,7 +41,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -263,27 +265,6 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		CokeOvenBlockEntity master = master();
-		if(master!=null)
-			return new FluidTank[]{master.tank};
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
-	{
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return true;
-	}
-
-	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
 		CokeOvenBlockEntity master = master();
@@ -319,11 +300,16 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 			new IEInventoryHandler(4, this, 0, new boolean[]{true, false, true, false},
 					new boolean[]{false, true, false, true})
 	);
+	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
+			be -> be.fluidCap, CokeOvenBlockEntity::master, this, registerFluidOutput(tank)
+	);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			return fluidCap.getAndCast();
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			CokeOvenBlockEntity master = master();

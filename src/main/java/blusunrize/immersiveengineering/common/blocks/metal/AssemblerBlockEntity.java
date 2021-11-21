@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -55,6 +56,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -537,11 +540,19 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	private static final BlockPos inputPos = new BlockPos(1, 1, 2);
 	private static final BlockPos outputPos = new BlockPos(1, 1, 0);
 	private static final Set<BlockPos> itemConnections = ImmutableSet.of(inputPos, outputPos);
+	private static final MultiblockFace fluidInputPos = new MultiblockFace(1, 0, 2, RelativeBlockFace.FRONT);
+
+	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
+			be -> be.fluidCap, AssemblerBlockEntity::master, this, registerFluidHandler(tanks)
+	);
 
 	@Nonnull
 	@Override
-	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
+	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			if(facing==null||fluidInputPos.equals(asRelativeFace(facing)))
+				return fluidCap.getAndCast();
 		if(itemConnections.contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			AssemblerBlockEntity master = master();
@@ -587,29 +598,6 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 		return IEContainerTypes.ASSEMBLER;
 	}
 
-	private static final BlockPos fluidInputPos = new BlockPos(1, 0, 2);
-
-	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		AssemblerBlockEntity master = master();
-		if(master!=null&&fluidInputPos.equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
-			return master.tanks;
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
-	{
-		return true;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return true;
-	}
-
 	@Override
 	public Direction[] sigOutputDirections()
 	{
@@ -630,7 +618,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	public static class CrafterPatternInventory implements Container
 	{
 		public NonNullList<ItemStack> inv = NonNullList.withSize(10, ItemStack.EMPTY);
-		public Recipe recipe;
+		public Recipe<CraftingContainer> recipe;
 		final AssemblerBlockEntity tile;
 
 		public CrafterPatternInventory(AssemblerBlockEntity tile)

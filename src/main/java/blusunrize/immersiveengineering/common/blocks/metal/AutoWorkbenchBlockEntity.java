@@ -47,7 +47,6 @@ import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -373,24 +372,6 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	public BEContainer<AutoWorkbenchBlockEntity, ?> getContainerType()
 	{
 		return IEContainerTypes.AUTO_WORKBENCH;
-	}
-
-	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
-	{
-		return true;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return true;
 	}
 
 	@Override

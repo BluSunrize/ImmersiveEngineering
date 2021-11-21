@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableList;
@@ -38,24 +39,26 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBlockEntity, RefineryRecipe> implements
 		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<RefineryBlockEntity>, IBlockBounds
 {
-	public static final int OUTPUT_EMPTY = 4;
-	public static final int OUTPUT_FILLED = 5;
 	public FluidTank[] tanks = new FluidTank[]{
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
@@ -66,6 +69,8 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	public RefineryBlockEntity(BlockEntityType<RefineryBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(IEMultiblocks.REFINERY, 16000, true, type, pos, state);
+		tanks[0].setValidator(fs -> RefineryRecipe.findIncompleteRefineryRecipe(fs, tanks[1].getFluid()).isPresent());
+		tanks[1].setValidator(fs -> RefineryRecipe.findIncompleteRefineryRecipe(fs, tanks[0].getFluid()).isPresent());
 	}
 
 	@Override
@@ -346,53 +351,36 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	}
 
 
-	private static final BlockPos outputOffset = new BlockPos(2, 0, 2);
-	private static final Set<BlockPos> inputOffsets = ImmutableSet.of(
-			new BlockPos(0, 0, 1),
-			new BlockPos(4, 0, 1)
+	private static final MultiblockFace outputOffset = new MultiblockFace(2, 0, 2, RelativeBlockFace.FRONT);
+	private static final Set<MultiblockFace> inputOffsets = ImmutableSet.of(
+			new MultiblockFace(0, 0, 1, RelativeBlockFace.LEFT),
+			new MultiblockFace(4, 0, 1, RelativeBlockFace.RIGHT)
+	);
+	private final MultiblockCapability<IFluidHandler> fluidInput = MultiblockCapability.make(
+			be -> be.fluidInput, RefineryBlockEntity::master, this, registerFluidInput(tanks[0], tanks[1])
+	);
+	private final MultiblockCapability<IFluidHandler> fluidOutput = MultiblockCapability.make(
+			be -> be.fluidOutput, RefineryBlockEntity::master, this, registerFluidInput(tanks[2])
+	);
+	private final MultiblockCapability<IFluidHandler> allFluids = MultiblockCapability.make(
+			be -> be.allFluids, RefineryBlockEntity::master, this, registerFluidView(tanks)
 	);
 
+	@Nonnull
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction side)
 	{
-		RefineryBlockEntity master = this.master();
-		if(master!=null)
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 		{
-			if(outputOffset.equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
-				return new FluidTank[]{master.tanks[2]};
-			if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().getCounterClockWise().getAxis()))
-				return new FluidTank[]{master.tanks[0], master.tanks[1]};
+			if(side==null)
+				return allFluids.getAndCast();
+			MultiblockFace relativeFace = asRelativeFace(side);
+			if(outputOffset.equals(relativeFace))
+				return fluidOutput.getAndCast();
+			else if(inputOffsets.contains(relativeFace))
+				return fluidInput.getAndCast();
 		}
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
-	{
-		if(inputOffsets.contains(posInMultiblock)&&(side==null||side.getAxis()==getFacing().getCounterClockWise().getAxis()))
-		{
-			RefineryBlockEntity master = this.master();
-			if(master==null||master.tanks[iTank].getFluidAmount() >= master.tanks[iTank].getCapacity())
-				return false;
-			if(master.tanks[0].getFluid().isEmpty()&&master.tanks[1].getFluid().isEmpty())
-			{
-				Optional<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource, FluidStack.EMPTY);
-				return incompleteRecipes.isPresent();
-			}
-			else
-			{
-				FluidStack otherFluid = master.tanks[iTank==0?1: 0].getFluid();
-				Optional<RefineryRecipe> incompleteRecipes = RefineryRecipe.findIncompleteRefineryRecipe(resource, otherFluid);
-				return incompleteRecipes.isPresent();
-			}
-		}
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return outputOffset.equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite());
+		return super.getCapability(capability, side);
 	}
 
 	@Override

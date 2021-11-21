@@ -31,9 +31,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -140,24 +137,6 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		}
 		nbt.putInt("storageAmount", storageAmount);
 		nbt.putBoolean("lockItem", lockItem);
-	}
-
-	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
-	{
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return false;
 	}
 
 	private static final CachedShapesWithTransform<BlockPos, Direction> BLOCK_BOUNDS = CachedShapesWithTransform.createDirectional(

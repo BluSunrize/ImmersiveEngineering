@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMulti
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
@@ -31,9 +30,6 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -273,25 +269,6 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 	@Override
 	public void doGraphicalUpdates()
 	{
-	}
-
-	@Nonnull
-	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
-	{
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return false;
 	}
 
 	public StateView getGuiInts()

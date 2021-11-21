@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.BlockstateProvider;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IRedstoneOutput;
+import blusunrize.immersiveengineering.common.fluids.ArrayFluidHandler;
 import blusunrize.immersiveengineering.mixin.accessors.BETypeAccess;
 import blusunrize.immersiveengineering.mixin.accessors.BlockEntityAccess;
 import com.google.common.base.Preconditions;
@@ -33,6 +34,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.common.util.NonNullSupplier;
 import net.minecraftforge.energy.IEnergyStorage;
+import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -177,6 +180,35 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 		return registerConstantCap(new WrappingEnergyStorage(directStorage, false, true, this::setChanged));
 	}
 
+	private LazyOptional<IFluidHandler> registerFluidHandler(IFluidTank[] tanks, boolean allowDrain, boolean allowFill)
+	{
+		return registerConstantCap(new ArrayFluidHandler(
+				// TODO the global forced update is a hack and should be replaced by updates on the machines that render
+				//  the fluid in world and screen sync for those that do not
+				tanks, allowDrain, allowFill, () -> markContainingBlockForUpdate(null)
+		));
+	}
+
+	protected final LazyOptional<IFluidHandler> registerFluidHandler(IFluidTank... tanks)
+	{
+		return registerFluidHandler(tanks, true, true);
+	}
+
+	protected final LazyOptional<IFluidHandler> registerFluidInput(IFluidTank... tanks)
+	{
+		return registerFluidHandler(tanks, false, true);
+	}
+
+	protected final LazyOptional<IFluidHandler> registerFluidOutput(IFluidTank... tanks)
+	{
+		return registerFluidHandler(tanks, true, false);
+	}
+
+	protected final LazyOptional<IFluidHandler> registerFluidView(IFluidTank... tanks)
+	{
+		return registerFluidHandler(tanks, false, false);
+	}
+
 	@Override
 	public final void setRemoved()
 	{
@@ -252,7 +284,7 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 		super.setBlockState(newState);
 		if(getType().isValid(old)&&!getType().isValid(newState))
 			setOverrideState(old);
-		else if (getType().isValid(newState))
+		else if(getType().isValid(newState))
 			setOverrideState(null);
 	}
 
@@ -275,7 +307,7 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	 */
 	protected void markChunkDirty()
 	{
-		if(this.level!=null && this.level.hasChunkAt(this.worldPosition))
+		if(this.level!=null&&this.level.hasChunkAt(this.worldPosition))
 			this.level.getChunkAt(this.worldPosition).markUnsaved();
 	}
 
@@ -291,7 +323,7 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	@Override
 	public void setChanged()
 	{
-		if (this.level !=null)
+		if(this.level!=null)
 		{
 			BlockState state = this.level.getBlockState(this.worldPosition);
 			((BlockEntityAccess)this).setBlockState(state);

@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -46,6 +47,8 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -352,27 +355,6 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		FermenterBlockEntity master = this.master();
-		if(master!=null&&new BlockPos(2, 0, 1).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise())))
-			return master.tanks;
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
-	{
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return true;
-	}
-
-	@Override
 	public void doGraphicalUpdates()
 	{
 		this.setChanged();
@@ -385,11 +367,17 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	private final LazyOptional<IItemHandler> extractionHandler = registerConstantCap(
 			new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true})
 	);
+	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
+			be -> be.fluidCap, FermenterBlockEntity::master, this, registerFluidOutput(tanks)
+	);
+	private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(2, 0, 1, RelativeBlockFace.RIGHT);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||FLUID_OUTPUT.equals(asRelativeFace(facing))))
+			return fluidCap.getAndCast();
 		if(ImmutableSet.of(
 				new BlockPos(1, 1, 1),
 				new BlockPos(0, 1, 0)

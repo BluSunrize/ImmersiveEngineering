@@ -18,12 +18,12 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -44,6 +44,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -369,11 +371,17 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	}
 
 	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new BottlingMachineInventoryHandler(this));
+	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
+			be -> be.fluidCap, BottlingMachineBlockEntity::master, this, registerFluidInput(tanks)
+	);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			if(facing==null||(BlockPos.ZERO.equals(posInMultiblock)&&facing.getAxis().isHorizontal()))
+				return fluidCap.getAndCast();
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			BottlingMachineBlockEntity master = master();
@@ -384,35 +392,6 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			return LazyOptional.empty();
 		}
 		return super.getCapability(capability, facing);
-	}
-
-	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		BottlingMachineBlockEntity master = this.master();
-		if(master!=null)
-		{
-			if(BlockPos.ZERO.equals(posInMultiblock)&&(side==null||side.getAxis()!=Axis.Y))
-				return master.tanks;
-		}
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
-	{
-		if(BlockPos.ZERO.equals(posInMultiblock)&&(side==null||side.getAxis()!=Axis.Y))
-		{
-			BottlingMachineBlockEntity master = this.master();
-			return !(master==null||master.tanks[iTank].getFluidAmount() >= master.tanks[iTank].getCapacity());
-		}
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return false;
 	}
 
 	@Override

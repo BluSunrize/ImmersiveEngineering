@@ -37,8 +37,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.Constants.NBT;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -72,24 +70,6 @@ public class BucketWheelBlockEntity extends MultiblockPartBlockEntity<BucketWhee
 		nbt.putFloat("rotation", rotation);
 		ContainerHelper.saveAllItems(nbt, digStacks);
 		nbt.putBoolean("active", active);
-	}
-
-	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		return new IFluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
-	{
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return false;
 	}
 
 	@Override

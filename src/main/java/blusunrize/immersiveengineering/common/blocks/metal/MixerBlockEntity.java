@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
@@ -52,8 +53,9 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
+import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -389,28 +391,6 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		MixerBlockEntity master = master();
-		if(master!=null&&((new BlockPos(1, 0, 2).equals(posInMultiblock)&&(side==null||side==getFacing().getOpposite()))
-				||(new BlockPos(0, 0, 1).equals(posInMultiblock)&&(side==null||side==(getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise())))))
-			return master.getInternalTanks();
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
-	{
-		return side==null||side==(getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise());
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return side==null||side==getFacing().getOpposite();
-	}
-
-	@Override
 	public void doGraphicalUpdates()
 	{
 		this.setChanged();
@@ -420,11 +400,29 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	private LazyOptional<IItemHandler> insertionHandler = registerConstantCap(
 			new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8])
 	);
+	private final MultiblockCapability<IFluidHandler> fluidInputCap = MultiblockCapability.make(
+			be -> be.fluidInputCap, MixerBlockEntity::master, this, registerFluidInput(tank)
+	);
+	private final MultiblockCapability<IFluidHandler> fluidOutputCap = MultiblockCapability.make(
+			be -> be.fluidOutputCap, MixerBlockEntity::master, this, registerFluidOutput(tank)
+	);
+	private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(1, 0, 2, RelativeBlockFace.FRONT);
+	private static final MultiblockFace FLUID_INPUT = new MultiblockFace(0, 0, 1, RelativeBlockFace.LEFT);
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			if(facing==null)
+				return fluidInputCap.getAndCast();
+			MultiblockFace relativeFace = asRelativeFace(facing);
+			if(FLUID_INPUT.equals(relativeFace))
+				return fluidInputCap.getAndCast();
+			else if(FLUID_OUTPUT.equals(relativeFace))
+				return fluidOutputCap.getAndCast();
+		}
 		if((facing==null||new BlockPos(1, 1, 0).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
 			MixerBlockEntity master = master();

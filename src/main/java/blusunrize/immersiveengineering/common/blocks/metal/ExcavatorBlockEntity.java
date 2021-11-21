@@ -489,24 +489,6 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 	}
 
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
-	{
-		return new IFluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resources)
-	{
-		return false;
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return false;
-	}
-
-	@Override
 	public void doGraphicalUpdates()
 	{
 		this.setChanged();

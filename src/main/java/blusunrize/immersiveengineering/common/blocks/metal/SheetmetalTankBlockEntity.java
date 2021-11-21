@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerIn
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
@@ -35,14 +36,16 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -155,27 +158,25 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 
 	private static final BlockPos ioTopOffset = new BlockPos(1, 4, 1);
 	private static final BlockPos ioBottomOffset = new BlockPos(1, 0, 1);
-	private static final Set<BlockPos> ioOffsets = ImmutableSet.of(ioTopOffset, ioBottomOffset);
+	private final MultiblockCapability<IFluidHandler> fluidInput = MultiblockCapability.make(
+			be -> be.fluidInput, SheetmetalTankBlockEntity::master, this, registerFluidInput(tank)
+	);
+	private final MultiblockCapability<IFluidHandler> fluidIO = MultiblockCapability.make(
+			be -> be.fluidInput, SheetmetalTankBlockEntity::master, this, registerFluidHandler(tank)
+	);
 
+	@Nonnull
 	@Override
-	protected IFluidTank[] getAccessibleFluidTanks(Direction side)
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
-		SheetmetalTankBlockEntity master = master();
-		if(master!=null&&ioOffsets.contains(posInMultiblock))
-			return new FluidTank[]{master.tank};
-		return new FluidTank[0];
-	}
-
-	@Override
-	protected boolean canFillTankFrom(int iTank, Direction side, FluidStack resource)
-	{
-		return ioOffsets.contains(posInMultiblock);
-	}
-
-	@Override
-	protected boolean canDrainTankFrom(int iTank, Direction side)
-	{
-		return ioBottomOffset.equals(posInMultiblock);
+		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+		{
+			if(ioBottomOffset.equals(posInMultiblock))
+				return fluidIO.getAndCast();
+			else if(ioTopOffset.equals(posInMultiblock))
+				return fluidInput.getAndCast();
+		}
+		return super.getCapability(capability, facing);
 	}
 
 	@Override
