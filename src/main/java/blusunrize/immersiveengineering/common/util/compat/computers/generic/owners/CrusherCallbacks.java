@@ -9,10 +9,9 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
@@ -36,8 +35,8 @@ public class CrusherCallbacks extends MultiblockCallbackOwner<CrusherBlockEntity
 		if(index < 0||index >= queue.size())
 			throw new RuntimeException("Invalid index, queue contains "+queue.size()+" elements");
 		MultiblockProcess<CrusherRecipe> process = queue.get(index);
-		if(process instanceof PoweredMultiblockBlockEntity.MultiblockProcessInWorld<?>)
-			return ((MultiblockProcessInWorld<CrusherRecipe>)process).inputItems.get(0);
+		if(process instanceof MultiblockProcessInWorld<?> inWorld)
+			return inWorld.inputItems.get(0);
 		else
 			return null;
 	}

@@ -16,10 +16,9 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.MultitankArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.MixerBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.MixerContainer;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.google.common.collect.ImmutableList;
@@ -85,10 +84,10 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		MultiBufferSource.BufferSource buffers = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
-			if(process instanceof PoweredMultiblockBlockEntity.MultiblockProcessInMachine)
+			if(process instanceof MultiblockProcessInMachine<?> inMachine)
 			{
 				float mod = 1-(process.processTick/(float)process.maxTicks);
-				for(int slot : ((MultiblockProcessInMachine<?>)process).getInputSlots())
+				for(int slot : inMachine.getInputSlots())
 				{
 					int h = (int)Math.max(1, mod*16);
 					this.blit(transform, leftPos+24+slot%2*21, topPos+7+slot/2*18+(16-h), 176, 16-h, 2, h);

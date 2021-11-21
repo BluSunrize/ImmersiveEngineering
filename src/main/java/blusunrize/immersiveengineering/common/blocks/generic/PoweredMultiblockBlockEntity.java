@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.common.blocks.generic;
 
-import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
-import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.energy.AveragingEnergyStorage;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
-import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessBE;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -24,12 +24,10 @@ import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,9 +38,7 @@ import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import javax.annotation.Nonnull;
@@ -377,383 +373,6 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		}
 	}
 
-	public abstract static class MultiblockProcess<R extends MultiblockRecipe>
-	{
-		public R recipe;
-		public int processTick;
-		public int maxTicks;
-		public int energyPerTick;
-		public boolean clearProcess = false;
-
-		public MultiblockProcess(R recipe)
-		{
-			this.recipe = recipe;
-			this.processTick = 0;
-			this.maxTicks = this.recipe.getTotalProcessTime();
-			this.energyPerTick = this.recipe.getTotalProcessEnergy()/this.maxTicks;
-		}
-
-		protected List<ItemStack> getRecipeItemOutputs(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			return recipe.getActualItemOutputs(multiblock);
-		}
-
-		protected List<FluidStack> getRecipeFluidOutputs(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			return recipe.getActualFluidOutputs(multiblock);
-		}
-
-		public boolean canProcess(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			if(multiblock.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick)
-			{
-				List<ItemStack> outputs = recipe.getItemOutputs();
-				if(outputs!=null&&!outputs.isEmpty())
-				{
-					int[] outputSlots = multiblock.getOutputSlots();
-					for(ItemStack output : outputs)
-						if(!output.isEmpty())
-						{
-							boolean canOutput = false;
-							if(outputSlots==null)
-								canOutput = true;
-							else
-							{
-								for(int iOutputSlot : outputSlots)
-								{
-									ItemStack s = multiblock.getInventory().get(iOutputSlot);
-									if(s.isEmpty()||(ItemHandlerHelper.canItemStacksStack(s, output)&&s.getCount()+output.getCount() <= multiblock.getSlotLimit(iOutputSlot)))
-									{
-										canOutput = true;
-										break;
-									}
-								}
-							}
-							if(!canOutput)
-								return false;
-						}
-				}
-				List<FluidStack> fluidOutputs = recipe.getFluidOutputs();
-				if(fluidOutputs!=null&&!fluidOutputs.isEmpty())
-				{
-					IFluidTank[] tanks = multiblock.getInternalTanks();
-					int[] outputTanks = multiblock.getOutputTanks();
-					for(FluidStack output : fluidOutputs)
-						if(output!=null&&output.getAmount() > 0)
-						{
-							boolean canOutput = false;
-							if(tanks==null||outputTanks==null)
-								canOutput = true;
-							else
-							{
-								for(int iOutputTank : outputTanks)
-									if(iOutputTank >= 0&&iOutputTank < tanks.length&&tanks[iOutputTank]!=null
-											&&tanks[iOutputTank].fill(output, FluidAction.SIMULATE)==output.getAmount())
-									{
-										canOutput = true;
-										break;
-									}
-							}
-							if(!canOutput)
-								return false;
-						}
-				}
-				return multiblock.additionalCanProcessCheck(this);
-			}
-			return false;
-		}
-
-		public void doProcessTick(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			int energyExtracted = energyPerTick;
-			int ticksAdded = 1;
-			if(this.recipe.getMultipleProcessTicks() > 1)
-			{
-				//Average Insertion, tracked by the advanced flux storage
-				int averageInsertion = multiblock.energyStorage.getAverageInsertion();
-				//Average Insertion mustn't be greater than possible extraction
-				averageInsertion = multiblock.energyStorage.extractEnergy(averageInsertion, true);
-				if(averageInsertion > energyExtracted)
-				{
-					int possibleTicks = Math.min(averageInsertion/energyPerTick, Math.min(this.recipe.getMultipleProcessTicks(), this.maxTicks-this.processTick));
-					if(possibleTicks > 1)
-					{
-						ticksAdded = possibleTicks;
-						energyExtracted *= ticksAdded;
-					}
-				}
-			}
-			multiblock.energyStorage.extractEnergy(energyExtracted, false);
-			this.processTick += ticksAdded;
-
-			if(this.processTick >= this.maxTicks)
-			{
-				this.processFinish(multiblock);
-			}
-		}
-
-		protected void processFinish(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			List<ItemStack> outputs = getRecipeItemOutputs(multiblock);
-			if(outputs!=null&&!outputs.isEmpty())
-			{
-				int[] outputSlots = multiblock.getOutputSlots();
-				for(ItemStack output : outputs)
-					if(!output.isEmpty())
-						if(outputSlots==null||multiblock.getInventory()==null)
-							multiblock.doProcessOutput(output.copy());
-						else
-						{
-							for(int iOutputSlot : outputSlots)
-							{
-								ItemStack s = multiblock.getInventory().get(iOutputSlot);
-								if(s.isEmpty())
-								{
-									multiblock.getInventory().set(iOutputSlot, output.copy());
-									break;
-								}
-								else if(ItemHandlerHelper.canItemStacksStack(s, output)&&s.getCount()+output.getCount() <= multiblock.getSlotLimit(iOutputSlot))
-								{
-									multiblock.getInventory().get(iOutputSlot).grow(output.getCount());
-									break;
-								}
-							}
-						}
-			}
-			List<FluidStack> fluidOutputs = getRecipeFluidOutputs(multiblock);
-			if(fluidOutputs!=null&&!fluidOutputs.isEmpty())
-			{
-				IFluidTank[] tanks = multiblock.getInternalTanks();
-				int[] outputTanks = multiblock.getOutputTanks();
-				for(FluidStack output : fluidOutputs)
-					if(output!=null&&output.getAmount() > 0)
-					{
-						if(tanks==null||outputTanks==null)
-							multiblock.doProcessFluidOutput(output);
-						else
-						{
-							for(int iOutputTank : outputTanks)
-								if(iOutputTank >= 0&&iOutputTank < tanks.length&&tanks[iOutputTank]!=null
-										&&tanks[iOutputTank].fill(output, FluidAction.SIMULATE)==output.getAmount())
-								{
-									tanks[iOutputTank].fill(output, FluidAction.EXECUTE);
-									break;
-								}
-						}
-					}
-			}
-
-			multiblock.onProcessFinish(this);
-			this.clearProcess = true;
-		}
-
-		protected abstract void writeExtraDataToNBT(CompoundTag nbt);
-	}
-
-	public static class MultiblockProcessInMachine<R extends MultiblockRecipe> extends MultiblockProcess<R>
-	{
-		protected int[] inputSlots = new int[0];
-		protected int[] inputAmounts = null;
-		protected int[] inputTanks = new int[0];
-
-		public MultiblockProcessInMachine(R recipe, int... inputSlots)
-		{
-			super(recipe);
-			this.inputSlots = inputSlots;
-		}
-
-		public MultiblockProcessInMachine<R> setInputTanks(int... inputTanks)
-		{
-			this.inputTanks = inputTanks;
-			return this;
-		}
-
-		public MultiblockProcessInMachine<R> setInputAmounts(int... inputAmounts)
-		{
-			this.inputAmounts = inputAmounts;
-			return this;
-		}
-
-		public int[] getInputSlots()
-		{
-			return this.inputSlots;
-		}
-
-		@Nullable
-		public int[] getInputAmounts()
-		{
-			return this.inputAmounts;
-		}
-
-		public int[] getInputTanks()
-		{
-			return this.inputTanks;
-		}
-
-		protected List<IngredientWithSize> getRecipeItemInputs(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			return recipe.getItemInputs();
-		}
-
-		protected List<FluidTagInput> getRecipeFluidInputs(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			return recipe.getFluidInputs();
-		}
-
-		@Override
-		public void doProcessTick(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			NonNullList<ItemStack> inv = multiblock.getInventory();
-			if(recipe.shouldCheckItemAvailability()&&recipe.getItemInputs()!=null&&inv!=null)
-			{
-				NonNullList<ItemStack> query = NonNullList.withSize(inputSlots.length, ItemStack.EMPTY);
-				for(int i = 0; i < inputSlots.length; i++)
-					if(inputSlots[i] >= 0&&inputSlots[i] < inv.size())
-						query.set(i, multiblock.getInventory().get(inputSlots[i]));
-				if(!IngredientUtils.stacksMatchIngredientWithSizeList(recipe.getItemInputs(), query))
-				{
-					this.clearProcess = true;
-					return;
-				}
-			}
-			super.doProcessTick(multiblock);
-		}
-
-		@Override
-		protected void processFinish(PoweredMultiblockBlockEntity<?, R> multiblock)
-		{
-			super.processFinish(multiblock);
-			NonNullList<ItemStack> inv = multiblock.getInventory();
-			List<IngredientWithSize> itemInputList = this.getRecipeItemInputs(multiblock);
-			if(inv!=null&&this.inputSlots!=null&&itemInputList!=null)
-			{
-				if(this.inputAmounts!=null&&this.inputSlots.length==this.inputAmounts.length)
-				{
-					for(int i = 0; i < this.inputSlots.length; i++)
-						if(this.inputAmounts[i] > 0)
-							inv.get(this.inputSlots[i]).shrink(this.inputAmounts[i]);
-
-				}
-				else
-					for(IngredientWithSize ingr : new ArrayList<>(itemInputList))
-					{
-						int ingrSize = ingr.getCount();
-						for(int slot : this.inputSlots)
-							if(!inv.get(slot).isEmpty()&&ingr.test(inv.get(slot)))
-							{
-								int taken = Math.min(inv.get(slot).getCount(), ingrSize);
-								inv.get(slot).shrink(taken);
-								if(inv.get(slot).getCount() <= 0)
-									inv.set(slot, ItemStack.EMPTY);
-								if((ingrSize -= taken) <= 0)
-									break;
-							}
-					}
-			}
-			IFluidTank[] tanks = multiblock.getInternalTanks();
-			List<FluidTagInput> fluidInputList = this.getRecipeFluidInputs(multiblock);
-			if(tanks!=null&&this.inputTanks!=null&&fluidInputList!=null)
-			{
-				for(FluidTagInput ingr : new ArrayList<>(fluidInputList))
-				{
-					int ingrSize = ingr.getAmount();
-					for(int tank : this.inputTanks)
-						if(tanks[tank]!=null&&ingr.testIgnoringAmount(tanks[tank].getFluid()))
-						{
-							int taken = Math.min(tanks[tank].getFluidAmount(), ingrSize);
-							tanks[tank].drain(taken, FluidAction.EXECUTE);
-							if((ingrSize -= taken) <= 0)
-								break;
-						}
-				}
-			}
-		}
-
-		public static <R extends MultiblockRecipe>
-		MultiblockProcessInMachine<R> load(R recipe, CompoundTag data)
-		{
-			return new MultiblockProcessInMachine<>(recipe, data.getIntArray("process_inputSlots"))
-					.setInputAmounts(data.getIntArray("process_inputAmounts"))
-					.setInputTanks(data.getIntArray("process_inputTanks"));
-		}
-
-		@Override
-		protected void writeExtraDataToNBT(CompoundTag nbt)
-		{
-			if(inputSlots!=null)
-				nbt.putIntArray("process_inputSlots", inputSlots);
-			if(inputAmounts!=null)
-				nbt.putIntArray("process_inputAmounts", inputAmounts);
-			if(inputTanks!=null)
-				nbt.putIntArray("process_inputTanks", inputTanks);
-		}
-	}
-
-	public static class MultiblockProcessInWorld<R extends MultiblockRecipe> extends MultiblockProcess<R>
-	{
-		public NonNullList<ItemStack> inputItems;
-		protected float transformationPoint;
-
-		public MultiblockProcessInWorld(R recipe, float transformationPoint, NonNullList<ItemStack> inputItem)
-		{
-			super(recipe);
-			this.inputItems = inputItem;
-			this.transformationPoint = transformationPoint;
-		}
-
-		public List<ItemStack> getDisplayItem()
-		{
-			if(processTick/(float)maxTicks > transformationPoint)
-			{
-				List<ItemStack> list = this.recipe.getItemOutputs();
-				if(!list.isEmpty())
-					return list;
-			}
-			return inputItems;
-		}
-
-		public static <R extends MultiblockRecipe>
-		MultiblockProcessInWorld<R> load(R recipe, CompoundTag data)
-		{
-			NonNullList<ItemStack> inputs = NonNullList.withSize(data.getInt("numInputs"), ItemStack.EMPTY);
-			ContainerHelper.loadAllItems(data, inputs);
-			float transformationPoint = data.getFloat("process_transformationPoint");
-			return new MultiblockProcessInWorld<>(recipe, transformationPoint, inputs);
-		}
-
-		@Override
-		protected void writeExtraDataToNBT(CompoundTag nbt)
-		{
-			ContainerHelper.saveAllItems(nbt, inputItems);
-			nbt.putInt("numInputs", inputItems.size());
-			nbt.putFloat("process_transformationPoint", transformationPoint);
-		}
-
-		@Override
-		protected void processFinish(PoweredMultiblockBlockEntity multiblock)
-		{
-			super.processFinish(multiblock);
-			int size = -1;
-
-			for(ItemStack inputItem : this.inputItems)
-			{
-				for(IngredientWithSize s : recipe.getItemInputs())
-					if(s.test(inputItem))
-					{
-						size = s.getCount();
-						break;
-					}
-
-				if(size > 0&&inputItem.getCount() > size)
-				{
-					inputItem.split(size);
-					processTick = 0;
-					clearProcess = false;
-				}
-			}
-		}
-	}
-
 	public static class MultiblockInventoryHandler_DirectProcessing
 			<T extends PoweredMultiblockBlockEntity<T, R>, R extends MultiblockRecipe>
 			implements IItemHandlerModifiable
@@ -767,13 +386,13 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			this.multiblock = multiblock;
 		}
 
-		public MultiblockInventoryHandler_DirectProcessing setTransformationPoint(float point)
+		public MultiblockInventoryHandler_DirectProcessing<T, R> setTransformationPoint(float point)
 		{
 			this.transformationPoint = point;
 			return this;
 		}
 
-		public MultiblockInventoryHandler_DirectProcessing setProcessStacking(boolean stacking)
+		public MultiblockInventoryHandler_DirectProcessing<T, R> setProcessStacking(boolean stacking)
 		{
 			this.doProcessStacking = stacking;
 			return this;
@@ -785,14 +404,16 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			return 1;
 		}
 
+		@Nonnull
 		@Override
 		public ItemStack getStackInSlot(int slot)
 		{
 			return ItemStack.EMPTY;
 		}
 
+		@Nonnull
 		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+		public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
 		{
 			stack = stack.copy();
 			R recipe = this.multiblock.findRecipeForInsertion(stack);
@@ -811,6 +432,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			return stack;
 		}
 
+		@Nonnull
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
@@ -830,7 +452,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		}
 
 		@Override
-		public void setStackInSlot(int slot, ItemStack stack)
+		public void setStackInSlot(int slot, @Nonnull ItemStack stack)
 		{
 		}
 	}

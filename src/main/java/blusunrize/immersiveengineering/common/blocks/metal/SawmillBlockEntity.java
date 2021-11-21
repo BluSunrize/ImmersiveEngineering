@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
@@ -537,8 +538,9 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		return null;
 	}
 
-	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new MultiblockInventoryHandler_DirectProcessing(this)
+	LazyOptional<IItemHandler> insertionHandler = registerConstantCap(new MultiblockInventoryHandler_DirectProcessing<>(this)
 	{
+		@Nonnull
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{

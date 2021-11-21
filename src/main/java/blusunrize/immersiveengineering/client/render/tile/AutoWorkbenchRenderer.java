@@ -16,10 +16,9 @@ import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.HashMultimap;
@@ -217,11 +216,11 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			if(itemDisplays[i]!=null)
 			{
 				MultiblockProcess<MultiblockRecipe> process = blockEntity.processQueue.get(i);
-				if(!(process instanceof PoweredMultiblockBlockEntity.MultiblockProcessInWorld))
+				if(!(process instanceof MultiblockProcessInWorld<?> inWorld))
 					continue;
 
 				float scale = .3125f;
-				List<ItemStack> dList = ((MultiblockProcessInWorld<?>)process).getDisplayItem();
+				List<ItemStack> dList = inWorld.getDisplayItem();
 				if(!dList.isEmpty())
 					if(dList.size() < 2)
 					{

@@ -10,10 +10,9 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalPressBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
@@ -112,9 +111,9 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 		for(int i = 0; i < shift.length; i++)
 		{
 			MultiblockProcess<?> process = te.processQueue.get(i);
-			if(!(process instanceof PoweredMultiblockBlockEntity.MultiblockProcessInWorld))
+			if(!(process instanceof MultiblockProcessInWorld<?> inWorld))
 				continue;
-			List<ItemStack> displays = ((MultiblockProcessInWorld<?>)process).getDisplayItem();
+			List<ItemStack> displays = inWorld.getDisplayItem();
 			if(displays.isEmpty())
 				continue;
 			matrixStack.pushPose();

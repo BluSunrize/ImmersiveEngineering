@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -61,10 +61,10 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
 		for(MultiblockProcess<?> process : tile.processQueue)
-			if(process instanceof MultiblockProcessInMachine)
+			if(process instanceof MultiblockProcessInMachine<?> inMachine)
 			{
 				float mod = process.processTick/(float)process.maxTicks;
-				int slot = ((MultiblockProcessInMachine<?>)process).getInputSlots()[0];
+				int slot = inMachine.getInputSlots()[0];
 				int h = (int)Math.max(1, mod*16);
 				this.blit(transform, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 176, 16-h, 2, h);
 			}
