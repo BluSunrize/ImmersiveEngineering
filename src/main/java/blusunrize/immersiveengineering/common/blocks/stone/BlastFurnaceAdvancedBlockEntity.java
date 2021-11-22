@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.common.collect.ImmutableSet;
@@ -161,14 +161,17 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 		return Optional.empty();
 	}
 
-	private final ResettableCapability<IItemHandler> inputHandler = registerCapability(
-			new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false})
+	private final MultiblockCapability<IItemHandler> inputHandler = MultiblockCapability.make(
+			this, be -> be.inputHandler, BlastFurnaceAdvancedBlockEntity::master,
+			registerCapability(new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false}))
 	);
-	private final ResettableCapability<IItemHandler> outputHandler = registerCapability(
-			new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true})
+	private final MultiblockCapability<IItemHandler> outputHandler = MultiblockCapability.make(
+			this, be -> be.outputHandler, BlastFurnaceAdvancedBlockEntity::master,
+			registerCapability(new IEInventoryHandler(1, this, 2, new boolean[]{false}, new boolean[]{true}))
 	);
-	private final ResettableCapability<IItemHandler> slagHandler = registerCapability(
-			new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true})
+	private final MultiblockCapability<IItemHandler> slagHandler = MultiblockCapability.make(
+			this, be -> be.slagHandler, BlastFurnaceAdvancedBlockEntity::master,
+			registerCapability(new IEInventoryHandler(1, this, 3, new boolean[]{false}, new boolean[]{true}))
 	);
 	//TODO output is facing, 2
 	private static final BlockPos outputOffset = new BlockPos(1, 0, 0);
@@ -182,16 +185,12 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 	{
 		if(ioOffsets.contains(posInMultiblock)&&capability==net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			BlastFurnaceAdvancedBlockEntity master = master();
-			if(master!=null)
-			{
-				if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)
-					return master.inputHandler.cast();
-				if(outputOffset.equals(posInMultiblock)&&facing==master.getFacing())
-					return master.outputHandler.cast();
-				if(slagOutputOffset.equals(posInMultiblock)&&facing==master.getFacing().getOpposite())
-					return master.slagHandler.cast();
-			}
+			if(inputOffset.equals(posInMultiblock)&&facing==Direction.UP)
+				return inputHandler.getAndCast();
+			if(outputOffset.equals(posInMultiblock)&&facing==getFacing())
+				return outputHandler.getAndCast();
+			if(slagOutputOffset.equals(posInMultiblock)&&facing==getFacing().getOpposite())
+				return slagHandler.getAndCast();
 		}
 		return super.getCapability(capability, facing);
 	}

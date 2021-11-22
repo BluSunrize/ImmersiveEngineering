@@ -23,7 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
@@ -453,8 +453,9 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	{
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
-			new MultiblockInventoryHandler_DirectProcessing<>(this).setProcessStacking(true)
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, CrusherBlockEntity::master,
+			registerCapability(new MultiblockInventoryHandler_DirectProcessing<>(this).setProcessStacking(true))
 	);
 
 	@Nonnull
@@ -462,11 +463,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY&&isInInput(false))
-		{
-			CrusherBlockEntity master = master();
-			if(master!=null)
-				return master.insertionHandler.cast();
-		}
+			return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 

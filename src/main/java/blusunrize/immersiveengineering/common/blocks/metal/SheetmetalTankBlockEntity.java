@@ -159,10 +159,10 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 	private static final BlockPos ioTopOffset = new BlockPos(1, 4, 1);
 	private static final BlockPos ioBottomOffset = new BlockPos(1, 0, 1);
 	private final MultiblockCapability<IFluidHandler> fluidInput = MultiblockCapability.make(
-			be -> be.fluidInput, SheetmetalTankBlockEntity::master, this, registerFluidInput(tank)
+			this, be -> be.fluidInput, SheetmetalTankBlockEntity::master, registerFluidInput(tank)
 	);
 	private final MultiblockCapability<IFluidHandler> fluidIO = MultiblockCapability.make(
-			be -> be.fluidInput, SheetmetalTankBlockEntity::master, this, registerFluidHandler(tank)
+			this, be -> be.fluidInput, SheetmetalTankBlockEntity::master, registerFluidHandler(tank)
 	);
 
 	@Nonnull

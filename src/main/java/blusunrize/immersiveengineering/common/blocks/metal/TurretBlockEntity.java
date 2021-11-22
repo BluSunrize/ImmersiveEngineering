@@ -606,7 +606,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	}
 
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			be -> be.energyCap, TurretBlockEntity::master, this, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, TurretBlockEntity::master, registerEnergyInput(energyStorage)
 	);
 
 	@Nonnull

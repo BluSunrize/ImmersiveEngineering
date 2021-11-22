@@ -24,7 +24,6 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -402,14 +401,16 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
-			new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8])
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, SqueezerBlockEntity::master,
+			registerCapability(new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]))
 	);
-	private final ResettableCapability<IItemHandler> extractionHandler = registerCapability(
-			new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true})
+	private final MultiblockCapability<IItemHandler> extractionHandler = MultiblockCapability.make(
+			this, be -> be.extractionHandler, SqueezerBlockEntity::master,
+			registerCapability(new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true}))
 	);
 	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
-			be -> be.fluidCap, SqueezerBlockEntity::master, this, registerFluidOutput(tanks)
+			this, be -> be.fluidCap, SqueezerBlockEntity::master, registerFluidOutput(tanks)
 	);
 
 	private static final BlockPos inputOffset = new BlockPos(0, 1, 0);
@@ -424,14 +425,10 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 			return fluidCap.getAndCast();
 		if((inputOffset.equals(posInMultiblock)||outputOffset.equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			SqueezerBlockEntity master = master();
-			if(master==null)
-				return LazyOptional.empty();
 			if(inputOffset.equals(posInMultiblock))
-				return master.insertionHandler.cast();
+				return insertionHandler.getAndCast();
 			if(outputOffset.equals(posInMultiblock))
-				return master.extractionHandler.cast();
-			return LazyOptional.empty();
+				return extractionHandler.getAndCast();
 		}
 		return super.getCapability(capability, facing);
 	}

@@ -357,13 +357,13 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 			new MultiblockFace(4, 0, 1, RelativeBlockFace.RIGHT)
 	);
 	private final MultiblockCapability<IFluidHandler> fluidInput = MultiblockCapability.make(
-			be -> be.fluidInput, RefineryBlockEntity::master, this, registerFluidInput(tanks[0], tanks[1])
+			this, be -> be.fluidInput, RefineryBlockEntity::master, registerFluidInput(tanks[0], tanks[1])
 	);
 	private final MultiblockCapability<IFluidHandler> fluidOutput = MultiblockCapability.make(
-			be -> be.fluidOutput, RefineryBlockEntity::master, this, registerFluidInput(tanks[2])
+			this, be -> be.fluidOutput, RefineryBlockEntity::master, registerFluidInput(tanks[2])
 	);
 	private final MultiblockCapability<IFluidHandler> allFluids = MultiblockCapability.make(
-			be -> be.allFluids, RefineryBlockEntity::master, this, registerFluidView(tanks)
+			this, be -> be.allFluids, RefineryBlockEntity::master, registerFluidView(tanks)
 	);
 
 	@Nonnull

@@ -30,7 +30,10 @@ import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.CachedRecipe;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.mojang.math.Vector3f;
@@ -455,16 +458,20 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	}
 
 
-	private final ResettableCapability<IItemHandler> inputHandler = registerCapability(
-			new IEInventoryHandler(1, this, 2, true, false)
+	private final MultiblockCapability<IItemHandler> inputHandler = MultiblockCapability.make(
+			this, be -> be.inputHandler, ClocheBlockEntity::master,
+			registerCapability(new IEInventoryHandler(1, this, 2, true, false))
 	);
 
-	private final ResettableCapability<IItemHandler> outputHandler = registerCapability(
-			new IEInventoryHandler(4, this, 3, false, true)
+	private final MultiblockCapability<IItemHandler> outputHandler = MultiblockCapability.make(
+			this, be -> be.outputHandler, ClocheBlockEntity::master,
+			registerCapability(new IEInventoryHandler(4, this, 3, false, true))
 	);
-	private final ResettableCapability<IFluidHandler> tankCap = registerCapability(tank);
+	private final MultiblockCapability<IFluidHandler> tankCap = MultiblockCapability.make(
+			this, be -> be.tankCap, ClocheBlockEntity::master, registerCapability(tank)
+	);
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			be -> be.energyCap, ClocheBlockEntity::master, this, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, ClocheBlockEntity::master, registerEnergyInput(energyStorage)
 	);
 
 
@@ -478,17 +485,14 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			return energyCap.getAndCast();
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			if(dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
-				return inputHandler.cast();
-			if(dummy==1&&(facing==null||facing==this.getFacing().getOpposite()))
-			{
-				ClocheBlockEntity te = getGuiMaster();
-				if(te!=null)
-					return te.outputHandler.cast();
-			}
+			if(facing==null||(dummy==0&&facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
+				return inputHandler.getAndCast();
+			if(dummy==1&&facing==this.getFacing().getOpposite())
+				return outputHandler.getAndCast();
 		}
-		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&dummy==0&&(facing==null||facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
-			return tankCap.cast();
+		else if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+			if(facing==null||(dummy==0&&facing.getAxis()!=this.getFacing().getClockWise().getAxis()))
+				return tankCap.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 

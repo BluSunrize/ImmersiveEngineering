@@ -25,7 +25,6 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.MultiFluidTank;
@@ -398,14 +397,15 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
-			new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8])
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, MixerBlockEntity::master,
+			registerCapability(new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]))
 	);
 	private final MultiblockCapability<IFluidHandler> fluidInputCap = MultiblockCapability.make(
-			be -> be.fluidInputCap, MixerBlockEntity::master, this, registerFluidInput(tank)
+			this, be -> be.fluidInputCap, MixerBlockEntity::master, registerFluidInput(tank)
 	);
 	private final MultiblockCapability<IFluidHandler> fluidOutputCap = MultiblockCapability.make(
-			be -> be.fluidOutputCap, MixerBlockEntity::master, this, registerFluidOutput(tank)
+			this, be -> be.fluidOutputCap, MixerBlockEntity::master, registerFluidOutput(tank)
 	);
 	private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(1, 0, 2, RelativeBlockFace.FRONT);
 	private static final MultiblockFace FLUID_INPUT = new MultiblockFace(0, 0, 1, RelativeBlockFace.LEFT);
@@ -425,11 +425,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 				return fluidOutputCap.getAndCast();
 		}
 		if((facing==null||new BlockPos(1, 1, 0).equals(posInMultiblock))&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			MixerBlockEntity master = master();
-			if(master!=null)
-				return master.insertionHandler.cast();
-		}
+			return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 

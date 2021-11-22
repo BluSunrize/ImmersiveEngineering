@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
@@ -371,9 +370,12 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		return null;
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(new BottlingMachineInventoryHandler(this));
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, BottlingMachineBlockEntity::master,
+			registerCapability(new BottlingMachineInventoryHandler(this))
+	);
 	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
-			be -> be.fluidCap, BottlingMachineBlockEntity::master, this, registerFluidInput(tanks)
+			this, be -> be.fluidCap, BottlingMachineBlockEntity::master, registerFluidInput(tanks)
 	);
 
 	@Nonnull
@@ -384,14 +386,8 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			if(facing==null||(BlockPos.ZERO.equals(posInMultiblock)&&facing.getAxis().isHorizontal()))
 				return fluidCap.getAndCast();
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			BottlingMachineBlockEntity master = master();
-			if(master==null)
-				return LazyOptional.empty();
 			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().getClockWise(): this.getFacing().getCounterClockWise()))
-				return master.insertionHandler.cast();
-			return LazyOptional.empty();
-		}
+				return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 

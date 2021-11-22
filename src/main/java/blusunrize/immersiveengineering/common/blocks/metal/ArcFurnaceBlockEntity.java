@@ -25,7 +25,7 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEParticles;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -173,7 +173,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	public void tickServer()
 	{
 		super.tickServer();
-		if (isDummy())
+		if(isDummy())
 			return;
 		if(!isRSDisabled()&&energyStorage.getEnergyStored() > 0)
 		{
@@ -473,7 +473,8 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	private static final BlockPos ELECTRODE_COMPARATOR_POS = new BlockPos(2, 4, 2);
 	private final MutableInt electrodeComparatorValue = new MutableInt(-1);
 
-	private int getElectrodeComparatorValueOnMaster() {
+	private int getElectrodeComparatorValueOnMaster()
+	{
 		float f = 0;
 		for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
 			if(!inventory.get(i).isEmpty())
@@ -614,8 +615,9 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	}
 
 
-	private final ResettableCapability<IItemHandler> inputHandler = registerCapability(
-			new IEInventoryHandler(IN_SLOT_COUNT, this, FIRST_IN_SLOT, true, false)
+	private final MultiblockCapability<IItemHandler> inputHandler = MultiblockCapability.make(
+			this, be -> be.inputHandler, ArcFurnaceBlockEntity::master,
+			registerCapability(new IEInventoryHandler(IN_SLOT_COUNT, this, FIRST_IN_SLOT, true, false)
 			{
 				//ignore the given slot and spread it out
 				@Override
@@ -636,48 +638,51 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 						}
 						else if(ItemHandlerHelper.canItemStacksStack(stack, here)&&here.getCount() < here.getMaxStackSize())
 						{
-					possibleSlots.add(i);
-				}
-			}
-			possibleSlots.sort(Comparator.comparingInt(a -> inventory.get(a).getCount()));
-			for(int i : possibleSlots)
-			{
-				ItemStack here = inventory.get(i);
-				int fillCount = Math.min(here.getMaxStackSize()-here.getCount(), stack.getCount());
-				if(!simulate)
-					here.grow(fillCount);
-				stack.shrink(fillCount);
-				if(stack.isEmpty())
-					return ItemStack.EMPTY;
-			}
+							possibleSlots.add(i);
+						}
+					}
+					possibleSlots.sort(Comparator.comparingInt(a -> inventory.get(a).getCount()));
+					for(int i : possibleSlots)
+					{
+						ItemStack here = inventory.get(i);
+						int fillCount = Math.min(here.getMaxStackSize()-here.getCount(), stack.getCount());
+						if(!simulate)
+							here.grow(fillCount);
+						stack.shrink(fillCount);
+						if(stack.isEmpty())
+							return ItemStack.EMPTY;
+					}
 					return stack;
 				}
-			});
-	private final ResettableCapability<IItemHandler> additiveHandler = registerCapability(
-			new IEInventoryHandler(ADDITIVE_SLOT_COUNT, this, FIRST_ADDITIVE_SLOT, true, false));
-	private final ResettableCapability<IItemHandler> outputHandler = registerCapability(
-			new IEInventoryHandler(OUT_SLOT_COUNT, this, FIRST_OUT_SLOT, false, true));
-	private final ResettableCapability<IItemHandler> slagHandler = registerCapability(
-			new IEInventoryHandler(1, this, SLAG_SLOT, false, true));
-	
+			}));
+	private final MultiblockCapability<IItemHandler> additiveHandler = MultiblockCapability.make(
+			this, be -> be.additiveHandler, ArcFurnaceBlockEntity::master,
+			registerCapability(new IEInventoryHandler(ADDITIVE_SLOT_COUNT, this, FIRST_ADDITIVE_SLOT, true, false))
+	);
+	private final MultiblockCapability<IItemHandler> outputHandler = MultiblockCapability.make(
+			this, be -> be.outputHandler, ArcFurnaceBlockEntity::master,
+			registerCapability(new IEInventoryHandler(OUT_SLOT_COUNT, this, FIRST_OUT_SLOT, false, true))
+	);
+	private final MultiblockCapability<IItemHandler> slagHandler = MultiblockCapability.make(
+			this, be -> be.slagHandler, ArcFurnaceBlockEntity::master,
+			registerCapability(new IEInventoryHandler(1, this, SLAG_SLOT, false, true))
+	);
+
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			ArcFurnaceBlockEntity master = master();
-			if(master==null)
-				return LazyOptional.empty();
 			if(posInMultiblock==MAIN_OUT_POS)
-				return master.outputHandler.cast();
+				return outputHandler.getAndCast();
 			else if(posInMultiblock==SLAG_OUT_POS)
-				return master.slagHandler.cast();
+				return slagHandler.getAndCast();
 				//TODO are these swapped?
 			else if(new BlockPos(1, 3, 2).equals(posInMultiblock))
-				return master.inputHandler.cast();
+				return inputHandler.getAndCast();
 			else if(new BlockPos(3, 3, 2).equals(posInMultiblock))
-				return master.additiveHandler.cast();
+				return additiveHandler.getAndCast();
 		}
 		return super.getCapability(capability, facing);
 	}
@@ -714,6 +719,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 			new BlockPos(2, 0, 4),
 			new BlockPos(0, 1, 4)
 	);
+
 	@Override
 	public boolean canUseGui(Player player)
 	{

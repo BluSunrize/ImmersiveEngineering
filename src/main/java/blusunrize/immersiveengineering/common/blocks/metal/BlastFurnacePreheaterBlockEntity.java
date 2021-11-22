@@ -45,7 +45,7 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	public final MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
 	public float angle = 0;
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			be -> be.energyCap, BlastFurnacePreheaterBlockEntity::master, this, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, BlastFurnacePreheaterBlockEntity::master, registerEnergyInput(energyStorage)
 	);
 
 	public BlastFurnacePreheaterBlockEntity(BlockPos pos, BlockState state)

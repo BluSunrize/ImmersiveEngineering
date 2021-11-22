@@ -16,7 +16,7 @@ import java.util.function.Function;
 public abstract class MultiblockCapability<T>
 {
 	public static <BE, T> MultiblockCapability<T> make(
-			Function<BE, MultiblockCapability<T>> getCap, Function<BE, BE> getMaster, BE owner, ResettableCapability<T> ownValue
+			BE owner, Function<BE, MultiblockCapability<T>> getCap, Function<BE, BE> getMaster, ResettableCapability<T> ownValue
 	)
 	{
 		return new Impl<>(getCap, getMaster, owner, ownValue);

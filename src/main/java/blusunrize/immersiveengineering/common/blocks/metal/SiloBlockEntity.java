@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.util.LayeredComparatorOutput;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -173,7 +173,9 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		return renderAABB;
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(new SiloInventoryHandler(this));
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, SiloBlockEntity::master, registerCapability(new SiloInventoryHandler(this))
+	);
 
 	private static final BlockPos bottomIoOffset = new BlockPos(1, 0, 1);
 	private static final BlockPos topIoOffset = new BlockPos(1, 6, 1);
@@ -184,7 +186,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(ioOffsets.contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return insertionHandler.cast();
+			return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 
@@ -227,7 +229,6 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
 			stack = stack.copy();
-			SiloBlockEntity silo = this.silo.master();
 			int space = MAX_STORAGE-silo.storageAmount;
 			if(slot!=0||space < 1||stack.isEmpty()||(!silo.identStack.isEmpty()&&!ItemHandlerHelper.canItemStacksStack(silo.identStack, stack)))
 				return stack;
@@ -249,7 +250,6 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
-			SiloBlockEntity silo = this.silo.master();
 			if(slot!=1||silo.storageAmount < 1||amount < 1||silo.identStack.isEmpty())
 				return ItemStack.EMPTY;
 			int returned = Math.min(Math.min(silo.storageAmount, amount), silo.identStack.getMaxStackSize());

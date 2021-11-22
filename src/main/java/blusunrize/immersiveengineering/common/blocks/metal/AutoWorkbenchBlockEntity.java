@@ -25,7 +25,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -328,8 +328,9 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
-			new IEInventoryHandler(16, this, 1, true, false)
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, AutoWorkbenchBlockEntity::master,
+			registerCapability(new IEInventoryHandler(16, this, 1, true, false))
 	);
 
 	@Nonnull
@@ -337,11 +338,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(new BlockPos(0, 1, 2).equals(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			AutoWorkbenchBlockEntity master = master();
-			if(master!=null)
-				return master.insertionHandler.cast();
-		}
+			return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 

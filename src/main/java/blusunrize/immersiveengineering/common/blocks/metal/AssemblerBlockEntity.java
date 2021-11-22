@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -533,10 +532,14 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
-			new IEInventoryHandler(18, this, 0, true, false));
-	private final ResettableCapability<IItemHandler> extractionHandler = registerCapability(
-			new IEInventoryHandler(3, this, 18, false, true));
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, AssemblerBlockEntity::master,
+			registerCapability(new IEInventoryHandler(18, this, 0, true, false))
+	);
+	private final MultiblockCapability<IItemHandler> extractionHandler = MultiblockCapability.make(
+			this, be -> be.extractionHandler, AssemblerBlockEntity::master,
+			registerCapability(new IEInventoryHandler(3, this, 18, false, true))
+	);
 
 	private static final BlockPos inputPos = new BlockPos(1, 1, 2);
 	private static final BlockPos outputPos = new BlockPos(1, 1, 0);
@@ -544,7 +547,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	private static final MultiblockFace fluidInputPos = new MultiblockFace(1, 0, 2, RelativeBlockFace.FRONT);
 
 	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
-			be -> be.fluidCap, AssemblerBlockEntity::master, this, registerFluidHandler(tanks)
+			this, be -> be.fluidCap, AssemblerBlockEntity::master, registerFluidHandler(tanks)
 	);
 
 	@Nonnull
@@ -556,14 +559,10 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 				return fluidCap.getAndCast();
 		if(itemConnections.contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			AssemblerBlockEntity master = master();
-			if(master==null)
-				return LazyOptional.empty();
 			if(inputPos.equals(posInMultiblock)&&facing==this.getFacing().getOpposite())
-				return master.insertionHandler.cast();
+				return insertionHandler.getAndCast();
 			if(outputPos.equals(posInMultiblock)&&facing==this.getFacing())
-				return master.extractionHandler.cast();
-			return LazyOptional.empty();
+				return extractionHandler.getAndCast();
 		}
 		return super.getCapability(capability, facing);
 	}

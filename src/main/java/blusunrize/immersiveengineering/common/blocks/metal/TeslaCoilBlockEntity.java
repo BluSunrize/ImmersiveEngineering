@@ -73,7 +73,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 {
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(48000);
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			be -> be.energyCap, TeslaCoilBlockEntity::master, this, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, TeslaCoilBlockEntity::master, registerEnergyInput(energyStorage)
 	);
 	public boolean redstoneControlInverted = false;
 	public boolean lowPower = false;

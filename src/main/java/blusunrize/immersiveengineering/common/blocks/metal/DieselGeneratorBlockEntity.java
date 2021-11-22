@@ -316,7 +316,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	}
 
 	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
-			be -> be.fluidCap, DieselGeneratorBlockEntity::master, this, registerFluidInput(tanks)
+			this, be -> be.fluidCap, DieselGeneratorBlockEntity::master, registerFluidInput(tanks)
 	);
 
 	@Nonnull

@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -362,14 +361,16 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
-			new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8])
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, FermenterBlockEntity::master,
+			registerCapability(new IEInventoryHandler(8, this, 0, new boolean[]{true, true, true, true, true, true, true, true}, new boolean[8]))
 	);
-	private final ResettableCapability<IItemHandler> extractionHandler = registerCapability(
-			new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true})
+	private final MultiblockCapability<IItemHandler> extractionHandler = MultiblockCapability.make(
+			this, be -> be.extractionHandler, FermenterBlockEntity::master,
+			registerCapability(new IEInventoryHandler(1, this, 8, new boolean[1], new boolean[]{true}))
 	);
 	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
-			be -> be.fluidCap, FermenterBlockEntity::master, this, registerFluidOutput(tanks)
+			this, be -> be.fluidCap, FermenterBlockEntity::master, registerFluidOutput(tanks)
 	);
 	private static final MultiblockFace FLUID_OUTPUT = new MultiblockFace(2, 0, 1, RelativeBlockFace.RIGHT);
 
@@ -379,19 +380,12 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	{
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY&&(facing==null||FLUID_OUTPUT.equals(asRelativeFace(facing))))
 			return fluidCap.getAndCast();
-		if(ImmutableSet.of(
-				new BlockPos(1, 1, 1),
-				new BlockPos(0, 1, 0)
-		).contains(posInMultiblock)&&capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		{
-			FermenterBlockEntity master = master();
-			if(master!=null)
-			{
-				if(posInMultiblock.getX()==0)
-					return master.insertionHandler.cast();
-				else
-					return master.extractionHandler.cast();
-			}
+			if(new BlockPos(0, 1, 0).equals(posInMultiblock))
+				return insertionHandler.getAndCast();
+			else if(new BlockPos(1, 1, 1).equals(posInMultiblock))
+				return extractionHandler.getAndCast();
 		}
 		return super.getCapability(capability, facing);
 	}

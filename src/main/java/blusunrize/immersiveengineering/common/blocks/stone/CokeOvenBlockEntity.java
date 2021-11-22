@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContai
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
@@ -297,12 +296,13 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	{
 	}
 
-	private final ResettableCapability<IItemHandler> invHandler = registerCapability(
-			new IEInventoryHandler(4, this, 0, new boolean[]{true, false, true, false},
-					new boolean[]{false, true, false, true})
-	);
+	private final MultiblockCapability<IItemHandler> invHandler = MultiblockCapability.make(
+			this, be -> be.invHandler, CokeOvenBlockEntity::master,
+			registerCapability(new IEInventoryHandler(
+					4, this, 0, new boolean[]{true, false, true, false}, new boolean[]{false, true, false, true}
+			)));
 	private final MultiblockCapability<IFluidHandler> fluidCap = MultiblockCapability.make(
-			be -> be.fluidCap, CokeOvenBlockEntity::master, this, registerFluidOutput(tank)
+			this, be -> be.fluidCap, CokeOvenBlockEntity::master, registerFluidOutput(tank)
 	);
 
 	@Nonnull
@@ -312,11 +312,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 		if(capability==CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
 			return fluidCap.getAndCast();
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			CokeOvenBlockEntity master = master();
-			if(master!=null)
-				return master.invHandler.cast();
-		}
+			return invHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 

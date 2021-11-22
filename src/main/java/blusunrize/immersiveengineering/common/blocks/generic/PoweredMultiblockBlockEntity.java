@@ -62,7 +62,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		super(multiblockInstance, type, redstoneControl, pos, state);
 		this.energyStorage = new AveragingEnergyStorage(energyCapacity);
 		this.energyCap = MultiblockCapability.make(
-				be -> be.energyCap, PoweredMultiblockBlockEntity::master, this, registerEnergyInput(this.energyStorage)
+				this, be -> be.energyCap, PoweredMultiblockBlockEntity::master, registerEnergyInput(this.energyStorage)
 		);
 	}
 

@@ -23,7 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
@@ -320,8 +320,9 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 		this.markContainingBlockForUpdate(null);
 	}
 
-	private final ResettableCapability<IItemHandler> insertionHandler = registerCapability(
-			new MultiblockInventoryHandler_DirectProcessing<>(this)
+	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, MetalPressBlockEntity::master,
+			registerCapability(new MultiblockInventoryHandler_DirectProcessing<>(this))
 	);
 
 	@Nonnull
@@ -329,14 +330,8 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			MetalPressBlockEntity master = master();
-			if(master==null)
-				return LazyOptional.empty();
 			if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&facing==this.getFacing().getOpposite())
-				return master.insertionHandler.cast();
-			return LazyOptional.empty();
-		}
+				return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 

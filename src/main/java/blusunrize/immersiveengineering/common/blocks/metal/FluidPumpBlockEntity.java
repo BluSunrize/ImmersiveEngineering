@@ -83,7 +83,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
 	public boolean placeCobble = true;
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
-			be -> be.energyCap, FluidPumpBlockEntity::master, this, registerEnergyInput(energyStorage)
+			this, be -> be.energyCap, FluidPumpBlockEntity::master, registerEnergyInput(energyStorage)
 	);
 
 	private boolean checkingArea = false;

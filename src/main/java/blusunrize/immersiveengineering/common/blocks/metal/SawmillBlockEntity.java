@@ -24,7 +24,7 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.ListUtils;
-import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
@@ -538,31 +538,27 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		return null;
 	}
 
-	final ResettableCapability<IItemHandler> insertionHandler = registerCapability(new MultiblockInventoryHandler_DirectProcessing<>(this)
-	{
-		@Nonnull
-		@Override
-		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
-		{
-			stack = stack.copy();
-			SawmillBlockEntity.this.insertItemToProcess(stack, simulate);
-			return stack;
-		}
-	});
+	final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
+			this, be -> be.insertionHandler, SawmillBlockEntity::master,
+			registerCapability(new MultiblockInventoryHandler_DirectProcessing<>(this)
+			{
+				@Nonnull
+				@Override
+				public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
+				{
+					stack = stack.copy();
+					SawmillBlockEntity.this.insertItemToProcess(stack, simulate);
+					return stack;
+				}
+			}));
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, @Nullable Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-		{
-			SawmillBlockEntity master = master();
-			if(master==null)
-				return LazyOptional.empty();
 			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&facing==(getIsMirrored()?this.getFacing().getClockWise(): this.getFacing().getCounterClockWise()))
-				return master.insertionHandler.cast();
-			return LazyOptional.empty();
-		}
+				return insertionHandler.getAndCast();
 		return super.getCapability(capability, facing);
 	}
 
