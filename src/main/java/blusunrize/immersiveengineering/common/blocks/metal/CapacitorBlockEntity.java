@@ -106,7 +106,7 @@ public class CapacitorBlockEntity extends IEBaseBlockEntity implements IEServerT
 		BlockPos outPos = getBlockPos().relative(side);
 		BlockEntity tileEntity = Utils.getExistingTileEntity(level, outPos);
 		int out = Math.min(getMaxOutput(), this.energyStorage.getEnergyStored());
-		this.energyStorage.extractEnergy(-EnergyHelper.insertFlux(tileEntity, side.getOpposite(), out, false), false);
+		this.energyStorage.extractEnergy(EnergyHelper.insertFlux(tileEntity, side.getOpposite(), out, false), false);
 	}
 
 	@Override
