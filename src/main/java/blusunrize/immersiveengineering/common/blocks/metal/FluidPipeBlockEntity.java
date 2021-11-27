@@ -262,8 +262,6 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	{
 		for(Direction f : DirectionUtils.VALUES)
 			sidedHandlers.put(f, registerCapability(new PipeFluidHandler(this, f)));
-			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
-		}
 	}
 
 	private void invalidateHandler(Direction side)

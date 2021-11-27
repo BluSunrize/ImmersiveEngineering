@@ -11,19 +11,16 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.IRotationAcceptor;
 import blusunrize.immersiveengineering.api.energy.NullEnergyStorage;
-import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
@@ -34,6 +31,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 
 public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional
 {
@@ -84,6 +82,9 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 
 	private final ResettableCapability<IEnergyStorage> energyCap = registerCapability(NullEnergyStorage.INSTANCE);
 	private final ResettableCapability<IRotationAcceptor> rotationCap = registerCapability(new RotationAcceptor());
+	private final Map<Direction, CapabilityReference<IEnergyStorage>> neighbors = CapabilityReference.forAllNeighbors(
+			this, CapabilityEnergy.ENERGY
+	);
 
 	@Nonnull
 	@Override
@@ -98,15 +99,18 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 
 	private class RotationAcceptor implements IRotationAcceptor
 	{
+
 		@Override
 		public void inputRotation(double rotation)
 		{
 			int output = (int)(IEServerConfig.MACHINES.dynamo_output.get()*rotation);
-			for(Direction fd : DirectionUtils.VALUES)
+			for(CapabilityReference<IEnergyStorage> neighbor : neighbors.values())
 			{
-				BlockPos outputPos = getBlockPos().relative(fd);
-				BlockEntity te = Utils.getExistingTileEntity(level, outputPos);
-				output -= EnergyHelper.insertFlux(te, fd.getOpposite(), output, false);
+				IEnergyStorage capOnSide = neighbor.getNullable();
+				if(capOnSide!=null)
+					output -= capOnSide.receiveEnergy(output, false);
+				if(output <= 0)
+					break;
 			}
 		}
 	}
