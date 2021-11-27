@@ -179,10 +179,11 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 		}
 		if(!inventory.get(8).isEmpty()&&level.getGameTime()%8==0)
 		{
-			if(outputCap.isPresent())
+			IItemHandler outputHandler = outputCap.getNullable();
+			if(outputHandler!=null)
 			{
 				ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(8), 1);
-				stack = Utils.insertStackIntoInventory(outputCap, stack, false);
+				stack = ItemHandlerHelper.insertItem(outputHandler, stack, false);
 				if(stack.isEmpty())
 					this.inventory.get(8).shrink(1);
 			}

@@ -118,11 +118,14 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	public void tickServer()
 	{
 		int maxOut = Math.min(storageToMachine.getEnergyStored(), getMaxOutput()-currentTickToMachine);
-		if(maxOut > 0&&output.isPresent())
+		if(maxOut > 0)
 		{
-			IEnergyStorage target = output.get();
-			int inserted = target.receiveEnergy(maxOut, false);
-			storageToMachine.extractEnergy(inserted, false);
+			IEnergyStorage target = output.getNullable();
+			if(target!=null)
+			{
+				int inserted = target.receiveEnergy(maxOut, false);
+				storageToMachine.extractEnergy(inserted, false);
+			}
 		}
 		currentTickToMachine = 0;
 		currentTickToNet = 0;

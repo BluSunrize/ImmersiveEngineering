@@ -129,15 +129,14 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 			for(Direction f : Direction.values())
 				if(sideConfig.get(f)==IOSideConfig.INPUT)
 				{
-					CapabilityReference<IFluidHandler> input = neighborFluids.get(f);
-					if(input.isPresent())
+					IFluidHandler input = neighborFluids.get(f).getNullable();
+					if(input!=null)
 					{
-						IFluidHandler handler = input.get();
-						FluidStack drain = handler.drain(500, FluidAction.SIMULATE);
+						FluidStack drain = input.drain(500, FluidAction.SIMULATE);
 						if(drain.isEmpty())
 							continue;
 						int out = this.outputFluid(drain, FluidAction.EXECUTE);
-						handler.drain(out, FluidAction.EXECUTE);
+						input.drain(out, FluidAction.EXECUTE);
 					}
 					else if(level.getGameTime()%20==((getBlockPos().getX()^getBlockPos().getZ())&19)
 							&&level.getFluidState(getBlockPos().relative(f)).getType().is(FluidTags.WATER)
@@ -254,11 +253,10 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		for(Direction f : Direction.values())
 			if(sideConfig.get(f)==IOSideConfig.OUTPUT)
 			{
-				CapabilityReference<IFluidHandler> output = neighborFluids.get(f);
-				if(output.isPresent())
+				IFluidHandler handler = neighborFluids.get(f).getNullable();
+				if(handler!=null)
 				{
 					BlockEntity tile = getLevelNonnull().getBlockEntity(worldPosition.relative(f));
-					IFluidHandler handler = output.get();
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeBlockEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 						insertResource.getOrCreateTag().putBoolean("pressurized", true);

@@ -242,32 +242,39 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 			}
 
 			if(level.getGameTime()%8==0)
-			{
-				if(output.isPresent())
-					for(int j : OUTPUT_SLOTS)
-						if(!inventory.get(j).isEmpty())
-						{
-							ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(j), 1);
-							stack = Utils.insertStackIntoInventory(output, stack, false);
-							if(stack.isEmpty())
-							{
-								this.inventory.get(j).shrink(1);
-								if(this.inventory.get(j).getCount() <= 0)
-									this.inventory.set(j, ItemStack.EMPTY);
-							}
-						}
-				if(!inventory.get(SLAG_SLOT).isEmpty()&&slagOut.isPresent())
+				outputItems();
+		}
+	}
+
+	private void outputItems()
+	{
+		IItemHandler outputHandler = output.getNullable();
+		if(outputHandler!=null)
+			for(int j : OUTPUT_SLOTS)
+				if(!inventory.get(j).isEmpty())
 				{
-					int out = Math.min(inventory.get(SLAG_SLOT).getCount(), 16);
-					ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(SLAG_SLOT), out);
-					stack = Utils.insertStackIntoInventory(slagOut, stack, false);
-					if(!stack.isEmpty())
-						out -= stack.getCount();
-					this.inventory.get(SLAG_SLOT).shrink(out);
-					if(this.inventory.get(SLAG_SLOT).getCount() <= 0)
-						this.inventory.set(SLAG_SLOT, ItemStack.EMPTY);
+					ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(j), 1);
+					stack = ItemHandlerHelper.insertItem(outputHandler, stack, false);
+					if(stack.isEmpty())
+					{
+						this.inventory.get(j).shrink(1);
+						if(this.inventory.get(j).getCount() <= 0)
+							this.inventory.set(j, ItemStack.EMPTY);
+					}
 				}
-			}
+		if(inventory.get(SLAG_SLOT).isEmpty())
+			return;
+		IItemHandler slagOutputHandler = slagOut.getNullable();
+		if(slagOutputHandler!=null)
+		{
+			int out = Math.min(inventory.get(SLAG_SLOT).getCount(), 16);
+			ItemStack stack = ItemHandlerHelper.copyStackWithSize(inventory.get(SLAG_SLOT), out);
+			stack = ItemHandlerHelper.insertItem(slagOutputHandler, stack, false);
+			if(!stack.isEmpty())
+				out -= stack.getCount();
+			this.inventory.get(SLAG_SLOT).shrink(out);
+			if(this.inventory.get(SLAG_SLOT).getCount() <= 0)
+				this.inventory.set(SLAG_SLOT, ItemStack.EMPTY);
 		}
 	}
 

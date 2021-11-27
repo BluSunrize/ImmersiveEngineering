@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
@@ -86,7 +85,10 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 	@Override
 	public void tickServer()
 	{
-		if(level.getGameTime()%8==0&&output.isPresent()&&isActive())
+		if(level.getGameTime()%8!=0||!isActive())
+			return;
+		IItemHandler outputHandler = output.getNullable();
+		if(outputHandler!=null)
 		{
 			boolean matched = true;
 			if(this.batchMode==BatchMode.ALL)
@@ -108,7 +110,7 @@ public class ItemBatcherBlockEntity extends IEBaseBlockEntity implements IEServe
 						ItemStack outStack = buffers.get(slot);
 						int outSize = filterStack.getCount();
 						ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outSize);
-						stack = Utils.insertStackIntoInventory(output, stack, false);
+						stack = ItemHandlerHelper.insertItem(outputHandler, stack, false);
 						if(!stack.isEmpty())
 							outSize -= stack.getCount();
 						outStack.shrink(outSize);

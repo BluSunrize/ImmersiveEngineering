@@ -563,12 +563,6 @@ public class Utils
 		return null;
 	}
 
-	public static boolean canInsertStackIntoInventory(CapabilityReference<IItemHandler> ref, ItemStack stack)
-	{
-		ItemStack temp = insertStackIntoInventory(ref, stack, true);
-		return temp.isEmpty()||temp.getCount() < stack.getCount();
-	}
-
 	public static ItemStack insertStackIntoInventory(CapabilityReference<IItemHandler> ref, ItemStack stack, boolean simulate)
 	{
 		IItemHandler handler = ref.getNullable();

@@ -257,7 +257,8 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 
 		if(level.getGameTime()%8==0)
 		{
-			if(output.isPresent())
+			IItemHandler outputHandler = output.getNullable();
+			if(outputHandler!=null)
 				for(int j = 3; j < 7; j++)
 				{
 					ItemStack outStack = inventory.get(j);
@@ -265,7 +266,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 					{
 						int outCount = Math.min(outStack.getCount(), 16);
 						ItemStack stack = ItemHandlerHelper.copyStackWithSize(outStack, outCount);
-						stack = Utils.insertStackIntoInventory(output, stack, false);
+						stack = ItemHandlerHelper.insertItem(outputHandler, stack, false);
 						if(!stack.isEmpty())
 							outCount -= stack.getCount();
 						outStack.shrink(outCount);

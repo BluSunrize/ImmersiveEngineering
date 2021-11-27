@@ -477,14 +477,13 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		final byte oldConn = connections;
 		int i = dir.get3DDataValue();
 		int mask = 1<<i;
-		if(sideConfig.getBoolean(dir)&&neighbors.get(dir).isPresent())
+		connections &= ~mask;
+		if(sideConfig.getBoolean(dir))
 		{
-			IFluidHandler handler = neighbors.get(dir).get();
-			if(handler.getTanks() > 0)
+			IFluidHandler handler = neighbors.get(dir).getNullable();
+			if(handler!=null&&handler.getTanks() > 0)
 				connections |= mask;
 		}
-		else
-			connections &= ~mask;
 		return oldConn!=connections;
 	}
 
@@ -498,10 +497,10 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			{
 				if(level.getBlockEntity(getBlockPos().relative(dir)) instanceof FluidPipeBlockEntity)
 					availableConnections |= mask;
-				else if(neighbors.get(dir).isPresent())
+				else
 				{
-					IFluidHandler handler = neighbors.get(dir).get();
-					if(handler.getTanks() > 0)
+					IFluidHandler handler = neighbors.get(dir).getNullable();
+					if(handler!=null&&handler.getTanks() > 0)
 						availableConnections |= mask;
 				}
 			}
