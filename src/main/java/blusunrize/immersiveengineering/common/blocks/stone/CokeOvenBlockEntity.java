@@ -123,7 +123,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 				else
 					process--;
 			}
-			this.markContainingBlockForUpdate(null);
+			setChanged();
 		}
 		else
 		{
@@ -173,7 +173,6 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 					Utils.modifyInvStackSize(inventory, EMPTY_CONTAINER_SLOT, -filledContainer.getCount());
 				}
 				setChanged();
-				this.markContainingBlockForUpdate(null);
 			}
 		}
 

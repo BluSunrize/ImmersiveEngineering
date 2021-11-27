@@ -117,7 +117,7 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 							setActive(true);
 					}
 				}
-				markContainingBlockForUpdate(null);
+				setChanged();
 			}
 
 			if(process <= 0)
@@ -152,7 +152,7 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 				lastBurnTime = addedBurntime;
 				burnTime += lastBurnTime;
 				Utils.modifyInvStackSize(inventory, fuelSlot, -1);
-				markContainingBlockForUpdate(null);
+				setChanged();
 			}
 		}
 
