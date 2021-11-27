@@ -29,9 +29,12 @@ public class Connection
 	@Nonnull
 	private final ConnectionPoint endB;
 	private final boolean internal;
+	private final double roughLength;
+
 	@Nullable
 	private CatenaryData catData;
 	boolean blockDataGenerated = false;
+
 	@Nullable
 	private LocalWireNetwork cachedLocalNet;
 	private int cachedNetVersion = -1;
@@ -48,6 +51,7 @@ public class Connection
 		this.endA = endA;
 		this.endB = endB;
 		this.internal = internal;
+		this.roughLength = Math.sqrt(endA.getPosition().distSqr(endB.getPosition(), false));
 	}
 
 	public Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB)
@@ -278,10 +282,12 @@ public class Connection
 
 	public ConnectionPoint[] getEnds()
 	{
-		return new ConnectionPoint[]{
-				endA,
-				endB
-		};
+		return new ConnectionPoint[]{endA, endB};
+	}
+
+	public double getBlockDistance()
+	{
+		return roughLength;
 	}
 
 	public static record RenderData(

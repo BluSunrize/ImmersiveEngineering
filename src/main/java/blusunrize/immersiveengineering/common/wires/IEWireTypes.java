@@ -25,7 +25,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -198,8 +197,7 @@ public class IEWireTypes
 		@Override
 		public double getBasicLossRate(Connection c)
 		{
-			double length = Math.sqrt(c.getEndA().getPosition().distSqr(Vec3.atLowerCornerOf(c.getEndB().getPosition()), false));
-			return getLossRatio()*length/getMaxLength();
+			return getLossRatio()*c.getBlockDistance()/getMaxLength();
 		}
 
 		@Override
