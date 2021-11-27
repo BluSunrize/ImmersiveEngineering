@@ -259,7 +259,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					int temp = handler.fill(insertResource, FluidAction.SIMULATE);
 					if(temp > 0)
 					{
-						sorting.put(new DirectionalFluidOutput(handler, tile, f), temp);
+						sorting.put(new DirectionalFluidOutput(handler, f, tile), temp);
 						sum += temp;
 					}
 				}
@@ -275,12 +275,12 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 				if(i++==sorting.size()-1)
 					amount = canAccept;
 				FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, amount, true);
-				if(output.containingTile instanceof FluidPipeBlockEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
+				if(output.containingTile() instanceof FluidPipeBlockEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 				{
 					this.energyStorage.extractEnergy(accelPower, false);
 					insertResource.getOrCreateTag().putBoolean("pressurized", true);
 				}
-				int r = output.output.fill(insertResource, action);
+				int r = output.output().fill(insertResource, action);
 				f += r;
 				canAccept -= r;
 				if(canAccept <= 0)

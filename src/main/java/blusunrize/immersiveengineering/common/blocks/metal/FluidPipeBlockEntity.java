@@ -142,7 +142,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 								handlerOptional.ifPresent(handler ->
 								{
 									if(handler.getTanks() > 0)
-										fluidHandlers.add(new DirectionalFluidOutput(handler, adjacentTile, fd));
+										fluidHandlers.add(new DirectionalFluidOutput(handler, fd, adjacentTile));
 								});
 							}
 					}
@@ -455,18 +455,12 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		}
 	}
 
-	public static class DirectionalFluidOutput
+	public static record DirectionalFluidOutput(
+			IFluidHandler output,
+			Direction direction,
+			BlockEntity containingTile
+	)
 	{
-		IFluidHandler output;
-		Direction direction;
-		BlockEntity containingTile;
-
-		public DirectionalFluidOutput(IFluidHandler output, BlockEntity containingTile, Direction direction)
-		{
-			this.output = output;
-			this.direction = direction;
-			this.containingTile = containingTile;
-		}
 	}
 
 	public boolean updateConnectionByte(Direction dir)
