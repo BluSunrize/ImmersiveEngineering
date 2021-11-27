@@ -94,8 +94,9 @@ public class BakedConnectionModel<T> extends BakedIEModel
 			for(Connection c : orig.connections())
 			{
 				ConnectionPoint here = c.getEndFor(orig.here());
-				data.add(new Connection.RenderData(c, c.getEndB().equals(here),
-						getSolidVertexCountForSide(here, c, RenderData.POINTS_PER_WIRE)));
+				data.add(Connection.RenderData.make(
+						c, c.getEndB().equals(here), getSolidVertexCountForSide(here, c, RenderData.POINTS_PER_WIRE)
+				));
 			}
 			ModelKey key = new ModelKey(data, ad, orig.here());
 			try
@@ -181,13 +182,13 @@ public class BakedConnectionModel<T> extends BakedIEModel
 		Vec3 up = new Vec3(0, 1, 0);
 		for(Connection.RenderData connData : data)
 		{
-			int color = connData.color;
+			int color = connData.color();
 			float[] rgb = {(color >> 16&255)/255f, (color >> 8&255)/255f, (color&255)/255f, (color >> 24&255)/255f};
 			if(rgb[3]==0)
 				rgb[3] = 1;
-			float radius = (float)(connData.type.getRenderDiameter()/2);
+			float radius = (float)(connData.type().getRenderDiameter()/2);
 
-			for(int segmentEndId = 1; segmentEndId <= connData.pointsToRenderSolid; segmentEndId++)
+			for(int segmentEndId = 1; segmentEndId <= connData.pointsToRenderSolid(); segmentEndId++)
 			{
 				int segmentStartId = segmentEndId-1;
 				Vec3 segmentEnd = connData.getPoint(segmentEndId);

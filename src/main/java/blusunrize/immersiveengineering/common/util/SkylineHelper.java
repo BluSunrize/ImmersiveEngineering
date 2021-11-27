@@ -80,9 +80,9 @@ public class SkylineHelper
 			double slopeAtPos = connection.getSlope(linePos, cpA);
 			Vec3 extendedWire;
 			if(catData.isVertical())
-				extendedWire = new Vec3(0, catData.getHorLength(), 0);
+				extendedWire = new Vec3(0, catData.horLength(), 0);
 			else
-				extendedWire = new Vec3(catData.getDeltaX(), slopeAtPos*catData.getHorLength(), catData.getDeltaZ());
+				extendedWire = new Vec3(catData.getDeltaX(), slopeAtPos*catData.horLength(), catData.getDeltaZ());
 			extendedWire = extendedWire.normalize();
 
 			double totalSpeed = playerMovement.dot(extendedWire);

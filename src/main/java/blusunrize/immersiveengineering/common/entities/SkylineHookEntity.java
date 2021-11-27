@@ -190,7 +190,7 @@ public class SkylineHookEntity extends Entity
 			else
 			{
 				final double realLinePos = connection.transformPosition(linePos, start);
-				double param = (realLinePos*getHorizontalLength()-connection.getCatenaryData().getOffsetX())/connection.getCatenaryData().getScale();
+				double param = (realLinePos*getHorizontalLength()-connection.getCatenaryData().offsetX())/connection.getCatenaryData().scale();
 				double pos = Math.exp(param);
 				double neg = 1/pos;
 				double cosh = (pos+neg)/2;
@@ -198,7 +198,7 @@ public class SkylineHookEntity extends Entity
 				//Formula taken from https://physics.stackexchange.com/a/83592 (x coordinate of the final vector),
 				//after plugging in the correct function
 				double vSquared = horizontalSpeed*horizontalSpeed*cosh*cosh*20*20;//cosh^2=1+sinh^2 and horSpeed*sinh=vertSpeed. 20 to convert from blocks/tick to block/s
-				deltaVHor = -sinh/(cosh*cosh)*(GRAVITY+vSquared/(connection.getCatenaryData().getScale()*cosh));
+				deltaVHor = -sinh/(cosh*cosh)*(GRAVITY+vSquared/(connection.getCatenaryData().scale()*cosh));
 				if(connection.getEndB().equals(start))
 					deltaVHor *= -1;
 			}
@@ -308,7 +308,7 @@ public class SkylineHookEntity extends Entity
 							factor = 1;
 						else
 							factor = -1;
-						return c.getCatenaryData().getDelta().normalize().dot(look)*factor;
+						return c.getCatenaryData().delta().normalize().dot(look)*factor;
 					}));//Maximum dot product=>Minimum angle=>Player goes in as close to a straight line as possible
 		}
 		if (line.isPresent())
@@ -527,7 +527,7 @@ public class SkylineHookEntity extends Entity
 		if(connection.getCatenaryData().isVertical())
 			return Math.abs(connection.getCatenaryData().getDeltaY());
 		else
-			return connection.getCatenaryData().getHorLength();
+			return connection.getCatenaryData().horLength();
 	}
 
 	private double getStartSignum()

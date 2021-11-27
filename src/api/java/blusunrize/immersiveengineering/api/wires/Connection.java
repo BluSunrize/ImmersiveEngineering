@@ -18,7 +18,6 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
 import java.util.StringJoiner;
 
 public class Connection
@@ -273,7 +272,7 @@ public class Connection
 				.add("endA="+endA)
 				.add("endB="+endB);
 		if(internal)
-			ret.add("internal="+internal);
+			ret.add("internal");
 		return ret.toString();
 	}
 
@@ -285,43 +284,25 @@ public class Connection
 		};
 	}
 
-	public static class RenderData
+	public static record RenderData(
+			CatenaryData data,
+			WireType type,
+			int pointsToRenderSolid,
+			int color
+	)
 	{
 		public static final int POINTS_PER_WIRE = 16;
-		public final CatenaryData data;
-		public final WireType type;
-		public final int pointsToRenderSolid;
-		public final int color;
 
-		public RenderData(Connection conn, boolean startAtB, int count)
+		public static RenderData make(Connection conn, boolean startAtB, int count)
 		{
-			type = conn.type;
-			assert (conn.hasCatenaryData());
-			pointsToRenderSolid = count;
-			color = type.getColour(conn);
-			data = new CatenaryData(conn.getCatenaryData(), startAtB, conn.getPoint(0, conn.getEndB()));
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this==o) return true;
-			if(o==null||getClass()!=o.getClass()) return false;
-
-			RenderData that = (RenderData)o;
-
-			if(pointsToRenderSolid!=that.pointsToRenderSolid) return false;
-			if(!data.equals(that.data)) return false;
-			return type.equals(that.type);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			int result = data.hashCode();
-			result = 31*result+type.hashCode();
-			result = 31*result+pointsToRenderSolid;
-			return result;
+			Preconditions.checkArgument(conn.hasCatenaryData());
+			CatenaryData basicCatData = conn.getCatenaryData();
+			CatenaryData directionalData;
+			if(startAtB)
+				directionalData = basicCatData.reverse(conn.getPoint(0, conn.getEndB()));
+			else
+				directionalData = basicCatData;
+			return new RenderData(directionalData, conn.type, count, conn.type.getColour(conn));
 		}
 
 		public Vec3 getPoint(int index)
@@ -330,47 +311,23 @@ public class Connection
 		}
 	}
 
-	public static class CatenaryData
+	public static record CatenaryData(
+			boolean isVertical,
+			//Relative to endA
+			double offsetX,
+			double offsetY,
+			double scale,
+			Vec3 delta,
+			double horLength,
+			Vec3 vecA
+	)
 	{
-		private final boolean isVertical;
-		//Relative to endA
-		private final double offsetX;
-		private final double offsetY;
-		private final double scale;
-		private final Vec3 delta;
-		private final double horLength;
-		private final Vec3 vecA;
-
-		public CatenaryData(boolean isVertical, double offsetX, double offsetY, double scale, Vec3 delta, double horLength, Vec3 vecA)
+		public CatenaryData reverse(Vec3 otherEndAVec)
 		{
-			this.isVertical = isVertical;
-			this.offsetX = offsetX;
-			this.offsetY = offsetY;
-			this.scale = scale;
-			this.delta = delta;
-			this.horLength = horLength;
-			this.vecA = vecA;
-		}
-
-		public CatenaryData(CatenaryData old, boolean reverse, Vec3 otherEndAVec)
-		{
-			this.isVertical = old.isVertical;
-			if(reverse)
-			{
-				this.vecA = otherEndAVec;
-				this.delta = old.delta.scale(-1);
-				this.offsetX = old.horLength-old.offsetX;
-				this.offsetY = -old.scale*Math.cosh(-offsetX/old.scale);
-			}
-			else
-			{
-				this.vecA = old.vecA;
-				this.delta = old.delta;
-				this.offsetX = old.offsetX;
-				this.offsetY = old.offsetY;
-			}
-			this.scale = old.scale;
-			this.horLength = old.horLength;
+			Vec3 delta = delta().scale(-1);
+			double offsetX = horLength-offsetX();
+			double offsetY = -scale*Math.cosh(-offsetX/scale);
+			return new CatenaryData(isVertical, offsetX, offsetY, scale, delta, horLength, otherEndAVec);
 		}
 
 		public double getSlope(double pos)
@@ -396,26 +353,6 @@ public class Connection
 			return vecA.add(x, y, z);
 		}
 
-		public boolean isVertical()
-		{
-			return isVertical;
-		}
-
-		public double getOffsetX()
-		{
-			return offsetX;
-		}
-
-		public double getOffsetY()
-		{
-			return offsetY;
-		}
-
-		public double getScale()
-		{
-			return scale;
-		}
-
 		public double getDeltaX()
 		{
 			return delta.x;
@@ -429,49 +366,6 @@ public class Connection
 		public double getDeltaZ()
 		{
 			return delta.z;
-		}
-
-		public double getHorLength()
-		{
-			return horLength;
-		}
-
-		public Vec3 getVecA()
-		{
-			return vecA;
-		}
-
-		@Override
-		public String toString()
-		{
-			return "Vertical: "+isVertical+", offset: x "+offsetX+" y "+offsetY+", Factor A: "+scale+", Vector at end A: "+
-					vecA+", horizontal length: "+horLength+", delta: "+delta.x+", "+delta.y+", "+delta.z;
-		}
-
-		public Vec3 getDelta()
-		{
-			return delta;
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this==o) return true;
-			if(o==null||getClass()!=o.getClass()) return false;
-			CatenaryData that = (CatenaryData)o;
-			return isVertical==that.isVertical&&
-					Double.compare(that.offsetX, offsetX)==0&&
-					Double.compare(that.offsetY, offsetY)==0&&
-					Double.compare(that.scale, scale)==0&&
-					Double.compare(that.horLength, horLength)==0&&
-					delta.equals(that.delta)&&
-					vecA.equals(that.vecA);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			return Objects.hash(isVertical, offsetX, offsetY, scale, delta, horLength, vecA);
 		}
 	}
 }

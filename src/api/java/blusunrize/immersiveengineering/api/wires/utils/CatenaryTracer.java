@@ -48,9 +48,9 @@ public class CatenaryTracer
 	public void calculateIntegerIntersections()
 	{
 		integerIntersections = new DoubleAVLTreeSet();
-		Vec3 across = catenaryData.getDelta();
-		Vec3 start = catenaryData.getVecA();
-		Vec3 end = start.add(catenaryData.getDelta());
+		Vec3 across = catenaryData.delta();
+		Vec3 start = catenaryData.vecA();
+		Vec3 end = start.add(catenaryData.delta());
 		across = new Vec3(across.x, 0, across.z);
 		double lengthHor = across.length();
 		integerIntersections.add(0);
@@ -86,7 +86,7 @@ public class CatenaryTracer
 				min = Math.min(start.y, end.y);
 			else
 				//Both branches exist => lowest point is the lowest point on the infinite catenary
-				min = catenaryData.getScale()+catenaryData.getOffsetY()+start.y;
+				min = catenaryData.scale()+catenaryData.offsetY()+start.y;
 			//There are up to 2 points with the same Y coord in a catenary
 			for(CatenaryBranch branch : CatenaryBranch.values())
 				if(branch.exists(catenaryData))
@@ -96,8 +96,8 @@ public class CatenaryTracer
 					for(int y = Mth.ceil(min); y <= Mth.floor(max); y++)
 					{
 						double yReal = y-start.y;
-						double acosh = acosh((yReal-catenaryData.getOffsetY())/catenaryData.getScale(), branch);
-						double posRel = (acosh*catenaryData.getScale()+catenaryData.getOffsetX())/lengthHor;
+						double acosh = acosh((yReal-catenaryData.offsetY())/catenaryData.scale(), branch);
+						double posRel = (acosh*catenaryData.scale()+catenaryData.offsetX())/lengthHor;
 						//All calculated intersections should exist up to numerical errors
 						Preconditions.checkState(posRel >= -1e-5&&posRel <= 1+1e-5);
 						if(posRel >= 0&&posRel <= 1)
@@ -207,9 +207,9 @@ public class CatenaryTracer
 		boolean exists(CatenaryData data)
 		{
 			if(this==NEGATIVE)
-				return data.getOffsetX() >= 0;
+				return data.offsetX() >= 0;
 			else
-				return data.getOffsetX() <= data.getHorLength();
+				return data.offsetX() <= data.horLength();
 		}
 	}
 }
