@@ -97,13 +97,9 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		super(type, pos, state);
 	}
 
-	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = new EnumMap<>(Direction.class);
-
-	{
-		for(Direction neighbor : DirectionUtils.VALUES)
-			neighborFluids.put(neighbor,
-					CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, neighbor));
-	}
+	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborFluids = CapabilityReference.forAllNeighbors(
+			this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+	);
 
 	@Override
 	public void tickServer()

@@ -39,13 +39,13 @@ import java.util.function.Function;
 public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE
 {
 	private int energyOutput = -1;
-	private final Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = new EnumMap<>(Direction.class);
+	private final Map<Direction, CapabilityReference<IEnergyStorage>> energyWrappers = CapabilityReference.forAllNeighbors(
+			this, CapabilityEnergy.ENERGY
+	);
 
 	public ThermoelectricGenBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.THERMOELECTRIC_GEN.get(), pos, state);
-		for(Direction d : DirectionUtils.VALUES)
-			energyWrappers.put(d, CapabilityReference.forNeighbor(this, CapabilityEnergy.ENERGY, d));
 	}
 
 	@Override

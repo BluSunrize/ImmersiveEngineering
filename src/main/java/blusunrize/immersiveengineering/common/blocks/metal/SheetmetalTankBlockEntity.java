@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
-import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.utils.TextUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
@@ -47,8 +46,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<SheetmetalTankBlockEntity>
@@ -69,18 +67,16 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 					}
 			}
 	);
-	private final List<CapabilityReference<IFluidHandler>> fluidNeighbors = new ArrayList<>();
+	private final Map<Direction, CapabilityReference<IFluidHandler>> fluidNeighbors = CapabilityReference.forAllNeighbors(
+			this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+	);
 
 	public SheetmetalTankBlockEntity(BlockEntityType<SheetmetalTankBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(IEMultiblocks.SHEETMETAL_TANK, type, true, pos, state);
 		// Tanks should not output by default
 		this.redstoneControlInverted = true;
-		for(Direction f : DirectionUtils.VALUES)
-			if(f!=Direction.UP)
-				fluidNeighbors.add(
-						CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f)
-				);
+		fluidNeighbors.remove(Direction.UP);
 	}
 
 	@Override
@@ -105,7 +101,7 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 	public void tickServer()
 	{
 		if(!isRSDisabled())
-			for(CapabilityReference<IFluidHandler> outputRef : fluidNeighbors)
+			for(CapabilityReference<IFluidHandler> outputRef : fluidNeighbors.values())
 				if(tank.getFluidAmount() > 0)
 				{
 					int outSize = Math.min(144, tank.getFluidAmount());

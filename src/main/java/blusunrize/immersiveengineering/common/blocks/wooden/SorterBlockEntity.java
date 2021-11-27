@@ -56,14 +56,14 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	 */
 	private static Set<BlockPos> routed = null;
 
-	private EnumMap<Direction, CapabilityReference<IItemHandler>> neighborCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, CapabilityReference<IItemHandler>> neighborCaps = CapabilityReference.forAllNeighbors(
+			this, ITEM_HANDLER_CAPABILITY
+	);
 
 	public SorterBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.SORTER.get(), pos, state);
 		filter = new SorterInventory();
-		for(Direction f : DirectionUtils.VALUES)
-			neighborCaps.put(f, CapabilityReference.forNeighbor(this, ITEM_HANDLER_CAPABILITY, f));
 	}
 
 

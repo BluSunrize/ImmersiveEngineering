@@ -21,6 +21,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.EnumMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
@@ -55,6 +57,15 @@ public abstract class CapabilityReference<T>
 	public static <T> CapabilityReference<T> forNeighbor(BlockEntity local, Capability<T> cap, @Nonnull Direction side)
 	{
 		return forRelative(local, cap, BlockPos.ZERO.relative(side), side);
+	}
+
+	public static <T>
+	Map<Direction, CapabilityReference<T>> forAllNeighbors(BlockEntity local, Capability<T> cap)
+	{
+		Map<Direction, CapabilityReference<T>> neighbors = new EnumMap<>(Direction.class);
+		for(Direction side : DirectionUtils.VALUES)
+			neighbors.put(side, CapabilityReference.forNeighbor(local, cap, side));
+		return neighbors;
 	}
 
 	protected final Capability<T> cap;

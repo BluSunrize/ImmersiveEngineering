@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
-import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
@@ -38,8 +37,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> implements IComparatorOverride,
@@ -64,20 +62,16 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 					}
 			}
 	);
+	private final Map<Direction, CapabilityReference<IItemHandler>> outputCaps = CapabilityReference.forAllNeighbors(
+			this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+	);
 
 	public SiloBlockEntity(BlockEntityType<SiloBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(IEMultiblocks.SILO, type, true, pos, state);
 		// Silos should not output by default
 		this.redstoneControlInverted = true;
-	}
-
-	private final List<CapabilityReference<IItemHandler>> outputCaps = new ArrayList<>();
-
-	{
-		for(Direction f : DirectionUtils.VALUES)
-			if(f!=Direction.UP)
-				outputCaps.add(CapabilityReference.forNeighbor(this, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, f));
+		outputCaps.remove(Direction.UP);
 	}
 
 	@Override
@@ -85,7 +79,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 	{
 		if(!this.identStack.isEmpty()&&storageAmount > 0&&level.getGameTime()%8==0&&!isRSDisabled())
 		{
-			for(CapabilityReference<IItemHandler> output : outputCaps)
+			for(CapabilityReference<IItemHandler> output : outputCaps.values())
 			{
 				ItemStack stack = ItemHandlerHelper.copyStackWithSize(identStack, 1);
 				stack = Utils.insertStackIntoInventory(output, stack, false);

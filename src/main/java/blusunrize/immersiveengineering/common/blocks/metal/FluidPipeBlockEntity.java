@@ -255,11 +255,12 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	private final Map<Direction, ResettableCapability<IFluidHandler>> sidedHandlers = new EnumMap<>(Direction.class);
-	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = new EnumMap<>(Direction.class);
+	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = CapabilityReference.forAllNeighbors(
+			this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY
+	);
 
 	{
 		for(Direction f : DirectionUtils.VALUES)
-		{
 			sidedHandlers.put(f, registerCapability(new PipeFluidHandler(this, f)));
 			neighbors.put(f, CapabilityReference.forNeighbor(this, CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY, f));
 		}

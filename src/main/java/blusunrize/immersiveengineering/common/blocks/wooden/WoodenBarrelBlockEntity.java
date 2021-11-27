@@ -77,7 +77,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		this(IEBlockEntities.WOODEN_BARREL.get(), pos, state);
 	}
 
-	private Map<Direction, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(
+	private final Map<Direction, CapabilityReference<IFluidHandler>> neighbors = ImmutableMap.of(
 			Direction.DOWN, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, Direction.DOWN),
 			Direction.UP, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, Direction.UP)
 	);

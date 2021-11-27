@@ -33,10 +33,7 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.EnumMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
 
@@ -54,13 +51,13 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	 * results in every possible path to be "tested"). Using a set results in effectively a DFS.
 	 */
 	private static Set<BlockPos> usedRouters = null;
-	private EnumMap<Direction, CapabilityReference<IFluidHandler>> neighborCaps = new EnumMap<>(Direction.class);
+	private final Map<Direction, CapabilityReference<IFluidHandler>> neighborCaps = CapabilityReference.forAllNeighbors(
+			this, FLUID_HANDLER_CAPABILITY
+	);
 
 	public FluidSorterBlockEntity(BlockPos pos, BlockState state)
 	{
 		super(IEBlockEntities.FLUID_SORTER.get(), pos, state);
-		for(Direction f : DirectionUtils.VALUES)
-			neighborCaps.put(f, CapabilityReference.forNeighbor(this, FLUID_HANDLER_CAPABILITY, f));
 	}
 
 	public int routeFluid(Direction inputSide, FluidStack stack, FluidAction doFill)
