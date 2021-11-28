@@ -21,6 +21,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -123,6 +124,7 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.hammers).add(Tools.HAMMER.get());
 		tag(IETags.screwdrivers).add(Tools.SCREWDRIVER.get());
 		tag(IETags.wirecutters).add(Tools.WIRECUTTER.get());
+		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
 
 		//TODO Forge#7891
 		tag(Tags.Items.ORES_GOLD).add(Items.DEEPSLATE_GOLD_ORE);

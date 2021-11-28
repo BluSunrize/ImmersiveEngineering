@@ -3195,5 +3195,6 @@ f04948c07759a8dc0add9b8d025580901d73ea24 data/minecraft/tags/blocks/mineable/sho
 998293558ad3cc64566d9a1b15ba11f0e8e5de88 data/minecraft/tags/blocks/needs_iron_tool.json
 b4a82c60ef7c2d9d1be26d9448f54ec35ed7943f data/minecraft/tags/blocks/needs_stone_tool.json
 a0a4dff1d7722e5158393683ab1829a82f8f16cc data/minecraft/tags/blocks/wooden_fences.json
+16710ac9ddc6280674bded9278cb43fc203905d9 data/minecraft/tags/items/cluster_max_harvestables.json
 0dbacb39b0846975ef9700573323c5df6195c4a6 data/minecraft/tags/items/lectern_books.json
 4f8feda66f598922dc4a05a588b0abec24c468e5 data/tconstruct/tags/blocks/harvestable/stackable.json
