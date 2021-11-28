@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -30,7 +31,7 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		float integrity = 100-(float)getDurabilityForDisplay(stack)*100f;
+		float integrity = getRelativeBarWidth(stack)*100f;
 		list.add(new TranslatableComponent(Lib.DESC_INFO+"electrodeIntegrity", String.format("%.2f", integrity)));
 	}
 
@@ -47,9 +48,14 @@ public class GraphiteElectrodeItem extends IEBaseItem
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
+	public int getBarWidth(@Nonnull ItemStack stack)
 	{
-		return ItemNBTHelper.getInt(stack, "graphDmg")/(double)IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getOr(0);
+		return Math.round(MAX_BAR_WIDTH*getRelativeBarWidth(stack));
+	}
+
+	private float getRelativeBarWidth(@Nonnull ItemStack stack)
+	{
+		return 1-ItemNBTHelper.getInt(stack, "graphDmg")/(float)IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getOr(96000);
 	}
 
 	@Override

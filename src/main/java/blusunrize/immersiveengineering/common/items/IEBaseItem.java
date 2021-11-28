@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemCont
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
@@ -129,5 +130,12 @@ public class IEBaseItem extends Item implements IColouredItem
 	public boolean canEquip(ItemStack stack, EquipmentSlot armorType, Entity entity)
 	{
 		return Mob.getEquipmentSlotForItem(stack)==armorType||getEquipmentSlot(stack)==armorType;
+	}
+
+	@Override
+	public int getBarColor(ItemStack pStack)
+	{
+		// All our items use the vanilla color gradient, even if they use different getBarWidth implementation
+		return Mth.hsvToRgb(Math.max(0.0F, getBarWidth(pStack)/(float)MAX_BAR_WIDTH)/3.0F, 1.0F, 1.0F);
 	}
 }

@@ -184,13 +184,12 @@ public class GuiHelper
 
 	public static void renderDurabilityBar(ItemStack stack, MultiBufferSource buffer, PoseStack transform)
 	{
-		if(!stack.isEmpty()&&stack.getItem().showDurabilityBar(stack))
+		if(!stack.isEmpty()&&stack.getItem().isBarVisible(stack))
 		{
-			double health = stack.getItem().getDurabilityForDisplay(stack);
-			int i = Math.round(13.0F-(float)health*13.0F);
-			int j = stack.getItem().getRGBDurabilityForDisplay(stack);
+			int width = stack.getItem().getBarWidth(stack);
+			int color = stack.getItem().getBarColor(stack);
 			draw(transform, buffer, 2, 13, 13, 2, 0, 0, 0);
-			draw(transform, buffer, 2, 13, i, 1, j >> 16&255, j >> 8&255, j&255);
+			draw(transform, buffer, 2, 13, width, 1, (color >> 16)&255, (color >> 8)&255, color&255);
 		}
 	}
 

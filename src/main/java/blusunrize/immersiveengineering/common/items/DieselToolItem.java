@@ -123,13 +123,13 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
+	public int getBarWidth(@Nonnull ItemStack stack)
 	{
-		return (double)getHeadDamage(stack)/(double)getMaxHeadDamage(stack);
+		return Math.round(MAX_BAR_WIDTH*(1-(float)getHeadDamage(stack)/(float)getMaxHeadDamage(stack)));
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack)
+	public boolean isBarVisible(@Nonnull ItemStack stack)
 	{
 		return getHeadDamage(stack) > 0;
 	}

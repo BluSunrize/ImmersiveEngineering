@@ -36,6 +36,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.Tags.Items;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
@@ -148,13 +149,13 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	}
 
 	@Override
-	public double getDurabilityForDisplay(ItemStack stack)
+	public int getBarWidth(@Nonnull ItemStack stack)
 	{
-		return getHeadDamage(stack)/(double)getMaximumHeadDamage(stack);
+		return Math.round(MAX_BAR_WIDTH*(1-getHeadDamage(stack)/(float)getMaximumHeadDamage(stack)));
 	}
 
 	@Override
-	public boolean showDurabilityBar(ItemStack stack)
+	public boolean isBarVisible(@Nonnull ItemStack stack)
 	{
 		return getHeadDamage(stack) > 0;
 	}
