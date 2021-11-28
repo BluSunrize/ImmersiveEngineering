@@ -561,6 +561,15 @@ public class Recipes extends RecipeProvider
 						.setEnergy(6000)
 						.build(out, toRL("crusher/raw_ore_"+metal.getName()));
 
+				Named<Item> rawBlock = createItemWrapper(IETags.getRawBlock(metal.getName()));
+				rawOreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 12);
+				if(!metal.isNative())
+					rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(rawBlock));
+				rawOreCrushing.addInput(rawBlock)
+						.setEnergy(9*6000)
+						.build(out, toRL("crusher/raw_block_"+metal.getName()));
+
+
 				// Arcfurnace ore
 				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 2);
 				if(!metal.isNative())
@@ -570,6 +579,15 @@ public class Recipes extends RecipeProvider
 						.setTime(200)
 						.setEnergy(102400)
 						.build(out, toRL("arcfurnace/ore_"+metal.getName()));
+
+				// Arcfurnace raw ore, TODO: bump this to 1.5 when we have chance based output
+				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
+				if(!metal.isNative())
+					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getRawOre()));
+				arcBuilder.addIngredient("input", metal.getRawOre())
+						.setTime(100)
+						.setEnergy(25600)
+						.build(out, toRL("arcfurnace/raw_ore_"+metal.getName()));
 			}
 
 			// Crush ingot
