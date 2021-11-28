@@ -1,3 +1,38 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@PixVoxel 
+BluSunrize
+/
+ImmersiveEngineering
+Public
+87
+603
+334
+Code
+Issues
+150
+Pull requests
+11
+Actions
+Projects
+1
+Wiki
+Security
+Insights
+ImmersiveEngineering/src/main/resources/assets/immersiveengineering/lang/ko_kr.json
+@BluSunrize
+BluSunrize Fix file error in ko_kr
+Latest commit a58d05c on 21 Oct
+ History
+ 3 contributors
+@PixVoxel@BluSunrize@stfwi
+1228 lines (1228 sloc)  96.1 KB
+   
 {"language":"korean",
 "language.code":"ko_kr",
 "language.region":"Republic of Korea",
