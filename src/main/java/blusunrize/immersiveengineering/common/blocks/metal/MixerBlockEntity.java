@@ -36,6 +36,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
@@ -47,7 +48,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -101,7 +101,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	public void receiveMessageFromClient(CompoundTag message)
 	{
 		super.receiveMessageFromClient(message);
-		if(message.contains("outputAll", NBT.TAG_BYTE))
+		if(message.contains("outputAll", Tag.TAG_BYTE))
 			outputAll = message.getBoolean("outputAll");
 	}
 

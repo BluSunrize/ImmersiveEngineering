@@ -30,6 +30,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -39,7 +40,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -159,7 +159,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 		dummy = nbt.getInt("dummy");
 		process = nbt.getInt("process");
 		isRunning = nbt.getBoolean("isRunning");
-		if(nbt.contains("sample", NBT.TAG_COMPOUND))
+		if(nbt.contains("sample", Tag.TAG_COMPOUND))
 			sample = ItemStack.of(nbt.getCompound("sample"));
 		else
 			sample = ItemStack.EMPTY;

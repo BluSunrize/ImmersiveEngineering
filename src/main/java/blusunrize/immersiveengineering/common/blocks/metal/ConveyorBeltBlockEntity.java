@@ -26,6 +26,7 @@ import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -42,7 +43,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -90,7 +90,7 @@ public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBloc
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		if(nbt.contains("conveyorBeltSubtypeNBT", NBT.TAG_COMPOUND))
+		if(nbt.contains("conveyorBeltSubtypeNBT", Tag.TAG_COMPOUND))
 			conveyorBeltSubtype.readConveyorNBT(nbt.getCompound("conveyorBeltSubtypeNBT"));
 
 		if(descPacket&&level!=null)

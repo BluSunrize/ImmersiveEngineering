@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -33,7 +34,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 public class RevolvershotEntity extends IEProjectileEntity
@@ -172,7 +172,7 @@ public class RevolvershotEntity extends IEProjectileEntity
 	{
 		super.readAdditionalSaveData(nbt);
 		this.bulletType = BulletHandler.getBullet(new ResourceLocation(nbt.getString("bulletType")));
-		if(nbt.contains("bulletPotion", NBT.TAG_COMPOUND))
+		if(nbt.contains("bulletPotion", Tag.TAG_COMPOUND))
 			this.bulletPotion = ItemStack.of(nbt.getCompound("bulletPotion"));
 	}
 

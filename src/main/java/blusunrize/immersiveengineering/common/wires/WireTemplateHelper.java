@@ -14,13 +14,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 
@@ -94,7 +94,7 @@ public class WireTemplateHelper
 
 	public static void readConnectionsFromNBT(CompoundTag compound, IConnectionTemplate template)
 	{
-		ListTag connectionsNBT = compound.getList(CONNECTIONS_KEY, NBT.TAG_COMPOUND);
+		ListTag connectionsNBT = compound.getList(CONNECTIONS_KEY, Tag.TAG_COMPOUND);
 		template.getStoredConnections().clear();
 		for(int i = 0; i < connectionsNBT.size(); i++)
 			template.getStoredConnections().add(new Connection(connectionsNBT.getCompound(i)));

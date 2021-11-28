@@ -26,6 +26,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ItemParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
@@ -36,7 +37,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nullable;
@@ -135,14 +135,14 @@ public class BucketWheelBlockEntity extends MultiblockPartBlockEntity<BucketWhee
 	{
 		synchronized(digStacks)
 		{
-			if(message.contains("fill", NBT.TAG_INT))
+			if(message.contains("fill", Tag.TAG_INT))
 				this.digStacks.set(message.getInt("fill"), ItemStack.of(message.getCompound("fillStack")));
-			if(message.contains("empty", NBT.TAG_INT))
+			if(message.contains("empty", Tag.TAG_INT))
 			{
 				int toRemove = message.getInt("empty");
 				this.digStacks.set(toRemove, ItemStack.EMPTY);
 			}
-			if(message.contains("rotation", NBT.TAG_INT))
+			if(message.contains("rotation", Tag.TAG_INT))
 			{
 				int packetRotation = message.getInt("rotation");
 				if(Math.abs(packetRotation-rotation) > 5*IEServerConfig.MACHINES.excavator_speed.get())

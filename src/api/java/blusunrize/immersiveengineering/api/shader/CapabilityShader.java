@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.shader;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -18,7 +19,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.INBTSerializable;
 import net.minecraftforge.common.util.LazyOptional;
 
@@ -100,7 +100,7 @@ public class CapabilityShader
 			if(!container.hasTag())
 				return ItemStack.EMPTY;
 			CompoundTag tagCompound = container.getOrCreateTag();
-			if(!tagCompound.contains(SHADER_NBT_KEY, NBT.TAG_COMPOUND))
+			if(!tagCompound.contains(SHADER_NBT_KEY, Tag.TAG_COMPOUND))
 				return ItemStack.EMPTY;
 			return ItemStack.of(tagCompound.getCompound(SHADER_NBT_KEY));
 		}

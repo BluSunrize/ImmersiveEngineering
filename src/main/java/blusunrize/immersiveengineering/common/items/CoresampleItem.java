@@ -46,7 +46,6 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -213,10 +212,10 @@ public class CoresampleItem extends IEBaseItem
 
 	public static List<VeinSampleData> getVeins(ItemStack stack)
 	{
-		if(!ItemNBTHelper.hasKey(stack, "mineralInfo", NBT.TAG_LIST))
+		if(!ItemNBTHelper.hasKey(stack, "mineralInfo", Tag.TAG_LIST))
 			return ImmutableList.of();
 		List<VeinSampleData> veins = new ArrayList<>();
-		ListTag mineralInfoNBT = stack.getOrCreateTag().getList("mineralInfo", NBT.TAG_COMPOUND);
+		ListTag mineralInfoNBT = stack.getOrCreateTag().getList("mineralInfo", Tag.TAG_COMPOUND);
 		for(Tag vein : mineralInfoNBT)
 		{
 			VeinSampleData data = VeinSampleData.fromNBT((CompoundTag)vein);

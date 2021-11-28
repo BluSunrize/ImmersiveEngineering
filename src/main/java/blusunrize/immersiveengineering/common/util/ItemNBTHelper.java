@@ -12,9 +12,9 @@ import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.regex.Pattern;
@@ -171,13 +171,13 @@ public class ItemNBTHelper
 				{
 					switch(add.getTagType(key))
 					{
-						case NBT.TAG_BYTE -> target.putByte(key, (byte)(target.getByte(key)+add.getByte(key)));
-						case NBT.TAG_SHORT -> target.putShort(key, (short)(target.getShort(key)+add.getShort(key)));
-						case NBT.TAG_INT -> target.putInt(key, (target.getInt(key)+add.getInt(key)));
-						case NBT.TAG_LONG -> target.putLong(key, (target.getLong(key)+add.getLong(key)));
-						case NBT.TAG_FLOAT -> target.putFloat(key, (target.getFloat(key)+add.getFloat(key)));
-						case NBT.TAG_DOUBLE -> target.putDouble(key, (target.getDouble(key)+add.getDouble(key)));
-						case NBT.TAG_BYTE_ARRAY -> {
+						case Tag.TAG_BYTE -> target.putByte(key, (byte)(target.getByte(key)+add.getByte(key)));
+						case Tag.TAG_SHORT -> target.putShort(key, (short)(target.getShort(key)+add.getShort(key)));
+						case Tag.TAG_INT -> target.putInt(key, (target.getInt(key)+add.getInt(key)));
+						case Tag.TAG_LONG -> target.putLong(key, (target.getLong(key)+add.getLong(key)));
+						case Tag.TAG_FLOAT -> target.putFloat(key, (target.getFloat(key)+add.getFloat(key)));
+						case Tag.TAG_DOUBLE -> target.putDouble(key, (target.getDouble(key)+add.getDouble(key)));
+						case Tag.TAG_BYTE_ARRAY -> {
 							byte[] bytesTarget = target.getByteArray(key);
 							byte[] bytesAdd = add.getByteArray(key);
 							byte[] bytes = new byte[bytesTarget.length+bytesAdd.length];
@@ -185,15 +185,15 @@ public class ItemNBTHelper
 							System.arraycopy(bytesAdd, 0, bytes, bytesTarget.length, bytesAdd.length);
 							target.putByteArray(key, bytes);
 						}
-						case NBT.TAG_STRING -> target.putString(key, (target.getString(key)+add.getString(key)));
-						case NBT.TAG_LIST -> {
+						case Tag.TAG_STRING -> target.putString(key, (target.getString(key)+add.getString(key)));
+						case Tag.TAG_LIST -> {
 							ListTag listTarget = (ListTag)target.get(key);
 							ListTag listAdd = (ListTag)add.get(key);
 							listTarget.addAll(listAdd);
 							target.put(key, listTarget);
 						}
-						case NBT.TAG_COMPOUND -> combineTags(target.getCompound(key), add.getCompound(key), null);
-						case NBT.TAG_INT_ARRAY -> {
+						case Tag.TAG_COMPOUND -> combineTags(target.getCompound(key), add.getCompound(key), null);
+						case Tag.TAG_INT_ARRAY -> {
 							int[] intsTarget = target.getIntArray(key);
 							int[] intsAdd = add.getIntArray(key);
 							int[] ints = new int[intsTarget.length+intsAdd.length];

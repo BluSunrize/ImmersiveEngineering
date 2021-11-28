@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraftforge.common.util.Constants.NBT;
+import net.minecraft.nbt.Tag;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -37,10 +37,10 @@ public class MultiFluidTank implements IFluidTank, IFluidHandler
 
 	public MultiFluidTank readFromNBT(CompoundTag nbt)
 	{
-		if(nbt.contains("fluids", NBT.TAG_LIST))
+		if(nbt.contains("fluids", Tag.TAG_LIST))
 		{
 			fluids.clear();
-			ListTag tagList = nbt.getList("fluids", NBT.TAG_COMPOUND);
+			ListTag tagList = nbt.getList("fluids", Tag.TAG_COMPOUND);
 			for(int i = 0; i < tagList.size(); i++)
 			{
 				FluidStack fs = FluidStack.loadFluidStackFromNBT(tagList.getCompound(i));

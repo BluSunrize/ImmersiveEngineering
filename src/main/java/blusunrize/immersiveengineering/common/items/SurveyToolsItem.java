@@ -39,7 +39,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -197,7 +196,7 @@ public class SurveyToolsItem extends IEBaseItem
 
 	public static ListTag getVeinData(ItemStack surveyTools, ResourceKey<Level> dimension, ColumnPos veinPos)
 	{
-		ListTag list = surveyTools.getOrCreateTag().getList(DATA_KEY, NBT.TAG_COMPOUND);
+		ListTag list = surveyTools.getOrCreateTag().getList(DATA_KEY, Tag.TAG_COMPOUND);
 		CompoundTag tag = null;
 		String dimString = dimension.location().toString();
 		for(Tag nbt : list)
@@ -218,8 +217,8 @@ public class SurveyToolsItem extends IEBaseItem
 			list.add(tag);
 			surveyTools.getOrCreateTag().put(DATA_KEY, list);
 		}
-		if(tag.contains("data", NBT.TAG_LIST))
-			return tag.getList("data", NBT.TAG_COMPOUND);
+		if(tag.contains("data", Tag.TAG_LIST))
+			return tag.getList("data", Tag.TAG_COMPOUND);
 		ListTag data = new ListTag();
 		tag.put("data", data);
 		return data;

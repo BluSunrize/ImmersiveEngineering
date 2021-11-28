@@ -40,7 +40,6 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.event.DrawSelectionEvent;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.Collection;
 
@@ -366,7 +365,7 @@ public class BlockOverlayUtils
 							if(dist < 10&&dist < lastDist)
 							{
 								lastDist = dist;
-								minerals = tagCompound.getList("minerals", NBT.TAG_STRING);
+								minerals = tagCompound.getList("minerals", Tag.TAG_STRING);
 							}
 						}
 					}

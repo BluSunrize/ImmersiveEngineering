@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -28,7 +29,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -65,7 +65,7 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStat
 		// In IE 134 and below the tile field is used instead of the blockstate property. The TE field is now only used
 		// to handle worlds saved with those versions and should be removed once compat is no longer a concern.
 		// Note that the blockstate is not actively replaced, so this will be the next MC version break (1.17).
-		if(nbt.contains("facing", NBT.TAG_INT))
+		if(nbt.contains("facing", Tag.TAG_INT))
 			this.facing = DirectionUtils.VALUES[nbt.getInt("facing")];
 		else
 			this.facing = null;

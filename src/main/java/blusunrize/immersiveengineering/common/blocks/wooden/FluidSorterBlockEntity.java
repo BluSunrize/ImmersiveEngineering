@@ -21,10 +21,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -143,9 +143,9 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	@Override
 	public void receiveMessageFromClient(CompoundTag message)
 	{
-		if(message.contains("sideConfig", NBT.TAG_BYTE_ARRAY))
+		if(message.contains("sideConfig", Tag.TAG_BYTE_ARRAY))
 			this.sortWithNBT = message.getByteArray("sideConfig");
-		if(message.contains("filter_side", NBT.TAG_INT))
+		if(message.contains("filter_side", Tag.TAG_INT))
 		{
 			int side = message.getInt("filter_side");
 			int slot = message.getInt("filter_slot");

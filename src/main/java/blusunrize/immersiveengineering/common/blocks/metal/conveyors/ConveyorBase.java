@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -145,7 +144,7 @@ public abstract class ConveyorBase implements IConveyorBelt
 	public void readConveyorNBT(CompoundTag nbt)
 	{
 		direction = ConveyorDirection.values()[nbt.getInt("direction")];
-		if(nbt.contains("dyeColour", NBT.TAG_INT))
+		if(nbt.contains("dyeColour", Tag.TAG_INT))
 			dyeColour = DyeColor.byId(nbt.getInt("dyeColour"));
 		else
 			dyeColour = null;

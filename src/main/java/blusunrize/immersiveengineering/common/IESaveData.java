@@ -15,11 +15,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import java.util.UUID;
@@ -38,7 +38,7 @@ public class IESaveData extends SavedData
 	public IESaveData(CompoundTag nbt)
 	{
 		this();
-		ListTag dimensionList = nbt.getList("mineralVeins", NBT.TAG_COMPOUND);
+		ListTag dimensionList = nbt.getList("mineralVeins", Tag.TAG_COMPOUND);
 		synchronized(ExcavatorHandler.getMineralVeinList())
 		{
 			ExcavatorHandler.getMineralVeinList().clear();
@@ -47,7 +47,7 @@ public class IESaveData extends SavedData
 				CompoundTag dimTag = dimensionList.getCompound(i);
 				ResourceLocation rl = new ResourceLocation(dimTag.getString("dimension"));
 				ResourceKey<Level> dimensionType = ResourceKey.create(Registry.DIMENSION_REGISTRY, rl);
-				ListTag mineralList = dimTag.getList("veins", NBT.TAG_COMPOUND);
+				ListTag mineralList = dimTag.getList("veins", Tag.TAG_COMPOUND);
 
 				ExcavatorHandler.getMineralVeinList().
 						putAll(dimensionType, mineralList.stream()
@@ -57,14 +57,14 @@ public class IESaveData extends SavedData
 			ExcavatorHandler.resetCache();
 		}
 
-		ListTag receivedShaderList = nbt.getList("receivedShaderList", NBT.TAG_COMPOUND);
+		ListTag receivedShaderList = nbt.getList("receivedShaderList", Tag.TAG_COMPOUND);
 		for(int i = 0; i < receivedShaderList.size(); i++)
 		{
 			CompoundTag tag = receivedShaderList.getCompound(i);
 			UUID player = tag.getUUID("player");
 			ShaderRegistry.receivedShaders.get(player).clear();
 
-			ListTag playerReceived = tag.getList("received", NBT.TAG_STRING);
+			ListTag playerReceived = tag.getList("received", Tag.TAG_STRING);
 			for(int j = 0; j < playerReceived.size(); j++)
 			{
 				String s = playerReceived.getString(j);

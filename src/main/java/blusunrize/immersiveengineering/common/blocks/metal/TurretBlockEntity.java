@@ -30,6 +30,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -54,7 +55,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -295,17 +295,17 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	@Override
 	public void receiveMessageFromClient(CompoundTag message)
 	{
-		if(message.contains("add", NBT.TAG_STRING))
+		if(message.contains("add", Tag.TAG_STRING))
 			targetList.add(message.getString("add"));
-		if(message.contains("remove", NBT.TAG_INT))
+		if(message.contains("remove", Tag.TAG_INT))
 			targetList.remove(message.getInt("remove"));
-		if(message.contains("whitelist", NBT.TAG_BYTE))
+		if(message.contains("whitelist", Tag.TAG_BYTE))
 			whitelist = message.getBoolean("whitelist");
-		if(message.contains("attackAnimals", NBT.TAG_BYTE))
+		if(message.contains("attackAnimals", Tag.TAG_BYTE))
 			attackAnimals = message.getBoolean("attackAnimals");
-		if(message.contains("attackPlayers", NBT.TAG_BYTE))
+		if(message.contains("attackPlayers", Tag.TAG_BYTE))
 			attackPlayers = message.getBoolean("attackPlayers");
-		if(message.contains("attackNeutrals", NBT.TAG_BYTE))
+		if(message.contains("attackNeutrals", Tag.TAG_BYTE))
 			attackNeutrals = message.getBoolean("attackNeutrals");
 		target = null;
 		this.setChanged();
@@ -317,7 +317,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		redstoneControlInverted = nbt.getBoolean("redstoneInverted");
 		EnergyHelper.deserializeFrom(energyStorage, nbt);
 
-		if(nbt.contains("owner", NBT.TAG_STRING))
+		if(nbt.contains("owner", Tag.TAG_STRING))
 			owner = nbt.getString("owner");
 		ListTag list = nbt.getList("targetList", 8);
 		targetList.clear();
@@ -329,7 +329,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		attackNeutrals = nbt.getBoolean("attackNeutrals");
 
 		target = null;
-		if(nbt.contains("target", NBT.TAG_STRING))
+		if(nbt.contains("target", Tag.TAG_STRING))
 			targetId = UUID.fromString(nbt.getString("target"));
 	}
 
@@ -574,11 +574,11 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		if(stack.hasTag())
 		{
 			CompoundTag tag = stack.getOrCreateTag();
-			if(tag.contains("owner", NBT.TAG_STRING))
+			if(tag.contains("owner", Tag.TAG_STRING))
 				this.owner = tag.getString("owner");
 			else if(placer!=null)
 				this.owner = placer.getName().getString();
-			if(tag.contains("targetList", NBT.TAG_LIST))
+			if(tag.contains("targetList", Tag.TAG_LIST))
 			{
 				ListTag list = tag.getList("targetList", 8);
 				targetList.clear();
@@ -587,15 +587,15 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			}
 			else if(owner!=null)
 				targetList.add(owner);
-			if(tag.contains("whitelist", NBT.TAG_BYTE))
+			if(tag.contains("whitelist", Tag.TAG_BYTE))
 				whitelist = tag.getBoolean("whitelist");
-			if(tag.contains("attackAnimals", NBT.TAG_BYTE))
+			if(tag.contains("attackAnimals", Tag.TAG_BYTE))
 				attackAnimals = tag.getBoolean("attackAnimals");
-			if(tag.contains("attackPlayers", NBT.TAG_BYTE))
+			if(tag.contains("attackPlayers", Tag.TAG_BYTE))
 				attackPlayers = tag.getBoolean("attackPlayers");
-			if(tag.contains("attackNeutrals", NBT.TAG_BYTE))
+			if(tag.contains("attackNeutrals", Tag.TAG_BYTE))
 				attackNeutrals = tag.getBoolean("attackNeutrals");
-			if(tag.contains("redstoneControlInverted", NBT.TAG_BYTE))
+			if(tag.contains("redstoneControlInverted", Tag.TAG_BYTE))
 				redstoneControlInverted = tag.getBoolean("redstoneControlInverted");
 		}
 		else if(placer!=null)

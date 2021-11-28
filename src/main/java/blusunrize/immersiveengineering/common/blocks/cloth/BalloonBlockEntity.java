@@ -28,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -44,7 +45,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -77,7 +77,7 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 		colour1 = tmpIdx >= 0&&tmpIdx < DyeColor.values().length?DyeColor.byId(tmpIdx): null;
 		if(oldStyle!=style||oldC0!=colour0||oldC1!=colour1)
 			requestModelDataUpdate();
-		if(nbt.contains("shader", NBT.TAG_COMPOUND))
+		if(nbt.contains("shader", Tag.TAG_COMPOUND))
 		{
 			shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
 			shader.deserializeNBT(nbt.getCompound("shader"));

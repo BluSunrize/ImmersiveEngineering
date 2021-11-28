@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.common.items.RevolverItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 
@@ -43,7 +43,7 @@ public class RevolverAssemblyRecipe extends TurnAndCopyRecipe
 				{
 					CompoundTag perks = ItemNBTHelper.getTagCompound(s, "perks");
 					for(String key : perks.getAllKeys())
-						if(perks.getTagType(key)==NBT.TAG_DOUBLE)
+						if(perks.getTagType(key)==Tag.TAG_DOUBLE)
 						{
 							RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
 							if(!tag.contains(key))

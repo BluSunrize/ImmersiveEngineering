@@ -13,10 +13,10 @@ import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.BaseComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.DyeColor;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -167,7 +167,7 @@ public class LogicCircuitHandler
 		{
 			LogicCircuitOperator operator = LogicCircuitOperator.valueOf(nbt.getString("operator"));
 			LogicCircuitRegister output = LogicCircuitRegister.valueOf(nbt.getString("output"));
-			ListTag inputList = nbt.getList("inputs", NBT.TAG_STRING);
+			ListTag inputList = nbt.getList("inputs", Tag.TAG_STRING);
 			LogicCircuitRegister[] inputs = new LogicCircuitRegister[inputList.size()];
 			for(int i = 0; i < inputs.length; i++)
 				inputs[i] = LogicCircuitRegister.valueOf(inputList.getString(i));

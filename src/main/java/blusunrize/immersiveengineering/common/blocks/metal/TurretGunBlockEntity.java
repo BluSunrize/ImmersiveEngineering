@@ -25,6 +25,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.ContainerHelper;
@@ -36,7 +37,6 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -201,7 +201,7 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	public void receiveMessageFromClient(CompoundTag message)
 	{
 		super.receiveMessageFromClient(message);
-		if(message.contains("expelCasings", NBT.TAG_BYTE))
+		if(message.contains("expelCasings", Tag.TAG_BYTE))
 			expelCasings = message.getBoolean("expelCasings");
 	}
 

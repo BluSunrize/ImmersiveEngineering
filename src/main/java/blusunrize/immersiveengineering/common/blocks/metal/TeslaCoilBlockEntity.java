@@ -36,6 +36,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -55,7 +56,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -249,7 +249,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public void receiveMessageFromServer(CompoundTag message)
 	{
-		if(message.contains("targetEntity", NBT.TAG_INT))
+		if(message.contains("targetEntity", Tag.TAG_INT))
 		{
 			Entity target = level.getEntity(message.getInt("targetEntity"));
 			if(target instanceof LivingEntity)
@@ -298,7 +298,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				level.playLocalSound(coilPos.x, coilPos.y, coilPos.z, IESounds.tesla, SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
 			}
 		}
-		else if(message.contains("tL", NBT.TAG_DOUBLE))
+		else if(message.contains("tL", Tag.TAG_DOUBLE))
 			initFreeStreamer(message.getDouble("tL"), message.getDouble("tV"), message.getDouble("tH"));
 	}
 

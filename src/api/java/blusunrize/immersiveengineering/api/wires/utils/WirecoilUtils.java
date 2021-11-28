@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants.NBT;
 
 public class WirecoilUtils
 {
@@ -42,7 +42,7 @@ public class WirecoilUtils
 
 	public static boolean hasWireLink(ItemStack stack)
 	{
-		return ItemUtils.hasTag(stack, "linkingDim", NBT.TAG_STRING);
+		return ItemUtils.hasTag(stack, "linkingDim", Tag.TAG_STRING);
 	}
 
 	public interface UseCallback

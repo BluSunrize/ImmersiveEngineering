@@ -22,7 +22,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -101,11 +100,11 @@ public class IICProxy implements IImmersiveConnectable
 
 	public static IICProxy readFromNBT(Level world, CompoundTag nbt)
 	{
-		ListTag internalNBT = nbt.getList("internal", NBT.TAG_COMPOUND);
+		ListTag internalNBT = nbt.getList("internal", Tag.TAG_COMPOUND);
 		List<Connection> internal = new ArrayList<>(internalNBT.size());
 		for(Tag c : internalNBT)
 			internal.add(new Connection((CompoundTag)c));
-		ListTag pointNBT = nbt.getList("points", NBT.TAG_COMPOUND);
+		ListTag pointNBT = nbt.getList("points", Tag.TAG_COMPOUND);
 		List<ConnectionPoint> points = new ArrayList<>();
 		for(Tag c : pointNBT)
 			points.add(new ConnectionPoint((CompoundTag)c));

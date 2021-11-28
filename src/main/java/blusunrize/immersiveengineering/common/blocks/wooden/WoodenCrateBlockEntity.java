@@ -28,6 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -47,7 +48,6 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -72,13 +72,13 @@ public class WoodenCrateBlockEntity extends IEBaseBlockEntity implements IIEInve
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		if(nbt.contains("name", NBT.TAG_STRING))
+		if(nbt.contains("name", Tag.TAG_STRING))
 			this.name = nbt.getString("name");
-		if(nbt.contains("enchantments", NBT.TAG_LIST))
-			this.enchantments = nbt.getList("enchantments", NBT.TAG_COMPOUND);
+		if(nbt.contains("enchantments", Tag.TAG_LIST))
+			this.enchantments = nbt.getList("enchantments", Tag.TAG_COMPOUND);
 		if(!descPacket)
 		{
-			if(nbt.contains("lootTable", NBT.TAG_STRING))
+			if(nbt.contains("lootTable", Tag.TAG_STRING))
 				this.lootTable = new ResourceLocation(nbt.getString("lootTable"));
 			else
 				ContainerHelper.loadAllItems(nbt, inventory);

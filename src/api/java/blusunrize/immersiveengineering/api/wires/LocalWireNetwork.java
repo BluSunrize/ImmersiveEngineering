@@ -21,7 +21,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -45,17 +44,17 @@ public class LocalWireNetwork implements IWorldTickable
 	public LocalWireNetwork(CompoundTag subnet, GlobalWireNetwork globalNet)
 	{
 		this(globalNet);
-		ListTag proxies = subnet.getList("proxies", NBT.TAG_COMPOUND);
+		ListTag proxies = subnet.getList("proxies", Tag.TAG_COMPOUND);
 		for(Tag b : proxies)
 		{
 			IImmersiveConnectable proxy = proxyProvider.fromNBT(((CompoundTag)b).getCompound("proxy"));
-			for(Tag p : ((CompoundTag)b).getList("points", NBT.TAG_COMPOUND))
+			for(Tag p : ((CompoundTag)b).getList("points", Tag.TAG_COMPOUND))
 			{
 				ConnectionPoint point = new ConnectionPoint((CompoundTag)p);
 				addConnector(point, proxy, globalNet);
 			}
 		}
-		ListTag wires = subnet.getList("wires", NBT.TAG_COMPOUND);
+		ListTag wires = subnet.getList("wires", Tag.TAG_COMPOUND);
 		for(Tag b : wires)
 		{
 			Connection wire = new Connection((CompoundTag)b);

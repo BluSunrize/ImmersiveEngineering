@@ -24,13 +24,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -152,7 +152,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 	@Override
 	public void receiveMessageFromClient(CompoundTag message)
 	{
-		if(message.contains("sideConfig", NBT.TAG_INT_ARRAY))
+		if(message.contains("sideConfig", Tag.TAG_INT_ARRAY))
 			this.sideFilter = message.getIntArray("sideConfig");
 	}
 

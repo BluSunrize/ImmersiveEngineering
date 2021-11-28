@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.mixin.accessors.TNTEntityAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.Explosion.BlockInteraction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
@@ -145,7 +145,7 @@ public class IEExplosiveEntity extends PrimedTnt
 		size = tagCompound.getFloat("explosionPower");
 		mode = BlockInteraction.values()[tagCompound.getInt("explosionSmoke")];
 		isFlaming = tagCompound.getBoolean("explosionFire");
-		if(tagCompound.contains("block", NBT.TAG_INT))
+		if(tagCompound.contains("block", Tag.TAG_INT))
 			this.block = Block.stateById(tagCompound.getInt("block"));
 	}
 

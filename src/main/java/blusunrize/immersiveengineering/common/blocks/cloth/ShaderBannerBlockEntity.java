@@ -20,6 +20,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +28,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -46,7 +46,7 @@ public class ShaderBannerBlockEntity extends IEBaseBlockEntity implements IBlock
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		if(nbt.contains("shader", NBT.TAG_COMPOUND))
+		if(nbt.contains("shader", Tag.TAG_COMPOUND))
 		{
 			shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "banner"));
 			shader.deserializeNBT(nbt.getCompound("shader"));

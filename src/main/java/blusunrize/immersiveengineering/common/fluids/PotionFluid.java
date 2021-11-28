@@ -16,6 +16,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -39,7 +40,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidAttributes.Builder;
 import net.minecraftforge.fluids.FluidStack;
@@ -69,7 +69,7 @@ public class PotionFluid extends Fluid
 
 	public static Potion fromTag(@Nullable CompoundTag tag)
 	{
-		if(tag==null||!tag.contains("Potion", NBT.TAG_STRING))
+		if(tag==null||!tag.contains("Potion", Tag.TAG_STRING))
 			return Potions.WATER;
 		ResourceLocation name = ResourceLocation.tryParse(tag.getString("Potion"));
 		if(name==null)

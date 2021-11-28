@@ -35,7 +35,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.Tags.Items;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -114,7 +113,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		if(head.hasTag())
 		{
 			CompoundTag nbt = head.getOrCreateTag();
-			if(nbt.contains(DAMAGE_KEY_OLD, NBT.TAG_INT))
+			if(nbt.contains(DAMAGE_KEY_OLD, net.minecraft.nbt.Tag.TAG_INT))
 				return nbt.getInt(DAMAGE_KEY_OLD);
 			else
 				return nbt.getInt(DAMAGE_KEY);

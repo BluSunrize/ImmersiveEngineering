@@ -22,13 +22,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -82,7 +82,7 @@ public class SplitConveyor extends ConveyorBase
 	public void handleInsertion(ItemEntity entity, ConveyorDirection conDir, double distX, double distZ)
 	{
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getBlockEntity().getBlockPos().hashCode());
-		if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
+		if(entity.getPersistentData().contains(nbtKey, Tag.TAG_INT))
 		{
 			Direction redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
 			BlockPos nextPos = getBlockEntity().getBlockPos().relative(redirect);
@@ -113,7 +113,7 @@ public class SplitConveyor extends ConveyorBase
 		if(entity.isAlive())
 		{
 			String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getBlockEntity().getBlockPos().hashCode());
-			if(entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
+			if(entity.getPersistentData().contains(nbtKey, Tag.TAG_INT))
 				redirect = Direction.values()[entity.getPersistentData().getInt(nbtKey)];
 			else
 			{
@@ -154,7 +154,7 @@ public class SplitConveyor extends ConveyorBase
 	{
 		Vec3 vec = super.getDirection(entity, outputBlocked);
 		String nbtKey = "immersiveengineering:conveyorDir"+Integer.toHexString(getBlockEntity().getBlockPos().hashCode());
-		if(!entity.getPersistentData().contains(nbtKey, NBT.TAG_INT))
+		if(!entity.getPersistentData().contains(nbtKey, Tag.TAG_INT))
 			return vec;
 		Direction redirect = Direction.from3DDataValue(entity.getPersistentData().getInt(nbtKey));
 		BlockPos wallPos = getBlockEntity().getBlockPos().relative(getFacing());

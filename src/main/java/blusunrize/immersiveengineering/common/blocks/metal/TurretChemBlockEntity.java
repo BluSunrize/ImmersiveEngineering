@@ -19,12 +19,12 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -128,7 +128,7 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 	public void receiveMessageFromClient(CompoundTag message)
 	{
 		super.receiveMessageFromClient(message);
-		if(message.contains("ignite", NBT.TAG_BYTE))
+		if(message.contains("ignite", Tag.TAG_BYTE))
 			ignite = message.getBoolean("ignite");
 	}
 

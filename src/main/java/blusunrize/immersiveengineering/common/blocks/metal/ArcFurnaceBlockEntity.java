@@ -38,6 +38,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
@@ -50,7 +51,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -715,7 +715,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		if(recipe!=null)
 		{
 			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, tag.getIntArray("process_inputSlots"));
-			if(tag.contains("process_inputAmounts", NBT.TAG_INT_ARRAY))
+			if(tag.contains("process_inputAmounts", Tag.TAG_INT_ARRAY))
 				process.setInputAmounts(tag.getIntArray("process_inputAmounts"));
 			return process;
 		}

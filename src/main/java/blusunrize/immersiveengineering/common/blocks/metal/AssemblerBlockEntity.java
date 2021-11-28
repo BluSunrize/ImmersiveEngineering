@@ -36,6 +36,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -51,7 +52,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -137,7 +137,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	public void receiveMessageFromClient(CompoundTag message)
 	{
 		Preconditions.checkState(!level.isClientSide);
-		if(message.contains("buttonID", NBT.TAG_INT))
+		if(message.contains("buttonID", Tag.TAG_INT))
 		{
 			int id = message.getInt("buttonID");
 			if(id >= 0&&id < patterns.length)
@@ -151,7 +151,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 				recursiveIngredients = !recursiveIngredients;
 			}
 		}
-		else if(message.contains("patternSync", NBT.TAG_INT))
+		else if(message.contains("patternSync", Tag.TAG_INT))
 		{
 			int r = message.getInt("recipe");
 			ListTag list = message.getList("patternSync", 10);

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +19,6 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
@@ -74,7 +74,7 @@ public class RGBColourationRecipe implements CraftingRecipe
 				{
 					itemToColour = stackInSlot;
 					int colour;
-					if(itemToColour.hasTag()&&itemToColour.getOrCreateTag().contains(colorKey, NBT.TAG_INT))
+					if(itemToColour.hasTag()&&itemToColour.getOrCreateTag().contains(colorKey, Tag.TAG_INT))
 						colour = itemToColour.getOrCreateTag().getInt(colorKey);
 					else
 						colour = 0xff_ff_ff;

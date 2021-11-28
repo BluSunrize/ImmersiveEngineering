@@ -14,6 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -33,7 +34,6 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -397,7 +397,7 @@ public abstract class IEProjectileEntity extends AbstractArrow//Yes I have to ex
 	public void readAdditionalSaveData(CompoundTag nbt)
 	{
 		super.readAdditionalSaveData(nbt);
-		if(nbt.contains("inTile", NBT.TAG_COMPOUND))
+		if(nbt.contains("inTile", Tag.TAG_COMPOUND))
 		{
 			inBlockState = NbtUtils.readBlockState(nbt.getCompound("inTile"));
 			stuckIn = NbtUtils.readBlockPos(nbt.getCompound("inPos"));

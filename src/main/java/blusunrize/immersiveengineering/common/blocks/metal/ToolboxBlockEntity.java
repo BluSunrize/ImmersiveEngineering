@@ -26,6 +26,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
@@ -41,7 +42,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.items.CapabilityItemHandler;
 
 import javax.annotation.Nullable;
@@ -62,10 +62,10 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
-		if(nbt.contains("name", NBT.TAG_STRING))
+		if(nbt.contains("name", Tag.TAG_STRING))
 			this.name = Component.Serializer.fromJson(nbt.getString("name"));
-		if(nbt.contains("enchantments", NBT.TAG_LIST))
-			this.enchantments = nbt.getList("enchantments", NBT.TAG_COMPOUND);
+		if(nbt.contains("enchantments", Tag.TAG_LIST))
+			this.enchantments = nbt.getList("enchantments", Tag.TAG_COMPOUND);
 		if(!descPacket)
 			ContainerHelper.loadAllItems(nbt, inventory);
 	}

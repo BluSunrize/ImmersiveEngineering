@@ -22,6 +22,7 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,7 +30,6 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -110,7 +110,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		if(nbt.contains("identStack", NBT.TAG_COMPOUND))
+		if(nbt.contains("identStack", Tag.TAG_COMPOUND))
 		{
 			CompoundTag t = nbt.getCompound("identStack");
 			this.identStack = ItemStack.of(t);

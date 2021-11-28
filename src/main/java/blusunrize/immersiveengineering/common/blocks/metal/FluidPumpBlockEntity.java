@@ -31,6 +31,7 @@ import blusunrize.immersiveengineering.common.util.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.tags.FluidTags;
@@ -49,7 +50,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -298,7 +298,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		int[] sideConfigArray = nbt.getIntArray("sideConfig");
 		for(Direction d : DirectionUtils.VALUES)
 			sideConfig.put(d, IOSideConfig.VALUES[sideConfigArray[d.ordinal()]]);
-		if(nbt.contains("placeCobble", NBT.TAG_BYTE))
+		if(nbt.contains("placeCobble", Tag.TAG_BYTE))
 			placeCobble = nbt.getBoolean("placeCobble");
 		tank.readFromNBT(nbt.getCompound("tank"));
 		EnergyHelper.deserializeFrom(energyStorage, nbt);

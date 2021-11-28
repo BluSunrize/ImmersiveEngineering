@@ -43,6 +43,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.DustParticleOptions;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
@@ -59,7 +60,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -299,15 +299,15 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	@Override
 	public void receiveMessageFromServer(CompoundTag message)
 	{
-		if(message.contains("growth", NBT.TAG_FLOAT))
+		if(message.contains("growth", Tag.TAG_FLOAT))
 			renderGrowth = message.getFloat("growth");
-		if(message.contains("renderActive", NBT.TAG_BYTE))
+		if(message.contains("renderActive", Tag.TAG_BYTE))
 			renderActive = message.getBoolean("renderActive");
-		if(message.contains("fertilizerAmount", NBT.TAG_INT))
+		if(message.contains("fertilizerAmount", Tag.TAG_INT))
 			fertilizerAmount = message.getInt("fertilizerAmount");
-		if(message.contains("fertilizerMod", NBT.TAG_FLOAT))
+		if(message.contains("fertilizerMod", Tag.TAG_FLOAT))
 			fertilizerMod = message.getFloat("fertilizerMod");
-		if(message.contains("tank", NBT.TAG_COMPOUND))
+		if(message.contains("tank", Tag.TAG_COMPOUND))
 			tank.readFromNBT(message.getCompound("tank"));
 	}
 

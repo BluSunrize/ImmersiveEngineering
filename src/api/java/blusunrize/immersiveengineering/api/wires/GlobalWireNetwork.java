@@ -34,7 +34,6 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -208,7 +207,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		localNetSet.forEach(LocalWireNetwork::setInvalid);
 		localNetSet.clear();
 		localNetsByPos.clear();
-		ListTag locals = nbt.getList("locals", NBT.TAG_COMPOUND);
+		ListTag locals = nbt.getList("locals", Tag.TAG_COMPOUND);
 		for(Tag b : locals)
 		{
 			CompoundTag subnet = (CompoundTag)b;

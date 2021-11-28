@@ -24,6 +24,7 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamag
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -50,7 +51,6 @@ import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -147,7 +147,7 @@ public class IEShieldItem extends UpgradeableToolItem
 		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
 		if(!inHand||!blocking)//Don't recharge if in use, to avoid flickering
 		{
-			if(getUpgrades(stack).contains("flash_cooldown", NBT.TAG_INT)&&energy.extractEnergy(10, true)==10)
+			if(getUpgrades(stack).contains("flash_cooldown", Tag.TAG_INT)&&energy.extractEnergy(10, true)==10)
 			{
 				energy.extractEnergy(20, false);
 				int cooldown = getUpgrades(stack).getInt("flash_cooldown");
@@ -156,7 +156,7 @@ public class IEShieldItem extends UpgradeableToolItem
 				else
 					getUpgrades(stack).putInt("flash_cooldown", cooldown);
 			}
-			if(getUpgrades(stack).contains("shock_cooldown", NBT.TAG_INT)&&energy.extractEnergy(10, true)==10)
+			if(getUpgrades(stack).contains("shock_cooldown", Tag.TAG_INT)&&energy.extractEnergy(10, true)==10)
 			{
 				energy.extractEnergy(20, false);
 				int cooldown = getUpgrades(stack).getInt("shock_cooldown");

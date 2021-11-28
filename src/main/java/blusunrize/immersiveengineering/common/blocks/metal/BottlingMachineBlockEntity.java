@@ -27,6 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -39,7 +40,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
@@ -471,7 +471,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		{
 			ItemStack input = ItemStack.of(nbt.getCompound("input"));
 			BottlingProcess process = new BottlingProcess(input);
-			if(nbt.contains("output", NBT.TAG_COMPOUND))
+			if(nbt.contains("output", Tag.TAG_COMPOUND))
 				process.items.set(1, ItemStack.of(nbt.getCompound("output")));
 			process.processTick = nbt.getInt("processTick");
 			return process;

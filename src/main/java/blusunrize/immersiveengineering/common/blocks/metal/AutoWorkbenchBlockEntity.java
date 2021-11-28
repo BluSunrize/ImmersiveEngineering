@@ -34,6 +34,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
@@ -44,7 +45,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -87,7 +87,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	@Override
 	public void receiveMessageFromClient(CompoundTag message)
 	{
-		if(message.contains("recipe", NBT.TAG_INT))
+		if(message.contains("recipe", Tag.TAG_INT))
 			this.selectedRecipe = message.getInt("recipe");
 	}
 

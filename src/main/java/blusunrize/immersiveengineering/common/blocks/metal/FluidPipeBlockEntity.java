@@ -33,6 +33,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -53,7 +54,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -219,7 +219,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		}
 		cover = ForgeRegistries.BLOCKS.getValue(new ResourceLocation(nbt.getString("cover")));
 		DyeColor oldColor = color;
-		if(nbt.contains("color", NBT.TAG_INT))
+		if(nbt.contains("color", Tag.TAG_INT))
 			color = DyeColor.byId(nbt.getInt("color"));
 		else
 			color = null;

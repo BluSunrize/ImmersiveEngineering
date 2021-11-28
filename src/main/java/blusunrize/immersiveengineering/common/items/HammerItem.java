@@ -49,7 +49,6 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -115,14 +114,14 @@ public class HammerItem extends IEBaseItem implements ITool
 		List<ResourceLocation> interdictedMultiblocks = null;
 		if(ItemNBTHelper.hasKey(stack, "multiblockPermission"))
 		{
-			ListTag list = stack.getOrCreateTag().getList("multiblockPermission", NBT.TAG_STRING);
+			ListTag list = stack.getOrCreateTag().getList("multiblockPermission", Tag.TAG_STRING);
 			permittedMultiblocks = parseMultiblockNames(list, player, "permission");
 			if(permittedMultiblocks==null)
 				return InteractionResult.FAIL;
 		}
 		if(ItemNBTHelper.hasKey(stack, "multiblockInterdiction"))
 		{
-			ListTag list = stack.getOrCreateTag().getList("multiblockInterdiction", NBT.TAG_STRING);
+			ListTag list = stack.getOrCreateTag().getList("multiblockInterdiction", Tag.TAG_STRING);
 			interdictedMultiblocks = parseMultiblockNames(list, player, "interdiction");
 			if(interdictedMultiblocks==null)
 				return InteractionResult.FAIL;
