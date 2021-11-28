@@ -11,22 +11,6 @@
   "result": {
     "tag": "forge:dusts/copper"
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:dusts/copper",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:raw_ores/copper",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:raw_ores/copper"
   },

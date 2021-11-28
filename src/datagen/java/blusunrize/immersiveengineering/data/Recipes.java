@@ -554,10 +554,8 @@ public class Recipes extends RecipeProvider
 						.build(out, toRL("crusher/ore_"+metal.getName()));
 
 				CrusherRecipeBuilder rawOreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 1);
-				//TODO re-add once we have raw ores for our own ores
-				//if(!metal.isNative())
-				rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getRawOre()));
-				//TODO "interesting" secondary outputs (gold from copper etc) for raw ore crushing?
+				if(!metal.isNative())
+					rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getRawOre()));
 				rawOreCrushing.addSecondary(metal.getDust(), 1/3f)
 						.addInput(metal.getRawOre())
 						.setEnergy(6000)
