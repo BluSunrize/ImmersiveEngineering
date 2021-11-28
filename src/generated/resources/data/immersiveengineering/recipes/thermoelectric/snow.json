@@ -1,5 +1,5 @@
 {
   "type": "immersiveengineering:thermoelectric_source",
-  "singleBlock": "minecraft:ice",
-  "tempKelvin": 260
+  "blockTag": "minecraft:snow",
+  "tempKelvin": 273
 }

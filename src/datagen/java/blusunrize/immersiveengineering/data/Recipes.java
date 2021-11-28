@@ -51,6 +51,7 @@ import net.minecraft.data.HashCache;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -1112,8 +1113,11 @@ public class Recipes extends RecipeProvider
 		ThermoelectricSourceBuilder.builder(Blocks.MAGMA_BLOCK)
 				.kelvin(1300)
 				.build(out, toRL("thermoelectric/magma"));
-		ThermoelectricSourceBuilder.builder(Blocks.ICE)
+		ThermoelectricSourceBuilder.builder(BlockTags.SNOW)
 				.celsius(0)
+				.build(out, toRL("thermoelectric/snow"));
+		ThermoelectricSourceBuilder.builder(Blocks.ICE)
+				.kelvin(260)
 				.build(out, toRL("thermoelectric/ice"));
 		ThermoelectricSourceBuilder.builder(Blocks.PACKED_ICE)
 				.kelvin(240)
