@@ -2483,12 +2483,12 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.CHEMTHROWER_MULTITANK))));
 
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_SCOPE))
-				.pattern("pi ")
-				.pattern("c i")
-				.pattern(" cp")
+				.pattern("cic")
+				.pattern("psp")
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.define('c', IETags.copperWire)
 				.define('p', Tags.Items.GLASS_PANES)
+				.define('s', Items.SPYGLASS)
 				.unlockedBy("has_railgun", has(Weapons.RAILGUN))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_SCOPE))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_CAPACITORS))
