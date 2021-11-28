@@ -11,13 +11,14 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.common.blocks.FakeLightBlock.FakeLightBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISpawnInterdiction;
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightBlockEntity;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
+import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -27,7 +28,6 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.Constants.NBT;
 
 import java.util.function.Supplier;
 
@@ -106,10 +106,10 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		}
 
 		@Override
-		public void onChunkUnloadedIE()
+		public void onChunkUnloaded()
 		{
 			SpawnInterdictionHandler.removeFromInterdictionTiles(this);
-			super.onChunkUnloadedIE();
+			super.onChunkUnloaded();
 		}
 
 		@Override
@@ -122,7 +122,7 @@ public class FakeLightBlock extends IEEntityBlock<FakeLightBlockEntity>
 		@Override
 		public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 		{
-			if(nbt.contains("floodlightCoords", NBT.TAG_COMPOUND))
+			if(nbt.contains("floodlightCoords", Tag.TAG_COMPOUND))
 				floodlightCoords = NbtUtils.readBlockPos(nbt.getCompound("floodlightCoords"));
 			else
 				floodlightCoords = null;

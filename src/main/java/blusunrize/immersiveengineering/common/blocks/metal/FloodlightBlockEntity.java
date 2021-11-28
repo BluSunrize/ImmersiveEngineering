@@ -278,10 +278,10 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	}
 
 	@Override
-	public void onChunkUnloadedIE()
+	public void onChunkUnloaded()
 	{
 		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
-		super.onChunkUnloadedIE();
+		super.onChunkUnloaded();
 	}
 
 	@Override

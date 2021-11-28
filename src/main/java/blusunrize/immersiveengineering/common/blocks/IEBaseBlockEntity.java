@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.WrappingEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
@@ -200,9 +199,7 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	@Override
 	public final void setRemoved()
 	{
-		if(ApiUtils.IS_UNLOADING_BLOCK_ENTITIES.getValue().test(level))
-			onChunkUnloadedIE();
-		else
+		if(!isUnloaded)
 			setRemovedIE();
 		super.setRemoved();
 	}
@@ -220,15 +217,20 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 		caps.forEach(ResettableCapability::reset);
 	}
 
+	private boolean isUnloaded = false;
+
 	@Override
-	public final void onChunkUnloaded()
+	public void onLoad()
 	{
-		onChunkUnloadedIE();
+		super.onLoad();
+		isUnloaded = false;
 	}
 
-	public void onChunkUnloadedIE()
+	@Override
+	public void onChunkUnloaded()
 	{
 		super.onChunkUnloaded();
+		isUnloaded = true;
 	}
 
 	public void setRemovedIE()

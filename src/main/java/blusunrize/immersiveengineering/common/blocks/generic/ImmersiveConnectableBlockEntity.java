@@ -98,9 +98,9 @@ public abstract class ImmersiveConnectableBlockEntity extends IEBaseBlockEntity 
 	}
 
 	@Override
-	public void onChunkUnloadedIE()
+	public void onChunkUnloaded()
 	{
-		super.onChunkUnloadedIE();
+		super.onChunkUnloaded();
 		ConnectorBlockEntityHelper.onChunkUnload(globalNet, this);
 	}
 

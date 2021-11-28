@@ -40,8 +40,8 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 		IStateBasedDirectional, IHammerInteraction, IBlockBounds, IActiveState, EnergyConnector
 {
 	public int energyStorage = 0;
-	private int energyDraw = IEServerConfig.MACHINES.lantern_energyDraw.get();
-	private int maximumStorage = IEServerConfig.MACHINES.lantern_maximumStorage.get();
+	private final int energyDraw = IEServerConfig.MACHINES.lantern_energyDraw.get();
+	private final int maximumStorage = IEServerConfig.MACHINES.lantern_maximumStorage.get();
 
 	public ElectricLanternBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -79,10 +79,10 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public void onChunkUnloadedIE()
+	public void onChunkUnloaded()
 	{
 		SpawnInterdictionHandler.removeFromInterdictionTiles(this);
-		super.onChunkUnloadedIE();
+		super.onChunkUnloaded();
 	}
 
 	@Override

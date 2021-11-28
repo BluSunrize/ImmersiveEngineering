@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.api.wires.impl;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
@@ -55,13 +54,14 @@ public abstract class ImmersiveConnectableBlockEntity extends BlockEntity implem
 		);
 	}
 
-	// WARNING: This method is currently never called due to a Forge bug. Make sure to differentiate between unloads and
-	// removes in setRemoved until this is fixed!
+	private boolean isUnloaded = false;
+
 	@Override
 	public void onChunkUnloaded()
 	{
 		super.onChunkUnloaded();
 		ConnectorBlockEntityHelper.onChunkUnload(globalNet, this);
+		isUnloaded = true;
 	}
 
 	@Override
@@ -69,15 +69,14 @@ public abstract class ImmersiveConnectableBlockEntity extends BlockEntity implem
 	{
 		super.onLoad();
 		ConnectorBlockEntityHelper.onChunkLoad(this, level);
+		isUnloaded = false;
 	}
 
 	@Override
 	public void setRemoved()
 	{
 		super.setRemoved();
-		if(ApiUtils.IS_UNLOADING_BLOCK_ENTITIES.getValue().test(level))
-			ConnectorBlockEntityHelper.onChunkUnload(globalNet, this);
-		else
+		if(!isUnloaded)
 			ConnectorBlockEntityHelper.remove(level, this);
 	}
 
