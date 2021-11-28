@@ -555,3 +555,22 @@ if (System.getProperty("idea.sync.active") == "true") {
         }
     }
 }
+
+task speedUpPreRun {
+    doLast {
+        for (String s : new String[]{"Client", "Server", "Data"}) {
+            ant.replace(
+                    file: ".idea/runConfigurations/run"+s+".xml",
+                    // prepareRunX is prepareRuns + compile, but compiling is already handled by IntelliJ
+                    token: "prepareRun"+s,
+                    value: "prepareRuns"
+            )
+        }
+    }
+}
+
+tasks.withType(Task) {
+    if (it.name == "genIntellijRuns") {
+        it.finalizedBy speedUpPreRun
+    }
+}
