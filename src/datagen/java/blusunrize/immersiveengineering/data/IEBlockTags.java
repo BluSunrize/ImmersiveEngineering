@@ -231,6 +231,7 @@ class IEBlockTags extends BlockTagsProvider
 	{
 		setMiningLevel(Metals.ORES.get(metal), level);
 		setMiningLevel(Metals.DEEPSLATE_ORES.get(metal), level);
+		setMiningLevel(Metals.RAW_ORES.get(metal), level);
 	}
 
 	private void setStorageMiningLevel(EnumMetals metal, Tiers level)

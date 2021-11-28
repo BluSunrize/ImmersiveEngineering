@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "sis",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:raw_ores/silver"
+    },
+    "i": {
+      "item": "immersiveengineering:raw_silver"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:raw_block_silver"
+  }
+}

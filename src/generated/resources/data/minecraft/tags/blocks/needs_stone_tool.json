@@ -3,8 +3,10 @@
   "values": [
     "minecraft:copper_ore",
     "minecraft:deepslate_copper_ore",
+    "minecraft:raw_copper_block",
     "immersiveengineering:ore_aluminum",
     "immersiveengineering:deepslate_ore_aluminum",
+    "immersiveengineering:raw_block_aluminum",
     "minecraft:copper_block",
     "immersiveengineering:storage_aluminum"
   ]

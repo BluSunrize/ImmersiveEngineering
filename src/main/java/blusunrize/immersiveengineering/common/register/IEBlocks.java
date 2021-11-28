@@ -35,6 +35,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -218,6 +219,7 @@ public final class IEBlocks
 	{
 		public static final Map<EnumMetals, BlockEntry<Block>> ORES = new EnumMap<>(EnumMetals.class);
 		public static final Map<EnumMetals, BlockEntry<Block>> DEEPSLATE_ORES = new EnumMap<>(EnumMetals.class);
+		public static final Map<EnumMetals, BlockEntry<Block>> RAW_ORES = new EnumMap<>(EnumMetals.class);
 		public static final Map<EnumMetals, BlockEntry<Block>> STORAGE = new EnumMap<>(EnumMetals.class);
 		public static final Map<EnumMetals, BlockEntry<IEBaseBlock>> SHEETMETAL = new EnumMap<>(EnumMetals.class);
 
@@ -229,6 +231,7 @@ public final class IEBlocks
 				BlockEntry<Block> storage;
 				BlockEntry<Block> ore = null;
 				BlockEntry<Block> deepslateOre = null;
+				BlockEntry<Block> rawOre = null;
 				BlockEntry<IEBaseBlock> sheetmetal = BlockEntry.simple("sheetmetal_"+name, SHEETMETAL_PROPERTIES);
 				registerSlab(sheetmetal);
 				SHEETMETAL.put(m, sheetmetal);
@@ -243,6 +246,10 @@ public final class IEBlocks
 									.color(MaterialColor.DEEPSLATE)
 									.sound(SoundType.DEEPSLATE)
 									.strength(4.5f, 3)
+									.requiresCorrectToolForDrops()));
+					rawOre = new BlockEntry<>(BlockEntry.simple("raw_block_"+name,
+							() -> Block.Properties.of(Material.STONE)
+									.strength(5, 6)
 									.requiresCorrectToolForDrops()));
 				}
 				if(!m.isVanillaMetal())
@@ -260,18 +267,21 @@ public final class IEBlocks
 					storage = new BlockEntry<>(Blocks.IRON_BLOCK);
 					ore = new BlockEntry<>(Blocks.IRON_ORE);
 					deepslateOre = new BlockEntry<>(Blocks.DEEPSLATE_IRON_ORE);
+					rawOre = new BlockEntry<>(Blocks.RAW_IRON_BLOCK);
 				}
 				else if(m==EnumMetals.GOLD)
 				{
 					storage = new BlockEntry<>(Blocks.GOLD_BLOCK);
 					ore = new BlockEntry<>(Blocks.GOLD_ORE);
 					deepslateOre = new BlockEntry<>(Blocks.DEEPSLATE_GOLD_ORE);
+					rawOre = new BlockEntry<>(Blocks.RAW_GOLD_BLOCK);
 				}
 				else if(m==EnumMetals.COPPER)
 				{
 					storage = new BlockEntry<>(Blocks.COPPER_BLOCK);
 					ore = new BlockEntry<>(Blocks.COPPER_ORE);
 					deepslateOre = new BlockEntry<>(Blocks.DEEPSLATE_COPPER_ORE);
+					rawOre = new BlockEntry<>(Blocks.RAW_COPPER_BLOCK);
 				}
 				else
 					throw new RuntimeException("Unkown vanilla metal: "+m.name());
@@ -280,6 +290,8 @@ public final class IEBlocks
 					ORES.put(m, ore);
 				if(deepslateOre!=null)
 					DEEPSLATE_ORES.put(m, deepslateOre);
+				if(deepslateOre!=null)
+					RAW_ORES.put(m, rawOre);
 			}
 		}
 	}

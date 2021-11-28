@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "sss",
+    "sis",
+    "sss"
+  ],
+  "key": {
+    "s": {
+      "tag": "forge:raw_ores/lead"
+    },
+    "i": {
+      "item": "immersiveengineering:raw_lead"
+    }
+  },
+  "result": {
+    "item": "immersiveengineering:raw_block_lead"
+  }
+}
