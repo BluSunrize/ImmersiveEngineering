@@ -137,7 +137,7 @@ public class Recipes extends RecipeProvider
 				ore = IEBlocks.Metals.DEEPSLATE_ORES.get(metal);
 				addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
 				BlockEntry<Block> rawBlock = IEBlocks.Metals.RAW_ORES.get(metal);
-				add3x3Conversion(rawBlock, rawOre, tags.raw_ore, out);
+				add3x3Conversion(rawBlock, rawOre, tags.rawOre, out);
 			}
 			addStandardSmeltingBlastingRecipe(dust, ingot, 0, out, "_from_dust");
 //			addStandardSmeltingBlastingRecipe(dust, ingot, metal.smeltingXP, out, "_from_dust"); //TODO: remove this, if 0 XP on dust is intentional. this bugs out because the alloys do not have metal.smeltingXP

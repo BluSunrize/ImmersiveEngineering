@@ -97,7 +97,14 @@ class IEBlockTags extends BlockTagsProvider
 					tag(tags.ore).add(IEBlocks.Metals.ORES.get(metal).get());
 					tag(tags.ore).add(IEBlocks.Metals.DEEPSLATE_ORES.get(metal).get());
 					tag(Tags.Blocks.ORES).addTag(tags.ore);
+					assert tags.rawBlock!=null;
+					tag(tags.rawBlock).add(IEBlocks.Metals.RAW_ORES.get(metal).get());
 				}
+			}
+			else //TODO Forge#789, remove if/when we get tags for raw blocks
+			{
+				assert tags.rawBlock!=null;
+				tag(tags.rawBlock).add(IEBlocks.Metals.RAW_ORES.get(metal).get());
 			}
 			//TODO Forge#7891
 			if(metal==EnumMetals.COPPER)

@@ -54,8 +54,9 @@ class IEItemTags extends ItemTagsProvider
 			}
 			if(metal.shouldAddOre())
 			{
-				tag(tags.raw_ore).add(Metals.RAW_ORES.get(metal).get());
-				//TODO there is no forge tag "raw_ores" yet?
+				assert tags.rawOre!=null;
+				tag(tags.rawOre).add(Metals.RAW_ORES.get(metal).get());
+				//TODO Forge#7891, there is no tag "raw_ores" yet
 			}
 			if(metal==EnumMetals.COPPER)
 			{
