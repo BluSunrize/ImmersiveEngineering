@@ -158,7 +158,7 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 			this, be -> be.fluidInput, SheetmetalTankBlockEntity::master, registerFluidInput(tank)
 	);
 	private final MultiblockCapability<IFluidHandler> fluidIO = MultiblockCapability.make(
-			this, be -> be.fluidInput, SheetmetalTankBlockEntity::master, registerFluidHandler(tank)
+			this, be -> be.fluidIO, SheetmetalTankBlockEntity::master, registerFluidHandler(tank)
 	);
 
 	@Nonnull
