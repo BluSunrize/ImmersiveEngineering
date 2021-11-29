@@ -14,6 +14,7 @@ import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -27,6 +28,7 @@ import org.lwjgl.opengl.GL11;
 
 import java.util.OptionalDouble;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static com.mojang.blaze3d.vertex.DefaultVertexFormat.*;
 import static net.minecraft.client.renderer.texture.TextureAtlas.LOCATION_PARTICLES;
@@ -55,6 +57,9 @@ public class IERenderTypes extends RenderStateShard
 	public static final RenderType POSITION_COLOR_LIGHTMAP;
 	public static final RenderType ITEM_DAMAGE_BAR;
 	public static final RenderType PARTICLES;
+	private static final Function<ResourceLocation, RenderType> GUI_CUTOUT;
+	private static final Function<ResourceLocation, RenderType> GUI_TRANSLUCENT;
+	private static final Function<ResourceLocation, RenderType> FULLBRIGHT_TRANSLUCENT;
 	private static final ShaderStateShard RENDERTYPE_POSITION_COLOR = RENDERTYPE_LIGHTNING_SHADER;
 	protected static final RenderStateShard.TextureStateShard BLOCK_SHEET_MIPPED = new RenderStateShard.TextureStateShard(TextureAtlas.LOCATION_BLOCKS, false, true);
 	protected static final RenderStateShard.LightmapStateShard LIGHTMAP_DISABLED = new RenderStateShard.LightmapStateShard(false);
@@ -173,6 +178,31 @@ public class IERenderTypes extends RenderStateShard
 						.setLightmapState(NO_LIGHTMAP)
 						.createCompositeState(true)
 		);
+		GUI_CUTOUT = Util.memoize(texture -> createDefault(
+				"gui_"+texture,
+				DefaultVertexFormat.POSITION_COLOR_TEX,
+				Mode.QUADS,
+				makeGuiState(texture).createCompositeState(false)
+		));
+		GUI_TRANSLUCENT = Util.memoize(texture -> createDefault(
+				"gui_translucent_"+texture,
+				DefaultVertexFormat.POSITION_COLOR_TEX,
+				Mode.QUADS,
+				makeGuiState(texture)
+						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.createCompositeState(false)
+		));
+		FULLBRIGHT_TRANSLUCENT = Util.memoize(texture -> createDefault(
+				"immersiveengineering:fullbright_translucent_"+texture,
+				DefaultVertexFormat.BLOCK,
+				Mode.QUADS,
+				CompositeState.builder()
+						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.setTextureState(new TextureStateShard(texture, false, false))
+						.setLightmapState(new LightmapStateShard(false))
+						.setShaderState(FULLBRIGHT_BLOCKS)
+						.createCompositeState(false)
+		));
 	}
 
 	private IERenderTypes(String p_110161_, Runnable p_110162_, Runnable p_110163_)
@@ -182,26 +212,12 @@ public class IERenderTypes extends RenderStateShard
 
 	public static RenderType getGui(ResourceLocation texture)
 	{
-		//TODO memoize(?)
-		return createDefault(
-				"gui_"+texture,
-				DefaultVertexFormat.POSITION_COLOR_TEX,
-				Mode.QUADS,
-				makeGuiState(texture).createCompositeState(false)
-		);
+		return GUI_CUTOUT.apply(texture);
 	}
 
 	public static RenderType getGuiTranslucent(ResourceLocation texture)
 	{
-		//TODO memoize(?)
-		return createDefault(
-				"gui_translucent_"+texture,
-				DefaultVertexFormat.POSITION_COLOR_TEX,
-				Mode.QUADS,
-				makeGuiState(texture)
-						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-						.createCompositeState(false)
-		);
+		return GUI_TRANSLUCENT.apply(texture);
 	}
 
 	private static CompositeState.CompositeStateBuilder makeGuiState(ResourceLocation texture)
@@ -268,16 +284,9 @@ public class IERenderTypes extends RenderStateShard
 		return RenderType.create(name, format, mode, 256, false, false, state);
 	}
 
-	public static RenderType getFullbrightTranslucent(ResourceLocation resourceLocation)
+	public static RenderType getFullbrightTranslucent(ResourceLocation texture)
 	{
-		//TODO memoize
-		RenderType.CompositeState glState = RenderType.CompositeState.builder()
-				.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-				.setTextureState(new TextureStateShard(resourceLocation, false, false))
-				.setLightmapState(new LightmapStateShard(false))
-				.setShaderState(FULLBRIGHT_BLOCKS)
-				.createCompositeState(false);
-		return createDefault("immersiveengineering:fullbright_translucent_"+resourceLocation, DefaultVertexFormat.BLOCK, Mode.QUADS, glState);
+		return FULLBRIGHT_TRANSLUCENT.apply(texture);
 	}
 
 	public static MultiBufferSource wrapWithStencil(MultiBufferSource in, Consumer<VertexConsumer> setupStencilArea, String name, int ref)
