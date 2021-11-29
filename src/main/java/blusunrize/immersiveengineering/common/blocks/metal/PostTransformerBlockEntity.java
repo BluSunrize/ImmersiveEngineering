@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import com.google.common.collect.ImmutableList;
@@ -36,7 +36,7 @@ public class PostTransformerBlockEntity extends AbstractTransformerBlockEntity i
 	}
 
 	@Override
-	protected Vec3 getConnectionOffset(Connection con, boolean right)
+	protected Vec3 getConnectionOffset(WireType type, boolean right)
 	{
 		if(right)
 			return new Vec3(.5+(getFacing()==Direction.EAST?.4375: getFacing()==Direction.WEST?-.4375: 0), 1.4375, .5+(getFacing()==Direction.SOUTH?.4375: getFacing()==Direction.NORTH?-.4375: 0));

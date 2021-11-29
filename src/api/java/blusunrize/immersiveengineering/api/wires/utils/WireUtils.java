@@ -10,17 +10,16 @@ package blusunrize.immersiveengineering.api.wires.utils;
 
 import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.api.wires.*;
-import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
-import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.DoubleTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -91,25 +90,16 @@ public class WireUtils
 
 	public static Set<BlockPos> findObstructingBlocks(Level world, Connection conn, Set<BlockPos> ignore)
 	{
-		BlockEntity teA = world.getBlockEntity(conn.getEndA().getPosition());
-		BlockEntity teB = world.getBlockEntity(conn.getEndB().getPosition());
 		Set<BlockPos> obstructions = new HashSet<>();
-		if(teA instanceof IImmersiveConnectable&&teB instanceof IImmersiveConnectable)
-		{
-			Vec3 start = ((IImmersiveConnectable)teA).getConnectionOffset(conn, conn.getEndA());
-			Vec3 end = ((IImmersiveConnectable)teB).getConnectionOffset(conn, conn.getEndB());
-			Vec3i offsetEndInt = conn.getEndB().getPosition().subtract(conn.getEndA().getPosition());
-			Vec3 offsetEnd = new Vec3(offsetEndInt.getX(), offsetEndInt.getY(), offsetEndInt.getZ());
-			WireUtils.raytraceAlongCatenaryRelative(conn, (p) -> {
-				if(!ignore.contains(p.block()))
-				{
-					BlockState state = world.getBlockState(p.block());
-					if(WireUtils.preventsConnection(world, p.block(), state, p.entersAt(), p.leavesAt()))
-						obstructions.add(p.block());
-				}
-			}, (p) -> {
-			}, start, end.add(offsetEnd));
-		}
+		WireUtils.raytraceAlongCatenary(conn, (p) -> {
+			if(!ignore.contains(p.block()))
+			{
+				BlockState state = world.getBlockState(p.block());
+				if(WireUtils.preventsConnection(world, p.block(), state, p.entersAt(), p.leavesAt()))
+					obstructions.add(p.block());
+			}
+		}, (p) -> {
+		});
 		return obstructions;
 	}
 
@@ -118,27 +108,12 @@ public class WireUtils
 		return WireType.getValue(tag.getString(key));
 	}
 
-	public static void raytraceAlongCatenary(Connection conn, LocalWireNetwork net, Consumer<BlockIntersection> in,
+	public static void raytraceAlongCatenary(Connection conn, Consumer<BlockIntersection> in,
 											 Consumer<BlockIntersection> close)
 	{
-		Vec3 vStart = getVecForIICAt(net, conn.getEndA(), conn, false);
-		Vec3 vEnd = getVecForIICAt(net, conn.getEndB(), conn, true);
-		raytraceAlongCatenaryRelative(conn, in, close, vStart, vEnd);
-	}
-
-	public static void raytraceAlongCatenaryRelative(Connection conn, Consumer<BlockIntersection> in,
-													 Consumer<BlockIntersection> close, Vec3 vStart,
-													 Vec3 vEnd)
-	{
-		conn.generateCatenaryData(vStart, vEnd);
 		final BlockPos offset = conn.getEndA().getPosition();
-		raytraceAlongCatenary(conn.getCatenaryData(), offset, in, close);
-	}
-
-	public static void raytraceAlongCatenary(CatenaryData data, BlockPos offset, Consumer<BlockIntersection> in,
-											 Consumer<BlockIntersection> close)
-	{
-		CatenaryTracer ct = new CatenaryTracer(data, offset);
+		conn.generateCatenaryData();
+		CatenaryTracer ct = new CatenaryTracer(conn.getCatenaryData(), offset);
 		ct.calculateIntegerIntersections();
 		ct.forEachSegment(segment -> (segment.inBlock?in: close).accept(new BlockIntersection(
 				segment.mainPos, segment.relativeSegmentStart, segment.relativeSegmentEnd
@@ -181,25 +156,6 @@ public class WireUtils
 		return vex;
 	}
 
-	public static Vec3 getVecForIICAt(LocalWireNetwork net, ConnectionPoint pos, Connection conn, boolean fromOtherEnd)
-	{
-		//Force loading
-		IImmersiveConnectable iicPos = net.getConnector(pos.getPosition());
-		Preconditions.checkArgument(
-				iicPos!=null&&!iicPos.isProxy(),
-				"Expected non-proxy at %s while querying offset for connection %s, but got %s",
-				pos, conn, iicPos
-		);
-		Vec3 offset = iicPos.getConnectionOffset(conn, pos);
-		if(fromOtherEnd)
-		{
-			BlockPos posA = pos.getPosition();
-			BlockPos posB = conn.getOtherEnd(pos).getPosition();
-			offset = offset.add(posA.getX()-posB.getX(), posA.getY()-posB.getY(), posA.getZ()-posB.getZ());
-		}
-		return offset;
-	}
-
 	public static Connection getTargetConnection(Level world, Player player, Connection ignored, double maxDistance)
 	{
 		Vec3 look = player.getLookAngle();
@@ -213,7 +169,7 @@ public class WireUtils
 		ConnectionPoint fixedPos = conn.getOtherEnd(currEnd);
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
 		globalNet.removeConnection(conn);
-		globalNet.addConnection(new Connection(conn.type, fixedPos, newEnd));
+		globalNet.addConnection(new Connection(conn.type, fixedPos, newEnd, globalNet));
 	}
 
 	public static double getCoeffForMinDistance(Vec3 point, Vec3 line, Vec3 across)
@@ -233,6 +189,29 @@ public class WireUtils
 			if(!global.getLocalNet(cp).getConnections(cp).stream().allMatch(Connection::isInternal))
 				return true;
 		return false;
+	}
+
+	public static Vec3 loadVec3(Tag loadFrom)
+	{
+		if(!(loadFrom instanceof ListTag list))
+			return Vec3.ZERO;
+		return new Vec3(list.getDouble(0), list.getDouble(1), list.getDouble(2));
+	}
+
+	public static Tag storeVec3(Vec3 vec)
+	{
+		ListTag list = new ListTag();
+		list.add(DoubleTag.valueOf(vec.x));
+		list.add(DoubleTag.valueOf(vec.y));
+		list.add(DoubleTag.valueOf(vec.z));
+		return list;
+	}
+
+	public static Vec3 getConnectionOffset(
+			GlobalWireNetwork globalNet, ConnectionPoint here, ConnectionPoint other, WireType type
+	)
+	{
+		return globalNet.getLocalNet(here).getConnector(here).getConnectionOffset(here, other, type);
 	}
 
 	public static record BlockIntersection(BlockPos block, Vec3 entersAt, Vec3 leavesAt)

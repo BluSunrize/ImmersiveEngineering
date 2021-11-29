@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.LocalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -196,10 +195,10 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
 		Direction side = getFacing().getOpposite();
-		double lengthFromHalf = LENGTH.getFloat(Pair.of(voltage, relay))-con.type.getRenderDiameter()/2-.5;
+		double lengthFromHalf = LENGTH.getFloat(Pair.of(voltage, relay))-type.getRenderDiameter()/2-.5;
 		return new Vec3(.5+lengthFromHalf*side.getStepX(),
 				.5+lengthFromHalf*side.getStepY(),
 				.5+lengthFromHalf*side.getStepZ());

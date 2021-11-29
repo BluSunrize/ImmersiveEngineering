@@ -16,16 +16,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
 
 public class MessageWireSync implements IMessage
 {
-	private ConnectionPoint start;
-	private ConnectionPoint end;
-	private WireType type;
-	private boolean added;
+	private final ConnectionPoint start;
+	private final ConnectionPoint end;
+	private final WireType type;
+	private final boolean added;
+	private final Vec3 offsetStart;
+	private final Vec3 offsetEnd;
 
 	public MessageWireSync(Connection conn, boolean added)
 	{
@@ -33,6 +36,8 @@ public class MessageWireSync implements IMessage
 		this.end = conn.getEndB();
 		this.type = conn.type;
 		this.added = added;
+		this.offsetStart = conn.getEndAOffset();
+		this.offsetEnd = conn.getEndBOffset();
 	}
 
 	public MessageWireSync(FriendlyByteBuf buf)
@@ -41,6 +46,8 @@ public class MessageWireSync implements IMessage
 		start = readConnPoint(buf);
 		end = readConnPoint(buf);
 		type = WireType.getValue(buf.readUtf(128));
+		offsetStart = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
+		offsetEnd = new Vec3(buf.readDouble(), buf.readDouble(), buf.readDouble());
 	}
 
 	private ConnectionPoint readConnPoint(FriendlyByteBuf buf)
@@ -57,11 +64,12 @@ public class MessageWireSync implements IMessage
 	@Override
 	public void toBytes(FriendlyByteBuf buf)
 	{
-		FriendlyByteBuf pb = new FriendlyByteBuf(buf);
-		pb.writeBoolean(added);
-		writeConnPoint(start, pb);
-		writeConnPoint(end, pb);
-		pb.writeUtf(type.getUniqueName());
+		buf.writeBoolean(added);
+		writeConnPoint(start, buf);
+		writeConnPoint(end, buf);
+		buf.writeUtf(type.getUniqueName());
+		buf.writeDouble(offsetStart.x).writeDouble(offsetStart.y).writeDouble(offsetStart.z);
+		buf.writeDouble(offsetEnd.x).writeDouble(offsetEnd.y).writeDouble(offsetEnd.z);
 	}
 
 	@Override
@@ -75,10 +83,10 @@ public class MessageWireSync implements IMessage
 
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
 			if(added)
-				globalNet.addConnection(new Connection(type, start, end));
+				globalNet.addConnection(new Connection(type, start, end, offsetStart, offsetEnd));
 			else if(globalNet.getNullableLocalNet(start)!=null&&globalNet.getNullableLocalNet(end)!=null)
 			{
-				globalNet.removeConnection(new Connection(type, start, end));
+				globalNet.removeConnection(new Connection(type, start, end, offsetStart, offsetEnd));
 				removeProxyIfNoWires(start, globalNet);
 				removeProxyIfNoWires(end, globalNet);
 			}

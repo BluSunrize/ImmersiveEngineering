@@ -104,9 +104,9 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		return getConnectionOffset(con, con.getEndFor(worldPosition).getIndex()==RIGHT_INDEX);
+		return getConnectionOffset(type, here.getIndex()==RIGHT_INDEX);
 	}
 
 	@Override
@@ -186,7 +186,7 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 		return true;
 	}
 
-	protected abstract Vec3 getConnectionOffset(Connection con, boolean right);
+	protected abstract Vec3 getConnectionOffset(WireType type, boolean right);
 
 	protected void updateMirrorState()
 	{

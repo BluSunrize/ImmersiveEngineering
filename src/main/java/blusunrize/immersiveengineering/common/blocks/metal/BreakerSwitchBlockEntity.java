@@ -137,7 +137,7 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
@@ -152,7 +152,7 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 		for(ConnectionPoint cp : getConnectionPoints())
 			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
 				if(!c.isInternal())
-					globalNet.updateCatenaryData(c, level);
+					globalNet.updateCatenaryData(c);
 		setChanged();
 		markContainingBlockForUpdate(getBlockState());
 		return true;

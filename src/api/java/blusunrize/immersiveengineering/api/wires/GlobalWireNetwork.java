@@ -34,6 +34,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -381,7 +382,7 @@ public class GlobalWireNetwork implements IWorldTickable
 					IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
 					if(!iicEnd.isProxy())
 					{
-						c.generateCatenaryData(world);
+						c.generateCatenaryData();
 						if(!world.isClientSide)
 						{
 							WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
@@ -541,12 +542,17 @@ public class GlobalWireNetwork implements IWorldTickable
 			removeCP(toRemove);
 	}
 
-	public void updateCatenaryData(Connection conn, Level world)
+	public void updateCatenaryData(Connection conn)
 	{
 		processQueuedLoads();
 		collisionData.removeConnection(conn);
-		conn.resetCatenaryData();
-		conn.generateCatenaryData(world);
+		LocalWireNetwork local = getLocalNet(conn.getEndA());
+		IImmersiveConnectable iicA = local.getConnector(conn.getEndA());
+		IImmersiveConnectable iicB = local.getConnector(conn.getEndB());
+		Vec3 newOffsetA = iicA.getConnectionOffset(conn.getEndA(), conn.getEndB(), conn.type);
+		Vec3 newOffsetB = iicB.getConnectionOffset(conn.getEndB(), conn.getEndA(), conn.type);
+		conn.resetCatenaryData(newOffsetA, newOffsetB);
+		conn.generateCatenaryData();
 		collisionData.addConnection(conn);
 	}
 

@@ -13,7 +13,6 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
@@ -30,6 +29,8 @@ public class Connection
 	private final ConnectionPoint endB;
 	private final boolean internal;
 	private final double roughLength;
+	private Vec3 endAOffset;
+	private Vec3 endBOffset;
 
 	@Nullable
 	private CatenaryData catData;
@@ -39,32 +40,60 @@ public class Connection
 	private LocalWireNetwork cachedLocalNet;
 	private int cachedNetVersion = -1;
 
-	private Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB, boolean internal)
+	private Connection(
+			@Nonnull WireType type,
+			@Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB,
+			Vec3 endAOffset, Vec3 endBOffset,
+			boolean internal
+	)
 	{
 		this.type = type;
 		if(endA.compareTo(endB) < 0)
 		{
-			ConnectionPoint tmp = endA;
-			endA = endB;
-			endB = tmp;
+			this.endAOffset = endBOffset;
+			this.endBOffset = endAOffset;
+			this.endA = endB;
+			this.endB = endA;
 		}
-		this.endA = endA;
-		this.endB = endB;
+		else
+		{
+			this.endAOffset = endAOffset;
+			this.endBOffset = endBOffset;
+			this.endA = endA;
+			this.endB = endB;
+		}
 		this.internal = internal;
 		this.roughLength = Math.sqrt(endA.getPosition().distSqr(endB.getPosition(), false));
 	}
 
-	public Connection(@Nonnull WireType type, @Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB)
+	public Connection(
+			@Nonnull WireType type,
+			@Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB, Vec3 endAOffset, Vec3 endBOffset
+	)
 	{
-		this(type, endA, endB, false);
+		this(type, endA, endB, endAOffset, endBOffset, false);
+	}
+
+	public Connection(
+			@Nonnull WireType type,
+			@Nonnull ConnectionPoint endA, @Nonnull ConnectionPoint endB,
+			GlobalWireNetwork netForOffsets
+	)
+	{
+		this(
+				type, endA, endB,
+				WireUtils.getConnectionOffset(netForOffsets, endA, endB, type),
+				WireUtils.getConnectionOffset(netForOffsets, endB, endA, type),
+				false
+		);
 	}
 
 	public Connection(BlockPos pos, int idA, int idB)
 	{
 		this(
 				WireType.INTERNAL_CONNECTION,
-				new ConnectionPoint(pos, idA),
-				new ConnectionPoint(pos, idB),
+				new ConnectionPoint(pos, idA), new ConnectionPoint(pos, idB),
+				Vec3.ZERO, Vec3.ZERO,
 				true
 		);
 	}
@@ -75,6 +104,8 @@ public class Connection
 				WireType.getValue(nbt.getString("type")),
 				new ConnectionPoint(nbt.getCompound("endA")),
 				new ConnectionPoint(nbt.getCompound("endB")),
+				WireUtils.loadVec3(nbt.get("endAOffset")),
+				WireUtils.loadVec3(nbt.get("endBOffset")),
 				nbt.getBoolean("internal")
 		);
 	}
@@ -120,6 +151,8 @@ public class Connection
 		nbt.put("endB", endB.createTag());
 		nbt.putString("type", type.getUniqueName());
 		nbt.putBoolean("internal", internal);
+		nbt.put("endAOffset", WireUtils.storeVec3(endAOffset));
+		nbt.put("endBOffset", WireUtils.storeVec3(endBOffset));
 		return nbt;
 	}
 
@@ -128,17 +161,10 @@ public class Connection
 		return internal;
 	}
 
-	public void generateCatenaryData(Level world)
+	public void generateCatenaryData()
 	{
-		LocalWireNetwork net = GlobalWireNetwork.getNetwork(world).getLocalNet(endA);
-		Preconditions.checkState(net==GlobalWireNetwork.getNetwork(world).getLocalNet(endB), endA+" and "+endB+" are in different local nets?");
-		Vec3 vecA = WireUtils.getVecForIICAt(net, endA, this, false);
-		Vec3 vecB = WireUtils.getVecForIICAt(net, endB, this, true);
-		generateCatenaryData(vecA, vecB);
-	}
-
-	public void generateCatenaryData(Vec3 vecA, Vec3 vecB)
-	{
+		Vec3 vecA = endAOffset;
+		Vec3 vecB = Vec3.atLowerCornerOf(endB.getPosition().subtract(endA.getPosition())).add(endBOffset);
 		Vec3 delta = vecB.subtract(vecA);
 		double horLength = Math.sqrt(delta.x*delta.x+delta.z*delta.z);
 
@@ -239,9 +265,11 @@ public class Connection
 		return Preconditions.checkNotNull(catData);
 	}
 
-	void resetCatenaryData()
+	void resetCatenaryData(Vec3 newOffsetA, Vec3 newOffsetB)
 	{
 		catData = null;
+		endAOffset = newOffsetA;
+		endBOffset = newOffsetB;
 	}
 
 	@Override
@@ -288,6 +316,16 @@ public class Connection
 	public double getBlockDistance()
 	{
 		return roughLength;
+	}
+
+	public Vec3 getEndAOffset()
+	{
+		return endAOffset;
+	}
+
+	public Vec3 getEndBOffset()
+	{
+		return endBOffset;
 	}
 
 	public static record RenderData(

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.wires;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.*;
+import blusunrize.immersiveengineering.api.wires.IConnectionTemplate.TemplateConnection;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
@@ -53,10 +54,10 @@ public class WireTemplateHelper
 					if(otherEnd.compareTo(cp) < 0||!box.isInside(otherEnd.getPosition()))
 						// only add once and only if fully in captured area
 						continue;
-					template.getStoredConnections().add(new Connection(
-							conn.type,
+					template.getStoredConnections().add(new TemplateConnection(
 							new ConnectionPoint(pos.subtract(offset), cp.getIndex()),
-							new ConnectionPoint(otherEnd.getPosition().subtract(offset), otherEnd.getIndex())
+							new ConnectionPoint(otherEnd.getPosition().subtract(offset), otherEnd.getIndex()),
+							conn.type
 					));
 				}
 		}
@@ -72,13 +73,13 @@ public class WireTemplateHelper
 		GlobalWireNetwork net = getNetwork(world);
 		if (net == null)
 			return;
-		for(Connection relative : template.getStoredConnections())
+		for(TemplateConnection relative : template.getStoredConnections())
 		{
-			ConnectionPoint endA = getAbsolutePoint(relative.getEndA(), orientation, world, startPos);
-			ConnectionPoint endB = getAbsolutePoint(relative.getEndB(), orientation, world, startPos);
+			ConnectionPoint endA = getAbsolutePoint(relative.endA(), orientation, world, startPos);
+			ConnectionPoint endB = getAbsolutePoint(relative.endB(), orientation, world, startPos);
 			if(endA==null||endB==null)
 				continue;
-			net.addConnection(new Connection(relative.type, endA, endB));
+			net.addConnection(new Connection(relative.type(), endA, endB, net));
 		}
 	}
 
@@ -87,7 +88,7 @@ public class WireTemplateHelper
 		if(template.getStoredConnections().isEmpty())
 			return;
 		ListTag connectionsNBT = new ListTag();
-		for(Connection c : template.getStoredConnections())
+		for(TemplateConnection c : template.getStoredConnections())
 			connectionsNBT.add(c.toNBT());
 		out.put(CONNECTIONS_KEY, connectionsNBT);
 	}
@@ -97,7 +98,7 @@ public class WireTemplateHelper
 		ListTag connectionsNBT = compound.getList(CONNECTIONS_KEY, Tag.TAG_COMPOUND);
 		template.getStoredConnections().clear();
 		for(int i = 0; i < connectionsNBT.size(); i++)
-			template.getStoredConnections().add(new Connection(connectionsNBT.getCompound(i)));
+			template.getStoredConnections().add(new TemplateConnection(connectionsNBT.getCompound(i)));
 	}
 
 	@Nullable

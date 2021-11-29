@@ -16,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Set;
@@ -63,7 +62,7 @@ public interface IImmersiveConnectable extends ILocalHandlerProvider
 	/**
 	 * @return Where the cable should attach
 	 */
-	Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here);
+	Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type);
 
 	/**
 	 * returns a set of Blocks to be ignored when raytracing
