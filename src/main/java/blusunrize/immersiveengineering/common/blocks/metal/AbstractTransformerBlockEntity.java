@@ -119,12 +119,8 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 		{
 			switch(attachedPoint.getIndex())
 			{
-				case LEFT_INDEX:
-					leftType = null;
-					break;
-				case RIGHT_INDEX:
-					rightType = null;
-					break;
+				case LEFT_INDEX -> leftType = null;
+				case RIGHT_INDEX -> rightType = null;
 			}
 		}
 		updateMirrorState();
@@ -135,26 +131,20 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	{
 		switch(target.getIndex())
 		{
-			case LEFT_INDEX:
-				this.leftType = cableType;
-				break;
-			case RIGHT_INDEX:
-				this.rightType = cableType;
-				break;
+			case LEFT_INDEX -> this.leftType = cableType;
+			case RIGHT_INDEX -> this.rightType = cableType;
 		}
 		updateMirrorState();
 	}
 
 	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		switch(target.getIndex())
-		{
-			case LEFT_INDEX:
-				return canAttach(cableType, leftType, rightType);
-			case RIGHT_INDEX:
-				return canAttach(cableType, rightType, leftType);
-		}
-		return false;
+		return switch(target.getIndex())
+				{
+					case LEFT_INDEX -> canAttach(cableType, leftType, rightType);
+					case RIGHT_INDEX -> canAttach(cableType, rightType, leftType);
+					default -> false;
+				};
 	}
 
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)

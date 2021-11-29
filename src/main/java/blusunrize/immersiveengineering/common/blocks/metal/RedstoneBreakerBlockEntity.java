@@ -75,8 +75,7 @@ public class RedstoneBreakerBlockEntity extends BreakerSwitchBlockEntity impleme
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
 		boolean isLeft = here.getIndex()==LEFT_INDEX;
-		Vec3 ret = mat.apply(isLeft?new Vec3(.125, .5, 1): new Vec3(.875, .5, 1));
-		return ret;
+		return mat.apply(isLeft?new Vec3(.125, .5, 1): new Vec3(.875, .5, 1));
 	}
 
 	@Override

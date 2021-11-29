@@ -364,22 +364,19 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 		int yDif = otherPos.getY()-worldPosition.getY();
 		int zDif = otherPos.getZ()-worldPosition.getZ();
 		double x, y, z;
-		switch(getFacing())
+		switch(getFacing().getAxis())
 		{
-			case DOWN:
-			case UP:
+			case Y:
 				x = (Math.abs(xDif) >= Math.abs(zDif))?(xDif >= 0)?.9375: .0625: .5;
 				y = (getFacing()==Direction.DOWN)?.9375: .0625;
 				z = (Math.abs(zDif) > Math.abs(xDif))?(zDif >= 0)?.9375: .0625: .5;
 				break;
-			case NORTH:
-			case SOUTH:
+			case Z:
 				x = (Math.abs(xDif) >= Math.abs(yDif))?(xDif >= 0)?.9375: .0625: .5;
 				y = (Math.abs(yDif) > Math.abs(xDif))?(yDif >= 0)?.9375: .0625: .5;
 				z = (getFacing()==Direction.NORTH)?.9375: .0625;
 				break;
-			case WEST:
-			case EAST:
+			case X:
 			default:
 				x = (getFacing()==Direction.WEST)?.9375: .0625;
 				y = (Math.abs(yDif) >= Math.abs(zDif))?(yDif >= 0)?.9375: .0625: .5;
