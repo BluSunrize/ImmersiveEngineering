@@ -404,15 +404,14 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					GuiHelper.drawColouredRect((int)offsetX+resMin, 0, (int)offsetX+1, height, 0xff000000, buffers, transform);
 				}
 				transform.translate(offsetX, offsetY, 0);
-				VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/scope.png")));
+				VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGuiTranslucent(rl("textures/gui/scope.png")));
 				GuiHelper.drawTexturedColoredRect(builder, transform, 0, 0, resMin, resMin, 1, 1, 1, 1, 0f, 1f, 0f, 1f);
 
 				builder = buffers.getBuffer(IERenderTypes.getGui(rl("textures/gui/hud_elements.png")));
 				GuiHelper.drawTexturedColoredRect(builder, transform, 218/256f*resMin, 64/256f*resMin, 24/256f*resMin, 128/256f*resMin, 1, 1, 1, 1, 64/256f, 88/256f, 96/256f, 224/256f);
 				ItemStack equipped = ClientUtils.mc().player.getItemInHand(InteractionHand.MAIN_HAND);
-				if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool)
+				if(!equipped.isEmpty()&&equipped.getItem() instanceof IZoomTool tool)
 				{
-					IZoomTool tool = (IZoomTool)equipped.getItem();
 					float[] steps = tool.getZoomSteps(equipped, ClientUtils.mc().player);
 					if(steps!=null&&steps.length > 1)
 					{

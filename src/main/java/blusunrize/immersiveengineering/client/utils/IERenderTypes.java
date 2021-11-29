@@ -19,6 +19,7 @@ import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderType.CompositeState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.NotImplementedException;
@@ -181,15 +182,33 @@ public class IERenderTypes extends RenderStateShard
 
 	public static RenderType getGui(ResourceLocation texture)
 	{
+		//TODO memoize(?)
 		return createDefault(
 				"gui_"+texture,
 				DefaultVertexFormat.POSITION_COLOR_TEX,
 				Mode.QUADS,
-				RenderType.CompositeState.builder()
-						.setTextureState(new TextureStateShard(texture, false, false))
-						.setShaderState(POSITION_COLOR_TEX_SHADER)
+				makeGuiState(texture).createCompositeState(false)
+		);
+	}
+
+	public static RenderType getGuiTranslucent(ResourceLocation texture)
+	{
+		//TODO memoize(?)
+		return createDefault(
+				"gui_translucent_"+texture,
+				DefaultVertexFormat.POSITION_COLOR_TEX,
+				Mode.QUADS,
+				makeGuiState(texture)
+						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 						.createCompositeState(false)
 		);
+	}
+
+	private static CompositeState.CompositeStateBuilder makeGuiState(ResourceLocation texture)
+	{
+		return RenderType.CompositeState.builder()
+				.setTextureState(new TextureStateShard(texture, false, false))
+				.setShaderState(POSITION_COLOR_TEX_SHADER);
 	}
 
 	public static RenderType getLines(float lineWidth)
