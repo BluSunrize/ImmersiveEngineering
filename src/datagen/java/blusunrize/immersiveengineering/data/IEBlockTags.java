@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
 import net.minecraft.data.DataGenerator;
@@ -93,18 +94,18 @@ class IEBlockTags extends BlockTagsProvider
 				tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.storage);
 				if(metal.shouldAddOre())
 				{
-					assert tags.ore!=null;
+					Preconditions.checkNotNull(tags.ore);
 					tag(tags.ore)
 							.add(IEBlocks.Metals.ORES.get(metal).get())
 							.add(IEBlocks.Metals.DEEPSLATE_ORES.get(metal).get());
 					tag(Tags.Blocks.ORES).addTag(tags.ore);
-					assert tags.rawBlock!=null;
+					Preconditions.checkNotNull(tags.rawBlock);
 					tag(tags.rawBlock).add(IEBlocks.Metals.RAW_ORES.get(metal).get());
 				}
 			}
 			else //TODO Forge#789, remove if/when we get tags for raw blocks
 			{
-				assert tags.rawBlock!=null;
+				Preconditions.checkNotNull(tags.rawBlock);
 				tag(tags.rawBlock).add(IEBlocks.Metals.RAW_ORES.get(metal).get());
 			}
 			//TODO Forge#7891
@@ -112,7 +113,7 @@ class IEBlockTags extends BlockTagsProvider
 			{
 				tag(tags.storage).add(IEBlocks.Metals.STORAGE.get(metal).get());
 				tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.storage);
-				assert tags.ore!=null;
+				Preconditions.checkNotNull(tags.ore);
 				tag(tags.ore).add(IEBlocks.Metals.ORES.get(metal).get());
 				tag(Tags.Blocks.ORES).addTag(tags.ore);
 			}

@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.data.resources.RecipeMetals;
+import com.google.common.base.Preconditions;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -54,7 +55,7 @@ class IEItemTags extends ItemTagsProvider
 			}
 			if(metal.shouldAddOre())
 			{
-				assert tags.rawOre!=null;
+				Preconditions.checkNotNull(tags.rawOre);
 				tag(tags.rawOre).add(Metals.RAW_ORES.get(metal).get());
 				//TODO Forge#7891, there is no tag "raw_ores" yet
 			}
