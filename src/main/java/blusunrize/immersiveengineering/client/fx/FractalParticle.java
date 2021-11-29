@@ -14,14 +14,14 @@ import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
+import com.mojang.math.*;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
@@ -42,9 +42,9 @@ public class FractalParticle extends Particle
 	public static final float[][] COLOUR_ORANGE = {{Lib.COLOUR_F_ImmersiveOrange[0], Lib.COLOUR_F_ImmersiveOrange[1], Lib.COLOUR_F_ImmersiveOrange[2], .5f}, {1, .97f, .87f, .75f}};
 	public static final float[][] COLOUR_LIGHTNING = {{77/255f, 74/255f, 152/255f, .75f}, {1, 1, 1, 1}};
 
-	private Vec3[] pointsList;
-	private float[] colourOut;
-	private float[] colourIn;
+	private final Vector3f[] pointsList;
+	private final float[] colourOut;
+	private final float[] colourIn;
 
 	public FractalParticle(ClientLevel world, double x, double y, double z, double speedX, double speedY, double speedZ, Vec3 direction, double scale, int maxAge, int points, float[] colourOut, float[] colourIn)
 	{
@@ -56,7 +56,7 @@ public class FractalParticle extends Particle
 		this.colourOut = colourOut;
 		this.colourIn = colourIn;
 
-		this.pointsList = new Vec3[points];
+		this.pointsList = new Vector3f[points];
 		direction = direction.scale(scale);
 		Vec3 startPos = direction.scale(-.5);
 		Vec3 end = direction.scale(.5);
@@ -71,13 +71,9 @@ public class FractalParticle extends Particle
 			double offX = (random.nextDouble()-.5)*mod;
 			double offY = (random.nextDouble()-.5)*mod;
 			double offZ = (random.nextDouble()-.5)*mod;
-			this.pointsList[i] = sub.add(offX, offY, offZ);
+			Vec3 pointDouble = sub.add(offX, offY, offZ);
+			this.pointsList[i] = new Vector3f((float)pointDouble.x, (float)pointDouble.y, (float)pointDouble.z);
 		}
-	}
-
-	public FractalParticle(ClientLevel world, double x, double y, double z, Vec3 direction, double scale, float[] colourOut, float[] colourIn)
-	{
-		this(world, x, y, z, 0, 0, 0, direction, scale, 10, 16, colourOut, colourIn);
 	}
 
 	@Override
@@ -113,17 +109,23 @@ public class FractalParticle extends Particle
 		matrixStack.scale(mod, mod, mod);
 		matrixStack.mulPose(new Quaternion(0, 180*mod, 0, true));
 		Matrix4f transform = matrixStack.last().pose();
+		Matrix3f transformN = matrixStack.last().normal();
 		matrixStack.popPose();
 
 		List<Pair<RenderType, Consumer<VertexConsumer>>> ret = new ArrayList<>();
 		LinePointProcessor putLinePoint = (buffer, i, color) -> {
-			int correctIndex = iStart+(i-iStart)%(iEnd-iStart);
-			Vec3 vecRender = pointsList[correctIndex];
-			buffer.vertex(transform, (float)vecRender.x, (float)vecRender.y, (float)vecRender.z)
-					.color(color[0], color[1], color[2], color[3]).endVertex();
-			if(i!=iStart&&i!=iEnd)
-				buffer.vertex(transform, (float)vecRender.x, (float)vecRender.y, (float)vecRender.z)
-						.color(color[0], color[1], color[2], color[3]).endVertex();
+			int correctIndex = getCyclicIndexInRange(iStart, iEnd, i);
+			Vector3f vecRender = pointsList[correctIndex];
+			if(i!=iStart)
+			{
+				Vector3f last = pointsList[getCyclicIndexInRange(iStart, iEnd, i-1)];
+				renderLinePoint(transformN, transform, vecRender, last, color, buffer, false);
+			}
+			if(i!=iEnd)
+			{
+				Vector3f next = pointsList[getCyclicIndexInRange(iStart, iEnd, i+1)];
+				renderLinePoint(transformN, transform, next, vecRender, color, buffer, true);
+			}
 		};
 		ret.add(Pair.of(IERenderTypes.getLines(4f), buffer -> {
 			for(int i = iStart; i <= iEnd; i++)
@@ -131,24 +133,60 @@ public class FractalParticle extends Particle
 		}));
 
 		ret.add(Pair.of(IERenderTypes.getLines(1f), buffer -> {
-			for(int i = iEnd; i >= iStart; i--)
+			for(int i = iStart; i <= iEnd; i++)
 				putLinePoint.draw(buffer, i, colourIn);
 		}));
 
-		ret.add(Pair.of(IERenderTypes.getPoints(8f), buffer -> {
+		ret.add(Pair.of(IERenderTypes.POINTS, buffer -> {
 			for(int i = iStart; i < iEnd; i++)
-				buffer.vertex(transform, (float)pointsList[i].x, (float)pointsList[i].y, (float)pointsList[i].z)
-						.color(colourOut[0], colourOut[1], colourOut[2], colourOut[3])
-						.endVertex();
+				drawPoint(buffer, transform, pointsList[i], 8, colourOut);
 		}));
 
-		ret.add(Pair.of(IERenderTypes.getPoints(2f), buffer -> {
+		ret.add(Pair.of(IERenderTypes.POINTS, buffer -> {
 			for(int i = iEnd-1; i >= iStart; i--)
-				buffer.vertex(transform, (float)pointsList[i].x, (float)pointsList[i].y, (float)pointsList[i].z)
-						.color(colourIn[0], colourIn[1], colourIn[2], colourIn[3])
-						.endVertex();
+				drawPoint(buffer, transform, pointsList[i], 2, colourIn);
 		}));
 		return ret;
+	}
+
+	private static int getCyclicIndexInRange(int being, int end, int i)
+	{
+		return being+Mth.positiveModulo(i-being, end-being);
+	}
+
+	private static void renderLinePoint(
+			Matrix3f transformN, Matrix4f transform, Vector3f start, Vector3f end, float[] color, VertexConsumer buffer, boolean atStart
+	)
+	{
+		Vector3f normal = new Vector3f(start.x()-end.x(), start.y()-end.y(), start.z()-end.z());
+		normal.transform(transformN);
+		normal.normalize();
+		Vector3f here = atStart?start: end;
+		buffer.vertex(transform, here.x(), here.y(), here.z())
+				.color(color[0], color[1], color[2], color[3])
+				.normal(normal.x(), normal.y(), normal.z())
+				.endVertex();
+	}
+
+	private static final Vector3f[] POINT_NORMALS = {
+			new Vector3f(-1, -1, 0),
+			new Vector3f(1, -1, 0),
+			new Vector3f(1, 1, 0),
+			new Vector3f(-1, 1, 0),
+	};
+
+	private void drawPoint(VertexConsumer builder, Matrix4f transform, Vector3f center, float size, float[] color)
+	{
+		Vector4f vector4f = new Vector4f(center.x(), center.y(), center.z(), 1.0F);
+		vector4f.transform(transform);
+		vector4f.perspectiveDivide();
+		for(Vector3f normal : POINT_NORMALS)
+			builder.vertex(vector4f.x(), vector4f.y(), vector4f.z())
+					.color(color[0], color[1], color[2], color[3])
+					// Passing this as the normal is a hack, and needs to be scaled since normals are encoded with 1 byte in the range [-1, 1]
+					// And then another factor of 2 since size is the full point size, not the "radius"
+					.normal(normal.x()*size/200, normal.y()*size/200, 0)
+					.endVertex();
 	}
 
 	private interface LinePointProcessor

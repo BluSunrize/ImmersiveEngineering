@@ -27,7 +27,6 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import org.lwjgl.opengl.GL11;
 
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -91,7 +90,7 @@ public class IEShaders
 						if(pre)
 						{
 							//TODO fix all of this RenderSystem.pushLightingAttributes();
-							GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, new float[]{.5f, .2f, 0, .5f});
+							//TODO GL11.glLightfv(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, new float[]{.5f, .2f, 0, .5f});
 							Minecraft.getInstance().gameRenderer.lightTexture().turnOffLightLayer();
 						}
 						else

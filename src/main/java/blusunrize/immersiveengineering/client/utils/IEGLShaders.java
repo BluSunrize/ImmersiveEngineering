@@ -17,6 +17,7 @@ public class IEGLShaders
 {
 	private static ShaderInstance blockFullbrightShader;
 	private static ShaderInstance vboShader;
+	private static ShaderInstance pointShader;
 
 	@SubscribeEvent
 	public static void registerShaders(RegisterShadersEvent ev) throws IOException
@@ -29,6 +30,10 @@ public class IEGLShaders
 				new ShaderInstance(ev.getResourceManager(), ImmersiveEngineering.rl("rendertype_vbo"), VertexBufferHolder.BUFFER_FORMAT),
 				shader -> vboShader = shader
 		);
+		ev.registerShader(
+				new ShaderInstance(ev.getResourceManager(), ImmersiveEngineering.rl("rendertype_point"), DefaultVertexFormat.POSITION_COLOR_NORMAL),
+				shader -> pointShader = shader
+		);
 	}
 
 	public static ShaderInstance getBlockFullbrightShader()
@@ -39,5 +44,10 @@ public class IEGLShaders
 	public static ShaderInstance getVboShader()
 	{
 		return vboShader;
+	}
+
+	public static ShaderInstance getPointShader()
+	{
+		return pointShader;
 	}
 }

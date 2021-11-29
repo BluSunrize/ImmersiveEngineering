@@ -23,7 +23,6 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.RenderType.CompositeState;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.resources.ResourceLocation;
-import org.apache.commons.lang3.NotImplementedException;
 import org.lwjgl.opengl.GL11;
 
 import java.util.OptionalDouble;
@@ -50,6 +49,7 @@ public class IERenderTypes extends RenderStateShard
 	public static final RenderType TRANSLUCENT_FULLBRIGHT;
 	public static final RenderType SOLID_FULLBRIGHT;
 	public static final RenderType LINES;
+	public static final RenderType POINTS;
 	public static final RenderType TRANSLUCENT_TRIANGLES;
 	public static final RenderType TRANSLUCENT_POSITION_COLOR;
 	public static final RenderType TRANSLUCENT_NO_DEPTH;
@@ -68,6 +68,7 @@ public class IERenderTypes extends RenderStateShard
 		RenderSystem.defaultBlendFunc();
 	}, RenderSystem::disableBlend);
 	protected static final RenderStateShard.ShaderStateShard FULLBRIGHT_BLOCKS = new RenderStateShard.ShaderStateShard(IEGLShaders::getBlockFullbrightShader);
+	protected static final RenderStateShard.ShaderStateShard POINTS_SHADER = new RenderStateShard.ShaderStateShard(IEGLShaders::getPointShader);
 	protected static final RenderStateShard.TransparencyStateShard NO_TRANSPARENCY = new RenderStateShard.TransparencyStateShard(
 			"no_transparency",
 			RenderSystem::disableBlend, () -> {
@@ -110,6 +111,16 @@ public class IERenderTypes extends RenderStateShard
 						.setShaderState(RENDERTYPE_LINES_SHADER)
 						.setLineState(new LineStateShard(OptionalDouble.of(2)))
 						.setLayeringState(VIEW_OFFSET_Z_LAYERING)
+						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
+						.setOutputState(ITEM_ENTITY_TARGET)
+						.setWriteMaskState(COLOR_DEPTH_WRITE)
+						.setCullState(NO_CULL)
+						.createCompositeState(false)
+		);
+		POINTS = createDefault(
+				ImmersiveEngineering.MODID+":points", DefaultVertexFormat.POSITION_COLOR_NORMAL, Mode.QUADS,
+				RenderType.CompositeState.builder()
+						.setShaderState(POINTS_SHADER)
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 						.setOutputState(ITEM_ENTITY_TARGET)
 						.setWriteMaskState(COLOR_DEPTH_WRITE)
@@ -239,31 +250,6 @@ public class IERenderTypes extends RenderStateShard
 						.setShaderState(RENDERTYPE_LINES_SHADER)
 						.createCompositeState(false)
 		);
-	}
-
-	public static RenderType getPoints(float pointSize)
-	{
-		//TODO
-		throw new NotImplementedException("Needs to be updated for 1.17");
-		//Not really a fog state, but using it like this makes using RenderType.State with custom states possible
-		/*
-		FogStateShard setPointSize = new FogStateShard(
-				ImmersiveEngineering.MODID+":pointsize_"+pointSize,
-				() -> GL11.glPointSize(pointSize),
-				() -> {
-					GL11.glPointSize(1);
-				}
-		);
-		return createDefault(
-				"point_pos_color_"+pointSize,
-				DefaultVertexFormat.POSITION_COLOR,
-				Mode.POINTS,
-				RenderType.CompositeState.builder()
-						.setFogState(setPointSize)
-						.setTextureState(BLOCK_SHEET_MIPPED)
-						.createCompositeState(false)
-		);
-		 */
 	}
 
 	public static RenderType getPositionTex(ResourceLocation texture)
