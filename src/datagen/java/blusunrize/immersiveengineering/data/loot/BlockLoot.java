@@ -120,10 +120,8 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 			register(entry, singleItem(block).apply(ConveyorCoverLootFunction.builder()));
 		}
 		for(EnumMetals metal : EnumMetals.values())
-		{
 			if(metal.shouldAddOre())
 				registerOre(metal);
-		}
 
 		registerAllRemainingAsDefault();
 	}

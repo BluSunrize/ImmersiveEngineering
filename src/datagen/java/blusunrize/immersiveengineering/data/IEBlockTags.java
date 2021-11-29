@@ -94,8 +94,9 @@ class IEBlockTags extends BlockTagsProvider
 				if(metal.shouldAddOre())
 				{
 					assert tags.ore!=null;
-					tag(tags.ore).add(IEBlocks.Metals.ORES.get(metal).get());
-					tag(tags.ore).add(IEBlocks.Metals.DEEPSLATE_ORES.get(metal).get());
+					tag(tags.ore)
+							.add(IEBlocks.Metals.ORES.get(metal).get())
+							.add(IEBlocks.Metals.DEEPSLATE_ORES.get(metal).get());
 					tag(Tags.Blocks.ORES).addTag(tags.ore);
 					assert tags.rawBlock!=null;
 					tag(tags.rawBlock).add(IEBlocks.Metals.RAW_ORES.get(metal).get());
