@@ -33,7 +33,7 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 	public boolean place(FeaturePlaceContext<IEOreFeatureConfig> ctx)
 	{
 		IEOreFeatureConfig config = ctx.config();
-		OreConfiguration vanillaConfig = new OreConfiguration(config.targetList, config.getSize());
+		OreConfiguration vanillaConfig = new OreConfiguration(config.targetList, config.getSize(), (float)config.getAirExposure());
 		return Feature.ORE.place(new FeaturePlaceContext<>(
 				Optional.empty(), ctx.level(), ctx.chunkGenerator(), ctx.random(), ctx.origin(), vanillaConfig
 		));
@@ -46,26 +46,35 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 						Codec.list(OreConfiguration.TargetBlockState.CODEC).fieldOf("targets")
 								.forGetter(cfg -> cfg.targetList),
 						Codec.list(Codec.STRING).fieldOf("size")
-								.forGetter(cfg -> cfg.size)
+								.forGetter(cfg -> cfg.size),
+						Codec.list(Codec.STRING).fieldOf("air_exposure")
+								.forGetter(cfg -> cfg.airExposure)
 				).apply(app, IEOreFeatureConfig::new)
 		);
 		public final List<TargetBlockState> targetList;
 		public final List<String> size;
+		public final List<String> airExposure;
 
-		public IEOreFeatureConfig(List<TargetBlockState> targetList, List<String> size)
+		public IEOreFeatureConfig(List<TargetBlockState> targetList, List<String> size, List<String> airExposure)
 		{
 			this.targetList = targetList;
 			this.size = size;
+			this.airExposure = airExposure;
 		}
 
 		public IEOreFeatureConfig(List<TargetBlockState> targetList, OreConfig config)
 		{
-			this(targetList, config.veinSize.getBase().getPath());
+			this(targetList, config.veinSize.getBase().getPath(), config.airExposure.getBase().getPath());
 		}
 
 		public int getSize()
 		{
 			return IEServerConfig.getRawConfig().get(size);
+		}
+
+		public double getAirExposure()
+		{
+			return IEServerConfig.getRawConfig().get(airExposure);
 		}
 	}
 }

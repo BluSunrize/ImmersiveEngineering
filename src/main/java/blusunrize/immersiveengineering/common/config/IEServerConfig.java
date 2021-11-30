@@ -458,11 +458,11 @@ public class IEServerConfig
 		{
 			builder.push("ores");
 			//Server
-			ore_bauxite = new OreConfig(builder, "bauxite", 4, 40, 85, 8);
-			ore_lead = new OreConfig(builder, "lead", 6, 8, 36, 4);
-			ore_silver = new OreConfig(builder, "silver", 8, 8, 40, 4);
-			ore_nickel = new OreConfig(builder, "nickel", 6, 8, 24, 2);
-			ore_uranium = new OreConfig(builder, "uranium", 4, 8, 24, 2);
+			ore_bauxite = new OreConfig(builder, "bauxite", 0, 6, 32, 112, 16);
+			ore_lead = new OreConfig(builder, "lead", 0, 8, -32, 80, 8);
+			ore_silver = new OreConfig(builder, "silver", 0.5, 9, -48, 32, 4);
+			ore_nickel = new OreConfig(builder, "nickel", 0, 6, -56, -8, 8);
+			ore_uranium = new OreConfig(builder, "uranium", 0.5, 4, -64, -16, 6);
 			retrogen_key = builder
 					.comment("The retrogeneration key. Basically IE checks if this key is saved in the chunks data. If it isn't, it will perform retrogen on all ores marked for retrogen.", "Change this in combination with the retrogen booleans to regen only some of the ores.")
 					.define("retrogen_key", "DEFAULT");
@@ -487,17 +487,21 @@ public class IEServerConfig
 
 		public static class OreConfig
 		{
+			public final DoubleValue airExposure;
 			public final IntValue veinSize;
 			public final IntValue minY;
 			public final IntValue maxY;
 			public final IntValue veinsPerChunk;
 			public final BooleanValue retrogenEnabled;
 
-			private OreConfig(Builder builder, String name, int defSize, int defMinY, int defMaxY, int defNumPerChunk)
+			private OreConfig(Builder builder, String name, double defAirExposure, int defSize, int defMinY, int defMaxY, int defNumPerChunk)
 			{
 				builder
 						.comment("Ore generation config - "+name)
 						.push(name);
+				airExposure = builder
+						.comment("Chance for ores to not generate, if they are exposed to air. 0 means ignoring air exposure, 1 requires being burried.")
+						.defineInRange("air_exposure", defAirExposure, 0, 1);
 				veinSize = builder
 						.comment("The maximum size of a vein. Set to 0 to disable generation")
 						.defineInRange("vein_size", defSize, 0, Integer.MAX_VALUE);
@@ -508,8 +512,8 @@ public class IEServerConfig
 						.comment("The maximum Y coordinate this ore can spawn at")
 						.defineInRange("max_y", defMaxY, Integer.MIN_VALUE, Integer.MAX_VALUE);
 				veinsPerChunk = builder
-						.comment("The average number of veins per chunk")
-						.defineInRange("avg_veins_per_chunk", defNumPerChunk, 0, Integer.MAX_VALUE);
+						.comment("The number of veins attempted to be generated per chunk")
+						.defineInRange("attempts_per_chunk", defNumPerChunk, 0, Integer.MAX_VALUE);
 				retrogenEnabled = builder
 						.comment("Set this to true to allow retro-generation of "+name+" Ore.")
 						.define("retrogen_enable", false);
