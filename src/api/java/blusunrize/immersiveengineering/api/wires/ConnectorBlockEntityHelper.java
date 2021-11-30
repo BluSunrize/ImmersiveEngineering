@@ -39,7 +39,6 @@ public class ConnectorBlockEntityHelper
 				WireLogger.logger.warn("Aborting and returning empty data: null connections at {}", cp);
 				return new ConnectionModelData(ImmutableSet.of(), pos);
 			}
-			//TODO change model data to only include catenary (a, oX, oY) and number of vertices to render
 			for(Connection c : conns)
 			{
 				ConnectionPoint other = c.getOtherEnd(cp);
@@ -49,7 +48,6 @@ public class ConnectorBlockEntityHelper
 					if(otherConnector!=null&&!otherConnector.isProxy())
 					{
 						// generate subvertices
-						c.generateCatenaryData(world);
 						ret.add(c);
 					}
 				}

@@ -28,7 +28,7 @@ public class Connection
 	@Nonnull
 	private final ConnectionPoint endB;
 	private final boolean internal;
-	private final double roughLength;
+	private double length;
 	private Vec3 endAOffset;
 	private Vec3 endBOffset;
 
@@ -50,20 +50,17 @@ public class Connection
 		this.type = type;
 		if(endA.compareTo(endB) < 0)
 		{
-			this.endAOffset = endBOffset;
-			this.endBOffset = endAOffset;
 			this.endA = endB;
 			this.endB = endA;
+			resetCatenaryData(endBOffset, endAOffset);
 		}
 		else
 		{
-			this.endAOffset = endAOffset;
-			this.endBOffset = endBOffset;
 			this.endA = endA;
 			this.endB = endB;
+			resetCatenaryData(endAOffset, endBOffset);
 		}
 		this.internal = internal;
-		this.roughLength = Math.sqrt(endA.getPosition().distSqr(endB.getPosition(), false));
 	}
 
 	public Connection(
@@ -270,6 +267,7 @@ public class Connection
 		catData = null;
 		endAOffset = newOffsetA;
 		endBOffset = newOffsetB;
+		length = Math.sqrt(endA.getPosition().distSqr(endB.getPosition(), false));
 	}
 
 	@Override
@@ -313,9 +311,9 @@ public class Connection
 		return new ConnectionPoint[]{endA, endB};
 	}
 
-	public double getBlockDistance()
+	public double getLength()
 	{
-		return roughLength;
+		return length;
 	}
 
 	public Vec3 getEndAOffset()

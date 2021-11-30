@@ -197,7 +197,7 @@ public class IEWireTypes
 		@Override
 		public double getBasicLossRate(Connection c)
 		{
-			return getLossRatio()*c.getBlockDistance()/getMaxLength();
+			return getLossRatio()*c.getLength()/getMaxLength();
 		}
 
 		@Override
