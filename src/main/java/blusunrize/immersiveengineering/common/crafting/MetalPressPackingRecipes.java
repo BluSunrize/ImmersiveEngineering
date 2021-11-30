@@ -143,6 +143,7 @@ public class MetalPressPackingRecipes
 			ItemStack output = originalRecipe.getSecond();
 			ResourceLocation originalId = originalRecipe.getFirst().getId();
 			String id = "metalpress/packing_"+originalId.getNamespace()+".."+originalId.getPath();
+			input = ItemHandlerHelper.copyStackWithSize(input, big?9: 4);
 			return new RecipeDelegate(id, output, input, (big?Molds.MOLD_PACKING_9: Molds.MOLD_PACKING_4).get());
 		}
 
