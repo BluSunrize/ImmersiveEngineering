@@ -26,9 +26,9 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -64,7 +64,7 @@ public class ConnectionLoader implements IModelLoader<ConnectorModel>
 			model = ModelLoaderRegistry.getModel(subloader, deserializationContext, baseModelData);
 		}
 		else
-			model = new UnbakedModelGeometry(ModelLoader.defaultModelGetter().apply(
+			model = new UnbakedModelGeometry(ForgeModelBakery.defaultModelGetter().apply(
 					new ResourceLocation(baseModel.getAsString())
 			));
 		List<String> layers = ImmutableList.of(RenderType.solid().toString());

@@ -32,7 +32,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.fmllegacy.RegistryObject;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -76,7 +76,7 @@ public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectab
 	}
 
 	@Override
-	public ItemStack getPickBlock(BlockState state, HitResult targetIn, BlockGetter world, BlockPos pos, Player player)
+	public ItemStack getCloneItemStack(BlockState state, HitResult targetIn, BlockGetter world, BlockPos pos, Player player)
 	{
 		//Select the wire if the player is sneaking
 		//TODO alternative to world instaceof World
@@ -101,6 +101,6 @@ public abstract class ConnectorBlock<T extends BlockEntity & IImmersiveConnectab
 				}
 			}
 		}
-		return super.getPickBlock(state, targetIn, world, pos, player);
+		return super.getCloneItemStack(state, targetIn, world, pos, player);
 	}
 }

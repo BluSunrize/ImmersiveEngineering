@@ -10,57 +10,46 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores;
-import blusunrize.immersiveengineering.common.world.IECountPlacement.IEFeatureSpreadConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.RepeatingDecorator;
+import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
+import net.minecraft.world.level.levelgen.placement.RepeatingPlacement;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-public class IECountPlacement extends RepeatingDecorator<IEFeatureSpreadConfig>
+public class IECountPlacement extends RepeatingPlacement
 {
-	public IECountPlacement()
+	public static final Codec<IECountPlacement> CODEC = RecordCodecBuilder.create(
+			app -> app.group(
+					Codec.list(Codec.STRING).fieldOf("count").forGetter(f -> f.count)
+			).apply(app, IECountPlacement::new)
+	);
+	private final List<String> count;
+
+	public IECountPlacement(List<String> count)
 	{
-		super(IEFeatureSpreadConfig.CODEC);
+		this.count = count;
+	}
+
+	public IECountPlacement(OreConfig config)
+	{
+		this(config.veinsPerChunk.getBase().getPath());
 	}
 
 	//TODO why is this constant? Was it constant before or did I mess up the port?
 	@Override
-	protected int count(@Nonnull Random random, IEFeatureSpreadConfig config, @Nonnull BlockPos pos)
+	protected int count(Random p_191913_, BlockPos p_191914_)
 	{
-		return config.getCount();
+		return IEServerConfig.getRawConfig().getInt(count);
 	}
 
-	public static class IEFeatureSpreadConfig implements DecoratorConfiguration, FeatureConfiguration
+	@Override
+	public PlacementModifierType<?> type()
 	{
-		public static final Codec<IEFeatureSpreadConfig> CODEC = RecordCodecBuilder.create(
-				app -> app.group(
-						Codec.list(Codec.STRING).fieldOf("count")
-								.forGetter(f -> f.count)
-				).apply(app, IEFeatureSpreadConfig::new)
-		);
-		private final List<String> count;
-
-		public IEFeatureSpreadConfig(Ores.OreConfig config)
-		{
-			this(config.veinsPerChunk.getBase().getPath());
-		}
-
-		public IEFeatureSpreadConfig(List<String> path)
-		{
-			count = path;
-		}
-
-		public int getCount()
-		{
-			return IEServerConfig.getRawConfig().getInt(count);
-		}
+		return IEWorldGen.IE_COUNT_PLACEMENT;
 	}
 }
 

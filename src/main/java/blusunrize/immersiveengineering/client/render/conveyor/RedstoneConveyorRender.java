@@ -21,7 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ModelBakeEvent;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -48,7 +48,7 @@ public class RedstoneConveyorRender extends BasicConveyorRender<RedstoneConveyor
 		{
 			ModelState transform = BlockModelRotation.by(0, (int)d.toYRot()+180);
 			BakedModel baked = model.bake(
-					ev.getModelLoader(), ModelLoader.defaultTextureGetter(), transform, modelName
+					ev.getModelLoader(), ForgeModelBakery.defaultTextureGetter(), transform, modelName
 			);
 			ROTATED_MODELS.put(d, baked);
 		}

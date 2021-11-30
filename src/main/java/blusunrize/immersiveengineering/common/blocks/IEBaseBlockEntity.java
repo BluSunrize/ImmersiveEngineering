@@ -24,11 +24,13 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.ticks.ScheduledTick;
 import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -79,9 +81,11 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	@Override
 	public ClientboundBlockEntityDataPacket getUpdatePacket()
 	{
-		CompoundTag nbttagcompound = new CompoundTag();
-		this.writeCustomNBT(nbttagcompound, true);
-		return new ClientboundBlockEntityDataPacket(this.worldPosition, 3, nbttagcompound);
+		return ClientboundBlockEntityDataPacket.create(this, be -> {
+			CompoundTag nbttagcompound = new CompoundTag();
+			this.writeCustomNBT(nbttagcompound, true);
+			return nbttagcompound;
+		});
 	}
 
 	@Override
@@ -250,7 +254,9 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 
 	protected void checkLight(BlockPos pos)
 	{
-		getLevelNonnull().getBlockTicks().scheduleTick(pos, getBlockState().getBlock(), 4);
+		getLevelNonnull().getBlockTicks().schedule(new ScheduledTick<Block>(
+				getBlockState().getBlock(), pos, 4, 0
+		));
 	}
 
 	public void setOverrideState(@Nullable BlockState state)
@@ -302,7 +308,7 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	protected void markChunkDirty()
 	{
 		if(this.level!=null&&this.level.hasChunkAt(this.worldPosition))
-			this.level.getChunkAt(this.worldPosition).markUnsaved();
+			this.level.getChunkAt(this.worldPosition).setUnsaved(true);
 	}
 
 	@Override

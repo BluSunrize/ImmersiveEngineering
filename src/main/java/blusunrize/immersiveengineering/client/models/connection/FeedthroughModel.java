@@ -61,7 +61,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -142,7 +142,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
-		return ModelLoader.White.instance();
+		return ForgeModelBakery.White.instance();
 	}
 
 	private static final ItemTransforms transform = new ItemTransforms(
@@ -194,7 +194,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			colorMultiplier = data.colorMultiplier();
 		}
 		return Pair.of(new FeedthroughCacheKey(
-				wire, baseState, offset, facing, MinecraftForgeClient.getRenderLayer(), colorMultiplier
+				wire, baseState, offset, facing, MinecraftForgeClient.getRenderType(), colorMultiplier
 		), side);
 	}
 

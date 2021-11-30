@@ -131,7 +131,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 				return nested.resolve(model, stack, world, livingEntity, unused);
 			final int color = fluid.getFluid().getAttributes().getColor(fluid);
 			return coloredModels.computeIfAbsent(color, i -> new PotionBucketModel(i).bake(
-					owner, bakery, ModelLoader.defaultTextureGetter(), BlockModelRotation.X0_Y0, this, ImmersiveEngineering.rl("potion_bucket_override")
+					owner, bakery, ForgeModelBakery.defaultTextureGetter(), BlockModelRotation.X0_Y0, this, ImmersiveEngineering.rl("potion_bucket_override")
 			));
 		}
 	}

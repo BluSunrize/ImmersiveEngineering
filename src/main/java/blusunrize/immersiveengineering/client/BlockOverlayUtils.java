@@ -257,23 +257,23 @@ public class BlockOverlayUtils
 	 */
 	public static void drawAdditionalBlockbreak(DrawSelectionEvent.HighlightBlock ev, Player player, Collection<BlockPos> blocks)
 	{
-		Vec3 renderView = ev.getInfo().getPosition();
+		Vec3 renderView = ev.getCamera().getPosition();
 		for(BlockPos pos : blocks)
-			((WorldRendererAccess)ev.getContext()).callRenderHitOutline(
-					ev.getMatrix(),
-					ev.getBuffers().getBuffer(RenderType.lines()),
+			((WorldRendererAccess)ev.getLevelRenderer()).callRenderHitOutline(
+					ev.getPoseStack(),
+					ev.getMultiBufferSource().getBuffer(RenderType.lines()),
 					player,
 					renderView.x, renderView.y, renderView.z,
 					pos,
 					ClientUtils.mc().level.getBlockState(pos)
 			);
 
-		PoseStack transform = ev.getMatrix();
+		PoseStack transform = ev.getPoseStack();
 		transform.pushPose();
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);
 		MultiPlayerGameMode controllerMP = ClientUtils.mc().gameMode;
 		if(controllerMP.isDestroying())
-			RenderUtils.drawBlockDamageTexture(transform, ev.getBuffers(), player.level, blocks);
+			RenderUtils.drawBlockDamageTexture(transform, ev.getMultiBufferSource(), player.level, blocks);
 		transform.popPose();
 	}
 

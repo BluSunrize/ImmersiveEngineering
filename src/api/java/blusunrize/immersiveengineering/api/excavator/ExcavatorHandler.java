@@ -19,7 +19,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.synth.SurfaceNoise;
+import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -39,7 +39,7 @@ public class ExcavatorHandler
 	public static int mineralVeinYield = 0;
 	public static double initialVeinDepletion = 0;
 	public static double mineralNoiseThreshold = 0;
-	public static SurfaceNoise noiseGenerator;
+	public static PerlinSimplexNoise noiseGenerator;
 
 	@Nullable
 	public static MineralVein getRandomMineral(Level world, BlockPos pos)
@@ -115,7 +115,7 @@ public class ExcavatorHandler
 		for(int xx = 0; xx < 16; ++xx)
 			for(int zz = 0; zz < 16; ++zz)
 			{
-				double noise = noiseGenerator.getSurfaceNoiseValue((xStart+xx)*d0, (zStart+zz)*d0, d0, xx*d0);
+				double noise = noiseGenerator.getValue((xStart+xx)*d0, (zStart+zz)*d0, true) * 0.55D;
 				// Vanilla Perlin noise scales to 0.55, so we un-scale it
 				double chance = Math.abs(noise)/.55;
 				if(chance > mineralNoiseThreshold&&chance > maxNoise)

@@ -19,8 +19,8 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
 
@@ -47,7 +47,7 @@ public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
 	{
 		IModelGeometry<?> baseModel;
 		if(modelContents.has(BASE_MODEL))
-			baseModel = new UnbakedModelGeometry(ModelLoader.defaultModelGetter().apply(
+			baseModel = new UnbakedModelGeometry(ForgeModelBakery.defaultModelGetter().apply(
 					new ResourceLocation(modelContents.get(BASE_MODEL).getAsString())
 			));
 		else

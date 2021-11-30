@@ -196,7 +196,7 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPre(TextureStitchEvent.Pre event)
 	{
-		if(!event.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
+		if(!event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		IELogger.info("Stitching Revolver Textures!");
 		RevolverCallbacks.addRevolverTextures(event);
@@ -212,10 +212,10 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPost(TextureStitchEvent.Post event)
 	{
-		if(!event.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
+		if(!event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		ImmersiveEngineering.proxy.clearRenderCaches();
-		RevolverCallbacks.retrieveRevolverTextures(event.getMap());
+		RevolverCallbacks.retrieveRevolverTextures(event.getAtlas());
 	}
 
 	private final Map<BlockPos, IEBlockEntitySound> tileSoundMap = new HashMap<>();

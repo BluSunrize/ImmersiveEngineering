@@ -57,9 +57,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -274,8 +274,7 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 		{
 			if(!block.canHarvestBlock(blockstate, level, pos, fakePlayer))
 				return ItemStack.EMPTY;
-			block.playerWillDestroy(level, pos, blockstate, fakePlayer);
-			if(block.removedByPlayer(blockstate, level, pos, fakePlayer, true, blockstate.getFluidState()))
+			if(block.onDestroyedByPlayer(blockstate, level, pos, fakePlayer, true, blockstate.getFluidState()))
 			{
 				block.destroy(level, pos, blockstate);
 

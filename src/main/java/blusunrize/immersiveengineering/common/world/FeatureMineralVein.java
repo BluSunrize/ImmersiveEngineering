@@ -11,10 +11,12 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -22,7 +24,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
 
 import javax.annotation.Nonnull;
-import java.util.stream.IntStream;
 
 class FeatureMineralVein extends Feature<NoneFeatureConfiguration>
 {
@@ -38,8 +39,9 @@ class FeatureMineralVein extends Feature<NoneFeatureConfiguration>
 	{
 		if(ExcavatorHandler.noiseGenerator==null)
 			ExcavatorHandler.noiseGenerator = new PerlinSimplexNoise(
-					new WorldgenRandom(ctx.level().getSeed()),
-					IntStream.of(0)
+					//TODO? new WorldgenRandom(ctx.level().getSeed()),
+                    new WorldgenRandom(new LegacyRandomSource(1309L)),
+					ImmutableList.of(0)
 			);
 
 		ServerLevel realLevel = ctx.level().getLevel();

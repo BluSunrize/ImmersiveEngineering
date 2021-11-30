@@ -38,7 +38,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.ModelLoader.White;
+import net.minecraftforge.client.model.ForgeModelBakery.White;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.common.util.Lazy;
@@ -102,7 +102,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 			try
 			{
 				SpecificConnectionModel ret = cache.get(key, () -> new SpecificConnectionModel(key, textureAtlasSprite.get()));
-				RenderType current = MinecraftForgeClient.getRenderLayer();
+				RenderType current = MinecraftForgeClient.getRenderType();
 				List<BakedQuad> connectionQuads = new ArrayList<>(ret.getQuads(current));
 				connectionQuads.addAll(getBaseQuads(current, state, side, rand, extraData));
 				return connectionQuads;
@@ -111,7 +111,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 				e.printStackTrace();
 			}
 		}
-		return getBaseQuads(MinecraftForgeClient.getRenderLayer(), state, side, rand, extraData);
+		return getBaseQuads(MinecraftForgeClient.getRenderType(), state, side, rand, extraData);
 	}
 
 	@Override

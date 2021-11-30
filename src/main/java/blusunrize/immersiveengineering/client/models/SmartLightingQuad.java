@@ -75,7 +75,7 @@ public class SmartLightingQuad extends BakedQuad
 				setTransform((Pose)SmartLightingQuad.pose.get(base));
 				setVertexFormat(DefaultVertexFormat.BLOCK);
 				BlockInfo info = (BlockInfo)SmartLightingQuad.blockInfo.get(base);
-				setWorld(info.getWorld());
+				setWorld(info.getLevel());
 				setState(info.getState());
 				setBlockPos(info.getBlockPos());
 				updateBlockInfo();
@@ -90,7 +90,7 @@ public class SmartLightingQuad extends BakedQuad
 		@Override
 		protected void updateLightmap(float[] normal, float[] lightmap, float x, float y, float z)
 		{
-			BlockAndTintGetter world = blockInfo.getWorld();
+			BlockAndTintGetter world = blockInfo.getLevel();
 			BlockPos here = blockPos.offset(Math.floor(x-normal[0]/2+0.5), Math.floor(y-normal[1]/2+0.5), Math.floor(z-normal[2]/2+0.5));
 			lightmap[0] = world.getLightEngine().getLayerListener(LightLayer.BLOCK).getLightValue(here)/(float)0xF;
 			lightmap[1] = world.getLightEngine().getLayerListener(LightLayer.SKY).getLightValue(here)/(float)0xF;

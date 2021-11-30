@@ -487,16 +487,14 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			{
 				if(player.getAbilities().instabuild)
 				{
-					block.playerWillDestroy(world, pos, state, player);
-					if(block.removedByPlayer(state, world, pos, player, false, state.getFluidState()))
+					if(block.onDestroyedByPlayer(state, world, pos, player, false, state.getFluidState()))
 						block.destroy(world, pos, state);
 				}
 				else
 				{
-					block.playerWillDestroy(world, pos, state, player);
 					BlockEntity te = world.getBlockEntity(pos);
 					consumeDurability(stack, world, state, pos, player);
-					if(block.removedByPlayer(state, world, pos, player, true, state.getFluidState()))
+					if(block.onDestroyedByPlayer(state, world, pos, player, true, state.getFluidState()))
 					{
 						block.destroy(world, pos, state);
 						block.playerDestroy(world, player, pos, state, te, stack);

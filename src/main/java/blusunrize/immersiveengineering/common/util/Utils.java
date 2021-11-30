@@ -898,7 +898,7 @@ public class Utils
 	public static ItemStack getPickBlock(BlockState state, HitResult rtr, Player player)
 	{
 		BlockGetter w = getSingleBlockWorldAccess(state);
-		return state.getBlock().getPickBlock(state, rtr, w, BlockPos.ZERO, player);
+		return state.getBlock().getCloneItemStack(state, rtr, w, BlockPos.ZERO, player);
 	}
 
 	public static ItemStack getPickBlock(BlockState state)

@@ -14,13 +14,13 @@ import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
-import blusunrize.immersiveengineering.common.world.IECountPlacement.IEFeatureSpreadConfig;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
-import blusunrize.immersiveengineering.common.world.IERangePlacement.IETopSolidRangeConfig;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
+import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -33,15 +33,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.Predicates;
-import net.minecraft.world.level.levelgen.placement.ConfiguredDecorator;
-import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
@@ -50,9 +47,9 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -60,19 +57,21 @@ import java.util.function.Supplier;
 
 public class IEWorldGen
 {
-	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
+	public static Map<String, PlacedFeature> features = new HashMap<>();
 	public static Map<String, Pair<OreConfig, BlockState>> retroFeatures = new HashMap<>();
 	public static boolean anyRetrogenEnabled = false;
 
 	public static void addOreGen(Supplier<? extends Block> blockSupplier, String name, OreConfig config)
 	{
 		Block block = blockSupplier.get();
-		IEOreFeatureConfig cfg = new IEOreFeatureConfig(Predicates.NATURAL_STONE, block.defaultBlockState(), config);
-		ConfiguredFeature<?, ?> feature = register(new ResourceLocation(Lib.MODID, name),
+		IEOreFeatureConfig cfg = new IEOreFeatureConfig(OreFeatures.NATURAL_STONE, block.defaultBlockState(), config);
+		PlacedFeature feature = register(new ResourceLocation(Lib.MODID, name),
 				IE_CONFIG_ORE.get().configured(cfg)
-						.decorated(IE_RANGE_PLACEMENT.get().configured(new IETopSolidRangeConfig(config)))
-						.squared()
-						.decorated(IE_COUNT_PLACEMENT.get().configured(new IEFeatureSpreadConfig(config)))
+						.placed(
+								new IECountPlacement(config),
+								InSquarePlacement.spread(),
+								HeightRangePlacement.of(new IERangePlacement(config))
+						)
 		);
 		features.put(name, feature);
 		retroFeatures.put(name, Pair.of(config, block.defaultBlockState()));
@@ -80,11 +79,10 @@ public class IEWorldGen
 
 	public static void registerMineralVeinGen()
 	{
-		ConfiguredFeature<?, ?> veinFeature = register(new ResourceLocation(Lib.MODID, "mineral_veins"),
+		PlacedFeature veinFeature = register(new ResourceLocation(Lib.MODID, "mineral_veins"),
 				MINERAL_VEIN_FEATURE.get().configured(new NoneFeatureConfiguration())
-						.decorated(
-								new ConfiguredDecorator<>(FeatureDecorator.NOPE, DecoratorConfiguration.NONE)
-						));
+						//TODO does this do what I want?
+						.placed());
 		features.put("veins", veinFeature);
 	}
 
@@ -99,7 +97,7 @@ public class IEWorldGen
 	public void onBiomeLoad(BiomeLoadingEvent ev)
 	{
 		BiomeGenerationSettingsBuilder generation = ev.getGeneration();
-		for(Entry<String, ConfiguredFeature<?, ?>> e : features.entrySet())
+		for(Entry<String, PlacedFeature> e : features.entrySet())
 			generation.addFeature(Decoration.UNDERGROUND_ORES, e.getValue());
 	}
 
@@ -111,11 +109,13 @@ public class IEWorldGen
 			BlockState state = gen.getValue().getSecond();
 			if(config.retrogenEnabled.get())
 			{
-				ConfiguredFeature<?, ?> retroFeature = IEContent.ORE_RETROGEN
-						.configured(new OreConfiguration(Predicates.NATURAL_STONE, state, config.veinSize.get()))
-						.decorated(new IERangePlacement().configured(new IETopSolidRangeConfig(config)))
-						.squared()
-						.decorated(new IECountPlacement().configured(new IEFeatureSpreadConfig(config)));
+				PlacedFeature retroFeature = IEContent.ORE_RETROGEN
+						.configured(new OreConfiguration(OreFeatures.NATURAL_STONE, state, config.veinSize.get()))
+						.placed(
+								new IECountPlacement(config),
+								InSquarePlacement.spread(),
+								HeightRangePlacement.of(new IERangePlacement(config))
+						);
 				retroFeature.place(
 						world, world.getChunkSource().getGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ)
 				);
@@ -198,31 +198,38 @@ public class IEWorldGen
 			IELogger.info("Retrogen was performed on "+counter+" Chunks, "+remaining+" chunks remaining");
 	}
 
-	private static DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, ImmersiveEngineering.MODID);
-	private static DeferredRegister<FeatureDecorator<?>> PLACEMENT_REGISTER = DeferredRegister.create(ForgeRegistries.DECORATORS, ImmersiveEngineering.MODID);
-	private static RegistryObject<FeatureMineralVein> MINERAL_VEIN_FEATURE = FEATURE_REGISTER.register(
+	private static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(ForgeRegistries.FEATURES, ImmersiveEngineering.MODID);
+	private static final RegistryObject<FeatureMineralVein> MINERAL_VEIN_FEATURE = FEATURE_REGISTER.register(
 			"mineral_vein", FeatureMineralVein::new
 	);
-	private static RegistryObject<IEOreFeature> IE_CONFIG_ORE = FEATURE_REGISTER.register(
+	private static final RegistryObject<IEOreFeature> IE_CONFIG_ORE = FEATURE_REGISTER.register(
 			"ie_ore", IEOreFeature::new
 	);
-	private static RegistryObject<IERangePlacement> IE_RANGE_PLACEMENT = PLACEMENT_REGISTER.register(
-			"ie_range", IERangePlacement::new
+	public static final HeightProviderType<IERangePlacement> IE_RANGE_PLACEMENT = registerHeightProvider(
+			"ie_range", IERangePlacement.CODEC
 	);
-	private static RegistryObject<IECountPlacement> IE_COUNT_PLACEMENT = PLACEMENT_REGISTER.register(
-			"ie_ount", IECountPlacement::new
+	public static final PlacementModifierType<IECountPlacement> IE_COUNT_PLACEMENT = registerPlacement(
+			"ie_count", IECountPlacement.CODEC
 	);
 
 	public static void init()
 	{
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		FEATURE_REGISTER.register(bus);
-		PLACEMENT_REGISTER.register(bus);
 	}
 
-	private static <FC extends FeatureConfiguration>
-	ConfiguredFeature<FC, ?> register(ResourceLocation key, ConfiguredFeature<FC, ?> configuredFeature)
+	private static <P extends PlacementModifier>
+	PlacementModifierType<P> registerPlacement(String name, Codec<P> codec) {
+		return Registry.register(Registry.PLACEMENT_MODIFIERS, ImmersiveEngineering.rl(name), () -> codec);
+	}
+
+	private static <P extends HeightProvider>
+	HeightProviderType<P> registerHeightProvider(String name, Codec<P> codec) {
+		return Registry.register(Registry.HEIGHT_PROVIDER_TYPES, ImmersiveEngineering.rl(name), () -> codec);
+	}
+
+	private static PlacedFeature register(ResourceLocation key, PlacedFeature placedFeature)
 	{
-		return Registry.register(BuiltinRegistries.CONFIGURED_FEATURE, key, configuredFeature);
+		return Registry.register(BuiltinRegistries.PLACED_FEATURE, key, placedFeature);
 	}
 }

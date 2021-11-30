@@ -36,6 +36,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.ticks.ScheduledTick;
 
 public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlock
 {
@@ -219,7 +220,9 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, LevelAccessor worldIn, BlockPos currentPos, BlockPos facingPos)
 	{
 		if(stateIn.hasProperty(BlockStateProperties.WATERLOGGED)&&stateIn.getValue(BlockStateProperties.WATERLOGGED))
-			worldIn.getLiquidTicks().scheduleTick(currentPos, Fluids.WATER, Fluids.WATER.getTickDelay(worldIn));
+			worldIn.getFluidTicks().schedule(new ScheduledTick<>(
+					Fluids.WATER, currentPos, Fluids.WATER.getTickDelay(worldIn), 0
+			));
 		return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
 	}
 

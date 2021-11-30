@@ -53,7 +53,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
-		if(distributeButton.isHovered())
+		if(distributeButton.isHoveredOrFocused())
 			addLine.accept(new TranslatableComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 	}
 
@@ -81,9 +81,9 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 				})
 		{
 			@Override
-			public boolean isHovered()
+			public boolean isHoveredOrFocused()
 			{
-				return super.isHovered()&&menu.getCarried().isEmpty();
+				return super.isHoveredOrFocused()&&menu.getCarried().isEmpty();
 			}
 		}.setHoverOffset(0, 16);
 		this.addRenderableWidget(distributeButton);

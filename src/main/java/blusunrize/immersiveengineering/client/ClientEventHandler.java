@@ -263,13 +263,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	public void onPlaySound(PlaySoundEvent event)
 	{
 		if(event.getSound()==null)
-		{
 			return;
-		}
 		else
-		{
 			event.getSound().getSource();
-		}
 		if(!EarmuffsItem.affectedSoundCategories.contains(event.getSound().getSource().getName()))
 			return;
 		if(ClientUtils.mc().player!=null)
@@ -282,9 +278,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					if(blacklist!=null&&blacklist.equalsIgnoreCase(event.getSound().getLocation().toString()))
 						return;
 				if(event.getSound() instanceof TickableSoundInstance)
-					event.setResultSound(new IEMuffledTickableSound((TickableSoundInstance)event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
+					event.setSound(new IEMuffledTickableSound((TickableSoundInstance)event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 				else
-					event.setResultSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
+					event.setSound(new IEMuffledSound(event.getSound(), EarmuffsItem.getVolumeMod(earmuffs)));
 			}
 		}
 	}
@@ -313,23 +309,23 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent
 	public void onRenderItemFrame(RenderItemInFrameEvent event)
 	{
-		if(event.getItem().getItem() instanceof EngineersBlueprintItem)
+		if(event.getItemStack().getItem() instanceof EngineersBlueprintItem)
 		{
-			double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(event.getEntityItemFrame());
+			double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(event.getItemFrameEntity());
 
 			if(playerDistanceSq < 1000)
 			{
-				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(event.getItem(), "blueprint"));
+				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(event.getItemStack(), "blueprint"));
 				if(recipes.length > 0)
 				{
-					int i = event.getEntityItemFrame().getRotation();
+					int i = event.getItemFrameEntity().getRotation();
 					BlueprintCraftingRecipe recipe = recipes[i%recipes.length];
-					BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, event.getEntityItemFrame().getCommandSenderWorld());
+					BlueprintLines blueprint = recipe==null?null: AutoWorkbenchRenderer.getBlueprintDrawable(recipe, event.getItemFrameEntity().getCommandSenderWorld());
 					if(blueprint!=null)
 					{
-						PoseStack transform = event.getMatrix();
+						PoseStack transform = event.getPoseStack();
 						transform.pushPose();
-						MultiBufferSource buffer = event.getBuffers();
+						MultiBufferSource buffer = event.getMultiBufferSource();
 						transform.mulPose(new Quaternion(0, 0, -i*45, true));
 						transform.translate(-.5, .5, -.001);
 						VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
@@ -621,7 +617,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent()
 	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
 	{
-		if(event.getInfo().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.FLASHED.get()))
+		if(event.getCamera().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.FLASHED.get()))
 		{
 			MobEffectInstance effect = living.getEffect(IEPotions.FLASHED.get());
 			int timeLeft = effect.getDuration();
@@ -639,7 +635,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent()
 	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
 	{
-		Entity e = event.getInfo().getEntity();
+		Entity e = event.getCamera().getEntity();
 		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.FLASHED.get()))
 		{
 			event.setRed(1);
@@ -649,7 +645,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent()
-	public void onFOVUpdate(FOVUpdateEvent event)
+	public void onFOVUpdate(FOVModifierEvent event)
 	{
 		Player player = ClientUtils.mc().player;
 
@@ -711,13 +707,13 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	@SubscribeEvent()
 	public void renderAdditionalBlockBounds(HighlightBlock event)
 	{
-		if(event.getTarget().getType()==Type.BLOCK&&event.getInfo().getEntity() instanceof LivingEntity player)
+		if(event.getTarget().getType()==Type.BLOCK&&event.getCamera().getEntity() instanceof LivingEntity player)
 		{
-			PoseStack transform = event.getMatrix();
-			MultiBufferSource buffer = event.getBuffers();
+			PoseStack transform = event.getPoseStack();
+			MultiBufferSource buffer = event.getMultiBufferSource();
 			BlockHitResult rtr = event.getTarget();
 			BlockPos pos = rtr.getBlockPos();
-			Vec3 renderView = event.getInfo().getPosition();
+			Vec3 renderView = event.getCamera().getPosition();
 			transform.pushPose();
 			transform.translate(-renderView.x, -renderView.y, -renderView.z);
 			transform.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -759,7 +755,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				if(!shape.isEmpty())
 					targetedBB = shape.bounds();
 
-				MultiBufferSource buffers = event.getBuffers();
+				MultiBufferSource buffers = event.getMultiBufferSource();
 
 				float y = (float)(targetedBB==null?0: side==Direction.DOWN?targetedBB.minY-eps: targetedBB.maxY+eps);
 				Matrix4f mat = transform.last().pose();
@@ -807,10 +803,10 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent
-	public void onRenderWorldLastEvent(RenderWorldLastEvent event)
+	public void onRenderWorldLastEvent(RenderLevelLastEvent event)
 	{
-		float partial = event.getPartialTicks();
-		PoseStack transform = event.getMatrixStack();
+		float partial = event.getPartialTick();
+		PoseStack transform = event.getPoseStack();
 		transform.pushPose();
 		Vec3 renderView = ClientUtils.mc().gameRenderer.getMainCamera().getPosition();
 		transform.translate(-renderView.x, -renderView.y, -renderView.z);

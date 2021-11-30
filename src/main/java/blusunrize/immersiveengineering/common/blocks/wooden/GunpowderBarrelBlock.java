@@ -45,7 +45,7 @@ public class GunpowderBarrelBlock extends TntBlock
 	}
 
 	@Override
-	public void catchFire(BlockState state, Level world, BlockPos pos, @Nullable Direction face, @Nullable LivingEntity igniter)
+	public void onCaughtFire(BlockState state, Level world, BlockPos pos, @org.jetbrains.annotations.Nullable Direction face, @org.jetbrains.annotations.Nullable LivingEntity igniter)
 	{
 		IEExplosiveEntity explosive = spawnExplosive(world, pos, state, igniter);
 		world.playSound(null, explosive.getX(), explosive.getY(), explosive.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);

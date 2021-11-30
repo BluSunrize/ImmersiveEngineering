@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -31,7 +31,7 @@ public class DynamicModelLoader
 	@SubscribeEvent
 	public static void textureStitch(TextureStitchEvent.Pre evt)
 	{
-		if(!evt.getMap().location().equals(InventoryMenu.BLOCK_ATLAS))
+		if(!evt.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		IELogger.logger.debug("Stitching textures!");
 		for(ResourceLocation rl : manualTextureRequests)
@@ -45,6 +45,6 @@ public class DynamicModelLoader
 
 	public static void requestModel(ResourceLocation name)
 	{
-		ModelLoader.addSpecialModel(name);
+		ForgeModelBakery.addSpecialModel(name);
 	}
 }

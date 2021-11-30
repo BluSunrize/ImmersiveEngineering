@@ -11,63 +11,50 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
-import blusunrize.immersiveengineering.common.world.IERangePlacement.IETopSolidRangeConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfiguration;
-import net.minecraft.world.level.levelgen.placement.DecorationContext;
-import net.minecraft.world.level.levelgen.placement.VerticalDecorator;
+import net.minecraft.world.level.levelgen.WorldGenerationContext;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
+import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 
-import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.Random;
 
-public class IERangePlacement extends VerticalDecorator<IETopSolidRangeConfig>
+public class IERangePlacement extends HeightProvider
 {
 	public static final Codec<List<String>> STRING_LIST = Codec.list(Codec.STRING);
+	public static Codec<IERangePlacement> CODEC = RecordCodecBuilder.create(
+			app -> app.group(
+					STRING_LIST.fieldOf("min").forGetter(config -> config.min),
+					STRING_LIST.fieldOf("max").forGetter(config -> config.max)
+			).apply(app, IERangePlacement::new)
+	);
 
-	public IERangePlacement()
+	private final List<String> min;
+	private final List<String> max;
+
+	public IERangePlacement(List<String> min, List<String> max)
 	{
-		super(IETopSolidRangeConfig.CODEC);
+		this.min = min;
+		this.max = max;
+	}
+
+	public IERangePlacement(OreConfig config)
+	{
+		this(config.minY.getBase().getPath(), config.maxY.getBase().getPath());
 	}
 
 	@Override
-	protected int y(@Nonnull DecorationContext ctx, Random random, IETopSolidRangeConfig config, int baseY)
+	public int sample(Random random, WorldGenerationContext p_161978_)
 	{
-		return random.nextInt(config.getMax()-config.getMin())+config.getMin();
+		int min = IEServerConfig.getRawConfig().getInt(this.min);
+		int max = IEServerConfig.getRawConfig().getInt(this.max);
+		return random.nextInt(max - min)+min;
 	}
 
-	public static class IETopSolidRangeConfig implements DecoratorConfiguration
+	@Override
+	public HeightProviderType<?> getType()
 	{
-		public static Codec<IETopSolidRangeConfig> CODEC = RecordCodecBuilder.create(
-				app -> app.group(
-						STRING_LIST.fieldOf("min").forGetter(config -> config.min),
-						STRING_LIST.fieldOf("max").forGetter(config -> config.max)
-				).apply(app, IETopSolidRangeConfig::new)
-		);
-
-		final List<String> min;
-		final List<String> max;
-
-		public IETopSolidRangeConfig(OreConfig config)
-		{
-			this(config.minY.getBase().getPath(), config.maxY.getBase().getPath());
-		}
-
-		public IETopSolidRangeConfig(List<String> minPath, List<String> maxPath)
-		{
-			this.min = minPath;
-			this.max = maxPath;
-		}
-
-		public int getMin()
-		{
-			return IEServerConfig.getRawConfig().getInt(min);
-		}
-
-		public int getMax()
-		{
-			return IEServerConfig.getRawConfig().getInt(max);
-		}
+		return IEWorldGen.IE_RANGE_PLACEMENT;
 	}
 }

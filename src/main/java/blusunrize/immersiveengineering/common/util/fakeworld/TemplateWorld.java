@@ -14,9 +14,7 @@ import net.minecraft.util.profiling.InactiveProfiler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.level.EmptyTickList;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.TickList;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -28,6 +26,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.scores.Scoreboard;
+import net.minecraft.world.ticks.LevelTickAccess;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
@@ -134,21 +133,17 @@ public class TemplateWorld extends Level
 		return new EmptyLevelEntityGetter<>();
 	}
 
-	@Nonnull
-	@Override
-	public TickList<Block> getBlockTicks()
-	{
-		return EmptyTickList.empty();
+    @Override
+    public LevelTickAccess<Block> getBlockTicks() {
+        return new EmptyTickAccess<>();
+    }
+
+    @Override
+    public LevelTickAccess<Fluid> getFluidTicks() {
+		return new EmptyTickAccess<>();
 	}
 
-	@Nonnull
-	@Override
-	public TickList<Fluid> getLiquidTicks()
-	{
-		return EmptyTickList.empty();
-	}
-
-	@Nonnull
+    @Nonnull
 	@Override
 	public ChunkSource getChunkSource()
 	{

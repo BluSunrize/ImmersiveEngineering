@@ -125,7 +125,7 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 			key = BlockCallback.castOrDefault(callback).getDefaultKey();
 		RenderType layerToCheck;
 		if(BlockCallback.castOrDefault(callback).dependsOnLayer())
-			layerToCheck = MinecraftForgeClient.getRenderLayer();
+			layerToCheck = MinecraftForgeClient.getRenderType();
 		else
 			layerToCheck = null;
 		ShaderCase shader = extraData.getData(CapabilityShader.MODEL_PROPERTY);

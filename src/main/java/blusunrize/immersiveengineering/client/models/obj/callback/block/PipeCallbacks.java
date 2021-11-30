@@ -322,7 +322,7 @@ public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
 		{
 			BlockState state = key.cover().defaultBlockState();
 			BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
-			RenderType curL = MinecraftForgeClient.getRenderLayer();
+			RenderType curL = MinecraftForgeClient.getRenderType();
 			for(RenderType layer : new RenderType[]{
 					RenderType.solid(),
 					RenderType.translucent(),
@@ -330,12 +330,12 @@ public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
 					RenderType.cutoutMipped(),
 			})
 			{
-				ForgeHooksClient.setRenderLayer(layer);
+				ForgeHooksClient.setRenderType(layer);
 				for(Direction direction : Direction.values())
 					quads.addAll(model.getQuads(state, direction, RANDOM, EmptyModelData.INSTANCE));
 				quads.addAll(model.getQuads(state, null, RANDOM, EmptyModelData.INSTANCE));
 			}
-			ForgeHooksClient.setRenderLayer(curL);
+			ForgeHooksClient.setRenderType(curL);
 		}
 		return quads;
 	}

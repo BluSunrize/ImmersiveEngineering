@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.Da
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
+import net.minecraftforge.network.NetworkEvent.Context;
 
 import java.util.List;
 import java.util.function.Supplier;

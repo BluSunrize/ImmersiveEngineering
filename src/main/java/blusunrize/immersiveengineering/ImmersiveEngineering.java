@@ -56,6 +56,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.fml.*;
 import net.minecraftforge.fml.common.Mod;
@@ -64,10 +65,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fmllegacy.network.NetworkDirection;
-import net.minecraftforge.fmllegacy.network.NetworkRegistry;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
-import net.minecraftforge.fmlserverevents.FMLServerStartedEvent;
+import net.minecraftforge.network.NetworkDirection;
+import net.minecraftforge.network.NetworkRegistry;
+import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 
 import javax.annotation.Nonnull;
@@ -82,8 +82,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import static net.minecraftforge.fmllegacy.network.NetworkDirection.PLAY_TO_CLIENT;
-import static net.minecraftforge.fmllegacy.network.NetworkDirection.PLAY_TO_SERVER;
+import static net.minecraftforge.network.NetworkDirection.PLAY_TO_CLIENT;
+import static net.minecraftforge.network.NetworkDirection.PLAY_TO_SERVER;
 
 @Mod(ImmersiveEngineering.MODID)
 public class ImmersiveEngineering
@@ -278,7 +278,7 @@ public class ImmersiveEngineering
 		event.addListener(new RecipeCachingReloadListener(event.getDataPackRegistries()));
 	}
 
-	public void serverStarted(FMLServerStartedEvent event)
+	public void serverStarted(ServerStartedEvent event)
 	{
 		//TODO isn't this always true? if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
 		{

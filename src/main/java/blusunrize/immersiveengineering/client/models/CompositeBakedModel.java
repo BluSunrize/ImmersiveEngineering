@@ -87,9 +87,9 @@ public class CompositeBakedModel<T extends BakedModel> implements BakedModel
 	}
 
 	@Override
-	public boolean isAmbientOcclusion(BlockState state)
+	public boolean useAmbientOcclusion(BlockState state)
 	{
-		return base.isAmbientOcclusion(state);
+		return base.useAmbientOcclusion(state);
 	}
 
 	@Nonnull

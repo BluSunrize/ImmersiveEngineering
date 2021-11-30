@@ -89,7 +89,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 	{
 		ArrayList<Component> tooltip = new ArrayList<>();
 
-		if(buttonInOut.isHovered())
+		if(buttonInOut.isHoveredOrFocused())
 		{
 			tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"redstone_iomode"));
 			tooltip.add(TextUtils.applyFormat(
@@ -99,7 +99,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 		}
 
 		for(int i = 0; i < colorButtons.length; i++)
-			if(colorButtons[i].isHovered())
+			if(colorButtons[i].isHoveredOrFocused())
 			{
 				tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color"));
 				tooltip.add(TextUtils.applyFormat(

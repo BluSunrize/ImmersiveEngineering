@@ -14,7 +14,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fmlclient.gui.widget.Slider;
+import net.minecraftforge.client.gui.widget.Slider;
 
 public class GuiSliderIE extends Slider
 {
@@ -28,7 +28,7 @@ public class GuiSliderIE extends Slider
 	{
 		if(this.visible)
 		{
-ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
+			ClientUtils.bindTexture(GuiReactiveList.TEXTURE);
 			Font fontrenderer = Minecraft.getInstance().font;
 			isHovered = mouseX >= this.x&&mouseY >= this.y&&mouseX < this.x+this.width&&mouseY < this.y+this.height;
 			RenderSystem.enableBlend();

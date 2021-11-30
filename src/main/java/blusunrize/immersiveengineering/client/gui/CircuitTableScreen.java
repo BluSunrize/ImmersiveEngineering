@@ -207,9 +207,9 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	public boolean charTyped(char codePoint, int modifiers)
 	{
 		for(GuiButtonState<?> input : this.inputButtons)
-			if(input.isHovered())
+			if(input.isHoveredOrFocused())
 				return input.charTyped(codePoint, modifiers);
-		if(this.outputButton.isHovered())
+		if(this.outputButton.isHoveredOrFocused())
 			return this.outputButton.charTyped(codePoint, modifiers);
 		return super.charTyped(codePoint, modifiers);
 	}

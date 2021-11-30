@@ -25,9 +25,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.util.JsonUtils;
+import net.minecraftforge.common.util.LogicalSidedProvider;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fmllegacy.LogicalSidedProvider;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.Map;

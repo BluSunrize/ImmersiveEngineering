@@ -22,13 +22,12 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.event.world.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fmllegacy.network.PacketDistributor;
+import net.minecraftforge.network.PacketDistributor;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Stream;
 
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID)
 public class WireSyncManager implements IWireSyncManager
@@ -64,11 +63,11 @@ public class WireSyncManager implements IWireSyncManager
 	private static void addPlayersTrackingPoint(Set<ServerPlayer> receivers, int x, int z, ServerLevel world)
 	{
 		ServerChunkCache chunkProvider = world.getChunkSource();
-		Stream<ServerPlayer> watching = chunkProvider.chunkMap.getPlayers(new ChunkPos(x >> 4, z >> 4), false);
-		watching.forEach(e -> {
+		for(ServerPlayer e : chunkProvider.chunkMap.getPlayers(new ChunkPos(x >> 4, z >> 4), false))
+		{
 			WireLogger.logger.debug("Watching player for {}, {}: {}", x, z, e);
 			receivers.add(e);
-		});
+		}
 	}
 
 	private static <T> void sendToPlayersForConnection(T msg, ServerLevel world, Connection c)

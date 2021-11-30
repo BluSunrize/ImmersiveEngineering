@@ -14,7 +14,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.client.renderer.texture.TextureManager;
 
 public record RevolverClientTooltip(RevolverServerTooltip data) implements ClientTooltipComponent
 {
@@ -31,7 +30,7 @@ public record RevolverClientTooltip(RevolverServerTooltip data) implements Clien
 	}
 
 	@Override
-	public void renderImage(Font pFont, int pMouseX, int pMouseY, PoseStack pPoseStack, ItemRenderer pItemRenderer, int pBlitOffset, TextureManager pTextureManager)
+	public void renderImage(Font pFont, int pMouseX, int pMouseY, PoseStack pPoseStack, ItemRenderer pItemRenderer, int pBlitOffset)
 	{
 		pPoseStack.pushPose();
 		pPoseStack.translate(pMouseX, pMouseY, pBlitOffset);

@@ -21,6 +21,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import java.util.List;
+import java.util.Optional;
 
 public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 {
@@ -35,7 +36,7 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 		IEOreFeatureConfig config = ctx.config();
 		OreConfiguration vanillaConfig = new OreConfiguration(config.target, config.state, config.getSize());
 		return Feature.ORE.place(new FeaturePlaceContext<>(
-				ctx.level(), ctx.chunkGenerator(), ctx.random(), ctx.origin(), vanillaConfig
+				Optional.empty(), ctx.level(), ctx.chunkGenerator(), ctx.random(), ctx.origin(), vanillaConfig
 		));
 	}
 

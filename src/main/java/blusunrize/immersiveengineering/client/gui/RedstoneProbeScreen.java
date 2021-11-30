@@ -86,7 +86,7 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 
 		ArrayList<Component> tooltip = new ArrayList<>();
 		for(int i = 0; i < colorButtonsSend.length; i++)
-			if(colorButtonsSend[i].isHovered()||colorButtonsReceive[i].isHovered())
+			if(colorButtonsSend[i].isHoveredOrFocused()||colorButtonsReceive[i].isHoveredOrFocused())
 			{
 				tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color"));
 				tooltip.add(TextUtils.applyFormat(

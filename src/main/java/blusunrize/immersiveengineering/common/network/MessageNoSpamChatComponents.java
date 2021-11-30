@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.fmllegacy.network.NetworkEvent.Context;
+import net.minecraftforge.network.NetworkEvent.Context;
 
 import java.util.function.Supplier;
 
