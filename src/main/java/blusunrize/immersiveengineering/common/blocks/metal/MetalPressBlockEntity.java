@@ -168,13 +168,13 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&!world.isClientSide&&entity instanceof ItemEntity&&entity.isAlive()
-				&&!((ItemEntity)entity).getItem().isEmpty())
+		if(new BlockPos(0, 1, 0).equals(posInMultiblock)&&!world.isClientSide&&entity instanceof ItemEntity itemEntity
+				&&entity.isAlive()&&!itemEntity.getItem().isEmpty())
 		{
 			MetalPressBlockEntity master = master();
 			if(master==null)
 				return;
-			ItemStack stack = ((ItemEntity)entity).getItem();
+			ItemStack stack = itemEntity.getItem();
 			if(stack.isEmpty())
 				return;
 			MetalPressRecipe recipe = master.findRecipeForInsertion(stack);
@@ -189,8 +189,10 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 			if(master.addProcessToQueue(process, true))
 			{
 				master.addProcessToQueue(process, false);
-				stack.shrink(displayStack.getCount());
-				if(stack.getCount() <= 0)
+				ItemStack remaining = stack.copy();
+				remaining.shrink(displayStack.getCount());
+				itemEntity.setItem(remaining);
+				if(remaining.isEmpty())
 					entity.discard();
 			}
 		}
@@ -227,8 +229,9 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 		return new DirectionalBlockPos(worldPosition.relative(getFacing(), 2), getFacing());
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(this,
-			this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(
+			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+	);
 
 	@Override
 	public void doProcessOutput(ItemStack output)
