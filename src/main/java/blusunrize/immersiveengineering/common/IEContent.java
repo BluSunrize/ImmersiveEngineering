@@ -183,7 +183,6 @@ public class IEContent
 		/*WORLDGEN*/
 		ev.enqueueWork(
 				() -> {
-					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
 					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);
 					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.LEAD), "lead", IEServerConfig.ORES.ore_lead);
 					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.SILVER), "silver", IEServerConfig.ORES.ore_silver);

@@ -458,7 +458,6 @@ public class IEServerConfig
 		{
 			builder.push("ores");
 			//Server
-			ore_copper = new OreConfig(builder, "copper", 8, 40, 72, 8);
 			ore_bauxite = new OreConfig(builder, "bauxite", 4, 40, 85, 8);
 			ore_lead = new OreConfig(builder, "lead", 6, 8, 36, 4);
 			ore_silver = new OreConfig(builder, "silver", 8, 8, 40, 4);
@@ -477,7 +476,6 @@ public class IEServerConfig
 		}
 
 
-		public final OreConfig ore_copper;
 		public final OreConfig ore_bauxite;
 		public final OreConfig ore_lead;
 		public final OreConfig ore_silver;
