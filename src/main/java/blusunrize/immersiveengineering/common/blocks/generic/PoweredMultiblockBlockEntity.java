@@ -193,7 +193,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	//	=================================
 	public final List<MultiblockProcess<R>> processQueue = new ArrayList<>();
 	public int tickedProcesses = 0;
-	private boolean renderAsActiveClient = true;
+	private boolean renderAsActiveClient = false;
 
 	private void syncRenderActive()
 	{

@@ -69,11 +69,10 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	public abstract void readCustomNBT(CompoundTag nbt, boolean descPacket);
 
 	@Override
-	public CompoundTag save(CompoundTag nbt)
+	protected void saveAdditional(CompoundTag nbt)
 	{
-		super.save(nbt);
+		super.saveAdditional(nbt);
 		this.writeCustomNBT(nbt, false);
-		return nbt;
 	}
 
 	public abstract void writeCustomNBT(CompoundTag nbt, boolean descPacket);
