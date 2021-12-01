@@ -10,14 +10,12 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
-import blusunrize.immersiveengineering.common.world.IERangePlacement.IETopSolidRangeConfig;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -39,8 +37,6 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
-import net.minecraft.world.level.levelgen.placement.ConfiguredDecorator;
-import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
@@ -72,13 +68,8 @@ public class IEWorldGen
 				OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, Metals.DEEPSLATE_ORES.get(metal).defaultBlockState())
 		);
 		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, config);
-		PlacedFeature feature = register(new ResourceLocation(Lib.MODID, name),
-				IE_CONFIG_ORE.get().configured(cfg)
-						.placed(
-								HeightRangePlacement.of(new IERangePlacement(config)),
-								InSquarePlacement.spread(),
-								new IECountPlacement(config)
-						)
+		PlacedFeature feature = register(
+				ImmersiveEngineering.rl(name), IE_CONFIG_ORE.get().configured(cfg).placed(getOreModifiers(config))
 		);
 		features.put(name, feature);
 		retroFeatures.put(name, Pair.of(config, targetList));
@@ -86,7 +77,7 @@ public class IEWorldGen
 
 	public static void registerMineralVeinGen()
 	{
-		PlacedFeature veinFeature = register(new ResourceLocation(Lib.MODID, "mineral_veins"),
+		PlacedFeature veinFeature = register(ImmersiveEngineering.rl("mineral_veins"),
 				MINERAL_VEIN_FEATURE.get().configured(new NoneFeatureConfiguration())
 						//TODO does this do what I want?
 						.placed());
@@ -118,16 +109,21 @@ public class IEWorldGen
 			{
 				PlacedFeature retroFeature = IEContent.ORE_RETROGEN
 						.configured(new OreConfiguration(targetList, config.veinSize.get()))
-						.placed(
-								HeightRangePlacement.of(new IERangePlacement(config)),
-								InSquarePlacement.spread(),
-								new IECountPlacement(config)
-						);
+						.placed(getOreModifiers(config));
 				retroFeature.place(
 						world, world.getChunkSource().getGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ)
 				);
 			}
 		}
+	}
+
+	private static List<PlacementModifier> getOreModifiers(OreConfig config)
+	{
+		return ImmutableList.of(
+				HeightRangePlacement.of(new IERangePlacement(config)),
+				InSquarePlacement.spread(),
+				new IECountPlacement(config)
+		);
 	}
 
 	@SubscribeEvent
