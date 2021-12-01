@@ -112,7 +112,11 @@ public class BlockStates extends ExtendedBlockstateProvider
 			if(!m.isVanillaMetal())
 			{
 				if(m.shouldAddOre())
+				{
 					cubeAll(Metals.ORES.get(m), modLoc("block/metal/ore_"+name));
+					cubeAll(Metals.DEEPSLATE_ORES.get(m), modLoc("block/metal/deepslate_ore_"+name));
+					cubeAll(Metals.RAW_ORES.get(m), modLoc("block/metal/raw_"+name));
+				}
 				ResourceLocation defaultStorageTexture = modLoc("block/metal/storage_"+name);
 				BlockEntry<Block> storage = Metals.STORAGE.get(m);
 				String storageName = name(storage);

@@ -1,0 +1,14 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "tag": "forge:ingots/gold"
+    }
+  ],
+  "additives": [],
+  "input": {
+    "tag": "forge:raw_ores/gold"
+  },
+  "time": 100,
+  "energy": 25600
+}

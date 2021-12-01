@@ -13,12 +13,11 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 
 import java.util.List;
 import java.util.Optional;
@@ -34,7 +33,7 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 	public boolean place(FeaturePlaceContext<IEOreFeatureConfig> ctx)
 	{
 		IEOreFeatureConfig config = ctx.config();
-		OreConfiguration vanillaConfig = new OreConfiguration(config.target, config.state, config.getSize());
+		OreConfiguration vanillaConfig = new OreConfiguration(config.targetList, config.getSize());
 		return Feature.ORE.place(new FeaturePlaceContext<>(
 				Optional.empty(), ctx.level(), ctx.chunkGenerator(), ctx.random(), ctx.origin(), vanillaConfig
 		));
@@ -44,28 +43,24 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 	{
 		public static final Codec<IEOreFeatureConfig> CODEC = RecordCodecBuilder.create(
 				app -> app.group(
-						RuleTest.CODEC.fieldOf("target")
-								.forGetter(cfg -> cfg.target),
-						BlockState.CODEC.fieldOf("state")
-								.forGetter(cfg -> cfg.state),
+						Codec.list(OreConfiguration.TargetBlockState.CODEC).fieldOf("targets")
+								.forGetter(cfg -> cfg.targetList),
 						Codec.list(Codec.STRING).fieldOf("size")
 								.forGetter(cfg -> cfg.size)
 				).apply(app, IEOreFeatureConfig::new)
 		);
-		public final RuleTest target;
+		public final List<TargetBlockState> targetList;
 		public final List<String> size;
-		public final BlockState state;
 
-		public IEOreFeatureConfig(RuleTest target, BlockState state, List<String> size)
+		public IEOreFeatureConfig(List<TargetBlockState> targetList, List<String> size)
 		{
+			this.targetList = targetList;
 			this.size = size;
-			this.state = state;
-			this.target = target;
 		}
 
-		public IEOreFeatureConfig(RuleTest target, BlockState state, OreConfig config)
+		public IEOreFeatureConfig(List<TargetBlockState> targetList, OreConfig config)
 		{
-			this(target, state, config.veinSize.getBase().getPath());
+			this(targetList, config.veinSize.getBase().getPath());
 		}
 
 		public int getSize()

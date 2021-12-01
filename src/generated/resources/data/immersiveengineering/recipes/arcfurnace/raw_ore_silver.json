@@ -1,0 +1,14 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "tag": "forge:ingots/silver"
+    }
+  ],
+  "additives": [],
+  "input": {
+    "tag": "forge:raw_ores/silver"
+  },
+  "time": 100,
+  "energy": 25600
+}

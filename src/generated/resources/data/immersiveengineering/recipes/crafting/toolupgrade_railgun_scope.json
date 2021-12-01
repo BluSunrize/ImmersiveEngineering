@@ -1,19 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "pi ",
-    "c i",
-    " cp"
+    "cic",
+    "psp"
   ],
   "key": {
     "i": {
       "tag": "forge:plates/iron"
     },
     "c": {
-      "tag": "forge:ingots/copper"
+      "tag": "forge:wires/copper"
     },
     "p": {
       "tag": "forge:glass_panes"
+    },
+    "s": {
+      "item": "minecraft:spyglass"
     }
   },
   "result": {

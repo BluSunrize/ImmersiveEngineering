@@ -16,10 +16,12 @@ import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.data.resources.RecipeMetals;
+import com.google.common.base.Preconditions;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -51,6 +53,12 @@ class IEItemTags extends ItemTagsProvider
 				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
 				if(metal.shouldAddOre())
 					tag(Tags.Items.ORES).addTag(IETags.getItemTag(tags.ore));
+			}
+			if(metal.shouldAddOre())
+			{
+				Preconditions.checkNotNull(tags.rawOre);
+				tag(tags.rawOre).add(Metals.RAW_ORES.get(metal).get());
+				//TODO Forge#7891, there is no tag "raw_ores" yet
 			}
 			if(metal==EnumMetals.COPPER)
 			{
@@ -116,6 +124,7 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.hammers).add(Tools.HAMMER.get());
 		tag(IETags.screwdrivers).add(Tools.SCREWDRIVER.get());
 		tag(IETags.wirecutters).add(Tools.WIRECUTTER.get());
+		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
 
 		//TODO Forge#7891
 		tag(Tags.Items.ORES_GOLD).add(Items.DEEPSLATE_GOLD_ORE);

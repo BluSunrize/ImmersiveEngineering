@@ -208,6 +208,7 @@ public class ItemModels extends TRSRItemModelProvider
 	{
 		addItemModels("metal_", IEItems.Metals.INGOTS.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
 		addItemModels("metal_", IEItems.Metals.NUGGETS.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
+		addItemModels("metal_", IEItems.Metals.RAW_ORES.values().stream().filter(i -> ImmersiveEngineering.MODID.equals(i.getId().getNamespace())).toArray(ItemLike[]::new));
 		addItemModels("metal_", IEItems.Metals.DUSTS.values().toArray(new ItemLike[0]));
 		addItemModels("metal_", IEItems.Metals.PLATES.values().toArray(new ItemLike[0]));
 		for(ItemLike bag : IEItems.Misc.SHADER_BAG.values())
@@ -413,7 +414,10 @@ public class ItemModels extends TRSRItemModelProvider
 	{
 		String name = metal.tagName();
 		if(metal.shouldAddOre())
+		{
 			cubeAll(name(Metals.ORES.get(metal)), rl("block/metal/ore_"+name));
+			cubeAll(name(Metals.DEEPSLATE_ORES.get(metal)), rl("block/metal/deepslate_ore_"+name));
+		}
 		if(!metal.isVanillaMetal())
 		{
 			ResourceLocation defaultName = rl("block/metal/storage_"+name);

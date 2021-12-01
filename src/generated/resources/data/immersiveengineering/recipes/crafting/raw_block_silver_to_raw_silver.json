@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:raw_block_silver"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:raw_silver",
+    "count": 9
+  }
+}

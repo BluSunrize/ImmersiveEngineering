@@ -125,19 +125,29 @@ public class IETags
 	{
 		public final Named<Item> ingot;
 		public final Named<Item> nugget;
+		@Nullable
+		public final Named<Item> rawOre;
 		public final Named<Item> plate;
 		public final Named<Item> dust;
 		public final Named<Block> storage;
 		public final Named<Block> sheetmetal;
 		@Nullable
 		public final Named<Block> ore;
+		@Nullable
+		public final Named<Block> rawBlock;
 
 		private MetalTags(EnumMetals m)
 		{
 			String name = m.tagName();
 			Named<Block> ore = null;
+			Named<Item> rawOre = null;
+			Named<Block> rawBlock = null;
 			if(m.shouldAddOre())
+			{
 				ore = createBlockTag(getOre(name));
+				rawOre = createItemWrapper(getRawOre(name));
+				rawBlock = createBlockTag(getRawBlock(name));
+			}
 			if(!m.isVanillaMetal())
 				storage = createBlockTag(getStorageBlock(name));
 			else if(m==EnumMetals.COPPER)
@@ -145,16 +155,19 @@ public class IETags
 				//TODO Forge#7891
 				storage = createBlockTag(getStorageBlock(name));
 				ore = createBlockTag(getOre(name));
+				rawBlock = createBlockTag(getRawBlock(name));
 			}
 			else if(m==EnumMetals.IRON)
 			{
 				storage = Blocks.STORAGE_BLOCKS_IRON;
 				ore = Blocks.ORES_IRON;
+				rawBlock = createBlockTag(getRawBlock(name));
 			}
 			else if(m==EnumMetals.GOLD)
 			{
 				storage = Blocks.STORAGE_BLOCKS_GOLD;
 				ore = Blocks.ORES_GOLD;
+				rawBlock = createBlockTag(getRawBlock(name));
 			}
 			else
 				throw new RuntimeException("Unkown vanilla metal: "+m.name());
@@ -164,6 +177,8 @@ public class IETags
 			plate = createItemWrapper(getPlate(name));
 			dust = createItemWrapper(getDust(name));
 			this.ore = ore;
+			this.rawOre = rawOre;
+			this.rawBlock = rawBlock;
 		}
 	}
 
@@ -200,6 +215,11 @@ public class IETags
 	public static ResourceLocation getStorageBlock(String type)
 	{
 		return forgeLoc("storage_blocks/"+type);
+	}
+
+	public static ResourceLocation getRawBlock(String type)
+	{
+		return forgeLoc("raw_blocks/"+type);
 	}
 
 	public static ResourceLocation getDust(String type)

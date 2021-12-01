@@ -9,12 +9,16 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
+import blusunrize.immersiveengineering.common.world.IERangePlacement.IETopSolidRangeConfig;
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
@@ -29,13 +33,14 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
+import net.minecraft.world.level.levelgen.placement.ConfiguredDecorator;
+import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
@@ -53,28 +58,30 @@ import net.minecraftforge.registries.RegistryObject;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
 
 public class IEWorldGen
 {
 	public static Map<String, PlacedFeature> features = new HashMap<>();
-	public static Map<String, Pair<OreConfig, BlockState>> retroFeatures = new HashMap<>();
+	public static Map<String, Pair<OreConfig, List<TargetBlockState>>> retroFeatures = new HashMap<>();
 	public static boolean anyRetrogenEnabled = false;
 
-	public static void addOreGen(Supplier<? extends Block> blockSupplier, String name, OreConfig config)
+	public static void addOreGen(EnumMetals metal, String name, OreConfig config)
 	{
-		Block block = blockSupplier.get();
-		IEOreFeatureConfig cfg = new IEOreFeatureConfig(OreFeatures.NATURAL_STONE, block.defaultBlockState(), config);
+		List<TargetBlockState> targetList = ImmutableList.of(
+				OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, Metals.ORES.get(metal).defaultBlockState()),
+				OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, Metals.DEEPSLATE_ORES.get(metal).defaultBlockState())
+		);
+		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, config);
 		PlacedFeature feature = register(new ResourceLocation(Lib.MODID, name),
 				IE_CONFIG_ORE.get().configured(cfg)
 						.placed(
-								new IECountPlacement(config),
+								HeightRangePlacement.of(new IERangePlacement(config)),
 								InSquarePlacement.spread(),
-								HeightRangePlacement.of(new IERangePlacement(config))
+								new IECountPlacement(config)
 						)
 		);
 		features.put(name, feature);
-		retroFeatures.put(name, Pair.of(config, block.defaultBlockState()));
+		retroFeatures.put(name, Pair.of(config, targetList));
 	}
 
 	public static void registerMineralVeinGen()
@@ -89,7 +96,7 @@ public class IEWorldGen
 	public static void onConfigUpdated()
 	{
 		anyRetrogenEnabled = false;
-		for(Pair<OreConfig, BlockState> config : retroFeatures.values())
+		for(Pair<OreConfig, List<TargetBlockState>> config : retroFeatures.values())
 			anyRetrogenEnabled |= config.getFirst().retrogenEnabled.get();
 	}
 
@@ -103,18 +110,18 @@ public class IEWorldGen
 
 	private void generateOres(Random random, int chunkX, int chunkZ, ServerLevel world)
 	{
-		for(Entry<String, Pair<OreConfig, BlockState>> gen : retroFeatures.entrySet())
+		for(Entry<String, Pair<OreConfig, List<TargetBlockState>>> gen : retroFeatures.entrySet())
 		{
 			OreConfig config = gen.getValue().getFirst();
-			BlockState state = gen.getValue().getSecond();
+			List<TargetBlockState> targetList = gen.getValue().getSecond();
 			if(config.retrogenEnabled.get())
 			{
 				PlacedFeature retroFeature = IEContent.ORE_RETROGEN
-						.configured(new OreConfiguration(OreFeatures.NATURAL_STONE, state, config.veinSize.get()))
+						.configured(new OreConfiguration(targetList, config.veinSize.get()))
 						.placed(
-								new IECountPlacement(config),
+								HeightRangePlacement.of(new IERangePlacement(config)),
 								InSquarePlacement.spread(),
-								HeightRangePlacement.of(new IERangePlacement(config))
+								new IECountPlacement(config)
 						);
 				retroFeature.place(
 						world, world.getChunkSource().getGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ)
@@ -136,7 +143,7 @@ public class IEWorldGen
 	public void chunkDataLoad(ChunkDataEvent.Load event)
 	{
 		LevelAccessor world = event.getWorld();
-		if(event.getChunk().getStatus()==ChunkStatus.FULL && world instanceof Level)
+		if(event.getChunk().getStatus()==ChunkStatus.FULL&&world instanceof Level)
 		{
 			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEServerConfig.ORES.retrogen_key.get())&&
 					anyRetrogenEnabled)

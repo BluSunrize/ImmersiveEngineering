@@ -51,6 +51,7 @@ import net.minecraft.data.HashCache;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
@@ -119,6 +120,7 @@ public class Recipes extends RecipeProvider
 		{
 			IETags.MetalTags tags = IETags.getTagsFor(metal);
 
+			ItemLike rawOre = Metals.RAW_ORES.get(metal);
 			ItemLike nugget = Metals.NUGGETS.get(metal);
 			ItemLike ingot = Metals.INGOTS.get(metal);
 			ItemLike plate = Metals.PLATES.get(metal);
@@ -133,6 +135,10 @@ public class Recipes extends RecipeProvider
 			{
 				BlockEntry<Block> ore = IEBlocks.Metals.ORES.get(metal);
 				addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
+				ore = IEBlocks.Metals.DEEPSLATE_ORES.get(metal);
+				addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
+				BlockEntry<Block> rawBlock = IEBlocks.Metals.RAW_ORES.get(metal);
+				add3x3Conversion(rawBlock, rawOre, tags.rawOre, out);
 			}
 			addStandardSmeltingBlastingRecipe(dust, ingot, 0, out, "_from_dust");
 //			addStandardSmeltingBlastingRecipe(dust, ingot, metal.smeltingXP, out, "_from_dust"); //TODO: remove this, if 0 XP on dust is intentional. this bugs out because the alloys do not have metal.smeltingXP
@@ -549,14 +555,21 @@ public class Recipes extends RecipeProvider
 						.build(out, toRL("crusher/ore_"+metal.getName()));
 
 				CrusherRecipeBuilder rawOreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 1);
-				//TODO re-add once we have raw ores for our own ores
-				//if(!metal.isNative())
-				rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getRawOre()));
-				//TODO "interesting" secondary outputs (gold from copper etc) for raw ore crushing?
+				if(!metal.isNative())
+					rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getRawOre()));
 				rawOreCrushing.addSecondary(metal.getDust(), 1/3f)
 						.addInput(metal.getRawOre())
 						.setEnergy(6000)
 						.build(out, toRL("crusher/raw_ore_"+metal.getName()));
+
+				Named<Item> rawBlock = createItemWrapper(IETags.getRawBlock(metal.getName()));
+				rawOreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 12);
+				if(!metal.isNative())
+					rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(rawBlock));
+				rawOreCrushing.addInput(rawBlock)
+						.setEnergy(9*6000)
+						.build(out, toRL("crusher/raw_block_"+metal.getName()));
+
 
 				// Arcfurnace ore
 				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 2);
@@ -567,6 +580,15 @@ public class Recipes extends RecipeProvider
 						.setTime(200)
 						.setEnergy(102400)
 						.build(out, toRL("arcfurnace/ore_"+metal.getName()));
+
+				// Arcfurnace raw ore, TODO: bump this to 1.5 when we have chance based output
+				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
+				if(!metal.isNative())
+					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getRawOre()));
+				arcBuilder.addIngredient("input", metal.getRawOre())
+						.setTime(100)
+						.setEnergy(25600)
+						.build(out, toRL("arcfurnace/raw_ore_"+metal.getName()));
 			}
 
 			// Crush ingot
@@ -1091,8 +1113,11 @@ public class Recipes extends RecipeProvider
 		ThermoelectricSourceBuilder.builder(Blocks.MAGMA_BLOCK)
 				.kelvin(1300)
 				.build(out, toRL("thermoelectric/magma"));
-		ThermoelectricSourceBuilder.builder(Blocks.ICE)
+		ThermoelectricSourceBuilder.builder(BlockTags.SNOW)
 				.celsius(0)
+				.build(out, toRL("thermoelectric/snow"));
+		ThermoelectricSourceBuilder.builder(Blocks.ICE)
+				.kelvin(260)
 				.build(out, toRL("thermoelectric/ice"));
 		ThermoelectricSourceBuilder.builder(Blocks.PACKED_ICE)
 				.kelvin(240)
@@ -2462,12 +2487,12 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.CHEMTHROWER_MULTITANK))));
 
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_SCOPE))
-				.pattern("pi ")
-				.pattern("c i")
-				.pattern(" cp")
+				.pattern("cic")
+				.pattern("psp")
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.define('c', IETags.copperWire)
 				.define('p', Tags.Items.GLASS_PANES)
+				.define('s', Items.SPYGLASS)
 				.unlockedBy("has_railgun", has(Weapons.RAILGUN))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_SCOPE))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_CAPACITORS))
