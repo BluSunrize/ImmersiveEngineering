@@ -186,6 +186,7 @@ public class IEContent
 					IEWorldGen.addOreGen(EnumMetals.LEAD, "lead", IEServerConfig.ORES.ore_lead);
 					IEWorldGen.addOreGen(EnumMetals.SILVER, "silver", IEServerConfig.ORES.ore_silver);
 					IEWorldGen.addOreGen(EnumMetals.NICKEL, "nickel", IEServerConfig.ORES.ore_nickel);
+					IEWorldGen.addOreGen(EnumMetals.NICKEL, "nickel_deep", IEServerConfig.ORES.ore_nickel_deep);
 					IEWorldGen.addOreGen(EnumMetals.URANIUM, "uranium", IEServerConfig.ORES.ore_uranium);
 					IEWorldGen.registerMineralVeinGen();
 				}

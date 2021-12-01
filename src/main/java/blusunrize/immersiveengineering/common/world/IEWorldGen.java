@@ -120,7 +120,7 @@ public class IEWorldGen
 	private static List<PlacementModifier> getOreModifiers(OreConfig config)
 	{
 		return ImmutableList.of(
-				HeightRangePlacement.of(new IERangePlacement(config)),
+				HeightRangePlacement.of(new IEHeightProvider(config)),
 				InSquarePlacement.spread(),
 				new IECountPlacement(config)
 		);
@@ -208,11 +208,11 @@ public class IEWorldGen
 	private static final RegistryObject<IEOreFeature> IE_CONFIG_ORE = FEATURE_REGISTER.register(
 			"ie_ore", IEOreFeature::new
 	);
-	public static final HeightProviderType<IERangePlacement> IE_RANGE_PLACEMENT = registerHeightProvider(
-			"ie_range", IERangePlacement.CODEC
-	);
 	public static final PlacementModifierType<IECountPlacement> IE_COUNT_PLACEMENT = registerPlacement(
 			"ie_count", IECountPlacement.CODEC
+	);
+	public static final HeightProviderType<IEHeightProvider> IE_HEIGHT_PROVIDER = registerHeightProvider(
+			"ie_range", IEHeightProvider.CODEC
 	);
 
 	public static void init()
@@ -222,12 +222,14 @@ public class IEWorldGen
 	}
 
 	private static <P extends PlacementModifier>
-	PlacementModifierType<P> registerPlacement(String name, Codec<P> codec) {
+	PlacementModifierType<P> registerPlacement(String name, Codec<P> codec)
+	{
 		return Registry.register(Registry.PLACEMENT_MODIFIERS, ImmersiveEngineering.rl(name), () -> codec);
 	}
 
 	private static <P extends HeightProvider>
-	HeightProviderType<P> registerHeightProvider(String name, Codec<P> codec) {
+	HeightProviderType<P> registerHeightProvider(String name, Codec<P> codec)
+	{
 		return Registry.register(Registry.HEIGHT_PROVIDER_TYPES, ImmersiveEngineering.rl(name), () -> codec);
 	}
 

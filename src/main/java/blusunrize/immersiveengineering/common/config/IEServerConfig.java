@@ -458,11 +458,12 @@ public class IEServerConfig
 		{
 			builder.push("ores");
 			//Server
-			ore_bauxite = new OreConfig(builder, "bauxite", 0, 6, 32, 112, 16);
-			ore_lead = new OreConfig(builder, "lead", 0, 8, -32, 80, 8);
-			ore_silver = new OreConfig(builder, "silver", 0.5, 9, -48, 32, 4);
-			ore_nickel = new OreConfig(builder, "nickel", 0, 6, -56, -8, 8);
-			ore_uranium = new OreConfig(builder, "uranium", 0.5, 4, -64, -16, 6);
+			ore_bauxite = new OreConfig(builder, "bauxite", OreDistribution.TRAPEZOID, 0, 6, 32, 112, 16);
+			ore_lead = new OreConfig(builder, "lead", OreDistribution.TRAPEZOID, 0, 8, -32, 80, 8);
+			ore_silver = new OreConfig(builder, "silver", OreDistribution.TRAPEZOID, 0.5, 9, -48, 32, 4);
+			ore_nickel = new OreConfig(builder, "nickel", OreDistribution.UNIFORM, 0, 3, -64, 24, 6);
+			ore_nickel_deep = new OreConfig(builder, "deep_nickel", OreDistribution.TRAPEZOID, 0, 6, -56, -8, 8);
+			ore_uranium = new OreConfig(builder, "uranium", OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 6);
 			retrogen_key = builder
 					.comment("The retrogeneration key. Basically IE checks if this key is saved in the chunks data. If it isn't, it will perform retrogen on all ores marked for retrogen.", "Change this in combination with the retrogen booleans to regen only some of the ores.")
 					.define("retrogen_key", "DEFAULT");
@@ -480,6 +481,7 @@ public class IEServerConfig
 		public final OreConfig ore_lead;
 		public final OreConfig ore_silver;
 		public final OreConfig ore_nickel;
+		public final OreConfig ore_nickel_deep;
 		public final OreConfig ore_uranium;
 		public final BooleanValue retrogen_log_flagChunk;
 		public final BooleanValue retrogen_log_remaining;
@@ -487,6 +489,7 @@ public class IEServerConfig
 
 		public static class OreConfig
 		{
+			public final ConfigValue<OreDistribution> distribution;
 			public final DoubleValue airExposure;
 			public final IntValue veinSize;
 			public final IntValue minY;
@@ -494,11 +497,14 @@ public class IEServerConfig
 			public final IntValue veinsPerChunk;
 			public final BooleanValue retrogenEnabled;
 
-			private OreConfig(Builder builder, String name, double defAirExposure, int defSize, int defMinY, int defMaxY, int defNumPerChunk)
+			private OreConfig(Builder builder, String name, OreDistribution defDist, double defAirExposure, int defSize, int defMinY, int defMaxY, int defNumPerChunk)
 			{
 				builder
 						.comment("Ore generation config - "+name)
 						.push(name);
+				distribution = builder
+						.comment("The distribution shape. UNIFORM is evenly distributed across the height range, TRAPEZOID favors the middle of the range.")
+						.define("distribution", defDist);
 				airExposure = builder
 						.comment("Chance for ores to not generate, if they are exposed to air. 0 means ignoring air exposure, 1 requires being burried.")
 						.defineInRange("air_exposure", defAirExposure, 0, 1);
@@ -519,6 +525,11 @@ public class IEServerConfig
 						.define("retrogen_enable", false);
 				builder.pop();
 			}
+		}
+
+		public enum OreDistribution {
+			UNIFORM,
+			TRAPEZOID;
 		}
 	}
 
