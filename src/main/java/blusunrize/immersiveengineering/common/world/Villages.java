@@ -35,15 +35,17 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Lifecycle;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
+import net.minecraft.core.WritableRegistry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -87,11 +89,11 @@ import static blusunrize.immersiveengineering.common.register.IEItems.Misc.WIRE_
 
 public class Villages
 {
-	public static final ResourceLocation ENGINEER = new ResourceLocation(MODID, "engineer");
-	public static final ResourceLocation MACHINIST = new ResourceLocation(MODID, "machinist");
-	public static final ResourceLocation ELECTRICIAN = new ResourceLocation(MODID, "electrician");
-	public static final ResourceLocation OUTFITTER = new ResourceLocation(MODID, "outfitter");
-	public static final ResourceLocation GUNSMITH = new ResourceLocation(MODID, "gunsmith");
+	public static final ResourceLocation ENGINEER = rl("engineer");
+	public static final ResourceLocation MACHINIST = rl("machinist");
+	public static final ResourceLocation ELECTRICIAN = rl("electrician");
+	public static final ResourceLocation OUTFITTER = rl("outfitter");
+	public static final ResourceLocation GUNSMITH = rl("gunsmith");
 
 	public static void init()
 	{
@@ -139,6 +141,7 @@ public class Villages
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
 		StructureTemplatePool old = BuiltinRegistries.TEMPLATE_POOL.get(pool);
+		int id = BuiltinRegistries.TEMPLATE_POOL.getId(old);
 
 		// Fixed seed to prevent inconsistencies between different worlds
 		List<StructurePoolElement> shuffled;
@@ -157,7 +160,12 @@ public class Villages
 				.collect(Collectors.toList());
 
 		ResourceLocation name = old.getName();
-		Registry.register(BuiltinRegistries.TEMPLATE_POOL, pool, new StructureTemplatePool(pool, name, newPieceList));
+		((WritableRegistry<StructureTemplatePool>)BuiltinRegistries.TEMPLATE_POOL).registerOrOverride(
+				OptionalInt.of(id),
+				ResourceKey.create(BuiltinRegistries.TEMPLATE_POOL.key(), name),
+				new StructureTemplatePool(pool, name, newPieceList),
+				Lifecycle.stable()
+		);
 	}
 
 	@Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
