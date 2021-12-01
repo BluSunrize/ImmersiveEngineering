@@ -9,14 +9,17 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.world.IECountPlacement.IEFeatureSpreadConfig;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import blusunrize.immersiveengineering.common.world.IERangePlacement.IETopSolidRangeConfig;
+import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -29,8 +32,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -39,7 +40,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.DecoratorConfig
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.Predicates;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.placement.ConfiguredDecorator;
 import net.minecraft.world.level.levelgen.placement.FeatureDecorator;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
@@ -56,18 +57,20 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.function.Supplier;
 
 public class IEWorldGen
 {
 	public static Map<String, ConfiguredFeature<?, ?>> features = new HashMap<>();
-	public static Map<String, Pair<OreConfig, BlockState>> retroFeatures = new HashMap<>();
+	public static Map<String, Pair<OreConfig, List<TargetBlockState>>> retroFeatures = new HashMap<>();
 	public static boolean anyRetrogenEnabled = false;
 
-	public static void addOreGen(Supplier<? extends Block> blockSupplier, String name, OreConfig config)
+	public static void addOreGen(EnumMetals metal, String name, OreConfig config)
 	{
-		Block block = blockSupplier.get();
-		IEOreFeatureConfig cfg = new IEOreFeatureConfig(Predicates.NATURAL_STONE, block.defaultBlockState(), config);
+		List<TargetBlockState> targetList = ImmutableList.of(
+				OreConfiguration.target(OreConfiguration.Predicates.STONE_ORE_REPLACEABLES, Metals.ORES.get(metal).defaultBlockState()),
+				OreConfiguration.target(OreConfiguration.Predicates.DEEPSLATE_ORE_REPLACEABLES, Metals.DEEPSLATE_ORES.get(metal).defaultBlockState())
+		);
+		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, config);
 		ConfiguredFeature<?, ?> feature = register(new ResourceLocation(Lib.MODID, name),
 				IE_CONFIG_ORE.get().configured(cfg)
 						.decorated(IE_RANGE_PLACEMENT.get().configured(new IETopSolidRangeConfig(config)))
@@ -75,7 +78,7 @@ public class IEWorldGen
 						.decorated(IE_COUNT_PLACEMENT.get().configured(new IEFeatureSpreadConfig(config)))
 		);
 		features.put(name, feature);
-		retroFeatures.put(name, Pair.of(config, block.defaultBlockState()));
+		retroFeatures.put(name, Pair.of(config, targetList));
 	}
 
 	public static void registerMineralVeinGen()
@@ -91,7 +94,7 @@ public class IEWorldGen
 	public static void onConfigUpdated()
 	{
 		anyRetrogenEnabled = false;
-		for(Pair<OreConfig, BlockState> config : retroFeatures.values())
+		for(Pair<OreConfig, List<TargetBlockState>> config : retroFeatures.values())
 			anyRetrogenEnabled |= config.getFirst().retrogenEnabled.get();
 	}
 
@@ -105,14 +108,14 @@ public class IEWorldGen
 
 	private void generateOres(Random random, int chunkX, int chunkZ, ServerLevel world)
 	{
-		for(Entry<String, Pair<OreConfig, BlockState>> gen : retroFeatures.entrySet())
+		for(Entry<String, Pair<OreConfig, List<TargetBlockState>>> gen : retroFeatures.entrySet())
 		{
 			OreConfig config = gen.getValue().getFirst();
-			BlockState state = gen.getValue().getSecond();
+			List<TargetBlockState> targetList = gen.getValue().getSecond();
 			if(config.retrogenEnabled.get())
 			{
 				ConfiguredFeature<?, ?> retroFeature = IEContent.ORE_RETROGEN
-						.configured(new OreConfiguration(Predicates.NATURAL_STONE, state, config.veinSize.get()))
+						.configured(new OreConfiguration(targetList, config.veinSize.get()))
 						.decorated(new IERangePlacement().configured(new IETopSolidRangeConfig(config)))
 						.squared()
 						.decorated(new IECountPlacement().configured(new IEFeatureSpreadConfig(config)));
@@ -136,7 +139,7 @@ public class IEWorldGen
 	public void chunkDataLoad(ChunkDataEvent.Load event)
 	{
 		LevelAccessor world = event.getWorld();
-		if(event.getChunk().getStatus()==ChunkStatus.FULL && world instanceof Level)
+		if(event.getChunk().getStatus()==ChunkStatus.FULL&&world instanceof Level)
 		{
 			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEServerConfig.ORES.retrogen_key.get())&&
 					anyRetrogenEnabled)
@@ -210,7 +213,7 @@ public class IEWorldGen
 			"ie_range", IERangePlacement::new
 	);
 	private static RegistryObject<IECountPlacement> IE_COUNT_PLACEMENT = PLACEMENT_REGISTER.register(
-			"ie_ount", IECountPlacement::new
+			"ie_count", IECountPlacement::new
 	);
 
 	public static void init()
