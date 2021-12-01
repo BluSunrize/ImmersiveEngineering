@@ -23,7 +23,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -87,9 +86,9 @@ public class IICProxy implements IImmersiveConnectable
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		return null;
+		return new Vec3(0.5, 0.5, 0.5);
 	}
 
 	@Override

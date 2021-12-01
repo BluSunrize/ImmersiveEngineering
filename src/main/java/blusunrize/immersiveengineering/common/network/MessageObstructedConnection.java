@@ -25,16 +25,16 @@ import java.util.function.Supplier;
 
 public class MessageObstructedConnection implements IMessage
 {
-	private Vec3 start, end;
-	private BlockPos startB, endB;
-	private Collection<BlockPos> blocking;
-	private WireType wireType;
+	private final Vec3 start, end;
+	private final BlockPos startB, endB;
+	private final Collection<BlockPos> blocking;
+	private final WireType wireType;
 
 	public MessageObstructedConnection(Connection conn, Collection<BlockPos> blocking)
 	{
 		this.blocking = blocking;
-		start = conn.getPoint(0, conn.getEndA());
-		end = conn.getPoint(1, conn.getEndA());
+		start = conn.getEndAOffset();
+		end = conn.getEndBOffset();
 		startB = conn.getEndA().getPosition();
 		endB = conn.getEndB().getPosition();
 		wireType = conn.type;
@@ -70,9 +70,10 @@ public class MessageObstructedConnection implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		context.get().enqueueWork(() -> {
-			Connection conn = new Connection(wireType, new ConnectionPoint(startB, 0),
-					new ConnectionPoint(endB, 0));
-			conn.generateCatenaryData(start, end);
+			Connection conn = new Connection(
+					wireType, new ConnectionPoint(startB, 0), new ConnectionPoint(endB, 0), start, end
+			);
+			conn.generateCatenaryData();
 			ClientEventHandler.FAILED_CONNECTIONS.put(conn,
 					Pair.of(blocking, new AtomicInteger(200)));
 		});

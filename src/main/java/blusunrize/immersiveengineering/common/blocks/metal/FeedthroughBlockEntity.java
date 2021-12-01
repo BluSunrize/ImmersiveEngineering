@@ -88,7 +88,7 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
 		double l = INFOS.get(reference).connOffset();
 		int factor;

@@ -65,14 +65,14 @@ public class SkylineHelper
 			Vec3 vEnd = Vec3.atLowerCornerOf(cpB.getPosition());
 
 			if(iicB!=null)
-				vStart = vStart.add(iicB.getConnectionOffset(connection, cpB));
+				vStart = vStart.add(iicB.getConnectionOffset(cpB, cpA, connection.type));
 			if(iicA!=null)
-				vEnd = vEnd.add(iicA.getConnectionOffset(connection, cpA));
+				vEnd = vEnd.add(iicA.getConnectionOffset(cpA, cpB, connection.type));
 
 			Vec3 pos = player.getEyePosition(0);
 			Vec3 across = new Vec3(vEnd.x-vStart.x, vEnd.y-vStart.y, vEnd.z-vStart.z);
 			double linePos = WireUtils.getCoeffForMinDistance(pos, vStart, across);
-			connection.generateCatenaryData(player.level);
+			connection.generateCatenaryData();
 			CatenaryData catData = connection.getCatenaryData();
 
 			Vec3 playerMovement = new Vec3(player.getDeltaMovement().x, player.getDeltaMovement().y,

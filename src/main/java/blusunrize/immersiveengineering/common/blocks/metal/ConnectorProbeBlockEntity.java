@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.Util;
@@ -148,10 +148,10 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
 		Direction side = getFacing().getOpposite();
-		double conRadius = con.type.getRenderDiameter()/2;
+		double conRadius = type.getRenderDiameter()/2;
 		return new Vec3(.5+side.getStepX()*(.375-conRadius), .5+side.getStepY()*(.375-conRadius), .5+side.getStepZ()*(.375-conRadius));
 	}
 

@@ -80,7 +80,10 @@ public class FeedthroughBlock extends ConnectorBlock<FeedthroughBlockEntity>
 						world.setBlockAndUpdate(posForOffset, connector);
 						ConnectionPoint newEnd = new ConnectionPoint(posForOffset, 0);
 						for(Connection c : removedConnections)
-							global.addConnection(new Connection(c.type, newEnd, c.getOtherEnd(cpOnFeedthrough)));
+						{
+							ConnectionPoint otherEnd = c.getOtherEnd(cpOnFeedthrough);
+							global.addConnection(new Connection(c.type, newEnd, otherEnd, global));
+						}
 					}
 				}
 			}

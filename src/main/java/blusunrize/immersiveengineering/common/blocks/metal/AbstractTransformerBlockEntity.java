@@ -104,9 +104,9 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		return getConnectionOffset(con, con.getEndFor(worldPosition).getIndex()==RIGHT_INDEX);
+		return getConnectionOffset(type, here.getIndex()==RIGHT_INDEX);
 	}
 
 	@Override
@@ -119,12 +119,8 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 		{
 			switch(attachedPoint.getIndex())
 			{
-				case LEFT_INDEX:
-					leftType = null;
-					break;
-				case RIGHT_INDEX:
-					rightType = null;
-					break;
+				case LEFT_INDEX -> leftType = null;
+				case RIGHT_INDEX -> rightType = null;
 			}
 		}
 		updateMirrorState();
@@ -135,26 +131,20 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	{
 		switch(target.getIndex())
 		{
-			case LEFT_INDEX:
-				this.leftType = cableType;
-				break;
-			case RIGHT_INDEX:
-				this.rightType = cableType;
-				break;
+			case LEFT_INDEX -> this.leftType = cableType;
+			case RIGHT_INDEX -> this.rightType = cableType;
 		}
 		updateMirrorState();
 	}
 
 	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		switch(target.getIndex())
-		{
-			case LEFT_INDEX:
-				return canAttach(cableType, leftType, rightType);
-			case RIGHT_INDEX:
-				return canAttach(cableType, rightType, leftType);
-		}
-		return false;
+		return switch(target.getIndex())
+				{
+					case LEFT_INDEX -> canAttach(cableType, leftType, rightType);
+					case RIGHT_INDEX -> canAttach(cableType, rightType, leftType);
+					default -> false;
+				};
 	}
 
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
@@ -186,7 +176,7 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 		return true;
 	}
 
-	protected abstract Vec3 getConnectionOffset(Connection con, boolean right);
+	protected abstract Vec3 getConnectionOffset(WireType type, boolean right);
 
 	protected void updateMirrorState()
 	{

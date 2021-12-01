@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
+import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralBlockEntity;
@@ -130,9 +130,9 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		BlockPos end = con.getOtherEnd(here).getPosition();
+		BlockPos end = other.getPosition();
 		int xDif = end.getX()-getBlockPos().getX();
 		int zDif = end.getZ()-getBlockPos().getZ();
 		int yDif = end.getY()-getBlockPos().getY();

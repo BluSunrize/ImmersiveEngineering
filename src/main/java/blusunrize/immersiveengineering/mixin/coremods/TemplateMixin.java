@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.mixin.coremods;
 
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.IConnectionTemplate;
 import blusunrize.immersiveengineering.common.wires.WireTemplateHelper;
 import net.minecraft.core.BlockPos;
@@ -32,7 +31,7 @@ import java.util.Random;
 @Mixin(StructureTemplate.class)
 public abstract class TemplateMixin implements IConnectionTemplate
 {
-	private final List<Connection> connections = new ArrayList<>();
+	private final List<TemplateConnection> connections = new ArrayList<>();
 
 	@Inject(method = "fillFromWorld", at = @At("HEAD"))
 	public void takeConnectionsFromWorld(
@@ -66,7 +65,7 @@ public abstract class TemplateMixin implements IConnectionTemplate
 	}
 
 	@Override
-	public List<Connection> getStoredConnections()
+	public List<TemplateConnection> getStoredConnections()
 	{
 		return connections;
 	}

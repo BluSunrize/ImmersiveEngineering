@@ -48,7 +48,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.List;
@@ -185,7 +184,7 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
 		if(getFacing().getAxis()==Axis.X)
 			return new Vec3(.5, 1.4375, here.getIndex()==0?.8125: .1875);

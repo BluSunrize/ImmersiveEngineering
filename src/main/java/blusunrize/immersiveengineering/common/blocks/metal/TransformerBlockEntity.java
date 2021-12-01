@@ -111,10 +111,10 @@ public class TransformerBlockEntity extends AbstractTransformerBlockEntity imple
 	}
 
 	@Override
-	protected Vec3 getConnectionOffset(Connection con, boolean right)
+	protected Vec3 getConnectionOffset(WireType type, boolean right)
 	{
-		double conRadius = con.type.getRenderDiameter()/2;
-		double offset = getHigherWiretype().equals(con.type.getCategory())?getHigherOffset(): getLowerOffset();
+		double conRadius = type.getRenderDiameter()/2;
+		double offset = getHigherWiretype().equals(type.getCategory())?getHigherOffset(): getLowerOffset();
 		if(getFacing()==Direction.NORTH)
 			return new Vec3(right?.8125: .1875, 2+offset-conRadius, .5);
 		if(getFacing()==Direction.SOUTH)

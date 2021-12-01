@@ -41,7 +41,8 @@ public class WireCollisionData
 			{
 				WireLogger.logger.info("Raytracing for addition of {}", conn);
 				if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
-				WireUtils.raytraceAlongCatenary(conn, net.getLocalNet(conn.getEndA()),
+				WireUtils.raytraceAlongCatenary(
+						conn,
 						p -> add(p.block(), new CollisionInfo(p.entersAt(), p.leavesAt(), conn, true)),
 						p -> add(p.block(), new CollisionInfo(p.entersAt(), p.leavesAt(), conn, false))
 				);
@@ -56,9 +57,7 @@ public class WireCollisionData
 		if(!isRemote&&conn.blockDataGenerated)
 		{
 			WireLogger.logger.info("Raytracing for removal of {}", conn);
-			WireUtils.raytraceAlongCatenary(conn.getCatenaryData(), conn.getEndA().getPosition(),
-					p -> remove(p.block(), conn), p -> remove(p.block(), conn)
-			);
+			WireUtils.raytraceAlongCatenary(conn, p -> remove(p.block(), conn), p -> remove(p.block(), conn));
 			conn.blockDataGenerated = false;
 		}
 	}

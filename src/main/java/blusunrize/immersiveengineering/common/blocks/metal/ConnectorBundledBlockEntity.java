@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.redstone.CapabilityRedstoneNetwork;
@@ -177,10 +176,10 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
 		Direction side = getFacing().getOpposite();
-		double conRadius = con.type.getRenderDiameter()/2;
+		double conRadius = type.getRenderDiameter()/2;
 		return new Vec3(.5-conRadius*side.getStepX(), .5-conRadius*side.getStepY(), .5-conRadius*side.getStepZ());
 	}
 

@@ -101,14 +101,13 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 			TargetingInfo targetHere = new TargetingInfo(side, hitX-pos.getX(), hitY-pos.getY(), hitZ-pos.getZ());
 			WireType wire = coil.getWireType(stack);
 			BlockPos masterPos = ((IImmersiveConnectable)tileEntity).getConnectionMaster(wire, targetHere);
-			BlockPos offsetHere = pos.subtract(masterPos);
+			BlockPos masterOffsetHere = pos.subtract(masterPos);
 			tileEntity = world.getBlockEntity(masterPos);
-			if(!(tileEntity instanceof IImmersiveConnectable)||!((IImmersiveConnectable)tileEntity).canConnect())
+			if(!(tileEntity instanceof IImmersiveConnectable iicHere)||!iicHere.canConnect())
 				return InteractionResult.PASS;
-			IImmersiveConnectable iicHere = (IImmersiveConnectable)tileEntity;
-			ConnectionPoint cpHere = iicHere.getTargetedPoint(targetHere, offsetHere);
+			ConnectionPoint cpHere = iicHere.getTargetedPoint(targetHere, masterOffsetHere);
 
-			if(cpHere==null||!((IImmersiveConnectable)tileEntity).canConnectCable(wire, cpHere, offsetHere)||
+			if(cpHere==null||!iicHere.canConnectCable(wire, cpHere, masterOffsetHere)||
 					!coil.canConnectCable(stack, tileEntity))
 			{
 				if(!world.isClientSide)
@@ -120,7 +119,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 			{
 				if(!hasWireLink(stack))
 				{
-					WireLink link = WireLink.create(cpHere, world, offsetHere, targetHere);
+					WireLink link = WireLink.create(cpHere, world, masterOffsetHere, targetHere);
 					link.writeToItem(stack);
 				}
 				else
@@ -140,13 +139,12 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"tooFar"), true);
 					else
 					{
-						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable))
+						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable iicLink))
 							player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"invalidPoint"), true);
 						else
 						{
-							IImmersiveConnectable iicLink = (IImmersiveConnectable)tileEntityLinkingPos;
-							if(!((IImmersiveConnectable)tileEntityLinkingPos).canConnectCable(wire, otherLink.cp, otherLink.offset)||
-									!((IImmersiveConnectable)tileEntityLinkingPos).getConnectionMaster(wire, otherLink.target).equals(otherLink.cp.getPosition())||
+							if(!iicLink.canConnectCable(wire, otherLink.cp, otherLink.offset)||
+									!iicLink.getConnectionMaster(wire, otherLink.target).equals(otherLink.cp.getPosition())||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
 								player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"invalidPoint"), true);
@@ -172,11 +170,10 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 									Set<BlockPos> ignore = new HashSet<>();
 									ignore.addAll(iicHere.getIgnored(iicLink));
 									ignore.addAll(iicLink.getIgnored(iicHere));
-									Connection tempConn = new Connection(wire, cpHere, otherLink.cp);
-									Set<BlockPos> failedReasons = findObstructingBlocks(world, tempConn, ignore);
+									Connection conn = new Connection(wire, cpHere, otherLink.cp, net);
+									Set<BlockPos> failedReasons = findObstructingBlocks(world, conn, ignore);
 									if(failedReasons.isEmpty())
 									{
-										Connection conn = new Connection(wire, cpHere, otherLink.cp);
 										net.addConnection(conn);
 
 										iicHere.connectCable(wire, cpHere, iicLink, otherLink.cp);
@@ -200,7 +197,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 										player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"cantSee"), true);
 										ImmersiveEngineering.packetHandler.send(
 												PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
-												new MessageObstructedConnection(tempConn, failedReasons)
+												new MessageObstructedConnection(conn, failedReasons)
 										);
 									}
 								}

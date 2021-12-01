@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
-import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.EnergyConnector;
@@ -40,7 +39,6 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
@@ -203,12 +201,12 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 	}
 
 	@Override
-	public Vec3 getConnectionOffset(@Nonnull Connection con, ConnectionPoint here)
+	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		BlockPos other = con.getOtherEnd(here).getPosition();
-		int xDif = other.getX()-worldPosition.getX();
-		int yDif = other.getY()-worldPosition.getY();
-		int zDif = other.getZ()-worldPosition.getZ();
+		BlockPos otherPos = other.getPosition();
+		int xDif = otherPos.getX()-worldPosition.getX();
+		int yDif = otherPos.getY()-worldPosition.getY();
+		int zDif = otherPos.getZ()-worldPosition.getZ();
 		boolean wallL = renderWall(true);
 		boolean wallR = renderWall(false);
 		if(!isOnGround()||!(wallL||wallR))

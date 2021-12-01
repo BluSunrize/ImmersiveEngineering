@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.wires.testutils.DummySyncManager;
 import blusunrize.immersiveengineering.api.wires.testutils.DummyWireType;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.phys.Vec3;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -56,12 +57,12 @@ public class GlobalWireNetworkTest
 	{
 		global.onConnectorLoad(iicA, false);
 		global.onConnectorLoad(iicB, false);
-		global.addConnection(new Connection(wiretype, cpA0, cpB0));
+		global.addConnection(new Connection(wiretype, cpA0, cpB0, Vec3.ZERO, Vec3.ZERO));
 		for(ConnectionPoint cp : new ConnectionPoint[]{cpA0, cpB0, cpB1})
 			Assert.assertNotNull(global.getNullableLocalNet(cp));
 		Assert.assertEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));
 		Assert.assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB1));
-		global.removeConnection(new Connection(wiretype, cpA0, cpB0));
+		global.removeConnection(new Connection(wiretype, cpA0, cpB0, Vec3.ZERO, Vec3.ZERO));
 		Assert.assertNotEquals(global.getLocalNet(cpA0), global.getLocalNet(cpB0));
 	}
 }
