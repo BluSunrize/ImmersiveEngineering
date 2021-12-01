@@ -11,22 +11,6 @@
   "result": {
     "tag": "forge:dusts/nickel"
   },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:dusts/nickel",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:raw_ores/nickel",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
   "input": {
     "tag": "forge:raw_ores/nickel"
   },

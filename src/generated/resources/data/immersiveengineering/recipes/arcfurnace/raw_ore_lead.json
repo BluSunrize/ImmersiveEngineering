@@ -1,0 +1,14 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "tag": "forge:ingots/lead"
+    }
+  ],
+  "additives": [],
+  "input": {
+    "tag": "forge:raw_ores/lead"
+  },
+  "time": 100,
+  "energy": 25600
+}

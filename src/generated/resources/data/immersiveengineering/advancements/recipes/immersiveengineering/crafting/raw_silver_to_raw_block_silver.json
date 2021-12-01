@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/raw_silver_to_raw_block_silver"
+    ]
+  },
+  "criteria": {
+    "has_raw_silver": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:raw_silver"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/raw_silver_to_raw_block_silver"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_raw_silver",
+      "has_the_recipe"
+    ]
+  ]
+}

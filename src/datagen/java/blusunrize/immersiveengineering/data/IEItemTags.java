@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.data.resources.RecipeMetals;
+import com.google.common.base.Preconditions;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.data.tags.ItemTagsProvider;
@@ -51,6 +52,12 @@ class IEItemTags extends ItemTagsProvider
 				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
 				if(metal.shouldAddOre())
 					tag(Tags.Items.ORES).addTag(IETags.getItemTag(tags.ore));
+			}
+			if(metal.shouldAddOre())
+			{
+				Preconditions.checkNotNull(tags.rawOre);
+				tag(tags.rawOre).add(Metals.RAW_ORES.get(metal).get());
+				//TODO Forge#7891, there is no tag "raw_ores" yet
 			}
 			if(metal==EnumMetals.COPPER)
 			{

@@ -119,6 +119,7 @@ public class Recipes extends RecipeProvider
 		{
 			IETags.MetalTags tags = IETags.getTagsFor(metal);
 
+			ItemLike rawOre = Metals.RAW_ORES.get(metal);
 			ItemLike nugget = Metals.NUGGETS.get(metal);
 			ItemLike ingot = Metals.INGOTS.get(metal);
 			ItemLike plate = Metals.PLATES.get(metal);
@@ -133,6 +134,10 @@ public class Recipes extends RecipeProvider
 			{
 				BlockEntry<Block> ore = IEBlocks.Metals.ORES.get(metal);
 				addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
+				ore = IEBlocks.Metals.DEEPSLATE_ORES.get(metal);
+				addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
+				BlockEntry<Block> rawBlock = IEBlocks.Metals.RAW_ORES.get(metal);
+				add3x3Conversion(rawBlock, rawOre, tags.rawOre, out);
 			}
 			addStandardSmeltingBlastingRecipe(dust, ingot, 0, out, "_from_dust");
 //			addStandardSmeltingBlastingRecipe(dust, ingot, metal.smeltingXP, out, "_from_dust"); //TODO: remove this, if 0 XP on dust is intentional. this bugs out because the alloys do not have metal.smeltingXP
@@ -549,14 +554,21 @@ public class Recipes extends RecipeProvider
 						.build(out, toRL("crusher/ore_"+metal.getName()));
 
 				CrusherRecipeBuilder rawOreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 1);
-				//TODO re-add once we have raw ores for our own ores
-				//if(!metal.isNative())
-				rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getRawOre()));
-				//TODO "interesting" secondary outputs (gold from copper etc) for raw ore crushing?
+				if(!metal.isNative())
+					rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(metal.getRawOre()));
 				rawOreCrushing.addSecondary(metal.getDust(), 1/3f)
 						.addInput(metal.getRawOre())
 						.setEnergy(6000)
 						.build(out, toRL("crusher/raw_ore_"+metal.getName()));
+
+				Named<Item> rawBlock = createItemWrapper(IETags.getRawBlock(metal.getName()));
+				rawOreCrushing = CrusherRecipeBuilder.builder(metal.getDust(), 12);
+				if(!metal.isNative())
+					rawOreCrushing.addCondition(getTagCondition(metal.getDust())).addCondition(getTagCondition(rawBlock));
+				rawOreCrushing.addInput(rawBlock)
+						.setEnergy(9*6000)
+						.build(out, toRL("crusher/raw_block_"+metal.getName()));
+
 
 				// Arcfurnace ore
 				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 2);
@@ -567,6 +579,15 @@ public class Recipes extends RecipeProvider
 						.setTime(200)
 						.setEnergy(102400)
 						.build(out, toRL("arcfurnace/ore_"+metal.getName()));
+
+				// Arcfurnace raw ore, TODO: bump this to 1.5 when we have chance based output
+				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
+				if(!metal.isNative())
+					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getRawOre()));
+				arcBuilder.addIngredient("input", metal.getRawOre())
+						.setTime(100)
+						.setEnergy(25600)
+						.build(out, toRL("arcfurnace/raw_ore_"+metal.getName()));
 			}
 
 			// Crush ingot

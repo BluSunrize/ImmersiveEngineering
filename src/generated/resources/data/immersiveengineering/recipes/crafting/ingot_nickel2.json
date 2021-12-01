@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "immersiveengineering:deepslate_ore_nickel"
+  },
+  "result": "immersiveengineering:ingot_nickel",
+  "experience": 1.0,
+  "cookingtime": 200
+}

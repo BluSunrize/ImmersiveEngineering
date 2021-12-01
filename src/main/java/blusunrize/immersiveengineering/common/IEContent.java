@@ -54,7 +54,6 @@ import blusunrize.immersiveengineering.common.items.RailgunProjectiles;
 import blusunrize.immersiveengineering.common.items.WireCoilItem;
 import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
 import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
@@ -183,12 +182,11 @@ public class IEContent
 		/*WORLDGEN*/
 		ev.enqueueWork(
 				() -> {
-					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.COPPER), "copper", IEServerConfig.ORES.ore_copper);
-					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.ALUMINUM), "bauxite", IEServerConfig.ORES.ore_bauxite);
-					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.LEAD), "lead", IEServerConfig.ORES.ore_lead);
-					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.SILVER), "silver", IEServerConfig.ORES.ore_silver);
-					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.NICKEL), "nickel", IEServerConfig.ORES.ore_nickel);
-					IEWorldGen.addOreGen(Metals.ORES.get(EnumMetals.URANIUM), "uranium", IEServerConfig.ORES.ore_uranium);
+					IEWorldGen.addOreGen(EnumMetals.ALUMINUM, "bauxite", IEServerConfig.ORES.ore_bauxite);
+					IEWorldGen.addOreGen(EnumMetals.LEAD, "lead", IEServerConfig.ORES.ore_lead);
+					IEWorldGen.addOreGen(EnumMetals.SILVER, "silver", IEServerConfig.ORES.ore_silver);
+					IEWorldGen.addOreGen(EnumMetals.NICKEL, "nickel", IEServerConfig.ORES.ore_nickel);
+					IEWorldGen.addOreGen(EnumMetals.URANIUM, "uranium", IEServerConfig.ORES.ore_uranium);
 					IEWorldGen.registerMineralVeinGen();
 				}
 		);

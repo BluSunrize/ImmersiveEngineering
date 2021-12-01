@@ -107,6 +107,7 @@ public final class IEItems
 	{
 		public static final Map<EnumMetals, ItemRegObject<Item>> INGOTS = new EnumMap<>(EnumMetals.class);
 		public static final Map<EnumMetals, ItemRegObject<Item>> NUGGETS = new EnumMap<>(EnumMetals.class);
+		public static final Map<EnumMetals, ItemRegObject<Item>> RAW_ORES = new EnumMap<>(EnumMetals.class);
 		public static final Map<EnumMetals, ItemRegObject<IEBaseItem>> DUSTS = new EnumMap<>(EnumMetals.class);
 		public static final Map<EnumMetals, ItemRegObject<IEBaseItem>> PLATES = new EnumMap<>(EnumMetals.class);
 
@@ -117,6 +118,7 @@ public final class IEItems
 				String name = m.tagName();
 				ItemRegObject<Item> nugget;
 				ItemRegObject<Item> ingot;
+				ItemRegObject<Item> rawOre = null;
 				if(!m.isVanillaMetal())
 					ingot = register("ingot_"+name, IEBaseItem::new);
 				else if(m==EnumMetals.IRON)
@@ -135,8 +137,18 @@ public final class IEItems
 					nugget = of(Items.GOLD_NUGGET);
 				else
 					throw new RuntimeException("Unkown vanilla metal: "+m.name());
+				if(m.shouldAddOre())
+					rawOre = register("raw_"+name, IEBaseItem::new);
+				else if(m==EnumMetals.IRON)
+					rawOre = of(Items.RAW_IRON);
+				else if(m==EnumMetals.GOLD)
+					rawOre = of(Items.RAW_GOLD);
+				else if(m==EnumMetals.COPPER)
+					rawOre = of(Items.RAW_COPPER);
 				NUGGETS.put(m, nugget);
 				INGOTS.put(m, ingot);
+				if(rawOre!=null)
+					RAW_ORES.put(m, rawOre);
 				PLATES.put(m, simple("plate_"+name));
 				DUSTS.put(m, simple("dust_"+name));
 			}

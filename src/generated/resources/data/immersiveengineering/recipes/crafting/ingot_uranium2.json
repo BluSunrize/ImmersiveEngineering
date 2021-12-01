@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "immersiveengineering:deepslate_ore_uranium"
+  },
+  "result": "immersiveengineering:ingot_uranium",
+  "experience": 1.0,
+  "cookingtime": 200
+}

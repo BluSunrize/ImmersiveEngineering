@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "immersiveengineering:raw_block_aluminum"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:raw_aluminum",
+    "count": 9
+  }
+}
