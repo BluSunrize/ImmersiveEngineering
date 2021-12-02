@@ -460,10 +460,10 @@ public class IEServerConfig
 			//Server
 			ore_bauxite = new OreConfig(builder, "bauxite", OreDistribution.TRAPEZOID, 0, 6, 32, 112, 16);
 			ore_lead = new OreConfig(builder, "lead", OreDistribution.TRAPEZOID, 0, 8, -32, 80, 8);
-			ore_silver = new OreConfig(builder, "silver", OreDistribution.TRAPEZOID, 0.5, 9, -48, 32, 4);
+			ore_silver = new OreConfig(builder, "silver", OreDistribution.TRAPEZOID, 0.25, 9, -48, 32, 6);
 			ore_nickel = new OreConfig(builder, "nickel", OreDistribution.UNIFORM, 0, 3, -64, 24, 6);
-			ore_nickel_deep = new OreConfig(builder, "deep_nickel", OreDistribution.TRAPEZOID, 0, 6, -56, -8, 8);
-			ore_uranium = new OreConfig(builder, "uranium", OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 6);
+			ore_nickel_deep = new OreConfig(builder, "deep_nickel", OreDistribution.TRAPEZOID, 0, 6, -120, -8, 8);
+			ore_uranium = new OreConfig(builder, "uranium", OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 9);
 			retrogen_key = builder
 					.comment("The retrogeneration key. Basically IE checks if this key is saved in the chunks data. If it isn't, it will perform retrogen on all ores marked for retrogen.", "Change this in combination with the retrogen booleans to regen only some of the ores.")
 					.define("retrogen_key", "DEFAULT");

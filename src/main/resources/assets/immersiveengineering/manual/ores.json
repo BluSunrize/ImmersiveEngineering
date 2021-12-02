@@ -6,6 +6,12 @@
         "item": "immersiveengineering:ore_aluminum"
       },
       {
+        "item": "immersiveengineering:deepslate_ore_aluminum"
+      },
+      {
+        "item": "immersiveengineering:raw_aluminum"
+      },
+      {
         "item": "immersiveengineering:ingot_aluminum"
       }
     ]
@@ -15,6 +21,12 @@
     "items": [
       {
         "item": "immersiveengineering:ore_lead"
+      },
+      {
+        "item": "immersiveengineering:deepslate_ore_lead"
+      },
+      {
+        "item": "immersiveengineering:raw_lead"
       },
       {
         "item": "immersiveengineering:ingot_lead"
@@ -28,6 +40,12 @@
         "item": "immersiveengineering:ore_silver"
       },
       {
+        "item": "immersiveengineering:deepslate_ore_silver"
+      },
+      {
+        "item": "immersiveengineering:raw_silver"
+      },
+      {
         "item": "immersiveengineering:ingot_silver"
       }
     ]
@@ -39,6 +57,12 @@
         "item": "immersiveengineering:ore_nickel"
       },
       {
+        "item": "immersiveengineering:deepslate_ore_nickel"
+      },
+      {
+        "item": "immersiveengineering:raw_nickel"
+      },
+      {
         "item": "immersiveengineering:ingot_nickel"
       }
     ]
@@ -48,6 +72,12 @@
     "items": [
       {
         "item": "immersiveengineering:ore_uranium"
+      },
+      {
+        "item": "immersiveengineering:deepslate_ore_uranium"
+      },
+      {
+        "item": "immersiveengineering:raw_uranium"
       },
       {
         "item": "immersiveengineering:ingot_uranium"
