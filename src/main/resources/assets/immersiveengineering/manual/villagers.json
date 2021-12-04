@@ -1,0 +1,47 @@
+{
+  "engineer": {
+    "type": "entity",
+    "id": "minecraft:villager",
+    "nbt": {
+      "VillagerData": {
+        "profession": "immersiveengineering:engineer"
+      }
+    }
+  },
+  "machinist": {
+    "type": "entity",
+    "id": "minecraft:villager",
+    "nbt": {
+      "VillagerData": {
+        "profession": "immersiveengineering:machinist"
+      }
+    }
+  },
+  "electrician": {
+    "type": "entity",
+    "id": "minecraft:villager",
+    "nbt": {
+      "VillagerData": {
+        "profession": "immersiveengineering:electrician"
+      }
+    }
+  },
+  "outfitter": {
+    "type": "entity",
+    "id": "minecraft:villager",
+    "nbt": {
+      "VillagerData": {
+        "profession": "immersiveengineering:outfitter"
+      }
+    }
+  },
+  "gunsmith": {
+    "type": "entity",
+    "id": "minecraft:villager",
+    "nbt": {
+      "VillagerData": {
+        "profession": "immersiveengineering:gunsmith"
+      }
+    }
+  }
+}
