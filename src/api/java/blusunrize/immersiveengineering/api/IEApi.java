@@ -14,6 +14,7 @@ import com.google.common.collect.Lists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.ArrayList;
@@ -131,5 +132,10 @@ public class IEApi
 			if(check.test(stack))
 				return false;
 		return true;
+	}
+
+	public static String getCurrentVersion()
+	{
+		return ModList.get().getModFileById(Lib.MODID).versionString();
 	}
 }
