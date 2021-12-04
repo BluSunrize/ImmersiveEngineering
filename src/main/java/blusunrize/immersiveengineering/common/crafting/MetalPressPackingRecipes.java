@@ -65,7 +65,7 @@ public class MetalPressPackingRecipes
 	{
 		public MetalPressContainerRecipe(ResourceLocation id, Item mold)
 		{
-			super(id, ItemStack.EMPTY, new IngredientWithSize(Ingredient.EMPTY), new ComparableItemStack(new ItemStack(mold)), 3200);
+			super(id, ItemStack.EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, 3200);
 		}
 
 		@Override
@@ -135,7 +135,7 @@ public class MetalPressPackingRecipes
 	{
 		private RecipeDelegate(String id, ItemStack output, ItemStack input, Item mold)
 		{
-			super(new ResourceLocation(Lib.MODID, id), output, IngredientWithSize.of(input), new ComparableItemStack(new ItemStack(mold)), 3200);
+			super(new ResourceLocation(Lib.MODID, id), output, IngredientWithSize.of(input), mold, 3200);
 		}
 
 		public static RecipeDelegate getPacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input, boolean big)

@@ -245,6 +245,11 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 		return obj;
 	}
 
+	protected R addSimpleItem(String key, ItemLike item)
+	{
+		return addWriter(json -> json.addProperty(key, item.asItem().getRegistryName().toString()));
+	}
+
 	public R addItem(String key, ItemLike item)
 	{
 		return addItem(key, new ItemStack(item));

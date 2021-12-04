@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
-import blusunrize.immersiveengineering.api.ComparableItemStack;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -31,10 +31,10 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
 
 	public IngredientWithSize input;
-	public final ComparableItemStack mold;
+	public final Item mold;
 	public final ItemStack output;
 
-	public MetalPressRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, ComparableItemStack mold, int energy)
+	public MetalPressRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, Item mold, int energy)
 	{
 		super(output, TYPE, id);
 		this.output = output;
@@ -70,7 +70,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	// Initialized by reload listener
 	public static Map<ResourceLocation, MetalPressRecipe> recipeList = Collections.emptyMap();
-	private static ArrayListMultimap<ComparableItemStack, MetalPressRecipe> recipesByMold = ArrayListMultimap.create();
+	private static ArrayListMultimap<Item, MetalPressRecipe> recipesByMold = ArrayListMultimap.create();
 
 	public static void updateRecipesByMold()
 	{
@@ -82,8 +82,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(mold.isEmpty()||input.isEmpty())
 			return null;
-		ComparableItemStack comp = ComparableItemStack.create(mold, false);
-		List<MetalPressRecipe> list = recipesByMold.get(comp);
+		List<MetalPressRecipe> list = recipesByMold.get(mold.getItem());
 		for(MetalPressRecipe recipe : list)
 			if(recipe.matches(mold, input, world))
 				return recipe.getActualRecipe(mold, input, world);
@@ -93,8 +92,8 @@ public class MetalPressRecipe extends MultiblockRecipe
 	public static List<MetalPressRecipe> removeRecipes(ItemStack output)
 	{
 		List<MetalPressRecipe> list = new ArrayList<>();
-		Set<ComparableItemStack> keySet = new HashSet<>(recipesByMold.keySet());
-		for(ComparableItemStack mold : keySet)
+		Set<Item> keySet = new HashSet<>(recipesByMold.keySet());
+		for(Item mold : keySet)
 		{
 			Iterator<MetalPressRecipe> it = recipesByMold.get(mold).iterator();
 			while(it.hasNext())
@@ -114,7 +113,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 	{
 		if(itemStack.isEmpty())
 			return false;
-		return recipesByMold.containsKey(ComparableItemStack.create(itemStack, false));
+		return recipesByMold.containsKey(itemStack.getItem());
 	}
 
 	@Override

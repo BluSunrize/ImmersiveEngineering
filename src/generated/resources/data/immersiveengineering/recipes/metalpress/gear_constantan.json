@@ -1,8 +1,6 @@
 {
   "type": "immersiveengineering:metal_press",
-  "mold": {
-    "item": "immersiveengineering:mold_gear"
-  },
+  "mold": "immersiveengineering:mold_gear",
   "result": {
     "tag": "forge:gears/constantan"
   },

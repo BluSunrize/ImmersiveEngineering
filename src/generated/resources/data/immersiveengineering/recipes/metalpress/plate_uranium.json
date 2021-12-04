@@ -1,8 +1,6 @@
 {
   "type": "immersiveengineering:metal_press",
-  "mold": {
-    "item": "immersiveengineering:mold_plate"
-  },
+  "mold": "immersiveengineering:mold_plate",
   "result": {
     "tag": "forge:plates/uranium"
   },

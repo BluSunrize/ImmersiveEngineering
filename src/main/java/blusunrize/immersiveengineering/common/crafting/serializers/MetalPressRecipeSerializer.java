@@ -35,10 +35,10 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	{
 		ItemStack output = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
-		ItemStack mold = readOutput(json.get("mold"));
+		Item mold = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(json, "mold")));
 		int energy = GsonHelper.getAsInt(json, "energy");
 		return IEServerConfig.MACHINES.metalPressConfig.apply(
-				new MetalPressRecipe(recipeId, output, input, new ComparableItemStack(mold), energy)
+				new MetalPressRecipe(recipeId, output, input, mold, energy)
 		);
 	}
 
@@ -48,9 +48,9 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	{
 		ItemStack output = buffer.readItem();
 		IngredientWithSize input = IngredientWithSize.read(buffer);
-		ItemStack mold = buffer.readItem();
+		Item mold = buffer.readRegistryIdSafe(Item.class);
 		int energy = buffer.readInt();
-		return new MetalPressRecipe(recipeId, output, input, new ComparableItemStack(mold), energy);
+		return new MetalPressRecipe(recipeId, output, input, mold, energy);
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	{
 		buffer.writeItem(recipe.output);
 		recipe.input.write(buffer);
-		buffer.writeItem(recipe.mold.stack);
+		buffer.writeRegistryId(recipe.mold);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }

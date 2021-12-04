@@ -42,7 +42,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 	public void setIngredients(MetalPressRecipe recipe, IIngredients ingredients)
 	{
 		List<List<ItemStack>> l = JEIIngredientStackListBuilder.make(recipe.input).build();
-		l.add(ListUtils.fromItems(recipe.mold.stack));
+		l.add(ListUtils.fromItems(recipe.mold.getDefaultInstance()));
 		ingredients.setInputLists(VanillaTypes.ITEM, l);
 		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
 	}
@@ -56,7 +56,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
 
 		guiItemStacks.init(1, true, 56, 0);
-		guiItemStacks.set(1, recipe.mold.stack);
+		guiItemStacks.set(1, recipe.mold.getDefaultInstance());
 
 		guiItemStacks.init(2, false, 82, 12);
 		guiItemStacks.set(2, recipe.output);

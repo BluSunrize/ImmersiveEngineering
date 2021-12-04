@@ -18,24 +18,25 @@ import net.minecraft.world.level.ItemLike;
 
 public class MetalPressRecipeBuilder extends IEFinishedRecipe<MetalPressRecipeBuilder>
 {
-	private MetalPressRecipeBuilder()
+	private MetalPressRecipeBuilder(ItemLike mold)
 	{
 		super(MetalPressRecipe.SERIALIZER.get());
+		addSimpleItem("mold", mold);
 	}
 
 	public static MetalPressRecipeBuilder builder(ItemLike mold, ItemLike result)
 	{
-		return new MetalPressRecipeBuilder().addIngredient("mold", mold).addResult(result);
+		return new MetalPressRecipeBuilder(mold).addResult(result);
 	}
 
 	public static MetalPressRecipeBuilder builder(ItemLike mold, ItemStack result)
 	{
-		return new MetalPressRecipeBuilder().addIngredient("mold", mold).addResult(result);
+		return new MetalPressRecipeBuilder(mold).addResult(result);
 	}
 
 	public static MetalPressRecipeBuilder builder(ItemLike mold, Tag<Item> result, int count)
 	{
-		return new MetalPressRecipeBuilder().addIngredient("mold", mold).addResult(new IngredientWithSize(result, count));
+		return new MetalPressRecipeBuilder(mold).addResult(new IngredientWithSize(result, count));
 	}
 
 }
