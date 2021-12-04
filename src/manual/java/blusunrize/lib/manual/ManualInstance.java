@@ -21,12 +21,17 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSyntaxException;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
@@ -36,9 +41,9 @@ import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import com.mojang.datafixers.util.Pair;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -147,6 +152,29 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 					}
 					return new ManualElementTable(this, table, GsonHelper.getAsBoolean(s,
 							"horizontal_bars", false));
+				}
+		);
+		registerSpecialElement(new ResourceLocation(name.getNamespace(), "entity"),
+				s -> {
+					String sType = GsonHelper.getAsString(s, "id");
+					Optional<EntityType<?>> type = EntityType.byString(sType);
+					if(type.isEmpty())
+						throw new IllegalArgumentException("Type "+sType+" is not a valid entity type!");
+
+					CompoundTag entityData = null;
+					if(s.has("nbt"))
+						try
+						{
+							JsonElement element = s.get("nbt");
+							if(element.isJsonObject())
+								entityData = TagParser.parseTag(element.toString());
+							else
+								entityData = TagParser.parseTag(GsonHelper.convertToString(element, "nbt"));
+						} catch(CommandSyntaxException e)
+						{
+							throw new JsonSyntaxException("Invalid NBT Entry: "+e);
+						}
+					return new ManualElementEntity(this, type.get(), entityData);
 				}
 		);
 	}
