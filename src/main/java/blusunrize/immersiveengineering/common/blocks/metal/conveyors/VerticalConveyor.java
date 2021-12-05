@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.Conveyo
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.client.render.conveyor.VerticalConveyorRender;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -28,12 +29,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
@@ -193,24 +192,12 @@ public class VerticalConveyor extends ConveyorBase
 			}
 			else
 			{
-				BlockEntity inventoryTile;
-				inventoryTile = getBlockEntity().getLevel().getBlockEntity(getBlockEntity().getBlockPos().offset(0, 1, 0));
+				BlockPos outputPos = getBlockEntity().getBlockPos().offset(0, 1, 0);
+				BlockEntity inventoryTile = getBlockEntity().getLevel().getBlockEntity(outputPos);
 				if(!getBlockEntity().getLevel().isClientSide)
 				{
-					if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorBlockEntity))
-					{
-						ItemStack stack = item.getItem();
-						if(!stack.isEmpty())
-						{
-							if(inserter==null)
-								inserter = CapabilityReference.forNeighbor(getBlockEntity(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
-							ItemStack ret = Utils.insertStackIntoInventory(inserter, stack, false);
-							if(ret.isEmpty())
-								entity.discard();
-							else if(ret.getCount() < stack.getCount())
-								item.setItem(ret);
-						}
-					}
+					if(!(inventoryTile instanceof IConveyorBlockEntity))
+						ItemUtils.tryInsertEntity(getBlockEntity().getLevel(), outputPos, Direction.DOWN, item);
 				}
 			}
 		}

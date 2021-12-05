@@ -3,7 +3,7 @@ package blusunrize.immersiveengineering.api.tool.conveyor;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ItemAgeAccessor;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.PlayerUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import com.google.common.base.Preconditions;
@@ -28,9 +28,6 @@ import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -286,19 +283,7 @@ public interface IConveyorBelt
 		if(!contact||inventoryTile instanceof IConveyorBlockEntity)
 			return;
 
-		LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
-		cap.ifPresent(itemHandler -> {
-			ItemStack stack = entity.getItem();
-			ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
-			if(temp.isEmpty()||temp.getCount() < stack.getCount())
-			{
-				temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
-				if(temp.isEmpty())
-					entity.discard();
-				else if(temp.getCount() < stack.getCount())
-					entity.setItem(temp);
-			}
-		});
+		ItemUtils.tryInsertEntity(world, invPos, getFacing().getOpposite(), entity);
 	}
 
 	default BlockPos getOutputInventory()

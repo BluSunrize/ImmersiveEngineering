@@ -13,10 +13,9 @@ import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorType;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.client.render.conveyor.SplitConveyorRender;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,11 +25,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -89,18 +85,7 @@ public class SplitConveyor extends ConveyorBase
 			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getZ(): entity.getX()));
 			BlockEntity inventoryTile = getBlockEntity().getLevel().getBlockEntity(nextPos);
 			if(distNext < .7&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorBlockEntity))
-			{
-				ItemStack stack = entity.getItem();
-				if(!stack.isEmpty())
-				{
-					CapabilityReference<IItemHandler> insert = CapabilityReference.forNeighbor(getBlockEntity(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, redirect);
-					ItemStack ret = Utils.insertStackIntoInventory(insert, stack, false);
-					if(ret.isEmpty())
-						entity.discard();
-					else if(ret.getCount() < stack.getCount())
-						entity.setItem(ret);
-				}
-			}
+				ItemUtils.tryInsertEntity(getBlockEntity().getLevel(), getBlockEntity().getBlockPos().relative(redirect), redirect.getOpposite(), entity);
 		}
 	}
 

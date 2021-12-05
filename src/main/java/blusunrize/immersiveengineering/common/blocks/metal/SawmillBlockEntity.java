@@ -389,14 +389,17 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 			SawmillBlockEntity master = master();
 			if(master==null)
 				return;
-			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&entity instanceof ItemEntity)
+			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&entity instanceof ItemEntity itemEntity)
 			{
-				ItemStack stack = ((ItemEntity)entity).getItem();
+				ItemStack stack = itemEntity.getItem();
 				if(stack.isEmpty())
 					return;
+				stack = stack.copy();
 				master.insertItemToProcess(stack, false);
 				if(stack.getCount() <= 0)
 					entity.discard();
+				else
+					itemEntity.setItem(stack);
 			}
 			else if(entity instanceof LivingEntity&&!master.sawblade.isEmpty()
 					&&CACHED_SAWBLADE_AABB.apply(master).intersects(entity.getBoundingBox()))

@@ -11,8 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorBelt;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedVoxelShapes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
@@ -47,7 +47,6 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -177,21 +176,7 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 				BlockPos invPos = diagonal?getBlockPos().relative(facing): getBlockPos().below();
 				inventoryTile = world.getBlockEntity(invPos);
 				if(!world.isClientSide&&isValidTargetInventory(inventoryTile))
-				{
-					LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(world, invPos, getFacing().getOpposite(), true);
-					cap.ifPresent(itemHandler -> {
-						ItemStack stack = itemEntity.getItem();
-						ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
-						if(temp.isEmpty()||temp.getCount() < stack.getCount())
-						{
-							temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
-							if(temp.isEmpty())
-								itemEntity.discard();
-							else if(temp.getCount() < stack.getCount())
-								itemEntity.setItem(temp);
-						}
-					});
-				}
+					ItemUtils.tryInsertEntity(world, invPos, getFacing().getOpposite(), itemEntity);
 			}
 		}
 	}

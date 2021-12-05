@@ -13,23 +13,19 @@ import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.render.conveyor.BasicConveyorRender;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -71,25 +67,9 @@ public class DropConveyor extends ConveyorBase
 			boolean contact = Math.abs(getFacing().getAxis()==Axis.Z?(getBlockEntity().getBlockPos().getZ()+.5-entity.getZ()):
 					(getBlockEntity().getBlockPos().getX()+.5-entity.getX())) < .2;
 
-			LazyOptional<IItemHandler> cap = LazyOptional.empty();
 			if(contact&&!(inventoryTile instanceof IConveyorBlockEntity))
-				cap = CapabilityUtils.findItemHandlerAtPos(getBlockEntity().getLevel(), posDown, Direction.UP, true);
-
-			if(cap.isPresent())
-				cap.ifPresent(itemHandler ->
-				{
-					ItemStack stack = entity.getItem();
-					ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack.copy(), true);
-					if(temp.isEmpty()||temp.getCount() < stack.getCount())
-					{
-						temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
-						if(temp.isEmpty())
-							entity.discard();
-						else if(temp.getCount() < stack.getCount())
-							entity.setItem(temp);
-					}
-				});
-			else if(contact&&isEmptySpace(getBlockEntity().getLevel(), posDown, inventoryTile))
+				ItemUtils.tryInsertEntity(getBlockEntity().getLevel(), posDown, Direction.UP, entity);
+			if(entity.isAlive()&&contact&&isEmptySpace(getBlockEntity().getLevel(), posDown, inventoryTile))
 			{
 				entity.setDeltaMovement(0, entity.getDeltaMovement().y, 0);
 				entity.setPos(getBlockEntity().getBlockPos().getX()+.5, getBlockEntity().getBlockPos().getY()-.5, getBlockEntity().getBlockPos().getZ()+.5);
