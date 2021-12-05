@@ -205,7 +205,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.17.1:8.0.0.14:api")
+    compileOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40:api")
     compileOnly fg.deobf("org.squiddev:cc-tweaked-1.17.1:1.98.2")
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3430022")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.1.0:api")
