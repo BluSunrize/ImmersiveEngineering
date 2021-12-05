@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -27,12 +28,16 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MetalPressPackingRecipes
 {
 	public static Map<ResourceLocation, CraftingRecipe> CRAFTING_RECIPE_MAP;
+	public static final ResourceLocation UNPACK_ID = ImmersiveEngineering.rl("unpacking");
+	public static final ResourceLocation PACK4_ID = ImmersiveEngineering.rl("packing4");
+	public static final ResourceLocation PACK9_ID = ImmersiveEngineering.rl("packing9");
 	private static final HashMap<ComparableItemStack, RecipeDelegate> UNPACKING_CACHE = new HashMap<>();
 
 	public static MetalPressRecipe get2x2PackingContainer()
@@ -133,26 +138,29 @@ public class MetalPressPackingRecipes
 
 	public static class RecipeDelegate extends MetalPressRecipe
 	{
-		private RecipeDelegate(String id, ItemStack output, ItemStack input, Item mold)
+		public final CraftingRecipe baseRecipe;
+
+		private RecipeDelegate(ResourceLocation id, ItemStack output, ItemStack input, Item mold, CraftingRecipe baseRecipe)
 		{
-			super(new ResourceLocation(Lib.MODID, id), output, IngredientWithSize.of(input), mold, 3200);
+			super(id, output, IngredientWithSize.of(input), mold, 3200);
+			this.baseRecipe = baseRecipe;
 		}
 
 		public static RecipeDelegate getPacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input, boolean big)
 		{
 			ItemStack output = originalRecipe.getSecond();
-			ResourceLocation originalId = originalRecipe.getFirst().getId();
-			String id = "metalpress/packing_"+originalId.getNamespace()+".."+originalId.getPath();
 			input = ItemHandlerHelper.copyStackWithSize(input, big?9: 4);
-			return new RecipeDelegate(id, output, input, (big?Molds.MOLD_PACKING_9: Molds.MOLD_PACKING_4).get());
+			return new RecipeDelegate(
+					big?PACK9_ID: PACK4_ID,
+					output, input, (big?Molds.MOLD_PACKING_9: Molds.MOLD_PACKING_4).get(),
+					originalRecipe.getFirst()
+			);
 		}
 
 		public static RecipeDelegate getUnpacking(Pair<CraftingRecipe, ItemStack> originalRecipe, ItemStack input)
 		{
 			ItemStack output = originalRecipe.getSecond();
-			ResourceLocation originalId = originalRecipe.getFirst().getId();
-			String id = "metalpress/unpacking_"+originalId.getNamespace()+".."+originalId.getPath();
-			return new RecipeDelegate(id, output, input, Molds.MOLD_UNPACKING.get());
+			return new RecipeDelegate(UNPACK_ID, output, input, Molds.MOLD_UNPACKING.get(), originalRecipe.getFirst());
 		}
 
 		@Override
@@ -162,34 +170,29 @@ public class MetalPressPackingRecipes
 		}
 	}
 
-	public static RecipeDelegate getRecipeDelegate(ResourceLocation id)
+	@Nullable
+	public static RecipeDelegate getRecipeDelegate(CraftingRecipe recipe, ResourceLocation id)
 	{
-		// Abort early for mismatched ids
-		if(!id.toString().startsWith("immersiveengineering:metalpress/packing_")
-				&&!id.toString().startsWith("immersiveengineering:metalpress/unpacking_"))
-			return null;
-
-		boolean packing = id.toString().startsWith("immersiveengineering:metalpress/packing_");
-		String recipeId;
-		if(packing)
-			recipeId = id.toString().substring("immersiveengineering:metalpress/packing_".length());
-		else
-			recipeId = id.toString().substring("immersiveengineering:metalpress/unpacking_".length());
-		recipeId = recipeId.replaceFirst("\\.\\.", ":");
-		CraftingRecipe recipe = CRAFTING_RECIPE_MAP.get(new ResourceLocation(recipeId));
-		if(recipe==null)
-			return null;
-
 		NonNullList<Ingredient> ingredients = recipe.getIngredients();
-		if(packing&&(ingredients.size()!=4&&ingredients.size()!=9))
+		if(ingredients.isEmpty()||ingredients.get(0).isEmpty())
 			return null;
-		if(!packing&&ingredients.size()!=1)
-			return null;
-
 		ItemStack input = ingredients.get(0).getItems()[0];
-		if(packing)
-			return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getResultItem()), input, ingredients.size()==9);
-		return RecipeDelegate.getUnpacking(Pair.of(recipe, recipe.getResultItem()), input);
+		if(PACK4_ID.equals(id))
+		{
+			if(ingredients.size()==4)
+				return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getResultItem()), input, false);
+		}
+		else if(PACK9_ID.equals(id))
+		{
+			if(ingredients.size()==9)
+				return RecipeDelegate.getPacking(Pair.of(recipe, recipe.getResultItem()), input, true);
+		}
+		else if(UNPACK_ID.equals(id))
+		{
+			if(ingredients.size()==1)
+				return RecipeDelegate.getUnpacking(Pair.of(recipe, recipe.getResultItem()), input);
+		}
+		return null;
 	}
 
 	public static Pair<CraftingRecipe, ItemStack> getPackedOutput(int gridSize, ItemStack stack, Level world)
