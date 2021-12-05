@@ -13,6 +13,8 @@ import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirectio
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorBelt;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
@@ -269,24 +271,12 @@ public class VerticalConveyor extends BasicConveyor
 			}
 			else
 			{
-				BlockEntity inventoryTile;
-				inventoryTile = getTile().getLevel().getBlockEntity(getTile().getBlockPos().offset(0, 1, 0));
+				BlockPos outputPos = getTile().getBlockPos().offset(0, 1, 0);
+				BlockEntity inventoryTile = getTile().getLevel().getBlockEntity(outputPos);
 				if(!getTile().getLevel().isClientSide)
 				{
-					if(inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
-					{
-						ItemStack stack = item.getItem();
-						if(!stack.isEmpty())
-						{
-							if(inserter==null)
-								inserter = CapabilityReference.forNeighbor(getTile(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, Direction.UP);
-							ItemStack ret = Utils.insertStackIntoInventory(inserter, stack, false);
-							if(ret.isEmpty())
-								entity.remove();
-							else if(ret.getCount() < stack.getCount())
-								item.setItem(ret);
-						}
-					}
+					if(!(inventoryTile instanceof IConveyorTile))
+						ItemUtils.tryInsertEntity(getTile().getLevel(), outputPos, Direction.DOWN, item);
 				}
 			}
 		}

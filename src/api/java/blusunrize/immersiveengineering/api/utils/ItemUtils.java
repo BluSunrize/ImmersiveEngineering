@@ -14,16 +14,22 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.Collection;
@@ -114,5 +120,22 @@ public class ItemUtils
 	public static boolean hasTag(ItemStack stack, String key, int type)
 	{
 		return stack.hasTag()&&stack.getOrCreateTag().contains(key, type);
+	}
+
+	public static void tryInsertEntity(Level level, BlockPos pos, Direction side, ItemEntity toInsert)
+	{
+		LazyOptional<IItemHandler> cap = CapabilityUtils.findItemHandlerAtPos(level, pos, side, true);
+		cap.ifPresent(itemHandler -> {
+			ItemStack stack = toInsert.getItem();
+			ItemStack temp = ItemHandlerHelper.insertItem(itemHandler, stack, true);
+			if(temp.getCount() < stack.getCount())
+			{
+				temp = ItemHandlerHelper.insertItem(itemHandler, stack, false);
+				if(temp.isEmpty())
+					toInsert.remove();
+				else if(temp.getCount() < stack.getCount())
+					toInsert.setItem(temp);
+			}
+		});
 	}
 }

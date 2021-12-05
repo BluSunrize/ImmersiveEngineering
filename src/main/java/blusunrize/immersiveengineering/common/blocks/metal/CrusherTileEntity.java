@@ -278,9 +278,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			AABB crusherInternal = new AABB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;
-			if(entity instanceof ItemEntity&&!((ItemEntity)entity).getItem().isEmpty())
+			if(entity instanceof ItemEntity itemEntity)
 			{
-				ItemStack stack = ((ItemEntity)entity).getItem();
+				ItemStack stack = itemEntity.getItem();
 				if(stack.isEmpty())
 					return;
 				CrusherRecipe recipe = master.findRecipeForInsertion(stack);
@@ -291,9 +291,12 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 				if(master.addProcessToQueue(process, true, true))
 				{
 					master.addProcessToQueue(process, false, true);
+					stack = stack.copy();
 					stack.shrink(displayStack.getCount());
-					if(stack.getCount() <= 0)
+					if(stack.isEmpty())
 						entity.remove();
+					else
+						itemEntity.setItem(stack);
 				}
 			}
 			else if(entity instanceof LivingEntity&&(!(entity instanceof Player)||!((Player)entity).abilities.invulnerable))
