@@ -80,6 +80,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 				upgrades.getBoolean("fancyAnimation"),
 				upgrades.getDouble("melee") > 0,
 				upgrades.getBoolean("electro"),
+				upgrades.getBoolean("scope"),
 				ItemNBTHelper.getInt(stack, "reload")
 		);
 	}
@@ -126,6 +127,8 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 			render.add("player_electro_0");
 			render.add("player_electro_1");
 		}
+		if(stack.scope())
+			render.add("dev_scope");
 		return render.contains(group);
 	}
 
@@ -254,7 +257,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 
 	public record Key(
 			String elite, String flavor, boolean extraBullets, boolean fancyAnimation, boolean extraMelee,
-			boolean electro, int reload
+			boolean electro, boolean scope, int reload
 	)
 	{
 	}

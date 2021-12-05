@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.tool.ITool;
+import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
@@ -83,7 +84,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.*;
 
-public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletContainer
+public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletContainer, IZoomTool
 {
 	public RevolverItem()
 	{
@@ -540,6 +541,20 @@ public class RevolverItem extends UpgradeableToolItem implements ITool, IBulletC
 	public double getUpgradeValue_d(ItemStack stack, String key)
 	{
 		return getUpgrades(stack).getDouble(key)+getPerks(stack).getDouble(key);
+	}
+
+	@Override
+	public boolean canZoom(ItemStack stack, Player player)
+	{
+		return this.hasUpgradeValue(stack, "scope");
+	}
+
+	float[] zoomSteps = new float[]{.3125f, .4f, .5f, .625f};
+
+	@Override
+	public float[] getZoomSteps(ItemStack stack, Player player)
+	{
+		return zoomSteps;
 	}
 
 	/* ------------- CRAFTING ------------- */

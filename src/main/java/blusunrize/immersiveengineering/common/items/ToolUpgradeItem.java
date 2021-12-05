@@ -84,7 +84,7 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 		REVOLVER_MAGAZINE(ImmutableSet.of("REVOLVER"), 1, (target, upgrade) -> !((IUpgradeableTool)target.getItem()).getUpgrades(target).contains("bullets"), (upgrade, modifications) -> ItemNBTHelper.modifyInt(modifications, "bullets", 6)),
 		REVOLVER_ELECTRO(ImmutableSet.of("REVOLVER"), (upgrade, modifications) -> modifications.putBoolean("electro", true)),
 		CHEMTHROWER_FOCUS(ImmutableSet.of("CHEMTHROWER"), (upgrade, modifications) -> modifications.putBoolean("focus", true)),
-		RAILGUN_SCOPE(ImmutableSet.of("RAILGUN"), (upgrade, modifications) -> modifications.putBoolean("scope", true)),
+		RAILGUN_SCOPE(ImmutableSet.of("RAILGUN", "REVOLVER"), (upgrade, modifications) -> modifications.putBoolean("scope", true)),
 		RAILGUN_CAPACITORS(ImmutableSet.of("RAILGUN"), (upgrade, modifications) -> modifications.putFloat("speed", 1f)),
 		SHIELD_FLASH(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.putBoolean("flash", true)),
 		SHIELD_SHOCK(ImmutableSet.of("SHIELD"), (upgrade, modifications) -> modifications.putBoolean("shock", true)),

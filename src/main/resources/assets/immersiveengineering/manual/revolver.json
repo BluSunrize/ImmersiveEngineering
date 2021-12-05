@@ -15,6 +15,10 @@
     "type": "crafting",
     "recipe": "crafting/speedloader"
   },
+  "scope": {
+    "type": "crafting",
+    "recipe": "crafting/toolupgrade_railgun_scope"
+  },
   "bayonet": {
     "type": "crafting",
     "recipe": "crafting/toolupgrade_revolver_bayonet"
