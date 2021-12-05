@@ -125,6 +125,14 @@ public class CachedConfig
 		}
 	}
 
+	public static class EnumValue<T extends Enum<T>> extends ConfigValue<T>
+	{
+		EnumValue(Builder builder, ForgeConfigSpec.EnumValue<T> base)
+		{
+			super(builder, base);
+		}
+	}
+
 	public static class Builder
 	{
 		private final ForgeConfigSpec.Builder inner;
@@ -183,6 +191,11 @@ public class CachedConfig
 		public IntValue defineInRange(String name, int def, int min, int max)
 		{
 			return new IntValue(this, inner.defineInRange(name, def, min, max));
+		}
+
+		public <T extends Enum<T>> EnumValue<T> defineEnum(String name, T defaultValue)
+		{
+			return new EnumValue<>(this, inner.defineEnum(name, defaultValue));
 		}
 
 		public <T> ConfigValue<List<? extends T>> defineList(String path, List<? extends T> defaultValue, Predicate<Object> elementValidator)

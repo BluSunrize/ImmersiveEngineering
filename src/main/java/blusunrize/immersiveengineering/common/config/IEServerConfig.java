@@ -489,7 +489,7 @@ public class IEServerConfig
 
 		public static class OreConfig
 		{
-			public final ConfigValue<OreDistribution> distribution;
+			public final EnumValue<OreDistribution> distribution;
 			public final DoubleValue airExposure;
 			public final IntValue veinSize;
 			public final IntValue minY;
@@ -504,7 +504,7 @@ public class IEServerConfig
 						.push(name);
 				distribution = builder
 						.comment("The distribution shape. UNIFORM is evenly distributed across the height range, TRAPEZOID favors the middle of the range.")
-						.define("distribution", defDist);
+						.defineEnum("distribution", defDist);
 				airExposure = builder
 						.comment("Chance for ores to not generate, if they are exposed to air. 0 means ignoring air exposure, 1 requires being burried.")
 						.defineInRange("air_exposure", defAirExposure, 0, 1);
