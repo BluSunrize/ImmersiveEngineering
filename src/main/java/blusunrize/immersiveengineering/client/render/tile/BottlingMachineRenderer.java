@@ -76,8 +76,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 			float processMaxTicks = process.maxProcessTick;
 			float transportTime = BottlingMachineBlockEntity.getTransportTime(processMaxTicks);
 			float liftTime = BottlingMachineBlockEntity.getLiftTime(processMaxTicks);
-			//+partialTicks
-			float fProcess = process.processTick;
+			float fProcess = process.processTick+(te.shouldRenderAsActive()?partialTicks: 0);
 
 			float itemX;
 			float itemY = 0;

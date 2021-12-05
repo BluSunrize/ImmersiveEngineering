@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -60,8 +61,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+/**
+ * WARNING: This inherits from PoweredMultiblockBlockEntity, but does not actually use the process queue system provided
+ * by that class! This needs to be fixed at some point, but is far from trivial since we can't actually precompute the
+ * recipe output even if we use a hacky recipe class to represent dynamic filling (due to endertank-style items)
+ */
 public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<BottlingMachineBlockEntity, MultiblockRecipe>
-		implements IConveyorAttachable, IBlockBounds
+		implements IConveyorAttachable, IBlockBounds, IEClientTickableBE
 {
 	public static final float TRANSLATION_DISTANCE = 2.5f;
 	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
@@ -113,10 +119,19 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	}, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 
 	@Override
+	public void tickClient()
+	{
+		if(!shouldRenderAsActive())
+			return;
+		for(BottlingProcess process : bottlingProcessQueue)
+			++process.processTick;
+	}
+
+	@Override
 	public void tickServer()
 	{
 		super.tickServer();
-		if(isDummy()||isRSDisabled())
+		if(isRSDisabled())
 			return;
 
 		int max = getMaxProcessPerTick();
@@ -185,11 +200,15 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	@Override
 	public Set<BlockPos> getRedstonePos()
 	{
-		return ImmutableSet.of(
-				new BlockPos(1, 0, 1)
-		);
+		return ImmutableSet.of(new BlockPos(1, 0, 1));
 	}
 
+	@Override
+	protected boolean shouldRenderAsActiveImpl()
+	{
+		// Use bottlingProcessQueue instead of the "real" processQueue
+		return energyStorage.getEnergyStored() > 0&&!isRSDisabled()&&!bottlingProcessQueue.isEmpty();
+	}
 
 	@Override
 	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
@@ -442,6 +461,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 						}
 						if(items.get(1).isEmpty())
 							items.set(1, items.get(0));
+						tile.markContainingBlockForUpdate(null);
 					}
 				}
 				if(processTick >= maxProcessTick)
