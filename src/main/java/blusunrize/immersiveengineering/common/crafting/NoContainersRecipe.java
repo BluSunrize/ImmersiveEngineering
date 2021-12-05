@@ -19,10 +19,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import javax.annotation.Nonnull;
 
-public record NoContainersRecipe(CraftingRecipe baseRecipe) implements CraftingRecipe
+public record NoContainersRecipe(
+		IShapedRecipe<CraftingContainer> baseRecipe
+) implements CraftingRecipe, IShapedRecipe<CraftingContainer>
 {
 	@Override
 	public boolean matches(@Nonnull CraftingContainer pContainer, @Nonnull Level pLevel)
@@ -109,5 +112,17 @@ public record NoContainersRecipe(CraftingRecipe baseRecipe) implements CraftingR
 	public boolean isIncomplete()
 	{
 		return baseRecipe().isIncomplete();
+	}
+
+	@Override
+	public int getRecipeWidth()
+	{
+		return baseRecipe().getRecipeWidth();
+	}
+
+	@Override
+	public int getRecipeHeight()
+	{
+		return baseRecipe().getRecipeHeight();
 	}
 }
