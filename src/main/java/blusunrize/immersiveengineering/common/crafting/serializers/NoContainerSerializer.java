@@ -13,10 +13,11 @@ import blusunrize.immersiveengineering.common.crafting.NoContainersRecipe;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
@@ -32,7 +33,7 @@ public class NoContainerSerializer extends ForgeRegistryEntry<RecipeSerializer<?
 	public NoContainersRecipe fromJson(@Nonnull ResourceLocation pRecipeId, @Nonnull JsonObject pSerializedRecipe)
 	{
 		return new NoContainersRecipe(
-				(CraftingRecipe)RecipeManager.fromJson(pRecipeId, pSerializedRecipe.getAsJsonObject(BASE_RECIPE))
+				(IShapedRecipe<CraftingContainer>)RecipeManager.fromJson(pRecipeId, pSerializedRecipe.getAsJsonObject(BASE_RECIPE))
 		);
 	}
 
@@ -41,7 +42,7 @@ public class NoContainerSerializer extends ForgeRegistryEntry<RecipeSerializer<?
 	public NoContainersRecipe fromNetwork(@Nonnull ResourceLocation pRecipeId, @Nonnull FriendlyByteBuf pBuffer)
 	{
 		RecipeSerializer<?> baseSerializer = pBuffer.readRegistryIdUnsafe(ForgeRegistries.RECIPE_SERIALIZERS);
-		return new NoContainersRecipe((CraftingRecipe)baseSerializer.fromNetwork(pRecipeId, pBuffer));
+		return new NoContainersRecipe((IShapedRecipe<CraftingContainer>)baseSerializer.fromNetwork(pRecipeId, pBuffer));
 	}
 
 	@Override

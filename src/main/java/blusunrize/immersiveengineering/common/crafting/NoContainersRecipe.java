@@ -19,19 +19,20 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import javax.annotation.Nonnull;
 
-public class NoContainersRecipe implements CraftingRecipe
+public class NoContainersRecipe implements CraftingRecipe, IShapedRecipe<CraftingContainer>
 {
-	private final CraftingRecipe baseRecipe;
+	private final IShapedRecipe<CraftingContainer> baseRecipe;
 
-	public NoContainersRecipe(CraftingRecipe baseRecipe)
+	public NoContainersRecipe(IShapedRecipe<CraftingContainer> baseRecipe)
 	{
 		this.baseRecipe = baseRecipe;
 	}
 
-	public CraftingRecipe baseRecipe()
+	public IShapedRecipe<CraftingContainer> baseRecipe()
 	{
 		return baseRecipe;
 	}
@@ -115,5 +116,17 @@ public class NoContainersRecipe implements CraftingRecipe
 	public ItemStack getToastSymbol()
 	{
 		return baseRecipe().getToastSymbol();
+	}
+
+	@Override
+	public int getRecipeWidth()
+	{
+		return baseRecipe().getRecipeWidth();
+	}
+
+	@Override
+	public int getRecipeHeight()
+	{
+		return baseRecipe().getRecipeHeight();
 	}
 }
