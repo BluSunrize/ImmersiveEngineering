@@ -150,35 +150,18 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 			}
 			else if(!stackInSlot.isEmpty())
 			{
-				if(stackInSlot.getItem() instanceof EngineersBlueprintItem)
+				boolean singleSlot = slotCount==1;
+				if(stackInSlot.getItem() instanceof EngineersBlueprintItem
+						||(stackInSlot.getItem() instanceof IUpgradeableTool uTool&&uTool.canModify(stackInSlot))
+						||(stackInSlot.getItem() instanceof IConfigurableTool cTool&&cTool.canConfigure(stackInSlot)))
 				{
-					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
+					if(!this.moveItemStackTo(stackInSlot, 0, 1, false)&&singleSlot)
 						return ItemStack.EMPTY;
 				}
-				else if(stackInSlot.getItem() instanceof IUpgradeableTool tool&&tool.canModify(stackInSlot))
+
+				if(!singleSlot)
 				{
-					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
-						return ItemStack.EMPTY;
-				}
-				else if(stackInSlot.getItem() instanceof IConfigurableTool tool&&tool.canConfigure(stackInSlot))
-				{
-					if(!this.moveItemStackTo(stackInSlot, 0, 1, true))
-						return ItemStack.EMPTY;
-				}
-				else if(slotCount > 1)
-				{
-					boolean b = true;
-					for(int i = 1; i < slotCount; i++)
-					{
-						Slot s = slots.get(i);
-						if(s!=null&&s.mayPlace(stackInSlot))
-							if(this.moveItemStackTo(stackInSlot, i, i+1, true))
-							{
-								b = false;
-								break;
-							}
-					}
-					if(b)
+					if(!this.moveItemStackTo(stackInSlot, 1, slotCount, false))
 						return ItemStack.EMPTY;
 				}
 			}
