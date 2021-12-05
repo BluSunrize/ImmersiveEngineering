@@ -215,7 +215,7 @@ dependencies {
 
     implementation "malte0811:BlockModelSplitter:1.2.0"
     testImplementation('junit:junit:4.13.2')
-    annotationProcessor 'org.spongepowered:mixin:0.8.4:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 
 def customGradle = rootProject.file('custom.gradle');
@@ -544,16 +544,6 @@ apply plugin: 'org.spongepowered.mixin'
 
 mixin {
     add sourceSets.main, "${modid}.refmap.json"
-}
-
-// Prevent Mixin annotation processor from getting into IDEA's annotation processor settings
-// Copied from Botania
-if (System.getProperty("idea.sync.active") == "true") {
-    afterEvaluate {
-        tasks.withType(JavaCompile).all {
-            it.options.annotationProcessorPath = files()
-        }
-    }
 }
 
 task speedUpPreRun {
