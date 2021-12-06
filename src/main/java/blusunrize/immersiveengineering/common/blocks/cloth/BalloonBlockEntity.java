@@ -56,7 +56,7 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 	public int style = 0;
 	public DyeColor colour0 = null;
 	public DyeColor colour1 = null;
-	public ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
+	private final ShaderWrapper_Direct shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
 
 	public BalloonBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -78,11 +78,7 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 		if(oldStyle!=style||oldC0!=colour0||oldC1!=colour1)
 			requestModelDataUpdate();
 		if(nbt.contains("shader", Tag.TAG_COMPOUND))
-		{
-			shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
 			shader.deserializeNBT(nbt.getCompound("shader"));
-			reInitCapability();
-		}
 	}
 
 	@Override
@@ -114,11 +110,6 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 	}
 
 	private final ResettableCapability<ShaderWrapper> shaderCap = registerCapability(shader);
-
-	private void reInitCapability()
-	{
-		shaderCap.reset();
-	}
 
 	@Nonnull
 	@Override
@@ -153,8 +144,6 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 	{
 		if(!heldItem.isEmpty()&&heldItem.getItem() instanceof IShaderItem)
 		{
-			if(this.shader==null)
-				this.shader = new ShaderWrapper_Direct(new ResourceLocation(ImmersiveEngineering.MODID, "balloon"));
 			this.shader.setShaderItem(ItemHandlerHelper.copyStackWithSize(heldItem, 1));
 			markContainingBlockForUpdate(null);
 			return true;
