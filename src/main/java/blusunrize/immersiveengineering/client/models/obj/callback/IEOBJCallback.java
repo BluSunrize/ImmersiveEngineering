@@ -39,7 +39,7 @@ public interface IEOBJCallback<Key>
 		return transform;
 	}
 
-	default Vector4f getRenderColor(Key object, String group, ShaderCase shaderCase, Vector4f original)
+	default Vector4f getRenderColor(Key object, String group, String material, ShaderCase shaderCase, Vector4f original)
 	{
 		return original;
 	}

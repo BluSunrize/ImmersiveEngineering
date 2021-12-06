@@ -55,7 +55,7 @@ public class ProbeConnectorCallbacks implements BlockCallback<ProbeConnectorCall
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, ShaderCase shader, Vector4f original)
+	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shader, Vector4f original)
 	{
 		if("colour_in".equals(group))
 		{

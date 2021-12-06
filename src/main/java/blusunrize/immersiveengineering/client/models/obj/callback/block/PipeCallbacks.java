@@ -341,7 +341,7 @@ public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, ShaderCase shaderCase, Vector4f original)
+	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shaderCase, Vector4f original)
 	{
 		if(key.color()!=null)
 		{

@@ -52,7 +52,7 @@ public class RSConnectorCallbacks implements BlockCallback<RSConnectorCallbacks.
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, ShaderCase shader, Vector4f original)
+	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shader, Vector4f original)
 	{
 		if("coloured".equals(group))
 		{

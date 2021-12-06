@@ -41,7 +41,7 @@ public class BalloonCallbacks implements BlockCallback<BalloonCallbacks.Key>
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key key, String group, ShaderCase shaderCase, Vector4f original)
+	public Vector4f getRenderColor(Key key, String group, String material, ShaderCase shaderCase, Vector4f original)
 	{
 		if(shaderCase!=null)
 			return original;

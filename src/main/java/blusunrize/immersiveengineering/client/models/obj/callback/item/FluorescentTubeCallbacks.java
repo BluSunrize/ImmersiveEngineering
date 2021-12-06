@@ -51,7 +51,7 @@ public class FluorescentTubeCallbacks implements ItemCallback<FluorescentTubeCal
 	}
 
 	@Override
-	public Vector4f getRenderColor(Key object, String group, ShaderCase shaderCase, Vector4f original)
+	public Vector4f getRenderColor(Key object, String group, String material, ShaderCase shaderCase, Vector4f original)
 	{
 		if("tube".equals(group))
 			return object.color();
