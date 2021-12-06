@@ -14,26 +14,11 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
-public class StackWithChance
+public record StackWithChance(ItemStack stack, float chance)
 {
-	private final ItemStack stack;
-	private final float chance;
-
-	public StackWithChance(ItemStack stack, float chance)
+	public StackWithChance
 	{
 		Preconditions.checkNotNull(stack);
-		this.stack = stack;
-		this.chance = chance;
-	}
-
-	public ItemStack getStack()
-	{
-		return stack;
-	}
-
-	public float getChance()
-	{
-		return chance;
 	}
 
 	public CompoundTag writeToNBT()

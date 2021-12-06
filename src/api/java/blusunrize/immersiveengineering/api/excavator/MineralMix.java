@@ -78,11 +78,11 @@ public class MineralMix extends IESerializableRecipe
 	{
 		float r = rand.nextFloat();
 		for(StackWithChance o : outputs)
-			if(o.getChance() >= 0)
+			if(o.chance() >= 0)
 			{
-				r -= o.getChance();
+				r -= o.chance();
 				if(r < 0)
-					return o.getStack();
+					return o.stack();
 			}
 		return ItemStack.EMPTY;
 	}

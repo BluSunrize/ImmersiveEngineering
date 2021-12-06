@@ -61,8 +61,8 @@ public class CrusherRecipe extends MultiblockRecipe
 		NonNullList<ItemStack> list = NonNullList.create();
 		list.add(output);
 		for(StackWithChance output : secondaryOutputs)
-			if(!output.getStack().isEmpty()&&ApiUtils.RANDOM.nextFloat() < output.getChance())
-				list.add(output.getStack());
+			if(!output.stack().isEmpty()&&ApiUtils.RANDOM.nextFloat() < output.chance())
+				list.add(output.stack());
 		return list;
 	}
 

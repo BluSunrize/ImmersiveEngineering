@@ -228,7 +228,7 @@ public class IEManual
 				dimensionString = I18n.get("ie.manual.entry.mineralsDimAny", toName.apply(mineral));
 
 			List<StackWithChance> formattedOutputs = Arrays.asList(mineral.outputs);
-			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.getChance()));
+			formattedOutputs.sort(Comparator.comparingDouble(i -> -i.chance()));
 
 			StringBuilder outputString = new StringBuilder();
 			NonNullList<ItemStack> sortedOres = NonNullList.create();
@@ -238,11 +238,11 @@ public class IEManual
 						.append("\n")
 						.append(
 								new DecimalFormat("00.00")
-										.format(sorted.getChance()*100)
+										.format(sorted.chance()*100)
 										.replaceAll("\\G0", "\u00A0")
 						).append("% ")
-						.append(sorted.getStack().getHoverName().getString());
-				sortedOres.add(sorted.getStack());
+						.append(sorted.stack().getHoverName().getString());
+				sortedOres.add(sorted.stack());
 			}
 			specials.add(new SpecialElementData(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
 			String desc = I18n.get("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());
