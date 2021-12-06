@@ -14,7 +14,6 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
-import com.mojang.blaze3d.vertex.VertexFormatElement.Usage;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
@@ -29,32 +28,29 @@ import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PolygonUtils
 {
-	private static int getOffset(VertexFormatElement.Usage usage, VertexFormatElement.Type type)
+	private static int getOffset(VertexFormatElement element)
 	{
 		int offset = 0;
 		for(VertexFormatElement e : DefaultVertexFormat.BLOCK.getElements())
-		{
-			if(e.getUsage()==usage&&e.getType()==type)
-			{
+			if(e==element)
 				return offset/4;
-			}
 			else
-			{
 				offset += e.getByteSize();
-			}
-		}
-		throw new IllegalStateException("Did not find element with usage "+usage.name()+" and type "+type.name());
+		throw new IllegalStateException("Did not find element with usage "+element.getUsage().name()+" and type "+element.getType().name());
 	}
 
-	public static Polygon<TextureAtlasSprite> toPolygon(BakedQuad quad)
+	public static Polygon<ExtraQuadData> toPolygon(BakedQuad quad)
 	{
 		List<Vertex> vertices = new ArrayList<>(4);
-		final int posOffset = getOffset(Usage.POSITION, Type.FLOAT);
-		final int uvOffset = getOffset(Usage.UV, Type.FLOAT);
-		final int normalOffset = getOffset(Usage.NORMAL, Type.BYTE);
+		final int posOffset = getOffset(DefaultVertexFormat.ELEMENT_POSITION);
+		final int uvOffset = getOffset(DefaultVertexFormat.ELEMENT_UV0);
+		final int normalOffset = getOffset(DefaultVertexFormat.ELEMENT_NORMAL);
+		final int colorOffset = getOffset(DefaultVertexFormat.ELEMENT_COLOR);
+		final int color = quad.getVertices()[colorOffset];
 		for(int v = 0; v < 4; ++v)
 		{
 			final int baseOffset = v*DefaultVertexFormat.BLOCK.getVertexSize()/4;
@@ -74,14 +70,15 @@ public class PolygonUtils
 					Float.intBitsToFloat(quad.getVertices()[baseOffset+posOffset+2])
 			);
 			vertices.add(new Vertex(pos, normalVec, uv));
+			Preconditions.checkState(quad.getVertices()[baseOffset+colorOffset]==color, "All vertices in a quad must have the same color, otherwise we need changes in BMS");
 		}
-		return new Polygon<>(vertices, quad.a());
+		return new Polygon<>(vertices, new ExtraQuadData(quad.a(), color));
 	}
 
-	public static BakedQuad toBakedQuad(Polygon<TextureAtlasSprite> poly, ModelState transform, VertexFormat format)
+	public static BakedQuad toBakedQuad(Polygon<ExtraQuadData> poly, ModelState transform, VertexFormat format)
 	{
 		Preconditions.checkArgument(poly.getPoints().size()==4);
-		BakedQuadBuilder quadBuilder = new BakedQuadBuilder(poly.getTexture());
+		BakedQuadBuilder quadBuilder = new BakedQuadBuilder(poly.getTexture().sprite());
 		Transformation rotation = transform.getRotation().blockCenterToCorner();
 		Vector3f normal = new Vector3f();
 		for(Vertex v : poly.getPoints())
@@ -94,11 +91,11 @@ public class PolygonUtils
 			rotation.transformNormal(normal);
 			pos.perspectiveDivide();
 			final double epsilon = 1e-5;
-			for (int i = 0; i < 2; ++i)
+			for(int i = 0; i < 2; ++i)
 			{
-				if(Math.abs(i - pos.x()) < epsilon) pos.setX(i);
-				if(Math.abs(i - pos.y()) < epsilon) pos.setY(i);
-				if(Math.abs(i - pos.z()) < epsilon) pos.setZ(i);
+				if(Math.abs(i-pos.x()) < epsilon) pos.setX(i);
+				if(Math.abs(i-pos.y()) < epsilon) pos.setY(i);
+				if(Math.abs(i-pos.z()) < epsilon) pos.setZ(i);
 			}
 			for(int i = 0, elementsSize = elements.size(); i < elementsSize; i++)
 			{
@@ -112,7 +109,10 @@ public class PolygonUtils
 						quadBuilder.put(i, normal.x(), normal.y(), normal.z());
 						break;
 					case COLOR:
-						quadBuilder.put(i, 1, 1, 1, 1);
+						int color = poly.getTexture().color();
+						quadBuilder.put(
+								i, (color >> 24)/255f, ((color >> 16)&255)/255f, ((color >> 8)&255)/255f, (color&255)/255f
+						);
 						break;
 					case UV:
 						if(element.getType()==Type.FLOAT)
@@ -138,5 +138,42 @@ public class PolygonUtils
 		for(int i = 3; i < length; ++i)
 			ret[i] = 1;
 		return ret;
+	}
+
+	public static class ExtraQuadData
+	{
+		private final TextureAtlasSprite sprite;
+		private final int color;
+
+		public ExtraQuadData(TextureAtlasSprite sprite, int color)
+		{
+			this.sprite = sprite;
+			this.color = color;
+		}
+
+		public int color()
+		{
+			return color;
+		}
+
+		public TextureAtlasSprite sprite()
+		{
+			return sprite;
+		}
+
+		@Override
+		public boolean equals(Object o)
+		{
+			if(this==o) return true;
+			if(o==null||getClass()!=o.getClass()) return false;
+			ExtraQuadData that = (ExtraQuadData)o;
+			return color==that.color&&sprite.equals(that.sprite);
+		}
+
+		@Override
+		public int hashCode()
+		{
+			return Objects.hash(sprite, color);
+		}
 	}
 }
