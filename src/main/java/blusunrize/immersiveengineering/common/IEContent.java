@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
@@ -43,6 +42,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import blusunrize.immersiveengineering.common.crafting.DefaultAssemblerAdapter;
 import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSerializer;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
@@ -182,12 +182,8 @@ public class IEContent
 		/*WORLDGEN*/
 		ev.enqueueWork(
 				() -> {
-					IEWorldGen.addOreGen(EnumMetals.ALUMINUM, "bauxite", IEServerConfig.ORES.ore_bauxite);
-					IEWorldGen.addOreGen(EnumMetals.LEAD, "lead", IEServerConfig.ORES.ore_lead);
-					IEWorldGen.addOreGen(EnumMetals.SILVER, "silver", IEServerConfig.ORES.ore_silver);
-					IEWorldGen.addOreGen(EnumMetals.NICKEL, "nickel", IEServerConfig.ORES.ore_nickel);
-					IEWorldGen.addOreGen(EnumMetals.NICKEL, "nickel_deep", IEServerConfig.ORES.ore_nickel_deep);
-					IEWorldGen.addOreGen(EnumMetals.URANIUM, "uranium", IEServerConfig.ORES.ore_uranium);
+					for(VeinType type : VeinType.VALUES)
+						IEWorldGen.addOreGen(type);
 					IEWorldGen.registerMineralVeinGen();
 				}
 		);

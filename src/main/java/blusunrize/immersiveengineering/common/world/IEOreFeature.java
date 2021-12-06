@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.world.level.levelgen.feature.Feature;
@@ -39,42 +39,24 @@ public class IEOreFeature extends Feature<IEOreFeature.IEOreFeatureConfig>
 		));
 	}
 
-	public static class IEOreFeatureConfig implements FeatureConfiguration
+	public record IEOreFeatureConfig(List<TargetBlockState> targetList, VeinType type) implements FeatureConfiguration
 	{
 		public static final Codec<IEOreFeatureConfig> CODEC = RecordCodecBuilder.create(
 				app -> app.group(
 						Codec.list(OreConfiguration.TargetBlockState.CODEC).fieldOf("targets")
 								.forGetter(cfg -> cfg.targetList),
-						Codec.list(Codec.STRING).fieldOf("size")
-								.forGetter(cfg -> cfg.size),
-						Codec.list(Codec.STRING).fieldOf("air_exposure")
-								.forGetter(cfg -> cfg.airExposure)
+						VeinType.CODEC.fieldOf("type").forGetter(cfg -> cfg.type)
 				).apply(app, IEOreFeatureConfig::new)
 		);
-		public final List<TargetBlockState> targetList;
-		public final List<String> size;
-		public final List<String> airExposure;
-
-		public IEOreFeatureConfig(List<TargetBlockState> targetList, List<String> size, List<String> airExposure)
-		{
-			this.targetList = targetList;
-			this.size = size;
-			this.airExposure = airExposure;
-		}
-
-		public IEOreFeatureConfig(List<TargetBlockState> targetList, OreConfig config)
-		{
-			this(targetList, config.veinSize.getBase().getPath(), config.airExposure.getBase().getPath());
-		}
 
 		public int getSize()
 		{
-			return IEServerConfig.getRawConfig().get(size);
+			return IEServerConfig.ORES.ores.get(type).veinSize.get();
 		}
 
 		public double getAirExposure()
 		{
-			return IEServerConfig.getRawConfig().get(airExposure);
+			return IEServerConfig.ORES.ores.get(type).airExposure.get();
 		}
 	}
 }

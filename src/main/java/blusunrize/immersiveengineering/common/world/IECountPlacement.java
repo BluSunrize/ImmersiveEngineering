@@ -10,40 +10,29 @@
 package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.placement.RepeatingPlacement;
 
-import java.util.List;
 import java.util.Random;
 
 public class IECountPlacement extends RepeatingPlacement
 {
-	public static final Codec<IECountPlacement> CODEC = RecordCodecBuilder.create(
-			app -> app.group(
-					Codec.list(Codec.STRING).fieldOf("count").forGetter(f -> f.count)
-			).apply(app, IECountPlacement::new)
-	);
-	private final List<String> count;
+	public static final Codec<IECountPlacement> CODEC = VeinType.CODEC.xmap(IECountPlacement::new, p -> p.type);
+	private final VeinType type;
 
-	public IECountPlacement(List<String> count)
+	public IECountPlacement(VeinType type)
 	{
-		this.count = count;
-	}
-
-	public IECountPlacement(OreConfig config)
-	{
-		this(config.veinsPerChunk.getBase().getPath());
+		this.type = type;
 	}
 
 	//TODO why is this constant? Was it constant before or did I mess up the port?
 	@Override
 	protected int count(Random p_191913_, BlockPos p_191914_)
 	{
-		return IEServerConfig.getRawConfig().getInt(count);
+		return IEServerConfig.ORES.ores.get(type).veinsPerChunk.get();
 	}
 
 	@Override

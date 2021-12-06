@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
@@ -21,18 +22,18 @@ import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.dimension.DimensionType;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
-import java.lang.reflect.Field;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
@@ -458,12 +459,8 @@ public class IEServerConfig
 		{
 			builder.push("ores");
 			//Server
-			ore_bauxite = new OreConfig(builder, "bauxite", OreDistribution.TRAPEZOID, 0, 6, 32, 112, 16);
-			ore_lead = new OreConfig(builder, "lead", OreDistribution.TRAPEZOID, 0, 8, -32, 80, 8);
-			ore_silver = new OreConfig(builder, "silver", OreDistribution.TRAPEZOID, 0.25, 9, -48, 32, 6);
-			ore_nickel = new OreConfig(builder, "nickel", OreDistribution.UNIFORM, 0, 3, -64, 24, 6);
-			ore_nickel_deep = new OreConfig(builder, "deep_nickel", OreDistribution.TRAPEZOID, 0, 6, -120, -8, 8);
-			ore_uranium = new OreConfig(builder, "uranium", OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 9);
+			for(VeinType type : VeinType.values())
+				ores.put(type, new OreConfig(builder, type));
 			retrogen_key = builder
 					.comment("The retrogeneration key. Basically IE checks if this key is saved in the chunks data. If it isn't, it will perform retrogen on all ores marked for retrogen.", "Change this in combination with the retrogen booleans to regen only some of the ores.")
 					.define("retrogen_key", "DEFAULT");
@@ -477,12 +474,7 @@ public class IEServerConfig
 		}
 
 
-		public final OreConfig ore_bauxite;
-		public final OreConfig ore_lead;
-		public final OreConfig ore_silver;
-		public final OreConfig ore_nickel;
-		public final OreConfig ore_nickel_deep;
-		public final OreConfig ore_uranium;
+		public final Map<VeinType, OreConfig> ores = new EnumMap<>(VeinType.class);
 		public final BooleanValue retrogen_log_flagChunk;
 		public final BooleanValue retrogen_log_remaining;
 		public final ConfigValue<String> retrogen_key;
@@ -497,29 +489,30 @@ public class IEServerConfig
 			public final IntValue veinsPerChunk;
 			public final BooleanValue retrogenEnabled;
 
-			private OreConfig(Builder builder, String name, OreDistribution defDist, double defAirExposure, int defSize, int defMinY, int defMaxY, int defNumPerChunk)
+			private OreConfig(Builder builder, VeinType type)
 			{
+				String name = type.getVeinName();
 				builder
 						.comment("Ore generation config - "+name)
 						.push(name);
 				distribution = builder
 						.comment("The distribution shape. UNIFORM is evenly distributed across the height range, TRAPEZOID favors the middle of the range.")
-						.defineEnum("distribution", defDist);
+						.defineEnum("distribution", type.defaultDistribution);
 				airExposure = builder
 						.comment("Chance for ores to not generate, if they are exposed to air. 0 means ignoring air exposure, 1 requires being burried.")
-						.defineInRange("air_exposure", defAirExposure, 0, 1);
+						.defineInRange("air_exposure", type.defaultAirExposure, 0, 1);
 				veinSize = builder
 						.comment("The maximum size of a vein. Set to 0 to disable generation")
-						.defineInRange("vein_size", defSize, 0, Integer.MAX_VALUE);
+						.defineInRange("vein_size", type.defaultVeinSize, 0, Integer.MAX_VALUE);
 				minY = builder
 						.comment("The minimum Y coordinate this ore can spawn at")
-						.defineInRange("min_y", defMinY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+						.defineInRange("min_y", type.defaultMinY, Integer.MIN_VALUE, Integer.MAX_VALUE);
 				maxY = builder
 						.comment("The maximum Y coordinate this ore can spawn at")
-						.defineInRange("max_y", defMaxY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+						.defineInRange("max_y", type.defaultMaxY, Integer.MIN_VALUE, Integer.MAX_VALUE);
 				veinsPerChunk = builder
 						.comment("The number of veins attempted to be generated per chunk")
-						.defineInRange("attempts_per_chunk", defNumPerChunk, 0, Integer.MAX_VALUE);
+						.defineInRange("attempts_per_chunk", type.defaultVeinsPerChunk, 0, Integer.MAX_VALUE);
 				retrogenEnabled = builder
 						.comment("Set this to true to allow retro-generation of "+name+" Ore.")
 						.define("retrogen_enable", false);
@@ -527,9 +520,48 @@ public class IEServerConfig
 			}
 		}
 
-		public enum OreDistribution {
+		public enum OreDistribution
+		{
 			UNIFORM,
 			TRAPEZOID;
+		}
+
+		public enum VeinType
+		{
+
+			BAUXITE(EnumMetals.ALUMINUM, OreDistribution.TRAPEZOID, 0, 6, 32, 112, 16),
+			LEAD(EnumMetals.LEAD, OreDistribution.TRAPEZOID, 0, 8, -32, 80, 8),
+			SILVER(EnumMetals.SILVER, OreDistribution.TRAPEZOID, 0.25, 9, -48, 32, 6),
+			NICKEL(EnumMetals.NICKEL, OreDistribution.UNIFORM, 0, 3, -64, 24, 6),
+			DEEP_NICKEL(EnumMetals.NICKEL, OreDistribution.TRAPEZOID, 0, 6, -120, -8, 8),
+			URANIUM(EnumMetals.URANIUM, OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 9),
+			;
+			public static final VeinType[] VALUES = values();
+			public static final Codec<VeinType> CODEC = Codec.INT.xmap(i -> VALUES[i], VeinType::ordinal);
+
+			public final EnumMetals metal;
+			private final OreDistribution defaultDistribution;
+			private final double defaultAirExposure;
+			private final int defaultVeinSize;
+			private final int defaultMinY;
+			private final int defaultMaxY;
+			private final int defaultVeinsPerChunk;
+
+			VeinType(EnumMetals metal, OreDistribution defaultDistribution, double defaultAirExposure, int defaultVeinSize, int defaultMinY, int defaultMaxY, int defaultVeinsPerChunk)
+			{
+				this.metal = metal;
+				this.defaultDistribution = defaultDistribution;
+				this.defaultAirExposure = defaultAirExposure;
+				this.defaultVeinSize = defaultVeinSize;
+				this.defaultMinY = defaultMinY;
+				this.defaultMaxY = defaultMaxY;
+				this.defaultVeinsPerChunk = defaultVeinsPerChunk;
+			}
+
+			public String getVeinName()
+			{
+				return name().toLowerCase(Locale.ROOT);
+			}
 		}
 	}
 
@@ -660,18 +692,7 @@ public class IEServerConfig
 
 	public static Config getRawConfig()
 	{
-		if(rawConfig==null)
-			try
-			{
-				Field childConfig = ForgeConfigSpec.class.getDeclaredField("childConfig");
-				childConfig.setAccessible(true);
-				rawConfig = (Config)childConfig.get(IEServerConfig.CONFIG_SPEC);
-				Preconditions.checkNotNull(rawConfig);
-			} catch(Exception x)
-			{
-				throw new RuntimeException(x);
-			}
-		return rawConfig;
+		return Preconditions.checkNotNull(rawConfig);
 	}
 
 	@SubscribeEvent

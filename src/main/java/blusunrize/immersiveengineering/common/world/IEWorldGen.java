@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
+import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
@@ -58,21 +59,23 @@ import java.util.Map.Entry;
 public class IEWorldGen
 {
 	public static Map<String, PlacedFeature> features = new HashMap<>();
-	public static Map<String, Pair<OreConfig, List<TargetBlockState>>> retroFeatures = new HashMap<>();
+	public static Map<String, Pair<VeinType, List<TargetBlockState>>> retroFeatures = new HashMap<>();
 	public static boolean anyRetrogenEnabled = false;
 
-	public static void addOreGen(EnumMetals metal, String name, OreConfig config)
+	public static void addOreGen(VeinType type)
 	{
+		EnumMetals metal = type.metal;
 		List<TargetBlockState> targetList = ImmutableList.of(
 				OreConfiguration.target(OreFeatures.STONE_ORE_REPLACEABLES, Metals.ORES.get(metal).defaultBlockState()),
 				OreConfiguration.target(OreFeatures.DEEPSLATE_ORE_REPLACEABLES, Metals.DEEPSLATE_ORES.get(metal).defaultBlockState())
 		);
-		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, config);
+		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, type);
+		String name = type.getVeinName();
 		PlacedFeature feature = register(
-				ImmersiveEngineering.rl(name), IE_CONFIG_ORE.get().configured(cfg).placed(getOreModifiers(config))
+				ImmersiveEngineering.rl(name), IE_CONFIG_ORE.get().configured(cfg).placed(getOreModifiers(type))
 		);
 		features.put(name, feature);
-		retroFeatures.put(name, Pair.of(config, targetList));
+		retroFeatures.put(name, Pair.of(type, targetList));
 	}
 
 	public static void registerMineralVeinGen()
@@ -87,8 +90,8 @@ public class IEWorldGen
 	public static void onConfigUpdated()
 	{
 		anyRetrogenEnabled = false;
-		for(Pair<OreConfig, List<TargetBlockState>> config : retroFeatures.values())
-			anyRetrogenEnabled |= config.getFirst().retrogenEnabled.get();
+		for(Pair<VeinType, List<TargetBlockState>> config : retroFeatures.values())
+			anyRetrogenEnabled |= IEServerConfig.ORES.ores.get(config.getFirst()).retrogenEnabled.get();
 	}
 
 	@SubscribeEvent
@@ -101,15 +104,16 @@ public class IEWorldGen
 
 	private void generateOres(Random random, int chunkX, int chunkZ, ServerLevel world)
 	{
-		for(Entry<String, Pair<OreConfig, List<TargetBlockState>>> gen : retroFeatures.entrySet())
+		for(Entry<String, Pair<VeinType, List<TargetBlockState>>> gen : retroFeatures.entrySet())
 		{
-			OreConfig config = gen.getValue().getFirst();
+			VeinType type = gen.getValue().getFirst();
 			List<TargetBlockState> targetList = gen.getValue().getSecond();
+			OreConfig config = IEServerConfig.ORES.ores.get(type);
 			if(config.retrogenEnabled.get())
 			{
 				PlacedFeature retroFeature = IEContent.ORE_RETROGEN
 						.configured(new OreConfiguration(targetList, config.veinSize.get()))
-						.placed(getOreModifiers(config));
+						.placed(getOreModifiers(type));
 				retroFeature.place(
 						world, world.getChunkSource().getGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ)
 				);
@@ -117,12 +121,12 @@ public class IEWorldGen
 		}
 	}
 
-	private static List<PlacementModifier> getOreModifiers(OreConfig config)
+	private static List<PlacementModifier> getOreModifiers(VeinType type)
 	{
 		return ImmutableList.of(
-				HeightRangePlacement.of(new IEHeightProvider(config)),
+				HeightRangePlacement.of(new IEHeightProvider(type)),
 				InSquarePlacement.spread(),
-				new IECountPlacement(config)
+				new IECountPlacement(type)
 		);
 	}
 

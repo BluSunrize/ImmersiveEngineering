@@ -20,7 +20,7 @@ import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import blusunrize.lib.manual.ManualEntry;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.Tree;
-import com.electronwill.nightconfig.core.Config;
+import com.electronwill.nightconfig.core.UnmodifiableConfig;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
@@ -59,8 +59,7 @@ public class IEManualInstance extends ManualInstance
 						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.ELECTRUM).connectorRate.get(),
 						IEServerConfig.WIRES.energyWireConfigs.get(IEWireType.STEEL).connectorRate.get()
 				);
-			//TODO forge PR or wait for Lex to fix this
-			Config actualCfg = IEServerConfig.getRawConfig();
+			UnmodifiableConfig actualCfg = IEServerConfig.getRawConfig();
 			if(!actualCfg.contains(s))
 				return null;
 			else
