@@ -137,6 +137,7 @@ public class Recipes extends RecipeProvider
 				addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
 				ore = IEBlocks.Metals.DEEPSLATE_ORES.get(metal);
 				addStandardSmeltingBlastingRecipe(ore, ingot, metal.smeltingXP, out);
+				addStandardSmeltingBlastingRecipe(Metals.RAW_ORES.get(metal), ingot, metal.smeltingXP, out);
 				BlockEntry<Block> rawBlock = IEBlocks.Metals.RAW_ORES.get(metal);
 				add3x3Conversion(rawBlock, rawOre, tags.rawOre, out);
 			}

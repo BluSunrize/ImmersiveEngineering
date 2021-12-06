@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:smelting",
+  "ingredient": {
+    "item": "immersiveengineering:raw_silver"
+  },
+  "result": "immersiveengineering:ingot_silver",
+  "experience": 1.0,
+  "cookingtime": 200
+}

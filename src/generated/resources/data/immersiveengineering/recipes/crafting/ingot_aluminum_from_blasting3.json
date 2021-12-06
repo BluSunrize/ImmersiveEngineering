@@ -1,0 +1,9 @@
+{
+  "type": "minecraft:blasting",
+  "ingredient": {
+    "item": "immersiveengineering:raw_aluminum"
+  },
+  "result": "immersiveengineering:ingot_aluminum",
+  "experience": 0.3,
+  "cookingtime": 100
+}
