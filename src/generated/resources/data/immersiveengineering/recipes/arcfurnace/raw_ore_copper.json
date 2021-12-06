@@ -6,6 +6,14 @@
     }
   ],
   "additives": [],
+  "secondaries": [
+    {
+      "chance": 0.5,
+      "output": {
+        "tag": "forge:ingots/copper"
+      }
+    }
+  ],
   "input": {
     "tag": "forge:raw_ores/copper"
   },

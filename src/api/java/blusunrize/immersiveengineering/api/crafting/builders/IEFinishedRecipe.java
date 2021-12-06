@@ -354,4 +354,21 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 	{
 		return null;
 	}
+
+	protected static JsonObject serializeStackWithChance(
+			IngredientWithSize ingredient, float chance, ICondition... conditions
+	)
+	{
+		JsonObject jsonObject = new JsonObject();
+		jsonObject.addProperty("chance", chance);
+		jsonObject.add("output", ingredient.serialize());
+		if(conditions.length > 0)
+		{
+			JsonArray conditionArray = new JsonArray();
+			for(ICondition condition : conditions)
+				conditionArray.add(CraftingHelper.serialize(condition));
+			jsonObject.add("conditions", conditionArray);
+		}
+		return jsonObject;
+	}
 }

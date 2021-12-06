@@ -50,7 +50,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 	{
 		if(multiblock.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick)
 		{
-			List<ItemStack> outputs = recipe.getItemOutputs();
+			List<ItemStack> outputs = getRecipeItemOutputs(multiblock);
 			if(outputs!=null&&!outputs.isEmpty())
 			{
 				int[] outputSlots = multiblock.getOutputSlots();

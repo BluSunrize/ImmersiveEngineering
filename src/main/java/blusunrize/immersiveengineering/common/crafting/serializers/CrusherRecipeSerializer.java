@@ -20,7 +20,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -43,13 +42,9 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		CrusherRecipe recipe = IEServerConfig.MACHINES.crusherConfig.apply(new CrusherRecipe(recipeId, output, input, energy));
 		for(int i = 0; i < array.size(); i++)
 		{
-			JsonObject element = array.get(i).getAsJsonObject();
-			if(CraftingHelper.processConditions(element, "conditions"))
-			{
-				float chance = GsonHelper.getAsFloat(element, "chance");
-				ItemStack stack = readOutput(element.get("output"));
-				recipe.addToSecondaryOutput(new StackWithChance(stack, chance));
-			}
+			StackWithChance secondary = readConditionalStackWithChance(array.get(i));
+			if(secondary!=null)
+				recipe.addToSecondaryOutput(secondary);
 		}
 		return recipe;
 	}

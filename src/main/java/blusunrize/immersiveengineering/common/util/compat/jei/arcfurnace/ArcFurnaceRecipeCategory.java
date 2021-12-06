@@ -75,17 +75,15 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 		int i = 0;
 		guiItemStacks.init(i, true, 20, 0);
 		guiItemStacks.set(i++, Arrays.asList(recipe.input.getMatchingStacks()));
-		ItemStack simulatedInput = recipe.input.getRandomizedExampleStack(0);
 
-		NonNullList<ItemStack> simulatedAdditives = NonNullList.withSize(recipe.additives.length, ItemStack.EMPTY);
 		for(int j = 0; j < recipe.additives.length; j++)
 		{
 			guiItemStacks.init(i, true, 12+j%2*18, 18+j/2*18);
 			guiItemStacks.set(i++, Arrays.asList(recipe.additives[j].getMatchingStacks()));
-			simulatedAdditives.set(j, recipe.additives[j].getRandomizedExampleStack(0));
 		}
 
-		NonNullList<ItemStack> simulatedOutput = recipe.getOutputs(simulatedInput, simulatedAdditives);
+		NonNullList<ItemStack> simulatedOutput = recipe.getBaseOutputs();
+		//TODO show secondary outputs
 		int outputSize = simulatedOutput.size();
 		for(int j = 0; j < outputSize; j++)
 		{

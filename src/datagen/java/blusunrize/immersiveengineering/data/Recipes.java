@@ -581,8 +581,9 @@ public class Recipes extends RecipeProvider
 						.setEnergy(102400)
 						.build(out, toRL("arcfurnace/ore_"+metal.getName()));
 
-				// Arcfurnace raw ore, TODO: bump this to 1.5 when we have chance based output
+				// Arcfurnace raw ore
 				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 1);
+				arcBuilder.addSecondary(metal.getIngot(), 0.5F);
 				if(!metal.isNative())
 					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getRawOre()));
 				arcBuilder.addIngredient("input", metal.getRawOre())

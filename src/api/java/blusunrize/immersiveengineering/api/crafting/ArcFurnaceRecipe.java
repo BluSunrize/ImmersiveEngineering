@@ -13,6 +13,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -31,6 +32,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	public final IngredientWithSize input;
 	public final IngredientWithSize[] additives;
 	public final NonNullList<ItemStack> output;
+	public final List<StackWithChance> secondaryOutputs;
 	@Nonnull
 	public final ItemStack slag;
 
@@ -39,11 +41,16 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 	// Initialized by reload listener
 	public static Map<ResourceLocation, ArcFurnaceRecipe> recipeList = Collections.emptyMap();
 
-	public ArcFurnaceRecipe(ResourceLocation id, NonNullList<ItemStack> output, IngredientWithSize input, @Nonnull ItemStack slag, int time,
-							int energy, IngredientWithSize... additives)
+	public ArcFurnaceRecipe(
+			ResourceLocation id,
+			NonNullList<ItemStack> output, @Nonnull ItemStack slag, List<StackWithChance> secondaryOutputs,
+			int time, int energy,
+			IngredientWithSize input, IngredientWithSize... additives
+	)
 	{
 		super(output.get(0), TYPE, id);
 		this.output = output;
+		this.secondaryOutputs = secondaryOutputs;
 		this.input = input;
 		this.slag = slag;
 		setTimeAndEnergy(time, energy);
@@ -68,9 +75,33 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	public NonNullList<ItemStack> getOutputs(ItemStack input, NonNullList<ItemStack> additives)
+	public NonNullList<ItemStack> getBaseOutputs()
 	{
 		return this.output;
+	}
+
+	public NonNullList<ItemStack> generateActualOutput(ItemStack input, NonNullList<ItemStack> additives, long seed)
+	{
+		Random random = new Random(seed);
+		NonNullList<ItemStack> actualOutput = NonNullList.withSize(this.output.size(), ItemStack.EMPTY);
+		for(int i = 0; i < this.output.size(); ++i)
+			actualOutput.set(i, this.output.get(i).copy());
+		for(StackWithChance secondary : secondaryOutputs)
+		{
+			if(secondary.chance() > random.nextFloat())
+				continue;
+			ItemStack remaining = secondary.stack();
+			for(var existing : actualOutput)
+				if(ItemHandlerHelper.canItemStacksStack(remaining, existing))
+				{
+					existing.grow(remaining.getCount());
+					remaining = ItemStack.EMPTY;
+					break;
+				}
+			if(!remaining.isEmpty())
+				actualOutput.add(remaining);
+		}
+		return actualOutput;
 	}
 
 	public boolean matches(ItemStack input, NonNullList<ItemStack> additives)

@@ -6,6 +6,14 @@
     }
   ],
   "additives": [],
+  "secondaries": [
+    {
+      "chance": 0.5,
+      "output": {
+        "tag": "forge:ingots/platinum"
+      }
+    }
+  ],
   "conditions": [
     {
       "value": {

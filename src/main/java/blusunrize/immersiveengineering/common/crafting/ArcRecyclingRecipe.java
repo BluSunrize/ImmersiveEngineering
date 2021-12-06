@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagContainer;
@@ -43,14 +44,14 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	public ArcRecyclingRecipe(ResourceLocation id, Supplier<TagContainer> tags, Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
 		super(id, outputs.keySet().stream().collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll),
-				input, ItemStack.EMPTY, time, energyPerTick);
+				ItemStack.EMPTY, ImmutableList.of(), time, energyPerTick, input);
 		this.tags = tags;
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
 	}
 
 	@Override
-	public NonNullList<ItemStack> getOutputs(ItemStack input, NonNullList<ItemStack> additives)
+	public NonNullList<ItemStack> generateActualOutput(ItemStack input, NonNullList<ItemStack> additives, long seed)
 	{
 		if(outputs==null)
 			return NonNullList.create();

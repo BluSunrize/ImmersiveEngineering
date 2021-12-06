@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
@@ -222,7 +223,9 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 							ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(stack, additives);
 							if(recipe!=null)
 							{
-								MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, slot, 12, 13, 14, 15);
+								MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(
+										recipe, ApiUtils.RANDOM.nextLong(), slot, 12, 13, 14, 15
+								);
 								if(this.addProcessToQueue(process, true))
 								{
 									this.addProcessToQueue(process, false);
@@ -714,12 +717,22 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		ArcFurnaceRecipe recipe = getRecipeForId(new ResourceLocation(id));
 		if(recipe!=null)
 		{
-			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, tag.getIntArray("process_inputSlots"));
+			long seed = tag.getLong("seed");
+			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, seed, tag.getIntArray("process_inputSlots"));
 			if(tag.contains("process_inputAmounts", Tag.TAG_INT_ARRAY))
 				process.setInputAmounts(tag.getIntArray("process_inputAmounts"));
 			return process;
 		}
 		return null;
+	}
+
+	@Override
+	protected CompoundTag writeProcessToNBT(MultiblockProcess<?> process)
+	{
+		CompoundTag processNBT = super.writeProcessToNBT(process);
+		if(process instanceof MultiblockProcessArcFurnace arcProcess)
+			processNBT.putLong("seed", arcProcess.seed);
+		return processNBT;
 	}
 
 	private static final Set<BlockPos> specialGuiPositions = ImmutableSet.of(
@@ -755,9 +768,12 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 
 	public static class MultiblockProcessArcFurnace extends MultiblockProcessInMachine<ArcFurnaceRecipe>
 	{
-		public MultiblockProcessArcFurnace(ArcFurnaceRecipe recipe, int... inputSlots)
+		private final long seed;
+
+		public MultiblockProcessArcFurnace(ArcFurnaceRecipe recipe, long seed, int... inputSlots)
 		{
 			super(recipe, inputSlots);
+			this.seed = seed;
 		}
 
 		@Override
@@ -766,8 +782,8 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 			ItemStack input = multiblock.getInventory().get(this.inputSlots[0]);
 			NonNullList<ItemStack> additives = NonNullList.withSize(ADDITIVE_SLOT_COUNT, ItemStack.EMPTY);
 			for(int i = 0; i < ADDITIVE_SLOT_COUNT; i++)
-				additives.set(i, !multiblock.getInventory().get(FIRST_ADDITIVE_SLOT+i).isEmpty()?multiblock.getInventory().get(FIRST_ADDITIVE_SLOT+i).copy(): ItemStack.EMPTY);
-			return recipe.getOutputs(input, additives);
+				additives.set(i, multiblock.getInventory().get(FIRST_ADDITIVE_SLOT+i).copy());
+			return recipe.generateActualOutput(input, additives, seed);
 		}
 
 		@Override
