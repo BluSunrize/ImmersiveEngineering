@@ -14,13 +14,13 @@ import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.CompositeBakedModel;
+import blusunrize.immersiveengineering.client.models.split.PolygonUtils.ExtraQuadData;
 import malte0811.modelsplitter.ClumpedModel;
 import malte0811.modelsplitter.SplitModel;
 import malte0811.modelsplitter.math.ModelSplitterVec3i;
 import malte0811.modelsplitter.model.OBJModel;
 import malte0811.modelsplitter.model.Polygon;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
@@ -69,20 +69,20 @@ public abstract class AbstractSplitModel<T extends BakedModel> extends Composite
 
 	protected Map<Vec3i, List<BakedQuad>> split(List<BakedQuad> in, Set<Vec3i> parts, ModelState transform)
 	{
-		List<Polygon<TextureAtlasSprite>> polys = in.stream()
+		List<Polygon<ExtraQuadData>> polys = in.stream()
 				.map(PolygonUtils::toPolygon)
 				.collect(Collectors.toList());
-		SplitModel<TextureAtlasSprite> splitData = new SplitModel<>(new OBJModel<>(polys));
+		SplitModel<ExtraQuadData> splitData = new SplitModel<>(new OBJModel<>(polys));
 		Set<ModelSplitterVec3i> partsBMS = parts.stream()
 				.map(v -> new ModelSplitterVec3i(v.getX(), v.getY(), v.getZ()))
 				.collect(Collectors.toSet());
-		ClumpedModel<TextureAtlasSprite> clumpedModel = new ClumpedModel<>(splitData, partsBMS);
+		ClumpedModel<ExtraQuadData> clumpedModel = new ClumpedModel<>(splitData, partsBMS);
 
 		Map<Vec3i, List<BakedQuad>> map = new HashMap<>();
-		for(Entry<ModelSplitterVec3i, OBJModel<TextureAtlasSprite>> e : clumpedModel.getClumpedParts().entrySet())
+		for(Entry<ModelSplitterVec3i, OBJModel<ExtraQuadData>> e : clumpedModel.getClumpedParts().entrySet())
 		{
 			List<BakedQuad> subModelFaces = new ArrayList<>(e.getValue().getFaces().size());
-			for(Polygon<TextureAtlasSprite> p : e.getValue().getFaces())
+			for(Polygon<ExtraQuadData> p : e.getValue().getFaces())
 				subModelFaces.add(PolygonUtils.toBakedQuad(p, transform));
 			Vec3i mcKey = new Vec3i(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ());
 			map.put(mcKey, subModelFaces);
