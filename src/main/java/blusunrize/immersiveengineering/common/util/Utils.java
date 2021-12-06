@@ -493,6 +493,16 @@ public class Utils
 		return new Vector4f(rgb[0], rgb[1], rgb[2], 1);
 	}
 
+	public static Vector4f vec4fFromInt(int argb)
+	{
+		return new Vector4f(
+				((argb >> 16)&255)/255f,
+				((argb >> 8)&255)/255f,
+				(argb&255)/255f,
+				((argb >> 24)&255)/255f
+		);
+	}
+
 	public static FluidStack drainFluidBlock(Level world, BlockPos pos, FluidAction action)
 	{
 		BlockState b = world.getBlockState(pos);
