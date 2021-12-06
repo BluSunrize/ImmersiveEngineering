@@ -76,8 +76,8 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 	@Override
 	public ArcFurnaceRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		NonNullList<ItemStack> outputs = NonNullList.of(ItemStack.EMPTY);
-		PacketUtils.readList(buffer, FriendlyByteBuf::readItem, outputs);
+		List<ItemStack> outputNullable = PacketUtils.readList(buffer, FriendlyByteBuf::readItem);
+		NonNullList<ItemStack> outputs = NonNullList.of(ItemStack.EMPTY, outputNullable.toArray(ItemStack[]::new));
 		List<StackWithChance> secondaries = PacketUtils.readList(buffer, StackWithChance::read);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		IngredientWithSize[] additives = PacketUtils.readList(buffer, IngredientWithSize::read)

@@ -20,16 +20,11 @@ public class PacketUtils
 {
 	public static <T> List<T> readList(FriendlyByteBuf buffer, Function<FriendlyByteBuf, T> readElement)
 	{
-		List<T> result = new ArrayList<>();
-		readList(buffer, readElement, result);
-		return result;
-	}
-
-	public static <T> void readList(FriendlyByteBuf buffer, Function<FriendlyByteBuf, T> readElement, List<T> out)
-	{
 		int numElements = buffer.readVarInt();
+		List<T> result = new ArrayList<>(numElements);
 		for(int i = 0; i < numElements; ++i)
-			out.add(readElement.apply(buffer));
+			result.add(readElement.apply(buffer));
+		return result;
 	}
 
 	public static <T> void writeListReverse(FriendlyByteBuf buffer, List<T> toWrite, BiConsumer<FriendlyByteBuf, T> writeElement)
