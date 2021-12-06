@@ -109,7 +109,7 @@ public class PolygonUtils
 					case COLOR:
 						int color = poly.getTexture().color();
 						quadBuilder.put(
-								i, (color >> 24)/255f, ((color >> 16)&255)/255f, ((color >> 8)&255)/255f, (color&255)/255f
+								i, (color&255)/255f, ((color >> 8)&255)/255f, ((color >> 16)&255)/255f, (color >> 24)/255f
 						);
 						break;
 					case UV:
