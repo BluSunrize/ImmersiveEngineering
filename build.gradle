@@ -196,6 +196,9 @@ repositories {
     }
     maven { // CC-Tweaked
         url 'https://squiddev.cc/maven/'
+        content {
+            includeGroup 'org.squiddev'
+        }
     }
     maven { //Curious
         url "https://maven.theillusivec4.top/"
@@ -206,10 +209,10 @@ dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
     compileOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40:api")
-    compileOnly fg.deobf("org.squiddev:cc-tweaked-1.17.1:1.98.2")
-    compileOnly fg.deobf("curse.maven:the-one-probe-245211:3430022")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.17.1-5.0.1.0:api")
-    compileOnly fg.deobf("curse.maven:jade-324717:3468298")
+    compileOnly fg.deobf("org.squiddev:cc-tweaked-1.18:1.99.0")
+    compileOnly fg.deobf("curse.maven:the-one-probe-245211:3550084")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18-5.0.2.4:api")
+    compileOnly fg.deobf("curse.maven:jade-324717:3551337")
     //TODO port compat once available
     //compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
 
