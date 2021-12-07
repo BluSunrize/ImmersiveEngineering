@@ -38,5 +38,8 @@ public class ClocheContainer extends IEBaseContainer<ClocheBlockEntity>
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
 		addGenericData(GenericContainerData.energy(bEntity.energyStorage));
+		addGenericData(GenericContainerData.fluid(bEntity.tank));
+		addGenericData(GenericContainerData.int32(() -> bEntity.fertilizerAmount, i -> bEntity.fertilizerAmount = i));
+		addGenericData(GenericContainerData.float32(() -> bEntity.fertilizerMod, i -> bEntity.fertilizerMod = i));
 	}
 }

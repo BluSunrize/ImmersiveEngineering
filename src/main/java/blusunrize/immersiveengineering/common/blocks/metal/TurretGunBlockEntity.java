@@ -209,18 +209,22 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		expelCasings = nbt.getBoolean("expelCasings");
 		if(!descPacket)
+		{
+			expelCasings = nbt.getBoolean("expelCasings");
 			ContainerHelper.loadAllItems(nbt, inventory);
+		}
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.putBoolean("expelCasings", expelCasings);
 		if(!descPacket)
+		{
+			nbt.putBoolean("expelCasings", expelCasings);
 			ContainerHelper.saveAllItems(nbt, inventory);
+		}
 	}
 
 	private final ResettableCapability<IItemHandler> itemHandler = registerCapability(

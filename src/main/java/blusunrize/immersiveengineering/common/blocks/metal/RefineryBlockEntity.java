@@ -77,22 +77,26 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tanks[0].readFromNBT(nbt.getCompound("tank0"));
-		tanks[1].readFromNBT(nbt.getCompound("tank1"));
-		tanks[2].readFromNBT(nbt.getCompound("tank2"));
 		if(!descPacket)
+		{
+			tanks[0].readFromNBT(nbt.getCompound("tank0"));
+			tanks[1].readFromNBT(nbt.getCompound("tank1"));
+			tanks[2].readFromNBT(nbt.getCompound("tank2"));
 			ContainerHelper.loadAllItems(nbt, inventory);
+		}
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.put("tank0", tanks[0].writeToNBT(new CompoundTag()));
-		nbt.put("tank1", tanks[1].writeToNBT(new CompoundTag()));
-		nbt.put("tank2", tanks[2].writeToNBT(new CompoundTag()));
 		if(!descPacket)
+		{
+			nbt.put("tank0", tanks[0].writeToNBT(new CompoundTag()));
+			nbt.put("tank1", tanks[1].writeToNBT(new CompoundTag()));
+			nbt.put("tank2", tanks[2].writeToNBT(new CompoundTag()));
 			ContainerHelper.saveAllItems(nbt, inventory);
+		}
 	}
 
 	@Override

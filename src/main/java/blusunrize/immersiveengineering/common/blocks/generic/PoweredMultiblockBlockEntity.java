@@ -101,9 +101,9 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		EnergyHelper.serializeTo(energyStorage, nbt);
 		if(!descPacket||shouldSyncProcessQueue())
 		{
+			EnergyHelper.serializeTo(energyStorage, nbt);
 			ListTag processNBT = new ListTag();
 			for(MultiblockProcess<?> process : this.processQueue)
 				processNBT.add(writeProcessToNBT(process));

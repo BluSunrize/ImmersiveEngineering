@@ -87,5 +87,7 @@ public class RefineryContainer extends IEBaseContainer<RefineryBlockEntity>
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
 		addGenericData(GenericContainerData.energy(tile.energyStorage));
+		for(int i = 0; i < 3; ++i)
+			addGenericData(GenericContainerData.fluid(tile.tanks[i]));
 	}
 }

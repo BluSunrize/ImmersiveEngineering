@@ -136,16 +136,22 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tank.readFromNBT(nbt.getCompound("tank"));
-		ignite = nbt.getBoolean("ignite");
+		if(!descPacket)
+		{
+			tank.readFromNBT(nbt.getCompound("tank"));
+			ignite = nbt.getBoolean("ignite");
+		}
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		nbt.put("tank", tank.writeToNBT(new CompoundTag()));
-		nbt.putBoolean("ignite", ignite);
+		if(!descPacket)
+		{
+			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
+			nbt.putBoolean("ignite", ignite);
+		}
 	}
 
 	private final ResettableCapability<IFluidHandler> tankCap = registerCapability(tank);

@@ -55,6 +55,8 @@ public abstract class TurretContainer<T extends TurretBlockEntity<T>> extends IE
 		public ChemTurretContainer(MenuType<?> type, int id, Inventory inventoryPlayer, TurretChemBlockEntity tile)
 		{
 			super(type, id, inventoryPlayer, tile);
+			addGenericData(GenericContainerData.fluid(tile.tank));
+			addGenericData(GenericContainerData.bool(() -> tile.ignite, b -> tile.ignite = b));
 		}
 	}
 
@@ -62,6 +64,7 @@ public abstract class TurretContainer<T extends TurretBlockEntity<T>> extends IE
 		public GunTurretContainer(MenuType<?> type, int id, Inventory inventoryPlayer, TurretGunBlockEntity tile)
 		{
 			super(type, id, inventoryPlayer, tile);
+			addGenericData(GenericContainerData.bool(() -> tile.expelCasings, b -> tile.expelCasings = b));
 		}
 	}
 }

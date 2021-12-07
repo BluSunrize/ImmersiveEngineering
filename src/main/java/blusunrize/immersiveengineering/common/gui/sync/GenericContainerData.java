@@ -47,6 +47,16 @@ public class GenericContainerData<T>
 		return new GenericContainerData<>(GenericDataSerializers.FLUID_STACK, tank::getFluid, tank::setFluid);
 	}
 
+	public static GenericContainerData<Boolean> bool(Supplier<Boolean> get, Consumer<Boolean> set)
+	{
+		return new GenericContainerData<>(GenericDataSerializers.BOOLEAN, get, set);
+	}
+
+	public static GenericContainerData<Float> float32(Supplier<Float> get, Consumer<Float> set)
+	{
+		return new GenericContainerData<>(GenericDataSerializers.FLOAT, get, set);
+	}
+
 	public boolean needsUpdate()
 	{
 		T newValue = get.get();

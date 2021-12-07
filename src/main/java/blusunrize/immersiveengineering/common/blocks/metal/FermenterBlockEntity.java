@@ -77,19 +77,22 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-		tanks[0].readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
+		{
+			tanks[0].readFromNBT(nbt.getCompound("tank"));
 			ContainerHelper.loadAllItems(nbt, inventory);
+		}
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		CompoundTag tankTag = tanks[0].writeToNBT(new CompoundTag());
-		nbt.put("tank", tankTag);
 		if(!descPacket)
+		{
+			nbt.put("tank", tanks[0].writeToNBT(new CompoundTag()));
 			ContainerHelper.saveAllItems(nbt, inventory);
+		}
 	}
 
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(this,

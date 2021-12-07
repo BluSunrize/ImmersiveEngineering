@@ -48,6 +48,9 @@ public class AssemblerContainer extends IEBaseContainer<AssemblerBlockEntity>
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 13+i*18, 195));
 		addGenericData(GenericContainerData.energy(tile.energyStorage));
+		for(int i = 0; i < 3; ++i)
+			addGenericData(GenericContainerData.fluid(tile.tanks[i]));
+		addGenericData(GenericContainerData.bool(() -> tile.recursiveIngredients, b -> tile.recursiveIngredients = b));
 	}
 
 	@Nonnull

@@ -30,6 +30,12 @@ public class GenericDataSerializers
 			FriendlyByteBuf::readFluidStack, FriendlyByteBuf::writeFluidStack,
 			FluidStack::copy, FluidStack::isFluidStackIdentical
 	);
+	public static final DataSerializer<Boolean> BOOLEAN = register(
+			FriendlyByteBuf::readBoolean, FriendlyByteBuf::writeBoolean
+	);
+	public static final DataSerializer<Float> FLOAT = register(
+			FriendlyByteBuf::readFloat, FriendlyByteBuf::writeFloat
+	);
 
 	private static <T> DataSerializer<T> register(
 			Function<FriendlyByteBuf, T> read, BiConsumer<FriendlyByteBuf, T> write
