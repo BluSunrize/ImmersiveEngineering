@@ -91,7 +91,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 			if(secondary.chance() > random.nextFloat())
 				continue;
 			ItemStack remaining = secondary.stack();
-			for(var existing : actualOutput)
+			for(ItemStack existing : actualOutput)
 				if(ItemHandlerHelper.canItemStacksStack(remaining, existing))
 				{
 					existing.grow(remaining.getCount());

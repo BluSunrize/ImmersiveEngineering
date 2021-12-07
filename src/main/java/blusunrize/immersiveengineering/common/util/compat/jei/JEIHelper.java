@@ -10,7 +10,10 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
+import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.gui.*;
+import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.gui.CraftingTableContainer;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
@@ -19,6 +22,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter.AlloySmelterRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace.ArcFurnaceRecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace.BlastFurnaceFuelCategory;
@@ -44,7 +48,9 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 
@@ -53,10 +59,8 @@ public class JEIHelper implements IModPlugin
 {
 	private static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "main");
 	public static final ResourceLocation JEI_GUI = new ResourceLocation(Lib.MODID, "textures/gui/jei_elements.png");
-	//	public static IJeiHelpers jeiHelpers;
-//	public static IModRegistry modRegistry;
 	public static IDrawableStatic slotDrawable;
-	public static ITooltipCallback fluidTooltipCallback = new IEFluidTooltipCallback();
+	public static ITooltipCallback<FluidStack> fluidTooltipCallback = new IEFluidTooltipCallback();
 
 	@Override
 	public ResourceLocation getPluginUid()
@@ -68,9 +72,15 @@ public class JEIHelper implements IModPlugin
 	public void registerItemSubtypes(ISubtypeRegistration subtypeRegistry)
 	{
 		subtypeRegistry.registerSubtypeInterpreter(
-				Misc.BLUEPRINT.asItem(),
-				(stack, $) -> EngineersBlueprintItem.getCategory(stack)
+				Misc.BLUEPRINT.asItem(), (stack, $) -> EngineersBlueprintItem.getCategory(stack)
 		);
+		for(IConveyorType<?> conveyor : ConveyorHandler.getConveyorTypes())
+		{
+			Item item = ConveyorHandler.getBlock(conveyor).asItem();
+			subtypeRegistry.registerSubtypeInterpreter(
+					item, (stack, $) -> ItemNBTHelper.getString(stack, ConveyorBlock.DEFAULT_COVER)
+			);
+		}
 	}
 
 	@Override
