@@ -12,8 +12,9 @@ package blusunrize.immersiveengineering.common.gui.sync;
 import blusunrize.immersiveengineering.api.energy.IMutableEnergyStorage;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataSerializer;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 
-import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -41,19 +42,26 @@ public class GenericContainerData<T>
 		return int32(storage::getEnergyStored, storage::setStoredEnergy);
 	}
 
+	public static GenericContainerData<FluidStack> fluid(FluidTank tank)
+	{
+		return new GenericContainerData<>(GenericDataSerializers.FLUID_STACK, tank::getFluid, tank::setFluid);
+	}
+
 	public boolean needsUpdate()
 	{
 		T newValue = get.get();
-		if(Objects.equals(current, newValue))
+		if(newValue==null&&current==null)
 			return false;
-		current = newValue;
+		if(current!=null&&newValue!=null&&serializer.equals().test(current, newValue))
+			return false;
+		current = serializer.copy().apply(newValue);
 		return true;
 	}
 
 	public void processSync(Object receivedData)
 	{
 		current = (T)receivedData;
-		set.accept(current);
+		set.accept(serializer.copy().apply(current));
 	}
 
 	public DataPair<T> dataPair()

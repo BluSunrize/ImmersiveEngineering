@@ -239,9 +239,9 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	{
 		super.readCustomNBT(nbt, descPacket);
 
-		tank.readFromNBT(nbt.getCompound("tank"));
 		if(!descPacket)
 		{
+			tank.readFromNBT(nbt.getCompound("tank"));
 			ContainerHelper.loadAllItems(nbt, inventory);
 			process = nbt.getInt("process");
 			processMax = nbt.getInt("processMax");
@@ -253,10 +253,9 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	{
 		super.writeCustomNBT(nbt, descPacket);
 
-		CompoundTag tankTag = tank.writeToNBT(new CompoundTag());
-		nbt.put("tank", tankTag);
 		if(!descPacket)
 		{
+			nbt.put("tank", tank.writeToNBT(new CompoundTag()));
 			nbt.putInt("process", process);
 			nbt.putInt("processMax", processMax);
 			ContainerHelper.saveAllItems(nbt, inventory);

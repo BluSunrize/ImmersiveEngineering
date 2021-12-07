@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -43,5 +44,6 @@ public class CokeOvenContainer extends IEBaseContainer<CokeOvenBlockEntity>
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 142));
 		data = tile.guiData;
 		addDataSlots(data);
+		addGenericData(GenericContainerData.fluid(tile.tank));
 	}
 }
