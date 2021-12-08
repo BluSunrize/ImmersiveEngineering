@@ -44,6 +44,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.network.NetworkHooks;
 import net.minecraftforge.registries.RegistryObject;
@@ -392,10 +393,13 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 		if(state.getBlock()==this)
 		{
 			BlockEntity te = world.getBlockEntity(pos);
-			if(te instanceof ICollisionBounds)
-				return ((ICollisionBounds)te).getCollisionShape(context);
+			if(te instanceof ICollisionBounds collisionBounds)
+				return collisionBounds.getCollisionShape(context);
 		}
-		return super.getCollisionShape(state, world, pos, context);
+		// Temporary hack: The vanilla Entity#isInWall passes nonsense positions to this method (always the head center
+		// rather than the actual block). This stops our blocks from suffocating people when this happens
+		return Shapes.empty();
+		//return super.getCollisionShape(state, world, pos, context);
 	}
 
 	@Override
