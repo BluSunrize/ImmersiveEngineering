@@ -457,10 +457,10 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	@SuppressWarnings("deprecation")
 	public boolean isSignalSource(BlockState state)
 	{
-		return true;
+		return getClassData().emitsRedstone();
 	}
 
-	//TODO missing Forge method? @Override
+	@Override
 	public boolean canConnectRedstone(BlockState state, BlockGetter world, BlockPos pos, Direction side)
 	{
 		BlockEntity te = world.getBlockEntity(pos);
@@ -496,19 +496,26 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 			this.classData = new BEClassInspectedData(
 					tempBE instanceof IEServerTickableBE,
 					tempBE instanceof IEClientTickableBE,
-					tempBE instanceof IComparatorOverride
+					tempBE instanceof IComparatorOverride,
+					tempBE instanceof IRedstoneOutput
 			);
 		}
 		return this.classData;
 	}
 
-	private record BEClassInspectedData(boolean serverTicking, boolean clientTicking, boolean hasComparatorOutput)
+	private record BEClassInspectedData(
+			boolean serverTicking,
+			boolean clientTicking,
+			boolean hasComparatorOutput,
+			boolean emitsRedstone
+	)
 	{
 		@Nullable
-		public <T extends BlockEntity> BlockEntityTicker<T> makeBaseTicker(boolean isClient) {
-			if (serverTicking && !isClient)
+		public <T extends BlockEntity> BlockEntityTicker<T> makeBaseTicker(boolean isClient)
+		{
+			if(serverTicking&&!isClient)
 				return IEServerTickableBE.makeTicker();
-			else if (clientTicking && isClient)
+			else if(clientTicking&&isClient)
 				return IEClientTickableBE.makeTicker();
 			else
 				return null;
