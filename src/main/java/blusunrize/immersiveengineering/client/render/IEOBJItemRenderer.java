@@ -57,7 +57,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 		}
 	};
 
-	public IEOBJItemRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_)
+	private IEOBJItemRenderer(BlockEntityRenderDispatcher p_172550_, EntityModelSet p_172551_)
 	{
 		super(p_172550_, p_172551_);
 	}

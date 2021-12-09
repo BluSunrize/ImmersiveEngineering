@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
@@ -22,6 +21,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -29,12 +29,7 @@ import net.minecraft.world.item.ItemStack;
 
 public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntity>
 {
-	static double sqrt2Half = Math.sqrt(2)/2;
-	public static final double[][] octagon = {
-			{1, 0}, {sqrt2Half, sqrt2Half}, {0, 1}, {-sqrt2Half, sqrt2Half},
-			{-1, 0}, {-sqrt2Half, -sqrt2Half}, {0, -1}, {sqrt2Half, -sqrt2Half}
-	};
-	TextureAtlasSprite tex;
+	private TextureAtlasSprite tex;
 
 	public FluorescentTubeRenderer(Context renderManager)
 	{
@@ -82,8 +77,9 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 	private static ItemStack tube = ItemStack.EMPTY;
 	private static ItemStack tubeActive = ItemStack.EMPTY;
 
-	static void drawTube(boolean active, float[] rgb, PoseStack matrixStack, MultiBufferSource buffer, int light,
-						 int overlay)
+	static void drawTube(
+			boolean active, float[] rgb, PoseStack matrixStack, MultiBufferSource buffer, int light, int overlay
+	)
 	{
 		if(tube.isEmpty())
 			tube = new ItemStack(Misc.FLUORESCENT_TUBE);
@@ -92,9 +88,10 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 			tubeActive = new ItemStack(Misc.FLUORESCENT_TUBE);
 			FluorescentTubeItem.setLit(tubeActive, 1);
 		}
-		matrixStack.translate(-.5, .25, -.5);
+		matrixStack.translate(0, 0.75, 0);
 		ItemStack renderStack = active?tubeActive: tube;
 		FluorescentTubeItem.setRGB(renderStack, rgb);
-		IEOBJItemRenderer.INSTANCE.get().renderByItem(renderStack, TransformType.FIXED, matrixStack, buffer, light, overlay);
+		ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
+		itemRenderer.renderStatic(renderStack, TransformType.NONE, light, overlay, matrixStack, buffer, 0);
 	}
 }
