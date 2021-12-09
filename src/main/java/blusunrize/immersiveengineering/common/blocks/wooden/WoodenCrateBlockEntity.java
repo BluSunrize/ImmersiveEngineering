@@ -201,7 +201,7 @@ public class WoodenCrateBlockEntity extends IEBaseBlockEntity implements IIEInve
 	{
 		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
 		CompoundTag tag = new CompoundTag();
-		ContainerHelper.saveAllItems(tag, inventory);
+		ContainerHelper.saveAllItems(tag, inventory, false);
 		if(!tag.isEmpty())
 			stack.setTag(tag);
 		if(this.name!=null)
