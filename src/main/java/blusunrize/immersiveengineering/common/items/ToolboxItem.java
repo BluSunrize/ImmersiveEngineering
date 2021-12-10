@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
@@ -38,9 +36,6 @@ public class ToolboxItem extends InternalStorageItem
 	public ToolboxItem()
 	{
 		super(new Properties().stacksTo(1));
-		ToolboxHandler.addToolType(stack -> IEServerConfig.TOOLS.toolbox_tools.get().contains(stack.getItem().getRegistryName().toString()));
-		ToolboxHandler.addFoodType(stack -> IEServerConfig.TOOLS.toolbox_foods.get().contains(stack.getItem().getRegistryName().toString()));
-		ToolboxHandler.addWiringType((stack, world) -> IEServerConfig.TOOLS.toolbox_wiring.get().contains(stack.getItem().getRegistryName().toString()));
 	}
 
 	@Nonnull

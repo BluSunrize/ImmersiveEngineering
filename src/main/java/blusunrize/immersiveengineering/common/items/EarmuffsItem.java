@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigBoolean;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
@@ -33,7 +32,7 @@ import java.util.List;
 
 import static blusunrize.immersiveengineering.client.utils.FontUtils.withAppendColoredColour;
 
-public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, IConfigurableTool, ITool, IColouredItem
+public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, IConfigurableTool, IColouredItem
 {
 	public static ItemGetterList EARMUFF_GETTERS = new ItemGetterList(
 			entity -> {
@@ -173,11 +172,5 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 			ItemNBTHelper.putBoolean(stack, "IE:Earmuffs:Cat_"+key, !(Boolean)value);
 		else if(value instanceof Float)
 			ItemNBTHelper.putFloat(stack, "IE:Earmuffs:Volume", 1-(Float)value);
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 }

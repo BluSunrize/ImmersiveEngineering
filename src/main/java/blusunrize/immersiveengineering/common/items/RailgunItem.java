@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.IRailgunProjectile;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
@@ -68,7 +67,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScrollwheel, ITool
+public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScrollwheel
 {
 	public RailgunItem()
 	{
@@ -399,11 +398,5 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	public float[] getZoomSteps(ItemStack stack, Player player)
 	{
 		return zoomSteps;
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 }

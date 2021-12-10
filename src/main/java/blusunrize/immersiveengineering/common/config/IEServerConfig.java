@@ -615,19 +615,6 @@ public class IEServerConfig
 						), obj -> true);
 				builder.pop();
 			}
-			{
-				builder.push("toolbox");
-				toolbox_tools = builder
-						.comment("A whitelist of tools allowed in the toolbox, formatting: [mod id]:[item name]")
-						.defineList("tools", ImmutableList.of(), obj -> true);
-				toolbox_foods = builder
-						.comment("A whitelist of foods allowed in the toolbox, formatting: [mod id]:[item name]")
-						.defineList("foods", ImmutableList.of(), obj -> true);
-				toolbox_wiring = builder
-						.comment("A whitelist of wire-related allowed in the toolbox, formatting: [mod id]:[item name]")
-						.defineList("wiring", ImmutableList.of(), obj -> true);
-				builder.pop();
-			}
 			builder.pop();
 		}
 
@@ -657,10 +644,6 @@ public class IEServerConfig
 		public final DoubleValue railgun_damage;
 		public final ConfigValue<List<? extends String>> powerpack_whitelist;
 		public final ConfigValue<List<? extends String>> powerpack_blacklist;
-
-		public final ConfigValue<List<? extends String>> toolbox_tools;
-		public final ConfigValue<List<? extends String>> toolbox_foods;
-		public final ConfigValue<List<? extends String>> toolbox_wiring;
 
 	}
 

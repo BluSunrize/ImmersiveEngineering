@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -55,7 +54,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HammerItem extends IEBaseItem implements ITool
+public class HammerItem extends IEBaseItem
 {
 	public HammerItem()
 	{
@@ -256,12 +255,6 @@ public class HammerItem extends IEBaseItem implements ITool
 		if(isCorrectToolForDrops(stack, state))
 			return 6;
 		return super.getDestroySpeed(stack, state);
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 
 	@Override

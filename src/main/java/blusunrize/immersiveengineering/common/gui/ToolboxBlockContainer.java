@@ -68,7 +68,7 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxBlockEntity> i
 		else if(slotNumer < 10)
 			return ToolboxHandler.isTool(stack);
 		else if(slotNumer < 16)
-			return ToolboxHandler.isWiring(stack, this.tile.getLevel());
+			return ToolboxHandler.isWiring(stack);
 		else
 			return true;
 	}

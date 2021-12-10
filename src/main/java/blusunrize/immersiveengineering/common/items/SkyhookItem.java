@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookStatus;
@@ -42,7 +41,7 @@ import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SKYHOOK_USER_DATA;
 
-public class SkyhookItem extends UpgradeableToolItem implements ITool
+public class SkyhookItem extends UpgradeableToolItem
 {
 	public SkyhookItem()
 	{
@@ -186,11 +185,5 @@ public class SkyhookItem extends UpgradeableToolItem implements ITool
 	public int getSlotCount()
 	{
 		return 2;
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 }

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
@@ -38,7 +37,7 @@ import net.minecraftforge.common.ForgeMod;
 import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class WirecutterItem extends IEBaseItem implements ITool
+public class WirecutterItem extends IEBaseItem
 {
 	public WirecutterItem()
 	{
@@ -184,11 +183,5 @@ public class WirecutterItem extends IEBaseItem implements ITool
 			player.broadcastBreakEvent(hand);
 			player.setItemInHand(hand, ItemStack.EMPTY);
 		}
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 }

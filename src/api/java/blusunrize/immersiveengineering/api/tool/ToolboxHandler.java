@@ -8,44 +8,29 @@
 
 package blusunrize.immersiveengineering.api.tool;
 
-import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
-import blusunrize.immersiveengineering.api.wires.IWireCoil;
-import net.minecraft.core.BlockPos;
+import blusunrize.immersiveengineering.api.IETags;
 import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShearsItem;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 public class ToolboxHandler
 {
 	private static final List<Predicate<ItemStack>> tools = new ArrayList<>();
 	private static final List<Predicate<ItemStack>> foods = new ArrayList<>();
-	private static final List<BiPredicate<ItemStack, Level>> wiring = new ArrayList<>();
+	private static final List<Predicate<ItemStack>> wiring = new ArrayList<>();
 
 	static
 	{
-		tools.add((s) -> (s.getItem() instanceof ITool tool&&tool.isTool(s)));
+		tools.add((s) -> s.is(IETags.toolboxTools));
 		tools.add((s) -> (s.getItem() instanceof DiggerItem));
 		tools.add((s) -> (s.getItem() instanceof ShearsItem));
 		foods.add((s) -> (s.getItem().isEdible()));
-		wiring.add((s, w) -> (s.getItem() instanceof IWireCoil));
-		wiring.add((s, w) ->
-				{
-					Block b = Block.byItem(s.getItem());
-					BlockState defaultState = b.defaultBlockState();
-					if(!(b instanceof EntityBlock eb))
-						return false;
-					return eb.newBlockEntity(BlockPos.ZERO, defaultState) instanceof IImmersiveConnectable;
-				}
-		);
+		foods.add((s) -> s.is(IETags.toolboxFood));
+		wiring.add((s) -> s.is(IETags.toolboxWiring));
 	}
 
 	public static boolean isTool(ItemStack s)
@@ -74,15 +59,15 @@ public class ToolboxHandler
 		foods.add(in);
 	}
 
-	public static boolean isWiring(ItemStack s, Level w)
+	public static boolean isWiring(ItemStack s)
 	{
-		for(BiPredicate<ItemStack, Level> p : wiring)
-			if(p.test(s, w))
+		for(Predicate<ItemStack> p : wiring)
+			if(p.test(s))
 				return true;
 		return false;
 	}
 
-	public static void addWiringType(BiPredicate<ItemStack, Level> in)
+	public static void addWiringType(Predicate<ItemStack> in)
 	{
 		wiring.add(in);
 	}

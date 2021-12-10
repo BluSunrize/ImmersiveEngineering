@@ -122,7 +122,7 @@ public class IEBlockEntities
 			"transformer", makeType(TransformerBlockEntity::new, Connectors.TRANSFORMER)
 	);
 	public static final RegistryObject<BlockEntityType<PostTransformerBlockEntity>> POST_TRANSFORMER = REGISTER.register(
-			"posttransformer", makeType(PostTransformerBlockEntity::new, Connectors.postTransformer)
+			"posttransformer", makeType(PostTransformerBlockEntity::new, Connectors.POST_TRANSFORMER)
 	);
 	public static final RegistryObject<BlockEntityType<TransformerHVBlockEntity>> TRANSFORMER_HV = REGISTER.register(
 			"transformerhv", makeType(TransformerHVBlockEntity::new, Connectors.TRANSFORMER_HV)

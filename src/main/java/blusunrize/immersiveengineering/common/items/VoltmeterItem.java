@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
@@ -42,7 +41,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class VoltmeterItem extends IEBaseItem implements ITool
+public class VoltmeterItem extends IEBaseItem
 {
 	public static RemoteEnergyData lastEnergyUpdate = new RemoteEnergyData(
 			FastEither.left(BlockPos.ZERO), 0, false, 0, 0
@@ -68,12 +67,6 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 					link.dimension.toString()
 			));
 		}
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 
 	@Override

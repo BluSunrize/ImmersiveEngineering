@@ -13,7 +13,11 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
+import blusunrize.immersiveengineering.common.blocks.metal.BasicConnectorBlock;
+import blusunrize.immersiveengineering.common.items.WireCoilItem;
+import blusunrize.immersiveengineering.common.register.IEBlocks.*;
+import blusunrize.immersiveengineering.common.register.IEItems.Metals;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.data.resources.RecipeMetals;
 import com.google.common.base.Preconditions;
@@ -135,6 +139,8 @@ class IEItemTags extends ItemTagsProvider
 		tag(Tags.Items.ORES_REDSTONE).add(Items.DEEPSLATE_REDSTONE_ORE);
 		tag(Tags.Items.ORES_EMERALD).add(Items.DEEPSLATE_EMERALD_ORE);
 
+		generateTagsForToolbox();
+
 		/* MOD COMPAT STARTS HERE */
 
 		// Curios
@@ -142,5 +148,39 @@ class IEItemTags extends ItemTagsProvider
 				.add(Misc.POWERPACK.asItem());
 		tag(TagUtils.createItemWrapper(new ResourceLocation("curios:head")))
 				.add(Misc.EARMUFFS.asItem());
+	}
+
+	private void generateTagsForToolbox()
+	{
+		tag(IETags.toolboxTools)
+				.add(Weapons.RAILGUN.asItem())
+				.add(Weapons.CHEMTHROWER.asItem())
+				.add(Weapons.REVOLVER.asItem())
+				.add(Weapons.SPEEDLOADER.asItem())
+				.add(Tools.WIRECUTTER.asItem())
+				.add(Tools.BUZZSAW.asItem())
+				.add(Tools.DRILL.asItem())
+				.add(Tools.HAMMER.asItem())
+				.add(Tools.SCREWDRIVER.asItem())
+				.add(Tools.SURVEY_TOOLS.asItem())
+				.add(Misc.EARMUFFS.asItem())
+				.add(Misc.SKYHOOK.asItem());
+		for(ItemRegObject<WireCoilItem> wirecoil : Misc.WIRE_COILS.values())
+			tag(IETags.toolboxWiring).add(wirecoil.asItem());
+		for(BlockEntry<BasicConnectorBlock<?>> connector : Connectors.ENERGY_CONNECTORS.values())
+			tag(IETags.toolboxWiring).add(connector.asItem());
+		tag(IETags.toolboxWiring)
+				.add(Connectors.CONNECTOR_STRUCTURAL.asItem())
+				.add(Connectors.TRANSFORMER.asItem())
+				.add(Connectors.POST_TRANSFORMER.asItem())
+				.add(Connectors.TRANSFORMER_HV.asItem())
+				.add(Connectors.BREAKER_SWITCH.asItem())
+				.add(Connectors.REDSTONE_BREAKER.asItem())
+				.add(Connectors.CURRENT_TRANSFORMER.asItem())
+				.add(Connectors.CONNECTOR_REDSTONE.asItem())
+				.add(Connectors.CONNECTOR_PROBE.asItem())
+				.add(Connectors.CONNECTOR_BUNDLED.asItem())
+				.add(Cloth.BALLOON.asItem())
+				.add(MetalDevices.RAZOR_WIRE.asItem());
 	}
 }

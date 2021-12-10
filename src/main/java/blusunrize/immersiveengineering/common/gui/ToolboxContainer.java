@@ -62,7 +62,7 @@ public class ToolboxContainer extends InternalStorageItemContainer implements IC
 		else if(slotNumer < 10)
 			return ToolboxHandler.isTool(stack);
 		else if(slotNumer < 16)
-			return ToolboxHandler.isWiring(stack, world);
+			return ToolboxHandler.isWiring(stack);
 		else
 			return true;
 	}

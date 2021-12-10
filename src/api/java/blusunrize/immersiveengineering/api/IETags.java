@@ -10,11 +10,13 @@ package blusunrize.immersiveengineering.api;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.StaticTagHelper;
 import net.minecraft.tags.Tag.Named;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags.Blocks;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -78,6 +80,11 @@ public class IETags
 	public static final Named<Item> hammers = createItemWrapper(rl("tools/hammers"));
 	public static final Named<Item> screwdrivers = createItemWrapper(rl("tools/screwdrivers"));
 	public static final Named<Item> wirecutters = createItemWrapper(rl("tools/wirecutters"));
+	public static final Named<Item> toolboxTools = createItemWrapper(rl("toolbox/tools"));
+	public static final Named<Item> toolboxFood = StaticTagHelper.createDelayedOptional(
+			ForgeRegistries.ITEMS.getRegistryName(), rl("toolbox/food"), null
+	);
+	public static final Named<Item> toolboxWiring = createItemWrapper(rl("toolbox/wiring"));
 	public static final Named<Block> hammerHarvestable = createBlockWrapper(rl("mineable/hammer"));
 	public static final Named<Block> wirecutterHarvestable = createBlockWrapper(rl("mineable/wirecutter"));
 	public static final Named<Block> drillHarvestable = createBlockWrapper(rl("mineable/drill"));

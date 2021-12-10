@@ -110,7 +110,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				.build();
 		transformerModel("block/connector/transformer_mv", Connectors.TRANSFORMER);
 		transformerModel("block/connector/transformer_hv", Connectors.TRANSFORMER_HV);
-		createConnector(Connectors.postTransformer, obj("block/connector/transformer_post.obj"),
+		createConnector(Connectors.POST_TRANSFORMER, obj("block/connector/transformer_post.obj"),
 				RenderType.solid());
 
 		ModelFile ctModel = split(obj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));

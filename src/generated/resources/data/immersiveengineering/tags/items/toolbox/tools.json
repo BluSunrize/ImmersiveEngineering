@@ -1,0 +1,17 @@
+{
+  "replace": false,
+  "values": [
+    "immersiveengineering:railgun",
+    "immersiveengineering:chemthrower",
+    "immersiveengineering:revolver",
+    "immersiveengineering:speedloader",
+    "immersiveengineering:wirecutter",
+    "immersiveengineering:buzzsaw",
+    "immersiveengineering:drill",
+    "immersiveengineering:hammer",
+    "immersiveengineering:screwdriver",
+    "immersiveengineering:survey_tools",
+    "immersiveengineering:earmuffs",
+    "immersiveengineering:skyhook"
+  ]
+}

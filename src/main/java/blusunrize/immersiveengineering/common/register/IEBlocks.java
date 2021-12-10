@@ -35,7 +35,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
@@ -523,7 +522,7 @@ public final class IEBlocks
 				"connector_structural", ConnectorBlock.PROPERTIES, p -> new BasicConnectorBlock<>(p, IEBlockEntities.CONNECTOR_STRUCTURAL)
 		);
 		public static final BlockEntry<TransformerBlock> TRANSFORMER = new BlockEntry<>("transformer", ConnectorBlock.PROPERTIES, TransformerBlock::new);
-		public static final BlockEntry<PostTransformerBlock> postTransformer = new BlockEntry<>(
+		public static final BlockEntry<PostTransformerBlock> POST_TRANSFORMER = new BlockEntry<>(
 				"post_transformer", ConnectorBlock.PROPERTIES, PostTransformerBlock::new
 		);
 		public static final BlockEntry<TransformerHVBlock> TRANSFORMER_HV = new BlockEntry<>(
@@ -640,7 +639,7 @@ public final class IEBlocks
 		{
 			if(entry==Misc.FAKE_LIGHT||entry==Misc.POTTED_HEMP||entry==StoneDecoration.CORESAMPLE||
 					entry==MetalDevices.TOOLBOX||entry==Cloth.SHADER_BANNER||entry==Cloth.SHADER_BANNER_WALL||
-					entry==Misc.HEMP_PLANT||entry==Connectors.postTransformer||IEFluids.ALL_FLUID_BLOCKS.contains(entry))
+					entry==Misc.HEMP_PLANT||entry==Connectors.POST_TRANSFORMER||IEFluids.ALL_FLUID_BLOCKS.contains(entry))
 				continue;
 			Function<Block, BlockItemIE> toItem;
 			if(entry==Cloth.BALLOON)

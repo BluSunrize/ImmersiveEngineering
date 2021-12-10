@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
@@ -64,7 +63,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, ITool, IScrollwheel
+public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IScrollwheel
 {
 	private static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
 
@@ -318,12 +317,6 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				new IESlot.Upgrades(container, toolInventory, 0, 80, 32, "CHEMTHROWER", stack, true, level, getPlayer),
 				new IESlot.Upgrades(container, toolInventory, 1, 100, 32, "CHEMTHROWER", stack, true, level, getPlayer)
 		};
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 
 	public static void setIgniteEnable(ItemStack chemthrower, boolean enabled)

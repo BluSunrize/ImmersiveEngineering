@@ -8,13 +8,12 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.tool.ITool;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelReader;
 
-public class ScrewdriverItem extends IEBaseItem implements ITool
+public class ScrewdriverItem extends IEBaseItem
 {
 	public ScrewdriverItem()
 	{
@@ -23,12 +22,6 @@ public class ScrewdriverItem extends IEBaseItem implements ITool
 
 	@Override
 	public boolean doesSneakBypassUse(ItemStack stack, LevelReader world, BlockPos pos, Player player)
-	{
-		return true;
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
 	{
 		return true;
 	}

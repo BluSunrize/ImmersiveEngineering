@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
@@ -29,7 +28,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class SpeedloaderItem extends InternalStorageItem implements ITool, IBulletContainer
+public class SpeedloaderItem extends InternalStorageItem implements IBulletContainer
 {
 	public SpeedloaderItem()
 	{
@@ -71,12 +70,6 @@ public class SpeedloaderItem extends InternalStorageItem implements ITool, IBull
 			}
 			return true;
 		}).orElse(true);
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 
 	@Override

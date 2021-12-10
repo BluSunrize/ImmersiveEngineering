@@ -36,7 +36,7 @@ public class TransformerBlockItem extends BlockItemIE
 		if(!context.replacingClickedOnBlock())
 			possiblePost = possiblePost.relative(context.getClickedFace(), -1);
 		if(PostTransformerBlock.isAttacheablePost(possiblePost, w))
-			return Connectors.postTransformer.defaultBlockState();
+			return Connectors.POST_TRANSFORMER.defaultBlockState();
 		else
 			return super.getPlacementState(context);
 	}

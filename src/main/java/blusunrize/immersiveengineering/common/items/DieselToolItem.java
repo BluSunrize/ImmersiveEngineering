@@ -6,7 +6,6 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Item;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
-import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
@@ -52,19 +51,13 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-public abstract class DieselToolItem extends UpgradeableToolItem implements IAdvancedFluidItem, ITool
+public abstract class DieselToolItem extends UpgradeableToolItem implements IAdvancedFluidItem
 {
 	protected static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
 
 	public DieselToolItem(Item.Properties props, String upgradeType)
 	{
 		super(props, upgradeType);
-	}
-
-	@Override
-	public boolean isTool(ItemStack item)
-	{
-		return true;
 	}
 
 	@Override
