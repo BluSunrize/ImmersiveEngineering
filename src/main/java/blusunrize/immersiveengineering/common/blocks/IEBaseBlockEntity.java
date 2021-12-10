@@ -90,7 +90,8 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	@Override
 	public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
 	{
-		this.readCustomNBT(pkt.getTag(), true);
+		CompoundTag nonNullTag = pkt.getTag()!=null?pkt.getTag(): new CompoundTag();
+		this.readCustomNBT(nonNullTag, true);
 	}
 
 	@Override
