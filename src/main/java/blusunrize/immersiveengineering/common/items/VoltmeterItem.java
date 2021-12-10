@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
 import blusunrize.immersiveengineering.api.tool.ITool;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
@@ -20,10 +21,12 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.Path;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
+import blusunrize.immersiveengineering.common.network.MessageRequestEnergyUpdate;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionResult;
@@ -41,6 +44,10 @@ import java.util.List;
 
 public class VoltmeterItem extends IEBaseItem implements ITool
 {
+	public static RemoteEnergyData lastEnergyUpdate = new RemoteEnergyData(
+			FastEither.left(BlockPos.ZERO), 0, false, 0, 0
+	);
+
 	public VoltmeterItem()
 	{
 		super(new Properties().stacksTo(1));
@@ -136,5 +143,36 @@ public class VoltmeterItem extends IEBaseItem implements ITool
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
+	}
+
+	public static record RemoteEnergyData(
+			FastEither<BlockPos, Integer> pos, long measuredInTick, boolean isValid, int stored, int capacity
+	)
+	{
+		public static RemoteEnergyData read(FriendlyByteBuf in)
+		{
+			FastEither<BlockPos, Integer> pos = MessageRequestEnergyUpdate.readPos(in);
+			long measuredInTick = in.readVarLong();
+			boolean isValid = in.readBoolean();
+			final int stored;
+			final int capacity;
+			if(isValid)
+			{
+				stored = in.readVarInt();
+				capacity = in.readVarInt();
+			}
+			else
+				stored = capacity = 0;
+			return new RemoteEnergyData(pos, measuredInTick, isValid, stored, capacity);
+		}
+
+		public void write(FriendlyByteBuf out)
+		{
+			MessageRequestEnergyUpdate.writePos(out, pos);
+			out.writeVarLong(measuredInTick)
+					.writeBoolean(isValid);
+			if(isValid)
+				out.writeVarInt(stored).writeVarInt(capacity);
+		}
 	}
 }

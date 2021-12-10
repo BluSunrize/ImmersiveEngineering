@@ -21,7 +21,7 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
-import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
@@ -105,9 +105,6 @@ import net.minecraftforge.client.event.*;
 import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.ForgeIngameGui;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.energy.CapabilityEnergy;
-import net.minecraftforge.energy.IEnergyStorage;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -475,7 +472,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				{
 					MultiBufferSource.BufferSource buffer = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
 					ItemStack equipped = player.getItemInHand(hand);
-					if(ItemStack.isSame(new ItemStack(Tools.VOLTMETER), equipped)||equipped.getItem() instanceof IWireCoil)
+					if(equipped.is(Tools.VOLTMETER.asItem())||equipped.getItem() instanceof IWireCoil)
 					{
 						if(WirecoilUtils.hasWireLink(equipped))
 						{
@@ -572,46 +569,42 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	private void renderVoltmeterOverlay(Player player, float scaledWidth, float scaledHeight, PoseStack transform, MultiBufferSource buffer)
 	{
 		HitResult rrt = ClientUtils.mc().hitResult;
-		ICapabilityProvider capSource = null;
+		FastEither<BlockPos, Integer> pos = null;
 		if(rrt instanceof BlockHitResult mop)
-		{
-			capSource = player.level.getBlockEntity(mop.getBlockPos());
-			if(player.level.getGameTime()%20==0)
-				ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestBlockUpdate(mop.getBlockPos()));
-		}
+			pos = FastEither.left(mop.getBlockPos());
 		else if(rrt instanceof EntityHitResult ehr)
-			capSource = ehr.getEntity();
-		if(capSource==null)
+			pos = FastEither.right(ehr.getEntity().getId());
+		if(pos==null)
 			return;
-		IEnergyStorage receiver = CapabilityUtils.getCapability(capSource, CapabilityEnergy.ENERGY);
-		if(receiver==null)
+		boolean matches = VoltmeterItem.lastEnergyUpdate.pos().equals(pos);
+		long sinceLast = player.level.getGameTime()-VoltmeterItem.lastEnergyUpdate.measuredInTick();
+		if(!matches||sinceLast > 20)
+			ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestEnergyUpdate(pos));
+		if(!VoltmeterItem.lastEnergyUpdate.isValid()||!matches)
 			return;
-		int maxStorage = receiver.getMaxEnergyStored();
-		int storage = receiver.getEnergyStored();
-		if(maxStorage > 0)
-		{
-			String storageText = Utils.toScientificNotation(storage, "0##", 100000);
-			String capacityText = Utils.toScientificNotation(maxStorage, "0##", 100000);
-			String[] text = I18n.get(Lib.DESC_INFO+"energyStored", "<br>"+storageText+" / "+capacityText)
-					.split("<br>");
-			int col = 0xffffff;
-			int i = 0;
-			RenderSystem.enableBlend();
-			for(String s : text)
-				if(s!=null)
-				{
-					s = s.trim();
-					int w = ClientUtils.font().width(s);
-					ClientUtils.font().drawInBatch(
-							s, scaledWidth/2-w/2f,
-							scaledHeight/2-4-text.length*(ClientUtils.font().lineHeight+2)+
-									(i++)*(ClientUtils.font().lineHeight+2), col,
-							false, transform.last().pose(), buffer, false,
-							0, 0xf000f0
-					);
-				}
-			RenderSystem.disableBlend();
-		}
+		int maxStorage = VoltmeterItem.lastEnergyUpdate.capacity();
+		int storage = VoltmeterItem.lastEnergyUpdate.stored();
+		String storageText = Utils.toScientificNotation(storage, "0##", 100000);
+		String capacityText = Utils.toScientificNotation(maxStorage, "0##", 100000);
+		String[] text = I18n.get(Lib.DESC_INFO+"energyStored", "<br>"+storageText+" / "+capacityText)
+				.split("<br>");
+		int col = 0xffffff;
+		int i = 0;
+		RenderSystem.enableBlend();
+		for(String s : text)
+			if(s!=null)
+			{
+				s = s.trim();
+				int w = ClientUtils.font().width(s);
+				ClientUtils.font().drawInBatch(
+						s, scaledWidth/2-w/2f,
+						scaledHeight/2-4-text.length*(ClientUtils.font().lineHeight+2)+
+								(i++)*(ClientUtils.font().lineHeight+2), col,
+						false, transform.last().pose(), buffer, false,
+						0, 0xf000f0
+				);
+			}
+		RenderSystem.disableBlend();
 	}
 
 	@SubscribeEvent()

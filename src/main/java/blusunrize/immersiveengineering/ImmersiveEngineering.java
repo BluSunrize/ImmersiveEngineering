@@ -205,7 +205,8 @@ public class ImmersiveEngineering
 		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageSkyhookSync.class, MessageSkyhookSync::new, PLAY_TO_CLIENT);
 		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);
-		registerMessage(MessageRequestBlockUpdate.class, MessageRequestBlockUpdate::new, PLAY_TO_SERVER);
+		registerMessage(MessageRequestEnergyUpdate.class, MessageRequestEnergyUpdate::new, PLAY_TO_SERVER);
+		registerMessage(MessageStoredEnergy.class, MessageStoredEnergy::new, PLAY_TO_CLIENT);
 		registerMessage(MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::new, PLAY_TO_CLIENT);
 		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
 		registerMessage(MessageBirthdayParty.class, MessageBirthdayParty::new, PLAY_TO_CLIENT);

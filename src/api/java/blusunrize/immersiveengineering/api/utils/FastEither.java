@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.utils;
 
 import com.google.common.base.Preconditions;
 
+import java.util.Objects;
 import java.util.function.Function;
 
 public class FastEither<L, R>
@@ -40,6 +41,11 @@ public class FastEither<L, R>
 		return left!=null;
 	}
 
+	public boolean isRight()
+	{
+		return right!=null;
+	}
+
 	public L leftNonnull()
 	{
 		return Preconditions.checkNotNull(left);
@@ -56,5 +62,20 @@ public class FastEither<L, R>
 			return left.apply(leftNonnull());
 		else
 			return right.apply(rightNonnull());
+	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if(this==o) return true;
+		if(o==null||getClass()!=o.getClass()) return false;
+		FastEither<?, ?> that = (FastEither<?, ?>)o;
+		return Objects.equals(left, that.left)&&Objects.equals(right, that.right);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(left, right);
 	}
 }

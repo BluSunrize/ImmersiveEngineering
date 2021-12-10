@@ -33,12 +33,9 @@ import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.wires.GlobalNetProvider;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
@@ -59,8 +56,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.block.entity.LecternBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.chunk.LevelChunk;
-import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
@@ -86,7 +81,6 @@ import java.util.*;
 public class EventHandler
 {
 	public static HashSet<IEExplosion> currentExplosions = new HashSet<IEExplosion>();
-	public static final Queue<Pair<ResourceKey<Level>, BlockPos>> requestedBlockUpdates = new LinkedList<>();
 	public static final Queue<Runnable> SERVER_TASKS = new ArrayDeque<>();
 
 	@SubscribeEvent
@@ -192,23 +186,6 @@ public class EventHandler
 					ex.doExplosionTick();
 					if(ex.isExplosionFinished)
 						itExplosion.remove();
-				}
-			}
-			Iterator<Pair<ResourceKey<Level>, BlockPos>> it = requestedBlockUpdates.iterator();
-			while(it.hasNext())
-			{
-				Pair<ResourceKey<Level>, BlockPos> curr = it.next();
-				if(curr.getFirst().equals(event.world.dimension()))
-				{
-					LevelChunk chunk = event.world.getChunkAt(curr.getSecond());
-					int sectionId = SectionPos.of(curr.getSecond()).y();
-					LevelChunkSection[] sections = chunk.getSections();
-					if(sectionId >= 0&&sectionId < sections.length&&sections[sectionId]!=null)
-					{
-						BlockState state = event.world.getBlockState(curr.getSecond());
-						event.world.sendBlockUpdated(curr.getSecond(), state, state, 3);
-					}
-					it.remove();
 				}
 			}
 		}
