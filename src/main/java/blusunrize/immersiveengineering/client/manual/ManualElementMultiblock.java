@@ -233,24 +233,20 @@ public class ManualElementMultiblock extends SpecialManualElements
 								{
 									transform.pushPose();
 									transform.translate(l, h, w);
-									boolean b = renderProperties.overwriteBlockRender(state, pos);
-									if(!b)
-									{
-										int overlay;
-										if(pos.equals(multiblock.getTriggerOffset()))
-											overlay = OverlayTexture.pack(0, true);
-										else
-											overlay = OverlayTexture.NO_OVERLAY;
-										IModelData modelData = EmptyModelData.INSTANCE;
-										BlockEntity te = structureWorld.getBlockEntity(pos);
-										if(te!=null)
-											modelData = te.getModelData();
-										blockRender.getModelRenderer().tesselateBlock(
-												structureWorld, blockRender.getBlockModel(state), state, pos, transform,
-												translucentFullbright, false, structureWorld.random, state.getSeed(pos),
-												overlay, modelData
-										);
-									}
+									int overlay;
+									if(pos.equals(multiblock.getTriggerOffset()))
+										overlay = OverlayTexture.pack(0, true);
+									else
+										overlay = OverlayTexture.NO_OVERLAY;
+									IModelData modelData = EmptyModelData.INSTANCE;
+									BlockEntity te = structureWorld.getBlockEntity(pos);
+									if(te!=null)
+										modelData = te.getModelData();
+									blockRender.getModelRenderer().tesselateBlock(
+											structureWorld, blockRender.getBlockModel(state), state, pos, transform,
+											translucentFullbright, false, structureWorld.random, state.getSeed(pos),
+											overlay, modelData
+									);
 									transform.popPose();
 								}
 							}
