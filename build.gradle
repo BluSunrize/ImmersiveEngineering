@@ -111,6 +111,7 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
+            jvmArg "-Dlog4j2.formatMsgNoLookups=true"
             arg "-mixin.config="+modid+".mixins.json"
             mods {
                 immersiveengineering {
@@ -132,6 +133,7 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
+            jvmArg "-Dlog4j2.formatMsgNoLookups=true"
             // Disable GUI by default, the IDE console can be used to enter commands
             arg '-nogui'
             arg "-mixin.config="+modid+".mixins.json"
@@ -158,6 +160,7 @@ minecraft {
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
+            jvmArg "-Dlog4j2.formatMsgNoLookups=true"
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]
             arg "-mixin.config="+modid+".mixins.json"
