@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.blocks;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalBE.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -189,7 +188,7 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 
 		if(tile instanceof IDirectionalBE)
 		{
-			Direction f = ((IDirectionalBE)tile).getFacingForPlacement(placer, pos, side, hitX, hitY, hitZ);
+			Direction f = ((IDirectionalBE)tile).getFacingForPlacement(context);
 			((IDirectionalBE)tile).setFacing(f);
 			if(tile instanceof IAdvancedDirectionalBE)
 				((IAdvancedDirectionalBE)tile).onDirectionalPlacement(side, hitX, hitY, hitZ, placer);

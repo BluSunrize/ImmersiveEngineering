@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBou
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
+import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -22,6 +23,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
@@ -228,11 +230,11 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStat
 	}
 
 	@Override
-	public Direction getFacingForPlacement(LivingEntity placer, BlockPos pos, Direction side, float hitX, float hitY,
-										   float hitZ)
+	public Direction getFacingForPlacement(BlockPlaceContext ctx)
 	{
-		onCeiling = (side==DOWN)||(side!=UP&&hitY > .5);
-		return IStateBasedDirectional.super.getFacingForPlacement(placer, pos, side, hitX, hitY, hitZ);
+		Direction side = ctx.getClickedFace();
+		onCeiling = (side==DOWN)||(side!=UP&&ctx.getClickLocation().y > .5);
+		return IStateBasedDirectional.super.getFacingForPlacement(ctx);
 	}
 
 	@Override
