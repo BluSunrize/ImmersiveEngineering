@@ -39,7 +39,6 @@ import net.minecraft.world.level.saveddata.maps.MapDecoration;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -84,12 +83,6 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}

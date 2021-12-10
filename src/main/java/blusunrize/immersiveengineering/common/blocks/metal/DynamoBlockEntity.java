@@ -24,7 +24,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -55,12 +54,6 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 
 	@Override
 	public boolean mirrorFacingOnPlacement(LivingEntity placer)
-	{
-		return true;
-	}
-
-	@Override
-	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return true;
 	}

@@ -66,12 +66,6 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 	}
 
 	@Override
-	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
-	{
-		return true;
-	}
-
-	@Override
 	public boolean canRotate(Direction axis)
 	{
 		return true;
