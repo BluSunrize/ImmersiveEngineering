@@ -33,5 +33,6 @@ public class SqueezerContainer extends IEBaseContainer<SqueezerBlockEntity>
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 143));
 		addGenericData(GenericContainerData.energy(tile.energyStorage));
+		addGenericData(GenericContainerData.fluid(tile.tanks[0]));
 	}
 }
