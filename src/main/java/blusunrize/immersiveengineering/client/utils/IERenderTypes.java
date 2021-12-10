@@ -96,7 +96,6 @@ public class IERenderTypes extends RenderStateShard
 						.setOverlayState(OVERLAY)
 						.setTextureState(BLOCK_SHEET_MIPPED)
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-						.setOutputState(TRANSLUCENT_TARGET)
 						.createCompositeState(false)
 		);
 		RenderType.CompositeState translucentNoDepthState = RenderType.CompositeState.builder()
