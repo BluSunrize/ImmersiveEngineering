@@ -157,12 +157,6 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(LivingEntity placer)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;

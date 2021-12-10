@@ -451,12 +451,6 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(LivingEntity placer)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;

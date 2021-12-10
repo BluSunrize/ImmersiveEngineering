@@ -439,12 +439,6 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	}
 
 	@Override
-	public boolean mirrorFacingOnPlacement(LivingEntity placer)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean canHammerRotate(Direction side, Vec3 hit, LivingEntity entity)
 	{
 		return false;
