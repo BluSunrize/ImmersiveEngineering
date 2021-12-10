@@ -456,12 +456,6 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 		return false;
 	}
 
-	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
 	@Nullable
 	@Override
 	public TeslaCoilBlockEntity master()

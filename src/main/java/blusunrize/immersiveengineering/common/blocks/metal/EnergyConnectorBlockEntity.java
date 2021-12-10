@@ -156,12 +156,6 @@ public class EnergyConnectorBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
 		if(!relay)

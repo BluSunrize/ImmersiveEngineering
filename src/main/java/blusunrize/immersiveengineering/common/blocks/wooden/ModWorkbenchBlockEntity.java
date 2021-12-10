@@ -112,12 +112,6 @@ public class ModWorkbenchBlockEntity extends IEBaseBlockEntity implements IIEInv
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public void receiveMessageFromClient(CompoundTag message)
 	{
 		applyConfigTo(inventory.get(0), message);

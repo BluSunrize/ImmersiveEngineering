@@ -122,12 +122,6 @@ public class ConnectorStructuralBlockEntity extends ImmersiveConnectableBlockEnt
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public Property<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_ALL;

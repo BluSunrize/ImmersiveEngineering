@@ -130,12 +130,6 @@ public class ConveyorBeltBlockEntity<T extends IConveyorBelt> extends IEBaseBloc
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public void afterRotation(Direction oldDir, Direction newDir)
 	{
 		if(this.conveyorBeltSubtype!=null)

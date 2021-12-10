@@ -106,13 +106,6 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 		return false;
 	}
 
-	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-
 	//	=================================
 	//		DATA MANAGEMENT
 	//	=================================

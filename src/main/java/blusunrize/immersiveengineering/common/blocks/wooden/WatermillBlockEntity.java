@@ -293,12 +293,6 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean isDummy()
 	{
 		return offset[0]!=0||offset[1]!=0;

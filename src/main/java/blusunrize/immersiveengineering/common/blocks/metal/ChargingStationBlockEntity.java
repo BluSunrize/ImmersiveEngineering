@@ -202,12 +202,6 @@ public class ChargingStationBlockEntity extends IEBaseBlockEntity implements IEC
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public VoxelShape getBlockBounds(@Nullable CollisionContext ctx)
 	{
 		return Shapes.box(

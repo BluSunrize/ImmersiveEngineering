@@ -249,12 +249,6 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStat
 		return false;
 	}
 
-	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
 	private static final record ShapeKey(int slopePos, int slopeLength, boolean onCeiling)
 	{
 	}

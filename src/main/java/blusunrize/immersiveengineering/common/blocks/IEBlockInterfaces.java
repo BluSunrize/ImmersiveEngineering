@@ -130,11 +130,6 @@ public class IEBlockInterfaces
 			return true;
 		}
 
-		default boolean canRotate(Direction axis)
-		{
-			return true;
-		}
-
 		default void afterRotation(Direction oldDir, Direction newDir)
 		{
 		}

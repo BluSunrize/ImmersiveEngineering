@@ -207,12 +207,6 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public void receiveMessageFromClient(CompoundTag message)
 	{
 		if(message.contains("ioMode"))

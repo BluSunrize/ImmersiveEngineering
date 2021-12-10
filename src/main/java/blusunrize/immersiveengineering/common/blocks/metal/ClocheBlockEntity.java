@@ -329,12 +329,6 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public void setFacing(Direction facing)
 	{
 		BlockPos lowest = worldPosition.below(dummy);

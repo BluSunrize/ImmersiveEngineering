@@ -179,12 +179,6 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public EnumProperty<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_HORIZONTAL;

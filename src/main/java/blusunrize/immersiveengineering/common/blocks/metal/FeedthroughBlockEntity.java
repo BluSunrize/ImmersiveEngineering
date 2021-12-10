@@ -183,12 +183,6 @@ public class FeedthroughBlockEntity extends ImmersiveConnectableBlockEntity impl
 		return false;
 	}
 
-	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
 	private VoxelShape aabb;
 
 	@Override

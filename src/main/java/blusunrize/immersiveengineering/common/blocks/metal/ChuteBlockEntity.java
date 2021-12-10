@@ -85,12 +85,6 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
 		boolean contact = false;

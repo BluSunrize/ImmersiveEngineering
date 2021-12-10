@@ -88,12 +88,6 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
 	{
 		ColumnPos coords = CoresampleItem.getCoords(coresample);

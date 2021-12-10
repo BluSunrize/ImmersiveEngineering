@@ -466,12 +466,6 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean canEntityDestroy(Entity entity)
 	{
 		if(isDummy())

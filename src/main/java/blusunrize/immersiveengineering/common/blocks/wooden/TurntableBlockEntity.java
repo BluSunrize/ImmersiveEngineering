@@ -111,12 +111,6 @@ public class TurntableBlockEntity extends IEBaseBlockEntity implements IStateBas
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		Direction facing = getFacing();

@@ -136,12 +136,6 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		this.setFacing(side);

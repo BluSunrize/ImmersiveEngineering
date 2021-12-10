@@ -445,12 +445,6 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public void onDirectionalPlacement(Direction side, float hitX, float hitY, float hitZ, LivingEntity placer)
 	{
 		Direction f = Direction.fromYRot(placer.getYRot());

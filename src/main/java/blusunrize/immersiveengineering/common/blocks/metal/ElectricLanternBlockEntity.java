@@ -163,12 +163,6 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
 		if(!level.isClientSide)

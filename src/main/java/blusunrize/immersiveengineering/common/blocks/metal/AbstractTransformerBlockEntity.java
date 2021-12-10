@@ -92,12 +92,6 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
 		return getConnectionOffset(type, here.getIndex()==RIGHT_INDEX);

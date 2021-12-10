@@ -66,12 +66,6 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
 		if(entity instanceof LivingEntity)

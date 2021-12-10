@@ -288,12 +288,6 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 		return false;
 	}
 
-	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
 	private void updateComparatorValues()
 	{
 		final int oldVal = compVal;

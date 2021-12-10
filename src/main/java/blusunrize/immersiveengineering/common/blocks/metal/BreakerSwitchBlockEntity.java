@@ -241,12 +241,6 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 		return false;
 	}
 
-	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
 	private static final CachedVoxelShapes<Pair<Direction, Integer>> SHAPES = new CachedVoxelShapes<>(pair -> {
 		Vec3 start = new Vec3(.25, .1875, 0);
 		Vec3 end = new Vec3(.75, .8125, .5);

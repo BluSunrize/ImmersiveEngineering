@@ -59,12 +59,6 @@ public class DynamoBlockEntity extends IEBaseBlockEntity implements IStateBasedD
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 	}

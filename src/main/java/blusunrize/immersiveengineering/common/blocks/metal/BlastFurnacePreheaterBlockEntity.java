@@ -148,12 +148,6 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
-	@Override
 	public void afterRotation(Direction oldDir, Direction newDir)
 	{
 		for(int i = 0; i <= 2; i++)

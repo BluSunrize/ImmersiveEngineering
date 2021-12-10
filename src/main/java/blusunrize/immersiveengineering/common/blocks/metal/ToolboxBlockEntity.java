@@ -203,12 +203,6 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 		return false;
 	}
 
-	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return true;
-	}
-
 	private static final VoxelShape boundsZ = Shapes.box(.125f, 0, .25f, .875f, .625f, .75f);
 	private static final VoxelShape boundsX = Shapes.box(.25f, 0, .125f, .75f, .625f, .875f);
 

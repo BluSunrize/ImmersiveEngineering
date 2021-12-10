@@ -158,13 +158,6 @@ public class ConnectorBundledBlockEntity extends ImmersiveConnectableBlockEntity
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-
-	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);

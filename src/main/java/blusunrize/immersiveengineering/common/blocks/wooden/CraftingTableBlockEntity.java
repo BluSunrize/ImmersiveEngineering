@@ -128,12 +128,6 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IIEIn
 	}
 
 	@Override
-	public boolean canRotate(Direction axis)
-	{
-		return false;
-	}
-
-	@Override
 	public Property<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_HORIZONTAL;
