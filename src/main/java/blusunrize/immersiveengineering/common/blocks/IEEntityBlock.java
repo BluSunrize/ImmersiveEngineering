@@ -390,16 +390,17 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 	@SuppressWarnings("deprecation")
 	public VoxelShape getCollisionShape(BlockState state, BlockGetter world, BlockPos pos, CollisionContext context)
 	{
-		if(state.getBlock()==this)
+		if(getClassData().customCollisionBounds())
 		{
 			BlockEntity te = world.getBlockEntity(pos);
 			if(te instanceof ICollisionBounds collisionBounds)
 				return collisionBounds.getCollisionShape(context);
+			else
+				// Temporary hack: The vanilla Entity#isInWall passes nonsense positions to this method (always the head
+				// center rather than the actual block). This stops our blocks from suffocating people when this happens
+				return Shapes.empty();
 		}
-		// Temporary hack: The vanilla Entity#isInWall passes nonsense positions to this method (always the head center
-		// rather than the actual block). This stops our blocks from suffocating people when this happens
-		return Shapes.empty();
-		//return super.getCollisionShape(state, world, pos, context);
+		return super.getCollisionShape(state, world, pos, context);
 	}
 
 	@Override
@@ -497,7 +498,8 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 					tempBE instanceof IEServerTickableBE,
 					tempBE instanceof IEClientTickableBE,
 					tempBE instanceof IComparatorOverride,
-					tempBE instanceof IRedstoneOutput
+					tempBE instanceof IRedstoneOutput,
+					tempBE instanceof ICollisionBounds
 			);
 		}
 		return this.classData;
@@ -507,7 +509,8 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 			boolean serverTicking,
 			boolean clientTicking,
 			boolean hasComparatorOutput,
-			boolean emitsRedstone
+			boolean emitsRedstone,
+			boolean customCollisionBounds
 	)
 	{
 		@Nullable
