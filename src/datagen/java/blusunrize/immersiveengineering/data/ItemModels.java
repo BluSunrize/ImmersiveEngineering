@@ -389,7 +389,6 @@ public class ItemModels extends TRSRItemModelProvider
 		Preconditions.checkArgument(existingFileHelper.exists(model, PackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
 				.customLoader(IEOBJBuilder::begin)
-				.flipV(true)
 				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()));
 	}
 

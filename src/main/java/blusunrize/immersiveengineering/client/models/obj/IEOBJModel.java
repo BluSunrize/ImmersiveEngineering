@@ -10,19 +10,23 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import com.mojang.datafixers.util.Pair;
+import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
+import malte0811.modelsplitter.model.OBJModel;
+import malte0811.modelsplitter.model.Polygon;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.client.model.IModelConfiguration;
+import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
-import net.minecraftforge.client.model.obj.OBJModel;
 
 import java.util.Collection;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public record IEOBJModel(OBJModel base, boolean dynamic, IEOBJCallback<?> callback)
+public record IEOBJModel(OBJModel<OBJMaterial> base, boolean dynamic, IEOBJCallback<?> callback)
 		implements IModelGeometry<IEOBJModel>
 {
 
@@ -36,6 +40,10 @@ public record IEOBJModel(OBJModel base, boolean dynamic, IEOBJCallback<?> callba
 	@Override
 	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 	{
-		return base.getTextures(owner, modelGetter, missingTextureErrors);
+		return base.getFaces().stream()
+				.map(Polygon::getTexture)
+				.distinct()
+				.map(mat -> ModelLoaderRegistry.resolveTexture(mat.map_Kd(), owner))
+				.collect(Collectors.toList());
 	}
 }

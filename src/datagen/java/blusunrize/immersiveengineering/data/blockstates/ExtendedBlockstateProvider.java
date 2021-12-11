@@ -251,8 +251,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		return models().withExistingParent(name, mcLoc("block"))
 				.texture("particle", particle)
 				.customLoader(IEOBJBuilder::begin)
-				.modelLocation(addModelsPrefix(model))
-				.flipV(true);
+				.modelLocation(addModelsPrefix(model));
 	}
 
 	protected int getAngle(Direction dir, int offset)

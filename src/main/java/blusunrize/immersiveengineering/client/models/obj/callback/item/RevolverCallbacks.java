@@ -191,10 +191,10 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 		}
 	}
 
-	private static final String[][] groups = {{"frame"}, {"cylinder"}};
+	private static final List<List<String>> groups = List.of(List.of("frame"), List.of("cylinder"));
 
 	@Override
-	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	public List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
 		return groups;
 	}
@@ -205,7 +205,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 
 	@Nonnull
 	@Override
-	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity,
+	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, TransformType transform, LivingEntity entity,
 												float partialTicks)
 	{
 		if(matOpen==null)
@@ -223,7 +223,7 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 			if(ItemNBTHelper.hasKey(stack, "reload"))
 			{
 				float f = 3-ItemNBTHelper.getInt(stack, "reload")/20f; //Reload time in seconds, for coordinating with audio
-				if("frame".equals(groups[0]))
+				if("frame".equals(groups.get(0)))
 				{
 					if(f < .35||f > 1.95)
 						return matClose;
@@ -249,10 +249,10 @@ public class RevolverCallbacks implements ItemCallback<RevolverCallbacks.Key>
 							null, null);
 				}
 			}
-			else if("frame".equals(groups[0])&&((Player)entity).containerMenu instanceof RevolverContainer)
+			else if("frame".equals(groups.get(0))&&((Player)entity).containerMenu instanceof RevolverContainer)
 				return matOpen;
 		}
-		return "frame".equals(groups[0])?matClose: matCylinder;
+		return "frame".equals(groups.get(0))?matClose: matCylinder;
 	}
 
 	public record Key(

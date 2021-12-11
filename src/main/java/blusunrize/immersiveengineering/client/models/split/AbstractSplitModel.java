@@ -84,7 +84,7 @@ public abstract class AbstractSplitModel<T extends BakedModel> extends Composite
 			List<BakedQuad> subModelFaces = new ArrayList<>(e.getValue().getFaces().size());
 			for(Polygon<ExtraQuadData> p : e.getValue().getFaces())
 				subModelFaces.add(PolygonUtils.toBakedQuad(p, transform));
-			Vec3i mcKey = new Vec3i(e.getKey().getX(), e.getKey().getY(), e.getKey().getZ());
+			Vec3i mcKey = new Vec3i(e.getKey().x(), e.getKey().y(), e.getKey().z());
 			map.put(mcKey, subModelFaces);
 		}
 		return map;

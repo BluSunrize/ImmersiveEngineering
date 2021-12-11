@@ -18,25 +18,24 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 
 public interface ItemCallback<Key> extends IEOBJCallback<Key>
 {
-	String[][] EMPTY_STRING_A = new String[0][];
-
-	default String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	default List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
-		return EMPTY_STRING_A;
+		return List.of();
 	}
 
 	@Nonnull
 	default Transformation getTransformForGroups(
-			ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks
+			ItemStack stack, List<String> groups, TransformType transform, LivingEntity entity, float partialTicks
 	)
 	{
 		return Transformation.identity();
 	}
 
-	default boolean areGroupsFullbright(ItemStack stack, String[] groups)
+	default boolean areGroupsFullbright(ItemStack stack, List<String> groups)
 	{
 		return false;
 	}

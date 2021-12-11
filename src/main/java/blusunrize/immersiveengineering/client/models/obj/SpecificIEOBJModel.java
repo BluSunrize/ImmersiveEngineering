@@ -15,14 +15,16 @@ import blusunrize.immersiveengineering.api.shader.ShaderLayer;
 import blusunrize.immersiveengineering.client.models.obj.GeneralIEOBJModel.GroupKey;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
-import blusunrize.immersiveengineering.mixin.accessors.client.obj.ModelMeshAccess;
-import blusunrize.immersiveengineering.mixin.accessors.client.obj.ModelObjectAccess;
-import blusunrize.immersiveengineering.mixin.accessors.client.obj.OBJModelAccess;
+import blusunrize.immersiveengineering.client.models.split.PolygonUtils;
+import blusunrize.immersiveengineering.client.models.split.PolygonUtils.ExtraQuadData;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
+import malte0811.modelsplitter.model.Group;
+import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
+import malte0811.modelsplitter.model.Polygon;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -36,13 +38,11 @@ import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
-import net.minecraftforge.client.model.obj.MaterialLibrary;
-import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
-import net.minecraftforge.client.model.obj.OBJModel.ModelObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class SpecificIEOBJModel<T> implements BakedModel
@@ -141,9 +141,9 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	{
 		List<BakedQuad> quads = Lists.newArrayList();
 
-		for(String groupName : baseModel.getGroups().keySet())
+		for(Entry<String, Group<OBJMaterial>> groupName : baseModel.getGroups().entrySet())
 		{
-			List<ShadedQuads> temp = addQuadsForGroup(groupName, true);
+			List<ShadedQuads> temp = addQuadsForGroup(groupName.getKey(), groupName.getValue(), true);
 			quads.addAll(
 					temp.stream()
 							.map(ShadedQuads::quadsInLayer)
@@ -157,7 +157,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		return ImmutableList.copyOf(quads);
 	}
 
-	public List<ShadedQuads> addQuadsForGroup(String groupName, boolean allowCaching)
+	public List<ShadedQuads> addQuadsForGroup(String groupName, Group<OBJMaterial> group, boolean allowCaching)
 	{
 		GroupKey<T> cacheKey = new GroupKey<>(key, shader, layer, groupName);
 		if(allowCaching)
@@ -171,7 +171,6 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			numPasses = shader.getLayers().length;
 		else
 			numPasses = 1;
-		ModelGroup g = baseModel.getGroups().get(groupName);
 		List<ShadedQuads> ret = new ArrayList<>();
 		Transformation optionalTransform = baseModel.getSprite().getRotation();
 		optionalTransform = callback.applyTransformations(key, groupName, optionalTransform);
@@ -181,9 +180,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 				baseModel.getSpriteGetter(), groupName, callback, key, shader
 		);
 		final MaterialColorGetter<T> colorGetter = new MaterialColorGetter<>(groupName, callback, key, shader);
-		final TextureCoordinateRemapper coordinateRemapper = new TextureCoordinateRemapper(
-				this.baseModel.getBaseModel(), shader
-		);
+		final TextureCoordinateRemapper coordinateRemapper = new TextureCoordinateRemapper(shader);
 
 		if(state.visibility().isVisible(groupName)&&callback.shouldRenderGroup(key, groupName, layer))
 			for(int pass = 0; pass < numPasses; ++pass)
@@ -194,15 +191,9 @@ public class SpecificIEOBJModel<T> implements BakedModel
 					colorGetter.setRenderPass(pass);
 					coordinateRemapper.setRenderPass(pass);
 					IModelBuilder<?> modelBuilder = new QuadListAdder(quads::add, transform);
-					addModelObjectQuads(
-							g, baseModel.getOwner(), modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform
+					addGroupQuads(
+							group, baseModel.getOwner(), modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform
 					);
-					final Transformation finalTransform = optionalTransform;
-					g.getParts().stream()
-							.filter(part -> baseModel.getOwner().getPartVisibility(part)&&part instanceof ModelObject)
-							.forEach(part -> addModelObjectQuads(
-									(ModelObject)part, baseModel.getOwner(), modelBuilder, spriteGetter, colorGetter, coordinateRemapper, finalTransform
-							));
 					ShaderLayer layer = shader!=null?shader.getLayers()[pass]: new ShaderLayer(new ResourceLocation("missing/no"), -1)
 					{
 						@Override
@@ -221,42 +212,30 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	/**
 	 * Yep, this is 90% a copy of ModelObject.addQuads. We need custom hooks in there, so we copy the rest around it.
 	 */
-	private void addModelObjectQuads(ModelObject modelObject, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
-									 MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
-									 TextureCoordinateRemapper coordinateRemapper,
-									 Transformation transform)
+	private void addGroupQuads(Group<OBJMaterial> group, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
+							   MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
+							   TextureCoordinateRemapper coordinateRemapper,
+							   Transformation transform)
 	{
-		List<ModelMeshAccess> meshes = ((ModelObjectAccess)modelObject).getMeshes();
-		for(ModelMeshAccess mesh : meshes)
+		for(var face : group.getFaces())
 		{
-			MaterialLibrary.Material mat = mesh.getMat();
+			OBJMaterial mat = face.getTexture();
 			if(mat==null)
 				continue;
 			TextureAtlasSprite texture = spriteGetter.apply(
-					mat.name, ModelLoaderRegistry.resolveTexture(mat.diffuseColorMap, owner)
+					mat.name(), ModelLoaderRegistry.resolveTexture(mat.map_Kd(), owner)
 			);
-			int tintIndex = mat.diffuseTintIndex;
-			Vector4f colorTint = colorGetter.apply(mat.name, mat.diffuseColor);
+			Vector4f colorTint = colorGetter.apply(mat.name(), new Vector4f(1, 1, 1, 1));
 
-			for(int[][] face : mesh.getFaces())
-			{
-				boolean drawFace = coordinateRemapper.remapCoord(face);
-				if(drawFace)
-				{
-					Map.Entry<BakedQuad, Direction> quad = ((OBJModelAccess)baseModel.getBaseModel()).invokeMakeQuad(
-							face, tintIndex, colorTint, mat.ambientColor, texture, transform
-					);
-					if(quad.getValue()==null)
-						modelBuilder.addGeneralQuad(quad.getKey());
-					else
-						modelBuilder.addFaceQuad(quad.getValue(), quad.getKey());
-				}
-				coordinateRemapper.resetCoords();
-			}
+			Polygon<OBJMaterial> remappedFace = coordinateRemapper.remapCoord(face);
+			if(remappedFace!=null)
+				modelBuilder.addGeneralQuad(PolygonUtils.toBakedQuad(
+						remappedFace.getPoints(), new ExtraQuadData(texture, colorTint), transform, false
+				));
 		}
 	}
 
-	public Map<String, ModelGroup> getGroups()
+	public Map<String, Group<OBJMaterial>> getGroups()
 	{
 		return baseModel.getGroups();
 	}

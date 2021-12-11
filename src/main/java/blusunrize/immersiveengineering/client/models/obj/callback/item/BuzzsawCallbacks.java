@@ -84,10 +84,10 @@ public class BuzzsawCallbacks implements ItemCallback<BuzzsawCallbacks.Key>
 		return true;
 	}
 
-	private static final String[][] GROUP_BLADE = {{"blade"}};
+	private static final List<List<String>> GROUP_BLADE = List.of(List.of("blade"));
 
 	@Override
-	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	public List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
 		return GROUP_BLADE;
 	}
@@ -96,7 +96,7 @@ public class BuzzsawCallbacks implements ItemCallback<BuzzsawCallbacks.Key>
 
 	@Nonnull
 	@Override
-	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
+	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
 		if(!DrillCallbacks.shouldRotate(Tools.BUZZSAW, entity, stack, transform))
 			return MAT_FIXED;

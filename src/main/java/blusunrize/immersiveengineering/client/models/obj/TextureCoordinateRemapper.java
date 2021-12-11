@@ -11,29 +11,23 @@ package blusunrize.immersiveengineering.client.models.obj;
 
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.api.shader.ShaderLayer;
-import blusunrize.immersiveengineering.mixin.accessors.client.obj.OBJModelAccess;
-import net.minecraft.world.phys.Vec2;
-import net.minecraftforge.client.model.obj.OBJModel;
+import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
+import malte0811.modelsplitter.model.Polygon;
+import malte0811.modelsplitter.model.UVCoords;
+import malte0811.modelsplitter.model.Vertex;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class TextureCoordinateRemapper
 {
-	private final List<Vec2> texCoords;
-	private final HashMap<Integer, Vec2> backup;
 	private final ShaderCase shaderCase;
-	private final boolean flipV;
 
 	private ShaderLayer shaderLayer;
 
-	public TextureCoordinateRemapper(OBJModel model, ShaderCase shaderCase)
+	public TextureCoordinateRemapper(ShaderCase shaderCase)
 	{
-		this.texCoords = ((OBJModelAccess)model).getTexCoords();
 		this.shaderCase = shaderCase;
-		this.backup = new HashMap<>();
-		this.flipV = model.flipV;
 	}
 
 	/**
@@ -51,49 +45,33 @@ public class TextureCoordinateRemapper
 	 * Remap texture coordinates for the given face
 	 *
 	 * @param face
-	 * @return whether to render the face or skip it
+	 * @return the actual face to render (may be the passed one or a different one), or null if the face should be skipped
 	 */
-	public boolean remapCoord(int[][] face)
+	public Polygon<OBJMaterial> remapCoord(Polygon<OBJMaterial> face)
 	{
-		if(shaderCase==null||texCoords.size() < 1)
-			return true;
+		if(shaderCase==null)
+			return face;
 
 		double[] texBounds = shaderLayer.getTextureBounds();
 		double[] cutBounds = shaderLayer.getCutoutBounds();
 		if(texBounds==null&&cutBounds==null)
-			return true;
+			return face;
 
-		for(int i = 0; i < 4; i++)
+		List<Vertex> newPoints = new ArrayList<>();
+		for(var vertex : face.getPoints())
 		{
-			int[] index = face[Math.min(i, face.length-1)];
-			if(index.length < 2)
-				continue;
-
-			int texIndex = index[1];
-			if(this.backup.containsKey(texIndex)) // if this coordinate has already been modified, abort
-				continue;
-			Vec2 texCoord = texCoords.get(texIndex);
-			this.backup.put(texIndex, texCoord);
-
-			if(flipV)
-				texCoord = new Vec2(texCoord.x, 1-texCoord.y);
+			UVCoords texCoord = vertex.uv();
 
 			if(texBounds!=null)
 			{
 				//if any uvs are outside the layers bounds
-				if(texBounds[0] > texCoord.x||texCoord.x > texBounds[2]||texBounds[1] > texCoord.y||texCoord.y > texBounds[3])
-				{
-					texCoords.set(texIndex, texCoord);
-					return false;
-				}
+				if(texBounds[0] > texCoord.u()||texCoord.u() > texBounds[2]||texBounds[1] > texCoord.v()||texCoord.v() > texBounds[3])
+					return null;
 
 				double dU = texBounds[2]-texBounds[0];
 				double dV = texBounds[3]-texBounds[1];
 				//Rescaling to the partial bounds that the texture represents
-				texCoord = new Vec2(
-						(float)((texCoord.x-texBounds[0])/dU),
-						(float)((texCoord.y-texBounds[1])/dV)
-				);
+				texCoord = new UVCoords((texCoord.u()-texBounds[0])/dU, (texCoord.v()-texBounds[1])/dV);
 			}
 			//Rescaling to the selective area of the texture that is used
 
@@ -101,25 +79,13 @@ public class TextureCoordinateRemapper
 			{
 				double dU = cutBounds[2]-cutBounds[0];
 				double dV = cutBounds[3]-cutBounds[1];
-				texCoord = new Vec2(
-						(float)(cutBounds[0]+dU*texCoord.x),
-						(float)(cutBounds[1]+dV*texCoord.y)
-				);
+				texCoord = new UVCoords(cutBounds[0]+dU*texCoord.u(), cutBounds[1]+dV*texCoord.v());
 			}
-			if(flipV)
-				texCoord = new Vec2(texCoord.x, 1-texCoord.y);
-			texCoords.set(texIndex, texCoord);
+			if(texCoord!=vertex.uv())
+				newPoints.add(new Vertex(vertex.position(), vertex.position(), texCoord));
+			else
+				newPoints.add(vertex);
 		}
-		return true;
-	}
-
-	/**
-	 * Reset any coordinates that were manipulated to their backed up state
-	 */
-	public void resetCoords()
-	{
-		for(Map.Entry<Integer, Vec2> entry : this.backup.entrySet())
-			this.texCoords.set(entry.getKey(), entry.getValue());
-		this.backup.clear();
+		return new Polygon<>(newPoints, face.getTexture());
 	}
 }

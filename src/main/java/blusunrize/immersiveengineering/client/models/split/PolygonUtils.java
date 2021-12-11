@@ -18,6 +18,7 @@ import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
 import malte0811.modelsplitter.math.Vec3d;
 import malte0811.modelsplitter.model.Polygon;
+import malte0811.modelsplitter.model.UVCoords;
 import malte0811.modelsplitter.model.Vertex;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -58,10 +59,10 @@ public class PolygonUtils
 					(byte)(packedNormal >> 8),
 					(byte)(packedNormal >> 16)
 			).normalize();
-			final double[] uv = {
+			final UVCoords uv = new UVCoords(
 					Float.intBitsToFloat(quad.getVertices()[uvOffset+baseOffset]),
 					Float.intBitsToFloat(quad.getVertices()[uvOffset+baseOffset+1])
-			};
+			);
 			final Vec3d pos = new Vec3d(
 					Float.intBitsToFloat(quad.getVertices()[baseOffset+posOffset]),
 					Float.intBitsToFloat(quad.getVertices()[baseOffset+posOffset+1]),
@@ -70,21 +71,28 @@ public class PolygonUtils
 			vertices.add(new Vertex(pos, normalVec, uv));
 			Preconditions.checkState(quad.getVertices()[baseOffset+colorOffset]==color, "All vertices in a quad must have the same color, otherwise we need changes in BMS");
 		}
-		return new Polygon<>(vertices, new ExtraQuadData(quad.getSprite(), color));
+		return new Polygon<>(vertices, new ExtraQuadData(
+				quad.getSprite(),
+				new Vector4f((color&255)/255f, ((color >> 8)&255)/255f, ((color >> 16)&255)/255f, (color >> 24)/255f))
+		);
 	}
 
 	public static BakedQuad toBakedQuad(Polygon<ExtraQuadData> poly, ModelState transform)
 	{
-		Preconditions.checkArgument(poly.getPoints().size()==4);
-		BakedQuadBuilder quadBuilder = new BakedQuadBuilder(poly.getTexture().sprite());
-		Transformation rotation = transform.getRotation().blockCenterToCorner();
+		return toBakedQuad(poly.getPoints(), poly.getTexture(), transform.getRotation().blockCenterToCorner(), true);
+	}
+
+	public static BakedQuad toBakedQuad(List<Vertex> points, ExtraQuadData data, Transformation rotation, boolean absoluteUV)
+	{
+		Preconditions.checkArgument(points.size()==4);
+		BakedQuadBuilder quadBuilder = new BakedQuadBuilder(data.sprite());
 		Vector3f normal = new Vector3f();
-		for(Vertex v : poly.getPoints())
+		for(Vertex v : points)
 		{
 			List<VertexFormatElement> elements = DefaultVertexFormat.BLOCK.getElements();
 			Vector4f pos = new Vector4f();
-			pos.set(toArray(v.getPosition(), 4));
-			normal.set(toArray(v.getNormal(), 3));
+			pos.set(toArray(v.position(), 4));
+			normal.set(toArray(v.normal(), 3));
 			rotation.transformPosition(pos);
 			rotation.transformNormal(normal);
 			pos.perspectiveDivide();
@@ -107,14 +115,18 @@ public class PolygonUtils
 						quadBuilder.put(i, normal.x(), normal.y(), normal.z());
 						break;
 					case COLOR:
-						int color = poly.getTexture().color();
-						quadBuilder.put(
-								i, (color&255)/255f, ((color >> 8)&255)/255f, ((color >> 16)&255)/255f, (color >> 24)/255f
-						);
+						quadBuilder.put(i, data.color().x(), data.color().y(), data.color().z(), data.color().w());
 						break;
 					case UV:
 						if(element.getType()==Type.FLOAT)
-							quadBuilder.put(i, (float)v.getU(), (float)v.getV());
+						{
+							if(absoluteUV)
+								quadBuilder.put(i, (float)v.uv().u(), (float)v.uv().v());
+							else
+								quadBuilder.put(
+										i, data.sprite().getU(16*v.uv().u()), data.sprite().getV(16*(1-v.uv().v()))
+								);
+						}
 						else
 							quadBuilder.put(i, 0, 0);
 						break;
@@ -138,7 +150,7 @@ public class PolygonUtils
 		return ret;
 	}
 
-	public static record ExtraQuadData(TextureAtlasSprite sprite, int color)
+	public static record ExtraQuadData(TextureAtlasSprite sprite, Vector4f color)
 	{
 	}
 }

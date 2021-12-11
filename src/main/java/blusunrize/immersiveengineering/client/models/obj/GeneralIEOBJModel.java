@@ -22,12 +22,14 @@ import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BlockCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.common.util.Utils;
-import blusunrize.immersiveengineering.mixin.accessors.client.obj.OBJModelAccess;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import com.google.common.collect.ImmutableList;
+import malte0811.modelsplitter.model.Group;
+import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
+import malte0811.modelsplitter.model.OBJModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
@@ -49,8 +51,6 @@ import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.client.model.obj.OBJModel;
-import net.minecraftforge.client.model.obj.OBJModel.ModelGroup;
 import net.minecraftforge.common.util.LazyOptional;
 
 import javax.annotation.Nonnull;
@@ -70,7 +70,7 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 			.maximumSize(100)
 			.build(CacheLoader.from(p -> new SpecificIEOBJModel<>(this, p.callbackKey(), p.shader(), p.renderTypeIfRelevant())));
 	private final IEOBJCallback<T> callback;
-	private final OBJModel baseModel;
+	private final OBJModel<OBJMaterial> baseModel;
 	private final TextureAtlasSprite particles;
 	private final IModelConfiguration owner;
 	private final Function<Material, TextureAtlasSprite> spriteGetter;
@@ -79,7 +79,7 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 	private final ItemOverrides overrides;
 	private final ModelProperty<T> keyProperty;
 
-	public GeneralIEOBJModel(IEOBJCallback<T> callback, OBJModel baseModel, IModelConfiguration owner, Function<Material, TextureAtlasSprite> spriteGetter, ModelState sprite, boolean isDynamic)
+	public GeneralIEOBJModel(IEOBJCallback<T> callback, OBJModel<OBJMaterial> baseModel, IModelConfiguration owner, Function<Material, TextureAtlasSprite> spriteGetter, ModelState sprite, boolean isDynamic)
 	{
 		this.callback = callback;
 		this.baseModel = baseModel;
@@ -211,12 +211,12 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 		return groupCache;
 	}
 
-	public Map<String, ModelGroup> getGroups()
+	public Map<String, Group<OBJMaterial>> getGroups()
 	{
-		return ((OBJModelAccess)baseModel).getParts();
+		return baseModel.getFacesByGroup();
 	}
 
-	public OBJModel getBaseModel()
+	public OBJModel<OBJMaterial> getBaseModel()
 	{
 		return baseModel;
 	}

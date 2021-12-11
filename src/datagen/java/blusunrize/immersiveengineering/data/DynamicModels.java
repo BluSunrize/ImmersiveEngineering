@@ -39,25 +39,21 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/arc_furnace_electrodes.obj.ie"))
 				.callback(DynamicSubmodelCallbacks.INSTANCE)
-				.flipV(true)
 				.end();
 		getBuilder(AutoWorkbenchRenderer.NAME)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/auto_workbench_animated.obj.ie"))
 				.callback(DynamicSubmodelCallbacks.INSTANCE)
-				.flipV(true)
 				.end();
 		getBuilder(BottlingMachineRenderer.NAME)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/bottling_machine_animated.obj.ie"))
 				.callback(DynamicSubmodelCallbacks.INSTANCE)
-				.flipV(true)
 				.end();
 		getBuilder(BucketWheelRenderer.NAME)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/bucket_wheel.obj.ie"))
 				.callback(DynamicSubmodelCallbacks.INSTANCE)
-				.flipV(true)
 				.end();
 		getBuilder(CrusherRenderer.NAME)
 				.customLoader(OBJLoaderBuilder::begin)
@@ -103,26 +99,22 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/wooden_device/windmill.obj.ie"))
 				.callback(DynamicSubmodelCallbacks.INSTANCE)
-				.flipV(true)
 				.end();
 		getBuilder(RedstoneConveyorRender.MODEL_NAME)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/conveyor_redstone.obj.ie"))
 				.callback(DynamicSubmodelCallbacks.INSTANCE)
-				.flipV(true)
 				.end();
 		getBuilder(SawbladeRenderer.NAME)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/item/buzzsaw_diesel.obj.ie"))
 				.callback(DynamicSubmodelCallbacks.INSTANCE)
-				.flipV(true)
 				.end();
 		TurretRenderer.MODEL_FILE_BY_BLOCK.forEach((block, file) -> {
 			getBuilder(TurretRenderer.MODEL_NAME_BY_BLOCK.get(block))
 					.customLoader(IEOBJBuilder::begin)
 					.modelLocation(rl("models/"+file))
 					.callback(DynamicSubmodelCallbacks.INSTANCE)
-					.flipV(true)
 					.end();
 		});
 		for(Entry<Block, ModelFile> multiblock : multiblocks.unsplitModels.entrySet())

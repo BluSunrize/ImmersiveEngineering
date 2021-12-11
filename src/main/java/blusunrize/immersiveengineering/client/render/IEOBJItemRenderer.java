@@ -20,6 +20,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
+import malte0811.modelsplitter.model.Group;
+import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -88,7 +90,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			if(callback.shouldRenderGroup(model.getKey(), g, null))
 				visible.add(g);
 		LivingEntity entity = GlobalTempData.getActiveHolder();
-		for(String[] groups : callback.getSpecialGroups(stack, transformType, entity))
+		for(List<String> groups : callback.getSpecialGroups(stack, transformType, entity))
 		{
 			Transformation mat = callback.getTransformForGroups(stack, groups, transformType, entity,
 					partialTicks);
@@ -97,21 +99,22 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 					combinedLightIn, combinedOverlayIn);
 			matrixStackIn.popPose();
 		}
-		renderQuadsForGroups(visible.toArray(new String[0]), model, callback, stack, matrixStackIn,
+		renderQuadsForGroups(List.copyOf(visible), model, callback, stack, matrixStackIn,
 				bufferIn, visible, combinedLightIn, combinedOverlayIn);
 	}
 
-	private <T> void renderQuadsForGroups(String[] groups, SpecificIEOBJModel<T> model, ItemCallback<T> callback,
+	private <T> void renderQuadsForGroups(List<String> groups, SpecificIEOBJModel<T> model, ItemCallback<T> callback,
 										  ItemStack stack, PoseStack matrix, MultiBufferSource buffer,
 										  Set<String> visible, int light, int overlay)
 	{
 		List<ShadedQuads> quadsByLayer = new ArrayList<>();
-		for(String g : groups)
+		for(String groupName : groups)
 		{
-			if(visible.contains(g)&&callback.shouldRenderGroup(model.getKey(), g, null))
-				quadsByLayer.addAll(model.addQuadsForGroup(g, true)
+			Group<OBJMaterial> group = model.getGroups().get(groupName);
+			if(visible.contains(groupName)&&callback.shouldRenderGroup(model.getKey(), groupName, null))
+				quadsByLayer.addAll(model.addQuadsForGroup(groupName, group, true)
 						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
-			visible.remove(g);
+			visible.remove(groupName);
 		}
 		matrix.pushPose();
 		for(ShadedQuads quadsForLayer : quadsByLayer)

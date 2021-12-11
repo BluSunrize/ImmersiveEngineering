@@ -27,6 +27,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
@@ -93,17 +94,17 @@ public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
 		return transform;
 	}
 
-	private static final String[][] ROTATING = {
-			{"drill_head", "upgrade_damage0"},
-			{"upgrade_damage1", "upgrade_damage2"},
-			{"upgrade_damage3", "upgrade_damage4"}
-	};
-	private static final String[][] FIXED = {
-			{"upgrade_damage1", "upgrade_damage2", "upgrade_damage3", "upgrade_damage4"}
-	};
+	private static final List<List<String>> ROTATING = List.of(
+			List.of("drill_head", "upgrade_damage0"),
+			List.of("upgrade_damage1", "upgrade_damage2"),
+			List.of("upgrade_damage3", "upgrade_damage4")
+	);
+	private static final List<List<String>> FIXED = List.of(List.of(
+			"upgrade_damage1", "upgrade_damage2", "upgrade_damage3", "upgrade_damage4"
+	));
 
 	@Override
-	public String[][] getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
+	public List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
 		if(shouldRotate(Tools.DRILL, entity, stack, transform))
 			return ROTATING;
@@ -115,21 +116,21 @@ public class DrillCallbacks implements ItemCallback<DrillCallbacks.Key>
 
 	@Nonnull
 	@Override
-	public Transformation getTransformForGroups(ItemStack stack, String[] groups, TransformType transform, LivingEntity entity, float partialTicks)
+	public Transformation getTransformForGroups(ItemStack stack, List<String> groups, TransformType transform, LivingEntity entity, float partialTicks)
 	{
-		if(groups==FIXED[0])
+		if(groups==FIXED.get(0))
 			return MAT_AUGERS;
 		float angle = (entity.tickCount%60+partialTicks)/60f*(float)(2*Math.PI);
 		Quaternion rotation = null;
 		Vector3f translation = null;
-		if("drill_head".equals(groups[0]))
+		if("drill_head".equals(groups.get(0)))
 			rotation = new Quaternion(angle, 0, 0, false);
-		else if("upgrade_damage1".equals(groups[0]))
+		else if("upgrade_damage1".equals(groups.get(0)))
 		{
 			translation = new Vector3f(.441f, 0, 0);
 			rotation = new Quaternion(0, angle, 0, false);
 		}
-		else if("upgrade_damage3".equals(groups[0]))
+		else if("upgrade_damage3".equals(groups.get(0)))
 		{
 			translation = new Vector3f(.441f, 0, 0);
 			rotation = new Quaternion(0, 0, angle, false);
