@@ -465,7 +465,7 @@ public class ClientProxy extends CommonProxy
 		DynamicModelLoader.requestTexture(SawbladeRenderer.SAWBLADE);
 		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_FLOW);
 		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_STILL);
-		DynamicModelLoader.requestTexture(RockcutterItem.texture);
+		DynamicModelLoader.requestTexture(RockcutterItem.TEXTURE);
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/wire"));
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));
 

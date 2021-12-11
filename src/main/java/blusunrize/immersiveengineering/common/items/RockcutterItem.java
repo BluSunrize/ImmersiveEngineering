@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -20,24 +21,24 @@ import java.util.function.Predicate;
 
 public class RockcutterItem extends SawbladeItem
 {
-	private static Set<Material> silktouchMaterials = ImmutableSet.of(
+	private static final Set<Material> silktouchMaterials = ImmutableSet.of(
 			Material.PLANT, Material.REPLACEABLE_PLANT, Material.GRASS,
 			Material.STONE, Material.GLASS, Material.ICE, Material.ICE_SOLID
 	);
-	private static ListTag enchants = new ListTag();
-	public static ResourceLocation texture = new ResourceLocation("immersiveengineering:item/rockcutter_blade");
+	private static final ListTag ENCHANTS = new ListTag();
+	public static final ResourceLocation TEXTURE = ImmersiveEngineering.rl("item/rockcutter_blade");
 
 	static
 	{
 		CompoundTag tag = new CompoundTag();
 		tag.putString("id", "silk_touch");
 		tag.putInt("lvl", 1);
-		enchants.add(tag);
+		ENCHANTS.add(tag);
 	}
 
 	public RockcutterItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage)
 	{
-		super(maxDamage, sawbladeSpeed, sawbladeDamage);
+		super(maxDamage, sawbladeSpeed, sawbladeDamage, TEXTURE);
 	}
 
 	@Override
@@ -49,18 +50,12 @@ public class RockcutterItem extends SawbladeItem
 	@Override
 	public ListTag getSawbladeEnchants()
 	{
-		return enchants.copy();
+		return ENCHANTS.copy();
 	}
 
 	@Override
 	public Predicate<BlockState> getSawbladeMaterials()
 	{
 		return s -> silktouchMaterials.contains(s.getMaterial());
-	}
-
-	@Override
-	public ResourceLocation getSawbladeTexture()
-	{
-		return texture;
 	}
 }
