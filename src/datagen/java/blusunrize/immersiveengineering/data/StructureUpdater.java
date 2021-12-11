@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.data;
 
+import com.mojang.datafixers.DataFixer;
+import com.mojang.datafixers.DataFixerUpper;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
@@ -74,7 +76,12 @@ public class StructureUpdater implements DataProvider
 		);
 		CompoundTag converted = updateNBT(inputNBT);
 		if(!converted.equals(inputNBT))
+		{
+			Class<? extends DataFixer> fixerClass = DataFixers.getDataFixer().getClass();
+			if (!fixerClass.equals(DataFixerUpper.class))
+				throw new RuntimeException("Structures are not up to date, but unknown data fixer is in use: "+fixerClass.getName());
 			writeNBTTo(loc, converted, cache);
+		}
 	}
 
 	private void writeNBTTo(ResourceLocation loc, CompoundTag data, HashCache cache) throws IOException
