@@ -1,7 +1,6 @@
 {
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/revolver.obj.ie",
-  "flip-v": true,
   "dynamic": true,
   "callbacks": "immersiveengineering:revolver",
   "transform": {

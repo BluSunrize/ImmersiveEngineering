@@ -5,6 +5,5 @@
   },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/wooden_device/logic_unit.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:logic_unit"
 }

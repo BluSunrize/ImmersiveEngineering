@@ -1,6 +1,5 @@
 {
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/metal_device/gun_turret.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:submodel"
 }

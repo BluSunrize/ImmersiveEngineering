@@ -5,6 +5,5 @@
   },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine_mirrored.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:bottling_machine"
 }

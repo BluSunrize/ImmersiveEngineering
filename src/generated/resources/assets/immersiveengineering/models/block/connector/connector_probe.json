@@ -5,6 +5,5 @@
   },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/connector/connector_probe.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:probe"
 }

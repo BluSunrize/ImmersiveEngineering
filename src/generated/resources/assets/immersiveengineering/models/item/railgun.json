@@ -1,7 +1,6 @@
 {
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/railgun.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:railgun",
   "transform": {
     "thirdperson_righthand": {

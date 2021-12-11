@@ -5,6 +5,5 @@
   },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/lantern.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:lantern"
 }

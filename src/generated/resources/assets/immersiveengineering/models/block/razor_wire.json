@@ -5,6 +5,5 @@
   },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/razor_wire.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:razor_wire"
 }

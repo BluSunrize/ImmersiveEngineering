@@ -1,6 +1,5 @@
 {
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine_animated.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:submodel"
 }

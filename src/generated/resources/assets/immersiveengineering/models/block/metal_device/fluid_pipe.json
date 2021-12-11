@@ -5,6 +5,5 @@
   },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/metal_device/fluid_pipe.obj.ie",
-  "flip-v": true,
   "callbacks": "immersiveengineering:pipe"
 }
