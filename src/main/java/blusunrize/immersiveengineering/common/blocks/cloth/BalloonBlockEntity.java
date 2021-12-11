@@ -13,32 +13,26 @@ import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderAndCase;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IPlayerInteraction;
-import blusunrize.immersiveengineering.common.blocks.metal.ConnectorStructuralBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -51,7 +45,9 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implements IPlayerInteraction, IHammerInteraction
+import static blusunrize.immersiveengineering.api.wires.WireType.STRUCTURE_CATEGORY;
+
+public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implements IPlayerInteraction, IHammerInteraction, IBlockBounds
 {
 	public int style = 0;
 	public DyeColor colour0 = null;
@@ -79,6 +75,7 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 			requestModelDataUpdate();
 		if(nbt.contains("shader", Tag.TAG_COMPOUND))
 			shader.deserializeNBT(nbt.getCompound("shader"));
+		markContainingBlockForUpdate(null);
 	}
 
 	@Override
@@ -118,6 +115,12 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 		if(capability==CapabilityShader.SHADER_CAPABILITY)
 			return shaderCap.cast();
 		return super.getCapability(capability, facing);
+	}
+
+	@Override
+	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
+	{
+		return STRUCTURE_CATEGORY.equals(cableType.getCategory());
 	}
 
 	@Override
@@ -195,31 +198,8 @@ public class BalloonBlockEntity extends ConnectorStructuralBlockEntity implement
 		return true;
 	}
 
-	@Override
-	public void onEntityCollision(Level world, Entity entity)
+	public ShaderWrapper getShader()
 	{
-		if(entity instanceof AbstractArrow)
-		{
-			Vec3 pos = Vec3.atCenterOf(getBlockPos());
-			world.playSound(null, pos.x, pos.y, pos.z, SoundEvents.FIREWORK_ROCKET_BLAST,
-					SoundSource.BLOCKS, 1.5f, 0.7f);
-			world.removeBlock(getBlockPos(), false);
-			world.addParticle(ParticleTypes.EXPLOSION, pos.x, pos.y, pos.z, 0, .05, 0);
-			ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(this.shader);
-			if(shader!=null)
-				shader.registryEntry().getEffectFunction().execute(world, shader.shader(), null, shader.sCase().getShaderType().toString(), pos, null, .375f);
-
-		}
-	}
-
-	@Override
-	public Direction getFacing()
-	{
-		return Direction.NORTH;
-	}
-
-	@Override
-	public void setFacing(Direction facing)
-	{
+		return shader;
 	}
 }
