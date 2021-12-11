@@ -230,7 +230,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			Polygon<OBJMaterial> remappedFace = coordinateRemapper.remapCoord(face);
 			if(remappedFace!=null)
 				modelBuilder.addGeneralQuad(PolygonUtils.toBakedQuad(
-						remappedFace.getPoints(), new ExtraQuadData(texture, colorTint), transform, false
+						remappedFace.getPoints(), new ExtraQuadData(texture, colorTint), transform.blockCenterToCorner(), false
 				));
 		}
 	}
