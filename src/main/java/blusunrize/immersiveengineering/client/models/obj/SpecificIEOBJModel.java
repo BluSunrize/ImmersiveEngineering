@@ -74,6 +74,8 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	@Override
 	public List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pSide, @Nonnull Random pRand)
 	{
+		if(pSide!=null)
+			return List.of();
 		if(quads==null)
 			quads = buildQuads();
 		return quads;
