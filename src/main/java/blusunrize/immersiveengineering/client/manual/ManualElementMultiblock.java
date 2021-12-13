@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks;
 import blusunrize.immersiveengineering.api.multiblocks.ClientMultiblocks.MultiblockManualData;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
@@ -20,7 +21,6 @@ import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
@@ -222,7 +222,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 				}
 				else
 				{
-					VertexConsumer translucentFullbright = buffer.getBuffer(IERenderTypes.TRANSLUCENT_FULLBRIGHT);
+					TransformingVertexBuilder translucentFullbright = new TransformingVertexBuilder(
+							buffer, IERenderTypes.TRANSLUCENT_FULLBRIGHT
+					);
 					for(int h = 0; h < structureHeight; h++)
 						for(int l = 0; l < structureLength; l++)
 							for(int w = 0; w < structureWidth; w++)
@@ -238,6 +240,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 										overlay = OverlayTexture.pack(0, true);
 									else
 										overlay = OverlayTexture.NO_OVERLAY;
+									translucentFullbright.setOverlay(overlay);
 									IModelData modelData = EmptyModelData.INSTANCE;
 									BlockEntity te = structureWorld.getBlockEntity(pos);
 									if(te!=null)

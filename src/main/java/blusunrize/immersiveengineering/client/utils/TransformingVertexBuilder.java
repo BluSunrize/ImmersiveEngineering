@@ -59,6 +59,11 @@ public class TransformingVertexBuilder implements VertexConsumer
 		this(buffer.getBuffer(type), transform, type.format());
 	}
 
+	public TransformingVertexBuilder(MultiBufferSource buffer, RenderType type)
+	{
+		this(buffer, type, new PoseStack());
+	}
+
 	@Nonnull
 	@Override
 	public VertexConsumer vertex(double x, double y, double z)
@@ -162,10 +167,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 	public void setOverlay(int packedOverlayIn)
 	{
-		overlay.setGlobal(new Vec2i(
-				packedOverlayIn&0xffff,
-				packedOverlayIn >> 16
-		));
+		overlay.setGlobal(new Vec2i(packedOverlayIn&0xffff, packedOverlayIn >> 16));
 	}
 
 	private record Vec2i(int x, int y)
@@ -175,8 +177,8 @@ public class TransformingVertexBuilder implements VertexConsumer
 	private static class ObjectWithGlobal<T>
 	{
 		@Nullable
-		T obj;
-		boolean isGlobal;
+		private T obj;
+		private boolean isGlobal;
 
 		public ObjectWithGlobal(TransformingVertexBuilder builder)
 		{
@@ -185,7 +187,7 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 		public void putData(T newVal)
 		{
-			Preconditions.checkState(obj==null);
+			Preconditions.checkState(obj==null||(isGlobal&&obj.equals(newVal)));
 			obj = newVal;
 		}
 
