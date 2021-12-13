@@ -193,8 +193,8 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 			getLevelNonnull().removeBlock(pos, false);
 		getLevelNonnull().setBlockAndUpdate(pos, state);
 		BlockEntity tile = getLevelNonnull().getBlockEntity(pos);
-		if(tile instanceof IReadOnPlacement)
-			((IReadOnPlacement)tile).readOnPlacement(null, stack);
+		if(tile instanceof IReadOnPlacement readPlacement)
+			readPlacement.readOnPlacement(null, stack);
 	}
 
 	//	=================================

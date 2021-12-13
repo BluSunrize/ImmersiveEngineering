@@ -46,7 +46,6 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -314,18 +313,6 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	public boolean shouldRenderAsActiveImpl()
 	{
 		return energyStorage.getEnergyStored() > 0&&!isRSDisabled()&&!this.sawblade.isEmpty();
-	}
-
-	@Override
-	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
-	{
-		super.replaceStructureBlock(pos, state, stack, h, l, w);
-		if(h==1&&l==1)
-		{
-			BlockEntity tile = level.getBlockEntity(pos);
-			if(tile instanceof ConveyorBeltBlockEntity)
-				((ConveyorBeltBlockEntity)tile).setFacing(this.getIsMirrored()?this.getFacing().getCounterClockWise(): this.getFacing().getClockWise());
-		}
 	}
 
 	private void insertItemToProcess(ItemStack stack, boolean simulate)

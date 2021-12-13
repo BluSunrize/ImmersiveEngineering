@@ -42,7 +42,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -183,18 +182,6 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 		if(posInMultiblock.getY()==1&&posInMultiblock.getX()%2==0)
 			return Shapes.box(0, 0, 0, 1, .125f, 1);
 		return Shapes.block();
-	}
-
-	@Override
-	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
-	{
-		super.replaceStructureBlock(pos, state, stack, h, l, w);
-		if(h==1&&l!=1)
-		{
-			BlockEntity tile = level.getBlockEntity(pos);
-			if(tile instanceof ConveyorBeltBlockEntity)
-				((ConveyorBeltBlockEntity)tile).setFacing(this.getFacing());
-		}
 	}
 
 	@Override

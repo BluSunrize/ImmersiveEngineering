@@ -34,7 +34,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -208,24 +207,6 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	{
 		// Use bottlingProcessQueue instead of the "real" processQueue
 		return energyStorage.getEnergyStored() > 0&&!isRSDisabled()&&!bottlingProcessQueue.isEmpty();
-	}
-
-	@Override
-	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
-	{
-		super.replaceStructureBlock(pos, state, stack, h, l, w);
-		if(h==2&&l==1&&w==1)
-		{
-			BlockEntity tile = level.getBlockEntity(pos);
-			if(tile instanceof FluidPumpBlockEntity)
-				((FluidPumpBlockEntity)tile).setDummy(true);
-		}
-		else if(h==1&&l==0)
-		{
-			BlockEntity tile = level.getBlockEntity(pos);
-			if(tile instanceof ConveyorBeltBlockEntity)
-				((ConveyorBeltBlockEntity)tile).setFacing(this.getIsMirrored()?this.getFacing().getCounterClockWise(): this.getFacing().getClockWise());
-		}
 	}
 
 	@Override

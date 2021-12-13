@@ -8,17 +8,14 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
-import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
@@ -378,18 +375,5 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 		if(new BlockPos(1, 1, 2).equals(posInMultiblock))
 			return new Direction[]{this.getFacing().getClockWise()};
 		return new Direction[0];
-	}
-
-	@Override
-	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
-	{
-		if(state.getBlock()==ConveyorHandler.getBlock(BasicConveyor.TYPE))
-		{
-			if((l==2&&w==0)||l==1)
-				state = state.setValue(IEProperties.FACING_ALL, getFacing().getClockWise());
-			else
-				state = state.setValue(IEProperties.FACING_ALL, getFacing().getOpposite());
-		}
-		super.replaceStructureBlock(pos, state, stack, h, l, w);
 	}
 }

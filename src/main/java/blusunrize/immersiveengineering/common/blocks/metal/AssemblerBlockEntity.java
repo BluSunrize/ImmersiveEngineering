@@ -45,7 +45,6 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -422,18 +421,6 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 				new BlockPos(0, 0, 1),
 				new BlockPos(2, 0, 1)
 		);
-	}
-
-	@Override
-	public void replaceStructureBlock(BlockPos pos, BlockState state, ItemStack stack, int h, int l, int w)
-	{
-		super.replaceStructureBlock(pos, state, stack, h, l, w);
-		if(h==1&&w==1&&l!=1)
-		{
-			BlockEntity tile = getLevelNonnull().getBlockEntity(pos);
-			if(tile instanceof ConveyorBeltBlockEntity)
-				((ConveyorBeltBlockEntity)tile).setFacing(this.getFacing());
-		}
 	}
 
 	@Override
