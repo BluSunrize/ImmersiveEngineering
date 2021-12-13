@@ -319,6 +319,8 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 
 			if(!simulate)
 				processQueue.add(process);
+			markContainingBlockForUpdate(null);
+			markChunkDirty();
 			return true;
 		}
 		return false;
