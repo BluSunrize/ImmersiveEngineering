@@ -117,6 +117,11 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 					.callback(DynamicSubmodelCallbacks.INSTANCE)
 					.end();
 		});
+		getBuilder(BlastFurnacePreheaterRenderer.NAME)
+				.customLoader(OBJLoaderBuilder::begin)
+				.modelLocation(rl("models/block/metal_device/blastfurnace_fan.obj"))
+				.flipV(true)
+				.end();
 		for(Entry<Block, ModelFile> multiblock : multiblocks.unsplitModels.entrySet())
 			withExistingParent(multiblock.getKey().getRegistryName().getPath(), multiblock.getValue().getLocation());
 	}

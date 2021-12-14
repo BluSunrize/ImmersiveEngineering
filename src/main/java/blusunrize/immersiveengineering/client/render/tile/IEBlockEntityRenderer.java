@@ -16,10 +16,15 @@ public abstract class IEBlockEntityRenderer<T extends BlockEntity> implements Bl
 		return (int)(BlockEntityRenderer.super.getViewDistance()*increase);
 	}
 
+	protected static void rotateForFacingNoCentering(PoseStack stack, Direction facing)
+	{
+		stack.mulPose(new Quaternion(0, 180-facing.toYRot(), 0, true));
+	}
+
 	protected static void rotateForFacing(PoseStack stack, Direction facing)
 	{
 		stack.translate(0.5, 0.5, 0.5);
-		stack.mulPose(new Quaternion(0, 180-facing.toYRot(), 0, true));
+		rotateForFacingNoCentering(stack, facing);
 		stack.translate(-0.5, -0.5, -0.5);
 	}
 }

@@ -160,6 +160,8 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 		if(activeBeforeTick!=activeAfterTick)
 		{
 			this.setChanged();
+			if(!activeAfterTick)
+				turnOff();
 			for(StructureBlockInfo info : multiblockInstance.getStructure(level))
 			{
 				T te = getEntityForPos(info.pos);
@@ -167,6 +169,10 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 					te.setActive(activeAfterTick);
 			}
 		}
+	}
+
+	protected void turnOff()
+	{
 	}
 
 	@Nullable

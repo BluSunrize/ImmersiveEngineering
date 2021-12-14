@@ -161,6 +161,14 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 		return Optional.empty();
 	}
 
+	@Override
+	protected void turnOff()
+	{
+		super.turnOff();
+		for(int j = 0; j < 2; j++)
+			getFromPreheater(j==0, BlastFurnacePreheaterBlockEntity::turnOff, 0);
+	}
+
 	private final MultiblockCapability<IItemHandler> inputHandler = MultiblockCapability.make(
 			this, be -> be.inputHandler, BlastFurnaceAdvancedBlockEntity::master,
 			registerCapability(new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false}))

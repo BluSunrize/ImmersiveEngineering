@@ -1,0 +1,5 @@
+{
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_device/blastfurnace_fan.obj",
+  "flip-v": true
+}

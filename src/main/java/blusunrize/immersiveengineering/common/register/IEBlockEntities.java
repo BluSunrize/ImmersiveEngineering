@@ -169,8 +169,8 @@ public class IEBlockEntities
 	public static final RegistryObject<BlockEntityType<FluidPlacerBlockEntity>> FLUID_PLACER = REGISTER.register(
 			"fluidplacer", makeType(FluidPlacerBlockEntity::new, MetalDevices.FLUID_PLACER)
 	);
-	public static final RegistryObject<BlockEntityType<BlastFurnacePreheaterBlockEntity>> BLASTFURNACE_PREHEATER = REGISTER.register(
-			"blastfurnacepreheater", makeType(BlastFurnacePreheaterBlockEntity::new, MetalDevices.BLAST_FURNACE_PREHEATER)
+	public static final MultiblockBEType<BlastFurnacePreheaterBlockEntity> BLASTFURNACE_PREHEATER = makeMultiblock(
+			"blastfurnacepreheater", BlastFurnacePreheaterBlockEntity::new, MetalDevices.BLAST_FURNACE_PREHEATER
 	);
 	public static final RegistryObject<BlockEntityType<FurnaceHeaterBlockEntity>> FURNACE_HEATER = REGISTER.register(
 			"furnaceheater", makeType(FurnaceHeaterBlockEntity::new, MetalDevices.FURNACE_HEATER)

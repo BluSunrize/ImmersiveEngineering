@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHasDummyBlocks;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
+import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -24,8 +24,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.common.capabilities.Capability;
@@ -37,8 +39,9 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional,
-		IHasDummyBlocks, IModelOffsetProvider
+		IHasDummyBlocks, IModelOffsetProvider, IEClientTickableBE
 {
+	public static final float ANGLE_PER_TICK = (float)Math.toRadians(20);
 	public boolean active;
 	public int dummy = 0;
 	public final MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
@@ -47,9 +50,9 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 			this, be -> be.energyCap, BlastFurnacePreheaterBlockEntity::master, registerEnergyInput(energyStorage)
 	);
 
-	public BlastFurnacePreheaterBlockEntity(BlockPos pos, BlockState state)
+	public BlastFurnacePreheaterBlockEntity(BlockEntityType<BlastFurnacePreheaterBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEBlockEntities.BLASTFURNACE_PREHEATER.get(), pos, state);
+		super(type, pos, state);
 	}
 
 	public int doSpeedup()
@@ -65,12 +68,26 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 			this.energyStorage.extractEnergy(consumed, false);
 			return 1;
 		}
-		else if(active)
+		else
+			turnOff();
+		return 0;
+	}
+
+	@Override
+	public void tickClient()
+	{
+		if(active)
+			angle = (angle+ANGLE_PER_TICK)%Mth.PI;
+	}
+
+	public Void turnOff()
+	{
+		if(active)
 		{
 			active = false;
 			this.markContainingBlockForUpdate(null);
 		}
-		return 0;
+		return null;
 	}
 
 	@Override
@@ -112,18 +129,20 @@ public class BlastFurnacePreheaterBlockEntity extends IEBaseBlockEntity implemen
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
-		EnergyHelper.deserializeFrom(energyStorage, nbt);
 		active = nbt.getBoolean("active");
 		if(descPacket)
 			this.markContainingBlockForUpdate(null);
+		else
+			EnergyHelper.deserializeFrom(energyStorage, nbt);
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		nbt.putInt("dummy", dummy);
-		EnergyHelper.serializeTo(energyStorage, nbt);
 		nbt.putBoolean("active", active);
+		if(!descPacket)
+			EnergyHelper.serializeTo(energyStorage, nbt);
 	}
 
 	@Nonnull

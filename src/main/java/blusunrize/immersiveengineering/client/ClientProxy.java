@@ -419,6 +419,7 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEBlockEntities.TURRET_CHEM.master(), TurretRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.TURRET_GUN.master(), TurretRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.CLOCHE.master(), ClocheRenderer::new);
+		registerBERenderNoContext(event, IEBlockEntities.BLASTFURNACE_PREHEATER.master(), BlastFurnacePreheaterRenderer::new);
 		// MULTIBLOCKS
 		registerBERenderNoContext(event, IEBlockEntities.METAL_PRESS.master(), MetalPressRenderer::new);
 		registerBERenderNoContext(event, IEBlockEntities.CRUSHER.master(), CrusherRenderer::new);
@@ -500,6 +501,7 @@ public class ClientProxy extends CommonProxy
 		WindmillRenderer.MODEL = new DynamicModel(WindmillRenderer.NAME);
 		RedstoneConveyorRender.MODEL_PANEL = new DynamicModel(RedstoneConveyorRender.MODEL_NAME);
 		SawbladeRenderer.MODEL = new DynamicModel(SawbladeRenderer.NAME);
+		BlastFurnacePreheaterRenderer.MODEL = new DynamicModel(BlastFurnacePreheaterRenderer.NAME);
 		TurretRenderer.fillModels();
 		BasicClientProperties.initModels();
 	}
