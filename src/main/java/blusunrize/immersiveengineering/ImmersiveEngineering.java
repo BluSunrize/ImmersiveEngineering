@@ -207,7 +207,12 @@ public class ImmersiveEngineering
 		).map(ItemLike::asItem));
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() ->
 				MetalDevices.CHUTES.values().stream().map(ItemLike::asItem));
-		ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.sheetmetals));
+
+		// Vanilla
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
+				Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.LIGHT_WEIGHTED_PRESSURE_PLATE,
+				Items.IRON_TRAPDOOR, Items.IRON_DOOR, Items.IRON_BARS, Items.CAULDRON
+		).map(ItemLike::asItem));
 
 		// Prevent tools used during crafting to be recycled as components
 		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
