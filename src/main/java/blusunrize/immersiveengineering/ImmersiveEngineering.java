@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering;
 
+import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
@@ -29,6 +30,8 @@ import blusunrize.immersiveengineering.common.crafting.RecipeCachingReloadListen
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.network.*;
+import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
+import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.register.IERecipes;
@@ -162,6 +165,7 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("fences", new Integer[]{5, 3});
 		IECompatModule.doModulesPreInit();
 
+		/* ARC FURNACE RECYCLING */
 		ArcRecyclingChecker.allowRecipeTypeForRecycling(RecipeType.CRAFTING);
 		ArcRecyclingChecker.allowRecipeTypeForRecycling(MetalPressRecipe.TYPE);
 		// Vanilla Tools, Swords & Armor
@@ -185,6 +189,26 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("gears/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("scaffoldings/");
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("fences/");
+
+		// Decoration blocks & Sheetmetal
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
+				MetalDecoration.ENGINEERING_RS, MetalDecoration.ENGINEERING_LIGHT, MetalDecoration.ENGINEERING_HEAVY,
+				MetalDecoration.GENERATOR, MetalDecoration.RADIATOR
+		).map(ItemLike::asItem));
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
+				MetalDecoration.ALU_WALLMOUNT, MetalDecoration.STEEL_WALLMOUNT, MetalDecoration.STEEL_SLOPE,
+				MetalDecoration.ALU_POST, MetalDecoration.STEEL_POST
+		).map(ItemLike::asItem));
+		for(EnumMetals metal : EnumMetals.values())
+			ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.getTagsFor(metal).sheetmetal));
+		// Metal devices & Chutes
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
+				MetalDevices.RAZOR_WIRE, MetalDevices.BARREL, MetalDevices.FLUID_PIPE
+		).map(ItemLike::asItem));
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() ->
+				MetalDevices.CHUTES.values().stream().map(ItemLike::asItem));
+		ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.sheetmetals));
+
 		// Prevent tools used during crafting to be recycled as components
 		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
 				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);
