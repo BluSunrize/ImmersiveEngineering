@@ -70,6 +70,12 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 	}
 
 	@Override
+	public NonNullList<ItemStack> getBaseOutputs()
+	{
+		return defaultOutputs.get();
+	}
+
+	@Override
 	public NonNullList<ItemStack> getItemOutputs()
 	{
 		return defaultOutputs.get();
