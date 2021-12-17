@@ -157,6 +157,14 @@ public class BlastFurnaceAdvancedTileEntity extends BlastFurnaceTileEntity
 		return Optional.empty();
 	}
 
+	@Override
+	protected void turnOff()
+	{
+		super.turnOff();
+		for(int j = 0; j < 2; j++)
+			getFromPreheater(j==0, BlastFurnacePreheaterTileEntity::turnOff, 0);
+	}
+
 	private LazyOptional<IItemHandler> inputHandler = registerConstantCap(
 			new IEInventoryHandler(2, this, 0, new boolean[]{true, true}, new boolean[]{false, false})
 	);

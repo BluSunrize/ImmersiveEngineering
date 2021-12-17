@@ -21,8 +21,6 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IEForgeEnergyWrapper;
 import blusunrize.immersiveengineering.common.util.EnergyHelper.IIEInternalFluxHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
@@ -30,13 +28,18 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.TickableBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements IIEInternalFluxHandler,
-		IStateBasedDirectional, IHasDummyBlocks, IModelOffsetProvider
+		IStateBasedDirectional, IHasDummyBlocks, IModelOffsetProvider, TickableBlockEntity
 {
+	public static final float ANGLE_PER_TICK = (float)Math.toRadians(20);
 	public boolean active;
 	public int dummy = 0;
 	public FluxStorage energyStorage = new FluxStorage(8000);
@@ -61,12 +64,27 @@ public class BlastFurnacePreheaterTileEntity extends IEBaseTileEntity implements
 			this.energyStorage.extractEnergy(consumed, false);
 			return 1;
 		}
-		else if(active)
+		else
+			turnOff();
+		return 0;
+	}
+
+	@Override
+	public void tick()
+	{
+		checkForNeedlessTicking();
+		if(level.isClientSide&&active)
+			angle = (angle+ANGLE_PER_TICK)%(float)Math.PI;
+	}
+
+	public Void turnOff()
+	{
+		if(active)
 		{
 			active = false;
 			this.markContainingBlockForUpdate(null);
 		}
-		return 0;
+		return null;
 	}
 
 	@Override

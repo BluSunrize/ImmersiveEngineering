@@ -248,6 +248,7 @@ public class ClientProxy extends CommonProxy
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.TURRET_CHEM.get(), TurretRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.TURRET_GUN.get(), TurretRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.CLOCHE.get(), ClocheRenderer::new);
+		ClientRegistry.bindTileEntityRenderer(IETileTypes.BLASTFURNACE_PREHEATER.get(), BlastFurnacePreheaterRenderer::new);
 		// MULTIBLOCKS
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.METAL_PRESS.get(), MetalPressRenderer::new);
 		ClientRegistry.bindTileEntityRenderer(IETileTypes.CRUSHER.get(), CrusherRenderer::new);
@@ -726,6 +727,10 @@ public class ClientProxy extends CommonProxy
 		);
 		SawbladeRenderer.MODEL = DynamicModel.createSimple(
 				new ResourceLocation(ImmersiveEngineering.MODID, "item/buzzsaw_diesel.obj.ie"),
+				"sawblade_entity", ModelType.IE_OBJ
+		);
+		BlastFurnacePreheaterRenderer.MODEL = DynamicModel.createSimple(
+				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_device/blastfurnace_fan.obj"),
 				"sawblade_entity", ModelType.IE_OBJ
 		);
 	}
