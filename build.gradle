@@ -291,7 +291,7 @@ task datagenJar(type: Jar, dependsOn: datagenClasses) {
     classifier = 'datagen'
     from sourceSets.datagen.output
     manifest {
-        attributes "FMLModType": "LIBRARY"
+        attributes "FMLModType": "GAMELIBRARY"
     }
 }
 
