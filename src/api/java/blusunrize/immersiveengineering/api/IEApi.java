@@ -136,6 +136,11 @@ public class IEApi
 
 	public static String getCurrentVersion()
 	{
-		return ModList.get().getModFileById(Lib.MODID).versionString();
+		return ModList.get().getModFileById(Lib.MODID).getMods().stream()
+				.filter(i -> Lib.MODID.equals(i.getModId()))
+				.findAny()
+				.orElseThrow(RuntimeException::new)
+				.getVersion()
+				.toString();
 	}
 }

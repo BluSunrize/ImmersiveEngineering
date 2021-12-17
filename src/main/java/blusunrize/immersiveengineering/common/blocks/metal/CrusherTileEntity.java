@@ -43,8 +43,6 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -278,8 +276,9 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			AABB crusherInternal = new AABB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;
-			if(entity instanceof ItemEntity itemEntity)
+			if(entity instanceof ItemEntity)
 			{
+				ItemEntity itemEntity = (ItemEntity)entity;
 				ItemStack stack = itemEntity.getItem();
 				if(stack.isEmpty())
 					return;

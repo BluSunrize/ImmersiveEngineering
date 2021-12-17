@@ -384,8 +384,9 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 			SawmillTileEntity master = master();
 			if(master==null)
 				return;
-			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&entity instanceof ItemEntity itemEntity)
+			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&entity instanceof ItemEntity)
 			{
+				ItemEntity itemEntity = (ItemEntity)entity;
 				ItemStack stack = itemEntity.getItem();
 				if(stack.isEmpty())
 					return;

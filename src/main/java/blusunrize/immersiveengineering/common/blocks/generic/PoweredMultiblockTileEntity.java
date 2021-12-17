@@ -28,13 +28,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -73,7 +73,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		energyStorage.readFromNBT(nbt);
 		if(!descPacket||shouldSyncProcessQueue())
 		{
-			ListTag processNBT = nbt.getList("processQueue", Tag.TAG_COMPOUND);
+			ListTag processNBT = nbt.getList("processQueue", NBT.TAG_COMPOUND);
 			processQueue.clear();
 			for(int i = 0; i < processNBT.size(); i++)
 			{
@@ -299,11 +299,13 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 
 	public boolean addProcessToQueue(MultiblockProcess<R> process, boolean simulate, boolean addToPrevious)
 	{
-		if(addToPrevious&&process instanceof MultiblockProcessInWorld<R> newProcess)
+		if(addToPrevious&&process instanceof MultiblockProcessInWorld)
 		{
+			MultiblockProcessInWorld<R> newProcess = (MultiblockProcessInWorld<R>)process;
 			for(MultiblockProcess<R> curr : processQueue)
-				if(curr instanceof MultiblockProcessInWorld<R> existingProcess&&process.recipe.equals(curr.recipe))
+				if(curr instanceof MultiblockProcessInWorld&&process.recipe.equals(curr.recipe))
 				{
+					MultiblockProcessInWorld<R> existingProcess = (MultiblockProcessInWorld<R>)curr;
 					boolean canStack = true;
 					for(ItemStack old : existingProcess.inputItems)
 					{

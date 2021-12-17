@@ -94,7 +94,7 @@ public abstract class IEBaseTileEntity extends BlockEntity implements Blockstate
 	}
 
 	@Override
-	public void handleUpdateTag(CompoundTag tag)
+	public void handleUpdateTag(BlockState state, CompoundTag tag)
 	{
 		this.readCustomNBT(tag, true);
 	}

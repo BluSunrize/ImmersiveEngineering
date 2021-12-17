@@ -223,8 +223,9 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&!world.isClientSide&&entity instanceof ItemEntity itemEntity&&entity.isAlive())
+		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&!world.isClientSide&&entity instanceof ItemEntity&&entity.isAlive())
 		{
+			ItemEntity itemEntity = (ItemEntity)entity;
 			BottlingMachineTileEntity master = master();
 			if(master==null)
 				return;
