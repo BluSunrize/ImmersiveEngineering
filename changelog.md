@@ -16,7 +16,7 @@
 - Fix some recipes not showing in the manual (BluSunrize)
 - Potentially fix rare wire crashes (Malte)
 - Re-enable Chisels&Bits compat (Malte)
-- Translations Added/Updated: ko_kr (PixVoxel, FreddyYJ), it_iT (maicol07)
+- Translations Added/Updated: ko_kr (PixVoxel, FreddyYJ), it_it (maicol07), ja_jp (karakufire), fr_fr (Juknum)
 
 ##### Version 1.16.5-5.0.5-140
 - Fix comparators not working on IE blocks (Malte)
