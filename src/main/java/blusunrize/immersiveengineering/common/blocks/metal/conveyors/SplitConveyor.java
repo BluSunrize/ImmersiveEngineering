@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal.conveyors;
 
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorTile;
-import blusunrize.immersiveengineering.api.utils.CapabilityReference;
+import blusunrize.immersiveengineering.api.utils.ItemUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.ModelConveyor;
@@ -29,7 +29,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
@@ -86,18 +85,7 @@ public class SplitConveyor extends BasicConveyor
 			double distNext = Math.abs((redirect.getAxis()==Axis.Z?nextPos.getZ(): nextPos.getX())+.5-(redirect.getAxis()==Axis.Z?entity.getZ(): entity.getX()));
 			BlockEntity inventoryTile = getTile().getLevel().getBlockEntity(nextPos);
 			if(distNext < .7&&inventoryTile!=null&&!(inventoryTile instanceof IConveyorTile))
-			{
-				ItemStack stack = entity.getItem();
-				if(!stack.isEmpty())
-				{
-					CapabilityReference<IItemHandler> insert = CapabilityReference.forNeighbor(getTile(), CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, redirect);
-					ItemStack ret = Utils.insertStackIntoInventory(insert, stack, false);
-					if(ret.isEmpty())
-						entity.remove();
-					else if(ret.getCount() < stack.getCount())
-						entity.setItem(ret);
-				}
-			}
+				ItemUtils.tryInsertEntity(getTile().getLevel(), getTile().getBlockPos().relative(redirect), redirect.getOpposite(), entity);
 		}
 	}
 

@@ -1,3 +1,23 @@
+##### Version 1.16.5-5.0.6-pre
+- Re-add the fan animation on blast furnace preheaters (Malte)
+- Add compat for Jade (Malte)
+- Allow drill- and generator fuels to be added using datapacks (Malte)
+- Allow water wheels to work when placed facing away from the dynamo (Malte)
+- Fix earmuffs stacking to 64 (Malte)
+- Fix wire rendering on the capacitor backpack (Malte)
+- Fix blocks with side configuration rendering their model 7 times (Malte)
+- Fix broken workbench GUI rendering (Malte)
+- Fix shift-click placing items in output slots (MalkContent)
+- Fix redstone interface connectors not resetting their output when broken (Malte)
+- Fix Xaero's world map breaking post models (Malte)
+- Fix lag with very full crushers (Malte)
+- Fix desync of item stack sizes on entities (Malte)
+- Fix dupe bug with the metal press (Malte)
+- Fix some recipes not showing in the manual (BluSunrize)
+- Potentially fix rare wire crashes (Malte)
+- Re-enable Chisels&Bits compat (Malte)
+
+
 ##### Version 1.16.5-5.0.5-140
 - Fix comparators not working on IE blocks (Malte)
 - Fix rendering of wires connected to razor wire (Malte)

@@ -34,6 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.util.Constants.NBT;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -70,22 +71,27 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	{
 		super.readCustomNBT(nbt, descPacket);
 		energyStorage.readFromNBT(nbt);
-		ListTag processNBT = nbt.getList("processQueue", 10);
-		processQueue.clear();
-		for(int i = 0; i < processNBT.size(); i++)
+		if(!descPacket||shouldSyncProcessQueue())
 		{
-			CompoundTag tag = processNBT.getCompound(i);
-			if(tag.contains("recipe"))
+			ListTag processNBT = nbt.getList("processQueue", NBT.TAG_COMPOUND);
+			processQueue.clear();
+			for(int i = 0; i < processNBT.size(); i++)
 			{
-				int processTick = tag.getInt("process_processTick");
-				MultiblockProcess<R> process = loadProcessFromNBT(tag);
-				if(process!=null)
+				CompoundTag tag = processNBT.getCompound(i);
+				if(tag.contains("recipe"))
 				{
-					process.processTick = processTick;
-					processQueue.add(process);
+					int processTick = tag.getInt("process_processTick");
+					MultiblockProcess<R> process = loadProcessFromNBT(tag);
+					if(process!=null)
+					{
+						process.processTick = processTick;
+						processQueue.add(process);
+					}
 				}
 			}
 		}
+		if(descPacket)
+			renderAsActiveClient = nbt.getBoolean("renderActive");
 	}
 
 	@Override
@@ -93,10 +99,15 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		energyStorage.writeToNBT(nbt);
-		ListTag processNBT = new ListTag();
-		for(MultiblockProcess<?> process : this.processQueue)
-			processNBT.add(writeProcessToNBT(process));
-		nbt.put("processQueue", processNBT);
+		if(!descPacket||shouldSyncProcessQueue())
+		{
+			ListTag processNBT = new ListTag();
+			for(MultiblockProcess<?> process : this.processQueue)
+				processNBT.add(writeProcessToNBT(process));
+			nbt.put("processQueue", processNBT);
+		}
+		if(descPacket)
+			nbt.putBoolean("renderActive", renderAsActiveClient);
 	}
 
 	@Nullable
@@ -117,7 +128,7 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		return null;
 	}
 
-	protected CompoundTag writeProcessToNBT(MultiblockProcess process)
+	protected CompoundTag writeProcessToNBT(MultiblockProcess<?> process)
 	{
 		CompoundTag tag = new CompoundTag();
 		tag.putString("recipe", process.recipe.getId().toString());
@@ -199,21 +210,33 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		return master.getComparatorValueOnMaster();
 	}
 
-	protected int getComparatorValueOnMaster() {
+	protected int getComparatorValueOnMaster()
+	{
 		return Utils.calcRedstoneFromInventory(this);
 	}
 
 	//	=================================
 	//		PROCESS MANAGEMENT
 	//	=================================
-	public List<MultiblockProcess<R>> processQueue = new ArrayList<MultiblockProcess<R>>();
+	public final List<MultiblockProcess<R>> processQueue = new ArrayList<>();
 	public int tickedProcesses = 0;
+	private boolean renderAsActiveClient = true;
+
+	private void syncRenderActive()
+	{
+		boolean renderActive = shouldRenderAsActive();
+		if(renderAsActiveClient==renderActive)
+			return;
+		renderAsActiveClient = renderActive;
+		updateMasterBlock(null, true);
+	}
 
 	@Override
 	public void tick()
 	{
 		checkForNeedlessTicking();
 		tickedProcesses = 0;
+		syncRenderActive();
 		if(level.isClientSide||isDummy()||isRSDisabled())
 			return;
 
@@ -234,6 +257,11 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 				processIterator.remove();
 		}
 		updateComparators(this, getRedstonePos(), cachedComparatorValue, getComparatorValueOnMaster());
+	}
+
+	protected boolean shouldSyncProcessQueue()
+	{
+		return true;
 	}
 
 	@Nullable
@@ -353,7 +381,15 @@ public abstract class PoweredMultiblockTileEntity<T extends PoweredMultiblockTil
 		return ia;
 	}
 
-	public boolean shouldRenderAsActive()
+	public final boolean shouldRenderAsActive()
+	{
+		if(level!=null&&!level.isClientSide)
+			return shouldRenderAsActiveImpl();
+		else
+			return renderAsActiveClient;
+	}
+
+	protected boolean shouldRenderAsActiveImpl()
 	{
 		return getEnergyStored(null) > 0&&!isRSDisabled()&&!processQueue.isEmpty();
 	}

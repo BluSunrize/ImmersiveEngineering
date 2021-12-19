@@ -88,7 +88,7 @@ public class ImmersiveEngineering
 {
 	public static final String MODID = Lib.MODID;
 	public static final String MODNAME = "Immersive Engineering";
-	public static final String VERSION = "${version}";
+	public static final String VERSION = IEApi.getCurrentVersion();
 	public static CommonProxy proxy = DistExecutor.safeRunForDist(
 			bootstrapErrorToXCPInDev(() -> ClientProxy::new), bootstrapErrorToXCPInDev(() -> CommonProxy::new)
 	);

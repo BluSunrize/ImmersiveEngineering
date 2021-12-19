@@ -9,4 +9,5 @@ LOCALIZATION
 	- zh_TW: xaxa123, vongola12324
 	- es_ES: FrannDzs, docanuto
 	- de_DE: astrutz
-	- ko_KR: Taki_B(PixelQuest), PixelVoxel(PixelQuest), FreddyYJ
+	- it_IT: maicol07
+  - ko_KR: PixVoxel, FreddyYJ

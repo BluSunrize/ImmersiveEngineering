@@ -175,7 +175,8 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 			final boolean activeAfterTick = getIsActive();
 			if(activeBeforeTick!=activeAfterTick)
 			{
-
+				if(!activeAfterTick)
+					turnOff();
 				this.setChanged();
 				for(int x = 0; x < 3; ++x)
 					for(int y = 0; y < 3; ++y)
@@ -188,6 +189,10 @@ public class BlastFurnaceTileEntity extends MultiblockPartTileEntity<BlastFurnac
 						}
 			}
 		}
+	}
+
+	protected void turnOff()
+	{
 	}
 
 	@Nullable

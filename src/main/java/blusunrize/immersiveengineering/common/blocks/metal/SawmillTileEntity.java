@@ -306,7 +306,7 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 	}
 
 	@Override
-	public boolean shouldRenderAsActive()
+	public boolean shouldRenderAsActiveImpl()
 	{
 		return getEnergyStored(null) > 0&&!isRSDisabled()&&!this.sawblade.isEmpty();
 	}
@@ -386,12 +386,16 @@ public class SawmillTileEntity extends PoweredMultiblockTileEntity<SawmillTileEn
 				return;
 			if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&entity instanceof ItemEntity)
 			{
-				ItemStack stack = ((ItemEntity)entity).getItem();
+				ItemEntity itemEntity = (ItemEntity)entity;
+				ItemStack stack = itemEntity.getItem();
 				if(stack.isEmpty())
 					return;
+				stack = stack.copy();
 				master.insertItemToProcess(stack, false);
 				if(stack.getCount() <= 0)
 					entity.remove();
+				else
+					itemEntity.setItem(stack);
 			}
 			else if(entity instanceof LivingEntity&&!master.sawblade.isEmpty()
 					&&CACHED_SAWBLADE_AABB.apply(master).intersects(entity.getBoundingBox()))

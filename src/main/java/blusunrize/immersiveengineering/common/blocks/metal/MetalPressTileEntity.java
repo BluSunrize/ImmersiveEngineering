@@ -184,8 +184,10 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 			if(master.addProcessToQueue(process, true))
 			{
 				master.addProcessToQueue(process, false);
-				stack.shrink(displayStack.getCount());
-				if(stack.getCount() <= 0)
+				ItemStack remaining = stack.copy();
+				remaining.shrink(displayStack.getCount());
+				((ItemEntity)entity).setItem(remaining);
+				if(remaining.isEmpty())
 					entity.remove();
 			}
 		}
@@ -224,8 +226,9 @@ public class MetalPressTileEntity extends PoweredMultiblockTileEntity<MetalPress
 		return new DirectionalBlockPos(worldPosition.relative(getFacing(), 2), getFacing());
 	}
 
-	private CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(this,
-			this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forTileEntityAt(
+			this, this::getOutputPos, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY
+	);
 
 	@Override
 	public void doProcessOutput(ItemStack output)

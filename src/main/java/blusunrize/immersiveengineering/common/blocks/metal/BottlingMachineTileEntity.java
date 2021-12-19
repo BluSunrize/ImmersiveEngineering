@@ -223,12 +223,13 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
-		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&!world.isClientSide&&entity!=null&&entity.isAlive()&&entity instanceof ItemEntity)
+		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&!world.isClientSide&&entity instanceof ItemEntity&&entity.isAlive())
 		{
+			ItemEntity itemEntity = (ItemEntity)entity;
 			BottlingMachineTileEntity master = master();
 			if(master==null)
 				return;
-			ItemStack stack = ((ItemEntity)entity).getItem();
+			ItemStack stack = itemEntity.getItem();
 			if(stack.isEmpty())
 				return;
 
@@ -249,9 +250,12 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 				master.bottlingProcessQueue.add(p);
 				master.setChanged();
 				master.markContainingBlockForUpdate(null);
+				stack = stack.copy();
 				stack.shrink(1);
 				if(stack.getCount() <= 0)
 					entity.remove();
+				else
+					itemEntity.setItem(stack);
 			}
 		}
 	}

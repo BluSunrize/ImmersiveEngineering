@@ -36,14 +36,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
@@ -83,20 +82,21 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		}
 	}
 
-	@OnlyIn(Dist.CLIENT)
-	private AABB renderAABB;
+	private Pair<BlockState, AABB> renderAABB;
 
-	@OnlyIn(Dist.CLIENT)
 	@Override
 	public AABB getRenderBoundingBox()
 	{
-		//		if(renderAABB==null)
-		//			if(pos==17)
-		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord-(facing==2||facing==3?2:1),yCoord,zCoord-(facing==4||facing==5?2:1), xCoord+(facing==2||facing==3?3:2),yCoord+3,zCoord+(facing==4||facing==5?3:2));
-		//			else
-		//				renderAABB = AxisAlignedBB.getBoundingBox(xCoord,yCoord,zCoord, xCoord,yCoord,zCoord);
-		//		return renderAABB;
-		return new AABB(getBlockPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1), getBlockPos().getY(), getBlockPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1), getBlockPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2), getBlockPos().getY()+3, getBlockPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2));
+		if(renderAABB==null||renderAABB.getKey()!=getBlockState())
+			renderAABB = Pair.of(getBlockState(), new AABB(
+					getBlockPos().getX()-(getFacing().getAxis()==Axis.Z?2: 1),
+					getBlockPos().getY(),
+					getBlockPos().getZ()-(getFacing().getAxis()==Axis.X?2: 1),
+					getBlockPos().getX()+(getFacing().getAxis()==Axis.Z?3: 2),
+					getBlockPos().getY()+3,
+					getBlockPos().getZ()+(getFacing().getAxis()==Axis.X?3: 2)
+			));
+		return renderAABB.getRight();
 	}
 
 	public static VoxelShape getBasicShape(BlockPos posInMultiblock)
@@ -276,22 +276,26 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 			AABB crusherInternal = new AABB(center.x-1.0625, center.y, center.z-1.0625, center.x+1.0625, center.y+1.25, center.z+1.0625);
 			if(!entity.getBoundingBox().intersects(crusherInternal))
 				return;
-			if(entity instanceof ItemEntity&&!((ItemEntity)entity).getItem().isEmpty())
+			if(entity instanceof ItemEntity)
 			{
-				ItemStack stack = ((ItemEntity)entity).getItem();
+				ItemEntity itemEntity = (ItemEntity)entity;
+				ItemStack stack = itemEntity.getItem();
 				if(stack.isEmpty())
 					return;
 				CrusherRecipe recipe = master.findRecipeForInsertion(stack);
 				if(recipe==null)
 					return;
 				ItemStack displayStack = recipe.getDisplayStack(stack);
-				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<CrusherRecipe>(recipe, .5f, Utils.createNonNullItemStackListFromItemStack(displayStack));
+				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<>(recipe, .5f, Utils.createNonNullItemStackListFromItemStack(displayStack));
 				if(master.addProcessToQueue(process, true, true))
 				{
 					master.addProcessToQueue(process, false, true);
+					stack = stack.copy();
 					stack.shrink(displayStack.getCount());
-					if(stack.getCount() <= 0)
+					if(stack.isEmpty())
 						entity.remove();
+					else
+						itemEntity.setItem(stack);
 				}
 			}
 			else if(entity instanceof LivingEntity&&(!(entity instanceof Player)||!((Player)entity).abilities.invulnerable))
@@ -342,7 +346,13 @@ public class CrusherTileEntity extends PoweredMultiblockTileEntity<CrusherTileEn
 		return true;
 	}
 
-	private CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
+	@Override
+	protected boolean shouldSyncProcessQueue()
+	{
+		return false;
+	}
+
+	private final CapabilityReference<IItemHandler> output = CapabilityReference.forTileEntityAt(this,
 			() -> new DirectionalBlockPos(getBlockPos().offset(0, -1, 0).relative(getFacing(), -2), getFacing()),
 			CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 

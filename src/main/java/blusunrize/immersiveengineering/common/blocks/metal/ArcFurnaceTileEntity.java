@@ -489,9 +489,9 @@ public class ArcFurnaceTileEntity extends PoweredMultiblockTileEntity<ArcFurnace
 	}
 
 	@Override
-	public boolean shouldRenderAsActive()
+	public boolean shouldRenderAsActiveImpl()
 	{
-		return hasElectrodes()&&super.shouldRenderAsActive();
+		return hasElectrodes()&&super.shouldRenderAsActiveImpl();
 	}
 
 	@Override
