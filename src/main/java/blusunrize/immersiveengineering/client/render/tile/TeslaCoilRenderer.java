@@ -19,8 +19,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.List;
-
 public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntity>
 {
 	@Override
@@ -50,16 +48,22 @@ public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntit
 		VertexConsumer base = buffers.getBuffer(type);
 		TransformingVertexBuilder builder = new TransformingVertexBuilder(base, transform, type.format());
 		builder.defaultColor((int)(255*rgba[0]), (int)(255*rgba[1]), (int)(255*rgba[2]), (int)(255*rgba[3]));
-		List<Vec3> subs = animation.subPoints;
-		builder.vertex(animation.startPos.x-tileX, animation.startPos.y-tileY, animation.startPos.z-tileZ).endVertex();
 
-		for(Vec3 sub : subs)
-		{
-			builder.vertex(sub.x-tileX, sub.y-tileY, sub.z-tileZ).endVertex();
-			builder.vertex(sub.x-tileX, sub.y-tileY, sub.z-tileZ).endVertex();
-		}
+		drawLine(animation.startPos, animation.subPoints.get(0), tileX, tileY, tileZ, builder);
+		for(int i = 0; i < animation.subPoints.size()-1; i++)
+			drawLine(animation.subPoints.get(i), animation.subPoints.get(i+1), tileX, tileY, tileZ, builder);
+		Vec3 end = (animation.targetEntity!=null?animation.targetEntity.position(): animation.targetPos);
+		drawLine(animation.subPoints.get(animation.subPoints.size()-1), end, tileX, tileY, tileZ, builder);
+	}
 
-		Vec3 end = (animation.targetEntity!=null?animation.targetEntity.position(): animation.targetPos).add(-tileX, -tileY, -tileZ);
-		builder.vertex(end.x, end.y, end.z).endVertex();
+	private static void drawLine(Vec3 start, Vec3 end, double offX, double offY, double offZ, VertexConsumer out)
+	{
+		Vec3 normal = new Vec3(start.x()-end.x(), start.y()-end.y(), start.z()-end.z()).normalize();
+		out.vertex(start.x-offX, start.y-offY, start.z-offZ)
+				.normal((float)normal.x, (float)normal.y, (float)normal.z)
+				.endVertex();
+		out.vertex(end.x-offX, end.y-offY, end.z-offZ)
+				.normal((float)normal.x, (float)normal.y, (float)normal.z)
+				.endVertex();
 	}
 }
