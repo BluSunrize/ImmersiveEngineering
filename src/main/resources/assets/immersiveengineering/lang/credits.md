@@ -10,4 +10,4 @@ LOCALIZATION
 	- es_ES: FrannDzs, docanuto
 	- de_DE: astrutz
 	- it_IT: maicol07
-  - ko_KR: PixVoxel, FreddyYJ
+    - ko_KR: Taki_B, PixVoxel, FreddyYJ
