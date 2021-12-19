@@ -73,11 +73,8 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 				FluorescentTubeEntity tube = new FluorescentTubeEntity(world, stack.copy(), angle);
 				tube.setPos(ctx.getClickLocation().x, ctx.getClickLocation().y+1.5, ctx.getClickLocation().z);
 				world.addFreshEntity(tube);
-				stack.split(1);
-				if(stack.getCount() > 0)
-					player.setItemInHand(ctx.getHand(), stack);
-				else
-					player.setItemInHand(ctx.getHand(), ItemStack.EMPTY);
+				if(!player.getAbilities().instabuild)
+					stack.shrink(1);
 			}
 			return InteractionResult.SUCCESS;
 		}
