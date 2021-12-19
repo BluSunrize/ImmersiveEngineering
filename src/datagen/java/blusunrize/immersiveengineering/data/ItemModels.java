@@ -293,6 +293,7 @@ public class ItemModels extends TRSRItemModelProvider
 
 		ieObjBuilder(IEItems.Misc.FLUORESCENT_TUBE, rl("item/fluorescent_tube.obj.ie"))
 				.callback(FluorescentTubeCallbacks.INSTANCE)
+				.dynamic(true)
 				.end()
 				.transforms(modLoc("item/fluorescent_tube"));
 		getBuilder(IEItems.Misc.CORESAMPLE)

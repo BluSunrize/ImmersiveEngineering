@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.render.entity;
 
-import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
 import blusunrize.immersiveengineering.common.items.FluorescentTubeItem;
@@ -18,10 +17,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -54,22 +55,26 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		matrixStackIn.translate(0, 0, .03125);
 		matrixStackIn.mulPose(new Quaternion(entity.angleHorizontal, 0, 0, true));
 		matrixStackIn.translate(0, -entity.TUBE_LENGTH/2, 0);
-		drawTube(entity.active, entity.rgb, matrixStackIn, bufferIn, packedLightIn, 0);
+		drawTube(entity.active, entity.rgb, matrixStackIn, bufferIn, packedLightIn, OverlayTexture.NO_OVERLAY);
 		matrixStackIn.popPose();
 		matrixStackIn.translate(-0.25, -1, 0);
 		if(tex==null)
 			tex = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS)
 					.apply(new ResourceLocation("minecraft:block/iron_block"));
 
-		VertexConsumer builder = bufferIn.getBuffer(IERenderTypes.getPositionTex(InventoryMenu.BLOCK_ATLAS));
+		VertexConsumer builder = bufferIn.getBuffer(RenderType.solid());
 		RenderUtils.renderTexturedBox(builder, matrixStackIn,
 				0, 0, 0,
 				.0625F, 1, .0625F,
-				tex.getU0(), tex.getV0(), tex.getU1(), tex.getV1());
+				tex.getU0(), tex.getV0(), tex.getU1(), tex.getV1(),
+				packedLightIn
+		);
 		RenderUtils.renderTexturedBox(builder, matrixStackIn,
 				.0625F, .9375F, 0,
 				.25F, 1, .0625F,
-				tex.getU0(), tex.getV0(), tex.getU1(), tex.getV1());
+				tex.getU0(), tex.getV0(), tex.getU1(), tex.getV1(),
+				packedLightIn
+		);
 
 		matrixStackIn.popPose();
 	}
@@ -86,7 +91,7 @@ public class FluorescentTubeRenderer extends EntityRenderer<FluorescentTubeEntit
 		if(tubeActive.isEmpty())
 		{
 			tubeActive = new ItemStack(Misc.FLUORESCENT_TUBE);
-			FluorescentTubeItem.setLit(tubeActive, 1);
+			FluorescentTubeItem.setLit(tubeActive, 0.6f);
 		}
 		matrixStack.translate(0, 0.75, 0);
 		ItemStack renderStack = active?tubeActive: tube;

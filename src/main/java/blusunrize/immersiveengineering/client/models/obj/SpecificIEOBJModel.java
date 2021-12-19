@@ -43,7 +43,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
-import java.util.stream.Collectors;
 
 public class SpecificIEOBJModel<T> implements BakedModel
 {
@@ -151,7 +150,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 							.map(ShadedQuads::quadsInLayer)
 							.flatMap(List::stream)
 							.filter(Objects::nonNull)
-							.collect(Collectors.toList())
+							.toList()
 			);
 		}
 

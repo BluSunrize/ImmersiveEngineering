@@ -17,6 +17,7 @@ import com.mojang.math.Matrix4f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -264,57 +265,70 @@ public class RenderUtils
 		float maxU = tex.getU(x1*16);
 		float minV = tex.getV((yForV?y1: z0)*16);
 		float maxV = tex.getV((yForV?y0: z1)*16);
-		renderTexturedBox(wr, stack, x0, y0, z0, x1, y1, z1, minU, minV, maxU, maxV);
+		renderTexturedBox(wr, stack, x0, y0, z0, x1, y1, z1, minU, minV, maxU, maxV, LightTexture.FULL_BRIGHT);
 	}
 
-	public static void renderTexturedBox(VertexConsumer wr, PoseStack stack, float x0, float y0, float z0, float x1, float y1, float z1, float u0, float v0, float u1, float v1)
+	public static void renderTexturedBox(
+			VertexConsumer wr, PoseStack
+			stack, float x0, float y0, float z0,
+			float x1, float y1, float z1,
+			float u0, float v0,
+			float u1, float v1,
+			int light
+	)
 	{
 		float normalX = 0;
 		float normalY = 0;
 		float normalZ = 1;
 
-		putVertex(wr, stack, x0, y0, z1, u0, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y0, z1, u1, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y1, z1, u1, v1, normalX, normalY, normalZ);
-		putVertex(wr, stack, x0, y1, z1, u0, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y0, z1, u0, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y0, z1, u1, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y1, z1, u1, v1, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x0, y1, z1, u0, v1, normalX, normalY, normalZ, light);
 		normalZ = -1;
-		putVertex(wr, stack, x0, y1, z0, u0, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y1, z0, u1, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y0, z0, u1, v1, normalX, normalY, normalZ);
-		putVertex(wr, stack, x0, y0, z0, u0, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y1, z0, u0, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y1, z0, u1, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y0, z0, u1, v1, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x0, y0, z0, u0, v1, normalX, normalY, normalZ, light);
 
 		normalZ = 0;
 		normalY = -1;
-		putVertex(wr, stack, x0, y0, z0, u0, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y0, z0, u1, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y0, z1, u1, v1, normalX, normalY, normalZ);
-		putVertex(wr, stack, x0, y0, z1, u0, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y0, z0, u0, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y0, z0, u1, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y0, z1, u1, v1, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x0, y0, z1, u0, v1, normalX, normalY, normalZ, light);
 		normalY = 1;
-		putVertex(wr, stack, x0, y1, z1, u0, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y1, z1, u1, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y1, z0, u1, v1, normalX, normalY, normalZ);
-		putVertex(wr, stack, x0, y1, z0, u0, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y1, z1, u0, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y1, z1, u1, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y1, z0, u1, v1, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x0, y1, z0, u0, v1, normalX, normalY, normalZ, light);
 
 		normalY = 0;
 		normalX = -1;
-		putVertex(wr, stack, x0, y0, z0, u0, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x0, y0, z1, u1, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x0, y1, z1, u1, v1, normalX, normalY, normalZ);
-		putVertex(wr, stack, x0, y1, z0, u0, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x0, y0, z0, u0, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x0, y0, z1, u1, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x0, y1, z1, u1, v1, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x0, y1, z0, u0, v1, normalX, normalY, normalZ, light);
 		normalX = 1;
-		putVertex(wr, stack, x1, y1, z0, u0, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y1, z1, u1, v0, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y0, z1, u1, v1, normalX, normalY, normalZ);
-		putVertex(wr, stack, x1, y0, z0, u0, v1, normalX, normalY, normalZ);
+		putVertex(wr, stack, x1, y1, z0, u0, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y1, z1, u1, v0, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y0, z1, u1, v1, normalX, normalY, normalZ, light);
+		putVertex(wr, stack, x1, y0, z0, u0, v1, normalX, normalY, normalZ, light);
 	}
 
-	private static void putVertex(VertexConsumer b, PoseStack mat, float x, float y, float z, float u, float v, float nX, float nY, float nZ)
+	private static void putVertex(
+			VertexConsumer b, PoseStack mat,
+			float x, float y, float z,
+			float u, float v,
+			float nX, float nY, float nZ,
+			int light
+	)
 	{
 		b.vertex(mat.last().pose(), x, y, z)
 				.color(1F, 1F, 1F, 1F)
 				.uv(u, v)
 				.overlayCoords(OverlayTexture.NO_OVERLAY)
-				.uv2(0, 0)
+				.uv2(light)
 				.normal(mat.last().normal(), nX, nY, nZ)
 				.endVertex();
 	}

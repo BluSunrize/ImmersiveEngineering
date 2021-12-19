@@ -39,7 +39,6 @@ import net.minecraftforge.client.IItemRenderProperties;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
@@ -113,7 +112,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			Group<OBJMaterial> group = model.getGroups().get(groupName);
 			if(visible.contains(groupName)&&callback.shouldRenderGroup(model.getKey(), groupName, null))
 				quadsByLayer.addAll(model.addQuadsForGroup(groupName, group, true)
-						.stream().filter(Objects::nonNull).collect(Collectors.toList()));
+						.stream().filter(Objects::nonNull).toList());
 			visible.remove(groupName);
 		}
 		matrix.pushPose();
@@ -132,7 +131,7 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			VertexConsumer builder = buffer.getBuffer(actualType);
 			Vector4f color = quadsForLayer.layer().getColor();
 			for(BakedQuad quad : quadsForLayer.quadsInLayer())
-				builder.putBulkData(matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay);
+				builder.putBulkData(matrix.last(), quad, color.x(), color.y(), color.z(), color.w(), light, overlay, true);
 			matrix.scale(1.01F, 1.01F, 1.01F);
 		}
 		matrix.popPose();

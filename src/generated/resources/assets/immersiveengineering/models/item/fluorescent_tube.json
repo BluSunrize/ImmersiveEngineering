@@ -1,6 +1,7 @@
 {
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/fluorescent_tube.obj.ie",
+  "dynamic": true,
   "callbacks": "immersiveengineering:fluorescent_tube",
   "transform": {
     "thirdperson_righthand": {

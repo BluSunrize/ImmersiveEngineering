@@ -204,14 +204,16 @@ public class IERenderTypes extends RenderStateShard
 		));
 		FULLBRIGHT_TRANSLUCENT = Util.memoize(texture -> createDefault(
 				"immersiveengineering:fullbright_translucent_"+texture,
-				DefaultVertexFormat.BLOCK,
+				NEW_ENTITY,
 				Mode.QUADS,
 				CompositeState.builder()
 						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
 						.setTextureState(new TextureStateShard(texture, false, false))
-						.setLightmapState(new LightmapStateShard(false))
+						.setLightmapState(LIGHTMAP_DISABLED)
 						.setShaderState(FULLBRIGHT_BLOCKS)
-						.createCompositeState(false)
+						.setCullState(NO_CULL)
+						.setOverlayState(OVERLAY)
+						.createCompositeState(true)
 		));
 	}
 

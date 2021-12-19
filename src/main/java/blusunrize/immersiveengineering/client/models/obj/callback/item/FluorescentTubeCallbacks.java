@@ -41,9 +41,7 @@ public class FluorescentTubeCallbacks implements ItemCallback<FluorescentTubeCal
 	@Override
 	public List<List<String>> getSpecialGroups(ItemStack stack, TransformType transform, LivingEntity entity)
 	{
-		if(isLit(stack))
-			return special;
-		return List.of();
+		return special;
 	}
 
 	@Override
