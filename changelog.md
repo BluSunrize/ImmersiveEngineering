@@ -1,4 +1,4 @@
-##### Version 1.16.5-5.0.6-pre
+##### Version 1.16.5-5.0.6-141
 - Re-add the fan animation on blast furnace preheaters (Malte)
 - Add compat for Jade (Malte)
 - Allow drill- and generator fuels to be added using datapacks (Malte)
