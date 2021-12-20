@@ -187,6 +187,8 @@ class IEBlockTags extends BlockTagsProvider
 	{
 		TagAppender<Block> tag = tag(IETags.hammerHarvestable);
 		MetalDecoration.METAL_LADDER.values().forEach(b -> tag.add(b.get()));
+		tag.addTag(IETags.scaffoldingSteel);
+		tag.addTag(IETags.scaffoldingAlu);
 		tag.add(StoneDecoration.CONCRETE_SPRAYED.get())
 				.add(Cloth.STRIP_CURTAIN.get());
 		//TODO not really the nicest approach, but maintains 1.16 behavior

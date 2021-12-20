@@ -4,6 +4,8 @@
     "immersiveengineering:metal_ladder_none",
     "immersiveengineering:metal_ladder_alu",
     "immersiveengineering:metal_ladder_steel",
+    "#immersiveengineering:scaffoldings/steel",
+    "#immersiveengineering:scaffoldings/aluminum",
     "immersiveengineering:concrete_sprayed",
     "immersiveengineering:strip_curtain",
     "immersiveengineering:razor_wire",
