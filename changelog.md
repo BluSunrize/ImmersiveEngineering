@@ -1,4 +1,74 @@
-##### Version 1.16.5-5.0.2-pre
+##### Version 1.18.1-6.0.0-pre
+- First (beta) release for 1.18.1
+- Fix ALL the issues that came with these updates (Malte)
+- Add deepslate ores, raw ores and update textures for IE ores (BluSunrize & Malte)
+    - Raw ores crush into grit, with a 33% chance for double output
+    - Raw ores smelt in the arc furnace with a 50% chance for double output
+    - Ore blocks can still be crushed for guaranteed double output (and secondary grits)
+    - IE oregen is still highly configurable
+- Remove copper ore, since vanilla adds it (Malte)
+- Change recipes for the precision scope to use the vanilla spyglass (BluSunrize)
+    - The scope can also be mounted on the revolver now
+- Add snow to the thermoelectric generator, buff ice a little as a result (BluSunrize)
+- Add manual entry for Villagers (BluSunrize)
+- Add chance-based outputs for the Arc Furnace (Malte)
+- Add full tag support for the toolbox slots (Malte)
+- Add expanded recycling support for vanilla metal items & IE blocks (BluSunrize) 
+- Fix issues with the hammer, allowing it to break scaffolding quicker and be enchanted at an anvil (BluSunrize) 
+
+##### Version 1.16.5-5.0.6-141
+- Re-add the fan animation on blast furnace preheaters (Malte)
+- Add compat for Jade (Malte)
+- Allow drill- and generator fuels to be added using datapacks (Malte)
+- Allow water wheels to work when placed facing away from the dynamo (Malte)
+- Fix earmuffs stacking to 64 (Malte)
+- Fix wire rendering on the capacitor backpack (Malte)
+- Fix blocks with side configuration rendering their model 7 times (Malte)
+- Fix broken workbench GUI rendering (Malte)
+- Fix shift-click placing items in output slots (MalkContent)
+- Fix redstone interface connectors not resetting their output when broken (Malte)
+- Fix Xaero's world map breaking post models (Malte)
+- Fix lag with very full crushers (Malte)
+- Fix desync of item stack sizes on entities (Malte)
+- Fix dupe bug with the metal press (Malte)
+- Fix some recipes not showing in the manual (BluSunrize)
+- Potentially fix rare wire crashes (Malte)
+- Re-enable Chisels&Bits compat (Malte)
+- Translations Added/Updated: ko_kr (PixVoxel, FreddyYJ), it_it (maicol07), ja_jp (karakufire), fr_fr (Juknum)
+
+##### Version 1.16.5-5.0.5-140
+- Fix comparators not working on IE blocks (Malte)
+- Fix rendering of wires connected to razor wire (Malte)
+- Fix rendering of colored conveyor stripes (Malte)
+- Fix additional open spot on chutes with upward-sloping conveyors (Malte)
+- Reduce redstone wire network update spam (Malte)
+- Fix wrong branch being used for update JSON (Malte)
+- Add wires to forge:wires tag (Malte)
+- Add potion effect descriptions for compat with Just Enough Effect Descriptions (BeepSterr)
+- Translations Added/Updated: ko_kr (Taki_B, PixelQuest), es_* (FrannDzs), en_us (Tiyth, hechtiQ)
+
+##### Version 1.16.5-5.0.4-139
+- Improve behavior of conveyors near unloaded/non-ticking chunks (Malte)
+- Fix inconsistent redstone behavior of strip curtains (Malte)
+- Fix redstone connectors not working on the main input of comparators (Malte)
+- Fix logic units not clearing registers between cycles (Malte)
+- Fix issues when adding or removing boards from the logic unit (Malte)
+- Fix rare crash involving redstone wires (Malte)
+- Fix race condition when addons add config getters (Malte)
+- Fix issues with the workbench UI (Malte)
+- Fix item entity output location for the auto-workbench (Malte)
+- Fix wire desync (Malte)
+- Fix render layer for diesel generator (Malte)
+- Fix revolver bullet desync (Malte)
+- Fix invisible fluid splash particles (Malte)
+- Fix crash when building an excavator without a vein (Malte)
+- Fix some recipes damaging instead of consuming their ingredients (Malte)
+- Fix pump vanishing when the bottling machine is broken (Malte)
+- Reduce block updates on multiblocks (Malte)
+- Fix Spanish translation for lightning rods (TwistedGate)
+- Fix recipes for graphite dust not loading with newer versions of JEI (BluSunrize)
+
+##### Version 1.16.5-5.0.3-138
 - Add Nether Fungi to the sawmill's recipes (BluSunrize)
 - Change Engineer's Workbench, Circuit Table and Crafting Table to be waterloggable (Malte)
 - Change Transformers to make attaching wires easier (Malte)
@@ -6,6 +76,7 @@
 - Fix crash with empty ingredients in JEI (Malte)
 - Fix shaders not working on minecarts (Malte)
 - Fix table rendering in the manual (Malte)
+- Fix comparator updates on multiblocks (Malte)
 - Various performance improvements, crash protection and logging (Malte)
 - Translations Added/Updated: es_* (docanuto)
 
