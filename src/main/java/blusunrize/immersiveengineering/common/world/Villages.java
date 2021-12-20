@@ -295,18 +295,18 @@ public class Villages
 				trades.get(1).add(new ItemsForEmerald(Tools.WIRECUTTER, new PriceInterval(4, 7), 12, 1, 0.2f));
 				trades.get(1).add(new ItemsForEmerald(WIRE_COILS.get(WireType.COPPER), new PriceInterval(-4, -2), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(IETags.electrumWire.getName(), new PriceInterval(6, 12), 12, 10));
-				trades.get(2).add(new ItemsForEmerald(Tools.VOLTMETER, new PriceInterval(4, 7), 12, 5, 0.2f));
+				trades.get(2).add(new EmeraldForItems(IETags.electrumWire.getName(), new PriceInterval(6, 12), 12, 4));
+				trades.get(2).add(new ItemsForEmerald(Tools.VOLTMETER, new PriceInterval(4, 7), 3, 12, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(WIRE_COILS.get(WireType.ELECTRUM), new PriceInterval(-4, -1), 12, 5));
-				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.FEET), new PriceInterval(5, 7), 12, 5, 0.2f));
-				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.LEGS), new PriceInterval(9, 11), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.FEET), new PriceInterval(5, 7), 3, 15, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.LEGS), new PriceInterval(9, 11), 3, 15, 0.2f));
 
-				trades.get(3).add(new EmeraldForItems(IETags.aluminumWire.getName(), new PriceInterval(4, 8), 12, 20));
-				trades.get(3).add(new ItemsForEmerald(WIRE_COILS.get(WireType.STEEL), new PriceInterval(-2, -1), 12, 10));
-				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST), new PriceInterval(11, 15), 12, 10, 0.2f));
-				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD), new PriceInterval(5, 7), 12, 10, 0.2f));
+				trades.get(3).add(new EmeraldForItems(IETags.aluminumWire.getName(), new PriceInterval(4, 8), 20, 10));
+				trades.get(3).add(new ItemsForEmerald(WIRE_COILS.get(WireType.STEEL), new PriceInterval(-2, -1), 12, 8));
+				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST), new PriceInterval(11, 15), 3, 18, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD), new PriceInterval(5, 7), 3, 18, 0.2f));
 
-				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.FLUORESCENT_TUBE, new PriceInterval(8, 12), 3, 15, 0.2f));
+				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.FLUORESCENT_TUBE, new PriceInterval(8, 12), 3, 25, 0.2f));
 				trades.get(4).add(new ItemsForEmerald(TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_ELECTRO), new PriceInterval(8, 12), 3, 15, 0.2f));
 
 				trades.get(5).add(new ItemsForEmerald(TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_CAPACITORS), new PriceInterval(8, 12), 3, 30, 0.2f));
@@ -331,7 +331,7 @@ public class Villages
 				 */
 				trades.get(1).add(new EmeraldForItems(Ingredients.EMPTY_CASING, new PriceInterval(6, 12), 16, 2));
 				trades.get(1).add(new EmeraldForItems(Ingredients.EMPTY_SHELL, new PriceInterval(6, 12), 16, 2));
-				trades.get(1).add(new ItemsForEmerald(Ingredients.WOODEN_GRIP, new PriceInterval(2, 4), 12, 1, 0.2f));
+				trades.get(1).add(new ItemsForEmerald(Ingredients.WOODEN_GRIP, new PriceInterval(2, 4), 1, 12, 0.2f));
 
 				trades.get(2).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("bullet"), new PriceInterval(3, 6), 1, 25));
 				trades.get(2).add(new ItemsForEmerald(BulletHandler.getBulletStack(BulletItem.CASULL), new PriceInterval(-4, -2), 12, 5));
@@ -343,8 +343,8 @@ public class Villages
 				trades.get(3).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new PriceInterval(5, 9), 1, 30, 0.2f));
 
 				trades.get(4).add(new RevolverPieceForEmeralds());
-				trades.get(4).add(new ItemsForEmerald(BulletHandler.getBulletStack(BulletItem.SILVER), new PriceInterval(-4, -1), 6, 15));
-				trades.get(4).add(new ItemsForEmerald(BulletHandler.getBulletStack(BulletItem.HIGH_EXPLOSIVE), new PriceInterval(2, 4), 6, 15));
+				trades.get(4).add(new ItemsForEmerald(BulletHandler.getBulletStack(BulletItem.SILVER), new PriceInterval(-4, -1), 8, 15));
+				trades.get(4).add(new ItemsForEmerald(BulletHandler.getBulletStack(BulletItem.HIGH_EXPLOSIVE), new PriceInterval(2, 4), 8, 15));
 
 				trades.get(5).add(new RevolverPieceForEmeralds());
 				trades.get(5).add(new RevolverPieceForEmeralds());
