@@ -272,17 +272,16 @@ public class Villages
 				trades.get(1).add(new EmeraldForItems(IETags.coalCoke.getName(), new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(Tools.HAMMER, new PriceInterval(4, 7), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.COPPER.tagName()), new PriceInterval(4, 6), 12, 10));
-				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.ALUMINUM.tagName()), new PriceInterval(4, 6), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.COPPER.tagName()), new PriceInterval(4, 6), 6, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.ALUMINUM.tagName()), new PriceInterval(4, 6), 6, 10));
 				trades.get(2).add(new ItemsForEmerald(Ingredients.COMPONENT_STEEL, new PriceInterval(1, 3), 12, 5));
 
-				trades.get(3).add(new ItemsForEmerald(Tools.TOOLBOX, new PriceInterval(6, 8), 12, 10, 0.2f));
-				trades.get(3).add(new ItemsForEmerald(Ingredients.WATERWHEEL_SEGMENT, new PriceInterval(1, 3), 12, 10));
-				// Todo, replace with somethign more appropriate
-				// trades.get(3).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("specialBullet"), new PriceInterval(5, 9), 12, 10, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(Tools.TOOLBOX, new PriceInterval(6, 8), 3, 20, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(Ingredients.WATERWHEEL_SEGMENT, new PriceInterval(1, 3), 8, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.getPlate(EnumMetals.STEEL.tagName()), new PriceInterval(4, 6), 12, 7));
 
 				trades.get(4).add(new ItemsForEmerald(Tools.DRILLHEAD_IRON, new PriceInterval(28, 40), 3, 15, 0.2f));
-				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.EARMUFFS, new PriceInterval(4, 9), 3, 15, 0.2f));
+				trades.get(4).add(new ItemsForEmerald(IEItems.Misc.EARMUFFS, new PriceInterval(4, 9), 3, 20, 0.2f));
 
 				trades.get(5).add(new ItemsForEmerald(Tools.DRILLHEAD_STEEL, new PriceInterval(32, 48), 3, 30, 0.2f));
 				trades.get(5).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new PriceInterval(12, 24), 3, 30, 0.2f));
