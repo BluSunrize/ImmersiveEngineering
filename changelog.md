@@ -1,4 +1,4 @@
-##### Version 1.18.1-6.0.0-pre
+##### Version 1.18.1-7.0.0-142
 - First (beta) release for 1.18.1
 - Fix ALL the issues that came with these updates (Malte)
 - Add deepslate ores, raw ores and update textures for IE ores (BluSunrize & Malte)
