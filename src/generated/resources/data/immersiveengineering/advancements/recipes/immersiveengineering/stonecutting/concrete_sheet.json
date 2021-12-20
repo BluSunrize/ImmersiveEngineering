@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:crafting/concrete_tile_stairs_from_concrete_tile_stonecutting"
+      "immersiveengineering:stonecutting/concrete_sheet"
     ]
   },
   "criteria": {
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:crafting/concrete_tile_stairs_from_concrete_tile_stonecutting"
+        "recipe": "immersiveengineering:stonecutting/concrete_sheet"
       }
     }
   },

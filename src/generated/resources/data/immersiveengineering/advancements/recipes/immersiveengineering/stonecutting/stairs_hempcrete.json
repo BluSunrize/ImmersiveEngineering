@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:stonecutting/stairs_hempcrete"
+    ]
+  },
+  "criteria": {
+    "has_hempcrete": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:hempcrete"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:stonecutting/stairs_hempcrete"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_hempcrete",
+      "has_the_recipe"
+    ]
+  ]
+}

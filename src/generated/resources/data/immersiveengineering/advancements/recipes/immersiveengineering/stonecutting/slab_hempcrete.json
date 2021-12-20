@@ -2,17 +2,17 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:crafting/concrete_tile_from_concrete_stonecutting"
+      "immersiveengineering:stonecutting/slab_hempcrete"
     ]
   },
   "criteria": {
-    "has_concrete": {
+    "has_hempcrete": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:concrete"
+              "immersiveengineering:hempcrete"
             ]
           }
         ]
@@ -21,13 +21,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:crafting/concrete_tile_from_concrete_stonecutting"
+        "recipe": "immersiveengineering:stonecutting/slab_hempcrete"
       }
     }
   },
   "requirements": [
     [
-      "has_concrete",
+      "has_hempcrete",
       "has_the_recipe"
     ]
   ]

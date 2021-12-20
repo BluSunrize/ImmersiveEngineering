@@ -1,6 +1,43 @@
 {
   "recipe": {
     "type": "crafting",
-    "recipe": "crafting/concrete"
+    "recipes": [
+      [
+        {
+          "recipe": "crafting/concrete"
+        },
+        {
+          "recipe": "crafting/concrete2"
+        }
+      ]
+    ]
+  },
+  "partial": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:concrete_sheet"
+      },
+      {
+        "item": "immersiveengineering:concrete_quarter"
+      },
+      {
+        "item": "immersiveengineering:slab_concrete"
+      },
+      {
+        "item": "immersiveengineering:concrete_three_quarter"
+      },
+      {
+        "item": "immersiveengineering:concrete_tile"
+      }
+    ]
+  },
+  "leaded": {
+    "type": "crafting",
+    "recipe": "crafting/concrete_leaded"
+  },
+  "liquid": {
+    "type": "item_display",
+    "item": "immersiveengineering:concrete_bucket"
   }
 }

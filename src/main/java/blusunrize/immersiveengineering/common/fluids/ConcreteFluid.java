@@ -67,17 +67,19 @@ public class ConcreteFluid extends IEFluid
 		int timer = state.getValue(IEProperties.INT_16);
 		int level = getLegacyLevel(state);
 		int quantaRemaining = 16-level;
-		if(timer >= Math.min(14, quantaRemaining))
+		boolean mayDry = timer >= Math.min(14, quantaRemaining);
+
+		// Source can not dry while there is still fluid around it, to prevent it from cutting off flow
+		if(this.isSource(state))
+			for(Direction neighborSide : Direction.Plane.HORIZONTAL)
+				if(world.getBlockState(pos.relative(neighborSide)).getFluidState().getType().isSame(this))
+					mayDry = false;
+
+		if(mayDry)
 		{
 			BlockEntry<? extends Block> solidBlock;
-			if(level >= 14)
-				solidBlock = StoneDecoration.CONCRETE_SHEET;
-			else if(level >= 10)
-				solidBlock = StoneDecoration.CONCRETE_QUARTER;
-			else if(level >= 6)
+			if(level >= 5&&level < 8)
 				solidBlock = IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE.getId());
-			else if(level >= 2)
-				solidBlock = StoneDecoration.CONCRETE_THREE_QUARTER;
 			else
 				solidBlock = StoneDecoration.CONCRETE;
 			world.setBlockAndUpdate(pos, solidBlock.get().defaultBlockState());
@@ -86,7 +88,7 @@ public class ConcreteFluid extends IEFluid
 		}
 		else if(world.getBlockState(pos).getBlock()==entry.getBlock())
 		{
-			BlockState newState = world.getBlockState(pos).setValue(IEProperties.INT_16, timer+(hasFlownInTick?1: 2));
+			BlockState newState = world.getBlockState(pos).setValue(IEProperties.INT_16, Math.min(timer+1, 15));
 			world.setBlockAndUpdate(pos, newState);
 		}
 	}
@@ -121,12 +123,11 @@ public class ConcreteFluid extends IEFluid
 			BlockState neighborState = worldIn.getBlockState(neighborPos);
 			FluidState fluidAtNeighbor = neighborState.getFluidState();
 			if(fluidAtNeighbor.getType().isSame(this)
-					&&((FlowingFluidAccess) this).callCanPassThroughWall(neighborSide, worldIn, pos, blockStateIn, neighborPos, neighborState)
-					&&fluidAtNeighbor.getAmount() > maxNeighborLevel
+					&&((FlowingFluidAccess)this).callCanPassThroughWall(neighborSide, worldIn, pos, blockStateIn, neighborPos, neighborState)
 			)
 			{
-				correspondingTimer = fluidAtNeighbor.getValue(IEProperties.INT_16);
-				maxNeighborLevel = fluidAtNeighbor.getAmount();
+				maxNeighborLevel = Math.max(maxNeighborLevel, fluidAtNeighbor.getAmount());
+				correspondingTimer = Math.max(correspondingTimer, fluidAtNeighbor.getValue(IEProperties.INT_16));
 			}
 		}
 
@@ -134,7 +135,7 @@ public class ConcreteFluid extends IEFluid
 		BlockState aboveState = worldIn.getBlockState(abovePos);
 		FluidState aboveFluid = aboveState.getFluidState();
 		FluidState currFluid = blockStateIn.getFluidState();
-		if(!aboveFluid.isEmpty()&&aboveFluid.getType().isSame(this)&&((FlowingFluidAccess) this).callCanPassThroughWall(Direction.UP, worldIn, pos, blockStateIn, abovePos, aboveState))
+		if(!aboveFluid.isEmpty()&&aboveFluid.getType().isSame(this)&&((FlowingFluidAccess)this).callCanPassThroughWall(Direction.UP, worldIn, pos, blockStateIn, abovePos, aboveState))
 			return this.getFlowingFluidState(8, true, currFluid, Math.max(correspondingTimer, aboveFluid.getValue(IEProperties.INT_16)));
 		else
 		{
