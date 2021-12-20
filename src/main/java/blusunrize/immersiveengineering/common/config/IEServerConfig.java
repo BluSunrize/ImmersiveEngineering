@@ -532,7 +532,7 @@ public class IEServerConfig
 			BAUXITE(EnumMetals.ALUMINUM, OreDistribution.TRAPEZOID, 0, 6, 32, 112, 16),
 			LEAD(EnumMetals.LEAD, OreDistribution.TRAPEZOID, 0, 8, -32, 80, 8),
 			SILVER(EnumMetals.SILVER, OreDistribution.TRAPEZOID, 0.25, 9, -48, 32, 6),
-			NICKEL(EnumMetals.NICKEL, OreDistribution.UNIFORM, 0, 3, -64, 24, 6),
+			NICKEL(EnumMetals.NICKEL, OreDistribution.UNIFORM, 0, 5, -64, 24, 7),
 			DEEP_NICKEL(EnumMetals.NICKEL, OreDistribution.TRAPEZOID, 0, 6, -120, -8, 8),
 			URANIUM(EnumMetals.URANIUM, OreDistribution.TRAPEZOID, 0.5, 4, -64, -16, 9),
 			;
