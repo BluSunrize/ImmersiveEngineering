@@ -14,6 +14,10 @@
 - Add chance-based outputs for the Arc Furnace (Malte)
 - Add full tag support for the toolbox slots (Malte)
 - Add expanded recycling support for vanilla metal items & IE blocks (BluSunrize) 
+- Overhaul villager trades (BluSunrize)
+    - Inventory of the structural engineer changed quite a bit
+    - Other trades had their XP values and max uses changed
+    - Price modifiers where changed resulting in less drastic discounts
 - Fix issues with the hammer, allowing it to break scaffolding quicker and be enchanted at an anvil (BluSunrize) 
 
 ##### Version 1.16.5-5.0.6-141
