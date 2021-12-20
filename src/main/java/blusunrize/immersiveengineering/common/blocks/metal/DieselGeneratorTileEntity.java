@@ -149,8 +149,7 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 		}
 		else
 		{
-
-			boolean prevActive = active;
+			final boolean prevActive = active;
 
 			if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
 			{
@@ -171,21 +170,21 @@ public class DieselGeneratorTileEntity extends MultiblockPartTileEntity<DieselGe
 					{
 						if(!active)
 						{
-							prevActive = true;
+							active = true;
 							animation_fanFadeIn = 80;
 						}
 						tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
 					}
 					else if(active)
 					{
-						prevActive = false;
+						active = false;
 						animation_fanFadeOut = 80;
 					}
 				}
 			}
 			else if(active)
 			{
-				prevActive = false;
+				active = false;
 				animation_fanFadeOut = 80;
 			}
 
