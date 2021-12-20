@@ -2,7 +2,7 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:crafting/concrete_stairs_from_concrete_stonecutting"
+      "immersiveengineering:stonecutting/slab_concrete"
     ]
   },
   "criteria": {
@@ -21,7 +21,7 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:crafting/concrete_stairs_from_concrete_stonecutting"
+        "recipe": "immersiveengineering:stonecutting/slab_concrete"
       }
     }
   },

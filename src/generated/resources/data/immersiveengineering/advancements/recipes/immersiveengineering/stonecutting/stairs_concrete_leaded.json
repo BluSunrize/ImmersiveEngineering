@@ -2,17 +2,17 @@
   "parent": "minecraft:recipes/root",
   "rewards": {
     "recipes": [
-      "immersiveengineering:crafting/hempcrete_stairs_from_hempcrete_stonecutting"
+      "immersiveengineering:stonecutting/stairs_concrete_leaded"
     ]
   },
   "criteria": {
-    "has_hempcrete": {
+    "has_concrete_leaded": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:hempcrete"
+              "immersiveengineering:concrete_leaded"
             ]
           }
         ]
@@ -21,13 +21,13 @@
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
-        "recipe": "immersiveengineering:crafting/hempcrete_stairs_from_hempcrete_stonecutting"
+        "recipe": "immersiveengineering:stonecutting/stairs_concrete_leaded"
       }
     }
   },
   "requirements": [
     [
-      "has_hempcrete",
+      "has_concrete_leaded",
       "has_the_recipe"
     ]
   ]
