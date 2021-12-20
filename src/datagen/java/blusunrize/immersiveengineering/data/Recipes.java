@@ -1169,6 +1169,12 @@ public class Recipes extends RecipeProvider
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.CONCRETE), IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE.getId()))
 				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
 				.save(out, toRL("concrete_stairs_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.CONCRETE), StoneDecoration.CONCRETE_SHEET, 16)
+				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL("concrete_sheet_from_concrete_stonecutting"));
+		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.CONCRETE), StoneDecoration.CONCRETE_THREE_QUARTER)
+				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
+				.save(out, toRL("concrete_three_quarter_from_concrete_stonecutting"));
 		SingleItemRecipeBuilder.stonecutting(Ingredient.of(StoneDecoration.CONCRETE_TILE), IEBlocks.TO_SLAB.get(StoneDecoration.CONCRETE_TILE.getId()), 2)
 				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
 				.save(out, toRL("concrete_tile_slab_from_concrete_tile_stonecutting"));
