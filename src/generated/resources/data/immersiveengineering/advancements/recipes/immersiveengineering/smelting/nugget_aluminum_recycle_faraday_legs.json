@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/nugget_aluminum_recycle_faraday_legs"
+    ]
+  },
+  "criteria": {
+    "has_armor_faraday_legs": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:armor_faraday_legs"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/nugget_aluminum_recycle_faraday_legs"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_armor_faraday_legs",
+      "has_the_recipe"
+    ]
+  ]
+}

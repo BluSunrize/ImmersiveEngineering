@@ -3136,12 +3136,15 @@ public class Recipes extends RecipeProvider
 	 * @param xp           experience awarded per smelted item
 	 * @param smeltingTime smelting time in ticks
 	 * @param extraPostfix adds an additional postfix before the smelting/blasting postfix when needed (for example used by dusts)
-	 * @param smeltPostfix allows adding the smelting postfix to the smelting (non-blasting) recipe
 	 */
-	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, int smeltingTime, Consumer<FinishedRecipe> out, String extraPostfix, boolean smeltPostfix)
+	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, int smeltingTime, Consumer<FinishedRecipe> out, String extraPostfix)
 	{
-		SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), output, xp, smeltingTime).unlockedBy("has_"+toPath(input), has(input)).save(out, toRL(toPath(output)+extraPostfix+(smeltPostfix?"_from_smelting": "")));
-		SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), output, xp, smeltingTime/blastDivider).unlockedBy("has_"+toPath(input), has(input)).save(out, toRL(toPath(output)+extraPostfix+"_from_blasting"));
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), output, xp, smeltingTime)
+				.unlockedBy("has_"+toPath(input), has(input))
+				.save(out, toRL("smelting/"+toPath(output)+extraPostfix));
+		SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), output, xp, smeltingTime/blastDivider)
+				.unlockedBy("has_"+toPath(input), has(input))
+				.save(out, toRL("smelting/"+toPath(output)+extraPostfix+"_from_blasting"));
 	}
 
 	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, Consumer<FinishedRecipe> out)
@@ -3151,7 +3154,7 @@ public class Recipes extends RecipeProvider
 
 	private void addStandardSmeltingBlastingRecipe(ItemLike input, ItemLike output, float xp, Consumer<FinishedRecipe> out, String extraPostfix)
 	{
-		addStandardSmeltingBlastingRecipe(input, output, xp, standardSmeltingTime, out, extraPostfix, false);
+		addStandardSmeltingBlastingRecipe(input, output, xp, standardSmeltingTime, out, extraPostfix);
 	}
 
 	private void addRGBRecipe(Consumer<FinishedRecipe> out, ResourceLocation recipeName, Ingredient target, String nbtKey)

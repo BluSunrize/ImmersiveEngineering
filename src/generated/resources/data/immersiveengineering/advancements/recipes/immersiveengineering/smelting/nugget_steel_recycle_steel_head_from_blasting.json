@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/nugget_steel_recycle_steel_head_from_blasting"
+    ]
+  },
+  "criteria": {
+    "has_armor_steel_head": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:armor_steel_head"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/nugget_steel_recycle_steel_head_from_blasting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_armor_steel_head",
+      "has_the_recipe"
+    ]
+  ]
+}

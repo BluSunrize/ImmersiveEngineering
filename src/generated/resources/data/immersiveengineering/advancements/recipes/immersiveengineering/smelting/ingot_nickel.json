@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/ingot_nickel"
+    ]
+  },
+  "criteria": {
+    "has_ore_nickel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:ore_nickel"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/ingot_nickel"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ore_nickel",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/ingot_steel_from_dust_from_blasting"
+    ]
+  },
+  "criteria": {
+    "has_dust_steel": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:dust_steel"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/ingot_steel_from_dust_from_blasting"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_dust_steel",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:smelting/ingot_aluminum2"
+    ]
+  },
+  "criteria": {
+    "has_deepslate_ore_aluminum": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:deepslate_ore_aluminum"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:smelting/ingot_aluminum2"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_deepslate_ore_aluminum",
+      "has_the_recipe"
+    ]
+  ]
+}
