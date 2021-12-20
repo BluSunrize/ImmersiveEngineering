@@ -42,6 +42,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -235,6 +236,13 @@ public class HammerItem extends IEBaseItem
 	}
 
 	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+	{
+		return EnchantmentHelper.getEnchantments(book).keySet().stream()
+				.allMatch(enchantment -> canApplyAtEnchantingTable(stack, enchantment));
+	}
+
+	@Override
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
 	{
 		return enchantment==Enchantments.BLOCK_EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
@@ -243,7 +251,7 @@ public class HammerItem extends IEBaseItem
 	@Override
 	public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand)
 	{
-		if (!player.level.isClientSide&&RotationUtil.rotateEntity(entity, player))
+		if(!player.level.isClientSide&&RotationUtil.rotateEntity(entity, player))
 			return InteractionResult.SUCCESS;
 		else
 			return InteractionResult.PASS;
