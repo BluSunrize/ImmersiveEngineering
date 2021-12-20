@@ -242,19 +242,27 @@ public class Villages
 			Int2ObjectMap<List<ItemListing>> trades = ev.getTrades();
 			if(ENGINEER.equals(ev.getType().getRegistryName()))
 			{
-				trades.get(1).add(new EmeraldForItems(IETags.treatedStick.getName(), new PriceInterval(8, 16), 16, 2));
-				trades.get(1).add(new ItemsForEmerald(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(-10, -6), 12, 1, 0.2f));
-				trades.get(1).add(new ItemsForEmerald(Cloth.BALLOON, new PriceInterval(-3, -1), 12, 1, 0.2f));
+				/* Structural Engineer
+				 * Sells various construction materials
+				 */
+				trades.get(1).add(new EmeraldForItems(IETags.treatedStick.getName(), new PriceInterval(8, 16), 16, 1));
+				trades.get(1).add(new ItemsForEmerald(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(-10, -6), 12, 1));
+				trades.get(1).add(new ItemsForEmerald(Cloth.BALLOON, new PriceInterval(-3, -1), 12, 2));
 
 				trades.get(2).add(new EmeraldForItems(IETags.ironRod.getName(), new PriceInterval(2, 6), 12, 10));
-				trades.get(2).add(new ItemsForEmerald(MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
-				trades.get(2).add(new ItemsForEmerald(MetalDecoration.ALU_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(-8, -4), 12, 5, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(-4, -2), 12, 5));
+				trades.get(2).add(new ItemsForEmerald(MetalDecoration.ALU_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(-4, -2), 12, 5));
 
-				trades.get(3).add(new EmeraldForItems(IETags.steelRod.getName(), new PriceInterval(2, 6), 12, 20));
-				trades.get(3).add(new EmeraldForItems(IETags.slag.getName(), new PriceInterval(4, 8), 12, 20));
-				trades.get(3).add(new ItemsForEmerald(StoneDecoration.CONCRETE, new PriceInterval(-6, -2), 12, 10, 0.2f));
+				trades.get(3).add(new EmeraldForItems(IETags.steelRod.getName(), new PriceInterval(2, 6), 12, 6));
+				trades.get(3).add(new EmeraldForItems(StoneDecoration.CONCRETE, new PriceInterval(4, 8), 8, 12));
+				trades.get(3).add(new ItemsForEmerald(WoodenDevices.TREATED_WALLMOUNT, new PriceInterval(-3, -2), 10, 8));
 
-				trades.get(4).add(new OreveinMapForEmeralds());
+				trades.get(4).add(new ItemsForEmerald(WoodenDecoration.TREATED_POST, new PriceInterval(-3, -2), 4, 10));
+				trades.get(4).add(new EmeraldForItems(MetalDecoration.STEEL_POST, new PriceInterval(1, 2), 4, 20));
+				trades.get(4).add(new EmeraldForItems(MetalDecoration.ALU_POST, new PriceInterval(1, 3), 6, 15));
+
+				trades.get(5).add(new OreveinMapForEmeralds());
+				trades.get(5).add(new EmeraldForItems(StoneDecoration.CONCRETE_LEADED, new PriceInterval(2, 6), 10, 10));
 			}
 			else if(MACHINIST.equals(ev.getType().getRegistryName()))
 			{
