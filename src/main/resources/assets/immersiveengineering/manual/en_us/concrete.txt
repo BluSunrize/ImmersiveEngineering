@@ -1,3 +1,7 @@
 Concrete
 Fortress Material
 <&recipe>Concrete is a very hard and resistant composite material. It's cheap to craft and makes for an excellent use for the excess slag produced by the <link;crude_blast_furnace;Blast Furnace>.
+<&partial>Concrete can be cut into slabs of varying thickness using a §2Stonecutter§r.
+You can also use that machine to make slabs and stairs of concrete, as well as concrete tiles which are smoother and more polished.
+<&leaded>Leaded concrete is a reinforced material, which is highly resistant to explosions. It may also afford protection against radiation, if that is something you worry about.
+<&liquid>Liquid concrete can be produced in a <link;mixer;Mixer> by combining half a bucket of Water with §2Gravel§r, §2Clay§r and §2two pieces of Sand§r or §2Slag§r.
