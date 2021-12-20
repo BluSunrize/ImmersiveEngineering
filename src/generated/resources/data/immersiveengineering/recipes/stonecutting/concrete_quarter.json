@@ -1,0 +1,8 @@
+{
+  "type": "minecraft:stonecutting",
+  "ingredient": {
+    "item": "immersiveengineering:concrete"
+  },
+  "result": "immersiveengineering:concrete_quarter",
+  "count": 4
+}
