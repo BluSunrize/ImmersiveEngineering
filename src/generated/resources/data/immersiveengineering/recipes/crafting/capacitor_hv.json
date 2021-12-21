@@ -1,25 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sss",
-    "ala",
-    "wrw"
+    "waw",
+    "fef",
+    "wcw"
   ],
   "key": {
-    "s": {
-      "tag": "forge:ingots/steel"
-    },
-    "a": {
-      "tag": "forge:ingots/aluminum"
-    },
-    "l": {
-      "tag": "forge:storage_blocks/lead"
-    },
     "w": {
       "tag": "forge:treated_wood"
     },
-    "r": {
-      "tag": "forge:storage_blocks/redstone"
+    "f": {
+      "tag": "forge:ingots/steel"
+    },
+    "a": {
+      "tag": "forge:plates/aluminum"
+    },
+    "c": {
+      "tag": "forge:ingots/hop_graphite"
+    },
+    "e": {
+      "tag": "forge:redstone_acid",
+      "amount": 1000,
+      "type": "immersiveengineering:fluid"
     }
   },
   "result": {

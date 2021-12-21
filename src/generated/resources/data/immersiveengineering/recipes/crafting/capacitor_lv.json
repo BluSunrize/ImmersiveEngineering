@@ -1,25 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "iii",
-    "clc",
-    "wrw"
+    "waw",
+    "fef",
+    "waw"
   ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "l": {
-      "tag": "forge:ingots/lead"
-    },
-    "c": {
-      "tag": "forge:ingots/copper"
-    },
     "w": {
       "tag": "forge:treated_wood"
     },
-    "r": {
-      "tag": "forge:dusts/redstone"
+    "f": {
+      "tag": "forge:ingots/iron"
+    },
+    "a": {
+      "tag": "forge:plates/lead"
+    },
+    "e": {
+      "tag": "forge:redstone_acid",
+      "amount": 1000,
+      "type": "immersiveengineering:fluid"
     }
   },
   "result": {
