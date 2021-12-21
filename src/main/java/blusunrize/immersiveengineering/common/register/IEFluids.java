@@ -78,6 +78,9 @@ public class IEFluids
 	public static final FluidEntry HERBICIDE = new FluidEntry(
 			"herbicide", rl("block/fluid/herbicide_still"), rl("block/fluid/herbicide_flow")
 	);
+	public static final FluidEntry REDSTONE_ACID = new FluidEntry(
+			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow")
+	);
 	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
 
 	public static void fixFluidFields()
