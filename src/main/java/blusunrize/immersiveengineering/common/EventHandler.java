@@ -365,7 +365,8 @@ public class EventHandler
 		{
 			if(!event.getPlayer().isShiftKeyDown())
 			{
-				ImmersiveEngineering.proxy.openManual();
+				if(event.getWorld().isClientSide)
+					ImmersiveEngineering.proxy.openManual();
 				event.setCanceled(true);
 			}
 			else if(!event.getWorld().isClientSide)
