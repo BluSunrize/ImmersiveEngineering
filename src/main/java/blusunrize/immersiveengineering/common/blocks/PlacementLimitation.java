@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.blocks;
 
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,7 +52,10 @@ public enum PlacementLimitation
 
 	public Direction getDirectionForPlacement(BlockPlaceContext context)
 	{
-		return getDirectionForPlacement(context.getClickedFace(), context.getPlayer(), context.getClickLocation());
+		Vec3 clickLocation = context.getClickLocation();
+		BlockPos pos = context.getClickedPos();
+		clickLocation = clickLocation.subtract(pos.getX(), pos.getY(), pos.getZ());
+		return getDirectionForPlacement(context.getClickedFace(), context.getPlayer(), clickLocation);
 	}
 
 	private interface DirectionGetter
