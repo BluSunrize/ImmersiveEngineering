@@ -64,10 +64,10 @@ public class ConcreteFluid extends IEFluid
 	{
 		hasFlownInTick = false;
 		super.tick(world, pos, state);
-		int timer = state.getValue(IEProperties.INT_16);
+		int timer = state.getValue(IEProperties.INT_32);
 		int level = getLegacyLevel(state);
 		int quantaRemaining = 16-level;
-		boolean mayDry = timer >= Math.min(14, quantaRemaining);
+		boolean mayDry = timer >= 31;//Math.min(14, quantaRemaining);
 
 		// Source can not dry while there is still fluid around it, to prevent it from cutting off flow
 		if(this.isSource(state))
@@ -88,7 +88,7 @@ public class ConcreteFluid extends IEFluid
 		}
 		else if(world.getBlockState(pos).getBlock()==entry.getBlock())
 		{
-			BlockState newState = world.getBlockState(pos).setValue(IEProperties.INT_16, Math.min(timer+1, 15));
+			BlockState newState = world.getBlockState(pos).setValue(IEProperties.INT_32, Math.min(timer+1, 31));
 			world.setBlockAndUpdate(pos, newState);
 		}
 	}
@@ -127,7 +127,7 @@ public class ConcreteFluid extends IEFluid
 			)
 			{
 				maxNeighborLevel = Math.max(maxNeighborLevel, fluidAtNeighbor.getAmount());
-				correspondingTimer = Math.max(correspondingTimer, fluidAtNeighbor.getValue(IEProperties.INT_16));
+				correspondingTimer = Math.max(correspondingTimer, fluidAtNeighbor.getValue(IEProperties.INT_32));
 			}
 		}
 
@@ -136,7 +136,7 @@ public class ConcreteFluid extends IEFluid
 		FluidState aboveFluid = aboveState.getFluidState();
 		FluidState currFluid = blockStateIn.getFluidState();
 		if(!aboveFluid.isEmpty()&&aboveFluid.getType().isSame(this)&&((FlowingFluidAccess)this).callCanPassThroughWall(Direction.UP, worldIn, pos, blockStateIn, abovePos, aboveState))
-			return this.getFlowingFluidState(8, true, currFluid, Math.max(correspondingTimer, aboveFluid.getValue(IEProperties.INT_16)));
+			return this.getFlowingFluidState(8, true, currFluid, Math.max(correspondingTimer, aboveFluid.getValue(IEProperties.INT_32)));
 		else
 		{
 			int newLevel = maxNeighborLevel-this.getDropOff(worldIn);
@@ -151,8 +151,8 @@ public class ConcreteFluid extends IEFluid
 	{
 		FluidState baseState = super.getFlowing(level, falling);
 		if(isSame(currentState.getType()))
-			baseDecay = Math.max(currentState.getValue(IEProperties.INT_16), baseDecay);
-		baseState = baseState.setValue(IEProperties.INT_16, baseDecay);
+			baseDecay = Math.max(currentState.getValue(IEProperties.INT_32), baseDecay);
+		baseState = baseState.setValue(IEProperties.INT_32, baseDecay);
 		return baseState;
 	}
 

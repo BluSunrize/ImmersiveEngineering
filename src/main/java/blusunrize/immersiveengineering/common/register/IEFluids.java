@@ -73,7 +73,7 @@ public class IEFluids
 	public static final FluidEntry CONCRETE = new FluidEntry(
 			"concrete", rl("block/fluid/concrete_still"), rl("block/fluid/concrete_flow"),
 			ConcreteFluid::new, ConcreteFluid.Flowing::new, createBuilder(2400, 4000),
-			ImmutableList.of(IEProperties.INT_16)
+			ImmutableList.of(IEProperties.INT_32)
 	);
 	public static final FluidEntry HERBICIDE = new FluidEntry(
 			"herbicide", rl("block/fluid/herbicide_still"), rl("block/fluid/herbicide_flow")

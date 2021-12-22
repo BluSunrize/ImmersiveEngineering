@@ -38,6 +38,7 @@ public class IEProperties
 	public static final BooleanProperty MIRRORED = BooleanProperty.create("mirrored");
 
 	public static final IntegerProperty INT_16 = IntegerProperty.create("int_16", 0, 15);
+	public static final IntegerProperty INT_32 = IntegerProperty.create("int_32", 0, 31);
 
 	public record ConnectionModelData(Set<Connection> connections, BlockPos here)
 	{
