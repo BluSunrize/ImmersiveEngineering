@@ -170,6 +170,7 @@ public class ChemthrowerEffects
 		ChemthrowerHandler.registerEffect(fluidBiodiesel, new ChemthrowerEffect_Potion(null, 0, IEPotions.FLAMMABLE.get(), 140, 1));
 		ChemthrowerHandler.registerFlammable(fluidBiodiesel);
 		ChemthrowerHandler.registerFlammable(fluidEthanol);
+		ChemthrowerHandler.registerEffect(fluidRedstoneAcid, new ChemthrowerEffect_Potion(null, 0, IEPotions.CONDUCTIVE.get(), 140, 1));
 		/*TODO
 		ChemthrowerHandler.registerEffect("oil", new ChemthrowerEffect_Potion(null, 0, new EffectInstance(IEPotions.flammable, 140, 0), new EffectInstance(Effects.BLINDNESS, 80, 1)));
 		ChemthrowerHandler.registerFlammable("oil");
