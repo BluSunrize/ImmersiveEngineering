@@ -216,7 +216,7 @@ dependencies {
     //TODO port compat once available
     //compileOnly fg.deobf(group: "com.blamejared.crafttweaker", name: "CraftTweaker-1.16.5", version: "7.1.0.245")
 
-    implementation "malte0811:BlockModelSplitter:2.0.0"
+    implementation "malte0811:BlockModelSplitter:2.0.1"
     testImplementation('junit:junit:4.13.2')
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }

@@ -47,7 +47,9 @@ public class IEOBJLoader implements IModelLoader<IEOBJModel>
 		ResourceLocation modelLoc = toRL(modelContents.get(MODEL_KEY).getAsString(), null);
 		try(InputStream input = getStream(modelLoc))
 		{
-			OBJModel<OBJMaterial> model = OBJModel.readFromStream(input, s -> getStream(toRL(s, modelLoc))).quadify();
+			OBJModel<OBJMaterial> model = OBJModel.readFromStream(input, s -> getStream(toRL(s, modelLoc)))
+					.quadify()
+					.recomputeZeroNormals();
 			IEOBJCallback<?> callback;
 			if(modelContents.has(CALLBACKS_KEY))
 			{

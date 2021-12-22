@@ -153,7 +153,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	public void tickServer()
 	{
 		tickCommon();
-		boolean prevActive = active;
+		final boolean prevActive = active;
 
 		if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
 		{
