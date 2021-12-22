@@ -2561,13 +2561,14 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_nickel_dust", has(IETags.getTagsFor(EnumMetals.NICKEL).dust))
 				.save(out, toRL("constantan_mix"));
 
-		ShapelessRecipeBuilder.shapeless(IEFluids.REDSTONE_ACID.getBucket())
+		ShapelessRecipeBuilder acidBaseRecipe = ShapelessRecipeBuilder.shapeless(IEFluids.REDSTONE_ACID.getBucket())
 				.requires(Tags.Items.DUSTS_REDSTONE)
 				.requires(Tags.Items.DUSTS_REDSTONE)
 				.requires(Tags.Items.DUSTS_REDSTONE)
 				.requires(Tags.Items.DUSTS_REDSTONE)
 				.requires(Items.WATER_BUCKET)
-				.unlockedBy("has_redstone_dust", has(Tags.Items.DUSTS_REDSTONE))
+				.unlockedBy("has_redstone_dust", has(Tags.Items.DUSTS_REDSTONE));
+		new NoContainerRecipeBuilder(acidBaseRecipe::save)
 				.save(out, toRL("redstone_acid"));
 
 		ShapedRecipeBuilder.shaped(Misc.BLUEPRINT)
