@@ -1,3 +1,18 @@
+##### Version 1.18.1-7.0.1-pre
+- Overhaul liquid concrete (BluSunrize)
+    - Only dries into full blocks or slabs
+    - Dries from teh outside inwards so it doesn't kill its source first
+    - Dries much slower so it has more time to fill an area
+    - Partial concrete blocks are made in the stonecutter
+- Fix missing normals on models, making them look too dark (Malte)
+- Fix various JEI integrations (BluSunrize)
+    - Move "show recipes" button in the mixer
+    - Fix ghost slot handling in the assembler
+- Fix crash when trying to use a manual on a lectern (BluSunrize)
+- Fix incorrect placement for conveyors (BluSunrize)
+- Fix assembler not consuming fluids correctly (BluSunrize)
+- Fix rendering for the bucket wheel not showing its contents (BluSunrize)
+
 ##### Version 1.18.1-7.0.0-142
 - First (beta) release for 1.18.1
 - Fix ALL the issues that came with these updates (Malte)
@@ -18,7 +33,7 @@
     - Inventory of the structural engineer changed quite a bit
     - Other trades had their XP values and max uses changed
     - Price modifiers where changed resulting in less drastic discounts
-- Fix issues with the hammer, allowing it to break scaffolding quicker and be enchanted at an anvil (BluSunrize) 
+- Fix issues with the hammer, allowing it to break scaffolding quicker and be enchanted at an anvil (BluSunrize)
 
 ##### Version 1.16.5-5.0.6-141
 - Re-add the fan animation on blast furnace preheaters (Malte)
