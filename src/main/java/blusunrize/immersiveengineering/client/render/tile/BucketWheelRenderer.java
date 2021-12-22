@@ -8,33 +8,23 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.model.data.IModelData;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
@@ -43,7 +33,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 {
 	public static final String NAME = "bucket_wheel";
 	public static DynamicModel WHEEL;
-	private static final Cache<List<String>, IVertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
+	private static final Cache<BucketWheelCallbacks.Key, IVertexBufferHolder> CACHED_BUFFERS = CacheBuilder.newBuilder()
 			.maximumSize(100)
 			.expireAfterAccess(1, TimeUnit.MINUTES)
 			.<Object, IVertexBufferHolder>removalListener(rem -> rem.getValue().reset())
@@ -54,26 +44,6 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 	{
 		if(!tile.formed||!tile.getLevelNonnull().hasChunkAt(tile.getBlockPos())||tile.isDummy())
 			return;
-		Map<String, String> texMap = new HashMap<>();
-		List<String> textures = new ArrayList<>(8);
-		synchronized(tile.digStacks)
-		{
-			for(int i = 0; i < tile.digStacks.size(); i++)
-			{
-				ItemStack stackAtIndex = tile.digStacks.get(i);
-				if(!stackAtIndex.isEmpty())
-				{
-					Block b = Block.byItem(stackAtIndex.getItem());
-					BlockState digState = b!=Blocks.AIR?b.defaultBlockState(): Blocks.COBBLESTONE.defaultBlockState();
-					BakedModel digModel = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(digState);
-					String texture = digModel.getParticleIcon().getName().toString();
-					texMap.put("dig"+i, texture);
-					textures.add(texture);
-				}
-				else
-					textures.add("");
-			}
-		}
 		matrixStack.pushPose();
 
 		matrixStack.translate(.5, .5, .5);
@@ -87,13 +57,14 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 		matrixStack.translate(-.5, -.5, -.5);
 		try
 		{
-			CACHED_BUFFERS.get(textures, () -> IVertexBufferHolder.create(() -> {
-				BakedModel model = WHEEL.get();
-				List<String> list = Lists.newArrayList("bucketWheel");
-				list.addAll(texMap.keySet());
-				VisibilityList objState = VisibilityList.show(list);
-				return model.getQuads(null, null, Utils.RAND, new SinglePropertyModelData<>(objState, DynamicSubmodelCallbacks.getProperty()));
-			})).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
+			BucketWheelCallbacks.Key key = BucketWheelCallbacks.INSTANCE.extractKey(
+					tile.getLevelNonnull(), tile.getBlockPos(), tile.getState(), tile
+			);
+			IModelData extraData = new SinglePropertyModelData<>(key, IEOBJCallbacks.getModelProperty(BucketWheelCallbacks.INSTANCE));
+
+			CACHED_BUFFERS.get(key, () -> IVertexBufferHolder.create(
+					() -> WHEEL.get().getQuads(null, null, Utils.RAND, extraData))
+			).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
 		} catch(ExecutionException ex)
 		{
 			throw new RuntimeException(ex);

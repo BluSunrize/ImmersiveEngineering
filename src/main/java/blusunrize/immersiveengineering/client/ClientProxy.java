@@ -124,6 +124,7 @@ public class ClientProxy extends CommonProxy
 
 		IEOBJCallbacks.register(rl("balloon"), BalloonCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("bottling_machine"), BottlingMachineCallbacks.INSTANCE);
+		IEOBJCallbacks.register(rl("bucket_wheel"), BucketWheelCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("breaker"), BreakerSwitchCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("chute"), ChuteCallbacks.INSTANCE);
 		IEOBJCallbacks.register(rl("cloche"), ClocheCallbacks.INSTANCE);

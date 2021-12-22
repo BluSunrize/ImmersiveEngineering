@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.data;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
+import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
 import blusunrize.immersiveengineering.client.render.entity.SawbladeRenderer;
 import blusunrize.immersiveengineering.client.render.tile.*;
@@ -53,7 +54,7 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 		getBuilder(BucketWheelRenderer.NAME)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/bucket_wheel.obj.ie"))
-				.callback(DynamicSubmodelCallbacks.INSTANCE)
+				.callback(BucketWheelCallbacks.INSTANCE)
 				.end();
 		getBuilder(CrusherRenderer.NAME)
 				.customLoader(OBJLoaderBuilder::begin)
