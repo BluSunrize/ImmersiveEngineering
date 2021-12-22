@@ -66,6 +66,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -292,6 +293,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 				dupeList.add(stack.copy());
 			itemStacks = dupeList;
 		}
+		FluidStack[] tankFluids = Arrays.stream(tanks).map(tank -> doConsume?tank.getFluid(): tank.getFluid().copy()).toArray(FluidStack[]::new);
 		for(int i = 0; i < queries.length; i++)
 		{
 			RecipeQuery recipeQuery = queries[i];
@@ -301,12 +303,14 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 				if(recipeQuery.isFluid())
 				{
 					boolean hasFluid = false;
-					for(FluidTank tank : tanks)
-						if(recipeQuery.matchesFluid(tank.getFluid()))
+					for(int t = 0; t < tankFluids.length; t++)
+						if(recipeQuery.matchesFluid(tankFluids[t]))
 						{
 							hasFluid = true;
 							if(doConsume)
-								tank.drain(recipeQuery.getFluidSize(), FluidAction.EXECUTE);
+								tanks[t].drain(recipeQuery.getFluidSize(), FluidAction.EXECUTE);
+							else
+								tankFluids[t].shrink(recipeQuery.getFluidSize());
 							break;
 						}
 					if(hasFluid)
