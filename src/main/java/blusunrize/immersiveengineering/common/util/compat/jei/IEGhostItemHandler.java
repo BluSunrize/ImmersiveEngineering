@@ -80,7 +80,7 @@ public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerSc
 		public void accept(ItemStack ingredient)
 		{
 			Int2ObjectMap<ItemStack> change = new Int2ObjectOpenHashMap<>();
-			change.put(slot.getSlotIndex(), ingredient);
+			change.put(((Slot)slot).index, ingredient);
 			ImmersiveEngineering.packetHandler.sendToServer(new MessageSetGhostSlots(change));
 		}
 	}
