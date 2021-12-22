@@ -25,7 +25,7 @@ public class FluidTagRecipeQuery extends RecipeQuery
 	@Override
 	public boolean matchesFluid(FluidStack fluid)
 	{
-		return tag.testIgnoringAmount(fluid);
+		return tag.test(fluid);
 	}
 
 	@Override
