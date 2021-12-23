@@ -24,7 +24,7 @@ import javax.annotation.Nonnull;
 
 public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRecipe
 {
-	protected final T baseRecipe;
+	public final T baseRecipe;
 
 	public NoContainersRecipe(T baseRecipe)
 	{

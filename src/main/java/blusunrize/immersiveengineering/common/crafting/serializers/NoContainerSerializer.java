@@ -55,8 +55,8 @@ public class NoContainerSerializer extends ForgeRegistryEntry<RecipeSerializer<?
 	@Override
 	public void toNetwork(@Nonnull FriendlyByteBuf pBuffer, @Nonnull NoContainersRecipe pRecipe)
 	{
-		pBuffer.writeRegistryIdUnsafe(ForgeRegistries.RECIPE_SERIALIZERS, pRecipe.baseRecipe().getSerializer());
-		send(pRecipe.baseRecipe(), pBuffer);
+		pBuffer.writeRegistryIdUnsafe(ForgeRegistries.RECIPE_SERIALIZERS, pRecipe.baseRecipe.getSerializer());
+		send(pRecipe.baseRecipe, pBuffer);
 	}
 
 	@SuppressWarnings("unchecked")
