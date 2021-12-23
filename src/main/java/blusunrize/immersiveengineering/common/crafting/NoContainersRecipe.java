@@ -21,11 +21,10 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
-import java.util.Objects;
 
 public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRecipe
 {
-	private final T baseRecipe;
+	protected final T baseRecipe;
 
 	public NoContainersRecipe(T baseRecipe)
 	{
@@ -35,34 +34,34 @@ public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRec
 	@Override
 	public boolean matches(@Nonnull CraftingContainer pContainer, @Nonnull Level pLevel)
 	{
-		return baseRecipe().matches(pContainer, pLevel);
+		return baseRecipe.matches(pContainer, pLevel);
 	}
 
 	@Nonnull
 	@Override
 	public ItemStack assemble(@Nonnull CraftingContainer pContainer)
 	{
-		return baseRecipe().assemble(pContainer);
+		return baseRecipe.assemble(pContainer);
 	}
 
 	@Override
 	public boolean canCraftInDimensions(int pWidth, int pHeight)
 	{
-		return baseRecipe().canCraftInDimensions(pWidth, pHeight);
+		return baseRecipe.canCraftInDimensions(pWidth, pHeight);
 	}
 
 	@Nonnull
 	@Override
 	public ItemStack getResultItem()
 	{
-		return baseRecipe().getResultItem();
+		return baseRecipe.getResultItem();
 	}
 
 	@Nonnull
 	@Override
 	public ResourceLocation getId()
 	{
-		return baseRecipe().getId();
+		return baseRecipe.getId();
 	}
 
 	@Nonnull
@@ -76,7 +75,7 @@ public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRec
 	@Override
 	public RecipeType<?> getType()
 	{
-		return baseRecipe().getType();
+		return baseRecipe.getType();
 	}
 
 	@Nonnull
@@ -90,58 +89,33 @@ public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRec
 	@Override
 	public NonNullList<Ingredient> getIngredients()
 	{
-		return baseRecipe().getIngredients();
+		return baseRecipe.getIngredients();
 	}
 
 	@Override
 	public boolean isSpecial()
 	{
-		return baseRecipe().isSpecial();
+		return baseRecipe.isSpecial();
 	}
 
 	@Nonnull
 	@Override
 	public String getGroup()
 	{
-		return baseRecipe().getGroup();
+		return baseRecipe.getGroup();
 	}
 
 	@Nonnull
 	@Override
 	public ItemStack getToastSymbol()
 	{
-		return baseRecipe().getToastSymbol();
+		return baseRecipe.getToastSymbol();
 	}
 
 	@Override
 	public boolean isIncomplete()
 	{
-		return baseRecipe().isIncomplete();
+		return baseRecipe.isIncomplete();
 	}
 
-	public T baseRecipe()
-	{
-		return baseRecipe;
-	}
-
-	@Override
-	public boolean equals(Object obj)
-	{
-		if(obj==this) return true;
-		if(obj==null||obj.getClass()!=this.getClass()) return false;
-		var that = (NoContainersRecipe<?>)obj;
-		return Objects.equals(this.baseRecipe, that.baseRecipe);
-	}
-
-	@Override
-	public int hashCode()
-	{
-		return Objects.hash(baseRecipe);
-	}
-
-	@Override
-	public String toString()
-	{
-		return "NoContainersRecipe["+"baseRecipe="+baseRecipe+']';
-	}
 }
