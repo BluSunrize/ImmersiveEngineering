@@ -12,6 +12,7 @@
 - Fix incorrect placement for conveyors (BluSunrize)
 - Fix assembler not consuming fluids correctly (BluSunrize)
 - Fix rendering for the bucket wheel not showing its contents (BluSunrize)
+- Translations Added/Updated: ru_ru (Bytegm), ja_jp (karakufire)
 
 ##### Version 1.18.1-7.0.0-142
 - First (beta) release for 1.18.1
