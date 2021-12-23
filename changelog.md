@@ -1,4 +1,4 @@
-##### Version 1.16.5-5.0.7-pre
+##### Version 1.16.5-5.0.7-143
 - Fix diesel generator not toggling on and off correctly (Malte)
 - Fix wrong model on the blastfurnace preheater fan (Malte)
 - Fix various JEI integrations (BluSunrize)
