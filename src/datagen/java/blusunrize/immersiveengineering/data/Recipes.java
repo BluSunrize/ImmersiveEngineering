@@ -933,6 +933,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
 		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
+		int quarter_bucket = FluidAttributes.BUCKET_VOLUME/4;
 		Fluid concrete = IEFluids.CONCRETE.getStill();
 		MixerRecipeBuilder.builder(concrete, half_bucket)
 				.addFluidTag(FluidTags.WATER, half_bucket)
@@ -954,6 +955,11 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/herbicide"));
+		MixerRecipeBuilder.builder(IEFluids.REDSTONE_ACID.getStill(), quarter_bucket)
+				.addFluidTag(FluidTags.WATER, quarter_bucket)
+				.addInput(Tags.Items.DUSTS_REDSTONE)
+				.setEnergy(1600)
+				.build(out, toRL("mixer/redstone_acid"));
 	}
 
 	private void mineralMixes(@Nonnull Consumer<FinishedRecipe> out)

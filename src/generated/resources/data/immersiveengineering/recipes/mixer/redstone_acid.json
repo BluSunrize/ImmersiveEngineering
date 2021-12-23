@@ -1,0 +1,17 @@
+{
+  "type": "immersiveengineering:mixer",
+  "inputs": [
+    {
+      "tag": "forge:dusts/redstone"
+    }
+  ],
+  "result": {
+    "fluid": "immersiveengineering:redstone_acid",
+    "amount": 250
+  },
+  "fluid": {
+    "tag": "minecraft:water",
+    "amount": 250
+  },
+  "energy": 1600
+}
