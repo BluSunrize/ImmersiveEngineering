@@ -10,10 +10,11 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.common.crafting.NoContainersRecipe;
+import blusunrize.immersiveengineering.common.crafting.NoContainersShapedRecipe;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -24,25 +25,31 @@ import net.minecraftforge.registries.ForgeRegistryEntry;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class NoContainerSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<NoContainersRecipe>
+public class NoContainerSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<NoContainersRecipe<?>>
 {
 	public static final String BASE_RECIPE = "baseRecipe";
 
 	@Nonnull
 	@Override
-	public NoContainersRecipe fromJson(@Nonnull ResourceLocation pRecipeId, @Nonnull JsonObject pSerializedRecipe)
+	public NoContainersRecipe<?> fromJson(@Nonnull ResourceLocation pRecipeId, @Nonnull JsonObject pSerializedRecipe)
 	{
-		return new NoContainersRecipe(
-				(IShapedRecipe<CraftingContainer>)RecipeManager.fromJson(pRecipeId, pSerializedRecipe.getAsJsonObject(BASE_RECIPE))
-		);
+		CraftingRecipe baseRecipe = (CraftingRecipe)RecipeManager.fromJson(pRecipeId, pSerializedRecipe.getAsJsonObject(BASE_RECIPE));
+		if(baseRecipe instanceof IShapedRecipe<?>)
+			return new NoContainersShapedRecipe(baseRecipe);
+		else
+			return new NoContainersRecipe(baseRecipe);
 	}
 
 	@Nullable
 	@Override
-	public NoContainersRecipe fromNetwork(@Nonnull ResourceLocation pRecipeId, @Nonnull FriendlyByteBuf pBuffer)
+	public NoContainersRecipe<?> fromNetwork(@Nonnull ResourceLocation pRecipeId, @Nonnull FriendlyByteBuf pBuffer)
 	{
 		RecipeSerializer<?> baseSerializer = pBuffer.readRegistryIdUnsafe(ForgeRegistries.RECIPE_SERIALIZERS);
-		return new NoContainersRecipe((IShapedRecipe<CraftingContainer>)baseSerializer.fromNetwork(pRecipeId, pBuffer));
+		CraftingRecipe baseRecipe = (CraftingRecipe)baseSerializer.fromNetwork(pRecipeId, pBuffer);
+		if(baseRecipe instanceof IShapedRecipe<?>)
+			return new NoContainersShapedRecipe(baseRecipe);
+		else
+			return new NoContainersRecipe(baseRecipe);
 	}
 
 	@Override

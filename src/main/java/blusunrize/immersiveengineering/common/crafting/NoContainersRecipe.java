@@ -19,14 +19,19 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import javax.annotation.Nonnull;
+import java.util.Objects;
 
-public record NoContainersRecipe(
-		IShapedRecipe<CraftingContainer> baseRecipe
-) implements CraftingRecipe, IShapedRecipe<CraftingContainer>
+public class NoContainersRecipe<T extends CraftingRecipe> implements CraftingRecipe
 {
+	private final T baseRecipe;
+
+	public NoContainersRecipe(T baseRecipe)
+	{
+		this.baseRecipe = baseRecipe;
+	}
+
 	@Override
 	public boolean matches(@Nonnull CraftingContainer pContainer, @Nonnull Level pLevel)
 	{
@@ -114,15 +119,29 @@ public record NoContainersRecipe(
 		return baseRecipe().isIncomplete();
 	}
 
-	@Override
-	public int getRecipeWidth()
+	public T baseRecipe()
 	{
-		return baseRecipe().getRecipeWidth();
+		return baseRecipe;
 	}
 
 	@Override
-	public int getRecipeHeight()
+	public boolean equals(Object obj)
 	{
-		return baseRecipe().getRecipeHeight();
+		if(obj==this) return true;
+		if(obj==null||obj.getClass()!=this.getClass()) return false;
+		var that = (NoContainersRecipe<?>)obj;
+		return Objects.equals(this.baseRecipe, that.baseRecipe);
+	}
+
+	@Override
+	public int hashCode()
+	{
+		return Objects.hash(baseRecipe);
+	}
+
+	@Override
+	public String toString()
+	{
+		return "NoContainersRecipe["+"baseRecipe="+baseRecipe+']';
 	}
 }
