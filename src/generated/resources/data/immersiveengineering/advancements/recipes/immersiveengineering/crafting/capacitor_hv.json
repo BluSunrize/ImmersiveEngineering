@@ -6,12 +6,12 @@
     ]
   },
   "criteria": {
-    "has_aluminum_ingot": {
+    "has_nickel_ingot": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/aluminum"
+            "tag": "forge:ingots/nickel"
           }
         ]
       }
@@ -45,7 +45,7 @@
   },
   "requirements": [
     [
-      "has_aluminum_ingot",
+      "has_nickel_ingot",
       "has_steel_ingot",
       "has_treated_planks",
       "has_the_recipe"

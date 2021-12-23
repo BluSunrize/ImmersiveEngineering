@@ -728,11 +728,28 @@ public class Recipes extends RecipeProvider
 				.setEnergy(512000)
 				.build(out, toRL("arcfurnace/netherite_scrap"));
 
+		// partial bucket values for bottling & mixing
+		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
+		int quarter_bucket = FluidAttributes.BUCKET_VOLUME/4;
+		int eighth_bucket = FluidAttributes.BUCKET_VOLUME/8;
+
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
 				.addFluidTag(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME)
 				.build(out, toRL("bottling/sponge"));
+		BottlingMachineRecipeBuilder.builder(Items.EXPOSED_COPPER)
+				.addInput(Items.COPPER_BLOCK)
+				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
+				.build(out, toRL("bottling/copper_aging"));
+		BottlingMachineRecipeBuilder.builder(Items.WEATHERED_COPPER)
+				.addInput(Items.EXPOSED_COPPER)
+				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
+				.build(out, toRL("bottling/copper_aging"));
+		BottlingMachineRecipeBuilder.builder(Items.OXIDIZED_COPPER)
+				.addInput(Items.WEATHERED_COPPER)
+				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
+				.build(out, toRL("bottling/copper_aging"));
 
 		/* CRUSHER */
 		CrusherRecipeBuilder.builder(Items.GRAVEL)
@@ -932,7 +949,6 @@ public class Recipes extends RecipeProvider
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
-		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
 		Fluid concrete = IEFluids.CONCRETE.getStill();
 		MixerRecipeBuilder.builder(concrete, half_bucket)
 				.addFluidTag(FluidTags.WATER, half_bucket)
@@ -954,6 +970,11 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/herbicide"));
+		MixerRecipeBuilder.builder(IEFluids.REDSTONE_ACID.getStill(), quarter_bucket)
+				.addFluidTag(FluidTags.WATER, quarter_bucket)
+				.addInput(Tags.Items.DUSTS_REDSTONE)
+				.setEnergy(1600)
+				.build(out, toRL("mixer/redstone_acid"));
 	}
 
 	private void mineralMixes(@Nonnull Consumer<FinishedRecipe> out)
@@ -1679,41 +1700,39 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(Ingredients.WIRE_STEEL), has(Ingredients.WIRE_STEEL))
 				.save(out, toRL(toPath(MetalDevices.RAZOR_WIRE)));
 		ShapedRecipeBuilder.shaped(MetalDevices.CAPACITOR_LV)
-				.pattern("iii")
-				.pattern("clc")
-				.pattern("wrw")
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('l', IETags.getTagsFor(EnumMetals.LEAD).ingot)
-				.define('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.pattern("waw")
+				.pattern("fef")
+				.pattern("waw")
 				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('r', Tags.Items.DUSTS_REDSTONE)
-				.unlockedBy("has_copper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
+				.define('f', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.define('a', IETags.getTagsFor(EnumMetals.LEAD).plate)
+				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidAttributes.BUCKET_VOLUME))
 				.unlockedBy("has_lead_ingot", has(IETags.getTagsFor(EnumMetals.LEAD).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(out, toRL(toPath(MetalDevices.CAPACITOR_LV)));
 		ShapedRecipeBuilder.shaped(MetalDevices.CAPACITOR_MV)
-				.pattern("iii")
-				.pattern("ele")
-				.pattern("wrw")
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('l', IETags.getTagsFor(EnumMetals.LEAD).ingot)
-				.define('e', IETags.getTagsFor(EnumMetals.ELECTRUM).ingot)
+				.pattern("waw")
+				.pattern("fef")
+				.pattern("wcw")
 				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('r', Tags.Items.STORAGE_BLOCKS_REDSTONE)
-				.unlockedBy("has_electrum_ingot", has(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
-				.unlockedBy("has_lead_ingot", has(IETags.getTagsFor(EnumMetals.LEAD).ingot))
+				.define('f', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.define('a', IETags.getTagsFor(EnumMetals.NICKEL).plate)
+				.define('c', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidAttributes.BUCKET_VOLUME))
+				.unlockedBy("has_nickel_ingot", has(IETags.getTagsFor(EnumMetals.NICKEL).ingot))
+				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(out, toRL(toPath(MetalDevices.CAPACITOR_MV)));
 		ShapedRecipeBuilder.shaped(MetalDevices.CAPACITOR_HV)
-				.pattern("sss")
-				.pattern("ala")
-				.pattern("wrw")
-				.define('s', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-				.define('a', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
-				.define('l', IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).storage))
+				.pattern("waw")
+				.pattern("fef")
+				.pattern("wcw")
 				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('r', Tags.Items.STORAGE_BLOCKS_REDSTONE)
-				.unlockedBy("has_aluminum_ingot", has(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
+				.define('f', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.define('a', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
+				.define('c', IETags.hopGraphiteIngot)
+				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidAttributes.BUCKET_VOLUME))
+				.unlockedBy("has_nickel_ingot", has(IETags.getTagsFor(EnumMetals.NICKEL).ingot))
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(out, toRL(toPath(MetalDevices.CAPACITOR_HV)));
@@ -2562,6 +2581,16 @@ public class Recipes extends RecipeProvider
 				.requires(IETags.getTagsFor(EnumMetals.NICKEL).dust)
 				.unlockedBy("has_nickel_dust", has(IETags.getTagsFor(EnumMetals.NICKEL).dust))
 				.save(out, toRL("constantan_mix"));
+
+		ShapelessRecipeBuilder acidBaseRecipe = ShapelessRecipeBuilder.shapeless(IEFluids.REDSTONE_ACID.getBucket())
+				.requires(Tags.Items.DUSTS_REDSTONE)
+				.requires(Tags.Items.DUSTS_REDSTONE)
+				.requires(Tags.Items.DUSTS_REDSTONE)
+				.requires(Tags.Items.DUSTS_REDSTONE)
+				.requires(Items.WATER_BUCKET)
+				.unlockedBy("has_redstone_dust", has(Tags.Items.DUSTS_REDSTONE));
+		new NoContainerRecipeBuilder(acidBaseRecipe::save)
+				.save(out, toRL("redstone_acid"));
 
 		ShapedRecipeBuilder.shaped(Misc.BLUEPRINT)
 				.pattern("jkl")

@@ -31,6 +31,8 @@ class FluidTags extends FluidTagsProvider
 		tag(IETags.fluidBiodiesel).add(IEFluids.BIODIESEL.getStill());
 		tag(IETags.fluidConcrete).add(IEFluids.CONCRETE.getStill());
 		tag(IETags.fluidHerbicide).add(IEFluids.HERBICIDE.getStill());
+		tag(IETags.fluidRedstoneAcid).add(IEFluids.REDSTONE_ACID.getStill());
+
 		tag(IETags.fluidPotion).add(IEFluids.POTION.get());
 		tag(IETags.drillFuel).addTag(IETags.fluidBiodiesel);
 	}

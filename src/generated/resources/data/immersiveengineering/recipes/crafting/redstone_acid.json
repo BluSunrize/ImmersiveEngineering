@@ -1,0 +1,26 @@
+{
+  "type": "immersiveengineering:no_container_item",
+  "baseRecipe": {
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+      {
+        "tag": "forge:dusts/redstone"
+      },
+      {
+        "tag": "forge:dusts/redstone"
+      },
+      {
+        "tag": "forge:dusts/redstone"
+      },
+      {
+        "tag": "forge:dusts/redstone"
+      },
+      {
+        "item": "minecraft:water_bucket"
+      }
+    ],
+    "result": {
+      "item": "immersiveengineering:redstone_acid_bucket"
+    }
+  }
+}

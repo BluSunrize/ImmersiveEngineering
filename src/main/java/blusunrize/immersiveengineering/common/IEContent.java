@@ -236,6 +236,7 @@ public class IEContent
 		IEFluids.ETHANOL.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
 		IEFluids.BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE.get(), 100, 1);
 		IEFluids.CONCRETE.getBlock().setEffect(MobEffects.MOVEMENT_SLOWDOWN, 20, 3);
+		IEFluids.REDSTONE_ACID.getBlock().setEffect(IEPotions.CONDUCTIVE.get(), 100, 1);
 
 		ChemthrowerEffects.register();
 
