@@ -45,10 +45,11 @@ public class PotionHelper
 	{
 		// Vanilla
 		for(Mix<Potion> mixPredicate : PotionBrewingAccess.getConversions())
-			out.apply(
-					mixPredicate.to.get(), mixPredicate.from.get(),
-					new IngredientWithSize(((MixPredicateAccess)mixPredicate).getIngredient())
-			);
+			if(mixPredicate.to.get()!=Potions.MUNDANE&&mixPredicate.to.get()!=Potions.THICK)
+				out.apply(
+						mixPredicate.to.get(), mixPredicate.from.get(),
+						new IngredientWithSize(((MixPredicateAccess)mixPredicate).getIngredient())
+				);
 
 		// Modded
 		for(IBrewingRecipe recipe : BrewingRecipeRegistry.getRecipes())
