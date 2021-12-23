@@ -1,0 +1,13 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "result": {
+    "item": "minecraft:exposed_copper"
+  },
+  "input": {
+    "item": "minecraft:copper_block"
+  },
+  "fluid": {
+    "tag": "forge:redstone_acid",
+    "amount": 125
+  }
+}

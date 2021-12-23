@@ -728,11 +728,28 @@ public class Recipes extends RecipeProvider
 				.setEnergy(512000)
 				.build(out, toRL("arcfurnace/netherite_scrap"));
 
+		// partial bucket values for bottling & mixing
+		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
+		int quarter_bucket = FluidAttributes.BUCKET_VOLUME/4;
+		int eighth_bucket = FluidAttributes.BUCKET_VOLUME/8;
+
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
 				.addFluidTag(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME)
 				.build(out, toRL("bottling/sponge"));
+		BottlingMachineRecipeBuilder.builder(Items.EXPOSED_COPPER)
+				.addInput(Items.COPPER_BLOCK)
+				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
+				.build(out, toRL("bottling/copper_aging"));
+		BottlingMachineRecipeBuilder.builder(Items.WEATHERED_COPPER)
+				.addInput(Items.EXPOSED_COPPER)
+				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
+				.build(out, toRL("bottling/copper_aging"));
+		BottlingMachineRecipeBuilder.builder(Items.OXIDIZED_COPPER)
+				.addInput(Items.WEATHERED_COPPER)
+				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
+				.build(out, toRL("bottling/copper_aging"));
 
 		/* CRUSHER */
 		CrusherRecipeBuilder.builder(Items.GRAVEL)
@@ -932,8 +949,6 @@ public class Recipes extends RecipeProvider
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
 		/* MIXER */
-		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
-		int quarter_bucket = FluidAttributes.BUCKET_VOLUME/4;
 		Fluid concrete = IEFluids.CONCRETE.getStill();
 		MixerRecipeBuilder.builder(concrete, half_bucket)
 				.addFluidTag(FluidTags.WATER, half_bucket)
