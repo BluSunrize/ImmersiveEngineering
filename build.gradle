@@ -16,6 +16,7 @@ buildscript {
         classpath 'gradle.plugin.com.github.jengelman.gradle.plugins:shadow:7.0.0'
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
         //classpath 'org.parchmentmc:librarian:1.+'
+        classpath "org.jetbrains.gradle.plugin.idea-ext:org.jetbrains.gradle.plugin.idea-ext.gradle.plugin:1.1.1"
     }
 }
 apply plugin: 'net.minecraftforge.gradle'
@@ -23,6 +24,7 @@ apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'eclipse'
 apply plugin: 'com.github.johnrengelman.shadow'
 //apply plugin: 'org.parchmentmc.librarian.forgegradle'
+apply plugin: 'org.jetbrains.gradle.plugin.idea-ext'
 
 version = buildVersionString()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -549,6 +551,9 @@ mixin {
     add sourceSets.main, "${modid}.refmap.json"
 }
 
+// Running this is equivalent to running genIntellijRuns, but it exists before afterEvaluate
+task genIntellijRunsDummy {}
+
 task speedUpPreRun {
     doLast {
         for (String s : new String[]{"Client", "Server", "Data"}) {
@@ -565,5 +570,10 @@ task speedUpPreRun {
 tasks.withType(Task) {
     if (it.name == "genIntellijRuns") {
         it.finalizedBy speedUpPreRun
+        genIntellijRunsDummy.dependsOn it
     }
+}
+
+idea.project.settings.taskTriggers {
+    afterSync genIntellijRunsDummy
 }
