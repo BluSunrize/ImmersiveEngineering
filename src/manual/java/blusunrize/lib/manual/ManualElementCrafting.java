@@ -98,18 +98,16 @@ public class ManualElementCrafting extends SpecialManualElements
 			NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
 			int recipeWidth;
 			int recipeHeight;
-			if(rec instanceof ShapelessRecipe)
-			{
-				recipeWidth = Mth.clamp(ingredientsPre.size(), 1, 3);
-				recipeHeight = (ingredientsPre.size()-1)/3+1;
-			}
-			else if(rec instanceof IShapedRecipe)
+			if(rec instanceof IShapedRecipe)
 			{
 				recipeWidth = ((IShapedRecipe<?>)rec).getRecipeWidth();
 				recipeHeight = ((IShapedRecipe<?>)rec).getRecipeHeight();
 			}
 			else
-				return;
+			{
+				recipeWidth = Mth.clamp(ingredientsPre.size(), 1, 3);
+				recipeHeight = (ingredientsPre.size()-1)/3+1;
+			}
 
 			int yOffset = (this.heightPixels[recipeIndex]-18*recipeHeight)/2;
 			if(yOffset < 0)
