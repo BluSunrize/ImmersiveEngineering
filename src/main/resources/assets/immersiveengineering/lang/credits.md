@@ -5,7 +5,7 @@ CODE
 
 LOCALIZATION
 	- zh_CN: 3TUSK, Amamiya-Nagisa, bakaxyf, CannonFotter, crafteverywhere, IamAchang, Joccob, LYDfalse, UUUii, Fodoth_jinzi89
-	- ru_RU: lex1975
+	- ru_RU: lex1975, Bytegm
 	- zh_TW: xaxa123, vongola12324
 	- es_ES: FrannDzs, docanuto
 	- de_DE: astrutz

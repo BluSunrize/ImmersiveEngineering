@@ -1,3 +1,12 @@
+##### Version 1.16.5-5.0.7-pre
+- Fix diesel generator not toggling on and off correctly (Malte)
+- Fix wrong model on the blastfurnace preheater fan (Malte)
+- Fix various JEI integrations (BluSunrize)
+    - Move "show recipes" button in the mixer
+    - Fix ghost slot handling in the assembler
+- Fix assembler not consuming fluids correctly (BluSunrize)
+- Translations Added/Updated: ru_ru (Bytegm)
+
 ##### Version 1.16.5-5.0.6-141
 - Re-add the fan animation on blast furnace preheaters (Malte)
 - Add compat for Jade (Malte)
