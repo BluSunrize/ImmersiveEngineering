@@ -23,6 +23,8 @@ public class BlastFurnacePreheaterRenderer extends BlockEntityRenderer<BlastFurn
 	@Override
 	public void render(BlastFurnacePreheaterTileEntity bEntity, float partial, PoseStack transform, MultiBufferSource buffers, int light, int overlay)
 	{
+		if(bEntity.isDummy())
+			return;
 		transform.pushPose();
 		transform.translate(0.5, 0.5, 0.5);
 		transform.mulPose(new Quaternion(new Vector3f(0, 1, 0), -bEntity.getFacing().toYRot()+180, true));

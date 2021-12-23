@@ -731,7 +731,7 @@ public class ClientProxy extends CommonProxy
 		);
 		BlastFurnacePreheaterRenderer.MODEL = DynamicModel.createSimple(
 				new ResourceLocation(ImmersiveEngineering.MODID, "block/metal_device/blastfurnace_fan.obj"),
-				"sawblade_entity", ModelType.IE_OBJ
+				BlastFurnacePreheaterRenderer.NAME, ModelType.IE_OBJ
 		);
 	}
 
