@@ -9,9 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
-import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
-import com.google.common.collect.Lists;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -28,13 +26,12 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BucketWheelCallbacks implements BlockCallback<BucketWheelCallbacks.Key>
 {
 	public static final BucketWheelCallbacks INSTANCE = new BucketWheelCallbacks();
-	private static final BucketWheelCallbacks.Key INVALID = new BucketWheelCallbacks.Key(VisibilityList.show("bucketWheel"), Collections.EMPTY_MAP);
+	private static final BucketWheelCallbacks.Key INVALID = new BucketWheelCallbacks.Key(Collections.EMPTY_MAP);
 
 	@Override
 	public Key extractKey(@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, BlockEntity blockEntity)
@@ -52,13 +49,11 @@ public class BucketWheelCallbacks implements BlockCallback<BucketWheelCallbacks.
 					Block b = Block.byItem(stackAtIndex.getItem());
 					BlockState digState = b!=Blocks.AIR?b.defaultBlockState(): Blocks.COBBLESTONE.defaultBlockState();
 					BakedModel digModel = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(digState);
-					texMap.put("dig"+i, digModel.getParticleIcon());
+					texMap.put("dig"+i, digModel.getParticleIcon(null));
 				}
 			}
 		}
-		List<String> visibility = Lists.newArrayList("bucketWheel");
-		visibility.addAll(texMap.keySet());
-		return new BucketWheelCallbacks.Key(VisibilityList.show(visibility), texMap);
+		return new BucketWheelCallbacks.Key(texMap);
 	}
 
 	@Nullable
@@ -77,10 +72,10 @@ public class BucketWheelCallbacks implements BlockCallback<BucketWheelCallbacks.
 	@Override
 	public boolean shouldRenderGroup(Key key, String group, RenderType layer)
 	{
-		return key.visibilityList.isVisible(group);
+		return ("bucketWheel".equals(group)||key.texMap.containsKey(group));
 	}
 
-	public record Key(VisibilityList visibilityList, Map<String, TextureAtlasSprite> texMap)
+	public record Key(Map<String, TextureAtlasSprite> texMap)
 	{
 	}
 }
