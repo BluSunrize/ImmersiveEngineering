@@ -132,7 +132,7 @@ public class GuiReactiveList extends Button
 		}
 
 		transform.scale(textScale, textScale, 1);
-		this.isHovered = mx >= x&&mx < x+width&&my >= y&&my < y+height;
+		this.isHovered = active && mx >= x&&mx < x+width&&my >= y&&my < y+height;
 		boolean hasTarget = false;
 		for(int i = 0; i < Math.min(perPage, entries.length); i++)
 		{
