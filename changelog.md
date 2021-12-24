@@ -1,9 +1,12 @@
-##### Version 1.18.1-7.0.1-pre
+##### Version 1.18.1-7.0.1-144
 - Overhaul liquid concrete (BluSunrize)
     - Only dries into full blocks or slabs
     - Dries from teh outside inwards so it doesn't kill its source first
     - Dries much slower so it has more time to fill an area
     - Partial concrete blocks are made in the stonecutter
+- Change "Capacitors" to "Accumulators" (BluSunrize)
+    - They now require redstone acid, which has some interesting interaction with copper
+    - The lore changed a bit!
 - Allow Circuit Table to edit the color configuration of existing circuits (BluSunrize)
 - Fix missing normals on models, making them look too dark (Malte)
 - Fix various JEI integrations (BluSunrize)
