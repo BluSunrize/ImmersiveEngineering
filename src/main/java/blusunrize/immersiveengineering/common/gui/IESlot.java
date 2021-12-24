@@ -664,6 +664,26 @@ public abstract class IESlot extends Slot
 		}
 	}
 
+	public static class LogicCircuit extends IESlot
+	{
+		public LogicCircuit(AbstractContainerMenu container, Container inv, int id, int x, int y)
+		{
+			super(container, inv, id, x, y);
+		}
+
+		@Override
+		public int getMaxStackSize()
+		{
+			return 1;
+		}
+
+		@Override
+		public boolean mayPlace(ItemStack itemStack)
+		{
+			return itemStack.getItem().equals(Misc.LOGIC_CIRCUIT_BOARD.get());
+		}
+	}
+
 	public interface ICallbackContainer
 	{
 		boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject);

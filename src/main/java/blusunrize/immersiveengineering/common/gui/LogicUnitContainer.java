@@ -19,7 +19,7 @@ public class LogicUnitContainer extends IEBaseContainer<LogicUnitBlockEntity>
 	{
 		super(type, tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)
-			this.addSlot(new Slot(this.inv, i, 44+(i%5)*18, 19+(i/5)*18));
+			this.addSlot(new IESlot.LogicCircuit(this, this.inv, i, 44+(i%5)*18, 19+(i/5)*18));
 		this.slotCount = tile.getInventory().size();
 
 		for(int i = 0; i < 3; i++)
