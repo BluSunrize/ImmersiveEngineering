@@ -36,6 +36,8 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableBlockEnti
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 34, IETags.circuitLogic));
 		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 54, IETags.circuitSolder));
 
+		this.addSlot(new IESlot.LogicCircuit(this, this.inv, this.slotCount++, 175, 11));
+
 		this.addSlot(new IESlot.Output(this, this.outputInventory, 0, 194, 56)
 		{
 			@Override
@@ -64,13 +66,21 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableBlockEnti
 	private void consumeInputs()
 	{
 		if(instruction!=null)
-			this.tile.consumeInputs(instruction);
+		{
+			this.tile.consumeInputs(instruction, getEditInstruction()!=null);
+			this.slotsChanged(this.inv);
+		}
+	}
+
+	private LogicCircuitInstruction getEditInstruction()
+	{
+		return LogicCircuitBoardItem.getInstruction(this.inv.getItem(CircuitTableBlockEntity.getEditSlot()));
 	}
 
 	@Override
 	public void slotsChanged(Container inventory)
 	{
-		if(instruction!=null&&this.tile.canAssemble(instruction))
+		if(instruction!=null&&this.tile.canAssemble(instruction, getEditInstruction()!=null))
 			this.outputInventory.setItem(0, LogicCircuitBoardItem.buildCircuitBoard(instruction));
 		else
 			this.outputInventory.setItem(0, ItemStack.EMPTY);

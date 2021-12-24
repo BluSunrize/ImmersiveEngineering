@@ -25,15 +25,19 @@ import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEnt
 import blusunrize.immersiveengineering.common.gui.CircuitTableContainer;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.DyeColor;
 
 import javax.annotation.Nonnull;
@@ -115,19 +119,49 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		this.updateButtons();
 	}
 
+	private LogicCircuitInstruction getEditInstruction()
+	{
+		return LogicCircuitBoardItem.getInstruction(this.menu.slots.get(CircuitTableBlockEntity.getEditSlot()).getItem());
+	}
+
 	@Nullable
 	private LogicCircuitOperator getSelectedOperator()
 	{
+		LogicCircuitInstruction editInstr = getEditInstruction();
+		if(editInstr!=null)
+			return editInstr.getOperator();
 		return LogicCircuitOperator.getByString(operatorList.getSelectedString());
 	}
 
 	private void updateInstruction()
 	{
 		this.instruction.reset();
-		this.instruction.get().ifPresent(instr -> {
-			this.menu.instruction = instr;
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(this.menu.containerId, instr.serialize()));
-		});
+		this.instruction.get().ifPresentOrElse(instr -> {
+					this.menu.instruction = instr;
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(this.menu.containerId, instr.serialize()));
+				},
+				() -> {
+					this.menu.instruction = null;
+					ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(this.menu.containerId, new CompoundTag()));
+				});
+	}
+
+	@Override
+	protected void slotClicked(Slot pSlot, int pSlotId, int pMouseButton, ClickType pType)
+	{
+		// withdrawing from edit slot, or quick-moving a circuit into it
+		boolean editCircuit = pSlotId==CircuitTableBlockEntity.getEditSlot()||(
+				pType==ClickType.QUICK_MOVE&&pSlotId >= this.menu.slotCount
+						&&pSlot!=null&&pSlot.getItem().is(IEItems.Misc.LOGIC_CIRCUIT_BOARD.get())
+		);
+
+		super.slotClicked(pSlot, pSlotId, pMouseButton, pType);
+
+		if(editCircuit)
+		{
+			this.minecraft.tell(this::updateButtons);
+			this.minecraft.tell(this::updateInstruction);
+		}
 	}
 
 	private void updateButtons()
@@ -167,16 +201,32 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 				}
 			}
 		}
+		LogicCircuitInstruction editInstr = getEditInstruction();
+		if(editInstr!=null)
+		{
+			this.operatorList.active = false;
+			this.operatorList.setSelectedString(editInstr.getOperator().name());
+			for(int i = 0; i < editInstr.getInputs().length; i++)
+				this.inputButtons.get(i).setStateByInt(editInstr.getInputs()[i].ordinal());
+			this.outputButton.setStateByInt(editInstr.getOutput().ordinal());
+		}
+		else
+			this.operatorList.active = true;
 	}
 
 	@Override
 	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
-		if(this.hoveredSlot!=null&&this.hoveredSlot.index < SLOT_TYPES.length&&!this.hoveredSlot.hasItem())
+		if(this.hoveredSlot!=null&&!this.hoveredSlot.hasItem())
 		{
-			int slotNum = this.hoveredSlot.index;
-			addGray.accept(new TranslatableComponent(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]));
+			if(this.hoveredSlot.index < CircuitTableBlockEntity.getEditSlot())
+			{
+				int slotNum = this.hoveredSlot.index;
+				addGray.accept(new TranslatableComponent(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]));
+			}
+			else if(this.hoveredSlot.index==CircuitTableBlockEntity.getEditSlot())
+				addGray.accept(new TranslatableComponent(Lib.DESC_INFO+"circuit_table.slot.edit"));
 		}
 	}
 
@@ -191,7 +241,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		{
 			int amount = 0;
 			DyeColor col = DyeColor.LIGHT_GRAY;
-			if(this.instruction.get().isPresent())
+			if(this.instruction.get().isPresent()&&getEditInstruction()==null)
 			{
 				amount = CircuitTableBlockEntity.getIngredientAmount(this.instruction.get().get(), i);
 				if(this.menu.slots.get(i).getItem().getCount() >= amount)

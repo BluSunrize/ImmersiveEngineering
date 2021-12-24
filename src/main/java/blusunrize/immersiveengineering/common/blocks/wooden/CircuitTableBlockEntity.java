@@ -57,7 +57,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	private static final int ASSEMBLY_ENERGY = 5000;
 
 	public final MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(SLOT_TYPES.length+1, ItemStack.EMPTY);
 
 	public CircuitTableBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -80,6 +80,11 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 			ContainerHelper.saveAllItems(nbt, inventory);
 	}
 
+	public static int getEditSlot()
+	{
+		return SLOT_TYPES.length;
+	}
+
 	public static int getIngredientAmount(LogicCircuitInstruction instruction, int slot)
 	{
 		return switch(slot)
@@ -94,10 +99,12 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 				};
 	}
 
-	public boolean canAssemble(LogicCircuitInstruction instruction)
+	public boolean canAssemble(LogicCircuitInstruction instruction, boolean editInstruction)
 	{
 		if(energyStorage.getEnergyStored() < ASSEMBLY_ENERGY)
 			return false;
+		if(editInstruction)
+			return !this.inventory.get(getEditSlot()).isEmpty();
 		for(int i = 0; i < SLOT_TYPES.length; i++)
 		{
 			ItemStack input = this.inventory.get(i);
@@ -107,11 +114,14 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 		return true;
 	}
 
-	public void consumeInputs(LogicCircuitInstruction instruction)
+	public void consumeInputs(LogicCircuitInstruction instruction, boolean editInstruction)
 	{
 		energyStorage.extractEnergy(ASSEMBLY_ENERGY, false);
-		for(int i = 0; i < SLOT_TYPES.length; i++)
-			this.inventory.get(i).shrink(getIngredientAmount(instruction, i));
+		if(editInstruction)
+			this.inventory.get(getEditSlot()).shrink(1);
+		else
+			for(int i = 0; i < SLOT_TYPES.length; i++)
+				this.inventory.get(i).shrink(getIngredientAmount(instruction, i));
 	}
 
 	private AABB renderAABB;
