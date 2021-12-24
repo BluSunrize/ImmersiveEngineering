@@ -4,6 +4,7 @@
     - Dries from teh outside inwards so it doesn't kill its source first
     - Dries much slower so it has more time to fill an area
     - Partial concrete blocks are made in the stonecutter
+- Allow Circuit Table to edit the color configuration of existing circuits (BluSunrize)
 - Fix missing normals on models, making them look too dark (Malte)
 - Fix various JEI integrations (BluSunrize)
     - Move "show recipes" button in the mixer
