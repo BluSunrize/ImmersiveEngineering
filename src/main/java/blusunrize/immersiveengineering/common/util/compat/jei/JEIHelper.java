@@ -50,9 +50,14 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 @JeiPlugin
 public class JEIHelper implements IModPlugin
@@ -140,6 +145,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList.values(), input -> input instanceof ArcRecyclingRecipe&&input.listInJEI())), ArcFurnaceRecipeCategory.UID_RECYCLING);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(ArcFurnaceRecipe.recipeList.values(), input -> !(input instanceof ArcRecyclingRecipe)&&input.listInJEI())), ArcFurnaceRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(BottlingMachineRecipe.recipeList.values(), IJEIRecipe::listInJEI)), BottlingMachineRecipeCategory.UID);
+		registration.addRecipes(getFluidBucketRecipes(), BottlingMachineRecipeCategory.UID);
 		registration.addRecipes(new ArrayList<>(Collections2.filter(MixerRecipe.recipeList.values(), IJEIRecipe::listInJEI)), MixerRecipeCategory.UID);
 	}
 
@@ -200,6 +206,37 @@ public class JEIHelper implements IModPlugin
 	public void registerAdvanced(IAdvancedRegistration registration)
 	{
 
+	}
+
+	private ArrayList<BottlingMachineRecipe> getFluidBucketRecipes()
+	{
+		// assume a source and flowing version of each fluid:
+		int fluidCount = ForgeRegistries.FLUIDS.getValues().size()/2;
+
+		ArrayList<BottlingMachineRecipe> recipes = new ArrayList<>(fluidCount);
+		for(Fluid f : ForgeRegistries.FLUIDS)
+			if(f.isSource(f.defaultFluidState()))
+			{
+				// Sort tags, prioritize vanilla/forge tags, and assume that more slashes means more specific tag
+				Optional<ResourceLocation> tag = f.getTags().stream()
+						.min((o1, o2) -> {
+							if(!("minecraft".equals(o1.getNamespace())||"forge".equals(o1.getNamespace())))
+								return 1;
+							return -Long.compare(
+									o1.getPath().codePoints().filter(ch -> ch=='/').count(),
+									o2.getPath().codePoints().filter(ch -> ch=='/').count()
+							);
+						});
+				ItemStack bucket = f.getBucket().getDefaultInstance();
+				if(!bucket.isEmpty()&&tag.isPresent())
+					recipes.add(new BottlingMachineRecipe(
+							new ResourceLocation(Lib.MODID, "jei_bucket_"+f.getRegistryName().getPath()),
+							bucket,
+							Ingredient.of(Items.BUCKET),
+							new FluidTagInput(tag.get(), 1000)
+					));
+			}
+		return recipes;
 	}
 
 //	@Override
