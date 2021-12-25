@@ -180,19 +180,19 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 			{
 				yMin = -.5f;
 				yMax = 1.25f;
-				xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ() < 2^facing==Direction.EAST): (posInMultiblock.getX()==2^facing==Direction.NORTH))?.8125f: .4375f;
-				xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.NORTH))?.1875f: .5625f;
-				zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==2^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.NORTH))?.8125f: .4375f;
-				zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ() < 2^facing==Direction.NORTH))?.1875f: .5625f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.NORTH))?.1875f: .5625f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ() < 2^facing==Direction.EAST): (posInMultiblock.getX()==2^facing==Direction.NORTH))?.8125f: .4375f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ() < 2^facing==Direction.NORTH))?.1875f: .5625f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==2^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.NORTH))?.8125f: .4375f;
 			}
 			else
 			{
 				yMin = .25f;
 				yMax = .75f;
-				xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ() < 2^facing==Direction.EAST): (posInMultiblock.getX()==2^facing==Direction.NORTH))?1: .625f;
-				xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.NORTH))?0: .375f;
-				zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==2^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.NORTH))?1: .625f;
-				zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ() < 2^facing==Direction.NORTH))?0: .375f;
+				xMin = (facing.getAxis()==Axis.X?(posInMultiblock.getZ()==2^facing==Direction.EAST): (posInMultiblock.getX()==0^facing==Direction.NORTH))?0: .375f;
+				xMax = (facing.getAxis()==Axis.X?(posInMultiblock.getZ() < 2^facing==Direction.EAST): (posInMultiblock.getX()==2^facing==Direction.NORTH))?1: .625f;
+				zMin = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==0^facing==Direction.EAST): (posInMultiblock.getZ() < 2^facing==Direction.NORTH))?0: .375f;
+				zMax = (facing.getAxis()==Axis.X?(posInMultiblock.getX()==2^facing==Direction.EAST): (posInMultiblock.getZ()==2^facing==Direction.NORTH))?1: .625f;
 			}
 		}
 		else if(posInMultiblock.getY() >= 2)
