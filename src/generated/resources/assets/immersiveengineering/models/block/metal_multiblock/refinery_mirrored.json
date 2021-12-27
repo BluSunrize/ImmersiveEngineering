@@ -1,7 +1,7 @@
 {
   "parent": "minecraft:block/block",
   "textures": {
-    "particle": "immersiveengineering:block/multiblocks/multiblock_components"
+    "particle": "immersiveengineering:block/multiblocks/refinery"
   },
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_multiblock/refinery_mirrored.obj",
