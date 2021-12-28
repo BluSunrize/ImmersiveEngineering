@@ -45,6 +45,7 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 		super(inventorySlotsIn, inv, title);
 		this.background = background;
 		this.infoAreas = new ResettableLazy<>(this::makeInfoAreas);
+		this.inventoryLabelY = this.imageHeight-91;
 	}
 
 	@Override
@@ -62,7 +63,6 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	@Override
 	public void render(@Nonnull PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
-		this.inventoryLabelY = this.imageHeight-94;
 		this.renderBackground(transform);
 		super.render(transform, mouseX, mouseY, partialTicks);
 		List<Component> tooltip = new ArrayList<>();
