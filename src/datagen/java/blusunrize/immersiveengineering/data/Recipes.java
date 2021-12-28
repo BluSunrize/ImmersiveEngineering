@@ -944,6 +944,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("fermenter/potato"));
 		/* REFINERY */
 		RefineryRecipeBuilder.builder(IEFluids.BIODIESEL.getStill(), 16)
+				.addCatalyst(IETags.saltpeterDust)
 				.addInput(IETags.fluidPlantoil, 8)
 				.addInput(IETags.fluidEthanol, 8)
 				.setEnergy(80)
