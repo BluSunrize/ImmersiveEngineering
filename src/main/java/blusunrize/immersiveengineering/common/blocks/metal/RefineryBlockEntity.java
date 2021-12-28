@@ -63,9 +63,10 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME)
 	};
-	public final NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
-	private static final int SLOT_CONTAINER_IN = 4;
-	private static final int SLOT_CONTAINER_OUT = 5;
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
+	private static final int SLOT_CATALYST = 0;
+	private static final int SLOT_CONTAINER_IN = 1;
+	private static final int SLOT_CONTAINER_OUT = 2;
 
 
 	public RefineryBlockEntity(BlockEntityType<RefineryBlockEntity> type, BlockPos pos, BlockState state)
@@ -110,7 +111,7 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 		{
 			if(tanks[0].getFluidAmount() > 0||tanks[1].getFluidAmount() > 0)
 			{
-				RefineryRecipe recipe = RefineryRecipe.findRecipe(tanks[0].getFluid(), tanks[1].getFluid());
+				RefineryRecipe recipe = RefineryRecipe.findRecipe(tanks[0].getFluid(), tanks[1].getFluid(), inventory.get(SLOT_CATALYST));
 				if(recipe!=null)
 				{
 					MultiblockProcessInMachine<RefineryRecipe> process = new MultiblockProcessInMachine<>(recipe)
@@ -129,24 +130,6 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 				level, this.getBlockPos().offset(0, -1, 0).relative(fw), fw, this.tanks[2],
 				SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, inventory::get, inventory::set
 		);
-
-		for(int tank = 0; tank < 2; tank++)
-		{
-			final int inputSlot = 2*tank;
-			final int outputSlot = inputSlot+1;
-			final int amountPrev = tanks[tank].getFluidAmount();
-			ItemStack outputStack = inventory.get(outputSlot);
-			ItemStack emptyContainer = Utils.drainFluidContainer(tanks[tank], inventory.get(inputSlot), outputStack);
-			if(amountPrev!=tanks[tank].getFluidAmount())
-			{
-				if(ItemHandlerHelper.canItemStacksStack(outputStack, emptyContainer))
-					outputStack.grow(emptyContainer.getCount());
-				else if(outputStack.isEmpty())
-					inventory.set(outputSlot, emptyContainer.copy());
-				inventory.get(inputSlot).shrink(outputSlot);
-				update = true;
-			}
-		}
 
 		if(update)
 		{

@@ -58,10 +58,12 @@ public class RefineryRecipe extends MultiblockRecipe
 	// Initialized by reload listener
 	public static Map<ResourceLocation, RefineryRecipe> recipeList = Collections.emptyMap();
 
-	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1)
+	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1, ItemStack catalyst)
 	{
 		for(RefineryRecipe recipe : recipeList.values())
 		{
+			if(!recipe.catalyst.test(catalyst))
+				continue;
 			if(input0!=null)
 			{
 				if(recipe.input0!=null&&recipe.input0.test(input0))
