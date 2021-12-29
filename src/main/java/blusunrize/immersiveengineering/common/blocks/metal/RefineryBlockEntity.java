@@ -64,9 +64,8 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME)
 	};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
-	private static final int SLOT_CATALYST = 0;
-	private static final int SLOT_CONTAINER_IN = 1;
-	private static final int SLOT_CONTAINER_OUT = 2;
+	private static final int SLOT_CONTAINER_IN = 4;
+	private static final int SLOT_CONTAINER_OUT = 5;
 
 
 	public RefineryBlockEntity(BlockEntityType<RefineryBlockEntity> type, BlockPos pos, BlockState state)
