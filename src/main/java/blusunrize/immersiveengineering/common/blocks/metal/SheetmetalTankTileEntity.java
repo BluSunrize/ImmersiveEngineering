@@ -109,7 +109,7 @@ public class SheetmetalTankTileEntity extends MultiblockPartTileEntity<Sheetmeta
 			for(CapabilityReference<IFluidHandler> outputRef : fluidNeighbors)
 				if(tank.getFluidAmount() > 0)
 				{
-					int outSize = Math.min(144, tank.getFluidAmount());
+					int outSize = Math.min(FluidAttributes.BUCKET_VOLUME, tank.getFluidAmount());
 					FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
 					IFluidHandler output = outputRef.getNullable();
 					if(output!=null)

@@ -88,7 +88,7 @@ public class WoodenBarrelTileEntity extends IEBaseTileEntity implements Tickable
 		for(Direction side : neighbors.keySet())
 			if(tank.getFluidAmount() > 0&&sideConfig.get(side)==OUTPUT)
 			{
-				int out = Math.min(40, tank.getFluidAmount());
+				int out = Math.min(FluidAttributes.BUCKET_VOLUME, tank.getFluidAmount());
 				CapabilityReference<IFluidHandler> capRef = neighbors.get(side);
 				IFluidHandler handler = capRef.getNullable();
 				if(handler!=null)

@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.tool.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
@@ -477,7 +478,7 @@ public class BottlingMachineTileEntity extends PoweredMultiblockTileEntity<Bottl
 						}
 						else
 						{
-							ItemStack ret = Utils.fillFluidContainer(tile.tanks[0], items.get(0), ItemStack.EMPTY, null);
+							ItemStack ret = FluidUtils.fillFluidContainer(tile.tanks[0], items.get(0), ItemStack.EMPTY, null);
 							if(!ret.isEmpty())
 								items.set(1, ret);
 						}

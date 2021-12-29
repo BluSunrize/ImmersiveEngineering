@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
@@ -40,9 +41,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
@@ -148,42 +147,10 @@ public class SqueezerTileEntity extends PoweredMultiblockTileEntity<SqueezerTile
 			}
 
 			Direction fw = getIsMirrored()?getFacing().getCounterClockWise(): getFacing().getClockWise();
-			if(this.tanks[0].getFluidAmount() > 0)
-			{
-				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[0].getFluid(), Math.min(this.tanks[0].getFluidAmount(), 80), false);
-				BlockPos outputPos = this.getBlockPos().offset(0, -1, 0).relative(fw, 2);
-				update |= FluidUtil.getFluidHandler(level, outputPos, fw.getOpposite()).map(output -> {
-					int accepted = output.fill(out, FluidAction.SIMULATE);
-					if(accepted > 0)
-					{
-						int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
-						this.tanks[0].drain(drained, FluidAction.EXECUTE);
-						return true;
-					}
-					return false;
-				}).orElse(false);
-				ItemStack empty = getInventory().get(9);
-				if(!empty.isEmpty()&&tanks[0].getFluidAmount() > 0)
-				{
-					ItemStack full = Utils.fillFluidContainer(tanks[0], empty, getInventory().get(10), null);
-					if(!full.isEmpty())
-					{
-						if(getInventory().get(9).getCount()==1&&!Utils.isFluidContainerFull(full))
-							getInventory().set(9, full.copy());
-						else
-						{
-							if(!getInventory().get(10).isEmpty()&&ItemHandlerHelper.canItemStacksStack(full, getInventory().get(10)))
-								getInventory().get(10).grow(full.getCount());
-							else
-								getInventory().set(10, full);
-							inventory.get(9).shrink(1);
-							if(inventory.get(9).getCount() <= 0)
-								inventory.set(9, ItemStack.EMPTY);
-						}
-						update = true;
-					}
-				}
-			}
+			update |= FluidUtils.multiblockFluidOutput(
+					level, this.getBlockPos().offset(0, -1, 0).relative(fw, 2), fw, this.tanks[0],
+					9, 10, inventory::get, inventory::set
+			);
 			if(!inventory.get(8).isEmpty()&&level.getGameTime()%8==0)
 			{
 				BlockPos outputPos = this.getBlockPos();

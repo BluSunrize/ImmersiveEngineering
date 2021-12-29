@@ -132,6 +132,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements TickableBlo
 					if(input.isPresent())
 					{
 						IFluidHandler handler = input.get();
+						int drainAmount = IFluidPipe.getTransferableAmount(this.canOutputPressurized(false));
 						FluidStack drain = handler.drain(500, FluidAction.SIMULATE);
 						if(drain.isEmpty())
 							continue;
@@ -260,7 +261,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements TickableBlo
 					IFluidHandler handler = output.get();
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeTileEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
-						insertResource.getOrCreateTag().putBoolean("pressurized", true);
+						insertResource.getOrCreateTag().putBoolean(IFluidPipe.NBT_PRESSURIZED, true);
 					int temp = handler.fill(insertResource, FluidAction.SIMULATE);
 					if(temp > 0)
 					{
@@ -283,7 +284,7 @@ public class FluidPumpTileEntity extends IEBaseTileEntity implements TickableBlo
 				if(output.containingTile instanceof FluidPipeTileEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 				{
 					this.energyStorage.extractEnergy(accelPower, false);
-					insertResource.getOrCreateTag().putBoolean("pressurized", true);
+					insertResource.getOrCreateTag().putBoolean(IFluidPipe.NBT_PRESSURIZED, true);
 				}
 				int r = output.output.fill(insertResource, action);
 				f += r;
