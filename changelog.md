@@ -1,7 +1,9 @@
 ##### Version 1.18.1-7.0.2-pre
-- Fix Lightning Rod crashing when built (BluSunrize)
 - Add some fake JEI recipes for filling buckets in the bottling machine (BluSunrize)
 - Updated JEI handlers for Coke Oven, Blast Furnace and Alloy Smelter to have some animated doodads (BluSunrize)
+- Fix Lightning Rod crashing when built (BluSunrize)
+- Fix texture glitches on Refinery model (BluSunrize)
+- Fix pipes and pumps transferring fluids much slower than planned, because pressurization didn't work (BluSunrize)
 
 ##### Version 1.18.1-7.0.1-144
 - Overhaul liquid concrete (BluSunrize)
