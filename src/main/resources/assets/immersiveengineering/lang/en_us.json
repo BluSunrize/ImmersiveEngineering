@@ -313,6 +313,7 @@
   "desc.immersiveengineering.info.circuit_table.slot.solder": "Solder",
   "desc.immersiveengineering.info.circuit_table.slot.edit": "Place logic circuit here to edit",
   "desc.immersiveengineering.info.circuit_table.copy": "Click to copy instruction",
+  "desc.immersiveengineering.info.refinery.slot.catalyst": "Catalyst",
   "desc.immersiveengineering.info.register": "Register %1$s",
   "desc.immersiveengineering.info.operator.set": "SET",
   "desc.immersiveengineering.info.operator.not": "NOT",
