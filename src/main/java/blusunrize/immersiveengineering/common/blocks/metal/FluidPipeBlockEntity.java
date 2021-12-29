@@ -378,7 +378,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				BlockPos cc = output.containingTile.getBlockPos();
 				if(!cc.equals(ccFrom)&&pipe.level.hasChunkAt(cc)&&!pipe.equals(output.containingTile))
 				{
-					int limit = getTranferrableAmount(resource, output);
+					int limit = getTransferableAmount(resource, output.containingTile);
 					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
 					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, true), FluidAction.SIMULATE);
 					if(temp > 0)
@@ -396,7 +396,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 					int amount = sorting.get(output);
 					if(sum > resource.getAmount())
 					{
-						int limit = getTranferrableAmount(resource, output);
+						int limit = getTransferableAmount(resource, output.containingTile);
 						int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
 						float prio = amount/(float)sum;
 						amount = (int)Math.ceil(Mth.clamp(amount, 1,
@@ -404,7 +404,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 						amount = Math.min(amount, canAccept);
 					}
 					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
-					if(r > 50)
+					if(r > IFluidPipe.AMOUNT_UNPRESSURIZED)
 						pipe.canOutputPressurized(output.containingTile, true);
 					f += r;
 					canAccept -= r;
@@ -416,11 +416,12 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			return 0;
 		}
 
-		private int getTranferrableAmount(FluidStack resource, DirectionalFluidOutput output)
+		private int getTransferableAmount(FluidStack resource, BlockEntity target)
 		{
-			return (resource.hasTag()&&resource.getOrCreateTag().contains("pressurized"))||
-					pipe.canOutputPressurized(output.containingTile, false)
-					?FluidAttributes.BUCKET_VOLUME: FluidAttributes.BUCKET_VOLUME/20;
+			return IFluidPipe.getTransferableAmount(
+					(resource.hasTag()&&resource.getOrCreateTag().contains(IFluidPipe.NBT_PRESSURIZED))
+							||pipe.canOutputPressurized(target, false)
+			);
 		}
 
 		@Nonnull
@@ -449,7 +450,8 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			int chosen = outputList.size()==1?0: CURRENT_TICK_RANDOM.nextInt(outputList.size());
 			DirectionalFluidOutput output = outputList.get(chosen);
 			FluidStack available = output.output.drain(maxDrain, FluidAction.SIMULATE);
-			int limit = getTranferrableAmount(available, output);
+			BlockEntity drainingBE = SafeChunkUtils.getSafeBE(world, this.pipe.getBlockPos().relative(this.facing));
+			int limit = getTransferableAmount(available, drainingBE);
 			int actualTake = Math.min(limit, maxDrain);
 			return output.output.drain(actualTake, doDrain);
 		}

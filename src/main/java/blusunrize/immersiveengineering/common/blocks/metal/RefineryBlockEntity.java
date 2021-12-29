@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
@@ -43,11 +44,9 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemHandlerHelper;
 
@@ -65,6 +64,10 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME)
 	};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
+	private static final int SLOT_CATALYST = 0;
+	private static final int SLOT_CONTAINER_IN = 1;
+	private static final int SLOT_CONTAINER_OUT = 2;
+
 
 	public RefineryBlockEntity(BlockEntityType<RefineryBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -122,41 +125,11 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 			}
 		}
 
-		if(this.tanks[2].getFluidAmount() > 0)
-		{
-			ItemStack filledContainer = Utils.fillFluidContainer(tanks[2], inventory.get(4), inventory.get(5), null);
-			if(!filledContainer.isEmpty())
-			{
-				if(inventory.get(4).getCount()==1&&!Utils.isFluidContainerFull(filledContainer))
-					inventory.set(4, filledContainer.copy());
-				else
-				{
-					if(!inventory.get(5).isEmpty()&&ItemHandlerHelper.canItemStacksStack(inventory.get(5), filledContainer))
-						inventory.get(5).grow(filledContainer.getCount());
-					else if(inventory.get(5).isEmpty())
-						inventory.set(5, filledContainer.copy());
-					inventory.get(4).shrink(1);
-					if(inventory.get(4).getCount() <= 0)
-						inventory.set(4, ItemStack.EMPTY);
-				}
-				update = true;
-			}
-			if(this.tanks[2].getFluidAmount() > 0)
-			{
-				FluidStack out = Utils.copyFluidStackWithAmount(this.tanks[2].getFluid(), Math.min(this.tanks[2].getFluidAmount(), 80), false);
-				BlockPos outputPos = this.getBlockPos().offset(0, -1, 0).relative(getFacing().getOpposite());
-				update |= FluidUtil.getFluidHandler(level, outputPos, getFacing()).map(output -> {
-					int accepted = output.fill(out, FluidAction.SIMULATE);
-					if(accepted > 0)
-					{
-						int drained = output.fill(Utils.copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
-						this.tanks[2].drain(drained, FluidAction.EXECUTE);
-						return true;
-					}
-					return false;
-				}).orElse(false);
-			}
-		}
+		Direction fw = getFacing().getOpposite();
+		update |= FluidUtils.multiblockFluidOutput(
+				level, this.getBlockPos().offset(0, -1, 0).relative(fw), fw, this.tanks[2],
+				SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, inventory::get, inventory::set
+		);
 
 		for(int tank = 0; tank < 2; tank++)
 		{

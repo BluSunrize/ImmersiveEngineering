@@ -604,29 +604,7 @@ public class Utils
 		Containers.dropItemStack(world, pos.getX(), pos.getY(), pos.getZ(), stack);
 	}
 
-	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable Player player)
-	{
-		if(containerIn==null||containerIn.isEmpty())
-			return ItemStack.EMPTY;
-
-		FluidActionResult result = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
-		if(result.isSuccess())
-		{
-			final ItemStack full = result.getResult();
-			if((containerOut.isEmpty()||ItemHandlerHelper.canItemStacksStack(containerOut, full)))
-			{
-				if(!containerOut.isEmpty()&&containerOut.getCount()+full.getCount() > containerOut.getMaxStackSize())
-					return ItemStack.EMPTY;
-				result = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
-				if(result.isSuccess())
-				{
-					return result.getResult();
-				}
-			}
-		}
-		return ItemStack.EMPTY;
-	}
-
+	// Todo: Remove? No longer needed since changes to the refinery
 	public static ItemStack drainFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut)
 	{
 		if(containerIn==null||containerIn.isEmpty())
@@ -654,18 +632,6 @@ public class Utils
 		}
 		return ItemStack.EMPTY;
 
-	}
-
-	public static boolean isFluidContainerFull(ItemStack stack)
-	{
-		return FluidUtil.getFluidHandler(stack)
-				.map(handler -> {
-					for(int t = 0; t < handler.getTanks(); ++t)
-						if(handler.getFluidInTank(t).getAmount() < handler.getTankCapacity(t))
-							return false;
-					return true;
-				})
-				.orElse(true);
 	}
 
 	public static boolean isFluidRelatedItemStack(ItemStack stack)

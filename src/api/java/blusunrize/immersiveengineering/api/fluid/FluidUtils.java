@@ -1,22 +1,30 @@
 package blusunrize.immersiveengineering.api.fluid;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidActionResult;
+import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
+import java.util.function.BiConsumer;
+import java.util.function.IntFunction;
 
 public class FluidUtils
 {
@@ -30,10 +38,10 @@ public class FluidUtils
 		if(stack==null)
 			return null;
 		FluidStack fs = new FluidStack(stack, amount);
-		if(stripPressure&&fs.hasTag()&&fs.getOrCreateTag().contains("pressurized"))
+		if(stripPressure&&fs.hasTag()&&fs.getOrCreateTag().contains(IFluidPipe.NBT_PRESSURIZED))
 		{
 			CompoundTag tag = fs.getOrCreateTag();
-			tag.remove("pressurized");
+			tag.remove(IFluidPipe.NBT_PRESSURIZED);
 			if(tag.isEmpty())
 				fs.setTag(null);
 		}
@@ -67,6 +75,91 @@ public class FluidUtils
 			fluidDestination.fill(simulatedMoved, doDrain);
 			return new FluidActionResult(handler.getContainer());
 		}).orElse(FluidActionResult.FAILURE);
+	}
+
+	public static boolean multiblockFluidOutput(
+			Level level, BlockPos targetPos, Direction dir, FluidTank tank,
+			int slotIn, int slotOut, IntFunction<ItemStack> invGet, BiConsumer<Integer, ItemStack> invSet
+	)
+	{
+		boolean updateTile = false;
+		if(tank.getFluidAmount() > 0)
+		{
+			// Handle container filling first, so that players can "intercept" the output
+			if(slotIn >= 0&&slotOut >= 0&&invGet!=null&&invSet!=null)
+				updateTile = fillFluidContainer(tank, slotIn, slotOut, invGet, invSet);
+
+			// Then try to output into pipes or similar
+			FluidStack out = copyFluidStackWithAmount(tank.getFluid(), Math.min(tank.getFluidAmount(), FluidAttributes.BUCKET_VOLUME), false);
+			updateTile |= FluidUtil.getFluidHandler(level, targetPos, dir.getOpposite()).map(output -> {
+				int accepted = output.fill(out, FluidAction.SIMULATE);
+				if(accepted > 0)
+				{
+					int drained = output.fill(copyFluidStackWithAmount(out, Math.min(out.getAmount(), accepted), false), FluidAction.EXECUTE);
+					tank.drain(drained, FluidAction.EXECUTE);
+					return true;
+				}
+				return false;
+			}).orElse(false);
+		}
+		return updateTile;
+	}
+
+	public static boolean fillFluidContainer(IFluidHandler handler, int slotIn, int slotOut, IntFunction<ItemStack> invGet, BiConsumer<Integer, ItemStack> invSet)
+	{
+		ItemStack filledContainer = fillFluidContainer(handler, invGet.apply(slotIn), invGet.apply(slotOut), null);
+		if(!filledContainer.isEmpty())
+		{
+			if(invGet.apply(slotIn).getCount()==1&&!isFluidContainerFull(filledContainer))
+				invSet.accept(slotIn, filledContainer.copy());
+			else
+			{
+				if(!invGet.apply(slotOut).isEmpty()&&ItemHandlerHelper.canItemStacksStack(filledContainer, invGet.apply(slotOut)))
+					invGet.apply(slotOut).grow(filledContainer.getCount());
+				else
+					invSet.accept(slotOut, filledContainer);
+				invGet.apply(slotIn).shrink(1);
+				if(invGet.apply(slotIn).getCount() <= 0)
+					invSet.accept(slotIn, ItemStack.EMPTY);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	public static ItemStack fillFluidContainer(IFluidHandler handler, ItemStack containerIn, ItemStack containerOut, @Nullable Player player)
+	{
+		if(containerIn==null||containerIn.isEmpty())
+			return ItemStack.EMPTY;
+
+		FluidActionResult result = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, false);
+		if(result.isSuccess())
+		{
+			final ItemStack full = result.getResult();
+			if((containerOut.isEmpty()||ItemHandlerHelper.canItemStacksStack(containerOut, full)))
+			{
+				if(!containerOut.isEmpty()&&containerOut.getCount()+full.getCount() > containerOut.getMaxStackSize())
+					return ItemStack.EMPTY;
+				result = FluidUtil.tryFillContainer(containerIn, handler, Integer.MAX_VALUE, player, true);
+				if(result.isSuccess())
+				{
+					return result.getResult();
+				}
+			}
+		}
+		return ItemStack.EMPTY;
+	}
+
+	public static boolean isFluidContainerFull(ItemStack stack)
+	{
+		return FluidUtil.getFluidHandler(stack)
+				.map(handler -> {
+					for(int t = 0; t < handler.getTanks(); ++t)
+						if(handler.getFluidInTank(t).getAmount() < handler.getTankCapacity(t))
+							return false;
+					return true;
+				})
+				.orElse(true);
 	}
 
 	public static boolean interactWithFluidHandler(Player player, InteractionHand hand, IFluidHandler handler)

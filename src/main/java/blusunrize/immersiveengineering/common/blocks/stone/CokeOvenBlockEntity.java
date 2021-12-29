@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.stone;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
@@ -47,7 +48,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -151,30 +151,9 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 			}
 		}
 
-		ItemStack inFullSlot = inventory.get(FULL_CONTAINER_SLOT);
-		if(tank.getFluidAmount() > 0&&(inFullSlot.isEmpty()||inFullSlot.getCount()+1 <= inFullSlot.getMaxStackSize()))
-		{
-			ItemStack filledContainer = Utils.fillFluidContainer(
-					tank,
-					inventory.get(EMPTY_CONTAINER_SLOT).copy(),
-					inFullSlot,
-					null
-			);
-			if(!filledContainer.isEmpty())
-			{
-				if(inventory.get(EMPTY_CONTAINER_SLOT).getCount()==1&&!Utils.isFluidContainerFull(filledContainer))
-					inventory.set(EMPTY_CONTAINER_SLOT, filledContainer.copy());
-				else
-				{
-					if(!inFullSlot.isEmpty()&&ItemHandlerHelper.canItemStacksStack(inFullSlot, filledContainer))
-						inFullSlot.grow(filledContainer.getCount());
-					else if(inFullSlot.isEmpty())
-						inventory.set(FULL_CONTAINER_SLOT, filledContainer.copy());
-					Utils.modifyInvStackSize(inventory, EMPTY_CONTAINER_SLOT, -filledContainer.getCount());
-				}
+		if(tank.getFluidAmount() > 0)
+			if(FluidUtils.fillFluidContainer(tank, EMPTY_CONTAINER_SLOT, FULL_CONTAINER_SLOT, inventory::get, inventory::set))
 				setChanged();
-			}
-		}
 
 		final boolean activeAfterTick = getIsActive();
 		if(activeBeforeTick!=activeAfterTick)

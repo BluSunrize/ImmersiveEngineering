@@ -128,7 +128,8 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					IFluidHandler input = neighborFluids.get(f).getNullable();
 					if(input!=null)
 					{
-						FluidStack drain = input.drain(500, FluidAction.SIMULATE);
+						int drainAmount = IFluidPipe.getTransferableAmount(this.canOutputPressurized(false));
+						FluidStack drain = input.drain(drainAmount, FluidAction.SIMULATE);
 						if(drain.isEmpty())
 							continue;
 						int out = this.outputFluid(drain, FluidAction.EXECUTE);
@@ -255,7 +256,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					BlockEntity tile = getLevelNonnull().getBlockEntity(worldPosition.relative(f));
 					FluidStack insertResource = Utils.copyFluidStackWithAmount(fs, fs.getAmount(), true);
 					if(tile instanceof FluidPipeBlockEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
-						insertResource.getOrCreateTag().putBoolean("pressurized", true);
+						insertResource.getOrCreateTag().putBoolean(IFluidPipe.NBT_PRESSURIZED, true);
 					int temp = handler.fill(insertResource, FluidAction.SIMULATE);
 					if(temp > 0)
 					{
@@ -278,7 +279,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 				if(output.containingTile() instanceof FluidPipeBlockEntity&&this.energyStorage.extractEnergy(accelPower, true) >= accelPower)
 				{
 					this.energyStorage.extractEnergy(accelPower, false);
-					insertResource.getOrCreateTag().putBoolean("pressurized", true);
+					insertResource.getOrCreateTag().putBoolean(IFluidPipe.NBT_PRESSURIZED, true);
 				}
 				int r = output.output().fill(insertResource, action);
 				f += r;

@@ -181,7 +181,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 				if(!outputAll)
 				{
 					FluidStack inTank = this.tank.getFluid();
-					FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), 80), false);
+					FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), FluidAttributes.BUCKET_VOLUME), false);
 					int accepted = output.fill(out, FluidAction.SIMULATE);
 					if(accepted > 0)
 					{
@@ -200,7 +200,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 						FluidStack fs = it.next();
 						if(fs!=null)
 						{
-							FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), 80-totalOut), false);
+							FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), FluidAttributes.BUCKET_VOLUME-totalOut), false);
 							int accepted = output.fill(out, FluidAction.SIMULATE);
 							if(accepted > 0)
 							{
@@ -209,7 +209,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 								totalOut += drained;
 								ret = true;
 							}
-							if(totalOut >= 80)
+							if(totalOut >= FluidAttributes.BUCKET_VOLUME)
 								break;
 						}
 					}
