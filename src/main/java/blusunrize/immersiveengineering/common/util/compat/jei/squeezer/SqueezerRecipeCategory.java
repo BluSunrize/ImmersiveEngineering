@@ -36,7 +36,7 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 	{
 		super(SqueezerRecipe.class, helper, UID, "block.immersiveengineering.squeezer");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/squeezer.png");
-		setBackground(helper.createDrawable(background, 6, 12, 164, 59));
+		setBackground(helper.createDrawable(background, 6, 12, 126, 59));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.SQUEEZER));
 		tankOverlay = helper.createDrawable(background, 179, 33, 16, 47);
 	}

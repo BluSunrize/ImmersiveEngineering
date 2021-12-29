@@ -17,6 +17,7 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
+import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.IIngredients;
 import net.minecraft.resources.ResourceLocation;
@@ -25,6 +26,7 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
@@ -36,7 +38,7 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 	{
 		super(RefineryRecipe.class, helper, UID, "block.immersiveengineering.refinery");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/refinery.png");
-		setBackground(helper.createDrawable(background, 6, 10, 164, 62));
+		setBackground(helper.createDrawable(background, 6, 10, 125, 62));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.REFINERY));
 		tankOverlay = helper.createDrawable(background, 179, 33, 16, 47);
 	}
@@ -64,8 +66,14 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 		}
 		if(recipe.input1!=null)
 		{
-			guiFluidStacks.init(1, true, 55, 10, 16, 47, FluidAttributes.BUCKET_VOLUME/20, false, tankOverlay);
+			guiFluidStacks.init(1, true, 34, 10, 16, 47, FluidAttributes.BUCKET_VOLUME/20, false, tankOverlay);
 			guiFluidStacks.set(1, recipe.input1.getMatchingFluidStacks());
+		}
+		if(!recipe.catalyst.isEmpty())
+		{
+			IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
+			guiItemStacks.init(0, true, 66, 15);
+			guiItemStacks.set(0, Arrays.asList(recipe.catalyst.getItems()));
 		}
 		guiFluidStacks.init(2, false, 103, 10, 16, 47, FluidAttributes.BUCKET_VOLUME/20, false, tankOverlay);
 		guiFluidStacks.set(2, recipe.output);
