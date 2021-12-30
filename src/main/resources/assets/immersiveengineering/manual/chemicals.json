@@ -1,0 +1,17 @@
+{
+  "start": {
+    "type": "item_display",
+    "items": [
+      {
+        "item": "immersiveengineering:dust_saltpeter"
+      },
+      {
+        "item": "immersiveengineering:dust_sulfur"
+      }
+    ]
+  },
+  "gunpowder": {
+    "type": "crafting",
+    "recipe": "crafting/gunpowder_from_dusts"
+  }
+}
