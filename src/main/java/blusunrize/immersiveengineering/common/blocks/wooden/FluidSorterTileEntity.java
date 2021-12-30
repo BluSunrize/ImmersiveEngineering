@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
+import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.IETileTypes;
 import blusunrize.immersiveengineering.common.blocks.IEBaseTileEntity;
@@ -39,7 +41,7 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 /**
  * @author BluSunrize - 02.03.2017
  */
-public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE
+public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteractionObjectIE, IFluidPipe
 {
 	public byte[] sortWithNBT = {1, 1, 1, 1, 1, 1};
 	//	public static final int filterSlotsPerSide = 8;
@@ -149,8 +151,11 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 
 	public Direction[][] getValidOutputs(Direction inputSide, @Nullable FluidStack fluidStack)
 	{
-		if(fluidStack==null)
+		if(fluidStack==null || fluidStack.isEmpty())
 			return new Direction[2][0];
+		// Strip pressure tag, since it confuses the sorting
+		fluidStack = FluidUtils.copyFluidStackWithAmount(fluidStack, 1, true);
+
 		ArrayList<Direction> validFilteredInvOuts = new ArrayList<>(6);
 		ArrayList<Direction> validUnfilteredInvOuts = new ArrayList<>(6);
 		for(Direction side : Direction.values())
@@ -161,7 +166,7 @@ public class FluidSorterTileEntity extends IEBaseTileEntity implements IInteract
 				filterIteration:
 				{
 					for(FluidStack filterStack : filters[side.ordinal()])
-						if(filterStack!=null)
+						if(filterStack!=null && !filterStack.isEmpty())
 						{
 							unmapped = false;
 							boolean b = filterStack.getFluid()==fluidStack.getFluid();

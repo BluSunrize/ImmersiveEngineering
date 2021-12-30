@@ -139,12 +139,11 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		{
 			BlockPos next = openList.get(0);
 			BlockEntity pipeTile = Utils.getExistingTileEntity(world, next);
-			if(!closedList.contains(next)&&(pipeTile instanceof IFluidPipe))
+			if(!closedList.contains(next)&&(pipeTile instanceof FluidPipeTileEntity))
 			{
-				if(pipeTile instanceof FluidPipeTileEntity)
-					closedList.add(next);
+				closedList.add(next);
 				for(Direction fd : DirectionUtils.VALUES)
-					if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
+					if(((FluidPipeTileEntity)pipeTile).hasOutputConnection(fd))
 					{
 						BlockPos nextPos = next.relative(fd);
 						BlockEntity adjacentTile = Utils.getExistingTileEntity(world, nextPos);
@@ -438,7 +437,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 				{
 					int limit = getTransferableAmount(resource, output.containingTile);
 					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
-					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, true), FluidAction.SIMULATE);
+					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, output.stripPressure()), FluidAction.SIMULATE);
 					if(temp > 0)
 					{
 						sorting.put(output, temp);
@@ -461,7 +460,7 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 								Math.min(resource.getAmount()*prio, tileSpecificAcceptedFluid)));
 						amount = Math.min(amount, canAccept);
 					}
-					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
+					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, output.stripPressure()), doFill);
 					if(r > IFluidPipe.AMOUNT_UNPRESSURIZED)
 						pipe.canOutputPressurized(output.containingTile, true);
 					f += r;
@@ -530,6 +529,12 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 			this.output = output;
 			this.direction = direction;
 			this.containingTile = containingTile;
+		}
+		boolean stripPressure()
+		{
+			if(containingTile instanceof IFluidPipe)
+				return ((IFluidPipe)containingTile).stripPressureTag();
+			return true;
 		}
 	}
 
@@ -1126,13 +1131,6 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		}
 	}
 
-	@Override
-	public boolean canOutputPressurized(boolean consumePower)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean hasOutputConnection(Direction side)
 	{
 		return side!=null&&sideConfig.getBoolean(side);

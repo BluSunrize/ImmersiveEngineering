@@ -35,7 +35,32 @@ public interface IFluidPipe
 		return pressurized?AMOUNT_PRESSURIZED: AMOUNT_UNPRESSURIZED;
 	}
 
-	boolean canOutputPressurized(boolean consumePower);
+	/**
+	 * @return whether the NBT tag for pressurization {@link #NBT_PRESSURIZED} should be stripped when inserting here
+	 */
+	default boolean stripPressureTag()
+	{
+		return false;
+	}
 
-	boolean hasOutputConnection(Direction side);
+	/**
+	 * This method allows pipes _before_ a pump to still transfer fluids at high speed, by inserting into a pump that
+	 * can consume power to speed up the fluid.
+	 *
+	 * @param consumePower if true, the block should consume power to speed up the transfer
+	 * @return whether this block has the capability to pressurize a fluid
+	 */
+	default boolean canOutputPressurized(boolean consumePower)
+	{
+		return false;
+	}
+
+	/**
+	 * Will be removed in 1.18.1, only used internally by pipes
+	 */
+	@Deprecated
+	default boolean hasOutputConnection(Direction side)
+	{
+		return false;
+	}
 }
