@@ -35,6 +35,11 @@ public interface IFluidPipe
 		return pressurized?AMOUNT_PRESSURIZED: AMOUNT_UNPRESSURIZED;
 	}
 
+	default boolean stripPressureTag()
+	{
+		return false;
+	}
+
 	boolean canOutputPressurized(boolean consumePower);
 
 	boolean hasOutputConnection(Direction side);

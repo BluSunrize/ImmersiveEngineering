@@ -381,7 +381,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 				{
 					int limit = getTransferableAmount(resource, output.containingTile);
 					int tileSpecificAcceptedFluid = Math.min(limit, canAccept);
-					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, true), FluidAction.SIMULATE);
+					int temp = output.output.fill(Utils.copyFluidStackWithAmount(resource, tileSpecificAcceptedFluid, output.stripPressure()), FluidAction.SIMULATE);
 					if(temp > 0)
 					{
 						sorting.put(output, temp);
@@ -404,7 +404,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 								Math.min(resource.getAmount()*prio, tileSpecificAcceptedFluid)));
 						amount = Math.min(amount, canAccept);
 					}
-					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, true), doFill);
+					int r = output.output.fill(Utils.copyFluidStackWithAmount(resource, amount, output.stripPressure()), doFill);
 					if(r > IFluidPipe.AMOUNT_UNPRESSURIZED)
 						pipe.canOutputPressurized(output.containingTile, true);
 					f += r;
@@ -468,6 +468,12 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 			BlockEntity containingTile
 	)
 	{
+		boolean stripPressure()
+		{
+			if(containingTile instanceof IFluidPipe pipe)
+				return pipe.stripPressureTag();
+			return true;
+		}
 	}
 
 	public boolean updateConnectionByte(Direction dir)
