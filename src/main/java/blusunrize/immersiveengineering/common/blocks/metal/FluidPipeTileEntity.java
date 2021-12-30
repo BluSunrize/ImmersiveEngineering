@@ -477,8 +477,8 @@ public class FluidPipeTileEntity extends IEBaseTileEntity implements IFluidPipe,
 		private int getTransferableAmount(FluidStack resource, BlockEntity target)
 		{
 			// certain targets may override the transfer limits. This only works for direct pipe connections.
-			if(target instanceof IPressurizedFluidOutput pressurizedOutput)
-				return pressurizedOutput.getMaxAcceptedFluidAmount(resource);
+			if(target instanceof IPressurizedFluidOutput)
+				return ((IPressurizedFluidOutput)target).getMaxAcceptedFluidAmount(resource);
 
 			return IFluidPipe.getTransferableAmount(
 					(resource.hasTag()&&resource.getOrCreateTag().contains(IFluidPipe.NBT_PRESSURIZED))
