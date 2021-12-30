@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
+import blusunrize.immersiveengineering.api.fluid.IPressurizedFluidOutput;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
@@ -418,6 +419,10 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 
 		private int getTransferableAmount(FluidStack resource, BlockEntity target)
 		{
+			// certain targets may override the transfer limits. This only works for direct pipe connections.
+			if(target instanceof IPressurizedFluidOutput pressurizedOutput)
+				return pressurizedOutput.getMaxAcceptedFluidAmount(resource);
+
 			return IFluidPipe.getTransferableAmount(
 					(resource.hasTag()&&resource.getOrCreateTag().contains(IFluidPipe.NBT_PRESSURIZED))
 							||pipe.canOutputPressurized(target, false)

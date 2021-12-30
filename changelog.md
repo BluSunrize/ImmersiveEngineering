@@ -1,5 +1,6 @@
 ##### Version 1.18.1-7.0.2-pre
 - Add some fake JEI recipes for filling buckets in the bottling machine (BluSunrize)
+- Add a new API interface that allows pressurized fluid in- and output above normal levels (BluSunrize)
 - Updated JEI handlers for Coke Oven, Blast Furnace and Alloy Smelter to have some animated doodads (BluSunrize)
 - Fix Lightning Rod crashing when built (BluSunrize)
 - Fix texture glitches on Refinery model (BluSunrize)
