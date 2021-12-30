@@ -126,7 +126,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	@Override
 	public boolean canTickAny()
 	{
-		return super.canTickAny() && !isRSDisabled();
+		return super.canTickAny()&&!isRSDisabled();
 	}
 
 	@Override
@@ -172,7 +172,10 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		{
 			SawmillProcess process = processIterator.next();
 			if(process.processStep(this, secondaries))
+			{
 				tickedProcesses++;
+				this.updateMasterBlock(null, true);
+			}
 			if(process.processFinished)
 			{
 				doProcessOutput(process.getCurrentStack(!this.sawblade.isEmpty()).copy());
@@ -363,7 +366,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		public AABB apply(SawmillBlockEntity tile)
 		{
 			return cache.computeIfAbsent(Pair.of(tile.getFacing(), tile.getIsMirrored()),
-					key -> CachedShapesWithTransform.withFacingAndMirror(SAWBLADE_AABB, key.getFirst(), key.getSecond()))
+							key -> CachedShapesWithTransform.withFacingAndMirror(SAWBLADE_AABB, key.getFirst(), key.getSecond()))
 					.move(tile.getOrigin());
 		}
 	};
