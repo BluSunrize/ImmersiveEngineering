@@ -1,10 +1,16 @@
 ##### Version 1.18.1-7.0.2-pre
+- The "Chemical Engineering" update! (BluSunrize)
+    - Refineries now use a catalyst, Biodiesel uses Nitrate Dust
+    - Add a manual entry for Nitrate and Sulfur to explain where to get them and what they are for
 - Add some fake JEI recipes for filling buckets in the bottling machine (BluSunrize)
 - Add a new API interface that allows pressurized fluid in- and output above normal levels (BluSunrize)
-- Updated JEI handlers for Coke Oven, Blast Furnace and Alloy Smelter to have some animated doodads (BluSunrize)
+- Update JEI handlers for Coke Oven, Blast Furnace and Alloy Smelter to have some animated doodads (BluSunrize)
 - Fix Lightning Rod crashing when built (BluSunrize)
 - Fix texture glitches on Refinery model (BluSunrize)
 - Fix pipes and pumps transferring fluids much slower than planned, because pressurization didn't work (BluSunrize)
+- Fix manual entries referring to "Engineer's Hammer" when "Engineer's Screwdriver" is the correct tool (Vapaman)
+- Fix banner patterns crashing in the loom (BluSunrize)
+- Fix sawmill not updating its visuals while processing (BluSunrize)
 
 ##### Version 1.18.1-7.0.1-144
 - Overhaul liquid concrete (BluSunrize)
