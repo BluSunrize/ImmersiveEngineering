@@ -244,6 +244,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Misc.MAINTENANCE_KIT);
 		addItemModels("", IEItems.Minecarts.CART_WOODEN_CRATE, IEItems.Minecarts.CART_REINFORCED_CRATE, IEItems.Minecarts.CART_WOODEN_BARREL, IEItems.Minecarts.CART_METAL_BARREL);
 		addItemModels("", IEItems.Misc.LOGIC_CIRCUIT_BOARD);
+		addItemModels("", IEItems.Misc.FERTILIZER);
 		addItemModel("banner_pattern", IEItems.BannerPatterns.HAMMER);
 		addItemModel("banner_pattern", IEItems.BannerPatterns.BEVELS);
 		addItemModel("banner_pattern", IEItems.BannerPatterns.ORNATE);

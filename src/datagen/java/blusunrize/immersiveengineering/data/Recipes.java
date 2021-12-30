@@ -2930,6 +2930,12 @@ public class Recipes extends RecipeProvider
 				.define('W', ItemTags.WOOL)
 				.unlockedBy("has_iron_rod", has(IETags.ironRod))
 				.save(out, toRL(toPath(Misc.EARMUFFS)));
+		ShapelessRecipeBuilder.shapeless(Misc.FERTILIZER)
+				.requires(IETags.saltpeterDust)
+				.requires(IETags.slag)
+				.unlockedBy("has_saltpeter", has(IETags.saltpeterDust))
+				.save(out, toRL(toPath(Misc.FERTILIZER)));
+
 		ShapedRecipeBuilder.shaped(MetalDecoration.LANTERN)
 				.pattern(" I ")
 				.pattern("PGP")
