@@ -279,6 +279,9 @@ public class Recipes extends RecipeProvider
 		ClocheFertilizerBuilder.builder(1.25f)
 				.addInput(Items.BONE_MEAL)
 				.build(out, toRL("fertilizer/bone_meal"));
+		ClocheFertilizerBuilder.builder(1.25f)
+				.addInput(Misc.FERTILIZER)
+				.build(out, toRL("fertilizer/fertilizer"));
 
 		ClocheRecipeBuilder.builder(new ItemStack(Items.WHEAT, 2))
 				.addResult(new ItemStack(Items.WHEAT_SEEDS, 1))
