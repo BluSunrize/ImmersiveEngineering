@@ -10,6 +10,10 @@
       }
     ]
   },
+  "fertilizer": {
+    "type": "crafting",
+    "recipe": "crafting/fertilizer"
+  },
   "gunpowder": {
     "type": "crafting",
     "recipe": "crafting/gunpowder_from_dusts"
