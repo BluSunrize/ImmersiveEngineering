@@ -124,12 +124,11 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		{
 			BlockPos next = openList.get(0);
 			BlockEntity pipeTile = Utils.getExistingTileEntity(world, next);
-			if(!closedList.contains(next)&&(pipeTile instanceof IFluidPipe))
+			if(!closedList.contains(next)&&(pipeTile instanceof FluidPipeBlockEntity))
 			{
-				if(pipeTile instanceof FluidPipeBlockEntity)
-					closedList.add(next);
+				closedList.add(next);
 				for(Direction fd : DirectionUtils.VALUES)
-					if(((IFluidPipe)pipeTile).hasOutputConnection(fd))
+					if(((FluidPipeBlockEntity)pipeTile).hasOutputConnection(fd))
 					{
 						BlockPos nextPos = next.relative(fd);
 						BlockEntity adjacentTile = Utils.getExistingTileEntity(world, nextPos);
@@ -766,16 +765,9 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		}
 	}
 
-	@Override
-	public boolean canOutputPressurized(boolean consumePower)
-	{
-		return false;
-	}
-
-	@Override
 	public boolean hasOutputConnection(Direction side)
 	{
-		return side!=null&&sideConfig.getBoolean(side);
+		return sideConfig.getBoolean(side);
 	}
 
 	@SubscribeEvent

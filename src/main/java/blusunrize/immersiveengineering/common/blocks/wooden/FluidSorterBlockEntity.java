@@ -250,17 +250,6 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		return super.getCapability(capability, facing);
 	}
 
-	@Override
-	public boolean canOutputPressurized(boolean consumePower)
-	{
-		return false;
-	}
-	@Override
-	public boolean hasOutputConnection(Direction side)
-	{
-		return false;
-	}
-
 	static class SorterFluidHandler implements IFluidHandler
 	{
 		FluidSorterBlockEntity tile;

@@ -510,10 +510,4 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		}
 		return false;
 	}
-
-	@Override
-	public boolean hasOutputConnection(Direction side)
-	{
-		return side!=null&&this.sideConfig.get(side)==IOSideConfig.OUTPUT;
-	}
 }
