@@ -54,13 +54,4 @@ public interface IFluidPipe
 	{
 		return false;
 	}
-
-	/**
-	 * Will be removed in 1.18.1, only used internally by pipes
-	 */
-	@Deprecated
-	default boolean hasOutputConnection(Direction side)
-	{
-		return false;
-	}
 }
