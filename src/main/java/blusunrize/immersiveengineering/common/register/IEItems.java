@@ -240,6 +240,7 @@ public final class IEItems
 
 	public static final class BannerPatterns
 	{
+		public static final List<ItemRegObject<BannerPatternItem>> ALL_PATTERNS = new ArrayList<>();
 		public static final ItemRegObject<BannerPatternItem> HAMMER = addBanner("hammer", "hmr");
 		public static final ItemRegObject<BannerPatternItem> BEVELS = addBanner("bevels", "bvl");
 		public static final ItemRegObject<BannerPatternItem> ORNATE = addBanner("ornate", "orn");
@@ -251,7 +252,7 @@ public final class IEItems
 
 		private static ItemRegObject<BannerPatternItem> addBanner(String name, String id)
 		{
-			return register(
+			ItemRegObject<BannerPatternItem> regObj = register(
 					"bannerpattern_"+name,
 					() -> {
 						String enumName = MODID+"_"+name;
@@ -260,6 +261,8 @@ public final class IEItems
 						return new BannerPatternItem(pattern, new Properties().tab(ImmersiveEngineering.ITEM_GROUP));
 					}
 			);
+			ALL_PATTERNS.add(regObj);
+			return regObj;
 		}
 
 		private static void init()

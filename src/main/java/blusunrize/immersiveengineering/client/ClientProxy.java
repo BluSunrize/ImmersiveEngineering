@@ -61,6 +61,7 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
@@ -72,8 +73,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.*;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -85,6 +88,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -184,6 +188,11 @@ public class ClientProxy extends CommonProxy
 
 		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
 		IEManual.addIEManualEntries();
+		IEItems.BannerPatterns.ALL_PATTERNS.forEach(regObject -> {
+			BannerPattern pattern = regObject.get().getBannerPattern();
+			Sheets.BANNER_MATERIALS.put(pattern, new Material(Sheets.BANNER_SHEET, pattern.location(true)));
+			Sheets.SHIELD_MATERIALS.put(pattern, new Material(Sheets.SHIELD_SHEET, pattern.location(false)));
+		});
 	}
 
 	private static <T extends Entity, T2 extends T> void registerEntityRenderingHandler(
@@ -197,7 +206,14 @@ public class ClientProxy extends CommonProxy
 	@SubscribeEvent
 	public static void textureStichPre(TextureStitchEvent.Pre event)
 	{
-		if(!event.getAtlas().location().equals(InventoryMenu.BLOCK_ATLAS))
+		ResourceLocation sheet = event.getAtlas().location();
+		if(sheet.equals(Sheets.BANNER_SHEET)||sheet.equals(Sheets.SHIELD_SHEET))
+			IEItems.BannerPatterns.ALL_PATTERNS.forEach(regObject -> {
+				BannerPattern pattern = regObject.get().getBannerPattern();
+				event.addSprite(pattern.location(sheet.equals(Sheets.BANNER_SHEET)));
+			});
+
+		if(!sheet.equals(InventoryMenu.BLOCK_ATLAS))
 			return;
 		IELogger.info("Stitching Revolver Textures!");
 		RevolverCallbacks.addRevolverTextures(event);
