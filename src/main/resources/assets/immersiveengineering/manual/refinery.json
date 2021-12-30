@@ -2,5 +2,9 @@
   "multiblock": {
     "type": "multiblock",
     "name": "multiblocks/refinery"
+  },
+  "diesel": {
+    "type": "item_display",
+    "item": "immersiveengineering:biodiesel_bucket"
   }
 }

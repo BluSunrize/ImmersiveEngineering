@@ -4,6 +4,9 @@
     "fluid": "immersiveengineering:biodiesel",
     "amount": 16
   },
+  "catalyst": {
+    "tag": "forge:dusts/saltpeter"
+  },
   "input0": {
     "tag": "forge:plantoil",
     "amount": 8

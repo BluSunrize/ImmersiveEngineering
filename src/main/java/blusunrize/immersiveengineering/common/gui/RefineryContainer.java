@@ -26,60 +26,9 @@ public class RefineryContainer extends IEBaseContainer<RefineryBlockEntity>
 	{
 		super(type, tile, id);
 
-		final RefineryBlockEntity tileF = tile;
-		this.addSlot(new IESlot.FluidContainer(this, this.inv, 0, 37, 15, 2)
-		{
-			@Override
-			public boolean mayPlace(ItemStack itemStack)
-			{
-				return itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
-						.map(h -> {
-							if(h.getTanks() <= 0)
-								return false;
-							FluidStack fs = h.getFluidInTank(0);
-							if(fs.isEmpty())
-								return false;
-							if(!RefineryRecipe.findIncompleteRefineryRecipe(fs, FluidStack.EMPTY).isPresent())
-								return false;
-							if(tileF.tanks[0].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[0].getFluid()))
-								return false;
-							if(tileF.tanks[1].getFluidAmount() <= 0)
-								return true;
-							Optional<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[1].getFluid());
-							return incomplete.isPresent();
-						}).orElse(false);
-			}
-		});
-		this.addSlot(new IESlot.Output(this, this.inv, 1, 37, 54));
-
-		this.addSlot(new IESlot.FluidContainer(this, this.inv, 2, 85, 15, 2)
-		{
-			@Override
-			public boolean mayPlace(ItemStack itemStack)
-			{
-				return itemStack.getCapability(CapabilityFluidHandler.FLUID_HANDLER_ITEM_CAPABILITY, null)
-						.map(h -> {
-							if(h.getTanks() <= 0)
-								return false;
-							FluidStack fs = h.getFluidInTank(0);
-							if(fs.isEmpty())
-								return false;
-							if(!RefineryRecipe.findIncompleteRefineryRecipe(fs, FluidStack.EMPTY).isPresent())
-								return false;
-							if(tileF.tanks[1].getFluidAmount() > 0&&!fs.isFluidEqual(tileF.tanks[1].getFluid()))
-								return false;
-							if(tileF.tanks[0].getFluidAmount() <= 0)
-								return true;
-							Optional<RefineryRecipe> incomplete = RefineryRecipe.findIncompleteRefineryRecipe(fs, tileF.tanks[0].getFluid());
-							return incomplete.isPresent();
-						}).orElse(false);
-			}
-		});
-		this.addSlot(new IESlot.Output(this, this.inv, 3, 85, 54));
-
-		this.addSlot(new IESlot.FluidContainer(this, this.inv, 4, 133, 15, 0));
-		this.addSlot(new IESlot.Output(this, this.inv, 5, 133, 54));
-		slotCount = 6;
+		this.addSlot(new Slot(this.inv, slotCount++, 73, 26));
+		this.addSlot(new IESlot.FluidContainer(this, this.inv, slotCount++, 133, 15, 0));
+		this.addSlot(new IESlot.Output(this, this.inv, slotCount++, 133, 54));
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

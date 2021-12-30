@@ -11,10 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ICollisionBounds;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
-import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISelectionBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
@@ -33,6 +30,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -56,16 +54,17 @@ import java.util.List;
 import java.util.Set;
 
 public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBlockEntity, RefineryRecipe> implements
-		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<RefineryBlockEntity>, IBlockBounds
+		ISelectionBounds, ICollisionBounds, IPlayerInteraction, IInteractionObjectIE<RefineryBlockEntity>, IBlockBounds
 {
 	public FluidTank[] tanks = new FluidTank[]{
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME),
 			new FluidTank(24*FluidAttributes.BUCKET_VOLUME)
 	};
-	public final NonNullList<ItemStack> inventory = NonNullList.withSize(6, ItemStack.EMPTY);
-	private static final int SLOT_CONTAINER_IN = 4;
-	private static final int SLOT_CONTAINER_OUT = 5;
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(3, ItemStack.EMPTY);
+	private static final int SLOT_CATALYST = 0;
+	private static final int SLOT_CONTAINER_IN = 1;
+	private static final int SLOT_CONTAINER_OUT = 2;
 
 
 	public RefineryBlockEntity(BlockEntityType<RefineryBlockEntity> type, BlockPos pos, BlockState state)
@@ -110,7 +109,7 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 		{
 			if(tanks[0].getFluidAmount() > 0||tanks[1].getFluidAmount() > 0)
 			{
-				RefineryRecipe recipe = RefineryRecipe.findRecipe(tanks[0].getFluid(), tanks[1].getFluid());
+				RefineryRecipe recipe = RefineryRecipe.findRecipe(tanks[0].getFluid(), tanks[1].getFluid(), inventory.get(SLOT_CATALYST));
 				if(recipe!=null)
 				{
 					MultiblockProcessInMachine<RefineryRecipe> process = new MultiblockProcessInMachine<>(recipe)
@@ -130,29 +129,31 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 				SLOT_CONTAINER_IN, SLOT_CONTAINER_OUT, inventory::get, inventory::set
 		);
 
-		for(int tank = 0; tank < 2; tank++)
-		{
-			final int inputSlot = 2*tank;
-			final int outputSlot = inputSlot+1;
-			final int amountPrev = tanks[tank].getFluidAmount();
-			ItemStack outputStack = inventory.get(outputSlot);
-			ItemStack emptyContainer = Utils.drainFluidContainer(tanks[tank], inventory.get(inputSlot), outputStack);
-			if(amountPrev!=tanks[tank].getFluidAmount())
-			{
-				if(ItemHandlerHelper.canItemStacksStack(outputStack, emptyContainer))
-					outputStack.grow(emptyContainer.getCount());
-				else if(outputStack.isEmpty())
-					inventory.set(outputSlot, emptyContainer.copy());
-				inventory.get(inputSlot).shrink(outputSlot);
-				update = true;
-			}
-		}
-
 		if(update)
 		{
 			this.setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
+	}
+
+	@Override
+	public boolean interact(Direction side, Player player, InteractionHand hand, ItemStack heldItem, float hitX, float hitY, float hitZ)
+	{
+		RefineryBlockEntity master = this.master();
+		if(master!=null)
+		{
+			int tank = -1;
+			if(posInMultiblock.getX()!=2&&posInMultiblock.getZ() < 2&&posInMultiblock.getY() > 0)
+				tank = (posInMultiblock.getX() < 2==this.getIsMirrored())?1: 0;
+			else if(posInMultiblock.getX()==2&&posInMultiblock.getZ()==2)
+				tank = 2;
+			if(tank >= 0&&FluidUtils.interactWithFluidHandler(player, hand, master.tanks[tank]))
+			{
+				this.updateMasterBlock(null, true);
+				return true;
+			}
+		}
+		return false;
 	}
 
 	private static final CachedShapesWithTransform<BlockPos, Pair<Direction, Boolean>> SHAPES =

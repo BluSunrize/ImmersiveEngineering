@@ -279,6 +279,9 @@ public class Recipes extends RecipeProvider
 		ClocheFertilizerBuilder.builder(1.25f)
 				.addInput(Items.BONE_MEAL)
 				.build(out, toRL("fertilizer/bone_meal"));
+		ClocheFertilizerBuilder.builder(1.25f)
+				.addInput(Misc.FERTILIZER)
+				.build(out, toRL("fertilizer/fertilizer"));
 
 		ClocheRecipeBuilder.builder(new ItemStack(Items.WHEAT, 2))
 				.addResult(new ItemStack(Items.WHEAT_SEEDS, 1))
@@ -944,6 +947,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("fermenter/potato"));
 		/* REFINERY */
 		RefineryRecipeBuilder.builder(IEFluids.BIODIESEL.getStill(), 16)
+				.addCatalyst(IETags.saltpeterDust)
 				.addInput(IETags.fluidPlantoil, 8)
 				.addInput(IETags.fluidEthanol, 8)
 				.setEnergy(80)
@@ -2929,6 +2933,12 @@ public class Recipes extends RecipeProvider
 				.define('W', ItemTags.WOOL)
 				.unlockedBy("has_iron_rod", has(IETags.ironRod))
 				.save(out, toRL(toPath(Misc.EARMUFFS)));
+		ShapelessRecipeBuilder.shapeless(Misc.FERTILIZER)
+				.requires(IETags.saltpeterDust)
+				.requires(IETags.slag)
+				.unlockedBy("has_saltpeter", has(IETags.saltpeterDust))
+				.save(out, toRL(toPath(Misc.FERTILIZER)));
+
 		ShapedRecipeBuilder.shaped(MetalDecoration.LANTERN)
 				.pattern(" I ")
 				.pattern("PGP")

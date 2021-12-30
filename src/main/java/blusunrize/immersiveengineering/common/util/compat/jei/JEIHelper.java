@@ -188,7 +188,7 @@ public class JEIHelper implements IModPlugin
 
 		registration.addRecipeClickArea(SqueezerScreen.class, 90, 19, 20, 33, SqueezerRecipeCategory.UID);
 		registration.addRecipeClickArea(FermenterScreen.class, 90, 19, 20, 33, FermenterRecipeCategory.UID);
-		registration.addRecipeClickArea(RefineryScreen.class, 83, 36, 20, 13, RefineryRecipeCategory.UID);
+		registration.addRecipeClickArea(RefineryScreen.class, 92, 24, 14, 20, RefineryRecipeCategory.UID);
 		registration.addRecipeClickArea(ArcFurnaceScreen.class, 81, 38, 23, 35, ArcFurnaceRecipeCategory.UID, ArcFurnaceRecipeCategory.UID_RECYCLING);
 		registration.addRecipeClickArea(MixerScreen.class, 52, 11, 16, 47, MixerRecipeCategory.UID);
 

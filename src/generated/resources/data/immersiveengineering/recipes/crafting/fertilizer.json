@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "tag": "forge:dusts/saltpeter"
+    },
+    {
+      "tag": "forge:slag"
+    }
+  ],
+  "result": {
+    "item": "immersiveengineering:fertilizer"
+  }
+}

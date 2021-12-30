@@ -307,6 +307,7 @@ public final class IEItems
 		public static final ItemRegObject<IEShieldItem> SHIELD = register("shield", IEShieldItem::new);
 		public static final ItemRegObject<MaintenanceKitItem> MAINTENANCE_KIT = register("maintenance_kit", MaintenanceKitItem::new);
 		public static final ItemRegObject<LogicCircuitBoardItem> LOGIC_CIRCUIT_BOARD = register("logic_circuit", LogicCircuitBoardItem::new);
+		public static final ItemRegObject<FertilizerItem> FERTILIZER = register("fertilizer", FertilizerItem::new);
 
 		public static final ItemRegObject<FakeIconItem> ICON_BIRTHDAY = icon("birthday");
 		public static final ItemRegObject<FakeIconItem> ICON_LUCKY = icon("lucky");

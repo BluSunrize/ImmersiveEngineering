@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 import com.google.common.collect.Lists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
@@ -33,13 +34,15 @@ public class RefineryRecipe extends MultiblockRecipe
 	public final FluidStack output;
 	public final FluidTagInput input0;
 	public final FluidTagInput input1;
+	public final Ingredient catalyst;
 
-	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagInput input0, FluidTagInput input1, int energy)
+	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagInput input0, FluidTagInput input1, Ingredient catalyst, int energy)
 	{
 		super(ItemStack.EMPTY, TYPE, id);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;
+		this.catalyst = catalyst;
 		setTimeAndEnergy(1, energy);
 
 		this.fluidInputList = Lists.newArrayList(this.input0, this.input1);
@@ -55,10 +58,12 @@ public class RefineryRecipe extends MultiblockRecipe
 	// Initialized by reload listener
 	public static Map<ResourceLocation, RefineryRecipe> recipeList = Collections.emptyMap();
 
-	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1)
+	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1, ItemStack catalyst)
 	{
 		for(RefineryRecipe recipe : recipeList.values())
 		{
+			if(!recipe.catalyst.test(catalyst))
+				continue;
 			if(input0!=null)
 			{
 				if(recipe.input0!=null&&recipe.input0.test(input0))
