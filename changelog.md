@@ -3,6 +3,7 @@
 - Fix flipped bounding boxes for the Lightning Rod (BluSunrize)
 - Fix texture glitches on Refinery model (BluSunrize)
 - Fix pipes and pumps transferring fluids much slower than planned, because pressurization didn't work (BluSunrize)
+- Fix manual entries referring to "Engineer's Hammer" when "Engineer's Screwdriver" is the correct tool (Vapaman)
 
 ##### Version 1.16.5-5.0.7-143
 - Fix diesel generator not toggling on and off correctly (Malte)
