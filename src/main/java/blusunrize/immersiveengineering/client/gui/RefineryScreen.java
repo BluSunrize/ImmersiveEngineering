@@ -56,6 +56,6 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
 		Slot s = this.menu.slots.get(0);
 		if(!s.hasItem()&&mouseX > leftPos+s.x&&mouseX < leftPos+s.x+16&&mouseY > topPos+s.y&&mouseY < topPos+s.y+16)
-			addLine.accept(new TranslatableComponent(Lib.DESC_INFO+"refinery.catalyst"));
+			addLine.accept(new TranslatableComponent(Lib.DESC_INFO+"refinery.slot.catalyst"));
 	}
 }
