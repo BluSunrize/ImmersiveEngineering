@@ -945,6 +945,10 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.CROPS_POTATO)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/potato"));
+		FermenterRecipeBuilder.builder(ethanol, 40)
+				.addInput(Tags.Items.CROPS_BEETROOT)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/beetroot"));
 		/* REFINERY */
 		RefineryRecipeBuilder.builder(IEFluids.BIODIESEL.getStill(), 16)
 				.addCatalyst(IETags.saltpeterDust)
