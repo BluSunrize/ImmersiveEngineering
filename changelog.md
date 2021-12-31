@@ -4,6 +4,7 @@
     - Add a manual entry for Nitrate and Sulfur to explain where to get them and what they are for
 - Add some fake JEI recipes for filling buckets in the bottling machine (BluSunrize)
 - Add a new API interface that allows pressurized fluid in- and output above normal levels (BluSunrize)
+- Change Electrician villager workstation to be the Circuit Table (BluSunrize)
 - Update JEI handlers for Coke Oven, Blast Furnace and Alloy Smelter to have some animated doodads (BluSunrize)
 - Fix Lightning Rod crashing when built (BluSunrize)
 - Fix texture glitches on Refinery model (BluSunrize)

@@ -7,7 +7,7 @@ Their workstation is an §2Engineer's Crafting Table§r.<np>
 <&machinist> The §lMachinist§r is an expert in metals, mechanics and tools. They sell their surplus hammers, toolboxes and drill heads. Particularly experienced machinists even know how to draw blueprints for <link;graphite;graphite electrodes;electrode>.
 Their workstation is an §2Anvil§r.<np>
 <&electrician> The §lElectrician§r offers wirecutters, coils of wire and pieces of a faraday suit. Some less reputable villagers may also have a stash of experimental weapon upgrades...
-Their workstation is a §2Current Transformer§r.<np>
+Their workstation is an §2Engineer's Circuit Table§r.<np>
 <&gunsmith> The §lGunsmith§r deals with the recently popular firearms. Apart from selling various kinds of ammunition, they also manufacture some rare pieces for the <link;revolver;Revolver;start> that influence its performance.
 Their workstation is an §2Engineer's Workbench§r.<np>
 <&outfitter> The §lOutfitter§r may not seem like a traditional engineer, although their field of work is no less precise! Whereas others manufacture components and assemble large structures, they instead design unique colour patterns known as <link;shader;Shaders;start>.

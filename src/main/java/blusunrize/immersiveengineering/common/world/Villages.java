@@ -182,7 +182,7 @@ public class Villages
 				"anvil", () -> createPOI("anvil", assembleStates(Blocks.ANVIL))
 		);
 		public static final RegistryObject<PoiType> POI_ENERGYMETER = POINTS_OF_INTEREST.register(
-				"energymeter", () -> createPOI("energymeter", assembleStates(Connectors.CURRENT_TRANSFORMER.get()))
+				"energymeter", () -> createPOI("energymeter", assembleStates(WoodenDevices.CIRCUIT_TABLE.get()))
 		);
 		public static final RegistryObject<PoiType> POI_BANNER = POINTS_OF_INTEREST.register(
 				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.SHADER_BANNER.get()))
