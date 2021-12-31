@@ -1,4 +1,4 @@
-##### Version 1.18.1-7.1.0-pre
+##### Version 1.18.1-7.1.0-145
 - The "Chemical Engineering" update! (BluSunrize)
     - Refineries now use a catalyst, Biodiesel uses Nitrate Dust
     - Add a manual entry for Nitrate and Sulfur to explain where to get them and what they are for
