@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.tool.IUpgrade;
 import blusunrize.immersiveengineering.api.tool.IUpgradeableTool;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableSet;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -40,7 +41,7 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 	@Override
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
-		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+getRegistryName().getPath()));
+		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+getRegistryName().getPath()).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Override
