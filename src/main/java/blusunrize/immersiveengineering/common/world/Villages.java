@@ -181,7 +181,8 @@ public class Villages
 		public static final RegistryObject<PoiType> POI_ANVIL = POINTS_OF_INTEREST.register(
 				"anvil", () -> createPOI("anvil", assembleStates(Blocks.ANVIL))
 		);
-		public static final RegistryObject<PoiType> POI_ENERGYMETER = POINTS_OF_INTEREST.register(
+		// TODO, 1.19: Change the name on this
+		public static final RegistryObject<PoiType> POI_CIRCUITTABLE = POINTS_OF_INTEREST.register(
 				"energymeter", () -> createPOI("energymeter", assembleStates(WoodenDevices.CIRCUIT_TABLE.get()))
 		);
 		public static final RegistryObject<PoiType> POI_BANNER = POINTS_OF_INTEREST.register(
@@ -198,7 +199,7 @@ public class Villages
 				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_ANVIL.get(), SoundEvents.VILLAGER_WORK_TOOLSMITH)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
-				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_ENERGYMETER.get(), IESounds.spark)
+				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_CIRCUITTABLE.get(), IESounds.spark)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_OUTFITTER = PROFESSIONS.register(
 				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_BANNER.get(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER)
