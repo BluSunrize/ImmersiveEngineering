@@ -6,6 +6,7 @@
 - Add a new API interface that allows pressurized fluid in- and output above normal levels (BluSunrize)
 - Change Electrician villager workstation to be the Circuit Table (BluSunrize)
 - Update JEI handlers for Coke Oven, Blast Furnace and Alloy Smelter to have some animated doodads (BluSunrize)
+- Update manual entry for fluid pipes to document that they can be dyed (BluSunrize)
 - Fix Lightning Rod crashing when built (BluSunrize)
 - Fix texture glitches on Refinery model (BluSunrize)
 - Fix pipes and pumps transferring fluids much slower than planned, because pressurization didn't work (BluSunrize)
