@@ -594,6 +594,16 @@ public class Recipes extends RecipeProvider
 						.setTime(100)
 						.setEnergy(25600)
 						.build(out, toRL("arcfurnace/raw_ore_"+metal.getName()));
+
+				// Arcfurnace raw ore block
+				arcBuilder = ArcFurnaceRecipeBuilder.builder(metal.getIngot(), 13);
+				arcBuilder.addSecondary(metal.getIngot(), 0.5F);
+				if(!metal.isNative())
+					arcBuilder.addCondition(getTagCondition(metal.getIngot())).addCondition(getTagCondition(metal.getRawBlock()));
+				arcBuilder.addIngredient("input", metal.getRawBlock())
+						.setTime(9*100)
+						.setEnergy(9*25600)
+						.build(out, toRL("arcfurnace/raw_block_"+metal.getName()));
 			}
 
 			// Crush ingot

@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "count": 13,
+      "base_ingredient": {
+        "tag": "forge:ingots/nickel"
+      }
+    }
+  ],
+  "additives": [],
+  "secondaries": [
+    {
+      "chance": 0.5,
+      "output": {
+        "tag": "forge:ingots/nickel"
+      }
+    }
+  ],
+  "input": {
+    "tag": "forge:raw_blocks/nickel"
+  },
+  "time": 900,
+  "energy": 230400
+}

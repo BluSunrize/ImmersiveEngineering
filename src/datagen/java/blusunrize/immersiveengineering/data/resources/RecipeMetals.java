@@ -89,6 +89,7 @@ public enum RecipeMetals
 	private final Named<Item> dust;
 	private final Named<Item> ore;
 	private final Named<Item> rawOre;
+	private final Named<Item> rawBlock;
 	private final AlloyProperties alloyProperties;
 	private final SecondaryOutput[] secondaryOutputs;
 
@@ -100,6 +101,7 @@ public enum RecipeMetals
 		this.isNative = isNative;
 		this.ore = !hasOre?null: createItemWrapper(IETags.getOre(name));
 		this.rawOre = !hasOre?null: createItemWrapper(IETags.getRawOre(name));
+		this.rawBlock = !hasOre?null: createItemWrapper(IETags.getRawBlock(name));
 		this.alloyProperties = alloyProperties;
 		this.secondaryOutputs = secondaryOutputs;
 	}
@@ -144,6 +146,11 @@ public enum RecipeMetals
 	public Named<Item> getRawOre()
 	{
 		return rawOre;
+	}
+
+	public Named<Item> getRawBlock()
+	{
+		return rawBlock;
 	}
 
 	public AlloyProperties getAlloyProperties()

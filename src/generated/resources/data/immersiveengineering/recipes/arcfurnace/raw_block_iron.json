@@ -1,0 +1,25 @@
+{
+  "type": "immersiveengineering:arc_furnace",
+  "results": [
+    {
+      "count": 13,
+      "base_ingredient": {
+        "tag": "forge:ingots/iron"
+      }
+    }
+  ],
+  "additives": [],
+  "secondaries": [
+    {
+      "chance": 0.5,
+      "output": {
+        "tag": "forge:ingots/iron"
+      }
+    }
+  ],
+  "input": {
+    "tag": "forge:raw_blocks/iron"
+  },
+  "time": 900,
+  "energy": 230400
+}
