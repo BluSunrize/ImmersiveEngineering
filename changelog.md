@@ -13,6 +13,7 @@
 - Fix manual entries referring to "Engineer's Hammer" when "Engineer's Screwdriver" is the correct tool (Vapaman)
 - Fix banner patterns crashing in the loom (BluSunrize)
 - Fix sawmill not updating its visuals while processing (BluSunrize)
+- Fix accumulator backpack not being equippable with rightclick (BluSunrize)
 
 ##### Version 1.18.1-7.0.1-144
 - Overhaul liquid concrete (BluSunrize)

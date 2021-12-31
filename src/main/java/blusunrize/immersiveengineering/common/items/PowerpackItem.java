@@ -13,11 +13,16 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.util.ItemGetterList;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.SimpleCapProvider;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -57,7 +62,7 @@ public class PowerpackItem extends IEBaseItem
 	{
 		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
 		String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
-		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
+		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Nullable
@@ -65,6 +70,20 @@ public class PowerpackItem extends IEBaseItem
 	public EquipmentSlot getEquipmentSlot(ItemStack stack)
 	{
 		return EquipmentSlot.CHEST;
+	}
+
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	{
+		ItemStack heldItem = player.getItemInHand(hand);
+		EquipmentSlot slot = Mob.getEquipmentSlotForItem(heldItem);
+		if(!player.getItemBySlot(slot).isEmpty())
+			return InteractionResultHolder.fail(heldItem);
+		player.setItemSlot(slot, heldItem.copy());
+		if(!world.isClientSide())
+			player.awardStat(Stats.ITEM_USED.get(this));
+		heldItem.setCount(0);
+		return InteractionResultHolder.sidedSuccess(heldItem, world.isClientSide());
 	}
 
 	@Override
