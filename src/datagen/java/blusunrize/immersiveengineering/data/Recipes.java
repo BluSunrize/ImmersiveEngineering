@@ -883,6 +883,10 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.CROPS_POTATO)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/potato"));
+		FermenterRecipeBuilder.builder(IEContent.fluidEthanol, 40)
+				.addInput(Tags.Items.CROPS_BEETROOT)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/beetroot"));
 		/* REFINERY */
 		RefineryRecipeBuilder.builder(IEContent.fluidBiodiesel, 16)
 				.addInput(IETags.fluidPlantoil, 8)

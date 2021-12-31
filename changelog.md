@@ -1,5 +1,6 @@
 ##### Version 1.16.5-5.0.8-pre
 - Add a new API interface that allows pressurized fluid in- and output above normal levels (BluSunrize)
+- Add fermentation recipe to turn beetroots into ethanol (BluSunrize)
 - Update JEI handlers for Coke Oven, Blast Furnace and Alloy Smelter to have some animated doodads (BluSunrize)
 - Update manual entry for fluid pipes to document that they can be dyed (BluSunrize)
 - Fix flipped bounding boxes for the Lightning Rod (BluSunrize)
