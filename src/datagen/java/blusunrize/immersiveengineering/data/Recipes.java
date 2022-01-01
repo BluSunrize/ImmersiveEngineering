@@ -984,7 +984,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("mixer/concrete"));
 		MixerRecipeBuilder.builder(IEFluids.HERBICIDE.getStill(), half_bucket)
 				.addFluidTag(IETags.fluidEthanol, half_bucket)
-				.addInput(IETags.saltpeterDust)
+				.addInput(IETags.sulfurDust)
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).dust)
 				.setEnergy(3200)
 				.build(out, toRL("mixer/herbicide"));

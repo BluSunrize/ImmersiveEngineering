@@ -2,7 +2,7 @@
   "type": "immersiveengineering:mixer",
   "inputs": [
     {
-      "tag": "forge:dusts/saltpeter"
+      "tag": "forge:dusts/sulfur"
     },
     {
       "tag": "forge:dusts/copper"

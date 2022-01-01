@@ -1,3 +1,6 @@
+##### Version 1.18.1-7.1.1-pre
+- Change herbicide recipe to use sulfur instead of nitrate (BluSunrize)
+
 ##### Version 1.18.1-7.1.0-145
 - The "Chemical Engineering" update! (BluSunrize)
     - Refineries now use a catalyst, Biodiesel uses Nitrate Dust
