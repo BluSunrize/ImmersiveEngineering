@@ -39,7 +39,7 @@ public class WireCollisions
 {
 	public static void handleEntityCollision(BlockPos p, Entity e)
 	{
-		if(!e.level.isClientSide&&IEServerConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity&&
+		if(!e.level.isClientSide&&IEServerConfig.WIRES.enableWireDamage.get()&&e instanceof LivingEntity living&&
 				!e.isInvulnerableTo(IEDamageSources.wireShock)&&
 				!(e instanceof Player player&&player.getAbilities().invulnerable))
 		{
@@ -48,15 +48,15 @@ public class WireCollisions
 			Collection<WireCollisionData.CollisionInfo> atBlock = wireData.getCollisionInfo(p);
 			for(CollisionInfo info : atBlock)
 			{
-				LocalWireNetwork local = info.getLocalNet();
+				LocalWireNetwork local = info.getLocalNet(global);
 				for(LocalNetworkHandler h : local.getAllHandlers())
-					if(h instanceof ICollisionHandler)
-						((ICollisionHandler)h).onCollided((LivingEntity)e, p, info);
+					if(h instanceof ICollisionHandler collisionHandler)
+						collisionHandler.onCollided(living, p, info);
 			}
 		}
 	}
 
-	public static void notifyBlockUpdate(@Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull BlockState oldState, @Nonnull BlockState newState, int flags)
+	public static void notifyBlockUpdate(@Nonnull Level worldIn, @Nonnull BlockPos pos, @Nonnull BlockState newState, int flags)
 	{
 		if(IEServerConfig.WIRES.blocksBreakWires.get()&&!worldIn.isClientSide&&(flags&1)!=0&&!newState.getCollisionShape(worldIn, pos).isEmpty())
 		{
@@ -66,16 +66,16 @@ public class WireCollisions
 			{
 				Map<Connection, BlockPos> toBreak = new HashMap<>();
 				for(CollisionInfo info : data)
-					if(info.isInBlock)
+					if(info.isInBlock())
 					{
-						Vec3 vecA = info.conn.getPoint(0, info.conn.getEndA());
-						if(Utils.isVecInBlock(vecA, pos, info.conn.getEndA().getPosition(), 1e-3))
+						Vec3 vecA = info.connection().getPoint(0, info.connection().getEndA());
+						if(Utils.isVecInBlock(vecA, pos, info.connection().getEndA().getPosition(), 1e-3))
 							continue;
-						Vec3 vecB = info.conn.getPoint(0, info.conn.getEndB());
-						if(Utils.isVecInBlock(vecB, pos, info.conn.getEndB().getPosition(), 1e-3))
+						Vec3 vecB = info.connection().getPoint(0, info.connection().getEndB());
+						if(Utils.isVecInBlock(vecB, pos, info.connection().getEndB().getPosition(), 1e-3))
 							continue;
 						BlockPos dropPos = pos;
-						if(WireUtils.preventsConnection(worldIn, pos, newState, info.intersectA, info.intersectB))
+						if(WireUtils.preventsConnection(worldIn, pos, newState, info.intersectA(), info.intersectB()))
 						{
 							for(Direction f : DirectionUtils.VALUES)
 								if(worldIn.isEmptyBlock(pos.relative(f)))
@@ -83,7 +83,7 @@ public class WireCollisions
 									dropPos = dropPos.relative(f);
 									break;
 								}
-							toBreak.put(info.conn, dropPos);
+							toBreak.put(info.connection(), dropPos);
 						}
 					}
 				for(Entry<Connection, BlockPos> b : toBreak.entrySet())

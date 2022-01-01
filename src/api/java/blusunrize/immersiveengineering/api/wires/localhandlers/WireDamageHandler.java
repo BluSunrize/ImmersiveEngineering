@@ -50,7 +50,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 	@Override
 	public void onCollided(LivingEntity e, BlockPos pos, CollisionInfo info)
 	{
-		WireType wType = info.conn.type;
+		WireType wType = info.connection().type;
 		if(!(wType instanceof IShockingWire shockWire))
 			return;
 		EnergyTransferHandler energyHandler = getEnergyHandler();
@@ -59,10 +59,10 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 		double extra = shockWire.getDamageRadius();
 		AABB eAabb = e.getBoundingBox();
 		AABB includingExtra = eAabb.inflate(extra).move(-pos.getX(), -pos.getY(), -pos.getZ());
-		boolean collides = includingExtra.contains(info.intersectA)||includingExtra.contains(info.intersectB);
-		if(!collides&&includingExtra.clip(info.intersectA, info.intersectB).isEmpty())
+		boolean collides = includingExtra.contains(info.intersectA())||includingExtra.contains(info.intersectB());
+		if(!collides&&includingExtra.clip(info.intersectA(), info.intersectB()).isEmpty())
 			return;
-		final ConnectionPoint target = info.conn.getEndA();//TODO less random choice?
+		final ConnectionPoint target = info.connection().getEndA();//TODO less random choice?
 		final List<SourceData> available = getAvailableEnergy(energyHandler, target);
 		if(available.isEmpty())
 			return;
@@ -71,7 +71,7 @@ public class WireDamageHandler extends LocalNetworkHandler implements ICollision
 			totalAvailable += source.amountAvailable*(1-source.pathToSource.loss);
 		totalAvailable = Math.min(totalAvailable, shockWire.getTransferRate());
 
-		final float maxPossibleDamage = shockWire.getDamageAmount(e, info.conn, totalAvailable);
+		final float maxPossibleDamage = shockWire.getDamageAmount(e, info.connection(), totalAvailable);
 		if(maxPossibleDamage <= 0)
 			return;
 		IElectricDamageSource dmg = GET_WIRE_DAMAGE.getValue()

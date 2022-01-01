@@ -24,17 +24,17 @@ public class WireCollisionData
 {
 	private final Map<BlockPos, List<CollisionInfo>> blockToWires = new Object2ObjectOpenHashMap<>();
 	private final GlobalWireNetwork net;
-	private final boolean isRemote;
+	private final boolean isClient;
 
-	WireCollisionData(GlobalWireNetwork net, boolean isRemote)
+	WireCollisionData(GlobalWireNetwork net, boolean isClient)
 	{
 		this.net = net;
-		this.isRemote = isRemote;
+		this.isClient = isClient;
 	}
 
 	public void addConnection(Connection conn)
 	{
-		if(!isRemote&&!conn.isInternal())
+		if(!isClient&&!conn.isInternal())
 		{
 			WireLogger.logger.info("Adding block data for {}", conn);
 			if(!conn.blockDataGenerated)
@@ -54,7 +54,7 @@ public class WireCollisionData
 	public void removeConnection(Connection conn)
 	{
 		WireLogger.logger.info("Removing block data for {}", conn);
-		if(!isRemote&&conn.blockDataGenerated)
+		if(!isClient&&conn.blockDataGenerated)
 		{
 			WireLogger.logger.info("Raytracing for removal of {}", conn);
 			WireUtils.raytraceAlongCatenary(conn, p -> remove(p.block(), conn), p -> remove(p.block(), conn));
@@ -65,7 +65,7 @@ public class WireCollisionData
 	private void remove(BlockPos pos, Connection toRemove)
 	{
 		List<CollisionInfo> existing = blockToWires.computeIfAbsent(pos, $ -> new ArrayList<>());
-		existing.removeIf(i -> i.conn==toRemove);
+		existing.removeIf(i -> i.connection==toRemove);
 		if(existing.isEmpty())
 			blockToWires.remove(pos);
 	}
@@ -86,52 +86,13 @@ public class WireCollisionData
 		return ret;
 	}
 
-	public class CollisionInfo
+	public record CollisionInfo(
+			@Nonnull Vec3 intersectA, @Nonnull Vec3 intersectB, @Nonnull Connection connection, boolean isInBlock
+	)
 	{
-		@Nonnull
-		public final Vec3 intersectA;
-		@Nonnull
-		public final Vec3 intersectB;
-		@Nonnull
-		public final Connection conn;
-		public final boolean isInBlock;
-
-		public CollisionInfo(@Nonnull Vec3 intersectA, @Nonnull Vec3 intersectB, @Nonnull Connection conn,
-							 boolean isInBlock)
+		public LocalWireNetwork getLocalNet(GlobalWireNetwork net)
 		{
-			this.intersectA = intersectA;
-			this.intersectB = intersectB;
-			this.conn = conn;
-			this.isInBlock = isInBlock;
-		}
-
-		public LocalWireNetwork getLocalNet()
-		{
-			return conn.getContainingNet(net);
-		}
-
-		@Override
-		public boolean equals(Object o)
-		{
-			if(this==o) return true;
-			if(o==null||getClass()!=o.getClass()) return false;
-
-			CollisionInfo that = (CollisionInfo)o;
-
-			if(isInBlock!=that.isInBlock) return false;
-			if(!intersectA.equals(that.intersectA)) return false;
-			if(!intersectB.equals(that.intersectB)) return false;
-			return conn.equals(that.conn);
-		}
-
-		@Override
-		public int hashCode()
-		{
-			int result = intersectA.hashCode();
-			result = 31*result+intersectB.hashCode();
-			result = 31*result+conn.hashCode();
-			result = 31*result+(isInBlock?1: 0);
-			return result;
+			return connection.getContainingNet(net);
 		}
 	}
 }

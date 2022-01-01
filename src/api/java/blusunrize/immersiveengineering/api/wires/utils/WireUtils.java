@@ -55,14 +55,14 @@ public class WireUtils
 			Collection<CollisionInfo> infoAtPos = collisionData.getCollisionInfo(pos);
 			for(CollisionInfo wireInfo : infoAtPos)
 			{
-				Connection c = wireInfo.conn;
+				Connection c = wireInfo.connection();
 				if(!c.equals(ignored))
 				{
 					Vec3 startRelative = start.add(-pos.getX(), -pos.getY(), -pos.getZ());
-					Vec3 across = wireInfo.intersectB.subtract(wireInfo.intersectA);
-					double t = getCoeffForMinDistance(startRelative, wireInfo.intersectA, across);
+					Vec3 across = wireInfo.intersectB().subtract(wireInfo.intersectA());
+					double t = getCoeffForMinDistance(startRelative, wireInfo.intersectA(), across);
 					t = Mth.clamp(t, 0, 1);
-					Vec3 closest = wireInfo.intersectA.add(t*across.x, t*across.y, t*across.z);
+					Vec3 closest = wireInfo.intersectA().add(t*across.x, t*across.y, t*across.z);
 					double distSq = closest.distanceToSqr(startRelative);
 					if(distSq < minDistSq.doubleValue())
 					{
