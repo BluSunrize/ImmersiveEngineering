@@ -22,6 +22,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -195,6 +196,33 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			else
 				buzzsaw.getOrCreateTag().remove("Enchantments");
 		}
+	}
+
+	@Nullable
+	@Override
+	public CompoundTag getShareTag(ItemStack stack)
+	{
+		CompoundTag ret = super.getShareTag(stack);
+		for(int i = 1; i <= 2; i++)
+		{
+			ItemStack spare = getSawblade(stack, i);
+			if(!spare.isEmpty())
+				ret.put("spare"+i, spare.save(new CompoundTag()));
+		}
+		return ret;
+	}
+
+	@Override
+	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
+	{
+		if(nbt!=null)
+			for(int i = 1; i <= 2; i++)
+				if(nbt.contains("spare"+i))
+				{
+					setSawblade(stack, ItemStack.of(nbt.getCompound("spare"+i)), i);
+					nbt.remove("spare"+i);
+				}
+		super.readShareTag(stack, nbt);
 	}
 
 	@Override
@@ -498,7 +526,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 					{
 						block.destroy(world, pos, state);
 						block.playerDestroy(world, player, pos, state, te, stack);
-						if (world instanceof ServerLevel)
+						if(world instanceof ServerLevel)
 							block.popExperience((ServerLevel)world, pos, xpDropEvent);
 					}
 				}
