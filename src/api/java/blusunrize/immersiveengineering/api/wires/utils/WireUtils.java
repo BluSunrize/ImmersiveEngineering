@@ -180,7 +180,7 @@ public class WireUtils
 
 	public static void forEachRenderPoint(Connection conn, RenderPointConsumer out)
 	{
-		BlockPos origin = conn.getEndA().getPosition();
+		BlockPos origin = conn.getEndA().position();
 		for(int i = 0; i <= Connection.RENDER_POINTS_PER_WIRE; ++i)
 		{
 			Vec3 relativePos = conn.getCatenaryData().getRenderPoint(i);

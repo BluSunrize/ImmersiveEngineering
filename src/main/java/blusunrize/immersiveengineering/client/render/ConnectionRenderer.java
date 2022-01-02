@@ -163,7 +163,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 
 	private static int getLight(Connection connection, Vec3i point, BlockAndTintGetter level)
 	{
-		return LevelRenderer.getLightColor(level, connection.getEndA().getPosition().offset(point));
+		return LevelRenderer.getLightColor(level, connection.getEndA().position().offset(point));
 	}
 
 	//TODO move somewhere else

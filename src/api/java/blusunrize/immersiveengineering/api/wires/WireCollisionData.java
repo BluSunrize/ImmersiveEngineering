@@ -47,7 +47,6 @@ public class WireCollisionData
 		if(conn.isInternal()||conn.blockDataGenerated)
 			return;
 		WireLogger.logger.info("Adding block data for {}", conn);
-		conn.generateCatenaryData();
 		if(isClient)
 			forEachSection(conn, (sectionPos, segments) -> {
 				synchronized(sectionsToWires)
