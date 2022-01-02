@@ -2,47 +2,38 @@ package blusunrize.immersiveengineering.data.blockstates;
 
 import blusunrize.immersiveengineering.api.IEProperties;
 import com.google.common.base.Preconditions;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.Property;
-import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.ConfiguredModel;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.data.blockstates.BlockStates.forEachState;
 
 public class ConnectorBlockBuilder
 {
-	private final BlockModelProvider models;
 	private final Block block;
 	private final VariantBlockStateBuilder outputBuilder;
-	private final BiConsumer<BlockModelBuilder, ModelFile> copyParticles;
 	private Function<PartialBlockstate, ModelFile> toModel;
 	private final List<Property<?>> additional = new ArrayList<>();
-	private RenderType[] layers;
 	private Property<Direction> facingProp;
 	private int xForHorizontal;
 
-	private ConnectorBlockBuilder(
-			BlockModelProvider models, VariantBlockStateBuilder outputBuilder, BiConsumer<BlockModelBuilder, ModelFile> copyParticles
-	)
+	private ConnectorBlockBuilder(VariantBlockStateBuilder outputBuilder)
 	{
-		this.models = models;
 		this.block = outputBuilder.getOwner();
 		this.outputBuilder = outputBuilder;
-		this.copyParticles = copyParticles;
 	}
 
-	public static ConnectorBlockBuilder builder(
-			BlockModelProvider models, VariantBlockStateBuilder outputBuilder, BiConsumer<BlockModelBuilder, ModelFile> copyParticles
-	)
+	public static ConnectorBlockBuilder builder(VariantBlockStateBuilder outputBuilder)
 	{
-		return new ConnectorBlockBuilder(models, outputBuilder, copyParticles);
+		return new ConnectorBlockBuilder(outputBuilder);
 	}
 
 	public ConnectorBlockBuilder addAdditional(Property<?> prop)
@@ -56,13 +47,6 @@ public class ConnectorBlockBuilder
 	{
 		Preconditions.checkNotNull(toModel);
 		this.toModel = toModel;
-		return this;
-	}
-
-	public ConnectorBlockBuilder layers(RenderType... layers)
-	{
-		Preconditions.checkNotNull(layers);
-		this.layers = layers;
 		return this;
 	}
 
