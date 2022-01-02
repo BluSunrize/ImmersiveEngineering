@@ -33,6 +33,7 @@ import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks
 import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
+import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
 import blusunrize.immersiveengineering.client.render.conveyor.SplitConveyorRender;
@@ -155,6 +156,7 @@ public class ClientProxy extends CommonProxy
 			MinecraftForge.EVENT_BUS.register(handler);
 			ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
 			reloadableManager.registerReloadListener(handler);
+			reloadableManager.registerReloadListener(new ConnectionRenderer());
 
 			IEModelLayers.registerDefinitions();
 			MinecraftForgeClient.registerTooltipComponentFactory(RevolverServerTooltip.class, RevolverClientTooltip::new);
@@ -326,6 +328,7 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
 		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
 		IEApi.renderCacheClearers.add(FeedthroughModel.CACHE::invalidateAll);
+		IEApi.renderCacheClearers.add(ConnectionRenderer::resetCache);
 	}
 
 	@Override

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
@@ -16,7 +17,11 @@ import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.WireRange;
 import blusunrize.immersiveengineering.mixin.accessors.client.CompiledChunkAccess;
 import blusunrize.immersiveengineering.mixin.accessors.client.RenderChunkAccess;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import malte0811.modelsplitter.model.UVCoords;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
@@ -30,12 +35,17 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.phys.Vec3;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /*
 TODO:
@@ -43,11 +53,31 @@ TODO:
  - Remove wires from section data structure
  - Sync wires early in case a "middle" chunk is synced first
  - Special treatment vertical wires
- - Cache data needed to render a segment, to make connection rendering near alloc-free
  - Write a comment for Forge about threading, maybe
  */
-public class ConnectionRenderer
+public class ConnectionRenderer implements ResourceManagerReloadListener
 {
+	private static final LoadingCache<SegmentKey, RenderedSegment> SEGMENT_CACHE = CacheBuilder.newBuilder()
+			.expireAfterAccess(120, TimeUnit.SECONDS)
+			.build(CacheLoader.from(ConnectionRenderer::renderSegment));
+	private static final ResettableLazy<TextureAtlasSprite> WIRE_TEXTURE = new ResettableLazy<>(
+			() -> Minecraft.getInstance().getModelManager()
+					.getAtlas(InventoryMenu.BLOCK_ATLAS)
+					.getSprite(ImmersiveEngineering.rl("block/wire"))
+	);
+
+	@Override
+	public void onResourceManagerReload(@Nonnull ResourceManager pResourceManager)
+	{
+		WIRE_TEXTURE.reset();
+		resetCache();
+	}
+
+	public static void resetCache()
+	{
+		SEGMENT_CACHE.invalidateAll();
+	}
+
 	public static void renderConnectionsInSection(
 			CompiledChunk compiled, ChunkBufferBuilderPack buffers,
 			@Nullable RenderChunkRegion region, RenderChunk renderChunk
@@ -63,56 +93,75 @@ public class ConnectionRenderer
 			return;
 		RenderType renderType = RenderType.solid();
 		BufferBuilder builder = buffers.builder(renderType);
-		var compiledAccess = (CompiledChunkAccess)compiled;
+		CompiledChunkAccess compiledAccess = (CompiledChunkAccess)compiled;
 		if(compiledAccess.getHasLayer().add(renderType))
-		{
 			((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
-		}
-		for(var connection : connectionParts)
+		for(WireRange connection : connectionParts)
 		{
 			ConnectionPoint connectionOrigin = connection.connection().getEndA();
-			renderConnection(builder, connection, connectionOrigin.getPosition().subtract(chunkOrigin), region);
+			renderConnection(
+					builder, connection,
+					connectionOrigin.getX()-chunkOrigin.getX(),
+					connectionOrigin.getY()-chunkOrigin.getY(),
+					connectionOrigin.getZ()-chunkOrigin.getZ(),
+					region
+			);
 		}
 		compiledAccess.setIsCompletelyEmpty(false);
 		compiledAccess.getHasBlocks().add(renderType);
 	}
 
-	public static void renderConnection(BufferBuilder out, WireRange toRender, Vec3i offset, BlockAndTintGetter level)
+	public static void renderConnection(
+			VertexConsumer out, WireRange toRender, int offX, int offY, int offZ, BlockAndTintGetter level
+	)
 	{
-		CatenaryData catenaryData = toRender.connection().getCatenaryData();
-		Vec3 lastPoint = catenaryData.getRenderPoint(toRender.firstPointToRender());
-		int lastLight = getLight(toRender.connection(), lastPoint, level);
+		Connection connection = toRender.connection();
+		int color = connection.type.getColour(connection);
+		double radius = connection.type.getRenderDiameter()/2;
+		int lastLight = 0;
 		for(int startPoint = toRender.firstPointToRender(); startPoint < toRender.lastPointToRender(); ++startPoint)
 		{
-			Vec3 nextPoint = catenaryData.getRenderPoint(startPoint+1);
-			int nextLight = getLight(toRender.connection(), nextPoint, level);
-			renderSegment(toRender.connection(), lastLight, nextLight, lastPoint, nextPoint, out, offset);
-			lastPoint = nextPoint;
+			RenderedSegment renderedSegment = SEGMENT_CACHE.getUnchecked(
+					new SegmentKey(radius, color, connection.getCatenaryData(), startPoint)
+			);
+			if(startPoint==toRender.firstPointToRender())
+			{
+				lastLight = getLight(connection, renderedSegment.offsetStart, level);
+			}
+			int nextLight = getLight(connection, renderedSegment.offsetEnd, level);
+			renderedSegment.render(lastLight, nextLight, OverlayTexture.NO_OVERLAY, offX, offY, offZ, out);
 			lastLight = nextLight;
 		}
 	}
 
-	private static void renderSegment(
-			Connection connection,
-			int lightStart, int lightEnd,
-			Vec3 start, Vec3 end,
-			BufferBuilder out, Vec3i offset
+	public static void renderConnection(
+			VertexConsumer out,
+			CatenaryData catenaryData, double radius, int color,
+			int light, int overlay
 	)
 	{
-		CatenaryData catenaryData = connection.getCatenaryData();
-		double radius = connection.type.getRenderDiameter()/2;
-		int color = connection.type.getColour(connection);
-		Vec3 horizontalUnscaledNormal = new Vec3(catenaryData.delta().z, 0, -catenaryData.delta().x);
-		Vec3 horNormal = horizontalUnscaledNormal.scale(radius/catenaryData.horLength());
-		renderBidirectionalQuad(out, start, end, horNormal, color, lightStart, lightEnd, offset);
-		//TODO radius vector based on connection slope!
-		renderBidirectionalQuad(out, start, end, new Vec3(0, radius, 0), color, lightStart, lightEnd, offset);
+		for(int i = 0; i < Connection.RENDER_POINTS_PER_WIRE; i++)
+			SEGMENT_CACHE.getUnchecked(new SegmentKey(radius, color, catenaryData, i))
+					.render(light, light, overlay, 0, 0, 0, out);
 	}
 
-	private static int getLight(Connection connection, Vec3 point, BlockAndTintGetter level)
+	private static RenderedSegment renderSegment(SegmentKey key)
 	{
-		BlockPos posToCheck = connection.getEndA().getPosition().offset(point.x, point.y, point.z);
-		return LevelRenderer.getLightColor(level, posToCheck);
+		CatenaryData catenaryData = key.catenaryShape();
+		Vec3 horizontalUnscaledNormal = new Vec3(catenaryData.delta().z, 0, -catenaryData.delta().x);
+		Vec3 horNormal = horizontalUnscaledNormal.scale(key.radius()/catenaryData.horLength());
+		List<Vertex> vertices = new ArrayList<>(4*4);
+		Vec3 start = key.catenaryShape().getRenderPoint(key.startIndex());
+		Vec3 end = key.catenaryShape().getRenderPoint(key.startIndex()+1);
+		renderBidirectionalQuad(vertices, start, end, horNormal, key.color());
+		//TODO radius vector based on connection slope!
+		renderBidirectionalQuad(vertices, start, end, new Vec3(0, key.radius(), 0), key.color());
+		return new RenderedSegment(vertices, new Vec3i(start.x, start.y, start.z), new Vec3i(end.x, end.y, end.z));
+	}
+
+	private static int getLight(Connection connection, Vec3i point, BlockAndTintGetter level)
+	{
+		return LevelRenderer.getLightColor(level, connection.getEndA().getPosition().offset(point));
 	}
 
 	//TODO move somewhere else
@@ -121,41 +170,60 @@ public class ConnectionRenderer
 		return (value >> lowestBit)&255;
 	}
 
-	private static void renderBidirectionalQuad(
-			BufferBuilder out, Vec3 start, Vec3 end, Vec3 radius, int color, int lightStart, int lightEnd, Vec3i offset
-	)
+	private static void renderBidirectionalQuad(List<Vertex> out, Vec3 start, Vec3 end, Vec3 radius, int color)
 	{
-		//TODO cache FFS!
-		TextureAtlasSprite texture = Minecraft.getInstance().getModelManager()
-				.getAtlas(InventoryMenu.BLOCK_ATLAS)
-				.getSprite(ImmersiveEngineering.rl("block/wire"));
+		TextureAtlasSprite texture = WIRE_TEXTURE.get();
 		UVCoords[] uvs = {
 				new UVCoords(texture.getU0(), texture.getV0()),
 				new UVCoords(texture.getU1(), texture.getV0()),
 				new UVCoords(texture.getU1(), texture.getV1()),
 				new UVCoords(texture.getU0(), texture.getV1()),
 		};
-
-		Vec3[] vertices = {
-				//TODO reduce allocs? Or cache "something"?
-				start.add(radius), end.add(radius), end.subtract(radius), start.subtract(radius),
-		};
+		Vec3[] vertices = {start.add(radius), end.add(radius), end.subtract(radius), start.subtract(radius),};
 		for(int i = 0; i < vertices.length; i++)
-			vertex(out, vertices[i], uvs[i], color, i==0||i==3?lightStart: lightEnd, offset);
+			out.add(vertex(vertices[i], uvs[i], color, i==0||i==3));
 		for(int i = vertices.length-1; i >= 0; i--)
-			vertex(out, vertices[i], uvs[i], color, i==0||i==3?lightStart: lightEnd, offset);
+			out.add(vertex(vertices[i], uvs[i], color, i==0||i==3));
 	}
 
-	private static void vertex(BufferBuilder out, Vec3 point, UVCoords uv, int color, int light, Vec3i offset)
+	private static Vertex vertex(Vec3 point, UVCoords uv, int color, boolean firstLight)
 	{
-		out.vertex(
-				(float)(point.x+offset.getX()), (float)(point.y+offset.getY()), (float)(point.z+offset.getZ()),
-				getByte(color, 0)/255f, getByte(color, 8)/255f, getByte(color, 16)/255f, 1,
+		return new Vertex(
+				(float)point.x, (float)point.y, (float)point.z,
 				(float)uv.u(), (float)uv.v(),
-				OverlayTexture.NO_OVERLAY,
-				light,
+				getByte(color, 0)/255f, getByte(color, 8)/255f, getByte(color, 16)/255f,
 				//TODO
-				0, 1, 0
+				0, 1, 0,
+				firstLight
 		);
+	}
+
+	private record SegmentKey(double radius, int color, CatenaryData catenaryShape, int startIndex)
+	{
+	}
+
+	private record Vertex(
+			float posX, float posY, float posZ,
+			float texU, float texV,
+			float red, float green, float blue,
+			float normalX, float normalY, float normalZ,
+			boolean lightForStart
+	)
+	{
+	}
+
+	private record RenderedSegment(List<Vertex> vertices, Vec3i offsetStart, Vec3i offsetEnd)
+	{
+		public void render(int lightStart, int lightEnd, int overlay, int offX, int offY, int offZ, VertexConsumer out)
+		{
+			for(Vertex v : vertices)
+				out.vertex(
+						offX+v.posX, offY+v.posY, offZ+v.posZ,
+						v.red, v.green, v.blue, 1,
+						v.texU, v.texV,
+						overlay, v.lightForStart?lightStart: lightEnd,
+						v.normalX, v.normalY, v.normalZ
+				);
+		}
 	}
 }
