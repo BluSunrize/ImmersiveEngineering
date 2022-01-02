@@ -119,42 +119,6 @@ public class WireUtils
 		)));
 	}
 
-	public static Vec3[] getConnectionCatenary(Vec3 start, Vec3 end, double slack)
-	{
-		final int vertices = 17;
-		double dx = (end.x)-(start.x);
-		double dy = (end.y)-(start.y);
-		double dz = (end.z)-(start.z);
-		double dw = Math.sqrt(dx*dx+dz*dz);
-		double k = Math.sqrt(dx*dx+dy*dy+dz*dz)*slack;
-		double l = 0;
-		int limiter = 0;
-		while(limiter < 300)
-		{
-			limiter++;
-			l += 0.01;
-			if(Math.sinh(l)/l >= Math.sqrt(k*k-dy*dy)/dw)
-				break;
-		}
-		double a = dw/2/l;
-		double offsetX = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
-		double offsetY = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
-		Vec3[] vex = new Vec3[vertices+1];
-
-		vex[0] = new Vec3(start.x, start.y, start.z);
-		for(int i = 1; i < vertices; i++)
-		{
-			float posRelative = i/(float)vertices;
-			double x = 0+dx*posRelative;
-			double z = 0+dz*posRelative;
-			double y = a*Math.cosh((dw*posRelative-offsetX)/a)+offsetY;
-			vex[i] = new Vec3(start.x+x, start.y+y, start.z+z);
-		}
-		vex[vertices] = new Vec3(end.x, end.y, end.z);
-
-		return vex;
-	}
-
 	public static Connection getTargetConnection(Level world, Player player, Connection ignored, double maxDistance)
 	{
 		Vec3 look = player.getLookAngle();

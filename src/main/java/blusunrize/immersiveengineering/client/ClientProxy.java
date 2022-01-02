@@ -325,8 +325,7 @@ public class ClientProxy extends CommonProxy
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
 		IEApi.renderCacheClearers.add(BucketWheelRenderer::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample::clearCache);
-		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
-		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
+		IEApi.renderCacheClearers.add(ModelPowerpack.CATENARY_DATA_CACHE::invalidateAll);
 		IEApi.renderCacheClearers.add(FeedthroughModel.CACHE::invalidateAll);
 		IEApi.renderCacheClearers.add(ConnectionRenderer::resetCache);
 	}
