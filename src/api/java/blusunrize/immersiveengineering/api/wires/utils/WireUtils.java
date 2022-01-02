@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
@@ -177,7 +178,24 @@ public class WireUtils
 		return globalNet.getLocalNet(here).getConnector(here).getConnectionOffset(here, other, type);
 	}
 
-	public static record BlockIntersection(BlockPos block, Vec3 entersAt, Vec3 leavesAt)
+	public static void forEachRenderPoint(Connection conn, RenderPointConsumer out)
 	{
+		BlockPos origin = conn.getEndA().getPosition();
+		for(int i = 0; i <= Connection.RENDER_POINTS_PER_WIRE; ++i)
+		{
+			Vec3 relativePos = conn.getCatenaryData().getRenderPoint(i);
+			BlockPos containingBlock = origin.offset(relativePos.x, relativePos.y, relativePos.z);
+			SectionPos section = SectionPos.of(containingBlock);
+			out.accept(i, relativePos, section);
+		}
+	}
+
+	public record BlockIntersection(BlockPos block, Vec3 entersAt, Vec3 leavesAt)
+	{
+	}
+
+	public interface RenderPointConsumer
+	{
+		void accept(int id, Vec3 relative, SectionPos section);
 	}
 }

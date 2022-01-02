@@ -9,11 +9,15 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.phys.Vec3;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableInt;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -21,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 public class WireCollisionData
 {
@@ -41,38 +46,18 @@ public class WireCollisionData
 	{
 		if(conn.isInternal()||conn.blockDataGenerated)
 			return;
+		WireLogger.logger.info("Adding block data for {}", conn);
+		conn.generateCatenaryData();
 		if(isClient)
-		{
-			conn.generateCatenaryData();
-			BlockPos origin = conn.getEndA().getPosition();
-			SectionPos currentSection = null;
-			int sectionStart = 0;
-			for(int i = 0; i <= Connection.RENDER_POINTS_PER_WIRE; ++i)
-			{
-				Vec3 relativePos = conn.getCatenaryData().getRenderPoint(i);
-				BlockPos containingBlock = origin.offset(relativePos.x, relativePos.y, relativePos.z);
-				SectionPos section = SectionPos.of(containingBlock);
-				if(currentSection!=null&&(!section.equals(currentSection)||i==Connection.RENDER_POINTS_PER_WIRE))
+			forEachSection(conn, (sectionPos, segments) -> {
+				synchronized(sectionsToWires)
 				{
-					synchronized(sectionsToWires)
-					{
-						sectionsToWires.computeIfAbsent(currentSection, $ -> new ArrayList<>())
-								.add(new ConnectionSegments(conn, sectionStart, i));
-					}
-					currentSection = null;
+					sectionsToWires.computeIfAbsent(sectionPos, $ -> new ArrayList<>()).add(segments);
 				}
-				if(currentSection==null)
-				{
-					currentSection = section;
-					sectionStart = i;
-				}
-			}
-		}
+			});
 		else
 		{
-			WireLogger.logger.info("Adding block data for {}", conn);
-			WireLogger.logger.info("Raytracing for addition of {}", conn);
-			if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
+			Preconditions.checkState(net.getLocalNet(conn.getEndA())==net.getLocalNet(conn.getEndB()));
 			WireUtils.raytraceAlongCatenary(
 					conn,
 					p -> add(p.block(), new CollisionInfo(p.entersAt(), p.leavesAt(), conn, true)),
@@ -84,14 +69,38 @@ public class WireCollisionData
 
 	public void removeConnection(Connection conn)
 	{
+		if(!conn.blockDataGenerated)
+			return;
 		WireLogger.logger.info("Removing block data for {}", conn);
-		if(!isClient&&conn.blockDataGenerated)
-		{
-			WireLogger.logger.info("Raytracing for removal of {}", conn);
+		if(isClient)
+			forEachSection(conn, (sectionPos, segments) -> {
+				synchronized(sectionsToWires)
+				{
+					sectionsToWires.computeIfAbsent(sectionPos, $ -> new ArrayList<>()).remove(segments);
+				}
+			});
+		else
 			WireUtils.raytraceAlongCatenary(conn, p -> remove(p.block(), conn), p -> remove(p.block(), conn));
-			conn.blockDataGenerated = false;
-		}
-		//TODO remove for client data!
+		conn.blockDataGenerated = false;
+	}
+
+	private void forEachSection(Connection conn, BiConsumer<SectionPos, ConnectionSegments> out)
+	{
+		Mutable<SectionPos> currentSection = new MutableObject<>(null);
+		MutableInt sectionStart = new MutableInt(0);
+		WireUtils.forEachRenderPoint(conn, (id, relative, section) -> {
+			if(currentSection.getValue()!=null&&
+					(!section.equals(currentSection.getValue())||id==Connection.RENDER_POINTS_PER_WIRE))
+			{
+				out.accept(currentSection.getValue(), new ConnectionSegments(conn, sectionStart.intValue(), id));
+				currentSection.setValue(null);
+			}
+			if(currentSection.getValue()==null)
+			{
+				currentSection.setValue(section);
+				sectionStart.setValue(id);
+			}
+		});
 	}
 
 	private void remove(BlockPos pos, Connection toRemove)
