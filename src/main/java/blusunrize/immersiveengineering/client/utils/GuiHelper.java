@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Matrix4f;
@@ -17,8 +18,10 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
+import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -167,6 +170,10 @@ public class GuiHelper
 	public static void renderItemWithOverlayIntoGUI(MultiBufferSource buffer, PoseStack transform,
 													ItemStack stack, int x, int y)
 	{
+		ItemRenderer itemRenderer = mc().getItemRenderer();
+		BakedModel bakedModel = itemRenderer.getModel(stack, null, mc().player, 0);
+		if(!bakedModel.usesBlockLight())
+			Lighting.setupForFlatItems();
 		transform.pushPose();
 		transform.translate(x, y, 100);
 		transform.pushPose();
@@ -174,7 +181,7 @@ public class GuiHelper
 		transform.scale(1, -1, 1);
 		transform.scale(16, 16, 16);
 		BatchingRenderTypeBuffer batchBuffer = new BatchingRenderTypeBuffer();
-		mc().getItemRenderer().renderStatic(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
+		itemRenderer.renderStatic(stack, TransformType.GUI, 0xf000f0, OverlayTexture.NO_OVERLAY,
 				transform, batchBuffer, 0);
 		batchBuffer.pipe(buffer);
 		transform.popPose();

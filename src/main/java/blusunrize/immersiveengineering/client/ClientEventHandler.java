@@ -52,6 +52,7 @@ import blusunrize.immersiveengineering.common.util.sound.IEMuffledSound;
 import blusunrize.immersiveengineering.common.util.sound.IEMuffledTickableSound;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Multimap;
+import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -522,6 +523,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					if(equipped.getItem()==Tools.VOLTMETER.get())
 						renderVoltmeterOverlay(player, scaledWidth, scaledHeight, transform, buffer);
 					buffer.endBatch();
+					Lighting.setupFor3DItems();
 				}
 			if(ClientUtils.mc().hitResult!=null)
 			{

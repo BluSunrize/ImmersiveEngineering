@@ -172,7 +172,7 @@ public class IERenderTypes extends RenderStateShard
 				RenderType.CompositeState.builder()
 						.setDepthTestState(DEPTH_ALWAYS)
 						.setTextureState(BLOCK_SHEET_MIPPED)
-						.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
+						.setShaderState(POSITION_COLOR_SHADER)
 						.setTransparencyState(NO_TRANSPARENCY)
 						.createCompositeState(false)
 		);
