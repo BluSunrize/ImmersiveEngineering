@@ -47,12 +47,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-/*
-TODO:
- - ~~Sync wires early in case a "middle" chunk is synced first~~ Waiting until this actually breaks, unable to trigger
-   the behavior in testing
- - Write a comment for Forge about threading, maybe
- */
 public class ConnectionRenderer implements ResourceManagerReloadListener
 {
 	private static final LoadingCache<SegmentKey, RenderedSegment> SEGMENT_CACHE = CacheBuilder.newBuilder()

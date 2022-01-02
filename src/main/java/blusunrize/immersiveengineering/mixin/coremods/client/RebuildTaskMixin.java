@@ -30,7 +30,6 @@ public class RebuildTaskMixin
 	@Nullable
 	protected RenderChunkRegion region;
 	private RenderChunkRegion regionCopy;
-	//TODO actually test!
 	@Shadow(aliases = "f_112859_")
 	private RenderChunk this$1;
 
