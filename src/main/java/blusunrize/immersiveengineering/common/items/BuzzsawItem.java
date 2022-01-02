@@ -69,6 +69,7 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class BuzzsawItem extends DieselToolItem implements IScrollwheel
@@ -109,17 +110,23 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	public ItemStack removeUpgrade(ItemStack stack, Player player, ItemStack upgrade)
 	{
-		if(upgrade.getItem()==Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES))
+		forEachSpareBlade(stack, upgrade, (i, sawblade) -> {
+			if(sawblade.isEmpty())
+				ItemNBTHelper.remove(upgrade, "sawblade"+i);
+			else
+				ItemNBTHelper.setItemStack(upgrade, "sawblade"+i, sawblade);
+		});
+		return upgrade;
+	}
+
+	private void forEachSpareBlade(ItemStack stack, ItemStack upgrade, BiConsumer<Integer, ItemStack> onBlade)
+	{
+		if(upgrade.getItem()==Misc.toolUpgrades.get(ToolUpgrade.BUZZSAW_SPAREBLADES).asItem())
 			for(int i = 1; i <= 2; i++)
 			{
 				ItemStack sawblade = getSawblade(stack, i);
-				if(!sawblade.isEmpty())
-				{
-					ItemNBTHelper.setItemStack(upgrade, "sawblade"+i, sawblade);
-					setSawblade(stack, ItemStack.EMPTY, i);
-				}
+				onBlade.accept(i, sawblade);
 			}
-		return upgrade;
 	}
 
 	@Override
