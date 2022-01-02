@@ -29,6 +29,7 @@ public class RebuildTaskMixin
 	@Shadow
 	@Nullable
 	protected RenderChunkRegion region;
+	private RenderChunkRegion regionCopy;
 	//TODO actually test!
 	@Shadow(aliases = "f_112859_")
 	private RenderChunk this$1;
@@ -37,6 +38,17 @@ public class RebuildTaskMixin
 			method = "compile",
 			at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Sets;newHashSet()Ljava/util/HashSet;")
 	)
+	public void extractRegion(CallbackInfoReturnable<Set<BlockEntity>> cir)
+	{
+		//TODO figure out why this is necessary: Is vanilla doing a dumb non-atomic swap and hoping it will behave
+		// atomically?
+		regionCopy = region;
+	}
+
+	@Inject(
+			method = "compile",
+			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/ModelBlockRenderer;enableCaching()V")
+	)
 	public void addConnectionQuads(
 			float pX, float pY, float pZ,
 			ChunkRenderDispatcher.CompiledChunk pCompiledChunk,
@@ -44,6 +56,6 @@ public class RebuildTaskMixin
 			CallbackInfoReturnable<Set<BlockEntity>> cir
 	)
 	{
-		ConnectionRenderer.renderConnectionsInSection(pCompiledChunk, pBuffers, this.region, this$1);
+		ConnectionRenderer.renderConnectionsInSection(pCompiledChunk, pBuffers, this.regionCopy, this$1);
 	}
 }

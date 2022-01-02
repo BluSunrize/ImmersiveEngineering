@@ -49,7 +49,8 @@ import java.util.concurrent.TimeUnit;
 
 /*
 TODO:
- - Sync wires early in case a "middle" chunk is synced first
+ - ~~Sync wires early in case a "middle" chunk is synced first~~ Waiting until this actually breaks, unable to trigger
+   the behavior in testing
  - Write a comment for Forge about threading, maybe
  */
 public class ConnectionRenderer implements ResourceManagerReloadListener
