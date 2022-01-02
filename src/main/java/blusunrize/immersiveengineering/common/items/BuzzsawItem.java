@@ -194,6 +194,33 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		}
 	}
 
+	@Nullable
+	@Override
+	public CompoundTag getShareTag(ItemStack stack)
+	{
+		CompoundTag ret = super.getShareTag(stack);
+		for(int i = 1; i <= 2; i++)
+		{
+			ItemStack spare = getSawblade(stack, i);
+			if(!spare.isEmpty())
+				ret.put("spare"+i, spare.save(new CompoundTag()));
+		}
+		return ret;
+	}
+
+	@Override
+	public void readShareTag(ItemStack stack, @Nullable CompoundTag nbt)
+	{
+		if(nbt!=null)
+			for(int i = 1; i <= 2; i++)
+				if(nbt.contains("spare"+i))
+				{
+					setSawblade(stack, ItemStack.of(nbt.getCompound("spare"+i)), i);
+					nbt.remove("spare"+i);
+				}
+		super.readShareTag(stack, nbt);
+	}
+
 	@Override
 	@OnlyIn(Dist.CLIENT)
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
@@ -509,7 +536,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 					{
 						block.destroy(world, pos, state);
 						block.playerDestroy(world, player, pos, state, te, stack);
-						if (world instanceof ServerLevel)
+						if(world instanceof ServerLevel)
 							block.popExperience((ServerLevel)world, pos, xpDropEvent);
 					}
 				}
