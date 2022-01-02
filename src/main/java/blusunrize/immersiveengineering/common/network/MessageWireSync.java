@@ -11,14 +11,16 @@ package blusunrize.immersiveengineering.common.network;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.SectionPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.network.NetworkEvent.Context;
 
+import java.util.Set;
 import java.util.function.Supplier;
 
 public class MessageWireSync implements IMessage
@@ -82,24 +84,19 @@ public class MessageWireSync implements IMessage
 			Level w = player.level;
 
 			GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(w);
+			Connection connection = new Connection(type, start, end, offsetStart, offsetEnd);
 			if(added)
-				globalNet.addConnection(new Connection(type, start, end, offsetStart, offsetEnd));
+				globalNet.addConnection(connection);
 			else if(globalNet.getNullableLocalNet(start)!=null&&globalNet.getNullableLocalNet(end)!=null)
 			{
-				globalNet.removeConnection(new Connection(type, start, end, offsetStart, offsetEnd));
+				globalNet.removeConnection(connection);
 				removeProxyIfNoWires(start, globalNet);
 				removeProxyIfNoWires(end, globalNet);
 			}
-			BlockEntity startTE = w.getBlockEntity(start.position());
-			if(startTE!=null)
-				startTE.requestModelDataUpdate();
-			BlockEntity endTE = w.getBlockEntity(end.position());
-			if(endTE!=null)
-				endTE.requestModelDataUpdate();
-			BlockState state = w.getBlockState(start.position());
-			w.sendBlockUpdated(start.position(), state, state, 3);
-			state = w.getBlockState(end.position());
-			w.sendBlockUpdated(end.position(), state, state, 3);
+			Set<SectionPos> sectionsToRerender = new ObjectArraySet<>();
+			WireUtils.forEachRenderPoint(connection, ($, $2, section) -> sectionsToRerender.add(section));
+			for(SectionPos section : sectionsToRerender)
+				Minecraft.getInstance().levelRenderer.setSectionDirty(section.x(), section.y(), section.z());
 		});
 		context.get().setPacketHandled(true);
 	}

@@ -49,8 +49,6 @@ import java.util.concurrent.TimeUnit;
 
 /*
 TODO:
- - Redraw chunks a wire passes through when the wire is added/removed
- - Remove wires from section data structure
  - Sync wires early in case a "middle" chunk is synced first
  - Special treatment vertical wires
  - Write a comment for Forge about threading, maybe
