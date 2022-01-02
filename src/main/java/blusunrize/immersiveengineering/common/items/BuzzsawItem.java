@@ -105,7 +105,12 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	public ItemStack getUpgradeAfterRemoval(ItemStack stack, ItemStack upgrade)
 	{
-		forEachSpareBlade(stack, upgrade, (i, sawblade) -> ItemNBTHelper.setItemStack(upgrade, "sawblade"+i, sawblade));
+		forEachSpareBlade(stack, upgrade, (i, sawblade) -> {
+			if(sawblade.isEmpty())
+				ItemNBTHelper.remove(upgrade, "sawblade"+i);
+			else
+				ItemNBTHelper.setItemStack(upgrade, "sawblade"+i, sawblade);
+		});
 		return upgrade;
 	}
 
@@ -121,8 +126,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 			for(int i = 1; i <= 2; i++)
 			{
 				ItemStack sawblade = getSawblade(stack, i);
-				if(!sawblade.isEmpty())
-					onBlade.accept(i, sawblade);
+				onBlade.accept(i, sawblade);
 			}
 	}
 
