@@ -1,5 +1,8 @@
 ##### Version 1.18.1-7.1.1-pre
 - Change herbicide recipe to use sulfur instead of nitrate (BluSunrize)
+- Clean up wire collision code (Malte)
+- Fix in-hand GUI for Drill & Buzzsaw rendering their head/blade too dark (BluSunrize)
+- Fix sync issues and dupe bug in the buzzsaw (BluSunrize)
 
 ##### Version 1.18.1-7.1.0-145
 - The "Chemical Engineering" update! (BluSunrize)
