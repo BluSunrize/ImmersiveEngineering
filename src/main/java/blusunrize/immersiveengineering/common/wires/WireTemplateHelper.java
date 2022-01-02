@@ -51,12 +51,12 @@ public class WireTemplateHelper
 					if(conn.isInternal())
 						continue;
 					ConnectionPoint otherEnd = conn.getOtherEnd(cp);
-					if(otherEnd.compareTo(cp) < 0||!box.isInside(otherEnd.getPosition()))
+					if(otherEnd.compareTo(cp) < 0||!box.isInside(otherEnd.position()))
 						// only add once and only if fully in captured area
 						continue;
 					template.getStoredConnections().add(new TemplateConnection(
-							new ConnectionPoint(pos.subtract(offset), cp.getIndex()),
-							new ConnectionPoint(otherEnd.getPosition().subtract(offset), otherEnd.getIndex()),
+							new ConnectionPoint(pos.subtract(offset), cp.index()),
+							new ConnectionPoint(otherEnd.position().subtract(offset), otherEnd.index()),
 							conn.type
 					));
 				}
@@ -106,11 +106,11 @@ public class WireTemplateHelper
 			ConnectionPoint relative, StructurePlaceSettings orientation, Level world, BlockPos base
 	)
 	{
-		BlockPos absolutePos = StructureTemplate.calculateRelativePosition(orientation, relative.getPosition()).offset(base);
+		BlockPos absolutePos = StructureTemplate.calculateRelativePosition(orientation, relative.position()).offset(base);
 		BlockEntity connector = world.getBlockEntity(absolutePos);
 		if(!(connector instanceof IImmersiveConnectable))
 			return null;
-		ConnectionPoint point = new ConnectionPoint(absolutePos, relative.getIndex());
+		ConnectionPoint point = new ConnectionPoint(absolutePos, relative.index());
 		if(!((IImmersiveConnectable)connector).getConnectionPoints().contains(point))
 			return null;
 		return point;

@@ -94,7 +94,7 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 	@Override
 	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		return getConnectionOffset(type, here.getIndex()==RIGHT_INDEX);
+		return getConnectionOffset(type, here.index()==RIGHT_INDEX);
 	}
 
 	@Override
@@ -105,7 +105,7 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 			leftType = rightType = null;
 		else
 		{
-			switch(attachedPoint.getIndex())
+			switch(attachedPoint.index())
 			{
 				case LEFT_INDEX -> leftType = null;
 				case RIGHT_INDEX -> rightType = null;
@@ -117,7 +117,7 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 
 	public void connectCable(WireType cableType, ConnectionPoint target, IImmersiveConnectable other, ConnectionPoint otherTarget)
 	{
-		switch(target.getIndex())
+		switch(target.index())
 		{
 			case LEFT_INDEX -> this.leftType = cableType;
 			case RIGHT_INDEX -> this.rightType = cableType;
@@ -127,7 +127,7 @@ public abstract class AbstractTransformerBlockEntity extends ImmersiveConnectabl
 
 	public boolean canConnectCable(WireType cableType, ConnectionPoint target, Vec3i offset)
 	{
-		return switch(target.getIndex())
+		return switch(target.index())
 				{
 					case LEFT_INDEX -> canAttach(cableType, leftType, rightType);
 					case RIGHT_INDEX -> canAttach(cableType, rightType, leftType);

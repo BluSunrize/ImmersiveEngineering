@@ -360,7 +360,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	@Override
 	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		BlockPos otherPos = other.getPosition();
+		BlockPos otherPos = other.position();
 		int xDif = otherPos.getX()-worldPosition.getX();
 		int yDif = otherPos.getY()-worldPosition.getY();
 		int zDif = otherPos.getZ()-worldPosition.getZ();

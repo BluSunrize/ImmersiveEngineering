@@ -186,7 +186,7 @@ public class RazorWireBlockEntity extends ImmersiveConnectableBlockEntity implem
 	@Override
 	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		BlockPos otherPos = other.getPosition();
+		BlockPos otherPos = other.position();
 		int xDif = otherPos.getX()-worldPosition.getX();
 		int yDif = otherPos.getY()-worldPosition.getY();
 		int zDif = otherPos.getZ()-worldPosition.getZ();

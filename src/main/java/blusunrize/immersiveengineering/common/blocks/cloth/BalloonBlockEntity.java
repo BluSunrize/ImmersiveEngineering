@@ -126,7 +126,7 @@ public class BalloonBlockEntity extends ImmersiveConnectableBlockEntity implemen
 	@Override
 	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		BlockPos end = other.getPosition();
+		BlockPos end = other.position();
 		int xDif = end.getX()-getBlockPos().getX();
 		int zDif = end.getZ()-getBlockPos().getZ();
 		int yDif = end.getY()-getBlockPos().getY();

@@ -69,10 +69,10 @@ public class WireCollisions
 					if(info.isInBlock())
 					{
 						Vec3 vecA = info.connection().getPoint(0, info.connection().getEndA());
-						if(Utils.isVecInBlock(vecA, pos, info.connection().getEndA().getPosition(), 1e-3))
+						if(Utils.isVecInBlock(vecA, pos, info.connection().getEndA().position(), 1e-3))
 							continue;
 						Vec3 vecB = info.connection().getPoint(0, info.connection().getEndB());
-						if(Utils.isVecInBlock(vecB, pos, info.connection().getEndB().getPosition(), 1e-3))
+						if(Utils.isVecInBlock(vecB, pos, info.connection().getEndB().position(), 1e-3))
 							continue;
 						BlockPos dropPos = pos;
 						if(WireUtils.preventsConnection(worldIn, pos, newState, info.intersectA(), info.intersectB()))

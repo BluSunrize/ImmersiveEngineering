@@ -241,7 +241,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		LocalWireNetwork ret = localNetsByPos.computeIfAbsent(pos, p -> {
 			LocalWireNetwork newNet = new LocalWireNetwork(this);
 			IImmersiveConnectable proxy = proxyProvider.create(
-					pos.getPosition(),
+					pos.position(),
 					ImmutableList.of(),
 					ImmutableList.of()
 			);
@@ -304,7 +304,7 @@ public class GlobalWireNetwork implements IWorldTickable
 				isNew = true;
 			LocalWireNetwork local = getLocalNet(cp);
 			if(loadedInNets.add(local))
-				local.loadConnector(cp.getPosition(), iic, false, this);
+				local.loadConnector(cp.position(), iic, false, this);
 		}
 		if(isNew&&!remote)
 			for(Connection c : iic.getInternalConnections())
@@ -360,11 +360,11 @@ public class GlobalWireNetwork implements IWorldTickable
 				IImmersiveConnectable otherIIC = localNet.getConnector(otherEnd);
 				if(otherIIC instanceof BlockEntity)
 					((BlockEntity)otherIIC).requestModelDataUpdate();
-				BlockState state = world.getBlockState(otherEnd.getPosition());
-				world.sendBlockUpdated(otherEnd.getPosition(), state, state, 3);
+				BlockState state = world.getBlockState(otherEnd.position());
+				world.sendBlockUpdated(otherEnd.position(), state, state, 3);
 			}
-			BlockState state = world.getBlockState(cp.getPosition());
-			world.sendBlockUpdated(cp.getPosition(), state, state, 3);
+			BlockState state = world.getBlockState(cp.position());
+			world.sendBlockUpdated(cp.position(), state, state, 3);
 		}
 		if(iic instanceof BlockEntity)
 			((BlockEntity)iic).requestModelDataUpdate();
@@ -519,7 +519,7 @@ public class GlobalWireNetwork implements IWorldTickable
 		//TODO better way of finding all connectors in a chunk
 		Collection<ConnectionPoint> ret = new ArrayList<>();
 		for(ConnectionPoint cp : localNetsByPos.keySet())
-			if(pos.equals(new ChunkPos(cp.getPosition())))
+			if(pos.equals(new ChunkPos(cp.position())))
 				ret.add(cp);
 		return ret;
 	}
@@ -536,7 +536,7 @@ public class GlobalWireNetwork implements IWorldTickable
 	{
 		Collection<ConnectionPoint> cpsAtInvalid = new ArrayList<>();
 		for(ConnectionPoint cp : localNetsByPos.keySet())
-			if(cp.getPosition().equals(pos))
+			if(cp.position().equals(pos))
 				cpsAtInvalid.add(cp);
 		for(ConnectionPoint toRemove : cpsAtInvalid)
 			removeCP(toRemove);

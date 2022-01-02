@@ -57,8 +57,8 @@ public class MessageWireSync implements IMessage
 
 	private void writeConnPoint(ConnectionPoint cp, FriendlyByteBuf buf)
 	{
-		buf.writeBlockPos(cp.getPosition());
-		buf.writeInt(cp.getIndex());
+		buf.writeBlockPos(cp.position());
+		buf.writeInt(cp.index());
 	}
 
 	@Override
@@ -90,16 +90,16 @@ public class MessageWireSync implements IMessage
 				removeProxyIfNoWires(start, globalNet);
 				removeProxyIfNoWires(end, globalNet);
 			}
-			BlockEntity startTE = w.getBlockEntity(start.getPosition());
+			BlockEntity startTE = w.getBlockEntity(start.position());
 			if(startTE!=null)
 				startTE.requestModelDataUpdate();
-			BlockEntity endTE = w.getBlockEntity(end.getPosition());
+			BlockEntity endTE = w.getBlockEntity(end.position());
 			if(endTE!=null)
 				endTE.requestModelDataUpdate();
-			BlockState state = w.getBlockState(start.getPosition());
-			w.sendBlockUpdated(start.getPosition(), state, state, 3);
-			state = w.getBlockState(end.getPosition());
-			w.sendBlockUpdated(end.getPosition(), state, state, 3);
+			BlockState state = w.getBlockState(start.position());
+			w.sendBlockUpdated(start.position(), state, state, 3);
+			state = w.getBlockState(end.position());
+			w.sendBlockUpdated(end.position(), state, state, 3);
 		});
 		context.get().setPacketHandled(true);
 	}

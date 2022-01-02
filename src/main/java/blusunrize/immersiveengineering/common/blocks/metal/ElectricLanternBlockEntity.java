@@ -128,7 +128,7 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 	@Override
 	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
-		BlockPos otherPos = other.getPosition();
+		BlockPos otherPos = other.position();
 		int xDif = otherPos.getX()-worldPosition.getX();
 		int zDif = otherPos.getZ()-worldPosition.getZ();
 		boolean flipped = getFacing()==Direction.UP;
@@ -168,7 +168,7 @@ public class ElectricLanternBlockEntity extends ImmersiveConnectableBlockEntity 
 		if(!level.isClientSide)
 			setFacing(getFacing().getOpposite());
 		for(ConnectionPoint cp : getConnectionPoints())
-			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
+			for(Connection c : getLocalNet(cp.index()).getConnections(cp))
 				if(!c.isInternal())
 					globalNet.updateCatenaryData(c);
 		setChanged();

@@ -58,7 +58,7 @@ public class LocalWireNetwork implements IWorldTickable
 		for(Tag b : wires)
 		{
 			Connection wire = new Connection((CompoundTag)b);
-			if(connectors.containsKey(wire.getEndA().getPosition())&&connectors.containsKey(wire.getEndB().getPosition()))
+			if(connectors.containsKey(wire.getEndA().position())&&connectors.containsKey(wire.getEndB().position()))
 				addConnection(wire, globalNet);
 			else
 				WireLogger.logger.error("Wire from {} to {}, but connector points are {}", wire.getEndA(), wire.getEndB(), connectors);
@@ -81,7 +81,7 @@ public class LocalWireNetwork implements IWorldTickable
 		ret.put("wires", wires);
 		Multimap<BlockPos, ConnectionPoint> connsByBlock = HashMultimap.create();
 		for(ConnectionPoint cp : connections.keySet())
-			connsByBlock.put(cp.getPosition(), cp);
+			connsByBlock.put(cp.position(), cp);
 		ListTag proxies = new ListTag();
 		for(BlockPos p : connectors.keySet())
 		{
@@ -150,8 +150,8 @@ public class LocalWireNetwork implements IWorldTickable
 			);
 		}
 		connections.put(cp, new ArrayList<>());
-		if(!connectors.containsKey(cp.getPosition()))
-			loadConnector(cp.getPosition(), iic, true, globalNet);
+		if(!connectors.containsKey(cp.position()))
+			loadConnector(cp.position(), iic, true, globalNet);
 		else
 		{
 			IImmersiveConnectable existing = getConnector(cp);
@@ -263,7 +263,7 @@ public class LocalWireNetwork implements IWorldTickable
 		}
 		for(ConnectionPoint end : new ConnectionPoint[]{c.getEndA(), c.getEndB()})
 		{
-			IImmersiveConnectable connector = connectors.get(end.getPosition());
+			IImmersiveConnectable connector = connectors.get(end.position());
 			if(connector!=null)
 				connector.removeCable(c, end);
 		}
@@ -279,7 +279,7 @@ public class LocalWireNetwork implements IWorldTickable
 		if(iic==null)
 		{
 			for(ConnectionPoint point : getConnectionPoints())
-				if(point.getPosition().equals(p))
+				if(point.position().equals(p))
 					WireLogger.logger.info("Cancelling, but connections {} at {} still exist!", connections.get(point),
 							point);
 			WireLogger.logger.info("Cancelled");
@@ -306,10 +306,10 @@ public class LocalWireNetwork implements IWorldTickable
 	void addConnection(Connection conn, GlobalWireNetwork globalNet)
 	{
 		++version;
-		IImmersiveConnectable connA = connectors.get(conn.getEndA().getPosition());
-		Preconditions.checkNotNull(connA, "No connector at %s", conn.getEndA().getPosition());
-		IImmersiveConnectable connB = connectors.get(conn.getEndB().getPosition());
-		Preconditions.checkNotNull(connB, "No connector at %s", conn.getEndB().getPosition());
+		IImmersiveConnectable connA = connectors.get(conn.getEndA().position());
+		Preconditions.checkNotNull(connA, "No connector at %s", conn.getEndA().position());
+		IImmersiveConnectable connB = connectors.get(conn.getEndB().position());
+		Preconditions.checkNotNull(connB, "No connector at %s", conn.getEndB().position());
 		if(connections.get(conn.getEndA()).stream().anyMatch(c -> c.getOtherEnd(conn.getEndA()).equals(conn.getEndB())))
 		{
 			WireLogger.logger.error("Tried to add a duplicate connection from {} ({}) to {} ({})",
@@ -390,7 +390,7 @@ public class LocalWireNetwork implements IWorldTickable
 				break;
 			LocalWireNetwork newNet = new LocalWireNetwork(globalNet);
 			for(ConnectionPoint p : inComponent)
-				newNet.addConnector(p, connectors.get(p.getPosition()), globalNet);
+				newNet.addConnector(p, connectors.get(p.position()), globalNet);
 			for(ConnectionPoint p : inComponent)
 				for(Connection c : getConnections(p))
 					if(c.isPositiveEnd(p))
@@ -431,7 +431,7 @@ public class LocalWireNetwork implements IWorldTickable
 
 	public IImmersiveConnectable getConnector(ConnectionPoint cp)
 	{
-		return getConnector(cp.getPosition());
+		return getConnector(cp.position());
 	}
 
 	@Override
@@ -480,13 +480,13 @@ public class LocalWireNetwork implements IWorldTickable
 		connections.remove(cp);
 		boolean hasMoreAtSameBlock = true;
 		for(ConnectionPoint cp2 : connections.keySet())
-			if(cp.getPosition().equals(cp2.getPosition()))
+			if(cp.position().equals(cp2.position()))
 			{
 				hasMoreAtSameBlock = false;
 				break;
 			}
 		if(hasMoreAtSameBlock)
-			removeConnector(cp.getPosition());
+			removeConnector(cp.position());
 	}
 
 	public void setInvalid()

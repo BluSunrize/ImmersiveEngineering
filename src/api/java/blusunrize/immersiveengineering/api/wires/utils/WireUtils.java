@@ -111,7 +111,7 @@ public class WireUtils
 	public static void raytraceAlongCatenary(Connection conn, Consumer<BlockIntersection> in,
 											 Consumer<BlockIntersection> close)
 	{
-		final BlockPos offset = conn.getEndA().getPosition();
+		final BlockPos offset = conn.getEndA().position();
 		conn.generateCatenaryData();
 		CatenaryTracer ct = new CatenaryTracer(conn.getCatenaryData(), offset);
 		ct.calculateIntegerIntersections();

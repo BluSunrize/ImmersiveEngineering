@@ -142,7 +142,7 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 	{
 		Matrix4 mat = new Matrix4(getFacing());
 		mat.translate(.5, .5, 0).rotate(Math.PI/2*rotation, 0, 0, 1).translate(-.5, -.5, 0);
-		boolean isLeft = here.getIndex()==LEFT_INDEX;
+		boolean isLeft = here.index()==LEFT_INDEX;
 		return mat.apply(new Vec3(isLeft?.25: .75, .5, .125));
 	}
 
@@ -151,7 +151,7 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 	{
 		rotation = (rotation+3)%4;
 		for(ConnectionPoint cp : getConnectionPoints())
-			for(Connection c : getLocalNet(cp.getIndex()).getConnections(cp))
+			for(Connection c : getLocalNet(cp.index()).getConnections(cp))
 				if(!c.isInternal())
 					globalNet.updateCatenaryData(c);
 		setChanged();

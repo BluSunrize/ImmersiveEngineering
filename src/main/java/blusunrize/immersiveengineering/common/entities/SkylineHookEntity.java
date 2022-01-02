@@ -99,7 +99,7 @@ public class SkylineHookEntity extends Entity
 		this.horizontalSpeed = speed;
 		this.connection = c;
 		this.start = start;
-		Vec3 pos = connection.getPoint(this.linePos, start).add(Vec3.atLowerCornerOf(start.getPosition()));
+		Vec3 pos = connection.getPoint(this.linePos, start).add(Vec3.atLowerCornerOf(start.position()));
 		this.moveTo(pos.x, pos.y, pos.z, this.getYRot(), this.getXRot());
 		if(!connection.getCatenaryData().isVertical())
 			this.angle = Math.atan2(connection.getCatenaryData().getDeltaZ(), connection.getCatenaryData().getDeltaX());
@@ -233,7 +233,7 @@ public class SkylineHookEntity extends Entity
 		}
 		horizontalSpeed *= friction;
 		linePos += horSpeedToUse/getHorizontalLength();
-		Vec3 pos = connection.getPoint(linePos, start).add(Vec3.atLowerCornerOf(start.getPosition()));
+		Vec3 pos = connection.getPoint(linePos, start).add(Vec3.atLowerCornerOf(start.position()));
 		setDeltaMovement(pos.x-getX(), pos.z-getZ(), pos.y-getY());
 		if(!isValidPosition(pos.x, pos.y, pos.z, player))
 		{

@@ -77,7 +77,7 @@ public class ConnectorBlockEntityHelper
 				dropHandler = (c) -> {
 					if(!c.isInternal())
 					{
-						BlockPos end = c.getOtherEnd(c.getEndFor(pos)).getPosition();
+						BlockPos end = c.getOtherEnd(c.getEndFor(pos)).position();
 						double dx = pos.getX()+.5+Math.signum(end.getX()-pos.getX());
 						double dy = pos.getY()+.5+Math.signum(end.getY()-pos.getY());
 						double dz = pos.getZ()+.5+Math.signum(end.getZ()-pos.getZ());

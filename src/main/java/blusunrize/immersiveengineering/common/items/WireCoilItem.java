@@ -125,15 +125,15 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 				else
 				{
 					final WireLink otherLink = WireLink.readFromItem(stack);
-					BlockEntity tileEntityLinkingPos = world.getBlockEntity(otherLink.cp.getPosition());
-					int distanceSq = (int)Math.ceil(otherLink.cp.getPosition().distSqr(
+					BlockEntity tileEntityLinkingPos = world.getBlockEntity(otherLink.cp.position());
+					int distanceSq = (int)Math.ceil(otherLink.cp.position().distSqr(
 							masterPos.getX(), masterPos.getY(), masterPos.getZ(), false
 					));
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
 					if(!otherLink.dimension.equals(world.dimension()))
 						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"wrongDimension"), true);
-					else if(otherLink.cp.getPosition().equals(masterPos))
+					else if(otherLink.cp.position().equals(masterPos))
 						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"sameConnection"), true);
 					else if(distanceSq > maxLengthSq)
 						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"tooFar"), true);
@@ -144,7 +144,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 						else
 						{
 							if(!iicLink.canConnectCable(wire, otherLink.cp, otherLink.offset)||
-									!iicLink.getConnectionMaster(wire, otherLink.target).equals(otherLink.cp.getPosition())||
+									!iicLink.getConnectionMaster(wire, otherLink.target).equals(otherLink.cp.position())||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
 								player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"invalidPoint"), true);
@@ -188,9 +188,9 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 										BlockState state = world.getBlockState(masterPos);
 										world.sendBlockUpdated(masterPos, state, state, 3);
 										((BlockEntity)iicLink).setChanged();
-										world.blockEvent(otherLink.cp.getPosition(), tileEntityLinkingPos.getBlockState().getBlock(), -1, 0);
-										state = world.getBlockState(otherLink.cp.getPosition());
-										world.sendBlockUpdated(otherLink.cp.getPosition(), state, state, 3);
+										world.blockEvent(otherLink.cp.position(), tileEntityLinkingPos.getBlockState().getBlock(), -1, 0);
+										state = world.getBlockState(otherLink.cp.position());
+										world.sendBlockUpdated(otherLink.cp.position(), state, state, 3);
 									}
 									else
 									{

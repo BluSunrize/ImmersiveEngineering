@@ -365,7 +365,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 			if(c.hasCatenaryData()&&w instanceof ServerLevel)
 			{
 				final int numPoints = 16;
-				final Vec3 offset = Vec3.atLowerCornerOf(c.getEndA().getPosition());
+				final Vec3 offset = Vec3.atLowerCornerOf(c.getEndA().position());
 				for(int i = 1; i < numPoints; ++i)
 				{
 					final double posOnWire = i/(double)numPoints;

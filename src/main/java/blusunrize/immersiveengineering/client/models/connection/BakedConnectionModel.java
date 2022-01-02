@@ -236,7 +236,7 @@ public class BakedConnectionModel<T> extends BakedIEModel
 		for(int i = 1; i <= totalPoints; i++)
 		{
 			Vec3 current = conn.getPoint(i/(double)totalPoints, start);
-			if(crossesChunkBoundary(current, lastPoint, start.getPosition()))
+			if(crossesChunkBoundary(current, lastPoint, start.position()))
 				crossings.add(i);
 			lastPoint = current;
 		}

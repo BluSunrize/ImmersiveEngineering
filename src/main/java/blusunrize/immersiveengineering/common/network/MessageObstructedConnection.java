@@ -35,8 +35,8 @@ public class MessageObstructedConnection implements IMessage
 		this.blocking = blocking;
 		start = conn.getEndAOffset();
 		end = conn.getEndBOffset();
-		startB = conn.getEndA().getPosition();
-		endB = conn.getEndB().getPosition();
+		startB = conn.getEndA().position();
+		endB = conn.getEndB().position();
 		wireType = conn.type;
 	}
 

@@ -161,7 +161,7 @@ public class Connection
 	public void generateCatenaryData()
 	{
 		Vec3 vecA = endAOffset;
-		Vec3 vecB = Vec3.atLowerCornerOf(endB.getPosition().subtract(endA.getPosition())).add(endBOffset);
+		Vec3 vecB = Vec3.atLowerCornerOf(endB.position().subtract(endA.position())).add(endBOffset);
 		Vec3 delta = vecB.subtract(vecA);
 		double horLength = Math.sqrt(delta.x*delta.x+delta.z*delta.z);
 
@@ -222,10 +222,10 @@ public class Connection
 		if(hasCatenaryData())
 			basic = getCatenaryData().getPoint(pos);
 		else
-			basic = Vec3.atLowerCornerOf(endB.getPosition().subtract(endA.getPosition())).scale(pos);
+			basic = Vec3.atLowerCornerOf(endB.position().subtract(endA.position())).scale(pos);
 		Vec3 add = Vec3.ZERO;
 		if(endB.equals(from))
-			add = Vec3.atLowerCornerOf(endA.getPosition().subtract(endB.getPosition()));
+			add = Vec3.atLowerCornerOf(endA.position().subtract(endB.position()));
 		return basic.add(add);
 	}
 
@@ -253,7 +253,7 @@ public class Connection
 
 	public ConnectionPoint getEndFor(BlockPos pos)
 	{
-		return endA.getPosition().equals(pos)?endA: endB;
+		return endA.position().equals(pos)?endA: endB;
 	}
 
 	@Nonnull
@@ -267,7 +267,7 @@ public class Connection
 		catData = null;
 		endAOffset = newOffsetA;
 		endBOffset = newOffsetB;
-		length = Math.sqrt(endA.getPosition().distSqr(endB.getPosition(), false));
+		length = Math.sqrt(endA.position().distSqr(endB.position(), false));
 	}
 
 	@Override

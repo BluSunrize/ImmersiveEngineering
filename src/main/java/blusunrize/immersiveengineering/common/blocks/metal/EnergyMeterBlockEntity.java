@@ -157,7 +157,7 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 		else
 			targetByHit = info.hitX > 0.5?new ConnectionPoint(worldPosition, 0): new ConnectionPoint(worldPosition, 1);
 		if(!globalNet.getLocalNet(targetByHit).getConnections(targetByHit).stream().allMatch(Connection::isInternal))
-			return new ConnectionPoint(worldPosition, 1-targetByHit.getIndex());
+			return new ConnectionPoint(worldPosition, 1-targetByHit.index());
 		else
 			return targetByHit;
 	}
@@ -188,9 +188,9 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 	public Vec3 getConnectionOffset(ConnectionPoint here, ConnectionPoint other, WireType type)
 	{
 		if(getFacing().getAxis()==Axis.X)
-			return new Vec3(.5, 1.4375, here.getIndex()==0?.8125: .1875);
+			return new Vec3(.5, 1.4375, here.index()==0?.8125: .1875);
 		else
-			return new Vec3(here.getIndex()==0?.8125: .1875, 1.4375, .5);
+			return new Vec3(here.index()==0?.8125: .1875, 1.4375, .5);
 	}
 
 	@Nullable

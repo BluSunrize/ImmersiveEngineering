@@ -477,7 +477,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						if(WirecoilUtils.hasWireLink(equipped))
 						{
 							WireLink link = WireLink.readFromItem(equipped);
-							BlockPos pos = link.cp.getPosition();
+							BlockPos pos = link.cp.position();
 							String s = I18n.get(Lib.DESC_INFO+"attachedTo", pos.getX(), pos.getY(), pos.getZ());
 							int col = WireType.ELECTRUM.getColour(null);
 							if(equipped.getItem() instanceof IWireCoil)

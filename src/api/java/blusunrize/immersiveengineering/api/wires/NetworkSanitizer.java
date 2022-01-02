@@ -42,11 +42,11 @@ public class NetworkSanitizer
 				Collection<ConnectionPoint> extraCPs = new ArrayList<>();
 				Set<BlockPos> missingConnectors = new HashSet<>();
 				for(ConnectionPoint cp : global.getAllConnectorsIn(chunk))
-					if(!missingConnectors.contains(cp.getPosition()))
+					if(!missingConnectors.contains(cp.position()))
 					{
-						BlockEntity inWorld = w.getBlockEntity(cp.getPosition());
+						BlockEntity inWorld = w.getBlockEntity(cp.position());
 						if(!(inWorld instanceof IImmersiveConnectable))
-							missingConnectors.add(cp.getPosition());
+							missingConnectors.add(cp.position());
 						else
 						{
 							IImmersiveConnectable iicWorld = (IImmersiveConnectable)inWorld;

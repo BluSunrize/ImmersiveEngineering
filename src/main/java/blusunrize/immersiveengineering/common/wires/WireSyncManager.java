@@ -53,7 +53,7 @@ public class WireSyncManager implements IWireSyncManager
 		if(conn.isInternal())
 			return false;
 		ConnectionPoint other = conn.getOtherEnd(currEnd);
-		ChunkPos otherChunk = new ChunkPos(other.getPosition());
+		ChunkPos otherChunk = new ChunkPos(other.position());
 		if(otherChunk.equals(pos))
 			return conn.isPositiveEnd(currEnd);
 		else
