@@ -44,7 +44,6 @@ TODO:
  - Sync wires early in case a "middle" chunk is synced first
  - Special treatment vertical wires
  - Cache data needed to render a segment, to make connection rendering near alloc-free
- - Delete SmartLightingQuad and related code!
  - Write a comment for Forge about threading, maybe
  */
 public class ConnectionRenderer

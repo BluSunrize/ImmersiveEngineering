@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.client.models.SmartLightingQuad;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -21,7 +20,6 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
@@ -117,19 +115,7 @@ public class ModelUtils
 		return quads;
 	}
 
-	private static final float[] FOUR_ONES = {1, 1, 1, 1};
-
-	public static BakedQuad createSmartLightingBakedQuad(Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, float[] colour, boolean invert, BlockPos base)
-	{
-		return createBakedQuad(vertices, facing, sprite, new double[]{0, 0, 16, 16}, colour, invert, FOUR_ONES, true, base);
-	}
-
 	public static BakedQuad createBakedQuad(Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
-	{
-		return createBakedQuad(vertices, facing, sprite, uvs, colour, invert, FOUR_ONES, false, null);
-	}
-
-	public static BakedQuad createBakedQuad(Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert, float[] alpha, boolean smartLighting, BlockPos basePos)
 	{
 		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
 		builder.setQuadOrientation(facing);
@@ -138,18 +124,17 @@ public class ModelUtils
 		Vec3 faceNormal = new Vec3(normalInt.getX(), normalInt.getY(), normalInt.getZ());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
-		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
+		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, 1);
 		vId = invert?2: 1;
 		u = vId > 1?2: 0;
-		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[vId]);
+		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, 1);
 		vId = invert?1: 2;
 		u = vId > 1?2: 0;
-		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, alpha[vId]);
+		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, 1);
 		vId = invert?0: 3;
 		u = vId > 1?2: 0;
-		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, alpha[vId]);
-		BakedQuad tmp = builder.build();
-		return smartLighting?new SmartLightingQuad(tmp.getVertices(), -1, facing, sprite, basePos): tmp;
+		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, 1);
+		return builder.build();
 	}
 
 	public static void putVertexData(BakedQuadBuilder builder, Vec3 pos, Vec3 faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
