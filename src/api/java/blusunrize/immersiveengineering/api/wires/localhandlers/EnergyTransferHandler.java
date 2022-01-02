@@ -362,7 +362,7 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 		default void burn(Connection c, double power, GlobalWireNetwork net, Level w)
 		{
 			net.removeConnection(c);
-			if(c.hasCatenaryData()&&w instanceof ServerLevel)
+			if(w instanceof ServerLevel)
 			{
 				final int numPoints = 16;
 				final Vec3 offset = Vec3.atLowerCornerOf(c.getEndA().position());

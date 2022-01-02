@@ -112,7 +112,6 @@ public class WireUtils
 											 Consumer<BlockIntersection> close)
 	{
 		final BlockPos offset = conn.getEndA().position();
-		conn.generateCatenaryData();
 		CatenaryTracer ct = new CatenaryTracer(conn.getCatenaryData(), offset);
 		ct.calculateIntegerIntersections();
 		ct.forEachSegment(segment -> (segment.inBlock?in: close).accept(new BlockIntersection(

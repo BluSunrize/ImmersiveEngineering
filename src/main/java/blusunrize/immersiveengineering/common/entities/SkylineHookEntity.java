@@ -94,7 +94,6 @@ public class SkylineHookEntity extends Entity
 
 	public void setConnectionAndPos(Connection c, ConnectionPoint start, double linePos, double speed)
 	{
-		c.generateCatenaryData();
 		this.linePos = linePos;
 		this.horizontalSpeed = speed;
 		this.connection = c;
@@ -302,7 +301,6 @@ public class SkylineHookEntity extends Entity
 			Vec3 look = player.getLookAngle();
 			line = possible.stream().filter(c -> !c.equals(connection)&&!c.isInternal())
 					.max(Comparator.comparingDouble(c -> {
-						c.generateCatenaryData();
 						double factor;
 						if(posForSwitch.equals(c.getEndA()))
 							factor = 1;

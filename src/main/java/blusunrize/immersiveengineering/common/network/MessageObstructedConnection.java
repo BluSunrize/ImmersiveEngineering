@@ -73,7 +73,6 @@ public class MessageObstructedConnection implements IMessage
 			Connection conn = new Connection(
 					wireType, new ConnectionPoint(startB, 0), new ConnectionPoint(endB, 0), start, end
 			);
-			conn.generateCatenaryData();
 			ClientEventHandler.FAILED_CONNECTIONS.put(conn,
 					Pair.of(blocking, new AtomicInteger(200)));
 		});

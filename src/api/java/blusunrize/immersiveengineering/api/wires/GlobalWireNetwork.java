@@ -380,14 +380,10 @@ public class GlobalWireNetwork implements IWorldTickable
 				if(otherLocal!=null)
 				{
 					IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
-					if(!iicEnd.isProxy())
+					if(!iicEnd.isProxy()&&!world.isClientSide)
 					{
-						c.generateCatenaryData();
-						if(!world.isClientSide)
-						{
-							WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
-							collisionData.addConnection(c);
-						}
+						WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
+						collisionData.addConnection(c);
 					}
 				}
 			}
@@ -552,7 +548,6 @@ public class GlobalWireNetwork implements IWorldTickable
 		Vec3 newOffsetA = iicA.getConnectionOffset(conn.getEndA(), conn.getEndB(), conn.type);
 		Vec3 newOffsetB = iicB.getConnectionOffset(conn.getEndB(), conn.getEndA(), conn.type);
 		conn.resetCatenaryData(newOffsetA, newOffsetB);
-		conn.generateCatenaryData();
 		collisionData.addConnection(conn);
 	}
 

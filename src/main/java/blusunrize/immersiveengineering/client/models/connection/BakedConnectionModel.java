@@ -93,7 +93,6 @@ public class BakedConnectionModel<T> extends BakedIEModel
 			assert (orig!=null);
 			for(Connection c : orig.connections())
 			{
-				c.generateCatenaryData();
 				ConnectionPoint here = c.getEndFor(orig.here());
 				data.add(Connection.RenderData.make(
 						c, c.getEndB().equals(here), getSolidVertexCountForSide(here, c, RenderData.POINTS_PER_WIRE)

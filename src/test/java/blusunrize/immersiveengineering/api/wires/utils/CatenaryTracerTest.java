@@ -156,7 +156,6 @@ public class CatenaryTracerTest
 				start.subtract(Vec3.atLowerCornerOf(posStart)),
 				end.subtract(Vec3.atLowerCornerOf(posEnd))
 		);
-		conn.generateCatenaryData();
 		return new CatenaryTracer(conn.getCatenaryData(), OFFSET);
 	}
 

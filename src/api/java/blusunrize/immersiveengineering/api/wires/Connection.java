@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.wires;
 
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
@@ -158,19 +157,14 @@ public class Connection
 		return internal;
 	}
 
-	public void generateCatenaryData()
+	public static CatenaryData makeCatenaryData(Vec3 vecA, Vec3 vecB, double slack)
 	{
-		Vec3 vecA = endAOffset;
-		Vec3 vecB = Vec3.atLowerCornerOf(endB.position().subtract(endA.position())).add(endBOffset);
 		Vec3 delta = vecB.subtract(vecA);
 		double horLength = Math.sqrt(delta.x*delta.x+delta.z*delta.z);
 
 		if(Math.abs(delta.x) < 0.05&&Math.abs(delta.z) < 0.05)
-		{
-			catData = new CatenaryData(true, 0, 0, 1, delta, 0, vecA);
-			return;
-		}
-		double wireLength = delta.length()*type.getSlack();
+			return new CatenaryData(true, 0, 0, 1, delta, 0, vecA);
+		double wireLength = delta.length()*slack;
 		double l;
 		{
 			double goal = Math.sqrt(wireLength*wireLength-delta.y*delta.y)/horLength;
@@ -201,12 +195,7 @@ public class Connection
 		double scale = horLength/(2*l);
 		double offsetX = (0+horLength-scale*Math.log((wireLength+delta.y)/(wireLength-delta.y)))*0.5;
 		double offsetY = (delta.y+0-wireLength*Math.cosh(l)/Math.sinh(l))*0.5;
-		catData = new CatenaryData(false, offsetX, offsetY, scale, delta, horLength, vecA);
-	}
-
-	public boolean hasCatenaryData()
-	{
-		return catData!=null;
+		return new CatenaryData(false, offsetX, offsetY, scale, delta, horLength, vecA);
 	}
 
 	public boolean isEnd(ConnectionPoint p)
@@ -218,11 +207,7 @@ public class Connection
 	public Vec3 getPoint(double pos, ConnectionPoint from)
 	{
 		pos = transformPosition(pos, from);
-		Vec3 basic;
-		if(hasCatenaryData())
-			basic = getCatenaryData().getPoint(pos);
-		else
-			basic = Vec3.atLowerCornerOf(endB.position().subtract(endA.position())).scale(pos);
+		Vec3 basic = getCatenaryData().getPoint(pos);
 		Vec3 add = Vec3.ZERO;
 		if(endB.equals(from))
 			add = Vec3.atLowerCornerOf(endA.position().subtract(endB.position()));
@@ -231,16 +216,11 @@ public class Connection
 
 	public double getSlope(double pos, ConnectionPoint from)
 	{
-		if(hasCatenaryData())
-		{
-			pos = transformPosition(pos, from);
-			double slope = getCatenaryData().getSlope(pos);
-			if(endB.equals(from))
-				slope *= -1;
-			return slope;
-		}
-		else
-			return 0;
+		pos = transformPosition(pos, from);
+		double slope = getCatenaryData().getSlope(pos);
+		if(endB.equals(from))
+			slope *= -1;
+		return slope;
 	}
 
 	public double transformPosition(double pos, ConnectionPoint from)
@@ -259,7 +239,13 @@ public class Connection
 	@Nonnull
 	public CatenaryData getCatenaryData()
 	{
-		return Preconditions.checkNotNull(catData);
+		if(catData==null)
+			catData = makeCatenaryData(
+					endAOffset,
+					Vec3.atLowerCornerOf(endB.position().subtract(endA.position())).add(endBOffset),
+					type.getSlack()
+			);
+		return catData;
 	}
 
 	void resetCatenaryData(Vec3 newOffsetA, Vec3 newOffsetB)
@@ -337,7 +323,6 @@ public class Connection
 
 		public static RenderData make(Connection conn, boolean startAtB, int count)
 		{
-			Preconditions.checkArgument(conn.hasCatenaryData());
 			CatenaryData basicCatData = conn.getCatenaryData();
 			CatenaryData directionalData;
 			if(startAtB)
