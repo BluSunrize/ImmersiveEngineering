@@ -50,14 +50,13 @@ import java.util.concurrent.TimeUnit;
 /*
 TODO:
  - Sync wires early in case a "middle" chunk is synced first
- - Special treatment vertical wires
  - Write a comment for Forge about threading, maybe
  */
 public class ConnectionRenderer implements ResourceManagerReloadListener
 {
 	private static final LoadingCache<SegmentKey, RenderedSegment> SEGMENT_CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(120, TimeUnit.SECONDS)
-			.build(CacheLoader.from(ConnectionRenderer::renderSegment));
+			.build(CacheLoader.from(ConnectionRenderer::renderSegmentForCache));
 	private static final ResettableLazy<TextureAtlasSprite> WIRE_TEXTURE = new ResettableLazy<>(
 			() -> Minecraft.getInstance().getModelManager()
 					.getAtlas(InventoryMenu.BLOCK_ATLAS)
@@ -141,15 +140,19 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 					.render(light, light, overlay, 0, 0, 0, out);
 	}
 
-	private static RenderedSegment renderSegment(SegmentKey key)
+	private static RenderedSegment renderSegmentForCache(SegmentKey key)
 	{
 		CatenaryData catenaryData = key.catenaryShape();
 		List<Vertex> vertices = new ArrayList<>(4*4);
 		Vec3 start = key.catenaryShape().getRenderPoint(key.startIndex());
 		Vec3 end = key.catenaryShape().getRenderPoint(key.startIndex()+1);
-		Vec3 horNormal = new Vec3(-catenaryData.delta().z, 0, catenaryData.delta().x).normalize();
-		Vec3 horRadius = horNormal.scale(key.radius());
+		Vec3 horNormal;
+		if(key.catenaryShape().isVertical())
+			horNormal = new Vec3(1, 0, 0);
+		else
+			horNormal = new Vec3(-catenaryData.delta().z, 0, catenaryData.delta().x).normalize();
 		Vec3 verticalNormal = start.subtract(end).cross(horNormal).normalize();
+		Vec3 horRadius = horNormal.scale(key.radius());
 		Vec3 verticalRadius = verticalNormal.scale(-key.radius());
 
 		renderBidirectionalQuad(vertices, start, end, horRadius, key.color(), verticalNormal);
