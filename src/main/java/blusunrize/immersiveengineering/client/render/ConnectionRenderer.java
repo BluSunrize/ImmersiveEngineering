@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.api.wires.Connection;
 import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
-import blusunrize.immersiveengineering.api.wires.WireCollisionData.WireRange;
+import blusunrize.immersiveengineering.api.wires.WireCollisionData.ConnectionSegments;
 import blusunrize.immersiveengineering.mixin.accessors.client.CompiledChunkAccess;
 import blusunrize.immersiveengineering.mixin.accessors.client.RenderChunkAccess;
 import com.google.common.cache.CacheBuilder;
@@ -88,7 +88,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		BlockPos chunkOrigin = renderChunk.getOrigin();
 		SectionPos section = SectionPos.of(chunkOrigin);
 		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(Minecraft.getInstance().level);
-		List<WireRange> connectionParts = globalNet.getCollisionData().getWiresIn(section);
+		List<ConnectionSegments> connectionParts = globalNet.getCollisionData().getWiresIn(section);
 		if(connectionParts==null||connectionParts.isEmpty())
 			return;
 		RenderType renderType = RenderType.solid();
@@ -96,10 +96,10 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		CompiledChunkAccess compiledAccess = (CompiledChunkAccess)compiled;
 		if(compiledAccess.getHasLayer().add(renderType))
 			((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
-		for(WireRange connection : connectionParts)
+		for(ConnectionSegments connection : connectionParts)
 		{
 			ConnectionPoint connectionOrigin = connection.connection().getEndA();
-			renderConnection(
+			renderSegments(
 					builder, connection,
 					connectionOrigin.getX()-chunkOrigin.getX(),
 					connectionOrigin.getY()-chunkOrigin.getY(),
@@ -111,8 +111,8 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		compiledAccess.getHasBlocks().add(renderType);
 	}
 
-	public static void renderConnection(
-			VertexConsumer out, WireRange toRender, int offX, int offY, int offZ, BlockAndTintGetter level
+	public static void renderSegments(
+			VertexConsumer out, ConnectionSegments toRender, int offX, int offY, int offZ, BlockAndTintGetter level
 	)
 	{
 		Connection connection = toRender.connection();
@@ -125,9 +125,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 					new SegmentKey(radius, color, connection.getCatenaryData(), startPoint)
 			);
 			if(startPoint==toRender.firstPointToRender())
-			{
 				lastLight = getLight(connection, renderedSegment.offsetStart, level);
-			}
 			int nextLight = getLight(connection, renderedSegment.offsetEnd, level);
 			renderedSegment.render(lastLight, nextLight, OverlayTexture.NO_OVERLAY, offX, offY, offZ, out);
 			lastLight = nextLight;
@@ -148,14 +146,16 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 	private static RenderedSegment renderSegment(SegmentKey key)
 	{
 		CatenaryData catenaryData = key.catenaryShape();
-		Vec3 horizontalUnscaledNormal = new Vec3(catenaryData.delta().z, 0, -catenaryData.delta().x);
-		Vec3 horNormal = horizontalUnscaledNormal.scale(key.radius()/catenaryData.horLength());
 		List<Vertex> vertices = new ArrayList<>(4*4);
 		Vec3 start = key.catenaryShape().getRenderPoint(key.startIndex());
 		Vec3 end = key.catenaryShape().getRenderPoint(key.startIndex()+1);
-		renderBidirectionalQuad(vertices, start, end, horNormal, key.color());
-		//TODO radius vector based on connection slope!
-		renderBidirectionalQuad(vertices, start, end, new Vec3(0, key.radius(), 0), key.color());
+		Vec3 horNormal = new Vec3(-catenaryData.delta().z, 0, catenaryData.delta().x).normalize();
+		Vec3 horRadius = horNormal.scale(key.radius());
+		Vec3 verticalNormal = start.subtract(end).cross(horNormal).normalize();
+		Vec3 verticalRadius = verticalNormal.scale(-key.radius());
+
+		renderBidirectionalQuad(vertices, start, end, horRadius, key.color(), verticalNormal);
+		renderBidirectionalQuad(vertices, start, end, verticalRadius, key.color(), horNormal);
 		return new RenderedSegment(vertices, new Vec3i(start.x, start.y, start.z), new Vec3i(end.x, end.y, end.z));
 	}
 
@@ -170,7 +170,9 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		return (value >> lowestBit)&255;
 	}
 
-	private static void renderBidirectionalQuad(List<Vertex> out, Vec3 start, Vec3 end, Vec3 radius, int color)
+	private static void renderBidirectionalQuad(
+			List<Vertex> out, Vec3 start, Vec3 end, Vec3 radius, int color, Vec3 positiveNormal
+	)
 	{
 		TextureAtlasSprite texture = WIRE_TEXTURE.get();
 		UVCoords[] uvs = {
@@ -181,20 +183,19 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		};
 		Vec3[] vertices = {start.add(radius), end.add(radius), end.subtract(radius), start.subtract(radius),};
 		for(int i = 0; i < vertices.length; i++)
-			out.add(vertex(vertices[i], uvs[i], color, i==0||i==3));
+			out.add(vertex(vertices[i], uvs[i], color, positiveNormal, i==0||i==3));
 		for(int i = vertices.length-1; i >= 0; i--)
-			out.add(vertex(vertices[i], uvs[i], color, i==0||i==3));
+			out.add(vertex(vertices[i], uvs[i], color, positiveNormal.scale(-1), i==0||i==3));
 	}
 
-	private static Vertex vertex(Vec3 point, UVCoords uv, int color, boolean firstLight)
+	private static Vertex vertex(Vec3 point, UVCoords uv, int color, Vec3 normal, boolean lightForStart)
 	{
 		return new Vertex(
 				(float)point.x, (float)point.y, (float)point.z,
 				(float)uv.u(), (float)uv.v(),
 				getByte(color, 0)/255f, getByte(color, 8)/255f, getByte(color, 16)/255f,
-				//TODO
-				0, 1, 0,
-				firstLight
+				(float)normal.x, (float)normal.y, (float)normal.y,
+				lightForStart
 		);
 	}
 

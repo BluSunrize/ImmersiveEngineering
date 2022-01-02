@@ -27,7 +27,7 @@ public class WireCollisionData
 	// Only populated on server
 	private final Map<BlockPos, List<CollisionInfo>> blockToWires = new Object2ObjectOpenHashMap<>();
 	// Only populated on client
-	private final Map<SectionPos, List<WireRange>> sectionsToWires = new Object2ObjectOpenHashMap<>();
+	private final Map<SectionPos, List<ConnectionSegments>> sectionsToWires = new Object2ObjectOpenHashMap<>();
 	private final GlobalWireNetwork net;
 	private final boolean isClient;
 
@@ -57,7 +57,7 @@ public class WireCollisionData
 					synchronized(sectionsToWires)
 					{
 						sectionsToWires.computeIfAbsent(currentSection, $ -> new ArrayList<>())
-								.add(new WireRange(conn, sectionStart, i));
+								.add(new ConnectionSegments(conn, sectionStart, i));
 					}
 					currentSection = null;
 				}
@@ -119,11 +119,11 @@ public class WireCollisionData
 	}
 
 	@Nullable
-	public List<WireRange> getWiresIn(SectionPos section)
+	public List<ConnectionSegments> getWiresIn(SectionPos section)
 	{
 		synchronized(sectionsToWires)
 		{
-			List<WireRange> containedWires = sectionsToWires.get(section);
+			List<ConnectionSegments> containedWires = sectionsToWires.get(section);
 			if(containedWires==null)
 				return null;
 			else
@@ -141,7 +141,7 @@ public class WireCollisionData
 		}
 	}
 
-	public record WireRange(Connection connection, int firstPointToRender, int lastPointToRender)
+	public record ConnectionSegments(Connection connection, int firstPointToRender, int lastPointToRender)
 	{
 	}
 }
