@@ -1,7 +1,6 @@
 package blusunrize.immersiveengineering.data.blockstates;
 
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.data.models.ConnectorBuilder;
 import com.google.common.base.Preconditions;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
@@ -11,11 +10,9 @@ import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.data.blockstates.BlockStates.forEachState;
 
@@ -120,17 +117,6 @@ public class ConnectorBlockBuilder
 		return this;
 	}
 
-	private ModelFile forConnectorModel(ModelFile model)
-	{
-		BlockModelBuilder ret = models.getBuilder(model.getLocation().getPath()+"_connector")
-				.customLoader(ConnectorBuilder::begin)
-				.baseModel(model)
-				.layers(Arrays.stream(layers).map(BlockStates::getName).collect(Collectors.toList()))
-				.end();
-		copyParticles.accept(ret, model);
-		return ret;
-	}
-
 	public void build()
 	{
 		forEachState(outputBuilder.partialState(), additional, map -> {
@@ -140,14 +126,14 @@ public class ConnectorBlockBuilder
 					if(d==Direction.DOWN)
 					{
 						PartialBlockstate downState = map.with(facingProp, Direction.DOWN);
-						ModelFile downModel = modelForState(downState);
+						ModelFile downModel = toModel.apply(downState);
 						outputBuilder.setModels(downState,
 								new ConfiguredModel(downModel, xForHorizontal-90, 0, true));
 					}
 					else if(d==Direction.UP)
 					{
 						PartialBlockstate upState = map.with(facingProp, Direction.UP);
-						ModelFile upModel = modelForState(upState);
+						ModelFile upModel = toModel.apply(upState);
 						outputBuilder.setModels(upState,
 								new ConfiguredModel(upModel, xForHorizontal+90, 0, true));
 					}
@@ -155,21 +141,16 @@ public class ConnectorBlockBuilder
 					{
 						int rotation = (int)d.toYRot();
 						PartialBlockstate dState = map.with(facingProp, d);
-						ModelFile connFile = modelForState(dState);
+						ModelFile connFile = toModel.apply(dState);
 						outputBuilder.setModels(dState, new ConfiguredModel(connFile, xForHorizontal, rotation, true));
 					}
 			}
 			else
 			{
-				ModelFile connFile = modelForState(map);
+				ModelFile connFile = toModel.apply(map);
 				outputBuilder.setModels(map,
 						new ConfiguredModel(connFile, 0, 0, true));
 			}
 		});
-	}
-
-	private ModelFile modelForState(PartialBlockstate state)
-	{
-		return forConnectorModel(toModel.apply(state));
 	}
 }

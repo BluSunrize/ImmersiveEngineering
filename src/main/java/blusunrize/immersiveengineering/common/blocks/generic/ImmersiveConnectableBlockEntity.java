@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.generic;
 
 
-import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.TargetingInfo;
-import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import com.google.common.collect.ImmutableList;
@@ -24,7 +21,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -84,17 +80,6 @@ public abstract class ImmersiveConnectableBlockEntity extends IEBaseBlockEntity 
 	@Override
 	public void writeCustomNBT(@Nonnull CompoundTag nbt, boolean descPacket)
 	{
-	}
-
-	@Nonnull
-	@Override
-	public IModelData getModelData()
-	{
-		return CombinedModelData.combine(
-				new SinglePropertyModelData<>(
-						ConnectorBlockEntityHelper.genConnBlockState(level, this), Model.CONNECTIONS
-				), super.getModelData()
-		);
 	}
 
 	@Override

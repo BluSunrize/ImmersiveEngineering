@@ -12,9 +12,11 @@ import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import com.google.common.collect.ImmutableList;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -22,7 +24,10 @@ import java.util.Map;
 
 public class WireCollisionData
 {
+	// Only populated on server
 	private final Map<BlockPos, List<CollisionInfo>> blockToWires = new Object2ObjectOpenHashMap<>();
+	// Only populated on client
+	private final Map<SectionPos, List<WireRange>> sectionsToWires = new Object2ObjectOpenHashMap<>();
 	private final GlobalWireNetwork net;
 	private final boolean isClient;
 
@@ -34,21 +39,47 @@ public class WireCollisionData
 
 	public void addConnection(Connection conn)
 	{
-		if(!isClient&&!conn.isInternal())
+		if(conn.isInternal()||conn.blockDataGenerated)
+			return;
+		if(isClient)
 		{
-			WireLogger.logger.info("Adding block data for {}", conn);
-			if(!conn.blockDataGenerated)
+			conn.generateCatenaryData();
+			BlockPos origin = conn.getEndA().getPosition();
+			SectionPos currentSection = null;
+			int sectionStart = 0;
+			for(int i = 0; i <= Connection.RENDER_POINTS_PER_WIRE; ++i)
 			{
-				WireLogger.logger.info("Raytracing for addition of {}", conn);
-				if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
-				WireUtils.raytraceAlongCatenary(
-						conn,
-						p -> add(p.block(), new CollisionInfo(p.entersAt(), p.leavesAt(), conn, true)),
-						p -> add(p.block(), new CollisionInfo(p.entersAt(), p.leavesAt(), conn, false))
-				);
-				conn.blockDataGenerated = true;
+				Vec3 relativePos = conn.getCatenaryData().getRenderPoint(i);
+				BlockPos containingBlock = origin.offset(relativePos.x, relativePos.y, relativePos.z);
+				SectionPos section = SectionPos.of(containingBlock);
+				if(currentSection!=null&&(!section.equals(currentSection)||i==Connection.RENDER_POINTS_PER_WIRE))
+				{
+					synchronized(sectionsToWires)
+					{
+						sectionsToWires.computeIfAbsent(currentSection, $ -> new ArrayList<>())
+								.add(new WireRange(conn, sectionStart, i));
+					}
+					currentSection = null;
+				}
+				if(currentSection==null)
+				{
+					currentSection = section;
+					sectionStart = i;
+				}
 			}
 		}
+		else
+		{
+			WireLogger.logger.info("Adding block data for {}", conn);
+			WireLogger.logger.info("Raytracing for addition of {}", conn);
+			if((net.getLocalNet(conn.getEndA())!=net.getLocalNet(conn.getEndB()))) throw new AssertionError();
+			WireUtils.raytraceAlongCatenary(
+					conn,
+					p -> add(p.block(), new CollisionInfo(p.entersAt(), p.leavesAt(), conn, true)),
+					p -> add(p.block(), new CollisionInfo(p.entersAt(), p.leavesAt(), conn, false))
+			);
+		}
+		conn.blockDataGenerated = true;
 	}
 
 	public void removeConnection(Connection conn)
@@ -60,6 +91,7 @@ public class WireCollisionData
 			WireUtils.raytraceAlongCatenary(conn, p -> remove(p.block(), conn), p -> remove(p.block(), conn));
 			conn.blockDataGenerated = false;
 		}
+		//TODO remove for client data!
 	}
 
 	private void remove(BlockPos pos, Connection toRemove)
@@ -86,6 +118,19 @@ public class WireCollisionData
 		return ret;
 	}
 
+	@Nullable
+	public List<WireRange> getWiresIn(SectionPos section)
+	{
+		synchronized(sectionsToWires)
+		{
+			List<WireRange> containedWires = sectionsToWires.get(section);
+			if(containedWires==null)
+				return null;
+			else
+				return List.copyOf(containedWires);
+		}
+	}
+
 	public record CollisionInfo(
 			@Nonnull Vec3 intersectA, @Nonnull Vec3 intersectB, @Nonnull Connection connection, boolean isInBlock
 	)
@@ -94,5 +139,9 @@ public class WireCollisionData
 		{
 			return connection.getContainingNet(net);
 		}
+	}
+
+	public record WireRange(Connection connection, int firstPointToRender, int lastPointToRender)
+	{
 	}
 }

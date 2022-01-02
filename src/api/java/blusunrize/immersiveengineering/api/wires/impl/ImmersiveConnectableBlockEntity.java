@@ -9,10 +9,6 @@
 
 package blusunrize.immersiveengineering.api.wires.impl;
 
-import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
-import blusunrize.immersiveengineering.api.IEProperties.Model;
-import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.api.wires.ConnectorBlockEntityHelper;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
@@ -24,9 +20,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
-
-import javax.annotation.Nonnull;
 
 public abstract class ImmersiveConnectableBlockEntity extends BlockEntity implements IImmersiveConnectable
 {
@@ -42,16 +35,6 @@ public abstract class ImmersiveConnectableBlockEntity extends BlockEntity implem
 	{
 		super.setLevel(world);
 		globalNet = GlobalWireNetwork.getNetwork(world);
-	}
-
-	@Nonnull
-	@Override
-	public IModelData getModelData()
-	{
-		ConnectionModelData state = ConnectorBlockEntityHelper.genConnBlockState(level, this);
-		return CombinedModelData.combine(
-				new SinglePropertyModelData<>(state, Model.CONNECTIONS), super.getModelData()
-		);
 	}
 
 	private boolean isUnloaded = false;

@@ -24,8 +24,6 @@ import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
-import blusunrize.immersiveengineering.client.models.connection.BakedConnectionModel;
-import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
@@ -167,7 +165,6 @@ public class ClientProxy extends CommonProxy
 	public static void registerModelLoaders(ModelRegistryEvent ev)
 	{
 		ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
-		ModelLoaderRegistry.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
 		ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
 		ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
 		ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
@@ -321,7 +318,6 @@ public class ClientProxy extends CommonProxy
 
 	static
 	{
-		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);

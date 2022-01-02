@@ -9,53 +9,17 @@
 
 package blusunrize.immersiveengineering.api.wires;
 
-import blusunrize.immersiveengineering.api.IEProperties.ConnectionModelData;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
-import com.google.common.collect.ImmutableSet;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Consumer;
 
 public class ConnectorBlockEntityHelper
 {
-	public static ConnectionModelData genConnBlockState(Level world, IImmersiveConnectable iic)
-	{
-		GlobalWireNetwork globalNet = GlobalWireNetwork.getNetwork(world);
-		final BlockPos pos = iic.getPosition();
-		Set<Connection> ret = new HashSet<>();
-		for(ConnectionPoint cp : iic.getConnectionPoints())
-		{
-			LocalWireNetwork local = globalNet.getLocalNet(cp);
-			Collection<Connection> conns = local.getConnections(cp);
-			if(conns==null)
-			{
-				WireLogger.logger.warn("Aborting and returning empty data: null connections at {}", cp);
-				return new ConnectionModelData(ImmutableSet.of(), pos);
-			}
-			for(Connection c : conns)
-			{
-				ConnectionPoint other = c.getOtherEnd(cp);
-				if(!c.isInternal())
-				{
-					IImmersiveConnectable otherConnector = globalNet.getLocalNet(other).getConnector(other);
-					if(otherConnector!=null&&!otherConnector.isProxy())
-					{
-						// generate subvertices
-						ret.add(c);
-					}
-				}
-			}
-		}
-		return new ConnectionModelData(ret, pos);
-	}
-
 	public static void onChunkUnload(GlobalWireNetwork globalNet, IImmersiveConnectable iic)
 	{
 		globalNet.onConnectorUnload(iic);
