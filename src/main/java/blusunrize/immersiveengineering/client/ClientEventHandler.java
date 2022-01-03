@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.wires.Connection;
-import blusunrize.immersiveengineering.api.wires.Connection.RenderData;
 import blusunrize.immersiveengineering.api.wires.IWireCoil;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
@@ -920,9 +919,9 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				int time = entry.getValue().getSecond().get();
 				float alpha = (float)Math.min((2+Math.sin(time*Math.PI/40))/3, time/20F);
 				Vec3 prev = conn.getPoint(0, conn.getEndA());
-				for(int i = 0; i < RenderData.POINTS_PER_WIRE; i++)
+				for(int i = 0; i < Connection.RENDER_POINTS_PER_WIRE; i++)
 				{
-					Vec3 next = conn.getPoint((i+1)/(double)RenderData.POINTS_PER_WIRE, conn.getEndA());
+					Vec3 next = conn.getCatenaryData().getRenderPoint(i+1);
 					Vec3 diff = next.subtract(prev).normalize();
 					builder.vertex(mat, (float)prev.x, (float)prev.y, (float)prev.z)
 							.color(1, 0, 0, alpha)

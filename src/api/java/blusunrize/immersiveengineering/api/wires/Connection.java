@@ -20,6 +20,8 @@ import java.util.StringJoiner;
 
 public class Connection
 {
+	public static final int RENDER_POINTS_PER_WIRE = 16;
+
 	@Nonnull
 	public final WireType type;
 	@Nonnull
@@ -312,33 +314,7 @@ public class Connection
 		return endBOffset;
 	}
 
-	public static record RenderData(
-			CatenaryData data,
-			WireType type,
-			int pointsToRenderSolid,
-			int color
-	)
-	{
-		public static final int POINTS_PER_WIRE = 16;
-
-		public static RenderData make(Connection conn, boolean startAtB, int count)
-		{
-			CatenaryData basicCatData = conn.getCatenaryData();
-			CatenaryData directionalData;
-			if(startAtB)
-				directionalData = basicCatData.reverse(conn.getPoint(0, conn.getEndB()));
-			else
-				directionalData = basicCatData;
-			return new RenderData(directionalData, conn.type, count, conn.type.getColour(conn));
-		}
-
-		public Vec3 getPoint(int index)
-		{
-			return data.getPoint(index/(double)POINTS_PER_WIRE);
-		}
-	}
-
-	public static record CatenaryData(
+	public record CatenaryData(
 			boolean isVertical,
 			//Relative to endA
 			double offsetX,
@@ -393,6 +369,11 @@ public class Connection
 		public double getDeltaZ()
 		{
 			return delta.z;
+		}
+
+		public Vec3 getRenderPoint(int index)
+		{
+			return getPoint(index/(double)RENDER_POINTS_PER_WIRE);
 		}
 	}
 }

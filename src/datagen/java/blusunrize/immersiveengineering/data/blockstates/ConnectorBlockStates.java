@@ -10,7 +10,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.data.models.SpecialModelBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.level.block.Block;
@@ -34,55 +33,48 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 	{
 		createConnector(
 				MetalDevices.FLOODLIGHT,
-				ieObjBuilder("block/metal_device/floodlight.obj.ie").callback(FloodlightCallbacks.INSTANCE).end(),
-				RenderType.translucent(), RenderType.solid()
+				ieObjBuilder("block/metal_device/floodlight.obj.ie").callback(FloodlightCallbacks.INSTANCE).end()
 		);
 		createConnector(
 				Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), obj(
 						"block/connector/connector_lv", rl("block/connector/connector_lv.obj"),
 						ImmutableMap.of("texture", modLoc("block/connector/connector_lv"))
-				), RenderType.solid()
+				)
 		);
 		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), obj(
 				"block/connector/relay_lv", rl("block/connector/connector_lv.obj"),
 				ImmutableMap.of("texture", modLoc("block/connector/relay_lv"))
-		), RenderType.solid());
+		));
 
 		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), obj(
 				"block/connector/connector_mv", rl("block/connector/connector_mv.obj"),
 				ImmutableMap.of("texture", modLoc("block/connector/connector_mv"))
-		), RenderType.solid());
+		));
 		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), obj(
 				"block/connector/relay_mv", rl("block/connector/connector_mv.obj"),
 				ImmutableMap.of("texture", modLoc("block/connector/relay_mv"))
-		), RenderType.solid());
+		));
 
-		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), obj("block/connector/connector_hv.obj"),
-				RenderType.solid());
-		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"),
-				RenderType.translucent());
+		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), obj("block/connector/connector_hv.obj"));
+		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"));
 
 		createConnector(
 				Connectors.CONNECTOR_STRUCTURAL,
-				ieObjBuilder("block/connector/connector_structural.obj.ie").callback(StructuralConnectorCallbacks.INSTANCE).end(),
-				RenderType.solid()
+				ieObjBuilder("block/connector/connector_structural.obj.ie").callback(StructuralConnectorCallbacks.INSTANCE).end()
 		);
 		createConnector(
 				Connectors.CONNECTOR_REDSTONE,
-				ieObjBuilder("block/connector/connector_redstone.obj.ie").callback(RSConnectorCallbacks.INSTANCE).end(),
-				RenderType.solid()
+				ieObjBuilder("block/connector/connector_redstone.obj.ie").callback(RSConnectorCallbacks.INSTANCE).end()
 		);
 		createConnector(
 				Connectors.CONNECTOR_PROBE,
-				ieObjBuilder("block/connector/connector_probe.obj.ie").callback(ProbeConnectorCallbacks.INSTANCE).end(),
-				RenderType.cutout(), RenderType.translucent()
+				ieObjBuilder("block/connector/connector_probe.obj.ie").callback(ProbeConnectorCallbacks.INSTANCE).end()
 		);
-		createConnector(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj"),
-				RenderType.cutout());
+		createConnector(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj"));
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();
-		createConnector(Connectors.FEEDTHROUGH, feedthroughModelFile, RenderType.chunkBufferLayers().toArray(new RenderType[0]));
+		createConnector(Connectors.FEEDTHROUGH, feedthroughModelFile);
 		buildConnector(MetalDevices.ELECTRIC_LANTERN)
 				.binaryModel(IEProperties.ACTIVE, obj(
 						"block/metal_device/e_lantern_off", rl("block/metal_device/e_lantern.obj"),
@@ -92,13 +84,11 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on"))
 				))
 				.autoRotationData()
-				.layers(RenderType.solid())
 				.build();
 
 		createConnector(
 				Connectors.REDSTONE_BREAKER,
-				ieObjBuilder("block/connector/redstone_breaker.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end(),
-				RenderType.solid()
+				ieObjBuilder("block/connector/redstone_breaker.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end()
 		);
 		buildConnector(Connectors.BREAKER_SWITCH)
 				.binaryModel(
@@ -106,17 +96,15 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 						ieObjBuilder("block/connector/breaker_switch_off.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end(),
 						ieObjBuilder("block/connector/breaker_switch_on.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end())
 				.rotationProperty(IEProperties.FACING_ALL)
-				.layers(RenderType.solid())
 				.build();
 		transformerModel("block/connector/transformer_mv", Connectors.TRANSFORMER);
 		transformerModel("block/connector/transformer_hv", Connectors.TRANSFORMER_HV);
-		createConnector(Connectors.POST_TRANSFORMER, obj("block/connector/transformer_post.obj"),
-				RenderType.solid());
+		createConnector(Connectors.POST_TRANSFORMER, obj("block/connector/transformer_post.obj"));
 
 		ModelFile ctModel = split(obj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
-		createConnector(Connectors.CURRENT_TRANSFORMER, ctModel, RenderType.solid());
-		createConnector(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end(), RenderType.cutout());
-		createConnector(Cloth.BALLOON, ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end(), RenderType.translucent());
+		createConnector(Connectors.CURRENT_TRANSFORMER, ctModel);
+		createConnector(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end());
+		createConnector(Cloth.BALLOON, ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end());
 	}
 
 	private void transformerModel(String baseName, Supplier<? extends Block> transformer)
@@ -127,23 +115,21 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				split(obj(baseName+"_right.obj"), COLUMN_THREE)
 		)
 				.addAdditional(IEProperties.MULTIBLOCKSLAVE)
-				.layers(RenderType.solid())
 				.rotationProperty(IEProperties.FACING_HORIZONTAL)
 				.build();
 	}
 
-	private void createConnector(Supplier<? extends Block> b, ModelFile model, RenderType... layers)
+	private void createConnector(Supplier<? extends Block> b, ModelFile model)
 	{
 		buildConnector(b)
 				.fixedModel(model)
-				.layers(layers)
 				.autoRotationData()
 				.build();
 	}
 
 	private ConnectorBlockBuilder buildConnector(Supplier<? extends Block> b)
 	{
-		return ConnectorBlockBuilder.builder(models(), getVariantBuilder(b.get()), this::addParticleTextureFrom);
+		return ConnectorBlockBuilder.builder(getVariantBuilder(b.get()));
 	}
 
 	@Nonnull

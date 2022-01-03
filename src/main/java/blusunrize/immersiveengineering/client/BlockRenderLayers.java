@@ -45,7 +45,6 @@ public class BlockRenderLayers
 	{
 		setRenderLayer(StoneDecoration.INSULATING_GLASS, RenderType.translucent());
 		setRenderLayer(StoneDecoration.CONCRETE_SPRAYED, RenderType.cutout());
-		setRenderLayer(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), RenderType.solid(), RenderType.translucent());
 		setRenderLayer(MetalDevices.FLOODLIGHT, RenderType.solid(), RenderType.translucent());
 
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())
@@ -53,11 +52,11 @@ public class BlockRenderLayers
 				setRenderLayer(block, RenderType.cutout());
 		setRenderLayer(WoodenDecoration.TREATED_SCAFFOLDING, RenderType.cutout());
 		setRenderLayer(WoodenDevices.LOGIC_UNIT, RenderType.solid(), RenderType.translucent());
-		setRenderLayer(Connectors.ENERGY_CONNECTORS.get(Pair.of(WireType.HV_CATEGORY, true)), RenderType.solid(), RenderType.translucent());
-		setRenderLayer(Connectors.CONNECTOR_BUNDLED, RenderType.solid(), RenderType.translucent(), RenderType.cutout());
-		setRenderLayer(Connectors.CONNECTOR_PROBE, RenderType.solid(), RenderType.translucent(), RenderType.cutout());
+		setRenderLayer(Connectors.ENERGY_CONNECTORS.get(Pair.of(WireType.HV_CATEGORY, true)), RenderType.translucent());
+		setRenderLayer(Connectors.CONNECTOR_BUNDLED, RenderType.cutout());
+		setRenderLayer(Connectors.CONNECTOR_PROBE, RenderType.translucent(), RenderType.cutout());
 		ItemBlockRenderTypes.setRenderLayer(Connectors.FEEDTHROUGH.get(), rt -> true);
-		setRenderLayer(MetalDevices.RAZOR_WIRE, RenderType.cutout(), RenderType.solid());
+		setRenderLayer(MetalDevices.RAZOR_WIRE, RenderType.cutout());
 		setRenderLayer(MetalDevices.FLUID_PLACER, RenderType.cutout());
 		setRenderLayer(MetalDevices.FURNACE_HEATER, RenderType.cutout());
 		setRenderLayer(MetalDevices.FLUID_PIPE, RenderType.cutout());
@@ -81,7 +80,7 @@ public class BlockRenderLayers
 						rt -> ItemBlockRenderTypes.canRenderInLayer(baseBlock.get().defaultBlockState(), rt)
 				);
 			}
-		setRenderLayer(Cloth.BALLOON, RenderType.solid(), RenderType.translucent());
+		setRenderLayer(Cloth.BALLOON, RenderType.translucent());
 		for(CoverType cover : CoverType.values())
 			setRenderLayer(MetalDecoration.METAL_LADDER.get(cover), RenderType.cutout());
 

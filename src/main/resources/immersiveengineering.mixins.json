@@ -27,15 +27,18 @@
     "coremods.TemplateMixin"
   ],
   "client": [
+    "accessors.client.CompiledChunkAccess",
     "accessors.client.FontResourceManagerAccess",
     "accessors.client.MinecartRendererAccess",
     "accessors.client.MinecraftAccess",
     "accessors.client.NewChatGuiAccess",
     "accessors.client.ParticleManagerAccess",
     "accessors.client.PlayerControllerAccess",
+    "accessors.client.RenderChunkAccess",
     "accessors.client.RenderTypeAccess",
     "accessors.client.WorldRendererAccess",
     "coremods.client.BipedModelMixin",
+    "coremods.client.RebuildTaskMixin",
     "coremods.client.WorldRendererMixin"
   ],
   "injectors": {

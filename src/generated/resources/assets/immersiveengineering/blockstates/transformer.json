@@ -1,78 +1,78 @@
 {
   "variants": {
     "facing=north,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "y": 180,
       "uvlock": true
     },
     "facing=south,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "uvlock": true
     },
     "facing=west,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "y": 90,
       "uvlock": true
     },
     "facing=east,mirrored=false,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "y": 270,
       "uvlock": true
     },
     "facing=north,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_right_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_right_split",
       "y": 180,
       "uvlock": true
     },
     "facing=south,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_right_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_right_split",
       "uvlock": true
     },
     "facing=west,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_right_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_right_split",
       "y": 90,
       "uvlock": true
     },
     "facing=east,mirrored=true,multiblockslave=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_right_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_right_split",
       "y": 270,
       "uvlock": true
     },
     "facing=north,mirrored=false,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "y": 180,
       "uvlock": true
     },
     "facing=south,mirrored=false,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "uvlock": true
     },
     "facing=west,mirrored=false,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "y": 90,
       "uvlock": true
     },
     "facing=east,mirrored=false,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "y": 270,
       "uvlock": true
     },
     "facing=north,mirrored=true,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_right_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_right_split",
       "y": 180,
       "uvlock": true
     },
     "facing=south,mirrored=true,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_right_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_right_split",
       "uvlock": true
     },
     "facing=west,mirrored=true,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_right_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_right_split",
       "y": 90,
       "uvlock": true
     },
     "facing=east,mirrored=true,multiblockslave=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_right_split_connector",
+      "model": "immersiveengineering:block/connector/transformer_mv_right_split",
       "y": 270,
       "uvlock": true
     }

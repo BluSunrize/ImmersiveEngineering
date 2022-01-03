@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.CollisionInfo;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.DoubleTag;
 import net.minecraft.nbt.ListTag;
@@ -119,42 +120,6 @@ public class WireUtils
 		)));
 	}
 
-	public static Vec3[] getConnectionCatenary(Vec3 start, Vec3 end, double slack)
-	{
-		final int vertices = 17;
-		double dx = (end.x)-(start.x);
-		double dy = (end.y)-(start.y);
-		double dz = (end.z)-(start.z);
-		double dw = Math.sqrt(dx*dx+dz*dz);
-		double k = Math.sqrt(dx*dx+dy*dy+dz*dz)*slack;
-		double l = 0;
-		int limiter = 0;
-		while(limiter < 300)
-		{
-			limiter++;
-			l += 0.01;
-			if(Math.sinh(l)/l >= Math.sqrt(k*k-dy*dy)/dw)
-				break;
-		}
-		double a = dw/2/l;
-		double offsetX = (0+dw-a*Math.log((k+dy)/(k-dy)))*0.5;
-		double offsetY = (dy+0-k*Math.cosh(l)/Math.sinh(l))*0.5;
-		Vec3[] vex = new Vec3[vertices+1];
-
-		vex[0] = new Vec3(start.x, start.y, start.z);
-		for(int i = 1; i < vertices; i++)
-		{
-			float posRelative = i/(float)vertices;
-			double x = 0+dx*posRelative;
-			double z = 0+dz*posRelative;
-			double y = a*Math.cosh((dw*posRelative-offsetX)/a)+offsetY;
-			vex[i] = new Vec3(start.x+x, start.y+y, start.z+z);
-		}
-		vex[vertices] = new Vec3(end.x, end.y, end.z);
-
-		return vex;
-	}
-
 	public static Connection getTargetConnection(Level world, Player player, Connection ignored, double maxDistance)
 	{
 		Vec3 look = player.getLookAngle();
@@ -213,7 +178,24 @@ public class WireUtils
 		return globalNet.getLocalNet(here).getConnector(here).getConnectionOffset(here, other, type);
 	}
 
-	public static record BlockIntersection(BlockPos block, Vec3 entersAt, Vec3 leavesAt)
+	public static void forEachRenderPoint(Connection conn, RenderPointConsumer out)
 	{
+		BlockPos origin = conn.getEndA().position();
+		for(int i = 0; i <= Connection.RENDER_POINTS_PER_WIRE; ++i)
+		{
+			Vec3 relativePos = conn.getCatenaryData().getRenderPoint(i);
+			BlockPos containingBlock = origin.offset(relativePos.x, relativePos.y, relativePos.z);
+			SectionPos section = SectionPos.of(containingBlock);
+			out.accept(i, relativePos, section);
+		}
+	}
+
+	public record BlockIntersection(BlockPos block, Vec3 entersAt, Vec3 leavesAt)
+	{
+	}
+
+	public interface RenderPointConsumer
+	{
+		void accept(int id, Vec3 relative, SectionPos section);
 	}
 }

@@ -24,8 +24,6 @@ import blusunrize.immersiveengineering.client.models.*;
 import blusunrize.immersiveengineering.client.models.ModelConveyor.ConveyorLoader;
 import blusunrize.immersiveengineering.client.models.ModelCoresample.CoresampleLoader;
 import blusunrize.immersiveengineering.client.models.PotionBucketModel.Loader;
-import blusunrize.immersiveengineering.client.models.connection.BakedConnectionModel;
-import blusunrize.immersiveengineering.client.models.connection.ConnectionLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughLoader;
 import blusunrize.immersiveengineering.client.models.connection.FeedthroughModel;
 import blusunrize.immersiveengineering.client.models.obj.IEOBJLoader;
@@ -35,6 +33,7 @@ import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks
 import blusunrize.immersiveengineering.client.models.obj.callback.block.*;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.*;
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
+import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
 import blusunrize.immersiveengineering.client.render.IEBipedLayerRenderer;
 import blusunrize.immersiveengineering.client.render.conveyor.RedstoneConveyorRender;
 import blusunrize.immersiveengineering.client.render.conveyor.SplitConveyorRender;
@@ -157,6 +156,7 @@ public class ClientProxy extends CommonProxy
 			MinecraftForge.EVENT_BUS.register(handler);
 			ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
 			reloadableManager.registerReloadListener(handler);
+			reloadableManager.registerReloadListener(new ConnectionRenderer());
 
 			IEModelLayers.registerDefinitions();
 			MinecraftForgeClient.registerTooltipComponentFactory(RevolverServerTooltip.class, RevolverClientTooltip::new);
@@ -167,7 +167,6 @@ public class ClientProxy extends CommonProxy
 	public static void registerModelLoaders(ModelRegistryEvent ev)
 	{
 		ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
-		ModelLoaderRegistry.registerLoader(ConnectionLoader.LOADER_NAME, new ConnectionLoader());
 		ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
 		ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
 		ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
@@ -321,15 +320,14 @@ public class ClientProxy extends CommonProxy
 
 	static
 	{
-		IEApi.renderCacheClearers.add(BakedConnectionModel.cache::invalidateAll);
 		IEApi.renderCacheClearers.add(ClocheRenderer::reset);
 		IEApi.renderCacheClearers.add(WatermillRenderer::reset);
 		IEApi.renderCacheClearers.add(WindmillRenderer::reset);
 		IEApi.renderCacheClearers.add(BucketWheelRenderer::reset);
 		IEApi.renderCacheClearers.add(ModelCoresample::clearCache);
-		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheLeft::invalidateAll);
-		IEApi.renderCacheClearers.add(ModelPowerpack.catenaryCacheRight::invalidateAll);
+		IEApi.renderCacheClearers.add(ModelPowerpack.CATENARY_DATA_CACHE::invalidateAll);
 		IEApi.renderCacheClearers.add(FeedthroughModel.CACHE::invalidateAll);
+		IEApi.renderCacheClearers.add(ConnectionRenderer::resetCache);
 	}
 
 	@Override

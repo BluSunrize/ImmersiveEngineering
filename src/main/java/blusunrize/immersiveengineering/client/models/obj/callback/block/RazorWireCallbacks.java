@@ -34,12 +34,6 @@ public class RazorWireCallbacks implements BlockCallback<RazorWireCallbacks.Key>
 	}
 
 	@Override
-	public boolean dependsOnLayer()
-	{
-		return true;
-	}
-
-	@Override
 	public Key getDefaultKey()
 	{
 		return INVALID;
@@ -48,7 +42,7 @@ public class RazorWireCallbacks implements BlockCallback<RazorWireCallbacks.Key>
 	@Override
 	public boolean shouldRenderGroup(Key object, String group, RenderType layer)
 	{
-		if(group==null||layer!=RenderType.cutout())
+		if(group==null)
 			return false;
 		if(!object.stacked()&&!object.onGround())
 			return !group.startsWith("wood");

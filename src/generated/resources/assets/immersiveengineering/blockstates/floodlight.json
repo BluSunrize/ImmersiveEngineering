@@ -1,33 +1,33 @@
 {
   "variants": {
     "facing=down": {
-      "model": "immersiveengineering:block/metal_device/floodlight_connector",
+      "model": "immersiveengineering:block/metal_device/floodlight",
       "uvlock": true
     },
     "facing=up": {
-      "model": "immersiveengineering:block/metal_device/floodlight_connector",
+      "model": "immersiveengineering:block/metal_device/floodlight",
       "x": 180,
       "uvlock": true
     },
     "facing=north": {
-      "model": "immersiveengineering:block/metal_device/floodlight_connector",
+      "model": "immersiveengineering:block/metal_device/floodlight",
       "x": 90,
       "y": 180,
       "uvlock": true
     },
     "facing=south": {
-      "model": "immersiveengineering:block/metal_device/floodlight_connector",
+      "model": "immersiveengineering:block/metal_device/floodlight",
       "x": 90,
       "uvlock": true
     },
     "facing=west": {
-      "model": "immersiveengineering:block/metal_device/floodlight_connector",
+      "model": "immersiveengineering:block/metal_device/floodlight",
       "x": 90,
       "y": 90,
       "uvlock": true
     },
     "facing=east": {
-      "model": "immersiveengineering:block/metal_device/floodlight_connector",
+      "model": "immersiveengineering:block/metal_device/floodlight",
       "x": 90,
       "y": 270,
       "uvlock": true

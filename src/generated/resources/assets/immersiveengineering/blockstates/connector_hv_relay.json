@@ -1,33 +1,33 @@
 {
   "variants": {
     "facing=down": {
-      "model": "immersiveengineering:block/connector/relay_hv_connector",
+      "model": "immersiveengineering:block/connector/relay_hv",
       "uvlock": true
     },
     "facing=up": {
-      "model": "immersiveengineering:block/connector/relay_hv_connector",
+      "model": "immersiveengineering:block/connector/relay_hv",
       "x": 180,
       "uvlock": true
     },
     "facing=north": {
-      "model": "immersiveengineering:block/connector/relay_hv_connector",
+      "model": "immersiveengineering:block/connector/relay_hv",
       "x": 90,
       "y": 180,
       "uvlock": true
     },
     "facing=south": {
-      "model": "immersiveengineering:block/connector/relay_hv_connector",
+      "model": "immersiveengineering:block/connector/relay_hv",
       "x": 90,
       "uvlock": true
     },
     "facing=west": {
-      "model": "immersiveengineering:block/connector/relay_hv_connector",
+      "model": "immersiveengineering:block/connector/relay_hv",
       "x": 90,
       "y": 90,
       "uvlock": true
     },
     "facing=east": {
-      "model": "immersiveengineering:block/connector/relay_hv_connector",
+      "model": "immersiveengineering:block/connector/relay_hv",
       "x": 90,
       "y": 270,
       "uvlock": true
