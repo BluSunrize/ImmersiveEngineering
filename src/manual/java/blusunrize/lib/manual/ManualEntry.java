@@ -69,7 +69,8 @@ public class ManualEntry implements Comparable<ManualEntry>
 		this.location = location;
 	}
 
-	public void initBasic() {
+	public void initBasic()
+	{
 		EntryData data = getContent.get();
 		title = data.title;
 		subtext = data.subtext;
@@ -95,13 +96,14 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	private void ensureInitialized()
 	{
-		if (initialized)
+		if(initialized)
 			return;
 		try
 		{
 			manual.entryRenderPre();
 			TextSplitter splitter = new TextSplitter(manual);
-			for (SpecialElementData special : specialElements) {
+			for(SpecialElementData special : specialElements)
+			{
 				splitter.addSpecialPage(special.anchor, special.offset, special.getElement());
 			}
 			SplitResult result = splitter.split(withLinks.get().getUnsplitTokens());
@@ -166,7 +168,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public void addButtons(ManualScreen gui, int x, int y, int page, List<Button> pageButtons)
 	{
-			ensureInitialized();
+		ensureInitialized();
 		ManualPage p = pages.get(page);
 		p.renderText = p.text.stream()
 				.map(
@@ -194,7 +196,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public int getPageCount()
 	{
-			ensureInitialized();
+		ensureInitialized();
 		return pages.size();
 	}
 
@@ -205,14 +207,14 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public ItemStack getHighlightedStack(int page)
 	{
-			ensureInitialized();
+		ensureInitialized();
 		return pages.get(page).special.getHighlightedStack();
 	}
 
 	public boolean listForSearch(String search)
 	{
-		for (SpecialElementData d : specialElements)
-			if (d.getElement().listForSearch(search))
+		for(SpecialElementData d : specialElements)
+			if(d.getElement().listForSearch(search))
 				return true;
 		return false;
 	}
@@ -226,7 +228,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 	public int getPageForAnchor(String anchor)
 	{
-			ensureInitialized();
+		ensureInitialized();
 		return anchorPoints.getInt(anchor);
 	}
 
@@ -445,7 +447,8 @@ public class ManualEntry implements Comparable<ManualEntry>
 		}
 	}
 
-	public static class SpecialElementData {
+	public static class SpecialElementData
+	{
 		private final String anchor;
 		private final int offset;
 		private final Supplier<? extends SpecialManualElement> element;
