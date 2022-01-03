@@ -6,6 +6,20 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
+          "type": "immersiveengineering:drop_inv"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    },
+    {
+      "rolls": 1.0,
+      "bonus_rolls": 0.0,
+      "entries": [
+        {
           "type": "minecraft:item",
           "name": "immersiveengineering:circuit_table"
         }

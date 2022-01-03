@@ -4,6 +4,7 @@
 - Fix in-hand GUI for Drill & Buzzsaw rendering their head/blade too dark (BluSunrize)
 - Fix sync issues and dupe bug in the buzzsaw (BluSunrize)
 - Fix incorrect collision box on Concrete Chunk (BluSunrize)
+- Fix circuit table not dropping its contents (BluSunrize)
 
 ##### Version 1.18.1-7.1.0-145
 - The "Chemical Engineering" update! (BluSunrize)

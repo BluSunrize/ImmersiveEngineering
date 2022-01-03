@@ -109,6 +109,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 
 		registerSelfDropping(WoodenDevices.CRAFTING_TABLE, dropInv());
 		registerSelfDropping(WoodenDevices.WORKBENCH, dropInv());
+		registerSelfDropping(WoodenDevices.CIRCUIT_TABLE, dropInv());
 		registerSelfDropping(WoodenDevices.ITEM_BATCHER, dropInv());
 		registerSelfDropping(MetalDevices.CLOCHE, dropInv());
 		registerSelfDropping(MetalDevices.CHARGING_STATION, dropInv());
