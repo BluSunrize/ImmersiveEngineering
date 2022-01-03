@@ -130,7 +130,7 @@ public final class IEBlocks
 		);
 		public static final BlockEntry<PartialConcreteBlock> CONCRETE_THREE_QUARTER = new BlockEntry<>(
 				"concrete_three_quarter",
-				PartialConcreteBlock::makeProperties, props -> new PartialConcreteBlock(props, 4)
+				PartialConcreteBlock::makeProperties, props -> new PartialConcreteBlock(props, 12)
 		);
 
 		public static final BlockEntry<HorizontalFacingBlock<CoresampleBlockEntity>> CORESAMPLE = new BlockEntry<>(
