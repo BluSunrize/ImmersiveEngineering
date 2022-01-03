@@ -59,7 +59,7 @@ import java.util.stream.Stream;
 public abstract class ManualInstance implements ResourceManagerReloadListener
 {
 	public ResourceLocation texture;
-	private Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
+	private final Map<ResourceLocation, Function<JsonObject, SpecialManualElement>> specialElements = new HashMap<>();
 	private final Tree<ResourceLocation, ManualEntry> contentTree;
 	private final List<Pair<List<ResourceLocation>, ManualEntry>> autoloadedEntries = new ArrayList<>();
 	private final List<List<ResourceLocation>> autoloadedSections = new ArrayList<>();

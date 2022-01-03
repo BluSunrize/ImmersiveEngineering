@@ -92,6 +92,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 			anchors.add(TextSplitter.START);
 			return anchors;
 		});
+		initialized = false;
 	}
 
 	private void ensureInitialized()
