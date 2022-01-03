@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
@@ -31,11 +32,12 @@ public class RebuildTaskMixin
 	protected RenderChunkRegion region;
 	private RenderChunkRegion regionCopy;
 	@Shadow(aliases = "f_112859_")
+	@Final
 	private RenderChunk this$1;
 
 	@Inject(
 			method = "compile",
-			at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Sets;newHashSet()Ljava/util/HashSet;")
+			at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Sets;newHashSet()Ljava/util/HashSet;", remap = false)
 	)
 	public void extractRegion(CallbackInfoReturnable<Set<BlockEntity>> cir)
 	{
