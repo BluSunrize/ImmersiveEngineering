@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.IRecipeLayout;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -52,6 +53,7 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 		if(recipe.input1!=null)
 			l.add(recipe.input1.getMatchingFluidStacks());
 		ingredients.setInputLists(VanillaTypes.FLUID, l);
+		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.catalyst).build());
 		ingredients.setOutput(VanillaTypes.FLUID, recipe.output);
 	}
 
