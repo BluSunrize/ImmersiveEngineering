@@ -68,14 +68,18 @@ public class WireCollisionData
 
 	public void removeConnection(Connection conn)
 	{
-		if(!conn.blockDataGenerated)
-			return;
 		WireLogger.logger.info("Removing block data for {}", conn);
 		if(isClient)
 			forEachSection(conn, (sectionPos, segments) -> {
 				synchronized(sectionsToWires)
 				{
-					sectionsToWires.computeIfAbsent(sectionPos, $ -> new ArrayList<>()).remove(segments);
+					List<ConnectionSegments> forSection = sectionsToWires.get(sectionPos);
+					if(forSection!=null)
+					{
+						forSection.remove(segments);
+						if(forSection.isEmpty())
+							sectionsToWires.remove(sectionPos);
+					}
 				}
 			});
 		else
@@ -104,10 +108,13 @@ public class WireCollisionData
 
 	private void remove(BlockPos pos, Connection toRemove)
 	{
-		List<CollisionInfo> existing = blockToWires.computeIfAbsent(pos, $ -> new ArrayList<>());
-		existing.removeIf(i -> i.connection==toRemove);
-		if(existing.isEmpty())
-			blockToWires.remove(pos);
+		List<CollisionInfo> existing = blockToWires.get(pos);
+		if(existing!=null)
+		{
+			existing.removeIf(i -> i.connection==toRemove);
+			if(existing.isEmpty())
+				blockToWires.remove(pos);
+		}
 	}
 
 	private void add(BlockPos pos, CollisionInfo info)
