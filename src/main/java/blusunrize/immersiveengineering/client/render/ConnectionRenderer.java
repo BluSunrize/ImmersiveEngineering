@@ -189,7 +189,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		return new Vertex(
 				(float)point.x, (float)point.y, (float)point.z,
 				(float)uv.u(), (float)uv.v(),
-				getByte(color, 0)/255f, getByte(color, 8)/255f, getByte(color, 16)/255f,
+				getByte(color, 16)/255f, getByte(color, 8)/255f, getByte(color, 0)/255f,
 				(float)normal.x, (float)normal.y, (float)normal.y,
 				lightForStart
 		);

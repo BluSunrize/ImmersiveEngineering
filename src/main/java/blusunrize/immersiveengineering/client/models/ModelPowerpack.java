@@ -93,7 +93,7 @@ public class ModelPowerpack
 						CATENARY_DATA_CACHE.getUnchecked(
 								new CatenaryKey((int)(1024*angleX), (int)(1024*angleZ), right)
 						),
-						-.015625, 0x44a0ed,
+						-.015625, 0xeda044,
 						packedLightIn, packedOverlayIn
 				);
 				matrixStackIn.popPose();
