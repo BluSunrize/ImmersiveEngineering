@@ -132,10 +132,7 @@ public class GlobalWireNetwork implements IWorldTickable
 			joined = netA;
 		joined.addConnection(conn, this);
 		syncManager.onConnectionAdded(conn);
-		IImmersiveConnectable connA = joined.getConnector(posA);
-		IImmersiveConnectable connB = joined.getConnector(posB);
-		if(connA!=null&&connB!=null&&!connA.isProxy()&&!connB.isProxy())
-			collisionData.addConnection(conn);
+		collisionData.addConnection(conn);
 		validateNextTick = true;
 	}
 
