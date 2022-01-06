@@ -21,6 +21,7 @@ import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -277,12 +278,19 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 			if(b)
 				return InteractionResult.SUCCESS;
 		}
-		if(tile instanceof IInteractionObjectIE&&hand==InteractionHand.MAIN_HAND&&!player.isShiftKeyDown())
+		if(tile instanceof MenuProvider menuProvider&&hand==InteractionHand.MAIN_HAND&&!player.isShiftKeyDown())
 		{
-			IInteractionObjectIE<?> interaction = (IInteractionObjectIE<?>)tile;
-			interaction = interaction.getGuiMaster();
-			if(interaction!=null&&interaction.canUseGui(player)&&!world.isClientSide)
-				NetworkHooks.openGui((ServerPlayer)player, interaction, ((BlockEntity)interaction).getBlockPos());
+			if(!world.isClientSide)
+			{
+				if(menuProvider instanceof IInteractionObjectIE<?> interaction)
+				{
+					interaction = interaction.getGuiMaster();
+					if(interaction!=null&&interaction.canUseGui(player))
+						NetworkHooks.openGui((ServerPlayer)player, interaction, ((BlockEntity)interaction).getBlockPos());
+				}
+				else
+					NetworkHooks.openGui((ServerPlayer)player, menuProvider);
+			}
 			return InteractionResult.SUCCESS;
 		}
 		return superResult;

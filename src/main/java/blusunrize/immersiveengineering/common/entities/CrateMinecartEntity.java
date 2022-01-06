@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.entities;
 
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEntity;
+import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
@@ -73,11 +74,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	@Override
 	protected Supplier<WoodenCrateBlockEntity> getTileProvider()
 	{
-		return () -> {
-			WoodenCrateBlockEntity tile = new WoodenCrateBlockEntity(BlockPos.ZERO, WoodenDevices.CRATE.defaultBlockState());
-			tile.setOverrideState(getDisplayBlockState());
-			return tile;
-		};
+		return () -> new WoodenCrateBlockEntity(BlockPos.ZERO, WoodenDevices.CRATE.defaultBlockState());
 	}
 
 	@Override
@@ -99,6 +96,6 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	@Override
 	public AbstractContainerMenu createMenu(int id, @Nonnull Inventory inv, @Nonnull Player player)
 	{
-		return IEContainerTypes.CRATE_MINECART.construct(id, inv, this);
+		return new CrateEntityContainer(IEContainerTypes.WOODEN_CRATE.get(), id, inv, this);
 	}
 }

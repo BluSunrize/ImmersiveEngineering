@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
-import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import net.minecraft.core.Direction;
@@ -29,6 +28,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
@@ -36,7 +36,7 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
-public abstract class IEMinecartEntity<T extends IEBaseBlockEntity> extends AbstractMinecart implements MenuProvider
+public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMinecart implements MenuProvider
 {
 	protected T containedBlockEntity;
 
@@ -109,9 +109,12 @@ public abstract class IEMinecartEntity<T extends IEBaseBlockEntity> extends Abst
 		InteractionResult superResult = super.interact(player, hand);
 		if(superResult==InteractionResult.SUCCESS)
 			return superResult;
-		if(!level.isClientSide&&this.containedBlockEntity instanceof IInteractionObjectIE)
+		if(player instanceof ServerPlayer serverPlayer&&this.containedBlockEntity instanceof MenuProvider menuProvider)
 		{
-			NetworkHooks.openGui((ServerPlayer)player, this, buffer -> buffer.writeInt(this.getId()));
+			if(menuProvider instanceof IInteractionObjectIE<?>)
+				NetworkHooks.openGui(serverPlayer, this, buffer -> buffer.writeInt(this.getId()));
+			else
+				NetworkHooks.openGui(serverPlayer, this);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
@@ -128,7 +131,10 @@ public abstract class IEMinecartEntity<T extends IEBaseBlockEntity> extends Abst
 	{
 		super.addAdditionalSaveData(compound);
 		if(this.containedBlockEntity!=null)
-			this.containedBlockEntity.writeCustomNBT(compound, false);
+		{
+			CompoundTag bEntityData = this.containedBlockEntity.saveWithoutMetadata();
+			compound.merge(bEntityData);
+		}
 	}
 
 	@Override
@@ -136,7 +142,7 @@ public abstract class IEMinecartEntity<T extends IEBaseBlockEntity> extends Abst
 	{
 		super.readAdditionalSaveData(compound);
 		this.containedBlockEntity = getTileProvider().get();
-		this.containedBlockEntity.readCustomNBT(compound, false);
+		this.containedBlockEntity.load(compound);
 	}
 
 	@Override

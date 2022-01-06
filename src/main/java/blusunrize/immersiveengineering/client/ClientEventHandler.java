@@ -32,7 +32,6 @@ import blusunrize.immersiveengineering.client.gui.BlastFurnaceScreen;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer;
 import blusunrize.immersiveengineering.client.render.tile.AutoWorkbenchRenderer.BlueprintLines;
 import blusunrize.immersiveengineering.client.utils.*;
-import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOverlayText;
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
@@ -534,14 +533,10 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					Entity entity = ((EntityHitResult)mop).getEntity();
 					if(entity instanceof ItemFrame)
 						BlockOverlayUtils.renderOreveinMapOverlays(transform, (ItemFrame)entity, mop, scaledWidth, scaledHeight);
-					else if(entity instanceof IEMinecartEntity)
+					else if(entity instanceof IEMinecartEntity<?> ieMinecart&&ieMinecart.getContainedBlockEntity() instanceof IBlockOverlayText overlayText)
 					{
-						IEBaseBlockEntity containedTile = ((IEMinecartEntity<?>)entity).getContainedBlockEntity();
-						if(containedTile instanceof IBlockOverlayText)
-						{
-							Component[] text = ((IBlockOverlayText)containedTile).getOverlayText(player, mop, false);
-							BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
-						}
+						Component[] text = overlayText.getOverlayText(player, mop, false);
+						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
 					}
 				}
 				else if(mop instanceof BlockHitResult)
