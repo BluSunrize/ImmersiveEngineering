@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEntity;
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -26,8 +25,10 @@ public abstract class CrateScreen<C extends CrateContainer> extends IEContainerS
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
-		WoodenCrateBlockEntity te = menu.tile;
-		this.font.draw(transform, te.getDisplayName().getContents(), 8, 6, 0x190b06);
+		// Only difference to super version is the text color
+		final int color = 0x190b06;
+		this.font.draw(transform, title, titleLabelX, titleLabelY, color);
+		this.font.draw(transform, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color);
 	}
 
 	// Unfortunately necessary to calm down the compiler wrt generics

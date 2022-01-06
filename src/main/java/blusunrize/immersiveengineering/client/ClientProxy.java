@@ -392,7 +392,7 @@ public class ClientProxy extends CommonProxy
 		registerTileScreen(IEContainerTypes.ALLOY_SMELTER, AlloySmelterScreen::new);
 		registerTileScreen(IEContainerTypes.BLAST_FURNACE, BlastFurnaceScreen::new);
 		registerTileScreen(IEContainerTypes.CRAFTING_TABLE, CraftingTableScreen::new);
-		registerTileScreen(IEContainerTypes.WOODEN_CRATE, CrateScreen.StandardCrate::new);
+		MenuScreens.register(IEContainerTypes.WOODEN_CRATE.get(), CrateScreen.StandardCrate::new);
 		registerTileScreen(IEContainerTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);
 		registerTileScreen(IEContainerTypes.CIRCUIT_TABLE, CircuitTableScreen::new);
 		registerTileScreen(IEContainerTypes.ASSEMBLER, AssemblerScreen::new);
@@ -415,7 +415,7 @@ public class ClientProxy extends CommonProxy
 		registerScreen(IEContainerTypes.REVOLVER, RevolverScreen::new);
 		registerScreen(IEContainerTypes.MAINTENANCE_KIT, MaintenanceKitScreen::new);
 
-		registerScreen(IEContainerTypes.CRATE_MINECART, CrateScreen.EntityCrate::new);
+		MenuScreens.register(IEContainerTypes.CRATE_MINECART.get(), CrateScreen.EntityCrate::new);
 	}
 
 	private static <T extends BlockEntity>
@@ -456,12 +456,6 @@ public class ClientProxy extends CommonProxy
 		registerBERenderNoContext(event, IEBlockEntities.CORE_SAMPLE.get(), CoresampleRenderer::new);
 		//CLOTH
 		event.registerBlockEntityRenderer(IEBlockEntities.SHADER_BANNER.get(), ShaderBannerRenderer::new);
-	}
-
-	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
-	void registerScreen(IEContainerTypes.EntityContainerType<?, C> type, ScreenConstructor<C, S> factory)
-	{
-		MenuScreens.register(type.getType(), factory);
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>

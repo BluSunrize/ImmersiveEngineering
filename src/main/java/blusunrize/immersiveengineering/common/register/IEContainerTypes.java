@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.blocks.stone.AlloySmelterBlockEnti
 import blusunrize.immersiveengineering.common.blocks.stone.BlastFurnaceBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.wooden.*;
-import blusunrize.immersiveengineering.common.entities.CrateMinecartEntity;
 import blusunrize.immersiveengineering.common.gui.*;
 import blusunrize.immersiveengineering.common.gui.TurretContainer.ChemTurretContainer;
 import blusunrize.immersiveengineering.common.gui.TurretContainer.GunTurretContainer;
@@ -43,7 +42,7 @@ public class IEContainerTypes
 	public static final BEContainer<AlloySmelterBlockEntity, AlloySmelterContainer> ALLOY_SMELTER = register(Lib.GUIID_AlloySmelter, AlloySmelterContainer::new);
 	public static final BEContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceContainer> BLAST_FURNACE = register(Lib.GUIID_BlastFurnace, BlastFurnaceContainer::new);
 	public static final BEContainer<CraftingTableBlockEntity, CraftingTableContainer> CRAFTING_TABLE = register(Lib.GUIID_CraftingTable, CraftingTableContainer::new);
-	public static final BEContainer<WoodenCrateBlockEntity, CrateContainer> WOODEN_CRATE = register(Lib.GUIID_WoodenCrate, CrateContainer::new);
+	public static final RegistryObject<MenuType<CrateContainer>> WOODEN_CRATE = registerSimple(Lib.GUIID_WoodenCrate, CrateContainer::new);
 	public static final BEContainer<ModWorkbenchBlockEntity, ModWorkbenchContainer> MOD_WORKBENCH = register(Lib.GUIID_Workbench, ModWorkbenchContainer::new);
 	public static final BEContainer<CircuitTableBlockEntity, CircuitTableContainer> CIRCUIT_TABLE = register(Lib.GUIID_CircuitTable, CircuitTableContainer::new);
 	public static final BEContainer<AssemblerBlockEntity, AssemblerContainer> ASSEMBLER = register(Lib.GUIID_Assembler, AssemblerContainer::new);
@@ -66,7 +65,7 @@ public class IEContainerTypes
 	public static final ItemContainerType<RevolverContainer> REVOLVER = register(Lib.GUIID_Revolver, RevolverContainer::new);
 	public static final ItemContainerType<MaintenanceKitContainer> MAINTENANCE_KIT = register(Lib.GUIID_MaintenanceKit, MaintenanceKitContainer::new);
 
-	public static final EntityContainerType<CrateMinecartEntity, CrateEntityContainer> CRATE_MINECART = register(Lib.GUIID_CartCrate, CrateEntityContainer::new);
+	public static final RegistryObject<MenuType<CrateEntityContainer>> CRATE_MINECART = registerSimple(Lib.GUIID_CartCrate, CrateEntityContainer::new);
 
 	public static <T extends BlockEntity, C extends IEBaseContainer<? super T>>
 	BEContainer<T, C> register(String name, BEContainerConstructor<T, C> container)
@@ -108,22 +107,17 @@ public class IEContainerTypes
 		return new ItemContainerType<>(typeRef, container);
 	}
 
-	public static <E extends Entity, C extends AbstractContainerMenu>
-	EntityContainerType<E, C> register(String name, EntityContainerConstructor<? super E, C> container)
+	public static <M extends AbstractContainerMenu>
+	RegistryObject<MenuType<M>> registerSimple(String name, SimpleContainerConstructor<M> factory)
 	{
-		RegistryObject<MenuType<C>> typeRef = REGISTER.register(
+		return REGISTER.register(
 				name, () -> {
-					Mutable<MenuType<C>> typeBox = new MutableObject<>();
-					MenuType<C> type = new MenuType<>((IContainerFactory<C>)(windowId, inv, data) -> {
-						int entityId = data.readInt();
-						Entity entity = ImmersiveEngineering.proxy.getClientWorld().getEntity(entityId);
-						return container.construct(typeBox.getValue(), windowId, inv, (E)entity);
-					});
+					Mutable<MenuType<M>> typeBox = new MutableObject<>();
+					MenuType<M> type = new MenuType<>((id, inv) -> factory.construct(typeBox.getValue(), id, inv));
 					typeBox.setValue(type);
 					return type;
 				}
 		);
-		return new EntityContainerType<>(typeRef, container);
 	}
 
 	public static class BEContainer<T extends BlockEntity, C extends IEBaseContainer<? super T>>
@@ -171,28 +165,6 @@ public class IEContainerTypes
 		}
 	}
 
-	public static class EntityContainerType<E extends Entity, C extends AbstractContainerMenu>
-	{
-		final RegistryObject<MenuType<C>> type;
-		final EntityContainerConstructor<? super E, C> factory;
-
-		private EntityContainerType(RegistryObject<MenuType<C>> type, EntityContainerConstructor<? super E, C> factory)
-		{
-			this.type = type;
-			this.factory = factory;
-		}
-
-		public C construct(int id, Inventory inv, E entity)
-		{
-			return factory.construct(getType(), id, inv, entity);
-		}
-
-		public MenuType<C> getType()
-		{
-			return type.get();
-		}
-	}
-
 	public interface BEContainerConstructor<T extends BlockEntity, C extends IEBaseContainer<? super T>>
 	{
 		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, T te);
@@ -206,5 +178,10 @@ public class IEContainerTypes
 	public interface EntityContainerConstructor<E extends Entity, C extends AbstractContainerMenu>
 	{
 		C construct(MenuType<?> type, int windowId, Inventory inventoryPlayer, E entity);
+	}
+
+	public interface SimpleContainerConstructor<C extends AbstractContainerMenu>
+	{
+		C construct(MenuType<?> type, int windowId, Inventory inventoryPlayer);
 	}
 }
