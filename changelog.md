@@ -1,11 +1,14 @@
 ##### Version 1.18.1-7.1.1-pre
 - Change herbicide recipe to use sulfur instead of nitrate (BluSunrize)
 - Clean up wire collision code (Malte)
+- Change wire rendering to use upcoming Forge features (Malte)
+- Change crates to extend vanilla loot containers (Malte)
 - Fix in-hand GUI for Drill & Buzzsaw rendering their head/blade too dark (BluSunrize)
 - Fix sync issues and dupe bug in the buzzsaw (BluSunrize)
 - Fix incorrect collision box on Concrete Chunk (BluSunrize)
 - Fix circuit table not dropping its contents (BluSunrize)
 - Fix JEI not showing refinery recipes when checking the uses of a catalyst (BluSunrize)
+- Fix manual not resetting when reloading resources (Malte)
 
 ##### Version 1.18.1-7.1.0-145
 - The "Chemical Engineering" update! (BluSunrize)
