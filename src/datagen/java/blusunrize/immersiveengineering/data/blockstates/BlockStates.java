@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.data.DataGenUtils;
 import blusunrize.immersiveengineering.data.models.ConveyorModelBuilder;
+import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import blusunrize.immersiveengineering.data.models.SideConfigBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -91,7 +92,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 				.add(new Vec3i(0, 3, 0));
 		for(Direction d : DirectionUtils.BY_HORIZONTAL_INDEX)
 			parts.add(new BlockPos(0, 3, 0).relative(d));
-		ModelFile baseModel = ieObjBuilder(name(b), model)
+		NongeneratedModel baseModel = ieObjBuilder(name(b), model, innerModels)
 				.callback(PostCallbacks.INSTANCE)
 				.end()
 				.texture("texture", texture);
@@ -443,7 +444,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 				.texture("particle", textureRL)
 				.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper));
 		createMultistateSingleModel(block, new ConfiguredModel(steelModel));
-		itemModel(block, obj(name(block)+"_item", objFile, ImmutableMap.of("texture", textureRL)));
+		itemModel(block, obj(name(block)+"_item", objFile, ImmutableMap.of("texture", textureRL), models()));
 	}
 
 	public void turret(Supplier<? extends Block> b, String loc)
@@ -568,7 +569,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 			{
 				ResourceLocation modelLoc = rl("block/wooden_device/wallmount"+or.modelSuffix()+".obj");
 				ModelFile model = obj(b.get().getRegistryName().getPath()+or.modelSuffix(), modelLoc,
-						ImmutableMap.of("texture", texture));
+						ImmutableMap.of("texture", texture), models());
 				stateBuilder.partialState()
 						.with(IEProperties.FACING_HORIZONTAL, d)
 						.with(WallmountBlock.ORIENTATION, or)

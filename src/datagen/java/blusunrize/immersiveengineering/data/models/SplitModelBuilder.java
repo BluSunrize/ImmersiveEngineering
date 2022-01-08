@@ -1,13 +1,13 @@
 package blusunrize.immersiveengineering.data.models;
 
 import blusunrize.immersiveengineering.client.models.split.SplitModelLoader;
+import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Vec3i;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
 import net.minecraftforge.client.model.generators.ModelBuilder;
-import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class SplitModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBu
 	}
 
 	private List<Vec3i> parts;
-	private ModelFile modelToSplit;
+	private NongeneratedModel modelToSplit;
 	private boolean isDynamic;
 
 	public SplitModelBuilder<T> parts(List<Vec3i> parts)
@@ -36,7 +36,7 @@ public class SplitModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBu
 		return this;
 	}
 
-	public SplitModelBuilder<T> innerModel(ModelFile modelToSplit)
+	public SplitModelBuilder<T> innerModel(NongeneratedModel modelToSplit)
 	{
 		Preconditions.checkNotNull(modelToSplit);
 		Preconditions.checkState(this.modelToSplit==null);
@@ -55,7 +55,7 @@ public class SplitModelBuilder<T extends ModelBuilder<T>> extends CustomLoaderBu
 	{
 		json = super.toJson(json);
 		json.addProperty(SplitModelLoader.DYNAMIC, isDynamic);
-		json.addProperty(SplitModelLoader.BASE_MODEL, modelToSplit.getLocation().toString());
+		json.add(SplitModelLoader.INNER_MODEL, modelToSplit.toJson());
 		JsonArray partsJson = new JsonArray();
 		for(Vec3i part : parts)
 		{

@@ -38,21 +38,25 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		createConnector(
 				Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), obj(
 						"block/connector/connector_lv", rl("block/connector/connector_lv.obj"),
-						ImmutableMap.of("texture", modLoc("block/connector/connector_lv"))
+						ImmutableMap.of("texture", modLoc("block/connector/connector_lv")),
+						models()
 				)
 		);
 		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), obj(
 				"block/connector/relay_lv", rl("block/connector/connector_lv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/relay_lv"))
+				ImmutableMap.of("texture", modLoc("block/connector/relay_lv")),
+				models()
 		));
 
 		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), obj(
 				"block/connector/connector_mv", rl("block/connector/connector_mv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/connector_mv"))
+				ImmutableMap.of("texture", modLoc("block/connector/connector_mv")),
+				models()
 		));
 		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), obj(
 				"block/connector/relay_mv", rl("block/connector/connector_mv.obj"),
-				ImmutableMap.of("texture", modLoc("block/connector/relay_mv"))
+				ImmutableMap.of("texture", modLoc("block/connector/relay_mv")),
+				models()
 		));
 
 		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), obj("block/connector/connector_hv.obj"));
@@ -78,10 +82,12 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		buildConnector(MetalDevices.ELECTRIC_LANTERN)
 				.binaryModel(IEProperties.ACTIVE, obj(
 						"block/metal_device/e_lantern_off", rl("block/metal_device/e_lantern.obj"),
-						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern"))
+						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern")),
+						models()
 				), obj(
 						"block/metal_device/e_lantern_on", rl("block/metal_device/e_lantern.obj"),
-						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on"))
+						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on")),
+						models()
 				))
 				.autoRotationData()
 				.build();
@@ -101,7 +107,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		transformerModel("block/connector/transformer_hv", Connectors.TRANSFORMER_HV);
 		createConnector(Connectors.POST_TRANSFORMER, obj("block/connector/transformer_post.obj"));
 
-		ModelFile ctModel = split(obj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
+		ModelFile ctModel = split(innerObj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
 		createConnector(Connectors.CURRENT_TRANSFORMER, ctModel);
 		createConnector(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end());
 		createConnector(Cloth.BALLOON, ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end());
@@ -110,10 +116,10 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 	private void transformerModel(String baseName, Supplier<? extends Block> transformer)
 	{
 		buildConnector(transformer).binaryModel(
-				IEProperties.MIRRORED,
-				split(obj(baseName+"_left.obj"), COLUMN_THREE),
-				split(obj(baseName+"_right.obj"), COLUMN_THREE)
-		)
+						IEProperties.MIRRORED,
+						split(innerObj(baseName+"_left.obj"), COLUMN_THREE),
+						split(mirror(innerObj(baseName+"_left.obj"), innerModels), COLUMN_THREE)
+				)
 				.addAdditional(IEProperties.MULTIBLOCKSLAVE)
 				.rotationProperty(IEProperties.FACING_HORIZONTAL)
 				.build();

@@ -26,12 +26,12 @@ import java.util.function.Function;
 
 public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 {
-	private final IModelGeometry<?> baseModel;
+	private final UnbakedModel baseModel;
 	private final Set<Vec3i> parts;
 	private final boolean dynamic;
 	private final Vec3i size;
 
-	public UnbakedSplitModel(IModelGeometry<?> baseModel, List<Vec3i> parts, boolean dynamic, Vec3i size)
+	public UnbakedSplitModel(UnbakedModel baseModel, List<Vec3i> parts, boolean dynamic, Vec3i size)
 	{
 		this.baseModel = baseModel;
 		this.parts = new HashSet<>(parts);
@@ -43,7 +43,7 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 	public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
 							ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 	{
-		BakedModel bakedBase = baseModel.bake(owner, bakery, spriteGetter, BlockModelRotation.X0_Y0, overrides, modelLocation);
+		BakedModel bakedBase = baseModel.bake(bakery, spriteGetter, BlockModelRotation.X0_Y0, modelLocation);
 		if(dynamic)
 			return new BakedDynamicSplitModel<>(
 					(ICacheKeyProvider<?>)bakedBase, parts, modelTransform, size
@@ -56,6 +56,6 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter,
 												  Set<Pair<String, String>> missingTextureErrors)
 	{
-		return baseModel.getTextures(owner, modelGetter, missingTextureErrors);
+		return baseModel.getMaterials(modelGetter, missingTextureErrors);
 	}
 }

@@ -23,6 +23,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
@@ -127,5 +128,10 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 	public Component getDisplayName()
 	{
 		return baseState.get().getName();
+	}
+
+	public Block getBlock()
+	{
+		return baseState.get();
 	}
 }

@@ -4,6 +4,9 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.data.DataGenUtils;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
+import blusunrize.immersiveengineering.data.models.MirroredModelBuilder;
+import blusunrize.immersiveengineering.data.models.NongeneratedModels;
+import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import blusunrize.immersiveengineering.data.models.SplitModelBuilder;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -18,10 +21,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
-import net.minecraftforge.client.model.generators.BlockModelBuilder;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ConfiguredModel;
-import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -38,11 +38,13 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected static final Map<ResourceLocation, String> generatedParticleTextures = new HashMap<>();
 	protected final ExistingFileHelper existingFileHelper;
+	protected final NongeneratedModels innerModels;
 
 	public ExtendedBlockstateProvider(DataGenerator gen, ExistingFileHelper exFileHelper)
 	{
 		super(gen, Lib.MODID, exFileHelper);
 		this.existingFileHelper = exFileHelper;
+		this.innerModels = new NongeneratedModels(gen, existingFileHelper);
 	}
 
 	protected String name(Supplier<? extends Block> b)
@@ -148,28 +150,41 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		itemModels().getBuilder(name(block)).parent(model);
 	}
 
-	protected BlockModelBuilder obj(String loc)
+	protected NongeneratedModel innerObj(String loc)
 	{
 		Preconditions.checkArgument(loc.endsWith(".obj"));
-		return obj(loc.substring(0, loc.length()-4), modLoc(loc));
+		return obj(loc.substring(0, loc.length()-4), modLoc(loc), innerModels);
 	}
 
-	protected BlockModelBuilder obj(String name, ResourceLocation model)
+	protected BlockModelBuilder obj(String loc)
 	{
-		return obj(name, model, ImmutableMap.of());
+		return obj(loc, models());
 	}
 
-	protected BlockModelBuilder obj(String name, ResourceLocation model, Map<String, ResourceLocation> textures)
+	protected <T extends ModelBuilder<T>>
+	T obj(String loc, ModelProvider<T> modelProvider)
 	{
-		return obj(models().withExistingParent(name, mcLoc("block")), model, textures);
+		Preconditions.checkArgument(loc.endsWith(".obj"));
+		return obj(loc.substring(0, loc.length()-4), modLoc(loc), modelProvider);
 	}
 
-	protected BlockModelBuilder obj(
-			BlockModelBuilder base, ResourceLocation model, Map<String, ResourceLocation> textures
-	)
+	protected <T extends ModelBuilder<T>>
+	T obj(String name, ResourceLocation model, ModelProvider<T> provider)
+	{
+		return obj(name, model, ImmutableMap.of(), provider);
+	}
+
+	protected <T extends ModelBuilder<T>>
+	T obj(String name, ResourceLocation model, Map<String, ResourceLocation> textures, ModelProvider<T> provider)
+	{
+		return obj(provider.withExistingParent(name, mcLoc("block")), model, textures);
+	}
+
+	protected <T extends ModelBuilder<T>>
+	T obj(T base, ResourceLocation model, Map<String, ResourceLocation> textures)
 	{
 		assertModelExists(model);
-		BlockModelBuilder ret = base
+		T ret = base
 				.customLoader(OBJLoaderBuilder::begin)
 				.detectCullableFaces(false)
 				.modelLocation(addModelsPrefix(model))
@@ -185,7 +200,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		return ret;
 	}
 
-	protected BlockModelBuilder splitModel(String name, ModelFile model, List<Vec3i> parts, boolean dynamic)
+	protected BlockModelBuilder splitModel(String name, NongeneratedModel model, List<Vec3i> parts, boolean dynamic)
 	{
 		BlockModelBuilder result = models().withExistingParent(name, mcLoc("block"))
 				.customLoader(SplitModelBuilder::begin)
@@ -197,17 +212,17 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		return result;
 	}
 
-	protected ModelFile split(ModelFile baseModel, List<Vec3i> parts, boolean dynamic)
+	protected ModelFile split(NongeneratedModel baseModel, List<Vec3i> parts, boolean dynamic)
 	{
 		return splitModel(baseModel.getLocation().getPath()+"_split", baseModel, parts, dynamic);
 	}
 
-	protected ModelFile split(ModelFile baseModel, List<Vec3i> parts)
+	protected ModelFile split(NongeneratedModel baseModel, List<Vec3i> parts)
 	{
 		return split(baseModel, parts, false);
 	}
 
-	protected ModelFile splitDynamic(ModelFile baseModel, List<Vec3i> parts)
+	protected ModelFile splitDynamic(NongeneratedModel baseModel, List<Vec3i> parts)
 	{
 		return split(baseModel, parts, true);
 	}
@@ -240,18 +255,43 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected IEOBJBuilder<BlockModelBuilder> ieObjBuilder(String loc)
 	{
-		Preconditions.checkArgument(loc.endsWith(".obj.ie"));
-		return ieObjBuilder(loc.substring(0, loc.length()-7), modLoc(loc));
+		return ieObjBuilder(getAutoNameIEOBJ(loc), modLoc(loc));
 	}
 
 	protected IEOBJBuilder<BlockModelBuilder> ieObjBuilder(String name, ResourceLocation model)
 	{
+		return ieObjBuilder(name, model, models());
+	}
+
+	protected <T extends ModelBuilder<T>>
+	IEOBJBuilder<T> ieObjBuilder(String loc, ModelProvider<T> modelProvider)
+	{
+		return ieObjBuilder(getAutoNameIEOBJ(loc), modLoc(loc), modelProvider);
+	}
+
+	private static String getAutoNameIEOBJ(String loc)
+	{
+		Preconditions.checkArgument(loc.endsWith(".obj.ie"));
+		return loc.substring(0, loc.length()-7);
+	}
+
+	protected <T extends ModelBuilder<T>>
+	IEOBJBuilder<T> ieObjBuilder(String name, ResourceLocation model, ModelProvider<T> modelProvider)
+	{
 		final String particle = DataGenUtils.getTextureFromObj(model, existingFileHelper);
 		generatedParticleTextures.put(modLoc(name), particle);
-		return models().withExistingParent(name, mcLoc("block"))
+		return modelProvider.withExistingParent(name, mcLoc("block"))
 				.texture("particle", particle)
 				.customLoader(IEOBJBuilder::begin)
 				.modelLocation(addModelsPrefix(model));
+	}
+
+	protected <T extends ModelBuilder<T>> T mirror(NongeneratedModel inner, ModelProvider<T> provider)
+	{
+		return provider.getBuilder(inner.getLocation().getPath()+"_mirrored")
+				.customLoader(MirroredModelBuilder::begin)
+				.inner(inner)
+				.end();
 	}
 
 	protected int getAngle(Direction dir, int offset)
