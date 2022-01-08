@@ -5,7 +5,15 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": true,
-  "base_model": "immersiveengineering:block/wooden_device/workbench",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
+    },
+    "loader": "immersiveengineering:ie_obj",
+    "model": "immersiveengineering:models/block/wooden_device/workbench.obj.ie",
+    "callbacks": "immersiveengineering:workbench"
+  },
   "split_parts": [
     [
       0,

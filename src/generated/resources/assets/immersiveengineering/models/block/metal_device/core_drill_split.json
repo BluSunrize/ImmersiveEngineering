@@ -5,7 +5,16 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveengineering:block/metal_device/core_drill",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveengineering:block/metal_device/coresample_drill"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/metal_device/core_drill.obj",
+    "detectCullableFaces": false,
+    "flip-v": true
+  },
   "split_parts": [
     [
       0,

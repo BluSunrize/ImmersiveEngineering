@@ -5,7 +5,16 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveengineering:block/blastfurnace_advanced",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/blast_furnace_advanced"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/blastfurnace_advanced.obj",
+    "detectCullableFaces": false,
+    "flip-v": true
+  },
   "split_parts": [
     [
       -1,

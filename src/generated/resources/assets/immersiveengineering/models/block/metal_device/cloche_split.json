@@ -5,7 +5,15 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": true,
-  "base_model": "immersiveengineering:block/metal_device/cloche",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveengineering:block/metal_device/cloche"
+    },
+    "loader": "immersiveengineering:ie_obj",
+    "model": "immersiveengineering:models/block/metal_device/cloche.obj.ie",
+    "callbacks": "immersiveengineering:cloche"
+  },
   "split_parts": [
     [
       0,

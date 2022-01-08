@@ -5,7 +5,16 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveengineering:block/metal_multiblock/mixer",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/mixer"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/metal_multiblock/mixer.obj",
+    "detectCullableFaces": false,
+    "flip-v": true
+  },
   "split_parts": [
     [
       -1,

@@ -5,7 +5,18 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveengineering:block/coke_oven_on",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/coke_oven_on",
+      "side": "immersiveengineering:block/multiblocks/coke_oven",
+      "front": "immersiveengineering:block/multiblocks/coke_oven_on"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/stone_multiblocks/cube_three.obj",
+    "detectCullableFaces": false,
+    "flip-v": true
+  },
   "split_parts": [
     [
       -1,

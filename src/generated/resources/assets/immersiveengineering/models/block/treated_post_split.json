@@ -2,7 +2,16 @@
   "parent": "minecraft:block/block",
   "loader": "immersiveengineering:basic_split",
   "dynamic": true,
-  "base_model": "immersiveengineering:block/treated_post",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "#texture",
+      "texture": "immersiveengineering:block/wooden_decoration/post"
+    },
+    "loader": "immersiveengineering:ie_obj",
+    "model": "immersiveengineering:models/block/wooden_device/wooden_post.obj.ie",
+    "callbacks": "immersiveengineering:post"
+  },
   "split_parts": [
     [
       0,

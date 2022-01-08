@@ -5,7 +5,20 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveengineering:block/alloy_smelter_off",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/alloy_smelter_off",
+      "side": "immersiveengineering:block/multiblocks/alloy_smelter_side",
+      "top": "immersiveengineering:block/multiblocks/alloy_smelter_top",
+      "bottom": "immersiveengineering:block/multiblocks/alloy_smelter_bottom",
+      "front": "immersiveengineering:block/multiblocks/alloy_smelter_off"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/stone_multiblocks/cube_two.obj",
+    "detectCullableFaces": false,
+    "flip-v": true
+  },
   "split_parts": [
     [
       0,

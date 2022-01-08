@@ -1,11 +1,20 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/multiblocks/fermenter"
-  },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveengineering:block/metal_multiblock/fermenter_mirrored",
+  "inner_model": {
+    "loader": "immersiveengineering:mirror",
+    "inner_model": {
+      "parent": "minecraft:block/block",
+      "textures": {
+        "particle": "immersiveengineering:block/multiblocks/fermenter"
+      },
+      "loader": "forge:obj",
+      "model": "immersiveengineering:models/block/metal_multiblock/fermenter.obj",
+      "detectCullableFaces": false,
+      "flip-v": true
+    }
+  },
   "split_parts": [
     [
       1,

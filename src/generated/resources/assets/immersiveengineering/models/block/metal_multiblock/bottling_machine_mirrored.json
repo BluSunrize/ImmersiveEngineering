@@ -1,9 +1,0 @@
-{
-  "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/multiblocks/bottling_machine"
-  },
-  "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine_mirrored.obj.ie",
-  "callbacks": "immersiveengineering:bottling_machine"
-}

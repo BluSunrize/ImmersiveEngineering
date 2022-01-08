@@ -5,7 +5,18 @@
   },
   "loader": "immersiveengineering:basic_split",
   "dynamic": false,
-  "base_model": "immersiveengineering:block/blast_furnace_on",
+  "inner_model": {
+    "parent": "minecraft:block/block",
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/blast_furnace_on",
+      "side": "immersiveengineering:block/multiblocks/blast_furnace",
+      "front": "immersiveengineering:block/multiblocks/blast_furnace_on"
+    },
+    "loader": "forge:obj",
+    "model": "immersiveengineering:models/block/stone_multiblocks/cube_three.obj",
+    "detectCullableFaces": false,
+    "flip-v": true
+  },
   "split_parts": [
     [
       -1,

@@ -1,11 +1,19 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/multiblocks/bottling_machine"
-  },
   "loader": "immersiveengineering:basic_split",
   "dynamic": true,
-  "base_model": "immersiveengineering:block/metal_multiblock/bottling_machine_mirrored",
+  "inner_model": {
+    "loader": "immersiveengineering:mirror",
+    "inner_model": {
+      "parent": "minecraft:block/block",
+      "textures": {
+        "particle": "immersiveengineering:block/multiblocks/bottling_machine"
+      },
+      "loader": "immersiveengineering:ie_obj",
+      "model": "immersiveengineering:models/block/metal_multiblock/bottling_machine.obj.ie",
+      "callbacks": "immersiveengineering:bottling_machine"
+    }
+  },
   "split_parts": [
     [
       1,
