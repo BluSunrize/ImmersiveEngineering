@@ -259,7 +259,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		@Override
 		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 		{
-			return slot==0&&ItemStack.isSame(stack, identStack);
+			return slot==0;
 		}
 	}
 }
