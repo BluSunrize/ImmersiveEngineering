@@ -168,7 +168,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 	}
 
 	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
-			this, be -> be.insertionHandler, SiloBlockEntity::master, registerCapability(new SiloInventoryHandler(this))
+			this, be -> be.insertionHandler, SiloBlockEntity::master, registerCapability(new SiloInventoryHandler())
 	);
 
 	private static final BlockPos bottomIoOffset = new BlockPos(1, 0, 1);
@@ -195,15 +195,8 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		return 0;
 	}
 
-	public static class SiloInventoryHandler implements IItemHandler
+	public class SiloInventoryHandler implements IItemHandler
 	{
-		SiloBlockEntity silo;
-
-		public SiloInventoryHandler(SiloBlockEntity silo)
-		{
-			this.silo = silo;
-		}
-
 		@Override
 		public int getSlots()
 		{
@@ -216,45 +209,43 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 			if(slot==0)
 				return ItemStack.EMPTY;
 			else
-				return ItemHandlerHelper.copyStackWithSize(silo.identStack, silo.storageAmount);
+				return ItemHandlerHelper.copyStackWithSize(identStack, storageAmount);
 		}
 
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
-			stack = stack.copy();
-			int space = MAX_STORAGE-silo.storageAmount;
-			if(slot!=0||space < 1||stack.isEmpty()||(!silo.identStack.isEmpty()&&!ItemHandlerHelper.canItemStacksStack(silo.identStack, stack)))
+			int space = MAX_STORAGE-storageAmount;
+			if(slot!=0||space < 1||stack.isEmpty()||(!identStack.isEmpty()&&!ItemHandlerHelper.canItemStacksStack(identStack, stack)))
 				return stack;
 			int accepted = Math.min(space, stack.getCount());
 			if(!simulate)
 			{
-				silo.storageAmount += accepted;
-				if(silo.identStack.isEmpty())
-					silo.identStack = stack.copy();
-				silo.setChanged();
-				silo.markContainingBlockForUpdate(null);
+				storageAmount += accepted;
+				if(identStack.isEmpty())
+					identStack = stack.copy();
+				setChanged();
+				markContainingBlockForUpdate(null);
 			}
+			stack = stack.copy();
 			stack.shrink(accepted);
-			if(stack.getCount() < 1)
-				stack = ItemStack.EMPTY;
 			return stack;
 		}
 
 		@Override
 		public ItemStack extractItem(int slot, int amount, boolean simulate)
 		{
-			if(slot!=1||silo.storageAmount < 1||amount < 1||silo.identStack.isEmpty())
+			if(slot!=1||storageAmount < 1||amount < 1||identStack.isEmpty())
 				return ItemStack.EMPTY;
-			int returned = Math.min(Math.min(silo.storageAmount, amount), silo.identStack.getMaxStackSize());
-			ItemStack out = ItemHandlerHelper.copyStackWithSize(silo.identStack, returned);
+			int returned = Math.min(Math.min(storageAmount, amount), identStack.getMaxStackSize());
+			ItemStack out = ItemHandlerHelper.copyStackWithSize(identStack, returned);
 			if(!simulate)
 			{
-				silo.storageAmount -= out.getCount();
-				if(silo.storageAmount <= 0&&!silo.lockItem)
-					silo.identStack = ItemStack.EMPTY;
-				silo.setChanged();
-				silo.markContainingBlockForUpdate(null);
+				storageAmount -= out.getCount();
+				if(storageAmount <= 0&&!lockItem)
+					identStack = ItemStack.EMPTY;
+				setChanged();
+				markContainingBlockForUpdate(null);
 			}
 			return out;
 		}
@@ -268,7 +259,7 @@ public class SiloBlockEntity extends MultiblockPartBlockEntity<SiloBlockEntity> 
 		@Override
 		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
 		{
-			return slot==0&&ItemStack.isSame(stack, silo.identStack);
+			return slot==0&&ItemStack.isSame(stack, identStack);
 		}
 	}
 }
