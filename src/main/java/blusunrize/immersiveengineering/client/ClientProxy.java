@@ -173,6 +173,7 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
 		ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
 		ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
+		ModelLoaderRegistry.registerLoader(MirroredModelLoader.ID, new MirroredModelLoader());
 	}
 
 	@SubscribeEvent
