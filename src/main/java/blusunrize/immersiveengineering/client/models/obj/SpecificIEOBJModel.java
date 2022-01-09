@@ -34,7 +34,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.IModelBuilder;
 import net.minecraftforge.client.model.IModelConfiguration;
 import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.client.model.PerspectiveMapWrapper;
@@ -43,6 +42,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 
 public class SpecificIEOBJModel<T> implements BakedModel
 {
@@ -175,7 +175,6 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		List<ShadedQuads> ret = new ArrayList<>();
 		Transformation optionalTransform = baseModel.getSprite().getRotation();
 		optionalTransform = callback.applyTransformations(key, groupName, optionalTransform);
-		Transformation transform = state.transform();
 
 		final MaterialSpriteGetter<T> spriteGetter = new MaterialSpriteGetter<>(
 				baseModel.getSpriteGetter(), groupName, callback, key, shader
@@ -191,9 +190,9 @@ public class SpecificIEOBJModel<T> implements BakedModel
 					spriteGetter.setRenderPass(pass);
 					colorGetter.setRenderPass(pass);
 					coordinateRemapper.setRenderPass(pass);
-					IModelBuilder<?> modelBuilder = new QuadListAdder(quads::add, transform);
 					addGroupQuads(
-							group, baseModel.getOwner(), modelBuilder, spriteGetter, colorGetter, coordinateRemapper, optionalTransform
+							group, baseModel.getOwner(), quads::add, spriteGetter, colorGetter,
+							coordinateRemapper, state.transform().compose(optionalTransform.blockCenterToCorner())
 					);
 					ShaderLayer layer = shader!=null?shader.getLayers()[pass]: new ShaderLayer(new ResourceLocation("missing/no"), -1)
 					{
@@ -213,7 +212,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	/**
 	 * Yep, this is 90% a copy of ModelObject.addQuads. We need custom hooks in there, so we copy the rest around it.
 	 */
-	private void addGroupQuads(Group<OBJMaterial> group, IModelConfiguration owner, IModelBuilder<?> modelBuilder,
+	private void addGroupQuads(Group<OBJMaterial> group, IModelConfiguration owner, Consumer<BakedQuad> out,
 							   MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
 							   TextureCoordinateRemapper coordinateRemapper,
 							   Transformation transform)
@@ -230,8 +229,8 @@ public class SpecificIEOBJModel<T> implements BakedModel
 
 			Polygon<OBJMaterial> remappedFace = coordinateRemapper.remapCoord(face);
 			if(remappedFace!=null)
-				modelBuilder.addGeneralQuad(PolygonUtils.toBakedQuad(
-						remappedFace.getPoints(), new ExtraQuadData(texture, colorTint), transform.blockCenterToCorner(), false
+				out.accept(PolygonUtils.toBakedQuad(
+						remappedFace.getPoints(), new ExtraQuadData(texture, colorTint), transform, false
 				));
 		}
 	}
