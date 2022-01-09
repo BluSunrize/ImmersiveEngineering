@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.data.models;
 
-import blusunrize.immersiveengineering.client.models.MirroredModelLoader;
+import blusunrize.immersiveengineering.client.models.mirror.MirroredModelLoader;
 import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import com.google.gson.JsonObject;
 import net.minecraftforge.client.model.generators.CustomLoaderBuilder;
