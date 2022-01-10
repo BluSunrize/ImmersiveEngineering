@@ -1,0 +1,11 @@
+{
+  "textures": {
+    "particle": "#texture"
+  },
+  "loader": "immersiveengineering:connector",
+  "base_model": "immersiveengineering:block/metal_device/floodlight_off",
+  "layers": [
+    "translucent",
+    "solid"
+  ]
+}

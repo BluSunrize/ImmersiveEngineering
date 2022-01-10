@@ -12,7 +12,9 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -30,11 +32,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 	@Override
 	protected void registerStatesAndModels()
 	{
-		createConnector(
-				MetalDevices.floodlight,
-				ieObj("block/metal_device/floodlight.obj.ie"),
-				RenderType.translucent(), RenderType.solid()
-		);
+		floodlightModel();
 		createConnector(
 				Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), obj(
 						"block/connector/connector_lv", rl("block/connector/connector_lv.obj"),
@@ -104,6 +102,20 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		createConnector(Connectors.currentTransformer, ctModel, RenderType.solid());
 		createConnector(MetalDevices.razorWire, ieObj("block/razor_wire.obj.ie"), RenderType.cutout());
 		createConnector(Cloth.balloon, ieObj("block/balloon.obj.ie"), RenderType.translucent());
+	}
+
+	private void floodlightModel()
+	{
+		ResourceLocation modelLoc = modLoc("block/metal_device/floodlight.obj.ie");
+		BlockModelBuilder offModel = ieObj("block/metal_device/floodlight_off", modelLoc)
+				.texture("texture", modLoc("block/metal_device/floodlight"));
+		BlockModelBuilder onModel = ieObj("block/metal_device/floodlight_on", modelLoc)
+				.texture("texture", modLoc("block/metal_device/floodlight_on"));
+		buildConnector(MetalDevices.floodlight)
+				.autoRotationData()
+				.binaryModel(IEProperties.ACTIVE, offModel, onModel)
+				.layers(RenderType.translucent(), RenderType.solid())
+				.build();
 	}
 
 	private void transformerModel(String baseName, Block transformer)
