@@ -371,6 +371,7 @@ public class ItemModels extends TRSRItemModelProvider
 				.texture("texture", modLoc("block/metal_device/electric_lantern"))
 				.transforms(rl("item/block"));
 		obj(MetalDevices.FLOODLIGHT, rl("block/metal_device/floodlight.obj.ie"))
+				.texture("texture", modLoc("block/metal_device/floodlight"))
 				.transforms(rl("item/floodlight"));
 		getBuilder(Connectors.FEEDTHROUGH)
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION));

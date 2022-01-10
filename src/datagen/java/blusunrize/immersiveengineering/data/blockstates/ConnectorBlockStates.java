@@ -12,7 +12,9 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.data.DataGenerator;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -31,10 +33,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 	@Override
 	protected void registerStatesAndModels()
 	{
-		createConnector(
-				MetalDevices.FLOODLIGHT,
-				ieObjBuilder("block/metal_device/floodlight.obj.ie").callback(FloodlightCallbacks.INSTANCE).end()
-		);
+		floodlightModel();
 		createConnector(
 				Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), obj(
 						"block/connector/connector_lv", rl("block/connector/connector_lv.obj"),
@@ -111,6 +110,23 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		createConnector(Connectors.CURRENT_TRANSFORMER, ctModel);
 		createConnector(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end());
 		createConnector(Cloth.BALLOON, ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end());
+	}
+
+	private void floodlightModel()
+	{
+		ResourceLocation modelLoc = modLoc("block/metal_device/floodlight.obj.ie");
+		BlockModelBuilder offModel = ieObjBuilder("block/metal_device/floodlight_off", modelLoc)
+				.callback(FloodlightCallbacks.INSTANCE)
+				.end()
+				.texture("texture", modLoc("block/metal_device/floodlight"));
+		BlockModelBuilder onModel = ieObjBuilder("block/metal_device/floodlight_on", modelLoc)
+				.callback(FloodlightCallbacks.INSTANCE)
+				.end()
+				.texture("texture", modLoc("block/metal_device/floodlight_on"));
+		buildConnector(MetalDevices.FLOODLIGHT)
+				.autoRotationData()
+				.binaryModel(IEProperties.ACTIVE, offModel, onModel)
+				.build();
 	}
 
 	private void transformerModel(String baseName, Supplier<? extends Block> transformer)
