@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.data.blockstates;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.data.DataGenUtils;
@@ -21,7 +22,9 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.StairBlock;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
+import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
 import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -30,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 public abstract class ExtendedBlockstateProvider extends BlockStateProvider
@@ -299,6 +304,62 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		return (int)((dir.toYRot()+offset)%360);
 	}
 
+	protected void createHorizontalRotatedBlock(Supplier<? extends Block> block, ModelFile model)
+	{
+		createHorizontalRotatedBlock(block, $ -> model, List.of());
+	}
+
+	protected void createHorizontalRotatedBlock(Supplier<? extends Block> block, Function<PartialBlockstate, ModelFile> model, List<Property<?>> additionalProps)
+	{
+		createRotatedBlock(block, model, IEProperties.FACING_HORIZONTAL, additionalProps, 0, 180);
+	}
+
+	protected void createAllRotatedBlock(Supplier<? extends Block> block, ModelFile model)
+	{
+		createAllRotatedBlock(block, $ -> model, List.of());
+	}
+
+	protected void createAllRotatedBlock(Supplier<? extends Block> block, Function<PartialBlockstate, ModelFile> model, List<Property<?>> additionalProps)
+	{
+		createRotatedBlock(block, model, IEProperties.FACING_ALL, additionalProps, 90, 0);
+	}
+
+	protected void createRotatedBlock(Supplier<? extends Block> block, ModelFile model, Property<Direction> facing,
+									  List<Property<?>> additionalProps, int offsetRotX, int offsetRotY)
+	{
+		createRotatedBlock(block, $ -> model, facing, additionalProps, offsetRotX, offsetRotY);
+	}
+
+	protected void createRotatedBlock(Supplier<? extends Block> block, Function<PartialBlockstate, ModelFile> model, Property<Direction> facing,
+									  List<Property<?>> additionalProps, int offsetRotX, int offsetRotY)
+	{
+		VariantBlockStateBuilder stateBuilder = getVariantBuilder(block.get());
+		forEachState(stateBuilder.partialState(), additionalProps, state -> {
+			ModelFile modelLoc = model.apply(state);
+			for(Direction d : facing.getPossibleValues())
+			{
+				int x;
+				int y;
+				switch(d)
+				{
+					case UP -> {
+						x = 90;
+						y = 0;
+					}
+					case DOWN -> {
+						x = -90;
+						y = 0;
+					}
+					default -> {
+						y = getAngle(d, offsetRotY);
+						x = 0;
+					}
+				}
+				state.with(facing, d).setModels(new ConfiguredModel(modelLoc, x+offsetRotX, y, false));
+			}
+		});
+	}
+
 	protected static String getName(RenderStateShard state)
 	{
 		//TODO clean up/speed up
@@ -313,5 +374,27 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		{
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static <T extends Comparable<T>> void forEach(PartialBlockstate base, Property<T> prop,
+														 List<Property<?>> remaining, Consumer<PartialBlockstate> out)
+	{
+		for(T value : prop.getPossibleValues())
+			forEachState(base, remaining, map -> {
+				map = map.with(prop, value);
+				out.accept(map);
+			});
+	}
+
+	public static void forEachState(PartialBlockstate base, List<Property<?>> props, Consumer<PartialBlockstate> out)
+	{
+		if(props.size() > 0)
+		{
+			List<Property<?>> remaining = props.subList(1, props.size());
+			Property<?> main = props.get(0);
+			forEach(base, main, remaining, out);
+		}
+		else
+			out.accept(base);
 	}
 }

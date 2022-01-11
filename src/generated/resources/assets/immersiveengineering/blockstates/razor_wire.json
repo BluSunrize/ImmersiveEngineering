@@ -1,23 +1,19 @@
 {
   "variants": {
     "facing=north": {
-      "model": "immersiveengineering:block/razor_wire",
-      "y": 180,
-      "uvlock": true
+      "model": "immersiveengineering:block/razor_wire"
     },
     "facing=south": {
       "model": "immersiveengineering:block/razor_wire",
-      "uvlock": true
+      "y": 180
     },
     "facing=west": {
       "model": "immersiveengineering:block/razor_wire",
-      "y": 90,
-      "uvlock": true
+      "y": 270
     },
     "facing=east": {
       "model": "immersiveengineering:block/razor_wire",
-      "y": 270,
-      "uvlock": true
+      "y": 90
     }
   }
 }

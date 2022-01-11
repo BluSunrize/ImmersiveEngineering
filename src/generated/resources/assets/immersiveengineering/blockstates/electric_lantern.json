@@ -1,22 +1,20 @@
 {
   "variants": {
     "active=false,facing=down": {
-      "model": "immersiveengineering:block/metal_device/e_lantern_off",
-      "uvlock": true
+      "model": "immersiveengineering:block/metal_device/e_lantern_on",
+      "x": -90
     },
     "active=true,facing=down": {
-      "model": "immersiveengineering:block/metal_device/e_lantern_on",
-      "uvlock": true
+      "model": "immersiveengineering:block/metal_device/e_lantern_off",
+      "x": -90
     },
     "active=false,facing=up": {
-      "model": "immersiveengineering:block/metal_device/e_lantern_off",
-      "x": 180,
-      "uvlock": true
+      "model": "immersiveengineering:block/metal_device/e_lantern_on",
+      "x": 90
     },
     "active=true,facing=up": {
-      "model": "immersiveengineering:block/metal_device/e_lantern_on",
-      "x": 180,
-      "uvlock": true
+      "model": "immersiveengineering:block/metal_device/e_lantern_off",
+      "x": 90
     }
   }
 }

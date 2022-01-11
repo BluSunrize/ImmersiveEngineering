@@ -19,6 +19,7 @@ import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
+import java.util.List;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
@@ -34,82 +35,65 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 	protected void registerStatesAndModels()
 	{
 		floodlightModel();
-		createConnector(
+		createAllRotatedBlock(
 				Connectors.getEnergyConnector(WireType.LV_CATEGORY, false), obj(
 						"block/connector/connector_lv", rl("block/connector/connector_lv.obj"),
 						ImmutableMap.of("texture", modLoc("block/connector/connector_lv")),
 						models()
 				)
 		);
-		createConnector(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), obj(
+		createAllRotatedBlock(Connectors.getEnergyConnector(WireType.LV_CATEGORY, true), obj(
 				"block/connector/relay_lv", rl("block/connector/connector_lv.obj"),
 				ImmutableMap.of("texture", modLoc("block/connector/relay_lv")),
 				models()
 		));
 
-		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), obj(
+		createAllRotatedBlock(Connectors.getEnergyConnector(WireType.MV_CATEGORY, false), obj(
 				"block/connector/connector_mv", rl("block/connector/connector_mv.obj"),
 				ImmutableMap.of("texture", modLoc("block/connector/connector_mv")),
 				models()
 		));
-		createConnector(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), obj(
+		createAllRotatedBlock(Connectors.getEnergyConnector(WireType.MV_CATEGORY, true), obj(
 				"block/connector/relay_mv", rl("block/connector/connector_mv.obj"),
 				ImmutableMap.of("texture", modLoc("block/connector/relay_mv")),
 				models()
 		));
 
-		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), obj("block/connector/connector_hv.obj"));
-		createConnector(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"));
+		createAllRotatedBlock(Connectors.getEnergyConnector(WireType.HV_CATEGORY, false), obj("block/connector/connector_hv.obj"));
+		createAllRotatedBlock(Connectors.getEnergyConnector(WireType.HV_CATEGORY, true), obj("block/connector/relay_hv.obj"));
 
-		createConnector(
+		createAllRotatedBlock(
 				Connectors.CONNECTOR_STRUCTURAL,
 				ieObjBuilder("block/connector/connector_structural.obj.ie").callback(StructuralConnectorCallbacks.INSTANCE).end()
 		);
-		createConnector(
+		createAllRotatedBlock(
 				Connectors.CONNECTOR_REDSTONE,
 				ieObjBuilder("block/connector/connector_redstone.obj.ie").callback(RSConnectorCallbacks.INSTANCE).end()
 		);
-		createConnector(
+		createAllRotatedBlock(
 				Connectors.CONNECTOR_PROBE,
 				ieObjBuilder("block/connector/connector_probe.obj.ie").callback(ProbeConnectorCallbacks.INSTANCE).end()
 		);
-		createConnector(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj"));
+		createAllRotatedBlock(Connectors.CONNECTOR_BUNDLED, obj("block/connector/connector_bundled.obj"));
 		ModelFile feedthroughModelFile = models().getBuilder("block/connector/feedthrough")
 				.customLoader(SpecialModelBuilder.forLoader(FeedthroughLoader.LOCATION))
 				.end();
-		createConnector(Connectors.FEEDTHROUGH, feedthroughModelFile);
-		buildConnector(MetalDevices.ELECTRIC_LANTERN)
-				.binaryModel(IEProperties.ACTIVE, obj(
-						"block/metal_device/e_lantern_off", rl("block/metal_device/e_lantern.obj"),
-						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern")),
-						models()
-				), obj(
-						"block/metal_device/e_lantern_on", rl("block/metal_device/e_lantern.obj"),
-						ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on")),
-						models()
-				))
-				.autoRotationData()
-				.build();
+		createAllRotatedBlock(Connectors.FEEDTHROUGH, feedthroughModelFile);
+		lanternModel();
 
-		createConnector(
+		createAllRotatedBlock(
 				Connectors.REDSTONE_BREAKER,
 				ieObjBuilder("block/connector/redstone_breaker.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end()
 		);
-		buildConnector(Connectors.BREAKER_SWITCH)
-				.binaryModel(
-						IEProperties.ACTIVE,
-						ieObjBuilder("block/connector/breaker_switch_off.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end(),
-						ieObjBuilder("block/connector/breaker_switch_on.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end())
-				.rotationProperty(IEProperties.FACING_ALL)
-				.build();
+		breakerModel();
 		transformerModel("block/connector/transformer_mv", Connectors.TRANSFORMER);
 		transformerModel("block/connector/transformer_hv", Connectors.TRANSFORMER_HV);
-		createConnector(Connectors.POST_TRANSFORMER, obj("block/connector/transformer_post.obj"));
+		createHorizontalRotatedBlock(Connectors.POST_TRANSFORMER, obj("block/connector/transformer_post.obj"));
 
 		ModelFile ctModel = split(innerObj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
-		createConnector(Connectors.CURRENT_TRANSFORMER, ctModel);
-		createConnector(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end());
-		createConnector(Cloth.BALLOON, ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end());
+		createHorizontalRotatedBlock(Connectors.CURRENT_TRANSFORMER, ctModel);
+		createHorizontalRotatedBlock(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end());
+		simpleBlock(Cloth.BALLOON.get(), ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end());
 	}
 
 	private void floodlightModel()
@@ -123,35 +107,56 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				.callback(FloodlightCallbacks.INSTANCE)
 				.end()
 				.texture("texture", modLoc("block/metal_device/floodlight_on"));
-		buildConnector(MetalDevices.FLOODLIGHT)
-				.autoRotationData()
-				.binaryModel(IEProperties.ACTIVE, offModel, onModel)
-				.build();
+		createAllRotatedBlock(
+				MetalDevices.FLOODLIGHT,
+				state -> state.getSetStates().get(IEProperties.ACTIVE)==Boolean.TRUE?onModel: offModel,
+				List.of(IEProperties.ACTIVE)
+		);
+	}
+
+	private void lanternModel()
+	{
+		BlockModelBuilder onModel = obj(
+				"block/metal_device/e_lantern_off", rl("block/metal_device/e_lantern.obj"),
+				ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern")),
+				models()
+		);
+		BlockModelBuilder offModel = obj(
+				"block/metal_device/e_lantern_on", rl("block/metal_device/e_lantern.obj"),
+				ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on")),
+				models()
+		);
+		createRotatedBlock(
+				MetalDevices.ELECTRIC_LANTERN,
+				state -> state.getSetStates().get(IEProperties.ACTIVE)==Boolean.TRUE?onModel: offModel,
+				IEProperties.FACING_TOP_DOWN,
+				List.of(IEProperties.ACTIVE),
+				0, 180
+		);
+	}
+
+	private void breakerModel()
+	{
+		BlockModelBuilder onModel = ieObjBuilder("block/connector/breaker_switch_on.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end();
+		BlockModelBuilder offModel = ieObjBuilder("block/connector/breaker_switch_off.obj.ie").callback(BreakerSwitchCallbacks.INSTANCE).end();
+		createAllRotatedBlock(
+				Connectors.BREAKER_SWITCH,
+				state -> state.getSetStates().get(IEProperties.ACTIVE)==Boolean.TRUE?onModel: offModel,
+				List.of(IEProperties.ACTIVE)
+		);
 	}
 
 	private void transformerModel(String baseName, Supplier<? extends Block> transformer)
 	{
-		buildConnector(transformer).binaryModel(
-						IEProperties.MIRRORED,
-						split(innerObj(baseName+"_left.obj"), COLUMN_THREE),
-						split(mirror(innerObj(baseName+"_left.obj"), innerModels), COLUMN_THREE)
-				)
-				.addAdditional(IEProperties.MULTIBLOCKSLAVE)
-				.rotationProperty(IEProperties.FACING_HORIZONTAL)
-				.build();
-	}
-
-	private void createConnector(Supplier<? extends Block> b, ModelFile model)
-	{
-		buildConnector(b)
-				.fixedModel(model)
-				.autoRotationData()
-				.build();
-	}
-
-	private ConnectorBlockBuilder buildConnector(Supplier<? extends Block> b)
-	{
-		return ConnectorBlockBuilder.builder(getVariantBuilder(b.get()));
+		ModelFile leftModel = split(innerObj(baseName+"_left.obj"), COLUMN_THREE);
+		ModelFile rightModel = split(mirror(innerObj(baseName+"_left.obj"), innerModels), COLUMN_THREE);
+		createRotatedBlock(
+				transformer,
+				state -> state.getSetStates().get(IEProperties.MIRRORED)==Boolean.TRUE?rightModel: leftModel,
+				IEProperties.FACING_HORIZONTAL,
+				List.of(IEProperties.MIRRORED),
+				0, 0
+		);
 	}
 
 	@Nonnull

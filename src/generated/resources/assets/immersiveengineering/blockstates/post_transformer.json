@@ -1,23 +1,19 @@
 {
   "variants": {
     "facing=north": {
-      "model": "immersiveengineering:block/connector/transformer_post",
-      "y": 180,
-      "uvlock": true
+      "model": "immersiveengineering:block/connector/transformer_post"
     },
     "facing=south": {
       "model": "immersiveengineering:block/connector/transformer_post",
-      "uvlock": true
+      "y": 180
     },
     "facing=west": {
       "model": "immersiveengineering:block/connector/transformer_post",
-      "y": 90,
-      "uvlock": true
+      "y": 270
     },
     "facing=east": {
       "model": "immersiveengineering:block/connector/transformer_post",
-      "y": 270,
-      "uvlock": true
+      "y": 90
     }
   }
 }

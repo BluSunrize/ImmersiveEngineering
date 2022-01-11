@@ -1,8 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "immersiveengineering:block/balloon",
-      "uvlock": true
+      "model": "immersiveengineering:block/balloon"
     }
   }
 }

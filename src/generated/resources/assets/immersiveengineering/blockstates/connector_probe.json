@@ -1,36 +1,30 @@
 {
   "variants": {
     "facing=down": {
-      "model": "immersiveengineering:block/connector/connector_probe",
-      "uvlock": true
+      "model": "immersiveengineering:block/connector/connector_probe"
     },
     "facing=up": {
       "model": "immersiveengineering:block/connector/connector_probe",
-      "x": 180,
-      "uvlock": true
+      "x": 180
     },
     "facing=north": {
       "model": "immersiveengineering:block/connector/connector_probe",
       "x": 90,
-      "y": 180,
-      "uvlock": true
+      "y": 180
     },
     "facing=south": {
       "model": "immersiveengineering:block/connector/connector_probe",
-      "x": 90,
-      "uvlock": true
+      "x": 90
     },
     "facing=west": {
       "model": "immersiveengineering:block/connector/connector_probe",
       "x": 90,
-      "y": 90,
-      "uvlock": true
+      "y": 90
     },
     "facing=east": {
       "model": "immersiveengineering:block/connector/connector_probe",
       "x": 90,
-      "y": 270,
-      "uvlock": true
+      "y": 270
     }
   }
 }
