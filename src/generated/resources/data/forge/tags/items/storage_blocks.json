@@ -1,12 +1,16 @@
 {
   "replace": false,
   "values": [
-    "#forge:storage_blocks/copper",
     "#forge:storage_blocks/aluminum",
+    "#forge:raw_blocks/aluminum",
     "#forge:storage_blocks/lead",
+    "#forge:raw_blocks/lead",
     "#forge:storage_blocks/silver",
+    "#forge:raw_blocks/silver",
     "#forge:storage_blocks/nickel",
+    "#forge:raw_blocks/nickel",
     "#forge:storage_blocks/uranium",
+    "#forge:raw_blocks/uranium",
     "#forge:storage_blocks/constantan",
     "#forge:storage_blocks/electrum",
     "#forge:storage_blocks/steel"

@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#forge:ores/copper",
     "#forge:ores/aluminum",
     "#forge:ores/lead",
     "#forge:ores/silver",

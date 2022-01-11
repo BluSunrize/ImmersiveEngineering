@@ -1,7 +1,6 @@
 {
   "replace": false,
   "values": [
-    "#forge:ingots/copper",
     "#forge:ingots/aluminum",
     "#forge:ingots/lead",
     "#forge:ingots/silver",
