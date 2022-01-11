@@ -1000,7 +1000,7 @@ public class Recipes extends RecipeProvider
 		// Metals
 		Named<Item> iron = Tags.Items.ORES_IRON;
 		Named<Item> gold = Tags.Items.ORES_GOLD;
-		Named<Item> copper = IETags.getItemTag(IETags.getTagsFor(EnumMetals.COPPER).ore);
+		Named<Item> copper = Tags.Items.ORES_COPPER;
 		Named<Item> aluminum = IETags.getItemTag(IETags.getTagsFor(EnumMetals.ALUMINUM).ore);
 		Named<Item> lead = IETags.getItemTag(IETags.getTagsFor(EnumMetals.LEAD).ore);
 		Named<Item> silver = IETags.getItemTag(IETags.getTagsFor(EnumMetals.SILVER).ore);

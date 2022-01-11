@@ -160,22 +160,21 @@ public class IETags
 				storage = createBlockTag(getStorageBlock(name));
 			else if(m==EnumMetals.COPPER)
 			{
-				//TODO Forge#7891
-				storage = createBlockTag(getStorageBlock(name));
-				ore = createBlockTag(getOre(name));
-				rawBlock = createBlockTag(getRawBlock(name));
+				storage = Blocks.STORAGE_BLOCKS_COPPER;
+				ore = Blocks.ORES_COPPER;
+				rawBlock = Blocks.STORAGE_BLOCKS_RAW_COPPER;
 			}
 			else if(m==EnumMetals.IRON)
 			{
 				storage = Blocks.STORAGE_BLOCKS_IRON;
 				ore = Blocks.ORES_IRON;
-				rawBlock = createBlockTag(getRawBlock(name));
+				rawBlock = Blocks.STORAGE_BLOCKS_RAW_IRON;
 			}
 			else if(m==EnumMetals.GOLD)
 			{
 				storage = Blocks.STORAGE_BLOCKS_GOLD;
 				ore = Blocks.ORES_GOLD;
-				rawBlock = createBlockTag(getRawBlock(name));
+				rawBlock = Blocks.STORAGE_BLOCKS_RAW_GOLD;
 			}
 			else
 				throw new RuntimeException("Unkown vanilla metal: "+m.name());

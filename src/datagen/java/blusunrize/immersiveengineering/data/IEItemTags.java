@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEItems.Metals;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
-import blusunrize.immersiveengineering.data.resources.RecipeMetals;
 import com.google.common.base.Preconditions;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -55,21 +54,13 @@ class IEItemTags extends ItemTagsProvider
 				tag(tags.ingot).add(Metals.INGOTS.get(metal).get());
 				tag(Tags.Items.INGOTS).addTag(tags.ingot);
 				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
-				if(metal.shouldAddOre())
-					tag(Tags.Items.ORES).addTag(IETags.getItemTag(tags.ore));
 			}
 			if(metal.shouldAddOre())
 			{
 				Preconditions.checkNotNull(tags.rawOre);
 				tag(tags.rawOre).add(Metals.RAW_ORES.get(metal).get());
-				//TODO Forge#7891, there is no tag "raw_ores" yet
-			}
-			if(metal==EnumMetals.COPPER)
-			{
-				//TODO Forge#7891
-				tag(tags.ingot).add(Metals.INGOTS.get(metal).get());
-				tag(Tags.Items.INGOTS).addTag(tags.ingot);
-				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
+				tag(Tags.Items.RAW_MATERIALS).addTag(tags.rawOre);
+				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.rawBlock));
 				tag(Tags.Items.ORES).addTag(IETags.getItemTag(tags.ore));
 			}
 			tag(tags.plate).add(Metals.PLATES.get(metal).get());
@@ -77,10 +68,6 @@ class IEItemTags extends ItemTagsProvider
 			tag(tags.dust).add(Metals.DUSTS.get(metal).get());
 			tag(Tags.Items.DUSTS).addTag(tags.dust);
 		}
-		//TODO Forge#7891
-		tag(RecipeMetals.COPPER.getRawOre()).add(Items.RAW_COPPER);
-		tag(RecipeMetals.IRON.getRawOre()).add(Items.RAW_IRON);
-		tag(RecipeMetals.GOLD.getRawOre()).add(Items.RAW_GOLD);
 
 		tag(IETags.clay).add(Items.CLAY_BALL);
 		tag(IETags.charCoal).add(Items.CHARCOAL);
@@ -129,15 +116,6 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.screwdrivers).add(Tools.SCREWDRIVER.get());
 		tag(IETags.wirecutters).add(Tools.WIRECUTTER.get());
 		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
-
-		//TODO Forge#7891
-		tag(Tags.Items.ORES_GOLD).add(Items.DEEPSLATE_GOLD_ORE);
-		tag(Tags.Items.ORES_IRON).add(Items.DEEPSLATE_IRON_ORE);
-		tag(Tags.Items.ORES_COAL).add(Items.DEEPSLATE_COAL_ORE);
-		tag(Tags.Items.ORES_LAPIS).add(Items.DEEPSLATE_LAPIS_ORE);
-		tag(Tags.Items.ORES_DIAMOND).add(Items.DEEPSLATE_DIAMOND_ORE);
-		tag(Tags.Items.ORES_REDSTONE).add(Items.DEEPSLATE_REDSTONE_ORE);
-		tag(Tags.Items.ORES_EMERALD).add(Items.DEEPSLATE_EMERALD_ORE);
 
 		generateTagsForToolbox();
 

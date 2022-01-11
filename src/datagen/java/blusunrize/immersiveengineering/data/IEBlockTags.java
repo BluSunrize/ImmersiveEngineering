@@ -101,21 +101,8 @@ class IEBlockTags extends BlockTagsProvider
 					tag(Tags.Blocks.ORES).addTag(tags.ore);
 					Preconditions.checkNotNull(tags.rawBlock);
 					tag(tags.rawBlock).add(IEBlocks.Metals.RAW_ORES.get(metal).get());
+					tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.rawBlock);
 				}
-			}
-			else //TODO Forge#789, remove if/when we get tags for raw blocks
-			{
-				Preconditions.checkNotNull(tags.rawBlock);
-				tag(tags.rawBlock).add(IEBlocks.Metals.RAW_ORES.get(metal).get());
-			}
-			//TODO Forge#7891
-			if(metal==EnumMetals.COPPER)
-			{
-				tag(tags.storage).add(IEBlocks.Metals.STORAGE.get(metal).get());
-				tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.storage);
-				Preconditions.checkNotNull(tags.ore);
-				tag(tags.ore).add(IEBlocks.Metals.ORES.get(metal).get());
-				tag(Tags.Blocks.ORES).addTag(tags.ore);
 			}
 			tag(tags.sheetmetal).add(IEBlocks.Metals.SHEETMETAL.get(metal).get());
 			tag(IETags.sheetmetals).addTag(tags.sheetmetal);
@@ -148,16 +135,6 @@ class IEBlockTags extends BlockTagsProvider
 				.addTag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.addTag(BlockTags.MINEABLE_WITH_PICKAXE);
 		checkAllRegisteredForBreaking();
-
-		//TODO Forge#7891
-		tag(Tags.Blocks.ORES_GOLD).add(Blocks.DEEPSLATE_GOLD_ORE);
-		tag(Tags.Blocks.ORES_IRON).add(Blocks.DEEPSLATE_IRON_ORE);
-		tag(Tags.Blocks.ORES_COAL).add(Blocks.DEEPSLATE_COAL_ORE);
-		tag(Tags.Blocks.ORES_LAPIS).add(Blocks.DEEPSLATE_LAPIS_ORE);
-		tag(Tags.Blocks.ORES_DIAMOND).add(Blocks.DEEPSLATE_DIAMOND_ORE);
-		tag(Tags.Blocks.ORES_REDSTONE).add(Blocks.DEEPSLATE_REDSTONE_ORE);
-		tag(Tags.Blocks.ORES_EMERALD).add(Blocks.DEEPSLATE_EMERALD_ORE);
-		tag(IETags.getTagsFor(EnumMetals.COPPER).ore).add(Blocks.DEEPSLATE_COPPER_ORE);
 
 		/* MOD COMPAT STARTS HERE */
 
