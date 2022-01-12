@@ -116,12 +116,12 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 
 	private void lanternModel()
 	{
-		BlockModelBuilder onModel = obj(
+		BlockModelBuilder offModel = obj(
 				"block/metal_device/e_lantern_off", rl("block/metal_device/e_lantern.obj"),
 				ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern")),
 				models()
 		);
-		BlockModelBuilder offModel = obj(
+		BlockModelBuilder onModel = obj(
 				"block/metal_device/e_lantern_on", rl("block/metal_device/e_lantern.obj"),
 				ImmutableMap.of("texture", modLoc("block/metal_device/electric_lantern_on")),
 				models()
@@ -131,7 +131,7 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 				state -> state.getSetStates().get(IEProperties.ACTIVE)==Boolean.TRUE?onModel: offModel,
 				IEProperties.FACING_TOP_DOWN,
 				List.of(IEProperties.ACTIVE),
-				0, 180
+				90, 180
 		);
 	}
 
