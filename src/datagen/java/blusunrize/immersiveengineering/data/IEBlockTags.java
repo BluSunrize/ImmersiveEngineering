@@ -102,6 +102,8 @@ class IEBlockTags extends BlockTagsProvider
 					Preconditions.checkNotNull(tags.rawBlock);
 					tag(tags.rawBlock).add(IEBlocks.Metals.RAW_ORES.get(metal).get());
 					tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.rawBlock);
+					tag(Tags.Blocks.ORES_IN_GROUND_STONE).add(Metals.ORES.get(metal).get());
+					tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(Metals.DEEPSLATE_ORES.get(metal).get());
 				}
 			}
 			tag(tags.sheetmetal).add(IEBlocks.Metals.SHEETMETAL.get(metal).get());

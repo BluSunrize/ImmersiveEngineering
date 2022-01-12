@@ -53,15 +53,12 @@ class IEItemTags extends ItemTagsProvider
 			{
 				tag(tags.ingot).add(Metals.INGOTS.get(metal).get());
 				tag(Tags.Items.INGOTS).addTag(tags.ingot);
-				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.storage));
 			}
 			if(metal.shouldAddOre())
 			{
 				Preconditions.checkNotNull(tags.rawOre);
 				tag(tags.rawOre).add(Metals.RAW_ORES.get(metal).get());
 				tag(Tags.Items.RAW_MATERIALS).addTag(tags.rawOre);
-				tag(Tags.Items.STORAGE_BLOCKS).addTag(IETags.getItemTag(tags.rawBlock));
-				tag(Tags.Items.ORES).addTag(IETags.getItemTag(tags.ore));
 			}
 			tag(tags.plate).add(Metals.PLATES.get(metal).get());
 			tag(IETags.plates).addTag(tags.plate);

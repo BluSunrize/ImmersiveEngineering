@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags.Blocks;
+import net.minecraftforge.common.Tags.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -31,6 +32,14 @@ public class IETags
 
 	private static final Map<Named<Block>, Named<Item>> toItemTag = new HashMap<>();
 	private static final Map<EnumMetals, MetalTags> metals = new HashMap<>();
+
+	static
+	{
+		toItemTag.put(Blocks.STORAGE_BLOCKS, Items.STORAGE_BLOCKS);
+		toItemTag.put(Blocks.ORES, Items.ORES);
+		toItemTag.put(Blocks.ORES_IN_GROUND_STONE, Items.ORES_IN_GROUND_STONE);
+		toItemTag.put(Blocks.ORES_IN_GROUND_DEEPSLATE, Items.ORES_IN_GROUND_DEEPSLATE);
+	}
 
 	//Vanilla
 	public static final Named<Item> clay = createItemWrapper(forgeLoc("clay"));
@@ -201,7 +210,7 @@ public class IETags
 
 	public static ResourceLocation getRawOre(String type)
 	{
-		return forgeLoc("raw_ores/"+type);
+		return forgeLoc("raw_materials/"+type);
 	}
 
 	public static ResourceLocation getNugget(String type)
@@ -226,7 +235,7 @@ public class IETags
 
 	public static ResourceLocation getRawBlock(String type)
 	{
-		return forgeLoc("raw_blocks/"+type);
+		return getStorageBlock("raw_"+type);
 	}
 
 	public static ResourceLocation getDust(String type)
