@@ -13,13 +13,13 @@
     },
     {
       "value": {
-        "tag": "forge:raw_ores/iron",
+        "tag": "forge:raw_materials/iron",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/iron"
+    "tag": "forge:raw_materials/iron"
   }
 }

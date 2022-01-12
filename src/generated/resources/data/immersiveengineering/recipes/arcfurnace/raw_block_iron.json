@@ -18,7 +18,7 @@
     }
   ],
   "input": {
-    "tag": "forge:raw_blocks/iron"
+    "tag": "forge:storage_blocks/raw_iron"
   },
   "time": 900,
   "energy": 230400

@@ -12,7 +12,7 @@
     "tag": "forge:dusts/silver"
   },
   "input": {
-    "tag": "forge:raw_ores/silver"
+    "tag": "forge:raw_materials/silver"
   },
   "energy": 6000
 }

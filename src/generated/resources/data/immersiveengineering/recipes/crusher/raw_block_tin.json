@@ -17,14 +17,14 @@
     },
     {
       "value": {
-        "tag": "forge:raw_blocks/tin",
+        "tag": "forge:storage_blocks/raw_tin",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_blocks/tin"
+    "tag": "forge:storage_blocks/raw_tin"
   },
   "energy": 54000
 }

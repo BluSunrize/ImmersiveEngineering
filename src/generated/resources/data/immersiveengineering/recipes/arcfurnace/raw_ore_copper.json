@@ -15,7 +15,7 @@
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/copper"
+    "tag": "forge:raw_materials/copper"
   },
   "time": 100,
   "energy": 25600

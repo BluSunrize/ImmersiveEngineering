@@ -1,10 +1,10 @@
 {
   "replace": false,
   "values": [
-    "#forge:raw_ores/aluminum",
-    "#forge:raw_ores/lead",
-    "#forge:raw_ores/silver",
-    "#forge:raw_ores/nickel",
-    "#forge:raw_ores/uranium"
+    "#forge:raw_materials/aluminum",
+    "#forge:raw_materials/lead",
+    "#forge:raw_materials/silver",
+    "#forge:raw_materials/nickel",
+    "#forge:raw_materials/uranium"
   ]
 }

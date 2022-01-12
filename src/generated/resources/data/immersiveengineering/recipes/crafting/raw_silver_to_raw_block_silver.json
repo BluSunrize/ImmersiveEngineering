@@ -7,7 +7,7 @@
   ],
   "key": {
     "s": {
-      "tag": "forge:raw_ores/silver"
+      "tag": "forge:raw_materials/silver"
     },
     "i": {
       "item": "immersiveengineering:raw_silver"

@@ -13,13 +13,13 @@
     },
     {
       "value": {
-        "tag": "forge:raw_ores/nickel",
+        "tag": "forge:raw_materials/nickel",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/nickel"
+    "tag": "forge:raw_materials/nickel"
   }
 }

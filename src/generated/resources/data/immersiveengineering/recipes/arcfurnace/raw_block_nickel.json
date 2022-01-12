@@ -18,7 +18,7 @@
     }
   ],
   "input": {
-    "tag": "forge:raw_blocks/nickel"
+    "tag": "forge:storage_blocks/raw_nickel"
   },
   "time": 900,
   "energy": 230400

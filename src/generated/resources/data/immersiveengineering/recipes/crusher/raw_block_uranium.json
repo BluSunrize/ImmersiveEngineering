@@ -8,7 +8,7 @@
     }
   },
   "input": {
-    "tag": "forge:raw_blocks/uranium"
+    "tag": "forge:storage_blocks/raw_uranium"
   },
   "energy": 54000
 }

@@ -18,7 +18,7 @@
     }
   ],
   "input": {
-    "tag": "forge:raw_blocks/silver"
+    "tag": "forge:storage_blocks/raw_silver"
   },
   "time": 900,
   "energy": 230400

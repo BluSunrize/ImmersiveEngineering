@@ -18,7 +18,7 @@
     }
   ],
   "input": {
-    "tag": "forge:raw_blocks/lead"
+    "tag": "forge:storage_blocks/raw_lead"
   },
   "time": 900,
   "energy": 230400

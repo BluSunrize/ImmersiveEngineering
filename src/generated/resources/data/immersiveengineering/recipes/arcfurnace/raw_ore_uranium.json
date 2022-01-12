@@ -15,7 +15,7 @@
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/uranium"
+    "tag": "forge:raw_materials/uranium"
   },
   "time": 100,
   "energy": 25600

@@ -7,7 +7,7 @@
   ],
   "key": {
     "s": {
-      "tag": "forge:raw_ores/aluminum"
+      "tag": "forge:raw_materials/aluminum"
     },
     "i": {
       "item": "immersiveengineering:raw_aluminum"

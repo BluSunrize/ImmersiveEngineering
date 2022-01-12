@@ -27,14 +27,14 @@
     },
     {
       "value": {
-        "tag": "forge:raw_blocks/cobalt",
+        "tag": "forge:storage_blocks/raw_cobalt",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_blocks/cobalt"
+    "tag": "forge:storage_blocks/raw_cobalt"
   },
   "time": 900,
   "energy": 230400

@@ -24,14 +24,14 @@
     },
     {
       "value": {
-        "tag": "forge:raw_ores/platinum",
+        "tag": "forge:raw_materials/platinum",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/platinum"
+    "tag": "forge:raw_materials/platinum"
   },
   "time": 100,
   "energy": 25600

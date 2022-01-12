@@ -21,14 +21,14 @@
     },
     {
       "value": {
-        "tag": "forge:raw_ores/osmium",
+        "tag": "forge:raw_materials/osmium",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/osmium"
+    "tag": "forge:raw_materials/osmium"
   },
   "energy": 6000
 }

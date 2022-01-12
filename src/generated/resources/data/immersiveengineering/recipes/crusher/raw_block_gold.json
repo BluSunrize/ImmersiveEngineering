@@ -8,7 +8,7 @@
     }
   },
   "input": {
-    "tag": "forge:raw_blocks/gold"
+    "tag": "forge:storage_blocks/raw_gold"
   },
   "energy": 54000
 }

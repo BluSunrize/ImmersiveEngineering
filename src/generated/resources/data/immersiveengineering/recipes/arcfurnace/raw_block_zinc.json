@@ -27,14 +27,14 @@
     },
     {
       "value": {
-        "tag": "forge:raw_blocks/zinc",
+        "tag": "forge:storage_blocks/raw_zinc",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_blocks/zinc"
+    "tag": "forge:storage_blocks/raw_zinc"
   },
   "time": 900,
   "energy": 230400

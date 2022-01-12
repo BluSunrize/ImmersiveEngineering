@@ -7,7 +7,7 @@
   ],
   "key": {
     "s": {
-      "tag": "forge:raw_ores/lead"
+      "tag": "forge:raw_materials/lead"
     },
     "i": {
       "item": "immersiveengineering:raw_lead"

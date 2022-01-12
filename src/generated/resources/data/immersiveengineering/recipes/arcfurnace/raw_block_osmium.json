@@ -27,14 +27,14 @@
     },
     {
       "value": {
-        "tag": "forge:raw_blocks/osmium",
+        "tag": "forge:storage_blocks/raw_osmium",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_blocks/osmium"
+    "tag": "forge:storage_blocks/raw_osmium"
   },
   "time": 900,
   "energy": 230400

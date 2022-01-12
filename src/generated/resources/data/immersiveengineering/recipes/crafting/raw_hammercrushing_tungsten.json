@@ -13,13 +13,13 @@
     },
     {
       "value": {
-        "tag": "forge:raw_ores/tungsten",
+        "tag": "forge:raw_materials/tungsten",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/tungsten"
+    "tag": "forge:raw_materials/tungsten"
   }
 }

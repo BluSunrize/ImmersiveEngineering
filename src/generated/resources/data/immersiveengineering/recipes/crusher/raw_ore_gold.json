@@ -12,7 +12,7 @@
     "tag": "forge:dusts/gold"
   },
   "input": {
-    "tag": "forge:raw_ores/gold"
+    "tag": "forge:raw_materials/gold"
   },
   "energy": 6000
 }

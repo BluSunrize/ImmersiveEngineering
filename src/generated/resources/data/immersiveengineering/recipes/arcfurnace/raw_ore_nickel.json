@@ -15,7 +15,7 @@
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/nickel"
+    "tag": "forge:raw_materials/nickel"
   },
   "time": 100,
   "energy": 25600

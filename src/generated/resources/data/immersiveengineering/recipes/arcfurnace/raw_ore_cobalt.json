@@ -24,14 +24,14 @@
     },
     {
       "value": {
-        "tag": "forge:raw_ores/cobalt",
+        "tag": "forge:raw_materials/cobalt",
         "type": "forge:tag_empty"
       },
       "type": "forge:not"
     }
   ],
   "input": {
-    "tag": "forge:raw_ores/cobalt"
+    "tag": "forge:raw_materials/cobalt"
   },
   "time": 100,
   "energy": 25600
