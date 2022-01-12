@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler.ChemthrowerEffect;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
-import blusunrize.immersiveengineering.mixin.accessors.EntityAccess;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
@@ -152,7 +151,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			}
 			if(mop.getType()==Type.ENTITY)
 			{
-				int f = this.isOnFire()?((EntityAccess)this).getRemainingFireTicks(): fire?3: 0;
+				int f = this.isOnFire()?getRemainingFireTicks(): fire?3: 0;
 				if(f > 0)
 				{
 					Entity hit = ((EntityHitResult)mop).getEntity();

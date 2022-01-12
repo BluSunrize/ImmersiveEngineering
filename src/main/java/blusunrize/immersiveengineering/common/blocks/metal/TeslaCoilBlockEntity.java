@@ -30,7 +30,6 @@ import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
-import blusunrize.immersiveengineering.mixin.accessors.EntityAccess;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -129,10 +128,9 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 							target.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 128));
 							if(dmgsrc.apply(target))
 							{
-								EntityAccess targetAccessor = (EntityAccess)target;
-								int prevFire = targetAccessor.getRemainingFireTicks();
-								targetAccessor.setRemainingFireTicks(1);
-								targetAccessor.setRemainingFireTicks(prevFire);
+								int prevFire = target.getRemainingFireTicks();
+								target.setRemainingFireTicks(1);
+								target.setRemainingFireTicks(prevFire);
 							}
 							this.sendRenderPacket(target);
 						}

@@ -12,7 +12,6 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import blusunrize.immersiveengineering.mixin.accessors.MixPredicateAccess;
 import blusunrize.immersiveengineering.mixin.accessors.PotionBrewingAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.tags.FluidTags;
@@ -48,7 +47,7 @@ public class PotionHelper
 			if(mixPredicate.to.get()!=Potions.MUNDANE&&mixPredicate.to.get()!=Potions.THICK)
 				out.apply(
 						mixPredicate.to.get(), mixPredicate.from.get(),
-						new IngredientWithSize(((MixPredicateAccess)mixPredicate).getIngredient())
+						new IngredientWithSize(mixPredicate.ingredient)
 				);
 
 		// Modded
