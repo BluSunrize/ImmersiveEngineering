@@ -22,6 +22,6 @@
  * Does not distinguish between primary or secondary outputs, nor between stripping and sawing results.
  * Removes all recipes where the provided output matches any possible output.
  */
-//<recipetype:immersiveengineering:sawmill>.removeRecipe(output as IItemStack);
-<recipetype:immersiveengineering:sawmill>.removeRecipe(<item:minecraft:oak_planks>);
-//<recipetype:immersiveengineering:sawmill>.removeRecipe(<item:immersiveengineering:dust_wood>);
+//<recipetype:immersiveengineering:sawmill>.remove(output as IItemStack);
+<recipetype:immersiveengineering:sawmill>.remove(<item:minecraft:oak_planks>);
+//<recipetype:immersiveengineering:sawmill>.remove(<item:immersiveengineering:dust_wood>);

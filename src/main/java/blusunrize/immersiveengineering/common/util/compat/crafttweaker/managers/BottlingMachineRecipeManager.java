@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -11,12 +11,13 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +36,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/immersiveengineering/BottlingMachine")
 @ZenCodeType.Name("mods.immersiveengineering.BottlingMachine")
-public class BottlingMachineRecipeManager implements IRecipeManager
+public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMachineRecipe>
 {
 
 	@Override
@@ -59,7 +60,7 @@ public class BottlingMachineRecipeManager implements IRecipeManager
 	 * @docParam output <item:minecraft:wooden_pickaxe>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient itemInput, MCTagWithAmount<Fluid> fluidTag, IItemStack output)
+	public void addRecipe(String recipePath, IIngredient itemInput, Many<MCTag<Fluid>> fluidTag, IItemStack output)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 
@@ -70,6 +71,6 @@ public class BottlingMachineRecipeManager implements IRecipeManager
 
 		final BottlingMachineRecipe recipe = new BottlingMachineRecipe(resourceLocation, itemOutput, input, fluidTagInput);
 
-		CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, null));
+		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
 }

@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -13,13 +13,13 @@ import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngred
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.fluid.MCFluidStackMutable;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.fluid.MCFluidStackMutable;
-import com.blamejared.crafttweaker.impl.item.MCItemStack;
+import com.blamejared.crafttweaker.api.item.MCItemStack;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +38,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/immersiveengineering/Fermenter")
 @ZenCodeType.Name("mods.immersiveengineering.Fermenter")
-public class FermenterRecipeManager implements IRecipeManager
+public class FermenterRecipeManager implements IRecipeManager<FermenterRecipe>
 {
 
 	@Override
@@ -72,7 +72,7 @@ public class FermenterRecipeManager implements IRecipeManager
 
 		final FermenterRecipe recipe = new FermenterRecipe(resourceLocation, fluidStack, outputItem, ingredient, energy);
 		final String outputDescription = String.format("%s and %s", itemOutput.getCommandString(), fluidOutput.getCommandString());
-		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, outputDescription));
+		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, outputDescription));
 	}
 
 	/**
@@ -123,7 +123,7 @@ public class FermenterRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void removeRecipe(Fluid outputFluid)
 	{
-		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<FermenterRecipe>(this, outputFluid)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, outputFluid)
 		{
 			@Override
 			public boolean shouldRemove(FermenterRecipe recipe)
@@ -144,7 +144,7 @@ public class FermenterRecipeManager implements IRecipeManager
 	public void removeRecipe(IFluidStack output)
 	{
 
-		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<FermenterRecipe>(this, output)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, output)
 		{
 			@Override
 			public boolean shouldRemove(FermenterRecipe recipe)

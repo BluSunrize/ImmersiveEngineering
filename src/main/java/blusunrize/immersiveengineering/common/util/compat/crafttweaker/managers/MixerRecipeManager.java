@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -14,12 +14,12 @@ import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngred
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
-import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.tag.MCTag;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
+import com.blamejared.crafttweaker.api.tag.MCTag;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -37,7 +37,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/immersiveengineering/Mixer")
 @ZenCodeType.Name("mods.immersiveengineering.Mixer")
-public class MixerRecipeManager implements IRecipeManager
+public class MixerRecipeManager implements IRecipeManager<MixerRecipe>
 {
 
 	@Override
@@ -47,7 +47,7 @@ public class MixerRecipeManager implements IRecipeManager
 	}
 
 	@Override
-	public void removeRecipe(IItemStack output)
+	public void remove(IIngredient output)
 	{
 		throw new UnsupportedOperationException("Cannot remove a Mixer recipe by Item output because Mixer Recipes have no Item output!");
 	}
@@ -63,16 +63,14 @@ public class MixerRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void removeRecipe(IFluidStack fluidStack)
 	{
-		final AbstractActionGenericRemoveRecipe<MixerRecipe> action = new AbstractActionGenericRemoveRecipe<MixerRecipe>(this, fluidStack)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, fluidStack)
 		{
 			@Override
 			public boolean shouldRemove(MixerRecipe recipe)
 			{
 				return recipe.fluidOutput.isFluidStackIdentical(fluidStack.getInternal());
 			}
-		};
-
-		CraftTweakerAPI.apply(action);
+		});
 	}
 
 	/**
@@ -86,16 +84,14 @@ public class MixerRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void removeRecipe(Fluid fluid)
 	{
-		final AbstractActionGenericRemoveRecipe<MixerRecipe> action = new AbstractActionGenericRemoveRecipe<MixerRecipe>(this, fluid)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, fluid)
 		{
 			@Override
 			public boolean shouldRemove(MixerRecipe recipe)
 			{
 				return fluid.isSame(recipe.fluidOutput.getFluid());
 			}
-		};
-
-		CraftTweakerAPI.apply(action);
+		});
 	}
 
 	/**
@@ -128,6 +124,6 @@ public class MixerRecipeManager implements IRecipeManager
 		final FluidStack outputFluidStack = new FluidStack(output, amount);
 
 		final MixerRecipe recipe = new MixerRecipe(resourceLocation, outputFluidStack, fluidTagInput, ingredientsWithSize, energy);
-		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, outputFluidStack));
+		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, outputFluidStack));
 	}
 }

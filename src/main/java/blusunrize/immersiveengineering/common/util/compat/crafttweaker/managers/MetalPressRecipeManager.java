@@ -1,22 +1,21 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +32,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/immersiveengineering/MetalPress")
 @ZenCodeType.Name("mods.immersiveengineering.MetalPress")
-public class MetalPressRecipeManager implements IRecipeManager
+public class MetalPressRecipeManager implements IRecipeManager<MetalPressRecipe>
 {
 
 	@Override
@@ -61,10 +60,9 @@ public class MetalPressRecipeManager implements IRecipeManager
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize ingredient = CrTIngredientUtil.getIngredientWithSize(input);
-        final ComparableItemStack moldStack = new ComparableItemStack(mold.getInternal(), mold.hasTag());
 		final ItemStack outputStack = output.getInternal();
 
-		final MetalPressRecipe recipe = new MetalPressRecipe(resourceLocation, outputStack, ingredient, moldStack, energy);
-		CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, null));
+		final MetalPressRecipe recipe = new MetalPressRecipe(resourceLocation, outputStack, ingredient, mold.getDefinition(), energy);
+		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
 }

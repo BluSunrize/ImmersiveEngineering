@@ -7,5 +7,5 @@
 /*
  * Removes recipes from the Metal Press based on output
  */
-//<recipetype:immersiveengineering:metal_press>.removeRecipe(output as IItemStack)
-<recipetype:immersiveengineering:metal_press>.removeRecipe(<item:immersiveengineering:empty_casing> * 2);
+//<recipetype:immersiveengineering:metal_press>.remove(output as IItemStack)
+<recipetype:immersiveengineering:metal_press>.remove(<item:immersiveengineering:empty_casing> * 2);

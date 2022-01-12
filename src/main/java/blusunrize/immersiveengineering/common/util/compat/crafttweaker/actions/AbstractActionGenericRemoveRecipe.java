@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -9,10 +9,10 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions;
 
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.actions.IRuntimeAction;
-import com.blamejared.crafttweaker.api.brackets.CommandStringDisplayable;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl_native.fluid.ExpandFluid;
+import com.blamejared.crafttweaker.api.action.base.IRuntimeAction;
+import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
+import com.blamejared.crafttweaker.natives.fluid.ExpandFluid;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
@@ -23,20 +23,20 @@ import java.util.Map;
 public abstract class AbstractActionGenericRemoveRecipe<T extends Recipe<?>> implements IRuntimeAction
 {
 
-	private final IRecipeManager manager;
+	private final IRecipeManager<T> manager;
 	private final String output;
 
-	public AbstractActionGenericRemoveRecipe(IRecipeManager manager, CommandStringDisplayable output)
+	public AbstractActionGenericRemoveRecipe(IRecipeManager<T> manager, CommandStringDisplayable output)
 	{
 		this(manager, output.getCommandString());
 	}
 
-	public AbstractActionGenericRemoveRecipe(IRecipeManager manager, Fluid fluid)
+	public AbstractActionGenericRemoveRecipe(IRecipeManager<T> manager, Fluid fluid)
 	{
 		this(manager, ExpandFluid.getCommandString(fluid));
 	}
 
-	public AbstractActionGenericRemoveRecipe(IRecipeManager manager, String output)
+	public AbstractActionGenericRemoveRecipe(IRecipeManager<T> manager, String output)
 	{
 		this.manager = manager;
 		this.output = output;
@@ -46,7 +46,7 @@ public abstract class AbstractActionGenericRemoveRecipe<T extends Recipe<?>> imp
 	public void apply()
 	{
 		int count = 0;
-		final Iterator<Map.Entry<ResourceLocation, Recipe<?>>> iterator = manager.getRecipes()
+		final Iterator<Map.Entry<ResourceLocation, T>> iterator = manager.getRecipes()
 				.entrySet()
 				.iterator();
 
@@ -54,15 +54,14 @@ public abstract class AbstractActionGenericRemoveRecipe<T extends Recipe<?>> imp
 		{
 			while(iterator.hasNext())
 			{
-				final Recipe<?> recipe = iterator.next().getValue();
+				final T recipe = iterator.next().getValue();
 				if(recipe instanceof GeneratedListRecipe)
 				{
-					CraftTweakerAPI.logDebug("Skipping GeneratedListRecipe '%s'", recipe.getId());
+					CraftTweakerAPI.LOGGER.debug("Skipping GeneratedListRecipe '{}'", recipe.getId());
 					continue;
 				}
 
-				//noinspection unchecked
-				if(shouldRemove((T)recipe))
+				if(shouldRemove(recipe))
 				{
 					iterator.remove();
 					count++;
@@ -70,11 +69,12 @@ public abstract class AbstractActionGenericRemoveRecipe<T extends Recipe<?>> imp
 			}
 		} catch(ClassCastException exception)
 		{
-			CraftTweakerAPI.logThrowing("There is an illegal entry in %s that caused an exception: ", exception, manager
-					.getCommandString());
+			CraftTweakerAPI.LOGGER.error(
+					"There is an illegal entry in "+manager.getCommandString()+" that caused an exception: ", exception
+			);
 		}
 
-		CraftTweakerAPI.logInfo("Removed %s \"%s\" recipes", count, manager.getCommandString());
+		CraftTweakerAPI.LOGGER.info("Removed {} \"{}\" recipes", count, manager.getCommandString());
 	}
 
 	public abstract boolean shouldRemove(T recipe);

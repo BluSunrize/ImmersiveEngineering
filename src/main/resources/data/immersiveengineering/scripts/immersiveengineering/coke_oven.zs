@@ -8,5 +8,5 @@
 /*
  * Removes a recipe from the coke oven
  */
- //<recipetype:immersiveengineering:coke_oven>.removeRecipe(fuel as IItemStack)
-<recipetype:immersiveengineering:coke_oven>.removeRecipe(<item:immersiveengineering:coal_coke>);
+ //<recipetype:immersiveengineering:coke_oven>.remove(fuel as IItemStack)
+<recipetype:immersiveengineering:coke_oven>.remove(<item:immersiveengineering:coal_coke>);

@@ -9,5 +9,5 @@
  * Removes a recipe from the Alloy Kiln based on its output.
  */
 
-//<recipetype:immersiveengineering:alloy>.removeRecipe(output as IItemStack)
-<recipetype:immersiveengineering:alloy>.removeRecipe(<item:immersiveengineering:ingot_constantan>);
+//<recipetype:immersiveengineering:alloy>.remove(output as IItemStack)
+<recipetype:immersiveengineering:alloy>.remove(<item:immersiveengineering:ingot_constantan>);

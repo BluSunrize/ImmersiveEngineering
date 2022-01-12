@@ -14,4 +14,4 @@
 /*
  * Removes a recipe based on its output
  */
-<recipetype:immersiveengineering:blueprint>.removeRecipe(<item:immersiveengineering:casull>);
+<recipetype:immersiveengineering:blueprint>.remove(<item:immersiveengineering:casull>);

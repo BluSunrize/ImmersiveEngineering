@@ -7,11 +7,11 @@
 /*
  * Removes a fuel from the blast furnace
  */
- //<recipetype:immersiveengineering:blast_furnace_fuel>.removeRecipe(fuel as IItemStack)
+ //<recipetype:immersiveengineering:blast_furnace_fuel>.removeFuel(fuel as IItemStack)
 <recipetype:immersiveengineering:blast_furnace_fuel>.removeFuel(<item:minecraft:charcoal>);
 
-//<recipetype:immersiveengineering:blast_furnace>.removeRecipe(output as IItemStack)
-<recipetype:immersiveengineering:blast_furnace>.removeRecipe(<item:minecraft:charcoal>);
+//<recipetype:immersiveengineering:blast_furnace>.remove(output as IItemStack)
+<recipetype:immersiveengineering:blast_furnace>.remove(<item:minecraft:charcoal>);
 
 /*
  * Adds a new recipe to the blast furnace.

@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
-import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
+import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +38,7 @@ import java.util.List;
 @ZenRegister
 @Document("mods/immersiveengineering/Crusher")
 @ZenCodeType.Name("mods.immersiveengineering.Crusher")
-public class CrusherRecipeManager implements IRecipeManager
+public class CrusherRecipeManager implements IRecipeManager<CrusherRecipe>
 {
 
 	@Override
@@ -48,9 +48,9 @@ public class CrusherRecipeManager implements IRecipeManager
 	}
 
 	@Override
-	public void removeRecipe(IItemStack output)
+	public void remove(IIngredient output)
 	{
-		removeRecipe((IIngredient)output);
+		removeRecipe(output);
 	}
 
 	/**
@@ -74,9 +74,7 @@ public class CrusherRecipeManager implements IRecipeManager
 				final ArrayList<ItemStack> itemStacks = new ArrayList<>();
 				itemStacks.add(recipe.output);
 				for(StackWithChance secondaryOutput : recipe.secondaryOutputs)
-				{
-					itemStacks.add(secondaryOutput.getStack());
-				}
+					itemStacks.add(secondaryOutput.stack());
 				return itemStacks;
 			}
 		});
@@ -96,8 +94,9 @@ public class CrusherRecipeManager implements IRecipeManager
 	 * @docParam mainOutput <item:minecraft:gunpowder> * 4
 	 * @docParam additionalOutputs <item:minecraft:coal> % 50, <item:minecraft:diamond> % 1
 	 */
+	@SafeVarargs
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient input, int energy, IItemStack mainOutput, MCWeightedItemStack... additionalOutputs)
+	public final void addRecipe(String recipePath, IIngredient input, int energy, IItemStack mainOutput, Percentaged<IItemStack>... additionalOutputs)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 
@@ -105,12 +104,12 @@ public class CrusherRecipeManager implements IRecipeManager
 		final Ingredient ingredient = input.asVanillaIngredient();
 		final CrusherRecipe recipe = new CrusherRecipe(resourceLocation, result, ingredient, energy);
 
-		for(MCWeightedItemStack additionalOutput : additionalOutputs)
+		for(Percentaged<IItemStack> additionalOutput : additionalOutputs)
 		{
 			final StackWithChance stackWithChance = CrTIngredientUtil.getStackWithChance(additionalOutput);
 			recipe.addToSecondaryOutput(stackWithChance);
 		}
 
-		CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, null));
+		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
 }

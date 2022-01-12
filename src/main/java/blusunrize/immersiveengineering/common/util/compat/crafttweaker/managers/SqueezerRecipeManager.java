@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -13,12 +13,12 @@ import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngred
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.fluid.MCFluidStackMutable;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.fluid.MCFluidStackMutable;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/immersiveengineering/Squeezer")
 @ZenCodeType.Name("mods.immersiveengineering.Squeezer")
-public class SqueezerRecipeManager implements IRecipeManager
+public class SqueezerRecipeManager implements IRecipeManager<SqueezerRecipe>
 {
 
 	@Override
@@ -54,18 +54,16 @@ public class SqueezerRecipeManager implements IRecipeManager
 	 * @docParam fluidStack <fluid:immersiveengineering:plantoil> * 60
 	 */
 	@ZenCodeType.Method
-	public void removeRecipe(IFluidStack fluidStack)
+	public void remove(IFluidStack fluidStack)
 	{
-		final AbstractActionGenericRemoveRecipe<SqueezerRecipe> action = new AbstractActionGenericRemoveRecipe<SqueezerRecipe>(this, fluidStack)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, fluidStack)
 		{
 			@Override
 			public boolean shouldRemove(SqueezerRecipe recipe)
 			{
 				return recipe.fluidOutput.isFluidStackIdentical(fluidStack.getInternal());
 			}
-		};
-
-		CraftTweakerAPI.apply(action);
+		});
 	}
 
 	/**
@@ -76,18 +74,16 @@ public class SqueezerRecipeManager implements IRecipeManager
 	 * @docParam fluid <fluid:immersiveengineering:plantoil>.fluid
 	 */
 	@ZenCodeType.Method
-	public void removeRecipe(Fluid fluid)
+	public void remove(Fluid fluid)
 	{
-		final AbstractActionGenericRemoveRecipe<SqueezerRecipe> action = new AbstractActionGenericRemoveRecipe<SqueezerRecipe>(this, fluid)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, fluid)
 		{
 			@Override
 			public boolean shouldRemove(SqueezerRecipe recipe)
 			{
 				return fluid.isSame(recipe.fluidOutput.getFluid());
 			}
-		};
-
-		CraftTweakerAPI.apply(action);
+		});
 	}
 
 	/**
@@ -116,7 +112,7 @@ public class SqueezerRecipeManager implements IRecipeManager
 		final SqueezerRecipe recipe = new SqueezerRecipe(resourceLocation, fluidOut, itemOut, inputWithSize, energy);
 
 		final String outputDescription = String.format("%s and %s", fluidOutput.getCommandString(), itemOutput.getCommandString());
-		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, outputDescription));
+		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, outputDescription));
 	}
 
 	/**

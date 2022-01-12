@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -12,22 +12,8 @@ import net.minecraftforge.common.MinecraftForge;
 
 public class CraftTweakerCompatModule extends IECompatModule
 {
-
-	@Override
-	public void preInit()
+	public CraftTweakerCompatModule()
 	{
 		MinecraftForge.EVENT_BUS.register(CrafttweakerEventHandlers.class);
-	}
-
-	@Override
-	public void init()
-	{
-
-	}
-
-	@Override
-	public void postInit()
-	{
-
 	}
 }

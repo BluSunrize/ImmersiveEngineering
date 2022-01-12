@@ -13,6 +13,6 @@
  * Cannot remove Recycling Recipes!
  */
 
-//<recipetype:immersiveengineering:arc_furnace>.removeRecipe(output as IItemStack, checkSlag as bool = false);
-<recipetype:immersiveengineering:arc_furnace>.removeRecipe(<item:immersiveengineering:slag>, true);
-<recipetype:immersiveengineering:arc_furnace>.removeRecipe(<item:minecraft:iron_ingot> * 3);
+//<recipetype:immersiveengineering:arc_furnace>.remove(output as IItemStack, checkSlag as bool = false);
+<recipetype:immersiveengineering:arc_furnace>.remove(<item:immersiveengineering:slag>, true);
+<recipetype:immersiveengineering:arc_furnace>.remove(<item:minecraft:iron_ingot> * 3);

@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -11,10 +11,10 @@ import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -30,7 +30,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/immersiveengineering/Fertilizer")
 @ZenCodeType.Name("mods.immersiveengineering.Fertilizer")
-public class ClocheFertilizerManager implements IRecipeManager
+public class ClocheFertilizerManager implements IRecipeManager<ClocheFertilizer>
 {
 
 	@Override
@@ -54,7 +54,7 @@ public class ClocheFertilizerManager implements IRecipeManager
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final ClocheFertilizer recipe = new ClocheFertilizer(resourceLocation, fertilizer.asVanillaIngredient(), growthModifier);
-		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, fertilizer));
+		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, fertilizer));
 	}
 
 	/**
@@ -80,8 +80,8 @@ public class ClocheFertilizerManager implements IRecipeManager
 	}
 
 	@Override
-	public void removeRecipe(IItemStack fertilizer)
+	public void removeByInput(IItemStack input)
 	{
-		removeFertilizer(fertilizer);
+		removeFertilizer(input);
 	}
 }

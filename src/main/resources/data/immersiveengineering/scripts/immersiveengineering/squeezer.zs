@@ -17,15 +17,15 @@
  * The IFluidStack variant checks stack size, whereas the MCFluid variant does not.
  */
 
-//<recipetype:immersiveengineering:squeezer>.removeRecipe(output as IFluidStack);
-<recipetype:immersiveengineering:squeezer>.removeRecipe(<fluid:immersiveengineering:plantoil> * 60);
+//<recipetype:immersiveengineering:squeezer>.remove(output as IFluidStack);
+<recipetype:immersiveengineering:squeezer>.remove(<fluid:immersiveengineering:plantoil> * 60);
 
-//<recipetype:immersiveengineering:squeezer>.removeRecipe(output as MCFluid);
-//<recipetype:immersiveengineering:squeezer>.removeRecipe(<fluid:immersiveengineering:plantoil>.fluid);
+//<recipetype:immersiveengineering:squeezer>.remove(output as MCFluid);
+//<recipetype:immersiveengineering:squeezer>.remove(<fluid:immersiveengineering:plantoil>.fluid);
 
 /*
  * Removes recipes based on output items.
  */
 
-//<recipetype:immersiveengineering:squeezer>.removeRecipe(output as IItemStack);
-<recipetype:immersiveengineering:squeezer>.removeRecipe(<item:immersiveengineering:dust_hop_graphite>);
+//<recipetype:immersiveengineering:squeezer>.remove(output as IItemStack);
+<recipetype:immersiveengineering:squeezer>.remove(<item:immersiveengineering:dust_hop_graphite>);

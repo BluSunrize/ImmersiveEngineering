@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -11,10 +11,10 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -30,7 +30,7 @@ import org.openzen.zencode.java.ZenCodeType.Method;
 @ZenRegister
 @Document("mods/immersiveengineering/BlastFurnaceFuel")
 @ZenCodeType.Name("mods.immersiveengineering.BlastFurnaceFuel")
-public class BlastFurnaceFuelManager implements IRecipeManager
+public class BlastFurnaceFuelManager implements IRecipeManager<BlastFurnaceFuel>
 {
 
 	@Override
@@ -54,13 +54,7 @@ public class BlastFurnaceFuelManager implements IRecipeManager
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final BlastFurnaceFuel recipe = new BlastFurnaceFuel(resourceLocation, fuel.asVanillaIngredient(), burnTime);
-		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, fuel));
-	}
-
-	@Override
-	public void removeRecipe(IItemStack output)
-	{
-		removeFuel(output);
+		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, fuel));
 	}
 
 	/**
@@ -72,7 +66,7 @@ public class BlastFurnaceFuelManager implements IRecipeManager
 	@Method
 	public void removeFuel(IItemStack fuel)
 	{
-		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<BlastFurnaceFuel>(this, fuel)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, fuel)
 		{
 			@Override
 			public boolean shouldRemove(BlastFurnaceFuel recipe)

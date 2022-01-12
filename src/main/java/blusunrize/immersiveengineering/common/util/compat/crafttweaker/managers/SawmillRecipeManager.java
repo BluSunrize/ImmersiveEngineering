@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -8,15 +8,15 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
+import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
-import com.blamejared.crafttweaker.impl.helper.CraftTweakerHelper;
-import com.blamejared.crafttweaker.impl.item.MCItemStack;
+import com.blamejared.crafttweaker.api.item.MCItemStack;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -40,7 +40,7 @@ import java.util.List;
 @ZenRegister
 @Document("mods/immersiveengineering/Sawmill")
 @ZenCodeType.Name("mods.immersiveengineering.Sawmill")
-public class SawmillRecipeManager implements IRecipeManager
+public class SawmillRecipeManager implements IRecipeManager<SawmillRecipe>
 {
 
 	@Override
@@ -50,7 +50,7 @@ public class SawmillRecipeManager implements IRecipeManager
 	}
 
 	@Override
-	public void removeRecipe(IItemStack output)
+	public void remove(IIngredient output)
 	{
 		final AbstractActionRemoveMultipleOutputs<SawmillRecipe> action = new AbstractActionRemoveMultipleOutputs<SawmillRecipe>(this, output)
 		{
@@ -96,13 +96,13 @@ public class SawmillRecipeManager implements IRecipeManager
 		final Ingredient ingredient = input.asVanillaIngredient();
 
 		final ItemStack stripped = strippedOutput.getInternal();
-		final ItemStack[] secondaryStripping = CraftTweakerHelper.getItemStacks(strippedOutputSecondaries);
+		final ItemStack[] secondaryStripping = CrTIngredientUtil.getItemStacks(strippedOutputSecondaries);
 
 		if(stripped.isEmpty()&&strippedOutputSecondaries.length!=0)
 			throw new IllegalArgumentException("Cannot have secondary stripped outputs when the main stripped output is empty!");
 
 		final ItemStack mainOutput = output.getInternal();
-		final ItemStack[] secondaryOutputs = CraftTweakerHelper.getItemStacks(outputSecondaries);
+		final ItemStack[] secondaryOutputs = CrTIngredientUtil.getItemStacks(outputSecondaries);
 
 		final SawmillRecipe recipe = new SawmillRecipe(resourceLocation, mainOutput, stripped, ingredient, energy);
 		for(ItemStack stack : secondaryStripping)
@@ -111,7 +111,7 @@ public class SawmillRecipeManager implements IRecipeManager
 		for(ItemStack stack : secondaryOutputs)
 			recipe.addToSecondaryOutput(stack);
 
-		CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, null));
+		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
 
 	/**

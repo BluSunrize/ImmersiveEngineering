@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -13,11 +13,12 @@ import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngred
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.fluid.IFluidStack;
-import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.tag.MCTagWithAmount;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
+import com.blamejared.crafttweaker.api.tag.MCTag;
+import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -35,7 +36,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/immersiveengineering/Refinery")
 @ZenCodeType.Name("mods.immersiveengineering.Refinery")
-public class RefineryRecipeManager implements IRecipeManager
+public class RefineryRecipeManager implements IRecipeManager<RefineryRecipe>
 {
 
 	@Override
@@ -45,7 +46,7 @@ public class RefineryRecipeManager implements IRecipeManager
 	}
 
 	@Override
-	public void removeRecipe(IItemStack output)
+	public void remove(IIngredient output)
 	{
 		throw new UnsupportedOperationException("Cannot remove a refinery recipe by item output, since it only has a fluid output");
 	}
@@ -60,16 +61,14 @@ public class RefineryRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void removeRecipe(IFluidStack fluidStack)
 	{
-		final AbstractActionGenericRemoveRecipe<RefineryRecipe> action = new AbstractActionGenericRemoveRecipe<RefineryRecipe>(this, fluidStack)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, fluidStack)
 		{
 			@Override
 			public boolean shouldRemove(RefineryRecipe recipe)
 			{
 				return recipe.output.isFluidStackIdentical(fluidStack.getInternal());
 			}
-		};
-
-		CraftTweakerAPI.apply(action);
+		});
 	}
 
 	/**
@@ -82,16 +81,14 @@ public class RefineryRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void removeRecipe(Fluid fluid)
 	{
-		final AbstractActionGenericRemoveRecipe<RefineryRecipe> action = new AbstractActionGenericRemoveRecipe<RefineryRecipe>(this, fluid)
+		CraftTweakerAPI.apply(new AbstractActionGenericRemoveRecipe<>(this, fluid)
 		{
 			@Override
 			public boolean shouldRemove(RefineryRecipe recipe)
 			{
 				return fluid.isSame(recipe.output.getFluid());
 			}
-		};
-
-		CraftTweakerAPI.apply(action);
+		});
 	}
 
 	/**
@@ -101,6 +98,7 @@ public class RefineryRecipeManager implements IRecipeManager
 	 * @param recipePath  The recipe name, without the resource location
 	 * @param fluidInput1 The first fluid input, as Tag
 	 * @param fluidInput2 The second fluid input, as Tag
+	 * @param catalyst    The catalyst of the recipe
 	 * @param energy      The total energy required
 	 * @param output      The output fluid
 	 * @docParam recipePath "refine_herbicide"
@@ -112,15 +110,15 @@ public class RefineryRecipeManager implements IRecipeManager
 	 * @docParam output <fluid:immersiveengineering:herbicide> * 10
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, MCTagWithAmount<Fluid> fluidInput1, MCTagWithAmount<Fluid> fluidInput2, int energy, IFluidStack output)
+	public void addRecipe(String recipePath, Many<MCTag<Fluid>> fluidInput1, Many<MCTag<Fluid>> fluidInput2, IIngredient catalyst, int energy, IFluidStack output)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final FluidStack outputStack = output.getInternal();
 
-		final FluidTagInput tagInput1 = CrTIngredientUtil.getFluidTagInput(fluidInput1.getTag(), fluidInput1.getAmount());
-		final FluidTagInput tagInput2 = CrTIngredientUtil.getFluidTagInput(fluidInput2.getTag(), fluidInput2.getAmount());
+		final FluidTagInput tagInput1 = CrTIngredientUtil.getFluidTagInput(fluidInput1);
+		final FluidTagInput tagInput2 = CrTIngredientUtil.getFluidTagInput(fluidInput2);
 
-		final RefineryRecipe recipe = new RefineryRecipe(resourceLocation, outputStack, tagInput1, tagInput2, energy);
-		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput(this, recipe, output));
+		final RefineryRecipe recipe = new RefineryRecipe(resourceLocation, outputStack, tagInput1, tagInput2, catalyst.asVanillaIngredient(), energy);
+		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, output));
 	}
 }

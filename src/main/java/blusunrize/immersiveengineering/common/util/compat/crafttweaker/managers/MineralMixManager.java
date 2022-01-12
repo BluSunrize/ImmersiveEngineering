@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -11,11 +11,12 @@ import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
-import com.blamejared.crafttweaker.impl.item.MCWeightedItemStack;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
+import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
@@ -39,7 +40,7 @@ import java.util.stream.Collectors;
 @ZenRegister
 @Document("mods/immersiveengineering/MineralMix")
 @ZenCodeType.Name("mods.immersiveengineering.MineralMix")
-public class MineralMixManager implements IRecipeManager
+public class MineralMixManager implements IRecipeManager<MineralMix>
 {
 
 	@Override
@@ -65,17 +66,17 @@ public class MineralMixManager implements IRecipeManager
 	 * @docParam background <block:minecraft:white_wool>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, MCWeightedItemStack[] outputs, int weight, float failChance, ResourceLocation[] dimensions, Block background)
+	public void addRecipe(String recipePath, List<Percentaged<IItemStack>> outputs, int weight, float failChance, ResourceLocation[] dimensions, Block background)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
-		final StackWithChance[] stacksWithChances = Arrays.stream(outputs).map(CrTIngredientUtil::getStackWithChance).toArray(StackWithChance[]::new);
+		final StackWithChance[] stacksWithChances = outputs.stream().map(CrTIngredientUtil::getStackWithChance).toArray(StackWithChance[]::new);
 		final List<ResourceKey<Level>> dimensionKeys = Arrays.stream(dimensions).map(resourceLocation1 -> ResourceKey.create(Registry.DIMENSION_REGISTRY, resourceLocation1)).collect(Collectors.toList());
 		final MineralMix mix = new MineralMix(resourceLocation, stacksWithChances, weight, failChance, dimensionKeys, background);
-		CraftTweakerAPI.apply(new ActionAddRecipe(this, mix, null));
+		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, mix, null));
 	}
 
 	@Override
-	public void removeRecipe(IItemStack output)
+	public void remove(IIngredient output)
 	{
 		throw new UnsupportedOperationException("Mineral Mixes can only be removed by name, not by output!");
 	}

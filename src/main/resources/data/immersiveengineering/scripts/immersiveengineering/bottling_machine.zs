@@ -8,5 +8,5 @@
  * Removes based on recipe output.
  * Cannot remove potion recipes!
  */
-//<recipetype:immersiveengineering:bottling_machine>.removeRecipe(output as IItemStack);
-<recipetype:immersiveengineering:bottling_machine>.removeRecipe(<item:minecraft:wet_sponge>);
+//<recipetype:immersiveengineering:bottling_machine>.remove(output as IItemStack);
+<recipetype:immersiveengineering:bottling_machine>.remove(<item:minecraft:wet_sponge>);

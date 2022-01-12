@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -12,11 +12,11 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -37,7 +37,7 @@ import java.util.List;
 @ZenRegister
 @Document("mods/immersiveengineering/Cloche")
 @ZenCodeType.Name("mods.immersiveengineering.Cloche")
-public class ClocheRecipeManager implements IRecipeManager
+public class ClocheRecipeManager implements IRecipeManager<ClocheRecipe>
 {
 
 	@Override
@@ -47,9 +47,9 @@ public class ClocheRecipeManager implements IRecipeManager
 	}
 
 	@Override
-	public void removeRecipe(IItemStack output)
+	public void remove(IIngredient output)
 	{
-		removeRecipe((IIngredient)output);
+		removeRecipe(output);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class ClocheRecipeManager implements IRecipeManager
 	@ZenCodeType.Method
 	public void removeRecipe(IIngredient output)
 	{
-		CraftTweakerAPI.apply(new AbstractActionRemoveMultipleOutputs<ClocheRecipe>(this, output)
+		CraftTweakerAPI.apply(new AbstractActionRemoveMultipleOutputs<>(this, output)
 		{
 			@Override
 			public List<ItemStack> getAllOutputs(ClocheRecipe recipe)
@@ -114,10 +114,10 @@ public class ClocheRecipeManager implements IRecipeManager
 		try
 		{
 			final ClocheRecipe recipe = new ClocheRecipe(resourceLocation, outputList, seedIngredient, soilIngredient, time, renderReference);
-			CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, null));
+			CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 		} catch(Exception ex)
 		{
-			CraftTweakerAPI.logThrowing("Could not create Cloche recipe '%s' with renderType '%s': ", ex, recipePath, renderType);
+			CraftTweakerAPI.LOGGER.error("Could not create Cloche recipe '{}' with renderType '{}': ", recipePath, renderType, ex);
 		}
 	}
 }

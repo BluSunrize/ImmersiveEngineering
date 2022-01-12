@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -12,12 +12,12 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredient;
-import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
@@ -39,7 +39,7 @@ import java.util.List;
 @ZenRegister
 @Document("mods/immersiveengineering/ArcFurnace")
 @ZenCodeType.Name("mods.immersiveengineering.ArcFurnace")
-public class ArcFurnaceRecipeManager implements IRecipeManager
+public class ArcFurnaceRecipeManager implements IRecipeManager<ArcFurnaceRecipe>
 {
 
 	@Override
@@ -74,16 +74,16 @@ public class ArcFurnaceRecipeManager implements IRecipeManager
 		final IngredientWithSize main = CrTIngredientUtil.getIngredientWithSize(mainIngredient);
 		final IngredientWithSize[] additivesWithSize = CrTIngredientUtil.getIngredientsWithSize(additives);
 
-		final ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(resourceLocation, outputList, main, slag
-				.getInternal(), time, energy, additivesWithSize);
+		final ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(resourceLocation, outputList, slag
+				.getInternal(), List.of(), time, energy, main, additivesWithSize);
 
-		CraftTweakerAPI.apply(new ActionAddRecipe(this, recipe, null));
+		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
 
 	@Override
-	public void removeRecipe(IItemStack output)
+	public void remove(IIngredient output)
 	{
-		removeRecipe(output, false);
+		remove(output, false);
 	}
 
 	/**
@@ -96,7 +96,7 @@ public class ArcFurnaceRecipeManager implements IRecipeManager
 	 * @docParam checkSlag true
 	 */
 	@ZenCodeType.Method
-	public void removeRecipe(IIngredient output, boolean checkSlag)
+	public void remove(IIngredient output, boolean checkSlag)
 	{
 		CraftTweakerAPI.apply(new AbstractActionRemoveMultipleOutputs<ArcFurnaceRecipe>(this, output)
 		{

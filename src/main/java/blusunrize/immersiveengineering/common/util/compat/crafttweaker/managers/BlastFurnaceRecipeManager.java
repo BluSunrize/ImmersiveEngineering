@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2021
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -11,11 +11,11 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
-import com.blamejared.crafttweaker.api.annotations.ZenRegister;
-import com.blamejared.crafttweaker.api.item.IIngredientWithAmount;
+import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.annotation.ZenRegister;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
-import com.blamejared.crafttweaker.api.managers.IRecipeManager;
-import com.blamejared.crafttweaker.impl.actions.recipes.ActionAddRecipe;
+import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ import org.openzen.zencode.java.ZenCodeType;
 @ZenRegister
 @Document("mods/immersiveengineering/BlastFurnace")
 @ZenCodeType.Name("mods.immersiveengineering.BlastFurnace")
-public class BlastFurnaceRecipeManager implements IRecipeManager
+public class BlastFurnaceRecipeManager implements IRecipeManager<BlastFurnaceRecipe>
 {
 
 	@Override
@@ -63,6 +63,6 @@ public class BlastFurnaceRecipeManager implements IRecipeManager
 		final ItemStack outputItem = output.getInternal();
 		final ItemStack slagItem = slag.getInternal();
 		final BlastFurnaceRecipe blastFurnaceRecipe = new BlastFurnaceRecipe(resourceLocation, outputItem, ingredientWithSize, time, slagItem);
-		CraftTweakerAPI.apply(new ActionAddRecipe(this, blastFurnaceRecipe, null));
+		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, blastFurnaceRecipe, null));
 	}
 }
