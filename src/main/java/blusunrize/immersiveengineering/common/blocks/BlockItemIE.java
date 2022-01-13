@@ -116,6 +116,12 @@ public class BlockItemIE extends BlockItem
 			return false;
 	}
 
+	@Override
+	public boolean canFitInsideContainerItems()
+	{
+		return !(getBlock() instanceof IEBaseBlock ieBlock)||ieBlock.fitsIntoContainer();
+	}
+
 	public static class BlockItemIENoInventory extends BlockItemIE
 	{
 		public BlockItemIENoInventory(Block b, Properties props)

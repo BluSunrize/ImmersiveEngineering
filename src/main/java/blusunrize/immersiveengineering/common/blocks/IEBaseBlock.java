@@ -46,10 +46,17 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	protected int lightOpacity;
 	protected PushReaction mobilityFlag = PushReaction.NORMAL;
 	protected final boolean notNormalBlock;
+	private final boolean fitsIntoContainer;
 
 	public IEBaseBlock(Block.Properties blockProps)
 	{
+		this(blockProps, true);
+	}
+
+	public IEBaseBlock(Block.Properties blockProps, boolean fitsIntoContainer)
+	{
 		super(blockProps.dynamicShape());
+		this.fitsIntoContainer = fitsIntoContainer;
 		this.notNormalBlock = !defaultBlockState().canOcclude();
 
 		this.registerDefaultState(getInitDefaultState());
@@ -253,6 +260,11 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 			return SimpleWaterloggedBlock.super.pickupBlock(level, pos, state);
 		else
 			return ItemStack.EMPTY;
+	}
+
+	public boolean fitsIntoContainer()
+	{
+		return fitsIntoContainer;
 	}
 
 	/* LADDERS */

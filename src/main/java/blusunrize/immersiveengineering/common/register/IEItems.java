@@ -272,18 +272,20 @@ public final class IEItems
 
 	public static final class Minecarts
 	{
-		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_CRATE = register("woodencrate", CrateMinecartEntity::new);
-		public static final ItemRegObject<IEMinecartItem> CART_REINFORCED_CRATE = register("reinforcedcrate", ReinforcedCrateMinecartEntity::new);
-		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_BARREL = register("woodenbarrel", BarrelMinecartEntity::new);
-		public static final ItemRegObject<IEMinecartItem> CART_METAL_BARREL = register("metalbarrel", MetalBarrelMinecartEntity::new);
+		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_CRATE = register("woodencrate", CrateMinecartEntity::new, false);
+		public static final ItemRegObject<IEMinecartItem> CART_REINFORCED_CRATE = register("reinforcedcrate", ReinforcedCrateMinecartEntity::new, false);
+		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_BARREL = register("woodenbarrel", BarrelMinecartEntity::new, true);
+		public static final ItemRegObject<IEMinecartItem> CART_METAL_BARREL = register("metalbarrel", MetalBarrelMinecartEntity::new, true);
 
 		private static void init()
 		{
 		}
 
-		private static ItemRegObject<IEMinecartItem> register(String name, IEMinecartEntity.MinecartConstructor constructor)
+		private static ItemRegObject<IEMinecartItem> register(
+				String name, IEMinecartEntity.MinecartConstructor constructor, boolean fitsIntoContainer
+		)
 		{
-			return IEItems.register("minecart_"+name, () -> new IEMinecartItem(constructor));
+			return IEItems.register("minecart_"+name, () -> new IEMinecartItem(constructor, fitsIntoContainer));
 		}
 	}
 

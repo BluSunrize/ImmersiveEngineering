@@ -15,9 +15,10 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BasicConnectorBlock;
 import blusunrize.immersiveengineering.common.items.WireCoilItem;
-import blusunrize.immersiveengineering.common.register.IEBlocks.*;
-import blusunrize.immersiveengineering.common.register.IEItems.Metals;
-import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
+import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.data.DataGenerator;
@@ -101,11 +102,6 @@ class IEItemTags extends ItemTagsProvider
 				.addTag(IETags.ironRod)
 				.addTag(IETags.steelRod);
 		tag(IETags.sawblades).add(Tools.SAWBLADE.get());
-		tag(IETags.forbiddenInCrates).add(Tools.TOOLBOX.get())
-				.add(WoodenDevices.CRATE.asItem())
-				.add(WoodenDevices.REINFORCED_CRATE.asItem())
-				.add(Minecarts.CART_WOODEN_CRATE.asItem())
-				.add(Minecarts.CART_REINFORCED_CRATE.asItem());
 		tag(IETags.circuitPCB).add(Ingredients.CIRCUIT_BOARD.asItem());
 		tag(IETags.circuitLogic).add(Ingredients.ELECTRON_TUBE.asItem());
 		tag(IETags.circuitSolder).addTag(IETags.copperWire).addTag(IETags.leadWire);

@@ -94,4 +94,10 @@ public class ToolboxItem extends InternalStorageItem
 	{
 		return SLOT_COUNT;
 	}
+
+	@Override
+	public boolean canFitInsideContainerItems()
+	{
+		return false;
+	}
 }

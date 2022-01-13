@@ -70,8 +70,12 @@ public class IEApi
 
 	/**
 	 * If one of the predicates in this list returns true for a given stack, it can't be placed in a crate or in the Engineer's toolbox
+	 *
+	 * @deprecated Use Item::canFitInsideContainerItems or IETags.forbiddenInCrates instead, or contact the IE team if
+	 * you actually need full stack context
 	 */
-	public static List<Predicate<ItemStack>> forbiddenInCrates = new ArrayList<>();
+	@Deprecated(forRemoval = true)
+	public static final List<Predicate<ItemStack>> forbiddenInCrates = new ArrayList<>();
 
 	public static ItemStack getPreferredTagStack(TagContainer tags, ResourceLocation name)
 	{
@@ -130,6 +134,8 @@ public class IEApi
 
 	public static boolean isAllowedInCrate(ItemStack stack)
 	{
+		if(!stack.getItem().canFitInsideContainerItems()||stack.is(IETags.forbiddenInCrates))
+			return false;
 		for(Predicate<ItemStack> check : forbiddenInCrates)
 			if(check.test(stack))
 				return false;

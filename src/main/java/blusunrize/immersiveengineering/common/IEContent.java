@@ -9,8 +9,6 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
-import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
@@ -77,7 +75,6 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ConcretePowderBlock;
-import net.minecraft.world.level.block.ShulkerBoxBlock;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.material.Fluid;
@@ -241,12 +238,6 @@ public class IEContent
 		ChemthrowerEffects.register();
 
 		RailgunProjectiles.register();
-
-		/*BLOCK ITEMS FROM CRATES*/
-		IEApi.forbiddenInCrates.add(
-				stack -> IETags.forbiddenInCrates.contains(stack.getItem())||
-						Block.byItem(stack.getItem()) instanceof ShulkerBoxBlock
-		);
 
 		FluidPipeBlockEntity.initCovers();
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler::new);

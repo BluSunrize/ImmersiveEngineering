@@ -82,7 +82,9 @@ public class IETags
 	public static final Named<Item> plates = createItemWrapper(forgeLoc("plates"));
 	public static final Named<Item> sawblades = createItemWrapper(forgeLoc("sawblades"));
 	//Utility tags
-	public static final Named<Item> forbiddenInCrates = createItemWrapper(rl("forbidden_in_crates"));
+	public static final Named<Item> forbiddenInCrates = StaticTagHelper.createDelayedOptional(
+			ForgeRegistries.ITEMS.getRegistryName(), rl("forbidden_in_crates"), null
+	);
 	public static final Named<Item> circuitPCB = createItemWrapper(rl("circuits/pcb"));
 	public static final Named<Item> circuitLogic = createItemWrapper(rl("circuits/logic"));
 	public static final Named<Item> circuitSolder = createItemWrapper(rl("circuits/solder"));

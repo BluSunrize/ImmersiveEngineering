@@ -62,13 +62,25 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 
 	public IEEntityBlock(BiFunction<BlockPos, BlockState, T> makeEntity, Properties blockProps)
 	{
-		super(blockProps);
+		this(makeEntity, blockProps, true);
+	}
+
+	public IEEntityBlock(
+			BiFunction<BlockPos, BlockState, T> makeEntity, Properties blockProps, boolean fitsIntoContainer
+	)
+	{
+		super(blockProps, fitsIntoContainer);
 		this.makeEntity = makeEntity;
 	}
 
 	public IEEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps)
 	{
-		this((bp, state) -> tileType.get().create(bp, state), blockProps);
+		this(tileType, blockProps, true);
+	}
+
+	public IEEntityBlock(RegistryObject<BlockEntityType<T>> tileType, Properties blockProps, boolean fitsIntoContainer)
+	{
+		this((bp, state) -> tileType.get().create(bp, state), blockProps, fitsIntoContainer);
 	}
 
 	@Nullable

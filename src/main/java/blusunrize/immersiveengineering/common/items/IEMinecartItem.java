@@ -40,11 +40,13 @@ import java.util.List;
 public class IEMinecartItem extends IEBaseItem
 {
 	private final MinecartConstructor constructor;
+	private final boolean fitsIntoContainers;
 
-	public IEMinecartItem(MinecartConstructor constructor)
+	public IEMinecartItem(MinecartConstructor constructor, boolean fitsIntoContainers)
 	{
 		super(new Properties().stacksTo(1));
 		this.constructor = constructor;
+		this.fitsIntoContainers = fitsIntoContainers;
 		GenericDeferredWork.registerDispenseBehavior(this, MINECART_DISPENSER_BEHAVIOR);
 	}
 
@@ -98,6 +100,11 @@ public class IEMinecartItem extends IEBaseItem
 		}
 	}
 
+	@Override
+	public boolean canFitInsideContainerItems()
+	{
+		return fitsIntoContainers;
+	}
 
 	private static final DispenseItemBehavior MINECART_DISPENSER_BEHAVIOR = new DefaultDispenseItemBehavior()
 	{
