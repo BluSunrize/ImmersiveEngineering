@@ -58,5 +58,6 @@ public class RebuildTaskMixin
 	)
 	{
 		ConnectionRenderer.renderConnectionsInSection(pCompiledChunk, pBuffers, this.regionCopy, this$1);
+		this.regionCopy = null;
 	}
 }
