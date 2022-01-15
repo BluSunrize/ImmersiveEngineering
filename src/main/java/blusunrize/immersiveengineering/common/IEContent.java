@@ -660,6 +660,7 @@ public class IEContent
 		IEMultiblocks.init();
 		BlueprintCraftingRecipe.registerDefaultCategories();
 		IETileTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEStats.init();
 		populateAPI();
 	}
 

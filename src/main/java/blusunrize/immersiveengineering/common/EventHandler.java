@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.items.IEItems.Tools;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
+import blusunrize.immersiveengineering.common.util.IEStats;
 import blusunrize.immersiveengineering.common.util.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.wires.CapabilityInit;
@@ -63,6 +64,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.WorldTickEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
@@ -410,7 +412,17 @@ public class EventHandler
 		{
 			BlockEntity te = event.getWorld().getBlockEntity(event.getPos());
 			if(te instanceof MultiblockPartTileEntity)
-				((MultiblockPartTileEntity)te).onlyLocalDissassembly = event.getWorld().getLevelData().getGameTime();
+				((MultiblockPartTileEntity<?>)te).onlyLocalDissassembly = event.getWorld().getLevelData().getGameTime();
 		}
+	}
+
+	@SubscribeEvent
+	public void onLivingDeath(LivingDeathEvent event)
+	{
+		if(!(event.getSource() instanceof ElectricDamageSource))
+			return;
+		if(!(event.getEntityLiving() instanceof ServerPlayer))
+			return;
+		((ServerPlayer) event.getEntityLiving()).awardStat(IEStats.WIRE_DEATHS);
 	}
 }

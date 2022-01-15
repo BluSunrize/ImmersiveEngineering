@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.wires.*;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.common.items.IEItems.Misc;
 import blusunrize.immersiveengineering.common.network.MessageSkyhookSync;
+import blusunrize.immersiveengineering.common.util.IEStats;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -287,8 +288,8 @@ public class SkylineHookEntity extends Entity
 		double dy = this.getY()-this.yo;
 		double dz = this.getZ()-this.zo;
 		int distTrvl = Math.round(Mth.sqrt(dx*dx+dy*dy+dz*dz)*100.0F);
-//			if(distTrvl>0)
-//				player.addStat(IEAchievements.statDistanceSkyhook, distTrvl);
+		if(distTrvl > 0)
+			player.awardStat(IEStats.SKYHOOK_DISTANCE, distTrvl);
 
 		//TODO
 //			if(player instanceof EntityPlayerMP)
