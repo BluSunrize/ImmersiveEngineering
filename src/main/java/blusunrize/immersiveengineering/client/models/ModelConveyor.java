@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.tool.conveyor.*;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
+import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender.RenderContext;
 import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
@@ -473,13 +474,13 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 	{
 		Block b = state.getBlock();
 		IConveyorType<?> conveyorName = ConveyorHandler.getType(b);
-		if(conveyorName!=null)
-		{
-			IConveyorBelt belt = ConveyorHandler.getConveyor(conveyorName, world.getBlockEntity(pos));
-			return CombinedModelData.combine(tileData, new SinglePropertyModelData<>(belt, CONVEYOR_MODEL_DATA));
-		}
-		else
+		if(conveyorName==null)
 			return tileData;
+		BlockEntity bEntity = world.getBlockEntity(pos);
+		if(!(bEntity instanceof IConveyorBlockEntity<?>))
+			return tileData;
+		IConveyorBelt belt = ConveyorHandler.getConveyor(conveyorName, bEntity);
+		return CombinedModelData.combine(tileData, new SinglePropertyModelData<>(belt, CONVEYOR_MODEL_DATA));
 	}
 
 	public record RawConveyorModel(IConveyorType<?> type) implements IModelGeometry<RawConveyorModel>
