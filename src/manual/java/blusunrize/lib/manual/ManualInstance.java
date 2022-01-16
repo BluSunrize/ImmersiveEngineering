@@ -581,13 +581,10 @@ public abstract class ManualInstance implements ISelectiveResourceReloadListener
 
 	public Leaf<ResourceLocation, ManualEntry> findEntry(ResourceLocation name, InnerNode<ResourceLocation, ManualEntry> parent)
 	{
-		for(AbstractNode<ResourceLocation, ManualEntry> child : parent.getChildren())
-		{
-			ResourceLocation loc = child.getLeafData().getLocation();
-			if(child.isLeaf()&&loc.equals(name))
-				return (Leaf<ResourceLocation, ManualEntry>)child;
-		}
-		throw new NoSuchElementException("Did not find a child with name "+name);
+		return parent.leafStream()
+				.filter(entry -> entry.getLeafData().getLocation().equals(name))
+				.findAny()
+				.orElseThrow(() -> new NoSuchElementException("Did not find a child with name "+name));
 	}
 
 	public abstract Font fontRenderer();

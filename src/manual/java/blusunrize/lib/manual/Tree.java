@@ -18,7 +18,7 @@ import java.util.stream.Stream.Builder;
 
 public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 {
-	private InnerNode<NT, LT> root;
+	private final InnerNode<NT, LT> root;
 
 	public Tree(NT root)
 	{
@@ -27,9 +27,7 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 
 	public Stream<LT> leafStream()
 	{
-		Stream.Builder<AbstractNode<NT, LT>> b = Stream.builder();
-		root.stream(b, true);
-		return b.build().map(AbstractNode::getLeafData);
+		return root.leafStream().map(Leaf::getLeafData);
 	}
 
 	public InnerNode<NT, LT> getRoot()
@@ -98,6 +96,13 @@ public class Tree<NT extends Comparable<NT>, LT extends Comparable<LT>>
 		void resetWeights()
 		{
 			cachedWeight = OptionalDouble.empty();
+		}
+
+		public final Stream<Leaf<NT, LT>> leafStream()
+		{
+			Stream.Builder<AbstractNode<NT, LT>> b = Stream.builder();
+			stream(b, true);
+			return b.build().map(node -> (Leaf<NT, LT>)node);
 		}
 	}
 
