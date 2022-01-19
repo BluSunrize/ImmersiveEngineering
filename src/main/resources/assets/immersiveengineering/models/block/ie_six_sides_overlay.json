@@ -46,18 +46,6 @@
 	],
 	"textures":
 	{
-		"particle": "#block_particle",
-		"block_down": "#block_down",
-		"block_up": "#block_up",
-		"block_north": "#block_north",
-		"block_south": "#block_south",
-		"block_west": "#block_west",
-		"block_east": "#block_east",
-		"overlay_down": "#overlay_down",
-		"overlay_up": "#overlay_up",
-		"overlay_north": "#overlay_north",
-		"overlay_south": "#overlay_south",
-		"overlay_west": "#overlay_west",
-		"overlay_east": "#overlay_east"
+		"particle": "#block_particle"
 	}
 }
