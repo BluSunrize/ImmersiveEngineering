@@ -150,8 +150,11 @@ public class WireUtils
 	public static boolean hasAnyConnections(GlobalWireNetwork global, IImmersiveConnectable iic)
 	{
 		for(ConnectionPoint cp : iic.getConnectionPoints())
-			if(!global.getLocalNet(cp).getConnections(cp).stream().allMatch(Connection::isInternal))
+		{
+			LocalWireNetwork local = global.getNullableLocalNet(cp);
+			if(local!=null&&!local.getConnections(cp).stream().allMatch(Connection::isInternal))
 				return true;
+		}
 		return false;
 	}
 
