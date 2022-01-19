@@ -326,6 +326,17 @@ public class GlobalWireNetwork implements IWorldTickable
 		if(queuedLoads.isEmpty()||processingLoadQueue)
 			return;
 		processingLoadQueue = true;
+		try
+		{
+			processQueuedLoadsInner();
+		} finally
+		{
+			processingLoadQueue = false;
+		}
+	}
+
+	private void processQueuedLoadsInner()
+	{
 		Map<Pair<BlockPos, Level>, IImmersiveConnectable> toProcess = queuedLoads;
 		queuedLoads = new LinkedHashMap<>();
 		for(Entry<Pair<BlockPos, Level>, IImmersiveConnectable> load : toProcess.entrySet())
@@ -346,7 +357,6 @@ public class GlobalWireNetwork implements IWorldTickable
 			else
 				queuedLoads.put(load.getKey(), load.getValue());
 		}
-		processingLoadQueue = false;
 	}
 
 	private void updateModelData(IImmersiveConnectable iic, Level world)
