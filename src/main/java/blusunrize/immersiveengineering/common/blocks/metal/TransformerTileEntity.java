@@ -144,7 +144,7 @@ public class TransformerTileEntity extends AbstractTransformerTileEntity impleme
 		if(facing.getAxis()==Axis.X)
 			hitPos = target.hitZ;
 		else
-			hitPos = 0.5-target.hitX;
+			hitPos = 1-target.hitX;
 
 		if((hitPos < .5)==(facing.getAxisDirection()==AxisDirection.POSITIVE))
 			return leftCP;
