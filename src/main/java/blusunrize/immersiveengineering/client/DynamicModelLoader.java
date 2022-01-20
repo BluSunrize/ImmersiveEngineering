@@ -14,7 +14,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -41,10 +40,5 @@ public class DynamicModelLoader
 	public static void requestTexture(ResourceLocation name)
 	{
 		manualTextureRequests.add(name);
-	}
-
-	public static void requestModel(ResourceLocation name)
-	{
-		ForgeModelBakery.addSpecialModel(name);
 	}
 }

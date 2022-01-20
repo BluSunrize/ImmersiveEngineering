@@ -175,6 +175,25 @@ public class ClientProxy extends CommonProxy
 		ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
 		ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
 		ModelLoaderRegistry.registerLoader(MirroredModelLoader.ID, new MirroredModelLoader());
+
+		ArcFurnaceRenderer.ELECTRODES = new DynamicModel(ArcFurnaceRenderer.NAME);
+		AutoWorkbenchRenderer.DYNAMIC = new DynamicModel(AutoWorkbenchRenderer.NAME);
+		BottlingMachineRenderer.DYNAMIC = new DynamicModel(BottlingMachineRenderer.NAME);
+		BucketWheelRenderer.WHEEL = new DynamicModel(BucketWheelRenderer.NAME);
+		CrusherRenderer.BARREL = new DynamicModel(CrusherRenderer.NAME);
+		SawmillRenderer.BLADE = new DynamicModel(SawmillRenderer.NAME);
+		DieselGeneratorRenderer.FAN = new DynamicModel(DieselGeneratorRenderer.NAME);
+		MetalPressRenderer.PISTON = new DynamicModel(MetalPressRenderer.NAME);
+		MixerRenderer.AGITATOR = new DynamicModel(MixerRenderer.NAME);
+		SampleDrillRenderer.DRILL = new DynamicModel(SampleDrillRenderer.NAME);
+		SqueezerRenderer.PISTON = new DynamicModel(SqueezerRenderer.NAME);
+		WatermillRenderer.MODEL = new DynamicModel(WatermillRenderer.NAME);
+		WindmillRenderer.MODEL = new DynamicModel(WindmillRenderer.NAME);
+		RedstoneConveyorRender.MODEL_PANEL = new DynamicModel(RedstoneConveyorRender.MODEL_NAME);
+		SawbladeRenderer.MODEL = new DynamicModel(SawbladeRenderer.NAME);
+		BlastFurnacePreheaterRenderer.MODEL = new DynamicModel(BlastFurnacePreheaterRenderer.NAME);
+		TurretRenderer.fillModels();
+		BasicClientProperties.initModels();
 	}
 
 	@SubscribeEvent
@@ -496,25 +515,6 @@ public class ClientProxy extends CommonProxy
 		DynamicModelLoader.requestTexture(RedstoneConveyorRender.texture_panel);
 
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "item/shader_slot"));
-
-		ArcFurnaceRenderer.ELECTRODES = new DynamicModel(ArcFurnaceRenderer.NAME);
-		AutoWorkbenchRenderer.DYNAMIC = new DynamicModel(AutoWorkbenchRenderer.NAME);
-		BottlingMachineRenderer.DYNAMIC = new DynamicModel(BottlingMachineRenderer.NAME);
-		BucketWheelRenderer.WHEEL = new DynamicModel(BucketWheelRenderer.NAME);
-		CrusherRenderer.BARREL = new DynamicModel(CrusherRenderer.NAME);
-		SawmillRenderer.BLADE = new DynamicModel(SawmillRenderer.NAME);
-		DieselGeneratorRenderer.FAN = new DynamicModel(DieselGeneratorRenderer.NAME);
-		MetalPressRenderer.PISTON = new DynamicModel(MetalPressRenderer.NAME);
-		MixerRenderer.AGITATOR = new DynamicModel(MixerRenderer.NAME);
-		SampleDrillRenderer.DRILL = new DynamicModel(SampleDrillRenderer.NAME);
-		SqueezerRenderer.PISTON = new DynamicModel(SqueezerRenderer.NAME);
-		WatermillRenderer.MODEL = new DynamicModel(WatermillRenderer.NAME);
-		WindmillRenderer.MODEL = new DynamicModel(WindmillRenderer.NAME);
-		RedstoneConveyorRender.MODEL_PANEL = new DynamicModel(RedstoneConveyorRender.MODEL_NAME);
-		SawbladeRenderer.MODEL = new DynamicModel(SawbladeRenderer.NAME);
-		BlastFurnacePreheaterRenderer.MODEL = new DynamicModel(BlastFurnacePreheaterRenderer.NAME);
-		TurretRenderer.fillModels();
-		BasicClientProperties.initModels();
 	}
 
 	public static void populateAPI()

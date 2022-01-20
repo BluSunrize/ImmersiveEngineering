@@ -9,13 +9,13 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.client.DynamicModelLoader;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.ForgeModelBakery;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.data.IModelData;
 
@@ -28,7 +28,7 @@ public class DynamicModel
 	public DynamicModel(String desc)
 	{
 		this.name = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/"+desc);
-		DynamicModelLoader.requestModel(this.name);
+		ForgeModelBakery.addSpecialModel(this.name);
 	}
 
 	public BakedModel get()
