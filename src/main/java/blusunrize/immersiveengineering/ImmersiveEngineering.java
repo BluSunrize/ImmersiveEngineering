@@ -54,7 +54,6 @@ import net.minecraft.server.ServerResources;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -188,7 +187,7 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				Molds.MOLD_PLATE, Molds.MOLD_GEAR, Molds.MOLD_ROD, Molds.MOLD_BULLET_CASING, Molds.MOLD_WIRE,
 				Molds.MOLD_PACKING_4, Molds.MOLD_PACKING_9, Molds.MOLD_UNPACKING
-		).map(ItemLike::asItem));
+		));
 		// Blocks, Plates, Rods, Wires, Gears, Scaffoldings, Fences
 		ArcRecyclingChecker.allowItemTagForRecycling(IETags.plates);
 		ArcRecyclingChecker.allowPrefixedTagForRecycling("rods/");
@@ -201,25 +200,24 @@ public class ImmersiveEngineering
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				MetalDecoration.ENGINEERING_RS, MetalDecoration.ENGINEERING_LIGHT, MetalDecoration.ENGINEERING_HEAVY,
 				MetalDecoration.GENERATOR, MetalDecoration.RADIATOR
-		).map(ItemLike::asItem));
+		));
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				MetalDecoration.ALU_WALLMOUNT, MetalDecoration.STEEL_WALLMOUNT, MetalDecoration.STEEL_SLOPE,
 				MetalDecoration.ALU_POST, MetalDecoration.STEEL_POST
-		).map(ItemLike::asItem));
+		));
 		for(EnumMetals metal : EnumMetals.values())
 			ArcRecyclingChecker.allowItemTagForRecycling(IETags.getItemTag(IETags.getTagsFor(metal).sheetmetal));
 		// Metal devices & Chutes
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				MetalDevices.RAZOR_WIRE, MetalDevices.BARREL, MetalDevices.FLUID_PIPE
-		).map(ItemLike::asItem));
-		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() ->
-				MetalDevices.CHUTES.values().stream().map(ItemLike::asItem));
+		));
+		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> MetalDevices.CHUTES.values().stream());
 
 		// Vanilla
 		ArcRecyclingChecker.allowEnumeratedItemsForRecycling(() -> Stream.of(
 				Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.LIGHT_WEIGHTED_PRESSURE_PLATE,
 				Items.IRON_TRAPDOOR, Items.IRON_DOOR, Items.IRON_BARS, Items.CAULDRON
-		).map(ItemLike::asItem));
+		));
 
 		// Prevent tools used during crafting to be recycled as components
 		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem

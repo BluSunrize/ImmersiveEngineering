@@ -11,6 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.ItemLike;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -61,9 +62,9 @@ public class ArcRecyclingChecker
 		RECYCLING_ALLOWED_ENUMERATED.add(getAllowedItems);
 	}
 
-	public static void allowEnumeratedItemsForRecycling(Supplier<Stream<Item>> getAllowedItems)
+	public static void allowEnumeratedItemsForRecycling(Supplier<Stream<? extends ItemLike>> getAllowedItems)
 	{
-		allowEnumeratedItemsForRecycling($ -> getAllowedItems.get());
+		allowEnumeratedItemsForRecycling($ -> getAllowedItems.get().map(ItemLike::asItem));
 	}
 
 	public static void allowPrefixedTagForRecycling(String prefix)
