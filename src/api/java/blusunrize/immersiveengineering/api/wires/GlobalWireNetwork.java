@@ -387,7 +387,7 @@ public class GlobalWireNetwork implements IWorldTickable
 				if(otherLocal!=null)
 				{
 					IImmersiveConnectable iicEnd = otherLocal.getConnector(otherEnd);
-					if(!iicEnd.isProxy()&&!world.isClientSide)
+					if(!iicEnd.isProxy())
 					{
 						WireLogger.logger.info("Here: {}, other end: {}", iic, iicEnd);
 						collisionData.addConnection(c);
@@ -429,6 +429,8 @@ public class GlobalWireNetwork implements IWorldTickable
 			validateNextTick = false;
 		}
 		processQueuedLoads();
+		if(world.isClientSide())
+			return;
 		for(LocalWireNetwork net : localNetSet)
 			net.update(world);
 		if(SANITIZE_CONNECTIONS.getValue().getAsBoolean())
