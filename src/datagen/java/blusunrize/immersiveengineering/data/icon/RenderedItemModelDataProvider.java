@@ -8,11 +8,13 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.nio.file.Path;
 
 public class RenderedItemModelDataProvider implements DataProvider
@@ -33,11 +35,29 @@ public class RenderedItemModelDataProvider implements DataProvider
         GameInitializationManager.getInstance().initialize(helper, generator);
         IEWireTypes.setup();
 
-        final Path itemOutputDirectory = this.generator.getOutputFolder().resolve("icons/item");
-        ModelRenderer itemRenderer = new ModelRenderer(512, 512, itemOutputDirectory.toFile(), pCache);
+        final Path itemOutputDirectory = this.generator.getOutputFolder().getParent().resolve("web/icons/item");
+        ModelRenderer itemRenderer = new ModelRenderer(256, 256, itemOutputDirectory.toFile());
 
+        Field item_renderProperties;
+        try
+        {
+            item_renderProperties = Item.class.getDeclaredField("renderProperties");
+            item_renderProperties.setAccessible(true);
+        } catch(NoSuchFieldException e)
+        {
+            throw new RuntimeException(e);
+        }
         IEItems.REGISTER.getEntries().forEach(regEntry -> {
             var item = regEntry.get();
+            item.initializeClient(properties -> {
+                try
+                {
+                    item_renderProperties.set(item, properties);
+                } catch(IllegalAccessException e)
+                {
+                    throw new RuntimeException(e);
+                }
+            });
             var name = regEntry.getId();
             ModelResourceLocation modelLocation = new ModelResourceLocation(name, "inventory");
 
