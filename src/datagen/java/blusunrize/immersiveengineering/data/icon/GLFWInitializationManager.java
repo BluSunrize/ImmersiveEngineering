@@ -45,6 +45,10 @@ public class GLFWInitializationManager
 			throw new RuntimeException("Failed to initialize GLFW???");
 		glfwSetErrorCallback(loggingErrorCallback);
 		glfwDefaultWindowHints();
+
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
 		long window = glfwCreateWindow(512, 512, "Hello World!", NULL, NULL);
 		glfwMakeContextCurrent(window);

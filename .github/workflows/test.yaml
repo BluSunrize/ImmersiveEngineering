@@ -44,13 +44,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-      - uses: openrndr/setup-opengl@v1.1
-      # From https://github.com/jyapayne/nim-staticglfw/blob/d270e2b9fb5472bf87338aee80c00105fa957332/.github/workflows/build.yml
-      # TODO figure out which ones we actually need
-      - name: Install GUI
+      - name: Install XVFB
         run: |
           sudo apt update
-          sudo apt install -y  build-essential libalut-dev libasound2-dev libc6-dev libgl1-mesa-dev libglu1-mesa-dev libxcursor-dev libxi-dev libxinerama-dev libxrandr-dev libxxf86vm-dev mesa-utils pkg-config xorg-dev xvfb libllvm6.0
+          sudo apt install -y xvfb
       - name: Create list of existing generated resources
         run: find src/generated/resources/ ! -path "**/.cache*" > resources.txt
       - name: Run data generation
