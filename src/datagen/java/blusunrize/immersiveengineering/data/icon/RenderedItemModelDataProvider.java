@@ -1,6 +1,7 @@
 package blusunrize.immersiveengineering.data.icon;
 
 import blusunrize.immersiveengineering.common.register.IEItems;
+import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
@@ -32,10 +33,16 @@ public class RenderedItemModelDataProvider implements DataProvider
     @Override
     public void run(HashCache pCache) throws IOException
     {
+        String outputTo = System.getenv("ie_datagen_icon_dir");
+        if(outputTo==null)
+        {
+            IELogger.logger.info("Skipping {} since the icon output directory is not set", getName());
+            return;
+        }
         GameInitializationManager.getInstance().initialize(helper, generator);
         IEWireTypes.setup();
 
-        final Path itemOutputDirectory = this.generator.getOutputFolder().getParent().resolve("web/icons/item");
+        final Path itemOutputDirectory = Path.of(outputTo);
         ModelRenderer itemRenderer = new ModelRenderer(256, 256, itemOutputDirectory.toFile());
 
         Field item_renderProperties;
