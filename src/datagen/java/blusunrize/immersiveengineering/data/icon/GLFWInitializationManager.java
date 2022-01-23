@@ -25,7 +25,6 @@ public class GLFWInitializationManager
 	}
 
 	private boolean initialized = false;
-	public static long window = 0;
 
 	private final GLFWErrorCallback loggingErrorCallback = GLFWErrorCallback.create((error, description) -> {
 		System.err.println("Error "+error+": "+description);
@@ -47,7 +46,7 @@ public class GLFWInitializationManager
 		glfwSetErrorCallback(loggingErrorCallback);
 		glfwDefaultWindowHints();
 		glfwWindowHint(GLFW_VISIBLE, GL_FALSE);
-		window = glfwCreateWindow(512, 512, "Hello World!", NULL, NULL);
+		long window = glfwCreateWindow(512, 512, "Hello World!", NULL, NULL);
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 	}

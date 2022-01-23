@@ -1,6 +1,6 @@
 name: Compile IE, run unit tests and check that all generated data is present
 
-# Run on PRs on every update and once per day on the default branch
+# Run on PRs on every update
 on:
   pull_request:
   push:
@@ -27,17 +27,3 @@ jobs:
         run: ./gradlew --max-workers 1 compileJava
       - name: Run unit tests
         run: ./gradlew --max-workers 1 test
-      - name: Create list of existing generated resources
-        run: find src/generated/resources/ ! -path "**/.cache*" > resources.txt
-      - name: Run data generation
-        # Hide the non-zero return code from gradle. runData always returns !=0 (to stop gradle from "caching" it?)
-        run: ./gradlew --max-workers 1 runData || true
-      - name: Check for crashes during data generation
-        run: bash -c "[ -f run/ie_data_gen_done ]"
-      - name: Check that no files have changed
-        # TODO --exit-code doesn't seem to be working as advertised?
-        run: git update-index --really-refresh && git diff-index --ignore-all-space HEAD && git diff-index --ignore-all-space --quiet HEAD || (git diff && false)
-      - name: Create list of actual generated resources
-        run: find src/generated/resources/ ! -path "**/.cache*" > resources_new.txt
-      - name: Check that no new resources have been created
-        run: diff resources.txt resources_new.txt
