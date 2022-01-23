@@ -34,6 +34,8 @@ jobs:
         working-directory: ie-repo
     steps:
       - uses: actions/checkout@v2
+        with:
+          path: ie-repo
       - uses: actions/cache@v2
         with:
           path: |
