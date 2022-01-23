@@ -44,10 +44,6 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 17
-      - name: Install XVFB
-        run: |
-          sudo apt update
-          sudo apt install -y xvfb
       - name: Create list of existing generated resources
         run: find src/generated/resources/ ! -path "**/.cache*" > resources.txt
       - name: Run data generation

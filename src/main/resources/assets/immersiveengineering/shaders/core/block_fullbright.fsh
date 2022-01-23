@@ -22,6 +22,6 @@ void main() {
     if (color.a < 0.1) {
         discard;
     }
-    //color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
-    fragColor = color;//linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
+    color.rgb = mix(overlayColor.rgb, color.rgb, overlayColor.a);
+    fragColor = linear_fog(color, vertexDistance, FogStart, FogEnd, FogColor);
 }
