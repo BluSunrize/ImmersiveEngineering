@@ -35,19 +35,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ReloadableResourceManager;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import net.minecraft.server.packs.PackResources;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.*;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.resource.DelegatingResourcePack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -446,22 +447,55 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 	private void loadAutoEntries()
 	{
 		ResourceLocation autoLoc = ManualUtils.getLocationForManual("manual/autoload.json", this);
+		ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
+		List<Resource> autoload = new ArrayList<>();
+		resourceManager.listPacks().forEach(packResources -> getActuallyAllResources(autoLoc, packResources, autoload));
+		NavigableSet<Pair<Double, JsonObject>> autoloadSources = new TreeSet<>(Comparator.comparingDouble(Pair::getFirst));
+		for(Resource r : autoload)
+		{
+			JsonObject autoloadJson = GsonHelper.parse(new InputStreamReader(r.getInputStream()));
+			double priority = 0;
+			JsonElement priorityElement = autoloadJson.remove("autoload_priority");
+			if(priorityElement!=null)
+				priority = priorityElement.getAsDouble();
+			autoloadSources.add(Pair.of(priority, autoloadJson));
+		}
+		for(Pair<Double, JsonObject> p : autoloadSources.descendingSet())
+			autoloadEntriesFromJson(p.getSecond(), new ArrayList<>());
+	}
+
+	private static final Lazy<Field> CLIENT_RESOURCES = Lazy.of(() -> {
 		try
 		{
-			List<Resource> autoload = Minecraft.getInstance().getResourceManager().getResources(autoLoc);
-			NavigableSet<Pair<Double, JsonObject>> autoloadSources = new TreeSet<>(Comparator.comparingDouble(Pair::getFirst));
-			for(Resource r : autoload)
+			Field clientResources = DelegatingResourcePack.class.getDeclaredField("namespacesAssets");
+			clientResources.setAccessible(true);
+			return clientResources;
+		} catch(Exception x)
+		{
+			throw new RuntimeException(x);
+		}
+	});
+
+	/**
+	 * ResourceManager#getResources fails to get all resources when multiple mods contain the same file since (at least
+	 * in dev?) all mods are bunched up into a single DelegatingResourcePack, which can only return one resource. This
+	 * "breaks open" DelegatingResourcePacks and actually gets *all* resources.
+	 */
+	private void getActuallyAllResources(ResourceLocation path, PackResources resources, List<Resource> out)
+	{
+		final PackType type = PackType.CLIENT_RESOURCES;
+		try
+		{
+			if(resources instanceof DelegatingResourcePack)
 			{
-				JsonObject autoloadJson = GsonHelper.parse(new InputStreamReader(r.getInputStream()));
-				double priority = 0;
-				JsonElement priorityElement = autoloadJson.remove("autoload_priority");
-				if(priorityElement!=null)
-					priority = priorityElement.getAsDouble();
-				autoloadSources.add(Pair.of(priority, autoloadJson));
+				Object rawValue = CLIENT_RESOURCES.get().get(resources);
+				Map<String, List<PackResources>> subResources = (Map<String, List<PackResources>>)rawValue;
+				for(PackResources subResource : subResources.getOrDefault(path.getNamespace(), List.of()))
+					getActuallyAllResources(path, subResource, out);
 			}
-			for(Pair<Double, JsonObject> p : autoloadSources.descendingSet())
-				autoloadEntriesFromJson(p.getSecond(), new ArrayList<>());
-		} catch(IOException e)
+			else if(resources.hasResource(type, path))
+				out.add(new SimpleResource(resources.getName(), path, resources.getResource(type, path), null));
+		} catch(Exception e)
 		{
 			throw new RuntimeException(e);
 		}
