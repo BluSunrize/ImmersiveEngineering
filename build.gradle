@@ -191,7 +191,7 @@ repositories {
         url 'https://maven.blamejared.com/'
     }
     maven {//Curse maven, in case some other maven goes offline and for mods that don't have a maven
-        url "https://cursemaven.com"
+        url "https://cfa2.cursemaven.com"
         content {
             includeGroup "curse.maven"
         }
