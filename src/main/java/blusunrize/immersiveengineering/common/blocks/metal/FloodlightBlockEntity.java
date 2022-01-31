@@ -469,8 +469,11 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 		}
 		this.rotX = Math.min(191.25f, Math.max(-11.25f, rotX+(dir?-11.25f: 11.25f)));
 		level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
-		turnCooldown = 20;
-		shouldUpdate = true;
+		if(getIsActive())
+		{
+			turnCooldown = 20;
+			shouldUpdate = true;
+		}
 	}
 
 	public void turnY(boolean dir, boolean throwException)
@@ -485,8 +488,11 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 		this.rotY += dir?-11.25: 11.25;
 		this.rotY %= 360;
 		level.blockEvent(getBlockPos(), getBlockState().getBlock(), 255, 0);
-		turnCooldown = 20;
-		shouldUpdate = true;
+		if(getIsActive())
+		{
+			turnCooldown = 20;
+			shouldUpdate = true;
+		}
 	}
 
 	@Override
