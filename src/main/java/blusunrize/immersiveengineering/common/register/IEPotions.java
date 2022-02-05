@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
@@ -165,10 +164,7 @@ public class IEPotions
 								.map(IEBlocks.TO_SLAB::get)
 								.filter(Objects::nonNull)
 								.noneMatch(b -> b.get()==state.getBlock()))
-				{
 					living.removeEffect(this);
-					IELogger.logger.info("Removing concrete feet");
-				}
 			}
 		}
 	}
