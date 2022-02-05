@@ -46,16 +46,12 @@ import blusunrize.immersiveengineering.common.crafting.IngredientWithSizeSeriali
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.entities.CapabilitySkyhookData.SkyhookUserData;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
-import blusunrize.immersiveengineering.common.items.BulletItem;
-import blusunrize.immersiveengineering.common.items.ChemthrowerEffects;
-import blusunrize.immersiveengineering.common.items.RailgunProjectiles;
-import blusunrize.immersiveengineering.common.items.WireCoilItem;
+import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.register.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.register.IEItems.Ingredients;
-import blusunrize.immersiveengineering.common.register.IEItems.ItemRegObject;
-import blusunrize.immersiveengineering.common.register.IEItems.Tools;
-import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.register.IEBlocks.Misc;
+import blusunrize.immersiveengineering.common.register.IEFluids.FluidEntry;
+import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEShaders;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -73,8 +69,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ConcretePowderBlock;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.material.Fluid;
@@ -95,6 +90,7 @@ import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
+import static blusunrize.immersiveengineering.common.fluids.IEFluid.BUCKET_DISPENSE_BEHAVIOR;
 
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
@@ -244,6 +240,22 @@ public class IEContent
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler::new);
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler::new);
 		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler::new);
+
+		ev.enqueueWork(IEContent::onThreadCommonSetup);
+	}
+
+	private static void onThreadCommonSetup()
+	{
+		((FlowerPotBlock)Blocks.FLOWER_POT).addPlant(Misc.HEMP_PLANT.getId(), Misc.POTTED_HEMP);
+
+		DispenserBlock.registerBehavior(IEItems.Misc.SHIELD, ArmorItem.DISPENSE_ITEM_BEHAVIOR);
+		DispenserBlock.registerBehavior(Minecarts.CART_METAL_BARREL, IEMinecartItem.MINECART_DISPENSER_BEHAVIOR);
+		DispenserBlock.registerBehavior(Minecarts.CART_WOODEN_BARREL, IEMinecartItem.MINECART_DISPENSER_BEHAVIOR);
+		DispenserBlock.registerBehavior(Minecarts.CART_REINFORCED_CRATE, IEMinecartItem.MINECART_DISPENSER_BEHAVIOR);
+		DispenserBlock.registerBehavior(Minecarts.CART_WOODEN_CRATE, IEMinecartItem.MINECART_DISPENSER_BEHAVIOR);
+		for(FluidEntry entry : IEFluids.ALL_ENTRIES)
+			DispenserBlock.registerBehavior(entry.getBucket(), BUCKET_DISPENSE_BEHAVIOR);
+		ComposterBlock.COMPOSTABLES.putIfAbsent(IEItems.Misc.HEMP_SEEDS.asItem(), 0.3f);
 	}
 
 	public static void populateAPI()

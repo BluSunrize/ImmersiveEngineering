@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.entities.IEMinecartEntity.MinecartConstructor;
-import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -47,7 +46,6 @@ public class IEMinecartItem extends IEBaseItem
 		super(new Properties().stacksTo(1));
 		this.constructor = constructor;
 		this.fitsIntoContainers = fitsIntoContainers;
-		GenericDeferredWork.registerDispenseBehavior(this, MINECART_DISPENSER_BEHAVIOR);
 	}
 
 	public final IEMinecartEntity<?> createCart(Level world, double x, double y, double z, ItemStack stack)
@@ -106,7 +104,7 @@ public class IEMinecartItem extends IEBaseItem
 		return fitsIntoContainers;
 	}
 
-	private static final DispenseItemBehavior MINECART_DISPENSER_BEHAVIOR = new DefaultDispenseItemBehavior()
+	public static final DispenseItemBehavior MINECART_DISPENSER_BEHAVIOR = new DefaultDispenseItemBehavior()
 	{
 		private final DefaultDispenseItemBehavior behaviourDefaultDispenseItem = new DefaultDispenseItemBehavior();
 

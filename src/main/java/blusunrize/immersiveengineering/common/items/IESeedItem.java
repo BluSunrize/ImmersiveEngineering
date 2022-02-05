@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.BlockItem;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.ComposterBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
@@ -27,9 +25,6 @@ public class IESeedItem extends BlockItem implements IPlantable
 	public IESeedItem(Block cropBlock)
 	{
 		super(cropBlock, new Properties().tab(ImmersiveEngineering.ITEM_GROUP));
-
-		// Register for composting
-		GenericDeferredWork.enqueue(() -> ComposterBlock.COMPOSTABLES.putIfAbsent(this, 0.3f));
 	}
 
 	@Override

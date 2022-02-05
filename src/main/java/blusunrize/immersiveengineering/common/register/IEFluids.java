@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.fluids.IEFluid.FluidConstructor;
 import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
-import blusunrize.immersiveengineering.common.util.GenericDeferredWork;
 import blusunrize.immersiveengineering.mixin.accessors.LiquidBlockAccess;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
@@ -49,7 +48,6 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
-import static blusunrize.immersiveengineering.common.fluids.IEFluid.BUCKET_DISPENSE_BEHAVIOR;
 import static blusunrize.immersiveengineering.common.fluids.IEFluid.createBuilder;
 
 public class IEFluids
@@ -198,7 +196,6 @@ public class IEFluids
 					return burnTime;
 				}
 			};
-			GenericDeferredWork.registerDispenseBehavior(result, BUCKET_DISPENSE_BEHAVIOR);
 			return result;
 		}
 
