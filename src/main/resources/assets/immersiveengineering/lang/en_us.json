@@ -234,7 +234,6 @@
   "desc.immersiveengineering.info.mineral.cassiterite": "Cassiterite",
   "desc.immersiveengineering.info.mineral.cooperite": "Cooperite",
   "desc.immersiveengineering.info.mineral.wolframite": "Wolframite",
-  "chat.immersiveengineering.info.old_java": "[Immersive Engineering] §4Warning: §rYour Java version is %1$s. This version causes crashes with the Engineer's manual. These crashes are close to impossible to fix for us. You can prevent the crashes by installing up-to-date Java (make sure to use Java 8, not Java 9) and forcing your launcher to use it.",
   "desc.immersiveengineering.info.coresample.pos": "Sample taken at %1$s, %2$s",
   "desc.immersiveengineering.info.coresample.mineral": "%1$s-Vein",
   "desc.immersiveengineering.info.coresample.noMineral": "No Mineral",

@@ -7,10 +7,10 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModules.StandardIECompatModule;
 import net.minecraftforge.common.MinecraftForge;
 
-public class CraftTweakerCompatModule extends IECompatModule
+public class CraftTweakerCompatModule extends StandardIECompatModule
 {
 	public CraftTweakerCompatModule()
 	{
