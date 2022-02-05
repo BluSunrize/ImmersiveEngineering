@@ -69,4 +69,10 @@ public abstract class ImmersiveConnectableBlockEntity extends BlockEntity implem
 	{
 		return ConnectorBlockEntityHelper.getLocalNetWithCache(globalNet, getBlockPos(), cpIndex, cachedLocalNets);
 	}
+
+	@Override
+	public BlockPos getPosition()
+	{
+		return worldPosition;
+	}
 }
