@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorBundledBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModules.StandardIECompatModule;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callbacks;
 import com.google.common.base.Suppliers;
@@ -22,7 +22,6 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
@@ -39,13 +38,13 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
-public class ComputerCraftCompatModule extends IECompatModule
+public class ComputerCraftCompatModule extends StandardIECompatModule
 {
 	public static Capability<IPeripheral> PERIPHERAL_CAPABILITY = CapabilityManager.get(new CapabilityToken<>()
 	{
 	});
 
-	private final Map<BlockEntityType<?>, PeripheralCreator<?>> knownPeripherals = new HashMap<>();
+	private final Map<ResourceLocation, PeripheralCreator<?>> knownPeripherals = new HashMap<>();
 
 	@Override
 	public void init()
@@ -80,7 +79,7 @@ public class ComputerCraftCompatModule extends IECompatModule
 		MinecraftForge.EVENT_BUS.addGenericListener(BlockEntity.class, this::attachPeripheral);
 		try
 		{
-			for(Entry<BlockEntityType<?>, CallbackOwner<?>> entry : Callbacks.getCallbacks().entrySet())
+			for(Entry<ResourceLocation, CallbackOwner<?>> entry : Callbacks.getCallbacks().entrySet())
 				knownPeripherals.put(entry.getKey(), new PeripheralCreator<>(entry.getValue()));
 		} catch(IllegalAccessException e)
 		{
@@ -95,7 +94,7 @@ public class ComputerCraftCompatModule extends IECompatModule
 		if(PERIPHERAL_CAPABILITY==null)
 			return;
 		BlockEntity te = ev.getObject();
-		PeripheralCreator<?> creator = knownPeripherals.get(te.getType());
+		PeripheralCreator<?> creator = knownPeripherals.get(te.getType().getRegistryName());
 		if(creator!=null)
 		{
 			ev.addCapability(CAP_NAME, new ICapabilityProvider()

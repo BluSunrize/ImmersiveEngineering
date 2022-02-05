@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
+import blusunrize.immersiveengineering.common.util.compat.IECompatModules.StandardIECompatModule;
 import blusunrize.immersiveengineering.common.util.compat.top.*;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
@@ -20,7 +21,7 @@ import java.util.function.Supplier;
 /**
  * @author Robustprogram - 26.1.2021
  */
-public class OneProbeCompatModule extends IECompatModule implements Function<ITheOneProbe, Void>
+public class OneProbeCompatModule extends StandardIECompatModule implements Function<ITheOneProbe, Void>
 {
 	@Override
 	public void sendIMCs()

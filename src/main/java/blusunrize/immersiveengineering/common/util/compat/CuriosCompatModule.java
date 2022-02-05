@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat;
 
 import blusunrize.immersiveengineering.common.items.EarmuffsItem;
 import blusunrize.immersiveengineering.common.items.PowerpackItem;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModules.StandardIECompatModule;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -22,13 +23,8 @@ import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 
 import java.util.function.Predicate;
 
-public class CuriosCompatModule extends IECompatModule
+public class CuriosCompatModule extends StandardIECompatModule
 {
-	@Override
-	public void init()
-	{
-	}
-
 	@Override
 	public void sendIMCs()
 	{

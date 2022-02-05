@@ -29,6 +29,6 @@ public class EnergyMeterCallbacks extends CallbackOwner<EnergyMeterBlockEntity>
 	@ComputerCallable
 	public int getAveragePower(CallbackEnvironment<EnergyMeterBlockEntity> env)
 	{
-		return env.getObject().getAveragePower();
+		return env.object().getAveragePower();
 	}
 }

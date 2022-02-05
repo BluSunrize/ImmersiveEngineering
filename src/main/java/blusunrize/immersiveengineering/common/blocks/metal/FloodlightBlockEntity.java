@@ -26,6 +26,7 @@ import blusunrize.immersiveengineering.common.util.SpawnInterdictionHandler;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -50,10 +51,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity implements IEServerTickableBE,
 		IAdvancedDirectionalBE, IHammerInteraction, IScrewdriverInteraction, ISpawnInterdiction, IBlockBounds,
-		IActiveState, EnergyConnector, IStateBasedDirectional
+		IActiveState, EnergyConnector, IStateBasedDirectional, ComputerControllable
 {
 	public int energyStorage = 0;
 	private final int energyDraw = IEServerConfig.MACHINES.floodlight_energyDraw.get();
@@ -68,7 +70,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	final int timeBetweenSwitches = 20;
 	int switchCooldown = 0;
 	private boolean shouldUpdate = true;
-	public ComputerControlState computerControl = ComputerControlState.NO_COMPUTER;
+	public final ComputerControlState computerControl = new ComputerControlState();
 	public int turnCooldown = 0;
 
 	public FloodlightBlockEntity(BlockPos pos, BlockState state)
@@ -92,8 +94,10 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 			shouldUpdate = false;
 		}
 
-		enabled = (computerControl.isEnabled()&&computerControl.isStillAttached())
-				||(isRSPowered()^redstoneControlInverted);
+		if(computerControl.isEnabled())
+			enabled = computerControl.isAttached();
+		else
+			enabled = isRSPowered()^redstoneControlInverted;
 		if(energyStorage >= (!activeBeforeTick?energyDraw*10: energyDraw)&&enabled&&switchCooldown <= 0)
 		{
 			energyStorage -= energyDraw;
@@ -312,10 +316,11 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 		if(descPacket&&nbt.contains("computerOn"))
 		{
 			boolean computerOn = nbt.getBoolean("computerOn");
-			computerControl = new ComputerControlState(() -> true, computerOn);
+			computerControl.setOneRef();
+			computerControl.setEnabled(computerOn);
 		}
 		else
-			computerControl = ComputerControlState.NO_COMPUTER;
+			computerControl.clear();
 		if(level!=null&&getIsActive())
 			checkLight();
 	}
@@ -335,7 +340,7 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 			BlockPos cc = fakeLights.get(i);
 			nbt.putIntArray("fakeLight_"+i, new int[]{cc.getX(), cc.getY(), cc.getZ()});
 		}
-		if(descPacket&&computerControl.isStillAttached())
+		if(descPacket&&computerControl.isAttached())
 			nbt.putBoolean("computerOn", computerControl.isEnabled());
 	}
 
@@ -519,5 +524,11 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 	public void insertEnergy(int amount)
 	{
 		energyStorage += amount;
+	}
+
+	@Override
+	public Stream<ComputerControlState> getAllComputerControlStates()
+	{
+		return Stream.of(computerControl);
 	}
 }

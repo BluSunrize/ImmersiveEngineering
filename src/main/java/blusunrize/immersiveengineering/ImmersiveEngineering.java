@@ -42,7 +42,7 @@ import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.commands.CommandHandler;
 import blusunrize.immersiveengineering.common.util.commands.CommandMineral;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModules;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.gson.Gson;
@@ -155,6 +155,7 @@ public class ImmersiveEngineering
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
 		IEWorldGen.init();
 		runLater.accept(IERecipes::registerRecipeTypes);
+		IECompatModules.onModConstruction();
 	}
 
 	public void setup(FMLCommonSetupEvent event)
@@ -169,7 +170,6 @@ public class ImmersiveEngineering
 		IEApi.prefixToIngotMap.put("gears", new Integer[]{4, 1});
 		IEApi.prefixToIngotMap.put("rods", new Integer[]{1, 2});
 		IEApi.prefixToIngotMap.put("fences", new Integer[]{5, 3});
-		IECompatModule.doModulesPreInit();
 
 		/* ARC FURNACE RECYCLING */
 		ArcRecyclingChecker.allowRecipeTypeForRecycling(RecipeType.CRAFTING);
@@ -233,7 +233,7 @@ public class ImmersiveEngineering
 
 		MinecraftForge.EVENT_BUS.register(new EventHandler());
 
-		IECompatModule.doModulesInit();
+		IECompatModules.onCommonSetup();
 		registerMessage(MessageBlockEntitySync.class, MessageBlockEntitySync::new);
 		registerMessage(MessageContainerUpdate.class, MessageContainerUpdate::new, PLAY_TO_SERVER);
 		registerMessage(MessageSpeedloaderSync.class, MessageSpeedloaderSync::new, PLAY_TO_CLIENT);
@@ -293,7 +293,7 @@ public class ImmersiveEngineering
 
 	public void enqueueIMCs(InterModEnqueueEvent event)
 	{
-		IECompatModule.doModulesIMCs();
+		IECompatModules.doModulesIMCs();
 	}
 
 	public void registerCommands(RegisterCommandsEvent event)

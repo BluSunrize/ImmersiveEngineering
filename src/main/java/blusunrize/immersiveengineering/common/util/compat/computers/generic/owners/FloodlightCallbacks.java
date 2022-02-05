@@ -9,7 +9,10 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.generic.owners;
 
 import blusunrize.immersiveengineering.common.blocks.metal.FloodlightBlockEntity;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.*;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.EventWaiterResult;
 
 public class FloodlightCallbacks extends CallbackOwner<FloodlightBlockEntity>
 {
@@ -21,59 +24,56 @@ public class FloodlightCallbacks extends CallbackOwner<FloodlightBlockEntity>
 	@ComputerCallable
 	public boolean isActive(CallbackEnvironment<FloodlightBlockEntity> env)
 	{
-		return env.getObject().getIsActive();
+		return env.object().getIsActive();
 	}
 
 	@ComputerCallable
 	public void setEnabled(CallbackEnvironment<FloodlightBlockEntity> env, boolean enable)
 	{
-		env.getObject().computerControl = new ComputerControlState(env.getIsAttached(), enable);
+		env.object().computerControl.setEnabled(enable);
 	}
 
 	@ComputerCallable
 	public boolean canTurn(CallbackEnvironment<FloodlightBlockEntity> env)
 	{
-		return env.getObject().canComputerTurn();
+		return env.object().canComputerTurn();
 	}
 
 	@ComputerCallable
 	public void turnAroundXZ(CallbackEnvironment<FloodlightBlockEntity> env, boolean up)
 	{
-		env.getObject().turnX(up, true);
+		env.object().turnX(up, true);
 	}
 
 	@ComputerCallable
 	public void turnAroundY(CallbackEnvironment<FloodlightBlockEntity> env, boolean dir)
 	{
-		env.getObject().turnY(dir, true);
+		env.object().turnY(dir, true);
 	}
 
 	@ComputerCallable
 	public int getMaxEnergyStored(CallbackEnvironment<FloodlightBlockEntity> env)
 	{
-		return env.getObject().maximumStorage;
+		return env.object().maximumStorage;
 	}
 
 	@ComputerCallable
 	public int getEnergyStored(CallbackEnvironment<FloodlightBlockEntity> env)
 	{
-		return env.getObject().energyStorage;
+		return env.object().energyStorage;
 	}
 
 	@ComputerCallable(isAsync = true)
 	public EventWaiterResult waitUntilTurnable(CallbackEnvironment<FloodlightBlockEntity> env)
 	{
-		return new EventWaiterResult(callback -> {
-			new Thread(() -> {
-				try
-				{
-					Thread.sleep(env.getObject().turnCooldown*50L);
-				} catch(InterruptedException e)
-				{
-					e.printStackTrace();
-				}
-				callback.run();
-			}).start();
+		return new EventWaiterResult(() -> {
+			try
+			{
+				Thread.sleep(env.object().turnCooldown*50L);
+			} catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}, "floodlight_turnable");
 	}
 }

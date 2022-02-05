@@ -8,26 +8,36 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
-import java.util.function.Consumer;
-
-public class EventWaiterResult
+public record EventWaiterResult(InterruptibleRunnable waitUntilDone, String name)
 {
-	private final Consumer<Runnable> startWithCallback;
-	private final String name;
-
-	public EventWaiterResult(Consumer<Runnable> startWithCallback, String name)
+	public void startAsync(Runnable callback)
 	{
-		this.startWithCallback = startWithCallback;
-		this.name = name;
+		new Thread(() -> {
+			try
+			{
+				waitUntilDone.run();
+			} catch(InterruptedException e)
+			{
+				e.printStackTrace();
+			}
+			callback.run();
+		}).start();
 	}
 
-	public final void start(Runnable callback)
+	public void runSync()
 	{
-		startWithCallback.accept(callback);
+		try
+		{
+			waitUntilDone.run();
+		} catch(InterruptedException e)
+		{
+			e.printStackTrace();
+		}
 	}
 
-	public String getName()
+	@FunctionalInterface
+	public interface InterruptibleRunnable
 	{
-		return name;
+		void run() throws InterruptedException;
 	}
 }

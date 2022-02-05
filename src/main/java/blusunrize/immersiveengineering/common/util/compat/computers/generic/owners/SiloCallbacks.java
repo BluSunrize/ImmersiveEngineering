@@ -25,6 +25,6 @@ public class SiloCallbacks extends MultiblockCallbackOwner<SiloBlockEntity>
 	public ItemStack getContents(CallbackEnvironment<SiloBlockEntity> env)
 	{
 		// This stack will be converted to a lua object immediately, so using a large stack size is ok
-		return ItemHandlerHelper.copyStackWithSize(env.getObject().identStack, env.getObject().storageAmount);
+		return ItemHandlerHelper.copyStackWithSize(env.object().identStack, env.object().storageAmount);
 	}
 }

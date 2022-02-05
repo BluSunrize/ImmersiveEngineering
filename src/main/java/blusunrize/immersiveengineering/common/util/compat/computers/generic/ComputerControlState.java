@@ -8,24 +8,45 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.generic;
 
-import java.util.function.BooleanSupplier;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class ComputerControlState
 {
-	public static final ComputerControlState NO_COMPUTER = new ComputerControlState(() -> false, false);
+	private AtomicInteger refCount = new AtomicInteger(0);
+	private boolean isEnabled = true;
 
-	private final BooleanSupplier isStillAttached;
-	private final boolean isEnabled;
-
-	public ComputerControlState(BooleanSupplier isStillAttached, boolean isEnabled)
+	public boolean isAttached()
 	{
-		this.isStillAttached = isStillAttached;
-		this.isEnabled = isEnabled;
+		return refCount.get() > 0;
 	}
 
-	public boolean isStillAttached()
+	public void setEnabled(boolean enabled)
 	{
-		return isStillAttached.getAsBoolean();
+		isEnabled = enabled;
+	}
+
+	public void addReference()
+	{
+		refCount.incrementAndGet();
+	}
+
+	public void removeReference()
+	{
+		if(refCount.decrementAndGet() <= 0)
+			clear();
+	}
+
+	public void clear()
+	{
+		refCount.set(0);
+		// Detaching and re-attaching a computer should reset enable state
+		isEnabled = true;
+	}
+
+	// Only for client-side use!
+	public void setOneRef()
+	{
+		refCount.set(1);
 	}
 
 	public boolean isEnabled()

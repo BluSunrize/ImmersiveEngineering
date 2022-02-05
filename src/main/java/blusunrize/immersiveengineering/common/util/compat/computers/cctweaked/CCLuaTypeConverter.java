@@ -17,7 +17,6 @@ import net.minecraftforge.registries.IForgeRegistryEntry;
 import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.function.Function;
 
 public class CCLuaTypeConverter extends LuaTypeConverter
 {
@@ -25,12 +24,12 @@ public class CCLuaTypeConverter extends LuaTypeConverter
 
 	@Override
 	@Nullable
-	protected Function<Object, Object> getInternalConverter(Class<?> type)
+	protected <T> Converter<T, ?> getInternalConverter(Class<T> type)
 	{
 		if(type==ItemStack.class)
-			return t -> serialize((ItemStack)t);
+			return new Converter<>(t -> serialize((ItemStack)t), Map.class);
 		else if(type==FluidStack.class)
-			return t -> serialize((FluidStack)t);
+			return new Converter<>(t -> serialize((FluidStack)t), Map.class);
 		else
 			return null;
 	}

@@ -14,25 +14,34 @@ import java.util.function.Function;
 public abstract class LuaTypeConverter
 {
 	@Nullable
-	protected abstract Function<Object, Object> getInternalConverter(Class<?> type);
+	protected abstract <F> Converter<F, ?> getInternalConverter(Class<F> type);
 
-	public Function<Object, Object> getConverter(Class<?> type)
+	public <F> Converter<F, ?> getConverter(Class<F> type)
 	{
-		Function<Object, Object> mainFunction = getInternalConverter(type);
+		Converter<F, ?> mainFunction = getInternalConverter(type);
 		if(mainFunction!=null)
 			return mainFunction;
 		if(type.isArray())
 		{
-			Function<Object, Object> inner = getInternalConverter(type.getComponentType());
+			Converter<?, ?> inner = getInternalConverter(type.getComponentType());
 			if(inner!=null)
-				return o -> {
+				return new Converter<>(o -> {
 					Object[] input = (Object[])o;
 					Object[] result = new Object[input.length];
 					for(int i = 0; i < input.length; ++i)
-						result[i] = inner.apply(input[i]);
+						result[i] = inner.convertUnchecked(input[i]);
 					return result;
-				};
+				}, inner.outputType().arrayType());
 		}
-		return Function.identity();
+		return new Converter<>(Function.identity(), type);
+	}
+
+	public record Converter<F, T>(Function<F, T> convert, Class<? extends T> outputType)
+	{
+		@SuppressWarnings("unchecked")
+		public Object convertUnchecked(Object in)
+		{
+			return convert().apply((F)in);
+		}
 	}
 }

@@ -26,6 +26,7 @@ public class ComputerCallback<T>
 	private final MethodHandle caller;
 	private final String name;
 	private final boolean isAsync;
+	private final Class<?> luaReturnType;
 
 	private ComputerCallback(
 			Callback<T> owner, Method method, LuaTypeConverter converters
@@ -33,16 +34,20 @@ public class ComputerCallback<T>
 	{
 		this.caller = MethodHandles.lookup().unreflect(method).bindTo(owner);
 		Function<Object, Object[]> wrapResult;
-		Class<?> resultType = method.getReturnType();
+		Class<?> actualReturnType = method.getReturnType();
+		if(actualReturnType!=EventWaiterResult.class)
+			this.luaReturnType = actualReturnType;
+		else
+			this.luaReturnType = void.class;
 		isAsync = method.getAnnotation(ComputerCallable.class).isAsync();
-		Preconditions.checkState(isAsync||!resultType.equals(EventWaiterResult.class));
-		if(Object[].class.equals(resultType))
+		Preconditions.checkState(isAsync||!actualReturnType.equals(EventWaiterResult.class));
+		if(Object[].class.equals(actualReturnType))
 			wrapResult = o -> (Object[])o;
-		else if(void.class.equals(resultType))
+		else if(void.class.equals(actualReturnType))
 			wrapResult = $ -> new Object[0];
 		else
 			wrapResult = o -> new Object[]{o};
-		this.wrapReturnValue = wrapResult.compose(converters.getConverter(resultType));
+		this.wrapReturnValue = wrapResult.compose(converters.getConverter(luaReturnType)::convertUnchecked);
 		this.name = owner.renameMethod(method.getName());
 		Class<?>[] allArguments = method.getParameterTypes();
 		Preconditions.checkState(allArguments.length > 0);
@@ -72,6 +77,16 @@ public class ComputerCallback<T>
 			if(!names.add(cb.getName()))
 				throw new RuntimeException("Duplicate method name "+cb.getName());
 		return callbacks;
+	}
+
+	public Class<?> getLuaReturnType()
+	{
+		return luaReturnType;
+	}
+
+	public List<ArgumentType> getUserArguments()
+	{
+		return userArguments;
 	}
 
 	public Object[] invoke(Object[] arguments, CallbackEnvironment<T> env) throws Throwable
@@ -115,15 +130,16 @@ public class ComputerCallback<T>
 			return fromLua;
 	}
 
-	private static class ArgumentType
+	public static class ArgumentType
 	{
 		private final Class<?> type;
+		private final Class<?> actualType;
 		private final boolean isIndex;
 		private final int indexForError;
 
 		private ArgumentType(Method method, int argIndex)
 		{
-			Class<?> actualType = method.getParameterTypes()[argIndex];
+			this.actualType = method.getParameterTypes()[argIndex];
 			if(actualType.isPrimitive())
 				this.type = Primitives.wrap(actualType);
 			else
@@ -153,6 +169,11 @@ public class ComputerCallback<T>
 				return ((Integer)userInput)-1;
 			else
 				return userInput;
+		}
+
+		public Class<?> getActualType()
+		{
+			return actualType;
 		}
 	}
 }

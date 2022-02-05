@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralM
 import blusunrize.immersiveengineering.common.blocks.MultiblockBEType;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.owners.*;
-import com.google.common.base.Preconditions;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.RegistryObject;
@@ -23,25 +23,19 @@ import java.util.Map;
 
 public class Callbacks
 {
-	private static final Map<BlockEntityType<?>, CallbackOwner<?>> CALLBACKS = new HashMap<>();
+	private static final Map<ResourceLocation, CallbackOwner<?>> CALLBACKS = new HashMap<>();
 	private static boolean initialized = false;
 
 	private static <T extends BlockEntity & IGeneralMultiblock>
 	void register(MultiblockBEType<T> type, CallbackOwner<T> owner)
 	{
-		register(type.dummy(), owner);
-		register(type.master(), owner);
+		register(type.dummyHolder(), owner);
+		register(type.masterHolder(), owner);
 	}
 
 	private static <T extends BlockEntity> void register(RegistryObject<BlockEntityType<T>> type, CallbackOwner<T> owner)
 	{
-		register(type.get(), owner);
-	}
-
-	private static <T extends BlockEntity> void register(BlockEntityType<T> type, CallbackOwner<T> owner)
-	{
-		Preconditions.checkState(!CALLBACKS.containsKey(type));
-		CALLBACKS.put(type, owner);
+		CALLBACKS.put(type.getId(), owner);
 	}
 
 	private static void ensureInitialized()
@@ -71,7 +65,7 @@ public class Callbacks
 		initialized = true;
 	}
 
-	public static Map<BlockEntityType<?>, CallbackOwner<?>> getCallbacks()
+	public static Map<ResourceLocation, CallbackOwner<?>> getCallbacks()
 	{
 		ensureInitialized();
 		return Collections.unmodifiableMap(CALLBACKS);

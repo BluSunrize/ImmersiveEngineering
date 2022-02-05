@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.util.compat.computers.generic.own
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.IndexArgument;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.EnergyCallbacks;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.impl.InventoryCallbacks;
@@ -37,14 +36,14 @@ public class AssemblerCallbacks extends MultiblockCallbackOwner<AssemblerBlockEn
 	public boolean isValidRecipe(CallbackEnvironment<AssemblerBlockEntity> env, @IndexArgument int recipe)
 	{
 		checkRecipeIndex(recipe);
-		return !env.getObject().patterns[recipe].inv.get(9).isEmpty();
+		return !env.object().patterns[recipe].inv.get(9).isEmpty();
 	}
 
 	@ComputerCallable
 	public void setRecipeEnabled(CallbackEnvironment<AssemblerBlockEntity> env, @IndexArgument int recipe, boolean enabled)
 	{
 		checkRecipeIndex(recipe);
-		env.getObject().computerControlByRecipe[recipe] = new ComputerControlState(env.getIsAttached(), enabled);
+		env.object().computerControlByRecipe[recipe].setEnabled(enabled);
 	}
 
 	@ComputerCallable
@@ -55,7 +54,7 @@ public class AssemblerCallbacks extends MultiblockCallbackOwner<AssemblerBlockEn
 		checkRecipeIndex(recipe);
 		if(slot < 0||slot >= 9)
 			throw new IllegalArgumentException("Recipe input stacks are 1-9");
-		return env.getObject().patterns[recipe].inv.get(slot);
+		return env.object().patterns[recipe].inv.get(slot);
 	}
 
 	private void checkRecipeIndex(int javaIndex)

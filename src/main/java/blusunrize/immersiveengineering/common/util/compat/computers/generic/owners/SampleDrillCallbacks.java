@@ -40,13 +40,13 @@ public class SampleDrillCallbacks extends CallbackOwner<SampleDrillBlockEntity>
 	@ComputerCallable
 	public float getSampleProgress(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		return env.getObject().getSampleProgress();
+		return env.object().getSampleProgress();
 	}
 
 	@ComputerCallable
 	public boolean isSamplingFinished(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		return env.getObject().isSamplingFinished();
+		return env.object().isSamplingFinished();
 	}
 
 	@ComputerCallable
@@ -76,7 +76,7 @@ public class SampleDrillCallbacks extends CallbackOwner<SampleDrillBlockEntity>
 	@ComputerCallable
 	public void reset(CallbackEnvironment<SampleDrillBlockEntity> env)
 	{
-		SampleDrillBlockEntity d = env.getObject();
+		SampleDrillBlockEntity d = env.object();
 		d.process = 0;
 		d.sample = ItemStack.EMPTY;
 	}
@@ -84,7 +84,7 @@ public class SampleDrillCallbacks extends CallbackOwner<SampleDrillBlockEntity>
 	@Nullable
 	private <T> List<T> getVeinProperties(CallbackEnvironment<SampleDrillBlockEntity> env, Function<VeinSampleData, T> get)
 	{
-		List<VeinSampleData> veins = env.getObject().getVein();
+		List<VeinSampleData> veins = env.object().getVein();
 		if(veins==null)
 			return null;
 		return veins.stream()

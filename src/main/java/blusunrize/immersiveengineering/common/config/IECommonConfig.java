@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
 import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.config.CachedConfig.ConfigValue;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModule;
+import blusunrize.immersiveengineering.common.util.compat.IECompatModules;
 import com.google.common.collect.ImmutableList;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -71,9 +71,8 @@ public class IECommonConfig
 		builder.pop();
 		builder.comment("A list of all mods that IE has integrated compatability for", "Setting any of these to false disables the respective compat")
 				.push("compat");
-		for(String mod : IECompatModule.moduleClasses.keySet())
-			compat.put(mod, builder
-					.define(mod, true));
+		for(String mod : IECompatModules.getAvailableModules())
+			compat.put(mod, builder.define(mod, true));
 		builder.pop();
 		CONFIG_SPEC = builder.build();
 	}

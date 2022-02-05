@@ -41,6 +41,6 @@ public class SingleItemCallback<T> extends Callback<T>
 	@ComputerCallable
 	public ItemStack getDesc(CallbackEnvironment<T> env)
 	{
-		return getStack.apply(env.getObject());
+		return getStack.apply(env.object());
 	}
 }

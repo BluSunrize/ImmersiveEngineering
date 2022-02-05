@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBl
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callback;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackEnvironment;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerCallable;
-import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 
 public class MultiblockCallbacks extends Callback<MultiblockPartBlockEntity<?>>
 {
@@ -22,12 +21,12 @@ public class MultiblockCallbacks extends Callback<MultiblockPartBlockEntity<?>>
 	@ComputerCallable
 	public boolean isRunning(CallbackEnvironment<PoweredMultiblockBlockEntity<?, ?>> env)
 	{
-		return env.getObject().shouldRenderAsActive();
+		return env.object().shouldRenderAsActive();
 	}
 
 	@ComputerCallable
 	public void setEnabled(CallbackEnvironment<PoweredMultiblockBlockEntity<?, ?>> env, boolean enable)
 	{
-		env.getObject().computerControl = new ComputerControlState(env.getIsAttached(), enable);
+		env.object().computerControl.setEnabled(enable);
 	}
 }

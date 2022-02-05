@@ -65,7 +65,18 @@ public class MultiblockBEType<T extends BlockEntity & IGeneralMultiblock> implem
 		return dummy.get();
 	}
 
-	public interface BEWithTypeConstructor<T extends BlockEntity> {
+	public RegistryObject<BlockEntityType<T>> dummyHolder()
+	{
+		return dummy;
+	}
+
+	public RegistryObject<BlockEntityType<T>> masterHolder()
+	{
+		return master;
+	}
+
+	public interface BEWithTypeConstructor<T extends BlockEntity>
+	{
 		T create(BlockEntityType<T> type, BlockPos p_155268_, BlockState p_155269_);
 	}
 }

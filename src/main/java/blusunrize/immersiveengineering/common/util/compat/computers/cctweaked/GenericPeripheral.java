@@ -8,6 +8,8 @@
 
 package blusunrize.immersiveengineering.common.util.compat.computers.cctweaked;
 
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import dan200.computercraft.api.lua.IArguments;
 import dan200.computercraft.api.lua.ILuaContext;
 import dan200.computercraft.api.lua.LuaException;
@@ -18,13 +20,11 @@ import dan200.computercraft.api.peripheral.IPeripheral;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class GenericPeripheral<T> implements IDynamicPeripheral
 {
 	private final PeripheralCreator<T> creator;
 	private final T object;
-	private final AtomicInteger numAttached = new AtomicInteger(0);
 
 	public GenericPeripheral(PeripheralCreator<T> creator, T object)
 	{
@@ -45,7 +45,7 @@ public class GenericPeripheral<T> implements IDynamicPeripheral
 			@Nonnull IComputerAccess computerAccess, @Nonnull ILuaContext ctx, int index, @Nonnull IArguments luaArgs
 	) throws LuaException
 	{
-		return creator.call(computerAccess, ctx, index, luaArgs, object, () -> numAttached.get() > 0);
+		return creator.call(computerAccess, ctx, index, luaArgs, object);
 	}
 
 	@Nonnull
@@ -68,12 +68,14 @@ public class GenericPeripheral<T> implements IDynamicPeripheral
 	@Override
 	public void attach(@Nonnull IComputerAccess computer)
 	{
-		numAttached.incrementAndGet();
+		if(object instanceof ComputerControllable controllable)
+			controllable.getAllComputerControlStates().forEach(ComputerControlState::addReference);
 	}
 
 	@Override
 	public void detach(@Nonnull IComputerAccess computer)
 	{
-		numAttached.decrementAndGet();
+		if(object instanceof ComputerControllable controllable)
+			controllable.getAllComputerControlStates().forEach(ComputerControlState::removeReference);
 	}
 }

@@ -31,7 +31,7 @@ public class CrusherCallbacks extends MultiblockCallbackOwner<CrusherBlockEntity
 	@ComputerCallable
 	public ItemStack getInputQueueElement(CallbackEnvironment<CrusherBlockEntity> env, @IndexArgument int index)
 	{
-		List<MultiblockProcess<CrusherRecipe>> queue = env.getObject().processQueue;
+		List<MultiblockProcess<CrusherRecipe>> queue = env.object().processQueue;
 		if(index < 0||index >= queue.size())
 			throw new RuntimeException("Invalid index, queue contains "+queue.size()+" elements");
 		MultiblockProcess<CrusherRecipe> process = queue.get(index);
@@ -44,6 +44,6 @@ public class CrusherCallbacks extends MultiblockCallbackOwner<CrusherBlockEntity
 	@ComputerCallable
 	public int getQueueSize(CallbackEnvironment<CrusherBlockEntity> env)
 	{
-		return env.getObject().processQueue.size();
+		return env.object().processQueue.size();
 	}
 }

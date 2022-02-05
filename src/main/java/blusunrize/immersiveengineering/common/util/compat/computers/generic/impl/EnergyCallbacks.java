@@ -22,7 +22,7 @@ public class EnergyCallbacks extends Callback<BlockEntity>
 	@ComputerCallable
 	public int getMaxEnergyStored(CallbackEnvironment<BlockEntity> env)
 	{
-		return env.getObject().getCapability(CapabilityEnergy.ENERGY)
+		return env.object().getCapability(CapabilityEnergy.ENERGY)
 				.map(IEnergyStorage::getMaxEnergyStored)
 				.orElse(0);
 	}
@@ -30,7 +30,7 @@ public class EnergyCallbacks extends Callback<BlockEntity>
 	@ComputerCallable
 	public int getEnergyStored(CallbackEnvironment<BlockEntity> env)
 	{
-		return env.getObject().getCapability(CapabilityEnergy.ENERGY)
+		return env.object().getCapability(CapabilityEnergy.ENERGY)
 				.map(IEnergyStorage::getEnergyStored)
 				.orElse(0);
 	}

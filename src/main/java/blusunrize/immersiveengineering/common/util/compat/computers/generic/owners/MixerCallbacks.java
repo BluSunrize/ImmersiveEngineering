@@ -30,7 +30,7 @@ public class MixerCallbacks extends MultiblockCallbackOwner<MixerBlockEntity>
 	@ComputerCallable
 	public FluidStack getFluid(CallbackEnvironment<MixerBlockEntity> env, @IndexArgument int index)
 	{
-		List<FluidStack> fluids = env.getObject().tank.fluids;
+		List<FluidStack> fluids = env.object().tank.fluids;
 		if(index >= 0&&index < fluids.size())
 			return fluids.get(index);
 		else
@@ -40,12 +40,12 @@ public class MixerCallbacks extends MultiblockCallbackOwner<MixerBlockEntity>
 	@ComputerCallable
 	public int getCapacity(CallbackEnvironment<MixerBlockEntity> env)
 	{
-		return env.getObject().tank.getCapacity();
+		return env.object().tank.getCapacity();
 	}
 
 	@ComputerCallable
 	public int getNumFluids(CallbackEnvironment<MixerBlockEntity> env)
 	{
-		return env.getObject().tank.fluids.size();
+		return env.object().tank.fluids.size();
 	}
 }

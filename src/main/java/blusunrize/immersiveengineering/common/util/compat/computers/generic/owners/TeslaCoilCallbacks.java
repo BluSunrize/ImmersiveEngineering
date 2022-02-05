@@ -25,15 +25,15 @@ public class TeslaCoilCallbacks extends CallbackOwner<TeslaCoilBlockEntity>
 	public boolean isActive(CallbackEnvironment<TeslaCoilBlockEntity> env)
 	{
 		int energyDrain = IEServerConfig.MACHINES.teslacoil_consumption.get();
-		if(env.getObject().lowPower)
+		if(env.object().lowPower)
 			energyDrain /= 2;
-		return env.getObject().canRun(energyDrain);
+		return env.object().canRun(energyDrain);
 	}
 
 	@ComputerCallable
 	public void setRSMode(CallbackEnvironment<TeslaCoilBlockEntity> env, boolean inverted)
 	{
-		env.getObject().redstoneControlInverted = inverted;
+		env.object().redstoneControlInverted = inverted;
 	}
 
 	@ComputerCallable
@@ -41,6 +41,6 @@ public class TeslaCoilCallbacks extends CallbackOwner<TeslaCoilBlockEntity>
 	{
 		if(isActive(env))
 			throw new RuntimeException("Can't switch power mode on an active coil");
-		env.getObject().lowPower = high;
+		env.object().lowPower = high;
 	}
 }

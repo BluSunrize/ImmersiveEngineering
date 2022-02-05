@@ -36,12 +36,12 @@ public class TankCallbacks<T> extends Callback<T>
 	@ComputerCallable
 	public FluidStack getDescFluid(CallbackEnvironment<T> env)
 	{
-		return getTank.apply(env.getObject()).getFluid();
+		return getTank.apply(env.object()).getFluid();
 	}
 
 	@ComputerCallable
 	public int getDescTankSize(CallbackEnvironment<T> env)
 	{
-		return getTank.apply(env.getObject()).getCapacity();
+		return getTank.apply(env.object()).getCapacity();
 	}
 }

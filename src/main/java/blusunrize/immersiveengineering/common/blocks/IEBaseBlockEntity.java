@@ -153,12 +153,18 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 	}
 
 	private final List<ResettableCapability<?>> caps = new ArrayList<>();
+	private final List<Runnable> onCapInvalidate = new ArrayList<>();
 
 	protected <T> ResettableCapability<T> registerCapability(T val)
 	{
 		ResettableCapability<T> cap = new ResettableCapability<>(val);
 		caps.add(cap);
 		return cap;
+	}
+
+	public void addCapInvalidateHook(Runnable hook)
+	{
+		onCapInvalidate.add(hook);
 	}
 
 	protected ResettableCapability<IEnergyStorage> registerEnergyInput(IEnergyStorage directStorage)
@@ -214,6 +220,8 @@ public abstract class IEBaseBlockEntity extends BlockEntity implements Blockstat
 		super.invalidateCaps();
 		resetAllCaps();
 		caps.clear();
+		onCapInvalidate.forEach(Runnable::run);
+		onCapInvalidate.clear();
 	}
 
 	protected void resetAllCaps()

@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMulti
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,10 +50,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Collection;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEntity<T>> extends IEBaseBlockEntity
 		implements IEServerTickableBE, IStateBasedDirectional, IGeneralMultiblock, IScrewdriverInteraction, IMirrorAble,
-		IModelOffsetProvider
+		IModelOffsetProvider, ComputerControllable
 {
 	public boolean formed = false;
 	//Position of this block according to the BlockInfo's returned by IMultiblock#getStructure
@@ -66,8 +68,7 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 	protected final Lazy<Vec3i> structureDimensions;
 	protected final boolean hasRedstoneControl;
 	protected boolean redstoneControlInverted = false;
-	//Absent means no controlling computers
-	public ComputerControlState computerControl = ComputerControlState.NO_COMPUTER;
+	public final ComputerControlState computerControl = new ComputerControlState();
 
 	protected MultiblockPartBlockEntity(
 			IETemplateMultiblock multiblockInstance, BlockEntityType<? extends T> type, boolean hasRSControl,
@@ -244,10 +245,8 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 		MultiblockPartBlockEntity<?> master = master();
 		if(master==null)
 			master = this;
-		if(master.computerControl.isStillAttached())
+		if(master.computerControl.isAttached())
 			return !master.computerControl.isEnabled();
-		else
-			master.computerControl = ComputerControlState.NO_COMPUTER;
 		for(BlockPos rsPos : rsPositions)
 		{
 			T tile = this.getEntityForPos(rsPos);
@@ -292,13 +291,21 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 		return cache.get(posInMultiblock, Pair.of(getFacing(), getIsMirrored()));
 	}
 
+	@Override
+	public Stream<ComputerControlState> getAllComputerControlStates()
+	{
+		return Stream.of(computerControl);
+	}
+
 	public static <T extends MultiblockPartBlockEntity<?> & IComparatorOverride>
-	void updateComparators(T tile, Collection<BlockPos> offsets, MutableInt cachedValue, int newValue) {
-		if (newValue == cachedValue.intValue())
+	void updateComparators(T tile, Collection<BlockPos> offsets, MutableInt cachedValue, int newValue)
+	{
+		if(newValue==cachedValue.intValue())
 			return;
 		cachedValue.setValue(newValue);
 		final Level world = tile.getLevelNonnull();
-		for (BlockPos offset : offsets) {
+		for(BlockPos offset : offsets)
+		{
 			final BlockPos worldPos = tile.getBlockPosForPos(offset);
 			final BlockState stateAt = world.getBlockState(worldPos);
 			world.updateNeighbourForOutputSignal(worldPos, stateAt.getBlock());

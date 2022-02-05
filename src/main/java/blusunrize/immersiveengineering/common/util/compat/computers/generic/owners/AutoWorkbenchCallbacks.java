@@ -27,22 +27,22 @@ public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenc
 	@ComputerCallable
 	public void selectRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env, @IndexArgument int selected)
 	{
-		BlueprintCraftingRecipe[] availableRecipes = env.getObject().getAvailableRecipes();
+		BlueprintCraftingRecipe[] availableRecipes = env.object().getAvailableRecipes();
 		if(selected < 0||selected >= availableRecipes.length)
 			throw new RuntimeException("Only "+availableRecipes.length+" recipes are available");
-		env.getObject().selectedRecipe = selected;
+		env.object().selectedRecipe = selected;
 	}
 
 	@ComputerCallable
 	public void unselectRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
 	{
-		env.getObject().selectedRecipe = -1;
+		env.object().selectedRecipe = -1;
 	}
 
 	@ComputerCallable
 	public ItemStack[] getAvailableRecipes(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
 	{
-		BlueprintCraftingRecipe[] availableRecipes = env.getObject().getAvailableRecipes();
+		BlueprintCraftingRecipe[] availableRecipes = env.object().getAvailableRecipes();
 		ItemStack[] outputs = new ItemStack[availableRecipes.length];
 		for(int i = 0; i < availableRecipes.length; ++i)
 			outputs[i] = availableRecipes[i].output;
@@ -52,6 +52,6 @@ public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenc
 	@ComputerCallable
 	public int getSelectedRecipe(CallbackEnvironment<AutoWorkbenchBlockEntity> env)
 	{
-		return env.getObject().selectedRecipe+1;
+		return env.object().selectedRecipe+1;
 	}
 }

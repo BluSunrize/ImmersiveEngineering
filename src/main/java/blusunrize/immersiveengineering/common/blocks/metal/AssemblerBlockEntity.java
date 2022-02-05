@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContai
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
+import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.base.Preconditions;
@@ -69,14 +70,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<AssemblerBlockEntity, MultiblockRecipe>
-		implements IInteractionObjectIE<AssemblerBlockEntity>, IConveyorAttachable, IBlockBounds
+		implements IInteractionObjectIE<AssemblerBlockEntity>, IConveyorAttachable, IBlockBounds, ComputerControllable
 {
 	public ComputerControlState[] computerControlByRecipe = {
-			ComputerControlState.NO_COMPUTER,
-			ComputerControlState.NO_COMPUTER,
-			ComputerControlState.NO_COMPUTER,
+			new ComputerControlState(), new ComputerControlState(), new ComputerControlState(),
 	};
 
 	public AssemblerBlockEntity(BlockEntityType<AssemblerBlockEntity> type, BlockPos pos, BlockState state)
@@ -180,7 +180,7 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 		{
 			CrafterPatternInventory pattern = patterns[p];
 			ComputerControlState state = computerControlByRecipe[p];
-			if(state.isStillAttached()&&!state.isEnabled())
+			if(state.isAttached()&&!state.isEnabled())
 				continue;
 			if(!pattern.inv.get(9).isEmpty()&&canOutput(pattern.inv.get(9), p))
 			{
@@ -604,6 +604,12 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 		if(getLevel()!=null)
 			for(CrafterPatternInventory pattern : patterns)
 				pattern.recalculateOutput();
+	}
+
+	@Override
+	public Stream<ComputerControlState> getAllComputerControlStates()
+	{
+		return Arrays.stream(computerControlByRecipe);
 	}
 
 	public static class CrafterPatternInventory implements Container

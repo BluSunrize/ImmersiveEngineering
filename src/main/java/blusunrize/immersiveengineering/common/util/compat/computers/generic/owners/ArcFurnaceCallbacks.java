@@ -42,6 +42,6 @@ public class ArcFurnaceCallbacks extends MultiblockCallbackOwner<ArcFurnaceBlock
 	@ComputerCallable
 	public ItemStack getSlag(CallbackEnvironment<ArcFurnaceBlockEntity> env)
 	{
-		return env.getObject().getInventory().get(ArcFurnaceBlockEntity.SLAG_SLOT);
+		return env.object().getInventory().get(ArcFurnaceBlockEntity.SLAG_SLOT);
 	}
 }

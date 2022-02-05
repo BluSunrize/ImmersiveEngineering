@@ -21,7 +21,6 @@ import dan200.computercraft.api.peripheral.IComputerAccess;
 
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 public class PeripheralCreator<T>
 {
@@ -55,36 +54,33 @@ public class PeripheralCreator<T>
 	}
 
 	public MethodResult call(
-			IComputerAccess computerAccess, ILuaContext ctx, int index, IArguments otherArgs, T mainArgument, BooleanSupplier isAttached
+			IComputerAccess computerAccess, ILuaContext ctx, int index, IArguments otherArgs, T mainArgument
 	) throws LuaException
 	{
 		ComputerCallback<? super T> callback = methods.get(index);
 
 		if(callback.isAsync())
 		{
-			Object[] result = callInner(callback, otherArgs, mainArgument, isAttached);
-			if(result[0] instanceof EventWaiterResult)
+			Object[] result = callInner(callback, otherArgs, mainArgument);
+			if(result[0] instanceof EventWaiterResult eventResult)
 			{
-				EventWaiterResult eventResult = (EventWaiterResult)result[0];
-				eventResult.start(() -> computerAccess.queueEvent(eventResult.getName()));
-				return MethodResult.pullEvent(eventResult.getName(), args -> MethodResult.of());
+				eventResult.startAsync(() -> computerAccess.queueEvent(eventResult.name()));
+				return MethodResult.pullEvent(eventResult.name(), args -> MethodResult.of());
 			}
 			else
 				return MethodResult.of(result);
 		}
 		else
-			return TaskCallback.make(ctx, () -> callInner(callback, otherArgs, mainArgument, isAttached));
+			return TaskCallback.make(ctx, () -> callInner(callback, otherArgs, mainArgument));
 	}
 
 	private Object[] callInner(
-			ComputerCallback<? super T> callback, IArguments otherArgs, T mainArgument, BooleanSupplier isAttached
+			ComputerCallback<? super T> callback, IArguments otherArgs, T mainArgument
 	) throws LuaException
 	{
 		try
 		{
-			return callback.invoke(
-					otherArgs.getAll(), new CallbackEnvironment<>(isAttached, owner.preprocess(mainArgument))
-			);
+			return callback.invoke(otherArgs.getAll(), new CallbackEnvironment<>(owner.preprocess(mainArgument)));
 		} catch(RuntimeException x)
 		{
 			throw new LuaException(x.getMessage());

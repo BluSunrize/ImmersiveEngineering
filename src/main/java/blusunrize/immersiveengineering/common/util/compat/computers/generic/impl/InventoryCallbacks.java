@@ -44,13 +44,13 @@ public class InventoryCallbacks<T> extends Callback<T>
 	@ComputerCallable
 	public int getDescSlotCount(CallbackEnvironment<T> env)
 	{
-		return getStacks.apply(env.getObject()).size();
+		return getStacks.apply(env.object()).size();
 	}
 
 	@ComputerCallable
 	public ItemStack getDescStack(CallbackEnvironment<T> env, @IndexArgument int index)
 	{
-		List<ItemStack> stacks = getStacks.apply(env.getObject());
+		List<ItemStack> stacks = getStacks.apply(env.object());
 		if(index < 0||index >= stacks.size())
 			throw new RuntimeException("Index is out of bounds, only "+stacks.size()+" "+desc+" slots are available");
 		else
