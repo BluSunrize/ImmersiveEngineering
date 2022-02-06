@@ -37,24 +37,7 @@ public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 			ServerLevel level = Objects.requireNonNull(ctx.getSender()).getLevel();
 			ICapabilityProvider provider;
 			BlockState blockState = level.getBlockState(pos);
-			RemoteRedstoneData data = null;
-			if(blockState!=null)//&&blockState.isSignalSource())
-			{
-				byte redstoneLevel = 0;
-				if(blockState.isSignalSource())
-				{
-					redstoneLevel = blockState.getOptionalValue(RedStoneWireBlock.POWER).orElse(0).byteValue();
-					for(Direction facing : Direction.values())
-						redstoneLevel = (byte)Math.max(redstoneLevel, blockState.getSignal(level, pos, facing));
-				}
-				else
-					redstoneLevel = (byte)Math.max(redstoneLevel, level.getDirectSignalTo(pos));
-				data = new RemoteRedstoneData(
-						pos, level.getGameTime(), true, blockState.isSignalSource(), redstoneLevel
-				);
-			}
-			if(data==null)
-				data = new RemoteRedstoneData(pos, level.getGameTime(), false, false, (byte)0);
+			RemoteRedstoneData data = new RemoteRedstoneData(pos, level.getGameTime(), blockState.isSignalSource(), redstoneLevel(level, pos));
 			ImmersiveEngineering.packetHandler.send(
 					PacketDistributor.PLAYER.with(ctx::getSender), new MessageRedstoneLevel(data)
 			);
@@ -65,7 +48,7 @@ public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 	{
 		BlockState blockState = level.getBlockState(pos);
 		byte redstoneLevel = 0;
-		if(blockState!=null)//&&blockState.isSignalSource())
+		if(blockState!=null)
 		{
 			if(blockState.isSignalSource())
 			{

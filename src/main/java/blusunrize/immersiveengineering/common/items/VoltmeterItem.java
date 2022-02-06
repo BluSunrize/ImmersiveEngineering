@@ -48,7 +48,7 @@ public class VoltmeterItem extends IEBaseItem
 			FastEither.left(BlockPos.ZERO), 0, false, 0, 0
 	);
 	public static RemoteRedstoneData lastRedstoneUpdate = new RemoteRedstoneData(
-			BlockPos.ZERO, 0, false, false, (byte)0
+			BlockPos.ZERO, 0, false, (byte)0
 	);
 
 	public VoltmeterItem()
@@ -182,30 +182,24 @@ public class VoltmeterItem extends IEBaseItem
 	}
 
 	public static record RemoteRedstoneData(
-			BlockPos pos, long measuredInTick, boolean isValid, boolean isSignalSource, byte rsLevel
+			BlockPos pos, long measuredInTick, boolean isSignalSource, byte rsLevel
 	)
 	{
 		public static RemoteRedstoneData read(FriendlyByteBuf in)
 		{
 			BlockPos pos = in.readBlockPos();
 			long measuredInTick = in.readVarLong();
-			boolean isValid = in.readBoolean();
 			boolean isSignalSource = in.readBoolean();
 			final byte rsLevel;
-//			if(isSignalSource)
 			rsLevel = in.readByte();
-//			else
-//				rsLevel = 0;
-			return new RemoteRedstoneData(pos, measuredInTick, isValid, isSignalSource, rsLevel);
+			return new RemoteRedstoneData(pos, measuredInTick, isSignalSource, rsLevel);
 		}
 
 		public void write(FriendlyByteBuf out)
 		{
 			out.writeBlockPos(pos);
 			out.writeVarLong(measuredInTick)
-					.writeBoolean(isValid)
 					.writeBoolean(isSignalSource);
-//			if(isSignalSource)
 			out.writeByte(rsLevel);
 		}
 	}
