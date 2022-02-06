@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.common.network.MessageRequestEnergyUpdate;
+import blusunrize.immersiveengineering.common.network.MessageRequestRedstoneUpdate;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.Util;
@@ -92,51 +93,59 @@ public class VoltmeterItem extends IEBaseItem
 				return InteractionResult.SUCCESS;
 			}
 		}
-		if(player!=null&&player.isShiftKeyDown()&&bEntity instanceof IImmersiveConnectable)
+		if(player!=null&&player.isShiftKeyDown())
 		{
-			if(world.isClientSide)
-				return InteractionResult.SUCCESS;
-			TargetingInfo targetingInfo = new TargetingInfo(context);
-			BlockPos masterPos = ((IImmersiveConnectable)bEntity).getConnectionMaster(null, targetingInfo);
-			BlockPos delta = pos.subtract(masterPos);
-			ConnectionPoint cp = ((IImmersiveConnectable)bEntity).getTargetedPoint(targetingInfo, delta);
-			if(cp==null)
-				return InteractionResult.FAIL;
-			if(!WirecoilUtils.hasWireLink(stack))
+			if(bEntity instanceof IImmersiveConnectable)
 			{
-				WireLink link = WireLink.create(cp, world, delta, targetingInfo);
-				link.writeToItem(stack);
+				if(world.isClientSide)
+					return InteractionResult.SUCCESS;
+				TargetingInfo targetingInfo = new TargetingInfo(context);
+				BlockPos masterPos = ((IImmersiveConnectable)bEntity).getConnectionMaster(null, targetingInfo);
+				BlockPos delta = pos.subtract(masterPos);
+				ConnectionPoint cp = ((IImmersiveConnectable)bEntity).getTargetedPoint(targetingInfo, delta);
+				if(cp==null)
+					return InteractionResult.FAIL;
+				if(!WirecoilUtils.hasWireLink(stack))
+				{
+					WireLink link = WireLink.create(cp, world, delta, targetingInfo);
+					link.writeToItem(stack);
+				}
+				else
+				{
+					WireLink link = WireLink.readFromItem(stack);
+					if(link.dimension.equals(world.dimension()))
+					{
+						GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
+						LocalWireNetwork netHere = global.getNullableLocalNet(cp);
+						LocalWireNetwork netLink = global.getNullableLocalNet(link.cp);
+						if(netHere==netLink&&netHere!=null)
+						{
+							EnergyTransferHandler energyHandler = netHere.getHandler(EnergyTransferHandler.ID,
+									EnergyTransferHandler.class);
+							if(energyHandler!=null)
+							{
+								Path energyPath = energyHandler.getPath(link.cp, cp);
+								double loss;
+								if(energyPath!=null)
+									loss = energyPath.loss;
+								else
+									loss = 1;
+								player.sendMessage(new TranslatableComponent(
+										Lib.CHAT_INFO+"averageLoss",
+										Utils.formatDouble(loss*100, "###.000")
+								), Util.NIL_UUID);
+							}
+						}
+					}
+					WirecoilUtils.clearWireLink(stack);
+				}
+				return InteractionResult.SUCCESS;
 			}
 			else
 			{
-				WireLink link = WireLink.readFromItem(stack);
-				if(link.dimension.equals(world.dimension()))
-				{
-					GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
-					LocalWireNetwork netHere = global.getNullableLocalNet(cp);
-					LocalWireNetwork netLink = global.getNullableLocalNet(link.cp);
-					if(netHere==netLink&&netHere!=null)
-					{
-						EnergyTransferHandler energyHandler = netHere.getHandler(EnergyTransferHandler.ID,
-								EnergyTransferHandler.class);
-						if(energyHandler!=null)
-						{
-							Path energyPath = energyHandler.getPath(link.cp, cp);
-							double loss;
-							if(energyPath!=null)
-								loss = energyPath.loss;
-							else
-								loss = 1;
-							player.sendMessage(new TranslatableComponent(
-									Lib.CHAT_INFO+"averageLoss",
-									Utils.formatDouble(loss*100, "###.000")
-							), Util.NIL_UUID);
-						}
-					}
-				}
-				WirecoilUtils.clearWireLink(stack);
+				if(!world.isClientSide)
+					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"redstoneLevel", MessageRequestRedstoneUpdate.redstoneLevel(world, pos)));
 			}
-			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
 	}

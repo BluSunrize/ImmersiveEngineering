@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RedStoneWireBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -43,20 +44,8 @@ public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 				if(blockState.isSignalSource())
 				{
 					redstoneLevel = blockState.getOptionalValue(RedStoneWireBlock.POWER).orElse(0).byteValue();
-				/*Direction facing = null;
-				for(Property prop : blockState.getProperties())
-				{
-					if(prop instanceof DirectionProperty dirProp&&prop.getName().equals("facing"))
-					{
-						facing = blockState.getOptionalValue(dirProp).orElse(null);
-					}
-				}
-				if(facing!=null)
-					redstoneLevel = Math.max(redstoneLevel, blockState.getSignal(level, pos, facing));*/
 					for(Direction facing : Direction.values())
-					{
 						redstoneLevel = (byte)Math.max(redstoneLevel, blockState.getSignal(level, pos, facing));
-					}
 				}
 				else
 					redstoneLevel = (byte)Math.max(redstoneLevel, level.getDirectSignalTo(pos));
@@ -70,6 +59,24 @@ public record MessageRequestRedstoneUpdate(BlockPos pos) implements IMessage
 					PacketDistributor.PLAYER.with(ctx::getSender), new MessageRedstoneLevel(data)
 			);
 		});
+	}
+
+	public static byte redstoneLevel(Level level, BlockPos pos)
+	{
+		BlockState blockState = level.getBlockState(pos);
+		byte redstoneLevel = 0;
+		if(blockState!=null)//&&blockState.isSignalSource())
+		{
+			if(blockState.isSignalSource())
+			{
+				redstoneLevel = blockState.getOptionalValue(RedStoneWireBlock.POWER).orElse(0).byteValue();
+				for(Direction facing : Direction.values())
+					redstoneLevel = (byte)Math.max(redstoneLevel, blockState.getSignal(level, pos, facing));
+			}
+			else
+				redstoneLevel = (byte)Math.max(redstoneLevel, level.getDirectSignalTo(pos));
+		}
+		return redstoneLevel;
 	}
 
 	public static BlockPos readPos(FriendlyByteBuf buf)

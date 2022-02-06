@@ -584,7 +584,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			return;
 
 		ArrayList<String> text = new ArrayList<>();
-		//String[] text = null;
 
 		boolean matches = VoltmeterItem.lastEnergyUpdate.pos().equals(pos);
 		long sinceLast = player.level.getGameTime()-VoltmeterItem.lastEnergyUpdate.measuredInTick();
@@ -608,8 +607,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			if(!matches||sinceLast > 20)
 				ImmersiveEngineering.packetHandler.sendToServer(new MessageRequestRedstoneUpdate(pos.leftNonnull()));
 
-			if(VoltmeterItem.lastRedstoneUpdate.isValid()&&matches)
-//			if(VoltmeterItem.lastRedstoneUpdate.isSignalSource()&&matches)
+			if(VoltmeterItem.lastRedstoneUpdate.isValid()&&VoltmeterItem.lastRedstoneUpdate.isSignalSource()&&matches)
 			{
 				text.addAll(Arrays.asList(I18n.get(Lib.DESC_INFO+"redstoneLevel", "<br>"+VoltmeterItem.lastRedstoneUpdate.rsLevel())
 						.split("<br>")));
