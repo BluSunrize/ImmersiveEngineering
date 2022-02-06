@@ -98,7 +98,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -572,11 +571,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	{
 		HitResult rrt = ClientUtils.mc().hitResult;
 		FastEither<BlockPos, Integer> pos = null;
-		BlockState blockState = null;
 		if(rrt instanceof BlockHitResult mop)
-		{
 			pos = FastEither.left(mop.getBlockPos());
-		}
 		else if(rrt instanceof EntityHitResult ehr)
 			pos = FastEither.right(ehr.getEntity().getId());
 
@@ -613,7 +609,6 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						.split("<br>")));
 			}
 		}
-
 
 		if(text!=null)
 		{
