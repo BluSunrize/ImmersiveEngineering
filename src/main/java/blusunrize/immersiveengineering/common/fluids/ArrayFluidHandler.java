@@ -47,7 +47,7 @@ public record ArrayFluidHandler(
 	@Override
 	public int fill(FluidStack resource, FluidAction action)
 	{
-		if(!allowFill)
+		if(!allowFill||resource.isEmpty())
 			return 0;
 		FluidStack remaining = resource.copy();
 		for(IFluidTank tank : internal)
