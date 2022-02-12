@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.fluids.IEFluid.FluidConstructor;
 import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
-import blusunrize.immersiveengineering.mixin.accessors.LiquidBlockAccess;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -80,16 +79,6 @@ public class IEFluids
 			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow")
 	);
 	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
-
-	public static void fixFluidFields()
-	{
-		//TODO Forge#7992
-		for(BlockEntry<? extends LiquidBlock> entry : ALL_FLUID_BLOCKS)
-		{
-			LiquidBlock block = entry.get();
-			((LiquidBlockAccess)block).setFluid(block.getFluid());
-		}
-	}
 
 	public static class FluidEntry
 	{

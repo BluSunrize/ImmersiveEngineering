@@ -13,7 +13,6 @@
     "accessors.FurnaceTEAccess",
     "accessors.HeroGiftsTaskAccess",
     "accessors.ItemEntityAccess",
-    "accessors.LiquidBlockAccess",
     "accessors.PaletteAccess",
     "accessors.PotionBrewingAccess",
     "accessors.ServerPlayNetHandlerAccess",

@@ -171,7 +171,6 @@ public class IEContent
 
 	public static void init(ParallelDispatchEvent ev)
 	{
-		IEFluids.fixFluidFields();
 		IEWireTypes.setup();
 		/*WORLDGEN*/
 		ev.enqueueWork(
