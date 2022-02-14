@@ -13,18 +13,15 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.core.NonNullList;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -44,40 +41,26 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	}
 
 	@Override
-	public void setIngredients(CrusherRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, CrusherRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
-		NonNullList<ItemStack> l = ListUtils.fromItems(recipe.output);
-		for(StackWithChance output : recipe.secondaryOutputs)
-			if(!output.stack().isEmpty())
-				l.add(output.stack());
-		ingredients.setOutputs(VanillaTypes.ITEM, l);
-	}
-
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, CrusherRecipe recipe, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 0, 18);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getItems()));
-		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
+		builder.addSlot(RecipeIngredientRole.INPUT, 2, 20)
+				.addItemStacks(Arrays.asList(recipe.input.getItems()))
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
-		int y = validSecondaries.isEmpty()?18: validSecondaries.size() < 2?9: 0;
-		guiItemStacks.init(1, false, 77, y);
-		guiItemStacks.set(1, recipe.output);
-		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);
+		int y = 1+(validSecondaries.isEmpty()?18: validSecondaries.size() < 2?9: 0);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 78, y)
+				.addItemStack(recipe.output)
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		for(int i = 0; i < validSecondaries.size(); i++)
-		{
-			guiItemStacks.init(2+i, false, 77+i/2*44, y+18+i%2*18);
-			guiItemStacks.set(2+i, validSecondaries.get(i).stack());
-			guiItemStacks.setBackground(2+i, JEIHelper.slotDrawable);
-		}
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 78+i/2*44, y+18+i%2*18)
+					.addItemStack(validSecondaries.get(i).stack())
+					.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 
 	@Override
-	public void draw(CrusherRecipe recipe, PoseStack transform, double mouseX, double mouseY)
+	public void draw(CrusherRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
 		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
 		int yBase = validSecondaries.isEmpty()?36: validSecondaries.size() < 2?27: 18;

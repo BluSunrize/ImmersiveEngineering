@@ -11,16 +11,13 @@ package blusunrize.immersiveengineering.common.util.compat.jei.workbench;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.google.common.collect.Lists;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -39,31 +36,18 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 	}
 
 	@Override
-	public void setIngredients(BlueprintCraftingRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, BlueprintCraftingRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		List<List<ItemStack>> l = JEIIngredientStackListBuilder.make(recipe.inputs).build();
-		l.add(ListUtils.fromItems(BlueprintCraftingRecipe.getTypedBlueprint(recipe.blueprintCategory)));
-		ingredients.setInputLists(VanillaTypes.ITEM, l);
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
-	}
-
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, BlueprintCraftingRecipe recipe, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		int i = 0;
-		guiItemStacks.init(i, true, 24, 5);
-		guiItemStacks.set(i, Lists.newArrayList(BlueprintCraftingRecipe.getTypedBlueprint(recipe.blueprintCategory)));
-		guiItemStacks.setBackground(i++, JEIHelper.slotDrawable);
-		int y = recipe.inputs.length <= 4?12: 0;
+		builder.addSlot(RecipeIngredientRole.INPUT, 25, 6)
+				.addItemStacks(Lists.newArrayList(BlueprintCraftingRecipe.getTypedBlueprint(recipe.blueprintCategory)))
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
+		int y = recipe.inputs.length <= 4?13: 1;
 		for(int j = 0; j < recipe.inputs.length; j++)
-		{
-			guiItemStacks.init(i, true, 80+j%2*18, y+j/2*18);
-			guiItemStacks.set(i, Arrays.asList(recipe.inputs[j].getMatchingStacks()));
-			guiItemStacks.setBackground(i++, JEIHelper.slotDrawable);
-		}
-		guiItemStacks.init(i, false, 140, 14);
-		guiItemStacks.set(i, recipe.output);
-		guiItemStacks.setBackground(i++, JEIHelper.slotDrawable);
+			builder.addSlot(RecipeIngredientRole.INPUT, 81+j%2*18, y+j/2*18)
+					.addItemStacks(Arrays.asList(recipe.inputs[j].getMatchingStacks()))
+					.setBackground(JEIHelper.slotDrawable, -1, -1);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 141, 15)
+				.addItemStack(recipe.output)
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 }

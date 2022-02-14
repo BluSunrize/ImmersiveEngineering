@@ -11,16 +11,14 @@ package blusunrize.immersiveengineering.common.util.compat.jei.metalpress;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -39,32 +37,23 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 	}
 
 	@Override
-	public void setIngredients(MetalPressRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, MetalPressRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		List<List<ItemStack>> l = JEIIngredientStackListBuilder.make(recipe.input).build();
-		l.add(ListUtils.fromItems(recipe.mold.getDefaultInstance()));
-		ingredients.setInputLists(VanillaTypes.ITEM, l);
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
+		builder.addSlot(RecipeIngredientRole.INPUT, 1, 13)
+				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()))
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
+
+		builder.addSlot(RecipeIngredientRole.INPUT, 57, 1)
+				.addItemStack(recipe.mold.getDefaultInstance())
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
+
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 13)
+				.addItemStack(recipe.output)
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, MetalPressRecipe recipe, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 0, 12);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
-		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
-
-		guiItemStacks.init(1, true, 56, 0);
-		guiItemStacks.set(1, recipe.mold.getDefaultInstance());
-
-		guiItemStacks.init(2, false, 82, 12);
-		guiItemStacks.set(2, recipe.output);
-		guiItemStacks.setBackground(2, JEIHelper.slotDrawable);
-	}
-
-	@Override
-	public void draw(MetalPressRecipe recipe, PoseStack transform, double mouseX, double mouseY)
+	public void draw(MetalPressRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
 		transform.pushPose();
 		transform.scale(3, 3, 1);

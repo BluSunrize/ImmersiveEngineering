@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
+import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -57,7 +58,7 @@ public abstract class IERecipeCategory<T> implements IRecipeCategory<T>
 
 	protected void setIcon(ItemStack stack)
 	{
-		this.setIcon(this.guiHelper.createDrawableIngredient(stack));
+		this.setIcon(this.guiHelper.createDrawableIngredient(VanillaTypes.ITEM, stack));
 	}
 
 	protected void setIcon(IDrawable icon)

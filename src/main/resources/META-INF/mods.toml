@@ -30,3 +30,10 @@ credits="All the great other Git Contributors, and the nerds on IRC!"
   versionRange="[${mc_version}]"
   ordering="NONE"
   side="BOTH"
+
+[[dependencies.immersiveengineering]]
+  modId="jei"
+  mandatory=false
+  versionRange="[${jei_version},)"
+  ordering="NONE"
+  side="BOTH"

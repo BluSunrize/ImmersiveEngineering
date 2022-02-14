@@ -13,13 +13,12 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -38,35 +37,24 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 	}
 
 	@Override
-	public void setIngredients(ClocheRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, ClocheRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		List<List<ItemStack>> l = JEIIngredientStackListBuilder.make(recipe.seed).add(recipe.soil).build();
-		ingredients.setInputLists(VanillaTypes.ITEM, l);
-		ingredients.setOutputs(VanillaTypes.ITEM, recipe.outputs);
-	}
+		builder.addSlot(RecipeIngredientRole.INPUT, 5, 7)
+				.addItemStacks(Arrays.asList(recipe.seed.getItems()))
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, ClocheRecipe recipe, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 4, 6);
-		guiItemStacks.set(0, Arrays.asList(recipe.seed.getItems()));
-		guiItemStacks.setBackground(0, JEIHelper.slotDrawable);
-
-		guiItemStacks.init(1, true, 4, 30);
-		guiItemStacks.set(1, Arrays.asList(recipe.soil.getItems()));
-		guiItemStacks.setBackground(1, JEIHelper.slotDrawable);
+		builder.addSlot(RecipeIngredientRole.INPUT, 5, 31)
+				.addItemStacks(Arrays.asList(recipe.soil.getItems()))
+				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		for(int i = 0; i < recipe.outputs.size(); i++)
-		{
-			guiItemStacks.init(2+i, false, 64+i%2*18, 12+i/2*18);
-			guiItemStacks.set(2+i, recipe.outputs.get(i));
-			guiItemStacks.setBackground(2+i, JEIHelper.slotDrawable);
-		}
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 65+i%2*18, 13+i/2*18)
+					.addItemStack(recipe.outputs.get(i))
+					.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 
 	@Override
-	public void draw(ClocheRecipe recipe, PoseStack transform, double mouseX, double mouseY)
+	public void draw(ClocheRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
 		transform.pushPose();
 		transform.scale(3, 3, 1);

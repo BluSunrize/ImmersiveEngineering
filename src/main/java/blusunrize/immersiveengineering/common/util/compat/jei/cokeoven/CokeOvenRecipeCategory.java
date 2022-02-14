@@ -14,22 +14,21 @@ import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 {
@@ -48,31 +47,21 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 	}
 
 	@Override
-	public void setIngredients(CokeOvenRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, CokeOvenRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
-		ingredients.setOutput(VanillaTypes.FLUID, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput));
-	}
+		builder.addSlot(RecipeIngredientRole.INPUT, 4, 19)
+				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, CokeOvenRecipe recipe, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 3, 18);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
-
-		guiItemStacks.init(1, false, 58, 18);
+		var outputSlotBuilder = builder.addSlot(RecipeIngredientRole.OUTPUT, 59, 19);
 		if(!recipe.output.isEmpty())
-			guiItemStacks.set(1, recipe.output);
+			outputSlotBuilder.addItemStack(recipe.output);
 
 		if(recipe.creosoteOutput > 0)
-		{
-			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-			guiFluidStacks.init(0, false, 103, 4, 16, 47, 5*FluidAttributes.BUCKET_VOLUME, false, tankOverlay);
-			guiFluidStacks.set(0, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput));
-			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
-		}
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 104, 5)
+					.setFluidRenderer(5*FluidAttributes.BUCKET_VOLUME, false, 16, 47)
+					.setOverlay(tankOverlay, 0, 0)
+					.addIngredient(VanillaTypes.FLUID, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput))
+					.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 
 	@Override

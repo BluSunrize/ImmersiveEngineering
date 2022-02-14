@@ -13,18 +13,17 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
@@ -38,13 +37,13 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 {
 	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "arcfurnace");
 	public static final ResourceLocation UID_RECYCLING = new ResourceLocation(Lib.MODID, "arcfurnace_recycling");
-	private IDrawableStatic arrow;
+	private final IDrawableStatic arrow;
 
 	public ArcFurnaceRecipeCategory(IGuiHelper helper, Class<? extends ArcFurnaceRecipe> recipeClass, ResourceLocation uid)
 	{
 		super(recipeClass, helper, uid, "block.immersiveengineering.arc_furnace");
 		setBackground(helper.createBlankDrawable(148, 54));
-		setIcon(helper.createDrawableIngredient(new ItemStack(IEBlocks.Multiblocks.ARC_FURNACE)));
+		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(IEBlocks.Multiblocks.ARC_FURNACE)));
 		arrow = helper.drawableBuilder(JEIHelper.JEI_GUI, 19, 4, 24, 18).setTextureSize(128, 128).build();
 	}
 
@@ -62,15 +61,32 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	}
 
 	@Override
-	public void setIngredients(ArcFurnaceRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, ArcFurnaceRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).add(recipe.additives).build());
-		NonNullList<ItemStack> l = ListUtils.fromItems(recipe.output);
-		if(recipe.slag==null)
-			System.out.println("ERROR ON RECIPE");
-		else if(!recipe.slag.isEmpty())
-			l.add(recipe.slag);
-		ingredients.setOutputs(VanillaTypes.ITEM, l);
+		super.setRecipe(builder, recipe, focuses);
+		int x = (148-getWidth(recipe))/2+1;
+
+		builder.addSlot(RecipeIngredientRole.INPUT, x+8, 1)
+				.addItemStacks(recipe.input.getMatchingStackList());
+
+		for(int j = 0; j < recipe.additives.length; j++)
+			builder.addSlot(RecipeIngredientRole.INPUT, x+j%2*18, 19+j/2*18)
+					.addItemStacks(recipe.additives[j].getMatchingStackList());
+
+		NonNullList<ItemStack> simulatedOutput = recipe.getBaseOutputs();
+		int outputSize = simulatedOutput.size();
+		for(int j = 0; j < outputSize; j++)
+			builder.addSlot(RecipeIngredientRole.OUTPUT, x+68+j%2*18, j/2*18+1)
+					.addItemStack(simulatedOutput.get(j));
+
+		int xSecondary = x+(outputSize > 1?106: 88);
+		for(int j = 0; j < recipe.secondaryOutputs.size(); j++)
+			builder.addSlot(RecipeIngredientRole.OUTPUT, xSecondary, j*18+1)
+					.addItemStack(recipe.secondaryOutputs.get(j).stack());
+
+		if(!recipe.slag.isEmpty())
+			builder.addSlot(RecipeIngredientRole.OUTPUT, x+68, 37)
+					.addItemStack(recipe.slag);
 	}
 
 	private int getWidth(ArcFurnaceRecipe recipe)
@@ -84,45 +100,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, ArcFurnaceRecipe recipe, IIngredients iIngredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		int i = 0;
-		int x = (148-getWidth(recipe))/2;
-
-		guiItemStacks.init(i, true, x+8, 0);
-		guiItemStacks.set(i++, Arrays.asList(recipe.input.getMatchingStacks()));
-
-		for(int j = 0; j < recipe.additives.length; j++)
-		{
-			guiItemStacks.init(i, true, x+j%2*18, 18+j/2*18);
-			guiItemStacks.set(i++, Arrays.asList(recipe.additives[j].getMatchingStacks()));
-		}
-
-		NonNullList<ItemStack> simulatedOutput = recipe.getBaseOutputs();
-		int outputSize = simulatedOutput.size();
-		for(int j = 0; j < outputSize; j++)
-		{
-			guiItemStacks.init(i, false, x+68+j%2*18, j/2*18);
-			guiItemStacks.set(i++, simulatedOutput.get(j));
-		}
-
-		int xSecondary = x+(outputSize > 1?106: 88);
-		for(int j = 0; j < recipe.secondaryOutputs.size(); j++)
-		{
-			guiItemStacks.init(i, false, xSecondary, j*18);
-			guiItemStacks.set(i++, recipe.secondaryOutputs.get(j).stack());
-		}
-
-		if(!recipe.slag.isEmpty())
-		{
-			guiItemStacks.init(i, false, x+68, 36);
-			guiItemStacks.set(i++, recipe.slag);
-		}
-	}
-
-	@Override
-	public void draw(ArcFurnaceRecipe recipe, PoseStack transform, double mouseX, double mouseY)
+	public void draw(ArcFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
 		int x = (148-getWidth(recipe))/2;
 		arrow.draw(transform, x+40, 10);
@@ -149,7 +127,7 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	}
 
 	@Override
-	public List<Component> getTooltipStrings(ArcFurnaceRecipe recipe, double mouseX, double mouseY)
+	public List<Component> getTooltipStrings(ArcFurnaceRecipe recipe, IRecipeSlotsView recipeSlotsView, double mouseX, double mouseY)
 	{
 		int x = (148-getWidth(recipe))/2;
 		if(mouseX >= x+40&&mouseX <= x+64&&mouseY >= 8&&mouseY <= 26)
@@ -162,6 +140,6 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 					new TranslatableComponent("desc.immersiveengineering.info.seconds", Utils.formatDouble(time/20, "#.##"))
 			);
 		}
-		return super.getTooltipStrings(recipe, mouseX, mouseY);
+		return super.getTooltipStrings(recipe, recipeSlotsView, mouseX, mouseY);
 	}
 }

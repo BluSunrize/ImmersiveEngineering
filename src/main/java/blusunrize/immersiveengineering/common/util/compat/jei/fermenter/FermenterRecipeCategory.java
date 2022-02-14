@@ -13,19 +13,18 @@ import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 {
@@ -42,30 +41,18 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 	}
 
 	@Override
-	public void setIngredients(FermenterRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, FermenterRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
+		builder.addSlot(RecipeIngredientRole.INPUT, 2, 7)
+				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));
+		var outputSlotBuilder = builder.addSlot(RecipeIngredientRole.OUTPUT, 85, 41);
 		if(!recipe.itemOutput.isEmpty())
-			ingredients.setOutput(VanillaTypes.ITEM, recipe.itemOutput);
-		if(recipe.fluidOutput!=null)
-			ingredients.setOutput(VanillaTypes.FLUID, recipe.fluidOutput);
-	}
-
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, FermenterRecipe recipe, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 1, 6);
-		guiItemStacks.init(1, false, 84, 40);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getMatchingStacks()));
-		if(!recipe.itemOutput.isEmpty())
-			guiItemStacks.set(1, recipe.itemOutput);
-		if(recipe.fluidOutput!=null && !recipe.fluidOutput.isEmpty())
-		{
-			IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-			guiFluidStacks.init(0, false, 106, 9, 16, 47, FluidAttributes.BUCKET_VOLUME/2, false, tankOverlay);
-			guiFluidStacks.set(0, recipe.fluidOutput);
-			guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
-		}
+			outputSlotBuilder.addItemStack(recipe.itemOutput);
+		if(recipe.fluidOutput!=null&&!recipe.fluidOutput.isEmpty())
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 107, 10)
+					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)
+					.setOverlay(tankOverlay, 0, 0)
+					.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)
+					.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 }

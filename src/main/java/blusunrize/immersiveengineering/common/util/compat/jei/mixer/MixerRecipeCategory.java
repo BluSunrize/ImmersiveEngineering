@@ -14,20 +14,20 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiFluidStackGroup;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 {
@@ -48,37 +48,31 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	}
 
 	@Override
-	public void setIngredients(MixerRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, MixerRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		ingredients.setInputs(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks());
-		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.itemInputs).build());
-		ingredients.setOutput(VanillaTypes.FLUID, recipe.fluidOutput);
-	}
+		builder.addSlot(RecipeIngredientRole.INPUT, 49, 4)
+				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 58, 47)
+				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
+				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, MixerRecipe recipe, IIngredients ingredients)
-	{
-		IGuiFluidStackGroup guiFluidStacks = recipeLayout.getFluidStacks();
-		guiFluidStacks.init(0, true, 48, 3, 58, 47, 4*FluidAttributes.BUCKET_VOLUME, false, null);
-		guiFluidStacks.set(0, recipe.fluidInput.getMatchingFluidStacks());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 139, 3)
+				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 47)
+				.setOverlay(tankOverlay, 0, 0)
+				.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)
+				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
-		guiFluidStacks.init(1, false, 138, 2, 16, 47, 4*FluidAttributes.BUCKET_VOLUME, false, tankOverlay);
-		guiFluidStacks.set(1, recipe.fluidOutput);
-		guiFluidStacks.addTooltipCallback(JEIHelper.fluidTooltipCallback);
-
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
 		for(int i = 0; i < recipe.itemInputs.length; i++)
 		{
-			int x = (i%2)*18;
-			int y = i/2*18;
-			guiItemStacks.init(i, true, x, y);
-			guiItemStacks.set(i, Arrays.asList(recipe.itemInputs[i].getMatchingStacks()));
-			guiItemStacks.setBackground(i, JEIHelper.slotDrawable);
+			int x = (i%2)*18+1;
+			int y = i/2*18+1;
+			builder.addSlot(RecipeIngredientRole.INPUT, x, y)
+					.addItemStacks(Arrays.asList(recipe.itemInputs[i].getMatchingStacks()))
+					.setBackground(JEIHelper.slotDrawable, -1, -1);
 		}
 	}
 
 	@Override
-	public void draw(MixerRecipe recipe, PoseStack transform, double mouseX, double mouseY)
+	public void draw(MixerRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
 		tankTexture.draw(transform, 40, 0);
 		arrowDrawable.draw(transform, 117, 19);

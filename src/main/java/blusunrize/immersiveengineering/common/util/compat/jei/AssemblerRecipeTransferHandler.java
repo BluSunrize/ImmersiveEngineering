@@ -14,9 +14,8 @@ import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import mezz.jei.api.gui.IRecipeLayout;
-import mezz.jei.api.gui.ingredient.IGuiIngredient;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
@@ -27,7 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import javax.annotation.Nullable;
-import java.util.List;
+import java.util.Optional;
 
 /**
  * @author BluSunrize - 08.09.2016
@@ -53,25 +52,28 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 		return CraftingRecipe.class;
 	}
 
-	@Nullable
 	@Override
-	public IRecipeTransferError transferRecipe(AssemblerContainer container, CraftingRecipe recipe, IRecipeLayout recipeLayout, Player player, boolean maxTransfer, boolean doTransfer)
+	@Nullable
+	public IRecipeTransferError transferRecipe(AssemblerContainer container, CraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer)
 	{
 		for(int i = 0; i < 3; i++)
 			if(container.tile.patterns[i].recipe==null)
 			{
 				if(doTransfer)
 				{
-					IGuiItemStackGroup stacks = recipeLayout.getItemStacks();
-					NonNullList<ItemStack> convertedInput = NonNullList.withSize(stacks.getGuiIngredients().size()-1, ItemStack.EMPTY);
+					var stacks = recipeSlots.getSlotViews();
+					NonNullList<ItemStack> convertedInput = NonNullList.withSize(stacks.size()-1, ItemStack.EMPTY);
 					int j = 0;
-					for(IGuiIngredient<ItemStack> ingr : stacks.getGuiIngredients().values())
+					for(var ingr : stacks)
 					{
 						if(j > 0)
 						{
-							List<ItemStack> list = ingr.getAllIngredients();
-							if(list!=null&&list.size() > 0)
-								convertedInput.set(j-1, list.get(0));
+							Optional<ItemStack> stackToUse = ingr.getAllIngredients()
+									.filter(t -> t.getType()==VanillaTypes.ITEM)
+									.map(t -> (ItemStack)t.getIngredient())
+									.findFirst();
+							if(stackToUse.isPresent())
+								convertedInput.set(j-1, stackToUse.get());
 						}
 						j++;
 					}

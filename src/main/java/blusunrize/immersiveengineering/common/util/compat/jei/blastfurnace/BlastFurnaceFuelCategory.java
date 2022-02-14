@@ -13,19 +13,19 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 {
@@ -44,21 +44,14 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 	}
 
 	@Override
-	public void setIngredients(BlastFurnaceFuel recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, BlastFurnaceFuel recipe, List<? extends IFocus<?>> focuses)
 	{
-		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
+		builder.addSlot(RecipeIngredientRole.INPUT, 1, 17)
+				.addItemStacks(Arrays.asList(recipe.input.getItems()));
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, BlastFurnaceFuel recipe, IIngredients iIngredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 0, 16);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getItems()));
-	}
-
-	@Override
-	public void draw(BlastFurnaceFuel recipe, PoseStack transform, double mouseX, double mouseY)
+	public void draw(BlastFurnaceFuel recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
 		this.flame.draw(transform, 1, 0);
 		String burnTime = I18n.get("desc.immersiveengineering.info.seconds", Utils.formatDouble(recipe.burnTime/20, "#.##"));

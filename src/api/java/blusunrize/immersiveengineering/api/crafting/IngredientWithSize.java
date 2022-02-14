@@ -20,6 +20,8 @@ import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Predicate;
 
 public class IngredientWithSize implements Predicate<ItemStack>
@@ -75,6 +77,12 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		for(int i = 0; i < baseStacks.length; ++i)
 			ret[i] = ItemHandlerHelper.copyStackWithSize(baseStacks[i], this.count);
 		return ret;
+	}
+
+	@Nonnull
+	public List<ItemStack> getMatchingStackList()
+	{
+		return Arrays.asList(getMatchingStacks());
 	}
 
 	@Nonnull

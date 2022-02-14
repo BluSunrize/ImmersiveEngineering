@@ -43,7 +43,7 @@ import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.ITooltipCallback;
+import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
@@ -53,7 +53,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class JEIHelper implements IModPlugin
 	private static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "main");
 	public static final ResourceLocation JEI_GUI = new ResourceLocation(Lib.MODID, "textures/gui/jei_elements.png");
 	public static IDrawableStatic slotDrawable;
-	public static ITooltipCallback<FluidStack> fluidTooltipCallback = new IEFluidTooltipCallback();
+	public static IRecipeSlotTooltipCallback fluidTooltipCallback = new IEFluidTooltipCallback();
 
 	@Override
 	public ResourceLocation getPluginUid()
@@ -208,6 +207,7 @@ public class JEIHelper implements IModPlugin
 
 	}
 
+	// TODO these throw when joining servers!
 	private ArrayList<BottlingMachineRecipe> getFluidBucketRecipes()
 	{
 		// assume a source and flowing version of each fluid:

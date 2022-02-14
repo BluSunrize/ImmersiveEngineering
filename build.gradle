@@ -65,9 +65,10 @@ sourceSets {
 }
 
 def version_replaces = [
-        'version': project.version,
-        'mc_version': version_minecraft,
-        'forge_version': version_forge
+        'version'      : project.version,
+        'mc_version'   : version_minecraft,
+        'forge_version': version_forge,
+        'jei_version'  : version_jei,
 ]
 
 def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
@@ -210,7 +211,7 @@ repositories {
 dependencies {
     minecraft "net.minecraftforge:forge:${version_minecraft}-${version_forge}"
 
-    compileOnly fg.deobf("mezz.jei:jei-1.18:9.0.0.40:api")
+    compileOnly fg.deobf("mezz.jei:jei-1.18.1:${version_jei}:api")
     compileOnly fg.deobf("org.squiddev:cc-tweaked-1.18:1.99.0")
     compileOnly fg.deobf("curse.maven:the-one-probe-245211:3550084")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:1.18-5.0.2.4:api")

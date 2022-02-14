@@ -11,23 +11,21 @@ package blusunrize.immersiveengineering.common.util.compat.jei.sawmill;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
-import net.minecraft.core.NonNullList;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 {
@@ -52,56 +50,39 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 	}
 
 	@Override
-	public void setIngredients(SawmillRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, SawmillRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input).build());
-		NonNullList<ItemStack> l = ListUtils.fromItems(recipe.output);
+		builder.addSlot(RecipeIngredientRole.INPUT, 3, 7)
+				.addItemStacks(Arrays.asList(recipe.input.getItems()));
+
 		if(!recipe.stripped.isEmpty())
-			l.add(recipe.stripped);
-		l.addAll(recipe.secondaryStripping);
-		l.addAll(recipe.secondaryOutputs);
-		ingredients.setOutputs(VanillaTypes.ITEM, l);
-	}
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 47, 7)
+					.addItemStack(recipe.stripped);
 
-	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, SawmillRecipe recipe, IIngredients ingredients)
-	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 2, 6);
-		guiItemStacks.set(0, Arrays.asList(recipe.input.getItems()));
-
-		int slot = 1;
-		if(!recipe.stripped.isEmpty())
-		{
-			guiItemStacks.init(slot, false, 46, 6);
-			guiItemStacks.set(slot, recipe.stripped);
-			guiItemStacks.setBackground(slot++, JEIHelper.slotDrawable);
-		}
-
-		guiItemStacks.init(slot, false, 94, 6);
-		guiItemStacks.set(slot++, recipe.output);
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 95, 7)
+				.addItemStack(recipe.output);
 
 		int i = 0;
 		for(ItemStack out : recipe.secondaryStripping)
 		{
-			guiItemStacks.init(slot, false, 46+i%2*18, 28+i/2*18);
-			guiItemStacks.set(slot, out);
-			guiItemStacks.setBackground(slot++, JEIHelper.slotDrawable);
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 47+i%2*18, 29+i/2*18)
+					.addItemStack(out);
 			i++;
 		}
 
 		i = 0;
 		for(ItemStack out : recipe.secondaryOutputs)
 		{
-			guiItemStacks.init(slot, false, 90+i%2*18, 28+i/2*18);
-			guiItemStacks.set(slot, out);
-			guiItemStacks.setBackground(slot++, JEIHelper.slotDrawable);
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 91+i%2*18, 29+i/2*18)
+					.addItemStack(out)
+					.setBackground(JEIHelper.slotDrawable, -1, -1);
 			i++;
 		}
 	}
 
+
 	@Override
-	public void draw(SawmillRecipe recipe, PoseStack transform, double mouseX, double mouseY)
+	public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
 		if(recipe.stripped.isEmpty())
 		{

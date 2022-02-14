@@ -12,18 +12,17 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
-import blusunrize.immersiveengineering.common.util.compat.jei.JEIIngredientStackListBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
-import mezz.jei.api.gui.IRecipeLayout;
+import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
-import mezz.jei.api.gui.ingredient.IGuiItemStackGroup;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.ingredients.IIngredients;
+import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Arrays;
+import java.util.List;
 
 public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 {
@@ -42,30 +41,21 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 	}
 
 	@Override
-	public void setIngredients(AlloyRecipe recipe, IIngredients ingredients)
+	public void setRecipe(IRecipeLayoutBuilder builder, AlloyRecipe recipe, List<? extends IFocus<?>> focuses)
 	{
-		ingredients.setInputLists(VanillaTypes.ITEM, JEIIngredientStackListBuilder.make(recipe.input0, recipe.input1).build());
-		ingredients.setOutput(VanillaTypes.ITEM, recipe.output);
+		super.setRecipe(builder, recipe, focuses);
+		builder.addSlot(RecipeIngredientRole.INPUT, 2, 2)
+				.addItemStacks(recipe.input0.getMatchingStackList());
+		builder.addSlot(RecipeIngredientRole.INPUT, 30, 2)
+				.addItemStacks(recipe.input1.getMatchingStackList());
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 84, 20)
+				.addItemStack(recipe.output);
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayout recipeLayout, AlloyRecipe recipe, IIngredients iIngredients)
+	public void draw(AlloyRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY)
 	{
-		IGuiItemStackGroup guiItemStacks = recipeLayout.getItemStacks();
-		guiItemStacks.init(0, true, 1, 1);
-		guiItemStacks.set(0, Arrays.asList(recipe.input0.getMatchingStacks()));
-
-		guiItemStacks.init(1, false, 29, 1);
-		guiItemStacks.set(1, Arrays.asList(recipe.input1.getMatchingStacks()));
-
-		guiItemStacks.init(2, false, 83, 19);
-		guiItemStacks.set(2, recipe.output);
-	}
-
-	@Override
-	public void draw(AlloyRecipe recipe, PoseStack poseStack, double mouseX, double mouseY)
-	{
-		flame.draw(poseStack, 18, 21);
-		arrow.draw(poseStack, 47, 20);
+		flame.draw(stack, 18, 21);
+		arrow.draw(stack, 47, 20);
 	}
 }
