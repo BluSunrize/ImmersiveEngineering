@@ -41,6 +41,7 @@
   "energy": {
     "entry_list": [
       "wiring",
+      "accumulators",
       "generator",
       "breaker",
       "current_transformer",

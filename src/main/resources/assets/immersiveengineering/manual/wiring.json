@@ -100,22 +100,6 @@
       ]
     ]
   },
-  "capacitor_recipes": {
-    "type": "crafting",
-    "recipes": [
-      [
-      {
-        "recipe": "crafting/capacitor_lv"
-      },
-      {
-        "recipe": "crafting/capacitor_mv"
-      },
-      {
-        "recipe": "crafting/capacitor_hv"
-      }
-      ]
-    ]
-  },
   "transformer_recipes": {
     "type": "crafting",
     "recipes": [
