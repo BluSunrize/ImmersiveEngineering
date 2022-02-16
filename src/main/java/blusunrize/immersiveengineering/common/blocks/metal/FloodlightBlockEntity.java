@@ -94,8 +94,8 @@ public class FloodlightBlockEntity extends ImmersiveConnectableBlockEntity imple
 			shouldUpdate = false;
 		}
 
-		if(computerControl.isEnabled())
-			enabled = computerControl.isAttached();
+		if(computerControl.isAttached())
+			enabled = computerControl.isEnabled();
 		else
 			enabled = isRSPowered()^redstoneControlInverted;
 		if(energyStorage >= (!activeBeforeTick?energyDraw*10: energyDraw)&&enabled&&switchCooldown <= 0)
