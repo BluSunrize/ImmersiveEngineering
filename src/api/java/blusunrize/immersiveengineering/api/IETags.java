@@ -20,6 +20,7 @@ import net.minecraftforge.common.Tags.Items;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -31,7 +32,7 @@ public class IETags
 {
 
 	private static final Map<Named<Block>, Named<Item>> toItemTag = new HashMap<>();
-	private static final Map<EnumMetals, MetalTags> metals = new HashMap<>();
+	private static final Map<EnumMetals, MetalTags> metals = new EnumMap<>(EnumMetals.class);
 
 	static
 	{
@@ -39,6 +40,7 @@ public class IETags
 		toItemTag.put(Blocks.ORES, Items.ORES);
 		toItemTag.put(Blocks.ORES_IN_GROUND_STONE, Items.ORES_IN_GROUND_STONE);
 		toItemTag.put(Blocks.ORES_IN_GROUND_DEEPSLATE, Items.ORES_IN_GROUND_DEEPSLATE);
+		toItemTag.put(Blocks.ORE_RATES_SINGULAR, Items.ORE_RATES_SINGULAR);
 	}
 
 	//Vanilla

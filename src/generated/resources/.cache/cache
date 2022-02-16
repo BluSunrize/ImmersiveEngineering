@@ -1196,6 +1196,7 @@ c2e2cf40c8fc836b37e8abf4076f1b7b71c76076 assets/immersiveengineering/models/item
 08dad36019704e4f7abb630ee1d1e868233a4943 data/forge/tags/block_entity_types/relocation_not_supported.json
 7fa7b97903216de91204275e978e8195e8fab75b data/forge/tags/blocks/fences/aluminum.json
 7f82e7a954cc13bc486a74077ea5f94cadf63f38 data/forge/tags/blocks/fences/steel.json
+22226fa97d89da387a8709a89e9874f04f663a79 data/forge/tags/blocks/ore_rates/singular.json
 79908563984f5353f84ff3e5b7fd867f4c602723 data/forge/tags/blocks/ores.json
 fbf2883f213d7d5d62dbaac7ff881fe3cebe1d71 data/forge/tags/blocks/ores/aluminum.json
 b3cbcaf06f88ad075d0ed4b79d8c6308d2e88f05 data/forge/tags/blocks/ores/lead.json
@@ -1289,6 +1290,7 @@ dec49ec4f1de3c4b6aa7e82122e0b55e1da26ee0 data/forge/tags/items/nuggets/aluminum.
 788a9442565589804b4cf678cfa6c65e24a7e4f2 data/forge/tags/items/nuggets/silver.json
 b27233c732908af1325a2ffb722dc7da3c4bede9 data/forge/tags/items/nuggets/steel.json
 c2f4773e58429ae9f5c804905c85eebc90b7b70a data/forge/tags/items/nuggets/uranium.json
+22226fa97d89da387a8709a89e9874f04f663a79 data/forge/tags/items/ore_rates/singular.json
 79908563984f5353f84ff3e5b7fd867f4c602723 data/forge/tags/items/ores.json
 fbf2883f213d7d5d62dbaac7ff881fe3cebe1d71 data/forge/tags/items/ores/aluminum.json
 b3cbcaf06f88ad075d0ed4b79d8c6308d2e88f05 data/forge/tags/items/ores/lead.json

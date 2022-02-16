@@ -104,6 +104,8 @@ class IEBlockTags extends BlockTagsProvider
 					tag(Tags.Blocks.STORAGE_BLOCKS).addTag(tags.rawBlock);
 					tag(Tags.Blocks.ORES_IN_GROUND_STONE).add(Metals.ORES.get(metal).get());
 					tag(Tags.Blocks.ORES_IN_GROUND_DEEPSLATE).add(Metals.DEEPSLATE_ORES.get(metal).get());
+					tag(Tags.Blocks.ORE_RATES_SINGULAR).add(Metals.ORES.get(metal).get())
+							.add(Metals.DEEPSLATE_ORES.get(metal).get());
 				}
 			}
 			tag(tags.sheetmetal).add(IEBlocks.Metals.SHEETMETAL.get(metal).get());
