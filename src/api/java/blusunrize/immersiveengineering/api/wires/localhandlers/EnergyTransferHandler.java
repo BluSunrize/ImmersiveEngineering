@@ -265,13 +265,18 @@ public class EnergyTransferHandler extends LocalNetworkHandler implements IWorld
 							((EnergyConnector)iic).onEnergyPassedThrough(availableAtPoint);
 					}
 				}
-				entry.output.insertEnergy((int)(atSource*availableFactor));
+				entry.output.insertEnergy(ceilIfClose(atSource*availableFactor));
 			}
 			if(allowedFactor < 1)
 				source.extractEnergy(available);
 			else
 				source.extractEnergy(Mth.ceil(maxSum));
 		}
+	}
+
+	private int ceilIfClose(double in)
+	{
+		return (int)(in+0.01);
 	}
 
 	private void burnOverloaded(Level world)
