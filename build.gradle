@@ -218,6 +218,8 @@ dependencies {
     compileOnly fg.deobf("curse.maven:jade-324717:3551337")
     compileOnly fg.deobf("curse.maven:opencomputers2-437654:3630307")
     compileOnly fg.deobf("com.blamejared.crafttweaker:CraftTweaker-forge-1.18.1:9.0.0+15")
+    compileOnly fg.deobf("curse.maven:tetra-289712:3655213")
+    compileOnly fg.deobf("curse.maven:mutil-351914:3640643")
 
     implementation "malte0811:BlockModelSplitter:2.0.1"
     testImplementation('junit:junit:4.13.2')

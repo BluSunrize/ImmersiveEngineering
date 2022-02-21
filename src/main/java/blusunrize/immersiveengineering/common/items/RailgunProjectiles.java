@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.common.register.IEItems;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.AbstractArrow.Pickup;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
 import net.minecraft.world.entity.projectile.ThrownTrident;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +27,10 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.fml.ModList;
+import se.mickelus.tetra.blocks.forged.chthonic.ChthonicExtractorBlock;
+import se.mickelus.tetra.blocks.forged.chthonic.ExtractorProjectileEntity;
+import se.mickelus.tetra.items.forged.ItemBeam;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -129,5 +134,36 @@ public class RailgunProjectiles
 				return defaultProjectile;
 			}
 		});
+
+		if(ModList.get().isLoaded("tetra"))
+		{
+			// Salvaged Beam
+			RailgunHandler.registerProjectile(() -> Ingredient.of(ItemBeam.instance), new RailgunHandler.StandardRailgunProjectile(40, 1.5)
+					.setColorMap(new RailgunRenderColors(0x383838, 0x383838, 0x383838, 0x383838, 0x2f2f2f, 0x252525)));
+
+			// Extractor
+			RailgunHandler.registerProjectile(() -> Ingredient.of(ChthonicExtractorBlock.item, ChthonicExtractorBlock.usedItem), new RailgunHandler.IRailgunProjectile()
+			{
+				@Override
+				public boolean isValidForTurret()
+				{
+					return false;
+				}
+
+				@Override
+				public Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)
+				{
+					if(shooter!=null)
+					{
+						ExtractorProjectileEntity extractor = new ExtractorProjectileEntity(shooter.level, shooter, ammo);
+						if(shooter.getAbilities().instabuild)
+							extractor.pickup = Pickup.CREATIVE_ONLY;
+						extractor.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 2.5F, 1.0F);
+						return extractor;
+					}
+					return defaultProjectile;
+				}
+			});
+		}
 	}
 }
