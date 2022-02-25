@@ -252,7 +252,6 @@ public class ImmersiveEngineering
 		registerMessage(MessageMaintenanceKit.class, MessageMaintenanceKit::new, PLAY_TO_SERVER);
 		registerMessage(MessageRevolverRotate.class, MessageRevolverRotate::new, PLAY_TO_SERVER);
 		registerMessage(MessageMultiblockSync.class, MessageMultiblockSync::new, PLAY_TO_CLIENT);
-		registerMessage(MessageClientCommand.class, MessageClientCommand::new, PLAY_TO_CLIENT);
 		registerMessage(MessageContainerData.class, MessageContainerData::new, PLAY_TO_CLIENT);
 
 		IEIMCHandler.init();
