@@ -11,7 +11,8 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
-import blusunrize.immersiveengineering.api.utils.DirectionUtils;
+import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler.IExternalHeatable;
+import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IActiveState;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
@@ -22,14 +23,12 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.Vec3;
@@ -40,6 +39,7 @@ import net.minecraftforge.energy.IEnergyStorage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collection;
 
 public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IActiveState,
 		IStateBasedDirectional, IHammerInteraction
@@ -47,6 +47,9 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000, Math.max(256,
 			Math.max(IEServerConfig.MACHINES.heater_consumption.get(), IEServerConfig.MACHINES.heater_speedupConsumption.get())));
 	private final ResettableCapability<IEnergyStorage> energyCap = registerEnergyInput(energyStorage);
+	private final Collection<CapabilityReference<IExternalHeatable>> heatables = CapabilityReference.forAllNeighbors(
+			this, ExternalHeaterHandler.CAPABILITY
+	).values();
 
 	public FurnaceHeaterBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -62,18 +65,17 @@ public class FurnaceHeaterBlockEntity extends IEBaseBlockEntity implements IESer
 		if(activeBeforeTick&&!redstonePower)
 			newActive = false;
 		if(energyStorage.getEnergyStored() > 3200||activeBeforeTick)
-			for(Direction fd : DirectionUtils.VALUES)
+			for(CapabilityReference<IExternalHeatable> capRef : heatables)
 			{
-				BlockEntity tileEntity = Utils.getExistingTileEntity(level, getBlockPos().relative(fd));
-				int consumed = 0;
-				if(tileEntity!=null)
-					consumed = tileEntity.getCapability(ExternalHeaterHandler.CAPABILITY)
-							.map(a -> a.doHeatTick(energyStorage.getEnergyStored(), redstonePower))
-							.orElse(0);
-				if(consumed > 0)
+				IExternalHeatable heatable = capRef.getNullable();
+				if(heatable!=null)
 				{
-					this.energyStorage.extractEnergy(consumed, false);
-					newActive = true;
+					int consumed = heatable.doHeatTick(energyStorage.getEnergyStored(), redstonePower);
+					if(consumed > 0)
+					{
+						this.energyStorage.extractEnergy(consumed, false);
+						newActive = true;
+					}
 				}
 			}
 		if(newActive!=activeBeforeTick)
