@@ -12,25 +12,18 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.register.IEItems.Tools;
+import blusunrize.immersiveengineering.gametest.GameTestUtils;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestFunction;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.gametest.GameTestHolder;
 
 import java.util.ArrayList;
@@ -68,30 +61,21 @@ public class TestMultiblocks
 		});
 		BlockState triggerState = helper.getBlockState(triggerRelative);
 		Block originalTestBlock = helper.getBlockState(testRelative).getBlock();
-		assertForm(player, helper, triggerAbsolute, testRelative, multiblock.getBlock());
+		assertForm(helper, multiblock, testRelative);
 		helper.runAfterDelay(20, () -> {
 			helper.setBlock(triggerRelative, Blocks.AIR);
 			helper.assertBlockPresent(originalTestBlock, testRelative);
 			helper.runAfterDelay(20, () -> {
 				helper.setBlock(triggerRelative, triggerState);
-				assertForm(player, helper, triggerAbsolute, testRelative, multiblock.getBlock());
+				assertForm(helper, multiblock, testRelative);
 				helper.succeed();
 			});
 		});
 	}
 
-	private static void assertForm(
-			Player player, GameTestHelper helper, BlockPos triggerAbsolute, BlockPos testPos, Block formed
-	)
+	private static void assertForm(GameTestHelper helper, IETemplateMultiblock multiblock, BlockPos testPos)
 	{
-		ItemStack hammer = new ItemStack(Tools.HAMMER);
-		player.setItemInHand(InteractionHand.MAIN_HAND, hammer);
-		BlockHitResult hitResult = new BlockHitResult(Vec3.ZERO, Direction.SOUTH, triggerAbsolute, false);
-		InteractionResult result = hammer.onItemUseFirst(
-				new UseOnContext(player, InteractionHand.MAIN_HAND, hitResult)
-		);
-		if(result!=InteractionResult.SUCCESS)
-			helper.fail("Wrong interaction result: "+result.name());
-		helper.assertBlockPresent(formed, testPos);
+		GameTestUtils.formMultiblock(multiblock, helper);
+		helper.assertBlockPresent(multiblock.getBlock(), testPos);
 	}
 }
