@@ -58,6 +58,12 @@ sourceSets {
         compileClasspath += main.output
         runtimeClasspath += main.output
     }
+    gametest {
+        compileClasspath += main.compileClasspath
+        runtimeClasspath += main.runtimeClasspath
+        compileClasspath += main.output
+        runtimeClasspath += main.output
+    }
     test {
         compileClasspath += manual.output + api.output
         runtimeClasspath += manual.output + api.output
@@ -111,15 +117,19 @@ minecraft {
             property 'forge.logging.markers', 'SCAN'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config="+modid+".mixins.json"
+            arg "-mixin.config=" + modid + ".mixins.json"
+            // TODO not really ideal, is it?
+            ideaModule project.name + ".gametest"
             mods {
                 immersiveengineering {
                     source sourceSets.main
                     source sourceSets.manual
                     source sourceSets.api
+                    source sourceSets.gametest
                 }
             }
         }
@@ -134,6 +144,7 @@ minecraft {
             property 'forge.logging.console.level', 'debug'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
 
             // Disable GUI by default, the IDE console can be used to enter commands
             arg '-nogui'
@@ -170,6 +181,27 @@ minecraft {
                 immersiveengineering {
                     source sourceSets.main
                     source sourceSets.datagen
+                    source sourceSets.manual
+                    source sourceSets.api
+                }
+            }
+        }
+        gameTestServer {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', ''
+
+            property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+            property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
+
+            arg "-mixin.config=" + modid + ".mixins.json"
+            ideaModule project.name + ".gametest"
+
+            mods {
+                immersiveengineering {
+                    source sourceSets.main
+                    source sourceSets.gametest
                     source sourceSets.manual
                     source sourceSets.api
                 }
