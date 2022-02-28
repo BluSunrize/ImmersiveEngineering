@@ -233,7 +233,8 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStat
 	public Direction getFacingForPlacement(BlockPlaceContext ctx)
 	{
 		Direction side = ctx.getClickedFace();
-		onCeiling = (side==DOWN)||(side!=UP&&ctx.getClickLocation().y > .5);
+		double relativeClickY = ctx.getClickLocation().y-ctx.getClickedPos().getY();
+		onCeiling = (side==DOWN)||(side!=UP&&relativeClickY > .5);
 		return IStateBasedDirectional.super.getFacingForPlacement(ctx);
 	}
 
@@ -249,7 +250,7 @@ public class StructuralArmBlockEntity extends IEBaseBlockEntity implements IStat
 		return false;
 	}
 
-	private static final record ShapeKey(int slopePos, int slopeLength, boolean onCeiling)
+	private record ShapeKey(int slopePos, int slopeLength, boolean onCeiling)
 	{
 	}
 
