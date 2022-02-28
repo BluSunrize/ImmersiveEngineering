@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
-import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
@@ -226,11 +225,9 @@ public class ImmersiveEngineering
 		IEIMCHandler.init();
 		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));
 
-		event.enqueueWork(Villages::init);
 		proxy.postInit();
 		IECompatModule.doModulesPostInit();
 		proxy.postInitEnd();
-		ShaderRegistry.compileWeight();
 		CommandMineral.registerArguments();
 	}
 

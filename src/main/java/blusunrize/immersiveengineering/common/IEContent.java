@@ -77,6 +77,7 @@ import blusunrize.immersiveengineering.common.wires.CapabilityInit;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
+import blusunrize.immersiveengineering.common.world.Villages;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
@@ -883,6 +884,11 @@ public class IEContent
 		LocalNetworkHandler.register(EnergyTransferHandler.ID, EnergyTransferHandler::new);
 		LocalNetworkHandler.register(RedstoneNetworkHandler.ID, RedstoneNetworkHandler::new);
 		LocalNetworkHandler.register(WireDamageHandler.ID, WireDamageHandler::new);
+
+		ev.enqueueWork(() -> {
+			Villages.init();
+			ShaderRegistry.compileWeight();
+		});
 	}
 
 	public static Item addBanner(String name, String id)
