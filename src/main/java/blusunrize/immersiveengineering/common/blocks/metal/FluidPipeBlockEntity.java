@@ -179,6 +179,14 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@Override
+	public void onChunkUnloaded()
+	{
+		super.onChunkUnloaded();
+		if(level!=null&&!level.isClientSide)
+			indirectConnections.clearDimension(level);
+	}
+
+	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
 		if(entity instanceof LivingEntity&&!((LivingEntity)entity).onClimbable()&&this.cover!=Blocks.AIR)
