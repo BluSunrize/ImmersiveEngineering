@@ -60,6 +60,7 @@ import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
+import blusunrize.immersiveengineering.common.world.Villages;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
@@ -255,6 +256,8 @@ public class IEContent
 		for(FluidEntry entry : IEFluids.ALL_ENTRIES)
 			DispenserBlock.registerBehavior(entry.getBucket(), BUCKET_DISPENSE_BEHAVIOR);
 		ComposterBlock.COMPOSTABLES.putIfAbsent(IEItems.Misc.HEMP_SEEDS.asItem(), 0.3f);
+		Villages.init();
+		ShaderRegistry.compileWeight();
 	}
 
 	public static void populateAPI()
