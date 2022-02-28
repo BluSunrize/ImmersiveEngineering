@@ -63,7 +63,8 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		matrixStack.pushPose();
 		matrixStack.translate(.5, .5, .5);
 
-		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), tile.rotationYaw, true));
+		float defaultYaw = 180-tile.getFacing().toYRot();
+		matrixStack.mulPose(new Quaternion(new Vector3f(0, 1, 0), tile.rotationYaw+defaultYaw, true));
 		matrixStack.mulPose(new Quaternion(new Vector3f(-1, 0, 0), tile.rotationPitch, true));
 
 		renderModelPart(bufferIn, matrixStack, tile.getLevelNonnull(), state, model, tile.getBlockPos(), true, combinedLightIn, "gun");

@@ -127,10 +127,11 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 			{
 				double yaw = (Mth.atan2(delta.x, delta.z)*(180/Math.PI))-180;
 				this.rotationPitch = (float)(Math.atan2(Math.sqrt(delta.x*delta.x+delta.z*delta.z), delta.y)*(180/Math.PI))-90;
+				float defaultYaw = 180-getFacing().toYRot();
 				if(this.rotationYaw==0)//moving from default
-					this.rotationYaw = (float)(yaw*.5);
+					this.rotationYaw = (float)(yaw*.5)-defaultYaw;
 				else
-					this.rotationYaw = (float)yaw;
+					this.rotationYaw = (float)yaw-defaultYaw;
 			}
 		}
 		else if(level.isClientSide)
