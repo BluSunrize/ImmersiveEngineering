@@ -8,8 +8,11 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlockEntity;
+import blusunrize.immersiveengineering.mixin.accessors.CraftingContainerAccess;
 import invtweaks.api.container.ChestContainer;
+import net.minecraft.core.NonNullList;
 import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
@@ -20,15 +23,21 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import static blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlockEntity.GRID_SIZE;
 
 @ChestContainer
 public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEntity>
 {
-	private final CraftingContainer craftingInventory = new CraftingContainer(this, 3, 3);
+	private final CraftingContainer craftingInventory = new CraftingContainer(this, GRID_SIZE, GRID_SIZE);
 	private final ResultContainer craftResultInventory = new ResultContainer();
 	private final Player player;
 
@@ -37,19 +46,19 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEn
 		super(type, tile, id);
 		this.player = inventoryPlayer.player;
 
+		NonNullList<ItemStack> craftingItems = tile.getCraftingInventory();
+		((CraftingContainerAccess)craftingInventory).setItems(craftingItems);
 		this.addSlot(new ResultSlot(player, craftingInventory, craftResultInventory, 0, 124, 35));
 
 		for(int i = 0; i < 9; i++)
-		{
-			Slot s = this.addSlot(new Slot(craftingInventory, i, 30+(i%3)*18, 17+(i/3)*18));
-			s.set(this.inv.getItem(18+i));
-		}
+			this.addSlot(new Slot(craftingInventory, i, 30+(i%3)*18, 17+(i/3)*18));
 
+		IItemHandler storageInventory = CapabilityUtils.getPresentCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 		int iSlot = 0;
 		for(int i = 0; i < 18; i++)
-			this.addSlot(new Slot(this.inv, iSlot++, 8+(i%9)*18, 79+(i/9)*18));
+			this.addSlot(new SlotItemHandler(storageInventory, iSlot++, 8+(i%9)*18, 79+(i/9)*18));
 
-		this.slotCount = tile.getInventory().size();
+		this.slotCount = storageInventory.getSlots()+tile.getCraftingInventory().size();
 		this.tile = tile;
 
 		for(int i = 0; i < 3; i++)
@@ -57,28 +66,39 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEn
 				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 129+i*18));
 		for(int i = 0; i < 9; i++)
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 187));
+
+		addSlotListener(new ContainerListener()
+		{
+			@Override
+			public void slotChanged(@Nonnull AbstractContainerMenu menu, int index, @Nonnull ItemStack stack)
+			{
+				// Kind of a hack: If another player modifies the crafting grid contents, we do not get a slotsChanged
+				// call by default. So we need to do that manually.
+				slotsChanged(null);
+			}
+
+			@Override
+			public void dataChanged(@Nonnull AbstractContainerMenu menu, int index, int value)
+			{
+				// NOP
+			}
+		});
+	}
+
+	@Override
+	public boolean stillValid(@Nonnull Player player)
+	{
+		return BlockEntityInventory.isValidForPlayer(this.tile, player);
 	}
 
 	private void doIfServerWorld(Consumer<Level> consumer)
 	{
 		if(this.tile!=null&&this.tile.getLevel()!=null&&!this.tile.getLevel().isClientSide)
-		{
 			consumer.accept(this.tile.getLevel());
-		}
 	}
 
 	@Override
-	public void removed(Player playerIn)
-	{
-		super.removed(playerIn);
-		doIfServerWorld(world -> {
-			for(int i = 0; i < 9; i++)
-				this.inv.setItem(18+i, this.getSlot(1+i).getItem());
-		});
-	}
-
-	@Override
-	public void slotsChanged(Container inventoryIn)
+	public void slotsChanged(@Nullable Container inventoryIn)
 	{
 		doIfServerWorld(world -> {
 			ServerPlayer serverplayerentity = (ServerPlayer)this.player;
@@ -88,9 +108,7 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEn
 			{
 				CraftingRecipe icraftingrecipe = optional.get();
 				if(craftResultInventory.setRecipeUsed(world, serverplayerentity, icraftingrecipe))
-				{
 					itemstack = icraftingrecipe.assemble(craftingInventory);
-				}
 			}
 
 			craftResultInventory.setItem(0, itemstack);
@@ -134,7 +152,7 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEn
 	}
 
 	@Override
-	public boolean canTakeItemForPickAll(ItemStack pStack, Slot pSlot)
+	public boolean canTakeItemForPickAll(@Nonnull ItemStack pStack, Slot pSlot)
 	{
 		return pSlot.container!=this.craftResultInventory&&super.canTakeItemForPickAll(pStack, pSlot);
 	}

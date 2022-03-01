@@ -17,8 +17,6 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -34,13 +32,17 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IIEInventory, IStateBasedDirectional,
+public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional,
 		IInteractionObjectIE<CraftingTableBlockEntity>
 {
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(27, ItemStack.EMPTY);
+	public static final int GRID_SIZE = 3;
+
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(18, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> craftingInv = NonNullList.withSize(GRID_SIZE*GRID_SIZE, ItemStack.EMPTY);
 
 	public CraftingTableBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -51,14 +53,28 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IIEIn
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(!descPacket)
-			ContainerHelper.loadAllItems(nbt, inventory);
+		{
+			NonNullList<ItemStack> totalInv = NonNullList.withSize(inventory.size()+craftingInv.size(), ItemStack.EMPTY);
+			ContainerHelper.loadAllItems(nbt, totalInv);
+			for(int i = 0; i < inventory.size(); ++i)
+				inventory.set(i, totalInv.get(i));
+			for(int i = 0; i < craftingInv.size(); ++i)
+				craftingInv.set(i, totalInv.get(inventory.size()+i));
+		}
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		if(!descPacket)
-			ContainerHelper.saveAllItems(nbt, inventory);
+		{
+			NonNullList<ItemStack> totalInv = NonNullList.withSize(inventory.size()+craftingInv.size(), ItemStack.EMPTY);
+			for(int i = 0; i < inventory.size(); ++i)
+				totalInv.set(i, totalInv.get(i));
+			for(int i = 0; i < craftingInv.size(); ++i)
+				totalInv.set(inventory.size()+i, totalInv.get(i));
+			ContainerHelper.saveAllItems(nbt, totalInv);
+		}
 	}
 
 	@Override
@@ -86,38 +102,22 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IIEIn
 		return IEContainerTypes.CRAFTING_TABLE;
 	}
 
-	@Override
-	public NonNullList<ItemStack> getInventory()
+	private final ResettableCapability<IItemHandler> inventoryCap = registerCapability(new ItemStackHandler(inventory)
 	{
-		return inventory;
-	}
-
-	@Override
-	public boolean isStackValid(int slot, ItemStack stack)
-	{
-		return true;
-	}
-
-	@Override
-	public int getSlotLimit(int slot)
-	{
-		return 64;
-	}
-
-	@Override
-	public void doGraphicalUpdates()
-	{
-		this.setChanged();
-	}
-
-	private final ResettableCapability<IItemHandler> insertionCap = registerCapability(new IEInventoryHandler(27, this));
+		@Override
+		protected void onContentsChanged(int slot)
+		{
+			super.onContentsChanged(slot);
+			CraftingTableBlockEntity.this.setChanged();
+		}
+	});
 
 	@Nonnull
 	@Override
 	public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing)
 	{
 		if(capability==CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-			return insertionCap.cast();
+			return inventoryCap.cast();
 		return super.getCapability(capability, facing);
 	}
 
@@ -131,5 +131,10 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IIEIn
 	public Property<Direction> getFacingProperty()
 	{
 		return IEProperties.FACING_HORIZONTAL;
+	}
+
+	public NonNullList<ItemStack> getCraftingInventory()
+	{
+		return craftingInv;
 	}
 }
