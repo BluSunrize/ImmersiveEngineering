@@ -107,9 +107,14 @@ public class TileInventory implements Container
 	@Override
 	public boolean stillValid(Player player)
 	{
+		return isValidForPlayer(tile, player);
+	}
+
+	public static boolean isValidForPlayer(BlockEntity tile, Player player)
+	{
 		if(tile instanceof IInteractionObjectIE&&!((IInteractionObjectIE)tile).canUseGui(player))
 			return false;
-		return !tile.isRemoved()&&Vec3.atLowerCornerOf(tile.getBlockPos()).distanceToSqr(player.position()) < 64;
+		return !tile.isRemoved()&&Vec3.atCenterOf(tile.getBlockPos()).distanceToSqr(player.position()) < 64;
 	}
 
 	@Override

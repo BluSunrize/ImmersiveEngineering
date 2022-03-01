@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.extensions.IForgeEntityMinecart;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -25,6 +26,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Objects;
 
@@ -114,5 +116,26 @@ public class CapabilityUtils
 		// trying to access the value will get null)
 		result.resolve();
 		return result;
+	}
+
+	public static <T> T getPresentCapability(ICapabilityProvider provider, Capability<T> cap)
+	{
+		return Objects.requireNonNull(getCapability(provider, cap, null));
+	}
+
+	@Nullable
+	public static <T> T getCapability(ICapabilityProvider provider, Capability<T> cap)
+	{
+		return getCapability(provider, cap, null);
+	}
+
+	@Nullable
+	public static <T> T getCapability(ICapabilityProvider provider, Capability<T> cap, @Nullable Direction side)
+	{
+		LazyOptional<T> optional = provider.getCapability(cap, side);
+		if(optional.isPresent())
+			return optional.orElseThrow(RuntimeException::new);
+		else
+			return null;
 	}
 }
