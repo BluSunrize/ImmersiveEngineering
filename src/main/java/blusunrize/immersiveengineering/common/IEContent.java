@@ -56,7 +56,6 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEShaders;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
-import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
@@ -87,7 +86,6 @@ import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import java.io.IOException;
-import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 import static blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.defaultAdapter;
@@ -98,7 +96,7 @@ public class IEContent
 {
 	public static final Feature<OreConfiguration> ORE_RETROGEN = new OreRetrogenFeature(OreConfiguration.CODEC);
 
-	public static void modConstruction(Consumer<Runnable> runLater)
+	public static void modConstruction()
 	{
 		/*BULLETS*/
 		BulletItem.initBullets();
@@ -141,7 +139,6 @@ public class IEContent
 
 		ClocheRenderFunctions.init();
 
-		runLater.accept(IELootFunctions::register);
 		IEShaders.commonConstruction();
 		IEMultiblocks.init();
 		BlueprintCraftingRecipe.registerDefaultCategories();

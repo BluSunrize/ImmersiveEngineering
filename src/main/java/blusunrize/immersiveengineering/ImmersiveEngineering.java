@@ -33,7 +33,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
-import blusunrize.immersiveengineering.common.register.IERecipes;
 import blusunrize.immersiveengineering.common.util.IEIMCHandler;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.MissingMappingsHelper;
@@ -142,17 +141,13 @@ public class ImmersiveEngineering
 		ModLoadingContext.get().registerConfig(Type.CLIENT, IEClientConfig.CONFIG_SPEC.getBaseSpec());
 		ModLoadingContext.get().registerConfig(Type.SERVER, IEServerConfig.CONFIG_SPEC.getBaseSpec());
 		DeferredWorkQueue queue = DeferredWorkQueue.lookup(Optional.of(ModLoadingStage.CONSTRUCT)).orElseThrow();
-		Consumer<Runnable> runLater = job -> queue.enqueueWork(
-				ModLoadingContext.get().getActiveContainer(), job
-		);
-		IEContent.modConstruction(runLater);
+		IEContent.modConstruction();
 		DistExecutor.safeRunWhenOn(Dist.CLIENT, bootstrapErrorToXCPInDev(() -> ClientProxy::modConstruction));
 		IngredientSerializers.init();
 
 		IEWorldGen ieWorldGen = new IEWorldGen();
 		MinecraftForge.EVENT_BUS.register(ieWorldGen);
 		IEWorldGen.init();
-		runLater.accept(IERecipes::registerRecipeTypes);
 		IECompatModules.onModConstruction();
 	}
 

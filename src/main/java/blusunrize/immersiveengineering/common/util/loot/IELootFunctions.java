@@ -8,17 +8,24 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
+import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.Serializer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
 /**
  * @author BluSunrize - 16.08.2018
  */
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IELootFunctions
 {
 	public static LootItemFunctionType bluprintz;
@@ -30,7 +37,9 @@ public class IELootFunctions
 	public static LootPoolEntryType tileDrop;
 	public static LootPoolEntryType multiblockOrigBlock;
 
-	public static void register()
+	@SubscribeEvent
+	// Just need *some* registry event, since all registries are apparently unfrozen during those
+	public static void register(RegistryEvent.Register<Block> ev)
 	{
 		bluprintz = registerFunction(BluprintzLootFunction.ID, new SimpleSerializer<>(BluprintzLootFunction::new));
 		windmill = registerFunction(WindmillLootFunction.ID, new SimpleSerializer<>(WindmillLootFunction::new));

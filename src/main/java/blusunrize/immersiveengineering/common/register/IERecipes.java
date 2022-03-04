@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
@@ -18,10 +19,18 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.Block;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IERecipes
 {
-	public static void registerRecipeTypes()
+	@SubscribeEvent
+	// Just need *some* registry event, since all registries are apparently unfrozen during those
+	public static void register(RegistryEvent.Register<Block> ev)
 	{
 		AlloyRecipe.TYPE = register("alloy");
 		ArcFurnaceRecipe.TYPE = register("arc_furnace");

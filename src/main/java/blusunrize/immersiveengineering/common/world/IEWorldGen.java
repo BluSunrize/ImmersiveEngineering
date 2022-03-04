@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
@@ -33,6 +34,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -45,12 +47,15 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -212,12 +217,8 @@ public class IEWorldGen
 	private static final RegistryObject<IEOreFeature> IE_CONFIG_ORE = FEATURE_REGISTER.register(
 			"ie_ore", IEOreFeature::new
 	);
-	public static final PlacementModifierType<IECountPlacement> IE_COUNT_PLACEMENT = registerPlacement(
-			"ie_count", IECountPlacement.CODEC
-	);
-	public static final HeightProviderType<IEHeightProvider> IE_HEIGHT_PROVIDER = registerHeightProvider(
-			"ie_range", IEHeightProvider.CODEC
-	);
+	public static PlacementModifierType<IECountPlacement> IE_COUNT_PLACEMENT;
+	public static HeightProviderType<IEHeightProvider> IE_HEIGHT_PROVIDER;
 
 	public static void init()
 	{
@@ -246,5 +247,17 @@ public class IEWorldGen
 		return BuiltinRegistries.register(
 				BuiltinRegistries.PLACED_FEATURE, rl, new PlacedFeature(configured, oreModifiers)
 		);
+	}
+
+	@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
+	public static class Register
+	{
+		@SubscribeEvent
+		// Just need *some* registry event, since all registries are apparently unfrozen during those
+		public static void register(RegistryEvent.Register<Block> ev)
+		{
+			IE_COUNT_PLACEMENT = registerPlacement("ie_count", IECountPlacement.CODEC);
+			IE_HEIGHT_PROVIDER = registerHeightProvider("ie_range", IEHeightProvider.CODEC);
+		}
 	}
 }
