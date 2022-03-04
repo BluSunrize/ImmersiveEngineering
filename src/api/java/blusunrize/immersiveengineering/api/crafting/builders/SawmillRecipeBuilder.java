@@ -13,8 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.tags.SetTag;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -41,7 +40,7 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 		return new SawmillRecipeBuilder().addResult(result);
 	}
 
-	public static SawmillRecipeBuilder builder(SetTag<Item> result, int count)
+	public static SawmillRecipeBuilder builder(TagKey<Item> result, int count)
 	{
 		return new SawmillRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
@@ -56,7 +55,7 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 		return addItem("stripped", itemStack);
 	}
 
-	public SawmillRecipeBuilder addStripped(SetTag<Item> tag)
+	public SawmillRecipeBuilder addStripped(TagKey<Item> tag)
 	{
 		return addStripped(new IngredientWithSize(tag));
 	}
@@ -80,7 +79,7 @@ public class SawmillRecipeBuilder extends IEFinishedRecipe<SawmillRecipeBuilder>
 		return this;
 	}
 
-	public SawmillRecipeBuilder addSecondary(Tag<Item> tag, boolean stripping)
+	public SawmillRecipeBuilder addSecondary(TagKey<Item> tag, boolean stripping)
 	{
 		return addSecondary(new IngredientWithSize(tag), stripping);
 	}

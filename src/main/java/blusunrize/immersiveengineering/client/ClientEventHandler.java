@@ -83,7 +83,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -251,13 +251,13 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			));
 
 		if(IEClientConfig.tagTooltips.get()&&event.getFlags().isAdvanced())
-		{
-			for(ResourceLocation oid : ItemTags.getAllTags().getMatchingTags(event.getItemStack().getItem()))
-				event.getToolTip().add(TextUtils.applyFormat(
-						new TextComponent(oid.toString()),
-						ChatFormatting.GRAY
-				));
-		}
+			event.getItemStack().getItem().builtInRegistryHolder().tags()
+					.map(TagKey::location)
+					.forEach(oid ->
+							event.getToolTip().add(TextUtils.applyFormat(
+									new TextComponent(oid.toString()),
+									ChatFormatting.GRAY
+							)));
 	}
 
 	@SubscribeEvent
@@ -490,7 +490,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 								HitResult rtr = ClientUtils.mc().hitResult;
 								double d;
 								if(rtr instanceof BlockHitResult)
-									d = ((BlockHitResult)rtr).getBlockPos().distSqr(pos.getX(), pos.getY(), pos.getZ(), false);
+									d = ((BlockHitResult)rtr).getBlockPos().distSqr(pos);
 								else
 									d = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
 								int max = ((IWireCoil)equipped.getItem()).getWireType(equipped).getMaxLength();

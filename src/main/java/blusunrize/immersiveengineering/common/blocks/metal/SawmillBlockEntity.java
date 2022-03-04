@@ -207,7 +207,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 				this.updateMasterBlock(null, true);
 				return true;
 			}
-			else if(IETags.sawblades.contains(heldItem.getItem()))
+			else if(heldItem.is(IETags.sawblades))
 			{
 				ItemStack tempBlade = !master.sawblade.isEmpty()?master.sawblade.copy(): ItemStack.EMPTY;
 				master.sawblade = ItemHandlerHelper.copyStackWithSize(heldItem, 1);

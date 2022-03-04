@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -39,7 +39,7 @@ public class CrusherRecipeBuilder extends IEFinishedRecipe<CrusherRecipeBuilder>
 		return new CrusherRecipeBuilder().addResult(result);
 	}
 
-	public static CrusherRecipeBuilder builder(Tag<Item> result, int count)
+	public static CrusherRecipeBuilder builder(TagKey<Item> result, int count)
 	{
 		return new CrusherRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
@@ -63,7 +63,7 @@ public class CrusherRecipeBuilder extends IEFinishedRecipe<CrusherRecipeBuilder>
 		return this;
 	}
 
-	public CrusherRecipeBuilder addSecondary(Tag<Item> tag, float chance)
+	public CrusherRecipeBuilder addSecondary(TagKey<Item> tag, float chance)
 	{
 		return addSecondary(new IngredientWithSize(tag), chance);
 	}

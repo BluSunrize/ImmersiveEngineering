@@ -19,8 +19,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -208,7 +207,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 			return addIngredient(generateSafeInputKey(), itemStacks);
 	}
 
-	public R addInput(Tag<Item> tag)
+	public R addInput(TagKey<Item> tag)
 	{
 		if(inputArray!=null)
 			return addMultiInput(Ingredient.of(tag));
@@ -273,7 +272,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 		return addIngredient(key, Ingredient.of(itemStacks));
 	}
 
-	public R addIngredient(String key, Tag<Item> tag)
+	public R addIngredient(String key, TagKey<Item> tag)
 	{
 		return addIngredient(key, Ingredient.of(tag));
 	}
@@ -310,12 +309,12 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 		return addWriter(jsonObject -> jsonObject.add(key, fluidTag.serialize()));
 	}
 
-	public R addFluidTag(String key, Named<Fluid> fluidTag, int amount)
+	public R addFluidTag(String key, TagKey<Fluid> fluidTag, int amount)
 	{
 		return addFluidTag(key, new FluidTagInput(fluidTag, amount, null));
 	}
 
-	public R addFluidTag(Named<Fluid> fluidTag, int amount)
+	public R addFluidTag(TagKey<Fluid> fluidTag, int amount)
 	{
 		return addFluidTag("fluid", new FluidTagInput(fluidTag, amount, null));
 	}

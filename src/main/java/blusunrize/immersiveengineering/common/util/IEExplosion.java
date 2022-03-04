@@ -174,9 +174,7 @@ public class IEExplosion extends Explosion
 					}
 
 		this.getToBlow().addAll(set);
-		this.getToBlow().sort(
-				Comparator.comparingDouble(pos -> pos.distSqr(getPosition().x, getPosition().y, getPosition().z, true))
-		);
+		this.getToBlow().sort(Comparator.comparingDouble(pos -> pos.distToCenterSqr(getPosition())));
 
 		float f3 = this.size*2.0F;
 		int k1 = Mth.floor(getPosition().x-(double)f3-1.0D);

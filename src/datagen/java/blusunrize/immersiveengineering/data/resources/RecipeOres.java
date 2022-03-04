@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.data.resources;
 
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -35,7 +35,7 @@ public enum RecipeOres
 
 	private final String name;
 	private final boolean isNative;
-	private final Named<Item> ore;
+	private final TagKey<Item> ore;
 	private final IngredientWithSize output;
 	private final SecondaryOutput[] secondaryOutputs;
 
@@ -64,7 +64,7 @@ public enum RecipeOres
 		return isNative;
 	}
 
-	public Named<Item> getOre()
+	public TagKey<Item> getOre()
 	{
 		return ore;
 	}

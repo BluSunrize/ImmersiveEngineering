@@ -11,8 +11,7 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
@@ -42,7 +41,7 @@ public class RefineryRecipeBuilder extends IEFinishedRecipe<RefineryRecipeBuilde
 		return addFluidTag(generateSafeInputKey(), fluidTag);
 	}
 
-	public RefineryRecipeBuilder addInput(Named<Fluid> fluidTag, int amount)
+	public RefineryRecipeBuilder addInput(TagKey<Fluid> fluidTag, int amount)
 	{
 		return addFluidTag(generateSafeInputKey(), fluidTag, amount);
 	}
@@ -52,7 +51,7 @@ public class RefineryRecipeBuilder extends IEFinishedRecipe<RefineryRecipeBuilde
 		return addIngredient("catalyst", itemProvider);
 	}
 
-	public RefineryRecipeBuilder addCatalyst(Tag<Item> tag)
+	public RefineryRecipeBuilder addCatalyst(TagKey<Item> tag)
 	{
 		return addIngredient("catalyst", tag);
 	}

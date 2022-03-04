@@ -18,8 +18,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -51,7 +50,7 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 		else
 		{
 			ResourceLocation tagName = new ResourceLocation(json.get(BLOCK_TAG_KEY).getAsString());
-			Tag<Block> tag = SerializationTags.getInstance().getOrEmpty(Registry.BLOCK_REGISTRY).getTag(tagName);
+			TagKey<Block> tag = TagKey.create(Registry.BLOCK_REGISTRY, tagName);
 			return new ThermoelectricSource(recipeId, tag, temperature);
 		}
 	}

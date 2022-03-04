@@ -32,7 +32,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.Tag.Builder;
 import net.minecraft.tags.Tag.BuilderEntry;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
@@ -233,7 +233,7 @@ class IEBlockTags extends BlockTagsProvider
 
 	private void setMiningLevel(Supplier<Block> block, Tiers level)
 	{
-		Named<Block> tag = switch(level)
+		TagKey<Block> tag = switch(level)
 				{
 					case STONE -> BlockTags.NEEDS_STONE_TOOL;
 					case IRON -> BlockTags.NEEDS_IRON_TOOL;
@@ -245,7 +245,7 @@ class IEBlockTags extends BlockTagsProvider
 
 	private void checkAllRegisteredForBreaking()
 	{
-		List<Named<Block>> knownHarvestTags = ImmutableList.of(
+		List<TagKey<Block>> knownHarvestTags = ImmutableList.of(
 				BlockTags.MINEABLE_WITH_AXE,
 				BlockTags.MINEABLE_WITH_PICKAXE,
 				BlockTags.MINEABLE_WITH_SHOVEL,
@@ -256,7 +256,7 @@ class IEBlockTags extends BlockTagsProvider
 				.map(this::tag)
 				.map(TagAppender::getInternalBuilder)
 				.flatMap(Builder::getEntries)
-				.map(BuilderEntry::getEntry)
+				.map(BuilderEntry::entry)
 				.filter(e -> e instanceof Tag.ElementEntry)
 				.map(Object::toString)
 				.map(ResourceLocation::new)

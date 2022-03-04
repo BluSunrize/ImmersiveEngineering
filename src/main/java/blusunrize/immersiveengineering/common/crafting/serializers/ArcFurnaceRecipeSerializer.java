@@ -94,7 +94,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 			for(int i = 0; i < numOutputs; ++i)
 				recyclingOutputs.put(buffer.readItem(), buffer.readDouble());
 			return new ArcRecyclingRecipe(
-					recipeId, () -> Minecraft.getInstance().getConnection().getTags(), recyclingOutputs, input, time, energy
+					recipeId, () -> Minecraft.getInstance().getConnection().registryAccess(), recyclingOutputs, input, time, energy
 			);
 		}
 	}

@@ -16,8 +16,7 @@ import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -41,7 +40,7 @@ public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 	public GeneratorFuel readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		ResourceLocation tagName = new ResourceLocation(json.get(FLUID_TAG_KEY).getAsString());
-		Tag<Fluid> tag = SerializationTags.getInstance().getOrEmpty(Registry.FLUID_REGISTRY).getTag(tagName);
+		TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, tagName);
 		int amount = json.get(BURN_TIME_KEY).getAsInt();
 		return new GeneratorFuel(recipeId, tag, amount);
 	}

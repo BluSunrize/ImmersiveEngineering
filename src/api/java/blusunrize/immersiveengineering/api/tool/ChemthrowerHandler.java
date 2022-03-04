@@ -14,7 +14,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.effect.MobEffect;
@@ -44,14 +44,14 @@ import java.util.function.BiConsumer;
 public class ChemthrowerHandler
 {
 	public static final SetRestrictedField<BiConsumer<Level, BlockPos>> SOLIDIFY_CONCRETE_POWDER = SetRestrictedField.common();
-	public static List<Pair<Tag<Fluid>, ChemthrowerEffect>> effectList = new ArrayList<>();
-	public static HashSet<Tag<Fluid>> flammableList = new HashSet<>();
+	public static List<Pair<TagKey<Fluid>, ChemthrowerEffect>> effectList = new ArrayList<>();
+	public static HashSet<TagKey<Fluid>> flammableList = new HashSet<>();
 
 	/**
 	 * registers a special effect to a fluid based on tags.
 	 * Fluids without an effect simply do damage based on temperature
 	 */
-	public static void registerEffect(Tag<Fluid> fluidTag, ChemthrowerEffect effect)
+	public static void registerEffect(TagKey<Fluid> fluidTag, ChemthrowerEffect effect)
 	{
 		effectList.add(Pair.of(fluidTag, effect));
 	}
@@ -59,8 +59,8 @@ public class ChemthrowerHandler
 	public static ChemthrowerEffect getEffect(Fluid fluid)
 	{
 		if(fluid!=null)
-			for(Pair<Tag<Fluid>, ChemthrowerEffect> entry : effectList)
-				if(entry.getFirst().contains(fluid))
+			for(Pair<TagKey<Fluid>, ChemthrowerEffect> entry : effectList)
+				if(fluid.is(entry.getFirst()))
 					return entry.getSecond();
 		return null;
 	}
@@ -68,7 +68,7 @@ public class ChemthrowerHandler
 	/**
 	 * registers a fluid based on its registry name, to allow the chemical thrower to ignite it upon dispersal
 	 */
-	public static void registerFlammable(Tag<Fluid> fluidTag)
+	public static void registerFlammable(TagKey<Fluid> fluidTag)
 	{
 		flammableList.add(fluidTag);
 	}
@@ -76,8 +76,8 @@ public class ChemthrowerHandler
 	public static boolean isFlammable(Fluid fluid)
 	{
 		if(fluid!=null)
-			for(Tag<Fluid> predicate : flammableList)
-				if(predicate.contains(fluid))
+			for(TagKey<Fluid> predicate : flammableList)
+				if(fluid.is(predicate))
 					return true;
 		return false;
 	}

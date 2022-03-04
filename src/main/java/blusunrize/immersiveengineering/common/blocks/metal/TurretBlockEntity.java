@@ -262,7 +262,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		if(!(entity instanceof Player)&&!(entity instanceof Animal)&&!(entity instanceof Enemy)&&!attackNeutrals)
 			return false;
 
-		if(target==null||getBlockPos().distSqr(entity.position(), true) < getBlockPos().distSqr(target.position(), true))
+		if(target==null||getBlockPos().distToCenterSqr(entity.position()) < getBlockPos().distToCenterSqr(target.position()))
 			return true;
 		return !checkCanShoot||canShootEntity(entity);
 	}

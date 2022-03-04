@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -34,7 +34,7 @@ public class BlastFurnaceFuelBuilder extends IEFinishedRecipe<BlastFurnaceFuelBu
 		return new BlastFurnaceFuelBuilder().addInput(input);
 	}
 
-	public static BlastFurnaceFuelBuilder builder(Tag<Item> input)
+	public static BlastFurnaceFuelBuilder builder(TagKey<Item> input)
 	{
 		return new BlastFurnaceFuelBuilder().addInput(Ingredient.of(input));
 	}

@@ -38,8 +38,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
@@ -82,7 +81,6 @@ import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.fluids.FluidActionResult;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -94,6 +92,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.text.DecimalFormat;
 import java.util.*;
+import java.util.Map.Entry;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
@@ -101,12 +100,6 @@ public class Utils
 {
 	public static final Random RAND = new Random();
 	public static final DecimalFormat NUMBERFORMAT_PREFIXED = new DecimalFormat("+#;-#");
-
-	public static boolean isInTag(ItemStack stack, ResourceLocation tagName)
-	{
-		Tag<Item> tag = ItemTags.getAllTags().getTag(tagName);
-		return tag!=null&&tag.contains(stack.getItem());
-	}
 
 	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
 	{
@@ -121,24 +114,24 @@ public class Utils
 		return stack1.areCapsCompatible(stack2);
 	}
 
-	public static final BiMap<ResourceLocation, DyeColor> DYES_BY_TAG =
-			ImmutableBiMap.<ResourceLocation, DyeColor>builder()
-					.put(Tags.Items.DYES_BLACK.getName(), DyeColor.BLACK)
-					.put(Tags.Items.DYES_RED.getName(), DyeColor.RED)
-					.put(Tags.Items.DYES_GREEN.getName(), DyeColor.GREEN)
-					.put(Tags.Items.DYES_BROWN.getName(), DyeColor.BROWN)
-					.put(Tags.Items.DYES_BLUE.getName(), DyeColor.BLUE)
-					.put(Tags.Items.DYES_PURPLE.getName(), DyeColor.PURPLE)
-					.put(Tags.Items.DYES_CYAN.getName(), DyeColor.CYAN)
-					.put(Tags.Items.DYES_LIGHT_GRAY.getName(), DyeColor.LIGHT_GRAY)
-					.put(Tags.Items.DYES_GRAY.getName(), DyeColor.GRAY)
-					.put(Tags.Items.DYES_PINK.getName(), DyeColor.PINK)
-					.put(Tags.Items.DYES_LIME.getName(), DyeColor.LIME)
-					.put(Tags.Items.DYES_YELLOW.getName(), DyeColor.YELLOW)
-					.put(Tags.Items.DYES_LIGHT_BLUE.getName(), DyeColor.LIGHT_BLUE)
-					.put(Tags.Items.DYES_MAGENTA.getName(), DyeColor.MAGENTA)
-					.put(Tags.Items.DYES_ORANGE.getName(), DyeColor.ORANGE)
-					.put(Tags.Items.DYES_WHITE.getName(), DyeColor.WHITE)
+	public static final BiMap<TagKey<Item>, DyeColor> DYES_BY_TAG =
+			ImmutableBiMap.<TagKey<Item>, DyeColor>builder()
+					.put(Tags.Items.DYES_BLACK, DyeColor.BLACK)
+					.put(Tags.Items.DYES_RED, DyeColor.RED)
+					.put(Tags.Items.DYES_GREEN, DyeColor.GREEN)
+					.put(Tags.Items.DYES_BROWN, DyeColor.BROWN)
+					.put(Tags.Items.DYES_BLUE, DyeColor.BLUE)
+					.put(Tags.Items.DYES_PURPLE, DyeColor.PURPLE)
+					.put(Tags.Items.DYES_CYAN, DyeColor.CYAN)
+					.put(Tags.Items.DYES_LIGHT_GRAY, DyeColor.LIGHT_GRAY)
+					.put(Tags.Items.DYES_GRAY, DyeColor.GRAY)
+					.put(Tags.Items.DYES_PINK, DyeColor.PINK)
+					.put(Tags.Items.DYES_LIME, DyeColor.LIME)
+					.put(Tags.Items.DYES_YELLOW, DyeColor.YELLOW)
+					.put(Tags.Items.DYES_LIGHT_BLUE, DyeColor.LIGHT_BLUE)
+					.put(Tags.Items.DYES_MAGENTA, DyeColor.MAGENTA)
+					.put(Tags.Items.DYES_ORANGE, DyeColor.ORANGE)
+					.put(Tags.Items.DYES_WHITE, DyeColor.WHITE)
 					.build();
 
 	@Nullable
@@ -146,21 +139,16 @@ public class Utils
 	{
 		if(stack.isEmpty())
 			return null;
-		Collection<ResourceLocation> owners = ItemTags.getAllTags().getMatchingTags(stack.getItem());
-		if(owners.contains(Tags.Items.DYES.getName()))
-		{
-			for(ResourceLocation tag : owners)
-				if(DYES_BY_TAG.containsKey(tag))
-					return DYES_BY_TAG.get(tag);
-		}
+		if(stack.is(Tags.Items.DYES))
+			for(Entry<TagKey<Item>, DyeColor> entry : DYES_BY_TAG.entrySet())
+				if(stack.is(entry.getKey()))
+					return entry.getValue();
 		return null;
 	}
 
 	public static boolean isDye(ItemStack stack)
 	{
-		if(stack.isEmpty())
-			return false;
-		return Tags.Items.DYES.contains(stack.getItem());
+		return stack.is(Tags.Items.DYES);
 	}
 
 	public static FluidStack copyFluidStackWithAmount(FluidStack stack, int amount, boolean stripPressure)

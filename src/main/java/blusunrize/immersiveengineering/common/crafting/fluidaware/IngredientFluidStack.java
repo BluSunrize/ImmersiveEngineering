@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializerFluidStack;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
@@ -40,7 +40,7 @@ public class IngredientFluidStack extends Ingredient
 		this.fluidTagInput = fluidTagInput;
 	}
 
-	public IngredientFluidStack(Named<Fluid> tag, int amount)
+	public IngredientFluidStack(TagKey<Fluid> tag, int amount)
 	{
 		this(new FluidTagInput(tag, amount, null));
 	}

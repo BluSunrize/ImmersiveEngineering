@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.gson.JsonElement;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -41,12 +41,12 @@ public class IngredientWithSize implements Predicate<ItemStack>
 		this(basePredicate, 1);
 	}
 
-	public IngredientWithSize(Tag<Item> basePredicate, int count)
+	public IngredientWithSize(TagKey<Item> basePredicate, int count)
 	{
 		this(Ingredient.of(basePredicate), count);
 	}
 
-	public IngredientWithSize(Tag<Item> basePredicate)
+	public IngredientWithSize(TagKey<Item> basePredicate)
 	{
 		this(basePredicate, 1);
 	}

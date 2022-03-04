@@ -31,12 +31,12 @@ public class PotionHelper
 	public static FluidTagInput getFluidTagForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
-			return new FluidTagInput(FluidTags.WATER.getName(), amount);
+			return new FluidTagInput(FluidTags.WATER, amount);
 		else
 		{
 			CompoundTag nbt = new CompoundTag();
 			nbt.putString("Potion", type.getRegistryName().toString());
-			return new FluidTagInput(IETags.fluidPotion.getName(), amount, nbt);
+			return new FluidTagInput(IETags.fluidPotion, amount, nbt);
 		}
 	}
 

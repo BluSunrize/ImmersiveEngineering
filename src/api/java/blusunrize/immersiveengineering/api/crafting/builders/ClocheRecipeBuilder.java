@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.common.base.Preconditions;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -39,7 +39,7 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 		return new ClocheRecipeBuilder().addResult(result);
 	}
 
-	public static ClocheRecipeBuilder builder(Tag<Item> result, int count)
+	public static ClocheRecipeBuilder builder(TagKey<Item> result, int count)
 	{
 		return new ClocheRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
@@ -54,7 +54,7 @@ public class ClocheRecipeBuilder extends IEFinishedRecipe<ClocheRecipeBuilder>
 		return addItem("soil", itemStack);
 	}
 
-	public ClocheRecipeBuilder addSoil(Tag<Item> tag)
+	public ClocheRecipeBuilder addSoil(TagKey<Item> tag)
 	{
 		return addSoil(Ingredient.of(tag));
 	}

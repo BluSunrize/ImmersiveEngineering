@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.ItemUtils;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,9 +22,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.SerializationTags;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
@@ -41,25 +40,26 @@ import java.util.stream.Collectors;
 public class FluidTagInput implements Predicate<FluidStack>
 {
 	// Generally left on the server, right on the client
-	protected final Either<Tag<Fluid>, List<ResourceLocation>> fluidTag;
+	// TODO FastEither
+	protected final Either<TagKey<Fluid>, List<ResourceLocation>> fluidTag;
 	protected final int amount;
 	protected final CompoundTag nbtTag;
 
-	public FluidTagInput(Either<Tag<Fluid>, List<ResourceLocation>> matching, int amount, CompoundTag nbtTag)
+	public FluidTagInput(Either<TagKey<Fluid>, List<ResourceLocation>> matching, int amount, CompoundTag nbtTag)
 	{
 		this.fluidTag = matching;
 		this.amount = amount;
 		this.nbtTag = nbtTag;
 	}
 
-	public FluidTagInput(Tag<Fluid> fluidTag, int amount, CompoundTag nbtTag)
+	public FluidTagInput(TagKey<Fluid> fluidTag, int amount, CompoundTag nbtTag)
 	{
 		this(Either.left(fluidTag), amount, nbtTag);
 	}
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount, CompoundTag nbtTag)
 	{
-		this(SerializationTags.getInstance().getOrEmpty(Registry.FLUID_REGISTRY).getTag(resourceLocation), amount, nbtTag);
+		this(TagKey.create(Registry.FLUID_REGISTRY, resourceLocation), amount, nbtTag);
 	}
 
 	public FluidTagInput(ResourceLocation resourceLocation, int amount)
@@ -67,7 +67,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 		this(resourceLocation, amount, null);
 	}
 
-	public FluidTagInput(Tag<Fluid> tag, int amount)
+	public FluidTagInput(TagKey<Fluid> tag, int amount)
 	{
 		this(tag, amount, null);
 	}
@@ -105,7 +105,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 		if(fluidStack==null)
 			return false;
 		if(!fluidTag.map(
-				t -> t.contains(fluidStack.getFluid()),
+				t -> fluidStack.getFluid().is(t),
 				l -> l.contains(fluidStack.getFluid().getRegistryName())
 		))
 			return false;
@@ -118,7 +118,8 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public List<FluidStack> getMatchingFluidStacks()
 	{
 		return fluidTag.map(
-				t -> t.getValues().stream(),
+				// TODO less global?
+				t -> TagUtils.elementStream(Registry.FLUID, t),
 				l -> l.stream().map(ForgeRegistries.FLUIDS::getValue)
 		)
 				.map(fluid -> new FluidStack(fluid, FluidTagInput.this.amount, FluidTagInput.this.nbtTag))
@@ -129,8 +130,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public JsonElement serialize()
 	{
 		JsonObject jsonObject = new JsonObject();
-		Tag<Fluid> unnamedTag = this.fluidTag.orThrow();
-		ResourceLocation name = FluidTags.getAllTags().getId(unnamedTag);
+		ResourceLocation name = this.fluidTag.orThrow().location();
 		jsonObject.addProperty("tag", name.toString());
 		jsonObject.addProperty("amount", this.amount);
 		if(this.nbtTag!=null)
@@ -163,7 +163,9 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public void write(FriendlyByteBuf out)
 	{
 		List<ResourceLocation> matching = fluidTag.map(
-				f -> f.getValues().stream().map(Fluid::getRegistryName).collect(Collectors.toList()),
+				f -> TagUtils.elementStream(Registry.FLUID, f)
+						.map(Fluid::getRegistryName)
+						.collect(Collectors.toList()),
 				l -> l
 		);
 		out.writeVarInt(matching.size());

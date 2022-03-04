@@ -87,7 +87,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 		this.discard();
 		if(this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
 		{
-			ItemStack itemstack = getCartItem();
+			ItemStack itemstack = getPickResult();
 			this.writeTileToItem(itemstack);
 			if(this.hasCustomName())
 				itemstack.setHoverName(this.getCustomName());

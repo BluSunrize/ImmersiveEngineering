@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -35,7 +35,7 @@ public class AlloyRecipeBuilder extends IEFinishedRecipe<AlloyRecipeBuilder>
 		return new AlloyRecipeBuilder().addResult(result);
 	}
 
-	public static AlloyRecipeBuilder builder(Tag<Item> result, int count)
+	public static AlloyRecipeBuilder builder(TagKey<Item> result, int count)
 	{
 		return new AlloyRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}

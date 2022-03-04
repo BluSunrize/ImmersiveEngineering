@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -34,7 +34,7 @@ public class BlueprintCraftingRecipeBuilder extends IEFinishedRecipe<BlueprintCr
 		return new BlueprintCraftingRecipeBuilder().addWriter(jsonObject -> jsonObject.addProperty("category", category)).addResult(result);
 	}
 
-	public static BlueprintCraftingRecipeBuilder builder(String category, Tag<Item> result, int count)
+	public static BlueprintCraftingRecipeBuilder builder(String category, TagKey<Item> result, int count)
 	{
 		return new BlueprintCraftingRecipeBuilder().addWriter(jsonObject -> jsonObject.addProperty("category", category)).addResult(new IngredientWithSize(result, count));
 	}

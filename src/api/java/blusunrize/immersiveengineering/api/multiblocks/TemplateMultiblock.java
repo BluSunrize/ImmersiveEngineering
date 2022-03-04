@@ -21,7 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -78,11 +78,11 @@ public abstract class TemplateMultiblock implements IMultiblock
 		this(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableMap.of());
 	}
 
-	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, Map<Block, Tag<Block>> tags)
+	public TemplateMultiblock(ResourceLocation loc, BlockPos masterFromOrigin, BlockPos triggerFromOrigin, BlockPos size, Map<Block, TagKey<Block>> tags)
 	{
 		this(loc, masterFromOrigin, triggerFromOrigin, size, ImmutableList.of(
 				(expected, found, world, pos) -> {
-					Tag<Block> tag = tags.get(expected.getBlock());
+					TagKey<Block> tag = tags.get(expected.getBlock());
 					if(tag!=null)
 					{
 						if(found.is(tag))

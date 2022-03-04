@@ -9,20 +9,15 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateManager;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.ServerResources;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -30,28 +25,19 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.client.event.RecipesUpdatedEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.network.PacketDistributor;
-import net.minecraftforge.server.ServerLifecycleHooks;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class RecipeReloadListener implements ResourceManagerReloadListener
 {
-	private final ServerResources serverResources;
-
-	public RecipeReloadListener(ServerResources serverResources)
-	{
-		this.serverResources = serverResources;
-	}
-
 	@Override
 	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
 	{
+		/*TODO
 		if(serverResources!=null)
 		{
 			startArcRecyclingRecipeGen(serverResources.getRecipeManager(), serverResources.getTags());
@@ -66,6 +52,7 @@ public class RecipeReloadListener implements ResourceManagerReloadListener
 					);
 			}
 		}
+		 */
 	}
 
 	RecipeManager clientRecipeManager;
@@ -118,7 +105,7 @@ public class RecipeReloadListener implements ResourceManagerReloadListener
 		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
 	}
 
-	private void startArcRecyclingRecipeGen(RecipeManager recipeManager, TagContainer tags)
+	private void startArcRecyclingRecipeGen(RecipeManager recipeManager, RegistryAccess tags)
 	{
 		Collection<Recipe<?>> recipes = recipeManager.getRecipes();
 		new ArcRecyclingCalculator(recipes, tags).run();

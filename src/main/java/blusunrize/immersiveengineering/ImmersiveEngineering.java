@@ -49,7 +49,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonStreamParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.ServerResources;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -300,13 +299,12 @@ public class ImmersiveEngineering
 
 	public void addReloadListeners(AddReloadListenerEvent event)
 	{
-		ServerResources dataPackRegistries = event.getDataPackRegistries();
-		event.addListener(new RecipeReloadListener(dataPackRegistries));
+		event.addListener(new RecipeReloadListener());
 	}
 
 	public void addReloadListenersLowest(AddReloadListenerEvent event)
 	{
-		event.addListener(new RecipeCachingReloadListener(event.getDataPackRegistries()));
+		event.addListener(new RecipeCachingReloadListener());
 	}
 
 	public void serverStarted(ServerStartedEvent event)

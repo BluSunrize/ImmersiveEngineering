@@ -87,12 +87,12 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 
 	public static void initCovers()
 	{
-		validPipeCovers.add(IETags.scaffoldingAlu::contains);
-		validPipeCovers.add(IETags.scaffoldingSteel::contains);
+		validPipeCovers.add(b -> b.defaultBlockState().is(IETags.scaffoldingAlu));
+		validPipeCovers.add(b -> b.defaultBlockState().is(IETags.scaffoldingSteel));
 		validPipeCovers.add(input -> input==WoodenDecoration.TREATED_SCAFFOLDING.get());
 
-		climbablePipeCovers.add(IETags.scaffoldingAlu::contains);
-		climbablePipeCovers.add(IETags.scaffoldingSteel::contains);
+		climbablePipeCovers.add(b -> b.defaultBlockState().is(IETags.scaffoldingAlu));
+		climbablePipeCovers.add(b -> b.defaultBlockState().is(IETags.scaffoldingSteel));
 		climbablePipeCovers.add(input -> input==WoodenDecoration.TREATED_SCAFFOLDING.get());
 	}
 

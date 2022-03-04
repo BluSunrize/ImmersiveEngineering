@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.data.resources;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -85,11 +85,11 @@ public enum RecipeMetals
 
 	private final String name;
 	private final boolean isNative;
-	private final Named<Item> ingot;
-	private final Named<Item> dust;
-	private final Named<Item> ore;
-	private final Named<Item> rawOre;
-	private final Named<Item> rawBlock;
+	private final TagKey<Item> ingot;
+	private final TagKey<Item> dust;
+	private final TagKey<Item> ore;
+	private final TagKey<Item> rawOre;
+	private final TagKey<Item> rawBlock;
 	private final AlloyProperties alloyProperties;
 	private final SecondaryOutput[] secondaryOutputs;
 
@@ -128,27 +128,27 @@ public enum RecipeMetals
 		return isNative;
 	}
 
-	public Named<Item> getIngot()
+	public TagKey<Item> getIngot()
 	{
 		return ingot;
 	}
 
-	public Named<Item> getDust()
+	public TagKey<Item> getDust()
 	{
 		return dust;
 	}
 
-	public Named<Item> getOre()
+	public TagKey<Item> getOre()
 	{
 		return ore;
 	}
 
-	public Named<Item> getRawOre()
+	public TagKey<Item> getRawOre()
 	{
 		return rawOre;
 	}
 
-	public Named<Item> getRawBlock()
+	public TagKey<Item> getRawBlock()
 	{
 		return rawBlock;
 	}

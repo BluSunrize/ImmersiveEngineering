@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -32,7 +32,7 @@ public class BottlingMachineRecipeBuilder extends IEFinishedRecipe<BottlingMachi
 		return new BottlingMachineRecipeBuilder().addResult(result);
 	}
 
-	public static BottlingMachineRecipeBuilder builder(Tag<Item> result, int count)
+	public static BottlingMachineRecipeBuilder builder(TagKey<Item> result, int count)
 	{
 		return new BottlingMachineRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}

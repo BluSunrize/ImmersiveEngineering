@@ -10,14 +10,12 @@ package blusunrize.immersiveengineering.api;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.StaticTagHelper;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags.Blocks;
 import net.minecraftforge.common.Tags.Items;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.EnumMap;
@@ -31,7 +29,7 @@ import static blusunrize.immersiveengineering.api.utils.TagUtils.*;
 public class IETags
 {
 
-	private static final Map<Named<Block>, Named<Item>> toItemTag = new HashMap<>();
+	private static final Map<TagKey<Block>, TagKey<Item>> toItemTag = new HashMap<>();
 	private static final Map<EnumMetals, MetalTags> metals = new EnumMap<>(EnumMetals.class);
 
 	static
@@ -44,73 +42,69 @@ public class IETags
 	}
 
 	//Vanilla
-	public static final Named<Item> clay = createItemWrapper(forgeLoc("clay"));
-	public static final Named<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
-	public static final Named<Item> charCoal = createItemWrapper(forgeLoc("charcoal"));
-	public static final Named<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
-	public static final Named<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
-	public static final Named<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
+	public static final TagKey<Item> clay = createItemWrapper(forgeLoc("clay"));
+	public static final TagKey<Block> clayBlock = createBlockTag(getStorageBlock("clay"));
+	public static final TagKey<Item> charCoal = createItemWrapper(forgeLoc("charcoal"));
+	public static final TagKey<Block> glowstoneBlock = createBlockTag(getStorageBlock("glowstone"));
+	public static final TagKey<Block> colorlessSandstoneBlocks = createBlockTag(forgeLoc("sandstone/colorless"));
+	public static final TagKey<Block> redSandstoneBlocks = createBlockTag(forgeLoc("sandstone/red"));
 	//IE Blocks
-	public static final Named<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
-	public static final Named<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
-	public static final Named<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
-	public static final Named<Block> scaffoldingSteel = createBlockTag(rl("scaffoldings/steel"));
-	public static final Named<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
-	public static final Named<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
-	public static final Named<Block> fencesSteel = createBlockTag(forgeLoc("fences/steel"));
-	public static final Named<Block> fencesAlu = createBlockTag(forgeLoc("fences/aluminum"));
+	public static final TagKey<Block> treatedWood = createBlockTag(forgeLoc("treated_wood"));
+	public static final TagKey<Block> treatedWoodSlab = createBlockTag(forgeLoc("treated_wood_slab"));
+	public static final TagKey<Block> coalCokeBlock = createBlockTag(getStorageBlock("coal_coke"));
+	public static final TagKey<Block> scaffoldingSteel = createBlockTag(rl("scaffoldings/steel"));
+	public static final TagKey<Block> scaffoldingAlu = createBlockTag(rl("scaffoldings/aluminum"));
+	public static final TagKey<Block> sheetmetals = createBlockTag(forgeLoc("sheetmetals"));
+	public static final TagKey<Block> fencesSteel = createBlockTag(forgeLoc("fences/steel"));
+	public static final TagKey<Block> fencesAlu = createBlockTag(forgeLoc("fences/aluminum"));
 	//IE Items
-	public static final Named<Item> treatedStick = createItemWrapper(getRod("treated_wood"));
-	public static final Named<Item> ironRod = createItemWrapper(getRod("iron"));
-	public static final Named<Item> steelRod = createItemWrapper(getRod("steel"));
-	public static final Named<Item> metalRods = createItemWrapper(getRod("all_metal"));
-	public static final Named<Item> aluminumRod = createItemWrapper(getRod("aluminum"));
-	public static final Named<Item> fiberHemp = createItemWrapper(forgeLoc("fiber_hemp"));
-	public static final Named<Item> fabricHemp = createItemWrapper(forgeLoc("fabric_hemp"));
-	public static final Named<Item> coalCoke = createItemWrapper(forgeLoc("coal_coke"));
-	public static final Named<Item> slag = createItemWrapper(forgeLoc("slag"));
-	public static final Named<Item> coalCokeDust = createItemWrapper(getDust("coal_coke"));
-	public static final Named<Item> hopGraphiteDust = createItemWrapper(getDust("hop_graphite"));
-	public static final Named<Item> hopGraphiteIngot = createItemWrapper(getIngot("hop_graphite"));
-	public static final Named<Item> copperWire = createItemWrapper(getWire("copper"));
-	public static final Named<Item> electrumWire = createItemWrapper(getWire("electrum"));
-	public static final Named<Item> aluminumWire = createItemWrapper(getWire("aluminum"));
-	public static final Named<Item> steelWire = createItemWrapper(getWire("steel"));
-	public static final Named<Item> leadWire = createItemWrapper(getWire("lead"));
-	public static final Named<Item> allWires = createItemWrapper(forgeLoc("wires"));
-	public static final Named<Item> saltpeterDust = createItemWrapper(getDust("saltpeter"));
-	public static final Named<Item> sulfurDust = createItemWrapper(getDust("sulfur"));
-	public static final Named<Item> sawdust = createItemWrapper(getDust("wood"));
-	public static final Named<Item> plates = createItemWrapper(forgeLoc("plates"));
-	public static final Named<Item> sawblades = createItemWrapper(forgeLoc("sawblades"));
+	public static final TagKey<Item> treatedStick = createItemWrapper(getRod("treated_wood"));
+	public static final TagKey<Item> ironRod = createItemWrapper(getRod("iron"));
+	public static final TagKey<Item> steelRod = createItemWrapper(getRod("steel"));
+	public static final TagKey<Item> metalRods = createItemWrapper(getRod("all_metal"));
+	public static final TagKey<Item> aluminumRod = createItemWrapper(getRod("aluminum"));
+	public static final TagKey<Item> fiberHemp = createItemWrapper(forgeLoc("fiber_hemp"));
+	public static final TagKey<Item> fabricHemp = createItemWrapper(forgeLoc("fabric_hemp"));
+	public static final TagKey<Item> coalCoke = createItemWrapper(forgeLoc("coal_coke"));
+	public static final TagKey<Item> slag = createItemWrapper(forgeLoc("slag"));
+	public static final TagKey<Item> coalCokeDust = createItemWrapper(getDust("coal_coke"));
+	public static final TagKey<Item> hopGraphiteDust = createItemWrapper(getDust("hop_graphite"));
+	public static final TagKey<Item> hopGraphiteIngot = createItemWrapper(getIngot("hop_graphite"));
+	public static final TagKey<Item> copperWire = createItemWrapper(getWire("copper"));
+	public static final TagKey<Item> electrumWire = createItemWrapper(getWire("electrum"));
+	public static final TagKey<Item> aluminumWire = createItemWrapper(getWire("aluminum"));
+	public static final TagKey<Item> steelWire = createItemWrapper(getWire("steel"));
+	public static final TagKey<Item> leadWire = createItemWrapper(getWire("lead"));
+	public static final TagKey<Item> allWires = createItemWrapper(forgeLoc("wires"));
+	public static final TagKey<Item> saltpeterDust = createItemWrapper(getDust("saltpeter"));
+	public static final TagKey<Item> sulfurDust = createItemWrapper(getDust("sulfur"));
+	public static final TagKey<Item> sawdust = createItemWrapper(getDust("wood"));
+	public static final TagKey<Item> plates = createItemWrapper(forgeLoc("plates"));
+	public static final TagKey<Item> sawblades = createItemWrapper(forgeLoc("sawblades"));
 	//Utility tags
-	public static final Named<Item> forbiddenInCrates = StaticTagHelper.createDelayedOptional(
-			ForgeRegistries.ITEMS.getRegistryName(), rl("forbidden_in_crates"), null
-	);
-	public static final Named<Item> circuitPCB = createItemWrapper(rl("circuits/pcb"));
-	public static final Named<Item> circuitLogic = createItemWrapper(rl("circuits/logic"));
-	public static final Named<Item> circuitSolder = createItemWrapper(rl("circuits/solder"));
-	public static final Named<Item> hammers = createItemWrapper(rl("tools/hammers"));
-	public static final Named<Item> screwdrivers = createItemWrapper(rl("tools/screwdrivers"));
-	public static final Named<Item> wirecutters = createItemWrapper(rl("tools/wirecutters"));
-	public static final Named<Item> toolboxTools = createItemWrapper(rl("toolbox/tools"));
-	public static final Named<Item> toolboxFood = StaticTagHelper.createDelayedOptional(
-			ForgeRegistries.ITEMS.getRegistryName(), rl("toolbox/food"), null
-	);
-	public static final Named<Item> toolboxWiring = createItemWrapper(rl("toolbox/wiring"));
-	public static final Named<Block> hammerHarvestable = createBlockWrapper(rl("mineable/hammer"));
-	public static final Named<Block> wirecutterHarvestable = createBlockWrapper(rl("mineable/wirecutter"));
-	public static final Named<Block> drillHarvestable = createBlockWrapper(rl("mineable/drill"));
+	public static final TagKey<Item> forbiddenInCrates = createItemWrapper(rl("forbidden_in_crates"));
+	public static final TagKey<Item> circuitPCB = createItemWrapper(rl("circuits/pcb"));
+	public static final TagKey<Item> circuitLogic = createItemWrapper(rl("circuits/logic"));
+	public static final TagKey<Item> circuitSolder = createItemWrapper(rl("circuits/solder"));
+	public static final TagKey<Item> hammers = createItemWrapper(rl("tools/hammers"));
+	public static final TagKey<Item> screwdrivers = createItemWrapper(rl("tools/screwdrivers"));
+	public static final TagKey<Item> wirecutters = createItemWrapper(rl("tools/wirecutters"));
+	public static final TagKey<Item> toolboxTools = createItemWrapper(rl("toolbox/tools"));
+	public static final TagKey<Item> toolboxFood = createItemWrapper(rl("toolbox/food"));
+	public static final TagKey<Item> toolboxWiring = createItemWrapper(rl("toolbox/wiring"));
+	public static final TagKey<Block> hammerHarvestable = createBlockWrapper(rl("mineable/hammer"));
+	public static final TagKey<Block> wirecutterHarvestable = createBlockWrapper(rl("mineable/wirecutter"));
+	public static final TagKey<Block> drillHarvestable = createBlockWrapper(rl("mineable/drill"));
 
-	public static final Named<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
-	public static final Named<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));
-	public static final Named<Fluid> fluidEthanol = createFluidWrapper(forgeLoc("ethanol"));
-	public static final Named<Fluid> fluidBiodiesel = createFluidWrapper(forgeLoc("biodiesel"));
-	public static final Named<Fluid> fluidConcrete = createFluidWrapper(forgeLoc("concrete"));
-	public static final Named<Fluid> fluidHerbicide = createFluidWrapper(forgeLoc("herbicide"));
-	public static final Named<Fluid> fluidRedstoneAcid = createFluidWrapper(forgeLoc("redstone_acid"));
-	public static final Named<Fluid> fluidPotion = createFluidWrapper(forgeLoc("potion"));
-	public static final Named<Fluid> drillFuel = createFluidWrapper(rl("drill_fuel"));
+	public static final TagKey<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
+	public static final TagKey<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));
+	public static final TagKey<Fluid> fluidEthanol = createFluidWrapper(forgeLoc("ethanol"));
+	public static final TagKey<Fluid> fluidBiodiesel = createFluidWrapper(forgeLoc("biodiesel"));
+	public static final TagKey<Fluid> fluidConcrete = createFluidWrapper(forgeLoc("concrete"));
+	public static final TagKey<Fluid> fluidHerbicide = createFluidWrapper(forgeLoc("herbicide"));
+	public static final TagKey<Fluid> fluidRedstoneAcid = createFluidWrapper(forgeLoc("redstone_acid"));
+	public static final TagKey<Fluid> fluidPotion = createFluidWrapper(forgeLoc("potion"));
+	public static final TagKey<Fluid> drillFuel = createFluidWrapper(rl("drill_fuel"));
 
 	static
 	{
@@ -118,7 +112,7 @@ public class IETags
 			metals.put(m, new MetalTags(m));
 	}
 
-	public static Named<Item> getItemTag(Named<Block> blockTag)
+	public static TagKey<Item> getItemTag(TagKey<Block> blockTag)
 	{
 		Preconditions.checkArgument(toItemTag.containsKey(blockTag));
 		return toItemTag.get(blockTag);
@@ -129,40 +123,40 @@ public class IETags
 		return metals.get(metal);
 	}
 
-	private static Named<Block> createBlockTag(ResourceLocation name)
+	private static TagKey<Block> createBlockTag(ResourceLocation name)
 	{
-		Named<Block> blockTag = createBlockWrapper(name);
+		TagKey<Block> blockTag = createBlockWrapper(name);
 		toItemTag.put(blockTag, createItemWrapper(name));
 		return blockTag;
 	}
 
-	public static void forAllBlocktags(BiConsumer<Named<Block>, Named<Item>> out)
+	public static void forAllBlocktags(BiConsumer<TagKey<Block>, TagKey<Item>> out)
 	{
-		for(Entry<Named<Block>, Named<Item>> entry : toItemTag.entrySet())
+		for(Entry<TagKey<Block>, TagKey<Item>> entry : toItemTag.entrySet())
 			out.accept(entry.getKey(), entry.getValue());
 	}
 
 	public static class MetalTags
 	{
-		public final Named<Item> ingot;
-		public final Named<Item> nugget;
+		public final TagKey<Item> ingot;
+		public final TagKey<Item> nugget;
 		@Nullable
-		public final Named<Item> rawOre;
-		public final Named<Item> plate;
-		public final Named<Item> dust;
-		public final Named<Block> storage;
-		public final Named<Block> sheetmetal;
+		public final TagKey<Item> rawOre;
+		public final TagKey<Item> plate;
+		public final TagKey<Item> dust;
+		public final TagKey<Block> storage;
+		public final TagKey<Block> sheetmetal;
 		@Nullable
-		public final Named<Block> ore;
+		public final TagKey<Block> ore;
 		@Nullable
-		public final Named<Block> rawBlock;
+		public final TagKey<Block> rawBlock;
 
 		private MetalTags(EnumMetals m)
 		{
 			String name = m.tagName();
-			Named<Block> ore = null;
-			Named<Item> rawOre = null;
-			Named<Block> rawBlock = null;
+			TagKey<Block> ore = null;
+			TagKey<Item> rawOre = null;
+			TagKey<Block> rawBlock = null;
 			if(m.shouldAddOre())
 			{
 				ore = createBlockTag(getOre(name));

@@ -10,7 +10,6 @@
 package blusunrize.immersiveengineering.client;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.ManualHelper;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
@@ -21,7 +20,6 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
-import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.client.manual.IEManualInstance;
 import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
 import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
@@ -43,7 +41,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -308,29 +305,16 @@ public class IEManual
 		return builder.create();
 	}
 
-	static <T> Component[][] formatToTable_ItemIntMap(Map<T, Integer> map, String valueType)
+	static Component[][] formatToTable_ItemIntMap(Map<Component, Integer> map, String valueType)
 	{
-		List<Entry<T, Integer>> sortedMapArray = new ArrayList<>(map.entrySet());
+		List<Entry<Component, Integer>> sortedMapArray = new ArrayList<>(map.entrySet());
 		sortedMapArray.sort(Entry.comparingByValue());
 		ArrayList<Component[]> list = new ArrayList<>();
 		try
 		{
-			for(Entry<T, Integer> entry : sortedMapArray)
+			for(Entry<Component, Integer> entry : sortedMapArray)
 			{
-				Component item = null;
-				if(entry.getKey() instanceof Component)
-					item = (Component)entry.getKey();
-				else if(entry.getKey() instanceof ResourceLocation)
-				{
-					ResourceLocation key = (ResourceLocation)entry.getKey();
-					TagContainer clientTags = Minecraft.getInstance().getConnection().getTags();
-					if(TagUtils.isNonemptyItemTag(clientTags, key))
-					{
-						ItemStack is = IEApi.getPreferredTagStack(clientTags, key);
-						if(!is.isEmpty())
-							item = is.getHoverName();
-					}
-				}
+				Component item = entry.getKey();
 				if(item==null)
 					item = Component.nullToEmpty(entry.getKey().toString());
 

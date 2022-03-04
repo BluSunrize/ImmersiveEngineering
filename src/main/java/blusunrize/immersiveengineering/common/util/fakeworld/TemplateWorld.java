@@ -3,13 +3,9 @@ package blusunrize.immersiveengineering.common.util.fakeworld;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.mixin.accessors.DimensionTypeAccessor;
 import com.google.common.collect.ImmutableList;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.*;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.util.profiling.InactiveProfiler;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -38,7 +34,7 @@ import java.util.function.Predicate;
 
 public class TemplateWorld extends Level
 {
-	private final Lazy<RegistryAccess> FALLBACK_REGISTRIES = Lazy.of(RegistryAccess::builtin);
+	private final Lazy<? extends RegistryAccess> FALLBACK_REGISTRIES = Lazy.of(RegistryAccess.BUILTIN);
 
 	private final Map<String, MapItemSavedData> maps = new HashMap<>();
 	private final Scoreboard scoreboard = new Scoreboard();
@@ -48,7 +44,7 @@ public class TemplateWorld extends Level
 	public TemplateWorld(List<StructureBlockInfo> blocks, Predicate<BlockPos> shouldShow)
 	{
 		super(
-				new FakeSpawnInfo(), Level.OVERWORLD, DimensionTypeAccessor.getOverworldType(),
+				new FakeSpawnInfo(), Level.OVERWORLD, Holder.direct(DimensionTypeAccessor.getOverworldType()),
 				() -> InactiveProfiler.INSTANCE, true, false, 0
 		);
 		this.chunkProvider = new TemplateChunkProvider(blocks, this, shouldShow);
@@ -120,13 +116,6 @@ public class TemplateWorld extends Level
 		return recipeManager;
 	}
 
-	@Nonnull
-	@Override
-	public TagContainer getTagManager()
-	{
-		return TagContainer.EMPTY;
-	}
-
 	@Override
 	protected LevelEntityGetter<Entity> getEntities()
 	{
@@ -188,8 +177,8 @@ public class TemplateWorld extends Level
 
 	@Nonnull
 	@Override
-	public Biome getUncachedNoiseBiome(int x, int y, int z)
+	public Holder<Biome> getUncachedNoiseBiome(int x, int y, int z)
 	{
-		return registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOrThrow(Biomes.PLAINS);
+		return Holder.direct(registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOrThrow(Biomes.PLAINS));
 	}
 }

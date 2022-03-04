@@ -206,7 +206,7 @@ public class ClientProxy extends CommonProxy
 		ShaderHelper.initShaders();
 		IEDefaultColourHandlers.register();
 
-		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener(null));
+		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener());
 		IEManual.addIEManualEntries();
 		IEItems.BannerPatterns.ALL_PATTERNS.forEach(regObject -> {
 			BannerPattern pattern = regObject.get().getBannerPattern();

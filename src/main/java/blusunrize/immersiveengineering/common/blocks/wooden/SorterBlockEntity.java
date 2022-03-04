@@ -25,8 +25,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -222,12 +220,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		if(!b&&fuzzy)
 			b = ItemStack.isSameIgnoreDurability(filterStack, stack);
 		if(!b&&oredict)
-			for(ResourceLocation name : ItemTags.getAllTags().getMatchingTags(stack.getItem()))
-				if(Utils.isInTag(filterStack, name))
-				{
-					b = true;
-					break;
-				}
+			 b = stack.getItem().builtInRegistryHolder().tags().anyMatch(filterStack::is);
 		if(nbt)
 			b &= Utils.compareItemNBT(filterStack, stack);
 		return b;

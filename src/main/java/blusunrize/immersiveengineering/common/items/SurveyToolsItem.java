@@ -59,7 +59,7 @@ public class SurveyToolsItem extends IEBaseItem
 					||state.getMaterial()==Material.GRASS||state.getMaterial()==Material.SAND;
 		});
 		// Stone, Diorite, Andesite, etc.
-		CAN_USE_ON.add((world, pos) -> Tags.Blocks.STONE.contains(world.getBlockState(pos).getBlock()));
+		CAN_USE_ON.add((world, pos) -> world.getBlockState(pos).is(Tags.Blocks.STONE));
 		// Stone, Diorite, Andesite, etc.
 		CAN_USE_ON.add((world, pos) -> {
 			Block block = world.getBlockState(pos).getBlock();

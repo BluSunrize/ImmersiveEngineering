@@ -21,8 +21,8 @@ import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -40,9 +40,9 @@ public class ArcRecyclingCalculator
 	private final List<Recipe<?>> recipeList;
 	private final long startTime;
 	private final ArcRecyclingChecker checker;
-	private final TagContainer tags;
+	private final RegistryAccess tags;
 
-	public ArcRecyclingCalculator(Collection<Recipe<?>> allRecipes, TagContainer tags)
+	public ArcRecyclingCalculator(Collection<Recipe<?>> allRecipes, RegistryAccess tags)
 	{
 		this.tags = tags;
 		this.startTime = System.currentTimeMillis();
@@ -109,9 +109,9 @@ public class ArcRecyclingCalculator
 		final Multimap<ItemStack, RecyclingCalculation> nonValidated = ArrayListMultimap.create();
 		private final ArcRecyclingChecker checker;
 		int invalidCount = 0;
-		private final TagContainer tags;
+		private final RegistryAccess tags;
 
-		public RecipeIterator(List<Recipe<?>> recipeList, ArcRecyclingChecker checker, TagContainer tags)
+		public RecipeIterator(List<Recipe<?>> recipeList, ArcRecyclingChecker checker, RegistryAccess tags)
 		{
 			this.recipeList = recipeList;
 			this.checker = checker;

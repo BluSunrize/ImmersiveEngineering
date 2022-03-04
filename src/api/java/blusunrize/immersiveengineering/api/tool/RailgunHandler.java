@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.api.tool;
 
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -36,7 +36,7 @@ public class RailgunHandler
 		return properties;
 	}
 
-	public static StandardRailgunProjectile registerStandardProjectile(Tag<Item> tag, double damage, double gravity)
+	public static StandardRailgunProjectile registerStandardProjectile(TagKey<Item> tag, double damage, double gravity)
 	{
 		return (StandardRailgunProjectile)registerProjectile(() -> Ingredient.of(tag), new StandardRailgunProjectile(damage, gravity));
 	}

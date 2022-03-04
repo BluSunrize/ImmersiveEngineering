@@ -23,10 +23,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
@@ -76,7 +77,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	@Override
 	public boolean isValidRepairItem(ItemStack stack, ItemStack material)
 	{
-		return perms.repairMaterial.contains(material.getItem());
+		return material.is(perms.repairMaterial);
 	}
 
 	@Override
@@ -114,7 +115,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		if(head.hasTag())
 		{
 			CompoundTag nbt = head.getOrCreateTag();
-			if(nbt.contains(DAMAGE_KEY_OLD, net.minecraft.nbt.Tag.TAG_INT))
+			if(nbt.contains(DAMAGE_KEY_OLD, Tag.TAG_INT))
 				return nbt.getInt(DAMAGE_KEY_OLD);
 			else
 				return nbt.getInt(DAMAGE_KEY);
@@ -163,7 +164,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 	public static class DrillHeadPerm
 	{
 		final String name;
-		final Tag<Item> repairMaterial;
+		final TagKey<Item> repairMaterial;
 		final int drillSize;
 		final int drillDepth;
 		final Tier drillLevel;
@@ -172,7 +173,7 @@ public class DrillheadItem extends IEBaseItem implements IDrillHead
 		final int maxDamage;
 		public final ResourceLocation texture;
 
-		public DrillHeadPerm(String name, Tag<Item> repairMaterial, int drillSize, int drillDepth, Tier drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
+		public DrillHeadPerm(String name, TagKey<Item> repairMaterial, int drillSize, int drillDepth, Tier drillLevel, float drillSpeed, int drillAttack, int maxDamage, ResourceLocation texture)
 		{
 			this.name = name;
 			this.repairMaterial = repairMaterial;

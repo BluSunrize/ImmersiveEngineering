@@ -13,10 +13,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
-import net.minecraft.tags.TagContainer;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.LivingEntity;
@@ -66,7 +66,7 @@ public class ApiUtils
 		return fluidStack;
 	}
 
-	public static Pair<ItemStack, Double> breakStackIntoPreciseIngots(TagContainer tags, ItemStack stack)
+	public static Pair<ItemStack, Double> breakStackIntoPreciseIngots(RegistryAccess tags, ItemStack stack)
 	{
 		String[] keys = IEApi.prefixToIngotMap.keySet().toArray(new String[0]);
 		String[] type = TagUtils.getMatchingPrefixAndRemaining(tags, stack, keys);
@@ -76,7 +76,7 @@ public class ApiUtils
 			if(relation!=null&&relation.length > 1)
 			{
 				double val = relation[0]/(double)relation[1];
-				return Pair.of(IEApi.getPreferredTagStack(tags, getIngot(type[1])), val);
+				return Pair.of(IEApi.getPreferredTagStack(tags, TagUtils.createItemWrapper(getIngot(type[1]))), val);
 			}
 		}
 		return null;

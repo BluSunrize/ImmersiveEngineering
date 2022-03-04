@@ -28,15 +28,11 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.TagCollection;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -57,6 +53,8 @@ import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class ManualUtils
 {
+	// TODO get rid of this untyped mess!
+	@Deprecated
 	public static boolean stackMatchesObject(ItemStack stack, Object o)
 	{
 		if(o instanceof ResourceLocation)
@@ -74,32 +72,7 @@ public class ManualUtils
 
 	public static boolean isInTag(ItemStack stack, ResourceLocation tag)
 	{
-		Tag<Item> itemTag = ItemTags.getAllTags().getTag(tag);
-		if(itemTag!=null&&itemTag.contains(stack.getItem()))
-			return true;
-		Tag<Block> blockTag = BlockTags.getAllTags().getTag(tag);
-		return blockTag!=null&&blockTag.contains(Block.byItem(stack.getItem()));
-	}
-
-	public static boolean isNonemptyItemTag(ResourceLocation name)
-	{
-		return isNonEmptyTag(ItemTags.getAllTags(), name);
-	}
-
-	public static boolean isNonemptyBlockTag(ResourceLocation name)
-	{
-		return isNonEmptyTag(BlockTags.getAllTags(), name);
-	}
-
-	private static <T> boolean isNonEmptyTag(TagCollection<T> collection, ResourceLocation name)
-	{
-		Tag<T> tag = collection.getTag(name);
-		return tag!=null&&tag.getValues().size() > 0;
-	}
-
-	public static boolean isNonemptyBlockOrItemTag(ResourceLocation name)
-	{
-		return isNonemptyBlockTag(name)||isNonemptyItemTag(name);
+		return stack.is(TagKey.create(Registry.ITEM_REGISTRY, tag));
 	}
 
 	public static String getTitleForNode(AbstractNode<ResourceLocation, ManualEntry> node, ManualInstance inst)

@@ -13,9 +13,12 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.utils.FastEither;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
@@ -34,10 +37,10 @@ public class ThermoelectricSource extends IESerializableRecipe
 
 	public static Collection<ThermoelectricSource> ALL_SOURCES = new ArrayList<>();
 
-	public final FastEither<Tag<Block>, List<Block>> blocks;
+	public final FastEither<TagKey<Block>, List<Block>> blocks;
 	public final int temperature;
 
-	public ThermoelectricSource(ResourceLocation id, Tag<Block> blocks, int temperature)
+	public ThermoelectricSource(ResourceLocation id, TagKey<Block> blocks, int temperature)
 	{
 		this(id, FastEither.left(blocks), temperature);
 	}
@@ -47,7 +50,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 		this(id, FastEither.right(blocks), temperature);
 	}
 
-	private ThermoelectricSource(ResourceLocation id, FastEither<Tag<Block>, List<Block>> blocks, int temperature)
+	private ThermoelectricSource(ResourceLocation id, FastEither<TagKey<Block>, List<Block>> blocks, int temperature)
 	{
 		super(ItemStack.EMPTY, TYPE, id);
 		this.blocks = blocks;
@@ -70,14 +73,17 @@ public class ThermoelectricSource extends IESerializableRecipe
 	public Block getExample()
 	{
 		return blocks.map(
-				t -> t.getRandomElement(ApiUtils.RANDOM),
+				tagKey -> Registry.BLOCK.getTag(tagKey)
+						.flatMap(t -> t.getRandomElement(ApiUtils.RANDOM))
+						.map(Holder::value)
+						.orElse(Blocks.AIR),
 				l -> l.isEmpty()?Blocks.AIR: l.get(0)
 		);
 	}
 
 	public List<Block> getMatchingBlocks()
 	{
-		return blocks.map(Tag::getValues, Function.identity());
+		return blocks.map(t -> TagUtils.elementStream(Registry.BLOCK, t).toList(), Function.identity());
 	}
 
 	public int getTemperature()
@@ -88,7 +94,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 	public boolean matches(Block block)
 	{
 		if(blocks.isLeft())
-			return blocks.leftNonnull().contains(block);
+			return block.defaultBlockState().is(blocks.leftNonnull());
 		else
 			return blocks.rightNonnull().contains(block);
 	}

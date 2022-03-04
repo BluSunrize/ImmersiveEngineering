@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -32,7 +32,7 @@ public class CokeOvenRecipeBuilder extends IEFinishedRecipe<CokeOvenRecipeBuilde
 		return new CokeOvenRecipeBuilder().addResult(result);
 	}
 
-	public static CokeOvenRecipeBuilder builder(Tag<Item> result, int count)
+	public static CokeOvenRecipeBuilder builder(TagKey<Item> result, int count)
 	{
 		return new CokeOvenRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}

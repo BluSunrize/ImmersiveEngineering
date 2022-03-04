@@ -21,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.features.OreFeatures;
@@ -34,7 +35,9 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
+import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
@@ -58,7 +61,7 @@ import java.util.Map.Entry;
 
 public class IEWorldGen
 {
-	public static Map<String, PlacedFeature> features = new HashMap<>();
+	public static Map<String, Holder<PlacedFeature>> features = new HashMap<>();
 	public static Map<String, Pair<VeinType, List<TargetBlockState>>> retroFeatures = new HashMap<>();
 	public static boolean anyRetrogenEnabled = false;
 
@@ -71,19 +74,17 @@ public class IEWorldGen
 		);
 		IEOreFeatureConfig cfg = new IEOreFeatureConfig(targetList, type);
 		String name = type.getVeinName();
-		PlacedFeature feature = register(
-				ImmersiveEngineering.rl(name), IE_CONFIG_ORE.get().configured(cfg).placed(getOreModifiers(type))
-		);
+		Holder<PlacedFeature> feature = register(ImmersiveEngineering.rl(name), IE_CONFIG_ORE, cfg, getOreModifiers(type));
 		features.put(name, feature);
 		retroFeatures.put(name, Pair.of(type, targetList));
 	}
 
 	public static void registerMineralVeinGen()
 	{
-		PlacedFeature veinFeature = register(ImmersiveEngineering.rl("mineral_veins"),
-				MINERAL_VEIN_FEATURE.get().configured(new NoneFeatureConfiguration())
-						//TODO does this do what I want?
-						.placed());
+		Holder<PlacedFeature> veinFeature = register(
+				//TODO does this do what I want?
+				ImmersiveEngineering.rl("mineral_veins"), MINERAL_VEIN_FEATURE, new NoneFeatureConfiguration(), List.of()
+		);
 		features.put("veins", veinFeature);
 	}
 
@@ -98,7 +99,7 @@ public class IEWorldGen
 	public void onBiomeLoad(BiomeLoadingEvent ev)
 	{
 		BiomeGenerationSettingsBuilder generation = ev.getGeneration();
-		for(Entry<String, PlacedFeature> e : features.entrySet())
+		for(Entry<String, Holder<PlacedFeature>> e : features.entrySet())
 			generation.addFeature(Decoration.UNDERGROUND_ORES, e.getValue());
 	}
 
@@ -111,10 +112,9 @@ public class IEWorldGen
 			OreConfig config = IEServerConfig.ORES.ores.get(type);
 			if(config.retrogenEnabled.get())
 			{
-				PlacedFeature retroFeature = IEContent.ORE_RETROGEN
-						.configured(new OreConfiguration(targetList, config.veinSize.get()))
-						.placed(getOreModifiers(type));
-				retroFeature.place(
+				var configured = new ConfiguredFeature<>(IEContent.ORE_RETROGEN, new OreConfiguration(targetList, config.veinSize.get()));
+				var placed = new PlacedFeature(Holder.direct(configured), getOreModifiers(type));
+				placed.place(
 						world, world.getChunkSource().getGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ)
 				);
 			}
@@ -237,8 +237,14 @@ public class IEWorldGen
 		return Registry.register(Registry.HEIGHT_PROVIDER_TYPES, ImmersiveEngineering.rl(name), () -> codec);
 	}
 
-	private static PlacedFeature register(ResourceLocation key, PlacedFeature placedFeature)
+	private static <Cfg extends FeatureConfiguration, F extends Feature<Cfg>>
+	Holder<PlacedFeature> register(ResourceLocation rl, RegistryObject<F> feature, Cfg cfg, List<PlacementModifier> oreModifiers)
 	{
-		return Registry.register(BuiltinRegistries.PLACED_FEATURE, key, placedFeature);
+		Holder<ConfiguredFeature<?, ?>> configured = BuiltinRegistries.register(
+				BuiltinRegistries.CONFIGURED_FEATURE, rl, new ConfiguredFeature<>(feature.get(), cfg)
+		);
+		return BuiltinRegistries.register(
+				BuiltinRegistries.PLACED_FEATURE, rl, new PlacedFeature(configured, oreModifiers)
+		);
 	}
 }

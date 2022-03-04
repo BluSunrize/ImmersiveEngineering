@@ -92,7 +92,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 		@Override
 		public boolean isFluidValid(FluidStack fluid)
 		{
-			return FluidTags.WATER.contains(fluid.getFluid());
+			return fluid.getFluid().is(FluidTags.WATER);
 		}
 	};
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));

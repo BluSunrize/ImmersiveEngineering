@@ -23,7 +23,7 @@ import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.inventory.EmptyContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -599,9 +599,9 @@ public abstract class IESlot extends Slot
 
 	public static class Tagged extends IESlot
 	{
-		private final Named<Item> tag;
+		private final TagKey<Item> tag;
 
-		public Tagged(AbstractContainerMenu container, Container inv, int id, int x, int y, Named<Item> tag)
+		public Tagged(AbstractContainerMenu container, Container inv, int id, int x, int y, TagKey<Item> tag)
 		{
 			super(container, inv, id, x, y);
 			this.tag = tag;
@@ -610,9 +610,7 @@ public abstract class IESlot extends Slot
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			if(itemStack.isEmpty())
-				return false;
-			return this.tag.contains(itemStack.getItem());
+			return itemStack.is(tag);
 		}
 	}
 

@@ -28,22 +28,8 @@ public class IEHeightProvider extends HeightProvider
 
 		this.internalProvider = Lazy.of(() -> {
 			OreConfig config = IEServerConfig.ORES.ores.get(type);
-			VerticalAnchor vaMin = new VerticalAnchor(0)
-			{
-				@Override
-				public int resolveY(WorldGenerationContext pContext)
-				{
-					return config.minY.get();
-				}
-			};
-			VerticalAnchor vaMax = new VerticalAnchor(0)
-			{
-				@Override
-				public int resolveY(WorldGenerationContext pContext)
-				{
-					return config.maxY.get();
-				}
-			};
+			VerticalAnchor vaMin = pContext -> config.minY.get();
+			VerticalAnchor vaMax = pContext -> config.maxY.get();
 			return config.distribution.get()==OreDistribution.TRAPEZOID?
 					TrapezoidHeight.of(vaMin, vaMax):
 					UniformHeight.of(vaMin, vaMax);

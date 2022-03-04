@@ -20,7 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.UnionMultiblock
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.properties.Property;
 
@@ -74,7 +74,7 @@ public class IEMultiblocks
 			return found;
 		});
 		//Tags
-		ImmutableList.Builder<Tag<Block>> genericTagsBuilder = ImmutableList.builder();
+		ImmutableList.Builder<TagKey<Block>> genericTagsBuilder = ImmutableList.builder();
 		for(EnumMetals metal : EnumMetals.values())
 		{
 			MetalTags tags = IETags.getTagsFor(metal);
@@ -87,10 +87,10 @@ public class IEMultiblocks
 		genericTagsBuilder.add(IETags.treatedWood);
 		genericTagsBuilder.add(IETags.fencesSteel);
 		genericTagsBuilder.add(IETags.fencesAlu);
-		List<Tag<Block>> genericTags = genericTagsBuilder.build();
+		List<TagKey<Block>> genericTags = genericTagsBuilder.build();
 		BlockMatcher.addPredicate((expected, found, world, pos) -> {
 			if(expected.getBlock()!=found.getBlock())
-				for(Tag<Block> t : genericTags)
+				for(TagKey<Block> t : genericTags)
 					if(expected.is(t)&&found.is(t))
 						return Result.allow(2);
 			return Result.DEFAULT;

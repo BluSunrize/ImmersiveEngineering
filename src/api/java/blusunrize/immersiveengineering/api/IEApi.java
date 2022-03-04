@@ -9,22 +9,21 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.utils.TagUtils;
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagContainer;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.registries.IForgeRegistryEntry;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @author BluSunrize - 13.08.2015
@@ -41,7 +40,7 @@ public class IEApi
 	/**
 	 * This map caches the preferred ores for the given OreDict name
 	 */
-	public static HashMap<ResourceLocation, ItemStack> oreOutputPreference = new HashMap<>();
+	private static HashMap<TagKey<Item>, ItemStack> oreOutputPreference = new HashMap<>();
 
 	/**
 	 * The TextureSheet id for the revolver's icons
@@ -77,59 +76,38 @@ public class IEApi
 	@Deprecated(forRemoval = true)
 	public static final List<Predicate<ItemStack>> forbiddenInCrates = new ArrayList<>();
 
-	public static ItemStack getPreferredTagStack(TagContainer tags, ResourceLocation name)
+	public static ItemStack getPreferredTagStack(RegistryAccess tags, TagKey<Item> tag)
 	{
-		return oreOutputPreference.computeIfAbsent(name, rl ->
-		{
-			if(TagUtils.isNonemptyItemTag(tags, name))
-				return new ItemStack(getPreferredElementbyMod(TagUtils.getItemTag(tags, name).getValues()));
-			else if(TagUtils.isNonemptyBlockTag(tags, name))
-				return new ItemStack(getPreferredElementbyMod(TagUtils.getBlockTag(tags, name).getValues()));
-			else
-				return ItemStack.EMPTY;
-		}).copy();
+		// TODO caching should not be global, tags can change!
+		return oreOutputPreference.computeIfAbsent(
+				tag, rl -> getPreferredElementbyMod(TagUtils.elementStream(tags, rl)).orElse(Items.AIR).getDefaultInstance()
+		).copy();
 	}
 
-	public static <T extends IForgeRegistryEntry<T>> T getPreferredElementbyMod(Collection<T> list)
+	public static <T extends IForgeRegistryEntry<T>> Optional<T> getPreferredElementbyMod(Stream<T> list)
 	{
 		return getPreferredElementbyMod(list, T::getRegistryName);
 	}
 
-	public static ItemStack getPreferredStackbyMod(Collection<ItemStack> list)
+	public static <T> Optional<T> getPreferredElementbyMod(Stream<T> list, Function<T, ResourceLocation> getName)
 	{
-		return getPreferredElementbyMod(list, e -> e.getItem().getRegistryName());
-	}
-
-	public static <T> T getPreferredElementbyMod(Collection<T> list, Function<T, ResourceLocation> getName)
-	{
-		T preferredStack = null;
-		int currBest = modPreference.size();
-		for(T stack : list)
-		{
-			ResourceLocation rl = getName.apply(stack);
-			if(rl==null)
-				continue;
-			if(preferredStack==null)
-				preferredStack = stack;
-			String modId = rl.getNamespace();
-			int idx = modPreference.indexOf(modId);
-			if(idx < 0)
-				idx = modPreference.size();
-			if(idx < currBest)
-			{
-				preferredStack = stack;
-				currBest = idx;
-			}
-			else if(idx==currBest&&rl.compareTo(getName.apply(preferredStack)) < 0)
-				preferredStack = stack;
-		}
-		Preconditions.checkNotNull(preferredStack, "No entry found in %s", list);
-		return preferredStack;
+		return list.min(
+			Comparator.<T>comparingInt(t -> {
+				ResourceLocation name = getName.apply(t);
+				String modId = name.getNamespace();
+				int idx = modPreference.indexOf(modId);
+				if(idx < 0)
+					return modPreference.size();
+				else
+					return idx;
+			}).thenComparing(getName)
+		);
 	}
 
 	public static ItemStack getPreferredStackbyMod(ItemStack[] array)
 	{
-		return getPreferredElementbyMod(Lists.newArrayList(array), stack -> stack.getItem().getRegistryName());
+		return getPreferredElementbyMod(Arrays.stream(array), stack -> stack.getItem().getRegistryName())
+				.orElseThrow(() -> new RuntimeException("Empty array?"));
 	}
 
 	public static boolean isAllowedInCrate(ItemStack stack)

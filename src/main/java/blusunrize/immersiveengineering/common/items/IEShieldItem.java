@@ -219,7 +219,7 @@ public class IEShieldItem extends UpgradeableToolItem
 	@Override
 	public boolean isValidRepairItem(ItemStack stack, ItemStack material)
 	{
-		return IETags.getTagsFor(EnumMetals.STEEL).ingot.contains(material.getItem());
+		return material.is(IETags.getTagsFor(EnumMetals.STEEL).ingot);
 	}
 
 	public static int getMaxEnergyStored(ItemStack container)

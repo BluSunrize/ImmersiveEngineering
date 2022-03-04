@@ -40,6 +40,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.core.WritableRegistry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.*;
@@ -49,6 +50,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
@@ -62,9 +64,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.structures.StructurePoolElement;
-import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool;
-import net.minecraft.world.level.levelgen.feature.structures.StructureTemplatePool.Projection;
+import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElement;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool;
+import net.minecraft.world.level.levelgen.structure.pools.StructureTemplatePool.Projection;
 import net.minecraft.world.level.saveddata.maps.MapDecoration.Type;
 import net.minecraft.world.level.saveddata.maps.MapItemSavedData;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -132,9 +134,7 @@ public class Villages
 	private static StructurePoolElement createWorkstation(String name)
 	{
 		return SingleJigsawAccess.construct(
-				Either.left(rl(name)),
-				() -> ProcessorLists.EMPTY,
-				Projection.RIGID
+				Either.left(rl(name)), ProcessorLists.EMPTY, Projection.RIGID
 		);
 	}
 
@@ -153,7 +153,7 @@ public class Villages
 		for(StructurePoolElement p : shuffled)
 			newPieces.computeInt(p, (StructurePoolElement pTemp, Integer i) -> (i==null?0: i)+1);
 		newPieces.put(SingleJigsawAccess.construct(
-				Either.left(toAdd), () -> ProcessorLists.EMPTY, Projection.RIGID
+				Either.left(toAdd), ProcessorLists.EMPTY, Projection.RIGID
 		), weight);
 		List<Pair<StructurePoolElement, Integer>> newPieceList = newPieces.object2IntEntrySet().stream()
 				.map(e -> Pair.of(e.getKey(), e.getIntValue()))
@@ -246,15 +246,15 @@ public class Villages
 				/* Structural Engineer
 				 * Sells various construction materials
 				 */
-				trades.get(1).add(new EmeraldForItems(IETags.treatedStick.getName(), new PriceInterval(8, 16), 16, 1));
+				trades.get(1).add(new EmeraldForItems(IETags.treatedStick, new PriceInterval(8, 16), 16, 1));
 				trades.get(1).add(new ItemsForEmerald(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL), new PriceInterval(-10, -6), 12, 1));
 				trades.get(1).add(new ItemsForEmerald(Cloth.BALLOON, new PriceInterval(-3, -1), 12, 2));
 
-				trades.get(2).add(new EmeraldForItems(IETags.ironRod.getName(), new PriceInterval(2, 6), 12, 10));
+				trades.get(2).add(new EmeraldForItems(IETags.ironRod, new PriceInterval(2, 6), 12, 10));
 				trades.get(2).add(new ItemsForEmerald(MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(-4, -2), 12, 5));
 				trades.get(2).add(new ItemsForEmerald(MetalDecoration.ALU_SCAFFOLDING.get(MetalScaffoldingType.STANDARD), new PriceInterval(-4, -2), 12, 5));
 
-				trades.get(3).add(new EmeraldForItems(IETags.steelRod.getName(), new PriceInterval(2, 6), 12, 6));
+				trades.get(3).add(new EmeraldForItems(IETags.steelRod, new PriceInterval(2, 6), 12, 6));
 				trades.get(3).add(new EmeraldForItems(StoneDecoration.CONCRETE, new PriceInterval(4, 8), 8, 12));
 				trades.get(3).add(new ItemsForEmerald(WoodenDevices.TREATED_WALLMOUNT, new PriceInterval(-3, -2), 10, 8));
 
@@ -270,7 +270,7 @@ public class Villages
 				/* Machinist
 				 * Sells tools, metals, blueprints and drillheads
 				 */
-				trades.get(1).add(new EmeraldForItems(IETags.coalCoke.getName(), new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new EmeraldForItems(IETags.coalCoke, new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(Tools.HAMMER, new PriceInterval(4, 7), 12, 1, 0.2f));
 
 				trades.get(2).add(new EmeraldForItems(IETags.getIngot(EnumMetals.COPPER.tagName()), new PriceInterval(4, 6), 6, 10));
@@ -292,17 +292,17 @@ public class Villages
 				/* Electrician
 				 * Sells wires, tools and the faraday suit
 				 */
-				trades.get(1).add(new EmeraldForItems(IETags.copperWire.getName(), new PriceInterval(8, 16), 16, 2));
+				trades.get(1).add(new EmeraldForItems(IETags.copperWire, new PriceInterval(8, 16), 16, 2));
 				trades.get(1).add(new ItemsForEmerald(Tools.WIRECUTTER, new PriceInterval(4, 7), 12, 1, 0.2f));
 				trades.get(1).add(new ItemsForEmerald(WIRE_COILS.get(WireType.COPPER), new PriceInterval(-4, -2), 12, 1, 0.2f));
 
-				trades.get(2).add(new EmeraldForItems(IETags.electrumWire.getName(), new PriceInterval(6, 12), 12, 4));
+				trades.get(2).add(new EmeraldForItems(IETags.electrumWire, new PriceInterval(6, 12), 12, 4));
 				trades.get(2).add(new ItemsForEmerald(Tools.VOLTMETER, new PriceInterval(4, 7), 3, 12, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(WIRE_COILS.get(WireType.ELECTRUM), new PriceInterval(-4, -1), 12, 5));
 				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.FEET), new PriceInterval(5, 7), 3, 15, 0.2f));
 				trades.get(2).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.LEGS), new PriceInterval(9, 11), 3, 15, 0.2f));
 
-				trades.get(3).add(new EmeraldForItems(IETags.aluminumWire.getName(), new PriceInterval(4, 8), 20, 10));
+				trades.get(3).add(new EmeraldForItems(IETags.aluminumWire, new PriceInterval(4, 8), 20, 10));
 				trades.get(3).add(new ItemsForEmerald(WIRE_COILS.get(WireType.STEEL), new PriceInterval(-2, -1), 12, 8));
 				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.CHEST), new PriceInterval(11, 15), 3, 18, 0.2f));
 				trades.get(3).add(new ItemsForEmerald(IEItems.Misc.FARADAY_SUIT.get(EquipmentSlot.HEAD), new PriceInterval(5, 7), 3, 18, 0.2f));
@@ -376,9 +376,15 @@ public class Villages
 			this(l -> new ItemStack(item), buyAmounts, maxUses, xp);
 		}
 
+		public EmeraldForItems(@Nonnull TagKey<Item> tag, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
+		{
+			this(l -> IEApi.getPreferredTagStack(l.registryAccess(), tag), buyAmounts, maxUses, xp);
+		}
+
+
 		public EmeraldForItems(@Nonnull ResourceLocation tag, @Nonnull PriceInterval buyAmounts, int maxUses, int xp)
 		{
-			this(l -> IEApi.getPreferredTagStack(l.getTagManager(), tag), buyAmounts, maxUses, xp);
+			this(TagKey.create(Registry.ITEM_REGISTRY, tag), buyAmounts, maxUses, xp);
 		}
 
 
@@ -487,7 +493,7 @@ public class Villages
 				MapItemSavedData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
 				selling.setHoverName(new TranslatableComponent("item.immersiveengineering.map_orevein"));
 				ItemNBTHelper.setLore(selling, new TranslatableComponent(vein.getMineral().getTranslationKey()));
-				ItemStack steelIngot = IEApi.getPreferredTagStack(trader.level.getTagManager(), IETags.getIngot(EnumMetals.STEEL.tagName()));
+				ItemStack steelIngot = IEApi.getPreferredTagStack(trader.level.registryAccess(), IETags.getTagsFor(EnumMetals.STEEL).ingot);
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
 						ItemHandlerHelper.copyStackWithSize(steelIngot, 4+random.nextInt(8)), selling, 0, 1, 30, 0.5F);
 			}

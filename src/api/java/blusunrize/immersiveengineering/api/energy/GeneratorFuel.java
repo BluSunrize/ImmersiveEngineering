@@ -12,8 +12,10 @@ package blusunrize.immersiveengineering.api.energy;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.utils.FastEither;
+import blusunrize.immersiveengineering.api.utils.TagUtils;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluid;
@@ -33,10 +35,10 @@ public class GeneratorFuel extends IESerializableRecipe
 
 	public static Collection<GeneratorFuel> ALL_FUELS = new ArrayList<>();
 
-	private final FastEither<Tag<Fluid>, List<Fluid>> fluids;
+	private final FastEither<TagKey<Fluid>, List<Fluid>> fluids;
 	private final int burnTime;
 
-	public GeneratorFuel(ResourceLocation id, Tag<Fluid> fluids, int burnTime)
+	public GeneratorFuel(ResourceLocation id, TagKey<Fluid> fluids, int burnTime)
 	{
 		super(ItemStack.EMPTY, TYPE, id);
 		this.fluids = FastEither.left(fluids);
@@ -52,7 +54,7 @@ public class GeneratorFuel extends IESerializableRecipe
 
 	public List<Fluid> getFluids()
 	{
-		return fluids.map(Tag::getValues, Function.identity());
+		return fluids.map(t -> TagUtils.elementStream(Registry.FLUID, t).toList(), Function.identity());
 	}
 
 	public int getBurnTime()

@@ -241,10 +241,10 @@ public abstract class ConveyorBase implements IConveyorBelt
 
 	static
 	{
-		validCoveyorCovers.add(IETags.scaffoldingAlu::contains);
-		validCoveyorCovers.add(IETags.scaffoldingSteel::contains);
+		validCoveyorCovers.add(b -> b.defaultBlockState().is(IETags.scaffoldingAlu));
+		validCoveyorCovers.add(b -> b.defaultBlockState().is(IETags.scaffoldingSteel));
 		validCoveyorCovers.add(input -> input==WoodenDecoration.TREATED_SCAFFOLDING.get());
-		validCoveyorCovers.add(Tags.Blocks.GLASS::contains);
+		validCoveyorCovers.add(b -> b.defaultBlockState().is(Tags.Blocks.GLASS));
 	}
 
 	public void dropCover(Player player)

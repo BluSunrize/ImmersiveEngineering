@@ -255,7 +255,7 @@ public class Connection
 		catData = null;
 		endAOffset = newOffsetA;
 		endBOffset = newOffsetB;
-		length = Math.sqrt(endA.position().distSqr(endB.position(), false));
+		length = Math.sqrt(endA.position().distSqr(endB.position()));
 	}
 
 	@Override

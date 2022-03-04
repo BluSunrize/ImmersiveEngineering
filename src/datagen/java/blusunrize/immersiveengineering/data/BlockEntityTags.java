@@ -17,12 +17,12 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.mixin.accessors.BETypeAccess;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.ForgeTagHandler;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -40,14 +40,14 @@ public class BlockEntityTags extends ForgeRegistryTagsProvider<BlockEntityType<?
 		super(generatorIn, ForgeRegistries.BLOCK_ENTITIES, Lib.MODID, existingFileHelper);
 	}
 
-	private static final List<Named<BlockEntityType<?>>> IMMOVABLE_TAGS = ImmutableList.of(
+	private static final List<TagKey<BlockEntityType<?>>> IMMOVABLE_TAGS = ImmutableList.of(
 			tag(new ResourceLocation("forge", "relocation_not_supported")),
 			tag(new ResourceLocation("forge", "immovable"))
 	);
 
-	private static Named<BlockEntityType<?>> tag(ResourceLocation name)
+	private static TagKey<BlockEntityType<?>> tag(ResourceLocation name)
 	{
-		return ForgeTagHandler.makeWrapperTag(ForgeRegistries.BLOCK_ENTITIES, name);
+		return TagKey.create(Registry.BLOCK_ENTITY_TYPE_REGISTRY, name);
 	}
 
 	@Override
@@ -71,7 +71,7 @@ public class BlockEntityTags extends ForgeRegistryTagsProvider<BlockEntityType<?
 
 	private void notMovable(BlockEntityType<?> type)
 	{
-		for(Named<BlockEntityType<?>> tag : IMMOVABLE_TAGS)
+		for(TagKey<BlockEntityType<?>> tag : IMMOVABLE_TAGS)
 			tag(tag).add(type);
 	}
 

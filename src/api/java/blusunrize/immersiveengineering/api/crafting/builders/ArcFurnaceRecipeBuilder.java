@@ -12,7 +12,7 @@ package blusunrize.immersiveengineering.api.crafting.builders;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import com.google.gson.JsonArray;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -42,7 +42,7 @@ public class ArcFurnaceRecipeBuilder extends IEFinishedRecipe<ArcFurnaceRecipeBu
 		return new ArcFurnaceRecipeBuilder().addResult(result);
 	}
 
-	public static ArcFurnaceRecipeBuilder builder(Tag<Item> result, int count)
+	public static ArcFurnaceRecipeBuilder builder(TagKey<Item> result, int count)
 	{
 		return new ArcFurnaceRecipeBuilder().addResult(new IngredientWithSize(result, count));
 	}
@@ -57,12 +57,12 @@ public class ArcFurnaceRecipeBuilder extends IEFinishedRecipe<ArcFurnaceRecipeBu
 		return addItem("slag", itemStack);
 	}
 
-	public ArcFurnaceRecipeBuilder addSlag(Tag<Item> tag, int count)
+	public ArcFurnaceRecipeBuilder addSlag(TagKey<Item> tag, int count)
 	{
 		return addIngredient("slag", new IngredientWithSize(tag, count));
 	}
 
-	public ArcFurnaceRecipeBuilder addSecondary(Tag<Item> tag, float chance)
+	public ArcFurnaceRecipeBuilder addSecondary(TagKey<Item> tag, float chance)
 	{
 		secondaryArray.add(serializeStackWithChance(new IngredientWithSize(tag), chance));
 		return this;

@@ -8,93 +8,50 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
+import net.minecraft.core.Holder;
+import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.Registry;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.*;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.Tags.Items;
+import net.minecraftforge.common.Tags;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
+// TODO move a lot of RLs to TagKey's
+// TODO make less alloc-y...
 public class TagUtils
 {
-	public static Tag<Item> getItemTag(TagContainer tags, ResourceLocation key)
+	public static boolean isNonemptyItemTag(RegistryAccess tags, ResourceLocation name)
 	{
-		return tags.getOrEmpty(Registry.ITEM_REGISTRY).getTag(key);
+		return holderStream(tags, Registry.ITEM_REGISTRY, name).findAny().isPresent();
 	}
 
-	public static Tag<Block> getBlockTag(TagContainer tags, ResourceLocation key)
-	{
-		return tags.getOrEmpty(Registry.BLOCK_REGISTRY).getTag(key);
+	private static List<ResourceLocation> getTags(Reference<?> ref) {
+		return ref.tags().map(TagKey::location).toList();
 	}
 
-	public static Collection<ResourceLocation> getTagsForItem(TagContainer tags, Item item)
+	public static Collection<ResourceLocation> getMatchingTagNames(RegistryAccess tags, ItemStack stack)
 	{
-		return tags.getOrEmpty(Registry.ITEM_REGISTRY).getMatchingTags(item);
-	}
-
-	public static Collection<ResourceLocation> getTagsForBlock(TagContainer tags, Block block)
-	{
-		return tags.getOrEmpty(Registry.BLOCK_REGISTRY).getMatchingTags(block);
-	}
-
-	public static boolean isInBlockOrItemTag(TagContainer tags, ItemStack stack, ResourceLocation oreName)
-	{
-		if(!isNonemptyBlockOrItemTag(tags, oreName))
-			return false;
-		Tag<Item> itemTag = getItemTag(tags, oreName);
-		if(itemTag!=null&&itemTag.getValues().contains(stack.getItem()))
-			return true;
-		Tag<Block> blockTag = getBlockTag(tags, oreName);
-		return blockTag!=null&&blockTag.getValues()
-				.stream()
-				.map(ItemLike::asItem)
-				.anyMatch(i -> stack.getItem()==i);
-	}
-
-	public static boolean isNonemptyItemTag(TagContainer tags, ResourceLocation name)
-	{
-		Tag<Item> t = getItemTag(tags, name);
-		return t!=null&&!t.getValues().isEmpty();
-	}
-
-	public static boolean isNonemptyBlockTag(TagContainer tags, ResourceLocation name)
-	{
-		Tag<Block> t = getBlockTag(tags, name);
-		return t!=null&&!t.getValues().isEmpty();
-	}
-
-	public static boolean isNonemptyBlockOrItemTag(TagContainer tags, ResourceLocation name)
-	{
-		return isNonemptyBlockTag(tags, name)||isNonemptyItemTag(tags, name);
-	}
-
-	public static String getMatchingPrefix(TagContainer tags, ItemStack stack, String... componentTypes)
-	{
-		for(ResourceLocation name : getMatchingTagNames(tags, stack))
-			for(String componentType : componentTypes)
-				if(name.getPath().startsWith(componentType))
-					return componentType;
-		return null;
-	}
-
-	public static Collection<ResourceLocation> getMatchingTagNames(TagContainer tags, ItemStack stack)
-	{
-		Collection<ResourceLocation> ret = new HashSet<>(getTagsForItem(tags, stack.getItem()));
+		// TODO ideally get rid of the block part...
+		Collection<ResourceLocation> ret = new HashSet<>(getTags(stack.getItem().builtInRegistryHolder()));
 		Block b = Block.byItem(stack.getItem());
 		if(b!=Blocks.AIR)
-			ret.addAll(getTagsForBlock(tags, b));
+			ret.addAll(getTags(b.builtInRegistryHolder()));
 		return ret;
 	}
 
-	public static String[] getMatchingPrefixAndRemaining(TagContainer tags, ItemStack stack, String... componentTypes)
+	public static String[] getMatchingPrefixAndRemaining(RegistryAccess tags, ItemStack stack, String... componentTypes)
 	{
 		for(ResourceLocation name : getMatchingTagNames(tags, stack))
 		{
@@ -111,23 +68,48 @@ public class TagUtils
 		return null;
 	}
 
-	public static boolean isIngot(TagContainer tags, ItemStack stack)
+	// TODO do we actually need RegAccess here when using during arc recycling
+	public static boolean isIngot(RegistryAccess tags, ItemStack stack)
 	{
-		return tags.getOrEmpty(Registry.ITEM_REGISTRY).getTag(Items.INGOTS.getName()).contains(stack.getItem());
+		var registry = tags.registryOrThrow(Registry.ITEM_REGISTRY);
+		var tag = registry.getTag(Tags.Items.INGOTS);
+		if (tag.isPresent())
+			return tag.get().contains(Holder.direct(stack.getItem()));
+		return false;
 	}
 
-	public static Named<Item> createItemWrapper(ResourceLocation name)
-	{
-		return ItemTags.bind(name.toString());
+	public static <T> Stream<T> elementStream(RegistryAccess tags, ResourceKey<Registry<T>> registry, ResourceLocation tag) {
+		return holderStream(tags, registry, tag).map(Holder::value);
 	}
 
-	public static Named<Block> createBlockWrapper(ResourceLocation name)
-	{
-		return BlockTags.bind(name.toString());
+	public static <T> Stream<T> elementStream(RegistryAccess tags, TagKey<T> key) {
+		return holderStream(tags.registryOrThrow(key.registry()), key).map(Holder::value);
 	}
 
-	public static Named<Fluid> createFluidWrapper(ResourceLocation name)
+	public static <T> Stream<T> elementStream(Registry<T> registry, TagKey<T> tag) {
+		return holderStream(registry, tag).map(Holder::value);
+	}
+
+	public static <T> Stream<Holder<T>> holderStream(RegistryAccess tags, ResourceKey<Registry<T>> registry, ResourceLocation tag) {
+		return holderStream(tags.registryOrThrow(registry), TagKey.create(registry, tag));
+	}
+
+	public static <T> Stream<Holder<T>> holderStream(Registry<T> registry, TagKey<T> tag) {
+		return StreamSupport.stream(registry.getTagOrEmpty(tag).spliterator(), false);
+	}
+
+	public static TagKey<Item> createItemWrapper(ResourceLocation name)
 	{
-		return FluidTags.bind(name.toString());
+		return TagKey.create(Registry.ITEM_REGISTRY, name);
+	}
+
+	public static TagKey<Block> createBlockWrapper(ResourceLocation name)
+	{
+		return TagKey.create(Registry.BLOCK_REGISTRY, name);
+	}
+
+	public static TagKey<Fluid> createFluidWrapper(ResourceLocation name)
+	{
+		return TagKey.create(Registry.FLUID_REGISTRY, name);
 	}
 }

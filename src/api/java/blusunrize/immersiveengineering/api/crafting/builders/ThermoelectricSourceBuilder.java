@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.api.crafting.builders;
 
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
-import net.minecraft.tags.Tag.Named;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 
 public class ThermoelectricSourceBuilder extends IEFinishedRecipe<ThermoelectricSourceBuilder>
@@ -25,13 +25,13 @@ public class ThermoelectricSourceBuilder extends IEFinishedRecipe<Thermoelectric
 		addWriter(obj -> obj.addProperty(SINGLE_BLOCK_KEY, matching.getRegistryName().toString()));
 	}
 
-	private ThermoelectricSourceBuilder(Named<Block> matching)
+	private ThermoelectricSourceBuilder(TagKey<Block> matching)
 	{
 		super(ThermoelectricSource.SERIALIZER.get());
-		addWriter(obj -> obj.addProperty(BLOCK_TAG_KEY, matching.getName().toString()));
+		addWriter(obj -> obj.addProperty(BLOCK_TAG_KEY, matching.location().toString()));
 	}
 
-	public static ThermoelectricSourceBuilder builder(Named<Block> tag)
+	public static ThermoelectricSourceBuilder builder(TagKey<Block> tag)
 	{
 		return new ThermoelectricSourceBuilder(tag);
 	}

@@ -48,6 +48,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -218,8 +219,10 @@ public class JEIHelper implements IModPlugin
 			if(f.isSource(f.defaultFluidState()))
 			{
 				// Sort tags, prioritize vanilla/forge tags, and assume that more slashes means more specific tag
-				Optional<ResourceLocation> tag = f.getTags().stream()
+				Optional<ResourceLocation> tag = f.builtInRegistryHolder().tags()
+						.map(TagKey::location)
 						.min((o1, o2) -> {
+							// TODO not symmetric!
 							if(!("minecraft".equals(o1.getNamespace())||"forge".equals(o1.getNamespace())))
 								return 1;
 							return -Long.compare(
