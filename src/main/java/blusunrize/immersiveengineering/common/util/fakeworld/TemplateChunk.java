@@ -25,7 +25,7 @@ public class TemplateChunk extends EmptyLevelChunk
 
 	public TemplateChunk(Level worldIn, ChunkPos chunkPos, List<StructureBlockInfo> blocksInChunk, Predicate<BlockPos> shouldShow)
 	{
-		super(worldIn, chunkPos, worldIn.getBiome(BlockPos.ZERO));
+		super(worldIn, chunkPos, worldIn.getUncachedNoiseBiome(0, 0, 0));
 		this.shouldShow = shouldShow;
 		this.blocksInChunk = new HashMap<>();
 		tiles = new HashMap<>();

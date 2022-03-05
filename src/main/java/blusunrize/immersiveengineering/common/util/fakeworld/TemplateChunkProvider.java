@@ -46,7 +46,7 @@ public class TemplateChunkProvider extends ChunkSource
 	@Override
 	public ChunkAccess getChunk(int chunkX, int chunkZ, @Nonnull ChunkStatus requiredStatus, boolean load)
 	{
-		return chunks.computeIfAbsent(new ChunkPos(chunkX, chunkZ), p -> new EmptyLevelChunk(world, p, world.getBiome(BlockPos.ZERO)));
+		return chunks.computeIfAbsent(new ChunkPos(chunkX, chunkZ), p -> new EmptyLevelChunk(world, p, world.getUncachedNoiseBiome(0, 0, 0)));
 	}
 
 	@Override
