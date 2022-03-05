@@ -16,6 +16,7 @@ import org.junit.Assert;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -28,15 +29,15 @@ public class IEApiTest extends TestCase
 		testGetPreferredElementByMod(rl("a", "a"), rl("a", "b"), rl("a", "a"), rl("c", "0"), rl("d", "a"));
 		testGetPreferredElementByMod(rl("d", "a"), rl("e", "c"), rl("d", "b"), rl("d", "a"), rl("e", "a"));
 		testGetPreferredElementByMod(rl("b", "a"), rl("b", "b"), rl("b", "a"), rl("a", "0"), rl("d", "a"));
-		Assert.assertThrows(NullPointerException.class, () -> IEApi.getPreferredElementbyMod(Stream.empty(), Function.identity()));
+		Assert.assertTrue(IEApi.getPreferredElementbyMod(Stream.empty(), Function.identity()).isEmpty());
 	}
 
 	private void testGetPreferredElementByMod(ResourceLocation expected, ResourceLocation... input)
 	{
 		List<ResourceLocation> baseList = Arrays.asList(input);
 		// Basic check to make sure order does not matter
-		Assert.assertEquals(expected, IEApi.getPreferredElementbyMod(baseList.stream(), Function.identity()));
-		Assert.assertEquals(expected, IEApi.getPreferredElementbyMod(Lists.reverse(baseList).stream(), Function.identity()));
+		Assert.assertEquals(Optional.of(expected), IEApi.getPreferredElementbyMod(baseList.stream(), Function.identity()));
+		Assert.assertEquals(Optional.of(expected), IEApi.getPreferredElementbyMod(Lists.reverse(baseList).stream(), Function.identity()));
 	}
 
 	private ResourceLocation rl(String namespace, String path)
