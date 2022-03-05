@@ -48,12 +48,15 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	public boolean multiblock = false;
 	private boolean beingBroken = false;
 	public double perTick;
+	private double catchupSpeed;
 	private final CapabilityReference<IRotationAcceptor> outputCap = CapabilityReference.forNeighbor(
 			this, IRotationAcceptor.CAPABILITY, () -> getFacing().getOpposite()
 	);
 	private final CapabilityReference<IRotationAcceptor> reverseOutputCap = CapabilityReference.forNeighbor(
 			this, IRotationAcceptor.CAPABILITY, this::getFacing
 	);
+	private static final int globalSyncDelay = 10*20;
+	private int globalSyncDelayCounter = 1;
 
 	public WatermillBlockEntity(BlockEntityType<WatermillBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -63,7 +66,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	@Override
 	public void tickClient()
 	{
-		rotation += perTick;
+		rotation += perTick+catchupSpeed;
 		rotation %= 1;
 	}
 
@@ -127,10 +130,42 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 	{
 		if(newValue!=perTick)
 		{
+			globalSyncDelayCounter = globalSyncDelay;
 			perTick = newValue;
 			markContainingBlockForUpdate(null);
 		}
-		rotation += perTick;
+		else if(globalSyncDelayCounter > 0)
+			globalSyncDelayCounter--;
+
+		if(globalSyncDelayCounter==0)
+		{
+			float newrot = (float)(level.getGameTime()*perTick);
+			if(Math.abs((newrot%.125)-(rotation%.125)) < perTick)
+			{
+				rotation = (float)(newrot-perTick);
+				catchupSpeed = 0;
+				globalSyncDelayCounter--;
+				markContainingBlockForUpdate(null);
+			}
+			else
+			{
+				double oldCatchupSpeed = catchupSpeed;
+				catchupSpeed = perTick/8 < 0.0002?perTick/8: 0.0002;
+				if(oldCatchupSpeed!=catchupSpeed)
+					markContainingBlockForUpdate(null);
+			}
+
+//				rotation += perTick+(perTick/2 < 0.002?perTick/2: 0.002);
+
+//			if(rotation!=newrot)
+//			{
+//				rotation = newrot;
+//				//update so changing perTick client side a second time AFTER globalSyncDelayCounter went to zero once does not jank from the markContainingBlockForUpdate above
+//				markContainingBlockForUpdate(null);
+//			}
+		}
+//		else
+		rotation += perTick+catchupSpeed;
 		rotation %= 1;
 	}
 
@@ -235,6 +270,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		offset = nbt.getIntArray("offset");
 		rotation = nbt.getFloat("rotation");
 		perTick = nbt.getDouble("perTick");
+		catchupSpeed = nbt.getDouble("catchupSpeed");
 
 		if(offset==null||offset.length < 2)
 			offset = new int[]{0, 0};
@@ -246,6 +282,7 @@ public class WatermillBlockEntity extends IEBaseBlockEntity implements IEServerT
 		nbt.putIntArray("offset", offset);
 		nbt.putFloat("rotation", rotation);
 		nbt.putDouble("perTick", perTick);
+		nbt.putDouble("catchupSpeed", catchupSpeed);
 	}
 
 	private AABB renderAABB;
