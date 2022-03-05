@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.ComparableItemStack;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.common.register.IEItems.Molds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.datafixers.util.Pair;
@@ -35,36 +36,29 @@ import java.util.Map;
 
 public class MetalPressPackingRecipes
 {
-	public static Map<ResourceLocation, CraftingRecipe> CRAFTING_RECIPE_MAP;
+	public static final CachedRecipeList<CraftingRecipe> CRAFTING_RECIPE_MAP = new CachedRecipeList<>(() -> RecipeType.CRAFTING, CraftingRecipe.class);
 	public static final ResourceLocation UNPACK_ID = ImmersiveEngineering.rl("unpacking");
 	public static final ResourceLocation PACK4_ID = ImmersiveEngineering.rl("packing4");
 	public static final ResourceLocation PACK9_ID = ImmersiveEngineering.rl("packing9");
+	// TODO clear at recipe reload!
 	private static final HashMap<ComparableItemStack, RecipeDelegate> UNPACKING_CACHE = new HashMap<>();
 
-	public static MetalPressRecipe get2x2PackingContainer()
+	public static void init()
 	{
-		return new MetalPressPackingRecipe(
+		MetalPressRecipe.addSpecialRecipe(new MetalPressPackingRecipe(
 				new ResourceLocation(Lib.MODID, "metalpress/packing2x2"), Molds.MOLD_PACKING_4.asItem(), 2
-		);
-	}
-
-	public static MetalPressRecipe get3x3PackingContainer()
-	{
-		return new MetalPressPackingRecipe(
+		));
+		MetalPressRecipe.addSpecialRecipe(new MetalPressPackingRecipe(
 				new ResourceLocation(Lib.MODID, "metalpress/packing3x3"), Molds.MOLD_PACKING_9.asItem(), 3
-		);
-	}
-
-	public static MetalPressRecipe getUnpackingContainer()
-	{
-		return new MetalPressContainerRecipe(new ResourceLocation(Lib.MODID, "metalpress/unpacking"), Molds.MOLD_UNPACKING.asItem())
+		));
+		MetalPressRecipe.addSpecialRecipe(new MetalPressContainerRecipe(new ResourceLocation(Lib.MODID, "metalpress/unpacking"), Molds.MOLD_UNPACKING.asItem())
 		{
 			@Override
 			protected MetalPressRecipe getRecipeFunction(ItemStack input, Level world)
 			{
 				return getUnpackingCached(input, world);
 			}
-		};
+		});
 	}
 
 	public static abstract class MetalPressContainerRecipe extends MetalPressRecipe
@@ -143,7 +137,6 @@ public class MetalPressPackingRecipes
 
 		private RecipeDelegate(ResourceLocation id, ItemStack output, ItemStack input, Item mold, CraftingRecipe baseRecipe)
 		{
-			// TODO fix
 			super(id, Lazy.of(() -> output), IngredientWithSize.of(input), mold, 3200);
 			this.baseRecipe = baseRecipe;
 		}
@@ -228,13 +221,14 @@ public class MetalPressPackingRecipes
 		}
 
 		Pair<CraftingRecipe, ItemStack> rePacked = getPackedOutput(count==4?2: 3, outStack, world);
-		if(rePacked==null||rePacked.getSecond().isEmpty()||!ItemStack.matches(input, rePacked.getSecond()))
+		ItemStack singleInput = ItemHandlerHelper.copyStackWithSize(input, 1);
+		if(rePacked==null||rePacked.getSecond().isEmpty()||!ItemStack.matches(singleInput, rePacked.getSecond()))
 		{
 			UNPACKING_CACHE.put(comp, null);
 			return null;
 		}
 
-		RecipeDelegate delegate = RecipeDelegate.getUnpacking(out, ItemHandlerHelper.copyStackWithSize(input, 1));
+		RecipeDelegate delegate = RecipeDelegate.getUnpacking(out, singleInput);
 		UNPACKING_CACHE.put(comp, delegate);
 		return delegate;
 	}

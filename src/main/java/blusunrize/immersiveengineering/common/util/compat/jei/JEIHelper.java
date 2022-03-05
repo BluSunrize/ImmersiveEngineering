@@ -136,7 +136,7 @@ public class JEIHelper implements IModPlugin
 		registration.addRecipes(BlastFurnaceRecipe.RECIPES.getClientRecipes(), BlastFurnaceRecipeCategory.UID);
 		registration.addRecipes(BlastFurnaceFuel.RECIPES.getClientRecipes(), BlastFurnaceFuelCategory.UID);
 		registration.addRecipes(ClocheRecipe.RECIPES.getClientRecipes(), ClocheRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(MetalPressRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), MetalPressRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(MetalPressRecipe.STANDARD_RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), MetalPressRecipeCategory.UID);
 		registration.addRecipes(Collections2.filter(CrusherRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), CrusherRecipeCategory.UID);
 		registration.addRecipes(Collections2.filter(SawmillRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), SawmillRecipeCategory.UID);
 		registration.addRecipes(Collections2.filter(BlueprintCraftingRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), WorkbenchRecipeCategory.UID);

@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes.RecipeDelegate;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -31,6 +32,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -38,6 +40,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -147,16 +150,17 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	protected MultiblockProcess<MetalPressRecipe> loadProcessFromNBT(CompoundTag tag)
 	{
 		ResourceLocation id = new ResourceLocation(tag.getString("recipe"));
-		/*
-		TODO fix!
-		if(recipe==null&&tag.contains("baseRecipe", Tag.TAG_STRING))
+		if(tag.contains("baseRecipe", Tag.TAG_STRING))
 		{
 			ResourceLocation baseRecipeName = new ResourceLocation(tag.getString("baseRecipe"));
-			CraftingRecipe baseRecipe = MetalPressPackingRecipes.CRAFTING_RECIPE_MAP.get(baseRecipeName);
-			if(baseRecipe!=null)
-				recipe = MetalPressPackingRecipes.getRecipeDelegate(baseRecipe, id);
+			return MultiblockProcessInWorld.load(id, (level, pressId) -> {
+				CraftingRecipe baseRecipe = MetalPressPackingRecipes.CRAFTING_RECIPE_MAP.getById(level, baseRecipeName);
+				if(baseRecipe!=null)
+					return MetalPressPackingRecipes.getRecipeDelegate(baseRecipe, pressId);
+				else
+					return null;
+			}, tag);
 		}
-		 */
 		return MultiblockProcessInWorld.load(id, this::getRecipeForId, tag);
 	}
 
@@ -363,7 +367,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	@Override
 	protected MetalPressRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		throw new UnsupportedOperationException();
+		return MetalPressRecipe.STANDARD_RECIPES.getById(level, id);
 	}
 
 	@Override

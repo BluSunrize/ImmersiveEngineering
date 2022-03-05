@@ -25,6 +25,7 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
+import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.network.*;
@@ -249,6 +250,7 @@ public class ImmersiveEngineering
 		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));
 
 		CommandMineral.registerArguments();
+		MetalPressPackingRecipes.init();
 	}
 
 	private int messageId = 0;

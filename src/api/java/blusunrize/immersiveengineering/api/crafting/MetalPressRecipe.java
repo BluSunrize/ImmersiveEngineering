@@ -20,7 +20,9 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * @author BluSunrize - 07.01.2016
@@ -31,11 +33,17 @@ public class MetalPressRecipe extends MultiblockRecipe
 {
 	public static RecipeType<MetalPressRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
-	public static final CachedRecipeList<MetalPressRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, MetalPressRecipe.class);
+	public static final CachedRecipeList<MetalPressRecipe> STANDARD_RECIPES = new CachedRecipeList<>(() -> TYPE, MetalPressRecipe.class);
+	private static final List<MetalPressRecipe> SPECIAL_RECIPES = new ArrayList<>();
 
 	public IngredientWithSize input;
 	public final Item mold;
 	public final Lazy<ItemStack> output;
+
+	public synchronized static void addSpecialRecipe(MetalPressRecipe recipe)
+	{
+		SPECIAL_RECIPES.add(recipe);
+	}
 
 	public MetalPressRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, Item mold, int energy)
 	{
@@ -97,7 +105,9 @@ public class MetalPressRecipe extends MultiblockRecipe
 		if(reloadCountForByMold!=CachedRecipeList.getReloadCount())
 		{
 			recipesByMold = ArrayListMultimap.create();
-			RECIPES.getRecipes(level).forEach(recipe -> recipesByMold.put(recipe.mold, recipe));
+			Consumer<MetalPressRecipe> addToMap = recipe -> recipesByMold.put(recipe.mold, recipe);
+			STANDARD_RECIPES.getRecipes(level).forEach(addToMap);
+			SPECIAL_RECIPES.forEach(addToMap);
 			reloadCountForByMold = CachedRecipeList.getReloadCount();
 		}
 		return recipesByMold;
