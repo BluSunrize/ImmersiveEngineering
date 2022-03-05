@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -34,7 +35,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE
 {
@@ -51,6 +52,7 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 	@Override
 	public void tickServer()
 	{
+		// TODO apparently thermos take some time to start after world load? When did that start?
 		if(level.getGameTime()%1024==((getBlockPos().getX()^getBlockPos().getZ())&1023))
 			recalculateEnergyOutput();
 		if(this.energyOutput > 0)
@@ -91,7 +93,7 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 		this.energyOutput = energy==0?-1: energy;
 	}
 
-	private final Map<Direction, Function<Block, Integer>> temperatureGetters = new EnumMap<>(Direction.class);
+	private final Map<Direction, BiFunction<Level, Block, Integer>> temperatureGetters = new EnumMap<>(Direction.class);
 
 	{
 		for(Direction d : DirectionUtils.VALUES)
@@ -107,7 +109,7 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 		Fluid f = getFluid(state);
 		if(f!=Fluids.EMPTY)
 			return f.getAttributes().getTemperature(level, pos);
-		return temperatureGetters.get(offset).apply(state.getBlock());
+		return temperatureGetters.get(offset).apply(level, state.getBlock());
 	}
 
 	Fluid getFluid(BlockState state)

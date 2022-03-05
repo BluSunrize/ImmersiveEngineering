@@ -51,7 +51,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				double playerDistanceSq = ClientUtils.mc().player.distanceToSqr(Vec3.atCenterOf(te.getBlockPos()));
 				if(playerDistanceSq < 120)
 				{
-					BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(stack, "blueprint"));
+					BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(te.getLevel(), ItemNBTHelper.getString(stack, "blueprint"));
 
 					float lineWidth = playerDistanceSq < 25?1: playerDistanceSq < 40?.5f: .1f;
 					int l = recipes.length;

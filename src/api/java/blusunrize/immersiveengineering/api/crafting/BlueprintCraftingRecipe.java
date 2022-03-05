@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
@@ -16,10 +17,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -35,10 +36,9 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static RecipeType<BlueprintCraftingRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
-	@Nonnull
-	public static Set<String> recipeCategories = new TreeSet<>();
-	// Initialized by reload listener
-	public static Map<ResourceLocation, BlueprintCraftingRecipe> recipeList = Collections.emptyMap();
+	public static final Set<String> recipeCategories = new TreeSet<>();
+	public static final CachedRecipeList<BlueprintCraftingRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, BlueprintCraftingRecipe.class);
+	private static int reloadCountForCategories = CachedRecipeList.INVALID_RELOAD_COUNT;
 	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
 	public static SetRestrictedField<ItemLike> blueprintItem = SetRestrictedField.common();
 
@@ -166,15 +166,18 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		return consumed;
 	}
 
-	public static BlueprintCraftingRecipe[] findRecipes(String blueprintCategory)
+	public static BlueprintCraftingRecipe[] findRecipes(Level level, String blueprintCategory)
 	{
+		updateRecipeCategories(level);
 		return recipesByCategory.getOrDefault(blueprintCategory, ImmutableList.of())
 				.toArray(new BlueprintCraftingRecipe[0]);
 	}
 
-	public static void updateRecipeCategories()
+	public static void updateRecipeCategories(Level level)
 	{
-		recipesByCategory = recipeList.values().stream()
+		if (reloadCountForCategories == CachedRecipeList.getReloadCount())
+			return;
+		recipesByCategory = RECIPES.getRecipes(level).stream()
 				.collect(Collectors.groupingBy(r -> r.blueprintCategory));
 		for(Entry<String, List<BlueprintCraftingRecipe>> e : recipesByCategory.entrySet())
 		{
@@ -187,6 +190,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 				);
 			e.getValue().sort(Comparator.comparing(BlueprintCraftingRecipe::getId));
 		}
+		reloadCountForCategories = CachedRecipeList.getReloadCount();
 	}
 
 	@Override

@@ -29,6 +29,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -53,7 +54,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
 public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<DieselGeneratorBlockEntity>
@@ -70,7 +71,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	public DieselGeneratorBlockEntity(BlockEntityType<DieselGeneratorBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(IEMultiblocks.DIESEL_GENERATOR, type, true, pos, state);
-		tanks[0].setValidator(fs -> recipeGetter.apply(fs.getFluid())!=null);
+		tanks[0].setValidator(fs -> recipeGetter.apply(level, fs.getFluid())!=null);
 	}
 
 	@Override
@@ -147,7 +148,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 		}
 	}
 
-	private final Function<Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
+	private final BiFunction<Level, Fluid, GeneratorFuel> recipeGetter = CachedRecipe.cached(GeneratorFuel::getRecipeFor);
 
 	@Override
 	public void tickServer()
@@ -157,7 +158,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 
 		if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
 		{
-			GeneratorFuel recipe = recipeGetter.apply(tanks[0].getFluid().getFluid());
+			GeneratorFuel recipe = recipeGetter.apply(level, tanks[0].getFluid().getFluid());
 			if(recipe!=null)
 			{
 				int burnTime = recipe.getBurnTime();

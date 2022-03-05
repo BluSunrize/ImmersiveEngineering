@@ -372,7 +372,7 @@ public class BlockOverlayUtils
 					if(minerals!=null)
 						for(int i = 0; i < minerals.size(); i++)
 						{
-							MineralMix mix = MineralMix.mineralList.get(new ResourceLocation(minerals.getString(i)));
+							MineralMix mix = MineralMix.RECIPES.getByIdOnClient(new ResourceLocation(minerals.getString(i)));
 							if(mix!=null)
 								font.drawShadow(transform, I18n.get(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.lineHeight, 0xffffff);
 						}

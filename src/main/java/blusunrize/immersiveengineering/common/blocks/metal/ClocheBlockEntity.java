@@ -98,7 +98,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	public final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(
-			ClocheRecipe::findRecipe, () -> inventory.get(SLOT_SEED), () -> inventory.get(SLOT_SOIL)
+			ClocheRecipe::findRecipe, () -> level, () -> inventory.get(SLOT_SEED), () -> inventory.get(SLOT_SOIL)
 	);
 
 	public int fertilizerAmount = 0;
@@ -231,7 +231,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 				ItemStack fertilizer = inventory.get(SLOT_FERTILIZER);
 				if(!fertilizer.isEmpty())
 				{
-					float itemMod = ClocheFertilizer.getFertilizerGrowthModifier(fertilizer);
+					float itemMod = ClocheFertilizer.getFertilizerGrowthModifier(level, fertilizer);
 					if(itemMod > 0)
 					{
 						fertilizerMod *= itemMod;
@@ -401,7 +401,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
 		if(slot==SLOT_FERTILIZER)
-			return ClocheFertilizer.isValidFertilizer(stack);
+			return ClocheFertilizer.isValidFertilizer(level, stack);
 		else
 			return true;
 	}

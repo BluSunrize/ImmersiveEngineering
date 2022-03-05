@@ -284,7 +284,7 @@ public class ModelCoresample extends BakedIEModel
 		@Override
 		public BakedModel resolve(BakedModel originalModel, ItemStack stack, @Nullable ClientLevel worldIn, @Nullable LivingEntity entityIn, int unused)
 		{
-			MineralMix[] minerals = CoresampleItem.getMineralMixes(stack);
+			MineralMix[] minerals = CoresampleItem.getMineralMixes(worldIn, stack);
 			if(minerals.length > 0)
 			{
 				try

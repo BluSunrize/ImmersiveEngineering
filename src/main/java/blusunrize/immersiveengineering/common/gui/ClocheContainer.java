@@ -22,9 +22,9 @@ public class ClocheContainer extends IEBaseContainer<ClocheBlockEntity>
 	public ClocheContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ClocheBlockEntity bEntity)
 	{
 		super(type, bEntity, id);
-		this.addSlot(new Cloche(SLOT_SOIL, this, this.inv, SLOT_SOIL, 62, 54));
-		this.addSlot(new Cloche(SLOT_SEED, this, this.inv, SLOT_SEED, 62, 34));
-		this.addSlot(new Cloche(SLOT_FERTILIZER, this, this.inv, SLOT_FERTILIZER, 8, 59));
+		this.addSlot(new Cloche(SLOT_SOIL, this, this.inv, SLOT_SOIL, 62, 54, tile.getLevel()));
+		this.addSlot(new Cloche(SLOT_SEED, this, this.inv, SLOT_SEED, 62, 34, tile.getLevel()));
+		this.addSlot(new Cloche(SLOT_FERTILIZER, this, this.inv, SLOT_FERTILIZER, 8, 59, tile.getLevel()));
 
 		for(int i = 0; i < 4; i++)
 			this.addSlot(new IESlot.Output(this, this.inv, 3+i, 116+i%2*18, 34+i/2*18));

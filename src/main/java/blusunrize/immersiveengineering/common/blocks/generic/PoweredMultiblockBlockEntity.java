@@ -29,6 +29,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -114,25 +115,22 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 	}
 
 	@Nullable
-	protected abstract R getRecipeForId(ResourceLocation id);
+	protected abstract R getRecipeForId(Level level, ResourceLocation id);
 
 	@Nullable
 	protected MultiblockProcess<R> loadProcessFromNBT(CompoundTag tag)
 	{
-		String id = tag.getString("recipe");
-		R recipe = getRecipeForId(new ResourceLocation(id));
-		if(recipe!=null)
-			if(isInWorldProcessingMachine())
-				return MultiblockProcessInWorld.load(recipe, tag);
-			else
-				return MultiblockProcessInMachine.load(recipe, tag);
-		return null;
+		ResourceLocation id = new ResourceLocation(tag.getString("recipe"));
+		if(isInWorldProcessingMachine())
+			return MultiblockProcessInWorld.load(id, this::getRecipeForId, tag);
+		else
+			return MultiblockProcessInMachine.load(id, this::getRecipeForId, tag);
 	}
 
 	protected CompoundTag writeProcessToNBT(MultiblockProcess<?> process)
 	{
 		CompoundTag tag = new CompoundTag();
-		tag.putString("recipe", process.recipe.getId().toString());
+		tag.putString("recipe", process.getRecipeId().toString());
 		tag.putInt("process_processTick", process.processTick);
 		process.writeExtraDataToNBT(tag);
 		return tag;
@@ -273,7 +271,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 		if(addToPrevious&&process instanceof MultiblockProcessInWorld<R> newProcess)
 		{
 			for(MultiblockProcess<R> curr : processQueue)
-				if(curr instanceof MultiblockProcessInWorld<R> existingProcess&&process.recipe.equals(curr.recipe))
+				if(curr instanceof MultiblockProcessInWorld<R> existingProcess&&process.getRecipeId().equals(curr.getRecipeId()))
 				{
 					boolean canStack = true;
 					for(ItemStack old : existingProcess.inputItems)
@@ -312,7 +310,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			{
 				p = processQueue.get(processQueue.size()-1);
 				if(p!=null)
-					dist = p.processTick/(float)p.maxTicks;
+					dist = p.processTick/(float)p.getMaxTicks(level);
 			}
 			if(p!=null&&dist < getMinProcessDistance(p))
 				return false;
@@ -348,7 +346,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			return master.getCurrentProcessesMax();
 		int[] ia = new int[processQueue.size()];
 		for(int i = 0; i < ia.length; i++)
-			ia[i] = processQueue.get(i).maxTicks;
+			ia[i] = processQueue.get(i).getMaxTicks(level);
 		return ia;
 	}
 
@@ -427,7 +425,8 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			if(recipe==null)
 				return stack;
 			ItemStack displayStack = recipe.getDisplayStack(stack);
-			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, transformationPoint,
+			if(multiblock.addProcessToQueue(new MultiblockProcessInWorld<>(
+					recipe, multiblock::getRecipeForId, transformationPoint,
 					Utils.createNonNullItemStackListFromItemStack(displayStack)), simulate, doProcessStacking))
 			{
 				multiblock.setChanged();

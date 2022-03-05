@@ -287,7 +287,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 				if(recipe==null)
 					return;
 				ItemStack displayStack = recipe.getDisplayStack(stack);
-				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<>(recipe, .5f, Utils.createNonNullItemStackListFromItemStack(displayStack));
+				MultiblockProcess<CrusherRecipe> process = new MultiblockProcessInWorld<>(recipe, this::getRecipeForId, .5f, Utils.createNonNullItemStackListFromItemStack(displayStack));
 				if(master.addProcessToQueue(process, true, true))
 				{
 					master.addProcessToQueue(process, false, true);
@@ -411,7 +411,7 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 			return master.getCurrentProcessesMax();
 		int[] ia = new int[processQueue.size() > 0?1: 0];
 		for(int i = 0; i < ia.length; i++)
-			ia[i] = processQueue.get(i).maxTicks;
+			ia[i] = processQueue.get(i).getMaxTicks(level);
 		return ia;
 	}
 
@@ -473,13 +473,13 @@ public class CrusherBlockEntity extends PoweredMultiblockBlockEntity<CrusherBloc
 	@Override
 	public CrusherRecipe findRecipeForInsertion(ItemStack inserting)
 	{
-		return CrusherRecipe.findRecipe(inserting);
+		return CrusherRecipe.findRecipe(level, inserting);
 	}
 
 	@Override
-	protected CrusherRecipe getRecipeForId(ResourceLocation id)
+	protected CrusherRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		return CrusherRecipe.recipeList.get(id);
+		return CrusherRecipe.RECIPES.getById(level, id);
 	}
 
 	@Override

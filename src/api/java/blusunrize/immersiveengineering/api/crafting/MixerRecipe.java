@@ -8,15 +8,20 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * @author BluSunrize - 20.02.2016
@@ -27,6 +32,7 @@ public class MixerRecipe extends MultiblockRecipe
 {
 	public static RecipeType<MixerRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<MixerRecipe>> SERIALIZER;
+	public static final CachedRecipeList<MixerRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, MixerRecipe.class);
 
 	public final IngredientWithSize[] itemInputs;
 	public final FluidTagInput fluidInput;
@@ -53,14 +59,11 @@ public class MixerRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, MixerRecipe> recipeList = Collections.emptyMap();
-
-	public static MixerRecipe findRecipe(FluidStack fluid, NonNullList<ItemStack> components)
+	public static MixerRecipe findRecipe(Level level, FluidStack fluid, NonNullList<ItemStack> components)
 	{
-		if(fluid==null)
+		if(fluid.isEmpty())
 			return null;
-		for(MixerRecipe recipe : recipeList.values())
+		for(MixerRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe.matches(fluid, components))
 				return recipe;
 		return null;

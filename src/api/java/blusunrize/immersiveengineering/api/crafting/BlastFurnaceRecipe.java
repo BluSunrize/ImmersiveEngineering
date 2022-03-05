@@ -8,15 +8,15 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -27,6 +27,7 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 {
 	public static RecipeType<BlastFurnaceRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceRecipe>> SERIALIZER;
+	public static final CachedRecipeList<BlastFurnaceRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, BlastFurnaceRecipe.class);
 
 	public final IngredientWithSize input;
 	public final ItemStack output;
@@ -59,16 +60,13 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 		return this.input.test(input);
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, BlastFurnaceRecipe> recipeList = Collections.emptyMap();
-
-	public static BlastFurnaceRecipe findRecipe(ItemStack input, @Nullable BlastFurnaceRecipe hint)
+	public static BlastFurnaceRecipe findRecipe(Level level, ItemStack input, @Nullable BlastFurnaceRecipe hint)
 	{
 		if (input.isEmpty())
 			return null;
 		if (hint != null && hint.matches(input))
 			return hint;
-		for(BlastFurnaceRecipe recipe : recipeList.values())
+		for(BlastFurnaceRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe.matches(input))
 				return recipe;
 		return null;

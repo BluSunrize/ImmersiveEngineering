@@ -72,8 +72,8 @@ public class SawmillRenderer extends IEBlockEntityRenderer<SawmillBlockEntity>
 		// Items
 		for(SawmillProcess process : te.sawmillProcessQueue)
 		{
-			float relative = process.getRelativeProcessStep();
-			ItemStack rendered = process.getCurrentStack(sawblade);
+			float relative = process.getRelativeProcessStep(te.getLevel());
+			ItemStack rendered = process.getCurrentStack(te.getLevel(), sawblade);
 			renderItem(rendered, relative, matrixStack, bufferIn, combinedLightIn, combinedOverlayIn);
 		}
 		matrixStack.popPose();

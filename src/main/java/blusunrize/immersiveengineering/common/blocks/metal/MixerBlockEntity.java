@@ -41,6 +41,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -62,6 +63,7 @@ import net.minecraftforge.items.IItemHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiFunction;
 
 public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEntity, MixerRecipe> implements
 		IInteractionObjectIE<MixerBlockEntity>, IBlockBounds, IEClientTickableBE
@@ -156,11 +158,11 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 
 				for(FluidStack fs : tank.fluids)
 				{
-					MixerRecipe recipe = MixerRecipe.findRecipe(fs, components);
+					MixerRecipe recipe = MixerRecipe.findRecipe(level, fs, components);
 					if(recipe!=null)
 					{
 						foundRecipe = true;
-						MultiblockProcessInMachine<MixerRecipe> process = new MultiblockProcessMixer(recipe, recipe.getUsedSlots(fs, components)).setInputTanks(0);
+						MultiblockProcessInMachine<MixerRecipe> process = new MultiblockProcessMixer(recipe, this::getRecipeForId, recipe.getUsedSlots(fs, components)).setInputTanks(0);
 						if(this.addProcessToQueue(process, true))
 						{
 							this.addProcessToQueue(process, false);
@@ -436,16 +438,21 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 	}
 
 	@Override
-	protected MixerRecipe getRecipeForId(ResourceLocation id)
+	protected MixerRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		return MixerRecipe.recipeList.get(id);
+		return MixerRecipe.RECIPES.getById(level, id);
 	}
 
 	public static class MultiblockProcessMixer extends MultiblockProcessInMachine<MixerRecipe>
 	{
-		public MultiblockProcessMixer(MixerRecipe recipe, int... inputSlots)
+		public MultiblockProcessMixer(MixerRecipe recipe, BiFunction<Level, ResourceLocation, MixerRecipe> getRecipe, int... inputSlots)
 		{
-			super(recipe, inputSlots);
+			super(recipe, getRecipe, inputSlots);
+		}
+
+		public MultiblockProcessMixer(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, MixerRecipe> getRecipe, int... inputSlots)
+		{
+			super(recipeId, getRecipe, inputSlots);
 		}
 
 		@Override
@@ -463,36 +470,44 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		@Override
 		public boolean canProcess(PoweredMultiblockBlockEntity<?, MixerRecipe> multiblock)
 		{
-			if(!(multiblock instanceof MixerBlockEntity))
+			var levelData = getLevelData(multiblock.getLevel());
+			if (levelData.recipe() == null)
+				return true;
+			if(!(multiblock instanceof MixerBlockEntity mixer))
 				return false;
-			MixerBlockEntity mixer = (MixerBlockEntity)multiblock;
 			// we don't need to check filling since after draining 1 mB of input fluid there will be space for 1 mB of output fluid
-			return mixer.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick&&
-					!mixer.tank.drain(recipe.fluidInput.withAmount(1), FluidAction.SIMULATE).isEmpty();
+			return mixer.energyStorage.extractEnergy(levelData.energyPerTick(), true)==levelData.energyPerTick()&&
+					!mixer.tank.drain(levelData.recipe().fluidInput.withAmount(1), FluidAction.SIMULATE).isEmpty();
 		}
 
 		@Override
 		public void doProcessTick(PoweredMultiblockBlockEntity<?, MixerRecipe> multiblock)
 		{
-			int timerStep = Math.max(this.maxTicks/this.recipe.fluidAmount, 1);
+			var levelData = getLevelData(multiblock.getLevel());
+			if (levelData.recipe() == null)
+			{
+				this.clearProcess = true;
+				return;
+			}
+			int timerStep = Math.max(levelData.maxTicks()/levelData.recipe().fluidAmount, 1);
 			if(timerStep!=0&&this.processTick%timerStep==0)
 			{
-				int amount = this.recipe.fluidAmount/maxTicks;
-				int leftover = this.recipe.fluidAmount%maxTicks;
+				int amount = levelData.recipe().fluidAmount/levelData.maxTicks();
+				int leftover = levelData.recipe().fluidAmount%levelData.maxTicks();
 				if(leftover > 0)
 				{
-					double distBetweenExtra = maxTicks/(double)leftover;
+					double distBetweenExtra = levelData.maxTicks()/(double)leftover;
 					if(Math.floor(processTick/distBetweenExtra)!=Math.floor((processTick-1)/distBetweenExtra))
 						amount++;
 				}
 				MixerBlockEntity mixer = (MixerBlockEntity)multiblock;
-				FluidStack drained = mixer.tank.drain(recipe.fluidInput.withAmount(amount), FluidAction.EXECUTE);
+				FluidStack drained = mixer.tank.drain(levelData.recipe().fluidInput.withAmount(amount), FluidAction.EXECUTE);
 				if(!drained.isEmpty())
 				{
 					NonNullList<ItemStack> components = NonNullList.withSize(this.inputSlots.length, ItemStack.EMPTY);
 					for(int i = 0; i < components.size(); i++)
 						components.set(i, multiblock.getInventory().get(this.inputSlots[i]));
-					FluidStack output = this.recipe.getFluidOutput(drained, components);
+					FluidStack output = levelData.recipe().getFluidOutput(drained, components);
 
 					FluidStack fs = Utils.copyFluidStackWithAmount(output, drained.getAmount(), false);
 					((MixerBlockEntity)multiblock).tank.fill(fs, FluidAction.EXECUTE);

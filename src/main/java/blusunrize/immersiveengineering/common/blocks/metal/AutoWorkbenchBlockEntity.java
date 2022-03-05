@@ -36,6 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -107,9 +108,9 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 				int crafted = recipe.getMaxCrafted(query);
 				if(crafted > 0)
 				{
-					if(this.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, 0.78f, NonNullList.create()), true))
+					if(this.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, this::getRecipeForId, 0.78f, NonNullList.create()), true))
 					{
-						this.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, 0.78f, recipe.consumeInputs(query, 1)), false);
+						this.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, this::getRecipeForId, 0.78f, recipe.consumeInputs(query, 1)), false);
 						for(int i = 0; i < query.size(); i++)
 							inventory.set(i+1, query.get(i));
 						this.setChanged();
@@ -122,7 +123,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 
 	public BlueprintCraftingRecipe[] getAvailableRecipes()
 	{
-		return EngineersBlueprintItem.getRecipes(inventory.get(0));
+		return EngineersBlueprintItem.getRecipes(level, inventory.get(0));
 	}
 
 	@Override
@@ -346,9 +347,9 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	}
 
 	@Override
-	protected BlueprintCraftingRecipe getRecipeForId(ResourceLocation id)
+	protected BlueprintCraftingRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		return BlueprintCraftingRecipe.recipeList.get(id);
+		return BlueprintCraftingRecipe.RECIPES.getById(level, id);
 	}
 
 	@Override

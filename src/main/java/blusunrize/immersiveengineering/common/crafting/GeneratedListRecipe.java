@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.common.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.cache.IListRecipe;
 import com.google.common.base.Preconditions;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -25,7 +26,7 @@ import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
-public class GeneratedListRecipe extends IESerializableRecipe
+public class GeneratedListRecipe extends IESerializableRecipe implements IListRecipe
 {
 	public static Map<ResourceLocation, RecipeListGenerator<?>> LIST_GENERATORS = new HashMap<>();
 	public static RegistryObject<IERecipeSerializer<GeneratedListRecipe>> SERIALIZER;

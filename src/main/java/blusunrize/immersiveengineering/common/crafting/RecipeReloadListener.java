@@ -9,22 +9,13 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import blusunrize.immersiveengineering.api.crafting.*;
-import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
-import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
-import blusunrize.immersiveengineering.api.excavator.MineralMix;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraftforge.client.event.RecipesUpdatedEvent;
-import net.minecraftforge.eventbus.api.EventPriority;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 import javax.annotation.Nonnull;
 import java.util.Collection;
@@ -55,34 +46,9 @@ public class RecipeReloadListener implements ResourceManagerReloadListener
 		 */
 	}
 
-	RecipeManager clientRecipeManager;
-
-	@SubscribeEvent(priority = EventPriority.HIGH)
-	public void onRecipesUpdated(RecipesUpdatedEvent event)
-	{
-		clientRecipeManager = event.getRecipeManager();
-		if(!Minecraft.getInstance().hasSingleplayerServer())
-			buildRecipeLists(clientRecipeManager);
-	}
-
 	public static void buildRecipeLists(RecipeManager recipeManager)
 	{
-		Collection<Recipe<?>> recipes = recipeManager.getRecipes();
-		// Empty recipe list shouldn't happen, but has been known to be caused by other mods
-		if(recipes.size()==0)
-			return;
-
-		AlloyRecipe.recipeList = filterRecipes(recipes, AlloyRecipe.class, AlloyRecipe.TYPE);
-		BlastFurnaceRecipe.recipeList = filterRecipes(recipes, BlastFurnaceRecipe.class, BlastFurnaceRecipe.TYPE);
-		BlastFurnaceFuel.blastFuels = filterRecipes(recipes, BlastFurnaceFuel.class, BlastFurnaceFuel.TYPE);
-		CokeOvenRecipe.recipeList = filterRecipes(recipes, CokeOvenRecipe.class, CokeOvenRecipe.TYPE);
-		ClocheRecipe.recipeList = filterRecipes(recipes, ClocheRecipe.class, ClocheRecipe.TYPE);
-		ClocheFertilizer.fertilizerList = filterRecipes(recipes, ClocheFertilizer.class, ClocheFertilizer.TYPE);
-
-		BlueprintCraftingRecipe.recipeList = filterRecipes(recipes, BlueprintCraftingRecipe.class, BlueprintCraftingRecipe.TYPE);
-		BlueprintCraftingRecipe.updateRecipeCategories();
-
-		MetalPressRecipe.recipeList = filterRecipes(recipes, MetalPressRecipe.class, MetalPressRecipe.TYPE);
+		/* TODO
 		MetalPressRecipe unpackingRecipe = MetalPressPackingRecipes.getUnpackingContainer();
 		MetalPressRecipe packingRecipe2x2 = MetalPressPackingRecipes.get2x2PackingContainer();
 		MetalPressRecipe packingRecipe3x3 = MetalPressPackingRecipes.get3x3PackingContainer();
@@ -90,19 +56,7 @@ public class RecipeReloadListener implements ResourceManagerReloadListener
 		MetalPressRecipe.recipeList.put(packingRecipe2x2.getId(), packingRecipe2x2);
 		MetalPressRecipe.recipeList.put(packingRecipe3x3.getId(), packingRecipe3x3);
 		MetalPressPackingRecipes.CRAFTING_RECIPE_MAP = filterRecipes(recipes, CraftingRecipe.class, RecipeType.CRAFTING);
-		MetalPressRecipe.updateRecipesByMold();
-
-		BottlingMachineRecipe.recipeList = filterRecipes(recipes, BottlingMachineRecipe.class, BottlingMachineRecipe.TYPE);
-		CrusherRecipe.recipeList = filterRecipes(recipes, CrusherRecipe.class, CrusherRecipe.TYPE);
-		SawmillRecipe.recipeList = filterRecipes(recipes, SawmillRecipe.class, SawmillRecipe.TYPE);
-		FermenterRecipe.recipeList = filterRecipes(recipes, FermenterRecipe.class, FermenterRecipe.TYPE);
-		SqueezerRecipe.recipeList = filterRecipes(recipes, SqueezerRecipe.class, SqueezerRecipe.TYPE);
-		RefineryRecipe.recipeList = filterRecipes(recipes, RefineryRecipe.class, RefineryRecipe.TYPE);
-		MixerRecipe.recipeList = filterRecipes(recipes, MixerRecipe.class, MixerRecipe.TYPE);
-		MineralMix.mineralList = filterRecipes(recipes, MineralMix.class, MineralMix.TYPE);
-		GeneratorFuel.ALL_FUELS = filterRecipes(recipes, GeneratorFuel.class, GeneratorFuel.TYPE).values();
-		ThermoelectricSource.ALL_SOURCES = filterRecipes(recipes, ThermoelectricSource.class, ThermoelectricSource.TYPE).values();
-		ArcFurnaceRecipe.recipeList = filterRecipes(recipes, ArcFurnaceRecipe.class, ArcFurnaceRecipe.TYPE);
+		 */
 	}
 
 	private void startArcRecyclingRecipeGen(RecipeManager recipeManager, RegistryAccess tags)

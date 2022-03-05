@@ -242,11 +242,12 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				));
 			}
 		}
+		Level clientLevel = ClientUtils.mc().level;
 		if(ClientUtils.mc().screen!=null
 				&&ClientUtils.mc().screen instanceof BlastFurnaceScreen
-				&&BlastFurnaceFuel.isValidBlastFuel(event.getItemStack()))
+				&&BlastFurnaceFuel.isValidBlastFuel(clientLevel, event.getItemStack()))
 			event.getToolTip().add(TextUtils.applyFormat(
-					new TranslatableComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(event.getItemStack())),
+					new TranslatableComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(clientLevel, event.getItemStack())),
 					ChatFormatting.GRAY
 			));
 
@@ -316,7 +317,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 
 			if(playerDistanceSq < 1000)
 			{
-				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(event.getItemStack(), "blueprint"));
+				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(event.getItemFrameEntity().level, ItemNBTHelper.getString(event.getItemStack(), "blueprint"));
 				if(recipes.length > 0)
 				{
 					int i = event.getItemFrameEntity().getRotation();
@@ -845,7 +846,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		if(show)
 		{
 			ResourceKey<Level> dimension = ClientUtils.mc().player.getCommandSenderWorld().dimension();
-			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.mineralList.keySet());
+			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.RECIPES.getClientRecipeNames());
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
 			final ColumnPos playerCol = new ColumnPos(ClientUtils.mc().player.blockPosition());
 			// 24: very roughly 16 * sqrt(2)
@@ -856,7 +857,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			{
 				for(MineralVein vein : minerals.get(dimension))
 				{
-					if(vein.getMineral()==null)
+					MineralMix mineral = vein.getMineral(ClientUtils.mc().level);
+					if(mineral==null)
 						continue;
 					transform.pushPose();
 					ColumnPos pos = vein.getPos();
@@ -865,7 +867,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					long distToPlayerSq = xDiff*xDiff+zDiff*zDiff;
 					if(distToPlayerSq > maxDistanceSq)
 						continue;
-					int iC = keyList.indexOf(vein.getMineral().getId());
+					int iC = keyList.indexOf(mineral.getId());
 					DyeColor color = DyeColor.values()[iC%16];
 					float[] rgb = color.getTextureDiffuseColors();
 					float r = rgb[0];

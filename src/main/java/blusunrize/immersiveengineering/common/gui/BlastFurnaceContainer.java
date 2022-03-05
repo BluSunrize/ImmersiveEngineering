@@ -31,10 +31,10 @@ public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceBlockEnti
 			@Override
 			public boolean mayPlace(ItemStack itemStack)
 			{
-				return BlastFurnaceRecipe.findRecipe(itemStack, null)!=null;
+				return BlastFurnaceRecipe.findRecipe(tile.getLevel(), itemStack, null)!=null;
 			}
 		});
-		this.addSlot(new IESlot.BlastFuel(this, this.inv, 1, 52, 53));
+		this.addSlot(new IESlot.BlastFuel(this, this.inv, 1, 52, 53, tile.getLevel()));
 		this.addSlot(new IESlot.Output(this, this.inv, 2, 112, 17));
 		this.addSlot(new IESlot.Output(this, this.inv, 3, 112, 53));
 		slotCount = 4;

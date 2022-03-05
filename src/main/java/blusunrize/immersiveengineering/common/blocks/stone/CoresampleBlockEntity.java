@@ -146,7 +146,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 						tagCompound.putDouble("x", sampleX);
 						tagCompound.putDouble("z", sampleZ);
 						tagCompound.putDouble("rot", 180.0);
-						tagCompound.put("minerals", CoresampleItem.getSimplifiedMineralList(coresample));
+						tagCompound.put("minerals", CoresampleItem.getSimplifiedMineralList(level, coresample));
 
 						nbttaglist.add(tagCompound);
 						mapTagCompound.put("Decorations", nbttaglist);

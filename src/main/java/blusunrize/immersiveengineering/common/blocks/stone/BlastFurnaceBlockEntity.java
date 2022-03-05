@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 public class BlastFurnaceBlockEntity<T extends BlastFurnaceBlockEntity<T>> extends FurnaceLikeBlockEntity<BlastFurnaceRecipe, T>
 {
 	private final Supplier<BlastFurnaceRecipe> cachedRecipe = CachedRecipe.cached(
-			BlastFurnaceRecipe::findRecipe, () -> inventory.get(0)
+			BlastFurnaceRecipe::findRecipe, () -> level, () -> inventory.get(0)
 	);
 
 	public BlastFurnaceBlockEntity(IETemplateMultiblock mb, BlockEntityType<T> type, BlockPos pos, BlockState state)
@@ -57,13 +57,13 @@ public class BlastFurnaceBlockEntity<T extends BlastFurnaceBlockEntity<T>> exten
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return slot==0?BlastFurnaceRecipe.findRecipe(stack, null)!=null: slot==1&&BlastFurnaceFuel.isValidBlastFuel(stack);
+		return slot==0?BlastFurnaceRecipe.findRecipe(level, stack, null)!=null: slot==1&&BlastFurnaceFuel.isValidBlastFuel(level, stack);
 	}
 
 	@Override
 	protected int getBurnTimeOf(ItemStack fuel)
 	{
-		return BlastFurnaceFuel.getBlastFuelTime(fuel);
+		return BlastFurnaceFuel.getBlastFuelTime(level, fuel);
 	}
 
 	public static class CrudeBlastFurnaceBlockEntity extends BlastFurnaceBlockEntity<CrudeBlastFurnaceBlockEntity>

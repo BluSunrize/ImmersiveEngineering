@@ -16,6 +16,7 @@ import blusunrize.lib.manual.SpecialManualElements;
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +44,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 		this.recipes.clear();
 
 		for(String category : BlueprintCraftingRecipe.recipeCategories)
-			for(BlueprintCraftingRecipe recipe : BlueprintCraftingRecipe.findRecipes(category))
+			for(BlueprintCraftingRecipe recipe : BlueprintCraftingRecipe.findRecipes(Minecraft.getInstance().level, category))
 				for(int iStack = 0; iStack < stacks.length; iStack++)
 				{
 					ItemStack output = stacks[iStack];

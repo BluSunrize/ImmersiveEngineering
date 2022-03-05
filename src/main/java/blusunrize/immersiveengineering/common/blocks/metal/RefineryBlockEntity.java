@@ -33,6 +33,7 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -46,7 +47,6 @@ import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -70,8 +70,8 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	public RefineryBlockEntity(BlockEntityType<RefineryBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(IEMultiblocks.REFINERY, 16000, true, type, pos, state);
-		tanks[0].setValidator(fs -> RefineryRecipe.findIncompleteRefineryRecipe(fs, tanks[1].getFluid()).isPresent());
-		tanks[1].setValidator(fs -> RefineryRecipe.findIncompleteRefineryRecipe(fs, tanks[0].getFluid()).isPresent());
+		tanks[0].setValidator(fs -> RefineryRecipe.findIncompleteRefineryRecipe(level, fs, tanks[1].getFluid()).isPresent());
+		tanks[1].setValidator(fs -> RefineryRecipe.findIncompleteRefineryRecipe(level, fs, tanks[0].getFluid()).isPresent());
 	}
 
 	@Override
@@ -109,10 +109,10 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 		{
 			if(tanks[0].getFluidAmount() > 0||tanks[1].getFluidAmount() > 0)
 			{
-				RefineryRecipe recipe = RefineryRecipe.findRecipe(tanks[0].getFluid(), tanks[1].getFluid(), inventory.get(SLOT_CATALYST));
+				RefineryRecipe recipe = RefineryRecipe.findRecipe(level, tanks[0].getFluid(), tanks[1].getFluid(), inventory.get(SLOT_CATALYST));
 				if(recipe!=null)
 				{
-					MultiblockProcessInMachine<RefineryRecipe> process = new MultiblockProcessInMachine<>(recipe)
+					MultiblockProcessInMachine<RefineryRecipe> process = new MultiblockProcessInMachine<>(recipe, this::getRecipeForId)
 							.setInputTanks((tanks[0].getFluidAmount() > 0&&tanks[1].getFluidAmount() > 0)?new int[]{0, 1}: tanks[0].getFluidAmount() > 0?new int[]{0}: new int[]{1});
 					if(this.addProcessToQueue(process, true))
 					{
@@ -374,9 +374,9 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	}
 
 	@Override
-	protected RefineryRecipe getRecipeForId(ResourceLocation id)
+	protected RefineryRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		return RefineryRecipe.recipeList.get(id);
+		return RefineryRecipe.RECIPES.getById(level, id);
 	}
 
 	@Override

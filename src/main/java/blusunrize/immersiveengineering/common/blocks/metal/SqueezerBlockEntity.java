@@ -40,6 +40,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -154,7 +155,7 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 					SqueezerRecipe recipe = this.findRecipeForInsertion(stack);
 					if(recipe!=null)
 					{
-						MultiblockProcessInMachine<SqueezerRecipe> process = new MultiblockProcessInMachine<>(recipe, slot);
+						MultiblockProcessInMachine<SqueezerRecipe> process = new MultiblockProcessInMachine<>(recipe, this::getRecipeForId, slot);
 						if(this.addProcessToQueue(process, true))
 						{
 							this.addProcessToQueue(process, false);
@@ -406,13 +407,13 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 	@Override
 	public SqueezerRecipe findRecipeForInsertion(ItemStack inserting)
 	{
-		return SqueezerRecipe.findRecipe(inserting);
+		return SqueezerRecipe.findRecipe(level, inserting);
 	}
 
 	@Override
-	protected SqueezerRecipe getRecipeForId(ResourceLocation id)
+	protected SqueezerRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		return SqueezerRecipe.recipeList.get(id);
+		return SqueezerRecipe.RECIPES.getById(level, id);
 	}
 
 	@Override

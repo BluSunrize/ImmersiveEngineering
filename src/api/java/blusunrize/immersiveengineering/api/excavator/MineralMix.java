@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -22,9 +23,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 
 public class MineralMix extends IESerializableRecipe
@@ -32,7 +31,7 @@ public class MineralMix extends IESerializableRecipe
 	public static RecipeType<MineralMix> TYPE;
 	public static RegistryObject<IERecipeSerializer<MineralMix>> SERIALIZER;
 
-	public static Map<ResourceLocation, MineralMix> mineralList = new HashMap<>();
+	public static final CachedRecipeList<MineralMix> RECIPES = new CachedRecipeList<>(() -> TYPE, MineralMix.class);
 
 	public final StackWithChance[] outputs;
 	public final int weight;

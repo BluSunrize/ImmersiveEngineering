@@ -56,7 +56,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 			if(Screen.hasShiftDown())
 			{
 				list.add(new TranslatableComponent(Lib.DESC_INFO+"blueprint.creates1"));
-				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(key);
+				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(world, key);
 				if(recipes.length > 0)
 					for(BlueprintCraftingRecipe recipe : recipes)
 						list.add(new TextComponent(" ").append(recipe.output.getHoverName()));
@@ -80,9 +80,9 @@ public class EngineersBlueprintItem extends IEBaseItem
 	}
 
 	@Nonnull
-	public static BlueprintCraftingRecipe[] getRecipes(ItemStack stack)
+	public static BlueprintCraftingRecipe[] getRecipes(Level level, ItemStack stack)
 	{
-		return BlueprintCraftingRecipe.findRecipes(getCategory(stack));
+		return BlueprintCraftingRecipe.findRecipes(level, getCategory(stack));
 	}
 
 	public static String getCategory(ItemStack stack)

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
@@ -16,13 +17,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author BluSunrize - 01.05.2015
@@ -33,6 +33,7 @@ public class CrusherRecipe extends MultiblockRecipe
 {
 	public static RecipeType<CrusherRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
+	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, CrusherRecipe.class);
 
 	public final Ingredient input;
 	public final ItemStack output;
@@ -76,12 +77,9 @@ public class CrusherRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, CrusherRecipe> recipeList = Collections.emptyMap();
-
-	public static CrusherRecipe findRecipe(ItemStack input)
+	public static CrusherRecipe findRecipe(Level level, ItemStack input)
 	{
-		for(CrusherRecipe recipe : recipeList.values())
+		for(CrusherRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe.input.test(input))
 				return recipe;
 		return null;

@@ -61,7 +61,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 			MultiblockProcess<MetalPressRecipe> process = te.processQueue.get(i);
 			if(process==null)
 				continue;
-			float processMaxTicks = process.maxTicks;
+			float processMaxTicks = process.getMaxTicks(te.getLevel());
 			float transportTime = getTransportTime(processMaxTicks);
 			float pressTime = getPressTime(processMaxTicks);
 			//+partialTicks
@@ -113,7 +113,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 			MultiblockProcess<?> process = te.processQueue.get(i);
 			if(!(process instanceof MultiblockProcessInWorld<?> inWorld))
 				continue;
-			List<ItemStack> displays = inWorld.getDisplayItem();
+			List<ItemStack> displays = inWorld.getDisplayItem(te.getLevel());
 			if(displays.isEmpty())
 				continue;
 			matrixStack.pushPose();

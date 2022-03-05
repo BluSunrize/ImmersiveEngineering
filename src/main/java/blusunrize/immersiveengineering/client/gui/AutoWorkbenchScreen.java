@@ -53,7 +53,7 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 		Slot s = menu.getSlot(0);
 		if(s!=null&&s.hasItem()&&s.getItem().getItem() instanceof EngineersBlueprintItem)
 		{
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(s.getItem(), "blueprint"));
+			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(tile.getLevel(), ItemNBTHelper.getString(s.getItem(), "blueprint"));
 			if(recipes!=null&&recipes.length > 0)
 			{
 				int l = recipes.length;

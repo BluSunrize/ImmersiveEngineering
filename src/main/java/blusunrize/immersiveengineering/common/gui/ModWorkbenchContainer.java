@@ -100,7 +100,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 			{
 				//Init the output inventory
 				blueprint = true;
-				BlueprintCraftingRecipe[] recipes = EngineersBlueprintItem.getRecipes(tool);
+				BlueprintCraftingRecipe[] recipes = EngineersBlueprintItem.getRecipes(world, tool);
 				inventoryBPoutput = new BlueprintInventory(this, recipes);
 
 				//Add output slots

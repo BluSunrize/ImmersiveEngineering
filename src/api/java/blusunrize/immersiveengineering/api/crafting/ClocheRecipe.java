@@ -10,19 +10,19 @@
 package blusunrize.immersiveengineering.api.crafting;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class ClocheRecipe extends IESerializableRecipe
 {
@@ -36,8 +36,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	public final ClocheRenderReference renderReference;
 	public final ClocheRenderFunction renderFunction;
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, ClocheRecipe> recipeList = Collections.emptyMap();
+	public static final CachedRecipeList<ClocheRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, ClocheRecipe.class);
 	private static final List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
 	public ClocheRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
@@ -80,13 +79,13 @@ public class ClocheRecipe extends IESerializableRecipe
 		return this.outputs.get(0);
 	}
 
-	public static ClocheRecipe findRecipe(ItemStack seed, ItemStack soil, @Nullable ClocheRecipe hint)
+	public static ClocheRecipe findRecipe(Level level, ItemStack seed, ItemStack soil, @Nullable ClocheRecipe hint)
 	{
 		if (seed.isEmpty() || soil.isEmpty())
 			return null;
 		if (hint != null && hint.matches(seed, soil))
 			return hint;
-		for(ClocheRecipe recipe : recipeList.values())
+		for(ClocheRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe.matches(seed, soil))
 				return recipe;
 		return null;

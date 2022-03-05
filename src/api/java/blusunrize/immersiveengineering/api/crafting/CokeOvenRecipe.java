@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -26,6 +26,7 @@ public class CokeOvenRecipe extends IESerializableRecipe
 {
 	public static RecipeType<CokeOvenRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<CokeOvenRecipe>> SERIALIZER;
+	public static final CachedRecipeList<CokeOvenRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, CokeOvenRecipe.class);
 
 	public final IngredientWithSize input;
 	public final ItemStack output;
@@ -57,21 +58,18 @@ public class CokeOvenRecipe extends IESerializableRecipe
 		return this.output;
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, CokeOvenRecipe> recipeList = Collections.emptyMap();
-
-	public static CokeOvenRecipe findRecipe(ItemStack input)
+	public static CokeOvenRecipe findRecipe(Level level, ItemStack input)
 	{
-		return findRecipe(input, null);
+		return findRecipe(level, input, null);
 	}
 
-	public static CokeOvenRecipe findRecipe(ItemStack input, @Nullable CokeOvenRecipe hint)
+	public static CokeOvenRecipe findRecipe(Level level, ItemStack input, @Nullable CokeOvenRecipe hint)
 	{
 		if (input.isEmpty())
 			return null;
 		if (hint != null && hint.matches(input))
 			return hint;
-		for(CokeOvenRecipe recipe : recipeList.values())
+		for(CokeOvenRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe.matches(input))
 				return recipe;
 		return null;

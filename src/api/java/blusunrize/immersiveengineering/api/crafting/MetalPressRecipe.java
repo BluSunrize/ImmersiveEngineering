@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
@@ -18,7 +19,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * @author BluSunrize - 07.01.2016
@@ -29,6 +30,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 {
 	public static RecipeType<MetalPressRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
+	public static final CachedRecipeList<MetalPressRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, MetalPressRecipe.class);
 
 	public IngredientWithSize input;
 	public final Item mold;
@@ -68,52 +70,36 @@ public class MetalPressRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, MetalPressRecipe> recipeList = Collections.emptyMap();
-	private static ArrayListMultimap<Item, MetalPressRecipe> recipesByMold = ArrayListMultimap.create();
-
-	public static void updateRecipesByMold()
-	{
-		recipesByMold = ArrayListMultimap.create();
-		recipeList.values().forEach(recipe -> recipesByMold.put(recipe.mold, recipe));
-	}
-
 	public static MetalPressRecipe findRecipe(ItemStack mold, ItemStack input, Level world)
 	{
 		if(mold.isEmpty()||input.isEmpty())
 			return null;
-		List<MetalPressRecipe> list = recipesByMold.get(mold.getItem());
+		List<MetalPressRecipe> list = getRecipesByMold(world).get(mold.getItem());
 		for(MetalPressRecipe recipe : list)
 			if(recipe.matches(mold, input, world))
 				return recipe.getActualRecipe(mold, input, world);
 		return null;
 	}
 
-	public static List<MetalPressRecipe> removeRecipes(ItemStack output)
-	{
-		List<MetalPressRecipe> list = new ArrayList<>();
-		Set<Item> keySet = new HashSet<>(recipesByMold.keySet());
-		for(Item mold : keySet)
-		{
-			Iterator<MetalPressRecipe> it = recipesByMold.get(mold).iterator();
-			while(it.hasNext())
-			{
-				MetalPressRecipe ir = it.next();
-				if(ItemStack.isSame(ir.output, output))
-				{
-					list.add(ir);
-					it.remove();
-				}
-			}
-		}
-		return list;
-	}
-
-	public static boolean isValidMold(ItemStack itemStack)
+	public static boolean isValidMold(Level level, ItemStack itemStack)
 	{
 		if(itemStack.isEmpty())
 			return false;
-		return recipesByMold.containsKey(itemStack.getItem());
+		return getRecipesByMold(level).containsKey(itemStack.getItem());
+	}
+
+	private static ArrayListMultimap<Item, MetalPressRecipe> recipesByMold = ArrayListMultimap.create();
+	private static int reloadCountForByMold = CachedRecipeList.INVALID_RELOAD_COUNT;
+
+	private static ArrayListMultimap<Item, MetalPressRecipe> getRecipesByMold(Level level)
+	{
+		if(reloadCountForByMold!=CachedRecipeList.getReloadCount())
+		{
+			recipesByMold = ArrayListMultimap.create();
+			RECIPES.getRecipes(level).forEach(recipe -> recipesByMold.put(recipe.mold, recipe));
+			reloadCountForByMold = CachedRecipeList.getReloadCount();
+		}
+		return recipesByMold;
 	}
 
 	@Override

@@ -14,28 +14,45 @@ import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class MultiblockProcessInWorld<R extends MultiblockRecipe> extends MultiblockProcess<R>
 {
 	public NonNullList<ItemStack> inputItems;
 	protected float transformationPoint;
 
-	public MultiblockProcessInWorld(R recipe, float transformationPoint, NonNullList<ItemStack> inputItem)
+	public MultiblockProcessInWorld(
+			ResourceLocation recipeId, BiFunction<Level, ResourceLocation, R> getRecipe,
+			float transformationPoint, NonNullList<ItemStack> inputItem
+	)
 	{
-		super(recipe);
+		super(recipeId, getRecipe);
 		this.inputItems = inputItem;
 		this.transformationPoint = transformationPoint;
 	}
 
-	public List<ItemStack> getDisplayItem()
+	public MultiblockProcessInWorld(
+			R recipe, BiFunction<Level, ResourceLocation, R> getRecipe,
+			float transformationPoint, NonNullList<ItemStack> inputItem
+	)
 	{
-		if(processTick/(float)maxTicks > transformationPoint)
+		super(recipe, getRecipe);
+		this.inputItems = inputItem;
+		this.transformationPoint = transformationPoint;
+	}
+
+	public List<ItemStack> getDisplayItem(Level level)
+	{
+		LevelDependentData<R> levelData = getLevelData(level);
+		if(processTick/(float)levelData.maxTicks() > transformationPoint && levelData.recipe() != null)
 		{
-			List<ItemStack> list = this.recipe.getItemOutputs();
+			List<ItemStack> list = levelData.recipe().getItemOutputs();
 			if(!list.isEmpty())
 				return list;
 		}
@@ -43,12 +60,14 @@ public class MultiblockProcessInWorld<R extends MultiblockRecipe> extends Multib
 	}
 
 	public static <R extends MultiblockRecipe>
-	MultiblockProcessInWorld<R> load(R recipe, CompoundTag data)
+	MultiblockProcessInWorld<R> load(
+			ResourceLocation recipeId, BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data
+	)
 	{
 		NonNullList<ItemStack> inputs = NonNullList.withSize(data.getInt("numInputs"), ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(data, inputs);
 		float transformationPoint = data.getFloat("process_transformationPoint");
-		return new MultiblockProcessInWorld<>(recipe, transformationPoint, inputs);
+		return new MultiblockProcessInWorld<>(recipeId, getRecipe, transformationPoint, inputs);
 	}
 
 	@Override
@@ -65,6 +84,9 @@ public class MultiblockProcessInWorld<R extends MultiblockRecipe> extends Multib
 		super.processFinish(multiblock);
 		int size = -1;
 
+		R recipe = getLevelData(multiblock.getLevel()).recipe();
+		if (recipe == null)
+			return;
 		for(ItemStack inputItem : this.inputItems)
 		{
 			for(IngredientWithSize s : recipe.getItemInputs())

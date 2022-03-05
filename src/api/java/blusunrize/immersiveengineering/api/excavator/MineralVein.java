@@ -14,7 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ColumnPos;
-import net.minecraftforge.common.util.Lazy;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 
@@ -22,7 +22,8 @@ public class MineralVein
 {
 	private final ColumnPos pos;
 	private final ResourceLocation mineralName;
-	private final Lazy<MineralMix> mineral;
+	@Nullable
+	private MineralMix mineral;
 	private final int radius;
 	private int depletion;
 
@@ -30,7 +31,6 @@ public class MineralVein
 	{
 		this.pos = pos;
 		this.mineralName = mineral;
-		this.mineral = Lazy.of(() -> MineralMix.mineralList.get(mineralName));
 		this.radius = radius;
 	}
 
@@ -40,9 +40,11 @@ public class MineralVein
 	}
 
 	@Nullable
-	public MineralMix getMineral()
+	public MineralMix getMineral(Level level)
 	{
-		return mineral.get();
+		if (mineral == null)
+			mineral = MineralMix.RECIPES.getById(level, mineralName);
+		return mineral;
 	}
 
 	public int getRadius()

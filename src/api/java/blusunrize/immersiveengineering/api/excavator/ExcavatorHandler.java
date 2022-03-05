@@ -94,7 +94,7 @@ public class ExcavatorHandler
 				final double finalTotalSaturation = totalSaturation;
 				worldInfo = new MineralWorldInfo(inVeins.stream()
 						.map(pair -> Pair.of(pair.getFirst(), (int)(pair.getSecond()/finalTotalSaturation*1000)))
-						.filter(p -> p.getFirst().getMineral()!=null)
+						.filter(p -> p.getFirst().getMineral(world)!=null)
 						.collect(Collectors.toList())
 				);
 				MINERAL_INFO_CACHE.put(cacheKey, worldInfo);
@@ -141,7 +141,7 @@ public class ExcavatorHandler
 				if(!crossover)
 				{
 					MineralMix mineralMix = null;
-					MineralSelection selection = new MineralSelection(world.dimension());
+					MineralSelection selection = new MineralSelection(world);
 					if(selection.getTotalWeight() > 0)
 					{
 						int weight = selection.getRandomWeight(rand);
@@ -194,12 +194,12 @@ public class ExcavatorHandler
 		private final int totalWeight;
 		private final Set<MineralMix> validMinerals;
 
-		public MineralSelection(ResourceKey<Level> dimension)
+		public MineralSelection(Level dimension)
 		{
 			int weight = 0;
 			this.validMinerals = new HashSet<>();
-			for(MineralMix e : MineralMix.mineralList.values())
-				if(e.validDimension(dimension))
+			for(MineralMix e : MineralMix.RECIPES.getRecipes(dimension))
+				if(e.validDimension(dimension.dimension()))
 				{
 					validMinerals.add(e);
 					weight += e.weight;

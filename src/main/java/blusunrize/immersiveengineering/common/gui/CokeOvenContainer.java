@@ -29,7 +29,7 @@ public class CokeOvenContainer extends IEBaseContainer<CokeOvenBlockEntity>
 			@Override
 			public boolean mayPlace(ItemStack itemStack)
 			{
-				return CokeOvenRecipe.findRecipe(itemStack)!=null;
+				return CokeOvenRecipe.findRecipe(tile.getLevel(), itemStack)!=null;
 			}
 		});
 		this.addSlot(new IESlot.Output(this, this.inv, 1, 85, 35));

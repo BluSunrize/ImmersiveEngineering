@@ -28,7 +28,7 @@ import java.util.function.Supplier;
 public class AlloySmelterBlockEntity extends FurnaceLikeBlockEntity<AlloyRecipe, AlloySmelterBlockEntity>
 {
 	private final Supplier<AlloyRecipe> cachedRecipe = CachedRecipe.cached(
-			AlloyRecipe::findRecipe, () -> inventory.get(0), () -> inventory.get(1)
+			AlloyRecipe::findRecipe, () -> level, () -> inventory.get(0), () -> inventory.get(1)
 	);
 
 	public AlloySmelterBlockEntity(BlockEntityType<AlloySmelterBlockEntity> type, BlockPos pos, BlockState state)

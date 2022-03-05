@@ -369,7 +369,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	}
 
 	@Override
-	protected MultiblockRecipe getRecipeForId(ResourceLocation id)
+	protected MultiblockRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
 		return null;
 	}
@@ -429,7 +429,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 					FluidStack fs = tile.tanks[0].getFluid();
 					if(!fs.isEmpty())
 					{
-						BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(items.get(0), fs);
+						BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(tile.level, items.get(0), fs);
 						if(recipe!=null)
 						{
 							if(recipe.fluidInput.test(tile.tanks[0].getFluid()))

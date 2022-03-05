@@ -8,18 +8,22 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Comparator;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.function.Function;
 
 /**
@@ -31,6 +35,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 {
 	public static RecipeType<SqueezerRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
+	public static final CachedRecipeList<SqueezerRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, SqueezerRecipe.class);
 
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
@@ -62,14 +67,11 @@ public class SqueezerRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, SqueezerRecipe> recipeList = Collections.emptyMap();
-
-	public static SqueezerRecipe findRecipe(ItemStack input)
+	public static SqueezerRecipe findRecipe(Level level, ItemStack input)
 	{
 		if(input.isEmpty())
 			return null;
-		for(SqueezerRecipe recipe : recipeList.values())
+		for(SqueezerRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe.input.test(input))
 				return recipe;
 		return null;
@@ -81,7 +83,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 		return 0;
 	}
 
-	public static SortedMap<Component, Integer> getFluidValuesSorted(Fluid f, boolean inverse)
+	public static SortedMap<Component, Integer> getFluidValuesSorted(Level level, Fluid f, boolean inverse)
 	{
 		SortedMap<Component, Integer> map = new TreeMap<>(
 				Comparator.comparing(
@@ -89,7 +91,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 						inverse?Comparator.reverseOrder(): Comparator.naturalOrder()
 				)
 		);
-		for(SqueezerRecipe recipe : recipeList.values())
+		for(SqueezerRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe.fluidOutput!=null&&recipe.fluidOutput.getFluid()==f&&!recipe.input.hasNoMatchingItems())
 			{
 				ItemStack is = recipe.input.getMatchingStacks()[0];

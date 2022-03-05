@@ -36,6 +36,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -130,7 +131,7 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 					FermenterRecipe recipe = this.findRecipeForInsertion(stack);
 					if(recipe!=null)
 					{
-						MultiblockProcessInMachine<FermenterRecipe> process = new MultiblockProcessInMachine<>(recipe, slot);
+						MultiblockProcessInMachine<FermenterRecipe> process = new MultiblockProcessInMachine<>(recipe, this::getRecipeForId, slot);
 						if(this.addProcessToQueue(process, true))
 						{
 							this.addProcessToQueue(process, false);
@@ -363,13 +364,13 @@ public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<Fermenter
 	@Override
 	public FermenterRecipe findRecipeForInsertion(ItemStack inserting)
 	{
-		return FermenterRecipe.findRecipe(inserting);
+		return FermenterRecipe.findRecipe(level, inserting);
 	}
 
 	@Override
-	protected FermenterRecipe getRecipeForId(ResourceLocation id)
+	protected FermenterRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		return FermenterRecipe.recipeList.get(id);
+		return FermenterRecipe.RECIPES.getById(level, id);
 	}
 
 	@Override

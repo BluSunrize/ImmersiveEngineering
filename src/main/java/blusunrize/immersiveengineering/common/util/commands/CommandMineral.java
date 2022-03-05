@@ -37,9 +37,12 @@ import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.server.ServerLifecycleHooks;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -71,7 +74,7 @@ public class CommandMineral
 		list.executes(command -> {
 			StringBuilder s = new StringBuilder();
 			int i = 0;
-			for(MineralMix mm : MineralMix.mineralList.values())
+			for(MineralMix mm : MineralMix.RECIPES.getRecipes(command.getSource().getLevel()))
 				s.append((i++) > 0?", ": "").append(mm.getId());
 			command.getSource().sendSuccess(new TextComponent(s.toString()), true);
 			return Command.SINGLE_SUCCESS;
@@ -112,7 +115,7 @@ public class CommandMineral
 				MineralVein vein = pair.getFirst();
 				double percentage = pair.getSecond()/(double)info.getTotalWeight();
 				MutableComponent component = new TextComponent("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
-				component.append(new TranslatableComponent(vein.getMineral().getTranslationKey()));
+				component.append(new TranslatableComponent(vein.getMineral(context.getSource().getLevel()).getTranslationKey()));
 				ret.append(component.withStyle(ChatFormatting.GRAY));
 				component = new TextComponent("\n  ");
 				component.append(new TranslatableComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
@@ -209,6 +212,7 @@ public class CommandMineral
 		return new ColumnPos((int)vec.x, (int)vec.z);
 	}
 
+	// TODO fix static level access hacks
 	private static class MineralArgument implements ArgumentType<MineralMix>
 	{
 		public static final DynamicCommandExceptionType invalidVein = new DynamicCommandExceptionType(
@@ -218,7 +222,7 @@ public class CommandMineral
 		public MineralMix parse(StringReader reader) throws CommandSyntaxException
 		{
 			String name = reader.readQuotedString();//TODO does this work properly?
-			for(MineralMix mm : MineralMix.mineralList.values())
+			for(MineralMix mm : getStaticMinerals())
 				if(mm.getId().toString().equalsIgnoreCase(name))
 					return mm;
 			throw invalidVein.create(name);
@@ -227,20 +231,26 @@ public class CommandMineral
 		@Override
 		public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
 		{
-			return SharedSuggestionProvider.suggest(MineralMix.mineralList.values().stream().map(mix -> "\""+mix.getId()+"\""), builder);
+			return SharedSuggestionProvider.suggest(getStaticMinerals().stream().map(mix -> "\""+mix.getId()+"\""), builder);
 		}
 
 		@Override
 		public Collection<String> getExamples()
 		{
 			List<String> ret = new ArrayList<>();
-			for(MineralMix mix : MineralMix.mineralList.values())
+			for(MineralMix mix : getStaticMinerals())
 			{
 				ret.add("\""+mix.getId()+"\"");
 				if(ret.size() > 5)
 					break;
 			}
 			return ret;
+		}
+
+		private Collection<MineralMix> getStaticMinerals() {
+			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
+			Level level = server.overworld();
+			return MineralMix.RECIPES.getRecipes(level);
 		}
 	}
 }

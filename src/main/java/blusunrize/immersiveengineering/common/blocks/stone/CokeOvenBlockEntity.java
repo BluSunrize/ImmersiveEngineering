@@ -65,7 +65,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	public FluidTank tank = new FluidTank(12*FluidAttributes.BUCKET_VOLUME);
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	private final Supplier<CokeOvenRecipe> cachedRecipe = CachedRecipe.cached(
-			CokeOvenRecipe::findRecipe, () -> inventory.get(INPUT_SLOT)
+			CokeOvenRecipe::findRecipe, () -> level, () -> inventory.get(INPUT_SLOT)
 	);
 	public int process = 0;
 	public int processMax = 0;
@@ -256,7 +256,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 		if(stack.isEmpty())
 			return false;
 		if(slot==INPUT_SLOT)
-			return CokeOvenRecipe.findRecipe(stack)!=null;
+			return CokeOvenRecipe.findRecipe(level, stack)!=null;
 		if(slot==EMPTY_CONTAINER_SLOT)
 			return Utils.isFluidRelatedItemStack(stack);
 		return false;

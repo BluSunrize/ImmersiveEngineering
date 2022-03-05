@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.energy;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import net.minecraft.core.Registry;
@@ -18,13 +19,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 
@@ -33,7 +33,7 @@ public class GeneratorFuel extends IESerializableRecipe
 	public static RecipeType<GeneratorFuel> TYPE;
 	public static RegistryObject<IERecipeSerializer<GeneratorFuel>> SERIALIZER;
 
-	public static Collection<GeneratorFuel> ALL_FUELS = new ArrayList<>();
+	public static final CachedRecipeList<GeneratorFuel> RECIPES = new CachedRecipeList<>(() -> TYPE, GeneratorFuel.class);
 
 	private final FastEither<TagKey<Fluid>, List<Fluid>> fluids;
 	private final int burnTime;
@@ -83,11 +83,11 @@ public class GeneratorFuel extends IESerializableRecipe
 			return this.fluids.rightNonnull().contains(in);
 	}
 
-	public static GeneratorFuel getRecipeFor(Fluid in, @Nullable GeneratorFuel hint)
+	public static GeneratorFuel getRecipeFor(Level level, Fluid in, @Nullable GeneratorFuel hint)
 	{
 		if(hint!=null&&hint.matches(in))
 			return hint;
-		for(GeneratorFuel fuel : ALL_FUELS)
+		for(GeneratorFuel fuel : RECIPES.getRecipes(level))
 			if(fuel.matches(in))
 				return fuel;
 		return null;

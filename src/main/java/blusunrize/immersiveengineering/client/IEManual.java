@@ -121,7 +121,7 @@ public class IEManual
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement(new SpecialElementData("values", 0, addDynamicTable(
-					() -> ThermoelectricSource.getThermalValuesSorted(true), "K"
+					() -> ThermoelectricSource.getThermalValuesSorted(Minecraft.getInstance().level, true), "K"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
 			ieMan.addEntry(energyCat, builder.create(), ieMan.atOffsetFrom(energyCat, "redstone_wire", 0.5));
@@ -138,7 +138,7 @@ public class IEManual
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
-					() -> FermenterRecipe.getFluidValuesSorted(IEFluids.ETHANOL.getStill(), true), "mB"
+					() -> FermenterRecipe.getFluidValuesSorted(Minecraft.getInstance().level, IEFluids.ETHANOL.getStill(), true), "mB"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "fermenter"));
 			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 1/3d));
@@ -146,7 +146,7 @@ public class IEManual
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
-					() -> SqueezerRecipe.getFluidValuesSorted(IEFluids.PLANTOIL.getStill(), true), "mB"
+					() -> SqueezerRecipe.getFluidValuesSorted(Minecraft.getInstance().level, IEFluids.PLANTOIL.getStill(), true), "mB"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
 			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 2/3d));
@@ -199,7 +199,7 @@ public class IEManual
 		StringBuilder text = new StringBuilder();
 		List<SpecialElementData> specials = new ArrayList<>();
 
-		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.mineralList.values());
+		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.RECIPES.getClientRecipes());
 		Function<MineralMix, String> toName = mineral -> {
 			String translationKey = mineral.getTranslationKey();
 			String localizedName = I18n.get(translationKey);

@@ -479,20 +479,20 @@ public class Villages
 				int offX = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
 				int offZ = random.nextInt(SEARCH_RADIUS*2)-SEARCH_RADIUS;
 				MineralVein vein = ExcavatorHandler.getRandomMineral(world, merchantPos.offset(offX, 0, offZ));
-				if(vein!=null&&vein.getMineral()!=null&&!veins.contains(vein))
+				if(vein!=null&&vein.getMineral(world)!=null&&!veins.contains(vein))
 					veins.add(vein);
 			}
 			if(veins.size() > 0)
 			{
 				// lowest weight first, to pick the rarest vein
-				veins.sort(Comparator.comparingInt(o -> o.getMineral().weight));
+				veins.sort(Comparator.comparingInt(o -> o.getMineral(world).weight));
 				MineralVein vein = veins.get(0);
 				BlockPos blockPos = new BlockPos(vein.getPos().x, 64, vein.getPos().z);
 				ItemStack selling = MapItem.create(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
 				MapItem.lockMap(world, selling);
 				MapItemSavedData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
 				selling.setHoverName(new TranslatableComponent("item.immersiveengineering.map_orevein"));
-				ItemNBTHelper.setLore(selling, new TranslatableComponent(vein.getMineral().getTranslationKey()));
+				ItemNBTHelper.setLore(selling, new TranslatableComponent(vein.getMineral(world).getTranslationKey()));
 				ItemStack steelIngot = IEApi.getPreferredTagStack(trader.level.registryAccess(), IETags.getTagsFor(EnumMetals.STEEL).ingot);
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
 						ItemHandlerHelper.copyStackWithSize(steelIngot, 4+random.nextInt(8)), selling, 0, 1, 30, 0.5F);

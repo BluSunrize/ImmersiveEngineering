@@ -9,22 +9,20 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.Collections;
-import java.util.Map;
 
 public class ClocheFertilizer extends IESerializableRecipe
 {
 	public static RecipeType<ClocheFertilizer> TYPE;
 	public static RegistryObject<IERecipeSerializer<ClocheFertilizer>> SERIALIZER;
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, ClocheFertilizer> fertilizerList = Collections.emptyMap();
+	public static final CachedRecipeList<ClocheFertilizer> RECIPES = new CachedRecipeList<>(() -> TYPE, ClocheFertilizer.class);
 
 	public final Ingredient input;
 	public final float growthModifier;
@@ -53,16 +51,16 @@ public class ClocheFertilizer extends IESerializableRecipe
 		return ItemStack.EMPTY;
 	}
 
-	public static float getFertilizerGrowthModifier(ItemStack stack)
+	public static float getFertilizerGrowthModifier(Level level, ItemStack stack)
 	{
-		for(ClocheFertilizer e : ClocheFertilizer.fertilizerList.values())
+		for(ClocheFertilizer e : RECIPES.getRecipes(level))
 			if(e.input.test(stack))
 				return e.getGrowthModifier();
 		return 0;
 	}
 
-	public static boolean isValidFertilizer(ItemStack stack)
+	public static boolean isValidFertilizer(Level level, ItemStack stack)
 	{
-		return getFertilizerGrowthModifier(stack) > 0;
+		return getFertilizerGrowthModifier(level, stack) > 0;
 	}
 }

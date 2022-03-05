@@ -127,7 +127,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 		if(sample.isEmpty())
 			return null;
 		else
-			return CoresampleItem.getVeins(sample);
+			return CoresampleItem.getVeins(level, sample);
 	}
 
 	@Nonnull
@@ -137,7 +137,7 @@ public class SampleDrillBlockEntity extends IEBaseBlockEntity implements IEServe
 		ItemNBTHelper.putLong(stack, "timestamp", level.getGameTime());
 		CoresampleItem.setDimension(stack, level.dimension());
 		CoresampleItem.setCoords(stack, getBlockPos());
-		CoresampleItem.setMineralInfo(stack, info, getBlockPos());
+		CoresampleItem.setMineralInfo(level, stack, info, getBlockPos());
 		return stack;
 	}
 

@@ -36,7 +36,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraftforge.common.Tags;
 
@@ -104,15 +103,12 @@ public class SurveyToolsItem extends IEBaseItem
 	@Override
 	public ItemStack finishUsingItem(ItemStack stack, Level world, LivingEntity entityLiving)
 	{
-		if(!(entityLiving instanceof ServerPlayer))
+		if(!(entityLiving instanceof ServerPlayer player))
 			return stack;
-		ServerPlayer player = (ServerPlayer)entityLiving;
-		HitResult rtr = getPlayerPOVHitResult(world, player, Fluid.NONE);
-		if(!(rtr instanceof BlockHitResult))
-			return stack;
-		BlockPos pos = ((BlockHitResult)rtr).getBlockPos();
+		BlockHitResult rtr = getPlayerPOVHitResult(world, player, Fluid.NONE);
+		BlockPos pos = rtr.getBlockPos();
 		MineralVein vein = ExcavatorHandler.getRandomMineral(world, pos);
-		if(vein==null || vein.getMineral()==null)
+		if(vein==null || vein.getMineral(world)==null)
 		{
 			player.displayClientMessage(new TranslatableComponent(Lib.CHAT_INFO+"survey.no_vein"), true);
 			return stack;
@@ -147,7 +143,7 @@ public class SurveyToolsItem extends IEBaseItem
 		Vec2 vecToCenter = new Vec2(vein.getPos().x-pos.getX(), vein.getPos().z-pos.getZ());
 		if(vecToCenter.x==0&&vecToCenter.y==0) // hit the vein center directly
 			response = new TranslatableComponent(Lib.CHAT_INFO+"survey.hint.center",
-					new TranslatableComponent(vein.getMineral().getTranslationKey()));
+					new TranslatableComponent(vein.getMineral(world).getTranslationKey()));
 		else
 		{
 			double angle = Math.toDegrees(Math.atan2(vecToCenter.y, vecToCenter.x));
@@ -157,17 +153,17 @@ public class SurveyToolsItem extends IEBaseItem
 			{
 				case 0: // hint at the type of vein
 					response = new TranslatableComponent(Lib.CHAT_INFO+"survey.hint.1",
-							new TranslatableComponent(vein.getMineral().getTranslationKey()));
+							new TranslatableComponent(vein.getMineral(world).getTranslationKey()));
 					break;
 				case 1: // hint at the direction
 					response = new TranslatableComponent(Lib.CHAT_INFO+"survey.hint.2",
-							new TranslatableComponent(vein.getMineral().getTranslationKey()),
+							new TranslatableComponent(vein.getMineral(world).getTranslationKey()),
 							new TranslatableComponent(Lib.CHAT_INFO+"survey.direction."+segment));
 					break;
 				case 2: // hint at distance
 				default:
 					response = new TranslatableComponent(Lib.CHAT_INFO+"survey.hint.3",
-							new TranslatableComponent(vein.getMineral().getTranslationKey()),
+							new TranslatableComponent(vein.getMineral(world).getTranslationKey()),
 							Math.round(Math.sqrt(vecToCenter.x*vecToCenter.x+vecToCenter.y*vecToCenter.y)),
 							new TranslatableComponent(Lib.CHAT_INFO+"survey.direction."+segment));
 					break;

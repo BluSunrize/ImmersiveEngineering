@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
-import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes.RecipeDelegate;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -32,7 +31,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -40,7 +38,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -81,7 +78,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 			return;
 		for(MultiblockProcess<?> process : processQueue)
 		{
-			float maxTicks = process.maxTicks;
+			float maxTicks = process.getMaxTicks(level);
 			float transportTime = getTransportTime(maxTicks);
 			float pressTime = getPressTime(maxTicks);
 			float fProcess = process.processTick;
@@ -126,7 +123,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 				this.updateMasterBlock(null, true);
 				return true;
 			}
-			else if(MetalPressRecipe.isValidMold(heldItem))
+			else if(MetalPressRecipe.isValidMold(level, heldItem))
 			{
 				ItemStack tempMold = !master.mold.isEmpty()?master.mold.copy(): ItemStack.EMPTY;
 				master.mold = ItemHandlerHelper.copyStackWithSize(heldItem, 1);
@@ -150,7 +147,8 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	protected MultiblockProcess<MetalPressRecipe> loadProcessFromNBT(CompoundTag tag)
 	{
 		ResourceLocation id = new ResourceLocation(tag.getString("recipe"));
-		MetalPressRecipe recipe = MetalPressRecipe.recipeList.get(id);
+		/*
+		TODO fix!
 		if(recipe==null&&tag.contains("baseRecipe", Tag.TAG_STRING))
 		{
 			ResourceLocation baseRecipeName = new ResourceLocation(tag.getString("baseRecipe"));
@@ -158,17 +156,16 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 			if(baseRecipe!=null)
 				recipe = MetalPressPackingRecipes.getRecipeDelegate(baseRecipe, id);
 		}
-		if(recipe!=null)
-			return MultiblockProcessInWorld.load(recipe, tag);
-		return null;
+		 */
+		return MultiblockProcessInWorld.load(id, this::getRecipeForId, tag);
 	}
 
 	@Override
 	protected CompoundTag writeProcessToNBT(MultiblockProcess<?> process)
 	{
 		CompoundTag tag = new CompoundTag();
-		tag.putString("recipe", process.recipe.getId().toString());
-		if(process.recipe instanceof RecipeDelegate delegate)
+		tag.putString("recipe", process.getRecipeId().toString());
+		if(process.getRecipe(level) instanceof RecipeDelegate delegate)
 			tag.putString("baseRecipe", delegate.baseRecipe.getId().toString());
 		tag.putInt("process_processTick", process.processTick);
 		process.writeExtraDataToNBT(tag);
@@ -203,7 +200,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 //			float processMaxTicks = recipe.getTotalProcessTime();
 //			float transformationPoint = (MetalPressRenderer.getPressTime(processMaxTicks)+MetalPressRenderer.getPressTime(processMaxTicks))/processMaxTicks;
 			float transformationPoint = 0.5f;
-			MultiblockProcess<MetalPressRecipe> process = new MultiblockProcessInWorld<>(recipe, transformationPoint,
+			MultiblockProcess<MetalPressRecipe> process = new MultiblockProcessInWorld<>(recipe, this::getRecipeForId, transformationPoint,
 					Utils.createNonNullItemStackListFromItemStack(displayStack));
 			if(master.addProcessToQueue(process, true))
 			{
@@ -288,7 +285,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	@Override
 	public float getMinProcessDistance(MultiblockProcess<MetalPressRecipe> process)
 	{
-		float maxTicks = process.maxTicks;
+		float maxTicks = process.getMaxTicks(level);
 		return 1f-(getTransportTime(maxTicks)+getPressTime(maxTicks))/maxTicks;
 	}
 
@@ -364,7 +361,7 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	}
 
 	@Override
-	protected MetalPressRecipe getRecipeForId(ResourceLocation id)
+	protected MetalPressRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
 		throw new UnsupportedOperationException();
 	}

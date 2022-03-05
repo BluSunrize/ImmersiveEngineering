@@ -45,6 +45,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -63,6 +64,7 @@ import org.apache.commons.lang3.mutable.MutableInt;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.BiFunction;
 
 public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurnaceBlockEntity, ArcFurnaceRecipe>
 		implements ISoundBE, IInteractionObjectIE<ArcFurnaceBlockEntity>, ISelectionBounds, ICollisionBounds,
@@ -220,11 +222,11 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 						ItemStack stack = this.getInventory().get(slot);
 						if(!stack.isEmpty()&&stack.getCount() > 0)
 						{
-							ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(stack, additives);
+							ArcFurnaceRecipe recipe = ArcFurnaceRecipe.findRecipe(level, stack, additives);
 							if(recipe!=null)
 							{
 								MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(
-										recipe, ApiUtils.RANDOM.nextLong(), slot, 12, 13, 14, 15
+										recipe, this::getRecipeForId, ApiUtils.RANDOM.nextLong(), slot, 12, 13, 14, 15
 								);
 								if(this.addProcessToQueue(process, true))
 								{
@@ -521,11 +523,12 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	{
 		if(!hasElectrodes())
 			return false;
-		if(process.recipe!=null&&!process.recipe.slag.isEmpty())
+		var recipe = process.getRecipe(level);
+		if(recipe!=null&&!recipe.slag.isEmpty())
 		{
 			if(this.inventory.get(SLAG_SLOT).isEmpty())
 				return true;
-			return ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), process.recipe.slag)&&inventory.get(SLAG_SLOT).getCount()+process.recipe.slag.getCount() <= getSlotLimit(SLAG_SLOT);
+			return ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), recipe.slag)&&inventory.get(SLAG_SLOT).getCount()+recipe.slag.getCount() <= getSlotLimit(SLAG_SLOT);
 		}
 		return true;
 	}
@@ -549,12 +552,13 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	@Override
 	public void onProcessFinish(MultiblockProcess<ArcFurnaceRecipe> process)
 	{
-		if(!process.recipe.slag.isEmpty())
+		ArcFurnaceRecipe recipe = process.getRecipe(level);
+		if(recipe != null && !recipe.slag.isEmpty())
 		{
 			if(this.inventory.get(SLAG_SLOT).isEmpty())
-				this.inventory.set(SLAG_SLOT, process.recipe.slag.copy());
-			else if(ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), process.recipe.slag)||inventory.get(SLAG_SLOT).getCount()+process.recipe.slag.getCount() > getSlotLimit(SLAG_SLOT))
-				this.inventory.get(SLAG_SLOT).grow(process.recipe.slag.getCount());
+				this.inventory.set(SLAG_SLOT, recipe.slag.copy());
+			else if(ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), recipe.slag)||inventory.get(SLAG_SLOT).getCount()+recipe.slag.getCount() > getSlotLimit(SLAG_SLOT))
+				this.inventory.get(SLAG_SLOT).grow(recipe.slag.getCount());
 		}
 	}
 
@@ -704,26 +708,21 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	}
 
 	@Override
-	protected ArcFurnaceRecipe getRecipeForId(ResourceLocation id)
+	protected ArcFurnaceRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		return ArcFurnaceRecipe.recipeList.get(id);
+		return ArcFurnaceRecipe.RECIPES.getById(level, id);
 	}
 
 	@Override
 	@Nullable
 	protected MultiblockProcess<ArcFurnaceRecipe> loadProcessFromNBT(CompoundTag tag)
 	{
-		String id = tag.getString("recipe");
-		ArcFurnaceRecipe recipe = getRecipeForId(new ResourceLocation(id));
-		if(recipe!=null)
-		{
-			long seed = tag.getLong("seed");
-			MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(recipe, seed, tag.getIntArray("process_inputSlots"));
-			if(tag.contains("process_inputAmounts", Tag.TAG_INT_ARRAY))
-				process.setInputAmounts(tag.getIntArray("process_inputAmounts"));
-			return process;
-		}
-		return null;
+		ResourceLocation id = new ResourceLocation(tag.getString("recipe"));
+		long seed = tag.getLong("seed");
+		MultiblockProcessArcFurnace process = new MultiblockProcessArcFurnace(id, this::getRecipeForId, seed, tag.getIntArray("process_inputSlots"));
+		if(tag.contains("process_inputAmounts", Tag.TAG_INT_ARRAY))
+			process.setInputAmounts(tag.getIntArray("process_inputAmounts"));
+		return process;
 	}
 
 	@Override
@@ -770,15 +769,24 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	{
 		private final long seed;
 
-		public MultiblockProcessArcFurnace(ArcFurnaceRecipe recipe, long seed, int... inputSlots)
+		public MultiblockProcessArcFurnace(ResourceLocation id, BiFunction<Level, ResourceLocation, ArcFurnaceRecipe> getRecipe, long seed, int... inputSlots)
 		{
-			super(recipe, inputSlots);
+			super(id, getRecipe, inputSlots);
+			this.seed = seed;
+		}
+
+		public MultiblockProcessArcFurnace(ArcFurnaceRecipe recipe, BiFunction<Level, ResourceLocation, ArcFurnaceRecipe> getRecipe, long seed, int... inputSlots)
+		{
+			super(recipe, getRecipe, inputSlots);
 			this.seed = seed;
 		}
 
 		@Override
 		protected NonNullList<ItemStack> getRecipeItemOutputs(PoweredMultiblockBlockEntity<?, ArcFurnaceRecipe> multiblock)
 		{
+			var recipe = getRecipe(multiblock.getLevel());
+			if (recipe == null)
+				return NonNullList.create();
 			ItemStack input = multiblock.getInventory().get(this.inputSlots[0]);
 			NonNullList<ItemStack> additives = NonNullList.withSize(ADDITIVE_SLOT_COUNT, ItemStack.EMPTY);
 			for(int i = 0; i < ADDITIVE_SLOT_COUNT; i++)

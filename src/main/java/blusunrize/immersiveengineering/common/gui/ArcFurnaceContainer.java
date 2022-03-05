@@ -21,9 +21,9 @@ public class ArcFurnaceContainer extends IEBaseContainer<ArcFurnaceBlockEntity>
 		super(type, tile, id);
 		this.tile = tile;
 		for(int i = 0; i < 12; i++)
-			this.addSlot(new IESlot.ArcInput(this, this.inv, i, 10+i%3*21, 34+i/3*18));
+			this.addSlot(new IESlot.ArcInput(this, this.inv, i, 10+i%3*21, 34+i/3*18, tile.getLevel()));
 		for(int i = 0; i < 4; i++)
-			this.addSlot(new IESlot.ArcAdditive(this, this.inv, 12+i, 114+i%2*18, 34+i/2*18));
+			this.addSlot(new IESlot.ArcAdditive(this, this.inv, 12+i, 114+i%2*18, 34+i/2*18, tile.getLevel()));
 		for(int i = 0; i < 6; i++)
 			this.addSlot(new IESlot.Output(this, this.inv, 16+i, 78+i%3*18, 80+i/3*18));
 		this.addSlot(new IESlot.Output(this, this.inv, 22, 132, 98));

@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * @author BluSunrize - 19.05.2017
@@ -26,6 +26,7 @@ public class AlloyRecipe extends IESerializableRecipe
 {
 	public static RecipeType<AlloyRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<AlloyRecipe>> SERIALIZER;
+	public static final CachedRecipeList<AlloyRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, AlloyRecipe.class);
 
 	public final IngredientWithSize input0;
 	public final IngredientWithSize input1;
@@ -62,16 +63,15 @@ public class AlloyRecipe extends IESerializableRecipe
 			return false;
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, AlloyRecipe> recipeList = Collections.emptyMap();
-
-	public static AlloyRecipe findRecipe(ItemStack input0, ItemStack input1, @Nullable AlloyRecipe hint)
+	public static AlloyRecipe findRecipe(
+			Level level, ItemStack input0, ItemStack input1, @Nullable AlloyRecipe hint
+	)
 	{
 		if (input0.isEmpty() || input1.isEmpty())
 			return null;
 		if (hint != null && hint.matches(input0, input1))
 			return hint;
-		for(AlloyRecipe recipe : recipeList.values())
+		for(AlloyRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe.matches(input0, input1))
 				return recipe;
 		return null;

@@ -42,6 +42,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -151,7 +152,7 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 				if(!isRSDisabled())
 				{
 					MineralVein mineralVein = ExcavatorHandler.getRandomMineral(level, wheelPos);
-					MineralMix mineral = mineralVein!=null?mineralVein.getMineral(): null;
+					MineralMix mineral = mineralVein!=null?mineralVein.getMineral(level): null;
 
 					int consumed = IEServerConfig.MACHINES.excavator_consumption.get();
 					int extracted = energyStorage.extractEnergy(consumed, true);
@@ -502,7 +503,7 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 	}
 
 	@Override
-	protected MultiblockRecipe getRecipeForId(ResourceLocation id)
+	protected MultiblockRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
 		return null;
 	}

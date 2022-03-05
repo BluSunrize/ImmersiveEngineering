@@ -8,17 +8,17 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -30,6 +30,7 @@ public class RefineryRecipe extends MultiblockRecipe
 {
 	public static RecipeType<RefineryRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<RefineryRecipe>> SERIALIZER;
+	public static final CachedRecipeList<RefineryRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, RefineryRecipe.class);
 
 	public final FluidStack output;
 	public final FluidTagInput input0;
@@ -55,12 +56,9 @@ public class RefineryRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, RefineryRecipe> recipeList = Collections.emptyMap();
-
-	public static RefineryRecipe findRecipe(FluidStack input0, FluidStack input1, ItemStack catalyst)
+	public static RefineryRecipe findRecipe(Level level, FluidStack input0, FluidStack input1, ItemStack catalyst)
 	{
-		for(RefineryRecipe recipe : recipeList.values())
+		for(RefineryRecipe recipe : RECIPES.getRecipes(level))
 		{
 			if(!recipe.catalyst.test(catalyst))
 				continue;
@@ -89,11 +87,11 @@ public class RefineryRecipe extends MultiblockRecipe
 		return null;
 	}
 
-	public static Optional<RefineryRecipe> findIncompleteRefineryRecipe(@Nonnull FluidStack input0, @Nonnull FluidStack input1)
+	public static Optional<RefineryRecipe> findIncompleteRefineryRecipe(Level level, @Nonnull FluidStack input0, @Nonnull FluidStack input1)
 	{
 		if(input0.isEmpty()&&input1.isEmpty())
 			return Optional.empty();
-		for(RefineryRecipe recipe : recipeList.values())
+		for(RefineryRecipe recipe : RECIPES.getRecipes(level))
 		{
 			if(!input0.isEmpty()&&input1.isEmpty())
 			{

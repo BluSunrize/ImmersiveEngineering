@@ -8,17 +8,16 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.Collections;
-import java.util.Map;
 
 /**
  * @author BluSunrize - 14.01.2016
@@ -29,6 +28,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 {
 	public static RecipeType<BottlingMachineRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
+	public static final CachedRecipeList<BottlingMachineRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, BottlingMachineRecipe.class);
 
 	public final Ingredient input;
 	public final FluidTagInput fluidInput;
@@ -52,13 +52,10 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		return SERIALIZER.get();
 	}
 
-	// Initialized by reload listener
-	public static Map<ResourceLocation, BottlingMachineRecipe> recipeList = Collections.emptyMap();
-
-	public static BottlingMachineRecipe findRecipe(ItemStack input, FluidStack fluid)
+	public static BottlingMachineRecipe findRecipe(Level level, ItemStack input, FluidStack fluid)
 	{
 		if(!input.isEmpty()&&!fluid.isEmpty())
-			for(BottlingMachineRecipe recipe : recipeList.values())
+			for(BottlingMachineRecipe recipe : RECIPES.getRecipes(level))
 				if(recipe.input.test(input)&&recipe.fluidInput.test(fluid))
 					return recipe;
 		return null;

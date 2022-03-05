@@ -73,7 +73,7 @@ public class CoresampleItem extends IEBaseItem
 		ColumnPos coords = getCoords(coresample);
 		if(coords!=null)
 		{
-			List<VeinSampleData> veins = getVeins(coresample);
+			List<VeinSampleData> veins = getVeins(world, coresample);
 			if(!veins.isEmpty())
 				veins.forEach(data -> {
 					MutableComponent component = new TextComponent(
@@ -172,18 +172,18 @@ public class CoresampleItem extends IEBaseItem
 		return super.useOn(ctx);
 	}
 
-	public static MineralMix[] getMineralMixes(ItemStack coresample)
+	public static MineralMix[] getMineralMixes(Level level, ItemStack coresample)
 	{
-		return getVeins(coresample)
+		return getVeins(level, coresample)
 				.stream()
 				.map(VeinSampleData::getType)
 				.toArray(MineralMix[]::new);
 	}
 
-	public static ListTag getSimplifiedMineralList(ItemStack coresample)
+	public static ListTag getSimplifiedMineralList(Level level, ItemStack coresample)
 	{
 		ListTag outList = new ListTag();
-		getVeins(coresample).stream()
+		getVeins(level, coresample).stream()
 				.map(VeinSampleData::getType)
 				.map(MineralMix::getId)
 				.map(ResourceLocation::toString)
@@ -192,7 +192,7 @@ public class CoresampleItem extends IEBaseItem
 		return outList;
 	}
 
-	public static void setMineralInfo(ItemStack stack, MineralWorldInfo info, BlockPos pos)
+	public static void setMineralInfo(Level level, ItemStack stack, MineralWorldInfo info, BlockPos pos)
 	{
 		if(info==null)
 			return;
@@ -200,7 +200,7 @@ public class CoresampleItem extends IEBaseItem
 		ListTag nbtList = new ListTag();
 		veins.forEach(pair -> {
 			VeinSampleData sampleData = new VeinSampleData(
-					pair.getFirst().getMineral(),
+					pair.getFirst().getMineral(level),
 					pair.getSecond()/(double)info.getTotalWeight(),
 					1-pair.getFirst().getFailChance(pos),
 					pair.getFirst().getDepletion()
@@ -210,7 +210,7 @@ public class CoresampleItem extends IEBaseItem
 		stack.getOrCreateTag().put("mineralInfo", nbtList);
 	}
 
-	public static List<VeinSampleData> getVeins(ItemStack stack)
+	public static List<VeinSampleData> getVeins(Level level, ItemStack stack)
 	{
 		if(!ItemNBTHelper.hasKey(stack, "mineralInfo", Tag.TAG_LIST))
 			return ImmutableList.of();
@@ -218,7 +218,7 @@ public class CoresampleItem extends IEBaseItem
 		ListTag mineralInfoNBT = stack.getOrCreateTag().getList("mineralInfo", Tag.TAG_COMPOUND);
 		for(Tag vein : mineralInfoNBT)
 		{
-			VeinSampleData data = VeinSampleData.fromNBT((CompoundTag)vein);
+			VeinSampleData data = VeinSampleData.fromNBT(level, (CompoundTag)vein);
 			if(data!=null)
 				veins.add(data);
 		}
@@ -273,9 +273,9 @@ public class CoresampleItem extends IEBaseItem
 		}
 
 		@Nullable
-		public static VeinSampleData fromNBT(CompoundTag nbt)
+		public static VeinSampleData fromNBT(Level level, CompoundTag nbt)
 		{
-			MineralMix mineral = MineralMix.mineralList.get(new ResourceLocation(nbt.getString("mineral")));
+			MineralMix mineral = MineralMix.RECIPES.getById(level, new ResourceLocation(nbt.getString("mineral")));
 			if(mineral==null)
 				return null;
 			return new VeinSampleData(

@@ -12,43 +12,63 @@ package blusunrize.immersiveengineering.common.blocks.multiblocks.process;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.items.ItemHandlerHelper;
 
+import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public abstract class MultiblockProcess<R extends MultiblockRecipe>
 {
-	public R recipe;
+	private final ResourceLocation recipeId;
+	private final BiFunction<Level, ResourceLocation, R> getRecipe;
 	public int processTick;
-	public int maxTicks;
-	public int energyPerTick;
+	private LevelDependentData<R> levelData;
 	public boolean clearProcess = false;
 
-	public MultiblockProcess(R recipe)
+	public MultiblockProcess(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, R> getRecipe)
 	{
-		this.recipe = recipe;
+		this.recipeId = recipeId;
+		this.getRecipe = getRecipe;
 		this.processTick = 0;
-		this.maxTicks = this.recipe.getTotalProcessTime();
-		this.energyPerTick = this.recipe.getTotalProcessEnergy()/this.maxTicks;
+	}
+
+	public MultiblockProcess(R recipe, BiFunction<Level, ResourceLocation, R> getRecipe)
+	{
+		this.recipeId = recipe.getId();
+		this.getRecipe = getRecipe;
+		this.processTick = 0;
+		populateLevelData(recipe);
 	}
 
 	protected List<ItemStack> getRecipeItemOutputs(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
+		R recipe = getLevelData(multiblock.getLevel()).recipe;
+		if (recipe == null)
+			return List.of();
 		return recipe.getActualItemOutputs(multiblock);
 	}
 
 	protected List<FluidStack> getRecipeFluidOutputs(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
+		R recipe = getLevelData(multiblock.getLevel()).recipe;
+		if (recipe == null)
+			return List.of();
 		return recipe.getActualFluidOutputs(multiblock);
 	}
 
 	public boolean canProcess(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
-		if(multiblock.energyStorage.extractEnergy(energyPerTick, true)==energyPerTick)
+		LevelDependentData<R> levelData = getLevelData(multiblock.getLevel());
+		if (levelData.recipe == null)
+			return true;
+		if(multiblock.energyStorage.extractEnergy(levelData.energyPerTick, true)==levelData.energyPerTick)
 		{
 			List<ItemStack> outputs = getRecipeItemOutputs(multiblock);
 			if(outputs!=null&&!outputs.isEmpty())
@@ -76,7 +96,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 							return false;
 					}
 			}
-			List<FluidStack> fluidOutputs = recipe.getFluidOutputs();
+			List<FluidStack> fluidOutputs = levelData.recipe.getFluidOutputs();
 			if(fluidOutputs!=null&&!fluidOutputs.isEmpty())
 			{
 				IFluidTank[] tanks = multiblock.getInternalTanks();
@@ -108,9 +128,15 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 
 	public void doProcessTick(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
-		int energyExtracted = energyPerTick;
+		LevelDependentData<R> levelData = getLevelData(multiblock.getLevel());
+		if (levelData.recipe == null)
+		{
+			this.clearProcess = true;
+			return;
+		}
+		int energyExtracted = levelData.energyPerTick;
 		int ticksAdded = 1;
-		if(this.recipe.getMultipleProcessTicks() > 1)
+		if(levelData.recipe.getMultipleProcessTicks() > 1)
 		{
 			//Average Insertion, tracked by the advanced flux storage
 			int averageInsertion = multiblock.energyStorage.getAverageInsertion();
@@ -118,7 +144,7 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 			averageInsertion = multiblock.energyStorage.extractEnergy(averageInsertion, true);
 			if(averageInsertion > energyExtracted)
 			{
-				int possibleTicks = Math.min(averageInsertion/energyPerTick, Math.min(this.recipe.getMultipleProcessTicks(), this.maxTicks-this.processTick));
+				int possibleTicks = Math.min(averageInsertion/levelData.energyPerTick, Math.min(levelData.recipe.getMultipleProcessTicks(), levelData.maxTicks-this.processTick));
 				if(possibleTicks > 1)
 				{
 					ticksAdded = possibleTicks;
@@ -129,10 +155,8 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 		multiblock.energyStorage.extractEnergy(energyExtracted, false);
 		this.processTick += ticksAdded;
 
-		if(this.processTick >= this.maxTicks)
-		{
+		if(this.processTick >= levelData.maxTicks)
 			this.processFinish(multiblock);
-		}
 	}
 
 	protected void processFinish(PoweredMultiblockBlockEntity<?, R> multiblock)
@@ -191,4 +215,41 @@ public abstract class MultiblockProcess<R extends MultiblockRecipe>
 	}
 
 	public abstract void writeExtraDataToNBT(CompoundTag nbt);
+
+	protected LevelDependentData<R> getLevelData(Level level)
+	{
+		if(levelData==null)
+			populateLevelData(getRecipe.apply(level, recipeId));
+		return levelData;
+	}
+
+	private void populateLevelData(R recipe){
+		if(recipe!=null)
+		{
+			int maxTicks = recipe.getTotalProcessTime();
+			int energyPerTick = recipe.getTotalProcessEnergy()/maxTicks;
+			this.levelData = new LevelDependentData<>(recipe, maxTicks, energyPerTick);
+		}
+		else
+			this.levelData = new LevelDependentData<>(null, 20, 0);
+	}
+
+	public ResourceLocation getRecipeId()
+	{
+		return recipeId;
+	}
+
+	public int getMaxTicks(Level level) {
+		return getLevelData(level).maxTicks;
+	}
+
+	@Nullable
+	public R getRecipe(Level level)
+	{
+		return getLevelData(level).recipe;
+	}
+
+	protected record LevelDependentData<R extends MultiblockRecipe>(@Nullable R recipe, int maxTicks, int energyPerTick)
+	{
+	}
 }

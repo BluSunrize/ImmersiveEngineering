@@ -8,16 +8,21 @@
 
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -38,8 +43,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public String specialRecipeType;
 	public static List<String> specialRecipeTypes = new ArrayList<>();
-	// Initialized by reload listener
-	public static Map<ResourceLocation, ArcFurnaceRecipe> recipeList = Collections.emptyMap();
+	public static final CachedRecipeList<ArcFurnaceRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, ArcFurnaceRecipe.class);
 
 	public ArcFurnaceRecipe(
 			ResourceLocation id,
@@ -185,25 +189,25 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 		return this;
 	}
 
-	public static ArcFurnaceRecipe findRecipe(ItemStack input, NonNullList<ItemStack> additives)
+	public static ArcFurnaceRecipe findRecipe(Level level, ItemStack input, NonNullList<ItemStack> additives)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList.values())
+		for(ArcFurnaceRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe!=null&&recipe.matches(input, additives))
 				return recipe;
 		return null;
 	}
 
-	public static boolean isValidRecipeInput(ItemStack stack)
+	public static boolean isValidRecipeInput(Level level, ItemStack stack)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList.values())
+		for(ArcFurnaceRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe!=null&&recipe.isValidInput(stack))
 				return true;
 		return false;
 	}
 
-	public static boolean isValidRecipeAdditive(ItemStack stack)
+	public static boolean isValidRecipeAdditive(Level level, ItemStack stack)
 	{
-		for(ArcFurnaceRecipe recipe : recipeList.values())
+		for(ArcFurnaceRecipe recipe : RECIPES.getRecipes(level))
 			if(recipe!=null&&recipe.isValidAdditive(stack))
 				return true;
 		return false;

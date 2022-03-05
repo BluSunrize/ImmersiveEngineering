@@ -133,15 +133,18 @@ public abstract class IESlot extends Slot
 
 	public static class BlastFuel extends IESlot
 	{
-		public BlastFuel(AbstractContainerMenu container, Container inv, int id, int x, int y)
+		private final Level level;
+
+		public BlastFuel(AbstractContainerMenu container, Container inv, int id, int x, int y, Level level)
 		{
 			super(container, inv, id, x, y);
+			this.level = level;
 		}
 
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			return BlastFurnaceFuel.isValidBlastFuel(itemStack);
+			return BlastFurnaceFuel.isValidBlastFuel(level, itemStack);
 		}
 	}
 
@@ -524,29 +527,35 @@ public abstract class IESlot extends Slot
 
 	public static class ArcInput extends IESlot
 	{
-		public ArcInput(AbstractContainerMenu container, Container inv, int id, int x, int y)
+		private final Level level;
+
+		public ArcInput(AbstractContainerMenu container, Container inv, int id, int x, int y, Level level)
 		{
 			super(container, inv, id, x, y);
+			this.level = level;
 		}
 
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty()&&ArcFurnaceRecipe.isValidRecipeInput(itemStack);
+			return !itemStack.isEmpty()&&ArcFurnaceRecipe.isValidRecipeInput(level, itemStack);
 		}
 	}
 
 	public static class ArcAdditive extends IESlot
 	{
-		public ArcAdditive(AbstractContainerMenu container, Container inv, int id, int x, int y)
+		private final Level level;
+
+		public ArcAdditive(AbstractContainerMenu container, Container inv, int id, int x, int y, Level level)
 		{
 			super(container, inv, id, x, y);
+			this.level = level;
 		}
 
 		@Override
 		public boolean mayPlace(ItemStack itemStack)
 		{
-			return !itemStack.isEmpty()&&ArcFurnaceRecipe.isValidRecipeAdditive(itemStack);
+			return !itemStack.isEmpty()&&ArcFurnaceRecipe.isValidRecipeAdditive(level, itemStack);
 		}
 	}
 
@@ -572,12 +581,14 @@ public abstract class IESlot extends Slot
 
 	public static class Cloche extends IESlot
 	{
+		private final Level level;
 		int type = 0;
 
-		public Cloche(int type, AbstractContainerMenu container, Container inv, int id, int x, int y)
+		public Cloche(int type, AbstractContainerMenu container, Container inv, int id, int x, int y, Level level)
 		{
 			super(container, inv, id, x, y);
 			this.type = type;
+			this.level = level;
 		}
 
 		@Override
@@ -592,7 +603,7 @@ public abstract class IESlot extends Slot
 			if(itemStack.isEmpty())
 				return false;
 			if(type==SLOT_FERTILIZER)
-				return ClocheFertilizer.isValidFertilizer(itemStack);
+				return ClocheFertilizer.isValidFertilizer(level, itemStack);
 			return true;
 		}
 	}

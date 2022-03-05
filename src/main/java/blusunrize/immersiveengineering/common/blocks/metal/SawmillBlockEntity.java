@@ -140,7 +140,8 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 			if(!this.sawblade.isEmpty())
 			{
 				Optional<SawmillProcess> process = sawmillProcessQueue.stream()
-						.filter(SawmillProcess::isSawing).findFirst();
+						.filter(p -> p.isSawing(level))
+						.findFirst();
 				if(process.isPresent())
 				{
 					Direction particleDir = getIsMirrored()?getFacing().getClockWise(): getFacing().getCounterClockWise();
@@ -151,8 +152,10 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 					double vX = level.random.nextDouble()*particleDir.getStepX()*0.3;
 					double vY = level.random.nextDouble()*0.3;
 					double vZ = level.random.nextDouble()*particleDir.getStepZ()*0.3;
-					level.addParticle(new ItemParticleOption(ParticleTypes.ITEM, process.get().getCurrentStack(true)),
-							posX, posY, posZ, vX, vY, vZ);
+					level.addParticle(
+							new ItemParticleOption(ParticleTypes.ITEM, process.get().getCurrentStack(level, true)),
+							posX, posY, posZ, vX, vY, vZ
+					);
 				}
 			}
 		}
@@ -178,7 +181,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 			}
 			if(process.processFinished)
 			{
-				doProcessOutput(process.getCurrentStack(!this.sawblade.isEmpty()).copy());
+				doProcessOutput(process.getCurrentStack(level, !this.sawblade.isEmpty()).copy());
 				processIterator.remove();
 				if(this.sawblade.hurt(IEServerConfig.MACHINES.sawmill_bladeDamage.get(), Utils.RAND, null))
 				{
@@ -330,7 +333,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 				p = this.sawmillProcessQueue.get(this.sawmillProcessQueue.size()-1);
 				if(p!=null)
 				{
-					dist = p.getRelativeProcessStep();
+					dist = p.getRelativeProcessStep(level);
 					// either it's a different item or we have 3 together already
 					if(!stack.sameItem(p.input)||combinedLogs > 2)
 					{
@@ -526,7 +529,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	}
 
 	@Override
-	protected MultiblockRecipe getRecipeForId(ResourceLocation id)
+	protected MultiblockRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
 		return null;
 	}
@@ -572,9 +575,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	public static class SawmillProcess
 	{
 		private final ItemStack input;
-		private final SawmillRecipe recipe;
-		private final float maxProcessTicks;
-		private final int energyPerTick;
+		private RecipeDependentData recipeDependentData;
 		private int processTick;
 		private boolean stripped = false;
 		private boolean sawed = false;
@@ -583,38 +584,44 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 		public SawmillProcess(ItemStack input)
 		{
 			this.input = input;
-			this.recipe = SawmillRecipe.findRecipe(input);
-			if(this.recipe!=null)
+		}
+
+		private RecipeDependentData getRecipeDependentData(Level level) {
+			if (this.recipeDependentData == null)
 			{
-				this.maxProcessTicks = this.recipe.getTotalProcessTime();
-				this.energyPerTick = this.recipe.getTotalProcessEnergy()/this.recipe.getTotalProcessTime();
+				SawmillRecipe recipe = SawmillRecipe.findRecipe(level, input);
+				if(recipe!=null)
+					this.recipeDependentData = new RecipeDependentData(
+							recipe,
+							recipe.getTotalProcessTime(),
+							recipe.getTotalProcessEnergy()/recipe.getTotalProcessTime()
+					);
+				else
+					this.recipeDependentData = new RecipeDependentData(null, 80, 40);
 			}
-			else
-			{
-				this.maxProcessTicks = 80;
-				this.energyPerTick = 40;
-			}
+			return this.recipeDependentData;
 		}
 
 		public boolean processStep(SawmillBlockEntity tile, Set<ItemStack> secondaries)
 		{
-			if(tile.energyStorage.extractEnergy(energyPerTick, true) >= energyPerTick)
+			var data = getRecipeDependentData(tile.level);
+			if(tile.energyStorage.extractEnergy(data.energyPerTick, true) >= data.energyPerTick)
 			{
-				tile.energyStorage.extractEnergy(energyPerTick, false);
+				tile.energyStorage.extractEnergy(data.energyPerTick, false);
 				this.processTick++;
-				float relative = getRelativeProcessStep();
-				if(this.recipe!=null)
+				float relative = getRelativeProcessStep(tile.level);
+				if(data.recipe!=null)
 				{
 					if(!this.stripped&&relative >= .3125)
 					{
 						this.stripped = true;
-						secondaries.addAll(this.recipe.secondaryStripping);
+						secondaries.addAll(data.recipe.secondaryStripping);
 					}
 					if(!this.sawed&&relative >= .8625)
 					{
 						this.sawed = true;
 						if(!tile.sawblade.isEmpty())
-							secondaries.addAll(this.recipe.secondaryOutputs);
+							secondaries.addAll(data.recipe.secondaryOutputs);
 					}
 				}
 				if(relative >= 1)
@@ -624,32 +631,33 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 			return false;
 		}
 
-		public float getRelativeProcessStep()
+		public float getRelativeProcessStep(Level level)
 		{
-			return this.processTick/this.maxProcessTicks;
+			return this.processTick/getRecipeDependentData(level).maxProcessTicks;
 		}
 
-		public ItemStack getCurrentStack(boolean sawblade)
+		public ItemStack getCurrentStack(Level level, boolean sawblade)
 		{
-			if(this.recipe==null)
+			var data = getRecipeDependentData(level);
+			if(data.recipe==null)
 				return this.input;
 			// Early exit before stripping
 			if(!this.stripped)
 				return this.input;
 			// After stripping
-			ItemStack stripped = this.recipe.stripped;
+			ItemStack stripped = data.recipe.stripped;
 			if(stripped.isEmpty())
 				stripped = this.input;
 			// Before sawing
 			if(!this.sawed)
 				return stripped;
 			// Finally, if there is a sawblade
-			return sawblade?this.recipe.output: stripped;
+			return sawblade?data.recipe.output: stripped;
 		}
 
-		public boolean isSawing()
+		public boolean isSawing(Level level)
 		{
-			return getRelativeProcessStep() > .5375&&!this.sawed;
+			return getRelativeProcessStep(level) > .5375&&!this.sawed;
 		}
 
 		public CompoundTag writeToNBT()
@@ -670,6 +678,10 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 			process.stripped = nbt.getBoolean("stripped");
 			process.sawed = nbt.getBoolean("sawed");
 			return process;
+		}
+
+		private record RecipeDependentData(SawmillRecipe recipe, float maxProcessTicks, int energyPerTick)
+		{
 		}
 	}
 }

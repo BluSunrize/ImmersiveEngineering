@@ -81,10 +81,10 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
 			MultiblockProcess<MultiblockRecipe> process = blockEntity.processQueue.get(i);
-			if(process==null||process.processTick <= 0||process.processTick==process.maxTicks)
+			if(process==null||process.processTick <= 0||process.processTick==process.getMaxTicks(blockEntity.getLevel()))
 				continue;
 			//+partialTicks
-			float processTimer = ((float)process.processTick)/process.maxTicks*180;
+			float processTimer = ((float)process.processTick)/process.getMaxTicks(blockEntity.getLevel())*180;
 			if(processTimer <= 9)
 				continue;
 
@@ -220,7 +220,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 					continue;
 
 				float scale = .3125f;
-				List<ItemStack> dList = inWorld.getDisplayItem();
+				List<ItemStack> dList = inWorld.getDisplayItem(blockEntity.getLevel());
 				if(!dList.isEmpty())
 					if(dList.size() < 2)
 					{
@@ -276,7 +276,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 
 		if(!blueprintStack.isEmpty()&&playerDistanceSq < 1000)
 		{
-			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(ItemNBTHelper.getString(blueprintStack, "blueprint"));
+			BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(blockEntity.getLevel(), ItemNBTHelper.getString(blueprintStack, "blueprint"));
 			BlueprintCraftingRecipe recipe = (blockEntity.selectedRecipe < 0||blockEntity.selectedRecipe >= recipes.length)?null: recipes[blockEntity.selectedRecipe];
 			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, blockEntity.getLevelNonnull());
 			if(blueprint!=null)

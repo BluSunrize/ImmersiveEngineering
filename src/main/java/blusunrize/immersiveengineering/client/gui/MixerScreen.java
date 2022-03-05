@@ -86,7 +86,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		for(MultiblockProcess<MixerRecipe> process : tile.processQueue)
 			if(process instanceof MultiblockProcessInMachine<?> inMachine)
 			{
-				float mod = 1-(process.processTick/(float)process.maxTicks);
+				float mod = 1-(process.processTick/(float)process.getMaxTicks(tile.getLevel()));
 				for(int slot : inMachine.getInputSlots())
 				{
 					int h = (int)Math.max(1, mod*16);

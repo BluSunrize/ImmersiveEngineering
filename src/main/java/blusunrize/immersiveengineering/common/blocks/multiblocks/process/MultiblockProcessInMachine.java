@@ -16,13 +16,16 @@ import blusunrize.immersiveengineering.api.utils.IngredientUtils;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiFunction;
 
 public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends MultiblockProcess<R>
 {
@@ -30,9 +33,15 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends Mult
 	protected int[] inputAmounts = null;
 	protected int[] inputTanks = new int[0];
 
-	public MultiblockProcessInMachine(R recipe, int... inputSlots)
+	public MultiblockProcessInMachine(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, R> getRecipe, int... inputSlots)
 	{
-		super(recipe);
+		super(recipeId, getRecipe);
+		this.inputSlots = inputSlots;
+	}
+
+	public MultiblockProcessInMachine(R recipe, BiFunction<Level, ResourceLocation, R> getRecipe, int... inputSlots)
+	{
+		super(recipe, getRecipe);
 		this.inputSlots = inputSlots;
 	}
 
@@ -66,17 +75,22 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends Mult
 
 	protected List<IngredientWithSize> getRecipeItemInputs(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
-		return recipe.getItemInputs();
+		var recipe = getLevelData(multiblock.getLevel()).recipe();
+		return recipe == null ? List.of() : recipe.getItemInputs();
 	}
 
 	protected List<FluidTagInput> getRecipeFluidInputs(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
-		return recipe.getFluidInputs();
+		var recipe = getLevelData(multiblock.getLevel()).recipe();
+		return recipe == null ? List.of() : recipe.getFluidInputs();
 	}
 
 	@Override
 	public void doProcessTick(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
+		var recipe = getLevelData(multiblock.getLevel()).recipe();
+		if (recipe == null)
+			return;
 		NonNullList<ItemStack> inv = multiblock.getInventory();
 		if(recipe.shouldCheckItemAvailability()&&recipe.getItemInputs()!=null&&inv!=null)
 		{
@@ -144,9 +158,9 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends Mult
 	}
 
 	public static <R extends MultiblockRecipe>
-	MultiblockProcessInMachine<R> load(R recipe, CompoundTag data)
+	MultiblockProcessInMachine<R> load(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, R> getRecipe, CompoundTag data)
 	{
-		return new MultiblockProcessInMachine<>(recipe, data.getIntArray("process_inputSlots"))
+		return new MultiblockProcessInMachine<>(recipeId, getRecipe, data.getIntArray("process_inputSlots"))
 				.setInputAmounts(data.getIntArray("process_inputAmounts"))
 				.setInputTanks(data.getIntArray("process_inputTanks"));
 	}
