@@ -48,7 +48,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 83, 13)
-				.addItemStack(recipe.output)
+				.addItemStack(recipe.output.get())
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 

@@ -59,7 +59,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(world, key);
 				if(recipes.length > 0)
 					for(BlueprintCraftingRecipe recipe : recipes)
-						list.add(new TextComponent(" ").append(recipe.output.getHoverName()));
+						list.add(new TextComponent(" ").append(recipe.output.get().getHoverName()));
 			}
 			else
 				list.add(new TranslatableComponent(Lib.DESC_INFO+"blueprint.creates0"));

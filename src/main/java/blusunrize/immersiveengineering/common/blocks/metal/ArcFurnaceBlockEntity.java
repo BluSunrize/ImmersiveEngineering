@@ -523,12 +523,12 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	{
 		if(!hasElectrodes())
 			return false;
-		var recipe = process.getRecipe(level);
-		if(recipe!=null&&!recipe.slag.isEmpty())
+		ArcFurnaceRecipe recipe = process.getRecipe(level);
+		if(recipe!=null&&!recipe.slag.get().isEmpty())
 		{
 			if(this.inventory.get(SLAG_SLOT).isEmpty())
 				return true;
-			return ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), recipe.slag)&&inventory.get(SLAG_SLOT).getCount()+recipe.slag.getCount() <= getSlotLimit(SLAG_SLOT);
+			return ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), recipe.slag.get())&&inventory.get(SLAG_SLOT).getCount()+recipe.slag.get().getCount() <= getSlotLimit(SLAG_SLOT);
 		}
 		return true;
 	}
@@ -553,12 +553,12 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	public void onProcessFinish(MultiblockProcess<ArcFurnaceRecipe> process)
 	{
 		ArcFurnaceRecipe recipe = process.getRecipe(level);
-		if(recipe != null && !recipe.slag.isEmpty())
+		if(recipe!=null&&!recipe.slag.get().isEmpty())
 		{
 			if(this.inventory.get(SLAG_SLOT).isEmpty())
-				this.inventory.set(SLAG_SLOT, recipe.slag.copy());
-			else if(ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), recipe.slag)||inventory.get(SLAG_SLOT).getCount()+recipe.slag.getCount() > getSlotLimit(SLAG_SLOT))
-				this.inventory.get(SLAG_SLOT).grow(recipe.slag.getCount());
+				this.inventory.set(SLAG_SLOT, recipe.slag.get().copy());
+			else if(ItemHandlerHelper.canItemStacksStack(this.inventory.get(SLAG_SLOT), recipe.slag.get())||inventory.get(SLAG_SLOT).getCount()+recipe.slag.get().getCount() > getSlotLimit(SLAG_SLOT))
+				this.inventory.get(SLAG_SLOT).grow(recipe.slag.get().getCount());
 		}
 	}
 

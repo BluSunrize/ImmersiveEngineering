@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -40,9 +41,9 @@ public class FermenterRecipe extends MultiblockRecipe
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
 	@Nonnull
-	public final ItemStack itemOutput;
+	public final Lazy<ItemStack> itemOutput;
 
-	public FermenterRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull ItemStack itemOutput, IngredientWithSize input, int energy)
+	public FermenterRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull Lazy<ItemStack> itemOutput, IngredientWithSize input, int energy)
 	{
 		super(itemOutput, TYPE, id);
 		this.fluidOutput = fluidOutput;
@@ -52,7 +53,7 @@ public class FermenterRecipe extends MultiblockRecipe
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
 		this.fluidOutputList = Lists.newArrayList(this.fluidOutput);
-		this.outputList = NonNullList.of(ItemStack.EMPTY, this.itemOutput);
+		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.itemOutput.get()));
 	}
 
 	@Override

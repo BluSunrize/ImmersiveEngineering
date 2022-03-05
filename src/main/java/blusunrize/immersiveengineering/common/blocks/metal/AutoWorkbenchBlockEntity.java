@@ -100,7 +100,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 		if(recipes.length > 0&&(this.selectedRecipe >= 0&&this.selectedRecipe < recipes.length))
 		{
 			BlueprintCraftingRecipe recipe = recipes[this.selectedRecipe];
-			if(recipe!=null&&!recipe.output.isEmpty())
+			if(recipe!=null&&!recipe.output.get().isEmpty())
 			{
 				NonNullList<ItemStack> query = NonNullList.withSize(16, ItemStack.EMPTY);
 				for(int i = 0; i < query.size(); i++)

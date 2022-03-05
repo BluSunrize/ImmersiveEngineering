@@ -43,10 +43,10 @@ public class BlueprintOutputArea extends InfoArea
 	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
 		BlueprintCraftingRecipe recipe = slot.recipe;
-		if(recipe.output.isEmpty()|| slot.hasItem())
+		if(recipe.output.get().isEmpty()||slot.hasItem())
 			return;
 		tooltip.add(TextUtils.applyFormat(
-				recipe.output.getHoverName().copy(), recipe.output.getRarity().color
+				recipe.output.get().getHoverName().copy(), recipe.output.get().getRarity().color
 		));
 		List<ItemStack> inputs = new ArrayList<>();
 		for(IngredientWithSize stack : recipe.inputs)
@@ -75,7 +75,7 @@ public class BlueprintOutputArea extends InfoArea
 	@Override
 	public void draw(PoseStack transform)
 	{
-		ItemStack ghostStack = slot.recipe.output;
+		ItemStack ghostStack = slot.recipe.output.get();
 		if(ghostStack.isEmpty()||slot.hasItem())
 			return;
 		Minecraft.getInstance().getItemRenderer().renderAndDecorateItem(ghostStack, area.getX(), area.getY());

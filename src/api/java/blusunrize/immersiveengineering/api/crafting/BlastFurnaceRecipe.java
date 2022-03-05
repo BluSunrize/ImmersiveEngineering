@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -30,12 +31,12 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	public static final CachedRecipeList<BlastFurnaceRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, BlastFurnaceRecipe.class);
 
 	public final IngredientWithSize input;
-	public final ItemStack output;
+	public final Lazy<ItemStack> output;
 	@Nonnull
-	public final ItemStack slag;
+	public final Lazy<ItemStack> slag;
 	public final int time;
 
-	public BlastFurnaceRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, int time, @Nonnull ItemStack slag)
+	public BlastFurnaceRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, int time, @Nonnull Lazy<ItemStack> slag)
 	{
 		super(output, TYPE, id);
 		this.output = output;
@@ -53,7 +54,7 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 	@Override
 	public ItemStack getResultItem()
 	{
-		return output;
+		return output.get();
 	}
 
 	public boolean matches(ItemStack input) {

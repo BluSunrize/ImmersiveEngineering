@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,7 +36,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	@Override
 	public CrusherRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(json.get("result"));
+		Lazy<ItemStack> output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
 		JsonArray array = json.getAsJsonArray("secondaries");
 		int energy = GsonHelper.getAsInt(json, "energy");
@@ -57,7 +58,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		Ingredient input = Ingredient.fromNetwork(buffer);
 		int energy = buffer.readInt();
 		int secondaryCount = buffer.readInt();
-		CrusherRecipe recipe = new CrusherRecipe(recipeId, output, input, energy);
+		CrusherRecipe recipe = new CrusherRecipe(recipeId, Lazy.of(() -> output), input, energy);
 		for(int i = 0; i < secondaryCount; i++)
 			recipe.addToSecondaryOutput(StackWithChance.read(buffer));
 		return recipe;
@@ -66,7 +67,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	@Override
 	public void toNetwork(FriendlyByteBuf buffer, CrusherRecipe recipe)
 	{
-		buffer.writeItem(recipe.output);
+		buffer.writeItem(recipe.output.get());
 		recipe.input.toNetwork(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 		buffer.writeInt(recipe.secondaryOutputs.size());

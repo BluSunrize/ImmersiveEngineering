@@ -19,6 +19,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.ArrayList;
@@ -36,10 +37,10 @@ public class CrusherRecipe extends MultiblockRecipe
 	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, CrusherRecipe.class);
 
 	public final Ingredient input;
-	public final ItemStack output;
+	public final Lazy<ItemStack> output;
 	public final List<StackWithChance> secondaryOutputs = new ArrayList<>();
 
-	public CrusherRecipe(ResourceLocation id, ItemStack output, Ingredient input, int energy)
+	public CrusherRecipe(ResourceLocation id, Lazy<ItemStack> output, Ingredient input, int energy)
 	{
 		super(output, TYPE, id);
 		this.output = output;
@@ -47,7 +48,7 @@ public class CrusherRecipe extends MultiblockRecipe
 		setTimeAndEnergy(50, energy);
 
 		setInputList(Lists.newArrayList(this.input));
-		this.outputList = NonNullList.of(ItemStack.EMPTY, this.output);
+		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
 	}
 
 	@Override
@@ -60,10 +61,13 @@ public class CrusherRecipe extends MultiblockRecipe
 	public NonNullList<ItemStack> getActualItemOutputs(BlockEntity tile)
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
-		list.add(output);
+		list.add(output.get());
 		for(StackWithChance output : secondaryOutputs)
-			if(!output.stack().isEmpty()&&ApiUtils.RANDOM.nextFloat() < output.chance())
-				list.add(output.stack());
+		{
+			ItemStack realStack = output.stack().get();
+			if(!realStack.isEmpty()&&ApiUtils.RANDOM.nextFloat() < output.chance())
+				list.add(realStack);
+		}
 		return list;
 	}
 

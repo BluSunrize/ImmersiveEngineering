@@ -29,7 +29,7 @@ public class BlastFurnaceFuel extends IESerializableRecipe
 
 	public BlastFurnaceFuel(ResourceLocation id, Ingredient input, int burnTime)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(LAZY_EMPTY, TYPE, id);
 		this.input = input;
 		this.burnTime = burnTime;
 	}

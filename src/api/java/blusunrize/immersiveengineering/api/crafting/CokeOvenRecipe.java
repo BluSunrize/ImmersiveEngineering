@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -29,11 +30,11 @@ public class CokeOvenRecipe extends IESerializableRecipe
 	public static final CachedRecipeList<CokeOvenRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, CokeOvenRecipe.class);
 
 	public final IngredientWithSize input;
-	public final ItemStack output;
+	public final Lazy<ItemStack> output;
 	public final int time;
 	public final int creosoteOutput;
 
-	public CokeOvenRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, int time, int creosoteOutput)
+	public CokeOvenRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, int time, int creosoteOutput)
 	{
 		super(output, TYPE, id);
 		this.output = output;
@@ -55,7 +56,7 @@ public class CokeOvenRecipe extends IESerializableRecipe
 	@Override
 	public ItemStack getResultItem()
 	{
-		return this.output;
+		return this.output.get();
 	}
 
 	public static CokeOvenRecipe findRecipe(Level level, ItemStack input)

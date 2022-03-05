@@ -19,6 +19,7 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.*;
@@ -49,7 +50,7 @@ public class PotionRecipeGenerators
 		Map<Potion, BottlingMachineRecipe> recipes = new HashMap<>();
 		Function<Potion, BottlingMachineRecipe> toRecipe = potion -> new BottlingMachineRecipe(
 				potion.getRegistryName(),
-				PotionUtils.setPotion(new ItemStack(Items.POTION), potion),
+				Lazy.of(() -> PotionUtils.setPotion(new ItemStack(Items.POTION), potion)),
 				Ingredient.of(Items.GLASS_BOTTLE),
 				getFluidTagForType(potion, 250)
 		);

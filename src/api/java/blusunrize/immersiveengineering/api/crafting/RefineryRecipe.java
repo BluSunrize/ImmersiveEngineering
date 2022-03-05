@@ -39,7 +39,7 @@ public class RefineryRecipe extends MultiblockRecipe
 
 	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagInput input0, FluidTagInput input1, Ingredient catalyst, int energy)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(LAZY_EMPTY, TYPE, id);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;

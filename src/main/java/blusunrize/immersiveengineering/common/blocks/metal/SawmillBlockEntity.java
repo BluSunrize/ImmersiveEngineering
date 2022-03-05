@@ -53,6 +53,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -615,13 +616,17 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 					if(!this.stripped&&relative >= .3125)
 					{
 						this.stripped = true;
-						secondaries.addAll(data.recipe.secondaryStripping);
+						data.recipe.secondaryStripping.stream()
+								.map(Lazy::get)
+								.forEach(secondaries::add);
 					}
 					if(!this.sawed&&relative >= .8625)
 					{
 						this.sawed = true;
 						if(!tile.sawblade.isEmpty())
-							secondaries.addAll(data.recipe.secondaryOutputs);
+							data.recipe.secondaryOutputs.stream()
+									.map(Lazy::get)
+									.forEach(secondaries::add);
 					}
 				}
 				if(relative >= 1)
@@ -645,14 +650,14 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 			if(!this.stripped)
 				return this.input;
 			// After stripping
-			ItemStack stripped = data.recipe.stripped;
+			ItemStack stripped = data.recipe.stripped.get();
 			if(stripped.isEmpty())
 				stripped = this.input;
 			// Before sawing
 			if(!this.sawed)
 				return stripped;
 			// Finally, if there is a sawblade
-			return sawblade?data.recipe.output: stripped;
+			return sawblade?data.recipe.output.get(): stripped;
 		}
 
 		public boolean isSawing(Level level)

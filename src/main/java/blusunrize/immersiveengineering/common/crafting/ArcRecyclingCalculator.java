@@ -26,6 +26,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -94,7 +95,12 @@ public class ArcRecyclingCalculator
 	private ArcRecyclingRecipe makeRecipe(RecyclingCalculation calculation)
 	{
 		ResourceLocation id = new ResourceLocation(Lib.MODID, "recycling/"+ForgeRegistries.ITEMS.getKey(calculation.stack.getItem()).getPath());
-		return new ArcRecyclingRecipe(id, () -> tags, calculation.outputs, IngredientWithSize.of(calculation.stack), 100, 51200);
+		return new ArcRecyclingRecipe(
+				id, () -> tags,
+				calculation.outputs.entrySet().stream()
+						.map(e -> Pair.of(Lazy.of(e::getKey), e.getValue()))
+						.toList(),
+				IngredientWithSize.of(calculation.stack), 100, 51200);
 	}
 
 	public static List<ArcFurnaceRecipe> getRecipesFromRunningThreads()

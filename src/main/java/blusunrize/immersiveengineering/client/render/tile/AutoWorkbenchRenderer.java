@@ -320,7 +320,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		BlueprintLines blueprint = blueprintCache.get(recipe);
 		if(blueprint==null)
 		{
-			blueprint = getBlueprintDrawable(recipe.output, world);
+			blueprint = getBlueprintDrawable(recipe.output.get(), world);
 			blueprintCache.put(recipe, blueprint);
 		}
 		return blueprint;

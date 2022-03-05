@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 
 public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
 {
-	protected MultiblockRecipe(ItemStack outputDummy, RecipeType<?> type, ResourceLocation id)
+	protected MultiblockRecipe(Lazy<ItemStack> outputDummy, RecipeType<?> type, ResourceLocation id)
 	{
 		super(outputDummy, type, id);
 	}
@@ -57,12 +57,12 @@ public abstract class MultiblockRecipe extends IESerializableRecipe implements I
 				.collect(Collectors.toList());
 	}
 
-	protected NonNullList<ItemStack> outputList = NonNullList.withSize(0, ItemStack.EMPTY);
+	protected Lazy<NonNullList<ItemStack>> outputList = Lazy.of(NonNullList::create);
 
 	@Override
 	public NonNullList<ItemStack> getItemOutputs()
 	{
-		return outputList;
+		return outputList.get();
 	}
 
 	protected List<FluidTagInput> fluidInputList;

@@ -30,6 +30,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -411,10 +412,10 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 
 	protected static class OutputSlot<R>
 	{
-		private final Function<R, ItemStack> getFromRecipe;
+		private final Function<R, Lazy<ItemStack>> getFromRecipe;
 		private final int slotIndex;
 
-		public OutputSlot(Function<R, ItemStack> getFromRecipe, int slotIndex)
+		public OutputSlot(Function<R, Lazy<ItemStack>> getFromRecipe, int slotIndex)
 		{
 			this.getFromRecipe = getFromRecipe;
 			this.slotIndex = slotIndex;
@@ -422,7 +423,7 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 
 		public ItemStack get(R recipe)
 		{
-			return getFromRecipe.apply(recipe);
+			return getFromRecipe.apply(recipe).get();
 		}
 	}
 }

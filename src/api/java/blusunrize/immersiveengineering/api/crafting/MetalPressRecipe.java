@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
@@ -34,9 +35,9 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public IngredientWithSize input;
 	public final Item mold;
-	public final ItemStack output;
+	public final Lazy<ItemStack> output;
 
-	public MetalPressRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input, Item mold, int energy)
+	public MetalPressRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, Item mold, int energy)
 	{
 		super(output, TYPE, id);
 		this.output = output;
@@ -45,7 +46,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 		setTimeAndEnergy(60, energy);
 
 		setInputListWithSizes(Lists.newArrayList(this.input));
-		this.outputList = NonNullList.of(ItemStack.EMPTY, this.output);
+		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
 	}
 
 	@Override

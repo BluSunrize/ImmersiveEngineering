@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.crafting.serializers;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
@@ -19,6 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -37,7 +39,7 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 		FluidStack fluidOutput = FluidStack.EMPTY;
 		if(json.has("fluid"))
 			fluidOutput = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "fluid"));
-		ItemStack itemOutput = ItemStack.EMPTY;
+		Lazy<ItemStack> itemOutput = IESerializableRecipe.LAZY_EMPTY;
 		if(json.has("result"))
 			itemOutput = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
@@ -52,7 +54,7 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 	public FermenterRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
 		FluidStack fluidOutput = buffer.readFluidStack();
-		ItemStack itemOutput = buffer.readItem();
+		Lazy<ItemStack> itemOutput = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		int energy = buffer.readInt();
 		return new FermenterRecipe(recipeId, fluidOutput, itemOutput, input, energy);
@@ -62,7 +64,7 @@ public class FermenterRecipeSerializer extends IERecipeSerializer<FermenterRecip
 	public void toNetwork(FriendlyByteBuf buffer, FermenterRecipe recipe)
 	{
 		buffer.writeFluidStack(recipe.fluidOutput);
-		buffer.writeItem(recipe.itemOutput);
+		buffer.writeItem(recipe.itemOutput.get());
 		recipe.input.write(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}

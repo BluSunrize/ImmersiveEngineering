@@ -49,7 +49,7 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 		builder.addSlot(RecipeIngredientRole.INPUT, 30, 2)
 				.addItemStacks(recipe.input1.getMatchingStackList());
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 84, 20)
-				.addItemStack(recipe.output);
+				.addItemStack(recipe.output.get());
 	}
 
 	@Override

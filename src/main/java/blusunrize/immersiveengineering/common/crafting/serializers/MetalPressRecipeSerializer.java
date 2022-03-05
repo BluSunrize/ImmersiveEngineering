@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -34,7 +35,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	@Override
 	public MetalPressRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(json.get("result"));
+		Lazy<ItemStack> output = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));
 		Item mold = ForgeRegistries.ITEMS.getValue(new ResourceLocation(GsonHelper.getAsString(json, "mold")));
 		int energy = GsonHelper.getAsInt(json, "energy");
@@ -47,7 +48,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	@Override
 	public MetalPressRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItem();
+		Lazy<ItemStack> output = readLazyStack(buffer);
 		IngredientWithSize input = IngredientWithSize.read(buffer);
 		Item mold = buffer.readRegistryIdSafe(Item.class);
 		int energy = buffer.readInt();
@@ -57,7 +58,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	@Override
 	public void toNetwork(FriendlyByteBuf buffer, MetalPressRecipe recipe)
 	{
-		buffer.writeItem(recipe.output);
+		writeLazyStack(buffer, recipe.output);
 		recipe.input.write(buffer);
 		buffer.writeRegistryId(recipe.mold);
 		buffer.writeInt(recipe.getTotalProcessEnergy());

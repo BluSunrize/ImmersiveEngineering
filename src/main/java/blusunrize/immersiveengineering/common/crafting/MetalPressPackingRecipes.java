@@ -26,6 +26,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nullable;
@@ -70,7 +71,7 @@ public class MetalPressPackingRecipes
 	{
 		public MetalPressContainerRecipe(ResourceLocation id, Item mold)
 		{
-			super(id, ItemStack.EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, 3200);
+			super(id, LAZY_EMPTY, new IngredientWithSize(Ingredient.EMPTY), mold, 3200);
 		}
 
 		@Override
@@ -142,7 +143,8 @@ public class MetalPressPackingRecipes
 
 		private RecipeDelegate(ResourceLocation id, ItemStack output, ItemStack input, Item mold, CraftingRecipe baseRecipe)
 		{
-			super(id, output, IngredientWithSize.of(input), mold, 3200);
+			// TODO fix
+			super(id, Lazy.of(() -> output), IngredientWithSize.of(input), mold, 3200);
 			this.baseRecipe = baseRecipe;
 		}
 

@@ -238,8 +238,8 @@ public class IEManual
 										.format(sorted.chance()*100)
 										.replaceAll("\\G0", "\u00A0")
 						).append("% ")
-						.append(sorted.stack().getHoverName().getString());
-				sortedOres.add(sorted.stack());
+						.append(sorted.stack().get().getHoverName().getString());
+				sortedOres.add(sorted.stack().get());
 			}
 			specials.add(new SpecialElementData(mineral.getId().toString(), 0, new ManualElementItem(ManualHelper.getManual(), sortedOres)));
 			String desc = I18n.get("ie.manual.entry.minerals_desc", dimensionString, outputString.toString());

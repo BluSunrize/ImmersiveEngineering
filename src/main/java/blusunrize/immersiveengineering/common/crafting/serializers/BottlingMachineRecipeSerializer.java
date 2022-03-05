@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 
@@ -33,7 +34,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	@Override
 	public BottlingMachineRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(json.get("result"));
+		Lazy<ItemStack> output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
 		FluidTagInput fluidInput = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "fluid"));
 		return IEServerConfig.MACHINES.bottlingMachineConfig.apply(
@@ -45,7 +46,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	@Override
 	public BottlingMachineRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItem();
+		Lazy<ItemStack> output = readLazyStack(buffer);
 		Ingredient input = Ingredient.fromNetwork(buffer);
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
 		return new BottlingMachineRecipe(recipeId, output, input, fluidInput);
@@ -54,7 +55,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	@Override
 	public void toNetwork(FriendlyByteBuf buffer, BottlingMachineRecipe recipe)
 	{
-		buffer.writeItem(recipe.output);
+		writeLazyStack(buffer, recipe.output);
 		recipe.input.toNetwork(buffer);
 		recipe.fluidInput.write(buffer);
 	}

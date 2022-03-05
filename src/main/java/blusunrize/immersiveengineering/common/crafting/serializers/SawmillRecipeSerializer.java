@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.crafting.serializers;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
@@ -20,6 +21,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -35,9 +37,9 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 	@Override
 	public SawmillRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(json.get("result"));
+		Lazy<ItemStack> output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(json.get("input"));
-		ItemStack stripped = ItemStack.EMPTY;
+		Lazy<ItemStack> stripped = IESerializableRecipe.LAZY_EMPTY;
 		if(json.has("stripped"))
 			stripped = readOutput(json.get("stripped"));
 
@@ -50,7 +52,7 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 			if(CraftingHelper.processConditions(element, "conditions"))
 			{
 				boolean stripping = GsonHelper.getAsBoolean(element, "stripping");
-				ItemStack stack = readOutput(element.get("output"));
+				Lazy<ItemStack> stack = readOutput(element.get("output"));
 				if(stripping)
 					recipe.addToSecondaryStripping(stack);
 				else
@@ -64,32 +66,32 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 	@Override
 	public SawmillRecipe fromNetwork(@Nonnull ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItem();
-		ItemStack stripped = buffer.readItem();
+		Lazy<ItemStack> output = readLazyStack(buffer);
+		Lazy<ItemStack> stripped = readLazyStack(buffer);
 		Ingredient input = Ingredient.fromNetwork(buffer);
 		int energy = buffer.readInt();
 		SawmillRecipe recipe = new SawmillRecipe(recipeId, output, stripped, input, energy);
 		int secondaryCount = buffer.readInt();
 		for(int i = 0; i < secondaryCount; i++)
-			recipe.addToSecondaryStripping(buffer.readItem());
+			recipe.addToSecondaryStripping(readLazyStack(buffer));
 		secondaryCount = buffer.readInt();
 		for(int i = 0; i < secondaryCount; i++)
-			recipe.addToSecondaryOutput(buffer.readItem());
+			recipe.addToSecondaryOutput(readLazyStack(buffer));
 		return recipe;
 	}
 
 	@Override
 	public void toNetwork(FriendlyByteBuf buffer, SawmillRecipe recipe)
 	{
-		buffer.writeItem(recipe.output);
-		buffer.writeItem(recipe.stripped);
+		writeLazyStack(buffer, recipe.output);
+		buffer.writeItem(recipe.stripped.get());
 		recipe.input.toNetwork(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 		buffer.writeInt(recipe.secondaryStripping.size());
-		for(ItemStack secondaryOutput : recipe.secondaryStripping)
-			buffer.writeItem(secondaryOutput);
+		for(Lazy<ItemStack> secondaryOutput : recipe.secondaryStripping)
+			buffer.writeItem(secondaryOutput.get());
 		buffer.writeInt(recipe.secondaryOutputs.size());
-		for(ItemStack secondaryOutput : recipe.secondaryOutputs)
-			buffer.writeItem(secondaryOutput);
+		for(Lazy<ItemStack> secondaryOutput : recipe.secondaryOutputs)
+			buffer.writeItem(secondaryOutput.get());
 	}
 }

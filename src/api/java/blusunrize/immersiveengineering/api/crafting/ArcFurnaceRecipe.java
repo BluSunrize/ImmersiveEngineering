@@ -15,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -23,6 +24,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 /**
  * @author BluSunrize - 23.03.2015
@@ -36,10 +38,10 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public final IngredientWithSize input;
 	public final IngredientWithSize[] additives;
-	public final NonNullList<ItemStack> output;
+	public final Lazy<NonNullList<ItemStack>> output;
 	public final List<StackWithChance> secondaryOutputs;
 	@Nonnull
-	public final ItemStack slag;
+	public final Lazy<ItemStack> slag;
 
 	public String specialRecipeType;
 	public static List<String> specialRecipeTypes = new ArrayList<>();
@@ -47,13 +49,16 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public ArcFurnaceRecipe(
 			ResourceLocation id,
-			NonNullList<ItemStack> output, @Nonnull ItemStack slag, List<StackWithChance> secondaryOutputs,
+			List<Lazy<ItemStack>> output, @Nonnull Lazy<ItemStack> slag, List<StackWithChance> secondaryOutputs,
 			int time, int energy,
 			IngredientWithSize input, IngredientWithSize... additives
 	)
 	{
 		super(output.get(0), TYPE, id);
-		this.output = output;
+		this.output = Lazy.of(() -> output.stream()
+				.map(Lazy::get)
+				.collect(Collectors.toCollection(NonNullList::create))
+		);
 		this.secondaryOutputs = secondaryOutputs;
 		this.input = input;
 		this.slag = slag;
@@ -81,20 +86,21 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public NonNullList<ItemStack> getBaseOutputs()
 	{
-		return this.output;
+		return this.output.get();
 	}
 
 	public NonNullList<ItemStack> generateActualOutput(ItemStack input, NonNullList<ItemStack> additives, long seed)
 	{
 		Random random = new Random(seed);
-		NonNullList<ItemStack> actualOutput = NonNullList.withSize(this.output.size(), ItemStack.EMPTY);
-		for(int i = 0; i < this.output.size(); ++i)
-			actualOutput.set(i, this.output.get(i).copy());
+		var output = this.output.get();
+		NonNullList<ItemStack> actualOutput = NonNullList.withSize(output.size(), ItemStack.EMPTY);
+		for(int i = 0; i < output.size(); ++i)
+			actualOutput.set(i, output.get(i).copy());
 		for(StackWithChance secondary : secondaryOutputs)
 		{
 			if(secondary.chance() > random.nextFloat())
 				continue;
-			ItemStack remaining = secondary.stack();
+			ItemStack remaining = secondary.stack().get();
 			for(ItemStack existing : actualOutput)
 				if(ItemHandlerHelper.canItemStacksStack(remaining, existing))
 				{

@@ -18,6 +18,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
 public class SawmillRecipe extends MultiblockRecipe
@@ -27,12 +28,12 @@ public class SawmillRecipe extends MultiblockRecipe
 	public static final CachedRecipeList<SawmillRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, SawmillRecipe.class);
 
 	public final Ingredient input;
-	public final ItemStack stripped;
-	public final NonNullList<ItemStack> secondaryStripping = NonNullList.create();
-	public final ItemStack output;
-	public final NonNullList<ItemStack> secondaryOutputs = NonNullList.create();
+	public final Lazy<ItemStack> stripped;
+	public final NonNullList<Lazy<ItemStack>> secondaryStripping = NonNullList.create();
+	public final Lazy<ItemStack> output;
+	public final NonNullList<Lazy<ItemStack>> secondaryOutputs = NonNullList.create();
 
-	public SawmillRecipe(ResourceLocation id, ItemStack output, ItemStack stripped, Ingredient input, int energy)
+	public SawmillRecipe(ResourceLocation id, Lazy<ItemStack> output, Lazy<ItemStack> stripped, Ingredient input, int energy)
 	{
 		super(output, TYPE, id);
 		this.output = output;
@@ -41,7 +42,7 @@ public class SawmillRecipe extends MultiblockRecipe
 		setTimeAndEnergy(80, energy);
 
 		setInputList(Lists.newArrayList(this.input));
-		this.outputList = NonNullList.of(ItemStack.EMPTY, this.output);
+		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
 	}
 
 	@Override
@@ -54,25 +55,25 @@ public class SawmillRecipe extends MultiblockRecipe
 	public NonNullList<ItemStack> getActualItemOutputs(BlockEntity tile)
 	{
 		NonNullList<ItemStack> list = NonNullList.create();
-		list.add(stripped);
-		for(ItemStack output : secondaryStripping)
-			if(!output.isEmpty())
-				list.add(output);
-		list.add(output);
-		for(ItemStack output : secondaryOutputs)
-			if(!output.isEmpty())
-				list.add(output);
+		list.add(stripped.get());
+		for(Lazy<ItemStack> output : secondaryStripping)
+			if(!output.get().isEmpty())
+				list.add(output.get());
+		list.add(output.get());
+		for(Lazy<ItemStack> output : secondaryOutputs)
+			if(!output.get().isEmpty())
+				list.add(output.get());
 		return list;
 	}
 
-	public SawmillRecipe addToSecondaryStripping(ItemStack output)
+	public SawmillRecipe addToSecondaryStripping(Lazy<ItemStack> output)
 	{
 		Preconditions.checkNotNull(output);
 		secondaryStripping.add(output);
 		return this;
 	}
 
-	public SawmillRecipe addToSecondaryOutput(ItemStack output)
+	public SawmillRecipe addToSecondaryOutput(Lazy<ItemStack> output)
 	{
 		Preconditions.checkNotNull(output);
 		secondaryOutputs.add(output);

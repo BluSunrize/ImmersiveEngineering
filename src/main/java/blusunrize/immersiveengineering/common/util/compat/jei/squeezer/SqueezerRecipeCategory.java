@@ -47,8 +47,8 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 		builder.addSlot(RecipeIngredientRole.INPUT, 2, 23)
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));
 		IRecipeSlotBuilder outputBuilder = builder.addSlot(RecipeIngredientRole.OUTPUT, 85, 41);
-		if(!recipe.itemOutput.isEmpty())
-			outputBuilder.addItemStack(recipe.itemOutput);
+		if(!recipe.itemOutput.get().isEmpty())
+			outputBuilder.addItemStack(recipe.itemOutput.get());
 		if(recipe.fluidOutput!=null&&!recipe.fluidOutput.isEmpty())
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 107, 10)
 					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)

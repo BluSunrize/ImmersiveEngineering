@@ -54,6 +54,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
@@ -234,7 +235,7 @@ public class JEIHelper implements IModPlugin
 				if(!bucket.isEmpty()&&tag.isPresent())
 					recipes.add(new BottlingMachineRecipe(
 							new ResourceLocation(Lib.MODID, "jei_bucket_"+f.getRegistryName().getPath()),
-							bucket,
+							Lazy.of(() -> bucket),
 							Ingredient.of(Items.BUCKET),
 							new FluidTagInput(tag.get(), 1000)
 					));

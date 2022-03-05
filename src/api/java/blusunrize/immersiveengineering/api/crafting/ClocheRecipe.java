@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -29,7 +30,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	public static RecipeType<ClocheRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<ClocheRecipe>> SERIALIZER;
 
-	public final List<ItemStack> outputs;
+	public final List<Lazy<ItemStack>> outputs;
 	public final Ingredient seed;
 	public final Ingredient soil;
 	public final int time;
@@ -39,7 +40,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	public static final CachedRecipeList<ClocheRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, ClocheRecipe.class);
 	private static final List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
-	public ClocheRecipe(ResourceLocation id, List<ItemStack> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
+	public ClocheRecipe(ResourceLocation id, List<Lazy<ItemStack>> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
 	{
 		super(outputs.get(0), TYPE, id);
 		this.outputs = outputs;
@@ -50,13 +51,13 @@ public class ClocheRecipe extends IESerializableRecipe
 		this.renderFunction = ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.get(renderReference.getType()).apply(renderReference.getBlock());
 	}
 
-	public ClocheRecipe(ResourceLocation id, ItemStack output, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
+	public ClocheRecipe(ResourceLocation id, Lazy<ItemStack> output, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
 	{
 		this(id, ImmutableList.of(output), seed, soil, time, renderReference);
 	}
 
 	// Allow for more dynamic recipes in subclasses
-	public List<ItemStack> getOutputs(ItemStack seed, ItemStack soil)
+	public List<Lazy<ItemStack>> getOutputs(ItemStack seed, ItemStack soil)
 	{
 		return this.outputs;
 	}
@@ -76,7 +77,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	@Override
 	public ItemStack getResultItem()
 	{
-		return this.outputs.get(0);
+		return this.outputs.get(0).get();
 	}
 
 	public static ClocheRecipe findRecipe(Level level, ItemStack seed, ItemStack soil, @Nullable ClocheRecipe hint)

@@ -42,7 +42,7 @@ public class MineralMix extends IESerializableRecipe
 	public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance,
 					  List<ResourceKey<Level>> dimensions, Block background)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(LAZY_EMPTY, TYPE, id);
 		this.weight = weight;
 		this.failChance = failChance;
 		this.outputs = outputs;
@@ -81,7 +81,7 @@ public class MineralMix extends IESerializableRecipe
 			{
 				r -= o.chance();
 				if(r < 0)
-					return o.stack();
+					return o.stack().get();
 			}
 		return ItemStack.EMPTY;
 	}

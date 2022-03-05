@@ -23,6 +23,7 @@ import mezz.jei.api.recipe.IFocus;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.Lazy;
 
 import java.util.Arrays;
 import java.util.List;
@@ -55,26 +56,26 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 		builder.addSlot(RecipeIngredientRole.INPUT, 3, 7)
 				.addItemStacks(Arrays.asList(recipe.input.getItems()));
 
-		if(!recipe.stripped.isEmpty())
+		if(!recipe.stripped.get().isEmpty())
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 47, 7)
-					.addItemStack(recipe.stripped);
+					.addItemStack(recipe.stripped.get());
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 95, 7)
-				.addItemStack(recipe.output);
+				.addItemStack(recipe.output.get());
 
 		int i = 0;
-		for(ItemStack out : recipe.secondaryStripping)
+		for(Lazy<ItemStack> out : recipe.secondaryStripping)
 		{
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 47+i%2*18, 29+i/2*18)
-					.addItemStack(out);
+					.addItemStack(out.get());
 			i++;
 		}
 
 		i = 0;
-		for(ItemStack out : recipe.secondaryOutputs)
+		for(Lazy<ItemStack> out : recipe.secondaryOutputs)
 		{
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 91+i%2*18, 29+i/2*18)
-					.addItemStack(out)
+					.addItemStack(out.get())
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 			i++;
 		}
@@ -84,7 +85,7 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 	@Override
 	public void draw(SawmillRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
-		if(recipe.stripped.isEmpty())
+		if(recipe.stripped.get().isEmpty())
 		{
 			this.middle.draw(transform, 36, 7);
 			this.arrowNormal.draw(transform, 22, 6);

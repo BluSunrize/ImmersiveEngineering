@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
@@ -49,7 +50,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 			JsonObject element = array.get(i).getAsJsonObject();
 			if(CraftingHelper.processConditions(element, "conditions"))
 			{
-				ItemStack stack = readOutput(element.get("output"));
+				Lazy<ItemStack> stack = readOutput(element.get("output"));
 				float chance = GsonHelper.getAsFloat(element, "chance");
 				totalChance += chance;
 				tempOres.add(new StackWithChance(stack, chance));

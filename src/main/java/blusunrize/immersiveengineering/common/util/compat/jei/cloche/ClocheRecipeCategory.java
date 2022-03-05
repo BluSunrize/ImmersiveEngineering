@@ -49,7 +49,7 @@ public class ClocheRecipeCategory extends IERecipeCategory<ClocheRecipe>
 
 		for(int i = 0; i < recipe.outputs.size(); i++)
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 65+i%2*18, 13+i/2*18)
-					.addItemStack(recipe.outputs.get(i))
+					.addItemStack(recipe.outputs.get(i).get())
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 

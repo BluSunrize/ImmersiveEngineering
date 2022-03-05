@@ -3167,6 +3167,7 @@ public class Recipes extends RecipeProvider
 
 	public static ICondition getTagCondition(TagKey<?> tag)
 	{
+		// TODO I'm not convinved TagEmptyCondition is in a remotely working condition
 		return new NotCondition(new TagEmptyCondition(tag.location()));
 	}
 

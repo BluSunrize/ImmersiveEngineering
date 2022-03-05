@@ -47,7 +47,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 					.addItemStacks(Arrays.asList(recipe.inputs[j].getMatchingStacks()))
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 141, 15)
-				.addItemStack(recipe.output)
+				.addItemStack(recipe.output.get())
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 }

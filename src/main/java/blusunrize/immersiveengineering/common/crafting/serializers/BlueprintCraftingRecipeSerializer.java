@@ -19,6 +19,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 
@@ -34,7 +35,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	public BlueprintCraftingRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
 		String category = GsonHelper.getAsString(json, "category");
-		ItemStack output = readOutput(json.get("result"));
+		Lazy<ItemStack> output = readOutput(json.get("result"));
 		JsonArray inputs = json.getAsJsonArray("inputs");
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputs.size()];
 		for(int i = 0; i < ingredients.length; i++)
@@ -49,7 +50,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	public BlueprintCraftingRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
 		String category = buffer.readUtf();
-		ItemStack output = buffer.readItem();
+		Lazy<ItemStack> output = readLazyStack(buffer);
 		int inputCount = buffer.readInt();
 		IngredientWithSize[] ingredients = new IngredientWithSize[inputCount];
 		for(int i = 0; i < ingredients.length; i++)
@@ -61,7 +62,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	public void toNetwork(FriendlyByteBuf buffer, BlueprintCraftingRecipe recipe)
 	{
 		buffer.writeUtf(recipe.blueprintCategory);
-		buffer.writeItem(recipe.output);
+		writeLazyStack(buffer, recipe.output);
 		buffer.writeInt(recipe.inputs.length);
 		for(IngredientWithSize ingredient : recipe.inputs)
 			ingredient.write(buffer);

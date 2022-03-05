@@ -18,6 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -43,10 +44,10 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 	public static SetRestrictedField<ItemLike> blueprintItem = SetRestrictedField.common();
 
 	public final String blueprintCategory;
-	public final ItemStack output;
+	public final Lazy<ItemStack> output;
 	public final IngredientWithSize[] inputs;
 
-	public BlueprintCraftingRecipe(ResourceLocation id, String blueprintCategory, ItemStack output, IngredientWithSize[] inputs)
+	public BlueprintCraftingRecipe(ResourceLocation id, String blueprintCategory, Lazy<ItemStack> output, IngredientWithSize[] inputs)
 	{
 		super(output, TYPE, id);
 		this.blueprintCategory = blueprintCategory;
@@ -54,7 +55,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 		this.inputs = inputs;
 
 		setInputListWithSizes(Lists.newArrayList(this.inputs));
-		this.outputList = NonNullList.of(ItemStack.EMPTY, this.output);
+		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
 
 		//Time and energy values are for the automatic workbench
 		setTimeAndEnergy(180, 23040);

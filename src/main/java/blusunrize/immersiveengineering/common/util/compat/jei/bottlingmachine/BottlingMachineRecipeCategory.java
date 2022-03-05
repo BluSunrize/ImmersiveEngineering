@@ -49,7 +49,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 				.addItemStacks(Arrays.asList(recipe.input.getItems()))
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 13)
-				.addItemStack(recipe.output)
+				.addItemStack(recipe.output.get())
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 76, 1)

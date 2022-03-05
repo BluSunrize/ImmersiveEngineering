@@ -40,14 +40,14 @@ public class GeneratorFuel extends IESerializableRecipe
 
 	public GeneratorFuel(ResourceLocation id, TagKey<Fluid> fluids, int burnTime)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(LAZY_EMPTY, TYPE, id);
 		this.fluids = FastEither.left(fluids);
 		this.burnTime = burnTime;
 	}
 
 	public GeneratorFuel(ResourceLocation id, List<Fluid> fluids, int burnTime)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(LAZY_EMPTY, TYPE, id);
 		this.fluids = FastEither.right(fluids);
 		this.burnTime = burnTime;
 	}

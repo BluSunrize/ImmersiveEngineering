@@ -21,6 +21,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
 
@@ -36,10 +37,11 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<Shapeless
 	@Override
 	public ShapelessRecipe readFromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
 	{
-		ItemStack output = readOutput(json.get("result"));
+		Lazy<ItemStack> output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
 		NonNullList<Ingredient> ingredients = NonNullList.of(Ingredient.EMPTY, input, Ingredient.of(IEItems.Tools.HAMMER));
-		return new ShapelessRecipe(recipeId, "", output, ingredients);
+		// TODO make non-tagbased or add a lazy shapeless recipe?
+		return new ShapelessRecipe(recipeId, "", output.get(), ingredients);
 	}
 
 	@Nonnull

@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nullable;
@@ -30,10 +31,10 @@ public class AlloyRecipe extends IESerializableRecipe
 
 	public final IngredientWithSize input0;
 	public final IngredientWithSize input1;
-	public final ItemStack output;
+	public final Lazy<ItemStack> output;
 	public final int time;
 
-	public AlloyRecipe(ResourceLocation id, ItemStack output, IngredientWithSize input0, IngredientWithSize input1, int time)
+	public AlloyRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input0, IngredientWithSize input1, int time)
 	{
 		super(output, TYPE, id);
 		this.output = output;
@@ -51,7 +52,7 @@ public class AlloyRecipe extends IESerializableRecipe
 	@Override
 	public ItemStack getResultItem()
 	{
-		return this.output;
+		return this.output.get();
 	}
 
 	public boolean matches(ItemStack input0, ItemStack input1) {

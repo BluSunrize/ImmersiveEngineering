@@ -13,18 +13,24 @@ import com.google.common.base.Preconditions;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.Lazy;
 
-public record StackWithChance(ItemStack stack, float chance)
+public record StackWithChance(Lazy<ItemStack> stack, float chance)
 {
 	public StackWithChance
 	{
 		Preconditions.checkNotNull(stack);
 	}
 
+	public StackWithChance(ItemStack stack, float chance)
+	{
+		this(Lazy.of(() -> stack), chance);
+	}
+
 	public CompoundTag writeToNBT()
 	{
 		CompoundTag compoundNBT = new CompoundTag();
-		compoundNBT.put("stack", stack.save(new CompoundTag()));
+		compoundNBT.put("stack", stack.get().save(new CompoundTag()));
 		compoundNBT.putFloat("chance", chance);
 		return compoundNBT;
 	}
@@ -41,7 +47,7 @@ public record StackWithChance(ItemStack stack, float chance)
 
 	public void write(FriendlyByteBuf buffer)
 	{
-		buffer.writeItem(this.stack);
+		buffer.writeItem(this.stack.get());
 		buffer.writeFloat(this.chance);
 	}
 

@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.IEApi;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
@@ -34,12 +36,12 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> extends ForgeRegis
 		return null;
 	}
 
-	protected static ItemStack readOutput(JsonElement outputObject)
+	protected static Lazy<ItemStack> readOutput(JsonElement outputObject)
 	{
 		if(outputObject.isJsonObject()&&outputObject.getAsJsonObject().has("item"))
-			return ShapedRecipe.itemStackFromJson(outputObject.getAsJsonObject());
+			return Lazy.of(() -> ShapedRecipe.itemStackFromJson(outputObject.getAsJsonObject()));
 		IngredientWithSize outgredient = IngredientWithSize.deserialize(outputObject);
-		return IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks());
+		return Lazy.of(() -> IEApi.getPreferredStackbyMod(outgredient.getMatchingStacks()));
 	}
 
 	@Nullable
@@ -49,11 +51,22 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> extends ForgeRegis
 		if(CraftingHelper.processConditions(object, "conditions"))
 		{
 			float chance = GsonHelper.getAsFloat(object, "chance");
-			ItemStack stack = readOutput(object.get("output"));
+			Lazy<ItemStack> stack = readOutput(object.get("output"));
 			return new StackWithChance(stack, chance);
 		}
 		return null;
 	}
 
 	public abstract R readFromJson(ResourceLocation recipeId, JsonObject json);
+
+	protected static Lazy<ItemStack> readLazyStack(FriendlyByteBuf buf)
+	{
+		ItemStack stack = buf.readItem();
+		return Lazy.of(() -> stack);
+	}
+
+	protected static void writeLazyStack(FriendlyByteBuf buf, Lazy<ItemStack> stack)
+	{
+		buf.writeItem(stack.get());
+	}
 }

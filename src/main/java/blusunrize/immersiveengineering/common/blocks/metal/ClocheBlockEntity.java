@@ -58,6 +58,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
@@ -160,15 +161,15 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 				boolean consume = false;
 				if(growth >= recipe.getTime(seed, soil))
 				{
-					List<ItemStack> outputs = recipe.getOutputs(seed, soil);
+					List<Lazy<ItemStack>> outputs = recipe.getOutputs(seed, soil);
 					int canFit = 0;
 					boolean[] emptySlotsUsed = new boolean[4];
-					for(ItemStack output : outputs)
-						if(!output.isEmpty())
+					for(Lazy<ItemStack> output : outputs)
+						if(!output.get().isEmpty())
 							for(int j = 3; j < 7; j++)
 							{
 								ItemStack existing = inventory.get(j);
-								if((existing.isEmpty()&&!emptySlotsUsed[j-3])||(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize()))
+								if((existing.isEmpty()&&!emptySlotsUsed[j-3])||(ItemHandlerHelper.canItemStacksStack(existing, output.get())&&existing.getCount()+output.get().getCount() <= existing.getMaxStackSize()))
 								{
 									canFit++;
 									if(existing.isEmpty())
@@ -178,18 +179,18 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 							}
 					if(canFit >= outputs.size())
 					{
-						for(ItemStack output : outputs)
+						for(Lazy<ItemStack> output : outputs)
 							for(int j = 3; j < 7; j++)
 							{
 								ItemStack existing = inventory.get(j);
 								if(existing.isEmpty())
 								{
-									inventory.set(j, output.copy());
+									inventory.set(j, output.get().copy());
 									break;
 								}
-								else if(ItemHandlerHelper.canItemStacksStack(existing, output)&&existing.getCount()+output.getCount() <= existing.getMaxStackSize())
+								else if(ItemHandlerHelper.canItemStacksStack(existing, output.get())&&existing.getCount()+output.get().getCount() <= existing.getMaxStackSize())
 								{
-									existing.grow(output.getCount());
+									existing.grow(output.get().getCount());
 									break;
 								}
 							}

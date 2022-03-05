@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 	{
 		JsonArray results = json.getAsJsonArray("results");
 
-		List<ItemStack> outputs = new ArrayList<>(results.size());
+		List<Lazy<ItemStack>> outputs = new ArrayList<>(results.size());
 		for(int i = 0; i < results.size(); i++)
 			outputs.add(readOutput(results.get(i)));
 
@@ -55,9 +56,9 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 	public ClocheRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
 		int outputCount = buffer.readInt();
-		List<ItemStack> outputs = new ArrayList<>(outputCount);
+		List<Lazy<ItemStack>> outputs = new ArrayList<>(outputCount);
 		for(int i = 0; i < outputCount; i++)
-			outputs.add(buffer.readItem());
+			outputs.add(readLazyStack(buffer));
 		Ingredient seed = Ingredient.fromNetwork(buffer);
 		Ingredient soil = Ingredient.fromNetwork(buffer);
 		int time = buffer.readInt();
@@ -69,8 +70,8 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 	public void toNetwork(FriendlyByteBuf buffer, ClocheRecipe recipe)
 	{
 		buffer.writeInt(recipe.outputs.size());
-		for(ItemStack stack : recipe.outputs)
-			buffer.writeItem(stack);
+		for(Lazy<ItemStack> stack : recipe.outputs)
+			buffer.writeItem(stack.get());
 		recipe.seed.toNetwork(buffer);
 		recipe.soil.toNetwork(buffer);
 		buffer.writeInt(recipe.time);

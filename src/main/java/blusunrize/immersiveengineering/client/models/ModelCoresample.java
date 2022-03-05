@@ -102,10 +102,10 @@ public class ModelCoresample extends BakedIEModel
 					for(MineralMix mineral : minerals)
 					{
 						for(StackWithChance o : mineral.outputs)
-							if(!o.stack().isEmpty())
+							if(!o.stack().get().isEmpty())
 							{
 								int weight = Math.round(allocatedPx*o.chance());
-								Block b = Block.byItem(o.stack().getItem());
+								Block b = Block.byItem(o.stack().get().getItem());
 								if(b==Blocks.AIR)
 									b = mineral.background;
 								BlockState state = b.defaultBlockState();

@@ -48,9 +48,9 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 		builder.addSlot(RecipeIngredientRole.INPUT, 10, 8)
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 70, 8)
-				.addItemStack(recipe.output);
+				.addItemStack(recipe.output.get());
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 70, 44)
-				.addItemStack(recipe.slag);
+				.addItemStack(recipe.slag.get());
 	}
 
 	@Override

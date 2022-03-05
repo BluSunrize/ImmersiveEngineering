@@ -48,7 +48,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 				for(int iStack = 0; iStack < stacks.length; iStack++)
 				{
 					ItemStack output = stacks[iStack];
-					if(!recipe.output.isEmpty()&&ManualUtils.stackMatchesObject(recipe.output, output)&&recipe.inputs!=null&&recipe.inputs.length > 0)
+					if(!recipe.output.get().isEmpty()&&ManualUtils.stackMatchesObject(recipe.output.get(), output)&&recipe.inputs!=null&&recipe.inputs.length > 0)
 					{
 						int h = (int)Math.ceil(recipe.inputs.length/2f);
 						PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.inputs.length+2];

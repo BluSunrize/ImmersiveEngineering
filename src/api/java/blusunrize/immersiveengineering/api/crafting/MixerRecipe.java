@@ -41,7 +41,7 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public MixerRecipe(ResourceLocation id, FluidStack fluidOutput, FluidTagInput fluidInput, IngredientWithSize[] itemInputs, int energy)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(LAZY_EMPTY, TYPE, id);
 		this.fluidOutput = fluidOutput;
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;

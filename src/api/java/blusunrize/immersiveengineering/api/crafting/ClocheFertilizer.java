@@ -29,7 +29,7 @@ public class ClocheFertilizer extends IESerializableRecipe
 
 	public ClocheFertilizer(ResourceLocation id, Ingredient input, float growthModifier)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(LAZY_EMPTY, TYPE, id);
 		this.input = input;
 		this.growthModifier = growthModifier;
 	}

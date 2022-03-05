@@ -53,7 +53,7 @@ public class GeneratedListRecipe extends IESerializableRecipe implements IListRe
 
 	public GeneratedListRecipe(ResourceLocation id)
 	{
-		super(ItemStack.EMPTY, Preconditions.checkNotNull(LIST_GENERATORS.get(id), id).recipeType, id);
+		super(LAZY_EMPTY, Preconditions.checkNotNull(LIST_GENERATORS.get(id), id).recipeType, id);
 		generator = LIST_GENERATORS.get(id);
 	}
 

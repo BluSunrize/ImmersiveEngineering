@@ -35,7 +35,7 @@ public class BlueprintInventory extends SimpleContainer
 		for(int i = 0; i < this.recipes.length; i++)
 		{
 			if(recipes[i].matchesRecipe(inputs))
-				this.setItem(i, recipes[i].output.copy());
+				this.setItem(i, recipes[i].output.get().copy());
 			else
 				this.setItem(i, ItemStack.EMPTY);
 		}

@@ -134,9 +134,9 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 				{
 					Utils.modifyInvStackSize(inventory, INPUT_SLOT, -recipe.input.getCount());
 					if(!inventory.get(OUTPUT_SLOT).isEmpty())
-						inventory.get(OUTPUT_SLOT).grow(recipe.output.copy().getCount());
+						inventory.get(OUTPUT_SLOT).grow(recipe.output.get().copy().getCount());
 					else if(inventory.get(OUTPUT_SLOT).isEmpty())
-						inventory.set(OUTPUT_SLOT, recipe.output.copy());
+						inventory.set(OUTPUT_SLOT, recipe.output.get().copy());
 					this.tank.fill(new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput), FluidAction.EXECUTE);
 				}
 				processMax = 0;
@@ -178,8 +178,8 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 		if(recipe==null)
 			return null;
 
-		if(inventory.get(OUTPUT_SLOT).isEmpty()||(ItemStack.isSame(inventory.get(OUTPUT_SLOT), recipe.output)&&
-				inventory.get(OUTPUT_SLOT).getCount()+recipe.output.getCount() <= getSlotLimit(OUTPUT_SLOT)))
+		if(inventory.get(OUTPUT_SLOT).isEmpty()||(ItemStack.isSame(inventory.get(OUTPUT_SLOT), recipe.output.get())&&
+				inventory.get(OUTPUT_SLOT).getCount()+recipe.output.get().getCount() <= getSlotLimit(OUTPUT_SLOT)))
 			if(tank.getFluidAmount()+recipe.creosoteOutput <= tank.getCapacity())
 				return recipe;
 		return null;

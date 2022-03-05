@@ -50,12 +50,12 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 		List<StackWithChance> validSecondaries = getValidSecondaryOutputs(recipe);
 		int y = 1+(validSecondaries.isEmpty()?18: validSecondaries.size() < 2?9: 0);
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 78, y)
-				.addItemStack(recipe.output)
+				.addItemStack(recipe.output.get())
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		for(int i = 0; i < validSecondaries.size(); i++)
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 78+i/2*44, y+18+i%2*18)
-					.addItemStack(validSecondaries.get(i).stack())
+					.addItemStack(validSecondaries.get(i).stack().get())
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 	}
 
@@ -86,7 +86,7 @@ public class CrusherRecipeCategory extends IERecipeCategory<CrusherRecipe>
 	{
 		List<StackWithChance> validSecondaries = new ArrayList<>();
 		for(StackWithChance out : recipe.secondaryOutputs)
-			if(!out.stack().isEmpty()&&out.chance() > 0)
+			if(!out.stack().get().isEmpty()&&out.chance() > 0)
 				validSecondaries.add(out);
 		return validSecondaries;
 	}

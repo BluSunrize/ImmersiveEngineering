@@ -15,14 +15,17 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.Lazy;
 
 public abstract class IESerializableRecipe implements Recipe<Container>
 {
-	protected final ItemStack outputDummy;
+	public static final Lazy<ItemStack> LAZY_EMPTY = Lazy.of(() -> ItemStack.EMPTY);
+
+	protected final Lazy<ItemStack> outputDummy;
 	protected final RecipeType<?> type;
 	protected final ResourceLocation id;
 
-	protected IESerializableRecipe(ItemStack outputDummy, RecipeType<?> type, ResourceLocation id)
+	protected IESerializableRecipe(Lazy<ItemStack> outputDummy, RecipeType<?> type, ResourceLocation id)
 	{
 		this.outputDummy = outputDummy;
 		this.type = type;
@@ -50,7 +53,7 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 	@Override
 	public ItemStack assemble(Container inv)
 	{
-		return this.outputDummy;
+		return this.outputDummy.get();
 	}
 
 	@Override

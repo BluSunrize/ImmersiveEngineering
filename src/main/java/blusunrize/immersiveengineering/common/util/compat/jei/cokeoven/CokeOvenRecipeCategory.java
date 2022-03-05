@@ -53,8 +53,8 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));
 
 		var outputSlotBuilder = builder.addSlot(RecipeIngredientRole.OUTPUT, 59, 19);
-		if(!recipe.output.isEmpty())
-			outputSlotBuilder.addItemStack(recipe.output);
+		if(!recipe.output.get().isEmpty())
+			outputSlotBuilder.addItemStack(recipe.output.get());
 
 		if(recipe.creosoteOutput > 0)
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 104, 5)

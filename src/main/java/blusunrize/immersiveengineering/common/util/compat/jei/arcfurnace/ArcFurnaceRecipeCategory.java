@@ -82,11 +82,11 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 		int xSecondary = x+(outputSize > 1?106: 88);
 		for(int j = 0; j < recipe.secondaryOutputs.size(); j++)
 			builder.addSlot(RecipeIngredientRole.OUTPUT, xSecondary, j*18+1)
-					.addItemStack(recipe.secondaryOutputs.get(j).stack());
+					.addItemStack(recipe.secondaryOutputs.get(j).stack().get());
 
-		if(!recipe.slag.isEmpty())
+		if(!recipe.slag.get().isEmpty())
 			builder.addSlot(RecipeIngredientRole.OUTPUT, x+68, 37)
-					.addItemStack(recipe.slag);
+					.addItemStack(recipe.slag.get());
 	}
 
 	private int getWidth(ArcFurnaceRecipe recipe)

@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
@@ -22,29 +23,27 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.ItemHandlerHelper;
 
 import java.util.AbstractCollection;
-import java.util.AbstractList;
-import java.util.Map;
-import java.util.Map.Entry;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 {
 	private final Supplier<RegistryAccess> tags;
-	private Map<ItemStack, Double> outputs;
+	private List<Pair<Lazy<ItemStack>, Double>> outputs;
 	private final Lazy<NonNullList<ItemStack>> defaultOutputs = Lazy.of(() -> {
 		NonNullList<ItemStack> ret = NonNullList.create();
-		for(Entry<ItemStack, Double> e : outputs.entrySet())
+		for(Pair<Lazy<ItemStack>, Double> e : outputs)
 		{
-			double scaledOut = e.getValue();
+			double scaledOut = e.getSecond();
 			addOutputToList(scaledOut, ret, e);
 		}
 		return ret;
 	});
 
-	public ArcRecyclingRecipe(ResourceLocation id, Supplier<RegistryAccess> tags, Map<ItemStack, Double> outputs, IngredientWithSize input, int time, int energyPerTick)
+	public ArcRecyclingRecipe(ResourceLocation id, Supplier<RegistryAccess> tags, List<Pair<Lazy<ItemStack>, Double>> outputs, IngredientWithSize input, int time, int energyPerTick)
 	{
-		super(id, outputs.keySet().stream().collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll),
-				ItemStack.EMPTY, ImmutableList.of(), time, energyPerTick, input);
+		super(id, outputs.stream().map(Pair::getFirst).collect(NonNullList::create, List::add, AbstractCollection::addAll),
+				LAZY_EMPTY, ImmutableList.of(), time, energyPerTick, input);
 		this.tags = tags;
 		this.outputs = outputs;
 		this.setSpecialRecipeType("Recycling");
@@ -61,9 +60,9 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		else
 			mod = (input.getMaxDamage()-input.getDamageValue())/(float)input.getMaxDamage();
 		NonNullList<ItemStack> outs = NonNullList.create();
-		for(Entry<ItemStack, Double> e : outputs.entrySet())
+		for(Pair<Lazy<ItemStack>, Double> e : outputs)
 		{
-			double scaledOut = mod*e.getValue();
+			double scaledOut = mod*e.getSecond();
 			addOutputToList(scaledOut, outs, e);
 		}
 		return outs;
@@ -81,15 +80,15 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		return defaultOutputs.get();
 	}
 
-	private void addOutputToList(double scaledOut, NonNullList<ItemStack> outs, Entry<ItemStack, Double> e)
+	private void addOutputToList(double scaledOut, NonNullList<ItemStack> outs, Pair<Lazy<ItemStack>, Double> e)
 	{
 		//Noone likes nuggets anyway >_>
 		if(scaledOut >= 1)
-			outs.add(ItemHandlerHelper.copyStackWithSize(e.getKey(), (int)scaledOut));
+			outs.add(ItemHandlerHelper.copyStackWithSize(e.getFirst().get(), (int)scaledOut));
 		int nuggetOut = (int)((scaledOut-(int)scaledOut)*9);
 		if(nuggetOut > 0)
 		{
-			String[] type = TagUtils.getMatchingPrefixAndRemaining(tags.get(), e.getKey(), "ingots");
+			String[] type = TagUtils.getMatchingPrefixAndRemaining(tags.get(), e.getFirst().get(), "ingots");
 			if(type!=null)
 			{
 				ItemStack nuggets = IEApi.getPreferredTagStack(tags.get(), TagUtils.createItemWrapper(IETags.getNugget(type[1])));
@@ -104,7 +103,7 @@ public class ArcRecyclingRecipe extends ArcFurnaceRecipe
 		return !input.isEmpty()&&this.input.test(input);
 	}
 
-	public Map<ItemStack, Double> getOutputs()
+	public List<Pair<Lazy<ItemStack>, Double>> getOutputs()
 	{
 		return outputs;
 	}

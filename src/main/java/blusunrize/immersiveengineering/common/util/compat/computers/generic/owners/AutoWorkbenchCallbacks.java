@@ -45,7 +45,7 @@ public class AutoWorkbenchCallbacks extends MultiblockCallbackOwner<AutoWorkbenc
 		BlueprintCraftingRecipe[] availableRecipes = env.object().getAvailableRecipes();
 		ItemStack[] outputs = new ItemStack[availableRecipes.length];
 		for(int i = 0; i < availableRecipes.length; ++i)
-			outputs[i] = availableRecipes[i].output;
+			outputs[i] = availableRecipes[i].output.get();
 		return outputs;
 	}
 

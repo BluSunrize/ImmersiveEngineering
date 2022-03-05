@@ -60,10 +60,10 @@ public class AutoWorkbenchScreen extends IEContainerScreen<AutoWorkbenchContaine
 				int xx = leftPos+121;
 				int yy = topPos+(l > 6?59-(l-3)/3*18: l > 3?59: 68);
 				for(int i = 0; i < l; i++)
-					if(recipes[i]!=null&&!recipes[i].output.isEmpty())
+					if(recipes[i]!=null&&!recipes[i].output.get().isEmpty())
 					{
 						final int id = i;
-						this.addRenderableWidget(new GuiButtonItem(xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.copy(), i==tile.selectedRecipe,
+						this.addRenderableWidget(new GuiButtonItem(xx+(i%3)*18, yy+(i/3)*18, recipes[i].output.get().copy(), i==tile.selectedRecipe,
 								btn -> {
 									if(id==tile.selectedRecipe)//disable
 										tile.selectedRecipe = -1;

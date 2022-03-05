@@ -57,7 +57,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 
 	private ThermoelectricSource(ResourceLocation id, FastEither<TagKey<Block>, List<Block>> blocks, int temperature)
 	{
-		super(ItemStack.EMPTY, TYPE, id);
+		super(LAZY_EMPTY, TYPE, id);
 		this.blocks = blocks;
 		this.temperature = temperature;
 	}

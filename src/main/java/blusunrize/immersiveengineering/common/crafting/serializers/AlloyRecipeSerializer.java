@@ -17,6 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
 
@@ -31,7 +32,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	@Override
 	public AlloyRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
 	{
-		ItemStack output = readOutput(json.get("result"));
+		Lazy<ItemStack> output = readOutput(json.get("result"));
 		IngredientWithSize input0 = IngredientWithSize.deserialize(json.get("input0"));
 		IngredientWithSize input1 = IngredientWithSize.deserialize(json.get("input1"));
 		int time = GsonHelper.getAsInt(json, "time", 200);
@@ -42,7 +43,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	@Override
 	public AlloyRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		ItemStack output = buffer.readItem();
+		Lazy<ItemStack> output = readLazyStack(buffer);
 		IngredientWithSize input0 = IngredientWithSize.read(buffer);
 		IngredientWithSize input1 = IngredientWithSize.read(buffer);
 		int time = buffer.readInt();
@@ -52,7 +53,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	@Override
 	public void toNetwork(FriendlyByteBuf buffer, AlloyRecipe recipe)
 	{
-		buffer.writeItem(recipe.output);
+		writeLazyStack(buffer, recipe.output);
 		recipe.input0.write(buffer);
 		recipe.input1.write(buffer);
 		buffer.writeInt(recipe.time);
