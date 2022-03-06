@@ -105,8 +105,7 @@ public class ArcRecyclingCalculator
 
 	public static List<ArcFurnaceRecipe> getRecipesFromRunningThreads()
 	{
-		return List.of();
-		//TODO return Objects.requireNonNull(lastResult);
+		return Objects.requireNonNull(lastResult);
 	}
 
 	private static class RecipeIterator

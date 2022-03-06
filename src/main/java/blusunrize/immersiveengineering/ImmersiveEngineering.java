@@ -26,7 +26,6 @@ import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.IngredientSerializers;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
-import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.network.*;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDecoration;
@@ -56,7 +55,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.RegistryEvent.MissingMappings;
 import net.minecraftforge.event.server.ServerStartedEvent;
@@ -129,7 +127,6 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMCs);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
-		MinecraftForge.EVENT_BUS.addListener(this::addReloadListeners);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
 		MinecraftForge.EVENT_BUS.addGenericListener(Block.class, (Consumer<MissingMappings<Block>>)MissingMappingsHelper::handleRemapping);
 		MinecraftForge.EVENT_BUS.addGenericListener(Item.class, (Consumer<MissingMappings<Item>>)MissingMappingsHelper::handleRemapping);
@@ -290,11 +287,6 @@ public class ImmersiveEngineering
 	{
 		//TODO do client commands exist yet? I don't think so
 		CommandHandler.registerServer(event.getDispatcher());
-	}
-
-	public void addReloadListeners(AddReloadListenerEvent event)
-	{
-		event.addListener(new RecipeReloadListener());
 	}
 
 	public void serverStarted(ServerStartedEvent event)

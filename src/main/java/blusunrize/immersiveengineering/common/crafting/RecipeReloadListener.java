@@ -9,28 +9,40 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
+import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraftforge.event.AddReloadListenerEvent;
+import net.minecraftforge.event.TagsUpdatedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
-import javax.annotation.Nonnull;
+import java.lang.ref.WeakReference;
 import java.util.Collection;
 
-public class RecipeReloadListener implements ResourceManagerReloadListener
+@EventBusSubscriber(modid = Lib.MODID)
+public class RecipeReloadListener
 {
-	@Override
-	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
+	// TODO total hack, but I don't see any other reasonable way to access both a (working) RecipeManager and
+	//  RegistryAccess with "good" tags at once
+	private static final ThreadLocal<WeakReference<RecipeManager>> recipes = new ThreadLocal<>();
+
+	@SubscribeEvent
+	public static void onRegisterReloadListeners(AddReloadListenerEvent ev)
 	{
-		/*TODO
-		startArcRecyclingRecipeGen(serverResources.getRecipeManager(), serverResources.getTags());
-		 */
+		recipes.set(new WeakReference<>(ev.getServerResources().getRecipeManager()));
 	}
 
-	private void startArcRecyclingRecipeGen(RecipeManager recipeManager, RegistryAccess tags)
+	@SubscribeEvent
+	public static void onTagsUpdated(TagsUpdatedEvent ev)
 	{
+		WeakReference<RecipeManager> boxedManager = recipes.get();
+		if(boxedManager==null)
+			return;
+		RecipeManager recipeManager = boxedManager.get();
+		if(recipeManager==null)
+			return;
 		Collection<Recipe<?>> recipes = recipeManager.getRecipes();
-		new ArcRecyclingCalculator(recipes, tags).run();
+		new ArcRecyclingCalculator(recipes, ev.getTagManager()).run();
 	}
 }

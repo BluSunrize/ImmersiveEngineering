@@ -53,7 +53,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyo
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConveyor;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalConveyor;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
-import blusunrize.immersiveengineering.common.crafting.RecipeReloadListener;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
@@ -206,7 +205,6 @@ public class ClientProxy extends CommonProxy
 		ShaderHelper.initShaders();
 		IEDefaultColourHandlers.register();
 
-		MinecraftForge.EVENT_BUS.register(new RecipeReloadListener());
 		IEManual.addIEManualEntries();
 		IEItems.BannerPatterns.ALL_PATTERNS.forEach(regObject -> {
 			BannerPattern pattern = regObject.get().getBannerPattern();
