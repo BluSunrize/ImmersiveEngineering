@@ -199,7 +199,7 @@ public class IEManual
 		StringBuilder text = new StringBuilder();
 		List<SpecialElementData> specials = new ArrayList<>();
 
-		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.RECIPES.getClientRecipes());
+		List<MineralMix> mineralsToAdd = new ArrayList<>(MineralMix.RECIPES.getRecipes(Minecraft.getInstance().level));
 		Function<MineralMix, String> toName = mineral -> {
 			String translationKey = mineral.getTranslationKey();
 			String localizedName = I18n.get(translationKey);

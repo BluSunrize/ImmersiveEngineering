@@ -846,7 +846,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		if(show)
 		{
 			ResourceKey<Level> dimension = ClientUtils.mc().player.getCommandSenderWorld().dimension();
-			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.RECIPES.getClientRecipeNames());
+			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.RECIPES.getRecipeNames(ClientUtils.mc().level));
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
 			final ColumnPos playerCol = new ColumnPos(ClientUtils.mc().player.blockPosition());
 			// 24: very roughly 16 * sqrt(2)

@@ -14,6 +14,7 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -372,7 +373,7 @@ public class BlockOverlayUtils
 					if(minerals!=null)
 						for(int i = 0; i < minerals.size(); i++)
 						{
-							MineralMix mix = MineralMix.RECIPES.getByIdOnClient(new ResourceLocation(minerals.getString(i)));
+							MineralMix mix = MineralMix.RECIPES.getById(Minecraft.getInstance().level, new ResourceLocation(minerals.getString(i)));
 							if(mix!=null)
 								font.drawShadow(transform, I18n.get(mix.getTranslationKey()), scaledWidth/2+8, scaledHeight/2+8+i*font.lineHeight, 0xffffff);
 						}

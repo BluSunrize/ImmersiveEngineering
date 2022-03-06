@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api.crafting.cache;
 
 import blusunrize.immersiveengineering.api.Lib;
-import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -75,16 +74,6 @@ public class CachedRecipeList<R extends Recipe<?>>
 		return Objects.requireNonNull(recipes).keySet();
 	}
 
-	public Collection<R> getClientRecipes()
-	{
-		return getRecipes(Objects.requireNonNull(Minecraft.getInstance().level));
-	}
-
-	public Collection<ResourceLocation> getClientRecipeNames()
-	{
-		return getRecipeNames(Objects.requireNonNull(Minecraft.getInstance().level));
-	}
-
 	public R getById(Level level, ResourceLocation name)
 	{
 		updateCache(level.getRecipeManager(), level.isClientSide());
@@ -107,10 +96,5 @@ public class CachedRecipeList<R extends Recipe<?>>
 				.collect(Collectors.toMap(R::getId, Function.identity()));
 		this.cachedDataIsClient = isClient;
 		this.cachedAtReloadCount = reloadCount;
-	}
-
-	public R getByIdOnClient(ResourceLocation resourceLocation)
-	{
-		return getById(Minecraft.getInstance().level, resourceLocation);
 	}
 }

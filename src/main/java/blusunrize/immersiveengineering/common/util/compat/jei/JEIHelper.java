@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.*;
+import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.gui.*;
@@ -47,17 +48,20 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
+import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 
 @JeiPlugin
@@ -131,23 +135,28 @@ public class JEIHelper implements IModPlugin
 	public void registerRecipes(IRecipeRegistration registration)
 	{
 		IELogger.info("Adding recipes to JEI!!");
-		registration.addRecipes(CokeOvenRecipe.RECIPES.getClientRecipes(), CokeOvenRecipeCategory.UID);
-		registration.addRecipes(AlloyRecipe.RECIPES.getClientRecipes(), AlloySmelterRecipeCategory.UID);
-		registration.addRecipes(BlastFurnaceRecipe.RECIPES.getClientRecipes(), BlastFurnaceRecipeCategory.UID);
-		registration.addRecipes(BlastFurnaceFuel.RECIPES.getClientRecipes(), BlastFurnaceFuelCategory.UID);
-		registration.addRecipes(ClocheRecipe.RECIPES.getClientRecipes(), ClocheRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(MetalPressRecipe.STANDARD_RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), MetalPressRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(CrusherRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), CrusherRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(SawmillRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), SawmillRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(BlueprintCraftingRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), WorkbenchRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(SqueezerRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), SqueezerRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(FermenterRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), FermenterRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(RefineryRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), RefineryRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(ArcFurnaceRecipe.RECIPES.getClientRecipes(), input -> input instanceof ArcRecyclingRecipe&&input.listInJEI()), ArcFurnaceRecipeCategory.UID_RECYCLING);
-		registration.addRecipes(Collections2.filter(ArcFurnaceRecipe.RECIPES.getClientRecipes(), input -> !(input instanceof ArcRecyclingRecipe)&&input.listInJEI()), ArcFurnaceRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(BottlingMachineRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), BottlingMachineRecipeCategory.UID);
+		registration.addRecipes(getRecipes(CokeOvenRecipe.RECIPES), CokeOvenRecipeCategory.UID);
+		registration.addRecipes(getRecipes(AlloyRecipe.RECIPES), AlloySmelterRecipeCategory.UID);
+		registration.addRecipes(getRecipes(BlastFurnaceRecipe.RECIPES), BlastFurnaceRecipeCategory.UID);
+		registration.addRecipes(getRecipes(BlastFurnaceFuel.RECIPES), BlastFurnaceFuelCategory.UID);
+		registration.addRecipes(getRecipes(ClocheRecipe.RECIPES), ClocheRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(MetalPressRecipe.STANDARD_RECIPES), IJEIRecipe::listInJEI), MetalPressRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(CrusherRecipe.RECIPES), IJEIRecipe::listInJEI), CrusherRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(SawmillRecipe.RECIPES), IJEIRecipe::listInJEI), SawmillRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(BlueprintCraftingRecipe.RECIPES), IJEIRecipe::listInJEI), WorkbenchRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(SqueezerRecipe.RECIPES), IJEIRecipe::listInJEI), SqueezerRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(FermenterRecipe.RECIPES), IJEIRecipe::listInJEI), FermenterRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(RefineryRecipe.RECIPES), IJEIRecipe::listInJEI), RefineryRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(ArcFurnaceRecipe.RECIPES), input -> input instanceof ArcRecyclingRecipe&&input.listInJEI()), ArcFurnaceRecipeCategory.UID_RECYCLING);
+		registration.addRecipes(Collections2.filter(getRecipes(ArcFurnaceRecipe.RECIPES), input -> !(input instanceof ArcRecyclingRecipe)&&input.listInJEI()), ArcFurnaceRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(BottlingMachineRecipe.RECIPES), IJEIRecipe::listInJEI), BottlingMachineRecipeCategory.UID);
 		registration.addRecipes(getFluidBucketRecipes(), BottlingMachineRecipeCategory.UID);
-		registration.addRecipes(Collections2.filter(MixerRecipe.RECIPES.getClientRecipes(), IJEIRecipe::listInJEI), MixerRecipeCategory.UID);
+		registration.addRecipes(Collections2.filter(getRecipes(MixerRecipe.RECIPES), IJEIRecipe::listInJEI), MixerRecipeCategory.UID);
+	}
+
+	private <T extends Recipe<?>> Collection<T> getRecipes(CachedRecipeList<T> cachedList)
+	{
+		return cachedList.getRecipes(Minecraft.getInstance().level);
 	}
 
 	@Override
