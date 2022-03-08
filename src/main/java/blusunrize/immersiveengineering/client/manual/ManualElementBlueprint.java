@@ -55,7 +55,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 						for(int i = 0; i < recipe.inputs.length; i++)
 							pIngredients[i] = new PositionedItemStack(recipe.inputs[i].getMatchingStacks(), 32+i%2*18, i/2*18);
 						int middle = (int)(h/2f*18)-8;
-						pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output, 86, middle);
+						pIngredients[pIngredients.length-2] = new PositionedItemStack(recipe.output.get(), 86, middle);
 						pIngredients[pIngredients.length-1] = new PositionedItemStack(BlueprintCraftingRecipe.getTypedBlueprint(category), 8, middle);
 
 						if(iStack < this.recipes.size())
@@ -102,9 +102,9 @@ public class ManualElementBlueprint extends SpecialManualElements
 			for(PositionedItemStack pstack : recipes.get(recipePage))
 				if(pstack!=null)
 				{
-					if(pstack.x > maxX)
-						maxX = pstack.x;
-					GuiComponent.fill(transform, x+pstack.x, y+pstack.y, x+pstack.x+16, y+pstack.y+16, 0x33666666);
+					if(pstack.x() > maxX)
+						maxX = pstack.x();
+					GuiComponent.fill(transform, x+pstack.x(), y+pstack.y(), x+pstack.x()+16, y+pstack.y()+16, 0x33666666);
 				}
 			ManualUtils.drawTexturedRect(manual.texture, x+maxX-17, y+yOff/2-5, 16, 10, 0/256f, 16/256f, 226/256f, 236/256f);
 		}
@@ -113,11 +113,11 @@ public class ManualElementBlueprint extends SpecialManualElements
 		{
 			for(PositionedItemStack pstack : recipes.get(recipePage))
 				if(pstack!=null)
-					if(!pstack.getStack().isEmpty())
+					if(!pstack.getStackAtCurrentTime().isEmpty())
 					{
-						ManualUtils.renderItemStack(transform, pstack.getStack(), x+pstack.x, y+pstack.y, true);
-						if(mouseX >= x+pstack.x&&mouseX < x+pstack.x+16&&mouseY >= y+pstack.y&&mouseY < y+pstack.y+16)
-							highlighted = pstack.getStack();
+						ManualUtils.renderItemStack(transform, pstack.getStackAtCurrentTime(), x+pstack.x(), y+pstack.y(), true);
+						if(mouseX >= x+pstack.x()&&mouseX < x+pstack.x()+16&&mouseY >= y+pstack.y()&&mouseY < y+pstack.y()+16)
+							highlighted = pstack.getStackAtCurrentTime();
 					}
 		}
 
@@ -129,7 +129,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 	{
 		for(PositionedItemStack[] recipe : this.recipes)
 			for(PositionedItemStack pStack : recipe)
-				for(ItemStack stack : pStack.getDisplayList())
+				for(ItemStack stack : pStack.displayList())
 					if(ManualUtils.listStack(searchTag, stack))
 						return true;
 		return false;
@@ -141,7 +141,7 @@ public class ManualElementBlueprint extends SpecialManualElements
 		int maxY = 0;
 		for(PositionedItemStack[] recipe : recipes)
 			for(PositionedItemStack pstack : recipe)
-				maxY = Math.max(maxY, pstack.y);
+				maxY = Math.max(maxY, pstack.y());
 		return maxY+18;
 	}
 }

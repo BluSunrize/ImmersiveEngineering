@@ -16,6 +16,7 @@ import blusunrize.lib.manual.Tree.Leaf;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.utils.ItemStackHashStrategy;
 import blusunrize.lib.manual.utils.ManualLogger;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -78,30 +79,30 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 		contentTree = new Tree<>(name);
 		((ReloadableResourceManager)Minecraft.getInstance().getResourceManager()).registerReloadListener(this);
 		registerSpecialElement(new ResourceLocation(name.getNamespace(), "crafting"), s -> {
-			Object[] stacksAndRecipes;
+			ManualRecipeRef[][] stacksAndRecipes;
 			if(GsonHelper.isArrayNode(s, "recipes"))
 			{
 				JsonArray data = GsonHelper.getAsJsonArray(s, "recipes");
-				stacksAndRecipes = new Object[data.size()];
+				stacksAndRecipes = new ManualRecipeRef[data.size()][];
 				for(int i = 0; i < data.size(); i++)
 				{
 					JsonElement el = data.get(i);
 					if(el.isJsonArray())
 					{
 						JsonArray inner = el.getAsJsonArray();
-						Object[] innerSaR = new Object[inner.size()];
+						ManualRecipeRef[] innerSaR = new ManualRecipeRef[inner.size()];
 						for(int j = 0; j < inner.size(); ++j)
 							innerSaR[j] = ManualUtils.getRecipeObjFromJson(this, inner.get(j));
 						stacksAndRecipes[i] = innerSaR;
 					}
 					else
-						stacksAndRecipes[i] = ManualUtils.getRecipeObjFromJson(this, el);
+						stacksAndRecipes[i] = new ManualRecipeRef[]{ManualUtils.getRecipeObjFromJson(this, el)};
 				}
 			}
 			else
 			{
-				stacksAndRecipes = new Object[1];
-				stacksAndRecipes[0] = ManualUtils.getRecipeObjFromJson(this, s);
+				stacksAndRecipes = new ManualRecipeRef[1][1];
+				stacksAndRecipes[0][0] = ManualUtils.getRecipeObjFromJson(this, s);
 			}
 			return new ManualElementCrafting(this, stacksAndRecipes);
 		});

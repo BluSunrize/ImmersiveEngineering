@@ -10,6 +10,7 @@ package blusunrize.lib.manual;
 
 import blusunrize.lib.manual.gui.GuiButtonManualNavigation;
 import blusunrize.lib.manual.gui.ManualScreen;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
 import blusunrize.lib.manual.utils.PrivateAccess;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
@@ -20,7 +21,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 
 import java.util.ArrayList;
@@ -29,19 +33,19 @@ import java.util.Map;
 
 public class ManualElementCrafting extends SpecialManualElements
 {
-	private Object[] recipeRows;
-	private List<PositionedItemStack[]>[] recipeLayout;
-	private int recipePage[];
-	private int heightPixels[];
+	private final ManualRecipeRef[][] recipeRows;
+	private final List<PositionedItemStack[]>[] recipeLayout;
+	private final int[] recipePage;
+	private final int[] heightPixels;
 
-	public ManualElementCrafting(ManualInstance manual, Object... stacks)
+	public ManualElementCrafting(ManualInstance manual, ManualRecipeRef[][] recipeRows)
 	{
 		super(manual);
-		this.recipeRows = stacks;
-		this.recipePage = new int[stacks.length];
-		this.heightPixels = new int[stacks.length];
-		this.recipeLayout = (List<PositionedItemStack[]>[])new List[stacks.length];
-		for(int i = 0; i < stacks.length; ++i)
+		this.recipeRows = recipeRows;
+		this.recipePage = new int[recipeRows.length];
+		this.heightPixels = new int[recipeRows.length];
+		this.recipeLayout = (List<PositionedItemStack[]>[])new List[recipeRows.length];
+		for(int i = 0; i < recipeRows.length; ++i)
 			recipeLayout[i] = new ArrayList<>();
 		recalculateCraftingRecipes();
 	}
@@ -55,53 +59,48 @@ public class ManualElementCrafting extends SpecialManualElements
 		for(int iStack = 0; iStack < recipeRows.length; iStack++)
 		{
 			this.recipeLayout[iStack].clear();
-			Object stack = recipeRows[iStack];
-			if(stack instanceof PositionedItemStack[])
-				addFixedRecipe(iStack, (PositionedItemStack[])stack);
-			else if(stack instanceof Object[])
-				for(Object subStack : (Object[])stack)
-				{
-					if(subStack instanceof PositionedItemStack[])
-						addFixedRecipe(iStack, (PositionedItemStack[])subStack);
-					else
-						checkAllRecipesFor(subStack, iStack);
-				}
-			else
-				checkAllRecipesFor(stack, iStack);
+			ManualRecipeRef[] row = recipeRows[iStack];
+			for(ManualRecipeRef recipe : row)
+			{
+				if(recipe.isLayout())
+					addFixedRecipe(iStack, recipe.getLayout());
+				else
+					checkAllRecipesFor(recipe, iStack);
+			}
 		}
 	}
 
-	private void checkAllRecipesFor(Object stack, int recipeIndex)
+	private void checkAllRecipesFor(ManualRecipeRef recipeToAdd, int recipeIndex)
 	{
 		RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
 		Map<ResourceLocation, Recipe<CraftingContainer>> recipes = PrivateAccess.getRecipes(
 				recipeManager, RecipeType.CRAFTING
 		);
-		if(stack instanceof ResourceLocation)
+		if(recipeToAdd.isRecipeName())
 		{
-			Recipe<CraftingContainer> recipe = recipes.get(stack);
+			Recipe<CraftingContainer> recipe = recipes.get(recipeToAdd.getRecipeName());
 			if(recipe!=null)
-				checkRecipe(recipe, stack, recipeIndex);
+				checkRecipe(recipe, recipeToAdd, recipeIndex);
 		}
 		else
 			for(Recipe<CraftingContainer> recipe : recipes.values())
-				checkRecipe(recipe, stack, recipeIndex);
+				checkRecipe(recipe, recipeToAdd, recipeIndex);
 	}
 
-	private void checkRecipe(Recipe<CraftingContainer> rec, Object stack, int recipeIndex)
+	private void checkRecipe(Recipe<CraftingContainer> rec, ManualRecipeRef recipeToAdd, int recipeIndex)
 	{
-		boolean matches = !rec.getResultItem().isEmpty()&&ManualUtils.stackMatchesObject(rec.getResultItem(), stack);
-		if(!matches&&stack instanceof ResourceLocation&&stack.equals(rec.getId()))
+		boolean matches = recipeToAdd.isResult()&&ManualUtils.stackMatchesObject(rec.getResultItem(), recipeToAdd.getResult());
+		if(!matches&&recipeToAdd.isRecipeName()&&recipeToAdd.getRecipeName().equals(rec.getId()))
 			matches = true;
 		if(matches)
 		{
 			NonNullList<Ingredient> ingredientsPre = rec.getIngredients();
 			int recipeWidth;
 			int recipeHeight;
-			if(rec instanceof IShapedRecipe)
+			if(rec instanceof IShapedRecipe<?> shaped)
 			{
-				recipeWidth = ((IShapedRecipe<?>)rec).getRecipeWidth();
-				recipeHeight = ((IShapedRecipe<?>)rec).getRecipeHeight();
+				recipeWidth = shaped.getRecipeWidth();
+				recipeHeight = shaped.getRecipeHeight();
 			}
 			else
 			{
@@ -129,8 +128,7 @@ public class ManualElementCrafting extends SpecialManualElements
 				this.heightPixels[recipeIndex] = recipeHeight*18;
 				for(int prevId = 0; prevId <= recipeIndex; ++prevId)
 					for(PositionedItemStack[] oldStacks : recipeLayout[prevId])
-						for(PositionedItemStack oldStack : oldStacks)
-							oldStack.y += yOffset;
+						moveBy(oldStacks, yOffset);
 			}
 			this.recipeLayout[recipeIndex].add(pIngredients);
 			addProvidedItem(rec.getResultItem());
@@ -141,8 +139,8 @@ public class ManualElementCrafting extends SpecialManualElements
 	{
 		int height = 0;
 		for(PositionedItemStack stack : recipe)
-			if(stack.y > height)
-				height = stack.y;
+			if(stack.y() > height)
+				height = stack.y();
 		height += 18;
 		if(this.heightPixels[index] < height)
 		{
@@ -150,16 +148,20 @@ public class ManualElementCrafting extends SpecialManualElements
 			this.heightPixels[index] = height;
 			for(int prevId = 0; prevId <= index; ++prevId)
 				for(PositionedItemStack[] oldStacks : recipeLayout[prevId])
-					for(PositionedItemStack oldStack : oldStacks)
-						oldStack.y += offset;
+					moveBy(oldStacks, offset);
 		}
 		else
 		{
 			int offset = (heightPixels[index]-height)/2;
-			for(PositionedItemStack stack : recipe)
-				stack.y += offset;
+			moveBy(recipe, offset);
 		}
 		recipeLayout[index].add(recipe);
+	}
+
+	private static void moveBy(PositionedItemStack[] in, int offY)
+	{
+		for(int i = 0; i < in.length; ++i)
+			in[i] = new PositionedItemStack(in[i].displayList(), in[i].x(), in[i].y()+offY);
 	}
 
 	@Override
@@ -202,9 +204,9 @@ public class ManualElementCrafting extends SpecialManualElements
 				for(PositionedItemStack pstack : rList.get(recipePage[i]))
 					if(pstack!=null)
 					{
-						if(pstack.x > maxX)
-							maxX = pstack.x;
-						GuiComponent.fill(transform, x+pstack.x, y+totalYOff+pstack.y, x+pstack.x+16, y+totalYOff+pstack.y+16, 0x33666666);
+						if(pstack.x() > maxX)
+							maxX = pstack.x();
+						GuiComponent.fill(transform, x+pstack.x(), y+totalYOff+pstack.y(), x+pstack.x()+16, y+totalYOff+pstack.y()+16, 0x33666666);
 					}
 
 				ManualUtils.drawTexturedRect(transform, manual.texture, x+maxX-17,
@@ -223,11 +225,11 @@ public class ManualElementCrafting extends SpecialManualElements
 			{
 				for(PositionedItemStack pstack : rList.get(recipePage[i]))
 					if(pstack!=null)
-						if(!pstack.getStack().isEmpty())
+						if(!pstack.getStackAtCurrentTime().isEmpty())
 						{
-							ManualUtils.renderItemStack(transform, pstack.getStack(), x+pstack.x, y+totalYOff+pstack.y, true);
-							if(mx >= x+pstack.x&&mx < x+pstack.x+16&&my >= y+totalYOff+pstack.y&&my < y+totalYOff+pstack.y+16)
-								highlighted = pstack.getStack();
+							ManualUtils.renderItemStack(transform, pstack.getStackAtCurrentTime(), x+pstack.x(), y+totalYOff+pstack.y(), true);
+							if(mx >= x+pstack.x()&&mx < x+pstack.x()+16&&my >= y+totalYOff+pstack.y()&&my < y+totalYOff+pstack.y()+16)
+								highlighted = pstack.getStackAtCurrentTime();
 						}
 				totalYOff += heightPixels[i]+8;
 			}
@@ -239,18 +241,10 @@ public class ManualElementCrafting extends SpecialManualElements
 	@Override
 	public boolean listForSearch(String searchTag)
 	{
-		for(Object stack : recipeRows)
-		{
-			if(stack instanceof Object[])
-			{
-				for(Object subStack : (Object[])stack)
-					if(subStack instanceof ItemStack&&ManualUtils.listStack(searchTag, (ItemStack)subStack))
-						return true;
-			}
-			else if(stack instanceof ItemStack)
-				if(ManualUtils.listStack(searchTag, (ItemStack)stack))
+		for(ManualRecipeRef[] row : recipeRows)
+			for(ManualRecipeRef recipe : row)
+				if(recipe.isResult()&&ManualUtils.listStack(searchTag, recipe.getResult()))
 					return true;
-		}
 		return false;
 	}
 

@@ -8,62 +8,31 @@
 
 package blusunrize.lib.manual;
 
-import net.minecraft.tags.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.ItemLike;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
-public class PositionedItemStack
+public record PositionedItemStack(List<ItemStack> displayList, int x, int y)
 {
-	public Object stack;
-	public int x;
-	public int y;
-
-	public PositionedItemStack(Object stack, int x, int y)
+	public PositionedItemStack(ItemStack stack, int x, int y)
 	{
-		this.stack = stack;
-		this.x = x;
-		this.y = y;
+		this(List.of(stack), x, y);
 	}
 
-	private List<ItemStack> displayList;
-
-	public List<ItemStack> getDisplayList()
+	public PositionedItemStack(ItemStack[] stacks, int x, int y)
 	{
-		if(displayList==null)
-			init();
-		return displayList;
+		this(Arrays.asList(stacks), x, y);
 	}
 
-	private void init()
+	public PositionedItemStack(Ingredient ingredient, int x, int y)
 	{
-		displayList = new ArrayList<>();
-		if(stack instanceof ItemStack)
-			displayList.add((ItemStack)stack);
-		else if(stack instanceof ItemStack[])
-			Collections.addAll(displayList, (ItemStack[])stack);
-		else if(stack instanceof Ingredient)
-			displayList.addAll(Arrays.asList(((Ingredient)stack).getItems()));
-		else if(stack instanceof List&&!((List<?>)stack).isEmpty())
-			displayList.addAll((List<ItemStack>)this.stack);
-		else if(stack instanceof Tag)
-			((Tag<?>)stack).getValues().stream()
-					.map(o -> ((ItemLike)o).asItem())
-					.map(ItemStack::new)
-					.forEach(displayList::add);
-		else
-			throw new RuntimeException("Unexpected stack object: "+stack);
+		this(ingredient.getItems(), x, y);
 	}
 
-	public ItemStack getStack()
+	public ItemStack getStackAtCurrentTime()
 	{
-		if(displayList==null)
-			init();
 		if(displayList.isEmpty())
 			return ItemStack.EMPTY;
 

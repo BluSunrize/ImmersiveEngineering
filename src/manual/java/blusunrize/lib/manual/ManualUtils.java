@@ -14,6 +14,7 @@ import blusunrize.lib.manual.Tree.AbstractNode;
 import blusunrize.lib.manual.gui.GuiButtonManualLink;
 import blusunrize.lib.manual.gui.ManualScreen;
 import blusunrize.lib.manual.links.Link;
+import blusunrize.lib.manual.utils.ManualRecipeRef;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -53,21 +54,13 @@ import static com.mojang.blaze3d.platform.GlStateManager.SourceFactor.SRC_ALPHA;
 
 public class ManualUtils
 {
-	// TODO get rid of this untyped mess!
-	@Deprecated
-	public static boolean stackMatchesObject(ItemStack stack, Object o)
+	public static boolean stackMatchesObject(ItemStack stack, ItemStack o)
 	{
-		if(o instanceof ResourceLocation)
-			return isInTag(stack, (ResourceLocation)o);
-		if(o instanceof ItemStack)
-		{
-			if(!ItemStack.isSame((ItemStack)o, stack))
-				return false;
-			if(((ItemStack)o).hasTag())
-				return ((ItemStack)o).getTag().equals(stack.getTag());
-			return true;
-		}
-		return false;
+		if(!ItemStack.isSame(o, stack))
+			return false;
+		if(o.hasTag())
+			return o.getTag().equals(stack.getTag());
+		return true;
 	}
 
 	public static boolean isInTag(ItemStack stack, ResourceLocation tag)
@@ -358,17 +351,15 @@ public class ManualUtils
 			return CraftingHelper.getItemStack(jsonEle.getAsJsonObject(), true);
 	}
 
-	public static Object getRecipeObjFromJson(ManualInstance m, JsonElement jsonEle)
+	public static ManualRecipeRef getRecipeObjFromJson(ManualInstance m, JsonElement jsonEle)
 	{
 		if(jsonEle.isJsonObject())
 		{
 			JsonObject json = jsonEle.getAsJsonObject();
 			if(GsonHelper.isStringValue(json, "recipe"))
-				return ManualUtils.getLocationForManual(GsonHelper.getAsString(json, "recipe"), m);
-			else if(GsonHelper.isStringValue(json, "orename"))
-				return json.get("orename").getAsString();
+				return new ManualRecipeRef(ManualUtils.getLocationForManual(GsonHelper.getAsString(json, "recipe"), m));
 			else if(GsonHelper.isStringValue(json, "item"))
-				return CraftingHelper.getItemStack(json, true);
+				return new ManualRecipeRef(CraftingHelper.getItemStack(json, true));
 		}
 		else if(jsonEle.isJsonArray())
 		{
@@ -382,10 +373,10 @@ public class ManualUtils
 				else
 					throw new RuntimeException("Failed to load positional item stack from "+json.get(i));
 			}
-			return stacks;
+			return new ManualRecipeRef(stacks);
 		}
 		else if(jsonEle.isJsonPrimitive()&&jsonEle.getAsJsonPrimitive().isString())
-			return ManualUtils.getLocationForManual(jsonEle.getAsString(), m);
+			return new ManualRecipeRef(ManualUtils.getLocationForManual(jsonEle.getAsString(), m));
 		throw new RuntimeException("Could not find recipe for "+jsonEle);
 	}
 
