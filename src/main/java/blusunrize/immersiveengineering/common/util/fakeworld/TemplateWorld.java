@@ -17,6 +17,7 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.EmptyTickList;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.TickList;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -176,5 +177,11 @@ public class TemplateWorld extends Level
 	public Biome getUncachedNoiseBiome(int x, int y, int z)
 	{
 		return registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOrThrow(Biomes.PLAINS);
+	}
+
+	@Override
+	public int getBrightness(@Nonnull LightLayer lightType, @Nonnull BlockPos pos)
+	{
+		return 15;
 	}
 }
