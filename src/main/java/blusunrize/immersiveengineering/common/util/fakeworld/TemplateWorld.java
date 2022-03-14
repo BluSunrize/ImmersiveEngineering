@@ -11,6 +11,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LightLayer;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.block.Block;
@@ -65,6 +66,7 @@ public class TemplateWorld extends Level
 	{
 	}
 
+	@Nonnull
 	@Override
 	public String gatherChunkSourceStats()
 	{
@@ -86,7 +88,7 @@ public class TemplateWorld extends Level
 	}
 
 	@Override
-	public void setMapData(String key, MapItemSavedData mapDataIn)
+	public void setMapData(@Nonnull String key, @Nonnull MapItemSavedData mapDataIn)
 	{
 		maps.put(key, mapDataIn);
 	}
@@ -116,23 +118,28 @@ public class TemplateWorld extends Level
 		return recipeManager;
 	}
 
+	@Nonnull
 	@Override
 	protected LevelEntityGetter<Entity> getEntities()
 	{
 		return new EmptyLevelEntityGetter<>();
 	}
 
-    @Override
-    public LevelTickAccess<Block> getBlockTicks() {
-        return new EmptyTickAccess<>();
-    }
-
-    @Override
-    public LevelTickAccess<Fluid> getFluidTicks() {
+	@Nonnull
+	@Override
+	public LevelTickAccess<Block> getBlockTicks()
+	{
 		return new EmptyTickAccess<>();
 	}
 
-    @Nonnull
+	@Nonnull
+	@Override
+	public LevelTickAccess<Fluid> getFluidTicks()
+	{
+		return new EmptyTickAccess<>();
+	}
+
+	@Nonnull
 	@Override
 	public ChunkSource getChunkSource()
 	{
@@ -145,7 +152,7 @@ public class TemplateWorld extends Level
 	}
 
 	@Override
-	public void gameEvent(@Nullable Entity p_151549_, GameEvent p_151550_, BlockPos p_151551_)
+	public void gameEvent(@Nullable Entity p_151549_, @Nonnull GameEvent p_151550_, @Nonnull BlockPos p_151551_)
 	{
 
 	}
@@ -180,5 +187,11 @@ public class TemplateWorld extends Level
 	public Holder<Biome> getUncachedNoiseBiome(int x, int y, int z)
 	{
 		return Holder.direct(registryAccess().registryOrThrow(Registry.BIOME_REGISTRY).getOrThrow(Biomes.PLAINS));
+	}
+
+	@Override
+	public int getBrightness(@Nonnull LightLayer lightType, @Nonnull BlockPos pos)
+	{
+		return 15;
 	}
 }
