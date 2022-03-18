@@ -84,6 +84,7 @@ processResources {
     filesMatching("META-INF/mods.toml") {
         expand version_replaces
     }
+    exclude ".cache"
     //Minify json resources
     doLast {
         fileTree(dir: getOutputs().getFiles().getAsPath(), includes: jsonPatterns).each {
