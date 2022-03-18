@@ -1192,8 +1192,8 @@ c2e2cf40c8fc836b37e8abf4076f1b7b71c76076 assets/immersiveengineering/models/item
 9869af42b22bbeaea6fe05a5ed394c08392d6a1a data/chiselsandbits/tags/blocks/chiselable/forced.json
 46fb165ebf90bd427ff10c20143bb4efcb9c91b9 data/curios/tags/items/back.json
 8aade5dc51fb55cc77252795990e0910ee325db8 data/curios/tags/items/head.json
-08dad36019704e4f7abb630ee1d1e868233a4943 data/forge/tags/block_entity_types/immovable.json
-08dad36019704e4f7abb630ee1d1e868233a4943 data/forge/tags/block_entity_types/relocation_not_supported.json
+08dad36019704e4f7abb630ee1d1e868233a4943 data/forge/tags/block_entity_type/immovable.json
+08dad36019704e4f7abb630ee1d1e868233a4943 data/forge/tags/block_entity_type/relocation_not_supported.json
 7fa7b97903216de91204275e978e8195e8fab75b data/forge/tags/blocks/fences/aluminum.json
 7f82e7a954cc13bc486a74077ea5f94cadf63f38 data/forge/tags/blocks/fences/steel.json
 22226fa97d89da387a8709a89e9874f04f663a79 data/forge/tags/blocks/ore_rates/singular.json
