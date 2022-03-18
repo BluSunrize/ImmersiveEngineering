@@ -18,13 +18,12 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRecipe>
 {
@@ -43,7 +42,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, BlastFurnaceRecipe recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, BlastFurnaceRecipe recipe, IFocusGroup focuses)
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 10, 8)
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));

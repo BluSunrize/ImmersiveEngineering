@@ -18,14 +18,13 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 {
@@ -42,7 +41,7 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, SqueezerRecipe recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, SqueezerRecipe recipe, IFocusGroup focuses)
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 2, 23)
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));

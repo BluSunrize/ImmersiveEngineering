@@ -16,13 +16,12 @@ import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import com.google.common.collect.Lists;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingRecipe>
 {
@@ -36,7 +35,7 @@ public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingR
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, BlueprintCraftingRecipe recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, BlueprintCraftingRecipe recipe, IFocusGroup focuses)
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 25, 6)
 				.addItemStacks(Lists.newArrayList(BlueprintCraftingRecipe.getTypedBlueprint(recipe.blueprintCategory)))

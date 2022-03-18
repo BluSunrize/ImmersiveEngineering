@@ -51,7 +51,7 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	}
 
 	@Override
-	public ItemStack getCartItem()
+	public ItemStack getPickResult()
 	{
 		return new ItemStack(IEItems.Minecarts.CART_WOODEN_CRATE.get());
 	}

@@ -48,7 +48,7 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 	}
 
 	@Override
-	public ItemStack getCartItem()
+	public ItemStack getPickResult()
 	{
 		return new ItemStack(IEItems.Minecarts.CART_WOODEN_BARREL.get());
 	}

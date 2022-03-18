@@ -36,7 +36,7 @@ public class ReinforcedCrateMinecartEntity extends CrateMinecartEntity
 	}
 
 	@Override
-	public ItemStack getCartItem()
+	public ItemStack getPickResult()
 	{
 		return new ItemStack(IEItems.Minecarts.CART_REINFORCED_CRATE.get());
 	}

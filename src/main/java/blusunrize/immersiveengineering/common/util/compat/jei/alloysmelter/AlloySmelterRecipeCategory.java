@@ -17,12 +17,10 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 {
@@ -41,7 +39,7 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, AlloyRecipe recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, AlloyRecipe recipe, IFocusGroup focuses)
 	{
 		super.setRecipe(builder, recipe, focuses);
 		builder.addSlot(RecipeIngredientRole.INPUT, 2, 2)

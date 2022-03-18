@@ -19,13 +19,12 @@ import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 {
@@ -44,7 +43,7 @@ public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, BlastFurnaceFuel recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, BlastFurnaceFuel recipe, IFocusGroup focuses)
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 1, 17)
 				.addItemStacks(Arrays.asList(recipe.input.getItems()));

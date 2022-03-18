@@ -17,13 +17,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 {
@@ -37,7 +36,7 @@ public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, MetalPressRecipe recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, MetalPressRecipe recipe, IFocusGroup focuses)
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 1, 13)
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()))

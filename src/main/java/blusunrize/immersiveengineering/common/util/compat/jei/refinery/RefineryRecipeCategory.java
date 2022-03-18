@@ -17,14 +17,13 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 {
@@ -41,7 +40,7 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, RefineryRecipe recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, RefineryRecipe recipe, IFocusGroup focuses)
 	{
 		if(recipe.input0!=null)
 			builder.addSlot(RecipeIngredientRole.INPUT, 8, 11)

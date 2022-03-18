@@ -19,14 +19,13 @@ import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 {
@@ -51,7 +50,7 @@ public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, SawmillRecipe recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, SawmillRecipe recipe, IFocusGroup focuses)
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 3, 7)
 				.addItemStacks(Arrays.asList(recipe.input.getItems()));

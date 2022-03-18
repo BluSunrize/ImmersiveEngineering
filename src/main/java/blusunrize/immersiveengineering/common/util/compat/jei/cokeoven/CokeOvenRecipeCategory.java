@@ -19,8 +19,9 @@ import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import mezz.jei.api.recipe.IFocus;
+import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +29,6 @@ import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Arrays;
-import java.util.List;
 
 public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 {
@@ -47,7 +47,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 	}
 
 	@Override
-	public void setRecipe(IRecipeLayoutBuilder builder, CokeOvenRecipe recipe, List<? extends IFocus<?>> focuses)
+	public void setRecipe(IRecipeLayoutBuilder builder, CokeOvenRecipe recipe, IFocusGroup focuses)
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 4, 19)
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));
@@ -65,8 +65,8 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 	}
 
 	@Override
-	public void draw(CokeOvenRecipe recipe, PoseStack poseStack, double mouseX, double mouseY)
+	public void draw(CokeOvenRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack stack, double mouseX, double mouseY)
 	{
-		flame.draw(poseStack, 31, 20);
+		flame.draw(stack, 31, 20);
 	}
 }
