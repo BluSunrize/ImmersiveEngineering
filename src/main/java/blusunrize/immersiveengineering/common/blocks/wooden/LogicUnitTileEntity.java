@@ -94,6 +94,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements TickableBlo
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		ContainerHelper.loadAllItems(nbt, inventory);
+		updateOutputs();
 	}
 
 	@Override
@@ -223,7 +224,7 @@ public class LogicUnitTileEntity extends IEBaseTileEntity implements TickableBlo
 		return super.getCapability(capability, facing);
 	}
 
-	ResettableLazy<boolean[]> combinedInputs = new ResettableLazy<>(() -> {
+	private final ResettableLazy<boolean[]> combinedInputs = new ResettableLazy<>(() -> {
 		boolean[] ret = new boolean[SIZE_COLORS];
 		for(boolean[] side : this.inputs.values())
 			for(int i = 0; i < SIZE_COLORS; ++i)
