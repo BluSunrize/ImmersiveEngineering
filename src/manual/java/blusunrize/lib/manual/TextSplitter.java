@@ -268,39 +268,34 @@ public class TextSplitter
 		}
 		else
 			currentWidth = 0;
-		while(pos < wordsAndSpaces.size()&&currentWidth < lineWidth)
+		while(canAddToLine(wordsAndSpaces, currentWidth, pos))
 		{
 			final TokenWithWidth token = wordsAndSpaces.get(pos);
-			if(currentWidth+token.width <= lineWidth||currentWidth==0)
+			if(token.getText().equals("<np>"))
+				return new Line(lineTokens, pos+1, true, anchorsBeforeLine);
+			else if(isLinebreak(token.getText()))
+				return new Line(lineTokens, pos+1, false, anchorsBeforeLine);
+			else if(token.getText().startsWith("<&")&&token.getText().endsWith(">"))
 			{
-				if(token.getText().equals("<np>"))
-					return new Line(lineTokens, pos+1, true, anchorsBeforeLine);
-				else if(isLinebreak(token.getText()))
-					return new Line(lineTokens, pos+1, false, anchorsBeforeLine);
-				else if(token.getText().startsWith("<&")&&token.getText().endsWith(">"))
-				{
-					String anchor = toAnchor(token.getText());
-					List<String> withNewAdded = new ArrayList<>(anchorsBeforeLine);
-					withNewAdded.add(anchor);
-					AnchorViability allowed = canPlaceAnchors.apply(withNewAdded);
+				String anchor = toAnchor(token.getText());
+				List<String> withNewAdded = new ArrayList<>(anchorsBeforeLine);
+				withNewAdded.add(anchor);
+				AnchorViability allowed = canPlaceAnchors.apply(withNewAdded);
 
-					if(allowed==AnchorViability.VALID_IF_ALONE&&currentWidth==0&&anchorsBeforeLine.isEmpty())
-						return new Line(ImmutableList.of(), pos+1, true, ImmutableList.of(anchor));
-					else if(allowed!=AnchorViability.VALID)
-						return new Line(lineTokens, pos, true, anchorsBeforeLine);
-					else
-						anchorsBeforeLine.add(anchor);
-				}
-				else if(!token.baseToken.isWhitespace()||currentWidth!=0)
-				{
-					//Don't add whitespace at the start of a line
-					lineTokens.add(token);
-					currentWidth += token.width;
-				}
-				pos++;
+				if(allowed==AnchorViability.VALID_IF_ALONE&&currentWidth==0&&anchorsBeforeLine.isEmpty())
+					return new Line(ImmutableList.of(), pos+1, true, ImmutableList.of(anchor));
+				else if(allowed!=AnchorViability.VALID)
+					return new Line(lineTokens, pos, true, anchorsBeforeLine);
+				else
+					anchorsBeforeLine.add(anchor);
 			}
-			else
-				break;
+			else if(!token.baseToken.isWhitespace()||currentWidth!=0)
+			{
+				//Don't add whitespace at the start of a line
+				lineTokens.add(token);
+				currentWidth += token.width;
+			}
+			pos++;
 		}
 		currentWidth = removeEndWhitespace(lineTokens, currentWidth);
 		if(currentWidth > lineWidth)
@@ -322,6 +317,13 @@ public class TextSplitter
 			return new Line(lineTokens, pos, false, anchorsBeforeLine);
 		else
 			return new Line(lineTokens, null, anchorsBeforeLine);
+	}
+
+	private boolean canAddToLine(List<TokenWithWidth> allTokens, int currentWidth, int nextToken)
+	{
+		if(nextToken >= allTokens.size())
+			return false;
+		return currentWidth==0||currentWidth+allTokens.get(nextToken).width <= lineWidth;
 	}
 
 	private int removeEndWhitespace(List<TokenWithWidth> tokens, int totalLength)

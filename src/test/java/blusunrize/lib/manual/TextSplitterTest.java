@@ -145,6 +145,16 @@ public class TextSplitterTest
 		assertLines(result, "test");
 	}
 
+	@Test
+	public void testExactLine()
+	{
+		var firstLine = "0123456789";
+		var secondLine = "abc";
+		var result = splitter.split(firstLine+"\n"+secondLine);
+		assertLineCounts(result, 2);
+		assertLines(result, firstLine, secondLine);
+	}
+
 	private static class DummyElement extends SpecialManualElement
 	{
 		private final int lines;
