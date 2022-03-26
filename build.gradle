@@ -81,6 +81,7 @@ def jsonPatterns = ["**/*.json", "**/*.mcmeta"]
 
 processResources {
     duplicatesStrategy = DuplicatesStrategy.FAIL
+    inputs.properties(version_replaces)
     filesMatching("META-INF/mods.toml") {
         expand version_replaces
     }
