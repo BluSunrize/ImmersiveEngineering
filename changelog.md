@@ -1,8 +1,11 @@
-##### Version 1.18.1-7.1.1-pre
+##### Version 1.18.2-8.0.0-pre
+- Re-add compat for OpenComputers2 (Malte)
+- Add support for running gametests in development (Malte)
 - Change herbicide recipe to use sulfur instead of nitrate (BluSunrize)
 - Clean up wire collision code (Malte)
 - Change wire rendering to render wires as part of the chunks they pass through (Malte)
 - Change crates to extend vanilla loot containers (Malte)
+- Change JEI GUI for Blast Furnace recipes to show the process time (BluSunrize)
 - Fix in-hand GUI for Drill & Buzzsaw rendering their head/blade too dark (BluSunrize)
 - Fix sync issues and dupe bug in the buzzsaw (BluSunrize)
 - Fix incorrect collision box on Concrete Chunk (BluSunrize)
@@ -10,6 +13,15 @@
 - Fix JEI not showing refinery recipes when checking the uses of a catalyst (BluSunrize)
 - Fix manual not resetting when reloading resources (Malte)
 - Fix silo item handler not fully complying with method contracts (Malte)
+- Fix floodlight not using its active texture (Malte)
+- Fix tags for storage blocks and ores (Malte)
+- Fix fluid pipes voiding fluid on chunks (un-)loading (Malte)
+- Fix turrets not facing the way they are placed (Malte)
+- Fix dupe bugs in the Engineer's Crafting Table (Malte)
+- Fix incorrect outputs in the logic unit when inverting gates are involved (Malte)
+- Fix left-hand rendering for drill, chemthrower, buzzsaw (Malte)
+- Fix selection box of covered extracting conveyor (BluSunrize)
+- Fix alloy smelter not handling swapped input slots (BluSunrize)
 - Mirror models in code rather than using separate OBJ files (Malte)
 
 ##### Version 1.18.1-7.1.0-145
