@@ -10,7 +10,9 @@ package blusunrize.immersiveengineering.common.util.compat.jei.blastfurnace;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
@@ -20,6 +22,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -57,5 +60,7 @@ public class BlastFurnaceRecipeCategory extends IERecipeCategory<BlastFurnaceRec
 	{
 		flame.draw(stack, 12, 27);
 		arrow.draw(stack, 33, 26);
+		String burnTime = I18n.get("desc.immersiveengineering.info.seconds", Utils.formatDouble(recipe.time/20f, "#.##"));
+		ClientUtils.font().draw(stack, burnTime, 68-ClientUtils.font().width(burnTime), 48, 0x777777);
 	}
 }
