@@ -221,7 +221,7 @@ public class ExtractConveyor extends ConveyorBase
 	@Override
 	public VoxelShape getSelectionShape()
 	{
-		VoxelShape ret = conveyorBounds;
+		VoxelShape ret = super.getSelectionShape();
 		double extension = getCurrentExtension();
 		VoxelShape extensionShape = switch(getExtractDirection())
 				{
