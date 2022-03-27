@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.0.0-pre
+##### Version 1.18.2-8.0.0-146
 - Re-add compat for OpenComputers2 (Malte)
 - Add support for running gametests in development (Malte)
 - Change herbicide recipe to use sulfur instead of nitrate (BluSunrize)
