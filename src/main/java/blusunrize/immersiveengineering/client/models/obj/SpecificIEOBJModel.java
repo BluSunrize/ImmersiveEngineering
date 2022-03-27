@@ -20,6 +20,8 @@ import blusunrize.immersiveengineering.client.models.split.PolygonUtils.ExtraQua
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Matrix3f;
+import com.mojang.math.Matrix4f;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector4f;
 import malte0811.modelsplitter.model.Group;
@@ -125,13 +127,32 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		return true;
 	}
 
+	private static final Matrix4f INVERT = Matrix4f.createScaleMatrix(-1, -1, -1);
+	private static final Matrix3f INVERT_NORMAL = new Matrix3f(INVERT);
+
 	@Override
 	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack transforms)
 	{
 		Transformation matrix = PerspectiveMapWrapper.getTransforms(baseModel.getOwner().getCombinedTransform())
 				.getOrDefault(cameraTransformType, Transformation.identity());
 
-		matrix.push(transforms);
+		var scale = matrix.getScale();
+		if(scale.x()*scale.y()*scale.z() < 0)
+		{
+			// If we "invert" the model, calling Transformation#push would produce a very broken normal matrix with
+			// entries on the order of 1e25. So we need to apply the positive part of the transformation and then invert
+			// manually.
+			var newScale = scale.copy();
+			newScale.mul(-1);
+			matrix = new Transformation(
+					matrix.getTranslation(), matrix.getLeftRotation(), newScale, matrix.getRightRotation()
+			);
+			matrix.push(transforms);
+			transforms.last().pose().multiply(INVERT);
+			transforms.last().normal().mul(INVERT_NORMAL);
+		}
+		else
+			matrix.push(transforms);
 		ItemCallback.castOrDefault(callback).handlePerspective(
 				key, GlobalTempData.getActiveHolder(), cameraTransformType, transforms
 		);

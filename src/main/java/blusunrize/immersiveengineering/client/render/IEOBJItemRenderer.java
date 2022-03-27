@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.client.models.obj.callback.DefaultCallbac
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
+import blusunrize.immersiveengineering.client.utils.InvertingVertexBuffer;
 import com.google.common.base.Suppliers;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -89,6 +90,11 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 			if(callback.shouldRenderGroup(model.getKey(), g, null))
 				visible.add(g);
 		LivingEntity entity = GlobalTempData.getActiveHolder();
+		if(transformType==TransformType.FIRST_PERSON_LEFT_HAND)
+		{
+			MultiBufferSource oldBufferIn = bufferIn;
+			bufferIn = type -> new InvertingVertexBuffer(4, oldBufferIn.getBuffer(type));
+		}
 		for(List<String> groups : callback.getSpecialGroups(stack, transformType, entity))
 		{
 			Transformation mat = callback.getTransformForGroups(stack, groups, transformType, entity,
