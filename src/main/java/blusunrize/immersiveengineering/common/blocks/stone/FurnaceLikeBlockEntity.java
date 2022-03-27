@@ -302,7 +302,14 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 		if(recipe!=null)
 		{
 			for(InputSlot<R> slot : inputs)
-				Utils.modifyInvStackSize(inventory, slot.slotIndex, -slot.get(recipe).getCount());
+			{
+				int reqSize = inputs.stream()
+						.map(matchSlot -> matchSlot.get(recipe))
+						.filter(ingr -> ingr.test(inventory.get(slot.slotIndex)))
+						.mapToInt(IngredientWithSize::getCount).findFirst().orElse(0);
+				Utils.modifyInvStackSize(inventory, slot.slotIndex, -reqSize);
+			}
+
 			for(OutputSlot<R> slot : outputs)
 			{
 				ItemStack result = slot.get(recipe);
