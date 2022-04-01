@@ -31,7 +31,8 @@ public class RebuildTaskMixin
 	@Nullable
 	protected RenderChunkRegion region;
 	private RenderChunkRegion regionCopy;
-	@Shadow(aliases = "f_112859_")
+	// Second alias is required with Optifine in production
+	@Shadow(aliases = {"f_112859_", "this$1"})
 	@Final
 	private RenderChunk this$1;
 
