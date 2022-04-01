@@ -29,7 +29,6 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.CompiledChunk;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
-import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -72,7 +71,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 
 	public static void renderConnectionsInSection(
 			CompiledChunk compiled, ChunkBufferBuilderPack buffers,
-			@Nullable RenderChunkRegion region, RenderChunk renderChunk
+			@Nullable BlockAndTintGetter region, RenderChunk renderChunk
 	)
 	{
 		if(region==null)

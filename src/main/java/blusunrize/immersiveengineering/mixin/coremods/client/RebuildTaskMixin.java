@@ -9,16 +9,19 @@
 package blusunrize.immersiveengineering.mixin.coremods.client;
 
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
+import blusunrize.immersiveengineering.common.mixin.CaptureOwner;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.Slice;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
@@ -30,26 +33,31 @@ public class RebuildTaskMixin
 	@Shadow
 	@Nullable
 	protected RenderChunkRegion region;
-	private RenderChunkRegion regionCopy;
+	private BlockAndTintGetter immersiveengineering$regionCopy;
 	// Second alias is required with Optifine in production
 	@Shadow(aliases = {"f_112859_", "this$1"})
 	@Final
 	private RenderChunk this$1;
 
-	@Inject(
+	// Extraction is called for every block, so we just extract the region here and render later
+	@CaptureOwner(
 			method = "compile",
-			at = @At(value = "INVOKE", target = "Lcom/google/common/collect/Sets;newHashSet()Ljava/util/HashSet;", remap = false)
+			at = {
+					// Vanilla
+					@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"),
+					// Optifine
+					@At(value = "INVOKE", target = "Lnet/optifine/override/ChunkCacheOF;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", remap = false),
+			},
+			slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isSolidRender(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z"))
 	)
-	public void extractRegion(CallbackInfoReturnable<Set<BlockEntity>> cir)
+	public void extractRegion(BlockAndTintGetter region)
 	{
-		//TODO figure out why this is necessary: Is vanilla doing a dumb non-atomic swap and hoping it will behave
-		// atomically?
-		regionCopy = region;
+		immersiveengineering$regionCopy = region;
 	}
 
 	@Inject(
 			method = "compile",
-			at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/block/ModelBlockRenderer;enableCaching()V")
+			at = @At(value = "INVOKE", target = "Ljava/util/Set;stream()Ljava/util/stream/Stream;", remap = false)
 	)
 	public void addConnectionQuads(
 			float pX, float pY, float pZ,
@@ -58,7 +66,7 @@ public class RebuildTaskMixin
 			CallbackInfoReturnable<Set<BlockEntity>> cir
 	)
 	{
-		ConnectionRenderer.renderConnectionsInSection(pCompiledChunk, pBuffers, this.regionCopy, this$1);
-		this.regionCopy = null;
+		ConnectionRenderer.renderConnectionsInSection(pCompiledChunk, pBuffers, this.immersiveengineering$regionCopy, this$1);
+		this.immersiveengineering$regionCopy = null;
 	}
 }
