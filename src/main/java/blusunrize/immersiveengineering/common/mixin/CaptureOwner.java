@@ -25,8 +25,6 @@ public @interface CaptureOwner
 {
 	String[] method() default {};
 
-	Slice slice();
-
 	At[] at();
 
 	int require() default 1;

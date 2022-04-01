@@ -44,11 +44,16 @@ public class RebuildTaskMixin
 			method = "compile",
 			at = {
 					// Vanilla
-					@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"),
+					@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", ordinal = 0),
+					// Vanilla, remapped manually. The Mixin AP is not aware of CaptureOwner, and this is less work than
+					// creating an AP just for this
+					@At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/chunk/RenderChunkRegion;m_8055_(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", ordinal = 0),
 					// Optifine
-					@At(value = "INVOKE", target = "Lnet/optifine/override/ChunkCacheOF;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", remap = false),
-			},
-			slice = @Slice(to = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;isSolidRender(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)Z"))
+					@At(value = "INVOKE", target = "Lnet/optifine/override/ChunkCacheOF;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"),
+					// Optifine, remapped manually. An AP would not help here, since the Optifine chunk cache class
+					// isn't known at compile time.
+					@At(value = "INVOKE", target = "Lnet/optifine/override/ChunkCacheOF;m_8055_(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;"),
+			}
 	)
 	public void extractRegion(BlockAndTintGetter region)
 	{
