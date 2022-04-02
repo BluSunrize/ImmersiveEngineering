@@ -784,7 +784,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		@Override
 		protected NonNullList<ItemStack> getRecipeItemOutputs(PoweredMultiblockBlockEntity<?, ArcFurnaceRecipe> multiblock)
 		{
-			var recipe = getRecipe(multiblock.getLevel());
+			ArcFurnaceRecipe recipe = getRecipe(multiblock.getLevel());
 			if (recipe == null)
 				return NonNullList.create();
 			ItemStack input = multiblock.getInventory().get(this.inputSlots[0]);

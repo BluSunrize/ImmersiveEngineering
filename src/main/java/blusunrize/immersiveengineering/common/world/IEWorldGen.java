@@ -117,8 +117,8 @@ public class IEWorldGen
 			OreConfig config = IEServerConfig.ORES.ores.get(type);
 			if(config.retrogenEnabled.get())
 			{
-				var configured = new ConfiguredFeature<>(IEContent.ORE_RETROGEN, new OreConfiguration(targetList, config.veinSize.get()));
-				var placed = new PlacedFeature(Holder.direct(configured), getOreModifiers(type));
+				ConfiguredFeature<OreConfiguration, Feature<OreConfiguration>> configured = new ConfiguredFeature<>(IEContent.ORE_RETROGEN, new OreConfiguration(targetList, config.veinSize.get()));
+				PlacedFeature placed = new PlacedFeature(Holder.direct(configured), getOreModifiers(type));
 				placed.place(
 						world, world.getChunkSource().getGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ)
 				);

@@ -470,7 +470,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		@Override
 		public boolean canProcess(PoweredMultiblockBlockEntity<?, MixerRecipe> multiblock)
 		{
-			var levelData = getLevelData(multiblock.getLevel());
+			LevelDependentData<MixerRecipe> levelData = getLevelData(multiblock.getLevel());
 			if (levelData.recipe() == null)
 				return true;
 			if(!(multiblock instanceof MixerBlockEntity mixer))
@@ -483,7 +483,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 		@Override
 		public void doProcessTick(PoweredMultiblockBlockEntity<?, MixerRecipe> multiblock)
 		{
-			var levelData = getLevelData(multiblock.getLevel());
+			LevelDependentData<MixerRecipe> levelData = getLevelData(multiblock.getLevel());
 			if (levelData.recipe() == null)
 			{
 				this.clearProcess = true;

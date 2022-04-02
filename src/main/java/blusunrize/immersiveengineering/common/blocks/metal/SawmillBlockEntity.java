@@ -605,7 +605,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 
 		public boolean processStep(SawmillBlockEntity tile, Set<ItemStack> secondaries)
 		{
-			var data = getRecipeDependentData(tile.level);
+			RecipeDependentData data = getRecipeDependentData(tile.level);
 			if(tile.energyStorage.extractEnergy(data.energyPerTick, true) >= data.energyPerTick)
 			{
 				tile.energyStorage.extractEnergy(data.energyPerTick, false);
@@ -643,7 +643,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 
 		public ItemStack getCurrentStack(Level level, boolean sawblade)
 		{
-			var data = getRecipeDependentData(level);
+			RecipeDependentData data = getRecipeDependentData(level);
 			if(data.recipe==null)
 				return this.input;
 			// Early exit before stripping

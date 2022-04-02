@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -61,10 +63,10 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 			{
 				if(doTransfer)
 				{
-					var stacks = recipeSlots.getSlotViews();
+					List<IRecipeSlotView> stacks = recipeSlots.getSlotViews();
 					NonNullList<ItemStack> convertedInput = NonNullList.withSize(stacks.size()-1, ItemStack.EMPTY);
 					int j = 0;
-					for(var ingr : stacks)
+					for(IRecipeSlotView ingr : stacks)
 					{
 						if(j > 0)
 						{

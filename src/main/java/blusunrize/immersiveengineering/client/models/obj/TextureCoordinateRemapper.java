@@ -58,7 +58,7 @@ public class TextureCoordinateRemapper
 			return face;
 
 		List<Vertex> newPoints = new ArrayList<>();
-		for(var vertex : face.getPoints())
+		for(Vertex vertex : face.getPoints())
 		{
 			UVCoords texCoord = vertex.uv();
 

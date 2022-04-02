@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.invoke.InvokeInjector;
 import org.spongepowered.asm.mixin.injection.struct.InjectionInfo;
 import org.spongepowered.asm.mixin.injection.struct.InjectionNodes.InjectionNode;
 import org.spongepowered.asm.mixin.injection.struct.Target;
+import org.spongepowered.asm.mixin.injection.struct.Target.Extension;
 import org.spongepowered.asm.mixin.injection.throwables.InvalidInjectionException;
 
 import java.util.List;
@@ -52,16 +53,16 @@ public class CaptureOwnerInjector extends InvokeInjector
 	protected void injectAtInvoke(Target target, InjectionNode node)
 	{
 		MethodInsnNode invokedNode = (MethodInsnNode)node.getCurrentTarget();
-		var realArgs = Type.getArgumentTypes(invokedNode.desc);
+		Type[] realArgs = Type.getArgumentTypes(invokedNode.desc);
 		// Top part of the stack before the method call
-		var argsWithThis = new Type[realArgs.length+1];
+		Type[] argsWithThis = new Type[realArgs.length+1];
 		argsWithThis[0] = Type.getType('L'+invokedNode.owner+';');
 		System.arraycopy(realArgs, 0, argsWithThis, 1, realArgs.length);
 
-		var injected = new InsnList();
-		var extraLocals = target.extendLocals();
+		InsnList injected = new InsnList();
+		Extension extraLocals = target.extendLocals();
 		// Move method args&owner from stack into locals
-		var storedArgs = storeArgs(target, argsWithThis, injected, 0);
+		int[] storedArgs = storeArgs(target, argsWithThis, injected, 0);
 		// Load owner and call handler
 		invokeHandlerWithArgs(argsWithThis, injected, storedArgs, 0, 1);
 		// Restore stack state

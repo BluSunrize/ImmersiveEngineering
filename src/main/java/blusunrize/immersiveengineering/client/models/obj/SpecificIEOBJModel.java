@@ -20,10 +20,7 @@ import blusunrize.immersiveengineering.client.models.split.PolygonUtils.ExtraQua
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector4f;
+import com.mojang.math.*;
 import malte0811.modelsplitter.model.Group;
 import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
 import malte0811.modelsplitter.model.Polygon;
@@ -136,13 +133,13 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		Transformation matrix = PerspectiveMapWrapper.getTransforms(baseModel.getOwner().getCombinedTransform())
 				.getOrDefault(cameraTransformType, Transformation.identity());
 
-		var scale = matrix.getScale();
+		Vector3f scale = matrix.getScale();
 		if(scale.x()*scale.y()*scale.z() < 0)
 		{
 			// If we "invert" the model, calling Transformation#push would produce a very broken normal matrix with
 			// entries on the order of 1e25. So we need to apply the positive part of the transformation and then invert
 			// manually.
-			var newScale = scale.copy();
+			Vector3f newScale = scale.copy();
 			newScale.mul(-1);
 			matrix = new Transformation(
 					matrix.getTranslation(), matrix.getLeftRotation(), newScale, matrix.getRightRotation()
@@ -238,7 +235,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 							   TextureCoordinateRemapper coordinateRemapper,
 							   Transformation transform)
 	{
-		for(var face : group.getFaces())
+		for(Polygon<OBJMaterial> face : group.getFaces())
 		{
 			OBJMaterial mat = face.getTexture();
 			if(mat==null)

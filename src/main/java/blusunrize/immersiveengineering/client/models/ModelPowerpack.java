@@ -108,8 +108,8 @@ public class ModelPowerpack
 	public static final LoadingCache<CatenaryKey, CatenaryData> CATENARY_DATA_CACHE = CacheBuilder.newBuilder()
 			.expireAfterAccess(10, TimeUnit.SECONDS)
 			.build(CacheLoader.from(key -> {
-				var angleX = key.xTimes1024()/1024.;
-				var angleZ = key.zTimes1024()/1024.;
+				double angleX = key.xTimes1024()/1024.;
+				double angleZ = key.zTimes1024()/1024.;
 				double armLength = .75f;
 				double x = .3125+(key.right?1: -1)*armLength*Math.sin(angleZ);
 				double y = armLength*Math.cos(angleX);

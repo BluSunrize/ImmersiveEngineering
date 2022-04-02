@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
@@ -44,7 +45,7 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 2, 7)
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));
-		var outputSlotBuilder = builder.addSlot(RecipeIngredientRole.OUTPUT, 85, 41);
+		IRecipeSlotBuilder outputSlotBuilder = builder.addSlot(RecipeIngredientRole.OUTPUT, 85, 41);
 		if(!recipe.itemOutput.get().isEmpty())
 			outputSlotBuilder.addItemStack(recipe.itemOutput.get());
 		if(recipe.fluidOutput!=null&&!recipe.fluidOutput.isEmpty())

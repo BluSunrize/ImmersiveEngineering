@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
+import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -52,7 +53,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 		builder.addSlot(RecipeIngredientRole.INPUT, 4, 19)
 				.addItemStacks(Arrays.asList(recipe.input.getMatchingStacks()));
 
-		var outputSlotBuilder = builder.addSlot(RecipeIngredientRole.OUTPUT, 59, 19);
+		IRecipeSlotBuilder outputSlotBuilder = builder.addSlot(RecipeIngredientRole.OUTPUT, 59, 19);
 		if(!recipe.output.get().isEmpty())
 			outputSlotBuilder.addItemStack(recipe.output.get());
 

@@ -75,20 +75,20 @@ public class MultiblockProcessInMachine<R extends MultiblockRecipe> extends Mult
 
 	protected List<IngredientWithSize> getRecipeItemInputs(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
-		var recipe = getLevelData(multiblock.getLevel()).recipe();
+		R recipe = getLevelData(multiblock.getLevel()).recipe();
 		return recipe == null ? List.of() : recipe.getItemInputs();
 	}
 
 	protected List<FluidTagInput> getRecipeFluidInputs(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
-		var recipe = getLevelData(multiblock.getLevel()).recipe();
+		R recipe = getLevelData(multiblock.getLevel()).recipe();
 		return recipe == null ? List.of() : recipe.getFluidInputs();
 	}
 
 	@Override
 	public void doProcessTick(PoweredMultiblockBlockEntity<?, R> multiblock)
 	{
-		var recipe = getLevelData(multiblock.getLevel()).recipe();
+		R recipe = getLevelData(multiblock.getLevel()).recipe();
 		if (recipe == null)
 			return;
 		NonNullList<ItemStack> inv = multiblock.getInventory();
