@@ -21,6 +21,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
@@ -35,7 +36,7 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 	}
 
 	@Override
-	public SawmillRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public SawmillRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		Lazy<ItemStack> output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(json.get("input"));
@@ -49,7 +50,7 @@ public class SawmillRecipeSerializer extends IERecipeSerializer<SawmillRecipe>
 		for(int i = 0; i < array.size(); i++)
 		{
 			JsonObject element = array.get(i).getAsJsonObject();
-			if(CraftingHelper.processConditions(element, "conditions"))
+			if(CraftingHelper.processConditions(element, "conditions", context))
 			{
 				boolean stripping = GsonHelper.getAsBoolean(element, "stripping");
 				Lazy<ItemStack> stack = readOutput(element.get("output"));

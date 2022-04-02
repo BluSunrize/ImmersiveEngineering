@@ -18,6 +18,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
@@ -31,7 +32,7 @@ public class BlastFurnaceRecipeSerializer extends IERecipeSerializer<BlastFurnac
 	}
 
 	@Override
-	public BlastFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public BlastFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		Lazy<ItemStack> output = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));

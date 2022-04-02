@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -37,7 +38,7 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 	}
 
 	@Override
-	public GeneratedListRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public GeneratedListRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		return new GeneratedListRecipe(recipeId);
 	}

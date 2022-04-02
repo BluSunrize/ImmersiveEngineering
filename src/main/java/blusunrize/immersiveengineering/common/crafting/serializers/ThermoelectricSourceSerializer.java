@@ -21,6 +21,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -38,7 +39,7 @@ public class ThermoelectricSourceSerializer extends IERecipeSerializer<Thermoele
 	}
 
 	@Override
-	public ThermoelectricSource readFromJson(ResourceLocation recipeId, JsonObject json)
+	public ThermoelectricSource readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		int temperature = json.get(TEMPERATURE_KEY).getAsInt();
 		if(json.has(SINGLE_BLOCK_KEY))

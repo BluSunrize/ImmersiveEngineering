@@ -20,6 +20,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -34,7 +35,7 @@ public class SqueezerRecipeSerializer extends IERecipeSerializer<SqueezerRecipe>
 	}
 
 	@Override
-	public SqueezerRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public SqueezerRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		FluidStack fluidOutput = FluidStack.EMPTY;
 		if(json.has("fluid"))

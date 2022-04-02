@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
@@ -32,7 +33,7 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	}
 
 	@Override
-	public BottlingMachineRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public BottlingMachineRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		Lazy<ItemStack> output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));

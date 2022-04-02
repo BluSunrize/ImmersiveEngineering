@@ -17,6 +17,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 
 import javax.annotation.Nullable;
 
@@ -29,7 +30,7 @@ public class ClocheFertilizerSerializer extends IERecipeSerializer<ClocheFertili
 	}
 
 	@Override
-	public ClocheFertilizer readFromJson(ResourceLocation recipeId, JsonObject json)
+	public ClocheFertilizer readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		Ingredient input = Ingredient.fromJson(json.get("input"));
 		float growthModifier = GsonHelper.getAsFloat(json, "growthModifier");

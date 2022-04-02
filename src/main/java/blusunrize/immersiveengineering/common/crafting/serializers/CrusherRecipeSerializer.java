@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
@@ -34,7 +35,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 	}
 
 	@Override
-	public CrusherRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public CrusherRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		Lazy<ItemStack> output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
@@ -43,7 +44,7 @@ public class CrusherRecipeSerializer extends IERecipeSerializer<CrusherRecipe>
 		CrusherRecipe recipe = IEServerConfig.MACHINES.crusherConfig.apply(new CrusherRecipe(recipeId, output, input, energy));
 		for(int i = 0; i < array.size(); i++)
 		{
-			StackWithChance secondary = readConditionalStackWithChance(array.get(i));
+			StackWithChance secondary = readConditionalStackWithChance(array.get(i), context);
 			if(secondary!=null)
 				recipe.addToSecondaryOutput(secondary);
 		}

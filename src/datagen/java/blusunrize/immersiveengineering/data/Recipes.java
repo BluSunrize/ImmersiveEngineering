@@ -45,8 +45,6 @@ import blusunrize.immersiveengineering.data.resources.RecipeWoods;
 import blusunrize.immersiveengineering.data.resources.SecondaryOutput;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.recipes.*;
@@ -3206,12 +3204,6 @@ public class Recipes extends RecipeProvider
 	{
 		addStandardSmeltingBlastingRecipe(input, output, xp, standardSmeltingTime, out, extraPostfix);
 	}
-
-	// Which joker decided to make this private in RecipeProvides?
-	private static InventoryChangeTrigger.TriggerInstance has(TagKey<Item> p_206407_) {
-		return inventoryTrigger(ItemPredicate.Builder.item().of(p_206407_).build());
-	}
-
 
 	private void addRGBRecipe(Consumer<FinishedRecipe> out, ResourceLocation recipeName, Ingredient target, String nbtKey)
 	{

@@ -21,6 +21,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
@@ -37,7 +38,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 	}
 
 	@Override
-	public ArcFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public ArcFurnaceRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		JsonArray results = json.getAsJsonArray("results");
 		List<Lazy<ItemStack>> outputs = new ArrayList<>();
@@ -62,7 +63,7 @@ public class ArcFurnaceRecipeSerializer extends IERecipeSerializer<ArcFurnaceRec
 		if(array!=null)
 			for(int i = 0; i < array.size(); i++)
 			{
-				StackWithChance secondary = readConditionalStackWithChance(array.get(i));
+				StackWithChance secondary = readConditionalStackWithChance(array.get(i), context);
 				if(secondary!=null)
 					secondaries.add(secondary);
 			}

@@ -19,6 +19,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
@@ -32,7 +33,7 @@ public class BlueprintCraftingRecipeSerializer extends IERecipeSerializer<Bluepr
 	}
 
 	@Override
-	public BlueprintCraftingRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public BlueprintCraftingRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		String category = GsonHelper.getAsString(json, "category");
 		Lazy<ItemStack> output = readOutput(json.get("result"));

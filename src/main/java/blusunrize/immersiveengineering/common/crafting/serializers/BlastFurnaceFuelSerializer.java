@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 
 import javax.annotation.Nullable;
 
@@ -29,7 +30,7 @@ public class BlastFurnaceFuelSerializer extends IERecipeSerializer<BlastFurnaceF
 	}
 
 	@Override
-	public BlastFurnaceFuel readFromJson(ResourceLocation recipeId, JsonObject json)
+	public BlastFurnaceFuel readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		Ingredient input = Ingredient.fromJson(json.getAsJsonObject("input"));
 		int time = GsonHelper.getAsInt(json, "time", 1200);

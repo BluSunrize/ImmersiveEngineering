@@ -401,7 +401,7 @@ public final class IEItems
 
 	private static <T extends Item> ItemRegObject<T> of(T existing)
 	{
-		return new ItemRegObject<>(RegistryObject.of(existing.getRegistryName(), ForgeRegistries.ITEMS));
+		return new ItemRegObject<>(RegistryObject.create(existing.getRegistryName(), ForgeRegistries.ITEMS));
 	}
 
 	public static class ItemRegObject<T extends Item> implements Supplier<T>, ItemLike

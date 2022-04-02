@@ -19,9 +19,11 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public abstract class IERecipeSerializer<R extends Recipe<?>> extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<R>
@@ -29,10 +31,17 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> extends ForgeRegis
 	public abstract ItemStack getIcon();
 
 	@Override
-	public final R fromJson(ResourceLocation recipeId, JsonObject json)
+	public R fromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
-		if(CraftingHelper.processConditions(json, "conditions"))
-			return readFromJson(recipeId, json);
+		if(CraftingHelper.processConditions(json, "conditions", context))
+			return readFromJson(recipeId, json, context);
+		return null;
+	}
+
+	@SuppressWarnings("NullableProblems")
+	@Override
+	public R fromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject serializedRecipe)
+	{
 		return null;
 	}
 
@@ -45,10 +54,10 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> extends ForgeRegis
 	}
 
 	@Nullable
-	protected static StackWithChance readConditionalStackWithChance(JsonElement element)
+	protected static StackWithChance readConditionalStackWithChance(JsonElement element, IContext context)
 	{
 		JsonObject object = element.getAsJsonObject();
-		if(CraftingHelper.processConditions(object, "conditions"))
+		if(CraftingHelper.processConditions(object, "conditions", context))
 		{
 			float chance = GsonHelper.getAsFloat(object, "chance");
 			Lazy<ItemStack> stack = readOutput(object.get("output"));
@@ -57,7 +66,7 @@ public abstract class IERecipeSerializer<R extends Recipe<?>> extends ForgeRegis
 		return null;
 	}
 
-	public abstract R readFromJson(ResourceLocation recipeId, JsonObject json);
+	public abstract R readFromJson(ResourceLocation recipeId, JsonObject json, IContext context);
 
 	protected static Lazy<ItemStack> readLazyStack(FriendlyByteBuf buf)
 	{

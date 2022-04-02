@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -33,7 +34,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	}
 
 	@Override
-	public MetalPressRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public MetalPressRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		Lazy<ItemStack> output = readOutput(json.get("result"));
 		IngredientWithSize input = IngredientWithSize.deserialize(json.get("input"));

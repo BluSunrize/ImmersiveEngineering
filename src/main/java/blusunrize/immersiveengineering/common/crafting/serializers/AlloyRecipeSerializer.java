@@ -17,6 +17,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
@@ -30,7 +31,7 @@ public class AlloyRecipeSerializer extends IERecipeSerializer<AlloyRecipe>
 	}
 
 	@Override
-	public AlloyRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public AlloyRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		Lazy<ItemStack> output = readOutput(json.get("result"));
 		IngredientWithSize input0 = IngredientWithSize.deserialize(json.get("input0"));

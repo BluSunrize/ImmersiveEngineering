@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
@@ -34,7 +35,7 @@ public class ClocheRecipeSerializer extends IERecipeSerializer<ClocheRecipe>
 	}
 
 	@Override
-	public ClocheRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public ClocheRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		JsonArray results = json.getAsJsonArray("results");
 

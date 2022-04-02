@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nonnull;
@@ -35,7 +36,7 @@ public class HammerCrushingRecipeSerializer extends IERecipeSerializer<LazyShape
 
 	@Nonnull
 	@Override
-	public LazyShapelessRecipe readFromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json)
+	public LazyShapelessRecipe readFromJson(@Nonnull ResourceLocation recipeId, @Nonnull JsonObject json, IContext context)
 	{
 		Lazy<ItemStack> output = readOutput(json.get("result"));
 		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));

@@ -20,6 +20,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
@@ -33,7 +34,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	}
 
 	@Override
-	public RefineryRecipe readFromJson(ResourceLocation recipeId, JsonObject json)
+	public RefineryRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		FluidStack output = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "result"));
 		FluidTagInput input0 = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "input0"));
@@ -43,7 +44,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 			catalyst = Ingredient.fromJson(json.get("catalyst"));
 		int energy = GsonHelper.getAsInt(json, "energy");
 		RefineryRecipe recipe = new RefineryRecipe(recipeId, output, input0, input1, catalyst, energy);
-		recipe.modifyTimeAndEnergy(()->1, IEServerConfig.MACHINES.refineryConfig);
+		recipe.modifyTimeAndEnergy(() -> 1, IEServerConfig.MACHINES.refineryConfig);
 		return recipe;
 	}
 

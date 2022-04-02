@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -40,7 +41,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 	}
 
 	@Override
-	public MineralMix readFromJson(ResourceLocation recipeId, JsonObject json)
+	public MineralMix readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		JsonArray array = json.getAsJsonArray("ores");
 		List<StackWithChance> tempOres = new ArrayList<>();
@@ -48,7 +49,7 @@ public class MineralMixSerializer extends IERecipeSerializer<MineralMix>
 		for(int i = 0; i < array.size(); i++)
 		{
 			JsonObject element = array.get(i).getAsJsonObject();
-			if(CraftingHelper.processConditions(element, "conditions"))
+			if(CraftingHelper.processConditions(element, "conditions", context))
 			{
 				Lazy<ItemStack> stack = readOutput(element.get("output"));
 				float chance = GsonHelper.getAsFloat(element, "chance");

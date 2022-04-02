@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -37,7 +38,7 @@ public class GeneratorFuelSerializer extends IERecipeSerializer<GeneratorFuel>
 	}
 
 	@Override
-	public GeneratorFuel readFromJson(ResourceLocation recipeId, JsonObject json)
+	public GeneratorFuel readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
 		ResourceLocation tagName = new ResourceLocation(json.get(FLUID_TAG_KEY).getAsString());
 		TagKey<Fluid> tag = TagKey.create(Registry.FLUID_REGISTRY, tagName);
