@@ -113,6 +113,7 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEn
 
 			craftResultInventory.setItem(0, itemstack);
 			serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(this.containerId, incrementStateId(), 0, itemstack));
+			this.tile.setChanged();
 		});
 	}
 
