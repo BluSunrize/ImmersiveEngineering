@@ -67,9 +67,9 @@ public class CraftingTableTileEntity extends IEBaseTileEntity implements IStateB
 		{
 			NonNullList<ItemStack> totalInv = NonNullList.withSize(inventory.size()+craftingInv.size(), ItemStack.EMPTY);
 			for(int i = 0; i < inventory.size(); ++i)
-				totalInv.set(i, totalInv.get(i));
+				totalInv.set(i, inventory.get(i));
 			for(int i = 0; i < craftingInv.size(); ++i)
-				totalInv.set(inventory.size()+i, totalInv.get(i));
+				totalInv.set(inventory.size()+i, craftingInv.get(i));
 			ContainerHelper.saveAllItems(nbt, totalInv);
 		}
 	}
