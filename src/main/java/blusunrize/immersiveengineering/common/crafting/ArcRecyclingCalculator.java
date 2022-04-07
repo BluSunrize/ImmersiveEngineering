@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Multimap;
@@ -23,12 +24,20 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.Lazy;
+import net.minecraftforge.event.TickEvent.ServerTickEvent;
+import net.minecraftforge.event.server.ServerStartedEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.server.ServerLifecycleHooks;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 import java.util.*;
 import java.util.Map.Entry;
@@ -37,7 +46,6 @@ import java.util.stream.Collectors;
 
 public class ArcRecyclingCalculator
 {
-	private static List<ArcFurnaceRecipe> lastResult;
 	private final List<Recipe<?>> recipeList;
 	private final long startTime;
 	private final ArcRecyclingChecker checker;
@@ -54,7 +62,7 @@ public class ArcRecyclingCalculator
 				.collect(Collectors.toList());
 	}
 
-	public void run()
+	public List<ArcFurnaceRecipe> run()
 	{
 		RecipeIterator iterator = new RecipeIterator(recipeList, checker, tags);
 		iterator.process();
@@ -87,9 +95,40 @@ public class ArcRecyclingCalculator
 				IELogger.info("Couldn't fully analyze "+invalid.stack+", missing knowledge for "+invalid.queriedSubcomponents);
 				generatedRecipes.add(makeRecipe(invalid));
 			}
-		ArcRecyclingCalculator.lastResult = generatedRecipes;
 		IELogger.info("Finished recipe profiler for Arc Recycling, took "
 				+(System.currentTimeMillis()-startTime)+" milliseconds");
+		return generatedRecipes;
+	}
+
+	public static Mutable<List<ArcFurnaceRecipe>> makeFuture()
+	{
+		Mutable<List<ArcFurnaceRecipe>> result = new MutableObject<>();
+		Mutable<Object> eventListener = new MutableObject<>();
+		eventListener.setValue(new Object()
+		{
+			@SubscribeEvent
+			public void onServerStarted(ServerStartedEvent ev)
+			{
+				fillInRecipes(ev.getServer());
+			}
+
+			@SubscribeEvent
+			public void onServerTick(ServerTickEvent ev)
+			{
+				fillInRecipes(ServerLifecycleHooks.getCurrentServer());
+			}
+
+			private void fillInRecipes(MinecraftServer server)
+			{
+				Preconditions.checkState(result.getValue()==null);
+				Collection<Recipe<?>> recipes = server.getRecipeManager().getRecipes();
+				ArcRecyclingCalculator calculator = new ArcRecyclingCalculator(recipes, server.registryAccess());
+				result.setValue(calculator.run());
+				MinecraftForge.EVENT_BUS.unregister(eventListener.getValue());
+			}
+		});
+		MinecraftForge.EVENT_BUS.register(eventListener.getValue());
+		return result;
 	}
 
 	private ArcRecyclingRecipe makeRecipe(RecyclingCalculation calculation)
@@ -101,11 +140,6 @@ public class ArcRecyclingCalculator
 						.map(e -> Pair.of(Lazy.of(e::getKey), e.getValue()))
 						.toList(),
 				IngredientWithSize.of(calculation.stack), 100, 51200);
-	}
-
-	public static List<ArcFurnaceRecipe> getRecipesFromRunningThreads()
-	{
-		return Objects.requireNonNull(lastResult);
 	}
 
 	private static class RecipeIterator

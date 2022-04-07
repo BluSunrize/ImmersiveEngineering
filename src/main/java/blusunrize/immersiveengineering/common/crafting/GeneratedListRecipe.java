@@ -12,6 +12,7 @@ package blusunrize.immersiveengineering.common.crafting;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.crafting.cache.IListRecipe;
 import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Unit;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -22,49 +23,74 @@ import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
-public class GeneratedListRecipe extends IESerializableRecipe implements IListRecipe
+public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESerializableRecipe implements IListRecipe
 {
-	public static Map<ResourceLocation, RecipeListGenerator<?>> LIST_GENERATORS = new HashMap<>();
-	public static RegistryObject<IERecipeSerializer<GeneratedListRecipe>> SERIALIZER;
+	public static Map<ResourceLocation, RecipeListGenerator<?, ?>> LIST_GENERATORS = new HashMap<>();
+	public static RegistryObject<IERecipeSerializer<GeneratedListRecipe<?, ?>>> SERIALIZER;
 
 	public static void init()
 	{
-		LIST_GENERATORS.put(rl("mixer_potion_list"), new RecipeListGenerator<>(
+		LIST_GENERATORS.put(rl("mixer_potion_list"), RecipeListGenerator.simple(
 				PotionRecipeGenerators::initPotionRecipes, MixerRecipe.SERIALIZER.getId(),
 				MixerRecipe.TYPE
 		));
-		LIST_GENERATORS.put(rl("potion_bottling_list"), new RecipeListGenerator<>(
+		LIST_GENERATORS.put(rl("potion_bottling_list"), RecipeListGenerator.simple(
 				PotionRecipeGenerators::getPotionBottlingRecipes, BottlingMachineRecipe.SERIALIZER.getId(),
 				BottlingMachineRecipe.TYPE
 		));
 		LIST_GENERATORS.put(rl("arc_recycling_list"), new RecipeListGenerator<>(
-				ArcRecyclingCalculator::getRecipesFromRunningThreads, ArcFurnaceRecipe.SERIALIZER.getId(),
+				ArcRecyclingCalculator::makeFuture,
+				recyclingList -> Objects.requireNonNull(recyclingList.getValue()),
+				ArcFurnaceRecipe.SERIALIZER.getId(),
 				ArcFurnaceRecipe.TYPE
 		));
 	}
 
 	@Nullable
 	private List<? extends IESerializableRecipe> cachedRecipes;
-	private final RecipeListGenerator<?> generator;
+	private final RecipeListGenerator<R, E> generator;
+	private E earlyResult;
 
-	public GeneratedListRecipe(ResourceLocation id)
+	public static GeneratedListRecipe<?, ?> from(ResourceLocation id)
 	{
-		super(LAZY_EMPTY, Preconditions.checkNotNull(LIST_GENERATORS.get(id), id).recipeType, id);
-		generator = LIST_GENERATORS.get(id);
+		GeneratedListRecipe<?, ?> result = fromInternal(id);
+		result.initEarly();
+		return result;
 	}
 
-	public GeneratedListRecipe(ResourceLocation id, @Nullable List<IESerializableRecipe> subRecipes)
+	private static GeneratedListRecipe<?, ?> fromInternal(ResourceLocation id)
 	{
-		this(id);
-		this.cachedRecipes = subRecipes;
+		RecipeListGenerator<?, ?> gen = LIST_GENERATORS.get(id);
+		Preconditions.checkNotNull(gen, id);
+		return new GeneratedListRecipe<>(id, gen);
+	}
+
+	public static GeneratedListRecipe<?, ?> resolved(ResourceLocation id, List<IESerializableRecipe> recipes)
+	{
+		GeneratedListRecipe<?, ?> result = fromInternal(id);
+		result.cachedRecipes = recipes;
+		return result;
+	}
+
+	private GeneratedListRecipe(ResourceLocation id, RecipeListGenerator<R, E> generator)
+	{
+		super(LAZY_EMPTY, generator.recipeType, id);
+		this.generator = generator;
+	}
+
+	private void initEarly()
+	{
+		this.earlyResult = this.generator.makeEarlyResult().get();
 	}
 
 	@Override
-	protected IERecipeSerializer<GeneratedListRecipe> getIESerializer()
+	protected IERecipeSerializer<GeneratedListRecipe<?, ?>> getIESerializer()
 	{
 		return SERIALIZER.get();
 	}
@@ -85,7 +111,7 @@ public class GeneratedListRecipe extends IESerializableRecipe implements IListRe
 	public List<? extends IESerializableRecipe> getSubRecipes()
 	{
 		if(cachedRecipes==null)
-			cachedRecipes = generator.generator.get();
+			cachedRecipes = generator.generator().apply(earlyResult);
 		return cachedRecipes;
 	}
 
@@ -94,17 +120,19 @@ public class GeneratedListRecipe extends IESerializableRecipe implements IListRe
 		return generator.serialized;
 	}
 
-	public static class RecipeListGenerator<T extends IESerializableRecipe>
+	public record RecipeListGenerator<T extends IESerializableRecipe, EarlyResult>(
+			Supplier<EarlyResult> makeEarlyResult,
+			Function<EarlyResult, List<? extends T>> generator,
+			ResourceLocation serialized,
+			RecipeType<T> recipeType
+	)
 	{
-		private final Supplier<List<T>> generator;
-		private final ResourceLocation serialized;
-		private final RecipeType<T> recipeType;
-
-		public RecipeListGenerator(Supplier<List<T>> generator, ResourceLocation serializer, RecipeType<T> recipeType)
+		public static <R extends IESerializableRecipe>
+		RecipeListGenerator<R, ?> simple(
+				Supplier<List<? extends R>> generator, ResourceLocation serialized, RecipeType<R> recipeType
+		)
 		{
-			this.generator = generator;
-			this.serialized = serializer;
-			this.recipeType = recipeType;
+			return new RecipeListGenerator<>(() -> Unit.INSTANCE, $ -> generator.get(), serialized, recipeType);
 		}
 	}
 }

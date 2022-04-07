@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRecipe>
+public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRecipe<?, ?>>
 {
 	@Override
 	public ItemStack getIcon()
@@ -38,14 +38,14 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 	}
 
 	@Override
-	public GeneratedListRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
+	public GeneratedListRecipe<?, ?> readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
-		return new GeneratedListRecipe(recipeId);
+		return GeneratedListRecipe.from(recipeId);
 	}
 
 	@Nullable
 	@Override
-	public GeneratedListRecipe fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
+	public GeneratedListRecipe<?, ?> fromNetwork(@Nonnull ResourceLocation recipeId, @Nonnull FriendlyByteBuf buffer)
 	{
 		int length = buffer.readVarInt();
 		List<IESerializableRecipe> subRecipes = new ArrayList<>(length);
@@ -62,11 +62,11 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 			Recipe<?> subRecipe = deserializer.fromNetwork(recipeName, buffer);
 			subRecipes.add((IESerializableRecipe)subRecipe);
 		}
-		return new GeneratedListRecipe(recipeId, subRecipes);
+		return GeneratedListRecipe.resolved(recipeId, subRecipes);
 	}
 
 	@Override
-	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull GeneratedListRecipe recipe)
+	public void toNetwork(@Nonnull FriendlyByteBuf buffer, @Nonnull GeneratedListRecipe<?, ?> recipe)
 	{
 		List<? extends IESerializableRecipe> recipes = recipe.getSubRecipes();
 		buffer.writeVarInt(recipes.size());
