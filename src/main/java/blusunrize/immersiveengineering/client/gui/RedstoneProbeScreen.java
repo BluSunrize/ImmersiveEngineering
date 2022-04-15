@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
+import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
 import blusunrize.immersiveengineering.common.blocks.metal.ConnectorProbeBlockEntity;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -51,24 +52,29 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 		for(int i = 0; i < colorButtonsSend.length; i++)
 		{
 			final DyeColor color = DyeColor.byId(i);
-			colorButtonsSend[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsSend, guiLeft+20+(i%4*14), guiTop+10+(i/4*14),
+			colorButtonsSend[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsSend, guiLeft+20+(i%4*14), guiTop+28+(i/4*14),
 					blockEntity.redstoneChannelSending.ordinal()==i, color, btn -> {
-						sendConfig("redstoneChannelSending", color);
+						sendConfig("redstoneChannelSending", color.getId());
 					});
 			this.addRenderableWidget(colorButtonsSend[i]);
 
-			colorButtonsReceive[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsReceive, guiLeft+136+(i%4*14), guiTop+10+(i/4*14),
+			colorButtonsReceive[i] = RedstoneConnectorScreen.buildColorButton(colorButtonsReceive, guiLeft+136+(i%4*14), guiTop+28+(i/4*14),
 					blockEntity.redstoneChannel.ordinal()==i, color, btn -> {
-						sendConfig("redstoneChannel", color);
+						sendConfig("redstoneChannel", color.getId());
 					});
 			this.addRenderableWidget(colorButtonsReceive[i]);
 		}
+
+		this.addRenderableWidget(new GuiSliderIE(guiLeft+15, guiTop, 64, new TranslatableComponent(Lib.GUI_CONFIG+"output_threshold"),
+				0, 15, this.blockEntity.outputThreshold,
+				btn -> sendConfig("outputThreshold", (int)Math.round(((GuiSliderIE)btn).sliderValue*15)))
+		);
 	}
 
-	private void sendConfig(String key, DyeColor color)
+	private void sendConfig(String key, int value)
 	{
 		CompoundTag message = new CompoundTag();
-		message.putInt(key, color.getId());
+		message.putInt(key, value);
 		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(blockEntity, message));
 	}
 
@@ -81,8 +87,8 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 	@Override
 	protected void drawGuiContainerForegroundLayer(PoseStack transform, int mouseX, int mouseY, float partialTick)
 	{
-		this.font.draw(transform, new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop, DyeColor.WHITE.getTextColor());
-		this.font.draw(transform, new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getString(), guiLeft+116, guiTop, DyeColor.WHITE.getTextColor());
+		this.font.draw(transform, new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop+18, DyeColor.WHITE.getTextColor());
+		this.font.draw(transform, new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getString(), guiLeft+116, guiTop+18, DyeColor.WHITE.getTextColor());
 
 		ArrayList<Component> tooltip = new ArrayList<>();
 		for(int i = 0; i < colorButtonsSend.length; i++)

@@ -46,6 +46,7 @@ import java.util.Map;
 public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 {
 	public DyeColor redstoneChannelSending = DyeColor.WHITE;
+	public int outputThreshold = 0;
 	private int lastOutput = 0;
 
 	public ConnectorProbeBlockEntity(BlockPos pos, BlockState state)
@@ -60,6 +61,7 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 		if(level.getGameTime()%8==((getBlockPos().getX()^getBlockPos().getZ())&7))
 		{
 			int out = getComparatorSignal();
+			out = out >= outputThreshold?out: 0;
 			if(out!=lastOutput)
 			{
 				this.lastOutput = out;
@@ -130,6 +132,8 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 			redstoneChannel = DyeColor.byId(message.getInt("redstoneChannel"));
 		if(message.contains("redstoneChannelSending"))
 			redstoneChannelSending = DyeColor.byId(message.getInt("redstoneChannelSending"));
+		if(message.contains("outputThreshold"))
+			outputThreshold = message.getInt("outputThreshold");
 		updateAfterConfigure();
 	}
 
@@ -138,6 +142,7 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("redstoneChannelSending", redstoneChannelSending.getId());
+		nbt.putInt("outputThreshold", outputThreshold);
 	}
 
 	@Override
@@ -145,6 +150,7 @@ public class ConnectorProbeBlockEntity extends ConnectorRedstoneBlockEntity
 	{
 		super.readCustomNBT(nbt, descPacket);
 		redstoneChannelSending = DyeColor.byId(nbt.getInt("redstoneChannelSending"));
+		outputThreshold = nbt.getInt("outputThreshold");
 	}
 
 	@Override

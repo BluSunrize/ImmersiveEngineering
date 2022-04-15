@@ -14,6 +14,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.client.gui.widget.Slider;
 
 public class GuiSliderIE extends Slider
@@ -21,6 +22,11 @@ public class GuiSliderIE extends Slider
 	public GuiSliderIE(int x, int y, int width, String name, float value, OnPress handler)
 	{
 		super(x, y, width, 8, Component.nullToEmpty(name+" "), Component.nullToEmpty("%"), 0, 100, 100*value, false, true, handler);
+	}
+
+	public GuiSliderIE(int x, int y, int width, Component prefix, int minVal, int maxVal, int value, OnPress handler)
+	{
+		super(x, y, width, 8, prefix, TextComponent.EMPTY, minVal, maxVal, value, false, true, handler);
 	}
 
 	@Override
@@ -45,7 +51,7 @@ public class GuiSliderIE extends Slider
 				color = 0xa0a0a0;
 			else if(this.isHovered)
 				color = 0xffffa0;
-			this.drawCenteredString(transform, fontrenderer, dispString, x+width/2, y-10+height/2-3, color);
+			drawCenteredString(transform, fontrenderer, getMessage(), x+width/2, y-10+height/2-3, color);
 		}
 	}
 

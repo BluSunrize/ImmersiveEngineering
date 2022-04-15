@@ -424,6 +424,7 @@
   "gui.immersiveengineering.config.redstone_color": "Redstone Signal Color:",
   "gui.immersiveengineering.config.redstone_color_sending": "Sending Signal Color:",
   "gui.immersiveengineering.config.redstone_color_receiving": "Receiving Signal Color:",
+  "gui.immersiveengineering.config.output_threshold": "Signal threshold: ",
   "chat.immersiveengineering.warning.wrongCable": "You cannot attach this wire here",
   "chat.immersiveengineering.warning.wrongDimension": "You are in the wrong dimension",
   "chat.immersiveengineering.warning.sameConnection": "You cannot attach a wire to the same point",
