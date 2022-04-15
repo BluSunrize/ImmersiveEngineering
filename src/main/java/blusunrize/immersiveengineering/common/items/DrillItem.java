@@ -15,6 +15,8 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
+import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
@@ -25,6 +27,8 @@ import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -155,6 +159,25 @@ public class DrillItem extends DieselToolItem
 	}
 
 	/* ------------- DIGGING ------------- */
+	public static boolean isSingleBlockMode(ItemStack stack)
+	{
+		return ItemNBTHelper.getBoolean(stack, "singleBlockMode");
+	}
+
+	@Override
+	public InteractionResultHolder<ItemStack> use(Level world, Player player, InteractionHand hand)
+	{
+		ItemStack stack = player.getItemInHand(hand);
+		if(player.isShiftKeyDown())
+		{
+			boolean mode = !isSingleBlockMode(stack);
+			stack.getOrCreateTag().putBoolean("singleBlockMode", mode);
+			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"drill_mode."+(mode?"single": "multi")));
+			return InteractionResultHolder.success(stack);
+		}
+		return InteractionResultHolder.pass(stack);
+	}
+
 	public boolean canToolBeUsed(ItemStack drill)
 	{
 		return getHeadDamage(drill) < getMaxHeadDamage(drill)&&!getFluid(drill).isEmpty();
@@ -253,7 +276,11 @@ public class DrillItem extends DieselToolItem
 	public boolean onBlockStartBreak(ItemStack stack, BlockPos iPos, Player player)
 	{
 		Level world = player.level;
-		if(player.isShiftKeyDown()||world.isClientSide||!(player instanceof ServerPlayer))
+		// early exit for client
+		if(world.isClientSide||!(player instanceof ServerPlayer))
+			return false;
+		// if sneaking or toggled, don't multi-mine
+		if(player.isShiftKeyDown()||isSingleBlockMode(stack))
 			return false;
 		HitResult mop = getPlayerPOVHitResult(world, player, Fluid.NONE);
 		ItemStack head = getHead(stack);

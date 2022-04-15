@@ -4,6 +4,7 @@
 - Add ethanol fermentation for honey, glow berries and sweet berries (BluSunrize)
 - Add beds to all engineer's villager houses (BluSunrize)
     - Also, all houses are now guaranteed to have a workstation in them
+- Add sneak + right-click feature to swap mining drill to single-block mode (BluSunrize)
 - Change recycling code to be a little less hacky (Malte)
 - Fix some hard incompatabilities with Optifine (Malte)
 - Fix engineer's crafting table losing its inventory (Malte)

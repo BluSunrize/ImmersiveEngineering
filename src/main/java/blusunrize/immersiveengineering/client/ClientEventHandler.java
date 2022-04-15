@@ -787,7 +787,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					((DrillItem)stack.getItem()).isEffective(stack, world.getBlockState(rtr.getBlockPos())))
 			{
 				ItemStack head = ((DrillItem)stack.getItem()).getHead(stack);
-				if(!head.isEmpty()&&player instanceof Player&&!player.isShiftKeyDown())
+				if(!head.isEmpty()&&player instanceof Player&&!player.isShiftKeyDown()&&!DrillItem.isSingleBlockMode(stack))
 				{
 					ImmutableList<BlockPos> blocks = ((IDrillHead)head.getItem()).getExtraBlocksDug(head, world,
 							(Player)player, event.getTarget());

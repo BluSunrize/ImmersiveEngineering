@@ -448,6 +448,8 @@
   "chat.immersiveengineering.info.tesla.lowPower": "Power mode: Low",
   "chat.immersiveengineering.info.notOwner": "Only the owner '%1$s' may access this block",
   "chat.immersiveengineering.info.tickrate": "This block will activate every %1$s ticks",
+  "chat.immersiveengineering.info.drill_mode.single": "Dig single block",
+  "chat.immersiveengineering.info.drill_mode.multi": "Dig multiple blocks",
   "chat.immersiveengineering.info.coreDrill.progress": "Core Sample in progress: %1$s",
   "chat.immersiveengineering.info.coreDrill.result.mineral": "§7Core Sample evaluated, %1$s§7 vein found",
   "chat.immersiveengineering.info.coreDrill.result.depl": "§7Mineral vein at %1$s§7 integrity",
