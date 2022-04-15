@@ -1,3 +1,13 @@
+##### Version 1.18.2-8.0.1-pre
+- Add signal-threshold function for probe connectors (BluSunrize)
+- Add cloche growing for glow berries (BluSunrize)
+- Add ethanol fermentation for honey, glow berries and sweet berries (BluSunrize)
+- Add beds to all engineer's villager houses (BluSunrize)
+    - Also, all houses are now guaranteed to have a workstation in them
+- Change recycling code to be a little less hacky (Malte)
+- Fix some hard incompatabilities with Optifine (Malte)
+- Fix engineer's crafting table losing its inventory (Malte)
+
 ##### Version 1.18.2-8.0.0-146
 - Re-add compat for OpenComputers2 (Malte)
 - Add support for running gametests in development (Malte)
