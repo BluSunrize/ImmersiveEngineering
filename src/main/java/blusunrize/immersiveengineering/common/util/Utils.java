@@ -205,7 +205,8 @@ public class Utils
 	public static String getHarvestLevelName(Tier lvl)
 	{
 		//TODO localize (or talk to Forge about generic localization)
-		return I18n.get(Lib.DESC_INFO+"mininglvl."+TierSortingRegistry.getName(lvl));
+		// return I18n.get(Lib.DESC_INFO+"mininglvl."+TierSortingRegistry.getName(lvl));
+		return Utils.toCamelCase(TierSortingRegistry.getName(lvl).getPath());
 	}
 
 	public static String getModName(String modid)
