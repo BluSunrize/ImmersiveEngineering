@@ -1,0 +1,19 @@
+{
+  "type": "immersiveengineering:cloche",
+  "results": [
+    {
+      "item": "minecraft:glow_berries"
+    }
+  ],
+  "input": {
+    "item": "minecraft:glow_berries"
+  },
+  "soil": {
+    "item": "minecraft:moss_block"
+  },
+  "time": 640,
+  "render": {
+    "type": "crop",
+    "block": "minecraft:cave_vines"
+  }
+}

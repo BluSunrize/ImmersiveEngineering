@@ -319,6 +319,12 @@ public class Recipes extends RecipeProvider
 				.setTime(560)
 				.setRender(new ClocheRenderReference("crop", Blocks.SWEET_BERRY_BUSH))
 				.build(out, toRL("cloche/sweet_berries"));
+		ClocheRecipeBuilder.builder(new ItemStack(Items.GLOW_BERRIES, 1))
+				.addInput(Items.GLOW_BERRIES)
+				.addSoil(Blocks.MOSS_BLOCK)
+				.setTime(640)
+				.setRender(new ClocheRenderReference("crop", Blocks.CAVE_VINES))
+				.build(out, toRL("cloche/glow_berries"));
 
 		ClocheRecipeBuilder.builder(Items.PUMPKIN)
 				.addInput(Items.PUMPKIN_SEEDS)
@@ -957,6 +963,19 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.CROPS_BEETROOT)
 				.setEnergy(6400)
 				.build(out, toRL("fermenter/beetroot"));
+		FermenterRecipeBuilder.builder(ethanol, 50)
+				.addInput(Items.SWEET_BERRIES)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/sweet_berries"));
+		FermenterRecipeBuilder.builder(ethanol, 100)
+				.addInput(Items.GLOW_BERRIES)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/glow_berries"));
+		FermenterRecipeBuilder.builder(ethanol, 250)
+				.addResult(Items.GLASS_BOTTLE)
+				.addInput(Items.HONEY_BOTTLE)
+				.setEnergy(6400)
+				.build(out, toRL("fermenter/honey"));
 		/* REFINERY */
 		RefineryRecipeBuilder.builder(IEFluids.BIODIESEL.getStill(), 16)
 				.addCatalyst(IETags.saltpeterDust)
