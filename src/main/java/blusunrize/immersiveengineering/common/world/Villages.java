@@ -107,21 +107,8 @@ public class Villages
 
 		// Register engineer's houses for each biome
 		for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"})
-			addToPool(new ResourceLocation("village/"+biome+"/houses"),
-					rl("village/houses/"+biome+"_engineer"), 4);
-
-		// Register workstations
-		Pools.register(new StructureTemplatePool(
-				new ResourceLocation(MODID, "village/workstations"),
-				new ResourceLocation("empty"),
-				ImmutableList.of(
-						new Pair<>(createWorkstation("village/workstations/electrician"), 1),
-						new Pair<>(createWorkstation("village/workstations/engineer"), 1),
-						new Pair<>(createWorkstation("village/workstations/gunsmith"), 1),
-						new Pair<>(createWorkstation("village/workstations/machinist"), 1),
-						new Pair<>(createWorkstation("village/workstations/outfitter"), 1)
-				)
-		));
+			for(String type : new String[]{"engineer", "machinist", "electrician", "gunsmith", "outfitter"})
+				addToPool(new ResourceLocation("village/"+biome+"/houses"), rl("village/houses/"+biome+"_"+type), 4);
 
 		// Register gifts
 		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));
