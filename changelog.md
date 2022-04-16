@@ -8,7 +8,13 @@
 - Fix pipes and pumps transferring fluids much slower than planned, because pressurization didn't work (BluSunrize)
 - Fix manual entries referring to "Engineer's Hammer" when "Engineer's Screwdriver" is the correct tool (Vapaman)
 - Fix tooltips for tool upgrades being white instead of grey (BluSunrize)
+- Fix fluid pipes voiding fluid after chunks being un- and reloaded (Malte)
+- Fix blades not showing in the buzzsaw quiver (BluSunrize)
+- Fix circuit table not dropping its contents (Malte)
+- Fix floodlight not using its active texture (Malte)
+- Fix sync issues and dupe bug in the buzzsaw (BluSunrize)
 - Fix faraday suit incorrectly accepting enchantments in the anvil (BluSunrize)
+- Fix dupe bugs in the Engineer's Crafting Table (Malte)
 
 ##### Version 1.16.5-5.0.7-143
 - Fix diesel generator not toggling on and off correctly (Malte)
