@@ -8,6 +8,7 @@
 - Add new textures for copper items (Silfryi)
 - Add the Multimeter (MalkContent)
     - It replaces the Voltmeter and can now read Redstone levels!
+- Add bundle tooltips for storage crates and the toolbox (BluSunrize)
 - Change recycling code to be a little less hacky (Malte)
 - Change sounds for metal press and diesel gen to be mono (ArchieBeepBoop)
     - This fixes them not reducing in volume over distance

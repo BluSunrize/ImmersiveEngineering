@@ -15,10 +15,14 @@ import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.BundleTooltip;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,8 +34,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidStack;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class BlockItemIE extends BlockItem
 {
@@ -114,6 +120,29 @@ public class BlockItemIE extends BlockItem
 			return super.updateCustomBlockEntityTag(pos, worldIn, player, stack, state);
 		else
 			return false;
+	}
+
+	@Nonnull
+	@Override
+	public Optional<TooltipComponent> getTooltipImage(@Nonnull ItemStack stack)
+	{
+		if(stack.hasTag())
+		{
+			CompoundTag tag = stack.getOrCreateTag();
+			if(tag.contains("Items"))
+			{
+				// manual readout, skipping empty slots
+				ListTag list = tag.getList("Items", 10);
+				NonNullList<ItemStack> items = NonNullList.create();
+				list.forEach(e -> {
+					ItemStack s = ItemStack.of((CompoundTag)e);
+					if(!s.isEmpty())
+						items.add(s);
+				});
+				return Optional.of(new BundleTooltip(items, 0));
+			}
+		}
+		return super.getTooltipImage(stack);
 	}
 
 	@Override

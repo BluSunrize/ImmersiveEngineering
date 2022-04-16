@@ -13,11 +13,14 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.BundleTooltip;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -28,6 +31,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.AbstractCollection;
+import java.util.AbstractList;
+import java.util.Optional;
 
 public class ToolboxItem extends InternalStorageItem
 {
@@ -99,5 +105,21 @@ public class ToolboxItem extends InternalStorageItem
 	public boolean canFitInsideContainerItems()
 	{
 		return false;
+	}
+
+	@Nonnull
+	@Override
+	public Optional<TooltipComponent> getTooltipImage(@Nonnull ItemStack stack)
+	{
+		if(stack.hasTag())
+		{
+			// cut all empty slots from list
+			NonNullList<ItemStack> items = getContainedItems(stack)
+					.stream()
+					.filter(s -> !s.isEmpty())
+					.collect(NonNullList::create, AbstractList::add, AbstractCollection::addAll);
+			return Optional.of(new BundleTooltip(items, 0));
+		}
+		return super.getTooltipImage(stack);
 	}
 }
