@@ -623,8 +623,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					int w = ClientUtils.font().width(s);
 					ClientUtils.font().drawInBatch(
 							s, scaledWidth/2-w/2f,
-							scaledHeight/2-4-text.size()*(ClientUtils.font().lineHeight+2)+
-									(i++)*(ClientUtils.font().lineHeight+2), col,
+							scaledHeight/2+4+(i++)*(ClientUtils.font().lineHeight+2), col,
 							false, transform.last().pose(), buffer, false,
 							0, 0xf000f0
 					);
