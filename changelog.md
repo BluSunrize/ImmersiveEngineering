@@ -5,11 +5,17 @@
 - Add beds to all engineer's villager houses (BluSunrize)
     - Also, all houses are now guaranteed to have a workstation in them
 - Add sneak + right-click feature to swap mining drill to single-block mode (BluSunrize)
+- Add new textures for copper items (Silfryi)
+- Add the Multimeter (MalkContent)
+    - It replaces the Voltmeter and can now read Redstone levels!
 - Change recycling code to be a little less hacky (Malte)
+- Change sounds for metal press and diesel gen to be mono (ArchieBeepBoop)
+    - This fixes them not reducing in volume over distance
 - Fix some hard incompatabilities with Optifine (Malte)
 - Fix engineer's crafting table losing its inventory (Malte)
 - Fix placement and colour of various "Inventory" texts (BluSunrize)
 - Fix faraday suit incorrectly accepting enchantments in the anvil (BluSunrize)
+- Translations Added/Updated: ru_ru (Michael-Soyka)
 
 ##### Version 1.18.2-8.0.0-146
 - Re-add compat for OpenComputers2 (Malte)
