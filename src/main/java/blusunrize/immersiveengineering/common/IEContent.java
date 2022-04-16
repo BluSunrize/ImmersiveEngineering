@@ -253,6 +253,7 @@ public class IEContent
 		for(FluidEntry entry : IEFluids.ALL_ENTRIES)
 			DispenserBlock.registerBehavior(entry.getBucket(), BUCKET_DISPENSE_BEHAVIOR);
 		ComposterBlock.COMPOSTABLES.putIfAbsent(IEItems.Misc.HEMP_SEEDS.asItem(), 0.3f);
+		ComposterBlock.COMPOSTABLES.putIfAbsent(IEItems.Ingredients.HEMP_FIBER.asItem(), 0.15f);
 		Villages.init();
 		ShaderRegistry.compileWeight();
 	}

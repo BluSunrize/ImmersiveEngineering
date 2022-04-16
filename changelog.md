@@ -13,6 +13,7 @@
 - Change recycling code to be a little less hacky (Malte)
 - Change sounds for metal press and diesel gen to be mono (ArchieBeepBoop)
     - This fixes them not reducing in volume over distance
+- Change hemp fiber to be compostable with a 15% chance (BluSunrize)
 - Fix some hard incompatabilities with Optifine (Malte)
 - Fix engineer's crafting table losing its inventory (Malte)
 - Fix placement and colour of various "Inventory" texts (BluSunrize)
