@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.utils.shapes.CachedShapesWithTransform;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlock;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectionalTile.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.IETileProviderBlock;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -83,7 +84,9 @@ public class DeskBlock<T extends BlockEntity> extends IETileProviderBlock<T>
 	public boolean canIEBlockBePlaced(BlockState newState, BlockPlaceContext context)
 	{
 		BlockPos start = context.getClickedPos();
-		return areAllReplaceable(start, start.above(2), context);
+		Direction tableFacing = context.getPlayer()!=null?context.getPlayer().getDirection():Direction.NORTH;
+		Direction dummyDir = DeskBlock.getDeskDummyOffset(context.getLevel(), context.getClickedPos(), tableFacing, context);
+		return areAllReplaceable(start, start.relative(dummyDir), context);
 	}
 
 	@Override
