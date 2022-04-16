@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.api.utils.FastEither;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
-import blusunrize.immersiveengineering.common.items.VoltmeterItem;
 import blusunrize.immersiveengineering.common.items.VoltmeterItem.RemoteEnergyData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
@@ -50,7 +49,7 @@ public record MessageRequestEnergyUpdate(FastEither<BlockPos, Integer> pos) impl
 				provider = SafeChunkUtils.getSafeBE(level, pos.leftNonnull());
 			else
 				provider = level.getEntity(pos.rightNonnull());
-			VoltmeterItem.RemoteEnergyData data = null;
+			RemoteEnergyData data = null;
 			if(provider!=null)
 			{
 				IEnergyStorage energyCap = CapabilityUtils.getCapability(provider, CapabilityEnergy.ENERGY);

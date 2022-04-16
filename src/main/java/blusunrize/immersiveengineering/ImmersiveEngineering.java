@@ -230,6 +230,8 @@ public class ImmersiveEngineering
 		registerMessage(MessageMinecartShaderSync.class, MessageMinecartShaderSync::new);
 		registerMessage(MessageRequestEnergyUpdate.class, MessageRequestEnergyUpdate::new, PLAY_TO_SERVER);
 		registerMessage(MessageStoredEnergy.class, MessageStoredEnergy::new, PLAY_TO_CLIENT);
+		registerMessage(MessageRequestRedstoneUpdate.class, MessageRequestRedstoneUpdate::new, PLAY_TO_SERVER);
+		registerMessage(MessageRedstoneLevel.class, MessageRedstoneLevel::new, PLAY_TO_CLIENT);
 		registerMessage(MessageNoSpamChatComponents.class, MessageNoSpamChatComponents::new, PLAY_TO_CLIENT);
 		registerMessage(MessageShaderManual.class, MessageShaderManual::new);
 		registerMessage(MessageBirthdayParty.class, MessageBirthdayParty::new, PLAY_TO_CLIENT);

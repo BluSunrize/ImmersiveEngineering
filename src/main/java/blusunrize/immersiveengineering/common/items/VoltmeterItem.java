@@ -21,6 +21,7 @@ import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHan
 import blusunrize.immersiveengineering.api.wires.utils.WireLink;
 import blusunrize.immersiveengineering.api.wires.utils.WirecoilUtils;
 import blusunrize.immersiveengineering.common.network.MessageRequestEnergyUpdate;
+import blusunrize.immersiveengineering.common.network.MessageRequestRedstoneUpdate;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.Util;
@@ -45,6 +46,9 @@ public class VoltmeterItem extends IEBaseItem
 {
 	public static RemoteEnergyData lastEnergyUpdate = new RemoteEnergyData(
 			FastEither.left(BlockPos.ZERO), 0, false, 0, 0
+	);
+	public static RemoteRedstoneData lastRedstoneUpdate = new RemoteRedstoneData(
+			BlockPos.ZERO, 0, false, (byte)0
 	);
 
 	public VoltmeterItem()
@@ -89,51 +93,59 @@ public class VoltmeterItem extends IEBaseItem
 				return InteractionResult.SUCCESS;
 			}
 		}
-		if(player!=null&&player.isShiftKeyDown()&&bEntity instanceof IImmersiveConnectable)
+		if(player!=null&&player.isShiftKeyDown())
 		{
-			if(world.isClientSide)
-				return InteractionResult.SUCCESS;
-			TargetingInfo targetingInfo = new TargetingInfo(context);
-			BlockPos masterPos = ((IImmersiveConnectable)bEntity).getConnectionMaster(null, targetingInfo);
-			BlockPos delta = pos.subtract(masterPos);
-			ConnectionPoint cp = ((IImmersiveConnectable)bEntity).getTargetedPoint(targetingInfo, delta);
-			if(cp==null)
-				return InteractionResult.FAIL;
-			if(!WirecoilUtils.hasWireLink(stack))
+			if(bEntity instanceof IImmersiveConnectable)
 			{
-				WireLink link = WireLink.create(cp, world, delta, targetingInfo);
-				link.writeToItem(stack);
+				if(world.isClientSide)
+					return InteractionResult.SUCCESS;
+				TargetingInfo targetingInfo = new TargetingInfo(context);
+				BlockPos masterPos = ((IImmersiveConnectable)bEntity).getConnectionMaster(null, targetingInfo);
+				BlockPos delta = pos.subtract(masterPos);
+				ConnectionPoint cp = ((IImmersiveConnectable)bEntity).getTargetedPoint(targetingInfo, delta);
+				if(cp==null)
+					return InteractionResult.FAIL;
+				if(!WirecoilUtils.hasWireLink(stack))
+				{
+					WireLink link = WireLink.create(cp, world, delta, targetingInfo);
+					link.writeToItem(stack);
+				}
+				else
+				{
+					WireLink link = WireLink.readFromItem(stack);
+					if(link.dimension.equals(world.dimension()))
+					{
+						GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
+						LocalWireNetwork netHere = global.getNullableLocalNet(cp);
+						LocalWireNetwork netLink = global.getNullableLocalNet(link.cp);
+						if(netHere==netLink&&netHere!=null)
+						{
+							EnergyTransferHandler energyHandler = netHere.getHandler(EnergyTransferHandler.ID,
+									EnergyTransferHandler.class);
+							if(energyHandler!=null)
+							{
+								Path energyPath = energyHandler.getPath(link.cp, cp);
+								double loss;
+								if(energyPath!=null)
+									loss = energyPath.loss;
+								else
+									loss = 1;
+								player.sendMessage(new TranslatableComponent(
+										Lib.CHAT_INFO+"averageLoss",
+										Utils.formatDouble(loss*100, "###.000")
+								), Util.NIL_UUID);
+							}
+						}
+					}
+					WirecoilUtils.clearWireLink(stack);
+				}
+				return InteractionResult.SUCCESS;
 			}
 			else
 			{
-				WireLink link = WireLink.readFromItem(stack);
-				if(link.dimension.equals(world.dimension()))
-				{
-					GlobalWireNetwork global = GlobalWireNetwork.getNetwork(world);
-					LocalWireNetwork netHere = global.getNullableLocalNet(cp);
-					LocalWireNetwork netLink = global.getNullableLocalNet(link.cp);
-					if(netHere==netLink&&netHere!=null)
-					{
-						EnergyTransferHandler energyHandler = netHere.getHandler(EnergyTransferHandler.ID,
-								EnergyTransferHandler.class);
-						if(energyHandler!=null)
-						{
-							Path energyPath = energyHandler.getPath(link.cp, cp);
-							double loss;
-							if(energyPath!=null)
-								loss = energyPath.loss;
-							else
-								loss = 1;
-							player.sendMessage(new TranslatableComponent(
-									Lib.CHAT_INFO+"averageLoss",
-									Utils.formatDouble(loss*100, "###.000")
-							), Util.NIL_UUID);
-						}
-					}
-				}
-				WirecoilUtils.clearWireLink(stack);
+				if(!world.isClientSide)
+					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"redstoneLevel", MessageRequestRedstoneUpdate.redstoneLevel(world, pos)));
 			}
-			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;
 	}
@@ -166,6 +178,29 @@ public class VoltmeterItem extends IEBaseItem
 					.writeBoolean(isValid);
 			if(isValid)
 				out.writeVarInt(stored).writeVarInt(capacity);
+		}
+	}
+
+	public static record RemoteRedstoneData(
+			BlockPos pos, long measuredInTick, boolean isSignalSource, byte rsLevel
+	)
+	{
+		public static RemoteRedstoneData read(FriendlyByteBuf in)
+		{
+			BlockPos pos = in.readBlockPos();
+			long measuredInTick = in.readVarLong();
+			boolean isSignalSource = in.readBoolean();
+			final byte rsLevel;
+			rsLevel = in.readByte();
+			return new RemoteRedstoneData(pos, measuredInTick, isSignalSource, rsLevel);
+		}
+
+		public void write(FriendlyByteBuf out)
+		{
+			out.writeBlockPos(pos);
+			out.writeVarLong(measuredInTick)
+					.writeBoolean(isSignalSource);
+			out.writeByte(rsLevel);
 		}
 	}
 }
