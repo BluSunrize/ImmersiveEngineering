@@ -134,6 +134,7 @@ class IEItemTags extends ItemTagsProvider
 				.add(Tools.HAMMER.asItem())
 				.add(Tools.SCREWDRIVER.asItem())
 				.add(Tools.SURVEY_TOOLS.asItem())
+				.add(Tools.VOLTMETER.asItem())
 				.add(Misc.EARMUFFS.asItem())
 				.add(Misc.SKYHOOK.asItem());
 		for(ItemRegObject<WireCoilItem> wirecoil : Misc.WIRE_COILS.values())
