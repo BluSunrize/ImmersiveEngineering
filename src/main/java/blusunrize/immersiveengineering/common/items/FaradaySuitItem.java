@@ -24,6 +24,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -67,6 +68,12 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 	public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type)
 	{
 		return ImmersiveEngineering.MODID+":textures/models/armor_faraday"+(slot==EquipmentSlot.LEGS?"_legs": "")+".png";
+	}
+
+	@Override
+	public boolean isBookEnchantable(ItemStack stack, ItemStack book)
+	{
+		return false;
 	}
 
 	private static class FaradayArmorMaterial implements ArmorMaterial

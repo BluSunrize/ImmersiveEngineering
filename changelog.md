@@ -9,6 +9,7 @@
 - Fix some hard incompatabilities with Optifine (Malte)
 - Fix engineer's crafting table losing its inventory (Malte)
 - Fix placement and colour of various "Inventory" texts (BluSunrize)
+- Fix faraday suit incorrectly accepting enchantments in the anvil (BluSunrize)
 
 ##### Version 1.18.2-8.0.0-146
 - Re-add compat for OpenComputers2 (Malte)
