@@ -51,6 +51,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		this.tile = container.tile;
 		this.imageWidth = 230;
 		this.imageHeight = 218;
+		this.inventoryLabelY = 127;
 	}
 
 	@Nonnull

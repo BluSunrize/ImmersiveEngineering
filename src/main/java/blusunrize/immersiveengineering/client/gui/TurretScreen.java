@@ -47,6 +47,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 		this.imageHeight = 190;
+		this.inventoryLabelY = 99;
 	}
 
 	@Nonnull

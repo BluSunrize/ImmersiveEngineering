@@ -61,6 +61,15 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 	}
 
 	@Override
+	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
+	{
+		// Only difference to super version is the text color
+		final int color = 0x190b06;
+		this.font.draw(transform, title, titleLabelX, titleLabelY, color);
+		this.font.draw(transform, playerInventoryTitle, inventoryLabelX, inventoryLabelY, color);
+	}
+
+	@Override
 	public void render(@Nonnull PoseStack transform, int mouseX, int mouseY, float partialTicks)
 	{
 		this.renderBackground(transform);
