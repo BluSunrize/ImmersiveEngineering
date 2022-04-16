@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.0.1-pre
+##### Version 1.18.2-8.0.1-147
 - Add signal-threshold function for probe connectors (BluSunrize)
 - Add cloche growing for glow berries (BluSunrize)
 - Add ethanol fermentation for honey, glow berries and sweet berries (BluSunrize)
