@@ -522,15 +522,16 @@ abstract class GenerateUpdateJSON extends DefaultTask {
                         }
                         if (mcVer == null) {
                             throw new NullPointerException("Could not find MC version for " + currentVersion);
+                        } else if (mcVer == project.ext.version_minecraft) {
+                            if (!changelogForVersions.containsKey(mcVer)) {
+                                promos.put(mcVer + RECOMMENDED, currentVersion)
+                                promos.put(mcVer + LATEST, currentVersion)
+                                changelogForVersions[mcVer] = new TreeMap<>({ String s1, String s2 ->
+                                    compareVersions(s1, s2)
+                                })
+                            }
+                            changelogForVersions[mcVer][currentVersion] = currentChangelog
                         }
-                        if (!changelogForVersions.containsKey(mcVer)) {
-                            promos.put(mcVer + RECOMMENDED, currentVersion)
-                            promos.put(mcVer + LATEST, currentVersion)
-                            changelogForVersions[mcVer] = new TreeMap<>({ String s1, String s2 ->
-                                compareVersions(s1, s2)
-                            })
-                        }
-                        changelogForVersions[mcVer][currentVersion] = currentChangelog
                     }
                     if (line.endsWith(BUILT_SUFFIX)) {
                         currentVersion = line.substring(VERSION_PREFIX.length(), line.length() - BUILT_SUFFIX.length())
