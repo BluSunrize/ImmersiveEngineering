@@ -58,7 +58,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 			outputSlotBuilder.addItemStack(recipe.output.get());
 
 		if(recipe.creosoteOutput > 0)
-			builder.addSlot(RecipeIngredientRole.OUTPUT, 104, 5)
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 4)
 					.setFluidRenderer(5*FluidAttributes.BUCKET_VOLUME, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredient(VanillaTypes.FLUID, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput))

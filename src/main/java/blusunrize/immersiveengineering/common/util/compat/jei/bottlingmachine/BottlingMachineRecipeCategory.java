@@ -52,7 +52,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 76, 1)
-				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 47)
+				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 48)
 				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
@@ -60,7 +60,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	@Override
 	public void draw(BottlingMachineRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
-		GuiHelper.drawSlot(75, 15, 16, 48, transform);
+		GuiHelper.drawSlot(76, 17, 16, 48, transform);
 
 		transform.pushPose();
 		transform.scale(3, 3, 1);

@@ -49,7 +49,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, MixerRecipe recipe, IFocusGroup focuses)
 	{
-		builder.addSlot(RecipeIngredientRole.INPUT, 49, 4)
+		builder.addSlot(RecipeIngredientRole.INPUT, 48, 3)
 				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 58, 47)
 				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
@@ -75,7 +75,7 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	{
 		tankTexture.draw(transform, 40, 0);
 		arrowDrawable.draw(transform, 117, 19);
-		GuiHelper.drawSlot(138, 17, 16, 47, transform);
+		GuiHelper.drawSlot(139, 18, 16, 47, transform);
 	}
 
 }

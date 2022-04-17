@@ -49,7 +49,7 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 		if(!recipe.itemOutput.get().isEmpty())
 			outputSlotBuilder.addItemStack(recipe.itemOutput.get());
 		if(recipe.fluidOutput!=null&&!recipe.fluidOutput.isEmpty())
-			builder.addSlot(RecipeIngredientRole.OUTPUT, 107, 10)
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 106, 9)
 					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)

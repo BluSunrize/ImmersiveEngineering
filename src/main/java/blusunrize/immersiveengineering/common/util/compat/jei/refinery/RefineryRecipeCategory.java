@@ -43,12 +43,12 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 	public void setRecipe(IRecipeLayoutBuilder builder, RefineryRecipe recipe, IFocusGroup focuses)
 	{
 		if(recipe.input0!=null)
-			builder.addSlot(RecipeIngredientRole.INPUT, 8, 11)
+			builder.addSlot(RecipeIngredientRole.INPUT, 7, 10)
 					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/20, false, 16, 47)
 					.addIngredients(VanillaTypes.FLUID, recipe.input0.getMatchingFluidStacks())
 					.setOverlay(tankOverlay, 0, 0);
 		if(recipe.input1!=null)
-			builder.addSlot(RecipeIngredientRole.INPUT, 35, 11)
+			builder.addSlot(RecipeIngredientRole.INPUT, 34, 10)
 					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/20, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredients(VanillaTypes.FLUID, recipe.input1.getMatchingFluidStacks());
@@ -57,7 +57,7 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 			builder.addSlot(RecipeIngredientRole.INPUT, 67, 16)
 					.addItemStacks(Arrays.asList(recipe.catalyst.getItems()));
 		}
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 104, 11)
+		builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 10)
 				.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/20, false, 16, 47)
 				.setOverlay(tankOverlay, 0, 0)
 				.addIngredient(VanillaTypes.FLUID, recipe.output)
