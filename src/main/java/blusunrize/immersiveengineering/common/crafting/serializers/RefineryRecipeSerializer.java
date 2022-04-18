@@ -38,7 +38,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	{
 		FluidStack output = ApiUtils.jsonDeserializeFluidStack(GsonHelper.getAsJsonObject(json, "result"));
 		FluidTagInput input0 = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "input0"));
-		FluidTagInput input1 = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "input1"));
+		FluidTagInput input1 = json.has("input1")?FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "input1")): null;
 		Ingredient catalyst = Ingredient.EMPTY;
 		if(json.has("catalyst"))
 			catalyst = Ingredient.fromJson(json.get("catalyst"));
@@ -54,7 +54,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	{
 		FluidStack output = buffer.readFluidStack();
 		FluidTagInput input0 = FluidTagInput.read(buffer);
-		FluidTagInput input1 = FluidTagInput.read(buffer);
+		FluidTagInput input1 = buffer.readBoolean()?FluidTagInput.read(buffer): null;
 		Ingredient catalyst = Ingredient.fromNetwork(buffer);
 		int energy = buffer.readInt();
 		return new RefineryRecipe(recipeId, output, input0, input1, catalyst, energy);
@@ -65,7 +65,13 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 	{
 		buffer.writeFluidStack(recipe.output);
 		recipe.input0.write(buffer);
-		recipe.input1.write(buffer);
+		if(recipe.input1!=null)
+		{
+			buffer.writeBoolean(true);
+			recipe.input1.write(buffer);
+		}
+		else
+			buffer.writeBoolean(false);
 		recipe.catalyst.toNetwork(buffer);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
