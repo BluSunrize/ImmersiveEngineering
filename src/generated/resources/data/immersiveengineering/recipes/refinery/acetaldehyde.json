@@ -1,7 +1,7 @@
 {
   "type": "immersiveengineering:refinery",
   "result": {
-    "fluid": "immersiveengineering:ethanal",
+    "fluid": "immersiveengineering:acetaldehyde",
     "amount": 8
   },
   "catalyst": {

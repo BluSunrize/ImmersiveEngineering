@@ -988,7 +988,7 @@ public class Recipes extends RecipeProvider
 				.addCatalyst(IETags.getTagsFor(EnumMetals.SILVER).plate)
 				.addInput(IETags.fluidEthanol, 8)
 				.setEnergy(120)
-				.build(out, toRL("refinery/ethanal"));
+				.build(out, toRL("refinery/acetaldehyde"));
 		RefineryRecipeBuilder.builder(IEFluids.PHENOLIC_RESIN.getStill(), 8)
 				.addInput(IETags.fluidAcetaldehyde, 12)
 				.addInput(IETags.fluidCreosote, 8)

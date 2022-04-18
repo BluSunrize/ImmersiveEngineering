@@ -81,7 +81,7 @@ public class IEFluids
 	);
 	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
 	public static final FluidEntry ACETALDEHYDE = new FluidEntry(
-			"ethanal", rl("block/fluid/acetaldehyde_still"), rl("block/fluid/acetaldehyde_flow"),
+			"acetaldehyde", rl("block/fluid/acetaldehyde_still"), rl("block/fluid/acetaldehyde_flow"),
 			createGasBuilder(788, 210)
 	);
 	public static final FluidEntry PHENOLIC_RESIN = new FluidEntry(
