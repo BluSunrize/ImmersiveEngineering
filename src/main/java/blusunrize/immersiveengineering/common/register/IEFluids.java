@@ -48,6 +48,7 @@ import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.fluids.IEFluid.createBuilder;
+import static blusunrize.immersiveengineering.common.fluids.IEFluid.createGasBuilder;
 
 public class IEFluids
 {
@@ -91,6 +92,11 @@ public class IEFluids
 		private FluidEntry(String name, ResourceLocation stillTex, ResourceLocation flowingTex)
 		{
 			this(name, 0, stillTex, flowingTex);
+		}
+
+		private FluidEntry(String name, ResourceLocation stillTex, ResourceLocation flowingTex, Consumer<Builder> buildAttributes)
+		{
+			this(name, 0, stillTex, flowingTex, buildAttributes);
 		}
 
 		private FluidEntry(String name, int burnTime, ResourceLocation stillTex, ResourceLocation flowingTex)

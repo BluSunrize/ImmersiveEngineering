@@ -106,11 +106,14 @@ public class IEFluid extends FlowingFluid
 		return fluidIn==entry.getStill()||fluidIn==entry.getFlowing();
 	}
 
-	//TODO all copied from water. Maybe make configurable?
 	@Override
 	public int getTickDelay(LevelReader p_205569_1_)
 	{
-		return 5;
+		// viscosity delta to water (1000)
+		int dW = this.getFlowing().getAttributes().getViscosity()-1000;
+		// dW for water & lava is 5000, difference in tick delay is 25 -> 0.005 as a modifier
+		double v = Math.round(5 + dW*0.005);
+		return Math.max(2, (int)v);
 	}
 
 	@Override
@@ -202,6 +205,10 @@ public class IEFluid extends FlowingFluid
 	public static Consumer<FluidAttributes.Builder> createBuilder(int density, int viscosity)
 	{
 		return builder -> builder.viscosity(viscosity).density(density);
+	}
+	public static Consumer<FluidAttributes.Builder> createGasBuilder(int density, int viscosity)
+	{
+		return builder -> builder.viscosity(viscosity).density(density).gaseous();
 	}
 
 	public static class Flowing extends IEFluid
