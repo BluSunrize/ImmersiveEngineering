@@ -113,6 +113,8 @@ public class IETags
 	public static final TagKey<Fluid> fluidHerbicide = createFluidWrapper(forgeLoc("herbicide"));
 	public static final TagKey<Fluid> fluidRedstoneAcid = createFluidWrapper(forgeLoc("redstone_acid"));
 	public static final TagKey<Fluid> fluidPotion = createFluidWrapper(forgeLoc("potion"));
+	public static final TagKey<Fluid> fluidAcetaldehyde = createFluidWrapper(forgeLoc("ethanal"));
+	public static final TagKey<Fluid> fluidResin = createFluidWrapper(forgeLoc("phenolic_resin"));
 	public static final TagKey<Fluid> drillFuel = createFluidWrapper(rl("drill_fuel"));
 
 	static

@@ -80,6 +80,14 @@ public class IEFluids
 			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow")
 	);
 	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
+	public static final FluidEntry ACETALDEHYDE = new FluidEntry(
+			"ethanal", rl("block/fluid/acetaldehyde_still"), rl("block/fluid/acetaldehyde_flow"),
+			createGasBuilder(788, 210)
+	);
+	public static final FluidEntry PHENOLIC_RESIN = new FluidEntry(
+			"phenolic_resin", rl("block/fluid/resin_still"), rl("block/fluid/resin_flow"),
+			createBuilder(1100, 2800)
+	);
 
 	public static class FluidEntry
 	{
