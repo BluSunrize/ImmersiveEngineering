@@ -984,6 +984,16 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.fluidEthanol, 8)
 				.setEnergy(80)
 				.build(out, toRL("refinery/biodiesel"));
+		RefineryRecipeBuilder.builder(IEFluids.ACETALDEHYDE.getStill(), 8)
+				.addCatalyst(IETags.getTagsFor(EnumMetals.SILVER).plate)
+				.addInput(IETags.fluidEthanol, 8)
+				.setEnergy(120)
+				.build(out, toRL("refinery/ethanal"));
+		RefineryRecipeBuilder.builder(IEFluids.PHENOLIC_RESIN.getStill(), 8)
+				.addInput(IETags.fluidAcetaldehyde, 12)
+				.addInput(IETags.fluidCreosote, 8)
+				.setEnergy(240)
+				.build(out, toRL("refinery/resin"));
 		/* MIXER */
 		Fluid concrete = IEFluids.CONCRETE.getStill();
 		MixerRecipeBuilder.builder(concrete, half_bucket)
