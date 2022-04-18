@@ -1,8 +1,10 @@
 {
   "type": "immersiveengineering:bottling_machine",
-  "result": {
-    "item": "minecraft:exposed_copper"
-  },
+  "results": [
+    {
+      "item": "minecraft:exposed_copper"
+    }
+  ],
   "input": {
     "item": "minecraft:copper_block"
   },

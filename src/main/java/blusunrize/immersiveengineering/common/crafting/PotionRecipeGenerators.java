@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -50,7 +51,7 @@ public class PotionRecipeGenerators
 		Map<Potion, BottlingMachineRecipe> recipes = new HashMap<>();
 		Function<Potion, BottlingMachineRecipe> toRecipe = potion -> new BottlingMachineRecipe(
 				potion.getRegistryName(),
-				Lazy.of(() -> PotionUtils.setPotion(new ItemStack(Items.POTION), potion)),
+				List.of(Lazy.of(() -> PotionUtils.setPotion(new ItemStack(Items.POTION), potion))),
 				Ingredient.of(Items.GLASS_BOTTLE),
 				getFluidTagForType(potion, 250)
 		);

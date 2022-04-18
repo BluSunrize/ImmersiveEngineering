@@ -161,7 +161,8 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 				if(process==null)
 					continue;
 
-				ItemStack display = itemDisplays[i][4]==0||process.items.get(1).isEmpty()?process.items.get(0): process.items.get(1);
+				int s = process.items.size();
+				List<ItemStack> display = itemDisplays[i][4]==0||s<=1?process.items.subList(0, 1): process.items.subList(1,s);
 				scale = .4375f;
 
 				matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
@@ -171,14 +172,18 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 					ClientUtils.mc().getItemRenderer().renderStatic(process.items.get(0), TransformType.FIXED,
 							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 				else if(itemDisplays[i][4]==1||!ClientUtils.mc().getMainRenderTarget().isStencilEnabled())
-					ClientUtils.mc().getItemRenderer().renderStatic(display, TransformType.FIXED,
-							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
+				{
+					for(ItemStack displayS : display)
+						ClientUtils.mc().getItemRenderer().renderStatic(displayS, TransformType.FIXED,
+								combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
+				}
 				else
 				{
 					float h0 = -.5f;
 					float h1 = h0+itemDisplays[i][4];
 					renderItemPart(bufferIn, matrixStack, process.items.get(0), h0, h1, combinedLightIn, combinedOverlayIn, 0);
-					renderItemPart(bufferIn, matrixStack, display, h0, h1, combinedLightIn, combinedOverlayIn, 1);
+					for(ItemStack displayS : display)
+						renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1);
 				}
 
 				matrixStack.scale(1/scale, 1/scale, 1/scale);

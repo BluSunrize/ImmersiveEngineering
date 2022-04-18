@@ -145,8 +145,9 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 				tickedProcesses++;
 			if(process.processFinished)
 			{
-				ItemStack output = !process.items.get(1).isEmpty()?process.items.get(1): process.items.get(0);
-				doProcessOutput(output);
+				int s = process.items.size();
+				for(ItemStack output : s > 1?process.items.subList(1, s): process.items.subList(0, 1))
+					doProcessOutput(output);
 				processIterator.remove();
 			}
 		}
@@ -405,15 +406,15 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 
 	public static class BottlingProcess
 	{
-		public NonNullList<ItemStack> items;
+		public List<ItemStack> items;
 		public int processTick;
 		public int maxProcessTick = getMaxProcessTick();
 		boolean processFinished = false;
 
 		public BottlingProcess(ItemStack input)
 		{
-			this.items = NonNullList.withSize(2, ItemStack.EMPTY);
-			this.items.set(0, input);
+			this.items = new ArrayList<>(2);
+			this.items.add(input);
 		}
 
 		public boolean processStep(BottlingMachineBlockEntity tile)
@@ -434,7 +435,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 						{
 							if(recipe.fluidInput.test(tile.tanks[0].getFluid()))
 							{
-								items.set(1, recipe.getActualItemOutputs(tile).get(0));
+								items.addAll(recipe.getActualItemOutputs(tile));
 								tile.tanks[0].drain(recipe.fluidInput.getAmount(), FluidAction.EXECUTE);
 							}
 						}
@@ -442,10 +443,10 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 						{
 							ItemStack ret = FluidUtils.fillFluidContainer(tile.tanks[0], items.get(0), ItemStack.EMPTY, null);
 							if(!ret.isEmpty())
-								items.set(1, ret);
+								items.add(ret);
 						}
-						if(items.get(1).isEmpty())
-							items.set(1, items.get(0));
+						if(items.size() <= 1)
+							items.add(items.get(0));
 						tile.markContainingBlockForUpdate(null);
 					}
 				}
@@ -464,20 +465,30 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		public CompoundTag writeToNBT()
 		{
 			CompoundTag nbt = new CompoundTag();
-			if(!items.get(0).isEmpty())
-				nbt.put("input", items.get(0).save(new CompoundTag()));
-			if(!items.get(1).isEmpty())
-				nbt.put("output", items.get(1).save(new CompoundTag()));
+			ListTag listtag = new ListTag();
+			for(ItemStack s : items)
+				listtag.add(s.save(new CompoundTag()));
+			nbt.put("items", listtag);
 			nbt.putInt("processTick", processTick);
 			return nbt;
 		}
 
 		public static BottlingProcess readFromNBT(CompoundTag nbt)
 		{
-			ItemStack input = ItemStack.of(nbt.getCompound("input"));
-			BottlingProcess process = new BottlingProcess(input);
-			if(nbt.contains("output", Tag.TAG_COMPOUND))
-				process.items.set(1, ItemStack.of(nbt.getCompound("output")));
+			BottlingProcess process;
+			if(nbt.contains("input")) //legacy
+			{
+				process = new BottlingProcess(ItemStack.of(nbt.getCompound("input")));
+				if(nbt.contains("output", Tag.TAG_COMPOUND))
+					process.items.set(1, ItemStack.of(nbt.getCompound("output")));
+			}
+			else
+			{
+				ListTag listtag = nbt.getList("items", 10);
+				process = new BottlingProcess(ItemStack.of(listtag.getCompound(0)));
+				for(int i = 1; i < listtag.size(); i++)
+					process.items.add(ItemStack.of(listtag.getCompound(i)));
+			}
 			process.processTick = nbt.getInt("processTick");
 			return process;
 		}

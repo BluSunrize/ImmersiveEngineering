@@ -47,9 +47,11 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		builder.addSlot(RecipeIngredientRole.INPUT, 1, 13)
 				.addItemStacks(Arrays.asList(recipe.input.getItems()))
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
-		builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 13)
-				.addItemStack(recipe.output.get())
-				.setBackground(JEIHelper.slotDrawable, -1, -1);
+		int i = 0;
+		for(ItemStack out : recipe.output.get())
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 13+(i++)*18)
+					.addItemStack(out)
+					.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 76, 1)
 				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 48)
