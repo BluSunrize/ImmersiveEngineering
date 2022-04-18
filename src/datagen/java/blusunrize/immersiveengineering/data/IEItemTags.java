@@ -102,6 +102,7 @@ class IEItemTags extends ItemTagsProvider
 				.addTag(IETags.aluminumRod)
 				.addTag(IETags.ironRod)
 				.addTag(IETags.steelRod);
+		tag(IETags.plasticPlate).add(Ingredients.DUROPLAST_PLATE.asItem());
 		tag(IETags.sawblades).add(Tools.SAWBLADE.get());
 		tag(IETags.circuitPCB).add(Ingredients.CIRCUIT_BOARD.asItem());
 		tag(IETags.circuitLogic).add(Ingredients.ELECTRON_TUBE.asItem());

@@ -95,6 +95,7 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> DUST_WOOD = simple("dust_wood", nothing(), i -> i.setBurnTime(100));
 		public static final ItemRegObject<IEBaseItem> ELECTRON_TUBE = simple("electron_tube");
 		public static final ItemRegObject<IEBaseItem> CIRCUIT_BOARD = simple("circuit_board");
+		public static final ItemRegObject<IEBaseItem> DUROPLAST_PLATE = simple("plate_duroplast");
 		public static final ItemRegObject<IEBaseItem> EMPTY_CASING = simple("empty_casing");
 		public static final ItemRegObject<IEBaseItem> EMPTY_SHELL = simple("empty_shell");
 

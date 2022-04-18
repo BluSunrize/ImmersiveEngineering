@@ -80,6 +80,7 @@ public class IETags
 	public static final TagKey<Item> sulfurDust = createItemWrapper(getDust("sulfur"));
 	public static final TagKey<Item> sawdust = createItemWrapper(getDust("wood"));
 	public static final TagKey<Item> plates = createItemWrapper(forgeLoc("plates"));
+	public static final TagKey<Item> plasticPlate = createItemWrapper(getPlate("plastic"));
 	public static final TagKey<Item> sawblades = createItemWrapper(forgeLoc("sawblades"));
 	//Utility tags
 	public static final TagKey<Item> forbiddenInCrates = createItemWrapper(rl("forbidden_in_crates"));

@@ -768,6 +768,11 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.WEATHERED_COPPER)
 				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
 				.build(out, toRL("bottling/copper_aging"));
+		BottlingMachineRecipeBuilder.builder(Ingredients.DUROPLAST_PLATE.get())
+				.addResult(Molds.MOLD_PLATE)
+				.addInput(Molds.MOLD_PLATE)
+				.addFluidTag(IETags.fluidResin, quarter_bucket)
+				.build(out, toRL("bottling/duroplast_plate"));
 
 		/* CRUSHER */
 		CrusherRecipeBuilder.builder(Items.GRAVEL)

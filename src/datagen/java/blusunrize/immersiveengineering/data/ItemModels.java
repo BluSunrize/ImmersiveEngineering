@@ -220,7 +220,9 @@ public class ItemModels extends TRSRItemModelProvider
 				Ingredients.WOODEN_GRIP, Ingredients.GUNPART_BARREL, Ingredients.GUNPART_DRUM, Ingredients.GUNPART_HAMMER,
 				Ingredients.DUST_COKE, Ingredients.DUST_HOP_GRAPHITE, Ingredients.INGOT_HOP_GRAPHITE,
 				Ingredients.WIRE_COPPER, Ingredients.WIRE_ELECTRUM, Ingredients.WIRE_ALUMINUM, Ingredients.WIRE_STEEL, Ingredients.WIRE_LEAD,
-				Ingredients.DUST_SALTPETER, Ingredients.DUST_SULFUR, Ingredients.DUST_WOOD, Ingredients.ELECTRON_TUBE, Ingredients.CIRCUIT_BOARD);
+				Ingredients.DUST_SALTPETER, Ingredients.DUST_SULFUR, Ingredients.DUST_WOOD, Ingredients.ELECTRON_TUBE, Ingredients.CIRCUIT_BOARD,
+				Ingredients.DUROPLAST_PLATE
+		);
 
 		addItemModels(
 				"tool_", mcLoc("item/handheld"), Tools.HAMMER, Tools.WIRECUTTER, Tools.SCREWDRIVER,
