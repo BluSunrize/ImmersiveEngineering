@@ -156,6 +156,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		cubeAll(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
 		cubeAll(StoneDecoration.INSULATING_GLASS, rl("block/stone_decoration/insulating_glass"));
 		cubeAll(StoneDecoration.ALLOYBRICK, rl("block/stone_decoration/alloybrick"));
+		cubeAll(StoneDecoration.DUROPLAST, rl("block/stone_decoration/duroplast"));
 
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			cubeAll(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));

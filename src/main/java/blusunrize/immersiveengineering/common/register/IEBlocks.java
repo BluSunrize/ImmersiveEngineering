@@ -137,6 +137,10 @@ public final class IEBlocks
 				"coresample", STONE_DECO_PROPS_NOT_SOLID, p -> new HorizontalFacingBlock<>(IEBlockEntities.CORE_SAMPLE, p)
 		);
 
+		public static final BlockEntry<IEBaseBlock> DUROPLAST = BlockEntry.simple(
+				"duroplast", STONE_DECO_PROPS_NOT_SOLID
+		);
+
 		private static void init()
 		{
 		}
