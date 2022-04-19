@@ -404,7 +404,7 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.DUSTS_REDSTONE)
 				.build(out, toRL("blueprint/electron_tube"));
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.CIRCUIT_BOARD))
-				.addInput(StoneDecoration.INSULATING_GLASS)
+				.addInput(IETags.plasticPlate)
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).plate)
 				.build(out, toRL("blueprint/circuit_board"));
 
@@ -773,6 +773,11 @@ public class Recipes extends RecipeProvider
 				.addInput(Molds.MOLD_PLATE)
 				.addFluidTag(IETags.fluidResin, quarter_bucket)
 				.build(out, toRL("bottling/duroplast_plate"));
+		BottlingMachineRecipeBuilder.builder(new ItemStack(StoneDecoration.DUROPLAST, 4))
+				.addResult(Molds.MOLD_PACKING_4)
+				.addInput(Molds.MOLD_PACKING_4)
+				.addFluidTag(IETags.fluidResin, FluidAttributes.BUCKET_VOLUME*4)
+				.build(out, toRL("bottling/duroplast_block"));
 
 		/* CRUSHER */
 		CrusherRecipeBuilder.builder(Items.GRAVEL)
