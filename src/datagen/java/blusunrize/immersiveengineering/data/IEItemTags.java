@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BasicConnectorBlock;
 import blusunrize.immersiveengineering.common.items.WireCoilItem;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
@@ -27,6 +28,7 @@ import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
@@ -110,6 +112,9 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.hammers).add(Tools.HAMMER.get());
 		tag(IETags.screwdrivers).add(Tools.SCREWDRIVER.get());
 		tag(IETags.wirecutters).add(Tools.WIRECUTTER.get());
+		tag(IETags.connectorInsulator)
+				.add(Blocks.TERRACOTTA.asItem())
+				.add(IEBlocks.StoneDecoration.DUROPLAST.asItem());
 		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
 
 		generateTagsForToolbox();

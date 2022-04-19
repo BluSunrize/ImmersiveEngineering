@@ -10,7 +10,7 @@
       "tag": "forge:ingots/aluminum"
     },
     "c": {
-      "item": "minecraft:terracotta"
+      "tag": "immersiveengineering:connector_insulator"
     }
   },
   "result": {

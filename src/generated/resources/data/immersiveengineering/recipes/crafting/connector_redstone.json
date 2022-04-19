@@ -9,7 +9,7 @@
       "tag": "forge:nuggets/electrum"
     },
     "b": {
-      "item": "minecraft:terracotta"
+      "tag": "immersiveengineering:connector_insulator"
     },
     "r": {
       "tag": "forge:dusts/redstone"
