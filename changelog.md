@@ -1,6 +1,7 @@
 ##### Version 1.18.2-8.0.2-pre
 - Restructure some manual entries for better flow and no weird page breaks (BluSunrize)
 - Fix display of fluid tanks in JEI (BluSunrize)
+- Correctly tag slabs, stairs and tools (Malte)
 
 ##### Version 1.18.2-8.0.1-147
 - Add signal-threshold function for probe connectors (BluSunrize)

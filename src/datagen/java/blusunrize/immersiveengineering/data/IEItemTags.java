@@ -111,6 +111,15 @@ class IEItemTags extends ItemTagsProvider
 		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
 
 		generateTagsForToolbox();
+		tag(IETags.tools)
+				.addTag(IETags.shovels)
+				.addTag(IETags.pickaxes)
+				.addTag(IETags.hoes)
+				.addTag(IETags.axes);
+		tag(IETags.shovels).add(Tools.STEEL_SHOVEL.get());
+		tag(IETags.pickaxes).add(Tools.STEEL_PICK.get());
+		tag(IETags.hoes).add(Tools.STEEL_HOE.get());
+		tag(IETags.axes).add(Tools.STEEL_AXE.get());
 
 		/* MOD COMPAT STARTS HERE */
 

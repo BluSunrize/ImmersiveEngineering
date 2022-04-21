@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.IETags.MetalTags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import blusunrize.immersiveengineering.common.blocks.IEStairsBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock;
@@ -37,6 +38,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Tiers;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.material.Material;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -139,6 +141,17 @@ class IEBlockTags extends BlockTagsProvider
 				.addTag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.addTag(BlockTags.MINEABLE_WITH_PICKAXE);
 		checkAllRegisteredForBreaking();
+
+		for(BlockEntry<SlabBlock> slab : IEBlocks.TO_SLAB.values())
+			if(slab.get().defaultBlockState().getMaterial()==Material.WOOD)
+				tag(BlockTags.WOODEN_SLABS).add(slab.get());
+			else
+				tag(BlockTags.SLABS).add(slab.get());
+		for(BlockEntry<IEStairsBlock> stairs : IEBlocks.TO_STAIRS.values())
+			if(stairs.get().defaultBlockState().getMaterial()==Material.WOOD)
+				tag(BlockTags.WOODEN_STAIRS).add(stairs.get());
+			else
+				tag(BlockTags.STAIRS).add(stairs.get());
 
 		/* MOD COMPAT STARTS HERE */
 

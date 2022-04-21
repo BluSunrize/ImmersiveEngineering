@@ -1357,6 +1357,11 @@ a8014cf88462dfa1ffe413204ae4f41a3f47e0dc data/forge/tags/items/storage_blocks/ra
 69a664bab3df4bd1c8951f9e51d91164214ac84d data/forge/tags/items/storage_blocks/silver.json
 38ebff9071dcbbbfc8f31f37ab444d2e4a3511b6 data/forge/tags/items/storage_blocks/steel.json
 a1f91eee7330736ce5dbc80b0a1a99348b91074e data/forge/tags/items/storage_blocks/uranium.json
+dab61a8e27fbd140b3d3b27dab70c191f6e11d4e data/forge/tags/items/tools.json
+e166baf99f8ac3a8704ec79142f01a4065e3a334 data/forge/tags/items/tools/axes.json
+6f46c3a346c399af6e7337d10d3e67b002db4fe3 data/forge/tags/items/tools/hoes.json
+16710ac9ddc6280674bded9278cb43fc203905d9 data/forge/tags/items/tools/pickaxes.json
+b3c9f745f31192bc83f5a307dee4ef198ce24371 data/forge/tags/items/tools/shovels.json
 49f4fa9a0a04b15ebd37bf168056c8539f0af186 data/forge/tags/items/treated_wood.json
 e0e475c66854f71d61117171224d586e62e3fecd data/forge/tags/items/treated_wood_slab.json
 86454f7465aca2c6e67f2bce9d78befec56b2bc7 data/forge/tags/items/wires.json
@@ -3165,7 +3170,11 @@ bb9f70e178c6c42746aa13014d01c576f9811fe2 data/minecraft/tags/blocks/mineable/axe
 f04948c07759a8dc0add9b8d025580901d73ea24 data/minecraft/tags/blocks/mineable/shovel.json
 998293558ad3cc64566d9a1b15ba11f0e8e5de88 data/minecraft/tags/blocks/needs_iron_tool.json
 b4a82c60ef7c2d9d1be26d9448f54ec35ed7943f data/minecraft/tags/blocks/needs_stone_tool.json
+7b3a05c7e056ba693febf2ef8d46a9341d2bdbbd data/minecraft/tags/blocks/slabs.json
+3af83d39e05b8844aad23332bafe5c949d904758 data/minecraft/tags/blocks/stairs.json
 a0a4dff1d7722e5158393683ab1829a82f8f16cc data/minecraft/tags/blocks/wooden_fences.json
+6eec7cf93d1b4c2fb8b9bcf227771ddc587b65c2 data/minecraft/tags/blocks/wooden_slabs.json
+1789275a4a551311c112c230f4c0976cc935ef76 data/minecraft/tags/blocks/wooden_stairs.json
 16710ac9ddc6280674bded9278cb43fc203905d9 data/minecraft/tags/items/cluster_max_harvestables.json
 0dbacb39b0846975ef9700573323c5df6195c4a6 data/minecraft/tags/items/lectern_books.json
 4f8feda66f598922dc4a05a588b0abec24c468e5 data/tconstruct/tags/blocks/harvestable/stackable.json

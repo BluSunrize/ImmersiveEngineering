@@ -95,6 +95,11 @@ public class IETags
 	public static final TagKey<Block> hammerHarvestable = createBlockWrapper(rl("mineable/hammer"));
 	public static final TagKey<Block> wirecutterHarvestable = createBlockWrapper(rl("mineable/wirecutter"));
 	public static final TagKey<Block> drillHarvestable = createBlockWrapper(rl("mineable/drill"));
+	public static final TagKey<Item> tools = createItemWrapper(forgeLoc("tools"));
+	public static final TagKey<Item> pickaxes = createItemWrapper(forgeLoc("tools/pickaxes"));
+	public static final TagKey<Item> shovels = createItemWrapper(forgeLoc("tools/shovels"));
+	public static final TagKey<Item> axes = createItemWrapper(forgeLoc("tools/axes"));
+	public static final TagKey<Item> hoes = createItemWrapper(forgeLoc("tools/hoes"));
 
 	public static final TagKey<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
 	public static final TagKey<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));

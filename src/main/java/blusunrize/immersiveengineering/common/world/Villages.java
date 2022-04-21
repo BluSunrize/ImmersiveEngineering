@@ -118,13 +118,6 @@ public class Villages
 		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_GUNSMITH.get(), rl("gameplay/hero_of_the_village/gunsmith"));
 	}
 
-	private static StructurePoolElement createWorkstation(String name)
-	{
-		return SingleJigsawAccess.construct(
-				Either.left(rl(name)), ProcessorLists.EMPTY, Projection.RIGID
-		);
-	}
-
 	private static void addToPool(ResourceLocation pool, ResourceLocation toAdd, int weight)
 	{
 		StructureTemplatePool old = BuiltinRegistries.TEMPLATE_POOL.get(pool);

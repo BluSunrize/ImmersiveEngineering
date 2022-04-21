@@ -1,0 +1,15 @@
+{
+  "replace": false,
+  "values": [
+    "immersiveengineering:stairs_concrete_leaded",
+    "immersiveengineering:stairs_steel_scaffolding_wooden_top",
+    "immersiveengineering:stairs_hempcrete",
+    "immersiveengineering:stairs_alu_scaffolding_wooden_top",
+    "immersiveengineering:stairs_concrete",
+    "immersiveengineering:stairs_concrete_tile",
+    "immersiveengineering:stairs_alu_scaffolding_standard",
+    "immersiveengineering:stairs_steel_scaffolding_standard",
+    "immersiveengineering:stairs_alu_scaffolding_grate_top",
+    "immersiveengineering:stairs_steel_scaffolding_grate_top"
+  ]
+}
