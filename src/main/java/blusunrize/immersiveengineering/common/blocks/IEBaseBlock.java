@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks;
 
+import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.IETags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -26,9 +27,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -37,6 +41,8 @@ import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.ticks.ScheduledTick;
+
+import javax.annotation.Nullable;
 
 public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlock
 {
@@ -265,6 +271,54 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	public boolean fitsIntoContainer()
 	{
 		return fitsIntoContainer;
+	}
+
+	@Override
+	public BlockState rotate(BlockState state, Rotation rot)
+	{
+		Property<Direction> facingProp = findFacingProperty(state);
+		if(facingProp!=null&&canRotate())
+		{
+			Direction currentDirection = state.getValue(facingProp);
+			Direction newDirection = rot.rotate(currentDirection);
+			return state.setValue(facingProp, newDirection);
+		}
+		return super.rotate(state, rot);
+	}
+
+	@Override
+	public BlockState mirror(BlockState state, Mirror mirrorIn)
+	{
+		if(state.hasProperty(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
+			return state.setValue(IEProperties.MIRRORED, !state.getValue(IEProperties.MIRRORED));
+		else
+		{
+			Property<Direction> facingProp = findFacingProperty(state);
+			if(facingProp!=null&&canRotate())
+			{
+				Direction currentDirection = state.getValue(facingProp);
+				Direction newDirection = mirrorIn.mirror(currentDirection);
+				return state.setValue(facingProp, newDirection);
+			}
+		}
+		return super.mirror(state, mirrorIn);
+	}
+
+	@Nullable
+	private Property<Direction> findFacingProperty(BlockState state)
+	{
+		if(state.hasProperty(IEProperties.FACING_ALL))
+			return IEProperties.FACING_ALL;
+		else if(state.hasProperty(IEProperties.FACING_HORIZONTAL))
+			return IEProperties.FACING_HORIZONTAL;
+		else
+			return null;
+	}
+
+	protected boolean canRotate()
+	{
+		//Basic heuristic: Multiblocks should not be rotated depending on state
+		return !getStateDefinition().getProperties().contains(IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	/* LADDERS */

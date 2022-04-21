@@ -32,14 +32,11 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.Mirror;
-import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -306,54 +303,6 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 			return InteractionResult.SUCCESS;
 		}
 		return superResult;
-	}
-
-	@Nullable
-	private Property<Direction> findFacingProperty(BlockState state)
-	{
-		if(state.hasProperty(IEProperties.FACING_ALL))
-			return IEProperties.FACING_ALL;
-		else if(state.hasProperty(IEProperties.FACING_HORIZONTAL))
-			return IEProperties.FACING_HORIZONTAL;
-		else
-			return null;
-	}
-
-	@Override
-	public BlockState rotate(BlockState state, Rotation rot)
-	{
-		Property<Direction> facingProp = findFacingProperty(state);
-		if(facingProp!=null&&canRotate())
-		{
-			Direction currentDirection = state.getValue(facingProp);
-			Direction newDirection = rot.rotate(currentDirection);
-			return state.setValue(facingProp, newDirection);
-		}
-		return super.rotate(state, rot);
-	}
-
-	@Override
-	public BlockState mirror(BlockState state, Mirror mirrorIn)
-	{
-		if(state.hasProperty(IEProperties.MIRRORED)&&canRotate()&&mirrorIn==Mirror.LEFT_RIGHT)
-			return state.setValue(IEProperties.MIRRORED, !state.getValue(IEProperties.MIRRORED));
-		else
-		{
-			Property<Direction> facingProp = findFacingProperty(state);
-			if(facingProp!=null&&canRotate())
-			{
-				Direction currentDirection = state.getValue(facingProp);
-				Direction newDirection = mirrorIn.mirror(currentDirection);
-				return state.setValue(facingProp, newDirection);
-			}
-		}
-		return super.mirror(state, mirrorIn);
-	}
-
-	protected boolean canRotate()
-	{
-		//Basic heuristic: Multiblocks should not be rotated depending on state
-		return !getStateDefinition().getProperties().contains(IEProperties.MULTIBLOCKSLAVE);
 	}
 
 	@Override
