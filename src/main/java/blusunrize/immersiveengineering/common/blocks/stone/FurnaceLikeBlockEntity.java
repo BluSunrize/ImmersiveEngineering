@@ -147,12 +147,16 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 
 		if(burnTime <= 0&&getRecipe()!=null)
 		{
-			final int addedBurntime = getBurnTimeOf(inventory.get(fuelSlot));
+			final ItemStack fuel = inventory.get(fuelSlot);
+			final int addedBurntime = getBurnTimeOf(fuel);
 			if(addedBurntime > 0)
 			{
 				lastBurnTime = addedBurntime;
 				burnTime += lastBurnTime;
-				Utils.modifyInvStackSize(inventory, fuelSlot, -1);
+				if(fuel.hasContainerItem()&&fuel.getCount()==1)
+					inventory.set(fuelSlot, fuel.getContainerItem());
+				else
+					fuel.shrink(1);
 				setChanged();
 			}
 		}
