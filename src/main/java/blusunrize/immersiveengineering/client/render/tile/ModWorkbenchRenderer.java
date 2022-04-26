@@ -53,7 +53,6 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				{
 					BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(te.getLevel(), ItemNBTHelper.getString(stack, "blueprint"));
 
-					float lineWidth = playerDistanceSq < 25?1: playerDistanceSq < 40?.5f: .1f;
 					int l = recipes.length;
 					int perRow = l > 6?l-3: l > 4?l-2: l==1?2: l==2?3: l;
 					matrixStack.translate(0, .501, 0);
@@ -76,7 +75,7 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 							//Width depends on distance
 							float texScale = blueprint.textureScale/16f;
 							matrixStack.scale(1/texScale, 1/texScale, 1/texScale);
-							blueprint.draw(lineWidth, matrixStack, bufferIn);
+							blueprint.draw(matrixStack, bufferIn, combinedLightIn);
 							matrixStack.scale(texScale, texScale, texScale);
 							matrixStack.translate(-dX, -dY/scale, 0);
 							rendered++;

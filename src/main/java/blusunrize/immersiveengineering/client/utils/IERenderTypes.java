@@ -160,9 +160,8 @@ public class IERenderTypes extends RenderStateShard
 				DefaultVertexFormat.POSITION_COLOR_LIGHTMAP,
 				Mode.QUADS,
 				RenderType.CompositeState.builder()
-						.setTextureState(BLOCK_SHEET_MIPPED)
 						.setLightmapState(new LightmapStateShard(true))
-						.setShaderState(RENDERTYPE_ENTITY_SOLID_SHADER)
+						.setShaderState(POSITION_COLOR_LIGHTMAP_SHADER)
 						.createCompositeState(false)
 		);
 		ITEM_DAMAGE_BAR = createDefault(

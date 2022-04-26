@@ -332,13 +332,11 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						transform.translate(-.5, .5, -.001);
 						VertexConsumer builder = buffer.getBuffer(IERenderTypes.getGui(rl("textures/models/blueprint_frame.png")));
 						GuiHelper.drawTexturedColoredRect(builder, transform, .125f, -.875f, .75f, .75f, 1, 1, 1, 1, 1, 0, 1, 0);
-						//Width depends on distance
-						float lineWidth = playerDistanceSq < 3?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
 						transform.translate(.75, -.25, -.002);
 						float scale = .0375f/(blueprint.getTextureScale()/16f);
 						transform.scale(-scale, -scale, scale);
 
-						blueprint.draw(lineWidth, transform, buffer);
+						blueprint.draw(transform, buffer, event.getPackedLight());
 
 						transform.popPose();
 						event.setCanceled(true);

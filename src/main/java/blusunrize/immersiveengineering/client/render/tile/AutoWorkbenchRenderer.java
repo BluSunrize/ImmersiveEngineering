@@ -39,6 +39,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -181,7 +182,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		matrixStack.translate(0.5, 0.5, 0.5);
 
 		matrixStack.pushPose();
-		ItemStack blueprintStack = blockEntity.inventory.get(0);
+		ItemStack blueprintStack = blockEntity.inventory.get(AutoWorkbenchBlockEntity.BLUEPRINT_SLOT);
 		if(!blueprintStack.isEmpty())
 			renderModelPart(matrixStack, blockRenderer, bufferIn, state, model, combinedLightIn, combinedOverlayIn, "blueprint");
 
@@ -281,15 +282,13 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			BlueprintLines blueprint = recipe==null?null: getBlueprintDrawable(recipe, blockEntity.getLevelNonnull());
 			if(blueprint!=null)
 			{
-				//Width depends on distance
-				float lineWidth = playerDistanceSq < 6?3: playerDistanceSq < 25?2: playerDistanceSq < 40?1: .5f;
 				matrixStack.pushPose();
 				matrixStack.translate(-.195, .125, .97);
 				matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), -45, true));
 				float scale = .5f/blueprint.textureScale;
 				matrixStack.scale(scale, -scale, scale);
 				matrixStack.translate(0.5, 0.5, 0.5);
-				blueprint.draw(lineWidth, matrixStack, bufferIn);
+				blueprint.draw(matrixStack, bufferIn, combinedLightIn);
 				matrixStack.popPose();
 			}
 		}
@@ -311,7 +310,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		matrix.popPose();
 	}
 
-	public static HashMap<BlueprintCraftingRecipe, BlueprintLines> blueprintCache = new HashMap<BlueprintCraftingRecipe, BlueprintLines>();
+	public static HashMap<BlueprintCraftingRecipe, BlueprintLines> blueprintCache = new HashMap<>();
 
 	public static BlueprintLines getBlueprintDrawable(BlueprintCraftingRecipe recipe, Level world)
 	{
@@ -338,13 +337,8 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			HashSet<String> textures = new HashSet<>();
 			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, EmptyModelData.INSTANCE);
 			for(BakedQuad quad : quads)
-			{
 				if(quad!=null)
-				{
-					quad.getSprite();
 					textures.add(quad.getSprite().getName().toString());
-				}
-			}
 			for(String s : textures)
 			{
 				ResourceLocation rl = new ResourceLocation(s);
@@ -495,20 +489,21 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			return textureScale;
 		}
 
-		public void draw(float lineWidth, PoseStack matrixStack, MultiBufferSource buffer)
+		public void draw(PoseStack matrixStack, MultiBufferSource buffer, int packedLight)
 		{
 			//Draw edges
-			RenderType type = IERenderTypes.getLines(lineWidth);
-			VertexConsumer baseBuilder = buffer.getBuffer(type);
-			TransformingVertexBuilder builder = new TransformingVertexBuilder(baseBuilder, matrixStack, type.format());
+			TransformingVertexBuilder builder = new TransformingVertexBuilder(
+					buffer, IERenderTypes.POSITION_COLOR_LIGHTMAP, matrixStack
+			);
 			builder.defaultColor(255, 255, 255, 255);
+			builder.setLight(packedLight);
+			LinePainter painter = makeQuadLinePainter(builder, 0.05f);
 			for(Pair<Point, Point> line : lines)
-				line2d(builder, line.getFirst().x, line.getFirst().y, line.getSecond().x, line.getSecond().y);
+				painter.drawLine(line.getFirst().x, line.getFirst().y, line.getSecond().x, line.getSecond().y);
 
-			if(lineWidth >= 1)//Draw shading if player is close enough
-				for(ShadeStyle style : areas.keySet())
-					for(Point pixel : areas.get(style))
-						style.drawShading(pixel, builder);
+			for(ShadeStyle style : areas.keySet())
+				for(Point pixel : areas.get(style))
+					style.drawShading(pixel, painter);
 			builder.unsetDefaultColor();
 		}
 	}
@@ -524,7 +519,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			this.stripeDirection = stripeDirection;
 		}
 
-		void drawShading(Point pixel, VertexConsumer builder)
+		void drawShading(Point pixel, LinePainter painter)
 		{
 			float step = 1/(float)stripeAmount;
 			float offset = step/2;
@@ -536,35 +531,51 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			}
 			for(int i = 0; i < stripeAmount; i++)
 				if(stripeDirection==0)//vertical
-					line2d(builder, pixel.x+offset+step*i, pixel.y, pixel.x+offset+step*i, pixel.y+1);
+					painter.drawLine(pixel.x+offset+step*i, pixel.y, pixel.x+offset+step*i, pixel.y+1);
 				else if(stripeDirection==1)//horizontal
-					line2d(builder, pixel.x, pixel.y+offset+step*i, pixel.x+1, pixel.y+offset+step*i);
+					painter.drawLine(pixel.x, pixel.y+offset+step*i, pixel.x+1, pixel.y+offset+step*i);
 				else if(stripeDirection==2)//diagonal
 				{
 					if(i==stripeAmount-1&&stripeAmount%2==1)
-						line2d(builder, pixel.x, pixel.y+1, pixel.x+1, pixel.y);
+						painter.drawLine(pixel.x, pixel.y+1, pixel.x+1, pixel.y);
 					else if(i%2==0)
-						line2d(builder, pixel.x, pixel.y+offset+step*(i/2), pixel.x+offset+step*(i/2), pixel.y);
+						painter.drawLine(pixel.x, pixel.y+offset+step*(i/2), pixel.x+offset+step*(i/2), pixel.y);
 					else
-						line2d(builder, pixel.x+1-offset-step*(i/2), pixel.y+1, pixel.x+1, pixel.y+1-offset-step*(i/2));
+						painter.drawLine(pixel.x+1-offset-step*(i/2), pixel.y+1, pixel.x+1, pixel.y+1-offset-step*(i/2));
 				}
 		}
 	}
 
-	private static void line2d(VertexConsumer out, float x0, float y0, float x1, float y1)
+	private static LinePainter makeQuadLinePainter(VertexConsumer out, float width)
 	{
-		float normalX = x1-x0;
-		float normalY = y1-y0;
-		out.vertex(x0, y0, 0).normal(normalX, normalY, 0).endVertex();
-		out.vertex(x1, y1, 0).normal(normalX, normalY, 0).endVertex();
+		return (x0, y0, x1, y1) -> {
+			float deltaX = x1-x0;
+			float deltaY = y1-y0;
+			// Normalize
+			final float distance = Mth.fastInvSqrt(deltaY*deltaY+deltaX*deltaX);
+			deltaX /= distance;
+			deltaY /= distance;
+			// Draw quad
+			final float offsetX = -deltaY*width;
+			final float offsetY = deltaX*width;
+			out.vertex(x0+offsetX, y0+offsetY, 0).endVertex();
+			out.vertex(x1+offsetX, y1+offsetY, 0).endVertex();
+			out.vertex(x1-offsetX, y1-offsetY, 0).endVertex();
+			out.vertex(x0-offsetX, y0-offsetY, 0).endVertex();
+		};
 	}
 
-	private static record TexturePoint(int x, int y, int scale)
+	private record TexturePoint(int x, int y, int scale)
 	{
 	}
 
 	private static double getLuminance(int rgb)
 	{
-		return Math.sqrt(.241*(rgb >> 16&255)+.691*(rgb >> 8&255)+.068*(rgb&255));
+		return Math.sqrt(.241*(rgb>>16&255)+.691*(rgb>>8&255)+.068*(rgb&255));
+	}
+
+	private interface LinePainter
+	{
+		void drawLine(float x0, float y0, float x1, float y1);
 	}
 }
