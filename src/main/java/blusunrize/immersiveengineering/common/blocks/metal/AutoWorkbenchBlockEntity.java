@@ -56,13 +56,17 @@ import java.util.Set;
 public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoWorkbenchBlockEntity, MultiblockRecipe>
 		implements IInteractionObjectIE<AutoWorkbenchBlockEntity>, IConveyorAttachable, IBlockBounds
 {
+	public static final int BLUEPRINT_SLOT = 0;
+	private static final int FIRST_INPUT_SLOT = 1;
+	private static final int NUM_INPUT_SLOTS = 16;
+
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(1+NUM_INPUT_SLOTS, ItemStack.EMPTY);
+	public int selectedRecipe = -1;
+
 	public AutoWorkbenchBlockEntity(BlockEntityType<AutoWorkbenchBlockEntity> type, BlockPos pos, BlockState state)
 	{
 		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, type, pos, state);
 	}
-
-	public final NonNullList<ItemStack> inventory = NonNullList.withSize(17, ItemStack.EMPTY);
-	public int selectedRecipe = -1;
 
 	@Override
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
@@ -71,6 +75,8 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 		selectedRecipe = nbt.getInt("selectedRecipe");
 		if(!descPacket)
 			ContainerHelper.loadAllItems(nbt, inventory);
+		else
+			inventory.set(BLUEPRINT_SLOT, ItemStack.of(nbt.getCompound("syncedBlueprint")));
 	}
 
 	@Override
@@ -78,8 +84,14 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.putInt("selectedRecipe", selectedRecipe);
-//		if(!descPacket) Disabled because blueprint. Have yet to see issue because of this
-		ContainerHelper.saveAllItems(nbt, inventory);
+		if(!descPacket)
+			ContainerHelper.saveAllItems(nbt, inventory);
+		else
+		{
+			CompoundTag blueprintNBT = new CompoundTag();
+			inventory.get(BLUEPRINT_SLOT).save(blueprintNBT);
+			nbt.put("syncedBlueprint", blueprintNBT);
+		}
 	}
 
 	@Override
@@ -93,7 +105,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	public void tickServer()
 	{
 		super.tickServer();
-		if(isRSDisabled()||level.getGameTime()%16!=((getBlockPos().getX()^getBlockPos().getZ())&15)||inventory.get(0).isEmpty())
+		if(isRSDisabled()||level.getGameTime()%16!=((getBlockPos().getX()^getBlockPos().getZ())&15)||inventory.get(BLUEPRINT_SLOT).isEmpty())
 			return;
 
 		BlueprintCraftingRecipe[] recipes = getAvailableRecipes();
@@ -102,9 +114,9 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 			BlueprintCraftingRecipe recipe = recipes[this.selectedRecipe];
 			if(recipe!=null&&!recipe.output.get().isEmpty())
 			{
-				NonNullList<ItemStack> query = NonNullList.withSize(16, ItemStack.EMPTY);
+				NonNullList<ItemStack> query = NonNullList.withSize(NUM_INPUT_SLOTS, ItemStack.EMPTY);
 				for(int i = 0; i < query.size(); i++)
-					query.set(i, inventory.get(i+1));
+					query.set(i, inventory.get(i+FIRST_INPUT_SLOT));
 				int crafted = recipe.getMaxCrafted(query);
 				if(crafted > 0)
 				{
@@ -112,7 +124,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 					{
 						this.addProcessToQueue(new MultiblockProcessInWorld<>(recipe, this::getRecipeForId, 0.78f, recipe.consumeInputs(query, 1)), false);
 						for(int i = 0; i < query.size(); i++)
-							inventory.set(i+1, query.get(i));
+							inventory.set(i+FIRST_INPUT_SLOT, query.get(i));
 						this.setChanged();
 						this.markContainingBlockForUpdate(null);
 					}
@@ -123,7 +135,7 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 
 	public BlueprintCraftingRecipe[] getAvailableRecipes()
 	{
-		return EngineersBlueprintItem.getRecipes(level, inventory.get(0));
+		return EngineersBlueprintItem.getRecipes(level, inventory.get(BLUEPRINT_SLOT));
 	}
 
 	@Override
