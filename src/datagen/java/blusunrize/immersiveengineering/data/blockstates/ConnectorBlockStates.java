@@ -88,11 +88,11 @@ public class ConnectorBlockStates extends ExtendedBlockstateProvider
 		breakerModel();
 		transformerModel("block/connector/transformer_mv", Connectors.TRANSFORMER);
 		transformerModel("block/connector/transformer_hv", Connectors.TRANSFORMER_HV);
-		createHorizontalRotatedBlock(Connectors.POST_TRANSFORMER, obj("block/connector/transformer_post.obj"));
+		createHorizontalRotatedBlock(Connectors.POST_TRANSFORMER, obj("block/connector/transformer_post.obj"), 0);
 
 		ModelFile ctModel = split(innerObj("block/connector/e_meter.obj"), ImmutableList.of(BlockPos.ZERO, new BlockPos(0, -1, 0)));
-		createHorizontalRotatedBlock(Connectors.CURRENT_TRANSFORMER, ctModel);
-		createHorizontalRotatedBlock(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end());
+		createHorizontalRotatedBlock(Connectors.CURRENT_TRANSFORMER, ctModel, 0);
+		createHorizontalRotatedBlock(MetalDevices.RAZOR_WIRE, ieObjBuilder("block/razor_wire.obj.ie").callback(RazorWireCallbacks.INSTANCE).end(), 0);
 		simpleBlock(Cloth.BALLOON.get(), ieObjBuilder("block/balloon.obj.ie").callback(BalloonCallbacks.INSTANCE).end());
 	}
 

@@ -309,6 +309,10 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 		createHorizontalRotatedBlock(block, $ -> model, List.of());
 	}
 
+	protected void createHorizontalRotatedBlock(Supplier<? extends Block> block, ModelFile model, int offsetRotY) {
+		createRotatedBlock(block, $ -> model, IEProperties.FACING_HORIZONTAL, List.of(), 0, offsetRotY);
+	}
+
 	protected void createHorizontalRotatedBlock(Supplier<? extends Block> block, Function<PartialBlockstate, ModelFile> model, List<Property<?>> additionalProps)
 	{
 		createRotatedBlock(block, model, IEProperties.FACING_HORIZONTAL, additionalProps, 0, 180);
