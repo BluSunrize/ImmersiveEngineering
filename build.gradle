@@ -25,6 +25,7 @@ apply plugin: 'eclipse'
 apply plugin: 'com.github.johnrengelman.shadow'
 apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'org.jetbrains.gradle.plugin.idea-ext'
+apply plugin: 'org.spongepowered.mixin'
 
 version = buildVersionString()
 group = 'blusunrize.immersiveengineering' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
@@ -117,13 +118,10 @@ minecraft {
 
             // Recommended logging data for a userdev environment
             property 'forge.logging.markers', 'SCAN'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-            arg "-mixin.config=" + modid + ".mixins.json"
             // TODO not really ideal, is it?
             ideaModule project.name + ".gametest"
             mods {
@@ -144,13 +142,10 @@ minecraft {
 
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
 
             // Disable GUI by default, the IDE console can be used to enter commands
             arg '-nogui'
-            arg "-mixin.config="+modid+".mixins.json"
 
             mods {
                 immersiveengineering {
@@ -171,12 +166,9 @@ minecraft {
             // Recommended logging level for the console
             property 'forge.logging.console.level', 'debug'
             property 'fml.earlyprogresswindow', 'false'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             args '--mod', 'immersiveengineering', '--all', '--output', file('src/generated/resources/'), '--validate',
                     '--existing', sourceSets.main.resources.srcDirs[0]
-            arg "-mixin.config="+modid+".mixins.json"
             ideaModule project.name+".datagen"
 
             mods {
@@ -193,11 +185,8 @@ minecraft {
             property 'forge.logging.markers', ''
 
             property 'forge.logging.console.level', 'debug'
-            property 'mixin.env.remapRefMap', 'true'
-            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             property 'forge.enabledGameTestNamespaces', 'immersiveengineering'
 
-            arg "-mixin.config=" + modid + ".mixins.json"
             ideaModule project.name + ".gametest"
 
             mods {
@@ -357,11 +346,6 @@ shadowJar {
     classifier = ''
     dependencies {
         include(dependency('malte0811:BlockModelSplitter:.*'))
-    }
-    manifest {
-        attributes([
-                "MixinConfigs": "${modid}.mixins.json"
-        ])
     }
     from(sourceSets.manual.output)
     from(sourceSets.api.output)
@@ -581,10 +565,9 @@ task updateJson(type: GenerateUpdateJSON) {
 
 processResources.dependsOn updateJson
 
-apply plugin: 'org.spongepowered.mixin'
-
 mixin {
     add sourceSets.main, "${modid}.refmap.json"
+    config "${modid}.mixins.json"
 }
 
 // Running this is equivalent to running genIntellijRuns, but it exists before afterEvaluate
