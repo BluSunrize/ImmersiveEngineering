@@ -19,7 +19,7 @@ import net.minecraftforge.common.util.Lazy;
 
 public abstract class IESerializableRecipe implements Recipe<Container>
 {
-	public static final Lazy<ItemStack> LAZY_EMPTY = Lazy.of(() -> ItemStack.EMPTY);
+	public static final Lazy<ItemStack> LAZY_EMPTY = of(ItemStack.EMPTY);
 
 	protected final Lazy<ItemStack> outputDummy;
 	protected final RecipeType<?> type;
@@ -80,5 +80,9 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 	public RecipeType<?> getType()
 	{
 		return this.type;
+	}
+
+	public static Lazy<ItemStack> of(ItemStack value) {
+		return Lazy.of(() -> value);
 	}
 }

@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
@@ -22,10 +23,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.util.Lazy;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static blusunrize.immersiveengineering.api.crafting.IESerializableRecipe.of;
 
 /**
  * Allows you to add or remove Sawmill recipes.
@@ -58,10 +63,12 @@ public class SawmillRecipeManager implements IRecipeManager<SawmillRecipe>
 			public List<ItemStack> getAllOutputs(SawmillRecipe recipe)
 			{
 				final List<ItemStack> itemStacks = new ArrayList<>();
-				itemStacks.add(recipe.output);
-				itemStacks.add(recipe.stripped);
-				itemStacks.addAll(recipe.secondaryOutputs);
-				itemStacks.addAll(recipe.secondaryStripping);
+				itemStacks.add(recipe.output.get());
+				itemStacks.add(recipe.stripped.get());
+				for(Lazy<ItemStack> secondaryOutput : recipe.secondaryOutputs)
+					itemStacks.add(secondaryOutput.get());
+				for(Lazy<ItemStack> strippingOutput : recipe.secondaryStripping)
+					itemStacks.add(strippingOutput.get());
 				return itemStacks;
 			}
 		};
@@ -104,12 +111,14 @@ public class SawmillRecipeManager implements IRecipeManager<SawmillRecipe>
 		final ItemStack mainOutput = output.getInternal();
 		final ItemStack[] secondaryOutputs = CrTIngredientUtil.getItemStacks(outputSecondaries);
 
-		final SawmillRecipe recipe = new SawmillRecipe(resourceLocation, mainOutput, stripped, ingredient, energy);
+		final SawmillRecipe recipe = new SawmillRecipe(
+				resourceLocation, of(mainOutput), of(stripped), ingredient, energy
+		);
 		for(ItemStack stack : secondaryStripping)
-			recipe.addToSecondaryStripping(stack);
+			recipe.addToSecondaryStripping(of(stack));
 
 		for(ItemStack stack : secondaryOutputs)
-			recipe.addToSecondaryOutput(stack);
+			recipe.addToSecondaryOutput(of(stack));
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}

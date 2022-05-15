@@ -110,7 +110,7 @@ public class RefineryRecipeManager implements IRecipeManager<RefineryRecipe>
 	 * @docParam output <fluid:immersiveengineering:herbicide> * 10
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, Many<MCTag<Fluid>> fluidInput1, Many<MCTag<Fluid>> fluidInput2, IIngredient catalyst, int energy, IFluidStack output)
+	public void addRecipe(String recipePath, Many<MCTag> fluidInput1, Many<MCTag> fluidInput2, IIngredient catalyst, int energy, IFluidStack output)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final FluidStack outputStack = output.getInternal();

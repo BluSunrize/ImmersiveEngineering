@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -21,6 +22,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
+
+import static blusunrize.immersiveengineering.api.crafting.IESerializableRecipe.of;
 
 /**
  * Allows you to add or remove Blast Furnace recipes.
@@ -62,7 +65,9 @@ public class BlastFurnaceRecipeManager implements IRecipeManager<BlastFurnaceRec
 		final IngredientWithSize ingredientWithSize = CrTIngredientUtil.getIngredientWithSize(ingredient);
 		final ItemStack outputItem = output.getInternal();
 		final ItemStack slagItem = slag.getInternal();
-		final BlastFurnaceRecipe blastFurnaceRecipe = new BlastFurnaceRecipe(resourceLocation, outputItem, ingredientWithSize, time, slagItem);
+		final BlastFurnaceRecipe blastFurnaceRecipe = new BlastFurnaceRecipe(
+				resourceLocation, of(outputItem), ingredientWithSize, time, of(slagItem)
+		);
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, blastFurnaceRecipe, null));
 	}
 }

@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -20,6 +21,8 @@ import com.blamejared.crafttweaker_annotations.annotations.Document;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
+
+import static blusunrize.immersiveengineering.api.crafting.IESerializableRecipe.of;
 
 /**
  * Allows you to add or remove alloy smelter recipes.
@@ -60,7 +63,7 @@ public class AlloyRecipeManager implements IRecipeManager<AlloyRecipe>
 		final ResourceLocation id = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize input0 = CrTIngredientUtil.getIngredientWithSize(inputA);
 		final IngredientWithSize input1 = CrTIngredientUtil.getIngredientWithSize(inputB);
-		final AlloyRecipe alloyRecipe = new AlloyRecipe(id, output.getInternal(), input0, input1, time);
+		final AlloyRecipe alloyRecipe = new AlloyRecipe(id, of(output.getInternal()), input0, input1, time);
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, alloyRecipe, null));
 	}

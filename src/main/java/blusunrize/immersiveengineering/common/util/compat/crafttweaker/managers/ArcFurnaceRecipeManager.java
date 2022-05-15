@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
@@ -23,10 +24,13 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraftforge.common.util.Lazy;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static blusunrize.immersiveengineering.api.crafting.IESerializableRecipe.of;
 
 /**
  * Allows you to add or remove arc furnace smelter recipes.
@@ -70,12 +74,13 @@ public class ArcFurnaceRecipeManager implements IRecipeManager<ArcFurnaceRecipe>
 	public void addRecipe(String recipePath, IIngredientWithAmount mainIngredient, IIngredientWithAmount[] additives, int time, int energy, IItemStack[] outputs, @ZenCodeType.Optional("<item:minecraft:air>") IItemStack slag)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
-		final NonNullList<ItemStack> outputList = CrTIngredientUtil.getNonNullList(outputs);
+		final List<Lazy<ItemStack>> outputList = CrTIngredientUtil.getNonNullList(outputs);
 		final IngredientWithSize main = CrTIngredientUtil.getIngredientWithSize(mainIngredient);
 		final IngredientWithSize[] additivesWithSize = CrTIngredientUtil.getIngredientsWithSize(additives);
 
-		final ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(resourceLocation, outputList, slag
-				.getInternal(), List.of(), time, energy, main, additivesWithSize);
+		final ArcFurnaceRecipe recipe = new ArcFurnaceRecipe(
+				resourceLocation, outputList, of(slag.getInternal()), List.of(), time, energy, main, additivesWithSize
+		);
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
@@ -98,14 +103,14 @@ public class ArcFurnaceRecipeManager implements IRecipeManager<ArcFurnaceRecipe>
 	@ZenCodeType.Method
 	public void remove(IIngredient output, boolean checkSlag)
 	{
-		CraftTweakerAPI.apply(new AbstractActionRemoveMultipleOutputs<ArcFurnaceRecipe>(this, output)
+		CraftTweakerAPI.apply(new AbstractActionRemoveMultipleOutputs<>(this, output)
 		{
 			@Override
 			public List<ItemStack> getAllOutputs(ArcFurnaceRecipe recipe)
 			{
-				final List<ItemStack> itemStacks = new ArrayList<>(recipe.output);
+				final List<ItemStack> itemStacks = new ArrayList<>(recipe.output.get());
 				if(checkSlag)
-					itemStacks.add(recipe.slag);
+					itemStacks.add(recipe.slag.get());
 				return itemStacks;
 			}
 

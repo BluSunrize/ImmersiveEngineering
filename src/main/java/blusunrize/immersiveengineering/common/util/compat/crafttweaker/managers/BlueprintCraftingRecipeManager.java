@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -66,7 +67,9 @@ public class BlueprintCraftingRecipeManager implements IRecipeManager<BlueprintC
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 		final IngredientWithSize[] ingredients = CrTIngredientUtil.getIngredientsWithSize(inputs);
 		final ItemStack results = output.getInternal();
-		final BlueprintCraftingRecipe recipe = new BlueprintCraftingRecipe(resourceLocation, blueprintCategory, results, ingredients);
+		final BlueprintCraftingRecipe recipe = new BlueprintCraftingRecipe(
+				resourceLocation, blueprintCategory, IESerializableRecipe.of(results), ingredients
+		);
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null)
 		{

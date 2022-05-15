@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
@@ -17,13 +18,16 @@ import com.blamejared.crafttweaker.api.util.Many;
 import com.blamejared.crafttweaker.api.util.random.Percentaged;
 import com.google.common.base.Preconditions;
 import net.minecraft.core.NonNullList;
-import net.minecraft.tags.Tag;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.util.Lazy;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class CrTIngredientUtil
 {
@@ -50,11 +54,11 @@ public class CrTIngredientUtil
 		return result;
 	}
 
-	public static NonNullList<ItemStack> getNonNullList(IItemStack[] itemStacks)
+	public static List<Lazy<ItemStack>> getNonNullList(IItemStack[] itemStacks)
 	{
-		final NonNullList<ItemStack> result = NonNullList.create();
+		final List<Lazy<ItemStack>> result = new ArrayList<>(itemStacks.length);
 		for(IItemStack itemStack : itemStacks)
-			result.add(itemStack.getInternal());
+			result.add(IESerializableRecipe.of(itemStack.getInternal()));
 		return result;
 	}
 
@@ -68,14 +72,14 @@ public class CrTIngredientUtil
 		return new StackWithChance(stack, weight);
 	}
 
-	public static FluidTagInput getFluidTagInput(MCTag<Fluid> tag, int amount)
+	public static FluidTagInput getFluidTagInput(MCTag tag, int amount)
 	{
-		final Tag<Fluid> internal = tag.getInternal();
+		final TagKey<Fluid> internal = tag.getTagKey();
 		Preconditions.checkNotNull(internal, "Invalid fluid tag used for recipe: "+tag);
 		return new FluidTagInput(internal, amount, null);
 	}
 
-	public static FluidTagInput getFluidTagInput(Many<MCTag<Fluid>> tag)
+	public static FluidTagInput getFluidTagInput(Many<MCTag> tag)
 	{
 		return getFluidTagInput(tag.getData(), tag.getAmount());
 	}

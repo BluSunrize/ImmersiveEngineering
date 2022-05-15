@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
@@ -27,6 +28,8 @@ import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static blusunrize.immersiveengineering.api.crafting.IESerializableRecipe.of;
 
 /**
  * Allows you to add or remove Crusher recipes.
@@ -71,10 +74,10 @@ public class CrusherRecipeManager implements IRecipeManager<CrusherRecipe>
 			@Override
 			public List<ItemStack> getAllOutputs(CrusherRecipe recipe)
 			{
-				final ArrayList<ItemStack> itemStacks = new ArrayList<>();
-				itemStacks.add(recipe.output);
+				final List<ItemStack> itemStacks = new ArrayList<>();
+				itemStacks.add(recipe.output.get());
 				for(StackWithChance secondaryOutput : recipe.secondaryOutputs)
-					itemStacks.add(secondaryOutput.stack());
+					itemStacks.add(secondaryOutput.stack().get());
 				return itemStacks;
 			}
 		});
@@ -102,7 +105,7 @@ public class CrusherRecipeManager implements IRecipeManager<CrusherRecipe>
 
 		final ItemStack result = mainOutput.getInternal();
 		final Ingredient ingredient = input.asVanillaIngredient();
-		final CrusherRecipe recipe = new CrusherRecipe(resourceLocation, result, ingredient, energy);
+		final CrusherRecipe recipe = new CrusherRecipe(resourceLocation, of(result), ingredient, energy);
 
 		for(Percentaged<IItemStack> additionalOutput : additionalOutputs)
 		{

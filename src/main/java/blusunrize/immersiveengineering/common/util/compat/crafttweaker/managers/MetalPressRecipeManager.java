@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -62,7 +63,9 @@ public class MetalPressRecipeManager implements IRecipeManager<MetalPressRecipe>
 		final IngredientWithSize ingredient = CrTIngredientUtil.getIngredientWithSize(input);
 		final ItemStack outputStack = output.getInternal();
 
-		final MetalPressRecipe recipe = new MetalPressRecipe(resourceLocation, outputStack, ingredient, mold.getDefinition(), energy);
+		final MetalPressRecipe recipe = new MetalPressRecipe(
+				resourceLocation, IESerializableRecipe.of(outputStack), ingredient, mold.getDefinition(), energy
+		);
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
 }

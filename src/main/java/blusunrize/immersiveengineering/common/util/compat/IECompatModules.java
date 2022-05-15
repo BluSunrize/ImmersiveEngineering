@@ -13,9 +13,15 @@ import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
 import blusunrize.immersiveengineering.common.util.compat.computers.oc2.OC2CompatModule;
+import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerCompatModule;
+import com.blamejared.crafttweaker.api.CraftTweakerAPI;
+import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.google.common.collect.Sets;
+import dan200.computercraft.api.ComputerCraftAPI;
 import li.cil.oc2.api.API;
+import mcjty.theoneprobe.TheOneProbe;
 import net.minecraftforge.fml.ModList;
+import top.theillusivec4.curios.api.CuriosApi;
 
 import javax.annotation.Nullable;
 import java.lang.reflect.Constructor;
@@ -31,10 +37,10 @@ public final class IECompatModules
 
 	static
 	{
-		STANDARD_MODULE_CLASSES.put("computercraft", ComputerCraftCompatModule.class);
-		STANDARD_MODULE_CLASSES.put("curios", CuriosCompatModule.class);
-		STANDARD_MODULE_CLASSES.put("theoneprobe", OneProbeCompatModule.class);
-		//TODO double-check that this is inlined!
+		STANDARD_MODULE_CLASSES.put(ComputerCraftAPI.MOD_ID, ComputerCraftCompatModule.class);
+		STANDARD_MODULE_CLASSES.put(CuriosApi.MODID, CuriosCompatModule.class);
+		STANDARD_MODULE_CLASSES.put(TheOneProbe.MODID, OneProbeCompatModule.class);
+		STANDARD_MODULE_CLASSES.put(CraftTweakerConstants.MOD_ID, CraftTweakerCompatModule.class);
 		EARLY_MODULE_CLASSES.put(API.MOD_ID, OC2CompatModule.class);
 	}
 

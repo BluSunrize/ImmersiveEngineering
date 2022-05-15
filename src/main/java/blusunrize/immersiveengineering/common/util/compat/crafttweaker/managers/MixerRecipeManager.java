@@ -115,7 +115,7 @@ public class MixerRecipeManager implements IRecipeManager<MixerRecipe>
 	 * @docParam amount 8000
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, MCTag<Fluid> fluidInput, IIngredientWithAmount[] inputItems, int energy, Fluid output, int amount)
+	public void addRecipe(String recipePath, MCTag fluidInput, IIngredientWithAmount[] inputItems, int energy, Fluid output, int amount)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 

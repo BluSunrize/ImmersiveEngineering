@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -109,7 +110,9 @@ public class SqueezerRecipeManager implements IRecipeManager<SqueezerRecipe>
 		final FluidStack fluidOut = fluidOutput.getInternal();
 		final ItemStack itemOut = itemOutput.getInternal();
 
-		final SqueezerRecipe recipe = new SqueezerRecipe(resourceLocation, fluidOut, itemOut, inputWithSize, energy);
+		final SqueezerRecipe recipe = new SqueezerRecipe(
+				resourceLocation, fluidOut, IESerializableRecipe.of(itemOut), inputWithSize, energy
+		);
 
 		final String outputDescription = String.format("%s and %s", fluidOutput.getCommandString(), itemOutput.getCommandString());
 		CraftTweakerAPI.apply(new ActionAddRecipeCustomOutput<>(this, recipe, outputDescription));

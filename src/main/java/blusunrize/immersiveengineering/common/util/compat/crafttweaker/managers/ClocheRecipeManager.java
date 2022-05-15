@@ -23,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.common.util.Lazy;
 import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.List;
@@ -67,7 +68,7 @@ public class ClocheRecipeManager implements IRecipeManager<ClocheRecipe>
 			@Override
 			public List<ItemStack> getAllOutputs(ClocheRecipe recipe)
 			{
-				return recipe.outputs;
+				return recipe.outputs.stream().map(Lazy::get).toList();
 			}
 		});
 	}
@@ -104,7 +105,7 @@ public class ClocheRecipeManager implements IRecipeManager<ClocheRecipe>
 	public void addRecipe(String recipePath, IIngredient seed, IIngredient soil, int time, IItemStack[] outputs, Block renderBlock, @ZenCodeType.Optional("\"generic\"") String renderType)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
-		final List<ItemStack> outputList = CrTIngredientUtil.getNonNullList(outputs);
+		final List<Lazy<ItemStack>> outputList = CrTIngredientUtil.getNonNullList(outputs);
 		final Ingredient seedIngredient = seed.asVanillaIngredient();
 		final Ingredient soilIngredient = soil.asVanillaIngredient();
 		if(!ClocheRenderFunction.RENDER_FUNCTION_FACTORIES.containsKey(renderType))
@@ -113,7 +114,9 @@ public class ClocheRecipeManager implements IRecipeManager<ClocheRecipe>
 		final ClocheRenderFunction.ClocheRenderReference renderReference = new ClocheRenderFunction.ClocheRenderReference(renderType, renderBlock);
 		try
 		{
-			final ClocheRecipe recipe = new ClocheRecipe(resourceLocation, outputList, seedIngredient, soilIngredient, time, renderReference);
+			final ClocheRecipe recipe = new ClocheRecipe(
+					resourceLocation, outputList, seedIngredient, soilIngredient, time, renderReference
+			);
 			CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 		} catch(Exception ex)
 		{

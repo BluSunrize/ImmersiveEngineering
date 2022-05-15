@@ -9,6 +9,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
@@ -60,7 +61,7 @@ public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMach
 	 * @docParam output <item:minecraft:wooden_pickaxe>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient itemInput, Many<MCTag<Fluid>> fluidTag, IItemStack output)
+	public void addRecipe(String recipePath, IIngredient itemInput, Many<MCTag> fluidTag, IItemStack output)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 
@@ -69,7 +70,9 @@ public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMach
 		final ItemStack itemOutput = output.getInternal();
 		final Ingredient input = itemInput.asVanillaIngredient();
 
-		final BottlingMachineRecipe recipe = new BottlingMachineRecipe(resourceLocation, itemOutput, input, fluidTagInput);
+		final BottlingMachineRecipe recipe = new BottlingMachineRecipe(
+				resourceLocation, IESerializableRecipe.of(itemOutput), input, fluidTagInput
+		);
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));
 	}
