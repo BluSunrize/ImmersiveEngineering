@@ -15,6 +15,10 @@
 - Fix sync issues and dupe bug in the buzzsaw (BluSunrize)
 - Fix faraday suit incorrectly accepting enchantments in the anvil (BluSunrize)
 - Fix dupe bugs in the Engineer's Crafting Table (Malte)
+- Fix errors with Starlight in the manual (Malte)
+- Fix logic units with inverters producing incorrect output on reload (Malte)
+- Fix lighting issues in offhand on some items (Malte)
+- Fix faraday suit accepting enchantments in the anvil (BluSunrize)
 
 ##### Version 1.16.5-5.0.7-143
 - Fix diesel generator not toggling on and off correctly (Malte)
