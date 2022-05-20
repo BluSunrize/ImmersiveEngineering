@@ -30,8 +30,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Transformation;
-import com.mojang.math.Vector4f;
+import com.mojang.math.*;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -80,6 +79,8 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
 	public static Cache<RenderCacheKey, List<BakedQuad>> modelCache = CacheBuilder.newBuilder()
 			.maximumSize(100).expireAfterAccess(60, TimeUnit.SECONDS).build();
+	private static final Matrix4f INVERT = Matrix4f.createScaleMatrix(-1, -1, -1);
+	private static final Matrix3f INVERT_NORMAL = new Matrix3f(INVERT);
 
 	//TODO check which ones are still needed
 	ImmutableList<BakedQuad> bakedQuads;
@@ -134,7 +135,23 @@ public class IESmartObjModel implements ICacheKeyProvider<RenderCacheKey>
 		Transformation matrix =
 				PerspectiveMapWrapper.getTransforms(owner.getCombinedTransform()).getOrDefault(cameraTransformType, Transformation.identity());
 
-		matrix.push(mat);
+		Vector3f scale = matrix.getScale();
+		if(scale.x()*scale.y()*scale.z() < 0)
+		{
+			// If we "invert" the model, calling Transformation#push would produce a very broken normal matrix with
+			// entries on the order of 1e25. So we need to apply the positive part of the transformation and then invert
+			// manually.
+			Vector3f newScale = scale.copy();
+			newScale.mul(-1);
+			matrix = new Transformation(
+				matrix.getTranslation(), matrix.getLeftRotation(), newScale, matrix.getRightRot()
+			);
+			matrix.push(mat);
+			mat.last().pose().multiply(INVERT);
+			mat.last().normal().mul(INVERT_NORMAL);
+		}
+		else
+			matrix.push(mat);
 		if(!this.tempStack.isEmpty()&&this.tempStack.getItem() instanceof IOBJModelCallback)
 			((IOBJModelCallback)this.tempStack.getItem()).handlePerspective(this.tempStack, cameraTransformType, mat, tempEntity);
 
