@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
+import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IEntityProof;
@@ -70,6 +71,7 @@ import net.minecraftforge.event.entity.living.LivingEvent.LivingJumpEvent;
 import net.minecraftforge.event.entity.living.LivingEvent.LivingUpdateEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent.ItemPickupEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.EntityInteractSpecific;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent.RightClickBlock;
 import net.minecraftforge.event.world.BlockEvent;
@@ -134,6 +136,19 @@ public class EventHandler
 			event.setCancellationResult(InteractionResult.SUCCESS);
 		}
 	}
+
+	@SubscribeEvent
+	public void onItemPickup(ItemPickupEvent event)
+	{
+		Player player = event.getPlayer();
+		ItemStack stack = event.getStack();
+		if(!stack.isEmpty()&&stack.getItem() instanceof IShaderItem)
+		{
+			ResourceLocation shader = ((IShaderItem)stack.getItem()).getShaderName(stack);
+			ShaderRegistry.markShaderReceived(player.getUUID(), shader);
+		}
+	}
+
 
 	/*TODO re-add when the event exists again!
 	@SubscribeEvent
