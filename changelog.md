@@ -13,6 +13,7 @@
 - Fix crash on the core sample tooltip (Malte)
 - Fix crafting table not dropping its contents (Malte)
 - Fix hammer-crushing recipes only working once until the game is restarted (BluSunrize)
+- Fix shaders not unlocking in the manual (BluSunrize)
 - Correctly tag slabs, stairs and tools (Malte)
 
 ##### Version 1.18.2-8.0.1-147
