@@ -302,7 +302,11 @@ public final class IEItems
 		public static final ItemRegObject<EngineersBlueprintItem> BLUEPRINT = register("blueprint", EngineersBlueprintItem::new);
 		public static final ItemRegObject<SkyhookItem> SKYHOOK = register("skyhook", SkyhookItem::new);
 		public static final ItemRegObject<ShaderItem> SHADER = register("shader", ShaderItem::new);
-		public static final Map<Rarity, ItemRegObject<ShaderBagItem>> SHADER_BAG = new EnumMap<>(Rarity.class);
+		// We can't use an EnumMap here, since Rarity is an "extensible enum" (Forge), so people may add to it later on.
+		// And since this map is created during static class init, it may be initialized before another mod has any
+		// chance of adding the rarity.
+		@SuppressWarnings("MapReplaceableByEnumMap")
+		public static final Map<Rarity, ItemRegObject<ShaderBagItem>> SHADER_BAG = new HashMap<>();
 		public static final ItemRegObject<EarmuffsItem> EARMUFFS = register("earmuffs", EarmuffsItem::new);
 		public static final ItemRegObject<CoresampleItem> CORESAMPLE = register("coresample", CoresampleItem::new);
 		public static final ItemRegObject<GraphiteElectrodeItem> GRAPHITE_ELECTRODE = register("graphite_electrode", GraphiteElectrodeItem::new);
