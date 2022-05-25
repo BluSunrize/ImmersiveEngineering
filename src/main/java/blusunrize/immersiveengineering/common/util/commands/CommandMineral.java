@@ -249,7 +249,7 @@ public class CommandMineral
 
 		private Collection<MineralMix> getStaticMinerals() {
 			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-			Level level = server.overworld();
+			Level level = server==null?ImmersiveEngineering.proxy.getClientWorld():server.overworld();
 			return MineralMix.RECIPES.getRecipes(level);
 		}
 	}
