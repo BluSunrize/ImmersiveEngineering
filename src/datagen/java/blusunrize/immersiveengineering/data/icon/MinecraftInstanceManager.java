@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.data.icon;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.Timer;
@@ -23,8 +24,10 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.MultiPackResourceManager;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleReloadableResourceManager;
+import net.minecraft.util.Unit;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -32,6 +35,9 @@ import sun.misc.Unsafe;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 public class MinecraftInstanceManager
 {
@@ -58,14 +64,20 @@ public class MinecraftInstanceManager
 		isInitialized = true;
 		beNoLevelRenderer = new BlockEntityWithoutLevelRenderer(null, null);//TODO
 
-		ResourceManager resourceManager = ObfuscationReflectionHelper.getPrivateValue(ExistingFileHelper.class, helper, "clientResources");
-		var secondManager = new SimpleReloadableResourceManager(PackType.CLIENT_RESOURCES);
-		secondManager.add(new FolderPackResources(gen.getOutputFolder().toFile()));
-		resourceManager = new MergedResourceManager(resourceManager, secondManager);
-
 		createMinecraft();
 		initializeTimer();
 		initializeRenderSystem();
+
+		MultiPackResourceManager nonGeneratedManager = ObfuscationReflectionHelper.getPrivateValue(
+				ExistingFileHelper.class, helper, "clientResources"
+		);
+		var allSources = nonGeneratedManager.listPacks().collect(Collectors.toList());
+		allSources.add(new FolderPackResources(gen.getOutputFolder().toFile()));
+		var resourceManager = new ReloadableResourceManager(PackType.CLIENT_RESOURCES);
+		resourceManager.createReload(
+				Util.backgroundExecutor(), Minecraft.getInstance(), CompletableFuture.completedFuture(Unit.INSTANCE), allSources
+		);
+
 		initializeResourceManager(resourceManager);
 		initializeTextureManager(resourceManager);
 		initializeBlockColors();
@@ -126,7 +138,7 @@ public class MinecraftInstanceManager
 		RenderSystem.initGameThread(false);
 	}
 
-	private void initializeResourceManager(final ResourceManager resourceManager)
+	private void initializeResourceManager(final ReloadableResourceManager resourceManager)
 	{
 		setMCField("resourceManager", resourceManager);
 	}

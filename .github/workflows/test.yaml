@@ -31,11 +31,22 @@ jobs:
     needs: test
     defaults:
       run:
-        working-directory: ie-repo
+        working-directory: main-repo
     steps:
       - uses: actions/checkout@v2
         with:
-          path: ie-repo
+          path: main-repo
+      - uses: actions/checkout@v2
+        with:
+          path: icons
+      - name: Set up icons repo
+        run: |
+          cd ../icons
+          ICON_BRANCH=icons/$(git branch --show-current)
+          echo Icon branch: $ICON_BRANCH
+          git fetch
+          git switch $ICON_BRANCH || git switch --orphan $ICON_BRANCH
+          cd ../main-repo
       - uses: actions/cache@v2
         with:
           path: |
@@ -63,3 +74,13 @@ jobs:
         run: find src/generated/resources/ ! -path "**/.cache*" > resources_new.txt
       - name: Check that no new resources have been created
         run: diff resources.txt resources_new.txt
+      - name: Commit and push icons
+        run: |
+          cd ../icons/
+          git add --all
+          if ! git diff-index --quiet HEAD ; then
+            git config user.name github-actions
+            git config user.email github-actions@github.com
+            git commit -m "Update generated icons"
+            git push --set-upstream origin $(git branch --show-current)
+          fi
