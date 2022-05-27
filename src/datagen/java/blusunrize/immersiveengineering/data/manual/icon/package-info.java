@@ -12,4 +12,4 @@
  * OrionOnline, Chisels&Bits: Fully working version, able to render all models
  * malte0811, Immersive Engineering: Port from 1.16.5 to 1.18.2
  */
-package blusunrize.immersiveengineering.data.icon;
+package blusunrize.immersiveengineering.data.manual.icon;

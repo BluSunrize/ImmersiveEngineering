@@ -1,4 +1,4 @@
-name: Check that generated data is up to date and update icons for web manual
+name: Check that generated data is up to date and update data for web manual
 
 # TODO make sure that PRs can't ever overwrite the main icons
 on:
@@ -38,14 +38,14 @@ jobs:
           path: main-repo
       - uses: actions/checkout@v2
         with:
-          path: icons
-      - name: Set up icons repo
+          path: manual-data
+      - name: Set up manual data repo
         run: |
-          cd ../icons
-          ICON_BRANCH=icons/$(git branch --show-current)
-          echo Icon branch: $ICON_BRANCH
+          cd ../manual-data
+          MANUAL_BRANCH=manual-data/$(git branch --show-current)
+          echo Online manual data branch: $MANUAL_BRANCH
           git fetch
-          git switch $ICON_BRANCH || git switch --orphan $ICON_BRANCH
+          git switch $MANUAL_BRANCH || git switch --orphan $MANUAL_BRANCH
           cd ../main-repo
       - uses: actions/cache@v2
         with:
@@ -64,7 +64,7 @@ jobs:
         run: find src/generated/resources/ ! -path "**/.cache*" > resources.txt
       - name: Run data generation
         # Hide the non-zero return code from gradle. runData always returns !=0 (to stop gradle from "caching" it?)
-        run: xvfb-run --auto-servernum bash -c "ie_datagen_icon_dir=$(pwd)/../icons ./gradlew runData" || true
+        run: xvfb-run --auto-servernum bash -c "ie_manual_datagen_path=$(pwd)/../manual-data ./gradlew runData" || true
       - name: Check for crashes during data generation
         run: bash -c "[ -f run/ie_data_gen_done ]"
       - name: Check that no files have changed
@@ -74,13 +74,13 @@ jobs:
         run: find src/generated/resources/ ! -path "**/.cache*" > resources_new.txt
       - name: Check that no new resources have been created
         run: diff resources.txt resources_new.txt
-      - name: Commit and push icons
+      - name: Commit and push manual data
         run: |
-          cd ../icons/
+          cd ../manual-data/
           git add --all
           if ! git diff-index --quiet HEAD ; then
             git config user.name github-actions
             git config user.email github-actions@github.com
-            git commit -m "Update generated icons"
+            git commit -m "Update generated manual data"
             git push --set-upstream origin $(git branch --show-current)
           fi

@@ -1,7 +1,14 @@
-package blusunrize.immersiveengineering.data.icon;
+/*
+ * BluSunrize
+ * Copyright (c) 2022
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
+package blusunrize.immersiveengineering.data.manual.icon;
 
 import blusunrize.immersiveengineering.common.register.IEItems;
-import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
@@ -18,31 +25,16 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
 
-public class RenderedItemModelDataProvider implements DataProvider
+public record RenderedItemModelDataProvider(
+        DataGenerator generator, ExistingFileHelper helper, Path itemOutputDirectory
+) implements DataProvider
 {
-
-    private final DataGenerator generator;
-    private final ExistingFileHelper helper;
-
-    public RenderedItemModelDataProvider(final DataGenerator generator, ExistingFileHelper helper)
-    {
-        this.generator = generator;
-        this.helper = helper;
-    }
-
     @Override
     public void run(HashCache pCache) throws IOException
     {
-        String outputTo = System.getenv("ie_datagen_icon_dir");
-        if(outputTo==null)
-        {
-            IELogger.logger.info("Skipping {} since the icon output directory is not set", getName());
-            return;
-        }
         GameInitializationManager.getInstance().initialize(helper, generator);
         IEWireTypes.setup();
 
-        final Path itemOutputDirectory = Path.of(outputTo);
         ModelRenderer itemRenderer = new ModelRenderer(256, 256, itemOutputDirectory.toFile());
 
         Field item_renderProperties;

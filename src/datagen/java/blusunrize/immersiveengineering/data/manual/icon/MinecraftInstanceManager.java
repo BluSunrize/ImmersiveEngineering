@@ -6,8 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.data.icon;
+package blusunrize.immersiveengineering.data.manual.icon;
 
+import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -35,7 +36,6 @@ import sun.misc.Unsafe;
 
 import java.io.File;
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -68,15 +68,7 @@ public class MinecraftInstanceManager
 		initializeTimer();
 		initializeRenderSystem();
 
-		MultiPackResourceManager nonGeneratedManager = ObfuscationReflectionHelper.getPrivateValue(
-				ExistingFileHelper.class, helper, "clientResources"
-		);
-		var allSources = nonGeneratedManager.listPacks().collect(Collectors.toList());
-		allSources.add(new FolderPackResources(gen.getOutputFolder().toFile()));
-		var resourceManager = new ReloadableResourceManager(PackType.CLIENT_RESOURCES);
-		resourceManager.createReload(
-				Util.backgroundExecutor(), Minecraft.getInstance(), CompletableFuture.completedFuture(Unit.INSTANCE), allSources
-		);
+		var resourceManager = ManualDataGenerator.makeFullResourceManager(PackType.CLIENT_RESOURCES, gen, helper);
 
 		initializeResourceManager(resourceManager);
 		initializeTextureManager(resourceManager);

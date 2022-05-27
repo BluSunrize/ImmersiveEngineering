@@ -7,7 +7,7 @@
  */
 
 
-package blusunrize.immersiveengineering.data.icon;
+package blusunrize.immersiveengineering.data.manual.icon;
 
 import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.client.Minecraft;
