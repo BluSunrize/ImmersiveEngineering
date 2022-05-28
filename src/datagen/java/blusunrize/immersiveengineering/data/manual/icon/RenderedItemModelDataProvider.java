@@ -16,6 +16,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -35,8 +36,6 @@ public record RenderedItemModelDataProvider(
         GameInitializationManager.getInstance().initialize(helper, generator);
         IEWireTypes.setup();
 
-        ModelRenderer itemRenderer = new ModelRenderer(256, 256, itemOutputDirectory.toFile());
-
         Field item_renderProperties;
         try
         {
@@ -46,23 +45,26 @@ public record RenderedItemModelDataProvider(
         {
             throw new RuntimeException(e);
         }
-        IEItems.REGISTER.getEntries().forEach(regEntry -> {
-            var item = regEntry.get();
-            item.initializeClient(properties -> {
-                try
-                {
-                    item_renderProperties.set(item, properties);
-                } catch(IllegalAccessException e)
-                {
-                    throw new RuntimeException(e);
-                }
-            });
-            var name = regEntry.getId();
-            ModelResourceLocation modelLocation = new ModelResourceLocation(name, "inventory");
+        try(ModelRenderer itemRenderer = new ModelRenderer(256, 256, itemOutputDirectory.toFile()))
+        {
+            IEItems.REGISTER.getEntries().forEach(regEntry -> {
+                Item item = regEntry.get();
+                item.initializeClient(properties -> {
+                    try
+                    {
+                        item_renderProperties.set(item, properties);
+                    } catch(IllegalAccessException e)
+                    {
+                        throw new RuntimeException(e);
+                    }
+                });
+                ResourceLocation name = regEntry.getId();
+                ModelResourceLocation modelLocation = new ModelResourceLocation(name, "inventory");
 
-            final BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
-            itemRenderer.renderModel(model, name.getNamespace()+"/"+name.getPath()+".png", new ItemStack(item));
-        });
+                final BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
+                itemRenderer.renderModel(model, name.getNamespace()+"/"+name.getPath()+".png", new ItemStack(item));
+            });
+        }
     }
 
     @Nonnull

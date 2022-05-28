@@ -14,6 +14,7 @@ import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.server.packs.FolderPackResources;
+import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
@@ -22,6 +23,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.nio.file.Path;
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -47,11 +49,11 @@ public class ManualDataGenerator
 		MultiPackResourceManager nonGeneratedManager = ObfuscationReflectionHelper.getPrivateValue(
 				ExistingFileHelper.class,
 				helper,
-				type == PackType.CLIENT_RESOURCES ? "clientResources" : "serverData"
+				type==PackType.CLIENT_RESOURCES?"clientResources": "serverData"
 		);
-		var allSources = nonGeneratedManager.listPacks().collect(Collectors.toList());
+		List<PackResources> allSources = nonGeneratedManager.listPacks().collect(Collectors.toList());
 		allSources.add(new FolderPackResources(gen.getOutputFolder().toFile()));
-		var resourceManager = new ReloadableResourceManager(type);
+		ReloadableResourceManager resourceManager = new ReloadableResourceManager(type);
 		resourceManager.createReload(
 				Util.backgroundExecutor(), Minecraft.getInstance(), CompletableFuture.completedFuture(Unit.INSTANCE), allSources
 		);

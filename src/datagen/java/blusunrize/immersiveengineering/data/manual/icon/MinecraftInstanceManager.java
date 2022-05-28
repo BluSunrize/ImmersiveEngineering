@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.data.manual.icon;
 
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.Options;
 import net.minecraft.client.Timer;
@@ -23,21 +22,16 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.server.packs.FolderPackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Unit;
 import net.minecraft.util.datafix.DataFixers;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import sun.misc.Unsafe;
 
 import java.io.File;
-import java.lang.reflect.Field;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 public class MinecraftInstanceManager
 {
@@ -49,8 +43,6 @@ public class MinecraftInstanceManager
 	}
 
 	private boolean isInitialized = false;
-	private Unsafe internalUnsafe = null;
-	private BlockEntityWithoutLevelRenderer beNoLevelRenderer;
 
 	private MinecraftInstanceManager()
 	{
@@ -62,58 +54,39 @@ public class MinecraftInstanceManager
 			return;
 
 		isInitialized = true;
-		beNoLevelRenderer = new BlockEntityWithoutLevelRenderer(null, null);//TODO
+		// Should probably pass non-null things here, but it seems to work for the moment
+		BlockEntityWithoutLevelRenderer beNoLevelRenderer = new BlockEntityWithoutLevelRenderer(null, null);
 
 		createMinecraft();
 		initializeTimer();
 		initializeRenderSystem();
 
-		var resourceManager = ManualDataGenerator.makeFullResourceManager(PackType.CLIENT_RESOURCES, gen, helper);
+		ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(PackType.CLIENT_RESOURCES, gen, helper);
 
 		initializeResourceManager(resourceManager);
 		initializeTextureManager(resourceManager);
 		initializeBlockColors();
 		initializeItemColors();
 		initializeModelManager();
-		initializeItemRenderer();
-		initializeBlockRenderDispatcher();
+		initializeItemRenderer(beNoLevelRenderer);
+		initializeBlockRenderDispatcher(beNoLevelRenderer);
 		initializeGameRenderer(resourceManager);
 		initializeDataFixer();
 		initializeGameSettings();
 
-		initializeTags(helper);
 		Minecraft.getInstance().gameRenderer.reloadShaders(resourceManager);
-	}
-
-	private Unsafe unsafe()
-	{
-		if(internalUnsafe!=null)
-			return internalUnsafe;
-
-		try
-		{
-			Field f = Unsafe.class.getDeclaredField("theUnsafe");
-			f.setAccessible(true);
-			internalUnsafe = (Unsafe)f.get(null);
-		} catch(NoSuchFieldException|IllegalAccessException e)
-		{
-			throw new IllegalStateException("Missing unsafe!");
-		}
-
-		return internalUnsafe;
 	}
 
 	private void createMinecraft()
 	{
 		try
 		{
-			final Minecraft testingMinecraft = (Minecraft)unsafe().allocateInstance(Minecraft.class);
-
-			Field f = Minecraft.class.getDeclaredField("instance");
-			f.setAccessible(true);
-			f.set(null, testingMinecraft);
-
-		} catch(InstantiationException|NoSuchFieldException|IllegalAccessException e)
+			Unsafe unsafe = ObfuscationReflectionHelper.getPrivateValue(Unsafe.class, null, "theUnsafe");
+			Minecraft testingMinecraft = (Minecraft)Objects.requireNonNull(unsafe).allocateInstance(Minecraft.class);
+			// Setting on the null object is correct for static fields, but ORH warns anyway
+			//noinspection ConstantConditions
+			ObfuscationReflectionHelper.setPrivateValue(Minecraft.class, null, testingMinecraft, "instance");
+		} catch(InstantiationException e)
 		{
 			throw new IllegalStateException("Failed to load minecraft!");
 		}
@@ -153,11 +126,13 @@ public class MinecraftInstanceManager
 
 	private void initializeModelManager()
 	{
-		final ExtendedModelManager modelManager = new ExtendedModelManager(Minecraft.getInstance().getTextureManager(), Minecraft.getInstance().getBlockColors(), 0);
+		final ExtendedModelManager modelManager = new ExtendedModelManager(
+				Minecraft.getInstance().getTextureManager(), Minecraft.getInstance().getBlockColors(), 0
+		);
 		setMCField("modelManager", modelManager);
 	}
 
-	private void initializeItemRenderer()
+	private void initializeItemRenderer(BlockEntityWithoutLevelRenderer beNoLevelRenderer)
 	{
 		final ItemRenderer itemRenderer = new ItemRenderer(
 				Minecraft.getInstance().getTextureManager(),
@@ -168,15 +143,21 @@ public class MinecraftInstanceManager
 		setMCField("itemRenderer", itemRenderer);
 	}
 
-	private void initializeBlockRenderDispatcher()
+	private void initializeBlockRenderDispatcher(BlockEntityWithoutLevelRenderer beNoLevelRenderer)
 	{
-		final BlockRenderDispatcher blockRendererDispatcher = new BlockRenderDispatcher(Minecraft.getInstance().getModelManager().getBlockModelShaper(), beNoLevelRenderer, Minecraft.getInstance().getBlockColors());
+		final BlockRenderDispatcher blockRendererDispatcher = new BlockRenderDispatcher(
+				Minecraft.getInstance().getModelManager().getBlockModelShaper(),
+				beNoLevelRenderer,
+				Minecraft.getInstance().getBlockColors()
+		);
 		setMCField("blockRenderer", blockRendererDispatcher);
 	}
 
 	private void initializeGameRenderer(final ResourceManager resourceManager)
 	{
-		final GameRenderer gameRenderer = new GameRenderer(Minecraft.getInstance(), resourceManager, new RenderBuffers());
+		final GameRenderer gameRenderer = new GameRenderer(
+				Minecraft.getInstance(), resourceManager, new RenderBuffers()
+		);
 		setMCField("gameRenderer", gameRenderer);
 	}
 
@@ -189,17 +170,6 @@ public class MinecraftInstanceManager
 	{
 		final Options gameSettings = new Options(Minecraft.getInstance(), new File("./"));
 		setMCField("options", gameSettings);
-	}
-
-	private void initializeTags(ExistingFileHelper existingFileHelper)
-	{
-		/*TODO not necessary? I hope?
-		final ResourceManager resourceManager = ObfuscationReflectionHelper.getPrivateValue(ExistingFileHelper.class, existingFileHelper, "serverData");
-		final TagManager networkTagManager = new TagManager();
-		AsyncReloadManager.getInstance().reload(resourceManager, networkTagManager);
-		TagRegistryManager.fetchTags(networkTagManager.getTagCollectionSupplier());
-		TagRegistryManager.fetchCustomTagTypes(networkTagManager.getTagCollectionSupplier());
-		 */
 	}
 
 	private static void setMCField(String name, Object value)

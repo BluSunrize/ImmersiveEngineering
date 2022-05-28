@@ -10,13 +10,13 @@ package blusunrize.immersiveengineering.data.manual;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.TagLoader;
 import net.minecraft.tags.TagManager;
@@ -25,10 +25,12 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 public record TagExports(DataGenerator gen, ExistingFileHelper helper, Path outPath) implements DataProvider
@@ -42,19 +44,23 @@ public record TagExports(DataGenerator gen, ExistingFileHelper helper, Path outP
 				rl -> Optional.ofNullable(ForgeRegistries.ITEMS.getValue(rl)),
 				TagManager.getTagDir(Registry.ITEM_REGISTRY)
 		);
-		try (var resourceManager = ManualDataGenerator.makeFullResourceManager(
+		try(ReloadableResourceManager resourceManager = ManualDataGenerator.makeFullResourceManager(
 				PackType.SERVER_DATA, gen, helper
-		)) {
+		))
+		{
 			Map<ResourceLocation, Tag<Item>> tags = loader.loadAndBuild(resourceManager);
-			for (var entry : tags.entrySet()) {
+			for(Entry<ResourceLocation, Tag<Item>> entry : tags.entrySet())
+			{
 				JsonArray elements = new JsonArray();
-				for (var item : entry.getValue().getValues()) {
+				for(Item item : entry.getValue().getValues())
+				{
 					elements.add(item.getRegistryName().toString());
 				}
-				var tagName = entry.getKey();
-				var tagPath = outPath.resolve(tagName.getNamespace()).resolve(tagName.getPath()+".json");
+				ResourceLocation tagName = entry.getKey();
+				Path tagPath = outPath.resolve(tagName.getNamespace()).resolve(tagName.getPath()+".json");
 				Files.createDirectories(tagPath.getParent());
-				try (var writer = Files.newBufferedWriter(tagPath)) {
+				try(BufferedWriter writer = Files.newBufferedWriter(tagPath))
+				{
 					writer.write(GSON.toJson(elements));
 				}
 			}

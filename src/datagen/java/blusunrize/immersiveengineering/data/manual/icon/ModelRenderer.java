@@ -36,7 +36,7 @@ import java.util.function.Function;
 
 import static org.lwjgl.opengl.GL40.*;
 
-public class ModelRenderer
+public class ModelRenderer implements AutoCloseable
 {
     private final int width;
     private final int height;
@@ -64,7 +64,6 @@ public class ModelRenderer
 
         this.depthBuffer = glGenRenderbuffers();
         glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
-        //TODO do we need/want stencil?
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
 
@@ -88,7 +87,13 @@ public class ModelRenderer
         RenderSystem.applyModelViewMatrix();
     }
 
-    // TODO free GL resources
+    @Override
+    public void close()
+    {
+        glDeleteBuffers(framebufferID);
+        glDeleteTextures(renderedTexture);
+        glDeleteRenderbuffers(depthBuffer);
+    }
 
     public void renderModel(BakedModel model, String filename, ItemStack stack)
     {

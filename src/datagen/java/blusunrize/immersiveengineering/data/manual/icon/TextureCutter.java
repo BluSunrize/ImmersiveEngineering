@@ -69,19 +69,8 @@ public class TextureCutter
 		final int yOffset = (height-newHeight)/2;
 
 		for(int x = 0; x <= newWidth; x++)
-		{
 			for(int y = 0; y < newHeight; y++)
-			{
-				bufferedimage.setRGB(
-						xOffset+x,
-						yOffset+y,
-						source.getRGB(
-								minX+x,
-								minY+y
-						)
-				);
-			}
-		}
+				bufferedimage.setRGB(xOffset+x, yOffset+y, source.getRGB(minX+x, minY+y));
 
 		return bufferedimage;
 	}
