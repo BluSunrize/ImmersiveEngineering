@@ -19,6 +19,7 @@
 - Fix logic units with inverters producing incorrect output on reload (Malte)
 - Fix lighting issues in offhand on some items (Malte)
 - Fix faraday suit accepting enchantments in the anvil (BluSunrize)
+- Fix shaders not unlocking in the manual (BluSunrize)
 
 ##### Version 1.16.5-5.0.7-143
 - Fix diesel generator not toggling on and off correctly (Malte)
