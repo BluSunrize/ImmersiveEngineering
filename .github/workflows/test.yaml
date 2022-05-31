@@ -1,8 +1,6 @@
 name: Check that generated data is up to date and update data for web manual
 
-# TODO make sure that PRs can't ever overwrite the main icons
-on:
-  push:
+on: [push, pull_request]
 
 jobs:
   test:
@@ -40,6 +38,7 @@ jobs:
         with:
           path: manual-data
       - name: Set up manual data repo
+        if: ${{ github.event_name != 'pull_request' && startsWith(env.GITHUB_REF_NAME, '1.')}}
         run: |
           cd ../manual-data
           MANUAL_BRANCH=manual-data/$(git branch --show-current)
@@ -75,6 +74,7 @@ jobs:
       - name: Check that no new resources have been created
         run: diff resources.txt resources_new.txt
       - name: Commit and push manual data
+        if: ${{ github.event_name != 'pull_request' && startsWith(env.GITHUB_REF_NAME, '1.')}}
         run: |
           cd ../manual-data/
           git add --all
