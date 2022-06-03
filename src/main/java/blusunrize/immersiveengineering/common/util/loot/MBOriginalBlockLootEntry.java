@@ -9,12 +9,10 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -29,8 +27,6 @@ import java.util.function.Consumer;
 
 public class MBOriginalBlockLootEntry extends LootPoolSingletonContainer
 {
-	public static ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "multiblock_original_block");
-
 	protected MBOriginalBlockLootEntry(int weightIn, int qualityIn, LootItemCondition[] conditionsIn, LootItemFunction[] functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
@@ -59,7 +55,7 @@ public class MBOriginalBlockLootEntry extends LootPoolSingletonContainer
 	@Override
 	public LootPoolEntryType getType()
 	{
-		return IELootFunctions.multiblockOrigBlock;
+		return IELootFunctions.MULTIBLOCK_ORIGINAL_BLOCK.get();
 	}
 
 	public static class Serializer extends LootPoolSingletonContainer.Serializer<MBOriginalBlockLootEntry>

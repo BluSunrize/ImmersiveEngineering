@@ -274,7 +274,7 @@ public class SkylineHookEntity extends Entity
 		double dz = this.getZ()-this.zo;
 		int distTrvl = Math.round(Mth.sqrt((float)(dx*dx+dy*dy+dz*dz))*100.0F);
 		if(distTrvl > 0)
-			player.awardStat(IEStats.SKYHOOK_DISTANCE, distTrvl);
+			player.awardStat(IEStats.SKYHOOK_DISTANCE.get(), distTrvl);
 
 		//TODO
 //			if(player instanceof EntityPlayerMP)

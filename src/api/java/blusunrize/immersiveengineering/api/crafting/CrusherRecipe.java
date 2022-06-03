@@ -16,7 +16,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.Lazy;
@@ -32,9 +31,8 @@ import java.util.List;
  */
 public class CrusherRecipe extends MultiblockRecipe
 {
-	public static RecipeType<CrusherRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
-	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, CrusherRecipe.class);
+	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CRUSHER, CrusherRecipe.class);
 
 	public final Ingredient input;
 	public final Lazy<ItemStack> output;
@@ -42,7 +40,7 @@ public class CrusherRecipe extends MultiblockRecipe
 
 	public CrusherRecipe(ResourceLocation id, Lazy<ItemStack> output, Ingredient input, int energy)
 	{
-		super(output, TYPE, id);
+		super(output, IERecipeTypes.CRUSHER, id);
 		this.output = output;
 		this.input = input;
 		setTimeAndEnergy(50, energy);

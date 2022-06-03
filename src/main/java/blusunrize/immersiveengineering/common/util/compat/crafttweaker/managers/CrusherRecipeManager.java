@@ -8,7 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.CrusherRecipe;
-import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
@@ -47,7 +47,7 @@ public class CrusherRecipeManager implements IRecipeManager<CrusherRecipe>
 	@Override
 	public RecipeType<CrusherRecipe> getRecipeType()
 	{
-		return CrusherRecipe.TYPE;
+		return IERecipeTypes.CRUSHER.get();
 	}
 
 	@Override

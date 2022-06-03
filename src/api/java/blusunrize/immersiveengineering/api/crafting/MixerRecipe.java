@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
@@ -30,9 +29,8 @@ import java.util.Set;
  */
 public class MixerRecipe extends MultiblockRecipe
 {
-	public static RecipeType<MixerRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<MixerRecipe>> SERIALIZER;
-	public static final CachedRecipeList<MixerRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, MixerRecipe.class);
+	public static final CachedRecipeList<MixerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.MIXER, MixerRecipe.class);
 
 	public final IngredientWithSize[] itemInputs;
 	public final FluidTagInput fluidInput;
@@ -41,7 +39,7 @@ public class MixerRecipe extends MultiblockRecipe
 
 	public MixerRecipe(ResourceLocation id, FluidStack fluidOutput, FluidTagInput fluidInput, IngredientWithSize[] itemInputs, int energy)
 	{
-		super(LAZY_EMPTY, TYPE, id);
+		super(LAZY_EMPTY, IERecipeTypes.MIXER, id);
 		this.fluidOutput = fluidOutput;
 		this.fluidAmount = fluidOutput.getAmount();
 		this.fluidInput = fluidInput;

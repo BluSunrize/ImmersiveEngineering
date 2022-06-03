@@ -9,11 +9,9 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -28,8 +26,6 @@ import java.util.function.Consumer;
 
 public class BEDropLootEntry extends LootPoolSingletonContainer
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "tile_drop");
-
 	protected BEDropLootEntry(int weightIn, int qualityIn, LootItemCondition[] conditionsIn, LootItemFunction[] functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
@@ -55,7 +51,7 @@ public class BEDropLootEntry extends LootPoolSingletonContainer
 	@Override
 	public LootPoolEntryType getType()
 	{
-		return IELootFunctions.tileDrop;
+		return IELootFunctions.TILE_DROP.get();
 	}
 
 	public static class Serializer extends LootPoolSingletonContainer.Serializer<BEDropLootEntry>

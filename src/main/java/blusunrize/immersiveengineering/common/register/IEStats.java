@@ -9,41 +9,43 @@
 package blusunrize.immersiveengineering.common.register;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.StatFormatter;
 import net.minecraft.stats.Stats;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
+import java.util.ArrayList;
+import java.util.List;
+
 public class IEStats
 {
-	public static ResourceLocation WIRE_DEATHS;
-	public static ResourceLocation SKYHOOK_DISTANCE;
+	private static final DeferredRegister<ResourceLocation> REGISTER = DeferredRegister.create(
+			Registry.CUSTOM_STAT_REGISTRY, ImmersiveEngineering.MODID
+	);
+	private static final List<Runnable> RUN_IN_SETUP = new ArrayList<>();
 
-	@SubscribeEvent
-	// Just need *some* registry event, since all registries are apparently unfrozen during those
-	public static void registerStats(RegistryEvent.Register<Block> ev)
+	public static final RegistryObject<ResourceLocation> WIRE_DEATHS = registerCustomStat("wire_deaths", StatFormatter.DEFAULT);
+	public static final RegistryObject<ResourceLocation> SKYHOOK_DISTANCE = registerCustomStat("skyhook_distance", StatFormatter.DISTANCE);
+
+	public static void modConstruction()
 	{
-		WIRE_DEATHS = registerCustomStat("wire_deaths", StatFormatter.DEFAULT);
-		SKYHOOK_DISTANCE = registerCustomStat("skyhook_distance", StatFormatter.DISTANCE);
+		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 
-	// Force classloading/static init
-	public static void init()
+	public static void setup()
 	{
+		RUN_IN_SETUP.forEach(Runnable::run);
 	}
 
-	private static ResourceLocation registerCustomStat(String name, StatFormatter formatter)
+	private static RegistryObject<ResourceLocation> registerCustomStat(String name, StatFormatter formatter)
 	{
-		ResourceLocation regName = ImmersiveEngineering.rl(name);
-		Registry.register(Registry.CUSTOM_STAT, regName, regName);
-		Stats.CUSTOM.get(regName, formatter);
-		return regName;
+		return REGISTER.register(name, () -> {
+			ResourceLocation regName = ImmersiveEngineering.rl(name);
+			RUN_IN_SETUP.add(() -> Stats.CUSTOM.get(regName, formatter));
+			return regName;
+		});
 	}
 }

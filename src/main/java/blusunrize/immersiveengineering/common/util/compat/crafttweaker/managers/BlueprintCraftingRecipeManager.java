@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -43,7 +44,7 @@ public class BlueprintCraftingRecipeManager implements IRecipeManager<BlueprintC
 	@Override
 	public RecipeType<BlueprintCraftingRecipe> getRecipeType()
 	{
-		return BlueprintCraftingRecipe.TYPE;
+		return IERecipeTypes.BLUEPRINT.get();
 	}
 
 

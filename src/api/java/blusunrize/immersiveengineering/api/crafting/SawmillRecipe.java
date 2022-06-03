@@ -15,7 +15,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.util.Lazy;
@@ -23,9 +22,8 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class SawmillRecipe extends MultiblockRecipe
 {
-	public static RecipeType<SawmillRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<SawmillRecipe>> SERIALIZER;
-	public static final CachedRecipeList<SawmillRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, SawmillRecipe.class);
+	public static final CachedRecipeList<SawmillRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SAWMILL, SawmillRecipe.class);
 
 	public final Ingredient input;
 	public final Lazy<ItemStack> stripped;
@@ -35,7 +33,7 @@ public class SawmillRecipe extends MultiblockRecipe
 
 	public SawmillRecipe(ResourceLocation id, Lazy<ItemStack> output, Lazy<ItemStack> stripped, Ingredient input, int energy)
 	{
-		super(output, TYPE, id);
+		super(output, IERecipeTypes.SAWMILL, id);
 		this.output = output;
 		this.stripped = stripped;
 		this.input = input;

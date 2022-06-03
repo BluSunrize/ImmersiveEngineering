@@ -9,11 +9,9 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -29,8 +27,6 @@ import javax.annotation.Nonnull;
 
 public class ConveyorCoverLootFunction extends LootItemConditionalFunction
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "conveyor_cover");
-
 	protected ConveyorCoverLootFunction(LootItemCondition[] conditionsIn)
 	{
 		super(conditionsIn);
@@ -57,7 +53,7 @@ public class ConveyorCoverLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.conveyorCover;
+		return IELootFunctions.CONVEYOR_COVER.get();
 	}
 
 	public static LootItemFunction.Builder builder()

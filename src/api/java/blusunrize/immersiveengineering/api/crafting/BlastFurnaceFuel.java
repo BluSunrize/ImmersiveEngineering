@@ -13,23 +13,21 @@ import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.RegistryObject;
 
 public class BlastFurnaceFuel extends IESerializableRecipe
 {
-	public static RecipeType<BlastFurnaceFuel> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceFuel>> SERIALIZER;
 
-	public static final CachedRecipeList<BlastFurnaceFuel> RECIPES = new CachedRecipeList<>(() -> TYPE, BlastFurnaceFuel.class);
+	public static final CachedRecipeList<BlastFurnaceFuel> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FUEL, BlastFurnaceFuel.class);
 
 	public final Ingredient input;
 	public final int burnTime;
 
 	public BlastFurnaceFuel(ResourceLocation id, Ingredient input, int burnTime)
 	{
-		super(LAZY_EMPTY, TYPE, id);
+		super(LAZY_EMPTY, IERecipeTypes.BLAST_FUEL, id);
 		this.input = input;
 		this.burnTime = burnTime;
 	}

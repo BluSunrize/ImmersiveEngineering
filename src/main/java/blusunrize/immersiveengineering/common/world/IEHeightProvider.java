@@ -45,6 +45,6 @@ public class IEHeightProvider extends HeightProvider
 	@Override
 	public HeightProviderType<?> getType()
 	{
-		return IEWorldGen.IE_HEIGHT_PROVIDER;
+		return IEWorldGen.IE_HEIGHT_PROVIDER.get();
 	}
 }

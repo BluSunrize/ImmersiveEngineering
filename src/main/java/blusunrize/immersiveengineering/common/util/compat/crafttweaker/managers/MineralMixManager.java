@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -46,7 +47,7 @@ public class MineralMixManager implements IRecipeManager<MineralMix>
 	@Override
 	public RecipeType<MineralMix> getRecipeType()
 	{
-		return MineralMix.TYPE;
+		return IERecipeTypes.MINERAL_MIX.get();
 	}
 
 	/**

@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
@@ -28,9 +27,8 @@ import java.util.Optional;
  */
 public class RefineryRecipe extends MultiblockRecipe
 {
-	public static RecipeType<RefineryRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<RefineryRecipe>> SERIALIZER;
-	public static final CachedRecipeList<RefineryRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, RefineryRecipe.class);
+	public static final CachedRecipeList<RefineryRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.REFINERY, RefineryRecipe.class);
 
 	public final FluidStack output;
 	public final FluidTagInput input0;
@@ -39,7 +37,7 @@ public class RefineryRecipe extends MultiblockRecipe
 
 	public RefineryRecipe(ResourceLocation id, FluidStack output, FluidTagInput input0, FluidTagInput input1, Ingredient catalyst, int energy)
 	{
-		super(LAZY_EMPTY, TYPE, id);
+		super(LAZY_EMPTY, IERecipeTypes.REFINERY, id);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;

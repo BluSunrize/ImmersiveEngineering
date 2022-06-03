@@ -408,15 +408,8 @@ public final class IEItems
 		return new ItemRegObject<>(RegistryObject.create(existing.getRegistryName(), ForgeRegistries.ITEMS));
 	}
 
-	public static class ItemRegObject<T extends Item> implements Supplier<T>, ItemLike
+	public record ItemRegObject<T extends Item>(RegistryObject<T> regObject) implements Supplier<T>, ItemLike
 	{
-		private final RegistryObject<T> regObject;
-
-		private ItemRegObject(RegistryObject<T> regObject)
-		{
-			this.regObject = regObject;
-		}
-
 		@Override
 		@Nonnull
 		public T get()

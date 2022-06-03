@@ -10,6 +10,7 @@
 package blusunrize.immersiveengineering.api.energy;
 
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
@@ -18,7 +19,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.registries.RegistryObject;
@@ -30,24 +30,23 @@ import java.util.function.Function;
 
 public class GeneratorFuel extends IESerializableRecipe
 {
-	public static RecipeType<GeneratorFuel> TYPE;
 	public static RegistryObject<IERecipeSerializer<GeneratorFuel>> SERIALIZER;
 
-	public static final CachedRecipeList<GeneratorFuel> RECIPES = new CachedRecipeList<>(() -> TYPE, GeneratorFuel.class);
+	public static final CachedRecipeList<GeneratorFuel> RECIPES = new CachedRecipeList<>(IERecipeTypes.GENERATOR_FUEL, GeneratorFuel.class);
 
 	private final FastEither<TagKey<Fluid>, List<Fluid>> fluids;
 	private final int burnTime;
 
 	public GeneratorFuel(ResourceLocation id, TagKey<Fluid> fluids, int burnTime)
 	{
-		super(LAZY_EMPTY, TYPE, id);
+		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL, id);
 		this.fluids = FastEither.left(fluids);
 		this.burnTime = burnTime;
 	}
 
 	public GeneratorFuel(ResourceLocation id, List<Fluid> fluids, int burnTime)
 	{
-		super(LAZY_EMPTY, TYPE, id);
+		super(LAZY_EMPTY, IERecipeTypes.GENERATOR_FUEL, id);
 		this.fluids = FastEither.right(fluids);
 		this.burnTime = burnTime;
 	}

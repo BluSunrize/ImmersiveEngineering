@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -17,23 +17,22 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraftforge.common.loot.GlobalLootModifierSerializer;
 import net.minecraftforge.common.loot.LootModifier;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries.Keys;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
-@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class GrassDrops
 {
-	@SubscribeEvent
-	public static void registerModifiers(RegistryEvent.Register<GlobalLootModifierSerializer<?>> ev)
+	public static void init()
 	{
-		ev.getRegistry().register(
-				new GrassDropSerializer().setRegistryName(Lib.MODID, "hemp_seed_drops")
+		DeferredRegister<GlobalLootModifierSerializer<?>> register = DeferredRegister.create(
+				Keys.LOOT_MODIFIER_SERIALIZERS, ImmersiveEngineering.MODID
 		);
+		register.register(FMLJavaModLoadingContext.get().getModEventBus());
+		register.register("hemp_seed_drops", GrassDropSerializer::new);
 	}
 
 	public static class GrassDropSerializer extends GlobalLootModifierSerializer<GrassDropModifier>

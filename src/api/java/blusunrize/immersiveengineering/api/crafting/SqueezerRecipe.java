@@ -14,7 +14,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
@@ -34,9 +33,8 @@ import java.util.function.Function;
  */
 public class SqueezerRecipe extends MultiblockRecipe
 {
-	public static RecipeType<SqueezerRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
-	public static final CachedRecipeList<SqueezerRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, SqueezerRecipe.class);
+	public static final CachedRecipeList<SqueezerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SQUEEZER, SqueezerRecipe.class);
 
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
@@ -45,7 +43,7 @@ public class SqueezerRecipe extends MultiblockRecipe
 
 	public SqueezerRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull Lazy<ItemStack> itemOutput, IngredientWithSize input, int energy)
 	{
-		super(itemOutput, TYPE, id);
+		super(itemOutput, IERecipeTypes.SQUEEZER, id);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;

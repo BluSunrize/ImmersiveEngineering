@@ -184,9 +184,9 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				if(count%4==0)
 				{
 					if(ignite)
-						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.sprayFire, SoundSource.PLAYERS, .5f, 1.5f);
+						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.sprayFire.get(), SoundSource.PLAYERS, .5f, 1.5f);
 					else
-						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spray, SoundSource.PLAYERS, .5f, .75f);
+						player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spray.get(), SoundSource.PLAYERS, .5f, .75f);
 				}
 			}
 			else

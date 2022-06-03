@@ -405,6 +405,6 @@ public class EventHandler
 			return;
 		if(!(event.getEntityLiving() instanceof ServerPlayer serverPlayer))
 			return;
-		serverPlayer.awardStat(IEStats.WIRE_DEATHS);
+		serverPlayer.awardStat(IEStats.WIRE_DEATHS.get());
 	}
 }

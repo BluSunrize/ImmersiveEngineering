@@ -34,21 +34,21 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 	public static Map<ResourceLocation, RecipeListGenerator<?, ?>> LIST_GENERATORS = new HashMap<>();
 	public static RegistryObject<IERecipeSerializer<GeneratedListRecipe<?, ?>>> SERIALIZER;
 
-	public static void init()
+	static
 	{
 		LIST_GENERATORS.put(rl("mixer_potion_list"), RecipeListGenerator.simple(
 				PotionRecipeGenerators::initPotionRecipes, MixerRecipe.SERIALIZER.getId(),
-				MixerRecipe.TYPE
+				IERecipeTypes.MIXER
 		));
 		LIST_GENERATORS.put(rl("potion_bottling_list"), RecipeListGenerator.simple(
 				PotionRecipeGenerators::getPotionBottlingRecipes, BottlingMachineRecipe.SERIALIZER.getId(),
-				BottlingMachineRecipe.TYPE
+				IERecipeTypes.BOTTLING_MACHINE
 		));
 		LIST_GENERATORS.put(rl("arc_recycling_list"), new RecipeListGenerator<>(
 				ArcRecyclingCalculator::makeFuture,
 				recyclingList -> Objects.requireNonNull(recyclingList.getValue()),
 				ArcFurnaceRecipe.SERIALIZER.getId(),
-				ArcFurnaceRecipe.TYPE
+				IERecipeTypes.ARC_FURNACE
 		));
 	}
 
@@ -124,12 +124,12 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 			Supplier<EarlyResult> makeEarlyResult,
 			Function<EarlyResult, List<? extends T>> generator,
 			ResourceLocation serialized,
-			RecipeType<T> recipeType
+			Supplier<RecipeType<T>> recipeType
 	)
 	{
 		public static <R extends IESerializableRecipe>
 		RecipeListGenerator<R, ?> simple(
-				Supplier<List<? extends R>> generator, ResourceLocation serialized, RecipeType<R> recipeType
+				Supplier<List<? extends R>> generator, ResourceLocation serialized, Supplier<RecipeType<R>> recipeType
 		)
 		{
 			return new RecipeListGenerator<>(() -> Unit.INSTANCE, $ -> generator.get(), serialized, recipeType);

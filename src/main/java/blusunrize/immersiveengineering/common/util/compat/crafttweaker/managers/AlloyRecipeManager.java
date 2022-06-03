@@ -8,7 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
-import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -40,7 +40,7 @@ public class AlloyRecipeManager implements IRecipeManager<AlloyRecipe>
 	@Override
 	public RecipeType<AlloyRecipe> getRecipeType()
 	{
-		return AlloyRecipe.TYPE;
+		return IERecipeTypes.ALLOY.get();
 	}
 
 	/**

@@ -8,7 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
-import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -41,7 +41,7 @@ public class CokeOvenRecipeManager implements IRecipeManager<CokeOvenRecipe>
 	@Override
 	public RecipeType<CokeOvenRecipe> getRecipeType()
 	{
-		return CokeOvenRecipe.TYPE;
+		return IERecipeTypes.COKE_OVEN.get();
 	}
 
 	/**

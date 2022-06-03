@@ -13,7 +13,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcRecyclingChecker;
-import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.client.ClientProxy;
@@ -162,7 +162,7 @@ public class ImmersiveEngineering
 
 		/* ARC FURNACE RECYCLING */
 		ArcRecyclingChecker.allowRecipeTypeForRecycling(RecipeType.CRAFTING);
-		ArcRecyclingChecker.allowRecipeTypeForRecycling(MetalPressRecipe.TYPE);
+		ArcRecyclingChecker.allowRecipeTypeForRecycling(IERecipeTypes.METAL_PRESS.get());
 		// Vanilla Tools, Swords & Armor
 		ArcRecyclingChecker.allowSimpleItemForRecycling(stack -> stack instanceof DiggerItem
 				||stack instanceof ShearsItem||stack instanceof SwordItem||

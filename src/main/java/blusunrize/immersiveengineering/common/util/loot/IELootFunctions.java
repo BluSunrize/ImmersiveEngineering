@@ -8,19 +8,22 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.core.Registry;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.Serializer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryType;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
+
+import java.util.function.Supplier;
 
 /**
  * @author BluSunrize - 16.08.2018
@@ -28,38 +31,40 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IELootFunctions
 {
-	public static LootItemFunctionType bluprintz;
-	public static LootItemFunctionType windmill;
-	public static LootItemFunctionType conveyorCover;
-	public static LootItemFunctionType propertyCount;
+	private static final DeferredRegister<LootItemFunctionType> FUNCTION_REGISTER = DeferredRegister.create(
+			Registry.LOOT_FUNCTION_REGISTRY, ImmersiveEngineering.MODID
+	);
+	public static final RegistryObject<LootItemFunctionType> BLUPRINTZ = registerFunction("secret_bluprintz", () -> new SimpleSerializer<>(BluprintzLootFunction::new));
+	public static final RegistryObject<LootItemFunctionType> WINDMILL = registerFunction("windmill", () -> new SimpleSerializer<>(WindmillLootFunction::new));
+	public static final RegistryObject<LootItemFunctionType> CONVEYOR_COVER = registerFunction("conveyor_cover", () -> new SimpleSerializer<>(ConveyorCoverLootFunction::new));
+	public static final RegistryObject<LootItemFunctionType> PROPERTY_COUNT = registerFunction("property_count", PropertyCountLootFunction.Serializer::new);
 
-	public static LootPoolEntryType dropInventory;
-	public static LootPoolEntryType tileDrop;
-	public static LootPoolEntryType multiblockOrigBlock;
+	private static final DeferredRegister<LootPoolEntryType> ENTRY_REGISTER = DeferredRegister.create(
+			// TODO why isn't there a REGISTRY field for this one?
+			Registry.LOOT_POOL_ENTRY_TYPE.key(), ImmersiveEngineering.MODID
+	);
+	public static final RegistryObject<LootPoolEntryType> DROP_INVENTORY = registerEntry("drop_inv", DropInventoryLootEntry.Serializer::new);
+	public static final RegistryObject<LootPoolEntryType> TILE_DROP = registerEntry("tile_drop", BEDropLootEntry.Serializer::new);
+	public static final RegistryObject<LootPoolEntryType> MULTIBLOCK_ORIGINAL_BLOCK = registerEntry("multiblock_original_block", MBOriginalBlockLootEntry.Serializer::new);
 
-	@SubscribeEvent
-	// Just need *some* registry event, since all registries are apparently unfrozen during those
-	public static void register(RegistryEvent.Register<Block> ev)
+	public static void init()
 	{
-		bluprintz = registerFunction(BluprintzLootFunction.ID, new SimpleSerializer<>(BluprintzLootFunction::new));
-		windmill = registerFunction(WindmillLootFunction.ID, new SimpleSerializer<>(WindmillLootFunction::new));
-		conveyorCover = registerFunction(ConveyorCoverLootFunction.ID, new SimpleSerializer<>(ConveyorCoverLootFunction::new));
-		propertyCount = registerFunction(PropertyCountLootFunction.ID, new PropertyCountLootFunction.Serializer());
-
-		dropInventory = registerEntry(DropInventoryLootEntry.ID, new DropInventoryLootEntry.Serializer());
-		tileDrop = registerEntry(BEDropLootEntry.ID, new BEDropLootEntry.Serializer());
-		multiblockOrigBlock = registerEntry(MBOriginalBlockLootEntry.ID, new MBOriginalBlockLootEntry.Serializer());
+		final IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
+		FUNCTION_REGISTER.register(bus);
+		ENTRY_REGISTER.register(bus);
 	}
 
-	private static LootPoolEntryType registerEntry(ResourceLocation id, Serializer<? extends LootPoolEntryContainer> serializer)
+	private static RegistryObject<LootPoolEntryType> registerEntry(
+			String id, Supplier<Serializer<? extends LootPoolEntryContainer>> serializer
+	)
 	{
-		return Registry.register(Registry.LOOT_POOL_ENTRY_TYPE, id, new LootPoolEntryType(serializer));
+		return ENTRY_REGISTER.register(id, () -> new LootPoolEntryType(serializer.get()));
 	}
 
-	private static LootItemFunctionType registerFunction(ResourceLocation id, Serializer<? extends LootItemFunction> serializer)
+	private static RegistryObject<LootItemFunctionType> registerFunction(
+			String id, Supplier<Serializer<? extends LootItemFunction>> serializer
+	)
 	{
-		return Registry.register(
-				Registry.LOOT_FUNCTION_TYPE, id, new LootItemFunctionType(serializer)
-		);
+		return FUNCTION_REGISTER.register(id, () -> new LootItemFunctionType(serializer.get()));
 	}
 }

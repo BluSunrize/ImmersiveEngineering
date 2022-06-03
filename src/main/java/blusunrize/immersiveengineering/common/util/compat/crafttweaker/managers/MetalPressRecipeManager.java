@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
@@ -39,7 +40,7 @@ public class MetalPressRecipeManager implements IRecipeManager<MetalPressRecipe>
 	@Override
 	public RecipeType<MetalPressRecipe> getRecipeType()
 	{
-		return MetalPressRecipe.TYPE;
+		return IERecipeTypes.METAL_PRESS.get();
 	}
 
 	/**

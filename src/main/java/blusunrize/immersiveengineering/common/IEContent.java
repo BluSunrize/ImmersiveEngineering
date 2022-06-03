@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.multiblocks.TemplateMultiblock;
@@ -56,26 +56,23 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEShaders;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
+import blusunrize.immersiveengineering.common.util.loot.GrassDrops;
+import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
-import blusunrize.immersiveengineering.common.world.OreRetrogenFeature;
 import blusunrize.immersiveengineering.common.world.Villages;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import blusunrize.immersiveengineering.mixin.accessors.TemplateAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -84,6 +81,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.registries.NewRegistryEvent;
 
 import java.io.IOException;
 
@@ -94,8 +92,6 @@ import static blusunrize.immersiveengineering.common.fluids.IEFluid.BUCKET_DISPE
 @Mod.EventBusSubscriber(modid = MODID, bus = Bus.MOD)
 public class IEContent
 {
-	public static final Feature<OreConfiguration> ORE_RETROGEN = new OreRetrogenFeature(OreConfiguration.CODEC);
-
 	public static void modConstruction()
 	{
 		/*BULLETS*/
@@ -129,9 +125,12 @@ public class IEContent
 		IEBlockEntities.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEContainerTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEStats.init();
+		IEStats.modConstruction();
 		IEBlocks.init();
 		IEItems.init();
+		IERecipeTypes.init();
+		GrassDrops.init();
+		IELootFunctions.init();
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;
@@ -156,20 +155,15 @@ public class IEContent
 	}
 
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public static void registerItems(RegistryEvent.Register<Item> event)
+	public static void addMissingRegistrations(NewRegistryEvent event)
 	{
 		IEItems.Misc.registerShaderBags();
-	}
-
-	@SubscribeEvent
-	public static void registerFeatures(RegistryEvent.Register<Feature<?>> event)
-	{
-		event.getRegistry().register(ORE_RETROGEN.setRegistryName(new ResourceLocation(ImmersiveEngineering.MODID, "ore_retro")));
 	}
 
 	public static void init(ParallelDispatchEvent ev)
 	{
 		IEWireTypes.setup();
+		IEStats.modConstruction();
 		/*WORLDGEN*/
 		ev.enqueueWork(
 				() -> {

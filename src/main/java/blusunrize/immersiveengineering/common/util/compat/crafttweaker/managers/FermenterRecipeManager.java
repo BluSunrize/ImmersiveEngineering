@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -45,7 +46,7 @@ public class FermenterRecipeManager implements IRecipeManager<FermenterRecipe>
 	@Override
 	public RecipeType<FermenterRecipe> getRecipeType()
 	{
-		return FermenterRecipe.TYPE;
+		return IERecipeTypes.FERMENTER.get();
 	}
 
 	/**

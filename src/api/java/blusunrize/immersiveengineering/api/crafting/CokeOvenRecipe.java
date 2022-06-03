@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
@@ -25,9 +24,8 @@ import javax.annotation.Nullable;
  */
 public class CokeOvenRecipe extends IESerializableRecipe
 {
-	public static RecipeType<CokeOvenRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<CokeOvenRecipe>> SERIALIZER;
-	public static final CachedRecipeList<CokeOvenRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, CokeOvenRecipe.class);
+	public static final CachedRecipeList<CokeOvenRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.COKE_OVEN, CokeOvenRecipe.class);
 
 	public final IngredientWithSize input;
 	public final Lazy<ItemStack> output;
@@ -36,7 +34,7 @@ public class CokeOvenRecipe extends IESerializableRecipe
 
 	public CokeOvenRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, int time, int creosoteOutput)
 	{
-		super(output, TYPE, id);
+		super(output, IERecipeTypes.COKE_OVEN, id);
 		this.output = output;
 		this.input = input;
 		this.time = time;

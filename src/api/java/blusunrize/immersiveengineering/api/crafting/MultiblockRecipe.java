@@ -12,6 +12,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
@@ -19,11 +20,13 @@ import net.minecraftforge.fluids.FluidStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public abstract class MultiblockRecipe extends IESerializableRecipe implements IMultiblockRecipe, IJEIRecipe
 {
-	protected MultiblockRecipe(Lazy<ItemStack> outputDummy, RecipeType<?> type, ResourceLocation id)
+	protected <T extends Recipe<?>>
+	MultiblockRecipe(Lazy<ItemStack> outputDummy, Supplier<RecipeType<T>> type, ResourceLocation id)
 	{
 		super(outputDummy, type, id);
 	}

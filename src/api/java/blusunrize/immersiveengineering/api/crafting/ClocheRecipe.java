@@ -16,7 +16,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
@@ -27,7 +26,6 @@ import java.util.List;
 
 public class ClocheRecipe extends IESerializableRecipe
 {
-	public static RecipeType<ClocheRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<ClocheRecipe>> SERIALIZER;
 
 	public final List<Lazy<ItemStack>> outputs;
@@ -37,12 +35,12 @@ public class ClocheRecipe extends IESerializableRecipe
 	public final ClocheRenderReference renderReference;
 	public final ClocheRenderFunction renderFunction;
 
-	public static final CachedRecipeList<ClocheRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, ClocheRecipe.class);
+	public static final CachedRecipeList<ClocheRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CLOCHE, ClocheRecipe.class);
 	private static final List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
 	public ClocheRecipe(ResourceLocation id, List<Lazy<ItemStack>> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)
 	{
-		super(outputs.get(0), TYPE, id);
+		super(outputs.get(0), IERecipeTypes.CLOCHE, id);
 		this.outputs = outputs;
 		this.seed = seed;
 		this.soil = soil;

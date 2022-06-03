@@ -17,6 +17,8 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 
+import java.util.function.Supplier;
+
 public abstract class IESerializableRecipe implements Recipe<Container>
 {
 	public static final Lazy<ItemStack> LAZY_EMPTY = of(ItemStack.EMPTY);
@@ -25,10 +27,11 @@ public abstract class IESerializableRecipe implements Recipe<Container>
 	protected final RecipeType<?> type;
 	protected final ResourceLocation id;
 
-	protected IESerializableRecipe(Lazy<ItemStack> outputDummy, RecipeType<?> type, ResourceLocation id)
+	protected <T extends Recipe<?>>
+	IESerializableRecipe(Lazy<ItemStack> outputDummy, Supplier<RecipeType<T>> type, ResourceLocation id)
 	{
 		this.outputDummy = outputDummy;
-		this.type = type;
+		this.type = type.get();
 		this.id = id;
 	}
 

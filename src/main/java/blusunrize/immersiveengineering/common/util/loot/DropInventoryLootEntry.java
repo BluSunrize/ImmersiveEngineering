@@ -9,7 +9,6 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
@@ -17,7 +16,6 @@ import blusunrize.immersiveengineering.common.util.inventory.IDropInventory;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -34,8 +32,6 @@ import java.util.function.Consumer;
 
 public class DropInventoryLootEntry extends LootPoolSingletonContainer
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "drop_inv");
-
 	protected DropInventoryLootEntry(int weightIn, int qualityIn, LootItemCondition[] conditionsIn, LootItemFunction[] functionsIn)
 	{
 		super(weightIn, qualityIn, conditionsIn, functionsIn);
@@ -83,7 +79,7 @@ public class DropInventoryLootEntry extends LootPoolSingletonContainer
 	@Override
 	public LootPoolEntryType getType()
 	{
-		return IELootFunctions.dropInventory;
+		return IELootFunctions.DROP_INVENTORY.get();
 	}
 
 	public static class Serializer extends LootPoolSingletonContainer.Serializer<DropInventoryLootEntry>

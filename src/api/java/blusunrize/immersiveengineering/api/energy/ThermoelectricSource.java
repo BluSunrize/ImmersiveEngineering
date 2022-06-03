@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.energy;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import blusunrize.immersiveengineering.api.utils.FastEither;
@@ -21,7 +22,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -37,10 +37,9 @@ import java.util.function.Function;
 
 public class ThermoelectricSource extends IESerializableRecipe
 {
-	public static RecipeType<ThermoelectricSource> TYPE;
 	public static RegistryObject<IERecipeSerializer<ThermoelectricSource>> SERIALIZER;
 
-	public static final CachedRecipeList<ThermoelectricSource> ALL_SOURCES = new CachedRecipeList<>(() -> TYPE, ThermoelectricSource.class);
+	public static final CachedRecipeList<ThermoelectricSource> ALL_SOURCES = new CachedRecipeList<>(IERecipeTypes.THERMOELECTRIC_SOURCE, ThermoelectricSource.class);
 
 	public final FastEither<TagKey<Block>, List<Block>> blocks;
 	public final int temperature;
@@ -57,7 +56,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 
 	private ThermoelectricSource(ResourceLocation id, FastEither<TagKey<Block>, List<Block>> blocks, int temperature)
 	{
-		super(LAZY_EMPTY, TYPE, id);
+		super(LAZY_EMPTY, IERecipeTypes.THERMOELECTRIC_SOURCE, id);
 		this.blocks = blocks;
 		this.temperature = temperature;
 	}

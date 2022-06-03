@@ -13,7 +13,6 @@
  */
 package blusunrize.immersiveengineering.common.world;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
@@ -24,9 +23,9 @@ import javax.annotation.Nonnull;
 
 public class OreRetrogenFeature extends OreFeature
 {
-	public OreRetrogenFeature(Codec<OreConfiguration> configFactory)
+	public OreRetrogenFeature()
 	{
-		super(configFactory);
+		super(OreConfiguration.CODEC);
 	}
 
 	@Override

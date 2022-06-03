@@ -13,7 +13,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.items.ItemHandlerHelper;
@@ -33,7 +32,6 @@ import java.util.stream.Collectors;
  */
 public class ArcFurnaceRecipe extends MultiblockRecipe
 {
-	public static RecipeType<ArcFurnaceRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<ArcFurnaceRecipe>> SERIALIZER;
 
 	public final IngredientWithSize input;
@@ -45,7 +43,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public String specialRecipeType;
 	public static List<String> specialRecipeTypes = new ArrayList<>();
-	public static final CachedRecipeList<ArcFurnaceRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, ArcFurnaceRecipe.class);
+	public static final CachedRecipeList<ArcFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ARC_FURNACE, ArcFurnaceRecipe.class);
 
 	public ArcFurnaceRecipe(
 			ResourceLocation id,
@@ -54,7 +52,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 			IngredientWithSize input, IngredientWithSize... additives
 	)
 	{
-		super(output.get(0), TYPE, id);
+		super(output.get(0), IERecipeTypes.ARC_FURNACE, id);
 		this.output = Lazy.of(() -> output.stream()
 				.map(Lazy::get)
 				.collect(Collectors.toCollection(NonNullList::create))

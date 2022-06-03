@@ -9,11 +9,9 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -30,8 +28,6 @@ import javax.annotation.Nonnull;
 
 public class PropertyCountLootFunction extends LootItemConditionalFunction
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "property_count");
-
 	private final String propertyName;
 
 	protected PropertyCountLootFunction(LootItemCondition[] conditionsIn, String propertyName)
@@ -61,7 +57,7 @@ public class PropertyCountLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.propertyCount;
+		return IELootFunctions.PROPERTY_COUNT.get();
 	}
 
 	public static class Serializer extends LootItemConditionalFunction.Serializer<PropertyCountLootFunction>

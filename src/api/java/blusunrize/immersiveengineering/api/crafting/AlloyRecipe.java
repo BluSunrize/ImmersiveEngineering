@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
@@ -25,9 +24,8 @@ import javax.annotation.Nullable;
  */
 public class AlloyRecipe extends IESerializableRecipe
 {
-	public static RecipeType<AlloyRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<AlloyRecipe>> SERIALIZER;
-	public static final CachedRecipeList<AlloyRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, AlloyRecipe.class);
+	public static final CachedRecipeList<AlloyRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ALLOY, AlloyRecipe.class);
 
 	public final IngredientWithSize input0;
 	public final IngredientWithSize input1;
@@ -36,7 +34,7 @@ public class AlloyRecipe extends IESerializableRecipe
 
 	public AlloyRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input0, IngredientWithSize input1, int time)
 	{
-		super(output, TYPE, id);
+		super(output, IERecipeTypes.ALLOY, id);
 		this.output = output;
 		this.input0 = input0;
 		this.input1 = input1;

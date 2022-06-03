@@ -10,8 +10,6 @@ package blusunrize.immersiveengineering.common.world;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.EnumMetals;
-import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.IEContent;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
@@ -20,7 +18,6 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.world.IEOreFeature.IEOreFeatureConfig;
 import com.google.common.collect.ImmutableList;
 import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -34,7 +31,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
@@ -43,19 +39,15 @@ import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfigur
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
-import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -117,7 +109,9 @@ public class IEWorldGen
 			OreConfig config = IEServerConfig.ORES.ores.get(type);
 			if(config.retrogenEnabled.get())
 			{
-				ConfiguredFeature<OreConfiguration, Feature<OreConfiguration>> configured = new ConfiguredFeature<>(IEContent.ORE_RETROGEN, new OreConfiguration(targetList, config.veinSize.get()));
+				ConfiguredFeature<OreConfiguration, Feature<OreConfiguration>> configured = new ConfiguredFeature<>(
+						ORE_RETROGEN.get(), new OreConfiguration(targetList, config.veinSize.get())
+				);
 				PlacedFeature placed = new PlacedFeature(Holder.direct(configured), getOreModifiers(type));
 				placed.place(
 						world, world.getChunkSource().getGenerator(), random, new BlockPos(16*chunkX, 0, 16*chunkZ)
@@ -217,27 +211,33 @@ public class IEWorldGen
 	private static final RegistryObject<IEOreFeature> IE_CONFIG_ORE = FEATURE_REGISTER.register(
 			"ie_ore", IEOreFeature::new
 	);
-	public static PlacementModifierType<IECountPlacement> IE_COUNT_PLACEMENT;
-	public static HeightProviderType<IEHeightProvider> IE_HEIGHT_PROVIDER;
+	public static final RegistryObject<OreRetrogenFeature> ORE_RETROGEN = FEATURE_REGISTER.register(
+			"ore_retro", OreRetrogenFeature::new
+	);
+
+	private static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_REGISTER = DeferredRegister.create(
+			Registry.PLACEMENT_MODIFIER_REGISTRY, ImmersiveEngineering.MODID
+	);
+	public static RegistryObject<PlacementModifierType<IECountPlacement>> IE_COUNT_PLACEMENT = PLACEMENT_REGISTER.register(
+			"ie_count", () -> () -> IECountPlacement.CODEC
+	);
+
+	private static final DeferredRegister<HeightProviderType<?>> HEIGHT_REGISTER = DeferredRegister.create(
+			Registry.HEIGHT_PROVIDER_TYPE_REGISTRY, ImmersiveEngineering.MODID
+	);
+	public static RegistryObject<HeightProviderType<IEHeightProvider>> IE_HEIGHT_PROVIDER = HEIGHT_REGISTER.register(
+			"ie_range", () -> () -> IEHeightProvider.CODEC
+	);
 
 	public static void init()
 	{
 		IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
 		FEATURE_REGISTER.register(bus);
+		PLACEMENT_REGISTER.register(bus);
+		HEIGHT_REGISTER.register(bus);
 	}
 
-	private static <P extends PlacementModifier>
-	PlacementModifierType<P> registerPlacement(String name, Codec<P> codec)
-	{
-		return Registry.register(Registry.PLACEMENT_MODIFIERS, ImmersiveEngineering.rl(name), () -> codec);
-	}
-
-	private static <P extends HeightProvider>
-	HeightProviderType<P> registerHeightProvider(String name, Codec<P> codec)
-	{
-		return Registry.register(Registry.HEIGHT_PROVIDER_TYPES, ImmersiveEngineering.rl(name), () -> codec);
-	}
-
+	// TODO what's the right point/way of registering to builtin/dynamic registries?
 	private static <Cfg extends FeatureConfiguration, F extends Feature<Cfg>>
 	Holder<PlacedFeature> register(ResourceLocation rl, RegistryObject<F> feature, Cfg cfg, List<PlacementModifier> oreModifiers)
 	{
@@ -247,17 +247,5 @@ public class IEWorldGen
 		return BuiltinRegistries.register(
 				BuiltinRegistries.PLACED_FEATURE, rl, new PlacedFeature(configured, oreModifiers)
 		);
-	}
-
-	@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
-	public static class Register
-	{
-		@SubscribeEvent
-		// Just need *some* registry event, since all registries are apparently unfrozen during those
-		public static void register(RegistryEvent.Register<Block> ev)
-		{
-			IE_COUNT_PLACEMENT = registerPlacement("ie_count", IECountPlacement.CODEC);
-			IE_HEIGHT_PROVIDER = registerHeightProvider("ie_range", IEHeightProvider.CODEC);
-		}
 	}
 }

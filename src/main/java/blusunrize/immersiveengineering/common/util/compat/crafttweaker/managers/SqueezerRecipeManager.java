@@ -7,6 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.SqueezerRecipe;
@@ -44,7 +45,7 @@ public class SqueezerRecipeManager implements IRecipeManager<SqueezerRecipe>
 	@Override
 	public RecipeType<SqueezerRecipe> getRecipeType()
 	{
-		return SqueezerRecipe.TYPE;
+		return IERecipeTypes.SQUEEZER.get();
 	}
 
 	/**

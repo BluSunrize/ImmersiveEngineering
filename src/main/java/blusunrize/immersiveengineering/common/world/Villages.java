@@ -82,6 +82,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -195,13 +196,26 @@ public class Villages
 
 		private static VillagerProfession createProf(ResourceLocation name, PoiType poi, SoundEvent sound)
 		{
+			return createProf(name, poi, () -> sound);
+		}
+
+		private static VillagerProfession createProf(ResourceLocation name, PoiType poi, Supplier<SoundEvent> sound)
+		{
 			return new VillagerProfession(
 					name.toString(),
 					poi,
-					ImmutableSet.<Item>builder().build(),
-					ImmutableSet.<Block>builder().build(),
-					sound
-			);
+					ImmutableSet.of(),
+					ImmutableSet.of(),
+					null
+			)
+			{
+				@Nullable
+				@Override
+				public SoundEvent getWorkSound()
+				{
+					return sound.get();
+				}
+			};
 		}
 
 		private static Collection<BlockState> assembleStates(Block block)

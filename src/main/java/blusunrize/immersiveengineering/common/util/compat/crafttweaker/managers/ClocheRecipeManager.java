@@ -9,6 +9,7 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers
 
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -44,7 +45,7 @@ public class ClocheRecipeManager implements IRecipeManager<ClocheRecipe>
 	@Override
 	public RecipeType<ClocheRecipe> getRecipeType()
 	{
-		return ClocheRecipe.TYPE;
+		return IERecipeTypes.CLOCHE.get();
 	}
 
 	@Override

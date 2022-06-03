@@ -9,11 +9,9 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -27,8 +25,6 @@ import javax.annotation.Nonnull;
 
 public class WindmillLootFunction extends LootItemConditionalFunction
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "windmill");
-
 	protected WindmillLootFunction(LootItemCondition[] conditionsIn)
 	{
 		super(conditionsIn);
@@ -50,7 +46,7 @@ public class WindmillLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.windmill;
+		return IELootFunctions.WINDMILL.get();
 	}
 
 	public static LootItemFunction.Builder builder()

@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
@@ -26,9 +25,8 @@ import javax.annotation.Nullable;
  */
 public class BlastFurnaceRecipe extends IESerializableRecipe
 {
-	public static RecipeType<BlastFurnaceRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceRecipe>> SERIALIZER;
-	public static final CachedRecipeList<BlastFurnaceRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, BlastFurnaceRecipe.class);
+	public static final CachedRecipeList<BlastFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FURNACE, BlastFurnaceRecipe.class);
 
 	public final IngredientWithSize input;
 	public final Lazy<ItemStack> output;
@@ -38,7 +36,7 @@ public class BlastFurnaceRecipe extends IESerializableRecipe
 
 	public BlastFurnaceRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, int time, @Nonnull Lazy<ItemStack> slag)
 	{
-		super(output, TYPE, id);
+		super(output, IERecipeTypes.BLAST_FURNACE, id);
 		this.output = output;
 		this.input = input;
 		this.time = time;

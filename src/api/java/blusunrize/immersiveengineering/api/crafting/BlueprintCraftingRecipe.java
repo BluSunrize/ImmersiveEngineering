@@ -15,7 +15,6 @@ import com.google.common.collect.Lists;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
@@ -34,11 +33,10 @@ import java.util.stream.Collectors;
  */
 public class BlueprintCraftingRecipe extends MultiblockRecipe
 {
-	public static RecipeType<BlueprintCraftingRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BlueprintCraftingRecipe>> SERIALIZER;
 
 	public static final Set<String> recipeCategories = new TreeSet<>();
-	public static final CachedRecipeList<BlueprintCraftingRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, BlueprintCraftingRecipe.class);
+	public static final CachedRecipeList<BlueprintCraftingRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLUEPRINT, BlueprintCraftingRecipe.class);
 	private static int reloadCountForCategories = CachedRecipeList.INVALID_RELOAD_COUNT;
 	private static Map<String, List<BlueprintCraftingRecipe>> recipesByCategory = Collections.emptyMap();
 	public static SetRestrictedField<ItemLike> blueprintItem = SetRestrictedField.common();
@@ -49,7 +47,7 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 
 	public BlueprintCraftingRecipe(ResourceLocation id, String blueprintCategory, Lazy<ItemStack> output, IngredientWithSize[] inputs)
 	{
-		super(output, TYPE, id);
+		super(output, IERecipeTypes.BLUEPRINT, id);
 		this.blueprintCategory = blueprintCategory;
 		this.output = output;
 		this.inputs = inputs;

@@ -14,7 +14,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
@@ -34,9 +33,8 @@ import java.util.function.Function;
  */
 public class FermenterRecipe extends MultiblockRecipe
 {
-	public static RecipeType<FermenterRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<FermenterRecipe>> SERIALIZER;
-	public static final CachedRecipeList<FermenterRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, FermenterRecipe.class);
+	public static final CachedRecipeList<FermenterRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.FERMENTER, FermenterRecipe.class);
 
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;
@@ -45,7 +43,7 @@ public class FermenterRecipe extends MultiblockRecipe
 
 	public FermenterRecipe(ResourceLocation id, FluidStack fluidOutput, @Nonnull Lazy<ItemStack> itemOutput, IngredientWithSize input, int energy)
 	{
-		super(itemOutput, TYPE, id);
+		super(itemOutput, IERecipeTypes.FERMENTER, id);
 		this.fluidOutput = fluidOutput;
 		this.itemOutput = itemOutput;
 		this.input = input;

@@ -15,7 +15,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.registries.RegistryObject;
@@ -31,9 +30,8 @@ import java.util.function.Consumer;
  */
 public class MetalPressRecipe extends MultiblockRecipe
 {
-	public static RecipeType<MetalPressRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
-	public static final CachedRecipeList<MetalPressRecipe> STANDARD_RECIPES = new CachedRecipeList<>(() -> TYPE, MetalPressRecipe.class);
+	public static final CachedRecipeList<MetalPressRecipe> STANDARD_RECIPES = new CachedRecipeList<>(IERecipeTypes.METAL_PRESS, MetalPressRecipe.class);
 	private static final List<MetalPressRecipe> SPECIAL_RECIPES = new ArrayList<>();
 
 	public IngredientWithSize input;
@@ -47,7 +45,7 @@ public class MetalPressRecipe extends MultiblockRecipe
 
 	public MetalPressRecipe(ResourceLocation id, Lazy<ItemStack> output, IngredientWithSize input, Item mold, int energy)
 	{
-		super(output, TYPE, id);
+		super(output, IERecipeTypes.METAL_PRESS, id);
 		this.output = output;
 		this.input = input;
 		this.mold = mold;

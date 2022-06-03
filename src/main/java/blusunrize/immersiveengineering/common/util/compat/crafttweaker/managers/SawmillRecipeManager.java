@@ -7,7 +7,7 @@
  */
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
-import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionRemoveMultipleOutputs;
@@ -28,7 +28,6 @@ import org.openzen.zencode.java.ZenCodeType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 import static blusunrize.immersiveengineering.api.crafting.IESerializableRecipe.of;
 
@@ -51,7 +50,7 @@ public class SawmillRecipeManager implements IRecipeManager<SawmillRecipe>
 	@Override
 	public RecipeType<SawmillRecipe> getRecipeType()
 	{
-		return SawmillRecipe.TYPE;
+		return IERecipeTypes.SAWMILL.get();
 	}
 
 	@Override

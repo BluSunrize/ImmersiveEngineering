@@ -14,7 +14,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
@@ -27,9 +26,8 @@ import net.minecraftforge.registries.RegistryObject;
  */
 public class BottlingMachineRecipe extends MultiblockRecipe
 {
-	public static RecipeType<BottlingMachineRecipe> TYPE;
 	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
-	public static final CachedRecipeList<BottlingMachineRecipe> RECIPES = new CachedRecipeList<>(() -> TYPE, BottlingMachineRecipe.class);
+	public static final CachedRecipeList<BottlingMachineRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BOTTLING_MACHINE, BottlingMachineRecipe.class);
 
 	public final Ingredient input;
 	public final FluidTagInput fluidInput;
@@ -37,7 +35,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public BottlingMachineRecipe(ResourceLocation id, Lazy<ItemStack> output, Ingredient input, FluidTagInput fluidInput)
 	{
-		super(output, TYPE, id);
+		super(output, IERecipeTypes.BOTTLING_MACHINE, id);
 		this.output = output;
 		this.input = input;
 		this.fluidInput = fluidInput;

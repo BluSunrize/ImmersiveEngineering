@@ -9,10 +9,8 @@
 
 package blusunrize.immersiveengineering.common.util.loot;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.network.chat.TextComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -23,8 +21,6 @@ import javax.annotation.Nonnull;
 
 public class BluprintzLootFunction extends LootItemConditionalFunction
 {
-	public static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "secret_bluprintz");
-
 	protected BluprintzLootFunction(LootItemCondition[] conditionsIn)
 	{
 		super(conditionsIn);
@@ -43,7 +39,7 @@ public class BluprintzLootFunction extends LootItemConditionalFunction
 	@Override
 	public LootItemFunctionType getType()
 	{
-		return IELootFunctions.bluprintz;
+		return IELootFunctions.BLUPRINTZ.get();
 	}
 
 	public static Builder<?> builder()

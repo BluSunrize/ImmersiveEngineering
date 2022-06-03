@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -36,7 +37,7 @@ public class ClocheFertilizerManager implements IRecipeManager<ClocheFertilizer>
 	@Override
 	public RecipeType<ClocheFertilizer> getRecipeType()
 	{
-		return ClocheFertilizer.TYPE;
+		return IERecipeTypes.FERTILIZER.get();
 	}
 
 	/**

@@ -38,7 +38,7 @@ public class IECountPlacement extends RepeatingPlacement
 	@Override
 	public PlacementModifierType<?> type()
 	{
-		return IEWorldGen.IE_COUNT_PLACEMENT;
+		return IEWorldGen.IE_COUNT_PLACEMENT.get();
 	}
 }
 

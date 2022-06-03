@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
@@ -42,7 +43,7 @@ public class RefineryRecipeManager implements IRecipeManager<RefineryRecipe>
 	@Override
 	public RecipeType<RefineryRecipe> getRecipeType()
 	{
-		return RefineryRecipe.TYPE;
+		return IERecipeTypes.REFINERY.get();
 	}
 
 	@Override

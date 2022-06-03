@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
@@ -43,7 +44,7 @@ public class MixerRecipeManager implements IRecipeManager<MixerRecipe>
 	@Override
 	public RecipeType<MixerRecipe> getRecipeType()
 	{
-		return MixerRecipe.TYPE;
+		return IERecipeTypes.MIXER.get();
 	}
 
 	@Override

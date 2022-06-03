@@ -8,6 +8,7 @@
 package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers;
 
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.AbstractActionGenericRemoveRecipe;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.actions.ActionAddRecipeCustomOutput;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
@@ -36,7 +37,7 @@ public class BlastFurnaceFuelManager implements IRecipeManager<BlastFurnaceFuel>
 	@Override
 	public RecipeType<BlastFurnaceFuel> getRecipeType()
 	{
-		return BlastFurnaceFuel.TYPE;
+		return IERecipeTypes.BLAST_FUEL.get();
 	}
 
 	/**

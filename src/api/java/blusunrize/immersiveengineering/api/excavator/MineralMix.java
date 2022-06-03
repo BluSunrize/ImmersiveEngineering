@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.excavator;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.crafting.StackWithChance;
 import blusunrize.immersiveengineering.api.crafting.cache.CachedRecipeList;
@@ -18,7 +19,6 @@ import com.google.common.collect.ImmutableSet;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraftforge.registries.RegistryObject;
@@ -28,10 +28,9 @@ import java.util.Random;
 
 public class MineralMix extends IESerializableRecipe
 {
-	public static RecipeType<MineralMix> TYPE;
 	public static RegistryObject<IERecipeSerializer<MineralMix>> SERIALIZER;
 
-	public static final CachedRecipeList<MineralMix> RECIPES = new CachedRecipeList<>(() -> TYPE, MineralMix.class);
+	public static final CachedRecipeList<MineralMix> RECIPES = new CachedRecipeList<>(IERecipeTypes.MINERAL_MIX, MineralMix.class);
 
 	public final StackWithChance[] outputs;
 	public final int weight;
@@ -42,7 +41,7 @@ public class MineralMix extends IESerializableRecipe
 	public MineralMix(ResourceLocation id, StackWithChance[] outputs, int weight, float failChance,
 					  List<ResourceKey<Level>> dimensions, Block background)
 	{
-		super(LAZY_EMPTY, TYPE, id);
+		super(LAZY_EMPTY, IERecipeTypes.MINERAL_MIX, id);
 		this.weight = weight;
 		this.failChance = failChance;
 		this.outputs = outputs;
