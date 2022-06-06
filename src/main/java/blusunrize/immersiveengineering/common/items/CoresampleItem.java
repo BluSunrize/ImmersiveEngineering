@@ -210,9 +210,9 @@ public class CoresampleItem extends IEBaseItem
 		stack.getOrCreateTag().put("mineralInfo", nbtList);
 	}
 
-	public static List<VeinSampleData> getVeins(Level level, ItemStack stack)
+	public static List<VeinSampleData> getVeins(@Nullable Level level, ItemStack stack)
 	{
-		if(!ItemNBTHelper.hasKey(stack, "mineralInfo", Tag.TAG_LIST))
+		if(level==null||!ItemNBTHelper.hasKey(stack, "mineralInfo", Tag.TAG_LIST))
 			return ImmutableList.of();
 		List<VeinSampleData> veins = new ArrayList<>();
 		ListTag mineralInfoNBT = stack.getOrCreateTag().getList("mineralInfo", Tag.TAG_COMPOUND);

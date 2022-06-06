@@ -44,8 +44,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		String key = getCategory(stack);
-		if(!key.isEmpty()
-				&&BlueprintCraftingRecipe.recipeCategories.contains(key))
+		if(!key.isEmpty()&&BlueprintCraftingRecipe.recipeCategories.contains(key))
 		{
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.get(formatKey);
@@ -53,7 +52,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 				list.add(new TextComponent(key));
 			else
 				list.add(new TranslatableComponent(formatKey));
-			if(Screen.hasShiftDown())
+			if(world!=null&&Screen.hasShiftDown())
 			{
 				list.add(new TranslatableComponent(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(world, key);

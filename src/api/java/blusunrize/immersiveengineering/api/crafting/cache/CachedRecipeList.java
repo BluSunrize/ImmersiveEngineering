@@ -19,6 +19,7 @@ import net.minecraftforge.event.TagsUpdatedEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
+import javax.annotation.Nonnull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Objects;
@@ -62,19 +63,19 @@ public class CachedRecipeList<R extends Recipe<?>>
 		return reloadCount;
 	}
 
-	public Collection<R> getRecipes(Level level)
+	public Collection<R> getRecipes(@Nonnull Level level)
 	{
 		updateCache(level.getRecipeManager(), level.isClientSide());
 		return Objects.requireNonNull(recipes).values();
 	}
 
-	public Collection<ResourceLocation> getRecipeNames(Level level)
+	public Collection<ResourceLocation> getRecipeNames(@Nonnull Level level)
 	{
 		updateCache(level.getRecipeManager(), level.isClientSide());
 		return Objects.requireNonNull(recipes).keySet();
 	}
 
-	public R getById(Level level, ResourceLocation name)
+	public R getById(@Nonnull Level level, ResourceLocation name)
 	{
 		updateCache(level.getRecipeManager(), level.isClientSide());
 		return recipes.get(name);
