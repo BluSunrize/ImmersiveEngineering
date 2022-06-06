@@ -38,7 +38,7 @@ jobs:
         with:
           path: manual-data
       - name: Set up manual data repo
-        if: ${{ github.event_name != 'pull_request' && startsWith(env.GITHUB_REF_NAME, '1.')}}
+        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref_name, '1.')}}
         run: |
           cd ../manual-data
           MANUAL_BRANCH=manual-data/$(git branch --show-current)
@@ -74,7 +74,7 @@ jobs:
       - name: Check that no new resources have been created
         run: diff resources.txt resources_new.txt
       - name: Commit and push manual data
-        if: ${{ github.event_name != 'pull_request' && startsWith(env.GITHUB_REF_NAME, '1.')}}
+        if: ${{ github.event_name != 'pull_request' && startsWith(github.ref_name, '1.')}}
         run: |
           cd ../manual-data/
           git add --all
