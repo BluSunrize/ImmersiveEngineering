@@ -10,10 +10,11 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IGeneralMultiblock;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
+import blusunrize.immersiveengineering.common.util.inventory.IDropInventory;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
-import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
@@ -25,7 +26,6 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolSingletonContainer
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
@@ -47,32 +47,29 @@ public class DropInventoryLootEntry extends LootPoolSingletonContainer
 		if(context.hasParam(LootContextParams.BLOCK_ENTITY))
 		{
 			BlockEntity te = context.getParamOrNull(LootContextParams.BLOCK_ENTITY);
-			if(te instanceof IGeneralMultiblock)
+			if(te instanceof IGeneralMultiblock dummyBE)
 			{
-				BlockEntity masterTE = (BlockEntity)((IGeneralMultiblock)te).master();
+				BlockEntity masterTE = (BlockEntity)dummyBE.master();
 				boolean switchToMaster = true;
-				if(masterTE instanceof MultiblockPartBlockEntity<?>&&masterTE.getLevel()!=null)
-					switchToMaster = ((MultiblockPartBlockEntity<?>)masterTE).onlyLocalDissassembly!=masterTE.getLevel().getGameTime();
+				if(masterTE instanceof MultiblockPartBlockEntity<?> multiblockPart&&masterTE.getLevel()!=null)
+					switchToMaster = multiblockPart.onlyLocalDissassembly!=masterTE.getLevel().getGameTime();
 				if(switchToMaster)
 					te = masterTE;
 			}
-			if(te instanceof IIEInventory&&((IIEInventory)te).getDroppedItems()!=null)
-				((IIEInventory)te).getDroppedItems().forEach(output);
+			if(te instanceof IDropInventory ieInvBE&&ieInvBE.getDroppedItems()!=null)
+				ieInvBE.getDroppedItems().forEach(output);
 			else if(te!=null)
 			{
-				LazyOptional<IItemHandler> itemHandler = te.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
-				itemHandler.ifPresent((h) ->
+				IItemHandler itemHandler = CapabilityUtils.getCapability(te, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
+				if(itemHandler instanceof IEInventoryHandler ieHandler)
 				{
-					if(h instanceof IEInventoryHandler)
-					{
-						for(int i = 0; i < h.getSlots(); i++)
-							if(!h.getStackInSlot(i).isEmpty())
-							{
-								output.accept(h.getStackInSlot(i));
-								((IEInventoryHandler)h).setStackInSlot(i, ItemStack.EMPTY);
-							}
-					}
-				});
+					for(int i = 0; i < ieHandler.getSlots(); i++)
+						if(!ieHandler.getStackInSlot(i).isEmpty())
+						{
+							output.accept(ieHandler.getStackInSlot(i));
+							ieHandler.setStackInSlot(i, ItemStack.EMPTY);
+						}
+				}
 			}
 		}
 	}

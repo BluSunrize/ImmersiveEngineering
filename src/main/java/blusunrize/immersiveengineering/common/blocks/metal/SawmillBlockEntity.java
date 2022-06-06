@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.process.Multibl
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -66,6 +65,7 @@ import javax.annotation.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBlockEntity, MultiblockRecipe>
 		implements IConveyorAttachable, IBlockBounds, IPlayerInteraction, IEClientTickableBE
@@ -480,9 +480,9 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 	}
 
 	@Override
-	public NonNullList<ItemStack> getDroppedItems()
+	public Stream<ItemStack> getDroppedItems()
 	{
-		return ListUtils.fromItems(sawblade);
+		return Stream.of(sawblade);
 	}
 
 	@Override

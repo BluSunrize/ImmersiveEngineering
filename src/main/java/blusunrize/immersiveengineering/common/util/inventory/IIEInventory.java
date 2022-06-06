@@ -12,8 +12,9 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.stream.Stream;
 
-public interface IIEInventory
+public interface IIEInventory extends IDropInventory
 {
 	@Nullable
 	NonNullList<ItemStack> getInventory();
@@ -24,9 +25,10 @@ public interface IIEInventory
 
 	void doGraphicalUpdates();
 
-	default NonNullList<ItemStack> getDroppedItems()
+	@Override
+	default Stream<ItemStack> getDroppedItems()
 	{
-		return getInventory();
+		return getInventory()!=null?getInventory().stream(): Stream.of();
 	}
 
 	default int getComparatedSize()

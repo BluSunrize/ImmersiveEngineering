@@ -17,6 +17,8 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.inventory.IDropInventory;
+import com.google.common.collect.Streams;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -35,9 +37,10 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
+import java.util.stream.Stream;
 
-public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IStateBasedDirectional,
-		IInteractionObjectIE<CraftingTableBlockEntity>
+public class CraftingTableBlockEntity extends IEBaseBlockEntity
+		implements IStateBasedDirectional, IInteractionObjectIE<CraftingTableBlockEntity>, IDropInventory
 {
 	public static final int GRID_SIZE = 3;
 
@@ -136,5 +139,11 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity implements IStat
 	public NonNullList<ItemStack> getCraftingInventory()
 	{
 		return craftingInv;
+	}
+
+	@Override
+	public Stream<ItemStack> getDroppedItems()
+	{
+		return Streams.concat(craftingInv.stream(), inventory.stream());
 	}
 }

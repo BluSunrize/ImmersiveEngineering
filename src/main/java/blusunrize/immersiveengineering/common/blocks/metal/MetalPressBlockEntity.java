@@ -23,7 +23,6 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes;
 import blusunrize.immersiveengineering.common.crafting.MetalPressPackingRecipes.RecipeDelegate;
 import blusunrize.immersiveengineering.common.util.IESounds;
-import blusunrize.immersiveengineering.common.util.ListUtils;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -58,6 +57,7 @@ import net.minecraftforge.items.ItemHandlerHelper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Set;
+import java.util.stream.Stream;
 
 public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPressBlockEntity, MetalPressRecipe> implements
 		IPlayerInteraction, IConveyorAttachable, IBlockBounds, IEClientTickableBE
@@ -301,9 +301,9 @@ public class MetalPressBlockEntity extends PoweredMultiblockBlockEntity<MetalPre
 	}
 
 	@Override
-	public NonNullList<ItemStack> getDroppedItems()
+	public Stream<ItemStack> getDroppedItems()
 	{
-		return ListUtils.fromItem(mold);
+		return Stream.of(mold);
 	}
 
 	@Override
