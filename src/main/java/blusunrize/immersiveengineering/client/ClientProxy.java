@@ -148,19 +148,22 @@ public class ClientProxy extends CommonProxy
 
 		// Apparently this runs in data generation runs... but registering model loaders causes NPEs there
 		if(Minecraft.getInstance()!=null)
-		{
-			populateAPI();
-			requestModelsAndTextures();
+			initWithMC();
+	}
 
-			ClientEventHandler handler = new ClientEventHandler();
-			MinecraftForge.EVENT_BUS.register(handler);
-			ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
-			reloadableManager.registerReloadListener(handler);
-			reloadableManager.registerReloadListener(new ConnectionRenderer());
+	public static void initWithMC()
+	{
+		populateAPI();
+		requestModelsAndTextures();
 
-			IEModelLayers.registerDefinitions();
-			MinecraftForgeClient.registerTooltipComponentFactory(RevolverServerTooltip.class, RevolverClientTooltip::new);
-		}
+		ClientEventHandler handler = new ClientEventHandler();
+		MinecraftForge.EVENT_BUS.register(handler);
+		ReloadableResourceManager reloadableManager = (ReloadableResourceManager)mc().getResourceManager();
+		reloadableManager.registerReloadListener(handler);
+		reloadableManager.registerReloadListener(new ConnectionRenderer());
+
+		IEModelLayers.registerDefinitions();
+		MinecraftForgeClient.registerTooltipComponentFactory(RevolverServerTooltip.class, RevolverClientTooltip::new);
 	}
 
 	@SubscribeEvent

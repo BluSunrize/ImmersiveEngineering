@@ -14,6 +14,8 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.StaticTemplateM
 import blusunrize.immersiveengineering.data.blockstates.BlockStates;
 import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
+import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
+import blusunrize.immersiveengineering.data.manual.icon.RenderedItemModelDataProvider;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
@@ -50,6 +52,7 @@ public class IEDataGenerator
 			gen.addProvider(new StructureUpdater("structures/multiblocks", Lib.MODID, exHelper, gen));
 			gen.addProvider(new StructureUpdater("structures/village", Lib.MODID, exHelper, gen));
 			gen.addProvider(new DynamicModels(multiblocks, gen, exHelper));
+			ManualDataGenerator.addProviders(gen, exHelper);
 			// Always keep this as the last provider!
 			gen.addProvider(new RunCompleteHelper());
 		}

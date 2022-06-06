@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Pair;
 import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.loading.FMLLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +68,7 @@ public class SetRestrictedField<T>
 		Preconditions.checkState(tracker.state==TrackerState.INITIALIZING);
 		String currentMod = ModLoadingContext.get().getActiveNamespace();
 		Preconditions.checkState(
-				Lib.MODID.equals(currentMod),
+				FMLLoader.getLaunchHandler().isData()||Lib.MODID.equals(currentMod),
 				"Restricted fields may only be set by Immersive Engineering, current mod is %s", currentMod
 		);
 		this.value = value;
