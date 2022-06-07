@@ -67,7 +67,7 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 
 		this.addRenderableWidget(new GuiSliderIE(guiLeft+15, guiTop, 64, new TranslatableComponent(Lib.GUI_CONFIG+"output_threshold"),
 				0, 15, this.blockEntity.outputThreshold,
-				btn -> sendConfig("outputThreshold", (int)Math.round(((GuiSliderIE)btn).sliderValue*15)))
+				value -> sendConfig("outputThreshold", Math.round(value*15)))
 		);
 	}
 

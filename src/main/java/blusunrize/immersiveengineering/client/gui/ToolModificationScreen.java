@@ -13,14 +13,18 @@ import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.Too
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool.ToolConfig.ToolConfigFloat;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonCheckbox;
 import blusunrize.immersiveengineering.client.gui.elements.GuiSliderIE;
-import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.nbt.ByteTag;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.FloatTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Function;
 
 public abstract class ToolModificationScreen<C extends AbstractContainerMenu> extends IEContainerScreen<C>
 {
@@ -46,36 +50,26 @@ public abstract class ToolModificationScreen<C extends AbstractContainerMenu> ex
 			if(boolArray!=null)
 				for(ToolConfigBoolean b : boolArray)
 					this.addRenderableWidget(new GuiButtonCheckbox(leftPos+b.x, topPos+b.y, tool.fomatConfigName(stack, b), b.value,
-							btn -> dataChanged(btn, b.name)));
+							btn -> sendChange(!btn.getState(), b.name, ByteTag::valueOf)));
 			ToolConfigFloat[] floatArray = tool.getFloatOptions(stack);
 			if(floatArray!=null)
 				for(ToolConfigFloat f : floatArray)
 					this.addRenderableWidget(new GuiSliderIE(leftPos+f.x, topPos+f.y, 80, tool.fomatConfigName(stack, f), f.value,
-							btn -> dataChanged(btn, f.name)));
+							value -> sendChange(value, f.name, FloatTag::valueOf)));
 		}
 	}
 
 	CompoundTag lastMessage;
 
-	private void dataChanged(AbstractWidget changed, String name)
+	private <T> void sendChange(T value, String optionName, Function<T, Tag> makeTag)
 	{
-		//TODO this changed to only send diffs, does that work or does MessageMaintenanceKit need to be changed?
 		Slot s = menu.getSlot(0);
-		if(s.getItem().getItem() instanceof IConfigurableTool)
+		if(s.getItem().getItem() instanceof IConfigurableTool tool)
 		{
 			ItemStack stack = s.getItem();
-			IConfigurableTool tool = ((IConfigurableTool)stack.getItem());
 			CompoundTag message = new CompoundTag();
-			if(changed instanceof GuiButtonCheckbox)
-			{
-				message.putBoolean(name, !((GuiButtonCheckbox)changed).getState());
-				tool.applyConfigOption(stack, name, !((GuiButtonCheckbox)changed).getState());
-			}
-			else if(changed instanceof GuiSliderIE)
-			{
-				message.putFloat(name, (float)((GuiSliderIE)changed).sliderValue);
-				tool.applyConfigOption(stack, name, (float)((GuiSliderIE)changed).sliderValue);
-			}
+			message.put(optionName, makeTag.apply(value));
+			tool.applyConfigOption(stack, optionName, value);
 			if(!message.equals(lastMessage))//Only send packets when values have changed
 				sendMessage(message);
 			lastMessage = message;
