@@ -122,6 +122,14 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.hoes).add(Tools.STEEL_HOE.get());
 		tag(IETags.axes).add(Tools.STEEL_AXE.get());
 
+		tag(IETags.recyclingIgnoredComponents)
+				// Ignore bricks for outputting
+				.addTag(Tags.Items.INGOTS_BRICK)
+				// Prevent tools used during crafting to be recycled as components
+				.add(Tools.HAMMER.get())
+				.add(Tools.SCREWDRIVER.get())
+				.add(Tools.WIRECUTTER.get());
+
 		/* MOD COMPAT STARTS HERE */
 
 		// Curios

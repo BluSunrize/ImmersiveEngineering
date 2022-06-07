@@ -208,13 +208,11 @@ public class ImmersiveEngineering
 				Items.IRON_TRAPDOOR, Items.IRON_DOOR, Items.IRON_BARS, Items.CAULDRON
 		));
 
-		// Prevent tools used during crafting to be recycled as components
-		ArcRecyclingChecker.makeItemInvalidRecyclingOutput(stack -> stack.getItem() instanceof HammerItem
-				||stack.getItem() instanceof WirecutterItem||stack.getItem() instanceof ScrewdriverItem);
-		// Ignore bricks
-		ArcRecyclingChecker.makeItemInvalidRecyclingOutput((tags, stack) -> TagUtils.isIngot(tags, stack)
-				&&Objects.requireNonNull(TagUtils.getMatchingPrefixAndRemaining(tags, stack, "ingots"))[1].contains("brick"));
+		// Whitelisted with tag
+		ArcRecyclingChecker.allowItemTagForRecycling(IETags.recyclingWhitelist);
 
+		// Ignore components to not propagate in recycling
+		ArcRecyclingChecker.makeItemInvalidRecyclingOutput((tags, stack) -> stack.is(IETags.recyclingIgnoredComponents));
 
 		new ThreadContributorSpecialsDownloader();
 
