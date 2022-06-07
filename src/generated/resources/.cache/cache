@@ -3176,5 +3176,6 @@ a0a4dff1d7722e5158393683ab1829a82f8f16cc data/minecraft/tags/blocks/wooden_fence
 6eec7cf93d1b4c2fb8b9bcf227771ddc587b65c2 data/minecraft/tags/blocks/wooden_slabs.json
 1789275a4a551311c112c230f4c0976cc935ef76 data/minecraft/tags/blocks/wooden_stairs.json
 16710ac9ddc6280674bded9278cb43fc203905d9 data/minecraft/tags/items/cluster_max_harvestables.json
+8571ccb0dda535fd456f1fc277cf152065671e59 data/minecraft/tags/items/coals.json
 0dbacb39b0846975ef9700573323c5df6195c4a6 data/minecraft/tags/items/lectern_books.json
 4f8feda66f598922dc4a05a588b0abec24c468e5 data/tconstruct/tags/blocks/harvestable/stackable.json
