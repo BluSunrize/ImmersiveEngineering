@@ -6,8 +6,7 @@
       "bonus_rolls": 0.0,
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "immersiveengineering:fluid_sorter"
+          "type": "immersiveengineering:tile_drop"
         }
       ],
       "conditions": [

@@ -13,19 +13,24 @@ import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -42,7 +47,7 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 /**
  * @author BluSunrize - 02.03.2017
  */
-public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<FluidSorterBlockEntity>, IFluidPipe
+public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<FluidSorterBlockEntity>, IFluidPipe, IBlockEntityDrop
 {
 	public byte[] sortWithNBT = {1, 1, 1, 1, 1, 1};
 	//	public static final int filterSlotsPerSide = 8;
@@ -228,6 +233,21 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 			}
 			nbt.put("filter_"+side, filterList);
 		}
+	}
+
+	@Override
+	public List<ItemStack> getBlockEntityDrop(LootContext context)
+	{
+		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
+		writeCustomNBT(stack.getOrCreateTag(), false);
+		return ImmutableList.of(stack);
+	}
+
+	@Override
+	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
+	{
+		if(stack.hasTag())
+			readCustomNBT(stack.getOrCreateTag(), false);
 	}
 
 

@@ -8,6 +8,7 @@
     - "immersiveengineering:recycling/blacklist" -> Items to exclude from recycling
     - "immersiveengineering:recycling/ignored_components" -> Items to ignore as components (such as tools used in crafting)
 - Restructure some manual entries for better flow and no weird page breaks (BluSunrize)
+- Change Fluid & Item Routers to keep their configuration when broken, so they can be moved more easily (BluSunrize)
 - Fix display of fluid tanks in JEI (BluSunrize)
 - Fix container items being lost in the alloy kiln (Malte)
 - Fix desync of the blueprint in the automated workbench (Malte)

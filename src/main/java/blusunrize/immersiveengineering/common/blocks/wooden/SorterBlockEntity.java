@@ -11,12 +11,15 @@ package blusunrize.immersiveengineering.common.blocks.wooden;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IReadOnPlacement;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Iterators;
 import it.unimi.dsi.fastutil.ints.IntIterators;
 import net.minecraft.core.BlockPos;
@@ -25,9 +28,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
@@ -42,7 +47,7 @@ import java.util.function.Predicate;
 import static net.minecraftforge.items.CapabilityItemHandler.ITEM_HANDLER_CAPABILITY;
 
 //TODO Metadata and oredict are gone. Update manual entry as well.
-public class SorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<SorterBlockEntity>
+public class SorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<SorterBlockEntity>, IBlockEntityDrop
 {
 	public SorterInventory filter;
 	public int[] sideFilter = {0, 0, 0, 0, 0, 0};//OreDict,nbt,fuzzy
@@ -314,6 +319,21 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 			filter.writeToNBT(filterList);
 			nbt.put("filter", filterList);
 		}
+	}
+
+	@Override
+	public List<ItemStack> getBlockEntityDrop(LootContext context)
+	{
+		ItemStack stack = new ItemStack(getBlockState().getBlock(), 1);
+		writeCustomNBT(stack.getOrCreateTag(), false);
+		return ImmutableList.of(stack);
+	}
+
+	@Override
+	public void readOnPlacement(@Nullable LivingEntity placer, ItemStack stack)
+	{
+		if(stack.hasTag())
+			readCustomNBT(stack.getOrCreateTag(), false);
 	}
 
 	private final EnumMap<Direction, ResettableCapability<IItemHandler>> insertionHandlers = new EnumMap<>(Direction.class);
