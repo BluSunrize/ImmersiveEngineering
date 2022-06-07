@@ -1,6 +1,14 @@
 ##### Version 1.18.2-8.0.2-pre
+- Re-add compat for Craftweaker (Malte)
 - Restructure some manual entries for better flow and no weird page breaks (BluSunrize)
 - Fix display of fluid tanks in JEI (BluSunrize)
+- Fix container items being lost in the alloy kiln (Malte)
+- Fix desync of the blueprint in the automated workbench (Malte)
+- Fix rotation issues with transformers and razor wire (Malte)
+- Fix crash with other mods adding new levels of Rarity for shaders (Malte)
+- Fix suggestions for the mineral command crashing clients in multiplayer (Malte)
+- Fix crash on the core sample tooltip (Malte)
+- Fix crafting table not dropping its contents (Malte)
 - Correctly tag slabs, stairs and tools (Malte)
 
 ##### Version 1.18.2-8.0.1-147
