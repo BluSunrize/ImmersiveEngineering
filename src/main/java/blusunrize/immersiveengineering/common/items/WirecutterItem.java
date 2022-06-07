@@ -33,6 +33,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeMod;
+import net.minecraftforge.common.Tags;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -89,6 +91,18 @@ public class WirecutterItem extends IEBaseItem
 	public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
 	{
 		return enchantment==Enchantments.BLOCK_EFFICIENCY||enchantment==Enchantments.UNBREAKING||enchantment==Enchantments.MENDING;
+	}
+
+	@Override
+	public boolean isRepairable(@NotNull ItemStack stack)
+	{
+		return true;
+	}
+
+	@Override
+	public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate)
+	{
+		return repairCandidate.is(Tags.Items.INGOTS_IRON);
 	}
 
 	// Block breaking

@@ -9,6 +9,8 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamageSource;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -121,7 +123,7 @@ public class FaradaySuitItem extends ArmorItem implements IElectricEquipment
 		@Override
 		public Ingredient getRepairIngredient()
 		{
-			return Ingredient.EMPTY;
+			return Ingredient.of(IETags.getTagsFor(EnumMetals.ALUMINUM).plate);
 		}
 
 		@Nonnull

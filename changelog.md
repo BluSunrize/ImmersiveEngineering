@@ -2,6 +2,7 @@
 - Re-add compat for Craftweaker (Malte)
 - Add coal coke to the "minecraft:coals" tag, allowing it to be used in crafting campfires (BluSunrize)
     - Unfortunately, vanilla torches don't use that tag, so they can't be made with coke. It's very silly.
+- Allow the hammer, wirecutters and faraday suit to be repaired with their respective materials (BluSunrize)
 - Restructure some manual entries for better flow and no weird page breaks (BluSunrize)
 - Fix display of fluid tanks in JEI (BluSunrize)
 - Fix container items being lost in the alloy kiln (Malte)
