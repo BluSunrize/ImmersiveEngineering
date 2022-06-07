@@ -3,7 +3,7 @@
 - Add coal coke to the "minecraft:coals" tag, allowing it to be used in crafting campfires (BluSunrize)
     - Unfortunately, vanilla torches don't use that tag, so they can't be made with coke. It's very silly.
 - Allow the hammer, wirecutters and faraday suit to be repaired with their respective materials (BluSunrize)
-- Add new tags to interact with arc furnace recycling:
+- Add new tags to interact with arc furnace recycling: (BluSunrize)
     - "immersiveengineering:recycling/whitelist" -> Items to be made recycle-able
     - "immersiveengineering:recycling/blacklist" -> Items to exclude from recycling
     - "immersiveengineering:recycling/ignored_components" -> Items to ignore as components (such as tools used in crafting)
@@ -18,6 +18,7 @@
 - Fix crafting table not dropping its contents (Malte)
 - Fix hammer-crushing recipes only working once until the game is restarted (BluSunrize)
 - Fix shaders not unlocking in the manual (BluSunrize)
+- Fix engineer villager houses being too common now since 5 unique variations were added (BluSunrize)
 - Correctly tag slabs, stairs and tools (Malte)
 
 ##### Version 1.18.2-8.0.1-147
