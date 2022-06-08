@@ -26,7 +26,6 @@ import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -36,8 +35,6 @@ import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-
-import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
 public final class IEItems
 {
@@ -239,38 +236,6 @@ public final class IEItems
 		}
 	}
 
-	public static final class BannerPatterns
-	{
-		public static final List<ItemRegObject<BannerPatternItem>> ALL_PATTERNS = new ArrayList<>();
-		public static final ItemRegObject<BannerPatternItem> HAMMER = addBanner("hammer", "hmr");
-		public static final ItemRegObject<BannerPatternItem> BEVELS = addBanner("bevels", "bvl");
-		public static final ItemRegObject<BannerPatternItem> ORNATE = addBanner("ornate", "orn");
-		public static final ItemRegObject<BannerPatternItem> TREATED_WOOD = addBanner("treated_wood", "twd");
-		public static final ItemRegObject<BannerPatternItem> WINDMILL = addBanner("windmill", "wnd");
-		public static final ItemRegObject<BannerPatternItem> WOLF_R = addBanner("wolf_r", "wlfr");
-		public static final ItemRegObject<BannerPatternItem> WOLF_L = addBanner("wolf_l", "wlfl");
-		public static final ItemRegObject<BannerPatternItem> WOLF = addBanner("wolf", "wlf");
-
-		private static ItemRegObject<BannerPatternItem> addBanner(String name, String id)
-		{
-			ItemRegObject<BannerPatternItem> regObj = register(
-					"bannerpattern_"+name,
-					() -> {
-						String enumName = MODID+"_"+name;
-						String fullId = "ie_"+id;
-						BannerPattern pattern = BannerPattern.create(enumName.toUpperCase(), enumName, fullId, true);
-						return new BannerPatternItem(pattern, new Properties().tab(ImmersiveEngineering.ITEM_GROUP));
-					}
-			);
-			ALL_PATTERNS.add(regObj);
-			return regObj;
-		}
-
-		private static void init()
-		{
-		}
-	}
-
 	public static final class Minecarts
 	{
 		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_CRATE = register("woodencrate", CrateMinecartEntity::new, false);
@@ -366,7 +331,6 @@ public final class IEItems
 		Metals.init();
 		Tools.init();
 		Weapons.init();
-		BannerPatterns.init();
 		Minecarts.init();
 		Misc.init();
 	}
@@ -399,7 +363,7 @@ public final class IEItems
 		);
 	}
 
-	private static <T extends Item> ItemRegObject<T> register(String name, Supplier<? extends T> make)
+	static <T extends Item> ItemRegObject<T> register(String name, Supplier<? extends T> make)
 	{
 		return new ItemRegObject<>(REGISTER.register(name, make));
 	}

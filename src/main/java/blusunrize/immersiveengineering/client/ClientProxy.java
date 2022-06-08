@@ -56,11 +56,11 @@ import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
+import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
-import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
@@ -77,6 +77,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ReloadableResourceManager;
 import net.minecraft.sounds.SoundEvent;
@@ -105,6 +106,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -209,10 +211,10 @@ public class ClientProxy extends CommonProxy
 		IEDefaultColourHandlers.register();
 
 		IEManual.addIEManualEntries();
-		IEItems.BannerPatterns.ALL_PATTERNS.forEach(regObject -> {
-			BannerPattern pattern = regObject.get().getBannerPattern();
-			Sheets.BANNER_MATERIALS.put(pattern, new Material(Sheets.BANNER_SHEET, pattern.location(true)));
-			Sheets.SHIELD_MATERIALS.put(pattern, new Material(Sheets.SHIELD_SHEET, pattern.location(false)));
+		IEBannerPatterns.REGISTER.getEntries().forEach(regObject -> {
+			ResourceKey<BannerPattern> pattern = Objects.requireNonNull(regObject.getKey());
+			Sheets.BANNER_MATERIALS.put(pattern, new Material(Sheets.BANNER_SHEET, BannerPattern.location(pattern, true)));
+			Sheets.SHIELD_MATERIALS.put(pattern, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(pattern, false)));
 		});
 	}
 
@@ -229,9 +231,9 @@ public class ClientProxy extends CommonProxy
 	{
 		ResourceLocation sheet = event.getAtlas().location();
 		if(sheet.equals(Sheets.BANNER_SHEET)||sheet.equals(Sheets.SHIELD_SHEET))
-			IEItems.BannerPatterns.ALL_PATTERNS.forEach(regObject -> {
-				BannerPattern pattern = regObject.get().getBannerPattern();
-				event.addSprite(pattern.location(sheet.equals(Sheets.BANNER_SHEET)));
+			IEBannerPatterns.REGISTER.getEntries().forEach(regObject -> {
+				ResourceKey<BannerPattern> pattern = Objects.requireNonNull(regObject.getKey());
+				event.addSprite(BannerPattern.location(pattern, sheet.equals(Sheets.BANNER_SHEET)));
 			});
 
 		if(!sheet.equals(InventoryMenu.BLOCK_ATLAS))

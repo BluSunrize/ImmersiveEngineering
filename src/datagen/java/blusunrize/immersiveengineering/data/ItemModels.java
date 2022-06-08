@@ -20,6 +20,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.ChuteBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.MetalLadderBlock.CoverType;
 import blusunrize.immersiveengineering.common.items.BulletItem;
+import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Metals;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -29,6 +30,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.*;
 import com.google.common.base.Preconditions;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
@@ -245,14 +247,14 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModels("", IEItems.Minecarts.CART_WOODEN_CRATE, IEItems.Minecarts.CART_REINFORCED_CRATE, IEItems.Minecarts.CART_WOODEN_BARREL, IEItems.Minecarts.CART_METAL_BARREL);
 		addItemModels("", IEItems.Misc.LOGIC_CIRCUIT_BOARD);
 		addItemModels("", IEItems.Misc.FERTILIZER);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.HAMMER);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.BEVELS);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.ORNATE);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.TREATED_WOOD);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.WINDMILL);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.WOLF_R);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.WOLF_L);
-		addItemModel("banner_pattern", IEItems.BannerPatterns.WOLF);
+		addItemModel("banner_pattern", IEBannerPatterns.HAMMER.item());
+		addItemModel("banner_pattern", IEBannerPatterns.BEVELS.item());
+		addItemModel("banner_pattern", IEBannerPatterns.ORNATE.item());
+		addItemModel("banner_pattern", IEBannerPatterns.TREATED_WOOD.item());
+		addItemModel("banner_pattern", IEBannerPatterns.WINDMILL.item());
+		addItemModel("banner_pattern", IEBannerPatterns.WOLF_R.item());
+		addItemModel("banner_pattern", IEBannerPatterns.WOLF_L.item());
+		addItemModel("banner_pattern", IEBannerPatterns.WOLF.item());
 		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY, IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM);
 
 		obj(Tools.VOLTMETER, rl("item/voltmeter.obj"))
@@ -402,7 +404,7 @@ public class ItemModels extends TRSRItemModelProvider
 
 	private String name(ItemLike item)
 	{
-		return item.asItem().getRegistryName().getPath();
+		return Registry.ITEM.getKey(item.asItem()).getPath();
 	}
 
 	@Nonnull
@@ -455,7 +457,7 @@ public class ItemModels extends TRSRItemModelProvider
 	private void addItemModels(String texturePrefix, ResourceLocation parent, Collection<? extends ItemLike> items)
 	{
 		for(ItemLike item : items)
-			addItemModel(texturePrefix==null?null: (texturePrefix+item.asItem().getRegistryName().getPath()), item, parent);
+			addItemModel(texturePrefix==null?null: (texturePrefix+Registry.ITEM.getKey(item.asItem()).getPath()), item, parent);
 	}
 
 	private void addItemModel(String texture, ItemLike item)

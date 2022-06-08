@@ -133,6 +133,7 @@ public class IEContent
 		GrassDrops.init();
 		IELootFunctions.init();
 		IEArgumentTypes.init();
+		IEBannerPatterns.init();
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;
