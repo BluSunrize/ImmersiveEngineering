@@ -36,7 +36,7 @@ public class IEBannerPatterns
 	{
 		RegistryObject<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
 		TagKey<BannerPattern> tag = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, pattern.getId());
-		ItemRegObject<BannerPatternItem> item = IEItems.register(name, () -> new BannerPatternItem(
+		ItemRegObject<BannerPatternItem> item = IEItems.register("pattern_"+name, () -> new BannerPatternItem(
 				tag, new Properties().tab(ImmersiveEngineering.ITEM_GROUP)
 		));
 		return new BannerEntry(pattern, tag, item);

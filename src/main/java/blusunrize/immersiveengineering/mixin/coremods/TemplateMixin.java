@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.common.wires.WireTemplateHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.Block;
@@ -26,7 +27,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 @Mixin(StructureTemplate.class)
 public abstract class TemplateMixin implements IConnectionTemplate
@@ -45,7 +45,7 @@ public abstract class TemplateMixin implements IConnectionTemplate
 	public void addConnectionsToWorld(
 			ServerLevelAccessor iworld,
 			BlockPos startPos, BlockPos p_237146_3_, StructurePlaceSettings orientation,
-			Random p_237146_5_, int p_237146_6_, CallbackInfoReturnable<Boolean> cir
+			RandomSource p_237146_5_, int p_237146_6_, CallbackInfoReturnable<Boolean> cir
 	)
 	{
 		if(cir.getReturnValue()==Boolean.TRUE)
