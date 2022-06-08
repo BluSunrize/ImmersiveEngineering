@@ -17,6 +17,7 @@ import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -156,7 +157,11 @@ public class MinecraftInstanceManager
 	private void initializeGameRenderer(final ResourceManager resourceManager)
 	{
 		final GameRenderer gameRenderer = new GameRenderer(
-				Minecraft.getInstance(), resourceManager, new RenderBuffers()
+				Minecraft.getInstance(),
+				// TODO test!
+				new ItemInHandRenderer(Minecraft.getInstance(), null, Minecraft.getInstance().getItemRenderer()),
+				resourceManager,
+				new RenderBuffers()
 		);
 		setMCField("gameRenderer", gameRenderer);
 	}

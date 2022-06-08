@@ -26,13 +26,11 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Sets;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.Tag;
-import net.minecraft.tags.Tag.Builder;
-import net.minecraft.tags.Tag.BuilderEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Tiers;
@@ -45,6 +43,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -268,11 +267,10 @@ class IEBlockTags extends BlockTagsProvider
 		Set<ResourceLocation> harvestable = knownHarvestTags.stream()
 				.map(this::tag)
 				.map(TagAppender::getInternalBuilder)
-				.flatMap(Builder::getEntries)
-				.map(BuilderEntry::entry)
-				.filter(e -> e instanceof Tag.ElementEntry)
+				.flatMap(b -> b.build().stream())
 				.map(Object::toString)
-				.map(ResourceLocation::new)
+				.map(ResourceLocation::tryParse)
+				.filter(Objects::nonNull)
 				.collect(Collectors.toSet());
 		Set<ResourceLocation> knownNonHarvestable = Stream.of(
 						Cloth.BALLOON, Cloth.CUSHION, Misc.FAKE_LIGHT, Misc.POTTED_HEMP, Misc.HEMP_PLANT
@@ -282,7 +280,7 @@ class IEBlockTags extends BlockTagsProvider
 		Set<ResourceLocation> registered = IEBlocks.REGISTER.getEntries().stream()
 				.map(RegistryObject::get)
 				.filter(b -> !(b instanceof IEFluidBlock))
-				.map(Block::getRegistryName)
+				.map(Registry.BLOCK::getKey)
 				.filter(name -> !knownNonHarvestable.contains(name))
 				.collect(Collectors.toSet());
 		Set<ResourceLocation> notHarvestable = Sets.difference(registered, harvestable);

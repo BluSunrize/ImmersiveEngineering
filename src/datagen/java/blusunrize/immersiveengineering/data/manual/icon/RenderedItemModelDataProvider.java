@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +31,7 @@ public record RenderedItemModelDataProvider(
 ) implements DataProvider
 {
     @Override
-    public void run(HashCache pCache) throws IOException
+    public void run(CachedOutput pCache) throws IOException
     {
         GameInitializationManager.getInstance().initialize(helper, generator);
         IEWireTypes.setup();

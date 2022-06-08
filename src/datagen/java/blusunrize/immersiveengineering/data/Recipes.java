@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.IngredientFluidStack;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
+import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
@@ -45,8 +46,9 @@ import blusunrize.immersiveengineering.data.resources.RecipeWoods;
 import blusunrize.immersiveengineering.data.resources.SecondaryOutput;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Registry;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -66,6 +68,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlabBlock;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
@@ -105,7 +108,7 @@ public class Recipes extends RecipeProvider
 	}
 
 	@Override
-	protected void saveAdvancement(HashCache cache, JsonObject json, Path path)
+	protected void saveAdvancement(CachedOutput cache, JsonObject json, Path path)
 	{
 		if(path.equals(ADV_ROOT)) return; //We NEVER care about this.
 		super.saveAdvancement(cache, json, path);
@@ -492,35 +495,35 @@ public class Recipes extends RecipeProvider
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
 				.build(out, toRL("blueprint/electrode"));
 
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.HAMMER)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.HAMMER.item())
 				.addInput(Items.PAPER)
 				.addInput(Tools.HAMMER)
 				.build(out, toRL("blueprint/banner_hammer"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.BEVELS)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.BEVELS.item())
 				.addInput(Items.PAPER)
 				.addInput(IETags.plates)
 				.build(out, toRL("blueprint/banner_bevels"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.ORNATE)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.ORNATE.item())
 				.addInput(Items.PAPER)
 				.addInput(IETags.getTagsFor(EnumMetals.SILVER).dust)
 				.build(out, toRL("blueprint/banner_ornate"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.TREATED_WOOD)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.TREATED_WOOD.item())
 				.addInput(Items.PAPER)
 				.addInput(IETags.getItemTag(IETags.treatedWood))
 				.build(out, toRL("blueprint/banner_treatedwood"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.WINDMILL)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.WINDMILL.item())
 				.addInput(Items.PAPER)
 				.addInput(WoodenDevices.WINDMILL)
 				.build(out, toRL("blueprint/banner_windmill"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.WOLF_R)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.WOLF_R.item())
 				.addInput(Items.PAPER)
 				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf_r"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.WOLF_L)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.WOLF_L.item())
 				.addInput(Items.PAPER)
 				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf_l"));
-		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.WOLF)
+		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.WOLF.item())
 				.addInput(Items.PAPER)
 				.addInput(BulletHandler.getBulletItem(BulletItem.WOLFPACK))
 				.build(out, toRL("blueprint/banner_wolf"));
@@ -1040,8 +1043,8 @@ public class Recipes extends RecipeProvider
 		TagKey<Item> aquamarine = createItemWrapper(IETags.getGem("aquamarine"));
 
 		// Common things
-		ResourceKey<DimensionType> overworld = DimensionType.OVERWORLD_LOCATION;
-		ResourceKey<DimensionType> nether = DimensionType.NETHER_LOCATION;
+		ResourceKey<DimensionType> overworld = BuiltinDimensionTypes.OVERWORLD;
+		ResourceKey<DimensionType> nether = BuiltinDimensionTypes.NETHER;
 		MineralMixBuilder.builder(overworld)
 				.addOre(Tags.Items.ORES_COAL, .8f)
 				.addOre(sulfur, .2f)
@@ -2980,34 +2983,35 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
 				.save(out, toRL(toPath(MetalDecoration.LANTERN)));
 
-		ShapedRecipeBuilder.shaped(Minecarts.CART_WOODEN_CRATE)
-				.pattern("B")
-				.pattern("C")
-				.define('B', WoodenDevices.CRATE)
-				.define('C', Items.MINECART)
-				.unlockedBy("has_minecart", has(Items.MINECART))
-				.save(out, toRL(toPath(Minecarts.CART_WOODEN_CRATE)));
-		ShapedRecipeBuilder.shaped(Minecarts.CART_REINFORCED_CRATE)
-				.pattern("B")
-				.pattern("C")
-				.define('B', WoodenDevices.REINFORCED_CRATE)
-				.define('C', Items.MINECART)
-				.unlockedBy("has_minecart", has(Items.MINECART))
-				.save(out, toRL(toPath(Minecarts.CART_REINFORCED_CRATE)));
-		ShapedRecipeBuilder.shaped(Minecarts.CART_WOODEN_BARREL)
-				.pattern("B")
-				.pattern("C")
-				.define('B', WoodenDevices.WOODEN_BARREL)
-				.define('C', Items.MINECART)
-				.unlockedBy("has_minecart", has(Items.MINECART))
-				.save(out, toRL(toPath(Minecarts.CART_WOODEN_BARREL)));
-		ShapedRecipeBuilder.shaped(Minecarts.CART_METAL_BARREL)
-				.pattern("B")
-				.pattern("C")
-				.define('B', MetalDevices.BARREL)
-				.define('C', Items.MINECART)
-				.unlockedBy("has_minecart", has(Items.MINECART))
-				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
+		//TODO
+		//ShapedRecipeBuilder.shaped(Minecarts.CART_WOODEN_CRATE)
+		//		.pattern("B")
+		//		.pattern("C")
+		//		.define('B', WoodenDevices.CRATE)
+		//		.define('C', Items.MINECART)
+		//		.unlockedBy("has_minecart", has(Items.MINECART))
+		//		.save(out, toRL(toPath(Minecarts.CART_WOODEN_CRATE)));
+		//ShapedRecipeBuilder.shaped(Minecarts.CART_REINFORCED_CRATE)
+		//		.pattern("B")
+		//		.pattern("C")
+		//		.define('B', WoodenDevices.REINFORCED_CRATE)
+		//		.define('C', Items.MINECART)
+		//		.unlockedBy("has_minecart", has(Items.MINECART))
+		//		.save(out, toRL(toPath(Minecarts.CART_REINFORCED_CRATE)));
+		//ShapedRecipeBuilder.shaped(Minecarts.CART_WOODEN_BARREL)
+		//		.pattern("B")
+		//		.pattern("C")
+		//		.define('B', WoodenDevices.WOODEN_BARREL)
+		//		.define('C', Items.MINECART)
+		//		.unlockedBy("has_minecart", has(Items.MINECART))
+		//		.save(out, toRL(toPath(Minecarts.CART_WOODEN_BARREL)));
+		//ShapedRecipeBuilder.shaped(Minecarts.CART_METAL_BARREL)
+		//		.pattern("B")
+		//		.pattern("C")
+		//		.define('B', MetalDevices.BARREL)
+		//		.define('C', Items.MINECART)
+		//		.unlockedBy("has_minecart", has(Items.MINECART))
+		//		.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
 	}
 
 	private void addArmor(TagKey<Item> input, Map<EquipmentSlot, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)
@@ -3077,7 +3081,7 @@ public class Recipes extends RecipeProvider
 
 	private void addStairs(ItemLike block, Consumer<FinishedRecipe> out)
 	{
-		ItemLike stairs = IEBlocks.TO_STAIRS.get(block.asItem().getRegistryName());
+		ItemLike stairs = IEBlocks.TO_STAIRS.get(Registry.ITEM.getKey(block.asItem()));
 		ShapedRecipeBuilder.shaped(stairs, 4)
 				.define('s', block)
 				.pattern("s  ")
@@ -3146,7 +3150,7 @@ public class Recipes extends RecipeProvider
 
 	private String toPath(ItemLike src)
 	{
-		return src.asItem().getRegistryName().getPath();
+		return Registry.ITEM.getKey(src.asItem()).getPath();
 	}
 
 	private ResourceLocation toRL(String s)

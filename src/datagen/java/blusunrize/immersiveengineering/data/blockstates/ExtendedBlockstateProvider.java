@@ -15,6 +15,7 @@ import com.google.common.collect.ImmutableMap;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -59,7 +60,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected String name(Block b)
 	{
-		return b.getRegistryName().getPath();
+		return Registry.BLOCK.getKey(b).getPath();
 	}
 
 	public void simpleBlockAndItem(Supplier<? extends Block> b, ModelFile model)
@@ -101,7 +102,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected void slabFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
-		slab(IEBlocks.TO_SLAB.get(b.get().getRegistryName()).get(), side, top, bottom);
+		slab(IEBlocks.TO_SLAB.get(Registry.BLOCK.getKey(b.get())).get(), side, top, bottom);
 	}
 
 	protected void slab(SlabBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
@@ -117,7 +118,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation texture)
 	{
-		stairs(IEBlocks.TO_STAIRS.get(b.get().getRegistryName()).get(), texture);
+		stairs(IEBlocks.TO_STAIRS.get(Registry.BLOCK.getKey(b.get())).get(), texture);
 	}
 
 	protected void stairs(StairBlock b, ResourceLocation texture)
@@ -127,7 +128,7 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 
 	protected void stairsFor(Supplier<? extends Block> b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)
 	{
-		stairs(IEBlocks.TO_STAIRS.get(b.get().getRegistryName()).get(), side, top, bottom);
+		stairs(IEBlocks.TO_STAIRS.get(Registry.BLOCK.getKey(b.get())).get(), side, top, bottom);
 	}
 
 	protected void stairs(StairBlock b, ResourceLocation side, ResourceLocation top, ResourceLocation bottom)

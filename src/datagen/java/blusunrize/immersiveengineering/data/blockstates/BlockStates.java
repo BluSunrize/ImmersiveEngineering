@@ -38,6 +38,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.Registry;
 import net.minecraft.core.Vec3i;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
@@ -415,7 +416,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		{
 			Fluid still = entry.getStill();
 			ResourceLocation stillTexture = still.getAttributes().getStillTexture();
-			ModelFile model = models().getBuilder("block/fluid/"+still.getRegistryName().getPath())
+			ModelFile model = models().getBuilder("block/fluid/"+Registry.FLUID.getKey(still).getPath())
 					.texture("particle", stillTexture);
 			getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));
 		}
@@ -457,7 +458,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 	{
 		super.fenceBlock(b.get(), texture);
 		itemModel(b,
-				models().withExistingParent(b.get().getRegistryName().getPath()+"_inventory", mcLoc("block/fence_inventory"))
+				models().withExistingParent(Registry.BLOCK.getKey(b.get()).getPath()+"_inventory", mcLoc("block/fence_inventory"))
 						.texture("texture", texture));
 	}
 
@@ -523,7 +524,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 			for(WallmountBlock.Orientation or : Orientation.values())
 			{
 				ResourceLocation modelLoc = rl("block/wooden_device/wallmount"+or.modelSuffix()+".obj");
-				ModelFile model = obj(b.get().getRegistryName().getPath()+or.modelSuffix(), modelLoc,
+				ModelFile model = obj(Registry.BLOCK.getKey(b.get()).getPath()+or.modelSuffix(), modelLoc,
 						ImmutableMap.of("texture", texture), models());
 				stateBuilder.partialState()
 						.with(IEProperties.FACING_HORIZONTAL, d)

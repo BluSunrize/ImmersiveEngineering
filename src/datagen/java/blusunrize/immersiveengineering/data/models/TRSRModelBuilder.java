@@ -28,7 +28,7 @@ public class TRSRModelBuilder extends ModelBuilder<TRSRModelBuilder>
 			transformFile = existingFileHelper.getResource(
 					source, PackType.CLIENT_RESOURCES, ".json", "transformations"
 			);
-			String jsonString = CharStreams.toString(new InputStreamReader(transformFile.getInputStream()));
+			String jsonString = CharStreams.toString(new InputStreamReader(transformFile.open()));
 			transforms.addFromJson(jsonString);
 			return this;
 		} catch(IOException e)

@@ -9,6 +9,7 @@ import blusunrize.immersiveengineering.client.render.tile.*;
 import blusunrize.immersiveengineering.data.DynamicModels.SimpleModelBuilder;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.models.IEOBJBuilder;
+import net.minecraft.core.Registry;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -124,7 +125,7 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.flipV(true)
 				.end();
 		for(Entry<Block, ModelFile> multiblock : multiblocks.unsplitModels.entrySet())
-			withExistingParent(multiblock.getKey().getRegistryName().getPath(), multiblock.getValue().getLocation());
+			withExistingParent(Registry.BLOCK.getKey(multiblock.getKey()).getPath(), multiblock.getValue().getLocation());
 	}
 
 	@Nonnull

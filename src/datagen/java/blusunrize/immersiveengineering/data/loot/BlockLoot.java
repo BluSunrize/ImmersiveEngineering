@@ -27,6 +27,7 @@ import net.minecraft.advancements.critereon.EnchantmentPredicate;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.Item;
@@ -206,7 +207,7 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 
 	private void register(Supplier<? extends Block> b, LootTable.Builder table)
 	{
-		register(b.get().getRegistryName(), table);
+		register(Registry.BLOCK.getKey(b.get()), table);
 	}
 
 	private void register(ResourceLocation name, LootTable.Builder table)

@@ -26,8 +26,6 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.advancements.MultiblockTrigger;
 import com.google.common.collect.Sets;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.FrameType;
@@ -37,9 +35,9 @@ import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.ItemPredicate;
 import net.minecraft.advancements.critereon.PlacedBlockTrigger;
 import net.minecraft.commands.CommandFunction;
+import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
-import net.minecraft.data.HashCache;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -56,17 +54,16 @@ import java.util.function.Consumer;
 
 public class Advancements extends AdvancementProvider
 {
-	private final Path OUTPUT;
-	private static final Gson GSON = (new GsonBuilder()).setPrettyPrinting().create();
+	private final Path output;
 
 	public Advancements(DataGenerator gen)
 	{
 		super(gen);
-		OUTPUT = gen.getOutputFolder();
+		output = gen.getOutputFolder();
 	}
 
 	@Override
-	public void run(HashCache cache)
+	public void run(CachedOutput cache)
 	{
 		Set<ResourceLocation> set = Sets.newHashSet();
 		Consumer<Advancement> consumer = (advancement) -> {
@@ -76,11 +73,11 @@ public class Advancements extends AdvancementProvider
 			}
 			else
 			{
-				Path path1 = createPath(OUTPUT, advancement);
+				Path path1 = createPath(output, advancement);
 
 				try
 				{
-					DataProvider.save(GSON, cache, advancement.deconstruct().serializeToJson(), path1);
+					DataProvider.saveStable(cache, advancement.deconstruct().serializeToJson(), path1);
 				} catch(IOException ioexception)
 				{
 					IELogger.error("Couldn't save advancement {}", path1, ioexception);

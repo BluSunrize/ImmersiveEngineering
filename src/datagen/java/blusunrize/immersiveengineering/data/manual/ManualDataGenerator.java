@@ -37,8 +37,8 @@ public class ManualDataGenerator
 			IELogger.logger.info("Skipping manual exports since the output directory is not set");
 			return;
 		}
-		gen.addProvider(new RenderedItemModelDataProvider(gen, exHelper, Path.of(outputTo, "icons")));
-		gen.addProvider(new TagExports(gen, exHelper, Path.of(outputTo, "tags")));
+		gen.addProvider(true, new RenderedItemModelDataProvider(gen, exHelper, Path.of(outputTo, "icons")));
+		gen.addProvider(true, new TagExports(gen, exHelper, Path.of(outputTo, "tags")));
 	}
 
 
