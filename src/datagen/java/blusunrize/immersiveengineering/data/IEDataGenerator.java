@@ -40,6 +40,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new IEItemTags(gen, blockTags, exHelper));
 			gen.addProvider(true, new FluidTags(gen, exHelper));
 			gen.addProvider(true, new BlockEntityTags(gen, exHelper));
+			gen.addProvider(true, new BannerTags(gen, exHelper));
 			gen.addProvider(true, new Recipes(gen));
 			gen.addProvider(true, new AllLoot(gen));
 			gen.addProvider(true, new BlockStates(gen, exHelper));

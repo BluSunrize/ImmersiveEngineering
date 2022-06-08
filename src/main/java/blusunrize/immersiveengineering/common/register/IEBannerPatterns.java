@@ -12,12 +12,16 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 // TODO fill tags correctly!
 public class IEBannerPatterns
 {
-	public static final DeferredRegister<BannerPattern> REGISTER = DeferredRegister.create(
+	private static final DeferredRegister<BannerPattern> REGISTER = DeferredRegister.create(
 			Registry.BANNER_PATTERN_REGISTRY, Lib.MODID
 	);
+	public static final List<BannerEntry> ALL_BANNERS = new ArrayList<>();
 	public static final BannerEntry HAMMER = addBanner("hammer", "hmr");
 	public static final BannerEntry BEVELS = addBanner("bevels", "bvl");
 	public static final BannerEntry ORNATE = addBanner("ornate", "orn");
@@ -36,10 +40,12 @@ public class IEBannerPatterns
 	{
 		RegistryObject<BannerPattern> pattern = REGISTER.register(name, () -> new BannerPattern("ie_"+hashName));
 		TagKey<BannerPattern> tag = TagKey.create(Registry.BANNER_PATTERN_REGISTRY, pattern.getId());
-		ItemRegObject<BannerPatternItem> item = IEItems.register("pattern_"+name, () -> new BannerPatternItem(
+		ItemRegObject<BannerPatternItem> item = IEItems.register("bannerpattern_"+name, () -> new BannerPatternItem(
 				tag, new Properties().tab(ImmersiveEngineering.ITEM_GROUP)
 		));
-		return new BannerEntry(pattern, tag, item);
+		BannerEntry result = new BannerEntry(pattern, tag, item);
+		ALL_BANNERS.add(result);
+		return result;
 	}
 
 	public record BannerEntry(

@@ -211,8 +211,8 @@ public class ClientProxy extends CommonProxy
 		IEDefaultColourHandlers.register();
 
 		IEManual.addIEManualEntries();
-		IEBannerPatterns.REGISTER.getEntries().forEach(regObject -> {
-			ResourceKey<BannerPattern> pattern = Objects.requireNonNull(regObject.getKey());
+		IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
+			ResourceKey<BannerPattern> pattern = Objects.requireNonNull(entry.pattern().getKey());
 			Sheets.BANNER_MATERIALS.put(pattern, new Material(Sheets.BANNER_SHEET, BannerPattern.location(pattern, true)));
 			Sheets.SHIELD_MATERIALS.put(pattern, new Material(Sheets.SHIELD_SHEET, BannerPattern.location(pattern, false)));
 		});
@@ -231,8 +231,8 @@ public class ClientProxy extends CommonProxy
 	{
 		ResourceLocation sheet = event.getAtlas().location();
 		if(sheet.equals(Sheets.BANNER_SHEET)||sheet.equals(Sheets.SHIELD_SHEET))
-			IEBannerPatterns.REGISTER.getEntries().forEach(regObject -> {
-				ResourceKey<BannerPattern> pattern = Objects.requireNonNull(regObject.getKey());
+			IEBannerPatterns.ALL_BANNERS.forEach(entry -> {
+				ResourceKey<BannerPattern> pattern = Objects.requireNonNull(entry.pattern().getKey());
 				event.addSprite(BannerPattern.location(pattern, sheet.equals(Sheets.BANNER_SHEET)));
 			});
 
