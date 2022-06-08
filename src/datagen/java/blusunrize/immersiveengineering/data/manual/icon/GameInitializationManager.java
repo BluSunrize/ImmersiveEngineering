@@ -12,7 +12,10 @@ package blusunrize.immersiveengineering.data.manual.icon;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.client.model.*;
+import net.minecraftforge.client.model.ModelLoaderRegistry.VanillaProxy;
+import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 public class GameInitializationManager
@@ -40,7 +43,15 @@ public class GameInitializationManager
 		GLFWInitializationManager.getInstance().initialize();
 		MinecraftInstanceManager.getInstance().initialize(existingFileHelper, gen);
 		ClientProxy.initWithMC();
-		ModelLoaderRegistry.init();
+		// TODO can the Forge method be made to work in this context?
+		//  ModelLoaderRegistry.init();
+		ModelLoaderRegistry.registerLoader(new ResourceLocation("minecraft", "elements"), VanillaProxy.Loader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "obj"), OBJLoader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "bucket"), DynamicBucketModel.Loader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "composite"), CompositeModel.Loader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "multi-layer"), MultiLayerModel.Loader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "item-layers"), ItemLayerModel.Loader.INSTANCE);
+		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "separate-perspective"), SeparatePerspectiveModel.Loader.INSTANCE);
 
 		final ExtendedModelManager extendedModelManager = (ExtendedModelManager)Minecraft.getInstance().getModelManager();
 		extendedModelManager.loadModels();
