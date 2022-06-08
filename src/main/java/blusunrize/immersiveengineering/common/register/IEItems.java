@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.entities.*;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.ToolUpgradeItem.ToolUpgrade;
 import net.minecraft.Util;
@@ -238,21 +237,23 @@ public final class IEItems
 
 	public static final class Minecarts
 	{
-		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_CRATE = register("woodencrate", CrateMinecartEntity::new, false);
-		public static final ItemRegObject<IEMinecartItem> CART_REINFORCED_CRATE = register("reinforcedcrate", ReinforcedCrateMinecartEntity::new, false);
-		public static final ItemRegObject<IEMinecartItem> CART_WOODEN_BARREL = register("woodenbarrel", BarrelMinecartEntity::new, true);
-		public static final ItemRegObject<IEMinecartItem> CART_METAL_BARREL = register("metalbarrel", MetalBarrelMinecartEntity::new, true);
+		//TODO
+		//public static final ItemRegObject<IEMinecartItem> CART_WOODEN_CRATE = register("woodencrate", CrateMinecartEntity::new, false);
+		//public static final ItemRegObject<IEMinecartItem> CART_REINFORCED_CRATE = register("reinforcedcrate", ReinforcedCrateMinecartEntity::new, false);
+		//public static final ItemRegObject<IEMinecartItem> CART_WOODEN_BARREL = register("woodenbarrel", BarrelMinecartEntity::new, true);
+		//public static final ItemRegObject<IEMinecartItem> CART_METAL_BARREL = register("metalbarrel", MetalBarrelMinecartEntity::new, true);
 
 		private static void init()
 		{
 		}
 
-		private static ItemRegObject<IEMinecartItem> register(
-				String name, IEMinecartEntity.MinecartConstructor constructor, boolean fitsIntoContainer
-		)
-		{
-			return IEItems.register("minecart_"+name, () -> new IEMinecartItem(constructor, fitsIntoContainer));
-		}
+		//TODO
+		//private static ItemRegObject<IEMinecartItem> register(
+		//		String name, IEMinecartEntity.MinecartConstructor constructor, boolean fitsIntoContainer
+		//)
+		//{
+		//	return IEItems.register("minecart_"+name, () -> new IEMinecartItem(constructor, fitsIntoContainer));
+		//}
 	}
 
 	//TODO move all of these somewhere else

@@ -403,10 +403,11 @@ public class ClientProxy extends CommonProxy
 		registerEntityRenderingHandler(event, IEEntityTypes.RAILGUN_SHOT, RailgunShotRenderer::new);
 		registerEntityRenderingHandler(event, IEEntityTypes.EXPLOSIVE, IEExplosiveRenderer::new);
 		registerEntityRenderingHandler(event, IEEntityTypes.FLUORESCENT_TUBE, FluorescentTubeRenderer::new);
-		registerEntityRenderingHandler(event, IEEntityTypes.BARREL_MINECART, IEMinecartRenderer.provide(IEModelLayers.BARREL_MINECART));
-		registerEntityRenderingHandler(event, IEEntityTypes.CRATE_MINECART, IEMinecartRenderer.provide(IEModelLayers.CRATE_MINECART));
-		registerEntityRenderingHandler(event, IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer.provide(IEModelLayers.REINFORCED_CRATE_CART));
-		registerEntityRenderingHandler(event, IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer.provide(IEModelLayers.METAL_BARREL_CART));
+		//TODO
+		//registerEntityRenderingHandler(event, IEEntityTypes.BARREL_MINECART, IEMinecartRenderer.provide(IEModelLayers.BARREL_MINECART));
+		//registerEntityRenderingHandler(event, IEEntityTypes.CRATE_MINECART, IEMinecartRenderer.provide(IEModelLayers.CRATE_MINECART));
+		//registerEntityRenderingHandler(event, IEEntityTypes.REINFORCED_CRATE_CART, IEMinecartRenderer.provide(IEModelLayers.REINFORCED_CRATE_CART));
+		//registerEntityRenderingHandler(event, IEEntityTypes.METAL_BARREL_CART, IEMinecartRenderer.provide(IEModelLayers.METAL_BARREL_CART));
 		registerEntityRenderingHandler(event, IEEntityTypes.SAWBLADE, SawbladeRenderer::new);
 	}
 
@@ -439,7 +440,8 @@ public class ClientProxy extends CommonProxy
 		registerScreen(IEContainerTypes.REVOLVER, RevolverScreen::new);
 		registerScreen(IEContainerTypes.MAINTENANCE_KIT, MaintenanceKitScreen::new);
 
-		MenuScreens.register(IEContainerTypes.CRATE_MINECART.get(), CrateScreen.EntityCrate::new);
+		//TODO
+		//MenuScreens.register(IEContainerTypes.CRATE_MINECART.get(), CrateScreen.EntityCrate::new);
 	}
 
 	private static <T extends BlockEntity>

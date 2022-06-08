@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
-import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -40,11 +39,11 @@ public abstract class CrateScreen<C extends CrateContainer> extends IEContainerS
 		}
 	}
 
-	public static class EntityCrate extends CrateScreen<CrateEntityContainer>
-	{
-		public EntityCrate(CrateEntityContainer container, Inventory inventoryPlayer, Component title)
-		{
-			super(container, inventoryPlayer, title);
-		}
-	}
+	//public static class EntityCrate extends CrateScreen<CrateEntityContainer>
+	//{
+	//	public EntityCrate(CrateEntityContainer container, Inventory inventoryPlayer, Component title)
+	//	{
+	//		super(container, inventoryPlayer, title);
+	//	}
+	//}
 }
