@@ -15,7 +15,7 @@ import blusunrize.immersiveengineering.api.wires.Connection.CatenaryData;
 import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.ConnectionSegments;
-import blusunrize.immersiveengineering.mixin.accessors.client.CompiledChunkAccess;
+import blusunrize.immersiveengineering.mixin.accessors.client.RenderChunkAccess;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -26,7 +26,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.CompiledChunk;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -43,6 +42,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 public class ConnectionRenderer implements ResourceManagerReloadListener
@@ -69,7 +69,7 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 	}
 
 	public static void renderConnectionsInSection(
-			CompiledChunk compiled, ChunkBufferBuilderPack buffers,
+			Set<RenderType> layers, ChunkBufferBuilderPack buffers,
 			@Nullable BlockAndTintGetter region, RenderChunk renderChunk
 	)
 	{
@@ -83,10 +83,8 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 			return;
 		RenderType renderType = RenderType.solid();
 		BufferBuilder builder = buffers.builder(renderType);
-		CompiledChunkAccess compiledAccess = (CompiledChunkAccess)compiled;
-		// TODO
-		//if(compiledAccess.getHasLayer().add(renderType))
-		//	((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
+		if(layers.add(renderType))
+			((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
 		for(ConnectionSegments connection : connectionParts)
 		{
 			ConnectionPoint connectionOrigin = connection.connection().getEndA();
@@ -98,9 +96,6 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 					region
 			);
 		}
-		// TODO gone?
-		//compiledAccess.setIsCompletelyEmpty(false);
-		compiledAccess.getHasBlocks().add(renderType);
 	}
 
 	public static void renderSegments(

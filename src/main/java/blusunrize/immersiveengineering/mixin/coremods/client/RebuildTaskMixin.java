@@ -11,17 +11,16 @@ package blusunrize.immersiveengineering.mixin.coremods.client;
 import blusunrize.immersiveengineering.client.render.ConnectionRenderer;
 import blusunrize.immersiveengineering.common.mixin.CaptureOwner;
 import net.minecraft.client.renderer.ChunkBufferBuilderPack;
-import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.chunk.ChunkRenderDispatcher.RenderChunk;
 import net.minecraft.client.renderer.chunk.RenderChunkRegion;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Slice;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import javax.annotation.Nullable;
@@ -34,6 +33,7 @@ public class RebuildTaskMixin
 	@Nullable
 	protected RenderChunkRegion region;
 	private BlockAndTintGetter immersiveengineering$regionCopy;
+	private Set<RenderType> immersiveengineering$layers;
 	// Second alias is required with Optifine in production
 	@Shadow(aliases = {"f_112859_", "this$1"})
 	@Final
@@ -60,18 +60,25 @@ public class RebuildTaskMixin
 		immersiveengineering$regionCopy = region;
 	}
 
+	@ModifyVariable(method = "compile", at = @At(value = "INVOKE", target = "Lnet/minecraft/util/RandomSource;create()Lnet/minecraft/util/RandomSource;"))
+	public Set<RenderType> extractLayers(Set<RenderType> set)
+	{
+		immersiveengineering$layers = set;
+		return set;
+	}
+
 	@Inject(
 			method = "compile",
-			at = @At(value = "INVOKE", target = "Ljava/util/Set;stream()Ljava/util/stream/Stream;", remap = false)
+			at = @At(value = "INVOKE", target = "Ljava/util/Set;iterator()Ljava/util/Iterator;", remap = false)
 	)
 	public void addConnectionQuads(
-			float pX, float pY, float pZ,
-			ChunkRenderDispatcher.CompiledChunk pCompiledChunk,
-			ChunkBufferBuilderPack pBuffers,
-			CallbackInfoReturnable<Set<BlockEntity>> cir
+			float pX, float pY, float pZ, ChunkBufferBuilderPack pBuffers, CallbackInfoReturnable<?> cir
 	)
 	{
-		ConnectionRenderer.renderConnectionsInSection(pCompiledChunk, pBuffers, this.immersiveengineering$regionCopy, this$1);
+		ConnectionRenderer.renderConnectionsInSection(
+				this.immersiveengineering$layers, pBuffers, this.immersiveengineering$regionCopy, this$1
+		);
 		this.immersiveengineering$regionCopy = null;
+		this.immersiveengineering$layers = null;
 	}
 }
