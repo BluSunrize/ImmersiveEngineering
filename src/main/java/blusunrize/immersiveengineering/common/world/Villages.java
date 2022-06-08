@@ -201,21 +201,16 @@ public class Villages
 
 		private static VillagerProfession createProf(ResourceLocation name, PoiType poi, Supplier<SoundEvent> sound)
 		{
+			// TODO fix sounds! May need to move something away from DefReg for that, or have a word with Forge
 			return new VillagerProfession(
 					name.toString(),
-					poi,
+					// TODO is this correct?
+					holder -> holder.value()==poi,
+					holder -> holder.value()==poi,
 					ImmutableSet.of(),
 					ImmutableSet.of(),
 					null
-			)
-			{
-				@Nullable
-				@Override
-				public SoundEvent getWorkSound()
-				{
-					return sound.get();
-				}
-			};
+			);
 		}
 
 		private static Collection<BlockState> assembleStates(Block block)

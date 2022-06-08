@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.api.wires.ConnectionPoint;
 import blusunrize.immersiveengineering.api.wires.GlobalWireNetwork;
 import blusunrize.immersiveengineering.api.wires.WireCollisionData.ConnectionSegments;
 import blusunrize.immersiveengineering.mixin.accessors.client.CompiledChunkAccess;
-import blusunrize.immersiveengineering.mixin.accessors.client.RenderChunkAccess;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -85,8 +84,9 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 		RenderType renderType = RenderType.solid();
 		BufferBuilder builder = buffers.builder(renderType);
 		CompiledChunkAccess compiledAccess = (CompiledChunkAccess)compiled;
-		if(compiledAccess.getHasLayer().add(renderType))
-			((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
+		// TODO
+		//if(compiledAccess.getHasLayer().add(renderType))
+		//	((RenderChunkAccess)renderChunk).invokeBeginLayer(builder);
 		for(ConnectionSegments connection : connectionParts)
 		{
 			ConnectionPoint connectionOrigin = connection.connection().getEndA();
@@ -98,7 +98,8 @@ public class ConnectionRenderer implements ResourceManagerReloadListener
 					region
 			);
 		}
-		compiledAccess.setIsCompletelyEmpty(false);
+		// TODO gone?
+		//compiledAccess.setIsCompletelyEmpty(false);
 		compiledAccess.getHasBlocks().add(renderType);
 	}
 
