@@ -20,6 +20,7 @@
 - Fix hammer-crushing recipes only working once until the game is restarted (BluSunrize)
 - Fix shaders not unlocking in the manual (BluSunrize)
 - Fix engineer villager houses being too common now since 5 unique variations were added (BluSunrize)
+- Fix some recipes having an unachievable unlock condition (BluSunrize)
 - Correctly tag slabs, stairs and tools (Malte)
 
 ##### Version 1.18.2-8.0.1-147

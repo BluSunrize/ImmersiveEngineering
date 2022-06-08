@@ -6,14 +6,12 @@
     ]
   },
   "criteria": {
-    "has_cokebrick": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:cokebrick"
-            ]
+            "tag": "forge:clay"
           }
         ]
       }
@@ -27,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_cokebrick",
+      "has_item",
       "has_the_recipe"
     ]
   ]

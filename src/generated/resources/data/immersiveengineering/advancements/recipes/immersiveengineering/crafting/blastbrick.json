@@ -6,14 +6,12 @@
     ]
   },
   "criteria": {
-    "has_blastbrick": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:blastbrick"
-            ]
+            "tag": "forge:ingots/brick"
           }
         ]
       }
@@ -27,7 +25,7 @@
   },
   "requirements": [
     [
-      "has_blastbrick",
+      "has_item",
       "has_the_recipe"
     ]
   ]
