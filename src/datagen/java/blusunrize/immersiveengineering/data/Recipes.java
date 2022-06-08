@@ -490,7 +490,7 @@ public class Recipes extends RecipeProvider
 
 		BlueprintCraftingRecipeBuilder.builder("electrode", Misc.GRAPHITE_ELECTRODE)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
-				.build(out, toRL("blueprint/electrode"));
+				.build(out, toRL("blueprint/graphite_electrode"));
 
 		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", BannerPatterns.HAMMER)
 				.addInput(Items.PAPER)
