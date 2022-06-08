@@ -21,7 +21,7 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.core.NonNullList;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -86,6 +86,6 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 				}
 				return null;
 			}
-		return this.transferHandlerHelper.createUserErrorWithTooltip(new TranslatableComponent(Lib.GUI+"assembler.nospace"));
+		return this.transferHandlerHelper.createUserErrorWithTooltip(Component.translatable(Lib.GUI+"assembler.nospace"));
 	}
 }

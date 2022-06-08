@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.client.models;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
 import blusunrize.immersiveengineering.common.register.IEFluids;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
@@ -64,7 +64,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 		ResourceLocation fluidMaskLocation = IEFluids.POTION.get().getAttributes().getStillTexture();
 		for(Pair<BakedModel, RenderType> layer : baseModel.getLayerModels(ItemStack.EMPTY, false))
 		{
-			List<BakedQuad> baseQuads = layer.getFirst().getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
+			List<BakedQuad> baseQuads = layer.getFirst().getQuads(null, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 			List<BakedQuad> newQuads = new ArrayList<>(baseQuads.size());
 			for(BakedQuad baseQuad : baseQuads)
 			{

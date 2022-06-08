@@ -55,6 +55,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEShaders;
 import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.common.util.commands.IEArgumentTypes;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.loot.GrassDrops;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
@@ -131,6 +132,7 @@ public class IEContent
 		IERecipeTypes.init();
 		GrassDrops.init();
 		IELootFunctions.init();
+		IEArgumentTypes.init();
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;

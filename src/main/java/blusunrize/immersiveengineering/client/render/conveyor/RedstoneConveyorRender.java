@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.conveyor.BasicConveyorCacheData;
@@ -10,7 +11,6 @@ import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.RedstoneConveyor;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
@@ -87,7 +87,7 @@ public class RedstoneConveyorRender extends BasicConveyorRender<RedstoneConveyor
 		if(model!=null)
 		{
 			String[] parts = context.isActiveOr(false)?new String[]{"panel", "lamp"}: new String[]{"panel"};
-			baseModel.addAll(model.getQuads(null, null, Utils.RAND, new SinglePropertyModelData<>(
+			baseModel.addAll(model.getQuads(null, null, ApiUtils.RANDOM_SOURCE, new SinglePropertyModelData<>(
 					VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty()
 			)));
 		}

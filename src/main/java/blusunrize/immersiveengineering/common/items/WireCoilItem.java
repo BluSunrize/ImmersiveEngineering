@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -65,18 +64,18 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 	{
 		if(WireType.REDSTONE_CATEGORY.equals(type.getCategory()))
 		{
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"coil.redstone"));
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.redstone"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
 		else if(WireType.STRUCTURE_CATEGORY.equals(type.getCategory()))
 		{
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"coil.construction0"));
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"coil.construction1"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction0"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"coil.construction1"));
 		}
 		if(hasWireLink(stack))
 		{
 			WireLink link = WireLink.readFromItem(stack);
-			list.add(new TranslatableComponent(Lib.DESC_INFO+"attachedToDim", link.cp.getX(),
+			list.add(Component.translatable(Lib.DESC_INFO+"attachedToDim", link.cp.getX(),
 					link.cp.getY(), link.cp.getZ(), link.dimension));
 		}
 	}
@@ -111,7 +110,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 					!coil.canConnectCable(stack, tileEntity))
 			{
 				if(!world.isClientSide)
-					player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"wrongCable"), true);
+					player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"wrongCable"), true);
 				return InteractionResult.FAIL;
 			}
 
@@ -130,22 +129,22 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 					int maxLengthSq = coil.getMaxLength(stack); //not squared yet
 					maxLengthSq *= maxLengthSq;
 					if(!otherLink.dimension.equals(world.dimension()))
-						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"wrongDimension"), true);
+						player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"wrongDimension"), true);
 					else if(otherLink.cp.position().equals(masterPos))
-						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"sameConnection"), true);
+						player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"sameConnection"), true);
 					else if(distanceSq > maxLengthSq)
-						player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"tooFar"), true);
+						player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"tooFar"), true);
 					else
 					{
 						if(!(tileEntityLinkingPos instanceof IImmersiveConnectable iicLink))
-							player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"invalidPoint"), true);
+							player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"invalidPoint"), true);
 						else
 						{
 							if(!iicLink.canConnectCable(wire, otherLink.cp, otherLink.offset)||
 									!iicLink.getConnectionMaster(wire, otherLink.target).equals(otherLink.cp.position())||
 									!coil.canConnectCable(stack, tileEntityLinkingPos))
 							{
-								player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"invalidPoint"), true);
+								player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"invalidPoint"), true);
 							}
 							else
 							{
@@ -162,7 +161,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 												connectionExists = true;
 								}
 								if(connectionExists)
-									player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"connectionExists"), true);
+									player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"connectionExists"), true);
 								else
 								{
 									Set<BlockPos> ignore = new HashSet<>();
@@ -192,7 +191,7 @@ public class WireCoilItem extends IEBaseItem implements IWireCoil
 									}
 									else
 									{
-										player.displayClientMessage(new TranslatableComponent(Lib.CHAT_WARN+"cantSee"), true);
+										player.displayClientMessage(Component.translatable(Lib.CHAT_WARN+"cantSee"), true);
 										ImmersiveEngineering.packetHandler.send(
 												PacketDistributor.PLAYER.with(() -> (ServerPlayer)player),
 												new MessageObstructedConnection(conn, failedReasons)

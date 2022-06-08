@@ -16,7 +16,7 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.UUID;
@@ -40,7 +40,7 @@ public class CommandShaders
 			ShaderRegistry.receivedShaders.get(uuid).clear();
 		ShaderRegistry.recalculatePlayerTotalWeight(uuid);
 		context.getSource().sendSuccess(
-				new TranslatableComponent(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
+				Component.translatable(Lib.CHAT_COMMAND+"shaders.clear.sucess", player.getName()),
 				true);
 		return Command.SINGLE_SUCCESS;
 	}

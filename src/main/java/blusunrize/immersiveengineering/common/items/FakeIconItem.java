@@ -25,7 +25,7 @@ public class FakeIconItem extends IEBaseItem
 	}
 
 	@Override
-	protected boolean allowdedIn(CreativeModeTab group)
+	protected boolean allowedIn(CreativeModeTab group)
 	{
 		return false;
 	}

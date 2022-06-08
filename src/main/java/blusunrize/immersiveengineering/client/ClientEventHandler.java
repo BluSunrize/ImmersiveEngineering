@@ -76,7 +76,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ColumnPos;
@@ -246,7 +245,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 				&&ClientUtils.mc().screen instanceof BlastFurnaceScreen
 				&&BlastFurnaceFuel.isValidBlastFuel(clientLevel, event.getItemStack()))
 			event.getToolTip().add(TextUtils.applyFormat(
-					new TranslatableComponent("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(clientLevel, event.getItemStack())),
+					Component.translatable("desc.immersiveengineering.info.blastFuelTime", BlastFurnaceFuel.getBlastFuelTime(clientLevel, event.getItemStack())),
 					ChatFormatting.GRAY
 			));
 
@@ -671,14 +670,14 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		if(ZoomHandler.isZooming)
 		{
 			if(mayZoom)
-				event.setNewfov(ZoomHandler.fovZoom);
+				event.setNewFov(ZoomHandler.fovZoom);
 			else
 				ZoomHandler.isZooming = false;
 		}
 
 		// Concrete feet slow you, but shouldn't break FoV
 		if(player.getEffect(IEPotions.CONCRETE_FEET.get())!=null)
-			event.setNewfov(1);
+			event.setNewFov(1);
 	}
 
 	@SubscribeEvent
@@ -868,9 +867,10 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			ResourceKey<Level> dimension = ClientUtils.mc().player.getCommandSenderWorld().dimension();
 			List<ResourceLocation> keyList = new ArrayList<>(MineralMix.RECIPES.getRecipeNames(ClientUtils.mc().level));
 			keyList.sort(Comparator.comparing(ResourceLocation::toString));
-			final ColumnPos playerCol = new ColumnPos(ClientUtils.mc().player.blockPosition());
+			BlockPos feetPos = ClientUtils.mc().player.blockPosition();
+			final ColumnPos playerCol = new ColumnPos(feetPos.getX(), feetPos.getZ());
 			// 24: very roughly 16 * sqrt(2)
-			final long maxDistance = ClientUtils.mc().options.renderDistance*24L;
+			final long maxDistance = ClientUtils.mc().options.renderDistance().get()*24L;
 			final long maxDistanceSq = maxDistance*maxDistance;
 			Multimap<ResourceKey<Level>, MineralVein> minerals;
 			synchronized(minerals = ExcavatorHandler.getMineralVeinList())
@@ -882,8 +882,8 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 						continue;
 					transform.pushPose();
 					ColumnPos pos = vein.getPos();
-					final long xDiff = pos.x-playerCol.x;
-					final long zDiff = pos.z-playerCol.z;
+					final long xDiff = pos.x()-playerCol.x();
+					final long zDiff = pos.z()-playerCol.z();
 					long distToPlayerSq = xDiff*xDiff+zDiff*zDiff;
 					if(distToPlayerSq > maxDistanceSq)
 						continue;
@@ -893,7 +893,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					float r = rgb[0];
 					float g = rgb[1];
 					float b = rgb[2];
-					transform.translate(pos.x, 0, pos.z);
+					transform.translate(pos.x(), 0, pos.z());
 					VertexConsumer bufferBuilder = buffers.getBuffer(IERenderTypes.CHUNK_MARKER);
 					Matrix4f mat = transform.last().pose();
 					Matrix3f matN = transform.last().normal();

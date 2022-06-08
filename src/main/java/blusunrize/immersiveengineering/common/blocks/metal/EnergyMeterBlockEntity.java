@@ -34,7 +34,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -84,7 +84,7 @@ public class EnergyMeterBlockEntity extends ImmersiveConnectableBlockEntity impl
 		String transferred = "0";
 		if(transfer > 0)
 			transferred = Utils.formatDouble(transfer, "0.###");
-		ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"energyTransfered", packets, transferred));
+		ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"energyTransfered", packets, transferred));
 		return true;
 	}
 

@@ -16,6 +16,7 @@ import li.cil.oc2.api.bus.device.Device;
 import li.cil.oc2.api.bus.device.provider.BlockDeviceQuery;
 import li.cil.oc2.api.util.Invalidatable;
 import li.cil.oc2.common.bus.device.provider.util.AbstractBlockDeviceProvider;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
@@ -54,7 +55,7 @@ public class DeviceProvider extends AbstractBlockDeviceProvider
 		BlockEntity blockEntity = blockDeviceQuery.getLevel().getBlockEntity(blockDeviceQuery.getQueryPosition());
 		if(!(blockEntity instanceof IEBaseBlockEntity ieBE))
 			return Invalidatable.empty();
-		WrappedOwner<?> owner = wrappedOwners.get(ieBE.getType().getRegistryName());
+		WrappedOwner<?> owner = wrappedOwners.get(Registry.BLOCK_ENTITY_TYPE.getKey(ieBE.getType()));
 		Invalidatable<Device> result = getDevice(owner, ieBE);
 		if(result.isPresent())
 			ieBE.addCapInvalidateHook(result::invalidate);

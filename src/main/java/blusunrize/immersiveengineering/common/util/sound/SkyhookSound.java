@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
@@ -54,7 +55,7 @@ public class SkyhookSound implements TickableSoundInstance
 		if(soundEvent==null)
 			this.sound = SoundManager.EMPTY_SOUND;
 		else
-			this.sound = soundEvent.getSound();
+			this.sound = soundEvent.getSound(ApiUtils.RANDOM_SOURCE);
 		return soundEvent;
 	}
 

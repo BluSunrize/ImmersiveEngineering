@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -54,7 +53,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
 		if(distributeButton.isHoveredOrFocused())
-			addLine.accept(new TranslatableComponent(Lib.GUI_CONFIG+"arcfurnace.distribute"));
+			addLine.accept(Component.translatable(Lib.GUI_CONFIG+"arcfurnace.distribute"));
 	}
 
 	@Override

@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.common.gui.RefineryContainer;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -56,6 +55,6 @@ public class RefineryScreen extends IEContainerScreen<RefineryContainer>
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
 		Slot s = this.menu.slots.get(0);
 		if(!s.hasItem()&&mouseX > leftPos+s.x&&mouseX < leftPos+s.x+16&&mouseY > topPos+s.y&&mouseY < topPos+s.y+16)
-			addLine.accept(new TranslatableComponent(Lib.DESC_INFO+"refinery.slot.catalyst"));
+			addLine.accept(Component.translatable(Lib.DESC_INFO+"refinery.slot.catalyst"));
 	}
 }

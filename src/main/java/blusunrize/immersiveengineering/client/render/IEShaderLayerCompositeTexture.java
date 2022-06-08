@@ -17,10 +17,10 @@ import net.minecraft.client.renderer.texture.AbstractTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.function.IntFunction;
 
 import static com.mojang.blaze3d.platform.NativeImage.*;
@@ -43,36 +43,35 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 	public void load(@Nonnull ResourceManager resourceManager)
 	{
 		this.releaseId();
-		Resource iresource = null;
-		NativeImage finalTexture = null;
-		NativeImage originalImage = null;
-		try
+		Resource iresource = resourceManager.getResource(this.canvasTexture).orElseThrow();
+		try(
+				InputStream imageStream = iresource.open();
+				NativeImage originalImage = NativeImage.read(imageStream);
+		)
 		{
-			iresource = resourceManager.getResource(this.canvasTexture);
-			originalImage = NativeImage.read(iresource.getInputStream());
 			int canvasWidth = originalImage.getWidth();
 			int canvasHeight = originalImage.getHeight();
 
-			finalTexture = new NativeImage(canvasWidth, canvasHeight, true);
+			NativeImage finalTexture = new NativeImage(canvasWidth, canvasHeight, true);
 			int layer = 0;
 
 			while(layer < 17&&layer < this.layers.length)
 			{
-				Resource iresource1 = null;
+				String texPath = this.layers[layer].getTexture().getPath();
 
-				try
+				if(!texPath.startsWith("textures/"))
+					texPath = "textures/"+texPath;
+				if(!texPath.endsWith(".png"))
+					texPath += ".png";
+				String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
+				Vector4f colour = this.layers[layer].getColor();
+
+				Resource iresource1 = resourceManager.getResource(new ResourceLocation(texture)).orElseThrow();
+				try(
+						InputStream texStream = iresource1.open();
+						NativeImage texureImage = NativeImage.read(texStream);
+				)
 				{
-					String texPath = this.layers[layer].getTexture().getPath();
-
-					if(!texPath.startsWith("textures/"))
-						texPath = "textures/"+texPath;
-					if(!texPath.endsWith(".png"))
-						texPath += ".png";
-					String texture = this.layers[layer].getTexture().getNamespace()+":"+texPath;
-					Vector4f colour = this.layers[layer].getColor();
-
-					iresource1 = resourceManager.getResource(new ResourceLocation(texture));
-					NativeImage texureImage = NativeImage.read(iresource1.getInputStream());
 
 					float[] mod = new float[]{colour.x(), colour.y(), colour.z(), colour.w()};
 					if(mod[3] < 0.2)
@@ -150,9 +149,6 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 					{
 						e.printStackTrace();
 					}
-				} finally
-				{
-					IOUtils.closeQuietly(iresource1);
 				}
 
 				++layer;
@@ -163,13 +159,6 @@ public class IEShaderLayerCompositeTexture extends AbstractTexture
 		} catch(IOException ioexception)
 		{
 			IELogger.error("Couldn't load layered image", ioexception);
-		} finally
-		{
-			IOUtils.closeQuietly(iresource);
-			if(originalImage!=null)
-				originalImage.close();
-			if(finalTexture!=null)
-				finalTexture.close();
 		}
 	}
 

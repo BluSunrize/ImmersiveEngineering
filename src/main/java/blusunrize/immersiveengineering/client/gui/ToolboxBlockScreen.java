@@ -12,7 +12,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.ToolboxBlockContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 
@@ -41,7 +40,7 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 		if(slot >= 0)
 			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
 		if(ss!=null)
-			addGray.accept(new TranslatableComponent(Lib.DESC_INFO+"toolbox."+ss));
+			addGray.accept(Component.translatable(Lib.DESC_INFO+"toolbox."+ss));
 	}
 
 	@Override

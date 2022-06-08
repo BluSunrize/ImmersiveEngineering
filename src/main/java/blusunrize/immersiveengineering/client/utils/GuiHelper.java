@@ -59,8 +59,7 @@ public class GuiHelper
 		bufferbuilder.vertex(mat, x+w, y, 0).color(color[0], color[1], color[2], 1).endVertex();
 		bufferbuilder.vertex(mat, x, y, 0).color(color[0], color[1], color[2], 1).endVertex();
 		bufferbuilder.unsetDefaultColor();
-		bufferbuilder.end();
-		BufferUploader.end(bufferbuilder);
+		BufferUploader.drawWithShader(bufferbuilder.end());
 		RenderSystem.enableTexture();
 		RenderSystem.disableBlend();
 	}

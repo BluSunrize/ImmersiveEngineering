@@ -29,7 +29,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -130,7 +129,7 @@ public class IEShieldItem extends UpgradeableToolItem
 		{
 			IEnergyStorage energyStorage = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
 			String stored = energyStorage.getEnergyStored()+"/"+getMaxEnergyStored(stack);
-			list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
+			list.add(Component.translatable(Lib.DESC+"info.energyStored", stored));
 		}
 	}
 

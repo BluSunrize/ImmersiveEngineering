@@ -343,8 +343,8 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 			{
 				ResourceLocation rl = new ResourceLocation(s);
 				rl = new ResourceLocation(rl.getNamespace(), String.format("%s/%s%s", "textures", rl.getPath(), ".png"));
-				Resource resource = ClientUtils.mc().getResourceManager().getResource(rl);
-				BufferedImage bufferedImage = ClientUtils.readBufferedImage(resource.getInputStream());
+				Resource resource = ClientUtils.mc().getResourceManager().getResource(rl).orElseThrow();
+				BufferedImage bufferedImage = ClientUtils.readBufferedImage(resource.open());
 				if(bufferedImage!=null)
 					images.add(bufferedImage);
 			}

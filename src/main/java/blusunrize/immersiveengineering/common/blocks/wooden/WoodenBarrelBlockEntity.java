@@ -29,7 +29,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -309,12 +308,12 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 			Optional<Boolean> ret = fOptional.map((f) -> {
 				if(f.getFluid().getAttributes().isGaseous(f))
 				{
-					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"noGasAllowed"));
+					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"noGasAllowed"));
 					return true;
 				}
 				else if(f.getFluid().getAttributes().getTemperature(f) >= WoodenBarrelBlockEntity.IGNITION_TEMPERATURE)
 				{
-					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"tooHot"));
+					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"tooHot"));
 					return true;
 				}
 				else

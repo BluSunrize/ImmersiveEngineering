@@ -33,7 +33,6 @@ import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -168,7 +167,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 	{
 		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
 		String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
-		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored));
+		list.add(Component.translatable(Lib.DESC+"info.energyStored", stored));
 	}
 
 	@Nonnull

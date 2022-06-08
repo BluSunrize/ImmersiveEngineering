@@ -31,7 +31,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ColumnPos;
@@ -67,7 +66,7 @@ public class CoresampleItem extends IEBaseItem
 	public static void getCoresampleInfo(ItemStack coresample, List<Component> list, ChatFormatting baseColor, @Nullable Level world, boolean showYield, boolean showTimestamp)
 	{
 		if(coresample.getOrCreateTag().contains("coords"))
-			list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.outdated"));
+			list.add(Component.translatable(Lib.DESC_INFO+"coresample.outdated"));
 
 		ColumnPos coords = getCoords(coresample);
 		if(coords!=null)
@@ -79,12 +78,12 @@ public class CoresampleItem extends IEBaseItem
 							Utils.formatDouble(data.getPercentageInTotalSample()*100, "0.00")+"% "
 					);
 					MineralMix mineral = data.getType();
-					component.append(new TranslatableComponent(mineral.getTranslationKey()));
+					component.append(Component.translatable(mineral.getTranslationKey()));
 					list.add(component.withStyle(baseColor));
 					if(showYield)
 					{
 						component = Component.literal("  ");
-						component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.saturation",
+						component.append(Component.translatable(Lib.DESC_INFO+"coresample.saturation",
 								Utils.formatDouble(data.getSaturation()*100, "0.00")
 						));
 						list.add(component.withStyle(ChatFormatting.DARK_GRAY));
@@ -95,15 +94,15 @@ public class CoresampleItem extends IEBaseItem
 						int yield_ = ExcavatorHandler.mineralVeinYield-data.getDepletion();
 						yield_ *= (1-mineral.failChance);
 						if(ExcavatorHandler.mineralVeinYield==0)
-							component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.infinite"));
+							component.append(Component.translatable(Lib.DESC_INFO+"coresample.infinite"));
 						else
-							component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.yield",
+							component.append(Component.translatable(Lib.DESC_INFO+"coresample.yield",
 									yield_));
 						list.add(component.withStyle(ChatFormatting.DARK_GRAY));
 					}
 				});
 			else
-				list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.noMineral").withStyle(baseColor));
+				list.add(Component.translatable(Lib.DESC_INFO+"coresample.noMineral").withStyle(baseColor));
 
 			ResourceKey<Level> dimension = getDimension(coresample);
 			if(dimension!=null)
@@ -115,7 +114,7 @@ public class CoresampleItem extends IEBaseItem
 			}
 			ColumnPos pos = getCoords(coresample);
 			if(pos!=null)
-				list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.pos", pos.x, pos.z).withStyle(baseColor));
+				list.add(Component.translatable(Lib.DESC_INFO+"coresample.pos", pos.x(), pos.z()).withStyle(baseColor));
 
 			if(showTimestamp)
 			{
@@ -127,12 +126,12 @@ public class CoresampleItem extends IEBaseItem
 					if(dist < 0)
 						list.add(Component.literal("Somehow this sample is dated in the future...are you a time traveller?!").withStyle(ChatFormatting.RED));
 					else
-						list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.timestamp", TimestampFormat.formatTimestamp(dist, TimestampFormat.DHM)).withStyle(baseColor));
+						list.add(Component.translatable(Lib.DESC_INFO+"coresample.timestamp", TimestampFormat.formatTimestamp(dist, TimestampFormat.DHM)).withStyle(baseColor));
 				}
 				else if(hasStamp)
-					list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.timezone").withStyle(baseColor));
+					list.add(Component.translatable(Lib.DESC_INFO+"coresample.timezone").withStyle(baseColor));
 				else
-					list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.noTimestamp").withStyle(baseColor));
+					list.add(Component.translatable(Lib.DESC_INFO+"coresample.noTimestamp").withStyle(baseColor));
 			}
 		}
 	}

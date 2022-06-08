@@ -176,7 +176,9 @@ public class ShaderMinecartRenderer<T extends AbstractMinecart> extends Minecart
 				mutableRenderers.put(
 						entry.getKey(),
 						new ShaderMinecartRenderer<>(minecartRender, new Context(
-								rendererManager, mc.getItemRenderer(), mc.getResourceManager(), mc.getEntityModels(), mc.font
+								rendererManager, mc.getItemRenderer(), mc.getBlockRenderer(),
+								mc.getEntityRenderDispatcher().getItemInHandRenderer(),
+								mc.getResourceManager(), mc.getEntityModels(), mc.font
 						))
 				);
 		rendererManager.renderers = ImmutableMap.copyOf(mutableRenderers);

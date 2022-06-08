@@ -31,7 +31,6 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -112,8 +111,8 @@ public class ShaderManualElement extends SpecialManualElements
 
 		this.name = TextUtils.applyFormat(shaderItem.getHoverName(), ChatFormatting.BOLD);
 		MutableComponent textAssembly = Component.literal("");
-		textAssembly.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.level"), ChatFormatting.BOLD));
-		textAssembly.append(new TranslatableComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
+		textAssembly.append(TextUtils.applyFormat(Component.translatable("desc.immersiveengineering.info.shader.level"), ChatFormatting.BOLD));
+		textAssembly.append(Component.translatable("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
 		if(unlocked)
 		{
 			String set = shader.info_set==null||shader.info_set.isEmpty()?null: ManualUtils.attemptStringTranslation(Lib.DESC_INFO+"shader.set.%s", shader.info_set);
@@ -122,15 +121,15 @@ public class ShaderManualElement extends SpecialManualElements
 
 			if(set!=null)
 				textAssembly.append("\n")
-						.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.set"), ChatFormatting.BOLD))
+						.append(TextUtils.applyFormat(Component.translatable("desc.immersiveengineering.info.shader.set"), ChatFormatting.BOLD))
 						.append(" "+set);
 			if(reference!=null)
 				textAssembly.append("\n")
-						.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.reference"), ChatFormatting.BOLD))
+						.append(TextUtils.applyFormat(Component.translatable("desc.immersiveengineering.info.shader.reference"), ChatFormatting.BOLD))
 						.append("\n"+reference);
 			if(details!=null)
 				textAssembly.append("\n")
-						.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.details"), ChatFormatting.BOLD))
+						.append(TextUtils.applyFormat(Component.translatable("desc.immersiveengineering.info.shader.details"), ChatFormatting.BOLD))
 						.append("\n"+details);
 
 			String cost = Integer.toString(replicationCost.getCount());
@@ -147,10 +146,10 @@ public class ShaderManualElement extends SpecialManualElements
 		}
 		else
 		{
-			textAssembly.append("\n\n").append(new TranslatableComponent("ie.manual.entry.shaderList.noInfo"));
+			textAssembly.append("\n\n").append(Component.translatable("ie.manual.entry.shaderList.noInfo"));
 			if(player.getAbilities().instabuild)
 				buttons.add(new GuiButtonManual(gui, x+10, y+120, 100, 16,
-						new TranslatableComponent("ie.manual.entry.shaderList.unlock"),
+						Component.translatable("ie.manual.entry.shaderList.unlock"),
 						btn -> {
 							UUID playerId = mc().player.getUUID();
 							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.UNLOCK, shader.getName()));

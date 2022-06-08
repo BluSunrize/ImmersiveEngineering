@@ -28,7 +28,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.CreativeModeTab;
@@ -119,17 +118,17 @@ public class ShaderItem extends IEBaseItem implements IShaderItem
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		//TODO proper translation
-		list.add(new TranslatableComponent(Lib.DESC_INFO+"shader.level")
+		list.add(Component.translatable(Lib.DESC_INFO+"shader.level")
 				.append(this.getRarity(stack).color.toString())
-				.append(new TranslatableComponent(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
+				.append(Component.translatable(Lib.DESC_INFO+"shader.rarity."+this.getRarity(stack).name().toLowerCase(Locale.US)))
 		);
 		if(!Screen.hasShiftDown())
-			list.add(new TranslatableComponent(Lib.DESC_INFO+"shader.applyTo")
+			list.add(Component.translatable(Lib.DESC_INFO+"shader.applyTo")
 					.append(" ")
-					.append(new TranslatableComponent(Lib.DESC_INFO+"holdShift")));
+					.append(Component.translatable(Lib.DESC_INFO+"holdShift")));
 		else
 		{
-			list.add(new TranslatableComponent(Lib.DESC_INFO+"shader.applyTo"));
+			list.add(Component.translatable(Lib.DESC_INFO+"shader.applyTo"));
 			ResourceLocation rl = getShaderName(stack);
 			if(rl!=null)
 			{
@@ -137,7 +136,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem
 				for(ShaderCase sCase : array)
 					if(!(sCase instanceof ShaderCaseItem))
 						list.add(TextUtils.applyFormat(
-								new TranslatableComponent(Lib.DESC_INFO+"shader."+sCase.getShaderType()),
+								Component.translatable(Lib.DESC_INFO+"shader."+sCase.getShaderType()),
 								ChatFormatting.DARK_GRAY
 						));
 			}
@@ -152,7 +151,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem
 		ResourceLocation rl = getShaderName(stack);
 		if(rl!=null)
 			itc.append(": ")
-					.append(new TranslatableComponent("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
+					.append(Component.translatable("item."+rl.getNamespace()+".shader.name."+rl.getPath()));
 		return itc;
 	}
 
@@ -167,7 +166,7 @@ public class ShaderItem extends IEBaseItem implements IShaderItem
 	@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list)
 	{
-		if(this.allowdedIn(tab))
+		if(this.allowedIn(tab))
 			for(ResourceLocation key : ShaderRegistry.shaderRegistry.keySet())
 			{
 				ItemStack s = new ItemStack(this);

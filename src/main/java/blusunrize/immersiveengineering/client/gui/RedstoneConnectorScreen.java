@@ -22,7 +22,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 
@@ -90,7 +89,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 
 		if(buttonInOut.isHoveredOrFocused())
 		{
-			tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"redstone_iomode"));
+			tooltip.add(Component.translatable(Lib.GUI_CONFIG+"redstone_iomode"));
 			tooltip.add(TextUtils.applyFormat(
 					buttonInOut.getState().getTextComponent(),
 					ChatFormatting.GRAY
@@ -100,9 +99,9 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 		for(int i = 0; i < colorButtons.length; i++)
 			if(colorButtons[i].isHoveredOrFocused())
 			{
-				tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color"));
+				tooltip.add(Component.translatable(Lib.GUI_CONFIG+"redstone_color"));
 				tooltip.add(TextUtils.applyFormat(
-						new TranslatableComponent("color.minecraft."+DyeColor.byId(i).getName()),
+						Component.translatable("color.minecraft."+DyeColor.byId(i).getName()),
 						ChatFormatting.GRAY
 				));
 			}

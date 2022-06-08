@@ -23,8 +23,8 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -193,10 +193,10 @@ public class BulletItem extends IEBaseItem
 	public Component getName(@Nonnull ItemStack stack)
 	{
 		String s = "item.immersiveengineering.bullet.";
-		String key = getRegistryName().getPath();
+		String key = Registry.ITEM.getKey(this).getPath();
 		s += key;
 		s = type.getTranslationKey(stack, s);
-		return new TranslatableComponent(s);
+		return Component.translatable(s);
 	}
 
 	@Override
@@ -376,7 +376,7 @@ public class BulletItem extends IEBaseItem
 			{
 				int color = ((IColouredItem)stack.getItem()).getColourForIEItem(stack, 1);
 				list.add(FontUtils.withAppendColoredColour(
-						new TranslatableComponent(Lib.DESC_INFO+"bullet.flareColour"),
+						Component.translatable(Lib.DESC_INFO+"bullet.flareColour"),
 						color
 				));
 			}

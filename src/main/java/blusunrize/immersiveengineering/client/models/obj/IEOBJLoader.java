@@ -86,7 +86,7 @@ public class IEOBJLoader implements IModelLoader<IEOBJModel>
 		{
 			if(manager==null)
 				manager = Minecraft.getInstance().getResourceManager();
-			return manager.getResource(path).getInputStream();
+			return manager.getResource(path).orElseThrow().open();
 		} catch(IOException e)
 		{
 			throw new RuntimeException(e);

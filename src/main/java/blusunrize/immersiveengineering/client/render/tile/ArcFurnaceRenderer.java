@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.ClientUtils;
@@ -16,7 +17,6 @@ import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmode
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -63,7 +63,7 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceBlockEnt
 			renderedParts.add("active");
 
 		matrixStack.pushPose();
-		List<BakedQuad> quads = ELECTRODES.get().getQuads(null, null, Utils.RAND, new SinglePropertyModelData<>(
+		List<BakedQuad> quads = ELECTRODES.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, new SinglePropertyModelData<>(
 				VisibilityList.show(renderedParts), DynamicSubmodelCallbacks.getProperty()
 		));
 		matrixStack.pushPose();

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
@@ -19,10 +18,8 @@ import blusunrize.immersiveengineering.api.utils.Raytracer;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.ImmutableBiMap;
-import com.google.common.collect.Lists;
 import com.mojang.math.Vector4f;
 import net.minecraft.advancements.Advancement;
-import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -40,6 +37,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.Containers;
 import net.minecraft.world.damagesource.DamageSource;
@@ -98,6 +96,8 @@ import java.util.function.Predicate;
 
 public class Utils
 {
+	@Deprecated(forRemoval = true)
+	// Replace by the ApiUtils fields
 	public static final Random RAND = new Random();
 	public static final DecimalFormat NUMBERFORMAT_PREFIXED = new DecimalFormat("+#;-#");
 
@@ -171,7 +171,9 @@ public class Utils
 		return world.getBlockState(pos).getBlock()==b;
 	}
 
-	public static double generateLuckInfluencedDouble(double median, double deviation, double luck, Random rng, boolean isBad, double luckScale)
+	public static double generateLuckInfluencedDouble(
+			double median, double deviation, double luck, RandomSource rng, boolean isBad, double luckScale
+	)
 	{
 		double number = rng.nextDouble()*deviation;
 		if(isBad)
@@ -697,6 +699,12 @@ public class Utils
 		private static final AbstractContainerMenu nullContainer = new AbstractContainerMenu(MenuType.CRAFTING, 0)
 		{
 			@Override
+			public ItemStack quickMoveStack(Player p_38941_, int p_38942_)
+			{
+				return ItemStack.EMPTY;
+			}
+
+			@Override
 			public void slotsChanged(Container paramIInventory)
 			{
 			}
@@ -783,44 +791,6 @@ public class Utils
 			if(inv.get(slot).getCount() <= 0)
 				inv.set(slot, ItemStack.EMPTY);
 		}
-	}
-
-	public static void shuffleLootItems(List<ItemStack> stacks, int slotAmount, Random rand)
-	{
-		List<ItemStack> list = Lists.newArrayList();
-		Iterator<ItemStack> iterator = stacks.iterator();
-		while(iterator.hasNext())
-		{
-			ItemStack itemstack = iterator.next();
-			if(itemstack.getCount() <= 0)
-				iterator.remove();
-			else if(itemstack.getCount() > 1)
-			{
-				list.add(itemstack);
-				iterator.remove();
-			}
-		}
-		slotAmount = slotAmount-stacks.size();
-		while(slotAmount > 0&&list.size() > 0)
-		{
-			ItemStack itemstack2 = list.remove(Mth.nextInt(rand, 0, list.size()-1));
-			int i = Mth.nextInt(rand, 1, itemstack2.getCount()/2);
-			itemstack2.shrink(i);
-			ItemStack itemstack1 = itemstack2.copy();
-			itemstack1.setCount(i);
-
-			if(itemstack2.getCount() > 1&&rand.nextBoolean())
-				list.add(itemstack2);
-			else
-				stacks.add(itemstack2);
-
-			if(itemstack1.getCount() > 1&&rand.nextBoolean())
-				list.add(itemstack1);
-			else
-				stacks.add(itemstack1);
-		}
-		stacks.addAll(list);
-		Collections.shuffle(stacks, rand);
 	}
 
 	public static int calcRedstoneFromInventory(IIEInventory inv)

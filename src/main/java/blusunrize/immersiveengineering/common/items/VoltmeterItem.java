@@ -24,11 +24,9 @@ import blusunrize.immersiveengineering.common.network.MessageRequestEnergyUpdate
 import blusunrize.immersiveengineering.common.network.MessageRequestRedstoneUpdate;
 import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -63,7 +61,7 @@ public class VoltmeterItem extends IEBaseItem
 		if(WirecoilUtils.hasWireLink(stack))
 		{
 			WireLink link = WireLink.readFromItem(stack);
-			tooltip.add(new TranslatableComponent(
+			tooltip.add(Component.translatable(
 					Lib.DESC_INFO+"attachedToDim",
 					link.cp.getX(),
 					link.cp.getY(),
@@ -89,7 +87,7 @@ public class VoltmeterItem extends IEBaseItem
 				int max = energyCap.getMaxEnergyStored();
 				int stored = energyCap.getEnergyStored();
 				if(max > 0)
-					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"energyStorage", stored, max));
+					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"energyStorage", stored, max));
 				return InteractionResult.SUCCESS;
 			}
 		}
@@ -130,10 +128,9 @@ public class VoltmeterItem extends IEBaseItem
 									loss = energyPath.loss;
 								else
 									loss = 1;
-								player.sendMessage(new TranslatableComponent(
-										Lib.CHAT_INFO+"averageLoss",
-										Utils.formatDouble(loss*100, "###.000")
-								), Util.NIL_UUID);
+								player.sendSystemMessage(Component.translatable(
+										Lib.CHAT_INFO+"averageLoss", Utils.formatDouble(loss*100, "###.000")
+								));
 							}
 						}
 					}
@@ -144,7 +141,7 @@ public class VoltmeterItem extends IEBaseItem
 			else
 			{
 				if(!world.isClientSide)
-					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"redstoneLevel", MessageRequestRedstoneUpdate.redstoneLevel(world, pos)));
+					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"redstoneLevel", MessageRequestRedstoneUpdate.redstoneLevel(world, pos)));
 			}
 		}
 		return InteractionResult.PASS;

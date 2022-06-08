@@ -70,8 +70,7 @@ public class VertexBufferHolder implements IVertexBufferHolder
 					BufferBuilder bb = tes.getBuilder();
 					bb.begin(Mode.QUADS, BUFFER_FORMAT);
 					renderToBuilder(bb, new PoseStack(), 0, 0, false);
-					bb.end();
-					vb.upload(bb);
+					vb.upload(bb.end());
 					return vb;
 				},
 				VertexBuffer::close

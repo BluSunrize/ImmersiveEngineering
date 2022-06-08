@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -44,7 +44,7 @@ public class DynamicModel
 
 	public List<BakedQuad> getNullQuads(IModelData data)
 	{
-		return get().getQuads(null, null, Utils.RAND, data);
+		return get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, data);
 	}
 
 	public ResourceLocation getName()

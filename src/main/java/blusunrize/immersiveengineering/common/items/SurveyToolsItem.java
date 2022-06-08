@@ -16,7 +16,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerPlayer;
@@ -93,7 +92,7 @@ public class SurveyToolsItem extends IEBaseItem
 		BlockPos pos = context.getClickedPos();
 		if(!CAN_USE_ON.stream().anyMatch(predicate -> predicate.test(world, pos)))
 		{
-			player.displayClientMessage(new TranslatableComponent(Lib.CHAT_INFO+"survey.wrong_block"), true);
+			player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"survey.wrong_block"), true);
 			return InteractionResult.FAIL;
 		}
 		player.startUsingItem(context.getHand());
@@ -110,7 +109,7 @@ public class SurveyToolsItem extends IEBaseItem
 		MineralVein vein = ExcavatorHandler.getRandomMineral(world, pos);
 		if(vein==null || vein.getMineral(world)==null)
 		{
-			player.displayClientMessage(new TranslatableComponent(Lib.CHAT_INFO+"survey.no_vein"), true);
+			player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"survey.no_vein"), true);
 			return stack;
 		}
 
@@ -134,16 +133,16 @@ public class SurveyToolsItem extends IEBaseItem
 		});
 		if(tooClose)
 		{
-			player.displayClientMessage(new TranslatableComponent(Lib.CHAT_INFO+"survey.too_close"), true);
+			player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"survey.too_close"), true);
 			return stack;
 		}
 
 		Component response;
 		// Get angle between postion->center vector and standard (south facing) vector
-		Vec2 vecToCenter = new Vec2(vein.getPos().x-pos.getX(), vein.getPos().z-pos.getZ());
+		Vec2 vecToCenter = new Vec2(vein.getPos().x()-pos.getX(), vein.getPos().z()-pos.getZ());
 		if(vecToCenter.x==0&&vecToCenter.y==0) // hit the vein center directly
-			response = new TranslatableComponent(Lib.CHAT_INFO+"survey.hint.center",
-					new TranslatableComponent(vein.getMineral(world).getTranslationKey()));
+			response = Component.translatable(Lib.CHAT_INFO+"survey.hint.center",
+					Component.translatable(vein.getMineral(world).getTranslationKey()));
 		else
 		{
 			double angle = Math.toDegrees(Math.atan2(vecToCenter.y, vecToCenter.x));
@@ -152,20 +151,20 @@ public class SurveyToolsItem extends IEBaseItem
 			switch(dataCount)
 			{
 				case 0: // hint at the type of vein
-					response = new TranslatableComponent(Lib.CHAT_INFO+"survey.hint.1",
-							new TranslatableComponent(vein.getMineral(world).getTranslationKey()));
+					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.1",
+							Component.translatable(vein.getMineral(world).getTranslationKey()));
 					break;
 				case 1: // hint at the direction
-					response = new TranslatableComponent(Lib.CHAT_INFO+"survey.hint.2",
-							new TranslatableComponent(vein.getMineral(world).getTranslationKey()),
-							new TranslatableComponent(Lib.CHAT_INFO+"survey.direction."+segment));
+					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.2",
+							Component.translatable(vein.getMineral(world).getTranslationKey()),
+							Component.translatable(Lib.CHAT_INFO+"survey.direction."+segment));
 					break;
 				case 2: // hint at distance
 				default:
-					response = new TranslatableComponent(Lib.CHAT_INFO+"survey.hint.3",
-							new TranslatableComponent(vein.getMineral(world).getTranslationKey()),
+					response = Component.translatable(Lib.CHAT_INFO+"survey.hint.3",
+							Component.translatable(vein.getMineral(world).getTranslationKey()),
 							Math.round(Math.sqrt(vecToCenter.x*vecToCenter.x+vecToCenter.y*vecToCenter.y)),
-							new TranslatableComponent(Lib.CHAT_INFO+"survey.direction."+segment));
+							Component.translatable(Lib.CHAT_INFO+"survey.direction."+segment));
 					break;
 			}
 		}
@@ -198,7 +197,7 @@ public class SurveyToolsItem extends IEBaseItem
 		for(Tag nbt : list)
 		{
 			CompoundTag tmp = (CompoundTag)nbt;
-			if(dimString.equals(tmp.getString("dimension"))&&tmp.getInt("x")==veinPos.x&&tmp.getInt("z")==veinPos.z)
+			if(dimString.equals(tmp.getString("dimension"))&&tmp.getInt("x")==veinPos.x()&&tmp.getInt("z")==veinPos.z())
 			{
 				tag = tmp;
 				break;
@@ -208,8 +207,8 @@ public class SurveyToolsItem extends IEBaseItem
 		{
 			tag = new CompoundTag();
 			tag.putString("dimension", dimString);
-			tag.putInt("x", veinPos.x);
-			tag.putInt("z", veinPos.z);
+			tag.putInt("x", veinPos.x());
+			tag.putInt("z", veinPos.z());
 			list.add(tag);
 			surveyTools.getOrCreateTag().put(DATA_KEY, list);
 		}

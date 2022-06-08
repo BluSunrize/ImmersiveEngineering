@@ -20,6 +20,7 @@ import com.google.common.base.Suppliers;
 import dan200.computercraft.api.ComputerCraftAPI;
 import dan200.computercraft.api.peripheral.IPeripheral;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -94,7 +95,7 @@ public class ComputerCraftCompatModule extends StandardIECompatModule
 		if(PERIPHERAL_CAPABILITY==null)
 			return;
 		BlockEntity te = ev.getObject();
-		PeripheralCreator<?> creator = knownPeripherals.get(te.getType().getRegistryName());
+		PeripheralCreator<?> creator = knownPeripherals.get(Registry.BLOCK_ENTITY_TYPE.getKey(te.getType()));
 		if(creator!=null)
 		{
 			ev.addCapability(CAP_NAME, new ICapabilityProvider()

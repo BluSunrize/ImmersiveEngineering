@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -22,7 +23,7 @@ public class IETickableSound extends AbstractTickableSoundInstance
 
 	public IETickableSound(SoundEvent event, SoundSource category, float volume, float pitch, Supplier<Boolean> tickFunction, Consumer<IETickableSound> onDoneFunction)
 	{
-		super(event, category);
+		super(event, category, ApiUtils.RANDOM_SOURCE);
 		this.volume = volume;
 		this.pitch = pitch;
 		this.tickFunction = tickFunction;

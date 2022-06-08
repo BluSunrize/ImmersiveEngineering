@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
@@ -149,7 +148,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	{
 		int color = getRGBInt(stack, 1);
 		list.add(FontUtils.withAppendColoredColour(
-				new TranslatableComponent(Lib.DESC_INFO+"colour"),
+				Component.translatable(Lib.DESC_INFO+"colour"),
 				color
 		));
 	}

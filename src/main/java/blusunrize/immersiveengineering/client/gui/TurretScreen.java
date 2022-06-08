@@ -24,7 +24,6 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import org.lwjgl.glfw.GLFW;
@@ -83,7 +82,7 @@ public abstract class TurretScreen<T extends TurretBlockEntity<T>, C extends Tur
 					}
 				}, tile.targetList.toArray(new String[0]))
 				.setPadding(0, 0, 2, 2));
-		this.addRenderableWidget(new GuiButtonIE(leftPos+74, topPos+84, 24, 16, new TranslatableComponent(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
+		this.addRenderableWidget(new GuiButtonIE(leftPos+74, topPos+84, 24, 16, Component.translatable(Lib.GUI_CONFIG+"turret.add"), TEXTURE, 176, 65,
 				btn -> {
 					CompoundTag tag = new CompoundTag();
 					int listOffset = -1;

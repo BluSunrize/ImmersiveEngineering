@@ -15,7 +15,6 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -49,11 +48,11 @@ public class TeslaCoilProvider implements IProbeInfoProvider
 				return;
 			}
 
-			probeInfo.text(new TranslatableComponent(
+			probeInfo.text(Component.translatable(
 					Lib.CHAT_INFO+"rsControl."+(teslaCoil.redstoneControlInverted?"invertedOn": "invertedOff")
 			));
 
-			probeInfo.text(new TranslatableComponent(
+			probeInfo.text(Component.translatable(
 					Lib.CHAT_INFO+"tesla."+(teslaCoil.lowPower?"lowPower": "highPower")
 			));
 		}

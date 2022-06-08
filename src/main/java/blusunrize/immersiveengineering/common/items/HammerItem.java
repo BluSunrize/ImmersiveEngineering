@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
@@ -18,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IDirectio
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.advancements.IEAdvancements;
 import blusunrize.immersiveengineering.common.util.orientation.RotationUtil;
 import net.minecraft.ChatFormatting;
@@ -30,7 +30,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -79,10 +78,10 @@ public class HammerItem extends IEBaseItem
 	{
 		if(!ItemNBTHelper.hasKey(stack, nbtKey, Tag.TAG_LIST))
 			return;
-		MutableComponent title = new TranslatableComponent(titleKey);
+		MutableComponent title = Component.translatable(titleKey);
 		ListTag tagList = stack.getOrCreateTag().getList(nbtKey, Tag.TAG_STRING);
 		if(!Screen.hasShiftDown())
-			list.add(title.append(" ").append(new TranslatableComponent(Lib.DESC_INFO+"holdShift")));
+			list.add(title.append(" ").append(Component.translatable(Lib.DESC_INFO+"holdShift")));
 		else
 		{
 			list.add(title);
@@ -210,7 +209,7 @@ public class HammerItem extends IEBaseItem
 	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		if(container.hurt(1, Utils.RAND, null))
+		if(container.hurt(1, ApiUtils.RANDOM_SOURCE, null))
 			return ItemStack.EMPTY;
 		else
 			return container;

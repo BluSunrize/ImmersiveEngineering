@@ -42,7 +42,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -99,8 +99,8 @@ public class Advancements extends AdvancementProvider
 
 			Advancement rtfm = Advancement.Builder.advancement()
 					.display(Tools.MANUAL,
-							new TranslatableComponent("advancement.immersiveengineering.root"),
-							new TranslatableComponent("advancement.immersiveengineering.root.desc"),
+							Component.translatable("advancement.immersiveengineering.root"),
+							Component.translatable("advancement.immersiveengineering.root.desc"),
 							new ResourceLocation("immersiveengineering:textures/block/wooden_decoration/treated_wood.png"),
 							FrameType.TASK, true, true, false)
 					.addCriterion("manual", InventoryChangeTrigger.TriggerInstance.hasItems(Tools.MANUAL))
@@ -312,16 +312,16 @@ public class Advancements extends AdvancementProvider
 	protected static Advancement.Builder advancement(Advancement parent, ItemLike display, String name, FrameType frame, boolean showToast, boolean announceToChat, boolean hidden)
 	{
 		return Advancement.Builder.advancement().parent(parent).display(display,
-				new TranslatableComponent("advancement.immersiveengineering."+name),
-				new TranslatableComponent("advancement.immersiveengineering."+name+".desc"),
+				Component.translatable("advancement.immersiveengineering."+name),
+				Component.translatable("advancement.immersiveengineering."+name+".desc"),
 				null, frame, showToast, announceToChat, hidden);
 	}
 
 	protected static Advancement.Builder advancement(Advancement parent, ItemStack display, String name, FrameType frame, boolean showToast, boolean announceToChat, boolean hidden)
 	{
 		return Advancement.Builder.advancement().parent(parent).display(display,
-				new TranslatableComponent("advancement.immersiveengineering."+name),
-				new TranslatableComponent("advancement.immersiveengineering."+name+".desc"),
+				Component.translatable("advancement.immersiveengineering."+name),
+				Component.translatable("advancement.immersiveengineering."+name+".desc"),
 				null, frame, showToast, announceToChat, hidden);
 	}
 

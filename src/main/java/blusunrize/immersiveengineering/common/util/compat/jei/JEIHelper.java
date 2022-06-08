@@ -49,6 +49,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -243,7 +244,7 @@ public class JEIHelper implements IModPlugin
 				ItemStack bucket = f.getBucket().getDefaultInstance();
 				if(!bucket.isEmpty()&&tag.isPresent())
 					recipes.add(new BottlingMachineRecipe(
-							new ResourceLocation(Lib.MODID, "jei_bucket_"+f.getRegistryName().getPath()),
+							new ResourceLocation(Lib.MODID, "jei_bucket_"+Registry.FLUID.getKey(f).getPath()),
 							Lazy.of(() -> bucket),
 							Ingredient.of(Items.BUCKET),
 							new FluidTagInput(tag.get(), 1000)

@@ -14,8 +14,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.BaseComponent;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.DyeColor;
 
 import javax.annotation.Nullable;
@@ -75,9 +75,9 @@ public class LogicCircuitHandler
 			return valueOf(name);
 		}
 
-		public BaseComponent getDescription()
+		public Component getDescription()
 		{
-			return new TranslatableComponent(Lib.DESC_INFO+"operator."+this.name().toLowerCase(Locale.ENGLISH));
+			return Component.translatable(Lib.DESC_INFO+"operator."+this.name().toLowerCase(Locale.ENGLISH));
 		}
 	}
 
@@ -89,12 +89,12 @@ public class LogicCircuitHandler
 		// Plus 8 internal storages
 		R0, R1, R2, R3, R4, R5, R6, R7;
 
-		public BaseComponent getDescription()
+		public MutableComponent getDescription()
 		{
 			if(this.ordinal() < 16)
-				return new TranslatableComponent("color.minecraft."+DyeColor.byId(this.ordinal()).getName());
+				return Component.translatable("color.minecraft."+DyeColor.byId(this.ordinal()).getName());
 			else
-				return new TranslatableComponent(Lib.DESC_INFO+"register", this.ordinal()-16);
+				return Component.translatable(Lib.DESC_INFO+"register", this.ordinal()-16);
 		}
 	}
 
@@ -104,7 +104,7 @@ public class LogicCircuitHandler
 		private final LogicCircuitRegister output;
 		private final LogicCircuitRegister[] inputs;
 
-		private final BaseComponent formattedString;
+		private final MutableComponent formattedString;
 
 		public LogicCircuitInstruction(LogicCircuitOperator operator, LogicCircuitRegister output, LogicCircuitRegister[] inputs)
 		{
@@ -146,7 +146,7 @@ public class LogicCircuitHandler
 			handler.setLogicCircuitRegister(output, operator.apply(bInputs));
 		}
 
-		public BaseComponent getFormattedString()
+		public Component getFormattedString()
 		{
 			return this.formattedString;
 		}

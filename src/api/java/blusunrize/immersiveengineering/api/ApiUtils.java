@@ -13,11 +13,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonNull;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.TickTask;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.thread.BlockableEventLoop;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -44,12 +46,14 @@ public class ApiUtils
 	 */
 	public static final Random RANDOM = new Random();
 
+	public static final RandomSource RANDOM_SOURCE = RandomSource.createNewThreadLocalInstance();
+
 	public static JsonElement jsonSerializeFluidStack(FluidStack fluidStack)
 	{
 		if(fluidStack==null)
 			return JsonNull.INSTANCE;
 		JsonObject jsonObject = new JsonObject();
-		jsonObject.addProperty("fluid", fluidStack.getFluid().getRegistryName().toString());
+		jsonObject.addProperty("fluid", Registry.FLUID.getKey(fluidStack.getFluid()).toString());
 		jsonObject.addProperty("amount", fluidStack.getAmount());
 		if(fluidStack.hasTag())
 			jsonObject.addProperty("tag", fluidStack.getTag().toString());

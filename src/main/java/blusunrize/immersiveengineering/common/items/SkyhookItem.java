@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.util.SkylineHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -52,10 +51,10 @@ public class SkyhookItem extends UpgradeableToolItem
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		if(shouldLimitSpeed(stack))
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook.speedLimit"));
 		else
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
-		list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"skyhook"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook.noLimit"));
+		list.add(Component.translatable(Lib.DESC_FLAVOUR+"skyhook"));
 	}
 
 	private static final String LIMIT_SPEED = "limitSpeed";
@@ -113,9 +112,9 @@ public class SkyhookItem extends UpgradeableToolItem
 		{
 			boolean limitSpeed = toggleSpeedLimit(stack);
 			if(limitSpeed)
-				player.displayClientMessage(new TranslatableComponent("chat.immersiveengineering.info.skyhookLimited"), true);
+				player.displayClientMessage(Component.translatable("chat.immersiveengineering.info.skyhookLimited"), true);
 			else
-				player.displayClientMessage(new TranslatableComponent("chat.immersiveengineering.info.skyhookUnlimited"), true);
+				player.displayClientMessage(Component.translatable("chat.immersiveengineering.info.skyhookUnlimited"), true);
 		}
 		else
 		{

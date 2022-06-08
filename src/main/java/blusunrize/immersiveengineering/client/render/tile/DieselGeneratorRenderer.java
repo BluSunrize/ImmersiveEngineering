@@ -8,10 +8,10 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.DieselGeneratorBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -49,7 +49,7 @@ public class DieselGeneratorRenderer extends IEBlockEntityRenderer<DieselGenerat
 				te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), true));
 		matrixStack.translate(-0.5, 0, -0.5);
 
-		List<BakedQuad> quads = FAN.get().getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
+		List<BakedQuad> quads = FAN.get().getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 		rotateForFacing(matrixStack, te.getFacing());
 		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.solid()), matrixStack, combinedLightIn,
 				combinedOverlayIn);

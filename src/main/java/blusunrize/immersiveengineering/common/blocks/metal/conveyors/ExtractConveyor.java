@@ -18,7 +18,7 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -196,7 +196,7 @@ public class ExtractConveyor extends ConveyorBase
 				this.transferTickrate = 20;
 			else if(this.transferTickrate==20)
 				this.transferTickrate = 4;
-			player.displayClientMessage(new TranslatableComponent(Lib.CHAT_INFO+"tickrate", this.transferTickrate), true);
+			player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"tickrate", this.transferTickrate), true);
 			return true;
 		}
 		return false;

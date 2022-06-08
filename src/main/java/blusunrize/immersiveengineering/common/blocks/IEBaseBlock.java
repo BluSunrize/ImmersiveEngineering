@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -89,7 +90,7 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 	@Override
 	public String getNameForFlavour()
 	{
-		return getRegistryName().getPath();
+		return Registry.BLOCK.getKey(this).getPath();
 	}
 
 	@Override

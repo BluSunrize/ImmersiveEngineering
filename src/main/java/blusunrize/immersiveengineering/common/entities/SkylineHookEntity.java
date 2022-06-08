@@ -437,12 +437,6 @@ public class SkylineHookEntity extends Entity
 	}
 
 	@Override
-	public float getBrightness()
-	{
-		return 1.0F;
-	}
-
-	@Override
 	public boolean isPickable()
 	{
 		return false;

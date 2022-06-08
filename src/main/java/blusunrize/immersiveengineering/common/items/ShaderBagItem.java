@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -54,7 +53,7 @@ public class ShaderBagItem extends IEBaseItem
 	@Override
 	public Component getName(ItemStack stack)
 	{
-		return new TranslatableComponent(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
+		return Component.translatable(Lib.DESC_INFO+"shader.rarity."+this.rarity.name().toLowerCase(Locale.US))
 				.append(" ")
 				.append(super.getName(stack));
 	}

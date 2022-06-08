@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.util.SimpleCapProvider;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -62,7 +61,7 @@ public class PowerpackItem extends IEBaseItem
 	{
 		IEnergyStorage energy = CapabilityUtils.getPresentCapability(stack, CapabilityEnergy.ENERGY);
 		String stored = energy.getEnergyStored()+"/"+getMaxEnergyStored(stack);
-		list.add(new TranslatableComponent(Lib.DESC+"info.energyStored", stored).withStyle(ChatFormatting.GRAY));
+		list.add(Component.translatable(Lib.DESC+"info.energyStored", stored).withStyle(ChatFormatting.GRAY));
 	}
 
 	@Nullable

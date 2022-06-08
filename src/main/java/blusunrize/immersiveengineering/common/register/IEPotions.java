@@ -17,6 +17,7 @@ import com.google.common.collect.ImmutableSet;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
+import net.minecraft.core.Registry;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -160,7 +161,7 @@ public class IEPotions
 				BlockState state = living.level.getBlockState(living.blockPosition());
 				if(!concrete.contains(state.getBlock())&&
 						concrete.stream()
-								.map(Block::getRegistryName)
+								.map(Registry.BLOCK::getKey)
 								.map(IEBlocks.TO_SLAB::get)
 								.filter(Objects::nonNull)
 								.noneMatch(b -> b.get()==state.getBlock()))

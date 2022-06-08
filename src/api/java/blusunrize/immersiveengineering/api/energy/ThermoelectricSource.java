@@ -78,7 +78,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 	{
 		return blocks.map(
 				tagKey -> Registry.BLOCK.getTag(tagKey)
-						.flatMap(t -> t.getRandomElement(ApiUtils.RANDOM))
+						.flatMap(t -> t.getRandomElement(ApiUtils.RANDOM_SOURCE))
 						.map(Holder::value)
 						.orElse(Blocks.AIR),
 				l -> l.isEmpty()?Blocks.AIR: l.get(0)

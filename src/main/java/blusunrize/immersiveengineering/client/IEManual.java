@@ -259,9 +259,9 @@ public class IEManual
 		ComparableVersion currIEVer = new ComparableVersion(ImmersiveEngineering.VERSION);
 		//Included changelog
 		try(InputStream in = Minecraft.getInstance().getResourceManager().getResource(new ResourceLocation(MODID,
-				"changelog.json")).getInputStream())
+				"changelog.json")).orElseThrow().open())
 		{
-			JsonElement ele = new JsonParser().parse(new InputStreamReader(in));
+			JsonElement ele = JsonParser.parseReader(new InputStreamReader(in));
 			JsonObject upToCurrent = ele.getAsJsonObject();
 			for(Entry<String, JsonElement> entry : upToCurrent.entrySet())
 			{

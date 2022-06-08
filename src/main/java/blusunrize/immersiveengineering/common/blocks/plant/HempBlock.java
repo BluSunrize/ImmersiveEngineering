@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +31,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.PlantType;
 
 import java.util.EnumMap;
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class HempBlock extends BushBlock implements BonemealableBlock
@@ -116,7 +116,7 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 	}
 
 	@Override
-	public void tick(BlockState state, ServerLevel world, BlockPos pos, Random random)
+	public void tick(BlockState state, ServerLevel world, BlockPos pos, RandomSource random)
 	{
 		int light = world.getMaxLocalRawBrightness(pos);
 		if(light >= 12)
@@ -158,20 +158,20 @@ public class HempBlock extends BushBlock implements BonemealableBlock
 
 	//canBonemeal
 	@Override
-	public boolean isBonemealSuccess(Level world, Random rand, BlockPos pos, BlockState state)
+	public boolean isBonemealSuccess(Level world, RandomSource rand, BlockPos pos, BlockState state)
 	{
 		return isValidBonemealTarget(world, pos, world.getBlockState(pos), world.isClientSide);
 	}
 
 	@Override
-	public void performBonemeal(ServerLevel world, Random rand, BlockPos pos, BlockState state)
+	public void performBonemeal(ServerLevel world, RandomSource rand, BlockPos pos, BlockState state)
 	{
 		EnumHempGrowth growth = state.getValue(GROWTH);
 		if(growth!=growth.getMax())
 		{
 			int span = growth.getMax().ordinal()-growth.ordinal();
 			EnumHempGrowth newGrowth = growth;
-			int growBy = RANDOM.nextInt(span)+1;
+			int growBy = rand.nextInt(span)+1;
 			for(int i = 0; i < growBy; ++i)
 				newGrowth = newGrowth.next();
 			world.setBlockAndUpdate(pos, state.setValue(GROWTH, newGrowth));

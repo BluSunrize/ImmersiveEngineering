@@ -37,8 +37,9 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -65,7 +66,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerTickableBE, IEClientTickableBE, IHasDummyBlocks,
@@ -421,14 +421,14 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				else
 				{
 					lowPower = !lowPower;
-					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower": "highPower")));
+					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower": "highPower")));
 					setChanged();
 				}
 			}
 			else
 			{
 				redstoneControlInverted = !redstoneControlInverted;
-				ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+				ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
 				setChanged();
 				this.markContainingBlockForUpdate(null);
 			}
@@ -531,7 +531,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 			return b;
 		}
 
-		public void createLightning(Random rand)
+		public void createLightning(RandomSource rand)
 		{
 			subPoints.clear();
 			Vec3 end = targetEntity!=null?targetEntity.position(): targetPos;

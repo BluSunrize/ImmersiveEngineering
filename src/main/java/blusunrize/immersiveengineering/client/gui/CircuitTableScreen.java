@@ -32,7 +32,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
@@ -94,7 +93,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 				new TooltipArea(copyArea, l -> {
 					if(this.menu.getCarried().getItem() instanceof LogicCircuitBoardItem)
 						l.add(TextUtils.applyFormat(
-								new TranslatableComponent(Lib.DESC_INFO+"circuit_table.copy"), ChatFormatting.GRAY
+								Component.translatable(Lib.DESC_INFO+"circuit_table.copy"), ChatFormatting.GRAY
 						));
 				})
 		);
@@ -222,10 +221,10 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 			if(this.hoveredSlot.index < CircuitTableBlockEntity.getEditSlot())
 			{
 				int slotNum = this.hoveredSlot.index;
-				addGray.accept(new TranslatableComponent(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]));
+				addGray.accept(Component.translatable(Lib.DESC_INFO+"circuit_table.slot."+SLOT_TYPES[slotNum]));
 			}
 			else if(this.hoveredSlot.index==CircuitTableBlockEntity.getEditSlot())
-				addGray.accept(new TranslatableComponent(Lib.DESC_INFO+"circuit_table.slot.edit"));
+				addGray.accept(Component.translatable(Lib.DESC_INFO+"circuit_table.slot.edit"));
 		}
 	}
 

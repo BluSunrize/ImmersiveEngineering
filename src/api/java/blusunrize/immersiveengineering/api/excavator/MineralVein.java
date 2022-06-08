@@ -55,8 +55,8 @@ public class MineralVein
 	// fail chance grows with distance from the center of the vein
 	public double getFailChance(BlockPos pos)
 	{
-		double dX = pos.getX()-this.pos.x;
-		double dZ = pos.getZ()-this.pos.z;
+		double dX = pos.getX()-this.pos.x();
+		double dZ = pos.getZ()-this.pos.z();
 		double d = (dX*dX+dZ*dZ)/(radius*radius);
 		return d*d*(-2*d+3);
 	}
@@ -88,8 +88,8 @@ public class MineralVein
 	public CompoundTag writeToNBT()
 	{
 		CompoundTag tag = new CompoundTag();
-		tag.putInt("x", pos.x);
-		tag.putInt("z", pos.z);
+		tag.putInt("x", pos.x());
+		tag.putInt("z", pos.z());
 		tag.putString("mineral", mineralName.toString());
 		tag.putInt("radius", radius);
 		tag.putInt("depletion", depletion);

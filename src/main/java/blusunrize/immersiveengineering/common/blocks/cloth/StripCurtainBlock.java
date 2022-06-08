@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
@@ -61,7 +60,7 @@ public class StripCurtainBlock extends IEEntityBlock<StripCurtainBlockEntity>
 		if(ItemNBTHelper.hasKey(stack, "colour"))
 		{
 			int color = ItemNBTHelper.getInt(stack, "colour");
-			tooltip.add(FontUtils.withAppendColoredColour(new TranslatableComponent(Lib.DESC_INFO+"colour"), color));
+			tooltip.add(FontUtils.withAppendColoredColour(Component.translatable(Lib.DESC_INFO+"colour"), color));
 		}
 	}
 }

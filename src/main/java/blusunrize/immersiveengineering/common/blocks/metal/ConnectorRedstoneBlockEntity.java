@@ -30,7 +30,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -254,8 +253,8 @@ public class ConnectorRedstoneBlockEntity extends ImmersiveConnectableBlockEntit
 		if(!Utils.isScrewdriver(player.getItemInHand(InteractionHand.MAIN_HAND)))
 			return null;
 		return new Component[]{
-				new TranslatableComponent(Lib.DESC_INFO+"redstoneChannel", I18n.get("item.minecraft.firework_star."+redstoneChannel.getName())),
-				new TranslatableComponent(Lib.DESC_INFO+"blockSide.io."+this.ioMode.getSerializedName())
+				Component.translatable(Lib.DESC_INFO+"redstoneChannel", I18n.get("item.minecraft.firework_star."+redstoneChannel.getName())),
+				Component.translatable(Lib.DESC_INFO+"blockSide.io."+this.ioMode.getSerializedName())
 		};
 	}
 

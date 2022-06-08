@@ -176,17 +176,4 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		}
 		return 0;
 	}
-
-	@Override
-	public float getBrightness()
-	{
-		FluidStack fluidStack = getFluid();
-		if(fluidStack!=null)
-		{
-			int light = this.isOnFire()?15: fluidStack.getFluid().getAttributes().getLuminosity(fluidStack);
-			if(light > 0)
-				return Math.max(light, super.getBrightness());
-		}
-		return super.getBrightness();
-	}
 }

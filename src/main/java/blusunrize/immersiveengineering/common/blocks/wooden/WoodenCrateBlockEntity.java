@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
@@ -24,7 +24,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -83,9 +82,9 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	{
 		Block b = getBlockState().getBlock();
 		if(b==WoodenDevices.REINFORCED_CRATE.get())
-			return new TranslatableComponent("block.immersiveengineering.reinforced_crate");
+			return Component.translatable("block.immersiveengineering.reinforced_crate");
 		else
-			return new TranslatableComponent("block.immersiveengineering.crate");
+			return Component.translatable("block.immersiveengineering.crate");
 	}
 
 	@Override
@@ -116,7 +115,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return IEApi.isAllowedInCrate(stack);
+		return !stack.is(IETags.forbiddenInCrates);
 	}
 
 	@Override

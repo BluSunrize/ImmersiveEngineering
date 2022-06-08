@@ -22,7 +22,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.DyeColor;
@@ -99,17 +98,17 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 	}
 
 	private static void gatherBatchmodeTooltip(List<Component> out, BatchMode mode) {
-		out.add(new TranslatableComponent(Lib.GUI_CONFIG+"item_batcher.batchmode"));
+		out.add(Component.translatable(Lib.GUI_CONFIG+"item_batcher.batchmode"));
 		out.add(TextUtils.applyFormat(
-				new TranslatableComponent(Lib.GUI_CONFIG+"item_batcher.batchmode."+mode.name()),
+				Component.translatable(Lib.GUI_CONFIG+"item_batcher.batchmode."+mode.name()),
 				ChatFormatting.GRAY
 		));
 	}
 
 	private static void gatherRedstoneTooltip(List<Component> out, DyeColor color) {
-		out.add(new TranslatableComponent(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
+		out.add(Component.translatable(Lib.GUI_CONFIG+"item_batcher.redstone_color"));
 		out.add(TextUtils.applyFormat(
-				new TranslatableComponent("color.minecraft."+color.getName()),
+				Component.translatable("color.minecraft."+color.getName()),
 				ChatFormatting.GRAY
 		));
 	}

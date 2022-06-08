@@ -32,7 +32,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -166,7 +166,7 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 		inverted = !inverted;
 		if(!level.isClientSide)
 		{
-			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
+			ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
 			notifyNeighbours();
 			if(oldPassing!=allowEnergyToPass())
 				updateConductivity();

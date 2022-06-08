@@ -8,13 +8,13 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -63,7 +63,7 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 			IModelData extraData = new SinglePropertyModelData<>(key, IEOBJCallbacks.getModelProperty(BucketWheelCallbacks.INSTANCE));
 
 			CACHED_BUFFERS.get(key, () -> IVertexBufferHolder.create(
-					() -> WHEEL.get().getQuads(null, null, Utils.RAND, extraData))
+					() -> WHEEL.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, extraData))
 			).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
 		} catch(ExecutionException ex)
 		{

@@ -17,6 +17,7 @@ import com.google.common.base.Preconditions;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -236,7 +237,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 	public JsonObject serializeItemStack(ItemStack stack)
 	{
 		JsonObject obj = new JsonObject();
-		obj.addProperty("item", stack.getItem().getRegistryName().toString());
+		obj.addProperty("item", Registry.ITEM.getKey(stack.getItem()).toString());
 		if(stack.getCount() > 1)
 			obj.addProperty("count", stack.getCount());
 		if(stack.hasTag())
@@ -246,7 +247,7 @@ public class IEFinishedRecipe<R extends IEFinishedRecipe<R>> implements Finished
 
 	protected R addSimpleItem(String key, ItemLike item)
 	{
-		return addWriter(json -> json.addProperty(key, item.asItem().getRegistryName().toString()));
+		return addWriter(json -> json.addProperty(key, Registry.ITEM.getKey(item.asItem()).toString()));
 	}
 
 	public R addItem(String key, ItemLike item)

@@ -21,8 +21,8 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -77,7 +77,7 @@ public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> imp
 	public static ItemStack makeCovered(ItemLike conveyor, Block cover)
 	{
 		ItemStack covered = new ItemStack(conveyor, 1);
-		covered.getOrCreateTag().putString(DEFAULT_COVER, cover.getRegistryName().toString());
+		covered.getOrCreateTag().putString(DEFAULT_COVER, Registry.BLOCK.getKey(cover).toString());
 		return covered;
 	}
 
@@ -93,7 +93,7 @@ public class ConveyorBlock extends IEEntityBlock<ConveyorBeltBlockEntity<?>> imp
 	{
 		String flavourKey = getDescriptionId()+".flavour";
 		if(I18n.exists(flavourKey))
-			tooltip.add(new TranslatableComponent(flavourKey));
+			tooltip.add(Component.translatable(flavourKey));
 	}
 
 	@Override

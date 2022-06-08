@@ -5,6 +5,7 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreConf
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.OreDistribution;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import com.mojang.serialization.Codec;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.WorldGenerationContext;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
@@ -12,8 +13,6 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.heightproviders.TrapezoidHeight;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraftforge.common.util.Lazy;
-
-import java.util.Random;
 
 public class IEHeightProvider extends HeightProvider
 {
@@ -37,7 +36,7 @@ public class IEHeightProvider extends HeightProvider
 	}
 
 	@Override
-	public int sample(Random random, WorldGenerationContext context)
+	public int sample(RandomSource random, WorldGenerationContext context)
 	{
 		return this.internalProvider.get().sample(random, context);
 	}

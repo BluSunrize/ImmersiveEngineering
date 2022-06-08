@@ -26,7 +26,6 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -136,8 +135,8 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 			float energy = recipe.getTotalProcessEnergy()/time;
 			Utils.formatDouble(energy, "#.##");
 			return Arrays.asList(
-					new TranslatableComponent("desc.immersiveengineering.info.ift", Utils.formatDouble(energy, "#.##")),
-					new TranslatableComponent("desc.immersiveengineering.info.seconds", Utils.formatDouble(time/20, "#.##"))
+					Component.translatable("desc.immersiveengineering.info.ift", Utils.formatDouble(energy, "#.##")),
+					Component.translatable("desc.immersiveengineering.info.seconds", Utils.formatDouble(time/20, "#.##"))
 			);
 		}
 		return super.getTooltipStrings(recipe, recipeSlotsView, mouseX, mouseY);

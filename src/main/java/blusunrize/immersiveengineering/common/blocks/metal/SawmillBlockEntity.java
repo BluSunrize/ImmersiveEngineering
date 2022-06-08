@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
@@ -184,7 +185,7 @@ public class SawmillBlockEntity extends PoweredMultiblockBlockEntity<SawmillBloc
 			{
 				doProcessOutput(process.getCurrentStack(level, !this.sawblade.isEmpty()).copy());
 				processIterator.remove();
-				if(this.sawblade.hurt(IEServerConfig.MACHINES.sawmill_bladeDamage.get(), Utils.RAND, null))
+				if(this.sawblade.hurt(IEServerConfig.MACHINES.sawmill_bladeDamage.get(), ApiUtils.RANDOM_SOURCE, null))
 				{
 					this.sawblade = ItemStack.EMPTY;
 					this.updateMasterBlock(null, true);

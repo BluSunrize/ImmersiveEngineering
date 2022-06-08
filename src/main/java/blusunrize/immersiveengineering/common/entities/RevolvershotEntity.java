@@ -183,12 +183,6 @@ public class RevolvershotEntity extends IEProjectileEntity
 	}
 
 	@Override
-	public float getBrightness()
-	{
-		return 1.0F;
-	}
-
-	@Override
 	public boolean isPickable()
 	{
 		return false;

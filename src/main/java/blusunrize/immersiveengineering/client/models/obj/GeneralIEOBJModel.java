@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -21,7 +22,6 @@ import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BlockCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -41,6 +41,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -58,7 +59,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 import java.util.function.Function;
 
 public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
@@ -109,12 +109,12 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 	{
 		if(key==null)
 			return ImmutableList.of();
-		return modelCache.getUnchecked(key).getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
+		return modelCache.getUnchecked(key).getQuads(null, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 	}
 
 	@Nullable
 	@Override
-	public ModelKey<T> getKey(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+	public ModelKey<T> getKey(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
 	{
 		if(side!=null)
 			return null;

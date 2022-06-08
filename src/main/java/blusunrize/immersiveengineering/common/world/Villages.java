@@ -45,12 +45,13 @@ import net.minecraft.core.WritableRegistry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.data.worldgen.*;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
@@ -127,7 +128,7 @@ public class Villages
 		// Fixed seed to prevent inconsistencies between different worlds
 		List<StructurePoolElement> shuffled;
 		if(old!=null)
-			shuffled = old.getShuffledTemplates(new Random(0));
+			shuffled = old.getShuffledTemplates(RandomSource.create(0));
 		else
 			shuffled = ImmutableList.of();
 		Object2IntMap<StructurePoolElement> newPieces = new Object2IntLinkedOpenHashMap<>();
@@ -157,20 +158,19 @@ public class Villages
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PoiType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(
-				"craftingtable", () -> createPOI("craftingtable", assembleStates(WoodenDevices.CRAFTING_TABLE.get()))
+				"craftingtable", () -> createPOI(assembleStates(WoodenDevices.CRAFTING_TABLE.get()))
 		);
 		public static final RegistryObject<PoiType> POI_ANVIL = POINTS_OF_INTEREST.register(
-				"anvil", () -> createPOI("anvil", assembleStates(Blocks.ANVIL))
+				"anvil", () -> createPOI(assembleStates(Blocks.ANVIL))
 		);
-		// TODO, 1.19: Change the name on this
 		public static final RegistryObject<PoiType> POI_CIRCUITTABLE = POINTS_OF_INTEREST.register(
-				"energymeter", () -> createPOI("energymeter", assembleStates(WoodenDevices.CIRCUIT_TABLE.get()))
+				"circuit_table", () -> createPOI(assembleStates(WoodenDevices.CIRCUIT_TABLE.get()))
 		);
 		public static final RegistryObject<PoiType> POI_BANNER = POINTS_OF_INTEREST.register(
-				"shaderbanner", () -> createPOI("shaderbanner", assembleStates(Cloth.SHADER_BANNER.get()))
+				"shaderbanner", () -> createPOI(assembleStates(Cloth.SHADER_BANNER.get()))
 		);
 		public static final RegistryObject<PoiType> POI_WORKBENCH = POINTS_OF_INTEREST.register(
-				"workbench", () -> createPOI("workbench", assembleStates(WoodenDevices.WORKBENCH.get()))
+				"workbench", () -> createPOI(assembleStates(WoodenDevices.WORKBENCH.get()))
 		);
 
 		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
@@ -189,9 +189,9 @@ public class Villages
 				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH.get(), IESounds.revolverReload)
 		);
 
-		private static PoiType createPOI(String name, Collection<BlockState> block)
+		private static PoiType createPOI(Collection<BlockState> block)
 		{
-			return new PoiType(MODID+":"+name, ImmutableSet.copyOf(block), 1, 1);
+			return new PoiType(ImmutableSet.copyOf(block), 1, 1);
 		}
 
 		private static VillagerProfession createProf(ResourceLocation name, PoiType poi, SoundEvent sound)
@@ -235,7 +235,8 @@ public class Villages
 		public static void registerTrades(VillagerTradesEvent ev)
 		{
 			Int2ObjectMap<List<ItemListing>> trades = ev.getTrades();
-			if(ENGINEER.equals(ev.getType().getRegistryName()))
+			final ResourceLocation typeName = Registry.VILLAGER_PROFESSION.getKey(ev.getType());
+			if(ENGINEER.equals(typeName))
 			{
 				/* Structural Engineer
 				 * Sells various construction materials
@@ -259,7 +260,7 @@ public class Villages
 				trades.get(5).add(new OreveinMapForEmeralds());
 				trades.get(5).add(new EmeraldForItems(StoneDecoration.CONCRETE_LEADED, new PriceInterval(2, 6), 10, 10));
 			}
-			else if(MACHINIST.equals(ev.getType().getRegistryName()))
+			else if(MACHINIST.equals(typeName))
 			{
 				/* Machinist
 				 * Sells tools, metals, blueprints and drillheads
@@ -281,7 +282,7 @@ public class Villages
 				trades.get(5).add(new ItemsForEmerald(Tools.DRILLHEAD_STEEL, new PriceInterval(32, 48), 3, 30, 0.2f));
 				trades.get(5).add(new ItemsForEmerald(BlueprintCraftingRecipe.getTypedBlueprint("electrode"), new PriceInterval(12, 24), 3, 30, 0.2f));
 			}
-			else if(ELECTRICIAN.equals(ev.getType().getRegistryName()))
+			else if(ELECTRICIAN.equals(typeName))
 			{
 				/* Electrician
 				 * Sells wires, tools and the faraday suit
@@ -306,7 +307,7 @@ public class Villages
 
 				trades.get(5).add(new ItemsForEmerald(TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_CAPACITORS), new PriceInterval(8, 12), 3, 30, 0.2f));
 			}
-			else if(OUTFITTER.equals(ev.getType().getRegistryName()))
+			else if(OUTFITTER.equals(typeName))
 			{
 				/* Outfitter
 				 * Sells Shaderbags
@@ -319,7 +320,7 @@ public class Villages
 				trades.get(2).add(new ItemsForEmerald(bag_uncommon, new PriceInterval(12, 20), 24, 5, 0.2f));
 				trades.get(3).add(new ItemsForEmerald(bag_rare, new PriceInterval(16, 24), 24, 10, 0.2f));
 			}
-			else if(GUNSMITH.equals(ev.getType().getRegistryName()))
+			else if(GUNSMITH.equals(typeName))
 			{
 				/* Gunsmith
 				 * Sells ammunition, blueprints and revolver parts
@@ -384,7 +385,7 @@ public class Villages
 
 		@Nullable
 		@Override
-		public MerchantOffer getOffer(Entity trader, Random rand)
+		public MerchantOffer getOffer(Entity trader, RandomSource rand)
 		{
 			if(buyingItem==null)
 				this.buyingItem = Objects.requireNonNull(this.getBuyingItem.apply(trader.level));
@@ -430,7 +431,7 @@ public class Villages
 
 		@Nullable
 		@Override
-		public MerchantOffer getOffer(Entity trader, Random rand)
+		public MerchantOffer getOffer(Entity trader, RandomSource rand)
 		{
 			int i = 1;
 			if(this.priceInfo!=null)
@@ -463,7 +464,7 @@ public class Villages
 
 		@Override
 		@Nullable
-		public MerchantOffer getOffer(Entity trader, @Nonnull Random random)
+		public MerchantOffer getOffer(Entity trader, @Nonnull RandomSource random)
 		{
 			Level world = trader.getCommandSenderWorld();
 			BlockPos merchantPos = trader.blockPosition();
@@ -481,12 +482,12 @@ public class Villages
 				// lowest weight first, to pick the rarest vein
 				veins.sort(Comparator.comparingInt(o -> o.getMineral(world).weight));
 				MineralVein vein = veins.get(0);
-				BlockPos blockPos = new BlockPos(vein.getPos().x, 64, vein.getPos().z);
+				BlockPos blockPos = new BlockPos(vein.getPos().x(), 64, vein.getPos().z());
 				ItemStack selling = MapItem.create(world, blockPos.getX(), blockPos.getZ(), (byte)1, true, true);
 				MapItem.lockMap(world, selling);
 				MapItemSavedData.addTargetDecoration(selling, blockPos, "ie:coresample_treasure", Type.RED_X);
-				selling.setHoverName(new TranslatableComponent("item.immersiveengineering.map_orevein"));
-				ItemNBTHelper.setLore(selling, new TranslatableComponent(vein.getMineral(world).getTranslationKey()));
+				selling.setHoverName(Component.translatable("item.immersiveengineering.map_orevein"));
+				ItemNBTHelper.setLore(selling, Component.translatable(vein.getMineral(world).getTranslationKey()));
 				ItemStack steelIngot = IEApi.getPreferredTagStack(trader.level.registryAccess(), IETags.getTagsFor(EnumMetals.STEEL).ingot);
 				return new MerchantOffer(new ItemStack(Items.EMERALD, 8+random.nextInt(8)),
 						ItemHandlerHelper.copyStackWithSize(steelIngot, 4+random.nextInt(8)), selling, 0, 1, 30, 0.5F);
@@ -502,7 +503,7 @@ public class Villages
 		}
 
 		@Override
-		public MerchantOffer getOffer(Entity trader, @Nonnull Random random)
+		public MerchantOffer getOffer(Entity trader, @Nonnull RandomSource random)
 		{
 			int part = random.nextInt(3);
 
@@ -533,7 +534,7 @@ public class Villages
 			this.max = max;
 		}
 
-		int getPrice(Random rand)
+		int getPrice(RandomSource rand)
 		{
 			return min >= max?min: min+rand.nextInt(max-min+1);
 		}

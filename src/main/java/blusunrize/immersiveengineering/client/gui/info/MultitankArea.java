@@ -15,7 +15,6 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -34,7 +33,7 @@ public class MultitankArea extends InfoArea
 	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
 		if(tank.getFluidTypes()==0)
-			tooltip.add(new TranslatableComponent("gui.immersiveengineering.empty"));
+			tooltip.add(Component.translatable("gui.immersiveengineering.empty"));
 		else
 		{
 			float capacity = tank.getCapacity();

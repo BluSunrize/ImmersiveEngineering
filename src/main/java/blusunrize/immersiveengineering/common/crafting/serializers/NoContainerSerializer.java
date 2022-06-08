@@ -20,12 +20,11 @@ import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.IShapedRecipe;
 import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class NoContainerSerializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<NoContainersRecipe<?>>
+public class NoContainerSerializer implements RecipeSerializer<NoContainersRecipe<?>>
 {
 	public static final String BASE_RECIPE = "baseRecipe";
 

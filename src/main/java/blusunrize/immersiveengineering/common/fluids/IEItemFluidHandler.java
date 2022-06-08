@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -35,12 +34,12 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 			FluidAttributes attr = fluid.getFluid().getAttributes();
 			ChatFormatting rarity = attr.getRarity()==Rarity.COMMON?ChatFormatting.GRAY: attr.getRarity().color;
 			return TextUtils.applyFormat(
-					new TranslatableComponent(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity),
+					Component.translatable(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity),
 					rarity
 			);
 		}
 		return TextUtils.applyFormat(
-				new TranslatableComponent(Lib.DESC_FLAVOUR+"drill.empty"),
+				Component.translatable(Lib.DESC_FLAVOUR+"drill.empty"),
 				ChatFormatting.GRAY
 		);
 	}

@@ -28,7 +28,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +63,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 				new EnergyInfoArea(leftPos+187, topPos+13, tile.energyStorage),
 				new TooltipArea(
 						new Rect2i(leftPos+162, topPos+69, 16, 16),
-						() -> new TranslatableComponent(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients"))
+						() -> Component.translatable(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients"))
 				)
 		);
 		for(int i = 0; i < tile.patterns.length; i++)
@@ -72,7 +71,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 			final int offset = 58 * i;
 			areas.add(new TooltipArea(
 					new Rect2i(leftPos+11 + offset, topPos+67, 10, 10),
-					new TranslatableComponent(Lib.GUI_CONFIG+"assembler.clearRecipe")
+					Component.translatable(Lib.GUI_CONFIG+"assembler.clearRecipe")
 			));
 			int finalI = i;
 			areas.add(new TooltipArea(

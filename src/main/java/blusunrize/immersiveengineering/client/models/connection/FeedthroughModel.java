@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.models.connection;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
@@ -24,7 +25,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntit
 import blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.FeedthroughData;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -51,6 +51,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.NbtUtils;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
@@ -71,7 +72,6 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -95,7 +95,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	@Override
 	public List<BakedQuad> getQuads(Pair<FeedthroughCacheKey, Direction> key)
 	{
-		return CACHE.getUnchecked(key.getFirst()).getQuads(null, key.getSecond(), Utils.RAND, EmptyModelData.INSTANCE);
+		return CACHE.getUnchecked(key.getFirst()).getQuads(null, key.getSecond(), ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 	}
 
 	@Nonnull
@@ -174,7 +174,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	@Nullable
 	@Override
 	public Pair<FeedthroughCacheKey, Direction> getKey(
-			@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData
+			@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData
 	)
 	{
 		BlockState baseState = Blocks.STONE.defaultBlockState();
@@ -200,7 +200,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
 	{
 		return ICacheKeyProvider.super.getQuads(state, side, rand, extraData);
 	}
@@ -333,7 +333,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 						{
 							Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(Transformation.identity(),
 									colorMultiplier);
-							quads.add(model.getQuads(k.baseState, side, Utils.RAND, EmptyModelData.INSTANCE)
+							quads.add(model.getQuads(k.baseState, side, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE)
 									.stream()
 									.map(tintTransformer)
 									.collect(Collectors.toCollection(ArrayList::new)));
@@ -354,7 +354,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
 						Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(Transformation.identity(),
 								colorMultiplier);
-						all.addAll(model.getQuads(k.baseState, side, Utils.RAND).stream().map(tintTransformer)
+						all.addAll(model.getQuads(k.baseState, side, ApiUtils.RANDOM_SOURCE).stream().map(tintTransformer)
 								.collect(Collectors.toCollection(ArrayList::new)));
 						quads.add(all);
 						break;
@@ -383,7 +383,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			mat.translate(-.5, -.5, -.5);
 			BakedModel model = mc().getBlockRenderer().getBlockModelShaper()
 					.getBlockModel(info.connector().setValue(IEProperties.FACING_ALL, Direction.DOWN));
-			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, Utils.RAND, EmptyModelData.INSTANCE));
+			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
 			if(side==facing)
 				conn.add(ModelUtils.createBakedQuad(
 						vertices, Direction.UP, getTexture(info), info.uvs(), WHITE, false
@@ -404,7 +404,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 		@Nonnull
 		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
 		{
 			return quads.get(side==null?6: side.get3DDataValue());
 		}

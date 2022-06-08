@@ -14,20 +14,20 @@ import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
 import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import com.google.gson.JsonObject;
+import net.minecraft.core.Registry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
-import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRecipe<?, ?>>
 {
@@ -50,12 +50,7 @@ public class GeneratedListSerializer extends IERecipeSerializer<GeneratedListRec
 		int length = buffer.readVarInt();
 		List<IESerializableRecipe> subRecipes = new ArrayList<>(length);
 		ResourceLocation recipeCategory = buffer.readResourceLocation();
-		RecipeSerializer<?> deserializer = RecipeSerializers.RECIPE_SERIALIZERS.getEntries()
-				.stream()
-				.map(RegistryObject::get)
-				.filter(ser -> recipeCategory.equals(ser.getRegistryName()))
-				.findAny()
-				.orElseThrow(RuntimeException::new);
+		RecipeSerializer<?> deserializer = Objects.requireNonNull(Registry.RECIPE_SERIALIZER.get(recipeCategory));
 		for(int i = 0; i < length; ++i)
 		{
 			ResourceLocation recipeName = buffer.readResourceLocation();

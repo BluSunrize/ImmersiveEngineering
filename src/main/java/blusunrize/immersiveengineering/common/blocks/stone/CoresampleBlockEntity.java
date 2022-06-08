@@ -17,14 +17,12 @@ import blusunrize.immersiveengineering.common.items.CoresampleItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
@@ -112,7 +110,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 				{
 					if(mapData.dimension!=CoresampleItem.getDimension(coresample))
 					{
-						player.sendMessage(new TranslatableComponent(Lib.CHAT_INFO+"coresample.mapDimension"), Util.NIL_UUID);
+						player.sendSystemMessage(Component.translatable(Lib.CHAT_INFO+"coresample.mapDimension"));
 						return true;
 					}
 
@@ -132,8 +130,8 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 						}
 					}
 
-					double sampleX = coords.x+.5;
-					double sampleZ = coords.z+.5;
+					double sampleX = coords.x()+.5;
+					double sampleZ = coords.z()+.5;
 
 					int mapScale = 1<<mapData.scale;
 					float distX = (float)(sampleX-mapData.x)/(float)mapScale;
@@ -152,7 +150,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 						mapTagCompound.put("Decorations", nbttaglist);
 					}
 					else
-						player.sendMessage(new TranslatableComponent(Lib.CHAT_INFO+"coresample.mapFail"), Util.NIL_UUID);
+						player.sendSystemMessage(Component.translatable(Lib.CHAT_INFO+"coresample.mapFail"));
 				}
 			}
 			return true;
@@ -167,7 +165,7 @@ public class CoresampleBlockEntity extends IEBaseBlockEntity implements IStateBa
 		if(coresample.hasCustomHoverName())
 			return coresample.getHoverName();
 		else
-			return new TranslatableComponent("item.immersiveengineering.coresample.name");
+			return Component.translatable("item.immersiveengineering.coresample.name");
 	}
 
 	@Override

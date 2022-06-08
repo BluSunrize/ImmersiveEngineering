@@ -34,6 +34,7 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -56,6 +57,7 @@ import java.util.function.Function;
 @SuppressWarnings("deprecation")
 public class ModelCoresample extends BakedIEModel
 {
+	// TODO proper cache keys!
 	private static final Cache<String, ModelCoresample> modelCache = CacheBuilder.newBuilder()
 			.expireAfterAccess(60, TimeUnit.SECONDS)
 			.build();
@@ -75,7 +77,7 @@ public class ModelCoresample extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState coreState, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData)
+	public List<BakedQuad> getQuads(@Nullable BlockState coreState, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
 	{
 		MineralMix[] minerals;
 		if(extraData.hasProperty(Model.MINERAL))
@@ -289,10 +291,10 @@ public class ModelCoresample extends BakedIEModel
 			{
 				try
 				{
-					String cacheKey = "";
+					StringBuilder cacheKey = new StringBuilder();
 					for(int i = 0; i < minerals.length; i++)
-						cacheKey += (i > 0?"_": "")+minerals[i].getId().toString();
-					return modelCache.get(cacheKey, () -> new ModelCoresample(minerals));
+						cacheKey.append(i > 0?"_": "").append(minerals[i].getId().toString());
+					return modelCache.get(cacheKey.toString(), () -> new ModelCoresample(minerals));
 				} catch(ExecutionException e)
 				{
 					throw new RuntimeException(e);

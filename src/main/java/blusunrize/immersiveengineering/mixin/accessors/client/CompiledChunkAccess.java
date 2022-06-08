@@ -21,9 +21,9 @@ public interface CompiledChunkAccess
 	@Accessor
 	Set<RenderType> getHasBlocks();
 
-	@Accessor
-	Set<RenderType> getHasLayer();
-
-	@Accessor
-	void setIsCompletelyEmpty(boolean newEmpty);
+	// TODO hasLayer is a f-ing local now, and isEmpty seems to be gone?
+	//@Accessor
+	//Set<RenderType> getHasLayer();
+	//@Accessor
+	//void setIsCompletelyEmpty(boolean newEmpty);
 }

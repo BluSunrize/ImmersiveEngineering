@@ -18,9 +18,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Either;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
@@ -34,6 +36,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -106,7 +109,7 @@ public class FluidTagInput implements Predicate<FluidStack>
 			return false;
 		if(!fluidTag.map(
 				t -> fluidStack.getFluid().is(t),
-				l -> l.contains(fluidStack.getFluid().getRegistryName())
+				l -> l.contains(Registry.FLUID.getKey(fluidStack.getFluid()))
 		))
 			return false;
 		if(this.nbtTag!=null)
@@ -163,8 +166,10 @@ public class FluidTagInput implements Predicate<FluidStack>
 	public void write(FriendlyByteBuf out)
 	{
 		List<ResourceLocation> matching = fluidTag.map(
-				f -> TagUtils.elementStream(Registry.FLUID, f)
-						.map(Fluid::getRegistryName)
+				f -> TagUtils.holderStream(Registry.FLUID, f)
+						.map(Holder::unwrapKey)
+						.map(Optional::orElseThrow)
+						.map(ResourceKey::location)
 						.collect(Collectors.toList()),
 				l -> l
 		);

@@ -15,7 +15,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -50,17 +49,17 @@ public class EngineersBlueprintItem extends IEBaseItem
 			if(formatKey.equals(formatted))
 				list.add(Component.literal(key));
 			else
-				list.add(new TranslatableComponent(formatKey));
+				list.add(Component.translatable(formatKey));
 			if(world!=null&&Screen.hasShiftDown())
 			{
-				list.add(new TranslatableComponent(Lib.DESC_INFO+"blueprint.creates1"));
+				list.add(Component.translatable(Lib.DESC_INFO+"blueprint.creates1"));
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(world, key);
 				if(recipes.length > 0)
 					for(BlueprintCraftingRecipe recipe : recipes)
 						list.add(Component.literal(" ").append(recipe.output.get().getHoverName()));
 			}
 			else
-				list.add(new TranslatableComponent(Lib.DESC_INFO+"blueprint.creates0"));
+				list.add(Component.translatable(Lib.DESC_INFO+"blueprint.creates0"));
 		}
 	}
 
@@ -68,7 +67,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 	@Override
 	public void fillItemCategory(CreativeModeTab tab, NonNullList<ItemStack> list)
 	{
-		if(this.allowdedIn(tab))
+		if(this.allowedIn(tab))
 			for(String key : BlueprintCraftingRecipe.recipeCategories)
 			{
 				ItemStack stack = new ItemStack(this);

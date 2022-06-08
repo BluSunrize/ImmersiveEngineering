@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.CrusherBlockEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -61,7 +61,7 @@ public class CrusherRenderer extends IEBlockEntityRenderer<CrusherBlockEntity>
 	{
 		matrix.pushPose();
 		matrix.translate(-.5, -.5, -.5);
-		List<BakedQuad> quads = BARREL.get().getQuads(null, null, Utils.RAND, EmptyModelData.INSTANCE);
+		List<BakedQuad> quads = BARREL.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 		rotateForFacing(matrix, facing);
 		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.solid()), matrix, light, overlay);
 		matrix.popPose();

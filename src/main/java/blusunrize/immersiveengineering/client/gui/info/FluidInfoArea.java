@@ -19,8 +19,8 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
@@ -70,7 +70,7 @@ public class FluidInfoArea extends InfoArea
 					fluid.getFluid().getAttributes().getRarity(fluid).color
 			));
 		else
-			tooltip.accept(new TranslatableComponent("gui.immersiveengineering.empty"));
+			tooltip.accept(Component.translatable("gui.immersiveengineering.empty"));
 		if(fluid.getFluid() instanceof IEFluid)
 		{
 			List<Component> temp = new ArrayList<>();
@@ -81,11 +81,11 @@ public class FluidInfoArea extends InfoArea
 		if(mc().options.advancedItemTooltips&&!fluid.isEmpty())
 		{
 			if(!Screen.hasShiftDown())
-				tooltip.accept(new TranslatableComponent(Lib.DESC_INFO+"holdShiftForInfo"));
+				tooltip.accept(Component.translatable(Lib.DESC_INFO+"holdShiftForInfo"));
 			else
 			{
 				//TODO translation keys
-				tooltip.accept(applyFormat(Component.literal("Fluid Registry: "+fluid.getFluid().getRegistryName()), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(Component.literal("Fluid Registry: "+Registry.FLUID.getKey(fluid.getFluid())), ChatFormatting.DARK_GRAY));
 				tooltip.accept(applyFormat(Component.literal("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)), ChatFormatting.DARK_GRAY));
 				tooltip.accept(applyFormat(Component.literal("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)), ChatFormatting.DARK_GRAY));
 				tooltip.accept(applyFormat(Component.literal("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)), ChatFormatting.DARK_GRAY));

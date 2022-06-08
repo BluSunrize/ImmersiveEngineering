@@ -22,7 +22,6 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -134,7 +133,7 @@ public class DrillItem extends DieselToolItem
 		list.add(IEItemFluidHandler.fluidItemInfoFlavor(getFluid(stack), getCapacity(stack, CAPACITY)));
 		if(getHead(stack).isEmpty())
 			list.add(TextUtils.applyFormat(
-					new TranslatableComponent(Lib.DESC_FLAVOUR+"drill.noHead"),
+					Component.translatable(Lib.DESC_FLAVOUR+"drill.noHead"),
 					ChatFormatting.GRAY
 			));
 		else
@@ -143,10 +142,10 @@ public class DrillItem extends DieselToolItem
 			int dmg = maxDmg-getHeadDamage(stack);
 			float quote = dmg/(float)maxDmg;
 			ChatFormatting status = quote < .1?ChatFormatting.RED: quote < .3?ChatFormatting.GOLD: quote < .6?ChatFormatting.YELLOW: ChatFormatting.GREEN;
-			list.add(TextUtils.applyFormat(new TranslatableComponent(Lib.DESC_FLAVOUR+"drill.headDamage"), ChatFormatting.GRAY)
+			list.add(TextUtils.applyFormat(Component.translatable(Lib.DESC_FLAVOUR+"drill.headDamage"), ChatFormatting.GRAY)
 					.append(" ")
 					.append(TextUtils.applyFormat(
-							new TranslatableComponent(Lib.DESC_INFO+"percent", (int)(quote*100)),
+							Component.translatable(Lib.DESC_INFO+"percent", (int)(quote*100)),
 							status
 					)));
 		}
@@ -172,7 +171,7 @@ public class DrillItem extends DieselToolItem
 		{
 			boolean mode = !isSingleBlockMode(stack);
 			stack.getOrCreateTag().putBoolean("singleBlockMode", mode);
-			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"drill_mode."+(mode?"single": "multi")));
+			ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"drill_mode."+(mode?"single": "multi")));
 			return InteractionResultHolder.success(stack);
 		}
 		return InteractionResultHolder.pass(stack);

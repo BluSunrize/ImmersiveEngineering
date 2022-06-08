@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api;
 
 import blusunrize.immersiveengineering.api.utils.TagUtils;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -17,11 +18,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.fml.ModList;
-import net.minecraftforge.registries.IForgeRegistryEntry;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -67,26 +66,19 @@ public class IEApi
 	 */
 	public static List<Runnable> renderCacheClearers = new ArrayList<>();
 
-	/**
-	 * If one of the predicates in this list returns true for a given stack, it can't be placed in a crate or in the Engineer's toolbox
-	 *
-	 * @deprecated Use Item::canFitInsideContainerItems or IETags.forbiddenInCrates instead, or contact the IE team if
-	 * you actually need full stack context
-	 */
-	@Deprecated(forRemoval = true)
-	public static final List<Predicate<ItemStack>> forbiddenInCrates = new ArrayList<>();
-
 	public static ItemStack getPreferredTagStack(RegistryAccess tags, TagKey<Item> tag)
 	{
 		// TODO caching should not be global, tags can change!
 		return oreOutputPreference.computeIfAbsent(
-				tag, rl -> getPreferredElementbyMod(TagUtils.elementStream(tags, rl)).orElse(Items.AIR).getDefaultInstance()
+				tag, rl -> getPreferredElementbyMod(
+						TagUtils.elementStream(tags, rl), tags.registryOrThrow(Registry.ITEM_REGISTRY)
+				).orElse(Items.AIR).getDefaultInstance()
 		).copy();
 	}
 
-	public static <T extends IForgeRegistryEntry<T>> Optional<T> getPreferredElementbyMod(Stream<T> list)
+	public static <T> Optional<T> getPreferredElementbyMod(Stream<T> list, Registry<T> registry)
 	{
-		return getPreferredElementbyMod(list, T::getRegistryName);
+		return getPreferredElementbyMod(list, registry::getKey);
 	}
 
 	public static <T> Optional<T> getPreferredElementbyMod(Stream<T> list, Function<T, ResourceLocation> getName)
@@ -106,18 +98,8 @@ public class IEApi
 
 	public static ItemStack getPreferredStackbyMod(ItemStack[] array)
 	{
-		return getPreferredElementbyMod(Arrays.stream(array), stack -> stack.getItem().getRegistryName())
+		return getPreferredElementbyMod(Arrays.stream(array), stack -> Registry.ITEM.getKey(stack.getItem()))
 				.orElseThrow(() -> new RuntimeException("Empty array?"));
-	}
-
-	public static boolean isAllowedInCrate(ItemStack stack)
-	{
-		if(!stack.getItem().canFitInsideContainerItems()||stack.is(IETags.forbiddenInCrates))
-			return false;
-		for(Predicate<ItemStack> check : forbiddenInCrates)
-			if(check.test(stack))
-				return false;
-		return true;
 	}
 
 	public static String getCurrentVersion()

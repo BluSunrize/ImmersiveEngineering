@@ -61,7 +61,7 @@ public class MetalPressRecipeSerializer extends IERecipeSerializer<MetalPressRec
 	{
 		writeLazyStack(buffer, recipe.output);
 		recipe.input.write(buffer);
-		buffer.writeRegistryId(recipe.mold);
+		buffer.writeRegistryId(ForgeRegistries.ITEMS, recipe.mold);
 		buffer.writeInt(recipe.getTotalProcessEnergy());
 	}
 }

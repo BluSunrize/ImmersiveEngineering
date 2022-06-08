@@ -12,13 +12,10 @@ import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
-import blusunrize.immersiveengineering.common.util.compat.computers.oc2.OC2CompatModule;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CraftTweakerCompatModule;
-import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.ComputerCraftAPI;
-import li.cil.oc2.api.API;
 import mcjty.theoneprobe.TheOneProbe;
 import net.minecraftforge.fml.ModList;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -41,7 +38,6 @@ public final class IECompatModules
 		STANDARD_MODULE_CLASSES.put(CuriosApi.MODID, CuriosCompatModule.class);
 		STANDARD_MODULE_CLASSES.put(TheOneProbe.MODID, OneProbeCompatModule.class);
 		STANDARD_MODULE_CLASSES.put(CraftTweakerConstants.MOD_ID, CraftTweakerCompatModule.class);
-		EARLY_MODULE_CLASSES.put(API.MOD_ID, OC2CompatModule.class);
 	}
 
 	public static void onModConstruction()

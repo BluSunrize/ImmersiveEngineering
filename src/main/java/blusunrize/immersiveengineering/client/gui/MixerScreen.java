@@ -28,7 +28,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -56,7 +55,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 				new EnergyInfoArea(leftPos+158, topPos+22, tile.energyStorage),
 				new TooltipArea(
 						new Rect2i(leftPos+106, topPos+61, 30, 16),
-						() -> new TranslatableComponent(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single"))
+						() -> Component.translatable(Lib.GUI_CONFIG+"mixer.output"+(tile.outputAll?"All": "Single"))
 				),
 				new MultitankArea(new Rect2i(leftPos+76, topPos+11, 58, 47), tile.tank)
 		);

@@ -16,7 +16,6 @@ import blusunrize.immersiveengineering.common.entities.RailgunShotEntity;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.EntityDamageSource;
 import net.minecraft.world.damagesource.IndirectEntityDamageSource;
@@ -90,7 +89,7 @@ public class IEDamageSources
 		public Component getLocalizedDeathMessage(LivingEntity entityLivingBaseIn)
 		{
 			String s = "death.attack."+this.msgId+".turret";
-			return new TranslatableComponent(s, entityLivingBaseIn.getDisplayName());
+			return Component.translatable(s, entityLivingBaseIn.getDisplayName());
 		}
 	}
 

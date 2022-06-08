@@ -19,7 +19,6 @@ import com.google.common.collect.Sets;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.DyeableLeatherItem;
 import net.minecraft.world.item.ItemStack;
@@ -105,7 +104,7 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 	public void appendHoverText(ItemStack stack, @Nullable Level world, List<Component> list, TooltipFlag flag)
 	{
 		int color = this.getColourForIEItem(stack, 0);
-		MutableComponent mainComponent = new TranslatableComponent(Lib.DESC_INFO+"colour");
+		MutableComponent mainComponent = Component.translatable(Lib.DESC_INFO+"colour");
 		list.add(withAppendColoredColour(mainComponent, color));
 	}
 

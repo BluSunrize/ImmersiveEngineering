@@ -20,7 +20,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
@@ -92,7 +91,7 @@ public class IEMinecartItem extends IEBaseItem
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
 				tooltip.add(TextUtils.applyFormat(
-						new TranslatableComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
+						Component.translatable(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
 						ChatFormatting.GRAY
 				));
 		}

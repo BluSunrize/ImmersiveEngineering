@@ -17,6 +17,7 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
@@ -499,7 +500,7 @@ public class ShaderRegistry
 			}
 	}
 
-	public static ResourceLocation getRandomShader(UUID player, Random rand, Rarity minRarity, boolean addToReceived)
+	public static ResourceLocation getRandomShader(UUID player, RandomSource rand, Rarity minRarity, boolean addToReceived)
 	{
 		int total = 0;
 		if(!playerTotalWeight.containsKey(player))

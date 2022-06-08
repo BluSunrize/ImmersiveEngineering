@@ -27,12 +27,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkStatus;
-import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -41,9 +41,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
-import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.world.BiomeLoadingEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -53,7 +51,10 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 
 public class IEWorldGen
@@ -92,6 +93,7 @@ public class IEWorldGen
 			anyRetrogenEnabled |= IEServerConfig.ORES.ores.get(config.getFirst()).retrogenEnabled.get();
 	}
 
+	/* TODO ask what this should be replaced by!
 	@SubscribeEvent
 	public void onBiomeLoad(BiomeLoadingEvent ev)
 	{
@@ -99,8 +101,9 @@ public class IEWorldGen
 		for(Entry<String, Holder<PlacedFeature>> e : features.entrySet())
 			generation.addFeature(Decoration.UNDERGROUND_ORES, e.getValue());
 	}
+	 */
 
-	private void generateOres(Random random, int chunkX, int chunkZ, ServerLevel world)
+	private void generateOres(RandomSource random, int chunkX, int chunkZ, ServerLevel world)
 	{
 		for(Entry<String, Pair<VeinType, List<TargetBlockState>>> gen : retroFeatures.entrySet())
 		{
@@ -186,7 +189,7 @@ public class IEWorldGen
 					if(event.world.hasChunk(loc.x, loc.z))
 					{
 						long worldSeed = ((WorldGenLevel)event.world).getSeed();
-						Random fmlRandom = new Random(worldSeed);
+						RandomSource fmlRandom = RandomSource.create(worldSeed);
 						long xSeed = (fmlRandom.nextLong() >> 3);
 						long zSeed = (fmlRandom.nextLong() >> 3);
 						fmlRandom.setSeed(xSeed*loc.x+zSeed*loc.z^worldSeed);

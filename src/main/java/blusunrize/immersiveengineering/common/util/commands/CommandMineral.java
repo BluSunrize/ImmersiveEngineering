@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.commands;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
@@ -17,46 +16,23 @@ import blusunrize.immersiveengineering.api.excavator.MineralWorldInfo;
 import blusunrize.immersiveengineering.common.IESaveData;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.StringReader;
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
-import com.mojang.brigadier.suggestion.Suggestions;
-import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.coordinates.ColumnPosArgument;
-import net.minecraft.commands.synchronization.ArgumentTypes;
-import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ColumnPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.server.ServerLifecycleHooks;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class CommandMineral
 {
-	public static void registerArguments()
-	{
-		ArgumentTypes.register(ImmersiveEngineering.MODID+":mineral", MineralArgument.class,
-				new EmptyArgumentSerializer<>(MineralArgument::new));
-	}
-
 	public static LiteralArgumentBuilder<CommandSourceStack> create()
 	{
 		LiteralArgumentBuilder<CommandSourceStack> main = Commands.literal("mineral");
@@ -87,7 +63,8 @@ public class CommandMineral
 		LiteralArgumentBuilder<CommandSourceStack> get = Commands.literal("get");
 		get.requires(source -> source.hasPermission(2)).executes(command -> {
 			ServerPlayer player = command.getSource().getPlayerOrException();
-			getMineral(command, new ColumnPos(player.blockPosition()));
+			BlockPos playerPos = player.blockPosition();
+			getMineral(command, new ColumnPos(playerPos.getX(), playerPos.getZ()));
 			return Command.SINGLE_SUCCESS;
 		}).then(
 				Commands.argument("location", ColumnPosArgument.columnPos())
@@ -104,27 +81,27 @@ public class CommandMineral
 	{
 		CommandSourceStack sender = context.getSource();
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getLevel(), pos);
-		TextComponent ret = Component.literal("");
+		MutableComponent ret = Component.literal("");
 		if(info==null||info.getTotalWeight()==0)
-			ret.append(new TranslatableComponent(Lib.CHAT_COMMAND+"mineral.get.none", pos.x, pos.z));
+			ret.append(Component.translatable(Lib.CHAT_COMMAND+"mineral.get.none", pos.x(), pos.z()));
 		else
 		{
-			ret.append(new TranslatableComponent(Lib.CHAT_COMMAND+"mineral.get", pos.x, pos.z));
+			ret.append(Component.translatable(Lib.CHAT_COMMAND+"mineral.get", pos.x(), pos.z()));
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
 			{
 				MineralVein vein = pair.getFirst();
 				double percentage = pair.getSecond()/(double)info.getTotalWeight();
 				MutableComponent component = Component.literal("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
-				component.append(new TranslatableComponent(vein.getMineral(context.getSource().getLevel()).getTranslationKey()));
+				component.append(Component.translatable(vein.getMineral(context.getSource().getLevel()).getTranslationKey()));
 				ret.append(component.withStyle(ChatFormatting.GRAY));
 				component = Component.literal("\n  ");
-				component.append(new TranslatableComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
-						vein.getPos().x, vein.getPos().z, vein.getRadius()));
+				component.append(Component.translatable(Lib.CHAT_COMMAND+"mineral.get.pos",
+						vein.getPos().x(), vein.getPos().z(), vein.getRadius()));
 				component.append("\n  ");
 				if(ExcavatorHandler.mineralVeinYield==0)
-					component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.infinite"));
+					component.append(Component.translatable(Lib.DESC_INFO+"coresample.infinite"));
 				else
-					component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.yield",
+					component.append(Component.translatable(Lib.DESC_INFO+"coresample.yield",
 							ExcavatorHandler.mineralVeinYield-vein.getDepletion()));
 				ret.append(component.withStyle(ChatFormatting.GRAY));
 			}
@@ -162,11 +139,11 @@ public class CommandMineral
 			MineralVein vein = new MineralVein(pos, mineral.getId(), radius);
 			ExcavatorHandler.addVein(sender.getLevel().dimension(), vein);
 			IESaveData.markInstanceDirty();
-			sender.sendSuccess(new TranslatableComponent(Lib.CHAT_COMMAND+
-					"mineral.put.success", mineral.getId(), radius, pos.x, pos.z), true);
+			sender.sendSuccess(Component.translatable(Lib.CHAT_COMMAND+
+					"mineral.put.success", mineral.getId(), radius, pos.x(), pos.z()), true);
 		}
 		else
-			sender.sendSuccess(new TranslatableComponent(Lib.CHAT_COMMAND+
+			sender.sendSuccess(Component.translatable(Lib.CHAT_COMMAND+
 					"mineral.put.invalid_mineral", mineral.getId()), true);
 	}
 
@@ -199,12 +176,12 @@ public class CommandMineral
 			for(Pair<MineralVein, Integer> pair : info.getAllVeins())
 				pair.getFirst().setDepletion(depletion);
 			IESaveData.markInstanceDirty();
-			sender.sendSuccess(new TranslatableComponent(Lib.CHAT_COMMAND+
+			sender.sendSuccess(Component.translatable(Lib.CHAT_COMMAND+
 					"mineral.set_depletion.success", depletion), true);
 		}
 		else
-			sender.sendSuccess(new TranslatableComponent(Lib.CHAT_COMMAND+
-					"mineral.set_depletion.no_mineral", pos.x, pos.z), true);
+			sender.sendSuccess(Component.translatable(Lib.CHAT_COMMAND+
+					"mineral.set_depletion.no_mineral", pos.x(), pos.z()), true);
 	}
 
 	private static ColumnPos columnPos(Vec3 vec)
@@ -212,45 +189,4 @@ public class CommandMineral
 		return new ColumnPos((int)vec.x, (int)vec.z);
 	}
 
-	// TODO fix static level access hacks
-	private static class MineralArgument implements ArgumentType<MineralMix>
-	{
-		public static final DynamicCommandExceptionType invalidVein = new DynamicCommandExceptionType(
-				(input) -> new TranslatableComponent(Lib.CHAT_COMMAND+"mineral.invalid", input));
-
-		@Override
-		public MineralMix parse(StringReader reader) throws CommandSyntaxException
-		{
-			String name = reader.readQuotedString();//TODO does this work properly?
-			for(MineralMix mm : getStaticMinerals())
-				if(mm.getId().toString().equalsIgnoreCase(name))
-					return mm;
-			throw invalidVein.create(name);
-		}
-
-		@Override
-		public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder)
-		{
-			return SharedSuggestionProvider.suggest(getStaticMinerals().stream().map(mix -> "\""+mix.getId()+"\""), builder);
-		}
-
-		@Override
-		public Collection<String> getExamples()
-		{
-			List<String> ret = new ArrayList<>();
-			for(MineralMix mix : getStaticMinerals())
-			{
-				ret.add("\""+mix.getId()+"\"");
-				if(ret.size() > 5)
-					break;
-			}
-			return ret;
-		}
-
-		private Collection<MineralMix> getStaticMinerals() {
-			MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-			Level level = server==null?ImmersiveEngineering.proxy.getClientWorld():server.overworld();
-			return MineralMix.RECIPES.getRecipes(level);
-		}
-	}
 }

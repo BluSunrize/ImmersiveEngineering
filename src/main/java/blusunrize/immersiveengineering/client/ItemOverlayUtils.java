@@ -132,7 +132,7 @@ public class ItemOverlayUtils
 	{
 		VertexConsumer builder = getHudElementsBuilder(buffer);
 		int rightOffset = 0;
-		if(ClientUtils.mc().options.showSubtitles)
+		if(ClientUtils.mc().options.showSubtitles().get())
 			rightOffset += 100;
 		float dx = scaledWidth-rightOffset-16;
 		float dy = scaledHeight;

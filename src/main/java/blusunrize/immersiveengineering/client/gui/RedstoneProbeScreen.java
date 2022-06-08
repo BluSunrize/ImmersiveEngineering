@@ -19,7 +19,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.DyeColor;
 
 import java.util.ArrayList;
@@ -65,7 +64,7 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 			this.addRenderableWidget(colorButtonsReceive[i]);
 		}
 
-		this.addRenderableWidget(new GuiSliderIE(guiLeft+15, guiTop, 64, new TranslatableComponent(Lib.GUI_CONFIG+"output_threshold"),
+		this.addRenderableWidget(new GuiSliderIE(guiLeft+15, guiTop, 64, Component.translatable(Lib.GUI_CONFIG+"output_threshold"),
 				0, 15, this.blockEntity.outputThreshold,
 				value -> sendConfig("outputThreshold", Math.round(value*15)))
 		);
@@ -87,16 +86,16 @@ public class RedstoneProbeScreen extends ClientBlockEntityScreen<ConnectorProbeB
 	@Override
 	protected void drawGuiContainerForegroundLayer(PoseStack transform, int mouseX, int mouseY, float partialTick)
 	{
-		this.font.draw(transform, new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop+18, DyeColor.WHITE.getTextColor());
-		this.font.draw(transform, new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color_receiving").getString(), guiLeft+116, guiTop+18, DyeColor.WHITE.getTextColor());
+		this.font.draw(transform, Component.translatable(Lib.GUI_CONFIG+"redstone_color_sending").getString(), guiLeft, guiTop+18, DyeColor.WHITE.getTextColor());
+		this.font.draw(transform, Component.translatable(Lib.GUI_CONFIG+"redstone_color_receiving").getString(), guiLeft+116, guiTop+18, DyeColor.WHITE.getTextColor());
 
 		ArrayList<Component> tooltip = new ArrayList<>();
 		for(int i = 0; i < colorButtonsSend.length; i++)
 			if(colorButtonsSend[i].isHoveredOrFocused()||colorButtonsReceive[i].isHoveredOrFocused())
 			{
-				tooltip.add(new TranslatableComponent(Lib.GUI_CONFIG+"redstone_color"));
+				tooltip.add(Component.translatable(Lib.GUI_CONFIG+"redstone_color"));
 				tooltip.add(TextUtils.applyFormat(
-						new TranslatableComponent("color.minecraft."+DyeColor.byId(i).getName()),
+						Component.translatable("color.minecraft."+DyeColor.byId(i).getName()),
 						ChatFormatting.GRAY
 				));
 			}

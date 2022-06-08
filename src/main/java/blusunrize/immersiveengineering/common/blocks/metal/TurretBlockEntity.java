@@ -32,7 +32,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -398,7 +398,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		if(player.isShiftKeyDown()&&!level.isClientSide)
 		{
 			redstoneControlInverted = !redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
 			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
@@ -433,7 +433,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	{
 		if(hasOwnerRights(player))
 			return true;
-		ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"notOwner", owner));
+		ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"notOwner", owner));
 		return false;
 	}
 

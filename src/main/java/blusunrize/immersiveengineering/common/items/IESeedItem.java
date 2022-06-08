@@ -30,7 +30,7 @@ public class IESeedItem extends BlockItem implements IPlantable
 	@Override
 	public void fillItemCategory(CreativeModeTab group, NonNullList<ItemStack> items)
 	{
-		if(this.allowdedIn(group))
+		if(this.allowedIn(group))
 			items.add(new ItemStack(this));
 	}
 

@@ -182,7 +182,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		{
 			if(this.tickedProcesses > 0)
 				for(int i = FIRST_ELECTRODE_SLOT; i < FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT; i++)
-					if(this.inventory.get(i).hurt(1, Utils.RAND, null))
+					if(this.inventory.get(i).hurt(1, ApiUtils.RANDOM_SOURCE, null))
 						this.inventory.set(i, ItemStack.EMPTY);
 			updateComparators(
 					this, ImmutableList.of(ELECTRODE_COMPARATOR_POS), electrodeComparatorValue, getElectrodeComparatorValueOnMaster()

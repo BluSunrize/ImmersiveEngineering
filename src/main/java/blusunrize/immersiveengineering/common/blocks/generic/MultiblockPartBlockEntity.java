@@ -28,7 +28,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -227,7 +227,7 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 				if(master!=null)
 				{
 					master.redstoneControlInverted = !master.redstoneControlInverted;
-					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO+"rsControl."
+					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsControl."
 							+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
 					this.updateMasterBlock(null, true);
 				}

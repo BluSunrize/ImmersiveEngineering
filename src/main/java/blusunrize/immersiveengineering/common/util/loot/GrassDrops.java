@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util.loot;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import com.google.gson.JsonObject;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -22,7 +23,6 @@ import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries.Keys;
 
 import javax.annotation.Nonnull;
-import java.util.List;
 
 public class GrassDrops
 {
@@ -60,7 +60,7 @@ public class GrassDrops
 
 		@Nonnull
 		@Override
-		protected List<ItemStack> doApply(List<ItemStack> generatedLoot, LootContext context)
+		protected ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
 		{
 			generatedLoot.add(new ItemStack(Misc.HEMP_SEEDS));
 			return generatedLoot;

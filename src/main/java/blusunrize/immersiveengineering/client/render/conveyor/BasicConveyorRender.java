@@ -1,12 +1,12 @@
 package blusunrize.immersiveengineering.client.render.conveyor;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.ConveyorDirection;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorWall;
 import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorModelRender;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ConveyorBase;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -104,10 +104,10 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorMod
 		Map<Direction, TextureAtlasSprite> sprites = new EnumMap<>(Direction.class);
 
 		for(Direction f : DirectionUtils.VALUES)
-			for(BakedQuad q : model.getQuads(state, f, Utils.RAND, EmptyModelData.INSTANCE))
+			for(BakedQuad q : model.getQuads(state, f, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE))
 				if(q!=null&&q.getSprite()!=null)
 					sprites.put(f, q.getSprite());
-		for(BakedQuad q : model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE))
+		for(BakedQuad q : model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE))
 			if(q!=null&&q.getSprite()!=null&&q.getDirection()!=null)
 				sprites.put(q.getDirection(), q.getSprite());
 		return d -> sprites.getOrDefault(d, sprite);

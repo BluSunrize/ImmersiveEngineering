@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TeslaCoilBlockEntity.LightningAnimation;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -30,7 +30,7 @@ public class TeslaCoilRenderer extends IEBlockEntityRenderer<TeslaCoilBlockEntit
 		for(LightningAnimation animation : tile.effectMap)
 		{
 			if(animation.shoudlRecalculateLightning())
-				animation.createLightning(Utils.RAND);
+				animation.createLightning(ApiUtils.RANDOM_SOURCE);
 
 			double tx = tile.getBlockPos().getX();
 			double ty = tile.getBlockPos().getY();

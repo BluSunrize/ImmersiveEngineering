@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.SafeChunkUtils;
 import blusunrize.immersiveengineering.common.blocks.wooden.WatermillBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -30,7 +30,7 @@ public class WatermillRenderer extends IEBlockEntityRenderer<WatermillBlockEntit
 	private static final IVertexBufferHolder MODEL_BUFFER = IVertexBufferHolder.create(() -> {
 		BlockState state = WoodenDevices.WATERMILL.defaultBlockState()
 				.setValue(IEProperties.FACING_HORIZONTAL, Direction.NORTH);
-		return MODEL.get().getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
+		return MODEL.get().getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 	});
 
 	@Override

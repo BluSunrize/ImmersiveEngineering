@@ -35,7 +35,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -133,7 +132,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 		if(totalMaterials!=null)
 		{
 			componentTooltip = new ArrayList<>();
-			componentTooltip.add(new TranslatableComponent("desc.immersiveengineering.info.reqMaterial"));
+			componentTooltip.add(Component.translatable("desc.immersiveengineering.info.reqMaterial"));
 			int maxOff = 1;
 			boolean hasAnyItems = false;
 			boolean[] hasItems = new boolean[totalMaterials.size()];

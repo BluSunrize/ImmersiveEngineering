@@ -13,10 +13,9 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Ores.VeinType;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.minecraft.world.level.levelgen.placement.RepeatingPlacement;
-
-import java.util.Random;
 
 public class IECountPlacement extends RepeatingPlacement
 {
@@ -30,7 +29,7 @@ public class IECountPlacement extends RepeatingPlacement
 
 	//TODO why is this constant? Was it constant before or did I mess up the port?
 	@Override
-	protected int count(Random p_191913_, BlockPos p_191914_)
+	protected int count(RandomSource p_191913_, BlockPos p_191914_)
 	{
 		return IEServerConfig.ORES.ores.get(type).veinsPerChunk.get();
 	}

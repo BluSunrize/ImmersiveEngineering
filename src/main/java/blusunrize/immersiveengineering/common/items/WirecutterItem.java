@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.TargetingInfo;
@@ -17,7 +18,6 @@ import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;
 import blusunrize.immersiveengineering.api.wires.utils.WireUtils;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -55,7 +55,7 @@ public class WirecutterItem extends IEBaseItem
 	public ItemStack getContainerItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
-		if(container.hurt(1, Utils.RAND, null))
+		if(container.hurt(1, ApiUtils.RANDOM_SOURCE, null))
 			return ItemStack.EMPTY;
 		else
 			return container;
@@ -96,7 +96,7 @@ public class WirecutterItem extends IEBaseItem
 	public boolean mineBlock(ItemStack itemstack, Level pLevel, BlockState state, BlockPos pPos, LivingEntity pEntityLiving)
 	{
 		boolean effective = state.is(IETags.wirecutterHarvestable);
-		itemstack.hurt(1, Utils.RAND, null);
+		itemstack.hurt(1, ApiUtils.RANDOM_SOURCE, null);
 		return effective;
 	}
 

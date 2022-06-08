@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -189,9 +190,9 @@ public class ModelUtils
 
 	public static ResourceLocation getSideTexture(@Nonnull BakedModel model, Direction side, @Nullable BlockState state)
 	{
-		List<BakedQuad> quads = model.getQuads(state, side, Utils.RAND, EmptyModelData.INSTANCE);
+		List<BakedQuad> quads = model.getQuads(state, side, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 		if(quads.isEmpty())//no quads for the specified side D:
-			quads = model.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE);
+			quads = model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 		if(quads.isEmpty())//no quads at all D:
 			return null;
 		return quads.get(0).getSprite().getName();

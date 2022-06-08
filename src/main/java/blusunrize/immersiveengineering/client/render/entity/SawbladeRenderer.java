@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.render.entity;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
-import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
@@ -19,7 +18,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
-import net.minecraft.client.AmbientOcclusionStatus;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -71,8 +69,10 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 			matrixStackIn.mulPose(new Quaternion(new Vector3f(0, 1, 0), spin, true));
 		}
 
-		AmbientOcclusionStatus aoStat = ClientUtils.mc().options.ambientOcclusion;
-		ClientUtils.mc().options.ambientOcclusion = AmbientOcclusionStatus.OFF;
+		// TODO this will cause all chunks to re-render now, we need to turn off AO somewhere else instead!
+		//  Or just move to our own dynamic model system
+		//AmbientOcclusionStatus aoStat = ClientUtils.mc().options.ambientOcclusion().get();
+		//ClientUtils.mc().options.ambientOcclusion().set(AmbientOcclusionStatus.OFF);
 
 		blockRenderer.getModelRenderer().renderModel(
 				matrixStackIn.last(), builder, state, model,
@@ -82,7 +82,7 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 				new SinglePropertyModelData<>(DYNAMIC_GROUPS, DynamicSubmodelCallbacks.getProperty())
 		);
 
-		ClientUtils.mc().options.ambientOcclusion = aoStat;
+		//ClientUtils.mc().options.ambientOcclusion = aoStat;
 
 		matrixStackIn.popPose();
 	}

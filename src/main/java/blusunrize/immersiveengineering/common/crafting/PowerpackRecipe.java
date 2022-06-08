@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -129,7 +130,7 @@ public class PowerpackRecipe implements CraftingRecipe
 			return false;
 		if(stack.getItem()==Misc.POWERPACK.asItem())
 			return false;
-		String regName = stack.getItem().getRegistryName().toString();
+		String regName = Registry.ITEM.getKey(stack.getItem()).toString();
 		for(String s : IEServerConfig.TOOLS.powerpack_whitelist.get())
 			if(regName.equals(s))
 				return true;

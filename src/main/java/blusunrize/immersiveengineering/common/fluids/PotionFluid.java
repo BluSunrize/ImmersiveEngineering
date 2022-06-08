@@ -15,11 +15,11 @@ import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -58,7 +58,7 @@ public class PotionFluid extends Fluid
 		if(type==Potions.WATER||type==null)
 			return new FluidStack(Fluids.WATER, amount);
 		FluidStack stack = new FluidStack(IEFluids.POTION.get(), amount);
-		stack.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
+		stack.getOrCreateTag().putString("Potion", Registry.POTION.getKey(type).toString());
 		return stack;
 	}
 
@@ -162,15 +162,15 @@ public class PotionFluid extends Fluid
 		{
 			List<MobEffectInstance> effects = PotionUtils.getAllEffects(fluidStack.getTag());
 			if(effects.isEmpty())
-				tooltip.add(new TranslatableComponent("effect.none").withStyle(ChatFormatting.GRAY));
+				tooltip.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
 			else
 			{
 				for(MobEffectInstance instance : effects)
 				{
-					MutableComponent itextcomponent = new TranslatableComponent(instance.getDescriptionId());
+					MutableComponent itextcomponent = Component.translatable(instance.getDescriptionId());
 					MobEffect effect = instance.getEffect();
 					if(instance.getAmplifier() > 0)
-						itextcomponent.append(" ").append(new TranslatableComponent("potion.potency."+instance.getAmplifier()));
+						itextcomponent.append(" ").append(Component.translatable("potion.potency."+instance.getAmplifier()));
 					if(instance.getDuration() > 20)
 						itextcomponent.append(" (").append(MobEffectUtil.formatDuration(instance, 1)).append(")");
 
@@ -180,8 +180,8 @@ public class PotionFluid extends Fluid
 			Potion potionType = PotionUtils.getPotion(fluidStack.getTag());
 			if(potionType!=Potions.EMPTY)
 			{
-				String modID = potionType.getRegistryName().getNamespace();
-				tooltip.add(new TranslatableComponent(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).withStyle(ChatFormatting.DARK_GRAY));
+				String modID = Registry.POTION.getKey(potionType).getNamespace();
+				tooltip.add(Component.translatable(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).withStyle(ChatFormatting.DARK_GRAY));
 			}
 		}
 	}
@@ -198,7 +198,7 @@ public class PotionFluid extends Fluid
 		{
 			if(stack==null||!stack.hasTag())
 				return super.getDisplayName(stack);
-			return new TranslatableComponent(PotionUtils.getPotion(stack.getTag()).getName("item.minecraft.potion.effect."));
+			return Component.translatable(PotionUtils.getPotion(stack.getTag()).getName("item.minecraft.potion.effect."));
 		}
 
 		@Override

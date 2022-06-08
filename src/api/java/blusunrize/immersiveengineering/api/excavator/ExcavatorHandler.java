@@ -17,6 +17,7 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ColumnPos;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.synth.PerlinSimplexNoise;
@@ -58,7 +59,7 @@ public class ExcavatorHandler
 
 	public static MineralWorldInfo getMineralWorldInfo(Level world, BlockPos pos)
 	{
-		return getMineralWorldInfo(world, new ColumnPos(pos));
+		return getMineralWorldInfo(world, new ColumnPos(pos.getX(), pos.getZ()));
 	}
 
 	public static MineralWorldInfo getMineralWorldInfo(Level world, ColumnPos columnPos)
@@ -80,8 +81,8 @@ public class ExcavatorHandler
 					// Use longs here to avoid overflow issues (#4468)
 					// With longs we can handle distances up to roughly 2**31 * sqrt(2), much larger than the maximum
 					// distance in an MC world (6*10**6*sqrt(2))
-					long dX = vein.getPos().x-columnPos.x;
-					long dZ = vein.getPos().z-columnPos.z;
+					long dX = vein.getPos().x()-columnPos.x();
+					long dZ = vein.getPos().z()-columnPos.z();
 					long d = dX*dX+dZ*dZ;
 					double rSq = vein.getRadius()*vein.getRadius();
 					if(d < rSq)
@@ -103,7 +104,7 @@ public class ExcavatorHandler
 		}
 	}
 
-	public static void generatePotentialVein(Level world, ChunkPos chunkpos, Random rand)
+	public static void generatePotentialVein(Level world, ChunkPos chunkpos, RandomSource rand)
 	{
 		int xStart = chunkpos.getMinBlockX();
 		int zStart = chunkpos.getMinBlockZ();
@@ -133,8 +134,8 @@ public class ExcavatorHandler
 				int radiusSq = radius*radius;
 				boolean crossover = MINERAL_VEIN_LIST.get(world.dimension()).stream().anyMatch(vein -> {
 					// Use longs to prevent overflow
-					long dX = vein.getPos().x-finalPos.x;
-					long dZ = vein.getPos().z-finalPos.z;
+					long dX = vein.getPos().x()-finalPos.x();
+					long dZ = vein.getPos().z()-finalPos.z();
 					long dSq = dX*dX+dZ*dZ;
 					return dSq < vein.getRadius()*vein.getRadius()||dSq < radiusSq;
 				});
@@ -212,7 +213,7 @@ public class ExcavatorHandler
 			return this.totalWeight;
 		}
 
-		public int getRandomWeight(Random random)
+		public int getRandomWeight(RandomSource random)
 		{
 			return random.nextInt(this.totalWeight);
 		}

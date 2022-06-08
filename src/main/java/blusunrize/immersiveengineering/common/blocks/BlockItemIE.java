@@ -19,7 +19,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.BundleTooltip;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -65,11 +64,11 @@ public class BlockItemIE extends BlockItem
 		if(getBlock() instanceof IIEBlock ieBlock&&ieBlock.hasFlavour())
 		{
 			String flavourKey = Lib.DESC_FLAVOUR+ieBlock.getNameForFlavour();
-			tooltip.add(TextUtils.applyFormat(new TranslatableComponent(flavourKey), ChatFormatting.GRAY));
+			tooltip.add(TextUtils.applyFormat(Component.translatable(flavourKey), ChatFormatting.GRAY));
 		}
 		super.appendHoverText(stack, world, tooltip, advanced);
 		if(ItemNBTHelper.hasKey(stack, "energyStorage"))
-			tooltip.add(TextUtils.applyFormat(new TranslatableComponent(Lib.DESC_INFO+"energyStored",
+			tooltip.add(TextUtils.applyFormat(Component.translatable(Lib.DESC_INFO+"energyStored",
 							ItemNBTHelper.getInt(stack, "energyStorage")),
 					ChatFormatting.GRAY));
 		if(ItemNBTHelper.hasKey(stack, "tank"))
@@ -77,7 +76,7 @@ public class BlockItemIE extends BlockItem
 			FluidStack fs = FluidStack.loadFluidStackFromNBT(ItemNBTHelper.getTagCompound(stack, "tank"));
 			if(fs!=null)
 				tooltip.add(TextUtils.applyFormat(
-						new TranslatableComponent(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
+						Component.translatable(Lib.DESC_INFO+"fluidStored", fs.getDisplayName(), fs.getAmount()),
 						ChatFormatting.GRAY));
 		}
 	}

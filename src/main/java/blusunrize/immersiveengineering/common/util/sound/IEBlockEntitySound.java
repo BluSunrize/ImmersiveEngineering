@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.sound;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.ISoundBE;
 import blusunrize.immersiveengineering.common.items.EarmuffsItem;
@@ -82,7 +83,7 @@ public class IEBlockEntitySound implements TickableSoundInstance
 		if(soundEvent==null)
 			this.sound = SoundManager.EMPTY_SOUND;
 		else
-			this.sound = soundEvent.getSound();
+			this.sound = soundEvent.getSound(ApiUtils.RANDOM_SOURCE);
 		return soundEvent;
 	}
 

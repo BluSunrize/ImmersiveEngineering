@@ -16,7 +16,6 @@ import mcp.mobius.waila.api.IComponentProvider;
 import mcp.mobius.waila.api.ITooltip;
 import mcp.mobius.waila.api.config.IPluginConfig;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.level.block.state.BlockState;
 
 public class HempDataProvider implements IComponentProvider
@@ -37,7 +36,7 @@ public class HempDataProvider implements IComponentProvider
 		if(relativeGrowth < 1)
 			growthText = Component.literal((int)(100*relativeGrowth)+"%");
 		else
-			growthText = new TranslatableComponent("tooltip.waila.crop_mature");
-		iTooltip.append(new TranslatableComponent("tooltip.waila.crop_growth").append(growthText));
+			growthText = Component.translatable("tooltip.waila.crop_mature");
+		iTooltip.append(Component.translatable("tooltip.waila.crop_growth").append(growthText));
 	}
 }

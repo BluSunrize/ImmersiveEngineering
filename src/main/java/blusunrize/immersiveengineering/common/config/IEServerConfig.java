@@ -24,7 +24,7 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.dimension.DimensionType;
+import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -303,7 +303,7 @@ public class IEServerConfig
 						.defineInRange("initial_depletion", .2, 0, 1);
 				excavator_dimBlacklist = builder
 						.comment("List of dimensions that can't contain minerals. Default: The End.")
-						.defineList("dimBlacklist", ImmutableList.of(DimensionType.END_LOCATION.location().toString()),
+						.defineList("dimBlacklist", ImmutableList.of(BuiltinDimensionTypes.END.location().toString()),
 								obj -> true);
 				builder.pop();
 			}

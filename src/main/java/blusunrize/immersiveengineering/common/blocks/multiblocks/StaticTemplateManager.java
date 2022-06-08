@@ -58,10 +58,7 @@ public class StaticTemplateManager
 						name.getNamespace(),
 						name.getPath().substring(slash+1)
 				);
-				return Optional.of(
-						EXISTING_HELPER.getResource(shortLoc, type, "", prefix)
-								.getInputStream()
-				);
+				return Optional.of(EXISTING_HELPER.getResource(shortLoc, type, "", prefix).open());
 			} catch(Exception x)
 			{
 				throw new RuntimeException(x);
@@ -71,8 +68,11 @@ public class StaticTemplateManager
 		{
 			try
 			{
-				Resource resource = server.getResourceManager().getResource(name);
-				return Optional.of(resource.getInputStream());
+				Optional<Resource> resource = server.getResourceManager().getResource(name);
+				if (resource.isPresent())
+					return Optional.of(resource.get().open());
+				else
+					return Optional.empty();
 			} catch(IOException x)
 			{
 				return Optional.empty();

@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.ClocheRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
 import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;
@@ -76,9 +76,9 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 				if(plantQuadList==null)
 				{
 					BakedModel plantModel = blockRenderer.getBlockModel(state);
-					plantQuadList = new ArrayList<>(plantModel.getQuads(state, null, Utils.RAND, EmptyModelData.INSTANCE));
+					plantQuadList = new ArrayList<>(plantModel.getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
 					for(Direction f : Direction.values())
-						plantQuadList.addAll(plantModel.getQuads(state, f, Utils.RAND, EmptyModelData.INSTANCE));
+						plantQuadList.addAll(plantModel.getQuads(state, f, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
 					plantQuads.put(state, plantQuadList);
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);

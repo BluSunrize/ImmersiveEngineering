@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.IEApi;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEntity;
 import com.google.common.base.Preconditions;
 import invtweaks.api.container.ChestContainer;
@@ -39,7 +39,7 @@ public class CrateContainer extends AbstractContainerMenu
 				@Override
 				public boolean mayPlace(ItemStack stack)
 				{
-					return IEApi.isAllowedInCrate(stack);
+					return !stack.is(IETags.forbiddenInCrates);
 				}
 			});
 

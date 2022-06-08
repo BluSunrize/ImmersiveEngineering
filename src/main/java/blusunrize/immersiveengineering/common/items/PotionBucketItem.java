@@ -5,9 +5,9 @@ import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -50,7 +50,7 @@ public class PotionBucketItem extends IEBaseItem
 		if(type==Potions.WATER||type==null)
 			return new ItemStack(Items.WATER_BUCKET);
 		ItemStack result = new ItemStack(Misc.POTION_BUCKET);
-		result.getOrCreateTag().putString("Potion", type.getRegistryName().toString());
+		result.getOrCreateTag().putString("Potion", Registry.POTION.getKey(type).toString());
 		return result;
 	}
 
@@ -62,7 +62,7 @@ public class PotionBucketItem extends IEBaseItem
 	@Override
 	public void fillItemCategory(@Nonnull CreativeModeTab group, @Nonnull NonNullList<ItemStack> items)
 	{
-		if(!allowdedIn(group))
+		if(!allowedIn(group))
 			return;
 		List<Potion> sortedPotions = new ArrayList<>(ForgeRegistries.POTIONS.getValues());
 		sortedPotions.sort(Comparator.comparing(e -> getPotionName(e).getString()));
@@ -82,7 +82,7 @@ public class PotionBucketItem extends IEBaseItem
 	@Override
 	public Component getName(@Nonnull ItemStack stack)
 	{
-		return new TranslatableComponent(
+		return Component.translatable(
 				"item.immersiveengineering.potion_bucket", getPotionName(getPotion(stack))
 		);
 	}
@@ -90,7 +90,7 @@ public class PotionBucketItem extends IEBaseItem
 	private static Component getPotionName(Potion potion)
 	{
 		String potionKey = potion.getName(Items.POTION.getDescriptionId()+".effect.");
-		return new TranslatableComponent(potionKey);
+		return Component.translatable(potionKey);
 	}
 
 	@Nonnull

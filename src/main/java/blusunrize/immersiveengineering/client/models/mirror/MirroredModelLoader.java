@@ -21,6 +21,7 @@ import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.model.IModelLoader;
 import net.minecraftforge.client.model.ModelLoaderRegistry.ExpandedBlockModelDeserializer;
@@ -30,7 +31,6 @@ import net.minecraftforge.client.model.data.IModelData;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
-import java.util.Random;
 
 public class MirroredModelLoader implements IModelLoader<MirroredGeometry>
 {
@@ -59,7 +59,7 @@ public class MirroredModelLoader implements IModelLoader<MirroredGeometry>
 	}
 
 	public static List<BakedQuad> getReversedQuads(
-			BakedModel model, @Nullable BlockState state, @Nullable Direction side, @Nonnull Random rand, @Nonnull IModelData extraData
+			BakedModel model, @Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData
 	)
 	{
 		return reversedQuads(model.getQuads(state, side, rand, extraData));
@@ -67,6 +67,6 @@ public class MirroredModelLoader implements IModelLoader<MirroredGeometry>
 
 	public static List<BakedQuad> getReversedQuads(SimpleBakedModel model, @Nullable Direction face)
 	{
-		return getReversedQuads(model, null, face, ApiUtils.RANDOM, EmptyModelData.INSTANCE);
+		return getReversedQuads(model, null, face, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
 	}
 }

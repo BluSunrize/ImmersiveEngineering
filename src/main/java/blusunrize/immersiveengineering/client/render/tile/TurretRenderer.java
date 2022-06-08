@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
@@ -17,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.TurretBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.metal.TurretGunBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableMap;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -28,6 +28,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,7 +58,7 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		BlockState state = tile.getBlockState();
 		if(state.getBlock()!=MetalDevices.TURRET_CHEM.get()&&state.getBlock()!=MetalDevices.TURRET_GUN.get())
 			return;
-		BakedModel model = MODELS_BY_BLOCK.get(state.getBlock().getRegistryName()).get();
+		BakedModel model = MODELS_BY_BLOCK.get(Registry.BLOCK.getKey(state.getBlock())).get();
 
 		//Outer GL Wrapping, initial translation
 		matrixStack.pushPose();
@@ -94,7 +95,7 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		VertexConsumer solidBuilder = new TransformingVertexBuilder(buffer, RenderType.solid(), matrix);
 		matrix.pushPose();
 		matrix.translate(-.5, 0, -.5);
-		List<BakedQuad> quads = model.getQuads(state, null, Utils.RAND,
+		List<BakedQuad> quads = model.getQuads(state, null, ApiUtils.RANDOM_SOURCE,
 				new SinglePropertyModelData<>(VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty()));
 		RenderUtils.renderModelTESRFancy(quads, solidBuilder, world, pos, !isFirst, -1, light);
 		matrix.popPose();

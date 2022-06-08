@@ -30,7 +30,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -105,11 +104,11 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			FluidAttributes attr = fs.getFluid().getAttributes();
 			ChatFormatting rarity = attr.getRarity()==Rarity.COMMON?ChatFormatting.GRAY:
 					attr.getRarity().color;
-			return TextUtils.applyFormat(new TranslatableComponent(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
+			return TextUtils.applyFormat(Component.translatable(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
 					fs.getAmount(), capacity), rarity);
 		}
 		else
-			return new TranslatableComponent(Lib.DESC_FLAVOUR+"drill.empty");
+			return Component.translatable(Lib.DESC_FLAVOUR+"drill.empty");
 
 	}
 

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.api;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
@@ -44,7 +43,7 @@ public class IEEnums
 
 		public Component getTextComponent()
 		{
-			return new TranslatableComponent(Lib.DESC_INFO+"blockSide.io."+getSerializedName());
+			return Component.translatable(Lib.DESC_INFO+"blockSide.io."+getSerializedName());
 		}
 
 		public static IOSideConfig next(IOSideConfig current)

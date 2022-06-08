@@ -19,7 +19,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.entity.player.Inventory;
 
 import javax.annotation.Nonnull;
@@ -40,7 +39,7 @@ public class GunTurretScreen extends TurretScreen<TurretGunBlockEntity, TurretCo
 		List<InfoArea> result = new ArrayList<>(super.makeInfoAreas());
 		result.add(new TooltipArea(
 				new Rect2i(leftPos+134, topPos+31, 16, 16),
-				() -> new TranslatableComponent(Lib.GUI_CONFIG+"turret.expel_casings_"+(tile.expelCasings?"on": "off"))
+				() -> Component.translatable(Lib.GUI_CONFIG+"turret.expel_casings_"+(tile.expelCasings?"on": "off"))
 		));
 		return result;
 	}

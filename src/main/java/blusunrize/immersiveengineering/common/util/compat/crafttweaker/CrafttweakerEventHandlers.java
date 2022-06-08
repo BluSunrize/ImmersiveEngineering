@@ -36,7 +36,7 @@ public class CrafttweakerEventHandlers
 			CraftTweakerAPI.LOGGER.info("List of all known blueprint categories: ");
 			for(String recipeCategory : BlueprintCraftingRecipe.recipeCategories)
 				CraftTweakerAPI.LOGGER.info("- {}", recipeCategory);
-			final TextComponent message = Component.literal(ChatFormatting.GREEN+"Categories written to the log"+ChatFormatting.RESET);
+			final Component message = Component.literal(ChatFormatting.GREEN+"Categories written to the log"+ChatFormatting.RESET);
 			ctx.getSource().sendSuccess(message, true);
 			return 0;
 		});

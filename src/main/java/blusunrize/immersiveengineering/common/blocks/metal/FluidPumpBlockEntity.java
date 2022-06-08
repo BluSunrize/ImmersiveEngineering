@@ -33,7 +33,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -346,7 +345,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					master = (FluidPumpBlockEntity)tmp;
 			}
 			master.placeCobble = !master.placeCobble;
-			ChatUtils.sendServerNoSpamMessages(p, new TranslatableComponent(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
+			ChatUtils.sendServerNoSpamMessages(p, Component.translatable(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
 			return true;
 		}
 		return false;

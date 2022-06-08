@@ -56,7 +56,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.RegistryEvent.MissingMappings;
 import net.minecraftforge.event.server.ServerStartedEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.InterModComms;
@@ -128,9 +127,7 @@ public class ImmersiveEngineering
 		FMLJavaModLoadingContext.get().getModEventBus().addListener(this::enqueueIMCs);
 		MinecraftForge.EVENT_BUS.addListener(this::registerCommands);
 		MinecraftForge.EVENT_BUS.addListener(this::serverStarted);
-		MinecraftForge.EVENT_BUS.addGenericListener(Block.class, (Consumer<MissingMappings<Block>>)MissingMappingsHelper::handleRemapping);
-		MinecraftForge.EVENT_BUS.addGenericListener(Item.class, (Consumer<MissingMappings<Item>>)MissingMappingsHelper::handleRemapping);
-		MinecraftForge.EVENT_BUS.addGenericListener(Fluid.class, (Consumer<MissingMappings<Fluid>>)MissingMappingsHelper::handleRemapping);
+		MinecraftForge.EVENT_BUS.addListener(MissingMappingsHelper::handleRemapping);
 		RecipeSerializers.RECIPE_SERIALIZERS.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.POINTS_OF_INTEREST.register(FMLJavaModLoadingContext.get().getModEventBus());
 		Villages.Registers.PROFESSIONS.register(FMLJavaModLoadingContext.get().getModEventBus());
@@ -248,7 +245,6 @@ public class ImmersiveEngineering
 		IEIMCHandler.init();
 		IEIMCHandler.handleIMCMessages(InterModComms.getMessages(MODID));
 
-		CommandMineral.registerArguments();
 		MetalPressPackingRecipes.init();
 	}
 

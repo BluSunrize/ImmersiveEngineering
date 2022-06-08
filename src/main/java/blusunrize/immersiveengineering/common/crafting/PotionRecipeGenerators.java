@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.MixerRecipe;
 import blusunrize.immersiveengineering.common.util.IELogger;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -49,7 +50,7 @@ public class PotionRecipeGenerators
 	{
 		Map<Potion, BottlingMachineRecipe> recipes = new HashMap<>();
 		Function<Potion, BottlingMachineRecipe> toRecipe = potion -> new BottlingMachineRecipe(
-				potion.getRegistryName(),
+				Registry.POTION.getKey(potion),
 				Lazy.of(() -> PotionUtils.setPotion(new ItemStack(Items.POTION), potion)),
 				Ingredient.of(Items.GLASS_BOTTLE),
 				getFluidTagForType(potion, 250)
@@ -62,8 +63,7 @@ public class PotionRecipeGenerators
 		recipes.put(Potions.WATER, toRecipe.apply(Potions.WATER));
 		IELogger.logger.info(
 				"Recipes for potions: "+recipes.keySet().stream()
-						.map(Potion::getRegistryName)
-						.filter(Objects::nonNull)
+						.map(Registry.POTION::getKey)
 						.map(ResourceLocation::toString)
 						.collect(Collectors.joining(", "))
 		);
@@ -72,11 +72,11 @@ public class PotionRecipeGenerators
 
 	public static void registerPotionRecipe(Potion output, Potion input, IngredientWithSize reagent, Map<Potion, List<MixerRecipe>> all)
 	{
-		if(!BLACKLIST.contains(output.getRegistryName().toString()))
+		ResourceLocation outputID = Registry.POTION.getKey(output);
+		if(!BLACKLIST.contains(outputID.toString()))
 		{
 			List<MixerRecipe> existing = all.computeIfAbsent(output, p -> new ArrayList<>());
-			ResourceLocation baseName = output.getRegistryName();
-			ResourceLocation name = new ResourceLocation(baseName.getNamespace(), baseName.getPath()+"_"+existing.size());
+			ResourceLocation name = new ResourceLocation(outputID.getNamespace(), outputID.getPath()+"_"+existing.size());
 
 			MixerRecipe recipe = new MixerRecipe(name, getFluidStackForType(output, FluidAttributes.BUCKET_VOLUME),
 					getFluidTagForType(input, FluidAttributes.BUCKET_VOLUME), new IngredientWithSize[]{reagent}, 6400);

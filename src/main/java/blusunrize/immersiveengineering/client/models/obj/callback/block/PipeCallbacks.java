@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.IEObjState;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
@@ -37,7 +38,10 @@ import net.minecraftforge.client.model.data.EmptyModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 import static net.minecraft.core.Direction.*;
 
@@ -45,7 +49,6 @@ public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
 {
 	public static final PipeCallbacks INSTANCE = new PipeCallbacks();
 
-	private static final Random RANDOM = new Random();
 	private static final Key INVALID = new Key(
 			Util.make(new EnumMap<>(Direction.class), m -> {
 				for(Direction d : DirectionUtils.VALUES)
@@ -332,8 +335,8 @@ public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
 			{
 				ForgeHooksClient.setRenderType(layer);
 				for(Direction direction : Direction.values())
-					quads.addAll(model.getQuads(state, direction, RANDOM, EmptyModelData.INSTANCE));
-				quads.addAll(model.getQuads(state, null, RANDOM, EmptyModelData.INSTANCE));
+					quads.addAll(model.getQuads(state, direction, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
+				quads.addAll(model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
 			}
 			ForgeHooksClient.setRenderType(curL);
 		}

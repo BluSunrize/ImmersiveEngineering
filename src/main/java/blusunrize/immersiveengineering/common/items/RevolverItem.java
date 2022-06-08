@@ -41,13 +41,13 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -220,11 +220,11 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	{
 		String tag = getRevolverDisplayTag(stack);
 		if(!tag.isEmpty())
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"revolver."+tag));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+tag));
 		else if(ItemNBTHelper.hasKey(stack, "flavour"))
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver."+ItemNBTHelper.getString(stack, "flavour")));
 		else
-			list.add(new TranslatableComponent(Lib.DESC_FLAVOUR+"revolver"));
+			list.add(Component.translatable(Lib.DESC_FLAVOUR+"revolver"));
 
 		CompoundTag perks = getPerks(stack);
 		for(String key : perks.getAllKeys())
@@ -704,7 +704,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		public Component getDisplayString(double value)
 		{
 			String key = Lib.DESC_INFO+"revolver.perk."+this.toString();
-			return new TranslatableComponent(key, valueFormatter.apply(value))
+			return Component.translatable(key, valueFormatter.apply(value))
 					.withStyle(isBadValue.test(value)?ChatFormatting.RED: ChatFormatting.BLUE);
 		}
 
@@ -719,7 +719,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 				averageTier += dTier;
 				int iTier = (int)Mth.clamp((dTier < 0?Math.floor(dTier): Math.ceil(dTier)), -3, 3);
 				String translate = Lib.DESC_INFO+"revolver.perk."+perk.name().toLowerCase(Locale.US)+".tier"+iTier;
-				name = new TranslatableComponent(translate).append(name);
+				name = Component.translatable(translate).append(name);
 			}
 
 			int rarityTier = (int)Math.ceil(Mth.clamp(averageTier+3, 0, 6)/6*5);
@@ -745,7 +745,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			return this.valueConcat.applyAsDouble(left, right);
 		}
 
-		public double generateValue(Random rand, boolean isBad, float luck)
+		public double generateValue(RandomSource rand, boolean isBad, float luck)
 		{
 			double d = Utils.generateLuckInfluencedDouble(generate_median, generate_deviation, luck, rand, isBad, generate_luckScale);
 			int i = (int)(d*100);
@@ -770,13 +770,13 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 			}
 		}
 
-		public static RevolverPerk getRandom(Random rand)
+		public static RevolverPerk getRandom(RandomSource rand)
 		{
 			int i = rand.nextInt(values().length);
 			return values()[i];
 		}
 
-		public static CompoundTag generatePerkSet(Random rand, float luck)
+		public static CompoundTag generatePerkSet(RandomSource rand, float luck)
 		{
 			RevolverPerk goodPerk = RevolverPerk.getRandom(rand);
 			RevolverPerk badPerk = RevolverPerk.LUCK;

@@ -8,12 +8,12 @@
 
 package blusunrize.immersiveengineering.client.render.tile;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
 import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -45,7 +45,7 @@ public class WindmillRenderer extends IEBlockEntityRenderer<WindmillBlockEntity>
 				IModelData data = new SinglePropertyModelData<>(
 						VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty()
 				);
-				return model.getQuads(null, null, Utils.RAND, data);
+				return model.getQuads(null, null, ApiUtils.RANDOM_SOURCE, data);
 			});
 		return BUFFERS[sails];
 	}
