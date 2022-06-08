@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.0.2-pre
+##### Version 1.18.2-8.0.2-149
 - Re-add compat for Craftweaker (Malte)
 - Add coal coke to the "minecraft:coals" tag, allowing it to be used in crafting campfires (BluSunrize)
     - Unfortunately, vanilla torches don't use that tag, so they can't be made with coke. It's very silly.
