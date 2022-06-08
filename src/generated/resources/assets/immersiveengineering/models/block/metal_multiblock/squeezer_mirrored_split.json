@@ -1,20 +1,20 @@
 {
   "parent": "minecraft:block/block",
-  "loader": "immersiveengineering:basic_split",
   "dynamic": false,
   "inner_model": {
-    "loader": "immersiveengineering:mirror",
     "inner_model": {
       "parent": "minecraft:block/block",
-      "textures": {
-        "particle": "immersiveengineering:block/multiblocks/squeezer"
-      },
+      "detectCullableFaces": false,
+      "flip-v": true,
       "loader": "forge:obj",
       "model": "immersiveengineering:models/block/metal_multiblock/squeezer.obj",
-      "detectCullableFaces": false,
-      "flip-v": true
-    }
+      "textures": {
+        "particle": "immersiveengineering:block/multiblocks/squeezer"
+      }
+    },
+    "loader": "immersiveengineering:mirror"
   },
+  "loader": "immersiveengineering:basic_split",
   "split_parts": [
     [
       0,

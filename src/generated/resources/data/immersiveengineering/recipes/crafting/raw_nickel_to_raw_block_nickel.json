@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:raw_nickel"
+    },
+    "s": {
+      "tag": "forge:raw_materials/nickel"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:raw_materials/nickel"
-    },
-    "i": {
-      "item": "immersiveengineering:raw_nickel"
-    }
-  },
   "result": {
     "item": "immersiveengineering:raw_block_nickel"
   }

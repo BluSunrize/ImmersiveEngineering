@@ -1,30 +1,30 @@
 {
   "type": "immersiveengineering:metal_press",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/osmium"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:gears/osmium"
+      }
+    }
+  ],
+  "energy": 2400,
+  "input": {
+    "base_ingredient": {
+      "tag": "forge:ingots/osmium"
+    },
+    "count": 4
+  },
   "mold": "immersiveengineering:mold_gear",
   "result": {
     "tag": "forge:gears/osmium"
-  },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/osmium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:gears/osmium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
-  "input": {
-    "count": 4,
-    "base_ingredient": {
-      "tag": "forge:ingots/osmium"
-    }
-  },
-  "energy": 2400
+  }
 }

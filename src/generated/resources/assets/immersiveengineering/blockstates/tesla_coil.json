@@ -2,13 +2,13 @@
   "variants": {
     "facing=down": {
       "model": "immersiveengineering:block/metal_device/teslacoil_split",
-      "x": 90,
-      "uvlock": true
+      "uvlock": true,
+      "x": 90
     },
-    "facing=up": {
+    "facing=east": {
       "model": "immersiveengineering:block/metal_device/teslacoil_split",
-      "x": -90,
-      "uvlock": true
+      "uvlock": true,
+      "y": 90
     },
     "facing=north": {
       "model": "immersiveengineering:block/metal_device/teslacoil_split",
@@ -16,18 +16,18 @@
     },
     "facing=south": {
       "model": "immersiveengineering:block/metal_device/teslacoil_split",
-      "y": 180,
-      "uvlock": true
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=up": {
+      "model": "immersiveengineering:block/metal_device/teslacoil_split",
+      "uvlock": true,
+      "x": -90
     },
     "facing=west": {
       "model": "immersiveengineering:block/metal_device/teslacoil_split",
-      "y": 270,
-      "uvlock": true
-    },
-    "facing=east": {
-      "model": "immersiveengineering:block/metal_device/teslacoil_split",
-      "y": 90,
-      "uvlock": true
+      "uvlock": true,
+      "y": 270
     }
   }
 }

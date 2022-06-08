@@ -1,30 +1,30 @@
 {
   "type": "immersiveengineering:metal_press",
-  "mold": "immersiveengineering:mold_wire",
-  "result": {
-    "count": 2,
-    "base_ingredient": {
-      "tag": "forge:wires/tin"
-    }
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/tin"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:wires/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:wires/tin"
+      }
     }
   ],
+  "energy": 2400,
   "input": {
     "tag": "forge:ingots/tin"
   },
-  "energy": 2400
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:wires/tin"
+    },
+    "count": 2
+  }
 }

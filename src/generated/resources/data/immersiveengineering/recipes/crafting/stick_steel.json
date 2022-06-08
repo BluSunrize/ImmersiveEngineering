@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "sticks",
-  "pattern": [
-    "i",
-    "i"
-  ],
   "key": {
     "i": {
       "tag": "forge:ingots/steel"
     }
   },
+  "pattern": [
+    "i",
+    "i"
+  ],
   "result": {
-    "item": "immersiveengineering:stick_steel",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:stick_steel"
   }
 }

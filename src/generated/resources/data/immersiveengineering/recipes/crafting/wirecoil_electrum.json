@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "tag": "forge:rods/wooden"
+    },
+    "w": {
+      "tag": "forge:wires/electrum"
+    }
+  },
   "pattern": [
     " w ",
     "wsw",
     " w "
   ],
-  "key": {
-    "w": {
-      "tag": "forge:wires/electrum"
-    },
-    "s": {
-      "tag": "forge:rods/wooden"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:wirecoil_electrum",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:wirecoil_electrum"
   }
 }

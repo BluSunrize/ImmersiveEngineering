@@ -1,27 +1,27 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "tag": "forge:dusts/ardite"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/ardite",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/ardite"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/ardite",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/ardite"
+      }
     }
   ],
+  "energy": 3000,
   "input": {
     "tag": "forge:ingots/ardite"
   },
-  "energy": 3000
+  "result": {
+    "tag": "forge:dusts/ardite"
+  },
+  "secondaries": []
 }

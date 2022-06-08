@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "s": {
+      "tag": "forge:rods/wooden"
+    },
+    "w": {
+      "item": "immersiveengineering:wire_steel"
+    }
+  },
   "pattern": [
     " w ",
     "wsw",
     " w "
   ],
-  "key": {
-    "w": {
-      "item": "immersiveengineering:wire_steel"
-    },
-    "s": {
-      "tag": "forge:rods/wooden"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:wirecoil_structure_steel",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:wirecoil_structure_steel"
   }
 }

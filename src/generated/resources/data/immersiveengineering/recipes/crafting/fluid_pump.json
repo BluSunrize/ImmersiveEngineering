@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " i ",
-    "ici",
-    "ppp"
-  ],
   "key": {
-    "i": {
-      "tag": "forge:plates/iron"
-    },
     "c": {
       "item": "immersiveengineering:component_iron"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
     },
     "p": {
       "item": "immersiveengineering:fluid_pipe"
     }
   },
+  "pattern": [
+    " i ",
+    "ici",
+    "ppp"
+  ],
   "result": {
     "item": "immersiveengineering:fluid_pump"
   }

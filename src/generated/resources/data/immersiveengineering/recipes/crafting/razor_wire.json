@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "p": {
+      "tag": "forge:plates/steel"
+    },
+    "s": {
+      "item": "immersiveengineering:wire_steel"
+    }
+  },
   "pattern": [
     "psp",
     "sss",
     "psp"
   ],
-  "key": {
-    "s": {
-      "item": "immersiveengineering:wire_steel"
-    },
-    "p": {
-      "tag": "forge:plates/steel"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:razor_wire",
-    "count": 3
+    "count": 3,
+    "item": "immersiveengineering:razor_wire"
   }
 }

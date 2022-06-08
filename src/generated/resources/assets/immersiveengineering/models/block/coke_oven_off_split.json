@@ -1,22 +1,19 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/multiblocks/coke_oven_off"
-  },
-  "loader": "immersiveengineering:basic_split",
   "dynamic": false,
   "inner_model": {
     "parent": "minecraft:block/block",
-    "textures": {
-      "particle": "immersiveengineering:block/multiblocks/coke_oven_off",
-      "side": "immersiveengineering:block/multiblocks/coke_oven",
-      "front": "immersiveengineering:block/multiblocks/coke_oven_off"
-    },
+    "detectCullableFaces": false,
+    "flip-v": true,
     "loader": "forge:obj",
     "model": "immersiveengineering:models/block/stone_multiblocks/cube_three.obj",
-    "detectCullableFaces": false,
-    "flip-v": true
+    "textures": {
+      "front": "immersiveengineering:block/multiblocks/coke_oven_off",
+      "particle": "immersiveengineering:block/multiblocks/coke_oven_off",
+      "side": "immersiveengineering:block/multiblocks/coke_oven"
+    }
   },
+  "loader": "immersiveengineering:basic_split",
   "split_parts": [
     [
       -1,
@@ -153,5 +150,8 @@
       1,
       1
     ]
-  ]
+  ],
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/coke_oven_off"
+  }
 }

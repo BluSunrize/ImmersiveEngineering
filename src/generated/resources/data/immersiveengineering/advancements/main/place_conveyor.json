@@ -1,56 +1,56 @@
 {
   "parent": "immersiveengineering:main/root",
+  "criteria": {
+    "basic": {
+      "conditions": {
+        "block": "immersiveengineering:conveyor_basic"
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "dropper": {
+      "conditions": {
+        "block": "immersiveengineering:conveyor_dropper"
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "extract": {
+      "conditions": {
+        "block": "immersiveengineering:conveyor_extract"
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "redstone": {
+      "conditions": {
+        "block": "immersiveengineering:conveyor_redstone"
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "splitter": {
+      "conditions": {
+        "block": "immersiveengineering:conveyor_splitter"
+      },
+      "trigger": "minecraft:placed_block"
+    },
+    "vertical": {
+      "conditions": {
+        "block": "immersiveengineering:conveyor_vertical"
+      },
+      "trigger": "minecraft:placed_block"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "immersiveengineering:conveyor_basic"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.place_conveyor"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.place_conveyor.desc"
     },
     "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:conveyor_basic"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "basic": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_basic"
-      }
-    },
-    "dropper": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_dropper"
-      }
-    },
-    "extract": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_extract"
-      }
-    },
-    "redstone": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_redstone"
-      }
-    },
-    "splitter": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_splitter"
-      }
-    },
-    "vertical": {
-      "trigger": "minecraft:placed_block",
-      "conditions": {
-        "block": "immersiveengineering:conveyor_vertical"
-      }
+    "title": {
+      "translate": "advancement.immersiveengineering.place_conveyor"
     }
   },
   "requirements": [

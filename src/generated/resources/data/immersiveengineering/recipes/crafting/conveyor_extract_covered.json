@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:conveyor_extract"
+    },
+    "s": {
+      "tag": "immersiveengineering:scaffoldings/steel"
+    }
+  },
   "pattern": [
     "s",
     "c"
   ],
-  "key": {
-    "s": {
-      "tag": "immersiveengineering:scaffoldings/steel"
-    },
-    "c": {
-      "item": "immersiveengineering:conveyor_extract"
-    }
-  },
   "result": {
     "item": "immersiveengineering:conveyor_extract",
     "nbt": {

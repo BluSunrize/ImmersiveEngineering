@@ -1,17 +1,17 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "components",
   "inputs": [
     {
-      "count": 2,
       "base_ingredient": {
         "tag": "forge:plates/steel"
-      }
+      },
+      "count": 2
     },
     {
       "tag": "forge:ingots/copper"
     }
   ],
-  "category": "components",
   "result": {
     "item": "immersiveengineering:component_steel"
   }

@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "specialBullet",
   "inputs": [
     {
       "item": "immersiveengineering:empty_casing"
@@ -11,7 +12,6 @@
       "item": "minecraft:tnt"
     }
   ],
-  "category": "specialBullet",
   "result": {
     "item": "immersiveengineering:he"
   }

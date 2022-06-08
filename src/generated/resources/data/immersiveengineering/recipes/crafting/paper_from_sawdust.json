@@ -14,13 +14,13 @@
       "tag": "forge:dusts/wood"
     },
     {
-      "tag": "minecraft:water",
+      "type": "immersiveengineering:fluid",
       "amount": 1000,
-      "type": "immersiveengineering:fluid"
+      "tag": "minecraft:water"
     }
   ],
   "result": {
-    "item": "minecraft:paper",
-    "count": 2
+    "count": 2,
+    "item": "minecraft:paper"
   }
 }

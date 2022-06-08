@@ -1,11 +1,11 @@
 {
   "type": "immersiveengineering:coke_oven",
-  "result": {
-    "item": "minecraft:charcoal"
-  },
+  "creosote": 250,
   "input": {
     "tag": "minecraft:logs"
   },
-  "creosote": 250,
+  "result": {
+    "item": "minecraft:charcoal"
+  },
   "time": 900
 }

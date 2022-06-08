@@ -1,31 +1,31 @@
 {
   "parent": "immersiveengineering:main/make_steel",
-  "display": {
-    "icon": {
-      "item": "immersiveengineering:excavator"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.mb_excavator"
-    },
-    "description": {
-      "translate": "advancement.immersiveengineering.mb_excavator.desc"
-    },
-    "frame": "challenge",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "excavator": {
-      "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/excavator",
         "item": {
           "items": [
             "immersiveengineering:hammer"
           ]
-        }
-      }
+        },
+        "multiblock": "immersiveengineering:multiblocks/excavator"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_excavator.desc"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:excavator"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_excavator"
     }
   },
   "requirements": [

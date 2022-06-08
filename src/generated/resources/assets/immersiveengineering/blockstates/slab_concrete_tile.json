@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_concrete_tile_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_concrete_tile_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_concrete_tile_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_concrete_tile_top"
     }
   }
 }

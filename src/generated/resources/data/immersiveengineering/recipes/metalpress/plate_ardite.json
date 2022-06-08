@@ -1,27 +1,27 @@
 {
   "type": "immersiveengineering:metal_press",
-  "mold": "immersiveengineering:mold_plate",
-  "result": {
-    "tag": "forge:plates/ardite"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/ardite",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/ardite"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:plates/ardite",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:plates/ardite"
+      }
     }
   ],
+  "energy": 2400,
   "input": {
     "tag": "forge:ingots/ardite"
   },
-  "energy": 2400
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "tag": "forge:plates/ardite"
+  }
 }

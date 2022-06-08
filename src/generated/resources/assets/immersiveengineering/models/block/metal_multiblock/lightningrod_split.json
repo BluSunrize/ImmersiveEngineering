@@ -1,20 +1,17 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/multiblocks/lightningrod"
-  },
-  "loader": "immersiveengineering:basic_split",
   "dynamic": false,
   "inner_model": {
     "parent": "minecraft:block/block",
-    "textures": {
-      "particle": "immersiveengineering:block/multiblocks/lightningrod"
-    },
+    "detectCullableFaces": false,
+    "flip-v": true,
     "loader": "forge:obj",
     "model": "immersiveengineering:models/block/metal_multiblock/lightningrod.obj",
-    "detectCullableFaces": false,
-    "flip-v": true
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/lightningrod"
+    }
   },
+  "loader": "immersiveengineering:basic_split",
   "split_parts": [
     [
       -1,
@@ -151,5 +148,8 @@
       -1,
       0
     ]
-  ]
+  ],
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/lightningrod"
+  }
 }

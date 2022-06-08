@@ -1,20 +1,20 @@
 {
   "type": "immersiveengineering:cloche",
-  "results": [
-    {
-      "item": "minecraft:sweet_berries",
-      "count": 2
-    }
-  ],
   "input": {
     "item": "minecraft:sweet_berries"
   },
-  "soil": {
-    "item": "minecraft:dirt"
-  },
-  "time": 560,
   "render": {
     "type": "crop",
     "block": "minecraft:sweet_berry_bush"
-  }
+  },
+  "results": [
+    {
+      "count": 2,
+      "item": "minecraft:sweet_berries"
+    }
+  ],
+  "soil": {
+    "item": "minecraft:dirt"
+  },
+  "time": 560
 }

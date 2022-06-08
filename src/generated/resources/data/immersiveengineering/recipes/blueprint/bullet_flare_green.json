@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "specialBullet",
   "inputs": [
     {
       "item": "immersiveengineering:empty_shell"
@@ -14,7 +15,6 @@
       "tag": "forge:dyes/green"
     }
   ],
-  "category": "specialBullet",
   "result": {
     "item": "immersiveengineering:flare",
     "nbt": "{flareColour:2925323}"

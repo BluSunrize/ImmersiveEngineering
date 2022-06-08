@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 1.0,
   "ingredient": {
     "item": "immersiveengineering:deepslate_ore_silver"
   },
-  "result": "immersiveengineering:ingot_silver",
-  "experience": 1.0,
-  "cookingtime": 200
+  "result": "immersiveengineering:ingot_silver"
 }

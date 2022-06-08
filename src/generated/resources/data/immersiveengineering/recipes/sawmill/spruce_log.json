@@ -1,5 +1,18 @@
 {
   "type": "immersiveengineering:sawmill",
+  "energy": 1600,
+  "input": [
+    {
+      "item": "minecraft:spruce_log"
+    },
+    {
+      "item": "minecraft:spruce_wood"
+    }
+  ],
+  "result": {
+    "count": 6,
+    "item": "minecraft:spruce_planks"
+  },
   "secondaries": [
     {
       "output": {
@@ -12,19 +25,6 @@
         "tag": "forge:dusts/wood"
       },
       "stripping": false
-    }
-  ],
-  "result": {
-    "item": "minecraft:spruce_planks",
-    "count": 6
-  },
-  "energy": 1600,
-  "input": [
-    {
-      "item": "minecraft:spruce_log"
-    },
-    {
-      "item": "minecraft:spruce_wood"
     }
   ],
   "stripped": {

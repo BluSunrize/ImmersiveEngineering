@@ -1,24 +1,24 @@
 {
   "type": "immersiveengineering:shaped_fluid",
+  "key": {
+    "c": {
+      "type": "immersiveengineering:fluid",
+      "amount": 1000,
+      "tag": "forge:creosote"
+    },
+    "s": {
+      "tag": "forge:rods/wooden"
+    },
+    "w": {
+      "tag": "minecraft:wool"
+    }
+  },
   "pattern": [
     "wc ",
     "sss"
   ],
-  "key": {
-    "w": {
-      "tag": "minecraft:wool"
-    },
-    "c": {
-      "tag": "forge:creosote",
-      "amount": 1000,
-      "type": "immersiveengineering:fluid"
-    },
-    "s": {
-      "tag": "forge:rods/wooden"
-    }
-  },
   "result": {
-    "item": "minecraft:torch",
-    "count": 12
+    "count": 12,
+    "item": "minecraft:torch"
   }
 }

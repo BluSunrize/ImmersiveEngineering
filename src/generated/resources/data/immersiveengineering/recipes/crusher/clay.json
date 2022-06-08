@@ -1,12 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "item": "minecraft:clay_ball",
-    "count": 4
-  },
+  "energy": 1600,
   "input": {
     "tag": "forge:storage_blocks/clay"
   },
-  "energy": 1600
+  "result": {
+    "count": 4,
+    "item": "minecraft:clay_ball"
+  },
+  "secondaries": []
 }

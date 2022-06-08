@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:ingot_electrum"
+    },
+    "s": {
+      "tag": "forge:ingots/electrum"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:ingots/electrum"
-    },
-    "i": {
-      "item": "immersiveengineering:ingot_electrum"
-    }
-  },
   "result": {
     "item": "immersiveengineering:storage_electrum"
   }

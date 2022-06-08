@@ -1,27 +1,27 @@
 {
   "type": "immersiveengineering:metal_press",
-  "mold": "immersiveengineering:mold_plate",
-  "result": {
-    "tag": "forge:plates/tin"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/tin"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:plates/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:plates/tin"
+      }
     }
   ],
+  "energy": 2400,
   "input": {
     "tag": "forge:ingots/tin"
   },
-  "energy": 2400
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "tag": "forge:plates/tin"
+  }
 }

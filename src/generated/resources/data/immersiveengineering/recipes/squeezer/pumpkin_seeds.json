@@ -1,11 +1,11 @@
 {
   "type": "immersiveengineering:squeezer",
+  "energy": 6400,
   "fluid": {
-    "fluid": "immersiveengineering:plantoil",
-    "amount": 40
+    "amount": 40,
+    "fluid": "immersiveengineering:plantoil"
   },
   "input": {
     "item": "minecraft:pumpkin_seeds"
-  },
-  "energy": 6400
+  }
 }

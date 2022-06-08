@@ -2,85 +2,85 @@
   "type": "minecraft:block",
   "pools": [
     {
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
       "entries": [
         {
           "type": "minecraft:item",
           "name": "immersiveengineering:seed"
         }
       ],
-      "conditions": [
-        {
-          "condition": "minecraft:survives_explosion"
-        }
-      ]
+      "rolls": 1.0
     },
     {
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
-      "entries": [
-        {
-          "type": "minecraft:item",
-          "name": "immersiveengineering:hemp_fiber"
-        }
-      ],
       "conditions": [
         {
           "condition": "minecraft:survives_explosion"
         },
         {
-          "condition": "minecraft:block_state_property",
           "block": "immersiveengineering:hemp",
+          "condition": "minecraft:block_state_property",
           "properties": {
             "growth": "bottom4"
           }
         }
       ],
-      "functions": [
-        {
-          "function": "minecraft:apply_bonus",
-          "enchantment": "minecraft:fortune",
-          "formula": "minecraft:binomial_with_bonus_count",
-          "parameters": {
-            "extra": 3,
-            "probability": 0.5
-          }
-        }
-      ]
-    },
-    {
-      "rolls": 1.0,
-      "bonus_rolls": 0.0,
       "entries": [
         {
           "type": "minecraft:item",
           "name": "immersiveengineering:hemp_fiber"
         }
       ],
+      "functions": [
+        {
+          "enchantment": "minecraft:fortune",
+          "formula": "minecraft:binomial_with_bonus_count",
+          "function": "minecraft:apply_bonus",
+          "parameters": {
+            "extra": 3,
+            "probability": 0.5
+          }
+        }
+      ],
+      "rolls": 1.0
+    },
+    {
+      "bonus_rolls": 0.0,
       "conditions": [
         {
           "condition": "minecraft:survives_explosion"
         },
         {
-          "condition": "minecraft:block_state_property",
           "block": "immersiveengineering:hemp",
+          "condition": "minecraft:block_state_property",
           "properties": {
             "growth": "top0"
           }
         }
       ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "immersiveengineering:hemp_fiber"
+        }
+      ],
       "functions": [
         {
-          "function": "minecraft:apply_bonus",
           "enchantment": "minecraft:fortune",
           "formula": "minecraft:binomial_with_bonus_count",
+          "function": "minecraft:apply_bonus",
           "parameters": {
             "extra": 3,
             "probability": 0.625
           }
         }
-      ]
+      ],
+      "rolls": 1.0
     }
   ]
 }

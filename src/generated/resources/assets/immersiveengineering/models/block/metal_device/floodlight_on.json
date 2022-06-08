@@ -1,10 +1,10 @@
 {
   "parent": "minecraft:block/block",
+  "callbacks": "immersiveengineering:floodlight",
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/metal_device/floodlight.obj.ie",
   "textures": {
     "particle": "#texture",
     "texture": "immersiveengineering:block/metal_device/floodlight_on"
-  },
-  "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/block/metal_device/floodlight.obj.ie",
-  "callbacks": "immersiveengineering:floodlight"
+  }
 }

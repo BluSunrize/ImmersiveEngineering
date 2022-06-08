@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " P ",
-    "ddd",
-    "ppp"
-  ],
   "key": {
     "P": {
       "tag": "forge:plates/iron"
@@ -16,6 +11,11 @@
       "item": "minecraft:paper"
     }
   },
+  "pattern": [
+    " P ",
+    "ddd",
+    "ppp"
+  ],
   "result": {
     "item": "immersiveengineering:blueprint",
     "nbt": {

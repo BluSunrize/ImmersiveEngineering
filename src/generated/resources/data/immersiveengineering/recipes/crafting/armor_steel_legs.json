@@ -1,15 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "xxx",
-    "x x",
-    "x x"
-  ],
   "key": {
     "x": {
       "tag": "forge:plates/steel"
     }
   },
+  "pattern": [
+    "xxx",
+    "x x",
+    "x x"
+  ],
   "result": {
     "item": "immersiveengineering:armor_steel_legs"
   }

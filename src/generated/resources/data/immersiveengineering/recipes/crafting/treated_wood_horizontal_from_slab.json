@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "s",
-    "s"
-  ],
   "key": {
     "s": {
       "item": "immersiveengineering:slab_treated_wood_horizontal"
     }
   },
+  "pattern": [
+    "s",
+    "s"
+  ],
   "result": {
     "item": "immersiveengineering:treated_wood_horizontal"
   }

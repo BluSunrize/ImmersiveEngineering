@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "bannerpatterns",
   "inputs": [
     {
       "item": "minecraft:paper"
@@ -8,8 +9,7 @@
       "tag": "forge:plates"
     }
   ],
-  "category": "bannerpatterns",
   "result": {
-    "item": "immersiveengineering:bannerpattern_bevels"
+    "item": "immersiveengineering:pattern_bevels"
   }
 }

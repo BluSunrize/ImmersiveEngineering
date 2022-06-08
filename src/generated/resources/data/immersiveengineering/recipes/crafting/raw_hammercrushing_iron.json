@@ -1,25 +1,25 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "result": {
-    "tag": "forge:dusts/iron"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/iron",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/iron"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:raw_materials/iron",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:raw_materials/iron"
+      }
     }
   ],
   "input": {
     "tag": "forge:raw_materials/iron"
+  },
+  "result": {
+    "tag": "forge:dusts/iron"
   }
 }

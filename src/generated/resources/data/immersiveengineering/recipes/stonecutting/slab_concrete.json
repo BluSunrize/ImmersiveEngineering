@@ -1,8 +1,8 @@
 {
   "type": "minecraft:stonecutting",
+  "count": 2,
   "ingredient": {
     "item": "immersiveengineering:concrete"
   },
-  "result": "immersiveengineering:slab_concrete",
-  "count": 2
+  "result": "immersiveengineering:slab_concrete"
 }

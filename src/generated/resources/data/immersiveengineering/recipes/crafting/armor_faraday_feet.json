@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "x x",
-    "x x"
-  ],
   "key": {
     "x": {
       "tag": "forge:plates/aluminum"
     }
   },
+  "pattern": [
+    "x x",
+    "x x"
+  ],
   "result": {
     "item": "immersiveengineering:armor_faraday_feet"
   }

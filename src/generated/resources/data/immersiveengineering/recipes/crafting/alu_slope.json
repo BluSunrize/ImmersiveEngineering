@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "sss",
-    "ss ",
-    "s  "
-  ],
   "key": {
     "s": {
       "item": "immersiveengineering:alu_scaffolding_standard"
     }
   },
+  "pattern": [
+    "sss",
+    "ss ",
+    "s  "
+  ],
   "result": {
-    "item": "immersiveengineering:alu_slope",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:alu_slope"
   }
 }

@@ -1,5 +1,9 @@
 {
   "type": "immersiveengineering:mineral_mix",
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "fail_chance": 0.15,
   "ores": [
     {
       "chance": 0.7,
@@ -14,24 +18,20 @@
       }
     },
     {
+      "chance": 0.1,
       "conditions": [
         {
+          "type": "forge:not",
           "value": {
-            "tag": "forge:ores/thorium",
-            "type": "forge:tag_empty"
-          },
-          "type": "forge:not"
+            "type": "forge:tag_empty",
+            "tag": "forge:ores/thorium"
+          }
         }
       ],
-      "chance": 0.1,
       "output": {
         "tag": "forge:ores/thorium"
       }
     }
   ],
-  "dimensions": [
-    "minecraft:overworld"
-  ],
-  "weight": 10,
-  "fail_chance": 0.15
+  "weight": 10
 }

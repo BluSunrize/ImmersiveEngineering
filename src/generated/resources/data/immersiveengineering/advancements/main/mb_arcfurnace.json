@@ -1,31 +1,31 @@
 {
   "parent": "immersiveengineering:main/make_steel",
-  "display": {
-    "icon": {
-      "item": "immersiveengineering:arc_furnace"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.mb_arcfurnace"
-    },
-    "description": {
-      "translate": "advancement.immersiveengineering.mb_arcfurnace.desc"
-    },
-    "frame": "challenge",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "arcfurnace": {
-      "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/arcfurnace",
         "item": {
           "items": [
             "immersiveengineering:hammer"
           ]
-        }
-      }
+        },
+        "multiblock": "immersiveengineering:multiblocks/arcfurnace"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_arcfurnace.desc"
+    },
+    "frame": "challenge",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:arc_furnace"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_arcfurnace"
     }
   },
   "requirements": [

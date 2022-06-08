@@ -1,27 +1,27 @@
 {
   "type": "immersiveengineering:metal_press",
-  "mold": "immersiveengineering:mold_plate",
-  "result": {
-    "tag": "forge:plates/osmium"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/osmium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/osmium"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:plates/osmium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:plates/osmium"
+      }
     }
   ],
+  "energy": 2400,
   "input": {
     "tag": "forge:ingots/osmium"
   },
-  "energy": 2400
+  "mold": "immersiveengineering:mold_plate",
+  "result": {
+    "tag": "forge:plates/osmium"
+  }
 }

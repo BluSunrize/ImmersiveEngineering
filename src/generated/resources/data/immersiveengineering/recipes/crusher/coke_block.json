@@ -1,14 +1,14 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "count": 9,
-    "base_ingredient": {
-      "tag": "forge:dusts/coal_coke"
-    }
-  },
+  "energy": 4800,
   "input": {
     "tag": "forge:storage_blocks/coal_coke"
   },
-  "energy": 4800
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:dusts/coal_coke"
+    },
+    "count": 9
+  },
+  "secondaries": []
 }

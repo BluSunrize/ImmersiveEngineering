@@ -1,13 +1,13 @@
 {
   "type": "immersiveengineering:bottling_machine",
-  "result": {
-    "item": "minecraft:wet_sponge"
+  "fluid": {
+    "amount": 1000,
+    "tag": "minecraft:water"
   },
   "input": {
     "item": "minecraft:sponge"
   },
-  "fluid": {
-    "tag": "minecraft:water",
-    "amount": 1000
+  "result": {
+    "item": "minecraft:wet_sponge"
   }
 }

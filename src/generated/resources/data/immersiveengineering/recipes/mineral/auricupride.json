@@ -1,5 +1,9 @@
 {
   "type": "immersiveengineering:mineral_mix",
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "fail_chance": 0.1,
   "ores": [
     {
       "chance": 0.75,
@@ -14,9 +18,5 @@
       }
     }
   ],
-  "dimensions": [
-    "minecraft:overworld"
-  ],
-  "weight": 30,
-  "fail_chance": 0.1
+  "weight": 30
 }

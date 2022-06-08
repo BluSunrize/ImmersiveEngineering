@@ -1,5 +1,5 @@
 {
-  "loader": "immersiveengineering:conf_sides",
   "type": "vertical",
-  "base_name": "immersiveengineering:block/wooden_device/barrel"
+  "base_name": "immersiveengineering:block/wooden_device/barrel",
+  "loader": "immersiveengineering:conf_sides"
 }

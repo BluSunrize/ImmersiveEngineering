@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/wooden_device/logic_unit"
-  },
+  "callbacks": "immersiveengineering:logic_unit",
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/wooden_device/logic_unit.obj.ie",
-  "callbacks": "immersiveengineering:logic_unit"
+  "textures": {
+    "particle": "immersiveengineering:block/wooden_device/logic_unit"
+  }
 }

@@ -1,30 +1,30 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "count": 12,
-    "base_ingredient": {
-      "tag": "forge:dusts/cobalt"
-    }
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/cobalt",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/cobalt"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:storage_blocks/raw_cobalt",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:storage_blocks/raw_cobalt"
+      }
     }
   ],
+  "energy": 54000,
   "input": {
     "tag": "forge:storage_blocks/raw_cobalt"
   },
-  "energy": 54000
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:dusts/cobalt"
+    },
+    "count": 12
+  },
+  "secondaries": []
 }

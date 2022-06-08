@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "d": {
+      "tag": "forge:dyes/black"
+    },
+    "s": {
+      "tag": "forge:sheetmetals"
+    }
+  },
   "pattern": [
     "sss",
     "sds",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:sheetmetals"
-    },
-    "d": {
-      "tag": "forge:dyes/black"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:sheetmetal_colored_black",
-    "count": 8
+    "count": 8,
+    "item": "immersiveengineering:sheetmetal_colored_black"
   }
 }

@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "s",
-    "s"
-  ],
   "key": {
     "s": {
       "item": "immersiveengineering:slab_alu_scaffolding_grate_top"
     }
   },
+  "pattern": [
+    "s",
+    "s"
+  ],
   "result": {
     "item": "immersiveengineering:alu_scaffolding_grate_top"
   }

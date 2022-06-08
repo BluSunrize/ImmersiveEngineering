@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "specialBullet",
   "inputs": [
     {
       "item": "immersiveengineering:empty_casing"
@@ -8,16 +9,15 @@
       "tag": "forge:gunpowder"
     },
     {
-      "count": 2,
       "base_ingredient": {
         "tag": "forge:nuggets/lead"
-      }
+      },
+      "count": 2
     },
     {
       "item": "minecraft:ender_eye"
     }
   ],
-  "category": "specialBullet",
   "result": {
     "item": "immersiveengineering:homing"
   }

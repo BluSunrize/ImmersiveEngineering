@@ -1,5 +1,9 @@
 {
   "variants": {
+    "facing=east": {
+      "model": "immersiveengineering:block/connector/transformer_post",
+      "y": 270
+    },
     "facing=north": {
       "model": "immersiveengineering:block/connector/transformer_post",
       "y": 180
@@ -10,10 +14,6 @@
     "facing=west": {
       "model": "immersiveengineering:block/connector/transformer_post",
       "y": 90
-    },
-    "facing=east": {
-      "model": "immersiveengineering:block/connector/transformer_post",
-      "y": 270
     }
   }
 }

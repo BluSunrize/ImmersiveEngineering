@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "side": "immersiveengineering:block/stone_decoration/hempcrete",
     "bottom": "immersiveengineering:block/stone_decoration/hempcrete",
+    "side": "immersiveengineering:block/stone_decoration/hempcrete",
     "top": "immersiveengineering:block/stone_decoration/hempcrete"
   }
 }

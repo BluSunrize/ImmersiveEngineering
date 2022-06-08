@@ -1,5 +1,9 @@
 {
   "type": "immersiveengineering:mineral_mix",
+  "dimensions": [
+    "minecraft:the_nether"
+  ],
+  "fail_chance": 0.7,
   "ores": [
     {
       "chance": 0.6,
@@ -14,10 +18,6 @@
       }
     }
   ],
-  "dimensions": [
-    "minecraft:the_nether"
-  ],
-  "weight": 8,
-  "fail_chance": 0.7,
-  "sample_background": "minecraft:netherrack"
+  "sample_background": "minecraft:netherrack",
+  "weight": 8
 }

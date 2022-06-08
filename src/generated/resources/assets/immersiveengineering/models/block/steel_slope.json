@@ -1,10 +1,10 @@
 {
   "parent": "minecraft:block/block",
+  "callbacks": "immersiveengineering:structural_arm",
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/block/slope.obj.ie",
   "textures": {
     "particle": "immersiveengineering:block/metal_decoration/steel_scaffolding",
     "texture": "immersiveengineering:block/metal_decoration/steel_scaffolding"
-  },
-  "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/block/slope.obj.ie",
-  "callbacks": "immersiveengineering:structural_arm"
+  }
 }

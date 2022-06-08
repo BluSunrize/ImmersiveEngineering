@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "isi",
-    "isi"
-  ],
   "key": {
     "i": {
       "tag": "forge:treated_wood"
@@ -12,8 +8,12 @@
       "tag": "forge:rods/treated_wood"
     }
   },
+  "pattern": [
+    "isi",
+    "isi"
+  ],
   "result": {
-    "item": "immersiveengineering:treated_fence",
-    "count": 3
+    "count": 3,
+    "item": "immersiveengineering:treated_fence"
   }
 }

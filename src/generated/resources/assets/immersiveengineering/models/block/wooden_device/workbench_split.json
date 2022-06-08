@@ -1,19 +1,16 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
-  },
-  "loader": "immersiveengineering:basic_split",
   "dynamic": true,
   "inner_model": {
     "parent": "minecraft:block/block",
-    "textures": {
-      "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
-    },
+    "callbacks": "immersiveengineering:workbench",
     "loader": "immersiveengineering:ie_obj",
     "model": "immersiveengineering:models/block/wooden_device/workbench.obj.ie",
-    "callbacks": "immersiveengineering:workbench"
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
+    }
   },
+  "loader": "immersiveengineering:basic_split",
   "split_parts": [
     [
       0,
@@ -25,5 +22,8 @@
       0,
       0
     ]
-  ]
+  ],
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/autoworkbench_blueprint"
+  }
 }

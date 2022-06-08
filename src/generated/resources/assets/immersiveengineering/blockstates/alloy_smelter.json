@@ -1,42 +1,42 @@
 {
   "variants": {
+    "active=false,facing=east": {
+      "model": "immersiveengineering:block/alloy_smelter_off_split",
+      "uvlock": true,
+      "y": 90
+    },
     "active=false,facing=north": {
       "model": "immersiveengineering:block/alloy_smelter_off_split",
       "uvlock": true
+    },
+    "active=false,facing=south": {
+      "model": "immersiveengineering:block/alloy_smelter_off_split",
+      "uvlock": true,
+      "y": 180
+    },
+    "active=false,facing=west": {
+      "model": "immersiveengineering:block/alloy_smelter_off_split",
+      "uvlock": true,
+      "y": 270
+    },
+    "active=true,facing=east": {
+      "model": "immersiveengineering:block/alloy_smelter_on_split",
+      "uvlock": true,
+      "y": 90
     },
     "active=true,facing=north": {
       "model": "immersiveengineering:block/alloy_smelter_on_split",
       "uvlock": true
     },
-    "active=false,facing=south": {
-      "model": "immersiveengineering:block/alloy_smelter_off_split",
-      "y": 180,
-      "uvlock": true
-    },
     "active=true,facing=south": {
       "model": "immersiveengineering:block/alloy_smelter_on_split",
-      "y": 180,
-      "uvlock": true
-    },
-    "active=false,facing=west": {
-      "model": "immersiveengineering:block/alloy_smelter_off_split",
-      "y": 270,
-      "uvlock": true
+      "uvlock": true,
+      "y": 180
     },
     "active=true,facing=west": {
       "model": "immersiveengineering:block/alloy_smelter_on_split",
-      "y": 270,
-      "uvlock": true
-    },
-    "active=false,facing=east": {
-      "model": "immersiveengineering:block/alloy_smelter_off_split",
-      "y": 90,
-      "uvlock": true
-    },
-    "active=true,facing=east": {
-      "model": "immersiveengineering:block/alloy_smelter_on_split",
-      "y": 90,
-      "uvlock": true
+      "uvlock": true,
+      "y": 270
     }
   }
 }

@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.3,
   "ingredient": {
     "item": "immersiveengineering:ore_aluminum"
   },
-  "result": "immersiveengineering:ingot_aluminum",
-  "experience": 0.3,
-  "cookingtime": 200
+  "result": "immersiveengineering:ingot_aluminum"
 }

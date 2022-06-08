@@ -1,5 +1,5 @@
 {
   "type": "immersiveengineering:generator_fuel",
-  "fluidTag": "forge:creosote",
-  "burnTime": 20
+  "burnTime": 20,
+  "fluidTag": "forge:creosote"
 }

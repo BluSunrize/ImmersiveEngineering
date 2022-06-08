@@ -1,34 +1,34 @@
 {
   "variants": {
-    "facing=north,mirrored=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
-      "y": 180
-    },
-    "facing=south,mirrored=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split"
-    },
-    "facing=west,mirrored=false": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
-      "y": 90
-    },
     "facing=east,mirrored=false": {
       "model": "immersiveengineering:block/connector/transformer_mv_left_split",
       "y": 270
+    },
+    "facing=east,mirrored=true": {
+      "model": "immersiveengineering:block/connector/transformer_mv_left_mirrored_split",
+      "y": 270
+    },
+    "facing=north,mirrored=false": {
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
+      "y": 180
     },
     "facing=north,mirrored=true": {
       "model": "immersiveengineering:block/connector/transformer_mv_left_mirrored_split",
       "y": 180
     },
+    "facing=south,mirrored=false": {
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split"
+    },
     "facing=south,mirrored=true": {
       "model": "immersiveengineering:block/connector/transformer_mv_left_mirrored_split"
+    },
+    "facing=west,mirrored=false": {
+      "model": "immersiveengineering:block/connector/transformer_mv_left_split",
+      "y": 90
     },
     "facing=west,mirrored=true": {
       "model": "immersiveengineering:block/connector/transformer_mv_left_mirrored_split",
       "y": 90
-    },
-    "facing=east,mirrored=true": {
-      "model": "immersiveengineering:block/connector/transformer_mv_left_mirrored_split",
-      "y": 270
     }
   }
 }

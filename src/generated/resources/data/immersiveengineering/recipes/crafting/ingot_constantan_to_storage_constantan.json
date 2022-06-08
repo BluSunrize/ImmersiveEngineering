@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:ingot_constantan"
+    },
+    "s": {
+      "tag": "forge:ingots/constantan"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:ingots/constantan"
-    },
-    "i": {
-      "item": "immersiveengineering:ingot_constantan"
-    }
-  },
   "result": {
     "item": "immersiveengineering:storage_constantan"
   }

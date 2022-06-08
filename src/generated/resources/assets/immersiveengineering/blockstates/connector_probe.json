@@ -3,9 +3,10 @@
     "facing=down": {
       "model": "immersiveengineering:block/connector/connector_probe"
     },
-    "facing=up": {
+    "facing=east": {
       "model": "immersiveengineering:block/connector/connector_probe",
-      "x": 180
+      "x": 90,
+      "y": 270
     },
     "facing=north": {
       "model": "immersiveengineering:block/connector/connector_probe",
@@ -16,15 +17,14 @@
       "model": "immersiveengineering:block/connector/connector_probe",
       "x": 90
     },
+    "facing=up": {
+      "model": "immersiveengineering:block/connector/connector_probe",
+      "x": 180
+    },
     "facing=west": {
       "model": "immersiveengineering:block/connector/connector_probe",
       "x": 90,
       "y": 90
-    },
-    "facing=east": {
-      "model": "immersiveengineering:block/connector/connector_probe",
-      "x": 90,
-      "y": 270
     }
   }
 }

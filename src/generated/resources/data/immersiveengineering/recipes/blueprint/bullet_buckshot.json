@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "bullet",
   "inputs": [
     {
       "item": "immersiveengineering:empty_shell"
@@ -8,13 +9,12 @@
       "tag": "forge:gunpowder"
     },
     {
-      "count": 2,
       "base_ingredient": {
         "tag": "forge:dusts/steel"
-      }
+      },
+      "count": 2
     }
   ],
-  "category": "bullet",
   "result": {
     "item": "immersiveengineering:buckshot"
   }

@@ -1,16 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " i ",
-    "pep",
-    "iri"
-  ],
   "key": {
-    "i": {
-      "tag": "forge:plates/iron"
-    },
     "e": {
       "item": "immersiveengineering:electron_tube"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
     },
     "p": {
       "tag": "forge:glass_panes"
@@ -19,6 +14,11 @@
       "tag": "forge:dusts/redstone"
     }
   },
+  "pattern": [
+    " i ",
+    "pep",
+    "iri"
+  ],
   "result": {
     "item": "immersiveengineering:electric_lantern"
   }

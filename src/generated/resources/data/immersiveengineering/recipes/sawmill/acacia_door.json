@@ -1,5 +1,12 @@
 {
   "type": "immersiveengineering:sawmill",
+  "energy": 800,
+  "input": {
+    "item": "minecraft:acacia_door"
+  },
+  "result": {
+    "item": "minecraft:acacia_planks"
+  },
   "secondaries": [
     {
       "output": {
@@ -7,12 +14,5 @@
       },
       "stripping": false
     }
-  ],
-  "result": {
-    "item": "minecraft:acacia_planks"
-  },
-  "input": {
-    "item": "minecraft:acacia_door"
-  },
-  "energy": 800
+  ]
 }

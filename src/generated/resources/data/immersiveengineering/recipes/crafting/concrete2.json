@@ -1,14 +1,11 @@
 {
   "type": "immersiveengineering:turn_and_copy",
   "group": "ie_concrete",
-  "pattern": [
-    "scs",
-    "gbg",
-    "scs"
-  ],
   "key": {
-    "s": {
-      "item": "immersiveengineering:slag"
+    "b": {
+      "type": "immersiveengineering:fluid",
+      "amount": 1000,
+      "tag": "minecraft:water"
     },
     "c": {
       "tag": "forge:clay"
@@ -16,15 +13,18 @@
     "g": {
       "tag": "forge:gravel"
     },
-    "b": {
-      "tag": "minecraft:water",
-      "amount": 1000,
-      "type": "immersiveengineering:fluid"
+    "s": {
+      "item": "immersiveengineering:slag"
     }
   },
+  "pattern": [
+    "scs",
+    "gbg",
+    "scs"
+  ],
+  "quarter_turn": true,
   "result": {
-    "item": "immersiveengineering:concrete",
-    "count": 12
-  },
-  "quarter_turn": true
+    "count": 12,
+    "item": "immersiveengineering:concrete"
+  }
 }

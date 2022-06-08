@@ -1,14 +1,14 @@
 {
   "type": "immersiveengineering:arc_furnace",
+  "additives": [],
+  "energy": 51200,
+  "input": {
+    "tag": "forge:dusts/electrum"
+  },
   "results": [
     {
       "tag": "forge:ingots/electrum"
     }
   ],
-  "additives": [],
-  "input": {
-    "tag": "forge:dusts/electrum"
-  },
-  "time": 100,
-  "energy": 51200
+  "time": 100
 }

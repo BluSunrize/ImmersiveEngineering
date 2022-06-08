@@ -1,20 +1,20 @@
 {
   "type": "immersiveengineering:arc_furnace",
-  "results": [
-    {
-      "count": 2,
-      "base_ingredient": {
-        "tag": "forge:ingots/iron"
-      }
-    }
-  ],
   "additives": [],
+  "energy": 102400,
   "input": {
     "tag": "forge:ores/iron"
   },
+  "results": [
+    {
+      "base_ingredient": {
+        "tag": "forge:ingots/iron"
+      },
+      "count": 2
+    }
+  ],
   "slag": {
     "tag": "forge:slag"
   },
-  "time": 200,
-  "energy": 102400
+  "time": 200
 }

@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "s s",
-    "s s",
-    "s s"
-  ],
   "key": {
     "s": {
       "tag": "forge:sheetmetals/aluminum"
     }
   },
+  "pattern": [
+    "s s",
+    "s s",
+    "s s"
+  ],
   "result": {
-    "item": "immersiveengineering:chute_aluminum",
-    "count": 12
+    "count": 12,
+    "item": "immersiveengineering:chute_aluminum"
   }
 }

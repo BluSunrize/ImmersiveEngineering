@@ -1,11 +1,11 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "tag": "forge:dusts/constantan"
-  },
+  "energy": 3000,
   "input": {
     "tag": "forge:ingots/constantan"
   },
-  "energy": 3000
+  "result": {
+    "tag": "forge:dusts/constantan"
+  },
+  "secondaries": []
 }

@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/connector/connector_probe"
-  },
+  "callbacks": "immersiveengineering:probe",
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/connector/connector_probe.obj.ie",
-  "callbacks": "immersiveengineering:probe"
+  "textures": {
+    "particle": "immersiveengineering:block/connector/connector_probe"
+  }
 }

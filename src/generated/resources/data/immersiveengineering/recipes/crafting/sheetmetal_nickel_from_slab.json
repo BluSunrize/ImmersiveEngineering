@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "s",
-    "s"
-  ],
   "key": {
     "s": {
       "item": "immersiveengineering:slab_sheetmetal_nickel"
     }
   },
+  "pattern": [
+    "s",
+    "s"
+  ],
   "result": {
     "item": "immersiveengineering:sheetmetal_nickel"
   }

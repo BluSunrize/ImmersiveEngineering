@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/metal_device/fluid_pipe"
-  },
+  "callbacks": "immersiveengineering:pipe",
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/metal_device/fluid_pipe.obj.ie",
-  "callbacks": "immersiveengineering:pipe"
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/fluid_pipe"
+  }
 }

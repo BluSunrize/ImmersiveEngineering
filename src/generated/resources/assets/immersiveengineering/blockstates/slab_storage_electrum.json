@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_storage_electrum_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_storage_electrum_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_storage_electrum_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_storage_electrum_top"
     }
   }
 }

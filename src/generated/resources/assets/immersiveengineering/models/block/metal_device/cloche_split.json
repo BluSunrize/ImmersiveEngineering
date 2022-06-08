@@ -1,19 +1,16 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/metal_device/cloche"
-  },
-  "loader": "immersiveengineering:basic_split",
   "dynamic": true,
   "inner_model": {
     "parent": "minecraft:block/block",
-    "textures": {
-      "particle": "immersiveengineering:block/metal_device/cloche"
-    },
+    "callbacks": "immersiveengineering:cloche",
     "loader": "immersiveengineering:ie_obj",
     "model": "immersiveengineering:models/block/metal_device/cloche.obj.ie",
-    "callbacks": "immersiveengineering:cloche"
+    "textures": {
+      "particle": "immersiveengineering:block/metal_device/cloche"
+    }
   },
+  "loader": "immersiveengineering:basic_split",
   "split_parts": [
     [
       0,
@@ -30,5 +27,8 @@
       2,
       0
     ]
-  ]
+  ],
+  "textures": {
+    "particle": "immersiveengineering:block/metal_device/cloche"
+  }
 }

@@ -1,15 +1,15 @@
 {
   "type": "immersiveengineering:metal_press",
+  "energy": 4800,
+  "input": {
+    "base_ingredient": {
+      "tag": "forge:ingots/hop_graphite"
+    },
+    "count": 4
+  },
   "mold": "immersiveengineering:mold_rod",
   "result": {
     "item": "immersiveengineering:graphite_electrode",
     "nbt": "{graphDmg:48000}"
-  },
-  "input": {
-    "count": 4,
-    "base_ingredient": {
-      "tag": "forge:ingots/hop_graphite"
-    }
-  },
-  "energy": 4800
+  }
 }

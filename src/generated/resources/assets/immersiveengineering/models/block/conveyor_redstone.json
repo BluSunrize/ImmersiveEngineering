@@ -1,4 +1,4 @@
 {
-  "loader": "immersiveengineering:models/conveyor",
-  "conveyorType": "immersiveengineering:redstone"
+  "conveyorType": "immersiveengineering:redstone",
+  "loader": "immersiveengineering:models/conveyor"
 }

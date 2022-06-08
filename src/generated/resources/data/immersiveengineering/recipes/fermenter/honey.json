@@ -1,14 +1,14 @@
 {
   "type": "immersiveengineering:fermenter",
+  "energy": 6400,
   "fluid": {
-    "fluid": "immersiveengineering:ethanol",
-    "amount": 250
-  },
-  "result": {
-    "item": "minecraft:glass_bottle"
+    "amount": 250,
+    "fluid": "immersiveengineering:ethanol"
   },
   "input": {
     "item": "minecraft:honey_bottle"
   },
-  "energy": 6400
+  "result": {
+    "item": "minecraft:glass_bottle"
+  }
 }

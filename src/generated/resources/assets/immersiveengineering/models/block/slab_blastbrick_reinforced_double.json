@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "side": "immersiveengineering:block/stone_decoration/blastbrick_reinforced",
     "bottom": "immersiveengineering:block/stone_decoration/blastbrick_reinforced",
+    "side": "immersiveengineering:block/stone_decoration/blastbrick_reinforced",
     "top": "immersiveengineering:block/stone_decoration/blastbrick_reinforced"
   }
 }

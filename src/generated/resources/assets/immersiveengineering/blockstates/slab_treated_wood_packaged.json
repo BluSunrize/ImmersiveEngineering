@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_treated_wood_packaged_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_treated_wood_packaged_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_treated_wood_packaged_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_treated_wood_packaged_top"
     }
   }
 }

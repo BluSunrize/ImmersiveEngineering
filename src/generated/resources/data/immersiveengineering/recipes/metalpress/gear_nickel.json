@@ -1,23 +1,23 @@
 {
   "type": "immersiveengineering:metal_press",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:gears/nickel"
+      }
+    }
+  ],
+  "energy": 2400,
+  "input": {
+    "base_ingredient": {
+      "tag": "forge:ingots/nickel"
+    },
+    "count": 4
+  },
   "mold": "immersiveengineering:mold_gear",
   "result": {
     "tag": "forge:gears/nickel"
-  },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:gears/nickel",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
-  "input": {
-    "count": 4,
-    "base_ingredient": {
-      "tag": "forge:ingots/nickel"
-    }
-  },
-  "energy": 2400
+  }
 }

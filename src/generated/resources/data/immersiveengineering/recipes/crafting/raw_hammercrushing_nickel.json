@@ -1,25 +1,25 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "result": {
-    "tag": "forge:dusts/nickel"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/nickel",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/nickel"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:raw_materials/nickel",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:raw_materials/nickel"
+      }
     }
   ],
   "input": {
     "tag": "forge:raw_materials/nickel"
+  },
+  "result": {
+    "tag": "forge:dusts/nickel"
   }
 }

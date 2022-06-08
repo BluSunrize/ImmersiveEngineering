@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_alu_scaffolding_wooden_top_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_alu_scaffolding_wooden_top_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_alu_scaffolding_wooden_top_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_alu_scaffolding_wooden_top_top"
     }
   }
 }

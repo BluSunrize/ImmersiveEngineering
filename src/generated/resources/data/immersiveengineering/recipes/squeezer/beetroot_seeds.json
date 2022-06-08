@@ -1,11 +1,11 @@
 {
   "type": "immersiveengineering:squeezer",
+  "energy": 6400,
   "fluid": {
-    "fluid": "immersiveengineering:plantoil",
-    "amount": 60
+    "amount": 60,
+    "fluid": "immersiveengineering:plantoil"
   },
   "input": {
     "item": "minecraft:beetroot_seeds"
-  },
-  "energy": 6400
+  }
 }

@@ -1,14 +1,14 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "electrode",
   "inputs": [
     {
-      "count": 4,
       "base_ingredient": {
         "tag": "forge:ingots/hop_graphite"
-      }
+      },
+      "count": 4
     }
   ],
-  "category": "electrode",
   "result": {
     "item": "immersiveengineering:graphite_electrode",
     "nbt": "{graphDmg:0}"

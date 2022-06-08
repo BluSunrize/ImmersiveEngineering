@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " ii",
-    "pph",
-    " ii"
-  ],
   "key": {
+    "h": {
+      "item": "minecraft:hopper"
+    },
     "i": {
       "tag": "forge:ingots/steel"
     },
     "p": {
       "item": "immersiveengineering:fluid_pipe"
-    },
-    "h": {
-      "item": "minecraft:hopper"
     }
   },
+  "pattern": [
+    " ii",
+    "pph",
+    " ii"
+  ],
   "result": {
     "item": "immersiveengineering:toolupgrade_chemthrower_focus"
   }

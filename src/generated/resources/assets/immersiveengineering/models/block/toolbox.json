@@ -1,10 +1,10 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/metal_decoration/toolbox"
-  },
+  "detectCullableFaces": false,
+  "flip-v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/toolbox.obj",
-  "detectCullableFaces": false,
-  "flip-v": true
+  "textures": {
+    "particle": "immersiveengineering:block/metal_decoration/toolbox"
+  }
 }

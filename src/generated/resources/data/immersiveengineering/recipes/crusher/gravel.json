@@ -1,5 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
+  "energy": 1600,
+  "input": {
+    "tag": "forge:gravel"
+  },
+  "result": {
+    "item": "minecraft:sand"
+  },
   "secondaries": [
     {
       "chance": 0.1,
@@ -7,12 +14,5 @@
         "item": "minecraft:flint"
       }
     }
-  ],
-  "result": {
-    "item": "minecraft:sand"
-  },
-  "input": {
-    "tag": "forge:gravel"
-  },
-  "energy": 1600
+  ]
 }

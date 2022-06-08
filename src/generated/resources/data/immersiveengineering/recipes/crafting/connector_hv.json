@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "item": "minecraft:terracotta"
+    },
+    "i": {
+      "tag": "forge:ingots/aluminum"
+    }
+  },
   "pattern": [
     " i ",
     "cic",
     "cic"
   ],
-  "key": {
-    "i": {
-      "tag": "forge:ingots/aluminum"
-    },
-    "c": {
-      "item": "minecraft:terracotta"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:connector_hv",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:connector_hv"
   }
 }

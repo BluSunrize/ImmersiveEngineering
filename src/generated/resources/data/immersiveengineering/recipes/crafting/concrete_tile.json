@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "group": "ie_concrete",
-  "pattern": [
-    "cc",
-    "cc"
-  ],
   "key": {
     "c": {
       "item": "immersiveengineering:concrete"
     }
   },
+  "pattern": [
+    "cc",
+    "cc"
+  ],
   "result": {
-    "item": "immersiveengineering:concrete_tile",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:concrete_tile"
   }
 }

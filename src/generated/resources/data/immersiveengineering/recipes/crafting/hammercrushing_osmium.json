@@ -1,25 +1,25 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "result": {
-    "tag": "forge:dusts/osmium"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/osmium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/osmium"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ores/osmium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ores/osmium"
+      }
     }
   ],
   "input": {
     "tag": "forge:ores/osmium"
+  },
+  "result": {
+    "tag": "forge:dusts/osmium"
   }
 }

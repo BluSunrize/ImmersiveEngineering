@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "s  ",
-    "ss ",
-    "sss"
-  ],
   "key": {
     "s": {
       "item": "immersiveengineering:steel_scaffolding_grate_top"
     }
   },
+  "pattern": [
+    "s  ",
+    "ss ",
+    "sss"
+  ],
   "result": {
-    "item": "immersiveengineering:stairs_steel_scaffolding_grate_top",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:stairs_steel_scaffolding_grate_top"
   }
 }

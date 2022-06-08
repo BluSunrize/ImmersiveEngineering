@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "side": "immersiveengineering:block/wooden_device/gunpowder_barrel",
     "bottom": "immersiveengineering:block/wooden_device/barrel_up_none",
+    "side": "immersiveengineering:block/wooden_device/gunpowder_barrel",
     "top": "immersiveengineering:block/wooden_device/gunpowder_barrel_top"
   }
 }

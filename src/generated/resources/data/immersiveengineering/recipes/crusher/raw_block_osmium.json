@@ -1,30 +1,30 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "count": 12,
-    "base_ingredient": {
-      "tag": "forge:dusts/osmium"
-    }
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/osmium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/osmium"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:storage_blocks/raw_osmium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:storage_blocks/raw_osmium"
+      }
     }
   ],
+  "energy": 54000,
   "input": {
     "tag": "forge:storage_blocks/raw_osmium"
   },
-  "energy": 54000
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:dusts/osmium"
+    },
+    "count": 12
+  },
+  "secondaries": []
 }

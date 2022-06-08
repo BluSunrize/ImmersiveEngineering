@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:ingot_aluminum"
+    },
+    "s": {
+      "tag": "forge:ingots/aluminum"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:ingots/aluminum"
-    },
-    "i": {
-      "item": "immersiveengineering:ingot_aluminum"
-    }
-  },
   "result": {
     "item": "immersiveengineering:storage_aluminum"
   }

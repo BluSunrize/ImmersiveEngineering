@@ -1,13 +1,13 @@
 {
   "type": "immersiveengineering:squeezer",
-  "result": {
-    "tag": "forge:dusts/hop_graphite"
-  },
+  "energy": 19200,
   "input": {
-    "count": 8,
     "base_ingredient": {
       "tag": "forge:dusts/coal_coke"
-    }
+    },
+    "count": 8
   },
-  "energy": 19200
+  "result": {
+    "tag": "forge:dusts/hop_graphite"
+  }
 }

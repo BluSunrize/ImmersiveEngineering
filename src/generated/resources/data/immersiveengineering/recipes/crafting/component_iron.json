@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "tag": "forge:ingots/copper"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
+    }
+  },
   "pattern": [
     "i i",
     " c ",
     "i i"
   ],
-  "key": {
-    "i": {
-      "tag": "forge:plates/iron"
-    },
-    "c": {
-      "tag": "forge:ingots/copper"
-    }
-  },
   "result": {
     "item": "immersiveengineering:component_iron"
   }

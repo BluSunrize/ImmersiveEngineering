@@ -1,5 +1,12 @@
 {
   "type": "immersiveengineering:sawmill",
+  "energy": 1600,
+  "input": {
+    "item": "minecraft:spruce_stairs"
+  },
+  "result": {
+    "item": "minecraft:spruce_planks"
+  },
   "secondaries": [
     {
       "output": {
@@ -7,12 +14,5 @@
       },
       "stripping": false
     }
-  ],
-  "result": {
-    "item": "minecraft:spruce_planks"
-  },
-  "input": {
-    "item": "minecraft:spruce_stairs"
-  },
-  "energy": 1600
+  ]
 }

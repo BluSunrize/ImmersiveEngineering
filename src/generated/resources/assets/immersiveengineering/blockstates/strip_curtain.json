@@ -1,34 +1,34 @@
 {
   "variants": {
+    "ceiling_attached=false,facing=east": {
+      "model": "immersiveengineering:block/stripcurtain",
+      "y": 90
+    },
     "ceiling_attached=false,facing=north": {
       "model": "immersiveengineering:block/stripcurtain"
     },
-    "ceiling_attached=true,facing=north": {
-      "model": "immersiveengineering:block/stripcurtain_middle"
-    },
     "ceiling_attached=false,facing=south": {
       "model": "immersiveengineering:block/stripcurtain",
-      "y": 180
-    },
-    "ceiling_attached=true,facing=south": {
-      "model": "immersiveengineering:block/stripcurtain_middle",
       "y": 180
     },
     "ceiling_attached=false,facing=west": {
       "model": "immersiveengineering:block/stripcurtain",
       "y": 270
     },
-    "ceiling_attached=true,facing=west": {
-      "model": "immersiveengineering:block/stripcurtain_middle",
-      "y": 270
-    },
-    "ceiling_attached=false,facing=east": {
-      "model": "immersiveengineering:block/stripcurtain",
-      "y": 90
-    },
     "ceiling_attached=true,facing=east": {
       "model": "immersiveengineering:block/stripcurtain_middle",
       "y": 90
+    },
+    "ceiling_attached=true,facing=north": {
+      "model": "immersiveengineering:block/stripcurtain_middle"
+    },
+    "ceiling_attached=true,facing=south": {
+      "model": "immersiveengineering:block/stripcurtain_middle",
+      "y": 180
+    },
+    "ceiling_attached=true,facing=west": {
+      "model": "immersiveengineering:block/stripcurtain_middle",
+      "y": 270
     }
   }
 }

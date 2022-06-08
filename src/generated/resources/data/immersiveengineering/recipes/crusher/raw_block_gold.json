@@ -1,14 +1,14 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "count": 12,
-    "base_ingredient": {
-      "tag": "forge:dusts/gold"
-    }
-  },
+  "energy": 54000,
   "input": {
     "tag": "forge:storage_blocks/raw_gold"
   },
-  "energy": 54000
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:dusts/gold"
+    },
+    "count": 12
+  },
+  "secondaries": []
 }

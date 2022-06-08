@@ -1,5 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
+  "energy": 6000,
+  "input": {
+    "tag": "forge:raw_materials/silver"
+  },
+  "result": {
+    "tag": "forge:dusts/silver"
+  },
   "secondaries": [
     {
       "chance": 0.33333334,
@@ -7,12 +14,5 @@
         "tag": "forge:dusts/silver"
       }
     }
-  ],
-  "result": {
-    "tag": "forge:dusts/silver"
-  },
-  "input": {
-    "tag": "forge:raw_materials/silver"
-  },
-  "energy": 6000
+  ]
 }

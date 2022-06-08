@@ -1,5 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
+  "energy": 6000,
+  "input": {
+    "tag": "forge:raw_materials/nickel"
+  },
+  "result": {
+    "tag": "forge:dusts/nickel"
+  },
   "secondaries": [
     {
       "chance": 0.33333334,
@@ -7,12 +14,5 @@
         "tag": "forge:dusts/nickel"
       }
     }
-  ],
-  "result": {
-    "tag": "forge:dusts/nickel"
-  },
-  "input": {
-    "tag": "forge:raw_materials/nickel"
-  },
-  "energy": 6000
+  ]
 }

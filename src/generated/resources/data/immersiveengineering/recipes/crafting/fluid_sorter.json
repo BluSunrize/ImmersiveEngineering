@@ -1,11 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "wrw",
-    "ici",
-    "wbw"
-  ],
   "key": {
+    "b": {
+      "item": "immersiveengineering:fluid_pipe"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
     "i": {
       "tag": "forge:ingots/iron"
     },
@@ -14,14 +15,13 @@
     },
     "w": {
       "tag": "forge:treated_wood"
-    },
-    "b": {
-      "item": "immersiveengineering:fluid_pipe"
-    },
-    "c": {
-      "item": "immersiveengineering:component_iron"
     }
   },
+  "pattern": [
+    "wrw",
+    "ici",
+    "wbw"
+  ],
   "result": {
     "item": "immersiveengineering:fluid_sorter"
   }

@@ -1,25 +1,25 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "result": {
-    "tag": "forge:dusts/ardite"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/ardite",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/ardite"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:raw_materials/ardite",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:raw_materials/ardite"
+      }
     }
   ],
   "input": {
     "tag": "forge:raw_materials/ardite"
+  },
+  "result": {
+    "tag": "forge:dusts/ardite"
   }
 }

@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "fff",
-    "f f",
-    "fff"
-  ],
   "key": {
     "f": {
       "item": "immersiveengineering:hemp_fabric"
     }
   },
+  "pattern": [
+    "fff",
+    "f f",
+    "fff"
+  ],
   "result": {
-    "item": "immersiveengineering:cushion",
-    "count": 3
+    "count": 3,
+    "item": "immersiveengineering:cushion"
   }
 }

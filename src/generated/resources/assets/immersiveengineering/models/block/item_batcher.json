@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "side": "immersiveengineering:block/wooden_device/item_batcher",
     "bottom": "immersiveengineering:block/wooden_device/item_batcher_in",
+    "side": "immersiveengineering:block/wooden_device/item_batcher",
     "top": "immersiveengineering:block/wooden_device/item_batcher_out"
   }
 }

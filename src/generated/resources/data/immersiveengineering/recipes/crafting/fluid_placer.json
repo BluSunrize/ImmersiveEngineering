@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "b": {
+      "item": "minecraft:iron_bars"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
+    }
+  },
   "pattern": [
     "ibi",
     "b b",
     "ibi"
   ],
-  "key": {
-    "i": {
-      "tag": "forge:plates/iron"
-    },
-    "b": {
-      "item": "minecraft:iron_bars"
-    }
-  },
   "result": {
     "item": "immersiveengineering:fluid_placer"
   }

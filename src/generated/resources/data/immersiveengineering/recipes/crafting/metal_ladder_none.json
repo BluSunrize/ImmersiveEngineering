@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "s s",
-    "sss",
-    "s s"
-  ],
   "key": {
     "s": {
       "tag": "forge:rods/all_metal"
     }
   },
+  "pattern": [
+    "s s",
+    "sss",
+    "s s"
+  ],
   "result": {
-    "item": "immersiveengineering:metal_ladder_none",
-    "count": 3
+    "count": 3,
+    "item": "immersiveengineering:metal_ladder_none"
   }
 }

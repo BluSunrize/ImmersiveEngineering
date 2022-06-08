@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ii",
-    "is"
-  ],
   "key": {
     "i": {
       "tag": "forge:ingots/steel"
@@ -12,6 +8,10 @@
       "tag": "forge:rods/steel"
     }
   },
+  "pattern": [
+    "ii",
+    "is"
+  ],
   "result": {
     "item": "immersiveengineering:steel_wallmount"
   }

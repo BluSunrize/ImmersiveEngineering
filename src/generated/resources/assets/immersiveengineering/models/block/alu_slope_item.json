@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:block/block",
+  "detectCullableFaces": false,
+  "flip-v": true,
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/slope.obj.ie",
   "textures": {
     "particle": "immersiveengineering:block/metal_decoration/aluminum_scaffolding",
     "texture": "immersiveengineering:block/metal_decoration/aluminum_scaffolding"
-  },
-  "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/slope.obj.ie",
-  "detectCullableFaces": false,
-  "flip-v": true
+  }
 }

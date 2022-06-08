@@ -1,11 +1,31 @@
 {
   "type": "immersiveengineering:arc_furnace",
+  "additives": [],
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/zinc"
+      }
+    },
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:raw_materials/zinc"
+      }
+    }
+  ],
+  "energy": 25600,
+  "input": {
+    "tag": "forge:raw_materials/zinc"
+  },
   "results": [
     {
       "tag": "forge:ingots/zinc"
     }
   ],
-  "additives": [],
   "secondaries": [
     {
       "chance": 0.5,
@@ -14,25 +34,5 @@
       }
     }
   ],
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ingots/zinc",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    },
-    {
-      "value": {
-        "tag": "forge:raw_materials/zinc",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
-  "input": {
-    "tag": "forge:raw_materials/zinc"
-  },
-  "time": 100,
-  "energy": 25600
+  "time": 100
 }

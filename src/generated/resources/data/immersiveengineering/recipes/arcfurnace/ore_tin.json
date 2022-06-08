@@ -1,36 +1,36 @@
 {
   "type": "immersiveengineering:arc_furnace",
-  "results": [
-    {
-      "count": 2,
-      "base_ingredient": {
-        "tag": "forge:ingots/tin"
-      }
-    }
-  ],
   "additives": [],
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/tin"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ores/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ores/tin"
+      }
     }
   ],
+  "energy": 102400,
   "input": {
     "tag": "forge:ores/tin"
   },
+  "results": [
+    {
+      "base_ingredient": {
+        "tag": "forge:ingots/tin"
+      },
+      "count": 2
+    }
+  ],
   "slag": {
     "tag": "forge:slag"
   },
-  "time": 200,
-  "energy": 102400
+  "time": 200
 }

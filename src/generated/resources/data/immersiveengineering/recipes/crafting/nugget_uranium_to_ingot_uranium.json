@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:nugget_uranium"
+    },
+    "s": {
+      "tag": "forge:nuggets/uranium"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:nuggets/uranium"
-    },
-    "i": {
-      "item": "immersiveengineering:nugget_uranium"
-    }
-  },
   "result": {
     "item": "immersiveengineering:ingot_uranium"
   }

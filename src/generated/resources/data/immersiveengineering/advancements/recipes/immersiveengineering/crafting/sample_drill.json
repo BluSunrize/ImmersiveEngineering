@@ -1,37 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "immersiveengineering:crafting/sample_drill"
-    ]
-  },
   "criteria": {
-    "has_steel_scaffolding_standard": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "immersiveengineering:steel_scaffolding_standard"
-            ]
-          }
-        ]
-      }
-    },
-    "has_steel_fence": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "items": [
-              "immersiveengineering:steel_fence"
-            ]
-          }
-        ]
-      }
-    },
     "has_light_engineering": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -40,13 +10,38 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_fence": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:steel_fence"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_scaffolding_standard": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:steel_scaffolding_standard"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
         "recipe": "immersiveengineering:crafting/sample_drill"
-      }
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
@@ -56,5 +51,10 @@
       "has_light_engineering",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/sample_drill"
+    ]
+  }
 }

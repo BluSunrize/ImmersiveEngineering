@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_sheetmetal_copper_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_sheetmetal_copper_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_sheetmetal_copper_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_sheetmetal_copper_top"
     }
   }
 }

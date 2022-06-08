@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:raw_silver"
+    },
+    "s": {
+      "tag": "forge:raw_materials/silver"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:raw_materials/silver"
-    },
-    "i": {
-      "item": "immersiveengineering:raw_silver"
-    }
-  },
   "result": {
     "item": "immersiveengineering:raw_block_silver"
   }

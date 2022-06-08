@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ii ",
-    "ic ",
-    " gg"
-  ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/steel"
-    },
     "c": {
       "item": "immersiveengineering:component_iron"
     },
     "g": {
       "item": "immersiveengineering:wooden_grip"
+    },
+    "i": {
+      "tag": "forge:ingots/steel"
     }
   },
+  "pattern": [
+    "ii ",
+    "ic ",
+    " gg"
+  ],
   "result": {
     "item": "immersiveengineering:skyhook"
   }

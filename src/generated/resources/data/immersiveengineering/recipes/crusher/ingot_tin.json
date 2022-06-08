@@ -1,27 +1,27 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "tag": "forge:dusts/tin"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/tin"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/tin"
+      }
     }
   ],
+  "energy": 3000,
   "input": {
     "tag": "forge:ingots/tin"
   },
-  "energy": 3000
+  "result": {
+    "tag": "forge:dusts/tin"
+  },
+  "secondaries": []
 }

@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "p": {
+      "item": "immersiveengineering:waterwheel_segment"
+    }
+  },
   "pattern": [
     " p ",
     "pip",
     " p "
   ],
-  "key": {
-    "p": {
-      "item": "immersiveengineering:waterwheel_segment"
-    },
-    "i": {
-      "tag": "forge:ingots/steel"
-    }
-  },
   "result": {
     "item": "immersiveengineering:watermill"
   }

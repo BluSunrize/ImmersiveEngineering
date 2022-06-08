@@ -1,14 +1,14 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "count": 6,
-    "base_ingredient": {
-      "item": "minecraft:redstone"
-    }
-  },
+  "energy": 6000,
   "input": {
     "tag": "forge:ores/redstone"
   },
-  "energy": 6000
+  "result": {
+    "base_ingredient": {
+      "item": "minecraft:redstone"
+    },
+    "count": 6
+  },
+  "secondaries": []
 }

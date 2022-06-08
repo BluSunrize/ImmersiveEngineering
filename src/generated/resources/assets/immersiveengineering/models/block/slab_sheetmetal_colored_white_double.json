@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "side": "immersiveengineering:block/metal/sheetmetal_white",
     "bottom": "immersiveengineering:block/metal/sheetmetal_white",
+    "side": "immersiveengineering:block/metal/sheetmetal_white",
     "top": "immersiveengineering:block/metal/sheetmetal_white"
   }
 }

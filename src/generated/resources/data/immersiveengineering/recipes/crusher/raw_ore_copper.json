@@ -1,5 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
+  "energy": 6000,
+  "input": {
+    "tag": "forge:raw_materials/copper"
+  },
+  "result": {
+    "tag": "forge:dusts/copper"
+  },
   "secondaries": [
     {
       "chance": 0.33333334,
@@ -7,12 +14,5 @@
         "tag": "forge:dusts/copper"
       }
     }
-  ],
-  "result": {
-    "tag": "forge:dusts/copper"
-  },
-  "input": {
-    "tag": "forge:raw_materials/copper"
-  },
-  "energy": 6000
+  ]
 }

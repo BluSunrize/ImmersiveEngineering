@@ -1,35 +1,35 @@
 {
   "type": "immersiveengineering:alloy",
-  "time": 200,
-  "result": {
-    "count": 4,
-    "base_ingredient": {
-      "tag": "forge:ingots/bronze"
-    }
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/bronze",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/bronze"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/tin",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/tin"
+      }
     }
   ],
   "input0": {
-    "count": 3,
     "base_ingredient": {
       "tag": "forge:ingots/copper"
-    }
+    },
+    "count": 3
   },
   "input1": {
     "tag": "forge:ingots/tin"
-  }
+  },
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:ingots/bronze"
+    },
+    "count": 4
+  },
+  "time": 200
 }

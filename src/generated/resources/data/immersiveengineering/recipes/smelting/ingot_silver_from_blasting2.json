@@ -1,9 +1,9 @@
 {
   "type": "minecraft:blasting",
+  "cookingtime": 100,
+  "experience": 1.0,
   "ingredient": {
     "item": "immersiveengineering:deepslate_ore_silver"
   },
-  "result": "immersiveengineering:ingot_silver",
-  "experience": 1.0,
-  "cookingtime": 100
+  "result": "immersiveengineering:ingot_silver"
 }

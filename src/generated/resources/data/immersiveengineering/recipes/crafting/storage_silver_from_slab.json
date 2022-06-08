@@ -1,14 +1,14 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "s",
-    "s"
-  ],
   "key": {
     "s": {
       "item": "immersiveengineering:slab_storage_silver"
     }
   },
+  "pattern": [
+    "s",
+    "s"
+  ],
   "result": {
     "item": "immersiveengineering:storage_silver"
   }

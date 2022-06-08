@@ -3,24 +3,13 @@
     "active=false,facing=down": {
       "model": "immersiveengineering:block/connector/breaker_switch_off"
     },
-    "active=true,facing=down": {
-      "model": "immersiveengineering:block/connector/breaker_switch_on"
-    },
-    "active=false,facing=up": {
+    "active=false,facing=east": {
       "model": "immersiveengineering:block/connector/breaker_switch_off",
-      "x": 180
-    },
-    "active=true,facing=up": {
-      "model": "immersiveengineering:block/connector/breaker_switch_on",
-      "x": 180
+      "x": 90,
+      "y": 270
     },
     "active=false,facing=north": {
       "model": "immersiveengineering:block/connector/breaker_switch_off",
-      "x": 90,
-      "y": 180
-    },
-    "active=true,facing=north": {
-      "model": "immersiveengineering:block/connector/breaker_switch_on",
       "x": 90,
       "y": 180
     },
@@ -28,29 +17,40 @@
       "model": "immersiveengineering:block/connector/breaker_switch_off",
       "x": 90
     },
-    "active=true,facing=south": {
-      "model": "immersiveengineering:block/connector/breaker_switch_on",
-      "x": 90
+    "active=false,facing=up": {
+      "model": "immersiveengineering:block/connector/breaker_switch_off",
+      "x": 180
     },
     "active=false,facing=west": {
       "model": "immersiveengineering:block/connector/breaker_switch_off",
       "x": 90,
       "y": 90
     },
-    "active=true,facing=west": {
-      "model": "immersiveengineering:block/connector/breaker_switch_on",
-      "x": 90,
-      "y": 90
-    },
-    "active=false,facing=east": {
-      "model": "immersiveengineering:block/connector/breaker_switch_off",
-      "x": 90,
-      "y": 270
+    "active=true,facing=down": {
+      "model": "immersiveengineering:block/connector/breaker_switch_on"
     },
     "active=true,facing=east": {
       "model": "immersiveengineering:block/connector/breaker_switch_on",
       "x": 90,
       "y": 270
+    },
+    "active=true,facing=north": {
+      "model": "immersiveengineering:block/connector/breaker_switch_on",
+      "x": 90,
+      "y": 180
+    },
+    "active=true,facing=south": {
+      "model": "immersiveengineering:block/connector/breaker_switch_on",
+      "x": 90
+    },
+    "active=true,facing=up": {
+      "model": "immersiveengineering:block/connector/breaker_switch_on",
+      "x": 180
+    },
+    "active=true,facing=west": {
+      "model": "immersiveengineering:block/connector/breaker_switch_on",
+      "x": 90,
+      "y": 90
     }
   }
 }

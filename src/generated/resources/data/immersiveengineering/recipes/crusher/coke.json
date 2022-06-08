@@ -1,11 +1,11 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "tag": "forge:dusts/coal_coke"
-  },
+  "energy": 2400,
   "input": {
     "tag": "forge:coal_coke"
   },
-  "energy": 2400
+  "result": {
+    "tag": "forge:dusts/coal_coke"
+  },
+  "secondaries": []
 }

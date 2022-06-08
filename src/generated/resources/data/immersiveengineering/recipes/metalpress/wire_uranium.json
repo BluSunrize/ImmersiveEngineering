@@ -1,23 +1,23 @@
 {
   "type": "immersiveengineering:metal_press",
-  "mold": "immersiveengineering:mold_wire",
-  "result": {
-    "count": 2,
-    "base_ingredient": {
-      "tag": "forge:wires/uranium"
-    }
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:wires/uranium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:wires/uranium"
+      }
     }
   ],
+  "energy": 2400,
   "input": {
     "tag": "forge:ingots/uranium"
   },
-  "energy": 2400
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:wires/uranium"
+    },
+    "count": 2
+  }
 }

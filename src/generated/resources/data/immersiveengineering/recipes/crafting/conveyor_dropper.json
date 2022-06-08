@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "c",
-    "t"
-  ],
   "key": {
     "c": {
       "item": "immersiveengineering:conveyor_basic"
@@ -12,6 +8,10 @@
       "item": "minecraft:iron_trapdoor"
     }
   },
+  "pattern": [
+    "c",
+    "t"
+  ],
   "result": {
     "item": "immersiveengineering:conveyor_dropper"
   }

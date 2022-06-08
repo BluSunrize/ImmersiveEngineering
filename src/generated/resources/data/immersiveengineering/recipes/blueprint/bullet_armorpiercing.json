@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "bullet",
   "inputs": [
     {
       "item": "immersiveengineering:empty_casing"
@@ -8,19 +9,18 @@
       "tag": "forge:gunpowder"
     },
     {
-      "count": 2,
       "base_ingredient": {
         "tag": "forge:nuggets/steel"
-      }
+      },
+      "count": 2
     },
     {
-      "count": 2,
       "base_ingredient": {
         "tag": "forge:nuggets/constantan"
-      }
+      },
+      "count": 2
     }
   ],
-  "category": "bullet",
   "result": {
     "item": "immersiveengineering:armor_piercing"
   }

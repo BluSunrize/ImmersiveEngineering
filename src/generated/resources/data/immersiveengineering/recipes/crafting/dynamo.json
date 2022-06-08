@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "rlr",
-    "iii"
-  ],
   "key": {
     "i": {
       "tag": "forge:ingots/iron"
@@ -15,6 +11,10 @@
       "tag": "forge:dusts/redstone"
     }
   },
+  "pattern": [
+    "rlr",
+    "iii"
+  ],
   "result": {
     "item": "immersiveengineering:dynamo"
   }

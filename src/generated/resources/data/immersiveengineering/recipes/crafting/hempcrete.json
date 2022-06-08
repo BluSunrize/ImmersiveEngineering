@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ttt",
-    "mmm",
-    "bbb"
-  ],
   "key": {
-    "t": {
+    "b": {
       "tag": "forge:clay"
     },
     "m": {
       "tag": "forge:fiber_hemp"
     },
-    "b": {
+    "t": {
       "tag": "forge:clay"
     }
   },
+  "pattern": [
+    "ttt",
+    "mmm",
+    "bbb"
+  ],
   "result": {
-    "item": "immersiveengineering:hempcrete",
-    "count": 6
+    "count": 6,
+    "item": "immersiveengineering:hempcrete"
   }
 }

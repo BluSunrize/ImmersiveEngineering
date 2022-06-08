@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "l": {
+      "item": "immersiveengineering:metal_ladder_none"
+    },
+    "s": {
+      "tag": "immersiveengineering:scaffoldings/steel"
+    }
+  },
   "pattern": [
     "s",
     "l"
   ],
-  "key": {
-    "s": {
-      "tag": "immersiveengineering:scaffoldings/steel"
-    },
-    "l": {
-      "item": "immersiveengineering:metal_ladder_none"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:metal_ladder_steel",
-    "count": 3
+    "count": 3,
+    "item": "immersiveengineering:metal_ladder_steel"
   }
 }

@@ -4,8 +4,10 @@
       "model": "immersiveengineering:block/item_batcher",
       "x": -180
     },
-    "facing=up": {
-      "model": "immersiveengineering:block/item_batcher"
+    "facing=east": {
+      "model": "immersiveengineering:block/item_batcher",
+      "x": -90,
+      "y": 270
     },
     "facing=north": {
       "model": "immersiveengineering:block/item_batcher",
@@ -16,15 +18,13 @@
       "model": "immersiveengineering:block/item_batcher",
       "x": -90
     },
+    "facing=up": {
+      "model": "immersiveengineering:block/item_batcher"
+    },
     "facing=west": {
       "model": "immersiveengineering:block/item_batcher",
       "x": -90,
       "y": 90
-    },
-    "facing=east": {
-      "model": "immersiveengineering:block/item_batcher",
-      "x": -90,
-      "y": 270
     }
   }
 }

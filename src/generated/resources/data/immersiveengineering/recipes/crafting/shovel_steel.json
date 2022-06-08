@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    }
+  },
   "pattern": [
     "i",
     "s",
     "s"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:rods/treated_wood"
-    },
-    "i": {
-      "tag": "forge:ingots/steel"
-    }
-  },
   "result": {
     "item": "immersiveengineering:shovel_steel"
   }

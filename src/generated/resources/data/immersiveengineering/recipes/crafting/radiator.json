@@ -1,26 +1,26 @@
 {
   "type": "immersiveengineering:turn_and_copy",
+  "key": {
+    "b": {
+      "type": "immersiveengineering:fluid",
+      "amount": 1000,
+      "tag": "minecraft:water"
+    },
+    "c": {
+      "tag": "forge:plates/copper"
+    },
+    "i": {
+      "tag": "forge:sheetmetals/steel"
+    }
+  },
   "pattern": [
     "ici",
     "cbc",
     "ici"
   ],
-  "key": {
-    "i": {
-      "tag": "forge:sheetmetals/steel"
-    },
-    "c": {
-      "tag": "forge:plates/copper"
-    },
-    "b": {
-      "tag": "minecraft:water",
-      "amount": 1000,
-      "type": "immersiveengineering:fluid"
-    }
-  },
+  "quarter_turn": true,
   "result": {
-    "item": "immersiveengineering:radiator",
-    "count": 4
-  },
-  "quarter_turn": true
+    "count": 4,
+    "item": "immersiveengineering:radiator"
+  }
 }

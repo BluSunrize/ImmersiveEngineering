@@ -1,5 +1,5 @@
 {
+  "callbacks": "immersiveengineering:bucket_wheel",
   "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/block/metal_multiblock/bucket_wheel.obj.ie",
-  "callbacks": "immersiveengineering:bucket_wheel"
+  "model": "immersiveengineering:models/block/metal_multiblock/bucket_wheel.obj.ie"
 }

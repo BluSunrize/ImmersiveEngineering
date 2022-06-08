@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "prp",
-    "prp",
-    " c "
-  ],
   "key": {
+    "c": {
+      "tag": "forge:plates/copper"
+    },
     "p": {
       "item": "minecraft:paper"
     },
     "r": {
       "tag": "forge:dyes/red"
-    },
-    "c": {
-      "tag": "forge:plates/copper"
     }
   },
+  "pattern": [
+    "prp",
+    "prp",
+    " c "
+  ],
   "result": {
-    "item": "immersiveengineering:empty_shell",
-    "count": 5
+    "count": 5,
+    "item": "immersiveengineering:empty_shell"
   }
 }

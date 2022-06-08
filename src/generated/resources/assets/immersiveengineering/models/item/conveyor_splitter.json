@@ -1,4 +1,4 @@
 {
-  "loader": "immersiveengineering:models/conveyor",
-  "conveyorType": "immersiveengineering:splitter"
+  "conveyorType": "immersiveengineering:splitter",
+  "loader": "immersiveengineering:models/conveyor"
 }

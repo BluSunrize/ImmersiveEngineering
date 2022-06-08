@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "components",
   "inputs": [
     {
       "tag": "forge:glass"
@@ -14,9 +15,8 @@
       "tag": "forge:dusts/redstone"
     }
   ],
-  "category": "components",
   "result": {
-    "item": "immersiveengineering:electron_tube",
-    "count": 3
+    "count": 3,
+    "item": "immersiveengineering:electron_tube"
   }
 }

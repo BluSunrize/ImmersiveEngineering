@@ -1,31 +1,31 @@
 {
   "parent": "immersiveengineering:main/craft_hammer",
-  "display": {
-    "icon": {
-      "item": "immersiveengineering:blast_furnace"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.mb_blastfurnace"
-    },
-    "description": {
-      "translate": "advancement.immersiveengineering.mb_blastfurnace.desc"
-    },
-    "frame": "goal",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "blastfurnace": {
-      "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/blast_furnace",
         "item": {
           "items": [
             "immersiveengineering:hammer"
           ]
-        }
-      }
+        },
+        "multiblock": "immersiveengineering:multiblocks/blast_furnace"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_blastfurnace.desc"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:blast_furnace"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_blastfurnace"
     }
   },
   "requirements": [

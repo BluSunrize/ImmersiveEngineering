@@ -1,5 +1,9 @@
 {
   "type": "immersiveengineering:mineral_mix",
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "fail_chance": 0.2,
   "ores": [
     {
       "chance": 0.3,
@@ -14,24 +18,20 @@
       }
     },
     {
+      "chance": 0.3,
       "conditions": [
         {
+          "type": "forge:not",
           "value": {
-            "tag": "forge:gems/aquamarine",
-            "type": "forge:tag_empty"
-          },
-          "type": "forge:not"
+            "type": "forge:tag_empty",
+            "tag": "forge:gems/aquamarine"
+          }
         }
       ],
-      "chance": 0.3,
       "output": {
         "tag": "forge:gems/aquamarine"
       }
     }
   ],
-  "dimensions": [
-    "minecraft:overworld"
-  ],
-  "weight": 5,
-  "fail_chance": 0.2
+  "weight": 5
 }

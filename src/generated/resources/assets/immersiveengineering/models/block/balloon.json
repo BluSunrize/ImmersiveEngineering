@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/connector/balloon"
-  },
+  "callbacks": "immersiveengineering:balloon",
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/balloon.obj.ie",
-  "callbacks": "immersiveengineering:balloon"
+  "textures": {
+    "particle": "immersiveengineering:block/connector/balloon"
+  }
 }

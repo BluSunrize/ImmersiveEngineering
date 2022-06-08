@@ -1,14 +1,14 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "count": 12,
-    "base_ingredient": {
-      "tag": "forge:dusts/nickel"
-    }
-  },
+  "energy": 54000,
   "input": {
     "tag": "forge:storage_blocks/raw_nickel"
   },
-  "energy": 54000
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:dusts/nickel"
+    },
+    "count": 12
+  },
+  "secondaries": []
 }

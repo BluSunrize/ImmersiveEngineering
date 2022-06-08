@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:component_steel"
+    },
+    "i": {
+      "tag": "forge:ingots/steel"
+    }
+  },
   "pattern": [
     " i ",
     "ici",
     " i "
   ],
-  "key": {
-    "i": {
-      "tag": "forge:ingots/steel"
-    },
-    "c": {
-      "item": "immersiveengineering:component_steel"
-    }
-  },
   "result": {
     "item": "immersiveengineering:gunpart_drum"
   }

@@ -1,10 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "fff",
-    "fsf",
-    "fff"
-  ],
   "key": {
     "f": {
       "tag": "forge:fiber_hemp"
@@ -13,6 +8,11 @@
       "tag": "forge:rods/wooden"
     }
   },
+  "pattern": [
+    "fff",
+    "fsf",
+    "fff"
+  ],
   "result": {
     "item": "immersiveengineering:hemp_fabric"
   }

@@ -1,13 +1,5 @@
 {
   "type": "immersiveengineering:arc_furnace",
-  "results": [
-    {
-      "count": 3,
-      "base_ingredient": {
-        "tag": "forge:ingots/invar"
-      }
-    }
-  ],
   "additives": [
     {
       "tag": "forge:ingots/nickel"
@@ -15,19 +7,27 @@
   ],
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/invar",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/invar"
+      }
     }
   ],
+  "energy": 51200,
   "input": {
-    "count": 2,
     "base_ingredient": {
       "tag": "forge:ingots/iron"
-    }
+    },
+    "count": 2
   },
-  "time": 100,
-  "energy": 51200
+  "results": [
+    {
+      "base_ingredient": {
+        "tag": "forge:ingots/invar"
+      },
+      "count": 3
+    }
+  ],
+  "time": 100
 }

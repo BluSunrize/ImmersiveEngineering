@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " p ",
-    "scs"
-  ],
   "key": {
     "c": {
       "tag": "forge:ingots/copper"
@@ -15,6 +11,10 @@
       "tag": "forge:rods/wooden"
     }
   },
+  "pattern": [
+    " p ",
+    "scs"
+  ],
   "result": {
     "item": "immersiveengineering:voltmeter"
   }

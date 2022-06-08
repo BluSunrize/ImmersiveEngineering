@@ -1,20 +1,17 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/multiblocks/silo"
-  },
-  "loader": "immersiveengineering:basic_split",
   "dynamic": false,
   "inner_model": {
     "parent": "minecraft:block/block",
-    "textures": {
-      "particle": "immersiveengineering:block/multiblocks/silo"
-    },
+    "detectCullableFaces": false,
+    "flip-v": true,
     "loader": "forge:obj",
     "model": "immersiveengineering:models/block/metal_multiblock/silo.obj",
-    "detectCullableFaces": false,
-    "flip-v": true
+    "textures": {
+      "particle": "immersiveengineering:block/multiblocks/silo"
+    }
   },
+  "loader": "immersiveengineering:basic_split",
   "split_parts": [
     [
       -1,
@@ -286,5 +283,8 @@
       6,
       1
     ]
-  ]
+  ],
+  "textures": {
+    "particle": "immersiveengineering:block/multiblocks/silo"
+  }
 }

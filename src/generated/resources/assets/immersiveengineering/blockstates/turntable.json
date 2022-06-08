@@ -4,8 +4,10 @@
       "model": "immersiveengineering:block/turntable",
       "x": -180
     },
-    "facing=up": {
-      "model": "immersiveengineering:block/turntable"
+    "facing=east": {
+      "model": "immersiveengineering:block/turntable",
+      "x": -90,
+      "y": 270
     },
     "facing=north": {
       "model": "immersiveengineering:block/turntable",
@@ -16,15 +18,13 @@
       "model": "immersiveengineering:block/turntable",
       "x": -90
     },
+    "facing=up": {
+      "model": "immersiveengineering:block/turntable"
+    },
     "facing=west": {
       "model": "immersiveengineering:block/turntable",
       "x": -90,
       "y": 90
-    },
-    "facing=east": {
-      "model": "immersiveengineering:block/turntable",
-      "x": -90,
-      "y": 270
     }
   }
 }

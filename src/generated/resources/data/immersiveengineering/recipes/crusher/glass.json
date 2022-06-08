@@ -1,11 +1,11 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "item": "minecraft:sand"
-  },
+  "energy": 3200,
   "input": {
     "tag": "forge:glass"
   },
-  "energy": 3200
+  "result": {
+    "item": "minecraft:sand"
+  },
+  "secondaries": []
 }

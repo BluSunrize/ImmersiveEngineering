@@ -1,19 +1,19 @@
 {
   "type": "immersiveengineering:refinery",
-  "result": {
-    "fluid": "immersiveengineering:biodiesel",
-    "amount": 16
-  },
   "catalyst": {
     "tag": "forge:dusts/saltpeter"
   },
+  "energy": 80,
   "input0": {
-    "tag": "forge:plantoil",
-    "amount": 8
+    "amount": 8,
+    "tag": "forge:plantoil"
   },
   "input1": {
-    "tag": "forge:ethanol",
-    "amount": 8
+    "amount": 8,
+    "tag": "forge:ethanol"
   },
-  "energy": 80
+  "result": {
+    "amount": 16,
+    "fluid": "immersiveengineering:biodiesel"
+  }
 }

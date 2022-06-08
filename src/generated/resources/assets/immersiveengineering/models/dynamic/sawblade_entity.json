@@ -1,5 +1,5 @@
 {
+  "callbacks": "immersiveengineering:submodel",
   "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/item/buzzsaw_diesel.obj.ie",
-  "callbacks": "immersiveengineering:submodel"
+  "model": "immersiveengineering:models/item/buzzsaw_diesel.obj.ie"
 }

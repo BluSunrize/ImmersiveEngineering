@@ -1,5 +1,9 @@
 {
   "type": "immersiveengineering:mineral_mix",
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "fail_chance": 0.05,
   "ores": [
     {
       "chance": 0.8,
@@ -14,24 +18,20 @@
       }
     },
     {
+      "chance": 0.2,
       "conditions": [
         {
+          "type": "forge:not",
           "value": {
-            "tag": "forge:dusts/phosphorus",
-            "type": "forge:tag_empty"
-          },
-          "type": "forge:not"
+            "type": "forge:tag_empty",
+            "tag": "forge:dusts/phosphorus"
+          }
         }
       ],
-      "chance": 0.2,
       "output": {
         "tag": "forge:dusts/phosphorus"
       }
     }
   ],
-  "dimensions": [
-    "minecraft:overworld"
-  ],
-  "weight": 25,
-  "fail_chance": 0.05
+  "weight": 25
 }

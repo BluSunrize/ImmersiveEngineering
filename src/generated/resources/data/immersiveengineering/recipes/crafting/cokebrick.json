@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "tag": "forge:clay"
+    },
+    "m": {
+      "tag": "forge:sandstone"
+    },
+    "s": {
+      "tag": "forge:ingots/brick"
+    }
+  },
   "pattern": [
     "csc",
     "sms",
     "csc"
   ],
-  "key": {
-    "c": {
-      "tag": "forge:clay"
-    },
-    "s": {
-      "tag": "forge:ingots/brick"
-    },
-    "m": {
-      "tag": "forge:sandstone"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:cokebrick",
-    "count": 3
+    "count": 3,
+    "item": "immersiveengineering:cokebrick"
   }
 }

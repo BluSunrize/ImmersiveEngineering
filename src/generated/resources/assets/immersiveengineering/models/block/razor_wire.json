@@ -1,9 +1,9 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/metal_decoration/razor_wire"
-  },
+  "callbacks": "immersiveengineering:razor_wire",
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/block/razor_wire.obj.ie",
-  "callbacks": "immersiveengineering:razor_wire"
+  "textures": {
+    "particle": "immersiveengineering:block/metal_decoration/razor_wire"
+  }
 }

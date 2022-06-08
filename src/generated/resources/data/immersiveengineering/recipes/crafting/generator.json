@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "d": {
+      "item": "immersiveengineering:dynamo"
+    },
+    "e": {
+      "tag": "forge:plates/electrum"
+    },
+    "i": {
+      "tag": "forge:sheetmetals/steel"
+    }
+  },
   "pattern": [
     "iei",
     "ede",
     "iei"
   ],
-  "key": {
-    "i": {
-      "tag": "forge:sheetmetals/steel"
-    },
-    "e": {
-      "tag": "forge:plates/electrum"
-    },
-    "d": {
-      "item": "immersiveengineering:dynamo"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:generator",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:generator"
   }
 }

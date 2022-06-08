@@ -1,5 +1,9 @@
 {
   "variants": {
+    "facing=east": {
+      "model": "immersiveengineering:metal_device/charging_station",
+      "y": 90
+    },
     "facing=north": {
       "model": "immersiveengineering:metal_device/charging_station"
     },
@@ -10,10 +14,6 @@
     "facing=west": {
       "model": "immersiveengineering:metal_device/charging_station",
       "y": 270
-    },
-    "facing=east": {
-      "model": "immersiveengineering:metal_device/charging_station",
-      "y": 90
     }
   }
 }

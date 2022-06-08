@@ -1,9 +1,9 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "result": {
-    "tag": "forge:dusts/nickel"
-  },
   "input": {
     "tag": "forge:ores/nickel"
+  },
+  "result": {
+    "tag": "forge:dusts/nickel"
   }
 }

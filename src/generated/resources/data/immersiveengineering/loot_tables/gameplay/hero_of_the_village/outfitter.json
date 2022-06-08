@@ -2,7 +2,6 @@
   "type": "minecraft:empty",
   "pools": [
     {
-      "rolls": 1.0,
       "bonus_rolls": 0.0,
       "entries": [
         {
@@ -25,7 +24,8 @@
           "type": "minecraft:item",
           "name": "immersiveengineering:shader_bag_epic"
         }
-      ]
+      ],
+      "rolls": 1.0
     }
   ]
 }

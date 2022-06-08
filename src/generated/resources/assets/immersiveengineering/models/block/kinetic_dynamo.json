@@ -2,11 +2,11 @@
   "parent": "minecraft:block/cube",
   "textures": {
     "down": "immersiveengineering:block/metal_device/dynamo_top",
+    "east": "immersiveengineering:block/metal_device/dynamo_side",
+    "north": "immersiveengineering:block/metal_device/dynamo_front",
+    "particle": "immersiveengineering:block/metal_device/dynamo_side",
     "south": "immersiveengineering:block/metal_device/dynamo_top",
     "up": "immersiveengineering:block/metal_device/dynamo_top",
-    "north": "immersiveengineering:block/metal_device/dynamo_front",
-    "west": "immersiveengineering:block/metal_device/dynamo_side",
-    "east": "immersiveengineering:block/metal_device/dynamo_side",
-    "particle": "immersiveengineering:block/metal_device/dynamo_side"
+    "west": "immersiveengineering:block/metal_device/dynamo_side"
   }
 }

@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:ingot_silver"
+    },
+    "s": {
+      "tag": "forge:ingots/silver"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:ingots/silver"
-    },
-    "i": {
-      "item": "immersiveengineering:ingot_silver"
-    }
-  },
   "result": {
     "item": "immersiveengineering:storage_silver"
   }

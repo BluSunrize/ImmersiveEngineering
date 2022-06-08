@@ -1,24 +1,24 @@
 {
   "type": "immersiveengineering:turn_and_copy",
-  "pattern": [
-    " w ",
-    "asa",
-    " w "
-  ],
   "key": {
-    "w": {
-      "tag": "forge:wires/aluminum"
-    },
     "a": {
       "tag": "forge:dusts/redstone"
     },
     "s": {
       "tag": "forge:rods/wooden"
+    },
+    "w": {
+      "tag": "forge:wires/aluminum"
     }
   },
+  "pattern": [
+    " w ",
+    "asa",
+    " w "
+  ],
+  "quarter_turn": true,
   "result": {
-    "item": "immersiveengineering:wirecoil_redstone",
-    "count": 4
-  },
-  "quarter_turn": true
+    "count": 4,
+    "item": "immersiveengineering:wirecoil_redstone"
+  }
 }

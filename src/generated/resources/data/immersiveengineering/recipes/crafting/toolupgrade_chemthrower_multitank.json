@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " p ",
-    "tct"
-  ],
   "key": {
-    "p": {
-      "item": "immersiveengineering:fluid_pipe"
-    },
     "c": {
       "item": "immersiveengineering:component_iron"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
     },
     "t": {
       "item": "immersiveengineering:toolupgrade_drill_capacity"
     }
   },
+  "pattern": [
+    " p ",
+    "tct"
+  ],
   "result": {
     "item": "immersiveengineering:toolupgrade_chemthrower_multitank"
   }

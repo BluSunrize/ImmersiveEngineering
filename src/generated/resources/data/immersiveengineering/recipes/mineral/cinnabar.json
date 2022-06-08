@@ -1,5 +1,9 @@
 {
   "type": "immersiveengineering:mineral_mix",
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "fail_chance": 0.1,
   "ores": [
     {
       "chance": 0.6,
@@ -14,24 +18,20 @@
       }
     },
     {
+      "chance": 0.3,
       "conditions": [
         {
+          "type": "forge:not",
           "value": {
-            "tag": "forge:ores/mercury",
-            "type": "forge:tag_empty"
-          },
-          "type": "forge:not"
+            "type": "forge:tag_empty",
+            "tag": "forge:ores/mercury"
+          }
         }
       ],
-      "chance": 0.3,
       "output": {
         "tag": "forge:ores/mercury"
       }
     }
   ],
-  "dimensions": [
-    "minecraft:overworld"
-  ],
-  "weight": 15,
-  "fail_chance": 0.1
+  "weight": 15
 }

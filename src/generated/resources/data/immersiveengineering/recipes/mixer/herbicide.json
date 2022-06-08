@@ -1,5 +1,10 @@
 {
   "type": "immersiveengineering:mixer",
+  "energy": 3200,
+  "fluid": {
+    "amount": 500,
+    "tag": "forge:ethanol"
+  },
   "inputs": [
     {
       "tag": "forge:dusts/sulfur"
@@ -9,12 +14,7 @@
     }
   ],
   "result": {
-    "fluid": "immersiveengineering:herbicide",
-    "amount": 500
-  },
-  "fluid": {
-    "tag": "forge:ethanol",
-    "amount": 500
-  },
-  "energy": 3200
+    "amount": 500,
+    "fluid": "immersiveengineering:herbicide"
+  }
 }

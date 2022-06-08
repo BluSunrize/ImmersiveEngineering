@@ -1,10 +1,10 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/wooden_device/craftingtable"
-  },
+  "detectCullableFaces": false,
+  "flip-v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/wooden_device/craftingtable.obj",
-  "detectCullableFaces": false,
-  "flip-v": true
+  "textures": {
+    "particle": "immersiveengineering:block/wooden_device/craftingtable"
+  }
 }

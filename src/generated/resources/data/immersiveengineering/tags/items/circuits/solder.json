@@ -1,5 +1,4 @@
 {
-  "replace": false,
   "values": [
     "#forge:wires/copper",
     "#forge:wires/lead"

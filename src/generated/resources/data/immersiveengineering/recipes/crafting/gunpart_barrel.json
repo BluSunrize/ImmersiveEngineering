@@ -1,13 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ss"
-  ],
   "key": {
     "s": {
       "tag": "forge:rods/steel"
     }
   },
+  "pattern": [
+    "ss"
+  ],
   "result": {
     "item": "immersiveengineering:gunpart_barrel"
   }

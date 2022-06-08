@@ -1,23 +1,23 @@
 {
   "type": "immersiveengineering:metal_press",
-  "mold": "immersiveengineering:mold_wire",
-  "result": {
-    "count": 2,
-    "base_ingredient": {
-      "tag": "forge:wires/constantan"
-    }
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:wires/constantan",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:wires/constantan"
+      }
     }
   ],
+  "energy": 2400,
   "input": {
     "tag": "forge:ingots/constantan"
   },
-  "energy": 2400
+  "mold": "immersiveengineering:mold_wire",
+  "result": {
+    "base_ingredient": {
+      "tag": "forge:wires/constantan"
+    },
+    "count": 2
+  }
 }

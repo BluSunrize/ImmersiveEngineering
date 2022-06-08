@@ -1,5 +1,9 @@
 {
   "variants": {
+    "facing=east": {
+      "model": "immersiveengineering:block/connector/e_meter_split",
+      "y": 270
+    },
     "facing=north": {
       "model": "immersiveengineering:block/connector/e_meter_split",
       "y": 180
@@ -10,10 +14,6 @@
     "facing=west": {
       "model": "immersiveengineering:block/connector/e_meter_split",
       "y": 90
-    },
-    "facing=east": {
-      "model": "immersiveengineering:block/connector/e_meter_split",
-      "y": 270
     }
   }
 }

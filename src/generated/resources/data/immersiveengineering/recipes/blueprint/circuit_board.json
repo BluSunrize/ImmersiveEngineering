@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "components",
   "inputs": [
     {
       "item": "immersiveengineering:insulating_glass"
@@ -8,7 +9,6 @@
       "tag": "forge:plates/copper"
     }
   ],
-  "category": "components",
   "result": {
     "item": "immersiveengineering:circuit_board"
   }

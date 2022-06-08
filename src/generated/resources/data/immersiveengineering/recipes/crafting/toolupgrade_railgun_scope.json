@@ -1,15 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "cic",
-    "psp"
-  ],
   "key": {
-    "i": {
-      "tag": "forge:plates/iron"
-    },
     "c": {
       "tag": "forge:wires/copper"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
     },
     "p": {
       "tag": "forge:glass_panes"
@@ -18,6 +14,10 @@
       "item": "minecraft:spyglass"
     }
   },
+  "pattern": [
+    "cic",
+    "psp"
+  ],
   "result": {
     "item": "immersiveengineering:toolupgrade_railgun_scope"
   }

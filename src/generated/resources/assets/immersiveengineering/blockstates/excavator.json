@@ -1,42 +1,42 @@
 {
   "variants": {
-    "facing=north,mirrored=false": {
-      "model": "immersiveengineering:block/metal_multiblock/excavator_split",
-      "uvlock": true
-    },
-    "facing=south,mirrored=false": {
-      "model": "immersiveengineering:block/metal_multiblock/excavator_split",
-      "y": 180,
-      "uvlock": true
-    },
-    "facing=west,mirrored=false": {
-      "model": "immersiveengineering:block/metal_multiblock/excavator_split",
-      "y": 270,
-      "uvlock": true
-    },
     "facing=east,mirrored=false": {
       "model": "immersiveengineering:block/metal_multiblock/excavator_split",
-      "y": 90,
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=east,mirrored=true": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator_mirrored_split",
+      "uvlock": true,
+      "y": 90
+    },
+    "facing=north,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator_split",
       "uvlock": true
     },
     "facing=north,mirrored=true": {
       "model": "immersiveengineering:block/metal_multiblock/excavator_mirrored_split",
       "uvlock": true
     },
+    "facing=south,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator_split",
+      "uvlock": true,
+      "y": 180
+    },
     "facing=south,mirrored=true": {
       "model": "immersiveengineering:block/metal_multiblock/excavator_mirrored_split",
-      "y": 180,
-      "uvlock": true
+      "uvlock": true,
+      "y": 180
+    },
+    "facing=west,mirrored=false": {
+      "model": "immersiveengineering:block/metal_multiblock/excavator_split",
+      "uvlock": true,
+      "y": 270
     },
     "facing=west,mirrored=true": {
       "model": "immersiveengineering:block/metal_multiblock/excavator_mirrored_split",
-      "y": 270,
-      "uvlock": true
-    },
-    "facing=east,mirrored=true": {
-      "model": "immersiveengineering:block/metal_multiblock/excavator_mirrored_split",
-      "y": 90,
-      "uvlock": true
+      "uvlock": true,
+      "y": 270
     }
   }
 }

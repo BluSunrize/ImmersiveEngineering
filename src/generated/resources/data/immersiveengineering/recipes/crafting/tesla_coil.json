@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "iii",
-    " l ",
-    "hlh"
-  ],
   "key": {
+    "h": {
+      "item": "immersiveengineering:capacitor_hv"
+    },
     "i": {
       "tag": "forge:ingots/aluminum"
     },
     "l": {
       "item": "immersiveengineering:coil_lv"
-    },
-    "h": {
-      "item": "immersiveengineering:capacitor_hv"
     }
   },
+  "pattern": [
+    "iii",
+    " l ",
+    "hlh"
+  ],
   "result": {
     "item": "immersiveengineering:tesla_coil"
   }

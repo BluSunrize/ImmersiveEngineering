@@ -1,31 +1,31 @@
 {
   "parent": "immersiveengineering:main/make_steel",
-  "display": {
-    "icon": {
-      "item": "immersiveengineering:crusher"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.mb_crusher"
-    },
-    "description": {
-      "translate": "advancement.immersiveengineering.mb_crusher.desc"
-    },
-    "frame": "goal",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "crusher": {
-      "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/crusher",
         "item": {
           "items": [
             "immersiveengineering:hammer"
           ]
-        }
-      }
+        },
+        "multiblock": "immersiveengineering:multiblocks/crusher"
+      },
+      "trigger": "immersiveengineering:multiblock_formed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_crusher.desc"
+    },
+    "frame": "goal",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:crusher"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_crusher"
     }
   },
   "requirements": [

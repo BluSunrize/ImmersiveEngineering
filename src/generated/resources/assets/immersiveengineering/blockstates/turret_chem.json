@@ -1,34 +1,34 @@
 {
   "variants": {
+    "facing=east,multiblockslave=false": {
+      "model": "immersiveengineering:block/metal_device/chem_turret",
+      "y": 90
+    },
+    "facing=east,multiblockslave=true": {
+      "model": "immersiveengineering:block/turret_chem_top",
+      "y": 90
+    },
     "facing=north,multiblockslave=false": {
       "model": "immersiveengineering:block/metal_device/chem_turret"
     },
+    "facing=north,multiblockslave=true": {
+      "model": "immersiveengineering:block/turret_chem_top"
+    },
     "facing=south,multiblockslave=false": {
       "model": "immersiveengineering:block/metal_device/chem_turret",
+      "y": 180
+    },
+    "facing=south,multiblockslave=true": {
+      "model": "immersiveengineering:block/turret_chem_top",
       "y": 180
     },
     "facing=west,multiblockslave=false": {
       "model": "immersiveengineering:block/metal_device/chem_turret",
       "y": 270
     },
-    "facing=east,multiblockslave=false": {
-      "model": "immersiveengineering:block/metal_device/chem_turret",
-      "y": 90
-    },
-    "facing=north,multiblockslave=true": {
-      "model": "immersiveengineering:block/turret_chem_top"
-    },
-    "facing=south,multiblockslave=true": {
-      "model": "immersiveengineering:block/turret_chem_top",
-      "y": 180
-    },
     "facing=west,multiblockslave=true": {
       "model": "immersiveengineering:block/turret_chem_top",
       "y": 270
-    },
-    "facing=east,multiblockslave=true": {
-      "model": "immersiveengineering:block/turret_chem_top",
-      "y": 90
     }
   }
 }

@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:nugget_silver"
+    },
+    "s": {
+      "tag": "forge:nuggets/silver"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:nuggets/silver"
-    },
-    "i": {
-      "item": "immersiveengineering:nugget_silver"
-    }
-  },
   "result": {
     "item": "immersiveengineering:ingot_silver"
   }

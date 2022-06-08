@@ -1,27 +1,27 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "tag": "forge:dusts/manyullyn"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/manyullyn",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/manyullyn"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ingots/manyullyn",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ingots/manyullyn"
+      }
     }
   ],
+  "energy": 3000,
   "input": {
     "tag": "forge:ingots/manyullyn"
   },
-  "energy": 3000
+  "result": {
+    "tag": "forge:dusts/manyullyn"
+  },
+  "secondaries": []
 }

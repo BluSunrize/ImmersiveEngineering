@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "b": {
+      "item": "minecraft:terracotta"
+    },
+    "c": {
+      "item": "immersiveengineering:coil_lv"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "m": {
+      "item": "immersiveengineering:voltmeter"
+    }
+  },
   "pattern": [
     " m ",
     "bcb",
     "ici"
   ],
-  "key": {
-    "m": {
-      "item": "immersiveengineering:voltmeter"
-    },
-    "b": {
-      "item": "minecraft:terracotta"
-    },
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "c": {
-      "item": "immersiveengineering:coil_lv"
-    }
-  },
   "result": {
     "item": "immersiveengineering:current_transformer"
   }

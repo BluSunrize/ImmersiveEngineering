@@ -1,23 +1,23 @@
 {
   "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:beetroot_seeds"
+  },
+  "render": {
+    "type": "crop",
+    "block": "minecraft:beetroots"
+  },
   "results": [
     {
-      "item": "minecraft:beetroot",
-      "count": 2
+      "count": 2,
+      "item": "minecraft:beetroot"
     },
     {
       "item": "minecraft:beetroot_seeds"
     }
   ],
-  "input": {
-    "item": "minecraft:beetroot_seeds"
-  },
   "soil": {
     "item": "minecraft:dirt"
   },
-  "time": 800,
-  "render": {
-    "type": "crop",
-    "block": "minecraft:beetroots"
-  }
+  "time": 800
 }

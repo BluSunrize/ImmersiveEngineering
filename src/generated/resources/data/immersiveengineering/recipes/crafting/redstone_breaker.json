@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "h h",
-    "ici",
-    "iri"
-  ],
   "key": {
+    "c": {
+      "item": "minecraft:repeater"
+    },
     "h": {
       "item": "immersiveengineering:connector_hv"
     },
     "i": {
       "tag": "forge:ingots/iron"
     },
-    "c": {
-      "item": "minecraft:repeater"
-    },
     "r": {
       "tag": "forge:dusts/redstone"
     }
   },
+  "pattern": [
+    "h h",
+    "ici",
+    "iri"
+  ],
   "result": {
     "item": "immersiveengineering:redstone_breaker"
   }

@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_sheetmetal_uranium_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_sheetmetal_uranium_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_sheetmetal_uranium_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_sheetmetal_uranium_top"
     }
   }
 }

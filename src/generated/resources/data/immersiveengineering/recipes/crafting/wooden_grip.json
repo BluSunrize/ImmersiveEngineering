@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "tag": "forge:nuggets/copper"
+    },
+    "s": {
+      "tag": "forge:rods/treated_wood"
+    }
+  },
   "pattern": [
     "ss",
     "cs",
     "ss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:rods/treated_wood"
-    },
-    "c": {
-      "tag": "forge:nuggets/copper"
-    }
-  },
   "result": {
     "item": "immersiveengineering:wooden_grip"
   }

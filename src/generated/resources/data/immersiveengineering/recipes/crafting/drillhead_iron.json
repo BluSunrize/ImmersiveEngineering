@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "b": {
+      "tag": "forge:storage_blocks/iron"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
   "pattern": [
     "  i",
     "ii ",
     "bi "
   ],
-  "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "b": {
-      "tag": "forge:storage_blocks/iron"
-    }
-  },
   "result": {
     "item": "immersiveengineering:drillhead_iron"
   }

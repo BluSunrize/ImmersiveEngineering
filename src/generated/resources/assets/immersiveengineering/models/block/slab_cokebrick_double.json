@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/cube_bottom_top",
   "textures": {
-    "side": "immersiveengineering:block/stone_decoration/cokebrick",
     "bottom": "immersiveengineering:block/stone_decoration/cokebrick",
+    "side": "immersiveengineering:block/stone_decoration/cokebrick",
     "top": "immersiveengineering:block/stone_decoration/cokebrick"
   }
 }

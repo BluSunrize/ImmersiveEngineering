@@ -1,15 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "iwi",
-    "rcr"
-  ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
     "c": {
       "item": "immersiveengineering:coil_lv"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
     },
     "r": {
       "tag": "forge:dusts/redstone"
@@ -18,6 +14,10 @@
       "tag": "forge:treated_wood"
     }
   },
+  "pattern": [
+    "iwi",
+    "rcr"
+  ],
   "result": {
     "item": "immersiveengineering:turntable"
   }

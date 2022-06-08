@@ -1,9 +1,9 @@
 {
   "type": "minecraft:smelting",
+  "cookingtime": 200,
+  "experience": 0.0,
   "ingredient": {
     "item": "immersiveengineering:dust_gold"
   },
-  "result": "minecraft:gold_ingot",
-  "experience": 0.0,
-  "cookingtime": 200
+  "result": "minecraft:gold_ingot"
 }

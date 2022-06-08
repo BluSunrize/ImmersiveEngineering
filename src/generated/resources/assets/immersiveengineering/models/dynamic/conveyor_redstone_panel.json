@@ -1,5 +1,5 @@
 {
+  "callbacks": "immersiveengineering:submodel",
   "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/block/conveyor_redstone.obj.ie",
-  "callbacks": "immersiveengineering:submodel"
+  "model": "immersiveengineering:models/block/conveyor_redstone.obj.ie"
 }

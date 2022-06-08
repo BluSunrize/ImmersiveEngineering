@@ -1,11 +1,32 @@
 {
   "parent": "minecraft:block/thin_block",
-  "textures": {
-    "particle": "immersiveengineering:block/wooden_decoration/sawdust",
-    "texture": "immersiveengineering:block/wooden_decoration/sawdust"
-  },
   "elements": [
     {
+      "faces": {
+        "down": {
+          "cullface": "down",
+          "texture": "#texture"
+        },
+        "east": {
+          "cullface": "east",
+          "texture": "#texture"
+        },
+        "north": {
+          "cullface": "north",
+          "texture": "#texture"
+        },
+        "south": {
+          "cullface": "south",
+          "texture": "#texture"
+        },
+        "up": {
+          "texture": "#texture"
+        },
+        "west": {
+          "cullface": "west",
+          "texture": "#texture"
+        }
+      },
       "from": [
         0,
         0,
@@ -15,32 +36,11 @@
         16,
         9,
         16
-      ],
-      "faces": {
-        "down": {
-          "texture": "#texture",
-          "cullface": "down"
-        },
-        "up": {
-          "texture": "#texture"
-        },
-        "north": {
-          "texture": "#texture",
-          "cullface": "north"
-        },
-        "south": {
-          "texture": "#texture",
-          "cullface": "south"
-        },
-        "west": {
-          "texture": "#texture",
-          "cullface": "west"
-        },
-        "east": {
-          "texture": "#texture",
-          "cullface": "east"
-        }
-      }
+      ]
     }
-  ]
+  ],
+  "textures": {
+    "particle": "immersiveengineering:block/wooden_decoration/sawdust",
+    "texture": "immersiveengineering:block/wooden_decoration/sawdust"
+  }
 }

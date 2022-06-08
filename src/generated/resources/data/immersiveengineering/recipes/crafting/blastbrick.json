@@ -1,23 +1,23 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "tag": "forge:ingots/nether_brick"
+    },
+    "m": {
+      "item": "minecraft:magma_block"
+    },
+    "s": {
+      "tag": "forge:ingots/brick"
+    }
+  },
   "pattern": [
     "csc",
     "sms",
     "csc"
   ],
-  "key": {
-    "c": {
-      "tag": "forge:ingots/nether_brick"
-    },
-    "s": {
-      "tag": "forge:ingots/brick"
-    },
-    "m": {
-      "item": "minecraft:magma_block"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:blastbrick",
-    "count": 3
+    "count": 3,
+    "item": "immersiveengineering:blastbrick"
   }
 }

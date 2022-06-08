@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "ppp",
-    "   ",
-    "ppp"
-  ],
   "key": {
     "p": {
       "tag": "forge:plates/iron"
     }
   },
+  "pattern": [
+    "ppp",
+    "   ",
+    "ppp"
+  ],
   "result": {
-    "item": "immersiveengineering:fluid_pipe",
-    "count": 8
+    "count": 8,
+    "item": "immersiveengineering:fluid_pipe"
   }
 }

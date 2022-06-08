@@ -1,15 +1,15 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "x x",
-    "xxx",
-    "xxx"
-  ],
   "key": {
     "x": {
       "tag": "forge:plates/aluminum"
     }
   },
+  "pattern": [
+    "x x",
+    "xxx",
+    "xxx"
+  ],
   "result": {
     "item": "immersiveengineering:armor_faraday_chest"
   }

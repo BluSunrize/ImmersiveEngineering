@@ -1,23 +1,23 @@
 {
   "type": "immersiveengineering:metal_press",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:gears/iron"
+      }
+    }
+  ],
+  "energy": 2400,
+  "input": {
+    "base_ingredient": {
+      "tag": "forge:ingots/iron"
+    },
+    "count": 4
+  },
   "mold": "immersiveengineering:mold_gear",
   "result": {
     "tag": "forge:gears/iron"
-  },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:gears/iron",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
-  "input": {
-    "count": 4,
-    "base_ingredient": {
-      "tag": "forge:ingots/iron"
-    }
-  },
-  "energy": 2400
+  }
 }

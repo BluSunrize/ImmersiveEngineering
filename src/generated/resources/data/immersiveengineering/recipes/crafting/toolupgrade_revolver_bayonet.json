@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "si",
-    "iw"
-  ],
   "key": {
     "i": {
       "tag": "forge:ingots/steel"
     },
-    "w": {
-      "tag": "forge:treated_wood"
-    },
     "s": {
       "item": "minecraft:iron_sword"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
     }
   },
+  "pattern": [
+    "si",
+    "iw"
+  ],
   "result": {
     "item": "immersiveengineering:toolupgrade_revolver_bayonet"
   }

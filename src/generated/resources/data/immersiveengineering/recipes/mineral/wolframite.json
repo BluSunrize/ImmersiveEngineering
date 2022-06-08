@@ -1,5 +1,18 @@
 {
   "type": "immersiveengineering:mineral_mix",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:ores/tungsten"
+      }
+    }
+  ],
+  "dimensions": [
+    "minecraft:overworld"
+  ],
+  "fail_chance": 0.1,
   "ores": [
     {
       "chance": 0.5,
@@ -14,33 +27,20 @@
       }
     },
     {
+      "chance": 0.5,
       "conditions": [
         {
+          "type": "forge:not",
           "value": {
-            "tag": "forge:ores/manganese",
-            "type": "forge:tag_empty"
-          },
-          "type": "forge:not"
+            "type": "forge:tag_empty",
+            "tag": "forge:ores/manganese"
+          }
         }
       ],
-      "chance": 0.5,
       "output": {
         "tag": "forge:ores/manganese"
       }
     }
   ],
-  "dimensions": [
-    "minecraft:overworld"
-  ],
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:ores/tungsten",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
-  "weight": 5,
-  "fail_chance": 0.1
+  "weight": 5
 }

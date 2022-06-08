@@ -1,23 +1,7 @@
 {
   "parent": "immersiveengineering:main/craft_revolver",
-  "display": {
-    "icon": {
-      "item": "immersiveengineering:wolfpack"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.craft_wolfpack"
-    },
-    "description": {
-      "translate": "advancement.immersiveengineering.craft_wolfpack.desc"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": true
-  },
   "criteria": {
     "wolfpack": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -26,7 +10,23 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_wolfpack.desc"
+    },
+    "frame": "task",
+    "hidden": true,
+    "icon": {
+      "item": "immersiveengineering:wolfpack"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_wolfpack"
     }
   },
   "requirements": [

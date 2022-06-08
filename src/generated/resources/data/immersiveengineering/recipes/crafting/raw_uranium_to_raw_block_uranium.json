@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:raw_uranium"
+    },
+    "s": {
+      "tag": "forge:raw_materials/uranium"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:raw_materials/uranium"
-    },
-    "i": {
-      "item": "immersiveengineering:raw_uranium"
-    }
-  },
   "result": {
     "item": "immersiveengineering:raw_block_uranium"
   }

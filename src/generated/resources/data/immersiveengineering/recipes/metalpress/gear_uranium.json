@@ -1,23 +1,23 @@
 {
   "type": "immersiveengineering:metal_press",
+  "conditions": [
+    {
+      "type": "forge:not",
+      "value": {
+        "type": "forge:tag_empty",
+        "tag": "forge:gears/uranium"
+      }
+    }
+  ],
+  "energy": 2400,
+  "input": {
+    "base_ingredient": {
+      "tag": "forge:ingots/uranium"
+    },
+    "count": 4
+  },
   "mold": "immersiveengineering:mold_gear",
   "result": {
     "tag": "forge:gears/uranium"
-  },
-  "conditions": [
-    {
-      "value": {
-        "tag": "forge:gears/uranium",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
-    }
-  ],
-  "input": {
-    "count": 4,
-    "base_ingredient": {
-      "tag": "forge:ingots/uranium"
-    }
-  },
-  "energy": 2400
+  }
 }

@@ -1,23 +1,23 @@
 {
   "parent": "immersiveengineering:main/root",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "immersiveengineering:wirecoil_copper"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.connect_wire"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.connect_wire.desc"
     },
     "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:wirecoil_copper"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "code_trigger": {
-      "trigger": "minecraft:impossible"
+    "title": {
+      "translate": "advancement.immersiveengineering.connect_wire"
     }
   },
   "requirements": [

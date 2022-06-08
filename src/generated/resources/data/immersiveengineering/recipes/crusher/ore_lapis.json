@@ -1,30 +1,30 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [
-    {
-      "chance": 0.2,
-      "output": {
-        "tag": "forge:dusts/sulfur"
-      },
-      "conditions": [
-        {
-          "value": {
-            "tag": "forge:dusts/sulfur",
-            "type": "forge:tag_empty"
-          },
-          "type": "forge:not"
-        }
-      ]
-    }
-  ],
-  "result": {
-    "count": 9,
-    "base_ingredient": {
-      "item": "minecraft:lapis_lazuli"
-    }
-  },
+  "energy": 6000,
   "input": {
     "tag": "forge:ores/lapis"
   },
-  "energy": 6000
+  "result": {
+    "base_ingredient": {
+      "item": "minecraft:lapis_lazuli"
+    },
+    "count": 9
+  },
+  "secondaries": [
+    {
+      "chance": 0.2,
+      "conditions": [
+        {
+          "type": "forge:not",
+          "value": {
+            "type": "forge:tag_empty",
+            "tag": "forge:dusts/sulfur"
+          }
+        }
+      ],
+      "output": {
+        "tag": "forge:dusts/sulfur"
+      }
+    }
+  ]
 }

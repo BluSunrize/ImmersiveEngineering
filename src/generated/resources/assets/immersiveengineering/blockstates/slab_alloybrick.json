@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_alloybrick_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_alloybrick_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_alloybrick_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_alloybrick_top"
     }
   }
 }

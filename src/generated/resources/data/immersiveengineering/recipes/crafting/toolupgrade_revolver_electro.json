@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "eee",
-    "rwr"
-  ],
   "key": {
     "e": {
       "item": "immersiveengineering:electron_tube"
@@ -15,6 +11,10 @@
       "item": "immersiveengineering:wire_copper"
     }
   },
+  "pattern": [
+    "eee",
+    "rwr"
+  ],
   "result": {
     "item": "immersiveengineering:toolupgrade_revolver_electro"
   }

@@ -1,25 +1,25 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "result": {
-    "tag": "forge:dusts/tungsten"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/tungsten",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/tungsten"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:raw_materials/tungsten",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:raw_materials/tungsten"
+      }
     }
   ],
   "input": {
     "tag": "forge:raw_materials/tungsten"
+  },
+  "result": {
+    "tag": "forge:dusts/tungsten"
   }
 }

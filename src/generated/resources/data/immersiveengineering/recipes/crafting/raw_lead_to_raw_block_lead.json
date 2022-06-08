@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:raw_lead"
+    },
+    "s": {
+      "tag": "forge:raw_materials/lead"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:raw_materials/lead"
-    },
-    "i": {
-      "item": "immersiveengineering:raw_lead"
-    }
-  },
   "result": {
     "item": "immersiveengineering:raw_block_lead"
   }

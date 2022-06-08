@@ -1,33 +1,7 @@
 {
   "parent": "minecraft:recipes/root",
-  "rewards": {
-    "recipes": [
-      "immersiveengineering:crafting/generator"
-    ]
-  },
   "criteria": {
-    "has_steel_sheetmetal": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:sheetmetals/steel"
-          }
-        ]
-      }
-    },
-    "has_electrum_ingot": {
-      "trigger": "minecraft:inventory_changed",
-      "conditions": {
-        "items": [
-          {
-            "tag": "forge:ingots/electrum"
-          }
-        ]
-      }
-    },
     "has_dynamo": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -36,13 +10,34 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_electrum_ingot": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:ingots/electrum"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_steel_sheetmetal": {
+      "conditions": {
+        "items": [
+          {
+            "tag": "forge:sheetmetals/steel"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
     },
     "has_the_recipe": {
-      "trigger": "minecraft:recipe_unlocked",
       "conditions": {
         "recipe": "immersiveengineering:crafting/generator"
-      }
+      },
+      "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
@@ -52,5 +47,10 @@
       "has_dynamo",
       "has_the_recipe"
     ]
-  ]
+  ],
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/generator"
+    ]
+  }
 }

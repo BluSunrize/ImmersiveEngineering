@@ -1,20 +1,5 @@
 {
   "type": "immersiveengineering:turn_and_copy",
-  "pattern": [
-    "f",
-    "c"
-  ],
-  "key": {
-    "f": {
-      "item": "minecraft:firework_rocket"
-    },
-    "c": {
-      "item": "immersiveengineering:empty_shell"
-    }
-  },
-  "result": {
-    "item": "immersiveengineering:firework"
-  },
   "copy_nbt": [
     0,
     1,
@@ -23,5 +8,20 @@
     4,
     5,
     6
-  ]
+  ],
+  "key": {
+    "c": {
+      "item": "immersiveengineering:empty_shell"
+    },
+    "f": {
+      "item": "minecraft:firework_rocket"
+    }
+  },
+  "pattern": [
+    "f",
+    "c"
+  ],
+  "result": {
+    "item": "immersiveengineering:firework"
+  }
 }

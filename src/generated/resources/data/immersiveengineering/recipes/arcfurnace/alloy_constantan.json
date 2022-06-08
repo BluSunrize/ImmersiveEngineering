@@ -1,21 +1,21 @@
 {
   "type": "immersiveengineering:arc_furnace",
-  "results": [
-    {
-      "count": 2,
-      "base_ingredient": {
-        "tag": "forge:ingots/constantan"
-      }
-    }
-  ],
   "additives": [
     {
       "tag": "forge:ingots/nickel"
     }
   ],
+  "energy": 51200,
   "input": {
     "tag": "forge:ingots/copper"
   },
-  "time": 100,
-  "energy": 51200
+  "results": [
+    {
+      "base_ingredient": {
+        "tag": "forge:ingots/constantan"
+      },
+      "count": 2
+    }
+  ],
+  "time": 100
 }

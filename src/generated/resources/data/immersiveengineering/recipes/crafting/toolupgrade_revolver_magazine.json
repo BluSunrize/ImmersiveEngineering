@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " ai",
-    "a a",
-    "ca "
-  ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/steel"
-    },
     "a": {
       "tag": "forge:ingots/copper"
     },
     "c": {
       "item": "immersiveengineering:component_iron"
+    },
+    "i": {
+      "tag": "forge:ingots/steel"
     }
   },
+  "pattern": [
+    " ai",
+    "a a",
+    "ca "
+  ],
   "result": {
     "item": "immersiveengineering:toolupgrade_revolver_magazine"
   }

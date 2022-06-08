@@ -1,9 +1,5 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "isi",
-    "i i"
-  ],
   "key": {
     "i": {
       "tag": "forge:ingots/steel"
@@ -12,8 +8,12 @@
       "tag": "forge:rods/steel"
     }
   },
+  "pattern": [
+    "isi",
+    "i i"
+  ],
   "result": {
-    "item": "immersiveengineering:connector_structural",
-    "count": 8
+    "count": 8,
+    "item": "immersiveengineering:connector_structural"
   }
 }

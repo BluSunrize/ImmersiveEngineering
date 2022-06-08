@@ -1,12 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "item": "minecraft:glowstone_dust",
-    "count": 4
-  },
+  "energy": 3200,
   "input": {
     "item": "minecraft:glowstone"
   },
-  "energy": 3200
+  "result": {
+    "count": 4,
+    "item": "minecraft:glowstone_dust"
+  },
+  "secondaries": []
 }

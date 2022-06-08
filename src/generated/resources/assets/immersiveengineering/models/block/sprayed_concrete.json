@@ -1,10 +1,10 @@
 {
   "parent": "minecraft:block/block",
-  "textures": {
-    "particle": "immersiveengineering:block/stone_decoration/concrete_sprayed"
-  },
+  "detectCullableFaces": false,
+  "flip-v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/sprayed_concrete.obj",
-  "detectCullableFaces": false,
-  "flip-v": true
+  "textures": {
+    "particle": "immersiveengineering:block/stone_decoration/concrete_sprayed"
+  }
 }

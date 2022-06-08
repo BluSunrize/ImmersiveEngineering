@@ -1,20 +1,20 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "tag": "forge:dusts/coal"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/coal",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/coal"
+      }
     }
   ],
+  "energy": 2400,
   "input": {
     "item": "minecraft:coal"
   },
-  "energy": 2400
+  "result": {
+    "tag": "forge:dusts/coal"
+  },
+  "secondaries": []
 }

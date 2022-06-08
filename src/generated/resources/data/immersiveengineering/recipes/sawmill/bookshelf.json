@@ -1,5 +1,13 @@
 {
   "type": "immersiveengineering:sawmill",
+  "energy": 1600,
+  "input": {
+    "item": "minecraft:bookshelf"
+  },
+  "result": {
+    "count": 4,
+    "item": "minecraft:oak_planks"
+  },
   "secondaries": [
     {
       "output": {
@@ -9,18 +17,10 @@
     },
     {
       "output": {
-        "item": "minecraft:book",
-        "count": 3
+        "count": 3,
+        "item": "minecraft:book"
       },
       "stripping": false
     }
-  ],
-  "result": {
-    "item": "minecraft:oak_planks",
-    "count": 4
-  },
-  "input": {
-    "item": "minecraft:bookshelf"
-  },
-  "energy": 1600
+  ]
 }

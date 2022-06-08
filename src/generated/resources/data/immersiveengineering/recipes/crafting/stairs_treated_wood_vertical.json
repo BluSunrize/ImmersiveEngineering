@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "s  ",
-    "ss ",
-    "sss"
-  ],
   "key": {
     "s": {
       "item": "immersiveengineering:treated_wood_vertical"
     }
   },
+  "pattern": [
+    "s  ",
+    "ss ",
+    "sss"
+  ],
   "result": {
-    "item": "immersiveengineering:stairs_treated_wood_vertical",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:stairs_treated_wood_vertical"
   }
 }

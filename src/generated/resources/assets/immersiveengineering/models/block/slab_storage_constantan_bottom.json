@@ -1,8 +1,8 @@
 {
   "parent": "minecraft:block/slab",
   "textures": {
-    "side": "immersiveengineering:block/metal/storage_constantan",
     "bottom": "immersiveengineering:block/metal/storage_constantan",
+    "side": "immersiveengineering:block/metal/storage_constantan",
     "top": "immersiveengineering:block/metal/storage_constantan"
   }
 }

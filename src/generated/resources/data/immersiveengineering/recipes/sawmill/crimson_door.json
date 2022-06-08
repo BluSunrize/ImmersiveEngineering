@@ -1,5 +1,12 @@
 {
   "type": "immersiveengineering:sawmill",
+  "energy": 800,
+  "input": {
+    "item": "minecraft:crimson_door"
+  },
+  "result": {
+    "item": "minecraft:crimson_planks"
+  },
   "secondaries": [
     {
       "output": {
@@ -7,12 +14,5 @@
       },
       "stripping": false
     }
-  ],
-  "result": {
-    "item": "minecraft:crimson_planks"
-  },
-  "input": {
-    "item": "minecraft:crimson_door"
-  },
-  "energy": 800
+  ]
 }

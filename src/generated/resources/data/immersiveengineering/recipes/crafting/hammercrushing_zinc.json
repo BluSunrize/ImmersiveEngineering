@@ -1,25 +1,25 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "result": {
-    "tag": "forge:dusts/zinc"
-  },
   "conditions": [
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:dusts/zinc",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:dusts/zinc"
+      }
     },
     {
+      "type": "forge:not",
       "value": {
-        "tag": "forge:ores/zinc",
-        "type": "forge:tag_empty"
-      },
-      "type": "forge:not"
+        "type": "forge:tag_empty",
+        "tag": "forge:ores/zinc"
+      }
     }
   ],
   "input": {
     "tag": "forge:ores/zinc"
+  },
+  "result": {
+    "tag": "forge:dusts/zinc"
   }
 }

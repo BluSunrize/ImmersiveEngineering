@@ -1,12 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "item": "minecraft:bone_meal",
-    "count": 6
-  },
+  "energy": 1600,
   "input": {
     "item": "minecraft:bone"
   },
-  "energy": 1600
+  "result": {
+    "count": 6,
+    "item": "minecraft:bone_meal"
+  },
+  "secondaries": []
 }

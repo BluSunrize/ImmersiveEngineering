@@ -1,23 +1,23 @@
 {
   "type": "immersiveengineering:shaped_fluid",
+  "key": {
+    "b": {
+      "type": "immersiveengineering:fluid",
+      "amount": 1000,
+      "tag": "forge:plantoil"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    }
+  },
   "pattern": [
     "bi ",
     "ibi",
     " ic"
   ],
-  "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "c": {
-      "item": "immersiveengineering:component_iron"
-    },
-    "b": {
-      "tag": "forge:plantoil",
-      "amount": 1000,
-      "type": "immersiveengineering:fluid"
-    }
-  },
   "result": {
     "item": "immersiveengineering:toolupgrade_drill_lube"
   }

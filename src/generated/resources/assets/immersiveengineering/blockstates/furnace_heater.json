@@ -4,25 +4,13 @@
       "model": "immersiveengineering:block/furnace_heater_off",
       "x": 90
     },
-    "active=true,facing=down": {
-      "model": "immersiveengineering:block/furnace_heater_on",
-      "x": 90
-    },
-    "active=false,facing=up": {
+    "active=false,facing=east": {
       "model": "immersiveengineering:block/furnace_heater_off",
-      "x": 270
-    },
-    "active=true,facing=up": {
-      "model": "immersiveengineering:block/furnace_heater_on",
-      "x": 270
+      "x": 180,
+      "y": 270
     },
     "active=false,facing=north": {
       "model": "immersiveengineering:block/furnace_heater_off",
-      "x": 180,
-      "y": 180
-    },
-    "active=true,facing=north": {
-      "model": "immersiveengineering:block/furnace_heater_on",
       "x": 180,
       "y": 180
     },
@@ -30,29 +18,41 @@
       "model": "immersiveengineering:block/furnace_heater_off",
       "x": 180
     },
-    "active=true,facing=south": {
-      "model": "immersiveengineering:block/furnace_heater_on",
-      "x": 180
+    "active=false,facing=up": {
+      "model": "immersiveengineering:block/furnace_heater_off",
+      "x": 270
     },
     "active=false,facing=west": {
       "model": "immersiveengineering:block/furnace_heater_off",
       "x": 180,
       "y": 90
     },
-    "active=true,facing=west": {
+    "active=true,facing=down": {
       "model": "immersiveengineering:block/furnace_heater_on",
-      "x": 180,
-      "y": 90
-    },
-    "active=false,facing=east": {
-      "model": "immersiveengineering:block/furnace_heater_off",
-      "x": 180,
-      "y": 270
+      "x": 90
     },
     "active=true,facing=east": {
       "model": "immersiveengineering:block/furnace_heater_on",
       "x": 180,
       "y": 270
+    },
+    "active=true,facing=north": {
+      "model": "immersiveengineering:block/furnace_heater_on",
+      "x": 180,
+      "y": 180
+    },
+    "active=true,facing=south": {
+      "model": "immersiveengineering:block/furnace_heater_on",
+      "x": 180
+    },
+    "active=true,facing=up": {
+      "model": "immersiveengineering:block/furnace_heater_on",
+      "x": 270
+    },
+    "active=true,facing=west": {
+      "model": "immersiveengineering:block/furnace_heater_on",
+      "x": 180,
+      "y": 90
     }
   }
 }

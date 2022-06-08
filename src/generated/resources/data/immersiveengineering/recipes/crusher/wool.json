@@ -1,12 +1,12 @@
 {
   "type": "immersiveengineering:crusher",
-  "secondaries": [],
-  "result": {
-    "item": "minecraft:string",
-    "count": 4
-  },
+  "energy": 3200,
   "input": {
     "tag": "minecraft:wool"
   },
-  "energy": 3200
+  "result": {
+    "count": 4,
+    "item": "minecraft:string"
+  },
+  "secondaries": []
 }

@@ -1,89 +1,16 @@
 {
+  "callbacks": "immersiveengineering:buzzsaw",
+  "dynamic": true,
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/buzzsaw_diesel.obj.ie",
-  "dynamic": true,
-  "callbacks": "immersiveengineering:buzzsaw",
   "transform": {
-    "thirdperson_righthand": {
-      "translation": [
-        0.062500015,
-        0.9375,
-        -2.9802322E-8
-      ],
-      "rotation": [
-        0.35244298,
-        0.62834233,
-        0.4903926,
-        0.4903926
-      ],
-      "scale": [
-        0.75,
-        0.75,
-        0.75
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "origin": "corner"
-    },
-    "thirdperson_lefthand": {
-      "translation": [
-        0.06250006,
-        0.93750006,
-        -2.9802322E-8
-      ],
-      "rotation": [
-        0.49039266,
-        -0.49039263,
-        -0.352443,
-        0.6283424
-      ],
-      "scale": [
-        0.74999994,
-        0.75000006,
-        -0.75
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "origin": "corner"
-    },
-    "firstperson_righthand": {
-      "translation": [
-        -0.09375,
-        0.36874998,
-        5.9604645E-8
-      ],
-      "rotation": [
-        0.0,
-        0.7071067,
-        0.0,
-        0.7071068
-      ],
-      "scale": [
-        0.37499988,
-        0.43749997,
-        0.37499988
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "origin": "corner"
-    },
     "firstperson_lefthand": {
-      "translation": [
-        -0.09375,
-        0.36874998,
-        -5.9604645E-8
+      "origin": "corner",
+      "post-rotation": [
+        0.0,
+        0.0,
+        0.0,
+        0.99830717
       ],
       "rotation": [
         0.0,
@@ -96,94 +23,44 @@
         0.43749997,
         -0.37499988
       ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "origin": "corner"
-    },
-    "head": {
       "translation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "origin": "corner"
-    },
-    "gui": {
-      "translation": [
-        -0.5000001,
-        0.049999893,
+        -0.09375,
+        0.36874998,
         -5.9604645E-8
-      ],
-      "rotation": [
-        -0.17205432,
-        0.86497545,
-        0.091964975,
-        -0.46233892
-      ],
-      "scale": [
-        0.7500002,
-        0.74999994,
-        0.75000006
-      ],
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "origin": "corner"
+      ]
     },
-    "ground": {
-      "translation": [
-        0.125,
-        0.25,
-        0.25
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        0.5,
-        0.5,
-        0.5
-      ],
+    "firstperson_righthand": {
+      "origin": "corner",
       "post-rotation": [
         0.0,
         0.0,
         0.0,
         0.99830717
       ],
-      "origin": "corner"
+      "rotation": [
+        0.0,
+        0.7071067,
+        0.0,
+        0.7071068
+      ],
+      "scale": [
+        0.37499988,
+        0.43749997,
+        0.37499988
+      ],
+      "translation": [
+        -0.09375,
+        0.36874998,
+        5.9604645E-8
+      ]
     },
     "fixed": {
-      "translation": [
-        0.18749997,
-        0.06250003,
-        0.15624999
+      "origin": "corner",
+      "post-rotation": [
+        0.0,
+        0.0,
+        0.0,
+        0.99830717
       ],
       "rotation": [
         0.0,
@@ -196,13 +73,136 @@
         0.43749997,
         0.43749997
       ],
+      "translation": [
+        0.18749997,
+        0.06250003,
+        0.15624999
+      ]
+    },
+    "ground": {
+      "origin": "corner",
       "post-rotation": [
         0.0,
         0.0,
         0.0,
         0.99830717
       ],
-      "origin": "corner"
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        0.125,
+        0.25,
+        0.25
+      ]
+    },
+    "gui": {
+      "origin": "corner",
+      "post-rotation": [
+        0.0,
+        0.0,
+        0.0,
+        0.99830717
+      ],
+      "rotation": [
+        -0.17205432,
+        0.86497545,
+        0.091964975,
+        -0.46233892
+      ],
+      "scale": [
+        0.7500002,
+        0.74999994,
+        0.75000006
+      ],
+      "translation": [
+        -0.5000001,
+        0.049999893,
+        -5.9604645E-8
+      ]
+    },
+    "head": {
+      "origin": "corner",
+      "post-rotation": [
+        0.0,
+        0.0,
+        0.0,
+        0.99830717
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "origin": "corner",
+      "post-rotation": [
+        0.0,
+        0.0,
+        0.0,
+        0.99830717
+      ],
+      "rotation": [
+        0.49039266,
+        -0.49039263,
+        -0.352443,
+        0.6283424
+      ],
+      "scale": [
+        0.74999994,
+        0.75000006,
+        -0.75
+      ],
+      "translation": [
+        0.06250006,
+        0.93750006,
+        -2.9802322E-8
+      ]
+    },
+    "thirdperson_righthand": {
+      "origin": "corner",
+      "post-rotation": [
+        0.0,
+        0.0,
+        0.0,
+        0.99830717
+      ],
+      "rotation": [
+        0.35244298,
+        0.62834233,
+        0.4903926,
+        0.4903926
+      ],
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ],
+      "translation": [
+        0.062500015,
+        0.9375,
+        -2.9802322E-8
+      ]
     }
   }
 }

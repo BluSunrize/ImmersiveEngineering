@@ -1,17 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "c c",
-    "c c",
-    " c "
-  ],
   "key": {
     "c": {
       "tag": "forge:plates/copper"
     }
   },
+  "pattern": [
+    "c c",
+    "c c",
+    " c "
+  ],
   "result": {
-    "item": "immersiveengineering:empty_casing",
-    "count": 5
+    "count": 5,
+    "item": "immersiveengineering:empty_casing"
   }
 }

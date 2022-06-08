@@ -1,9 +1,9 @@
 {
   "type": "immersiveengineering:revolver_assembly",
-  "pattern": [
-    " i ",
-    "bdh",
-    "gig"
+  "copy_nbt": [
+    3,
+    4,
+    5
   ],
   "key": {
     "b": {
@@ -12,22 +12,22 @@
     "d": {
       "item": "immersiveengineering:gunpart_drum"
     },
-    "h": {
-      "item": "immersiveengineering:gunpart_hammer"
-    },
     "g": {
       "item": "immersiveengineering:wooden_grip"
+    },
+    "h": {
+      "item": "immersiveengineering:gunpart_hammer"
     },
     "i": {
       "tag": "forge:ingots/iron"
     }
   },
+  "pattern": [
+    " i ",
+    "bdh",
+    "gig"
+  ],
   "result": {
     "item": "immersiveengineering:revolver"
-  },
-  "copy_nbt": [
-    3,
-    4,
-    5
-  ]
+  }
 }

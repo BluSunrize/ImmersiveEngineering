@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_insulating_glass_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_insulating_glass_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_insulating_glass_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_insulating_glass_top"
     }
   }
 }

@@ -1,17 +1,17 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "molds",
   "inputs": [
     {
-      "count": 3,
       "base_ingredient": {
         "tag": "forge:plates/steel"
-      }
+      },
+      "count": 3
     },
     {
       "item": "immersiveengineering:wirecutter"
     }
   ],
-  "category": "molds",
   "result": {
     "item": "immersiveengineering:mold_packing_9"
   }

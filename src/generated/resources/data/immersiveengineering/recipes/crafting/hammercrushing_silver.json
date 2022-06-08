@@ -1,9 +1,9 @@
 {
   "type": "immersiveengineering:hammer_crushing",
-  "result": {
-    "tag": "forge:dusts/silver"
-  },
   "input": {
     "tag": "forge:ores/silver"
+  },
+  "result": {
+    "tag": "forge:dusts/silver"
   }
 }

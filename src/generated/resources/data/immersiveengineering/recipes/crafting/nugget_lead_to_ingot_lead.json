@@ -1,18 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "i": {
+      "item": "immersiveengineering:nugget_lead"
+    },
+    "s": {
+      "tag": "forge:nuggets/lead"
+    }
+  },
   "pattern": [
     "sss",
     "sis",
     "sss"
   ],
-  "key": {
-    "s": {
-      "tag": "forge:nuggets/lead"
-    },
-    "i": {
-      "item": "immersiveengineering:nugget_lead"
-    }
-  },
   "result": {
     "item": "immersiveengineering:ingot_lead"
   }

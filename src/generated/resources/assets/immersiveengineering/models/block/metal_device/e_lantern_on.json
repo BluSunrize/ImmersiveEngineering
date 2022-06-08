@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:block/block",
+  "detectCullableFaces": false,
+  "flip-v": true,
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_device/e_lantern.obj",
   "textures": {
     "particle": "immersiveengineering:block/metal_device/electric_lantern_on",
     "texture": "immersiveengineering:block/metal_device/electric_lantern_on"
-  },
-  "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/metal_device/e_lantern.obj",
-  "detectCullableFaces": false,
-  "flip-v": true
+  }
 }

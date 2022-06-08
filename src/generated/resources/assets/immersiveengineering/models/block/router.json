@@ -2,11 +2,11 @@
   "parent": "immersiveengineering:block/ie_six_sides",
   "textures": {
     "down": "immersiveengineering:block/wooden_device/sorter_0",
-    "up": "immersiveengineering:block/wooden_device/sorter_1",
-    "north": "immersiveengineering:block/wooden_device/sorter_2",
-    "south": "immersiveengineering:block/wooden_device/sorter_3",
-    "west": "immersiveengineering:block/wooden_device/sorter_4",
     "east": "immersiveengineering:block/wooden_device/sorter_5",
-    "particle": "immersiveengineering:block/wooden_device/sorter_0"
+    "north": "immersiveengineering:block/wooden_device/sorter_2",
+    "particle": "immersiveengineering:block/wooden_device/sorter_0",
+    "south": "immersiveengineering:block/wooden_device/sorter_3",
+    "up": "immersiveengineering:block/wooden_device/sorter_1",
+    "west": "immersiveengineering:block/wooden_device/sorter_4"
   }
 }

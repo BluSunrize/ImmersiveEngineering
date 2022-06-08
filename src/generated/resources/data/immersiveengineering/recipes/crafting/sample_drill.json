@@ -1,21 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "e": {
+      "item": "immersiveengineering:light_engineering"
+    },
+    "f": {
+      "item": "immersiveengineering:steel_fence"
+    },
+    "s": {
+      "item": "immersiveengineering:steel_scaffolding_standard"
+    }
+  },
   "pattern": [
     "sfs",
     "sfs",
     "efe"
   ],
-  "key": {
-    "s": {
-      "item": "immersiveengineering:steel_scaffolding_standard"
-    },
-    "f": {
-      "item": "immersiveengineering:steel_fence"
-    },
-    "e": {
-      "item": "immersiveengineering:light_engineering"
-    }
-  },
   "result": {
     "item": "immersiveengineering:sample_drill"
   }

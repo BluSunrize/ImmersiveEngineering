@@ -1,19 +1,19 @@
 {
   "type": "immersiveengineering:cloche",
+  "input": {
+    "item": "minecraft:chorus_flower"
+  },
+  "render": {
+    "type": "chorus",
+    "block": "minecraft:chorus_flower"
+  },
   "results": [
     {
       "item": "minecraft:chorus_fruit"
     }
   ],
-  "input": {
-    "item": "minecraft:chorus_flower"
-  },
   "soil": {
     "item": "minecraft:end_stone"
   },
-  "time": 480,
-  "render": {
-    "type": "chorus",
-    "block": "minecraft:chorus_flower"
-  }
+  "time": 480
 }

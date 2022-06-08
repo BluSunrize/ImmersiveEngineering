@@ -1,13 +1,13 @@
 {
   "variants": {
-    "type=top": {
-      "model": "immersiveengineering:block/slab_sheetmetal_gold_top"
-    },
     "type=bottom": {
       "model": "immersiveengineering:block/slab_sheetmetal_gold_bottom"
     },
     "type=double": {
       "model": "immersiveengineering:block/slab_sheetmetal_gold_double"
+    },
+    "type=top": {
+      "model": "immersiveengineering:block/slab_sheetmetal_gold_top"
     }
   }
 }

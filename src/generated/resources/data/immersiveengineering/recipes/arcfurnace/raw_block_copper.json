@@ -1,14 +1,18 @@
 {
   "type": "immersiveengineering:arc_furnace",
+  "additives": [],
+  "energy": 230400,
+  "input": {
+    "tag": "forge:storage_blocks/raw_copper"
+  },
   "results": [
     {
-      "count": 13,
       "base_ingredient": {
         "tag": "forge:ingots/copper"
-      }
+      },
+      "count": 13
     }
   ],
-  "additives": [],
   "secondaries": [
     {
       "chance": 0.5,
@@ -17,9 +21,5 @@
       }
     }
   ],
-  "input": {
-    "tag": "forge:storage_blocks/raw_copper"
-  },
-  "time": 900,
-  "energy": 230400
+  "time": 900
 }
