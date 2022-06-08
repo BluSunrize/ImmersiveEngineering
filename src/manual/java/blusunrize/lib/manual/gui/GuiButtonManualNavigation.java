@@ -12,7 +12,7 @@ import blusunrize.lib.manual.ManualUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ONE_MINUS_SRC_ALPHA;
 import static com.mojang.blaze3d.platform.GlStateManager.DestFactor.ZERO;
@@ -26,7 +26,7 @@ public class GuiButtonManualNavigation extends Button
 
 	public GuiButtonManualNavigation(ManualScreen gui, int x, int y, int w, int h, int type, OnPress handler)
 	{
-		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), TextComponent.EMPTY, handler);
+		super(x, y, type >= 4?10: Math.min(type < 2?16: 10, w), type >= 4?10: Math.min(type < 2?10: 16, h), Component.empty(), handler);
 		this.gui = gui;
 		this.type = type;
 	}

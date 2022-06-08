@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlock
 import mcjty.theoneprobe.Tools;
 import mcjty.theoneprobe.api.*;
 import mcjty.theoneprobe.config.Config;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -37,7 +37,7 @@ public class MultiblockDisplayOverride implements IBlockDisplayOverride
 						.item(stack)
 						.vertical()
 						.itemLabel(stack)
-						.text(new TextComponent(TextStyleClass.MODNAME+ImmersiveEngineering.MODNAME));
+						.text(Component.literal(TextStyleClass.MODNAME+ImmersiveEngineering.MODNAME));
 			else
 				probeInfo.horizontal(probeInfo.defaultLayoutStyle().alignment(ElementAlignment.ALIGN_CENTER))
 						.item(stack)

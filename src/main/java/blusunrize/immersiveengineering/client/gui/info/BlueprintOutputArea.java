@@ -19,7 +19,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemHandlerHelper;
 import org.lwjgl.opengl.GL11;
@@ -67,7 +66,7 @@ public class BlueprintOutputArea extends InfoArea
 		}
 		for(ItemStack ss : inputs)
 			tooltip.add(TextUtils.applyFormat(
-					new TextComponent(ss.getCount()+"x ").append(ss.getHoverName()),
+					Component.literal(ss.getCount()+"x ").append(ss.getHoverName()),
 					ChatFormatting.GRAY
 			));
 	}

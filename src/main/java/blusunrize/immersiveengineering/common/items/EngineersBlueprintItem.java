@@ -15,7 +15,6 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +48,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 			String formatKey = Lib.DESC_INFO+"blueprint."+key;
 			String formatted = I18n.get(formatKey);
 			if(formatKey.equals(formatted))
-				list.add(new TextComponent(key));
+				list.add(Component.literal(key));
 			else
 				list.add(new TranslatableComponent(formatKey));
 			if(world!=null&&Screen.hasShiftDown())
@@ -58,7 +57,7 @@ public class EngineersBlueprintItem extends IEBaseItem
 				BlueprintCraftingRecipe[] recipes = BlueprintCraftingRecipe.findRecipes(world, key);
 				if(recipes.length > 0)
 					for(BlueprintCraftingRecipe recipe : recipes)
-						list.add(new TextComponent(" ").append(recipe.output.get().getHoverName()));
+						list.add(Component.literal(" ").append(recipe.output.get().getHoverName()));
 			}
 			else
 				list.add(new TranslatableComponent(Lib.DESC_INFO+"blueprint.creates0"));

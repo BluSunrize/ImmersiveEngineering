@@ -1,9 +1,9 @@
 package blusunrize.immersiveengineering.client.utils;
 
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
 import net.minecraft.network.chat.TextColor;
-import net.minecraft.network.chat.TextComponent;
 
 public class FontUtils
 {
@@ -17,7 +17,7 @@ public class FontUtils
 
 	public static MutableComponent withAppendColoredColour(MutableComponent base, int color) {
 		String hexCol = hexColorString(color);
-		MutableComponent coloredComponent = new TextComponent("#"+hexCol);
+		MutableComponent coloredComponent = Component.literal("#"+hexCol);
 		Style coloredStyle = coloredComponent.getStyle().withColor(TextColor.fromRgb(color));
 		coloredComponent.setStyle(coloredStyle);
 		return base.append(coloredComponent);

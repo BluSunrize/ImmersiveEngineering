@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -48,7 +47,7 @@ public class UnionMultiblock implements IMultiblock
 				.map(IMultiblock::getDisplayName)
 				.map(Component::copy)
 				.reduce((c1, c2) -> c1.append(", ").append(c2))
-				.orElse(TextComponent.EMPTY.copy());
+				.orElse(Component.empty().copy());
 	}
 
 	@Override

@@ -35,7 +35,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -93,7 +92,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 	}
 
 	private static final Component greenTick = applyFormat(
-			new TextComponent("\u2713"), ChatFormatting.GREEN, ChatFormatting.BOLD
+			Component.literal("\u2713"), ChatFormatting.GREEN, ChatFormatting.BOLD
 	).append(" ");
 
 	@Override
@@ -168,9 +167,9 @@ public class ManualElementMultiblock extends SpecialManualElements
 				if(hasItems[ss])
 					s = greenTick.copy();
 				else
-					s = new TextComponent(hasAnyItems?"   ": "");
+					s = Component.literal(hasAnyItems?"   ": "");
 				s.append(applyFormat(
-						new TextComponent(sIndent.toString()+req.getCount()+"x "), ChatFormatting.GRAY
+						Component.literal(sIndent.toString()+req.getCount()+"x "), ChatFormatting.GRAY
 				));
 				if(!req.isEmpty())
 					s.append(applyFormat(req.getHoverName().copy(), req.getRarity().color));

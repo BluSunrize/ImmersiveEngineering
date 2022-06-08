@@ -36,7 +36,7 @@ import blusunrize.immersiveengineering.common.util.IEDamageSources.ElectricDamag
 import blusunrize.immersiveengineering.common.wires.GlobalNetProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.FluidTags;
@@ -349,7 +349,7 @@ public class EventHandler
 					event.setCost(event.getCost()+5);
 					if(event.getLeft().hasCustomHoverName())
 						event.setCost(event.getCost()+2);
-					event.getOutput().setHoverName(new TextComponent(event.getName()));
+					event.getOutput().setHoverName(Component.literal(event.getName()));
 				}
 			}
 		}

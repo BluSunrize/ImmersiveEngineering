@@ -23,7 +23,6 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.item.ItemStack;
@@ -65,7 +64,7 @@ public class ManualScreen extends Screen
 
 	public ManualScreen(ManualInstance manual, ResourceLocation texture, boolean setLastActive)
 	{
-		super(new TextComponent("manual"));
+		super(Component.literal("manual"));
 		this.manual = manual;
 		this.currentNode = manual.getRoot();
 		this.texture = texture;
@@ -94,7 +93,7 @@ public class ManualScreen extends Screen
 	public void init()
 	{
 		Window res = mc.getWindow();
-		double oldGuiScale = res.calculateScale(mc.options.guiScale, mc.isEnforceUnicode());
+		double oldGuiScale = res.calculateScale(mc.options.guiScale().get(), mc.isEnforceUnicode());
 
 		int guiScaleInt = Math.min(manual.getGuiRescale(), getMinecraft().getWindow().calculateScale(0, true));
 		double newGuiScale = res.calculateScale(guiScaleInt, true);
@@ -160,7 +159,7 @@ public class ManualScreen extends Screen
 		if(textField)
 		{
 			mc.keyboardHandler.setSendRepeatsToGui(true);
-			searchField = new EditBox(font, guiLeft+166, guiTop+78, 120, 12, TextComponent.EMPTY);
+			searchField = new EditBox(font, guiLeft+166, guiTop+78, 120, 12, Component.empty());
 			searchField.setTextColor(-1);
 			searchField.setTextColorUneditable(-1);
 			searchField.setBordered(false);
@@ -309,7 +308,7 @@ public class ManualScreen extends Screen
 			{
 				ManualLink link = this.manual.getManualLink(stack);
 				if(link!=null)
-					tooltip.add(new TextComponent(manual.formatLink(link)));
+					tooltip.add(Component.literal(manual.formatLink(link)));
 			}
 		}
 		return tooltip;

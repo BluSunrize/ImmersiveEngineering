@@ -107,8 +107,7 @@ public class ManualUtils
 				.color(1F, 1F, 1F, 1F)
 				.uv(uv[0], uv[2])
 				.endVertex();
-		buffer.end();
-		BufferUploader.end(buffer);
+		BufferUploader.drawWithShader(buffer.end());
 	}
 
 	public static <T> List<T> getPrimitiveSpellingCorrections

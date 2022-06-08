@@ -22,7 +22,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
@@ -55,7 +54,7 @@ public class RedstoneConnectorScreen extends ClientBlockEntityScreen<ConnectorRe
 
 		clearWidgets();
 
-		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, TextComponent.EMPTY, new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
+		buttonInOut = new GuiButtonState<>(guiLeft+41, guiTop+20, 18, 18, Component.empty(), new IOSideConfig[]{IOSideConfig.INPUT, IOSideConfig.OUTPUT},
 				blockEntity.ioMode.ordinal()-1, TEXTURE, 176, 0, 1,
 				btn -> sendConfig("ioMode", btn.getNextState().ordinal())
 		);

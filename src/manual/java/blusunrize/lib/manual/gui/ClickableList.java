@@ -16,7 +16,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
@@ -47,7 +47,7 @@ public class ClickableList extends Button
 				  @Nonnull List<Tree.AbstractNode<ResourceLocation, ManualEntry>> nodes,
 				  Consumer<Tree.AbstractNode<ResourceLocation, ManualEntry>> handler)
 	{
-		super(x, y, w, h, TextComponent.EMPTY, btn -> {
+		super(x, y, w, h, Component.empty(), btn -> {
 		});
 		this.gui = gui;
 		this.textScale = textScale;

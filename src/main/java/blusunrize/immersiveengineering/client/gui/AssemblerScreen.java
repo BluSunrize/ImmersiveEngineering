@@ -28,7 +28,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -105,7 +104,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		for(int i = 0; i < 3; ++i)
 		{
 			final int id = i;
-			this.addRenderableWidget(new GuiButtonIE(leftPos+11+i*59, topPos+67, 10, 10, TextComponent.EMPTY, TEXTURE, 230, 50,
+			this.addRenderableWidget(new GuiButtonIE(leftPos+11+i*59, topPos+67, 10, 10, Component.empty(), TEXTURE, 230, 50,
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}

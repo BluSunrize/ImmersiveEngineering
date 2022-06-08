@@ -22,7 +22,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -54,7 +53,7 @@ public class ItemBatcherScreen extends IEContainerScreen<ItemBatcherContainer>
 		mc().keyboardHandler.setSendRepeatsToGui(true);
 
 		this.clearWidgets();
-		buttonBatchMode = new GuiButtonState<>(leftPos+7, topPos+92, 18, 18, TextComponent.EMPTY,
+		buttonBatchMode = new GuiButtonState<>(leftPos+7, topPos+92, 18, 18, Component.empty(),
 				ItemBatcherBlockEntity.BatchMode.values(), tile.batchMode.ordinal(), TEXTURE,
 				176, 36, 1,
 				btn -> {

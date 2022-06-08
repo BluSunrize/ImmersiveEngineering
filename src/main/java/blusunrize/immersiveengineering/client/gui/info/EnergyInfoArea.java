@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.client.gui.info;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.energy.IEnergyStorage;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class EnergyInfoArea extends InfoArea
 	@Override
 	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
-		tooltip.add(new TextComponent(energy.getEnergyStored()+"/"+energy.getMaxEnergyStored()+" IF"));
+		tooltip.add(Component.literal(energy.getEnergyStored()+"/"+energy.getMaxEnergyStored()+" IF"));
 	}
 
 	@Override

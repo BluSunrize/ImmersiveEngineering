@@ -16,7 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.locale.Language;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -31,7 +31,7 @@ public class GuiButtonManualLink extends Button
 
 	public GuiButtonManualLink(ManualScreen gui, int x, int y, int w, int h, @Nullable ManualLink link, String localized)
 	{
-		super(x, y, w, h, TextComponent.EMPTY, btn -> {
+		super(x, y, w, h, Component.empty(), btn -> {
 			if(link!=null)
 				link.changePage(gui, true);
 		});
@@ -66,7 +66,7 @@ public class GuiButtonManualLink extends Button
 		else
 			tooltip = "Invalid link";
 		gui.renderTooltip(transform, Language.getInstance().getVisualOrder(
-				ImmutableList.of(new TextComponent(tooltip))
+				ImmutableList.of(Component.literal(tooltip))
 		), mx+8, my+4, font);
 	}
 }

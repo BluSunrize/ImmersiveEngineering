@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -75,7 +74,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	public void init()
 	{
 		super.init();
-		distributeButton = new GuiButtonIE(leftPos+10, topPos+10, 16, 16, TextComponent.EMPTY, TEXTURE, 179, 0,
+		distributeButton = new GuiButtonIE(leftPos+10, topPos+10, 16, 16, Component.empty(), TEXTURE, 179, 0,
 				btn -> {
 					if(menu.getCarried().isEmpty())
 						autoSplitStacks();

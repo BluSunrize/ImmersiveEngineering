@@ -16,7 +16,6 @@ import com.google.common.base.Preconditions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -358,7 +357,7 @@ public class IEBlockInterfaces
 		@Override
 		default Component getDisplayName()
 		{
-			return new TextComponent("");
+			return Component.literal("");
 		}
 	}
 

@@ -13,7 +13,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class GuiButtonItem extends Button
@@ -23,7 +23,7 @@ public class GuiButtonItem extends Button
 
 	public GuiButtonItem(int x, int y, ItemStack stack, boolean state, OnPress handler)
 	{
-		super(x, y, 18, 18, TextComponent.EMPTY, handler);
+		super(x, y, 18, 18, Component.empty(), handler);
 		this.state = state;
 		this.item = stack;
 	}

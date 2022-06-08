@@ -20,7 +20,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
@@ -86,18 +85,18 @@ public class FluidInfoArea extends InfoArea
 			else
 			{
 				//TODO translation keys
-				tooltip.accept(applyFormat(new TextComponent("Fluid Registry: "+fluid.getFluid().getRegistryName()), ChatFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(new TextComponent("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)), ChatFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(new TextComponent("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)), ChatFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(new TextComponent("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)), ChatFormatting.DARK_GRAY));
-				tooltip.accept(applyFormat(new TextComponent("NBT Data: "+fluid.getTag()), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(Component.literal("Fluid Registry: "+fluid.getFluid().getRegistryName()), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(Component.literal("Density: "+fluid.getFluid().getAttributes().getDensity(fluid)), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(Component.literal("Temperature: "+fluid.getFluid().getAttributes().getTemperature(fluid)), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(Component.literal("Viscosity: "+fluid.getFluid().getAttributes().getViscosity(fluid)), ChatFormatting.DARK_GRAY));
+				tooltip.accept(applyFormat(Component.literal("NBT Data: "+fluid.getTag()), ChatFormatting.DARK_GRAY));
 			}
 		}
 
 		if(tankCapacity > 0)
-			tooltip.accept(applyFormat(new TextComponent(fluid.getAmount()+"/"+tankCapacity+"mB"), ChatFormatting.GRAY));
+			tooltip.accept(applyFormat(Component.literal(fluid.getAmount()+"/"+tankCapacity+"mB"), ChatFormatting.GRAY));
 		else if(tankCapacity==0)
-			tooltip.accept(applyFormat(new TextComponent(fluid.getAmount()+"mB"), ChatFormatting.GRAY));
+			tooltip.accept(applyFormat(Component.literal(fluid.getAmount()+"mB"), ChatFormatting.GRAY));
 		//don't display amount for tankCapacity < 0, i.e. for ghost fluid stacks
 	}
 

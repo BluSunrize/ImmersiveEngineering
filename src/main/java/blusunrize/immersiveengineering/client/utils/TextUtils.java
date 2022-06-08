@@ -3,7 +3,6 @@ package blusunrize.immersiveengineering.client.utils;
 import blusunrize.immersiveengineering.api.Lib;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.StringRepresentable;
 import net.minecraftforge.fluids.FluidStack;
@@ -33,6 +32,6 @@ public class TextUtils
 			s = fluid.getDisplayName().getString()+": "+fluid.getAmount()+"mB";
 		else
 			s = I18n.get(Lib.GUI+"empty");
-		return new TextComponent(s);
+		return Component.literal(s);
 	}
 }

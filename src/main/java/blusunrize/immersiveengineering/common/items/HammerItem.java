@@ -30,7 +30,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -192,7 +191,7 @@ public class HammerItem extends IEBaseItem
 			if(asRL==null||MultiblockHandler.getByUniqueName(asRL)==null)
 			{
 				if(player!=null&&!player.getCommandSenderWorld().isClientSide)
-					player.displayClientMessage(new TextComponent("Invalid "+prefix+" entry: "+listEntry), false);
+					player.displayClientMessage(Component.literal("Invalid "+prefix+" entry: "+listEntry), false);
 				return null;
 			}
 			result.add(asRL);

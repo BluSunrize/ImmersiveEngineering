@@ -16,7 +16,7 @@ import mcjty.theoneprobe.api.IProbeInfo;
 import mcjty.theoneprobe.api.IProbeInfoProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -49,7 +49,7 @@ public class SideConfigProvider implements IProbeInfoProvider
 			Direction side = flip?data.getSideHit().getOpposite(): data.getSideHit();
 			IOSideConfig config = configSides.getSideConfig(side);
 
-			TextComponent combined = new TextComponent("");
+			TextComponent combined = Component.literal("");
 			TranslatableComponent direction =
 					new TranslatableComponent(Lib.DESC_INFO+"blockSide."+(flip?"opposite": "facing"));
 			TranslatableComponent connection =

@@ -15,7 +15,6 @@ import it.unimi.dsi.fastutil.floats.FloatConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraftforge.client.gui.widget.ForgeSlider;
 
 import javax.annotation.Nonnull;
@@ -38,7 +37,7 @@ public class GuiSliderIE extends ForgeSlider
 
 	public GuiSliderIE(int x, int y, int width, Component prefix, int minVal, int maxVal, int value, FloatConsumer handler)
 	{
-		super(x, y, width, 8, prefix, TextComponent.EMPTY, minVal, maxVal, value, 1, 0, true);
+		super(x, y, width, 8, prefix, Component.empty(), minVal, maxVal, value, 1, 0, true);
 		this.handler = handler;
 	}
 

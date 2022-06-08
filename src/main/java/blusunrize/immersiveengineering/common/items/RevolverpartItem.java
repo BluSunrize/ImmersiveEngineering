@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -45,7 +44,7 @@ public class RevolverpartItem extends IEBaseItem
 		{
 			RevolverItem.RevolverPerk perk = RevolverItem.RevolverPerk.get(key);
 			if(perk!=null)
-				list.add(new TextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
+				list.add(Component.literal("  ").append(perk.getDisplayString(perks.getDouble(key))));
 		}
 	}
 }

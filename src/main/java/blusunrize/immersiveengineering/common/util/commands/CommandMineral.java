@@ -34,8 +34,8 @@ import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.coordinates.ColumnPosArgument;
 import net.minecraft.commands.synchronization.ArgumentTypes;
 import net.minecraft.commands.synchronization.EmptyArgumentSerializer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ColumnPos;
@@ -76,7 +76,7 @@ public class CommandMineral
 			int i = 0;
 			for(MineralMix mm : MineralMix.RECIPES.getRecipes(command.getSource().getLevel()))
 				s.append((i++) > 0?", ": "").append(mm.getId());
-			command.getSource().sendSuccess(new TextComponent(s.toString()), true);
+			command.getSource().sendSuccess(Component.literal(s.toString()), true);
 			return Command.SINGLE_SUCCESS;
 		});
 		return list;
@@ -104,7 +104,7 @@ public class CommandMineral
 	{
 		CommandSourceStack sender = context.getSource();
 		MineralWorldInfo info = ExcavatorHandler.getMineralWorldInfo(sender.getLevel(), pos);
-		TextComponent ret = new TextComponent("");
+		TextComponent ret = Component.literal("");
 		if(info==null||info.getTotalWeight()==0)
 			ret.append(new TranslatableComponent(Lib.CHAT_COMMAND+"mineral.get.none", pos.x, pos.z));
 		else
@@ -114,10 +114,10 @@ public class CommandMineral
 			{
 				MineralVein vein = pair.getFirst();
 				double percentage = pair.getSecond()/(double)info.getTotalWeight();
-				MutableComponent component = new TextComponent("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
+				MutableComponent component = Component.literal("\n "+Utils.formatDouble(percentage*100, "0.00")+"% ");
 				component.append(new TranslatableComponent(vein.getMineral(context.getSource().getLevel()).getTranslationKey()));
 				ret.append(component.withStyle(ChatFormatting.GRAY));
-				component = new TextComponent("\n  ");
+				component = Component.literal("\n  ");
 				component.append(new TranslatableComponent(Lib.CHAT_COMMAND+"mineral.get.pos",
 						vein.getPos().x, vein.getPos().z, vein.getRadius()));
 				component.append("\n  ");

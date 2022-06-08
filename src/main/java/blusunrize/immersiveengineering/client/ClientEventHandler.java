@@ -76,7 +76,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -237,7 +236,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 			{
 				event.getToolTip().add(TextUtils.applyFormat(powerpack.getHoverName(), ChatFormatting.GRAY));
 				event.getToolTip().add(TextUtils.applyFormat(
-						new TextComponent(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
+						Component.literal(EnergyHelper.getEnergyStored(powerpack)+"/"+EnergyHelper.getMaxEnergyStored(powerpack)+" IF"),
 						ChatFormatting.GRAY
 				));
 			}
@@ -256,7 +255,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					.map(TagKey::location)
 					.forEach(oid ->
 							event.getToolTip().add(TextUtils.applyFormat(
-									new TextComponent(oid.toString()),
+									Component.literal(oid.toString()),
 									ChatFormatting.GRAY
 							)));
 	}

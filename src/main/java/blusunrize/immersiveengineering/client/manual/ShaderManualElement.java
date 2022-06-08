@@ -28,9 +28,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.FormattedText;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Player;
@@ -111,7 +111,7 @@ public class ShaderManualElement extends SpecialManualElements
 			exampleItems = null;
 
 		this.name = TextUtils.applyFormat(shaderItem.getHoverName(), ChatFormatting.BOLD);
-		MutableComponent textAssembly = new TextComponent("");
+		MutableComponent textAssembly = Component.literal("");
 		textAssembly.append(TextUtils.applyFormat(new TranslatableComponent("desc.immersiveengineering.info.shader.level"), ChatFormatting.BOLD));
 		textAssembly.append(new TranslatableComponent("desc.immersiveengineering.info.shader.rarity."+shader.rarity.name().toLowerCase(Locale.US)));
 		if(unlocked)
@@ -137,7 +137,7 @@ public class ShaderManualElement extends SpecialManualElements
 			if(!IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)&&!mc().player.getAbilities().instabuild)
 				cost = ChatFormatting.RED+cost;
 			buttons.add(new GuiButtonManual(gui, x+50, y+120, 70, 12,
-					new TextComponent(I18n.get("ie.manual.entry.shaderList.order")+" "+cost+"x   ").withStyle(ChatFormatting.BOLD),
+					Component.literal(I18n.get("ie.manual.entry.shaderList.order")+" "+cost+"x   ").withStyle(ChatFormatting.BOLD),
 					btn -> {
 						if(IngredientUtils.hasPlayerIngredient(mc().player, replicationCost)||mc().player.getAbilities().instabuild)
 							ImmersiveEngineering.packetHandler.sendToServer(new MessageShaderManual(MessageType.SPAWN, shader.getName()));

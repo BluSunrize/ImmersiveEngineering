@@ -31,7 +31,6 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -76,7 +75,7 @@ public class CoresampleItem extends IEBaseItem
 			List<VeinSampleData> veins = getVeins(world, coresample);
 			if(!veins.isEmpty())
 				veins.forEach(data -> {
-					MutableComponent component = new TextComponent(
+					MutableComponent component = Component.literal(
 							Utils.formatDouble(data.getPercentageInTotalSample()*100, "0.00")+"% "
 					);
 					MineralMix mineral = data.getType();
@@ -84,13 +83,13 @@ public class CoresampleItem extends IEBaseItem
 					list.add(component.withStyle(baseColor));
 					if(showYield)
 					{
-						component = new TextComponent("  ");
+						component = Component.literal("  ");
 						component.append(new TranslatableComponent(Lib.DESC_INFO+"coresample.saturation",
 								Utils.formatDouble(data.getSaturation()*100, "0.00")
 						));
 						list.add(component.withStyle(ChatFormatting.DARK_GRAY));
 
-						component = new TextComponent("  ");
+						component = Component.literal("  ");
 						// Used to be called "yield", but apparently IntelliJ gets confused over whether we're in a
 						// switch-case or nor
 						int yield_ = ExcavatorHandler.mineralVeinYield-data.getDepletion();
@@ -112,7 +111,7 @@ public class CoresampleItem extends IEBaseItem
 				String s2 = dimension.location().getPath();
 				if(s2.toLowerCase(Locale.ENGLISH).startsWith("the_"))
 					s2 = s2.substring(4);
-				list.add(new TextComponent(Utils.toCamelCase(s2)).withStyle(baseColor));
+				list.add(Component.literal(Utils.toCamelCase(s2)).withStyle(baseColor));
 			}
 			ColumnPos pos = getCoords(coresample);
 			if(pos!=null)
@@ -126,7 +125,7 @@ public class CoresampleItem extends IEBaseItem
 					long timestamp = ItemNBTHelper.getLong(coresample, "timestamp");
 					long dist = world.getGameTime()-timestamp;
 					if(dist < 0)
-						list.add(new TextComponent("Somehow this sample is dated in the future...are you a time traveller?!").withStyle(ChatFormatting.RED));
+						list.add(Component.literal("Somehow this sample is dated in the future...are you a time traveller?!").withStyle(ChatFormatting.RED));
 					else
 						list.add(new TranslatableComponent(Lib.DESC_INFO+"coresample.timestamp", TimestampFormat.formatTimestamp(dist, TimestampFormat.DHM)).withStyle(baseColor));
 				}

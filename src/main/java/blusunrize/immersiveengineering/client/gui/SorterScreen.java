@@ -24,7 +24,6 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 
@@ -95,7 +94,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 
 		public ButtonSorter(int x, int y, int type, OnPress handler)
 		{
-			super(x, y, 18, 18, TextComponent.EMPTY, handler);
+			super(x, y, 18, 18, Component.empty(), handler);
 			this.type = type;
 		}
 
@@ -118,9 +117,9 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 			String[] split = I18n.get(Lib.DESC_INFO+"filter."+(type==0?"tag": type==1?"nbt": "damage")).split("<br>");
 			for(int i = 0; i < split.length; i++)
 				if (i == 0)
-					tooltip.add(new TextComponent(split[i]));
+					tooltip.add(Component.literal(split[i]));
 				else
-					tooltip.add(TextUtils.applyFormat(new TextComponent(split[i]), ChatFormatting.GRAY));
+					tooltip.add(TextUtils.applyFormat(Component.literal(split[i]), ChatFormatting.GRAY));
 		}
 	}
 }

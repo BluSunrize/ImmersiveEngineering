@@ -32,7 +32,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -114,7 +113,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 
 		this.outputButton = this.addRenderableWidget(new GuiButtonLogicCircuitRegister(
 				leftPos+121, topPos+56,
-				new TextComponent("Output"), btn -> this.minecraft.tell(this::updateInstruction))
+				Component.literal("Output"), btn -> this.minecraft.tell(this::updateInstruction))
 		);
 		this.updateButtons();
 	}
@@ -196,7 +195,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 					else // Add new ones
 						this.inputButtons.add(this.addRenderableWidget(new GuiButtonLogicCircuitRegister(
 								leftPos+inputStart+20*i, topPos+18,
-								new TextComponent("Input "+(i+1)), btn -> this.minecraft.tell(this::updateInstruction))
+								Component.literal("Input "+(i+1)), btn -> this.minecraft.tell(this::updateInstruction))
 						));
 				}
 			}

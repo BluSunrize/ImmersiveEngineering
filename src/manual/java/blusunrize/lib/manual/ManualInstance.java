@@ -26,7 +26,6 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.core.NonNullList;
@@ -34,11 +33,13 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.*;
+import net.minecraft.server.packs.resources.ReloadableResourceManager;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -48,6 +49,8 @@ import net.minecraftforge.resource.DelegatingResourcePack;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.*;
@@ -292,9 +295,8 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 				Player player = Minecraft.getInstance().player;
 				String error = numFailedEntries+" entries failed to load! Please report this as an issue with your log file!";
 				if(player!=null)
-					player.sendMessage(
-							new TextComponent(error).setStyle(Style.EMPTY.applyFormat(ChatFormatting.RED)),
-							Util.NIL_UUID
+					player.sendSystemMessage(
+							Component.literal(error).setStyle(Style.EMPTY.applyFormat(ChatFormatting.RED))
 					);
 				else
 					ManualLogger.LOGGER.error(error);
@@ -454,12 +456,18 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 		NavigableSet<Pair<Double, JsonObject>> autoloadSources = new TreeSet<>(Comparator.comparingDouble(Pair::getFirst));
 		for(Resource r : autoload)
 		{
-			JsonObject autoloadJson = GsonHelper.parse(new InputStreamReader(r.getInputStream()));
-			double priority = 0;
-			JsonElement priorityElement = autoloadJson.remove("autoload_priority");
-			if(priorityElement!=null)
-				priority = priorityElement.getAsDouble();
-			autoloadSources.add(Pair.of(priority, autoloadJson));
+			try(InputStream stream = r.open())
+			{
+				JsonObject autoloadJson = GsonHelper.parse(new InputStreamReader(stream));
+				double priority = 0;
+				JsonElement priorityElement = autoloadJson.remove("autoload_priority");
+				if(priorityElement!=null)
+					priority = priorityElement.getAsDouble();
+				autoloadSources.add(Pair.of(priority, autoloadJson));
+			} catch(IOException x)
+			{
+				throw new RuntimeException(x);
+			}
 		}
 		for(Pair<Double, JsonObject> p : autoloadSources.descendingSet())
 			autoloadEntriesFromJson(p.getSecond(), new ArrayList<>());
@@ -495,7 +503,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 					getActuallyAllResources(path, subResource, out);
 			}
 			else if(resources.hasResource(type, path))
-				out.add(new SimpleResource(resources.getName(), path, resources.getResource(type, path), null));
+				out.add(new Resource(resources.getName(), () -> resources.getResource(type, path)));
 		} catch(Exception e)
 		{
 			throw new RuntimeException(e);

@@ -33,8 +33,8 @@ import net.minecraft.world.item.ItemStack;
 import org.apache.commons.io.IOUtils;
 
 import javax.annotation.Nonnull;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.BufferedReader;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Supplier;
@@ -331,14 +331,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 						"manual/"+name.getPath()+".json");
 				Resource resLang = getResourceNullable(langLoc);
 				ResourceManager manager = Minecraft.getInstance().getResourceManager();
-				Resource resData;
-				try
-				{
-					resData = manager.getResource(dataLoc);
-				} catch(IOException e)
-				{
-					throw new RuntimeException(e);
-				}
+				Resource resData = manager.getResource(dataLoc).orElseThrow();
 				if(resLang==null)
 					resLang = getResourceNullable(new ResourceLocation(name.getNamespace(),
 							"manual/en_us/"+name.getPath()+".txt"));
@@ -346,11 +339,13 @@ public class ManualEntry implements Comparable<ManualEntry>
 					return new EntryData(
 							"ERROR", "This is not a good thing", "Could not find the file for "+name, ImmutableList.of()
 					);
-				try
+				try(
+						BufferedReader dataStream = resData.openAsReader();
+						InputStream langStream = resLang.open();
+				)
 				{
-					JsonObject json = GsonHelper.fromJson(GSON, new InputStreamReader(resData.getInputStream()),
-							JsonObject.class, true);
-					byte[] bytesLang = IOUtils.toByteArray(resLang.getInputStream());
+					JsonObject json = GsonHelper.fromJson(GSON, dataStream, JsonObject.class, true);
+					byte[] bytesLang = IOUtils.toByteArray(langStream);
 					String content = new String(bytesLang, StandardCharsets.UTF_8);
 					List<SpecialElementData> allSpecials = new ArrayList<>(hardcodedSpecials);
 					assert json!=null;
@@ -386,13 +381,7 @@ public class ManualEntry implements Comparable<ManualEntry>
 
 		private static Resource getResourceNullable(ResourceLocation rl)
 		{
-			try
-			{
-				return Minecraft.getInstance().getResourceManager().getResource(rl);
-			} catch(IOException e)
-			{
-				return null;
-			}
+			return Minecraft.getInstance().getResourceManager().getResource(rl).orElse(null);
 		}
 	}
 

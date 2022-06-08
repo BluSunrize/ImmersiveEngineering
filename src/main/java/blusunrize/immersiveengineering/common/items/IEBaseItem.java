@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredIt
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -84,7 +83,7 @@ public class IEBaseItem extends Item implements IColouredItem
 			@Override
 			public Component getDisplayName()
 			{
-				return new TextComponent("");
+				return Component.literal("");
 			}
 
 			@Nullable

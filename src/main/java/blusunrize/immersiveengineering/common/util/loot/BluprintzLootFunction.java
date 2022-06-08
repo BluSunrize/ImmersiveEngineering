@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.util.loot;
 
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -30,8 +30,8 @@ public class BluprintzLootFunction extends LootItemConditionalFunction
 	@Override
 	public ItemStack run(ItemStack stack, @Nonnull LootContext context)
 	{
-		stack.setHoverName(new TextComponent("Super Special BluPrintz"));
-		ItemNBTHelper.setLore(stack, new TextComponent("Congratulations!"), new TextComponent("You have found an easter egg!"));
+		stack.setHoverName(Component.literal("Super Special BluPrintz"));
+		ItemNBTHelper.setLore(stack, Component.literal("Congratulations!"), Component.literal("You have found an easter egg!"));
 		return stack;
 	}
 

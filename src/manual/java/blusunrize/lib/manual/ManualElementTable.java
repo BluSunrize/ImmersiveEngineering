@@ -14,7 +14,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.Arrays;
@@ -34,7 +33,7 @@ public class ManualElementTable extends SpecialManualElements
 	{
 		this(manual, Arrays.stream(table)
 						.map(a -> Arrays.stream(a)
-								.map(TextComponent::new)
+								.map(Component::literal)
 								.toArray(Component[]::new)
 						)
 						.toArray(Component[][]::new),

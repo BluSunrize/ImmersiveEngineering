@@ -41,7 +41,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -232,7 +231,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 		{
 			RevolverPerk perk = RevolverPerk.get(key);
 			if(perk!=null)
-				list.add(new TextComponent("  ").append(perk.getDisplayString(perks.getDouble(key))));
+				list.add(Component.literal("  ").append(perk.getDisplayString(perks.getDouble(key))));
 		}
 	}
 

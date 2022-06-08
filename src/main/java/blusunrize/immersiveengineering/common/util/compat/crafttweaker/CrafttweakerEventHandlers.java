@@ -14,7 +14,7 @@ import com.blamejared.crafttweaker.api.event.type.CTCommandRegisterEvent;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class CrafttweakerEventHandlers
@@ -25,7 +25,7 @@ public class CrafttweakerEventHandlers
 	{
 		event.registerDump(new CommandImpl(
 				"ieBlueprintCategories",
-				new TextComponent("Lists the different blueprint categories for the IE workbench"),
+				Component.literal("Lists the different blueprint categories for the IE workbench"),
 				CrafttweakerEventHandlers::buildDumpCommand
 		));
 	}
@@ -36,7 +36,7 @@ public class CrafttweakerEventHandlers
 			CraftTweakerAPI.LOGGER.info("List of all known blueprint categories: ");
 			for(String recipeCategory : BlueprintCraftingRecipe.recipeCategories)
 				CraftTweakerAPI.LOGGER.info("- {}", recipeCategory);
-			final TextComponent message = new TextComponent(ChatFormatting.GREEN+"Categories written to the log"+ChatFormatting.RESET);
+			final TextComponent message = Component.literal(ChatFormatting.GREEN+"Categories written to the log"+ChatFormatting.RESET);
 			ctx.getSource().sendSuccess(message, true);
 			return 0;
 		});
