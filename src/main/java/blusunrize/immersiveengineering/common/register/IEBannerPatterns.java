@@ -15,7 +15,6 @@ import net.minecraftforge.registries.RegistryObject;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO fill tags correctly!
 public class IEBannerPatterns
 {
 	private static final DeferredRegister<BannerPattern> REGISTER = DeferredRegister.create(
