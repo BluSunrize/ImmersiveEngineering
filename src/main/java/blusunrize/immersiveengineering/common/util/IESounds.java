@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.util;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import net.minecraft.core.Registry;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -38,6 +39,11 @@ public class IESounds
 	public static final RegistryObject<SoundEvent> dieselGenerator = registerSound("diesel_generator");
 	public static final RegistryObject<SoundEvent> direSwitch = registerSound("dire_switch");
 	public static final RegistryObject<SoundEvent> chute = registerSound("chute");
+
+	public static void init()
+	{
+		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+	}
 
 	private static RegistryObject<SoundEvent> registerSound(String name)
 	{

@@ -60,6 +60,7 @@ import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
 import blusunrize.immersiveengineering.common.util.IEDamageSources;
 import blusunrize.immersiveengineering.common.util.IEShaders;
+import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.commands.IEArgumentTypes;
 import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
@@ -140,6 +141,7 @@ public class IEContent
 		IELootFunctions.init();
 		IEArgumentTypes.init();
 		IEBannerPatterns.init();
+		IESounds.init();
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;

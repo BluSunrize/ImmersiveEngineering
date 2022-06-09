@@ -69,11 +69,6 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 			matrixStackIn.mulPose(new Quaternion(new Vector3f(0, 1, 0), spin, true));
 		}
 
-		// TODO this will cause all chunks to re-render now, we need to turn off AO somewhere else instead!
-		//  Or just move to our own dynamic model system
-		//AmbientOcclusionStatus aoStat = ClientUtils.mc().options.ambientOcclusion().get();
-		//ClientUtils.mc().options.ambientOcclusion().set(AmbientOcclusionStatus.OFF);
-
 		blockRenderer.getModelRenderer().renderModel(
 				matrixStackIn.last(), builder, state, model,
 				// Tint color
@@ -81,8 +76,6 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 				packedLightIn, OverlayTexture.NO_OVERLAY,
 				new SinglePropertyModelData<>(DYNAMIC_GROUPS, DynamicSubmodelCallbacks.getProperty())
 		);
-
-		//ClientUtils.mc().options.ambientOcclusion = aoStat;
 
 		matrixStackIn.popPose();
 	}

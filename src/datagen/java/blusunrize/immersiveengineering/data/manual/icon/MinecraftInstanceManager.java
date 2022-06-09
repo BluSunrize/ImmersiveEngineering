@@ -158,7 +158,7 @@ public class MinecraftInstanceManager
 	{
 		final GameRenderer gameRenderer = new GameRenderer(
 				Minecraft.getInstance(),
-				// TODO test!
+				// Again null isn't ideal, but seems to work for the time being
 				new ItemInHandRenderer(Minecraft.getInstance(), null, Minecraft.getInstance().getItemRenderer()),
 				resourceManager,
 				new RenderBuffers()
