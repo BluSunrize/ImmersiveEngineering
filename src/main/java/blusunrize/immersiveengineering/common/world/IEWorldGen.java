@@ -33,6 +33,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
+import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.world.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -93,15 +95,11 @@ public class IEWorldGen
 			anyRetrogenEnabled |= IEServerConfig.ORES.ores.get(config.getFirst()).retrogenEnabled.get();
 	}
 
-	/* TODO ask what this should be replaced by!
-	@SubscribeEvent
-	public void onBiomeLoad(BiomeLoadingEvent ev)
+	public static void addOresTo(BiomeGenerationSettingsBuilder generation)
 	{
-		BiomeGenerationSettingsBuilder generation = ev.getGeneration();
 		for(Entry<String, Holder<PlacedFeature>> e : features.entrySet())
 			generation.addFeature(Decoration.UNDERGROUND_ORES, e.getValue());
 	}
-	 */
 
 	private void generateOres(RandomSource random, int chunkX, int chunkZ, ServerLevel world)
 	{

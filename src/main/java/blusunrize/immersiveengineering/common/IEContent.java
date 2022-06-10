@@ -61,6 +61,7 @@ import blusunrize.immersiveengineering.common.util.fakeworld.TemplateWorld;
 import blusunrize.immersiveengineering.common.util.loot.GrassDrops;
 import blusunrize.immersiveengineering.common.util.loot.IELootFunctions;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
+import blusunrize.immersiveengineering.common.world.IEBiomeModifier;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import blusunrize.immersiveengineering.common.world.Villages;
 import blusunrize.immersiveengineering.mixin.accessors.ConcretePowderBlockAccess;
@@ -128,14 +129,15 @@ public class IEContent
 		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEContainerTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEStats.modConstruction();
-		IEBlocks.init();
 		IEItems.init();
-		IERecipeTypes.init();
+		IESounds.init();
+		IEBlocks.init();
 		GrassDrops.init();
+		IERecipeTypes.init();
+		IEBiomeModifier.init();
 		IELootFunctions.init();
 		IEArgumentTypes.init();
 		IEBannerPatterns.init();
-		IESounds.init();
 
 		BulletHandler.emptyCasing = Ingredients.EMPTY_CASING;
 		BulletHandler.emptyShell = Ingredients.EMPTY_SHELL;
@@ -165,10 +167,10 @@ public class IEContent
 		IEItems.Misc.registerShaderBags();
 	}
 
-	public static void init(ParallelDispatchEvent ev)
+	public static void commonSetup(ParallelDispatchEvent ev)
 	{
 		IEWireTypes.setup();
-		IEStats.modConstruction();
+		IEStats.setup();
 		/*WORLDGEN*/
 		ev.enqueueWork(
 				() -> {
