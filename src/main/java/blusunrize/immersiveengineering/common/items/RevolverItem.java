@@ -378,7 +378,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 								Utils.attractEnemies(player, 64*noise);
 								SoundEvent sound = bullet.getSound();
 								if(sound==null)
-									sound = IESounds.revolverFire;
+									sound = IESounds.revolverFire.get();
 								world.playSound(null, player.getX(), player.getY(), player.getZ(), sound, SoundSource.PLAYERS, noise, 1f);
 							}
 							else

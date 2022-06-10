@@ -13,6 +13,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -21,35 +22,31 @@ public class IESounds
 	private static final DeferredRegister<SoundEvent> REGISTER = DeferredRegister.create(
 			Registry.SOUND_EVENT_REGISTRY, MODID
 	);
-	public static final SoundEvent metalpress_piston = registerSound("metal_press_piston");
-	public static final SoundEvent metalpress_smash = registerSound("metal_press_smash");
-	public static final SoundEvent birthdayParty = registerSound("birthday_party");
-	public static final SoundEvent revolverFire = registerSound("revolver_fire");
-	public static final SoundEvent revolverFireThump = registerSound("revolver_fire_thump");
-	public static final SoundEvent revolverReload = registerSound("revolver_reload");
-	public static final SoundEvent spray = registerSound("spray");
-	public static final SoundEvent sprayFire = registerSound("spray_fire");
-	public static final SoundEvent chargeFast = registerSound("charge_fast");
-	public static final SoundEvent chargeSlow = registerSound("charge_slow");
-	public static final SoundEvent spark = registerSound("spark");
-	public static final SoundEvent railgunFire = registerSound("railgun_fire");
-	public static final SoundEvent tesla = registerSound("tesla");
-	public static final SoundEvent crusher = registerSound("crusher");
-	public static final SoundEvent dieselGenerator = registerSound("diesel_generator");
-	public static final SoundEvent direSwitch = registerSound("dire_switch");
-	public static final SoundEvent chute = registerSound("chute");
+	public static final RegistryObject<SoundEvent> metalpress_piston = registerSound("metal_press_piston");
+	public static final RegistryObject<SoundEvent> metalpress_smash = registerSound("metal_press_smash");
+	public static final RegistryObject<SoundEvent> birthdayParty = registerSound("birthday_party");
+	public static final RegistryObject<SoundEvent> revolverFire = registerSound("revolver_fire");
+	public static final RegistryObject<SoundEvent> revolverFireThump = registerSound("revolver_fire_thump");
+	public static final RegistryObject<SoundEvent> revolverReload = registerSound("revolver_reload");
+	public static final RegistryObject<SoundEvent> spray = registerSound("spray");
+	public static final RegistryObject<SoundEvent> sprayFire = registerSound("spray_fire");
+	public static final RegistryObject<SoundEvent> chargeFast = registerSound("charge_fast");
+	public static final RegistryObject<SoundEvent> chargeSlow = registerSound("charge_slow");
+	public static final RegistryObject<SoundEvent> spark = registerSound("spark");
+	public static final RegistryObject<SoundEvent> railgunFire = registerSound("railgun_fire");
+	public static final RegistryObject<SoundEvent> tesla = registerSound("tesla");
+	public static final RegistryObject<SoundEvent> crusher = registerSound("crusher");
+	public static final RegistryObject<SoundEvent> dieselGenerator = registerSound("diesel_generator");
+	public static final RegistryObject<SoundEvent> direSwitch = registerSound("dire_switch");
+	public static final RegistryObject<SoundEvent> chute = registerSound("chute");
 
 	public static void init()
 	{
 		REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 	}
 
-	private static SoundEvent registerSound(String name)
+	private static RegistryObject<SoundEvent> registerSound(String name)
 	{
-		// This is not the intended way of using deferred registers, but the constructor of SoundEvent doesn't actually
-		// do anything interesting, and we need the instances to be available when registering villager professions
-		SoundEvent event = new SoundEvent(ImmersiveEngineering.rl(name));
-		REGISTER.register(name, () -> event);
-		return event;
+		return REGISTER.register(name, () -> new SoundEvent(ImmersiveEngineering.rl(name)));
 	}
 }

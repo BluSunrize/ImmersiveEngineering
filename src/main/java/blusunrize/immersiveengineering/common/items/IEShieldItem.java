@@ -210,7 +210,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			if(b)
 			{
 				getUpgrades(stack).putInt("shock_cooldown", 40);
-				player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark,
+				player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark.get(),
 						SoundSource.BLOCKS, 2.5F, 0.5F+ApiUtils.RANDOM.nextFloat());
 			}
 		}

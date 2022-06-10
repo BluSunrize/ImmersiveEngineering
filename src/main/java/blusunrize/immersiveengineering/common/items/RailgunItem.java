@@ -189,7 +189,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		if(energy.extractEnergy(consumption, true)==consumption&&!findAmmo(stack, player).isEmpty())
 		{
 			player.startUsingItem(hand);
-			player.level.playSound(null, player.getX(), player.getY(), player.getZ(), getChargeTime(stack) <= 20?IESounds.chargeFast: IESounds.chargeSlow, SoundSource.PLAYERS, 1.5f, 1f);
+			player.level.playSound(null, player.getX(), player.getY(), player.getZ(), getChargeTime(stack) <= 20?IESounds.chargeFast.get(): IESounds.chargeSlow.get(), SoundSource.PLAYERS, 1.5f, 1f);
 			return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
 		}
 		return new InteractionResultHolder<>(InteractionResult.PASS, stack);
@@ -201,7 +201,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		int inUse = this.getUseDuration(stack)-count;
 		if(inUse > getChargeTime(stack)&&inUse%20==user.getRandom().nextInt(20))
 		{
-			user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark, SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
+			user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.spark.get(), SoundSource.PLAYERS, .8f+(.2f*user.getRandom().nextFloat()), .5f+(.5f*user.getRandom().nextFloat()));
 			ShaderAndCase shader = ShaderRegistry.getStoredShaderAndCase(stack);
 			if(shader!=null)
 			{
@@ -235,7 +235,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 					float speed = 20;
 					Entity shot = new RailgunShotEntity(user.level, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
 					shot = projectileProperties.getProjectile((Player)user, ammoConsumed, shot);
-					user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire, SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
+					user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire.get(), SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
 					energy.extractEnergy(consumption, false);
 					if(!world.isClientSide)
 						user.level.addFreshEntity(shot);

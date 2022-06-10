@@ -179,13 +179,13 @@ public class Villages
 				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_ANVIL, SoundEvents.VILLAGER_WORK_TOOLSMITH)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
-				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_CIRCUITTABLE, IESounds.spark)
+				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_CIRCUITTABLE, IESounds.spark.get())
 		);
 		public static final RegistryObject<VillagerProfession> PROF_OUTFITTER = PROFESSIONS.register(
 				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_BANNER, SoundEvents.VILLAGER_WORK_CARTOGRAPHER)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_GUNSMITH = PROFESSIONS.register(
-				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH, IESounds.revolverReload)
+				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH, IESounds.revolverReload.get())
 		);
 
 		private static PoiType createPOI(Collection<BlockState> block)

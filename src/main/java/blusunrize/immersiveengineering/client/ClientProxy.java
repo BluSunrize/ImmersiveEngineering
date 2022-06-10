@@ -261,7 +261,9 @@ public class ClientProxy extends CommonProxy
 	private final Map<BlockPos, IEBlockEntitySound> tileSoundMap = new HashMap<>();
 
 	@Override
-	public void handleTileSound(SoundEvent soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch)
+	public void handleTileSound(
+			Supplier<SoundEvent> soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch
+	)
 	{
 		BlockPos pos = tile.getBlockPos();
 		IEBlockEntitySound sound = tileSoundMap.get(pos);
@@ -269,7 +271,7 @@ public class ClientProxy extends CommonProxy
 		{
 			if(tile instanceof ISoundBE&&mc().player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ()) > ((ISoundBE)tile).getSoundRadiusSq())
 				return;
-			sound = ClientUtils.generatePositionedIESound(soundEvent, volume, pitch, true, 0, pos);
+			sound = ClientUtils.generatePositionedIESound(soundEvent.get(), volume, pitch, true, 0, pos);
 			tileSoundMap.put(pos, sound);
 		}
 		else if(sound!=null&&(sound.donePlaying||!tileActive))
