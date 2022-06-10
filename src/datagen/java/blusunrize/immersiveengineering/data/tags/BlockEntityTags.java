@@ -7,7 +7,7 @@
  *
  */
 
-package blusunrize.immersiveengineering.data;
+package blusunrize.immersiveengineering.data.tags;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.IImmersiveConnectable;

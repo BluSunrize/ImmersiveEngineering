@@ -34,8 +34,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.function.Supplier;
-
 public class CommonProxy
 {
 	public void onWorldLoad()
@@ -46,7 +44,7 @@ public class CommonProxy
 	{
 	}
 
-	public void handleTileSound(Supplier<SoundEvent> soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch)
+	public void handleTileSound(SoundEvent soundEvent, BlockEntity tile, boolean tileActive, float volume, float pitch)
 	{
 	}
 

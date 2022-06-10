@@ -125,7 +125,7 @@ public class BulletItem extends IEBaseItem
 			@Override
 			public SoundEvent getSound()
 			{
-				return IESounds.revolverFireThump.get();
+				return IESounds.revolverFireThump;
 			}
 		});
 
@@ -419,7 +419,7 @@ public class BulletItem extends IEBaseItem
 		@Override
 		public SoundEvent getSound()
 		{
-			return IESounds.revolverFireThump.get();
+			return IESounds.revolverFireThump;
 		}
 
 		@Override

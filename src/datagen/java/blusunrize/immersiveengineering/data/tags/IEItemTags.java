@@ -6,7 +6,7 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.data;
+package blusunrize.immersiveengineering.data.tags;
 
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
@@ -30,7 +30,7 @@ import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
-class IEItemTags extends ItemTagsProvider
+public class IEItemTags extends ItemTagsProvider
 {
 
 	public IEItemTags(DataGenerator gen, BlockTagsProvider blocks, ExistingFileHelper existingFileHelper)

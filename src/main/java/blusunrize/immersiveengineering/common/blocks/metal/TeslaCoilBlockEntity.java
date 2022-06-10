@@ -294,7 +294,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				}
 
 				addAnimation(new LightningAnimation(coilPos, (LivingEntity)target));
-				level.playLocalSound(coilPos.x, coilPos.y, coilPos.z, IESounds.tesla.get(), SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
+				level.playLocalSound(coilPos.x, coilPos.y, coilPos.z, IESounds.tesla, SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
 			}
 		}
 		else if(message.contains("tL", Tag.TAG_DOUBLE))
@@ -342,7 +342,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 		coilPos = coilPos.add(f.getStepX()*dShift, f.getStepY()*dShift, f.getStepZ()*dShift);
 		addAnimation(new LightningAnimation(coilPos, Vec3.atLowerCornerOf(getBlockPos()).add(tx, ty, tz)));
 //		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
-		level.playLocalSound(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), IESounds.tesla.get(), SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
+		level.playLocalSound(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), IESounds.tesla, SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
 	}
 
 	private void addAnimation(LightningAnimation ani)

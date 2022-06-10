@@ -83,7 +83,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
@@ -174,19 +173,19 @@ public class Villages
 		);
 
 		public static final RegistryObject<VillagerProfession> PROF_ENGINEER = PROFESSIONS.register(
-				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_CRAFTINGTABLE.get(), SoundEvents.VILLAGER_WORK_MASON)
+				ENGINEER.getPath(), () -> createProf(ENGINEER, POI_CRAFTINGTABLE, SoundEvents.VILLAGER_WORK_MASON)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_MACHINIST = PROFESSIONS.register(
-				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_ANVIL.get(), SoundEvents.VILLAGER_WORK_TOOLSMITH)
+				MACHINIST.getPath(), () -> createProf(MACHINIST, POI_ANVIL, SoundEvents.VILLAGER_WORK_TOOLSMITH)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_ELECTRICIAN = PROFESSIONS.register(
-				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_CIRCUITTABLE.get(), IESounds.spark)
+				ELECTRICIAN.getPath(), () -> createProf(ELECTRICIAN, POI_CIRCUITTABLE, IESounds.spark)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_OUTFITTER = PROFESSIONS.register(
-				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_BANNER.get(), SoundEvents.VILLAGER_WORK_CARTOGRAPHER)
+				OUTFITTER.getPath(), () -> createProf(OUTFITTER, POI_BANNER, SoundEvents.VILLAGER_WORK_CARTOGRAPHER)
 		);
 		public static final RegistryObject<VillagerProfession> PROF_GUNSMITH = PROFESSIONS.register(
-				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH.get(), IESounds.revolverReload)
+				GUNSMITH.getPath(), () -> createProf(GUNSMITH, POI_WORKBENCH, IESounds.revolverReload)
 		);
 
 		private static PoiType createPOI(Collection<BlockState> block)
@@ -194,22 +193,18 @@ public class Villages
 			return new PoiType(ImmutableSet.copyOf(block), 1, 1);
 		}
 
-		private static VillagerProfession createProf(ResourceLocation name, PoiType poi, SoundEvent sound)
+		private static VillagerProfession createProf(
+				ResourceLocation name, RegistryObject<PoiType> poi, SoundEvent sound
+		)
 		{
-			return createProf(name, poi, () -> sound);
-		}
-
-		private static VillagerProfession createProf(ResourceLocation name, PoiType poi, Supplier<SoundEvent> sound)
-		{
-			// TODO fix sounds! May need to move something away from DefReg for that, or have a word with Forge
+			ResourceKey<PoiType> poiName = Objects.requireNonNull(poi.getKey());
 			return new VillagerProfession(
 					name.toString(),
-					// TODO is this correct?
-					holder -> holder.value()==poi,
-					holder -> holder.value()==poi,
+					holder -> holder.is(poiName),
+					holder -> holder.is(poiName),
 					ImmutableSet.of(),
 					ImmutableSet.of(),
-					null
+					sound
 			);
 		}
 

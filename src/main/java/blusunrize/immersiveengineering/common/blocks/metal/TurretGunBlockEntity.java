@@ -144,7 +144,7 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 					}
 					SoundEvent sound = bullet.getSound();
 					if(sound==null)
-						sound = IESounds.revolverFire.get();
+						sound = IESounds.revolverFire;
 					level.playSound(null, getBlockPos(), sound, SoundSource.BLOCKS, 1, 1);
 				}
 			}

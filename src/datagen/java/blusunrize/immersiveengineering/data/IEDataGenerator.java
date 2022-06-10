@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.data.blockstates.ConnectorBlockStates;
 import blusunrize.immersiveengineering.data.blockstates.MultiblockStates;
 import blusunrize.immersiveengineering.data.loot.AllLoot;
 import blusunrize.immersiveengineering.data.manual.ManualDataGenerator;
+import blusunrize.immersiveengineering.data.tags.*;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
@@ -41,6 +42,7 @@ public class IEDataGenerator
 			gen.addProvider(true, new FluidTags(gen, exHelper));
 			gen.addProvider(true, new BlockEntityTags(gen, exHelper));
 			gen.addProvider(true, new BannerTags(gen, exHelper));
+			gen.addProvider(true, new PoiTags(gen, exHelper));
 			gen.addProvider(true, new Recipes(gen));
 			gen.addProvider(true, new AllLoot(gen));
 			gen.addProvider(true, new BlockStates(gen, exHelper));
