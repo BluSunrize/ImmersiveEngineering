@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "B": {
+      "item": "immersiveengineering:metal_barrel"
+    },
+    "C": {
+      "item": "minecraft:minecart"
+    }
+  },
+  "pattern": [
+    "B",
+    "C"
+  ],
+  "result": {
+    "item": "immersiveengineering:minecart_metalbarrel"
+  }
+}
