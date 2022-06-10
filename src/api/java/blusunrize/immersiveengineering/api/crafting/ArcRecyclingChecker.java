@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.api.crafting;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.utils.TagUtils;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -33,11 +34,15 @@ public class ArcRecyclingChecker
 	{
 		RECYCLING_ALLOWED_ENUMERATED.stream()
 				.flatMap(f -> f.apply(tags))
+				// filter out blacklisted
+				.filter((Item item) -> !item.builtInRegistryHolder().is(IETags.recyclingBlacklist))
 				.forEach(i -> knownItemValidity.put(i, true));
 	}
 
 	public boolean isAllowed(RegistryAccess tags, ItemStack stack)
 	{
+		if(stack.is(IETags.recyclingBlacklist))
+			return false;
 		if(knownItemValidity.computeIfAbsent(
 				stack.getItem(), (Item i) -> RECYCLING_ALLOWED.stream().anyMatch(p -> p.test(tags, i))
 		))

@@ -90,6 +90,8 @@ public class BlockLoot implements Consumer<BiConsumer<ResourceLocation, LootTabl
 		);
 		register(WoodenDevices.CRATE, LootPool.lootPool().add(tileOrInv));
 		register(WoodenDevices.REINFORCED_CRATE, tileDrop());
+		register(WoodenDevices.SORTER, tileDrop());
+		register(WoodenDevices.FLUID_SORTER, tileDrop());
 		register(StoneDecoration.CORESAMPLE, tileDrop());
 		register(MetalDevices.TOOLBOX, tileDrop());
 		register(Cloth.SHADER_BANNER, tileDrop());

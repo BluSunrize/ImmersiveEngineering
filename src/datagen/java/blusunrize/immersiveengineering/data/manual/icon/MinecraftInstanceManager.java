@@ -15,11 +15,13 @@ import net.minecraft.client.Options;
 import net.minecraft.client.Timer;
 import net.minecraft.client.color.block.BlockColors;
 import net.minecraft.client.color.item.ItemColors;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.RenderBuffers;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.data.DataGenerator;
@@ -55,8 +57,6 @@ public class MinecraftInstanceManager
 			return;
 
 		isInitialized = true;
-		// Should probably pass non-null things here, but it seems to work for the moment
-		BlockEntityWithoutLevelRenderer beNoLevelRenderer = new BlockEntityWithoutLevelRenderer(null, null);
 
 		createMinecraft();
 		initializeTimer();
@@ -69,8 +69,8 @@ public class MinecraftInstanceManager
 		initializeBlockColors();
 		initializeItemColors();
 		initializeModelManager();
-		initializeItemRenderer(beNoLevelRenderer);
-		initializeBlockRenderDispatcher(beNoLevelRenderer);
+		initializeItemRenderer();
+		initializeBlockRenderDispatcher();
 		initializeGameRenderer(resourceManager);
 		initializeDataFixer();
 		initializeGameSettings();
@@ -133,8 +133,19 @@ public class MinecraftInstanceManager
 		setMCField("modelManager", modelManager);
 	}
 
-	private void initializeItemRenderer(BlockEntityWithoutLevelRenderer beNoLevelRenderer)
+	private void initializeItemRenderer()
 	{
+		// Should probably pass non-null things here, but it seems to work for the moment
+		// The various onResourceManagerReload do not use the parameter, but are required to initialize more fields in
+		// these objects
+		EntityModelSet entityModelSet = new EntityModelSet();
+		entityModelSet.onResourceManagerReload(null);
+		BlockEntityRenderDispatcher dispatcher = new BlockEntityRenderDispatcher(
+				null, entityModelSet, () -> Minecraft.getInstance().getBlockRenderer()
+		);
+		dispatcher.onResourceManagerReload(null);
+		BlockEntityWithoutLevelRenderer beNoLevelRenderer = new BlockEntityWithoutLevelRenderer(dispatcher, entityModelSet);
+		beNoLevelRenderer.onResourceManagerReload(null);
 		final ItemRenderer itemRenderer = new ItemRenderer(
 				Minecraft.getInstance().getTextureManager(),
 				Minecraft.getInstance().getModelManager(),
@@ -144,11 +155,11 @@ public class MinecraftInstanceManager
 		setMCField("itemRenderer", itemRenderer);
 	}
 
-	private void initializeBlockRenderDispatcher(BlockEntityWithoutLevelRenderer beNoLevelRenderer)
+	private void initializeBlockRenderDispatcher()
 	{
 		final BlockRenderDispatcher blockRendererDispatcher = new BlockRenderDispatcher(
 				Minecraft.getInstance().getModelManager().getBlockModelShaper(),
-				beNoLevelRenderer,
+				Minecraft.getInstance().getItemRenderer().getBlockEntityRenderer(),
 				Minecraft.getInstance().getBlockColors()
 		);
 		setMCField("blockRenderer", blockRendererDispatcher);

@@ -1,4 +1,4 @@
-// 1.19	2022-06-10T12:05:24.833523835	Tags for minecraft:item
+// 1.19	2022-06-10T12:22:51.816813482	Tags for minecraft:item
 0ec28c858b1b91c5bff32d09a6c333dd450fa2da data/curios/tags/items/back.json
 929bbfcc2e578a06d498a3ac24c23dfc1e69677c data/curios/tags/items/head.json
 f470b0889459fb2d48176e69995c70ce18aa66ea data/forge/tags/items/charcoal.json
@@ -72,6 +72,7 @@ b60ddad4fd1c2aab06f2e15a6e8ce5be8a5669a0 data/forge/tags/items/plates/uranium.js
 3efccf09a12189c530c82f4e76cca82a7296cd5d data/forge/tags/items/raw_materials/nickel.json
 8a57d117bff85a12b6b28f0e3fcf6f5f81acf40c data/forge/tags/items/raw_materials/silver.json
 94661462a27f2d0810c12498d65fe5798243eb64 data/forge/tags/items/raw_materials/uranium.json
+760547229cd962c162d51cb04c941ef73537db0b data/forge/tags/items/recycling/ignored_components.json
 ada6a87147f3701010a02139808a5705aaa5b4a4 data/forge/tags/items/rods/all_metal.json
 0386cca1fc75d8a29b17bb25b05b6e9f73ff0270 data/forge/tags/items/rods/aluminum.json
 544689d2afab25e854136be08f9a6537997f514b data/forge/tags/items/rods/iron.json
@@ -136,4 +137,5 @@ e5c3944c2ae80d9e04025f18f44f3f7f45e17818 data/immersiveengineering/tags/items/to
 72757ad4db4fa6ebbe78f75376dd9544720b1c61 data/immersiveengineering/tags/items/tools/screwdrivers.json
 abd64977cb7f9a82733f5a615230b150179a2123 data/immersiveengineering/tags/items/tools/wirecutters.json
 36a0820ce40f524e68f52c0d229df56ef7c8cb4a data/minecraft/tags/items/cluster_max_harvestables.json
+721903046c1e90c28d2fede7814f04994baaf913 data/minecraft/tags/items/coals.json
 ca80813f3c36ca4d7cd3b091a242dffa5652499d data/minecraft/tags/items/lectern_books.json

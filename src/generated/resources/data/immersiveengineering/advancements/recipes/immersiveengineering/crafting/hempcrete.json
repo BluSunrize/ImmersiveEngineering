@@ -1,13 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_hempcrete": {
+    "has_item": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:hempcrete"
-            ]
+            "tag": "forge:fiber_hemp"
           }
         ]
       },
@@ -22,7 +20,7 @@
   },
   "requirements": [
     [
-      "has_hempcrete",
+      "has_item",
       "has_the_recipe"
     ]
   ],

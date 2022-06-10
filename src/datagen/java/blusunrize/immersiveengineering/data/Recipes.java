@@ -48,6 +48,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
+import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
@@ -493,7 +494,7 @@ public class Recipes extends RecipeProvider
 
 		BlueprintCraftingRecipeBuilder.builder("electrode", Misc.GRAPHITE_ELECTRODE)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
-				.build(out, toRL("blueprint/electrode"));
+				.build(out, toRL("blueprint/graphite_electrode"));
 
 		BlueprintCraftingRecipeBuilder.builder("bannerpatterns", IEBannerPatterns.HAMMER.item())
 				.addInput(Items.PAPER)
@@ -1198,17 +1199,17 @@ public class Recipes extends RecipeProvider
 				makeIngredient(IETags.clay),
 				makeIngredient(Tags.Items.INGOTS_BRICK),
 				makeIngredient(Tags.Items.SANDSTONE),
-				out);
+				has(IETags.clay), out);
 		addCornerStraightMiddle(StoneDecoration.BLASTBRICK, 3,
 				makeIngredient(Tags.Items.INGOTS_NETHER_BRICK),
 				makeIngredient(Tags.Items.INGOTS_BRICK),
 				makeIngredient(Blocks.MAGMA_BLOCK),
-				out);
+				has(Tags.Items.INGOTS_BRICK), out);
 		addSandwich(StoneDecoration.HEMPCRETE, 6,
 				makeIngredient(IETags.clay),
 				makeIngredient(IETags.fiberHemp),
 				makeIngredient(IETags.clay),
-				out);
+				has(IETags.fiberHemp), out);
 		add3x3Conversion(StoneDecoration.COKE, IEItems.Ingredients.COAL_COKE, IETags.coalCoke, out);
 
 		addStairs(StoneDecoration.HEMPCRETE, out);
@@ -2894,11 +2895,13 @@ public class Recipes extends RecipeProvider
 		addCornerStraightMiddle(Misc.WIRE_COILS.get(WireType.COPPER_INSULATED), 4,
 				makeIngredient(IETags.fabricHemp),
 				makeIngredient(Misc.WIRE_COILS.get(WireType.COPPER)),
-				makeIngredient(IETags.fabricHemp), out);
+				makeIngredient(IETags.fabricHemp),
+				has(Misc.WIRE_COILS.get(WireType.COPPER)), out);
 		addCornerStraightMiddle(Misc.WIRE_COILS.get(WireType.ELECTRUM_INSULATED), 4,
 				makeIngredient(IETags.fabricHemp),
 				makeIngredient(Misc.WIRE_COILS.get(WireType.ELECTRUM)),
-				makeIngredient(IETags.fabricHemp), out);
+				makeIngredient(IETags.fabricHemp),
+				has(Misc.WIRE_COILS.get(WireType.ELECTRUM)), out);
 		ItemLike wireCoilRedstone = Misc.WIRE_COILS.get(WireType.REDSTONE);
 		TurnAndCopyRecipeBuilder.builder(wireCoilRedstone, 4)
 				.allowQuarterTurn()
@@ -3112,7 +3115,8 @@ public class Recipes extends RecipeProvider
 	 * @param middle the item in the middle
 	 */
 	@ParametersAreNonnullByDefault
-	private void addCornerStraightMiddle(ItemLike output, int count, Ingredient corner, Ingredient side, Ingredient middle, Consumer<FinishedRecipe> out)
+	private void addCornerStraightMiddle(ItemLike output, int count, Ingredient corner, Ingredient side, Ingredient middle,
+										 CriterionTriggerInstance condition, Consumer<FinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shaped(output, count)
 				.define('c', corner)
@@ -3121,7 +3125,7 @@ public class Recipes extends RecipeProvider
 				.pattern("csc")
 				.pattern("sms")
 				.pattern("csc")
-				.unlockedBy("has_"+toPath(output), has(output))
+				.unlockedBy("has_item", condition)
 				.save(out, toRL(toPath(output)));
 	}
 
@@ -3134,7 +3138,8 @@ public class Recipes extends RecipeProvider
 	 * @param bottom the item on the bottom
 	 */
 	@ParametersAreNonnullByDefault
-	private void addSandwich(ItemLike output, int count, Ingredient top, Ingredient middle, Ingredient bottom, Consumer<FinishedRecipe> out)
+	private void addSandwich(ItemLike output, int count, Ingredient top, Ingredient middle, Ingredient bottom,
+							 CriterionTriggerInstance condition, Consumer<FinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shaped(output, count)
 				.define('t', top)
@@ -3143,7 +3148,7 @@ public class Recipes extends RecipeProvider
 				.pattern("ttt")
 				.pattern("mmm")
 				.pattern("bbb")
-				.unlockedBy("has_"+toPath(output), has(output))
+				.unlockedBy("has_item", condition)
 				.save(out, toRL(toPath(output)));
 	}
 

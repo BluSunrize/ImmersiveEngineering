@@ -44,7 +44,7 @@ public class LazyShapelessRecipe extends ShapelessRecipe
 	@Override
 	public ItemStack assemble(@Nonnull CraftingContainer p_44260_)
 	{
-		return result.get();
+		return result.get().copy();
 	}
 
 	@Nonnull

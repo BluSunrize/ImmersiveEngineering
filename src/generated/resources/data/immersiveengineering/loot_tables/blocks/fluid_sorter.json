@@ -10,8 +10,7 @@
       ],
       "entries": [
         {
-          "type": "minecraft:item",
-          "name": "immersiveengineering:fluid_sorter"
+          "type": "immersiveengineering:tile_drop"
         }
       ],
       "rolls": 1.0

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.data.manual.icon;
 
+import blusunrize.immersiveengineering.client.utils.DummyVertexBuilder;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.platform.Lighting;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -17,7 +18,10 @@ import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderBuffers;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
@@ -45,6 +49,7 @@ public class ModelRenderer implements AutoCloseable
     private final int depthBuffer;
     private final File outputDirectory;
     private final ItemRenderer itemRenderer;
+    private final RenderBuffers RENDER_BUFFERS = new RenderBuffers();
 
     public ModelRenderer(int width, int height, final File outputDirectory)
     {
@@ -114,9 +119,23 @@ public class ModelRenderer implements AutoCloseable
         else
             Lighting.setupForFlatItems();
         BufferBuilder builder = Tesselator.getInstance().getBuilder();
-        MultiBufferSource.BufferSource bufferSources = MultiBufferSource.immediate(builder);
+        MultiBufferSource.BufferSource bufferSources = RENDER_BUFFERS.bufferSource();
+        // Do not render foil/enchantment glint: This depends on the current time, and we do not want the output to vary
+        // randomly. Additionally, glint isn't really visible in the output anyway, I assume this is technically a bug.
+        MultiBufferSource noFoilSource = type -> {
+            if(type==RenderType.glintDirect())
+                return new DummyVertexBuilder();
+            else
+                return bufferSources.getBuffer(type);
+        };
 
-        itemRenderer.render(stack, ItemTransforms.TransformType.GUI, false, new PoseStack(), bufferSources, 15728880, OverlayTexture.NO_OVERLAY, model);
+        itemRenderer.render(
+                stack,
+                ItemTransforms.TransformType.GUI, false, new PoseStack(),
+                noFoilSource,
+                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+                model
+        );
 
         bufferSources.endBatch();
         if(builder.building())

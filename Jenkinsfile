@@ -1,6 +1,9 @@
 #!/usr/bin/env groovy
 
 pipeline {
+    options {
+        buildDiscarder(logRotator(artifactNumToKeepStr: '10'))
+    }
     agent any
     tools {
         jdk "jdk-17.0.1"

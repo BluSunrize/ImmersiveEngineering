@@ -14,7 +14,7 @@
     "type": "blueprint",
     "recipes": [
       {
-        "item": "immersiveengineering:electrode"
+        "item": "immersiveengineering:graphite_electrode"
       }
     ]
   }

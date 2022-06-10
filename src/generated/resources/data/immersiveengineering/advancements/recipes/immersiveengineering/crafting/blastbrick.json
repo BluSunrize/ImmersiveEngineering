@@ -1,13 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_blastbrick": {
+    "has_item": {
       "conditions": {
         "items": [
           {
-            "items": [
-              "immersiveengineering:blastbrick"
-            ]
+            "tag": "forge:ingots/brick"
           }
         ]
       },
@@ -22,7 +20,7 @@
   },
   "requirements": [
     [
-      "has_blastbrick",
+      "has_item",
       "has_the_recipe"
     ]
   ],

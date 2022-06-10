@@ -22,6 +22,10 @@ import net.minecraft.util.Unit;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -29,6 +33,10 @@ import java.util.stream.Collectors;
 
 public class ManualDataGenerator
 {
+    private static final String README_CONTENTS = "Minecraft's item icons (as found in `icons/minecraft` are used in"+
+        "accordance with Mojang's [Asset Usage Guidelines]"+
+        "(https://www.minecraft.net/en-us/terms#terms-brand_guidelines)\n";
+
 	public static void addProviders(DataGenerator gen, ExistingFileHelper exHelper)
 	{
 		String outputTo = System.getenv("ie_manual_datagen_path");
@@ -37,8 +45,21 @@ public class ManualDataGenerator
 			IELogger.logger.info("Skipping manual exports since the output directory is not set");
 			return;
 		}
-		gen.addProvider(true, new RenderedItemModelDataProvider(gen, exHelper, Path.of(outputTo, "icons")));
-		gen.addProvider(true, new TagExports(gen, exHelper, Path.of(outputTo, "tags")));
+		try
+		{
+			Path mainOutput = Path.of(outputTo);
+			Files.createDirectories(mainOutput);
+			Path readme = mainOutput.resolve("README.md");
+			try(BufferedWriter readmeWriter = Files.newBufferedWriter(readme, StandardCharsets.UTF_8))
+			{
+				readmeWriter.write(README_CONTENTS, 0, README_CONTENTS.length());
+			}
+			gen.addProvider(true, new RenderedItemModelDataProvider(gen, exHelper, mainOutput.resolve("icons")));
+			gen.addProvider(true, new TagExports(gen, exHelper, mainOutput.resolve("tags")));
+		} catch(IOException xcp)
+		{
+			throw new RuntimeException(xcp);
+		}
 	}
 
 

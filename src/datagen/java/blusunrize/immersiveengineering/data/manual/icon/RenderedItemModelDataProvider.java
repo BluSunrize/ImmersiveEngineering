@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.data.manual.icon;
 
-import blusunrize.immersiveengineering.common.register.IEItems;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
@@ -20,11 +20,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Path;
+import java.util.Set;
 
 public record RenderedItemModelDataProvider(
         DataGenerator generator, ExistingFileHelper helper, Path itemOutputDirectory
@@ -47,8 +49,12 @@ public record RenderedItemModelDataProvider(
         }
         try(ModelRenderer itemRenderer = new ModelRenderer(256, 256, itemOutputDirectory.toFile()))
         {
-            IEItems.REGISTER.getEntries().forEach(regEntry -> {
-                Item item = regEntry.get();
+            Set<String> domainsToRender = Set.of("minecraft", Lib.MODID);
+            ForgeRegistries.ITEMS.getEntries().forEach(entry -> {
+                ResourceLocation name = entry.getKey().location();
+                if (!domainsToRender.contains(name.getNamespace()))
+                    return;
+                Item item = entry.getValue();
                 item.initializeClient(properties -> {
                     try
                     {
@@ -58,11 +64,11 @@ public record RenderedItemModelDataProvider(
                         throw new RuntimeException(e);
                     }
                 });
-                ResourceLocation name = regEntry.getId();
                 ModelResourceLocation modelLocation = new ModelResourceLocation(name, "inventory");
+                ItemStack stackToRender = item.getDefaultInstance();
 
                 final BakedModel model = Minecraft.getInstance().getModelManager().getModel(modelLocation);
-                itemRenderer.renderModel(model, name.getNamespace()+"/"+name.getPath()+".png", new ItemStack(item));
+                itemRenderer.renderModel(model, name.getNamespace()+"/"+name.getPath()+".png", stackToRender);
             });
         }
     }

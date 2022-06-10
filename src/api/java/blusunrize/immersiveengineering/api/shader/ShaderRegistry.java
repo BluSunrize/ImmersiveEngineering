@@ -500,6 +500,15 @@ public class ShaderRegistry
 			}
 	}
 
+	public static void markShaderReceived(UUID player, ResourceLocation shader)
+	{
+		if(!receivedShaders.get(player).contains(shader))
+		{
+			receivedShaders.put(player, shader);
+			recalculatePlayerTotalWeight(player);
+		}
+	}
+
 	public static ResourceLocation getRandomShader(UUID player, RandomSource rand, Rarity minRarity, boolean addToReceived)
 	{
 		int total = 0;
@@ -528,11 +537,7 @@ public class ShaderRegistry
 				}
 			}
 		if(addToReceived)
-		{
-			if(!receivedShaders.get(player).contains(shader))
-				receivedShaders.put(player, shader);
-			recalculatePlayerTotalWeight(player);
-		}
+			markShaderReceived(player, shader);
 		return shader;
 	}
 

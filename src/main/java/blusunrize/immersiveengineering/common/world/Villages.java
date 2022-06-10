@@ -109,7 +109,7 @@ public class Villages
 		// Register engineer's houses for each biome
 		for(String biome : new String[]{"plains", "snowy", "savanna", "desert", "taiga"})
 			for(String type : new String[]{"engineer", "machinist", "electrician", "gunsmith", "outfitter"})
-				addToPool(new ResourceLocation("village/"+biome+"/houses"), rl("village/houses/"+biome+"_"+type), 4);
+				addToPool(new ResourceLocation("village/"+biome+"/houses"), rl("village/houses/"+biome+"_"+type), 1);
 
 		// Register gifts
 		HeroGiftsTaskAccess.getGifts().put(Registers.PROF_ENGINEER.get(), rl("gameplay/hero_of_the_village/engineer"));

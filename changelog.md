@@ -1,6 +1,26 @@
-##### Version 1.18.2-8.0.2-pre
+##### Version 1.18.2-8.0.2-149
+- Re-add compat for Craftweaker (Malte)
+- Add coal coke to the "minecraft:coals" tag, allowing it to be used in crafting campfires (BluSunrize)
+    - Unfortunately, vanilla torches don't use that tag, so they can't be made with coke. It's very silly.
+- Allow the hammer, wirecutters and faraday suit to be repaired with their respective materials (BluSunrize)
+- Add new tags to interact with arc furnace recycling: (BluSunrize)
+    - "immersiveengineering:recycling/whitelist" -> Items to be made recycle-able
+    - "immersiveengineering:recycling/blacklist" -> Items to exclude from recycling
+    - "immersiveengineering:recycling/ignored_components" -> Items to ignore as components (such as tools used in crafting)
 - Restructure some manual entries for better flow and no weird page breaks (BluSunrize)
+- Change Fluid & Item Routers to keep their configuration when broken, so they can be moved more easily (BluSunrize)
 - Fix display of fluid tanks in JEI (BluSunrize)
+- Fix container items being lost in the alloy kiln (Malte)
+- Fix desync of the blueprint in the automated workbench (Malte)
+- Fix rotation issues with transformers and razor wire (Malte)
+- Fix crash with other mods adding new levels of Rarity for shaders (Malte)
+- Fix suggestions for the mineral command crashing clients in multiplayer (Malte)
+- Fix crash on the core sample tooltip (Malte)
+- Fix crafting table not dropping its contents (Malte)
+- Fix hammer-crushing recipes only working once until the game is restarted (BluSunrize)
+- Fix shaders not unlocking in the manual (BluSunrize)
+- Fix engineer villager houses being too common now since 5 unique variations were added (BluSunrize)
+- Fix some recipes having an unachievable unlock condition (BluSunrize)
 - Correctly tag slabs, stairs and tools (Malte)
 
 ##### Version 1.18.2-8.0.1-147
