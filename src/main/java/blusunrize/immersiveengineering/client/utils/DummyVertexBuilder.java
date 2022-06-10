@@ -10,10 +10,11 @@
 package blusunrize.immersiveengineering.client.utils;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import javax.annotation.Nonnull;
 
-public class DummyVertexBuilder implements VertexConsumer
+public record DummyVertexBuilder(VertexFormat format) implements VertexConsumer
 {
 	@Nonnull
 	@Override
@@ -59,15 +60,24 @@ public class DummyVertexBuilder implements VertexConsumer
 
 	@Override
 	public void endVertex()
-	{ }
+	{
+	}
 
 	@Override
 	public void defaultColor(int r, int g, int b, int a)
-	{ }
+	{
+	}
 
 	@Override
 	public void unsetDefaultColor()
 	{
 
+	}
+
+	@Override
+	@Nonnull
+	public VertexFormat getVertexFormat()
+	{
+		return format;
 	}
 }

@@ -167,7 +167,14 @@ public class TransformingVertexBuilder implements VertexConsumer
 
 	public void setOverlay(int packedOverlayIn)
 	{
-		overlay.setGlobal(new Vec2i(packedOverlayIn&0xffff, packedOverlayIn >> 16));
+		overlay.setGlobal(new Vec2i(packedOverlayIn&0xffff, packedOverlayIn>>16));
+	}
+
+	@Nonnull
+	@Override
+	public VertexFormat getVertexFormat()
+	{
+		return format;
 	}
 
 	private record Vec2i(int x, int y)
