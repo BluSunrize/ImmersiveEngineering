@@ -141,7 +141,11 @@ public class MinecraftInstanceManager
 		EntityModelSet entityModelSet = new EntityModelSet();
 		entityModelSet.onResourceManagerReload(null);
 		BlockEntityRenderDispatcher dispatcher = new BlockEntityRenderDispatcher(
-				null, entityModelSet, () -> Minecraft.getInstance().getBlockRenderer()
+				null,
+				entityModelSet,
+				() -> Minecraft.getInstance().getBlockRenderer(),
+				() -> Minecraft.getInstance().getItemRenderer(),
+				() -> Minecraft.getInstance().getEntityRenderDispatcher()
 		);
 		dispatcher.onResourceManagerReload(null);
 		BlockEntityWithoutLevelRenderer beNoLevelRenderer = new BlockEntityWithoutLevelRenderer(dispatcher, entityModelSet);
