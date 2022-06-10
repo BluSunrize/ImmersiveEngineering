@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
@@ -330,7 +331,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	@Override
 	protected void consumeDurability(ItemStack stack, Level world, @Nullable BlockState state, @Nullable BlockPos pos, LivingEntity living)
 	{
-		if(state==null||!state.is(BlockTags.LEAVES)||Utils.RAND.nextInt(10)==0)
+		if(state==null||!state.is(BlockTags.LEAVES)||ApiUtils.RANDOM.nextInt(10)==0)
 			super.consumeDurability(stack, world, state, pos, living);
 	}
 

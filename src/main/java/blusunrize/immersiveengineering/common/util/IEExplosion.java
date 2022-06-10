@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.EventHandler;
 import blusunrize.immersiveengineering.mixin.accessors.ExplosionAccess;
 import com.google.common.collect.Sets;
@@ -77,9 +78,9 @@ public class IEExplosion extends Explosion
 
 //			if(spawnParticles)
 			{
-				double d0 = (float)pos.getX()+Utils.RAND.nextFloat();
-				double d1 = (float)pos.getY()+Utils.RAND.nextFloat();
-				double d2 = (float)pos.getZ()+Utils.RAND.nextFloat();
+				double d0 = (float)pos.getX()+ApiUtils.RANDOM.nextFloat();
+				double d1 = (float)pos.getY()+ApiUtils.RANDOM.nextFloat();
+				double d2 = (float)pos.getZ()+ApiUtils.RANDOM.nextFloat();
 				double d3 = d0-getPosition().x;
 				double d4 = d1-getPosition().y;
 				double d5 = d2-getPosition().z;
@@ -88,7 +89,7 @@ public class IEExplosion extends Explosion
 				d4 = d4/d6;
 				d5 = d5/d6;
 				double d7 = 0.5D/(d6/(double)this.size+0.1D);
-				d7 = d7*(double)(Utils.RAND.nextFloat()*Utils.RAND.nextFloat()+0.3F);
+				d7 = d7*(double)(ApiUtils.RANDOM.nextFloat()*ApiUtils.RANDOM.nextFloat()+0.3F);
 				d3 = d3*d7;
 				d4 = d4*d7;
 				d5 = d5*d7;
@@ -141,7 +142,7 @@ public class IEExplosion extends Explosion
 						d0 = d0/d3;
 						d1 = d1/d3;
 						d2 = d2/d3;
-						float f = this.size*(0.7F+Utils.RAND.nextFloat()*0.6F);
+						float f = this.size*(0.7F+ApiUtils.RANDOM.nextFloat()*0.6F);
 						double d4 = getPosition().x;
 						double d6 = getPosition().y;
 						double d8 = getPosition().z;
@@ -225,7 +226,7 @@ public class IEExplosion extends Explosion
 	{
 		Vec3 pos = getPosition();
 		if(this.world.isClientSide)
-			this.world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.NEUTRAL, 4.0F, (1.0F+(Utils.RAND.nextFloat()-Utils.RAND.nextFloat())*0.2F)*0.7F, true);
+			this.world.playLocalSound(pos.x, pos.y, pos.z, SoundEvents.GENERIC_EXPLODE, SoundSource.NEUTRAL, 4.0F, (1.0F+(ApiUtils.RANDOM.nextFloat()-ApiUtils.RANDOM.nextFloat())*0.2F)*0.7F, true);
 
 		if(this.size >= 2.0F&&this.damagesTerrain!=BlockInteraction.NONE)
 			this.world.addParticle(ParticleTypes.EXPLOSION_EMITTER, pos.x, pos.y, pos.z, 1.0D, 0.0D, 0.0D);

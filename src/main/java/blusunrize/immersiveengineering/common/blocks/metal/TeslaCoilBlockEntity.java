@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
@@ -113,7 +114,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 			if(!targets.isEmpty())
 			{
 				ElectricDamageSource dmgsrc = IEDamageSources.causeTeslaDamage(IEServerConfig.MACHINES.teslacoil_damage.get().floatValue(), lowPower);
-				int randomTarget = Utils.RAND.nextInt(targets.size());
+				int randomTarget = ApiUtils.RANDOM.nextInt(targets.size());
 				target = (LivingEntity)targets.get(randomTarget);
 				if(target!=null)
 				{
@@ -148,8 +149,8 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 			if(targets.isEmpty()&&level.getGameTime()%128==(timeKey&127))
 			{
 				//target up to 4 blocks away
-				double tV = (Utils.RAND.nextDouble()-.5)*8;
-				double tH = (Utils.RAND.nextDouble()-.5)*8;
+				double tV = (ApiUtils.RANDOM.nextDouble()-.5)*8;
+				double tH = (ApiUtils.RANDOM.nextDouble()-.5)*8;
 				if(lowPower)
 				{
 					tV /= 2;
@@ -186,7 +187,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				}
 				if(!targetFound)
 				{
-					boolean positiveFirst = Utils.RAND.nextBoolean();
+					boolean positiveFirst = ApiUtils.RANDOM.nextBoolean();
 					for(int i = 0; i < 2; i++)
 					{
 						for(int ll = 0; ll <= 6; ll++)
@@ -279,7 +280,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 					else
 						f = dz < 0?Direction.NORTH: Direction.SOUTH;
 				}
-				double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
+				double verticalOffset = 1+ApiUtils.RANDOM.nextDouble()*.25;
 				Vec3 coilPos = Vec3.atCenterOf(getBlockPos());
 				//Vertical offset
 				coilPos = coilPos.add(getFacing().getStepX()*verticalOffset, getFacing().getStepY()*verticalOffset, getFacing().getStepZ()*verticalOffset);
@@ -289,12 +290,12 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 					coilPos = coilPos.add(f.getStepX()*.375, f.getStepY()*.375, f.getStepZ()*.375);
 					//random side offset
 					f = DirectionUtils.rotateAround(f, getFacing().getAxis());
-					double dShift = (Utils.RAND.nextDouble()-.5)*.75;
+					double dShift = (ApiUtils.RANDOM.nextDouble()-.5)*.75;
 					coilPos = coilPos.add(f.getStepX()*dShift, f.getStepY()*dShift, f.getStepZ()*dShift);
 				}
 
 				addAnimation(new LightningAnimation(coilPos, (LivingEntity)target));
-				level.playLocalSound(coilPos.x, coilPos.y, coilPos.z, IESounds.tesla, SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
+				level.playLocalSound(coilPos.x, coilPos.y, coilPos.z, IESounds.tesla, SoundSource.BLOCKS, 2.5F, 0.5F+ApiUtils.RANDOM.nextFloat(), true);
 			}
 		}
 		else if(message.contains("tL", Tag.TAG_DOUBLE))
@@ -330,7 +331,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				f = tz < 0?Direction.NORTH: Direction.SOUTH;
 		}
 
-		double verticalOffset = 1+Utils.RAND.nextDouble()*.25;
+		double verticalOffset = 1+ApiUtils.RANDOM.nextDouble()*.25;
 		Vec3 coilPos = Vec3.atCenterOf(getBlockPos());
 		//Vertical offset
 		coilPos = coilPos.add(getFacing().getStepX()*verticalOffset, getFacing().getStepY()*verticalOffset, getFacing().getStepZ()*verticalOffset);
@@ -338,11 +339,11 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 		coilPos = coilPos.add(f.getStepX()*.375, f.getStepY()*.375, f.getStepZ()*.375);
 		//random side offset
 		f = DirectionUtils.rotateAround(f, getFacing().getAxis());
-		double dShift = (Utils.RAND.nextDouble()-.5)*.75;
+		double dShift = (ApiUtils.RANDOM.nextDouble()-.5)*.75;
 		coilPos = coilPos.add(f.getStepX()*dShift, f.getStepY()*dShift, f.getStepZ()*dShift);
 		addAnimation(new LightningAnimation(coilPos, Vec3.atLowerCornerOf(getBlockPos()).add(tx, ty, tz)));
-//		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + Utils.RAND.nextFloat());
-		level.playLocalSound(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), IESounds.tesla, SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat(), true);
+//		world.playSound(null, getPos(), IESounds.tesla, SoundCategory.BLOCKS,2.5f, .5f + ApiUtils.RANDOM.nextFloat());
+		level.playLocalSound(getBlockPos().getX(), getBlockPos().getY(), getBlockPos().getZ(), IESounds.tesla, SoundSource.BLOCKS, 2.5F, 0.5F+ApiUtils.RANDOM.nextFloat(), true);
 	}
 
 	private void addAnimation(LightningAnimation ani)
@@ -561,7 +562,7 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				}
 				subPoints.add(sub.add(offX, offY, offZ));
 			}
-			animationTimer = ANIMATION_MAX+Utils.RAND.nextInt(5)-2;
+			animationTimer = ANIMATION_MAX+ApiUtils.RANDOM.nextInt(5)-2;
 		}
 
 		public boolean tick()

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.fluid.IFluidPipe;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -18,7 +19,6 @@ import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -100,7 +100,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		int lengthFiltered = sides.length;
 		while(lengthFiltered > 0&&available.getAmount() > 0)
 		{
-			int rand = Utils.RAND.nextInt(lengthFiltered);
+			int rand = ApiUtils.RANDOM.nextInt(lengthFiltered);
 			Direction currentSide = sides[rand];
 			CapabilityReference<IFluidHandler> capRef = neighborCaps.get(currentSide);
 			IFluidHandler fluidOut = capRef.getNullable();

@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
@@ -15,7 +16,6 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -103,7 +103,7 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 				boolean ignite = ChemthrowerHandler.isFlammable(fs.getFluid())&&this.ignite;
 				for(int i = 0; i < split; i++)
 				{
-					Vec3 vecDir = v.add(Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter, Utils.RAND.nextGaussian()*scatter);
+					Vec3 vecDir = v.add(ApiUtils.RANDOM.nextGaussian()*scatter, ApiUtils.RANDOM.nextGaussian()*scatter, ApiUtils.RANDOM.nextGaussian()*scatter);
 					Vec3 throwerPos = getGunPosition();
 					ChemthrowerShotEntity chem = new ChemthrowerShotEntity(level, throwerPos.x+v.x*0.875, throwerPos.y+v.y*0.875,
 							throwerPos.z+v.z*0.875, 0, 0, 0, fs);

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.EnumMetals;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
@@ -210,7 +211,7 @@ public class IEShieldItem extends UpgradeableToolItem
 			{
 				getUpgrades(stack).putInt("shock_cooldown", 40);
 				player.level.playSound(null, player.getX(), player.getY(), player.getZ(), IESounds.spark,
-						SoundSource.BLOCKS, 2.5F, 0.5F+Utils.RAND.nextFloat());
+						SoundSource.BLOCKS, 2.5F, 0.5F+ApiUtils.RANDOM.nextFloat());
 			}
 		}
 	}

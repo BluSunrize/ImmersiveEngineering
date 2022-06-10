@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
 import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
@@ -141,7 +142,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 				}
 				else
 					renderGrowth = 0;
-				if(Utils.RAND.nextInt(8)==0)
+				if(ApiUtils.RANDOM.nextInt(8)==0)
 					particles.get().add(new DustParticleOptions(new Vector3f(.55f, .1f, .1f), 1), .5, 2.6875, .5, .25, .25, .25, 20);
 			}
 		}

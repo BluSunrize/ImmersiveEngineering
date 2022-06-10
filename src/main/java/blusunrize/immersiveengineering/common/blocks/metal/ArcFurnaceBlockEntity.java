@@ -157,18 +157,18 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 		if(shouldRenderAsActive())
 			for(int i = 0; i < 4; i++)
 			{
-				if(Utils.RAND.nextInt(6)==0)
+				if(ApiUtils.RANDOM.nextInt(6)==0)
 					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5-.25*getFacing().getStepX(),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5-.25*getFacing().getStepZ(),
-							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
-				if(Utils.RAND.nextInt(6)==0)
+							ApiUtils.RANDOM.nextDouble()*.05-.025, .025, ApiUtils.RANDOM.nextDouble()*.05-.025);
+				if(ApiUtils.RANDOM.nextInt(6)==0)
 					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+(getFacing()==Direction.EAST?-.25: .25),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+(getFacing()==Direction.SOUTH?.25: -.25),
-							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
-				if(Utils.RAND.nextInt(6)==0)
+							ApiUtils.RANDOM.nextDouble()*.05-.025, .025, ApiUtils.RANDOM.nextDouble()*.05-.025);
+				if(ApiUtils.RANDOM.nextInt(6)==0)
 					level.addParticle(IEParticles.SPARKS.get(), getBlockPos().getX()+.5+(getFacing()==Direction.WEST?.25: -.25),
 							getBlockPos().getY()+2.9, getBlockPos().getZ()+.5+(getFacing()==Direction.NORTH?-.25: .25),
-							Utils.RAND.nextDouble()*.05-.025, .025, Utils.RAND.nextDouble()*.05-.025);
+							ApiUtils.RANDOM.nextDouble()*.05-.025, .025, ApiUtils.RANDOM.nextDouble()*.05-.025);
 			}
 	}
 

@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
@@ -307,14 +308,14 @@ public class ExcavatorBlockEntity extends PoweredMultiblockBlockEntity<Excavator
 	{
 		if(mineralVein.isDepleted())
 			return;
-		ItemStack ore = mineralMix.getRandomOre(Utils.RAND);
+		ItemStack ore = mineralMix.getRandomOre(ApiUtils.RANDOM);
 		if(ore.isEmpty())
 			return;
 		// if random number of 0-1 is smaller than the fail chance of the specific mineral
-		if(Utils.RAND.nextFloat() < mineralMix.failChance)
+		if(ApiUtils.RANDOM.nextFloat() < mineralMix.failChance)
 			return;
 		// if random number of 0-1 is smaller than the distance based fail chance of the vein
-		if(Utils.RAND.nextFloat() < mineralVein.getFailChance(wheelPos))
+		if(ApiUtils.RANDOM.nextFloat() < mineralVein.getFailChance(wheelPos))
 			return;
 		wheel.digStacks.set(targetDown, ore);
 		wheel.setChanged();

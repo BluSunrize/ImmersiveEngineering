@@ -1,5 +1,6 @@
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -10,7 +11,6 @@ import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IAdvancedFluidItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMultimap;
@@ -247,7 +247,7 @@ public abstract class DieselToolItem extends UpgradeableToolItem implements IAdv
 			ItemStack head = getHead(stack);
 			if(!head.isEmpty())
 			{
-				if(!getUpgrades(stack).getBoolean("oiled")||Utils.RAND.nextInt(4)==0)
+				if(!getUpgrades(stack).getBoolean("oiled")||ApiUtils.RANDOM.nextInt(4)==0)
 					damageHead(head, dmg, living);
 				this.setHead(stack, head);
 				IFluidHandler handler = FluidUtil.getFluidHandler(stack).orElseThrow(RuntimeException::new);

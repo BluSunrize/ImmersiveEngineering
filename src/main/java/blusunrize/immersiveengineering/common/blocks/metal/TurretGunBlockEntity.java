@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.blocks.metal;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
@@ -18,7 +19,6 @@ import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
-import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -114,7 +114,7 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 					else
 						for(int i = 0; i < count; i++)
 						{
-							Vec3 vecDir = vec.add(Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1, Utils.RAND.nextGaussian()*.1);
+							Vec3 vecDir = vec.add(ApiUtils.RANDOM.nextGaussian()*.1, ApiUtils.RANDOM.nextGaussian()*.1, ApiUtils.RANDOM.nextGaussian()*.1);
 							Entity entBullet = getBulletEntity(level, vecDir, bullet);
 							level.addFreshEntity(bullet.getProjectile(null, bulletStack, entBullet, false));
 						}

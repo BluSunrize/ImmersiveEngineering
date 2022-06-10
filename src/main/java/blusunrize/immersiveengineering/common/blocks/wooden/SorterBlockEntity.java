@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
@@ -100,7 +101,7 @@ public class SorterBlockEntity extends IEBaseBlockEntity implements IInteraction
 		int lengthFiltered = sides.length;
 		while(lengthFiltered > 0&&!stack.isEmpty())
 		{
-			int rand = Utils.RAND.nextInt(lengthFiltered);
+			int rand = ApiUtils.RANDOM.nextInt(lengthFiltered);
 			stack = this.outputItemToInv(stack, sides[rand], simulate);
 			sides[rand] = sides[lengthFiltered-1];
 			lengthFiltered--;

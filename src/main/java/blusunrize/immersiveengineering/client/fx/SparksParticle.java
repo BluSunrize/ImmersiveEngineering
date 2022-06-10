@@ -30,7 +30,7 @@ public class SparksParticle extends TextureSheetParticle
 		this.yd = my;
 		this.zd = mz;
 		pickSprite(sprite);
-		//TODO this.setParticleTextureIndex(Utils.RAND.nextInt(3));
+		//TODO this.setParticleTextureIndex(ApiUtils.RANDOM.nextInt(3));
 	}
 
 	@Override

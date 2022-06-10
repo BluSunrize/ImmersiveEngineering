@@ -8,9 +8,9 @@
 
 package blusunrize.immersiveengineering.common.entities;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.BulletHandler.IBullet;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.math.Vector3f;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.DustParticleOptions;
@@ -89,7 +89,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 			if(tickCount > 40)
 				for(int i = 0; i < 20; i++)
 				{
-					Vec3 v = new Vec3(Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5, Utils.RAND.nextDouble()-.5);
+					Vec3 v = new Vec3(ApiUtils.RANDOM.nextDouble()-.5, ApiUtils.RANDOM.nextDouble()-.5, ApiUtils.RANDOM.nextDouble()-.5);
 					level.addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
 				}
 		}
@@ -140,7 +140,7 @@ public class RevolvershotFlareEntity extends RevolvershotEntity
 		float b = (getColour()&255)/255f;
 		for(int i = 0; i < 80; i++)
 		{
-			Vec3 v = new Vec3((Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1, (Utils.RAND.nextDouble()-.5)*i > 40?2: 1);
+			Vec3 v = new Vec3((ApiUtils.RANDOM.nextDouble()-.5)*i > 40?2: 1, (ApiUtils.RANDOM.nextDouble()-.5)*i > 40?2: 1, (ApiUtils.RANDOM.nextDouble()-.5)*i > 40?2: 1);
 			level.addParticle(new DustParticleOptions(new Vector3f(r, g, b), 1), getX()+v.x, getY()+v.y, getZ()+v.z, v.x/10, v.y/10, v.z/10);
 		}
 	}

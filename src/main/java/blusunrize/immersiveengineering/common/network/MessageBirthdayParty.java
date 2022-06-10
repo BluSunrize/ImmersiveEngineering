@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.Entity;
@@ -48,7 +49,7 @@ public class MessageBirthdayParty implements IMessage
 				Entity entity = world.getEntity(entityId);
 				if(entity!=null&&entity instanceof LivingEntity)
 				{
-					world.createFireworks(entity.getX(), entity.getY(), entity.getZ(), 0, 0, 0, Utils.getRandomFireworkExplosion(Utils.RAND, 4));
+					world.createFireworks(entity.getX(), entity.getY(), entity.getZ(), 0, 0, 0, Utils.getRandomFireworkExplosion(ApiUtils.RANDOM, 4));
 					entity.getPersistentData().putBoolean("headshot", true);
 				}
 			}

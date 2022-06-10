@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
@@ -78,13 +79,13 @@ public class LightningrodBlockEntity extends MultiblockPartBlockEntity<Lightning
 			fenceNet = this.getFenceNet();
 		if(fenceNet!=null&&fenceNet.size() > 0
 				&&level.getGameTime()%128==((getBlockPos().getX()^getBlockPos().getZ())&127)
-				&&(level.isThundering()||(level.isRaining()&&Utils.RAND.nextInt(10)==0)))
+				&&(level.isThundering()||(level.isRaining()&&ApiUtils.RANDOM.nextInt(10)==0)))
 		{
 			int i = this.height+this.fenceNet.size();
-			if(Utils.RAND.nextInt(4096*level.getMaxBuildHeight()) < i*(getBlockPos().getY()+i))
+			if(ApiUtils.RANDOM.nextInt(4096*level.getMaxBuildHeight()) < i*(getBlockPos().getY()+i))
 			{
 				this.energyStorage.setStoredEnergy(IEServerConfig.MACHINES.lightning_output.get());
-				BlockPos pos = fenceNet.get(Utils.RAND.nextInt(fenceNet.size()));
+				BlockPos pos = fenceNet.get(ApiUtils.RANDOM.nextInt(fenceNet.size()));
 				LightningBolt lightningboltentity = EntityType.LIGHTNING_BOLT.create(level);
 				lightningboltentity.moveTo(Vec3.atBottomCenterOf(pos));
 				lightningboltentity.setVisualOnly(true);

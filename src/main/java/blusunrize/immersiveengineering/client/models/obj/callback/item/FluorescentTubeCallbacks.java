@@ -9,9 +9,9 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.item;
 
+import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
-import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.math.Vector4f;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.util.Mth;
@@ -31,7 +31,7 @@ public class FluorescentTubeCallbacks implements ItemCallback<FluorescentTubeCal
 	{
 		boolean lit = isLit(object);
 		float min = .3F+(lit?ItemNBTHelper.getFloat(object, LIT_STRENGTH)*.68F: 0);
-		float mult = min+(lit?Utils.RAND.nextFloat()*Mth.clamp(1-min, 0, .1F): 0);
+		float mult = min+(lit?ApiUtils.RANDOM.nextFloat()*Mth.clamp(1-min, 0, .1F): 0);
 		float[] colors = getRGBFloat(object, mult);
 		return new Key(new Vector4f(colors[0], colors[1], colors[2], colors[3]));
 	}

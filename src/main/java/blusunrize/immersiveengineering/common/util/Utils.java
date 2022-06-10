@@ -96,9 +96,6 @@ import java.util.function.Predicate;
 
 public class Utils
 {
-	@Deprecated(forRemoval = true)
-	// Replace by the ApiUtils fields
-	public static final Random RAND = new Random();
 	public static final DecimalFormat NUMBERFORMAT_PREFIXED = new DecimalFormat("+#;-#");
 
 	public static boolean compareItemNBT(ItemStack stack1, ItemStack stack2)
