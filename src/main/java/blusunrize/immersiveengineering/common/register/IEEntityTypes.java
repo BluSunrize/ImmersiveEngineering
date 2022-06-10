@@ -70,27 +70,26 @@ public class IEEntityTypes
 			() -> Builder.<WolfpackShotEntity>of(WolfpackShotEntity::new, MobCategory.MISC)
 					.sized(0.125f, 0.125f)
 	);
-	//TODO
-	//public static final RegistryObject<EntityType<CrateMinecartEntity>> CRATE_MINECART = register(
-	//		"cart_woodencrate",
-	//		() -> Builder.<CrateMinecartEntity>of(CrateMinecartEntity::new, MobCategory.MISC)
-	//				.sized(0.98F, 0.7F)
-	//);
-	//public static final RegistryObject<EntityType<ReinforcedCrateMinecartEntity>> REINFORCED_CRATE_CART = register(
-	//		"cart_reinforcedcrate",
-	//		() -> Builder.<ReinforcedCrateMinecartEntity>of(ReinforcedCrateMinecartEntity::new, MobCategory.MISC)
-	//				.sized(0.98F, 0.7F)
-	//);
-	//public static final RegistryObject<EntityType<BarrelMinecartEntity>> BARREL_MINECART = register(
-	//		"cart_woodenbarrel",
-	//		() -> Builder.<BarrelMinecartEntity>of(BarrelMinecartEntity::new, MobCategory.MISC)
-	//				.sized(0.98F, 0.7F)
-	//);
-	//public static final RegistryObject<EntityType<MetalBarrelMinecartEntity>> METAL_BARREL_CART = register(
-	//		"cart_metalbarrel",
-	//		() -> Builder.<MetalBarrelMinecartEntity>of(MetalBarrelMinecartEntity::new, MobCategory.MISC)
-	//				.sized(0.98F, 0.7F)
-	//);
+	public static final RegistryObject<EntityType<CrateMinecartEntity>> CRATE_MINECART = register(
+			"cart_woodencrate",
+			() -> Builder.<CrateMinecartEntity>of(CrateMinecartEntity::new, MobCategory.MISC)
+					.sized(0.98F, 0.7F)
+	);
+	public static final RegistryObject<EntityType<ReinforcedCrateMinecartEntity>> REINFORCED_CRATE_CART = register(
+			"cart_reinforcedcrate",
+			() -> Builder.<ReinforcedCrateMinecartEntity>of(ReinforcedCrateMinecartEntity::new, MobCategory.MISC)
+					.sized(0.98F, 0.7F)
+	);
+	public static final RegistryObject<EntityType<BarrelMinecartEntity>> BARREL_MINECART = register(
+			"cart_woodenbarrel",
+			() -> Builder.<BarrelMinecartEntity>of(BarrelMinecartEntity::new, MobCategory.MISC)
+					.sized(0.98F, 0.7F)
+	);
+	public static final RegistryObject<EntityType<MetalBarrelMinecartEntity>> METAL_BARREL_CART = register(
+			"cart_metalbarrel",
+			() -> Builder.<MetalBarrelMinecartEntity>of(MetalBarrelMinecartEntity::new, MobCategory.MISC)
+					.sized(0.98F, 0.7F)
+	);
 	public static final RegistryObject<EntityType<SawbladeEntity>> SAWBLADE = register(
 			"sawblade",
 			() -> Builder.<SawbladeEntity>of(SawbladeEntity::new, MobCategory.MISC)

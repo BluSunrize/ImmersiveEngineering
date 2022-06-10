@@ -244,8 +244,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModel("drillhead_steel", Tools.DRILLHEAD_STEEL);
 		addItemModels("", Tools.SAWBLADE, Tools.ROCKCUTTER);
 		addItemModels("", IEItems.Misc.MAINTENANCE_KIT);
-		//TODO
-		//addItemModels("", IEItems.Minecarts.CART_WOODEN_CRATE, IEItems.Minecarts.CART_REINFORCED_CRATE, IEItems.Minecarts.CART_WOODEN_BARREL, IEItems.Minecarts.CART_METAL_BARREL);
+		addItemModels("", IEItems.Minecarts.CART_WOODEN_CRATE, IEItems.Minecarts.CART_REINFORCED_CRATE, IEItems.Minecarts.CART_WOODEN_BARREL, IEItems.Minecarts.CART_METAL_BARREL);
 		addItemModels("", IEItems.Misc.LOGIC_CIRCUIT_BOARD);
 		addItemModels("", IEItems.Misc.FERTILIZER);
 		addItemModel("banner_pattern", IEBannerPatterns.HAMMER.item());

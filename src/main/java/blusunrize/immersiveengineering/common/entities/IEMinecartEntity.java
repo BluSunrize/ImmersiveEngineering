@@ -25,13 +25,16 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
@@ -64,17 +67,19 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	public abstract void readTileFromItem(LivingEntity placer, ItemStack itemStack);
 
 	@Override
+	@NotNull
 	public Type getMinecartType()
 	{
 		return Type.CHEST;
 	}
 
 	@Override
-	public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing)
+	@NotNull
+	public <C> LazyOptional<C> getCapability(@NotNull Capability<C> capability, @Nullable Direction facing)
 	{
 		if(this.isAlive()&&this.containedBlockEntity!=null)
 		{
-			LazyOptional<T> beCap = this.containedBlockEntity.getCapability(capability, facing);
+			LazyOptional<C> beCap = this.containedBlockEntity.getCapability(capability, facing);
 			if(beCap.isPresent())
 				return beCap;
 		}
@@ -82,7 +87,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	public void destroy(DamageSource source)
+	public void destroy(@NotNull DamageSource source)
 	{
 		this.discard();
 		if(this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
@@ -104,7 +109,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	public InteractionResult interact(Player player, InteractionHand hand)
+	public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand)
 	{
 		InteractionResult superResult = super.interact(player, hand);
 		if(superResult==InteractionResult.SUCCESS)
@@ -121,13 +126,13 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Nullable
-	public AbstractContainerMenu createMenu(int id, Inventory playerInventory, Player playerEntity)
+	public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
 	{
 		return null;
 	}
 
 	@Override
-	protected void addAdditionalSaveData(CompoundTag compound)
+	protected void addAdditionalSaveData(@NotNull CompoundTag compound)
 	{
 		super.addAdditionalSaveData(compound);
 		if(this.containedBlockEntity!=null)
@@ -138,7 +143,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	protected void readAdditionalSaveData(CompoundTag compound)
+	protected void readAdditionalSaveData(@NotNull CompoundTag compound)
 	{
 		super.readAdditionalSaveData(compound);
 		this.containedBlockEntity = getTileProvider().get();
@@ -146,9 +151,16 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	public Packet<?> getAddEntityPacket()
+	public @NotNull Packet<?> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
+	}
+
+	// TODO check if this is reasonable
+	@Override
+	protected Item getDropItem()
+	{
+		return Items.MINECART;
 	}
 
 	public interface MinecartConstructor

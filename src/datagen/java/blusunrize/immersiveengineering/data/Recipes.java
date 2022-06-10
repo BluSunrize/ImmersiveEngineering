@@ -2983,35 +2983,34 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_glowstone", has(Tags.Items.DUSTS_GLOWSTONE))
 				.save(out, toRL(toPath(MetalDecoration.LANTERN)));
 
-		//TODO
-		//ShapedRecipeBuilder.shaped(Minecarts.CART_WOODEN_CRATE)
-		//		.pattern("B")
-		//		.pattern("C")
-		//		.define('B', WoodenDevices.CRATE)
-		//		.define('C', Items.MINECART)
-		//		.unlockedBy("has_minecart", has(Items.MINECART))
-		//		.save(out, toRL(toPath(Minecarts.CART_WOODEN_CRATE)));
-		//ShapedRecipeBuilder.shaped(Minecarts.CART_REINFORCED_CRATE)
-		//		.pattern("B")
-		//		.pattern("C")
-		//		.define('B', WoodenDevices.REINFORCED_CRATE)
-		//		.define('C', Items.MINECART)
-		//		.unlockedBy("has_minecart", has(Items.MINECART))
-		//		.save(out, toRL(toPath(Minecarts.CART_REINFORCED_CRATE)));
-		//ShapedRecipeBuilder.shaped(Minecarts.CART_WOODEN_BARREL)
-		//		.pattern("B")
-		//		.pattern("C")
-		//		.define('B', WoodenDevices.WOODEN_BARREL)
-		//		.define('C', Items.MINECART)
-		//		.unlockedBy("has_minecart", has(Items.MINECART))
-		//		.save(out, toRL(toPath(Minecarts.CART_WOODEN_BARREL)));
-		//ShapedRecipeBuilder.shaped(Minecarts.CART_METAL_BARREL)
-		//		.pattern("B")
-		//		.pattern("C")
-		//		.define('B', MetalDevices.BARREL)
-		//		.define('C', Items.MINECART)
-		//		.unlockedBy("has_minecart", has(Items.MINECART))
-		//		.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
+		ShapedRecipeBuilder.shaped(Minecarts.CART_WOODEN_CRATE)
+				.pattern("B")
+				.pattern("C")
+				.define('B', WoodenDevices.CRATE)
+				.define('C', Items.MINECART)
+				.unlockedBy("has_minecart", has(Items.MINECART))
+				.save(out, toRL(toPath(Minecarts.CART_WOODEN_CRATE)));
+		ShapedRecipeBuilder.shaped(Minecarts.CART_REINFORCED_CRATE)
+				.pattern("B")
+				.pattern("C")
+				.define('B', WoodenDevices.REINFORCED_CRATE)
+				.define('C', Items.MINECART)
+				.unlockedBy("has_minecart", has(Items.MINECART))
+				.save(out, toRL(toPath(Minecarts.CART_REINFORCED_CRATE)));
+		ShapedRecipeBuilder.shaped(Minecarts.CART_WOODEN_BARREL)
+				.pattern("B")
+				.pattern("C")
+				.define('B', WoodenDevices.WOODEN_BARREL)
+				.define('C', Items.MINECART)
+				.unlockedBy("has_minecart", has(Items.MINECART))
+				.save(out, toRL(toPath(Minecarts.CART_WOODEN_BARREL)));
+		ShapedRecipeBuilder.shaped(Minecarts.CART_METAL_BARREL)
+				.pattern("B")
+				.pattern("C")
+				.define('B', MetalDevices.BARREL)
+				.define('C', Items.MINECART)
+				.unlockedBy("has_minecart", has(Items.MINECART))
+				.save(out, toRL(toPath(Minecarts.CART_METAL_BARREL)));
 	}
 
 	private void addArmor(TagKey<Item> input, Map<EquipmentSlot, ? extends ItemLike> items, String name, Consumer<FinishedRecipe> out)

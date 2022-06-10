@@ -37,6 +37,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockOve
 import blusunrize.immersiveengineering.common.blocks.wooden.TurntableBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.entities.IEMinecartEntity;
 import blusunrize.immersiveengineering.common.items.*;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IScrollwheel;
 import blusunrize.immersiveengineering.common.network.*;
@@ -534,12 +535,11 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 					Entity entity = ((EntityHitResult)mop).getEntity();
 					if(entity instanceof ItemFrame)
 						BlockOverlayUtils.renderOreveinMapOverlays(transform, (ItemFrame)entity, mop, scaledWidth, scaledHeight);
-					//TODO
-					//else if(entity instanceof IEMinecartEntity<?> ieMinecart&&ieMinecart.getContainedBlockEntity() instanceof IBlockOverlayText overlayText)
-					//{
-					//	Component[] text = overlayText.getOverlayText(player, mop, false);
-					//	BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
-					//}
+					else if(entity instanceof IEMinecartEntity<?> ieMinecart&&ieMinecart.getContainedBlockEntity() instanceof IBlockOverlayText overlayText)
+					{
+						Component[] text = overlayText.getOverlayText(player, mop, false);
+						BlockOverlayUtils.drawBlockOverlayText(transform, text, scaledWidth, scaledHeight);
+					}
 				}
 				else if(mop instanceof BlockHitResult)
 				{
