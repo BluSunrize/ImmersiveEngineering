@@ -34,8 +34,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkHooks;
-import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
@@ -67,15 +67,15 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	public abstract void readTileFromItem(LivingEntity placer, ItemStack itemStack);
 
 	@Override
-	@NotNull
+	@Nonnull
 	public Type getMinecartType()
 	{
 		return Type.CHEST;
 	}
 
 	@Override
-	@NotNull
-	public <C> LazyOptional<C> getCapability(@NotNull Capability<C> capability, @Nullable Direction facing)
+	@Nonnull
+	public <C> LazyOptional<C> getCapability(@Nonnull Capability<C> capability, @Nullable Direction facing)
 	{
 		if(this.isAlive()&&this.containedBlockEntity!=null)
 		{
@@ -87,9 +87,9 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	public void destroy(@NotNull DamageSource source)
+	public void destroy(@Nonnull DamageSource source)
 	{
-		this.discard();
+		this.kill();
 		if(this.level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS))
 		{
 			ItemStack itemstack = getPickResult();
@@ -109,7 +109,8 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand)
+	@Nonnull
+	public InteractionResult interact(@Nonnull Player player, @Nonnull InteractionHand hand)
 	{
 		InteractionResult superResult = super.interact(player, hand);
 		if(superResult==InteractionResult.SUCCESS)
@@ -126,13 +127,13 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Nullable
-	public AbstractContainerMenu createMenu(int id, @NotNull Inventory playerInventory, @NotNull Player playerEntity)
+	public AbstractContainerMenu createMenu(int id, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity)
 	{
 		return null;
 	}
 
 	@Override
-	protected void addAdditionalSaveData(@NotNull CompoundTag compound)
+	protected void addAdditionalSaveData(@Nonnull CompoundTag compound)
 	{
 		super.addAdditionalSaveData(compound);
 		if(this.containedBlockEntity!=null)
@@ -143,7 +144,7 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	protected void readAdditionalSaveData(@NotNull CompoundTag compound)
+	protected void readAdditionalSaveData(@Nonnull CompoundTag compound)
 	{
 		super.readAdditionalSaveData(compound);
 		this.containedBlockEntity = getTileProvider().get();
@@ -151,12 +152,13 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 	}
 
 	@Override
-	public @NotNull Packet<?> getAddEntityPacket()
+	public @Nonnull Packet<?> getAddEntityPacket()
 	{
 		return NetworkHooks.getEntitySpawningPacket(this);
 	}
 
-	// TODO check if this is reasonable
+	// This is only used by the super impl of destroy, which does not allow attaching NBT to the drop. So it's actually
+	// unused for our minecarts
 	@Override
 	protected Item getDropItem()
 	{

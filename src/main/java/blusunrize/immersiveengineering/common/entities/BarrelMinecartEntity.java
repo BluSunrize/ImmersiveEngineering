@@ -26,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.fluids.FluidUtil;
 
+import javax.annotation.Nonnull;
 import java.util.function.Supplier;
 
 import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY;
@@ -68,10 +69,11 @@ public class BarrelMinecartEntity extends IEMinecartEntity<WoodenBarrelBlockEnti
 		this.containedBlockEntity.readOnPlacement(placer, itemStack);
 	}
 
+	@Nonnull
 	@Override
-	public InteractionResult interact(Player player, InteractionHand hand)
+	public InteractionResult interact(@Nonnull Player player, @Nonnull InteractionHand hand)
 	{
-		if(super.interact(player, hand) == InteractionResult.SUCCESS)
+		if(super.interact(player, hand)==InteractionResult.SUCCESS)
 			return InteractionResult.SUCCESS;
 		ItemStack itemstack = player.getItemInHand(hand);
 		if(FluidUtil.getFluidHandler(itemstack).isPresent())
