@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 
-public class ArcFurnaceContainer extends IEBaseContainer<ArcFurnaceBlockEntity>
+public class ArcFurnaceContainer extends IEBaseContainerOld<ArcFurnaceBlockEntity>
 {
 	public ArcFurnaceContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ArcFurnaceBlockEntity tile)
 	{
@@ -32,7 +32,7 @@ public class ArcFurnaceContainer extends IEBaseContainer<ArcFurnaceBlockEntity>
 		this.addSlot(new IESlot.ArcElectrode(this, this.inv, 24, 80, 10));
 		this.addSlot(new IESlot.ArcElectrode(this, this.inv, 25, 98, 10));
 
-		slotCount = 26;
+		ownSlotCount = 26;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

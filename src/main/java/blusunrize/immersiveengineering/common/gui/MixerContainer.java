@@ -22,7 +22,7 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 
 //TODO custom subclass of ItemStackHandler for markDirty etc
-public class MixerContainer extends IEBaseContainer<MixerBlockEntity> implements ICallbackContainer
+public class MixerContainer extends IEBaseContainerOld<MixerBlockEntity> implements ICallbackContainer
 {
 	public MixerContainer(MenuType<?> type, int id, Inventory inventoryPlayer, MixerBlockEntity tile)
 	{
@@ -32,7 +32,7 @@ public class MixerContainer extends IEBaseContainer<MixerBlockEntity> implements
 				.orElseThrow(RuntimeException::new);
 		for(int i = 0; i < 8; i++)
 			this.addSlot(new IESlot.ContainerCallback(this, inv, i, 7+(i%2)*21, 7+(i/2)*18));
-		slotCount = 8;
+		ownSlotCount = 8;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

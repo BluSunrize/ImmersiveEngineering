@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.Slot;
 
 import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity.*;
 
-public class ClocheContainer extends IEBaseContainer<ClocheBlockEntity>
+public class ClocheContainer extends IEBaseContainerOld<ClocheBlockEntity>
 {
 	public ClocheContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ClocheBlockEntity bEntity)
 	{
@@ -29,7 +29,7 @@ public class ClocheContainer extends IEBaseContainer<ClocheBlockEntity>
 		for(int i = 0; i < 4; i++)
 			this.addSlot(new IESlot.Output(this, this.inv, 3+i, 116+i%2*18, 34+i/2*18));
 
-		this.slotCount = 7;
+		this.ownSlotCount = 7;
 		this.tile = bEntity;
 
 		for(int i = 0; i < 3; i++)

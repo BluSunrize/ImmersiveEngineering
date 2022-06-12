@@ -149,7 +149,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	{
 		// withdrawing from edit slot, or quick-moving a circuit into it
 		boolean editCircuit = pSlotId==CircuitTableBlockEntity.getEditSlot()||(
-				pType==ClickType.QUICK_MOVE&&pSlotId >= this.menu.slotCount
+				pType==ClickType.QUICK_MOVE&&pSlotId >= this.menu.ownSlotCount
 						&&pSlot!=null&&pSlot.getItem().is(IEItems.Misc.LOGIC_CIRCUIT_BOARD.get())
 		);
 

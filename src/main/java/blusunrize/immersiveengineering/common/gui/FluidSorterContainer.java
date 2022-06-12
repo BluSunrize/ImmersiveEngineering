@@ -19,7 +19,7 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nonnull;
 
-public class FluidSorterContainer extends IEBaseContainer<FluidSorterBlockEntity>
+public class FluidSorterContainer extends IEBaseContainerOld<FluidSorterBlockEntity>
 {
 	int slotCount;
 

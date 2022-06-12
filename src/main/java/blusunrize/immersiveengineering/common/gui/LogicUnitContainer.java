@@ -13,14 +13,14 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 
-public class LogicUnitContainer extends IEBaseContainer<LogicUnitBlockEntity>
+public class LogicUnitContainer extends IEBaseContainerOld<LogicUnitBlockEntity>
 {
 	public LogicUnitContainer(MenuType<?> type, int id, Inventory inventoryPlayer, LogicUnitBlockEntity tile)
 	{
 		super(type, tile, id);
 		for(int i = 0; i < tile.getInventory().size(); i++)
 			this.addSlot(new IESlot.LogicCircuit(this, this.inv, i, 44+(i%5)*18, 19+(i/5)*18));
-		this.slotCount = tile.getInventory().size();
+		this.ownSlotCount = tile.getInventory().size();
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

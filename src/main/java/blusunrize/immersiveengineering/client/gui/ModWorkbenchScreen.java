@@ -53,7 +53,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	protected List<InfoArea> makeInfoAreas()
 	{
 		List<InfoArea> areas = new ArrayList<>();
-		for(int i = 0; i < menu.slotCount; i++)
+		for(int i = 0; i < menu.ownSlotCount; i++)
 		{
 			Slot s = menu.getSlot(i);
 			if(s instanceof IESlot.BlueprintOutput)
@@ -65,7 +65,7 @@ public class ModWorkbenchScreen extends ToolModificationScreen<ModWorkbenchConta
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		for(int i = 0; i < menu.slotCount; i++)
+		for(int i = 0; i < menu.ownSlotCount; i++)
 		{
 			Slot s = menu.getSlot(i);
 			if(!(s instanceof AlwaysEmptySlot))

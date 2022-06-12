@@ -54,7 +54,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.SplitConvey
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalConveyor;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
-import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
+import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
@@ -490,7 +490,7 @@ public class ClientProxy extends CommonProxy
 		MenuScreens.register(type.getType(), factory);
 	}
 
-	public static <C extends IEBaseContainer<?>, S extends Screen & MenuAccess<C>>
+	public static <C extends IEBaseContainerOld<?>, S extends Screen & MenuAccess<C>>
 	void registerTileScreen(BEContainer<?, C> type, ScreenConstructor<C, S> factory)
 	{
 		MenuScreens.register(type.getType(), factory);

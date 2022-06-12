@@ -48,7 +48,7 @@ public class MessageContainerData implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		AbstractContainerMenu currentContainer = ImmersiveEngineering.proxy.getClientPlayer().containerMenu;
-		if(!(currentContainer instanceof IEBaseContainer<?> ieContainer))
+		if(!(currentContainer instanceof IEBaseContainer ieContainer))
 			return;
 		ieContainer.receiveSync(synced);
 	}

@@ -21,7 +21,7 @@ import javax.annotation.Nonnull;
 
 import static blusunrize.immersiveengineering.common.blocks.wooden.ItemBatcherBlockEntity.NUM_SLOTS;
 
-public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherBlockEntity>
+public class ItemBatcherContainer extends IEBaseContainerOld<ItemBatcherBlockEntity>
 {
 	public ItemBatcherContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ItemBatcherBlockEntity tile)
 	{
@@ -32,7 +32,7 @@ public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherBlockEntity
 		for(int i = 0; i < NUM_SLOTS; i++)
 			this.addSlot(new Slot(this.inv, i, 8+i*18, 59));
 
-		this.slotCount = 2*NUM_SLOTS;
+		this.ownSlotCount = 2*NUM_SLOTS;
 		this.tile = tile;
 
 		for(int i = 0; i < 3; i++)
@@ -52,13 +52,13 @@ public class ItemBatcherContainer extends IEBaseContainer<ItemBatcherBlockEntity
 		{
 			ItemStack itemstack1 = slotObject.getItem();
 			itemstack = itemstack1.copy();
-			if(slot < slotCount)
+			if(slot < ownSlotCount)
 			{
-				if(!this.moveItemStackTo(itemstack1, slotCount, this.slots.size(), true))
+				if(!this.moveItemStackTo(itemstack1, ownSlotCount, this.slots.size(), true))
 					return ItemStack.EMPTY;
 			}
 			// exclude ghost slots from shiftclick
-			else if(!this.moveItemStackTo(itemstack1, 9, slotCount, false))
+			else if(!this.moveItemStackTo(itemstack1, 9, ownSlotCount, false))
 			{
 				return ItemStack.EMPTY;
 			}

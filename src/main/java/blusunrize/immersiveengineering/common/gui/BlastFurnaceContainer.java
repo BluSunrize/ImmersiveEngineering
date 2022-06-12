@@ -16,7 +16,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceBlockEntity<?>>
+public class BlastFurnaceContainer extends IEBaseContainerOld<BlastFurnaceBlockEntity<?>>
 {
 	public final FurnaceLikeBlockEntity<?, ?>.StateView state;
 
@@ -37,7 +37,7 @@ public class BlastFurnaceContainer extends IEBaseContainer<BlastFurnaceBlockEnti
 		this.addSlot(new IESlot.BlastFuel(this, this.inv, 1, 52, 53, tile.getLevel()));
 		this.addSlot(new IESlot.Output(this, this.inv, 2, 112, 17));
 		this.addSlot(new IESlot.Output(this, this.inv, 3, 112, 53));
-		slotCount = 4;
+		ownSlotCount = 4;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

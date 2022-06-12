@@ -67,7 +67,7 @@ public class IEContainerTypes
 
 	public static final RegistryObject<MenuType<CrateEntityContainer>> CRATE_MINECART = registerSimple(Lib.GUIID_CartCrate, CrateEntityContainer::new);
 
-	public static <T extends BlockEntity, C extends IEBaseContainer<? super T>>
+	public static <T extends BlockEntity, C extends IEBaseContainerOld<? super T>>
 	BEContainer<T, C> register(String name, BEContainerConstructor<T, C> container)
 	{
 		RegistryObject<MenuType<C>> typeRef = REGISTER.register(
@@ -120,7 +120,7 @@ public class IEContainerTypes
 		);
 	}
 
-	public static class BEContainer<T extends BlockEntity, C extends IEBaseContainer<? super T>>
+	public static class BEContainer<T extends BlockEntity, C extends IEBaseContainerOld<? super T>>
 	{
 		private final RegistryObject<MenuType<C>> type;
 		private final BEContainerConstructor<T, C> factory;
@@ -165,7 +165,7 @@ public class IEContainerTypes
 		}
 	}
 
-	public interface BEContainerConstructor<T extends BlockEntity, C extends IEBaseContainer<? super T>>
+	public interface BEContainerConstructor<T extends BlockEntity, C extends IEBaseContainerOld<? super T>>
 	{
 		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, T te);
 	}

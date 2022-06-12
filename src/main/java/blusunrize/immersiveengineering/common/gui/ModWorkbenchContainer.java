@@ -30,7 +30,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 
-public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEntity>
+public class ModWorkbenchContainer extends IEBaseContainerOld<ModWorkbenchBlockEntity>
 {
 	public static final int MAX_NUM_DYNAMIC_SLOTS = 20;
 
@@ -63,7 +63,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 		((ContainerAccess)this).getLastSlots().clear();
 		((ContainerAccess)this).getRemoteSlots().clear();
 		this.addSlot(new IESlot.ModWorkbench(this, this.inv, 0, 24, 22, 1));
-		slotCount = 1;
+		ownSlotCount = 1;
 
 		ItemStack tool = this.getSlot(0).getItem();
 		if(tool.getItem() instanceof IUpgradeableTool upgradeableTool)
@@ -82,14 +82,14 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 				for(Slot s : slots)
 				{
 					this.addSlot(s);
-					slotCount++;
+					ownSlotCount++;
 				}
 
 			tool.getCapability(CapabilityShader.SHADER_CAPABILITY, null).ifPresent(wrapper ->
 			{
 				this.shaderInv = new ShaderInventory(this, wrapper);
 				this.addSlot(new IESlot.Shader(this, shaderInv, 0, 130, 32, tool));
-				slotCount++;
+				ownSlotCount++;
 				this.shaderInv.shader = wrapper.getShaderItem();
 			});
 		}
@@ -108,7 +108,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 				{
 					int y = 21+(i < 9?i/3: (-(i-6)/3))*18;
 					this.addSlot(new IESlot.BlueprintOutput(this, inventoryBPoutput, this.inv, i, 118+(i%3*18), y, recipes[i]));
-					slotCount++;
+					ownSlotCount++;
 				}
 			}
 			//Add input slots, these are always here if no tool is in
@@ -118,14 +118,14 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 					this.addSlot(new IESlot.BlueprintInput(this, this.inv, this.inventoryBPoutput, i+1, i%2==0?74: 92, 21+(i/2)*18));
 				else
 					this.addSlot(new Slot(this.inv, i+1, i%2==0?74: 92, 21+(i/2)*18));
-				slotCount++;
+				ownSlotCount++;
 			}
 			if(inventoryBPoutput!=null)
 				inventoryBPoutput.updateOutputs(inv);
 		}
 		// Add "useless" slots to keep the number of slots (and therefore the IDs of the player inventory slots)
 		// constant. MC doesn't handle changing slot IDs well, causing desyncs
-		for(; slotCount < MAX_NUM_DYNAMIC_SLOTS; ++slotCount)
+		for(; ownSlotCount < MAX_NUM_DYNAMIC_SLOTS; ++ownSlotCount)
 			addSlot(new IESlot.AlwaysEmptySlot(this));
 		bindPlayerInv(inventoryPlayer);
 		ImmersiveEngineering.proxy.reInitGui();
@@ -143,14 +143,14 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 			ItemStack stackInSlot = slotObject.getItem();
 			resultStack = stackInSlot.copy();
 
-			if(slot < slotCount)
+			if(slot < ownSlotCount)
 			{
-				if(!this.moveItemStackTo(stackInSlot, slotCount, (slotCount+36), true))
+				if(!this.moveItemStackTo(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
 					return ItemStack.EMPTY;
 			}
 			else if(!stackInSlot.isEmpty())
 			{
-				boolean singleSlot = slotCount==1;
+				boolean singleSlot = ownSlotCount==1;
 				if(stackInSlot.getItem() instanceof EngineersBlueprintItem
 						||(stackInSlot.getItem() instanceof IUpgradeableTool uTool&&uTool.canModify(stackInSlot))
 						||(stackInSlot.getItem() instanceof IConfigurableTool cTool&&cTool.canConfigure(stackInSlot)))
@@ -161,7 +161,7 @@ public class ModWorkbenchContainer extends IEBaseContainer<ModWorkbenchBlockEnti
 
 				if(!singleSlot)
 				{
-					if(!this.moveItemStackTo(stackInSlot, 1, slotCount, false))
+					if(!this.moveItemStackTo(stackInSlot, 1, ownSlotCount, false))
 						return ItemStack.EMPTY;
 				}
 			}

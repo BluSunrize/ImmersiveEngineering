@@ -14,7 +14,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 
-public class SqueezerContainer extends IEBaseContainer<SqueezerBlockEntity>
+public class SqueezerContainer extends IEBaseContainerOld<SqueezerBlockEntity>
 {
 	public SqueezerContainer(MenuType<?> type, int id, Inventory inventoryPlayer, SqueezerBlockEntity tile)
 	{
@@ -25,7 +25,7 @@ public class SqueezerContainer extends IEBaseContainer<SqueezerBlockEntity>
 		this.addSlot(new IESlot.Output(this, this.inv, 8, 91, 53));
 		this.addSlot(new IESlot.FluidContainer(this, this.inv, 9, 134, 17, 0));
 		this.addSlot(new IESlot.Output(this, this.inv, 10, 134, 53));
-		slotCount = 11;
+		ownSlotCount = 11;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

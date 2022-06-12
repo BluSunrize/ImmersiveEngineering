@@ -27,7 +27,7 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
-		ToolboxScreen.gatherEmptySlotTooltip(menu, menu.slotCount, leftPos, topPos, mouseX, mouseY, addGray);
+		ToolboxScreen.gatherEmptySlotTooltip(menu, menu.ownSlotCount, leftPos, topPos, mouseX, mouseY, addGray);
 	}
 
 	@Override

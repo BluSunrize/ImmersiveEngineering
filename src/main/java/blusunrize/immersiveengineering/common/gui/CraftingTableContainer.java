@@ -35,7 +35,7 @@ import java.util.function.Consumer;
 import static blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlockEntity.GRID_SIZE;
 
 @ChestContainer
-public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEntity>
+public class CraftingTableContainer extends IEBaseContainerOld<CraftingTableBlockEntity>
 {
 	private final CraftingContainer craftingInventory = new CraftingContainer(this, GRID_SIZE, GRID_SIZE);
 	private final ResultContainer craftResultInventory = new ResultContainer();
@@ -58,7 +58,7 @@ public class CraftingTableContainer extends IEBaseContainer<CraftingTableBlockEn
 		for(int i = 0; i < 18; i++)
 			this.addSlot(new SlotItemHandler(storageInventory, iSlot++, 8+(i%9)*18, 79+(i/9)*18));
 
-		this.slotCount = storageInventory.getSlots()+tile.getCraftingInventory().size();
+		this.ownSlotCount = storageInventory.getSlots()+tile.getCraftingInventory().size();
 		this.tile = tile;
 
 		for(int i = 0; i < 3; i++)

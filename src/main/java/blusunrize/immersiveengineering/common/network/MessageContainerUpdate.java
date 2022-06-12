@@ -49,8 +49,8 @@ public class MessageContainerUpdate implements IMessage
 		assert player!=null;
 		ctx.enqueueWork(() -> {
 			player.resetLastActionTime();
-			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IEBaseContainer)
-				((IEBaseContainer<?>)player.containerMenu).receiveMessageFromScreen(nbt);
+			if(player.containerMenu.containerId==windowId&&player.containerMenu instanceof IEBaseContainer ieMenu)
+				ieMenu.receiveMessageFromScreen(nbt);
 		});
 	}
 }

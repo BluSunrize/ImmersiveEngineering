@@ -20,7 +20,7 @@ import net.minecraftforge.items.wrapper.InvWrapper;
 
 import javax.annotation.Nonnull;
 
-public class AssemblerContainer extends IEBaseContainer<AssemblerBlockEntity>
+public class AssemblerContainer extends IEBaseContainerOld<AssemblerBlockEntity>
 {
 	public AssemblerContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AssemblerBlockEntity tile)
 	{
@@ -40,7 +40,7 @@ public class AssemblerContainer extends IEBaseContainer<AssemblerBlockEntity>
 		}
 		for(int i = 0; i < 18; i++)
 			this.addSlot(new Slot(this.inv, i, 13+(i%9)*18, 87+(i/9)*18));
-		slotCount = 21;
+		ownSlotCount = 21;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

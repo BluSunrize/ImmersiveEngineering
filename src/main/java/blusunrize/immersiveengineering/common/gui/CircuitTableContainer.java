@@ -22,7 +22,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class CircuitTableContainer extends IEBaseContainer<CircuitTableBlockEntity>
+public class CircuitTableContainer extends IEBaseContainerOld<CircuitTableBlockEntity>
 {
 	private final SimpleContainer outputInventory = new SimpleContainer(1);
 
@@ -32,11 +32,11 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableBlockEnti
 	{
 		super(type, tile, id);
 
-		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 14, IETags.circuitPCB));
-		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 34, IETags.circuitLogic));
-		this.addSlot(new IESlot.Tagged(this, this.inv, this.slotCount++, 8, 54, IETags.circuitSolder));
+		this.addSlot(new IESlot.Tagged(this, this.inv, this.ownSlotCount++, 8, 14, IETags.circuitPCB));
+		this.addSlot(new IESlot.Tagged(this, this.inv, this.ownSlotCount++, 8, 34, IETags.circuitLogic));
+		this.addSlot(new IESlot.Tagged(this, this.inv, this.ownSlotCount++, 8, 54, IETags.circuitSolder));
 
-		this.addSlot(new IESlot.LogicCircuit(this, this.inv, this.slotCount++, 175, 11));
+		this.addSlot(new IESlot.LogicCircuit(this, this.inv, this.ownSlotCount++, 175, 11));
 
 		this.addSlot(new IESlot.Output(this, this.outputInventory, 0, 194, 56)
 		{
@@ -53,7 +53,7 @@ public class CircuitTableContainer extends IEBaseContainer<CircuitTableBlockEnti
 				super.onTake(player, stack);
 			}
 		});
-		this.slotCount++;
+		this.ownSlotCount++;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

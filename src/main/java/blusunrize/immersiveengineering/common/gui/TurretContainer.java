@@ -19,7 +19,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class TurretContainer<T extends TurretBlockEntity<T>> extends IEBaseContainer<T>
+public abstract class TurretContainer<T extends TurretBlockEntity<T>> extends IEBaseContainerOld<T>
 {
 	public TurretContainer(MenuType<?> type, int id, Inventory inventoryPlayer, T tile)
 	{
@@ -40,7 +40,7 @@ public abstract class TurretContainer<T extends TurretBlockEntity<T>> extends IE
 				}
 			});
 			this.addSlot(new IESlot.Output(this, this.inv, 1, 134, 49));
-			slotCount = 2;
+			ownSlotCount = 2;
 		}
 
 		for(int i = 0; i < 3; i++)

@@ -16,7 +16,7 @@ import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-public class CokeOvenContainer extends IEBaseContainer<CokeOvenBlockEntity>
+public class CokeOvenContainer extends IEBaseContainerOld<CokeOvenBlockEntity>
 {
 	public CokeOvenBlockEntity.CokeOvenData data;
 
@@ -35,7 +35,7 @@ public class CokeOvenContainer extends IEBaseContainer<CokeOvenBlockEntity>
 		this.addSlot(new IESlot.Output(this, this.inv, 1, 85, 35));
 		this.addSlot(new IESlot.FluidContainer(this, this.inv, 2, 152, 17, 0));
 		this.addSlot(new IESlot.Output(this, this.inv, 3, 152, 53));
-		slotCount = 4;
+		ownSlotCount = 4;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

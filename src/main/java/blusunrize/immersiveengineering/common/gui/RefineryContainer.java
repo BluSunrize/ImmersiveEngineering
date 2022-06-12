@@ -8,27 +8,21 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.crafting.RefineryRecipe;
 import blusunrize.immersiveengineering.common.blocks.metal.RefineryBlockEntity;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 
-import java.util.Optional;
-
-public class RefineryContainer extends IEBaseContainer<RefineryBlockEntity>
+public class RefineryContainer extends IEBaseContainerOld<RefineryBlockEntity>
 {
 	public RefineryContainer(MenuType<?> type, int id, Inventory inventoryPlayer, RefineryBlockEntity tile)
 	{
 		super(type, tile, id);
 
-		this.addSlot(new Slot(this.inv, slotCount++, 73, 26));
-		this.addSlot(new IESlot.FluidContainer(this, this.inv, slotCount++, 133, 15, 0));
-		this.addSlot(new IESlot.Output(this, this.inv, slotCount++, 133, 54));
+		this.addSlot(new Slot(this.inv, ownSlotCount++, 73, 26));
+		this.addSlot(new IESlot.FluidContainer(this, this.inv, ownSlotCount++, 133, 15, 0));
+		this.addSlot(new IESlot.Output(this, this.inv, ownSlotCount++, 133, 54));
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

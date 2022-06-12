@@ -20,7 +20,7 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchBlockEntity>
+public class AutoWorkbenchContainer extends IEBaseContainerOld<AutoWorkbenchBlockEntity>
 {
 	public Inventory inventoryPlayer;
 
@@ -33,7 +33,7 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchBlockEn
 
 		for(int i = 0; i < 16; i++)
 			this.addSlot(new Slot(this.inv, 1+i, 7+(i%4)*18, 24+(i/4)*18));
-		slotCount = 17;
+		ownSlotCount = 17;
 
 		bindPlayerInv(inventoryPlayer);
 		addGenericData(GenericContainerData.energy(tile.energyStorage));
@@ -66,9 +66,9 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchBlockEn
 			ItemStack stackInSlot = slotObject.getItem();
 			stack = stackInSlot.copy();
 
-			if(slot < slotCount)
+			if(slot < ownSlotCount)
 			{
-				if(!this.moveItemStackTo(stackInSlot, slotCount, (slotCount+36), true))
+				if(!this.moveItemStackTo(stackInSlot, ownSlotCount, (ownSlotCount+36), true))
 					return ItemStack.EMPTY;
 			}
 			else if(!stackInSlot.isEmpty())
@@ -81,7 +81,7 @@ public class AutoWorkbenchContainer extends IEBaseContainer<AutoWorkbenchBlockEn
 				else
 				{
 					boolean b = true;
-					for(int i = 1; i < slotCount; i++)
+					for(int i = 1; i < ownSlotCount; i++)
 					{
 						Slot s = slots.get(i);
 						if(s!=null&&s.mayPlace(stackInSlot))

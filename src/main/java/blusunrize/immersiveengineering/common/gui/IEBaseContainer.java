@@ -1,11 +1,3 @@
-/*
- * BluSunrize
- * Copyright (c) 2017
- *
- * This code is licensed under "Blu's License of Common Sense"
- * Details can be found in the license file in the root folder of this project
- */
-
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
@@ -13,18 +5,15 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import blusunrize.immersiveengineering.common.network.MessageContainerData;
-import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -38,27 +27,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
-public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMenu
+public abstract class IEBaseContainer extends AbstractContainerMenu
 {
-	public T tile;
-	@Nullable
-	public Container inv;
-	public int slotCount;
 	private final List<GenericContainerData<?>> genericData = new ArrayList<>();
 	private final List<ServerPlayer> usingPlayers = new ArrayList<>();
+	public int ownSlotCount;
 
-	public IEBaseContainer(MenuType<?> type, T tile, int id)
+	protected IEBaseContainer(@Nullable MenuType<?> pMenuType, int pContainerId)
 	{
-		super(type, id);
-		this.tile = tile;
-		if(tile instanceof IIEInventory)
-			this.inv = new BlockEntityInventory(tile, this);
-	}
-
-	@Override
-	public boolean stillValid(@Nonnull Player player)
-	{
-		return inv!=null&&inv.stillValid(player);//Override for TE's that don't implement IIEInventory
+		super(pMenuType, pContainerId);
 	}
 
 	public void addGenericData(GenericContainerData<?> newData)
@@ -117,9 +94,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 					slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
 			}
 			else if(stackHeld.isEmpty())
-			{
 				slot.set(ItemStack.EMPTY);
-			}
 			else if(slot.mayPlace(stackHeld))
 			{
 				if(ItemStack.isSame(stackSlot, stackHeld))
@@ -135,9 +110,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 			ItemStack stackHeld = getCarried();
 			int amount = Math.min(slot.getMaxStackSize(), stackHeld.getCount());
 			if(!slot.hasItem())
-			{
 				slot.set(ItemHandlerHelper.copyStackWithSize(stackHeld, amount));
-			}
 		}
 	}
 
@@ -151,26 +124,18 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		{
 			ItemStack itemstack1 = slotObject.getItem();
 			itemstack = itemstack1.copy();
-			if(slot < slotCount)
+			if(slot < ownSlotCount)
 			{
-				if(!this.moveItemStackTo(itemstack1, slotCount, this.slots.size(), true))
-				{
+				if(!this.moveItemStackTo(itemstack1, ownSlotCount, this.slots.size(), true))
 					return ItemStack.EMPTY;
-				}
 			}
-			else if(!this.moveItemStackToWithMayPlace(itemstack1, 0, slotCount))
-			{
+			else if(!this.moveItemStackToWithMayPlace(itemstack1, 0, ownSlotCount))
 				return ItemStack.EMPTY;
-			}
 
 			if(itemstack1.isEmpty())
-			{
 				slotObject.set(ItemStack.EMPTY);
-			}
 			else
-			{
 				slotObject.setChanged();
-			}
 		}
 
 		return itemstack;
@@ -198,14 +163,6 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 		return inAllowedRange&&moveItemStackTo(pStack, allowedStart, pEndIndex, false);
 	}
 
-	@Override
-	public void removed(Player playerIn)
-	{
-		super.removed(playerIn);
-		if(inv!=null)
-			this.inv.stopOpen(playerIn);
-	}
-
 	public void receiveMessageFromScreen(CompoundTag nbt)
 	{
 	}
@@ -213,7 +170,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 	@SubscribeEvent
 	public static void onContainerOpened(PlayerContainerEvent.Open ev)
 	{
-		if(ev.getContainer() instanceof IEBaseContainer<?> ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
+		if(ev.getContainer() instanceof IEBaseContainer ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
 		{
 			ieContainer.usingPlayers.add(serverPlayer);
 			List<Pair<Integer, DataPair<?>>> list = new ArrayList<>();
@@ -228,7 +185,7 @@ public class IEBaseContainer<T extends BlockEntity> extends AbstractContainerMen
 	@SubscribeEvent
 	public static void onContainerClosed(PlayerContainerEvent.Close ev)
 	{
-		if(ev.getContainer() instanceof IEBaseContainer<?> ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
+		if(ev.getContainer() instanceof IEBaseContainer ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
 			ieContainer.usingPlayers.remove(serverPlayer);
 	}
 }

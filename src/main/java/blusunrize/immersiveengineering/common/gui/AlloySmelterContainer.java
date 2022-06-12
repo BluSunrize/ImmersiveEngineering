@@ -13,7 +13,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 
-public class AlloySmelterContainer extends IEBaseContainer<AlloySmelterBlockEntity>
+public class AlloySmelterContainer extends IEBaseContainerOld<AlloySmelterBlockEntity>
 {
 	public AlloySmelterContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AlloySmelterBlockEntity tile)
 	{
@@ -23,7 +23,7 @@ public class AlloySmelterContainer extends IEBaseContainer<AlloySmelterBlockEnti
 		this.addSlot(new Slot(this.inv, 1, 66, 17));
 		this.addSlot(new IESlot.IEFurnaceSFuelSlot(this, this.inv, 2, 52, 53));
 		this.addSlot(new IESlot.Output(this, this.inv, 3, 120, 35));
-		slotCount = 4;
+		ownSlotCount = 4;
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)

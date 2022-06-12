@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class SorterContainer extends IEBaseContainer<SorterBlockEntity>
+public class SorterContainer extends IEBaseContainerOld<SorterBlockEntity>
 {
 	int slotCount;
 

@@ -10,7 +10,6 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.client.gui.IEContainerScreen;
-import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
 import blusunrize.immersiveengineering.common.gui.IESlot.ItemHandlerGhost;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
 import com.google.common.collect.ImmutableList;
@@ -49,14 +48,12 @@ public class IEGhostItemHandler implements IGhostIngredientHandler<IEContainerSc
 	{
 		final ItemHandlerGhost slot;
 		final IEContainerScreen<?> gui;
-		final IEBaseContainer<?> container;
 		Rect2i area;
 		int lastGuiLeft, lastGuiTop;
 
 		public GhostSlotTarget(ItemHandlerGhost slot, IEContainerScreen<?> gui)
 		{
 			this.slot = slot;
-			this.container = (IEBaseContainer<?>)gui.getMenu();
 			this.gui = gui;
 			initRectangle();
 		}

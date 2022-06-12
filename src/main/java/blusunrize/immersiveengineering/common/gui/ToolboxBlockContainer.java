@@ -10,28 +10,22 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.common.blocks.metal.ToolboxBlockEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
-import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class ToolboxBlockContainer extends IEBaseContainer<ToolboxBlockEntity> implements ICallbackContainer
+public class ToolboxBlockContainer extends IEBaseContainerOld<ToolboxBlockEntity> implements ICallbackContainer
 {
-	private IItemHandler inv;
-
 	public ToolboxBlockContainer(MenuType<?> type, int id, Inventory inventoryPlayer, ToolboxBlockEntity tile)
 	{
 		super(type, tile, id);
 		this.tile = tile;
-		inv = new ItemStackHandler(tile.getInventory());
-		if(inv instanceof IEItemStackHandler)
-			((IEItemStackHandler)inv).setTile(tile);
+		IItemHandler inv = new ItemStackHandler(tile.getInventory());
 
-		this.slotCount = ToolboxContainer.addSlots(this::addSlot, this, this.inv, inventoryPlayer);
+		this.ownSlotCount = ToolboxContainer.addSlots(this::addSlot, this, inv, inventoryPlayer);
 	}
 
 	@Override
@@ -44,12 +38,5 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxBlockEntity> i
 	public boolean canTake(ItemStack stack, int slotNumber, Slot slotObject)
 	{
 		return true;
-	}
-
-	@Override
-	public void removed(Player playerIn)
-	{
-		if(inv instanceof IEItemStackHandler)
-			((IEItemStackHandler)inv).setTile(null);
 	}
 }
