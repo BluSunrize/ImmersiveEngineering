@@ -8,15 +8,19 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.items.IItemHandler;
+
+import java.util.function.Consumer;
 
 public class ToolboxContainer extends InternalStorageItemContainer implements ICallbackContainer
 {
@@ -28,40 +32,57 @@ public class ToolboxContainer extends InternalStorageItemContainer implements IC
 	@Override
 	int addSlots()
 	{
-		int i = 0;
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 48, 24));
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 30, 42));
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 48, 42));
+		return addSlots(this::addSlot, this, this.inv, this.inventoryPlayer);
+	}
 
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 75, 24));
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 93, 24));
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 111, 24));
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 75, 42));
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 93, 42));
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 111, 42));
-		this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 129, 42));
+	public static int addSlots(
+			Consumer<Slot> addSlot, AbstractContainerMenu menu, IItemHandler inv, Inventory playerInv
+	)
+	{
+		int numOwnSlots = 0;
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 48, 24));
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 30, 42));
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 48, 42));
+
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 75, 24));
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 93, 24));
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 111, 24));
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 75, 42));
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 93, 42));
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 111, 42));
+		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 129, 42));
 
 		for(int j = 0; j < 6; j++)
-			this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 35+j*18, 77));
+			addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 35+j*18, 77));
 		for(int j = 0; j < 7; j++)
-			this.addSlot(new IESlot.ContainerCallback(this, this.inv, i++, 26+j*18, 112));
+			addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 26+j*18, 112));
 
-		bindPlayerInventory(inventoryPlayer);
-		return i;
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
+				addSlot.accept(new Slot(playerInv, j+i*9+9, 8+j*18, 157+i*18));
+
+		for(int i = 0; i < 9; i++)
+			addSlot.accept(new Slot(playerInv, i, 8+i*18, 215));
+		return numOwnSlots;
 	}
 
 	@Override
-	public boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject)
+	public boolean canInsert(ItemStack stack, int slotNumber, Slot slotObject)
+	{
+		return canInsert(stack, slotNumber);
+	}
+
+	public static boolean canInsert(ItemStack stack, int slotNumber)
 	{
 		if(stack.isEmpty())
 			return false;
 		if(!IEApi.isAllowedInCrate(stack))
 			return false;
-		if(slotNumer < 3)
+		if(slotNumber < 3)
 			return ToolboxHandler.isFood(stack);
-		else if(slotNumer < 10)
+		else if(slotNumber < 10)
 			return ToolboxHandler.isTool(stack);
-		else if(slotNumer < 16)
+		else if(slotNumber < 16)
 			return ToolboxHandler.isWiring(stack);
 		else
 			return true;
@@ -71,15 +92,5 @@ public class ToolboxContainer extends InternalStorageItemContainer implements IC
 	public boolean canTake(ItemStack stack, int slotNumer, Slot slotObject)
 	{
 		return true;
-	}
-
-	protected void bindPlayerInventory(Inventory inventoryPlayer)
-	{
-		for(int i = 0; i < 3; i++)
-			for(int j = 0; j < 9; j++)
-				this.addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 157+i*18));
-
-		for(int i = 0; i < 9; i++)
-			this.addSlot(new Slot(inventoryPlayer, i, 8+i*18, 215));
 	}
 }

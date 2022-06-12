@@ -8,8 +8,6 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
-import blusunrize.immersiveengineering.api.IETags;
-import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.ToolboxBlockEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IEItemStackHandler;
@@ -32,49 +30,18 @@ public class ToolboxBlockContainer extends IEBaseContainer<ToolboxBlockEntity> i
 		inv = new ItemStackHandler(tile.getInventory());
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setTile(tile);
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 48, 24));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 30, 42));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 48, 42));
 
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 75, 24));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 93, 24));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 111, 24));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 75, 42));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 93, 42));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 111, 42));
-		this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 129, 42));
-
-		for(int j = 0; j < 6; j++)
-			this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 35+j*18, 77));
-		for(int j = 0; j < 7; j++)
-			this.addSlot(new IESlot.ContainerCallback(this, inv, slotCount++, 26+j*18, 112));
-
-		for(int i = 0; i < 3; i++)
-			for(int j = 0; j < 9; j++)
-				this.addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 157+i*18));
-		for(int i = 0; i < 9; i++)
-			this.addSlot(new Slot(inventoryPlayer, i, 8+i*18, 215));
+		this.slotCount = ToolboxContainer.addSlots(this::addSlot, this, this.inv, inventoryPlayer);
 	}
 
 	@Override
-	public boolean canInsert(ItemStack stack, int slotNumer, Slot slotObject)
+	public boolean canInsert(ItemStack stack, int slotNumber, Slot slotObject)
 	{
-		if(stack.isEmpty())
-			return false;
-		if(stack.is(IETags.forbiddenInCrates))
-			return false;
-		if(slotNumer < 3)
-			return ToolboxHandler.isFood(stack);
-		else if(slotNumer < 10)
-			return ToolboxHandler.isTool(stack);
-		else if(slotNumer < 16)
-			return ToolboxHandler.isWiring(stack);
-		else
-			return true;
+		return ToolboxContainer.canInsert(stack, slotNumber);
 	}
 
 	@Override
-	public boolean canTake(ItemStack stack, int slotNumer, Slot slotObject)
+	public boolean canTake(ItemStack stack, int slotNumber, Slot slotObject)
 	{
 		return true;
 	}

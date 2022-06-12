@@ -8,12 +8,10 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.ToolboxBlockContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
 
 import java.util.function.Consumer;
 
@@ -29,18 +27,7 @@ public class ToolboxBlockScreen extends IEContainerScreen<ToolboxBlockContainer>
 	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
-		int slot = -1;
-		for(int i = 0; i < this.menu.slotCount; i++)
-		{
-			Slot s = this.menu.getSlot(i);
-			if(!s.hasItem()&&mouseX > leftPos+s.x&&mouseX < leftPos+s.x+16&&mouseY > topPos+s.y&&mouseY < topPos+s.y+16)
-				slot = i;
-		}
-		String ss = null;
-		if(slot >= 0)
-			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
-		if(ss!=null)
-			addGray.accept(Component.translatable(Lib.DESC_INFO+"toolbox."+ss));
+		ToolboxScreen.gatherEmptySlotTooltip(menu, menu.slotCount, leftPos, topPos, mouseX, mouseY, addGray);
 	}
 
 	@Override

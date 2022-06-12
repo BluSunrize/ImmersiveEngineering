@@ -13,11 +13,11 @@ import blusunrize.immersiveengineering.common.gui.ToolboxContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 import java.util.function.Consumer;
 
-//TODO deduplicate with block version
 public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 {
 	public ToolboxScreen(ToolboxContainer container, Inventory inventoryPlayer, Component title)
@@ -30,18 +30,26 @@ public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
+		gatherEmptySlotTooltip(menu, menu.internalSlots, leftPos, topPos, mouseX, mouseY, addGray);
+	}
+
+	public static void gatherEmptySlotTooltip(
+			AbstractContainerMenu menu, int internalSlots, int leftPos, int topPos, int mouseX, int mouseY,
+			Consumer<Component> addGray
+	)
+	{
 		int slot = -1;
-		for(int i = 0; i < this.menu.internalSlots; i++)
+		for(int i = 0; i < internalSlots; i++)
 		{
-			Slot s = this.menu.getSlot(i);
+			Slot s = menu.getSlot(i);
 			if(!s.hasItem()&&mouseX > leftPos+s.x&&mouseX < leftPos+s.x+16&&mouseY > topPos+s.y&&mouseY < topPos+s.y+16)
 				slot = i;
 		}
-		String ss = null;
 		if(slot >= 0)
-			ss = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
-		if(ss!=null)
-			addGray.accept(Component.translatable(Lib.DESC_INFO+"toolbox."+ss));
+		{
+			String areaKey = slot < 3?"food": slot < 10?"tool": slot < 16?"wire": "any";
+			addGray.accept(Component.translatable(Lib.DESC_INFO+"toolbox."+areaKey));
+		}
 	}
 
 	@Override
