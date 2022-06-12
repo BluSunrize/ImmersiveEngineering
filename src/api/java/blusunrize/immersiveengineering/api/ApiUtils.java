@@ -32,9 +32,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.LogicalSide;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.Map;
 import java.util.Random;
-import java.util.TreeMap;
 
 import static blusunrize.immersiveengineering.api.IETags.getIngot;
 
@@ -91,13 +89,6 @@ public class ApiUtils
 		return dim==0?vec.x: (dim==1?vec.y: vec.z);
 	}
 
-	public static <T extends Comparable<T>> Map<T, Integer> sortMap(Map<T, Integer> map, boolean inverse)
-	{
-		TreeMap<T, Integer> sortedMap = new TreeMap<>(new ValueComparator<T>(map, inverse));
-		sortedMap.putAll(map);
-		return sortedMap;
-	}
-
 	//Based on net.minecraft.entity.EntityLivingBase.knockBack
 	public static void knockbackNoSource(LivingEntity entity, double strength, double xRatio, double zRatio)
 	{
@@ -131,26 +122,5 @@ public class ApiUtils
 	public static void addFutureServerTask(Level world, Runnable task)
 	{
 		addFutureServerTask(world, task, false);
-	}
-
-	public static record ValueComparator<T extends Comparable<T>>(
-			Map<T, Integer> base, boolean inverse
-	) implements java.util.Comparator<T>
-	{
-
-		@Override
-		public int compare(T s0, T s1)//Cant return equal to keys separate
-		{
-			int v0 = base.get(s0);
-			int v1 = base.get(s1);
-			int ret;
-			if(v0 > v1)
-				ret = -1;
-			else if(v0 < v1)
-				ret = 1;
-			else
-				ret = s0.compareTo(s1);
-			return ret*(inverse?-1: 1);
-		}
 	}
 }
