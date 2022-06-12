@@ -8,7 +8,7 @@
 
 package blusunrize.immersiveengineering.common.blocks.wooden;
 
-import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparatorOverride;
 import blusunrize.immersiveengineering.common.gui.CrateContainer;
@@ -115,7 +115,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return !stack.is(IETags.forbiddenInCrates);
+		return IEApi.isAllowedInCrate(stack);
 	}
 
 	@Override

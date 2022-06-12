@@ -55,7 +55,7 @@ public class ToolboxContainer extends InternalStorageItemContainer implements IC
 	{
 		if(stack.isEmpty())
 			return false;
-		if(stack.is(IETags.forbiddenInCrates))
+		if(!IEApi.isAllowedInCrate(stack))
 			return false;
 		if(slotNumer < 3)
 			return ToolboxHandler.isFood(stack);

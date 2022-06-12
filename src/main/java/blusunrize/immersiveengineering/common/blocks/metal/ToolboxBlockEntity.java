@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties;
-import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
@@ -135,7 +135,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	@Override
 	public boolean isStackValid(int slot, ItemStack stack)
 	{
-		return !stack.is(IETags.forbiddenInCrates);
+		return IEApi.isAllowedInCrate(stack);
 	}
 
 	@Override

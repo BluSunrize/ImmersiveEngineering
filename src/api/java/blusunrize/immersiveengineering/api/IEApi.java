@@ -102,6 +102,13 @@ public class IEApi
 				.orElseThrow(() -> new RuntimeException("Empty array?"));
 	}
 
+	public static boolean isAllowedInCrate(ItemStack stack)
+	{
+		if(!stack.getItem().canFitInsideContainerItems()||stack.is(IETags.forbiddenInCrates))
+			return false;
+		return true;
+	}
+
 	public static String getCurrentVersion()
 	{
 		return ModList.get().getModFileById(Lib.MODID).versionString();
