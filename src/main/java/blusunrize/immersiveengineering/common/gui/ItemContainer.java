@@ -110,7 +110,6 @@ public abstract class ItemContainer extends AbstractContainerMenu implements Sup
 				return ItemStack.EMPTY;
 			slotObject.onTake(player, oldStackInSlot);
 
-			updatePlayerItem();
 			broadcastChanges();
 		}
 		return oldStackInSlot;
@@ -133,20 +132,7 @@ public abstract class ItemContainer extends AbstractContainerMenu implements Sup
 		if(par1==this.blockedSlot||(par3==ClickType.SWAP&&par2==par4EntityPlayer.getInventory().selected))
 			return;
 		super.clicked(par1, par2, par3, par4EntityPlayer);
-		updatePlayerItem();
 		broadcastChanges();
-	}
-
-	@Override
-	public void removed(Player par1EntityPlayer)
-	{
-		super.removed(par1EntityPlayer);
-		if(!this.world.isClientSide)
-			updatePlayerItem();
-	}
-
-	protected void updatePlayerItem()
-	{
 	}
 
 	@Override

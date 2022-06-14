@@ -59,13 +59,48 @@ public class IEContainerTypes
 	public static final BEContainer<TurretChemBlockEntity, ChemTurretContainer> CHEM_TURRET = register(Lib.GUIID_Turret_Chem, TurretContainer.ChemTurretContainer::new);
 	public static final BEContainer<FluidSorterBlockEntity, FluidSorterContainer> FLUID_SORTER = register(Lib.GUIID_FluidSorter, FluidSorterContainer::new);
 	public static final BEContainer<ClocheBlockEntity, ClocheContainer> CLOCHE = register(Lib.GUIID_Cloche, ClocheContainer::new);
-	public static final BEContainer<ToolboxBlockEntity, ToolboxBlockContainer> TOOLBOX_BLOCK = register(Lib.GUIID_ToolboxBlock, ToolboxBlockContainer::new);
+	public static final BEContainer<ToolboxBlockEntity, ToolboxContainer> TOOLBOX_BLOCK = registerBENew(
+			Lib.GUIID_ToolboxBlock, ToolboxContainer::makeFromBE, ToolboxContainer::makeClient
+	);
 
-	public static final ItemContainerType<ToolboxContainer> TOOLBOX = register(Lib.GUIID_Toolbox, ToolboxContainer::new);
+	public static final ItemContainerTypeNew<ToolboxContainer> TOOLBOX = registerItemNew(
+			Lib.GUIID_Toolbox, ToolboxContainer::makeFromItem, ToolboxContainer::makeClient
+	);
 	public static final ItemContainerType<RevolverContainer> REVOLVER = register(Lib.GUIID_Revolver, RevolverContainer::new);
 	public static final ItemContainerType<MaintenanceKitContainer> MAINTENANCE_KIT = register(Lib.GUIID_MaintenanceKit, MaintenanceKitContainer::new);
 
 	public static final RegistryObject<MenuType<CrateEntityContainer>> CRATE_MINECART = registerSimple(Lib.GUIID_CartCrate, CrateEntityContainer::new);
+
+	public static <T extends BlockEntity, C extends IEBaseContainer>
+	BEContainer<T, C> registerBENew(
+			String name, BEContainerConstructor<T, C> container, ClientContainerConstructor<C> client
+	)
+	{
+		RegistryObject<MenuType<C>> typeRef = registerType(name, client);
+		return new BEContainer<>(typeRef, container);
+	}
+
+	public static <C extends IEBaseContainer>
+	ItemContainerTypeNew<C> registerItemNew(
+			String name, NewItemContainerConstructor<C> container, ClientContainerConstructor<C> client
+	)
+	{
+		RegistryObject<MenuType<C>> typeRef = registerType(name, client);
+		return new ItemContainerTypeNew<>(typeRef, container);
+	}
+
+	private static <C extends IEBaseContainer>
+	RegistryObject<MenuType<C>> registerType(String name, ClientContainerConstructor<C> client)
+	{
+		return REGISTER.register(
+				name, () -> {
+					Mutable<MenuType<C>> typeBox = new MutableObject<>();
+					MenuType<C> type = new MenuType<>((id, inv) -> client.construct(typeBox.getValue(), id, inv));
+					typeBox.setValue(type);
+					return type;
+				}
+		);
+	}
 
 	public static <T extends BlockEntity, C extends IEBaseContainerOld<? super T>>
 	BEContainer<T, C> register(String name, BEContainerConstructor<T, C> container)
@@ -120,7 +155,7 @@ public class IEContainerTypes
 		);
 	}
 
-	public static class BEContainer<T extends BlockEntity, C extends IEBaseContainerOld<? super T>>
+	public static class BEContainer<T extends BlockEntity, C extends IEBaseContainer>
 	{
 		private final RegistryObject<MenuType<C>> type;
 		private final BEContainerConstructor<T, C> factory;
@@ -143,17 +178,10 @@ public class IEContainerTypes
 	}
 
 
-	public static class ItemContainerType<C extends AbstractContainerMenu>
+	public record ItemContainerType<C extends AbstractContainerMenu>(
+			RegistryObject<MenuType<C>> type, ItemContainerConstructor<C> factory
+	)
 	{
-		final RegistryObject<MenuType<C>> type;
-		final ItemContainerConstructor<C> factory;
-
-		private ItemContainerType(RegistryObject<MenuType<C>> type, ItemContainerConstructor<C> factory)
-		{
-			this.type = type;
-			this.factory = factory;
-		}
-
 		public C create(int id, Inventory inv, Level w, EquipmentSlot slot, ItemStack stack)
 		{
 			return factory.construct(getType(), id, inv, w, slot, stack);
@@ -165,14 +193,39 @@ public class IEContainerTypes
 		}
 	}
 
-	public interface BEContainerConstructor<T extends BlockEntity, C extends IEBaseContainerOld<? super T>>
+	public record ItemContainerTypeNew<C extends AbstractContainerMenu>(
+			RegistryObject<MenuType<C>> type, NewItemContainerConstructor<C> factory
+	)
+	{
+		public C create(int id, Inventory inv, EquipmentSlot slot, ItemStack stack)
+		{
+			return factory.construct(getType(), id, inv, slot, stack);
+		}
+
+		public MenuType<C> getType()
+		{
+			return type.get();
+		}
+	}
+
+	public interface BEContainerConstructor<T extends BlockEntity, C extends IEBaseContainer>
 	{
 		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, T te);
+	}
+
+	public interface ClientContainerConstructor<C extends IEBaseContainer>
+	{
+		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer);
 	}
 
 	public interface ItemContainerConstructor<C extends AbstractContainerMenu>
 	{
 		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, Level world, EquipmentSlot slot, ItemStack stack);
+	}
+
+	public interface NewItemContainerConstructor<C extends AbstractContainerMenu>
+	{
+		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, EquipmentSlot slot, ItemStack stack);
 	}
 
 	public interface EntityContainerConstructor<E extends Entity, C extends AbstractContainerMenu>

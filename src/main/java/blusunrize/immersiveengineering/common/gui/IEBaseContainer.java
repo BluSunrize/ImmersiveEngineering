@@ -6,14 +6,19 @@ import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import blusunrize.immersiveengineering.common.network.MessageContainerData;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.event.entity.player.PlayerContainerEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -25,17 +30,22 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
 public abstract class IEBaseContainer extends AbstractContainerMenu
 {
 	private final List<GenericContainerData<?>> genericData = new ArrayList<>();
 	private final List<ServerPlayer> usingPlayers = new ArrayList<>();
+	private final Runnable setChanged;
+	private final Predicate<Player> isValid;
 	public int ownSlotCount;
 
-	protected IEBaseContainer(@Nullable MenuType<?> pMenuType, int pContainerId)
+	protected IEBaseContainer(ContainerContext ctx)
 	{
-		super(pMenuType, pContainerId);
+		super(ctx.type, ctx.id);
+		this.setChanged = ctx.setChanged;
+		this.isValid = ctx.isValid;
 	}
 
 	public void addGenericData(GenericContainerData<?> newData)
@@ -167,6 +177,19 @@ public abstract class IEBaseContainer extends AbstractContainerMenu
 	{
 	}
 
+	@Override
+	public void removed(@Nonnull Player player)
+	{
+		super.removed(player);
+		setChanged.run();
+	}
+
+	@Override
+	public boolean stillValid(@Nonnull Player pPlayer)
+	{
+		return isValid.test(pPlayer);
+	}
+
 	@SubscribeEvent
 	public static void onContainerOpened(PlayerContainerEvent.Open ev)
 	{
@@ -187,5 +210,41 @@ public abstract class IEBaseContainer extends AbstractContainerMenu
 	{
 		if(ev.getContainer() instanceof IEBaseContainer ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
 			ieContainer.usingPlayers.remove(serverPlayer);
+	}
+
+	public static ContainerContext blockCtx(@Nullable MenuType<?> pMenuType, int pContainerId, BlockEntity be)
+	{
+		return new ContainerContext(pMenuType, pContainerId, be::setChanged, p -> {
+			BlockPos pos = be.getBlockPos();
+			Level level = be.getLevel();
+			if(level==null||level.getBlockEntity(pos)!=be)
+				return false;
+			else
+				return !(p.distanceToSqr(pos.getX()+0.5D, pos.getY()+0.5D, pos.getZ()+0.5D) > 64.0D);
+		});
+	}
+
+	public static ContainerContext itemCtx(
+			@Nullable MenuType<?> pMenuType, int pContainerId, Inventory playerInv, EquipmentSlot slot, ItemStack stack
+	)
+	{
+		return new ContainerContext(pMenuType, pContainerId, () -> {
+		}, p -> {
+			if(p!=playerInv.player)
+				return false;
+			return ItemStack.isSame(p.getItemBySlot(slot), stack);
+		});
+	}
+
+	public static ContainerContext clientCtx(@Nullable MenuType<?> pMenuType, int pContainerId)
+	{
+		return new ContainerContext(pMenuType, pContainerId, () -> {
+		}, $ -> true);
+	}
+
+	protected record ContainerContext(
+			MenuType<?> type, int id, Runnable setChanged, Predicate<Player> isValid
+	)
+	{
 	}
 }

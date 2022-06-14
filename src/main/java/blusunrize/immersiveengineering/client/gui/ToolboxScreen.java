@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.common.gui.ToolboxContainer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 
 import java.util.function.Consumer;
@@ -30,16 +29,8 @@ public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
 	protected void gatherAdditionalTooltips(int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray)
 	{
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
-		gatherEmptySlotTooltip(menu, menu.internalSlots, leftPos, topPos, mouseX, mouseY, addGray);
-	}
-
-	public static void gatherEmptySlotTooltip(
-			AbstractContainerMenu menu, int internalSlots, int leftPos, int topPos, int mouseX, int mouseY,
-			Consumer<Component> addGray
-	)
-	{
 		int slot = -1;
-		for(int i = 0; i < internalSlots; i++)
+		for(int i = 0; i < menu.ownSlotCount; i++)
 		{
 			Slot s = menu.getSlot(i);
 			if(!s.hasItem()&&mouseX > leftPos+s.x&&mouseX < leftPos+s.x+16&&mouseY > topPos+s.y&&mouseY < topPos+s.y+16)

@@ -12,17 +12,16 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerTypeNew;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.MenuProvider;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -77,30 +76,21 @@ public class IEBaseItem extends Item implements IColouredItem
 	protected void openGui(Player player, EquipmentSlot slot)
 	{
 		ItemStack stack = player.getItemBySlot(slot);
-		NetworkHooks.openGui((ServerPlayer)player, new MenuProvider()
+		ItemContainerTypeNew<?> typeNew = getContainerTypeNew();
+		if(typeNew!=null)
+			NetworkHooks.openGui(
+					(ServerPlayer)player,
+					new SimpleMenuProvider((id, inv, p) -> typeNew.create(id, inv, slot, stack), Component.empty())
+			);
+		else
 		{
-			@Nonnull
-			@Override
-			public Component getDisplayName()
-			{
-				return Component.literal("");
-			}
-
-			@Nullable
-			@Override
-			public AbstractContainerMenu createMenu(
-					int i, @Nonnull Inventory playerInventory, @Nonnull Player playerEntity
-			)
-			{
-				if(!(stack.getItem() instanceof IEBaseItem))
-					return null;
-				ItemContainerType<?> containerType = ((IEBaseItem)stack.getItem()).getContainerType();
-				if(containerType==null)
-					return null;
-				return containerType.create(i, playerInventory, playerEntity.level, slot, stack);
-			}
-			// Matches IEContainerTypes#register (for items)
-		}, buffer -> buffer.writeInt(slot.ordinal()));
+			ItemContainerType<?> typeOld = getContainerType();
+			if(typeOld!=null)
+				NetworkHooks.openGui((ServerPlayer)player, new SimpleMenuProvider(
+						(id, inv, p) -> typeOld.create(id, inv, player.level, slot, stack),
+						Component.empty()
+				), buffer -> buffer.writeInt(slot.ordinal()));
+		}
 	}
 
 	@Override
@@ -122,6 +112,12 @@ public class IEBaseItem extends Item implements IColouredItem
 
 	@Nullable
 	protected IEContainerTypes.ItemContainerType<?> getContainerType()
+	{
+		return null;
+	}
+
+	@Nullable
+	protected IEContainerTypes.ItemContainerTypeNew<?> getContainerTypeNew()
 	{
 		return null;
 	}

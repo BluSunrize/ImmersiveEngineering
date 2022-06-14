@@ -137,19 +137,6 @@ public class RevolverContainer extends InternalStorageItemContainer
 
 
 	@Override
-	protected void updatePlayerItem()
-	{
-		super.updatePlayerItem();
-		/*if(this.secondRevolver!=null)
-		{
-			((IInternalStorageItem)this.secondRevolver.getItem()).setContainedItems(this.secondRevolver, this.secondRevolverInventory.stackList);
-			ItemStack hand = player.getItemStackFromSlot(this.secondHand);
-			if(!hand.isEmpty()&&!hand.equals(secondRevolver))
-				player.setItemStackToSlot(this.secondHand, this.secondRevolver);
-		}*/
-	}
-
-	@Override
 	public void removed(Player par1EntityPlayer)
 	{
 		super.removed(par1EntityPlayer);

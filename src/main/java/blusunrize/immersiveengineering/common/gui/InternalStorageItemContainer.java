@@ -50,14 +50,4 @@ public abstract class InternalStorageItemContainer extends ItemContainer
 		if(inv instanceof IEItemStackHandler)
 			((IEItemStackHandler)inv).setInventoryForUpdate(null);
 	}
-
-	@Override
-	protected void updatePlayerItem()
-	{
-		/*((IInternalStorageItem)this.heldItem.getItem()).setContainedItems(this.heldItem, ((InventoryStorageItem)this.input).stackList);
-		ItemStack hand = player.getItemStackFromSlot(this.equipmentSlot);
-		if(!hand.isEmpty() && !hand.equals(heldItem))
-			player.setItemStackToSlot(this.equipmentSlot, this.heldItem);
-		player.inventory.markDirty();TODO remove?*/
-	}
 }

@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
+import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -289,16 +290,23 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 		}
 		if(tile instanceof MenuProvider menuProvider&&hand==InteractionHand.MAIN_HAND&&!player.isShiftKeyDown())
 		{
-			if(!world.isClientSide)
+			if(player instanceof ServerPlayer serverPlayer)
 			{
 				if(menuProvider instanceof IInteractionObjectIE<?> interaction)
 				{
 					interaction = interaction.getGuiMaster();
 					if(interaction!=null&&interaction.canUseGui(player))
-						NetworkHooks.openGui((ServerPlayer)player, interaction, ((BlockEntity)interaction).getBlockPos());
+					{
+						// This can be removed once IEBaseContainerOld is gone
+						var tempMenu = interaction.createMenu(0, player.getInventory(), player);
+						if(tempMenu instanceof IEBaseContainerOld<?>)
+							NetworkHooks.openGui(serverPlayer, interaction, ((BlockEntity)interaction).getBlockPos());
+						else
+							NetworkHooks.openGui(serverPlayer, interaction);
+					}
 				}
 				else
-					NetworkHooks.openGui((ServerPlayer)player, menuProvider);
+					NetworkHooks.openGui(serverPlayer, menuProvider);
 			}
 			return InteractionResult.SUCCESS;
 		}

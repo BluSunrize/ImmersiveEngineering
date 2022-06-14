@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerTypeNew;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -56,7 +55,7 @@ public class ToolboxItem extends InternalStorageItem
 
 	@Nullable
 	@Override
-	protected ItemContainerType<?> getContainerType()
+	protected ItemContainerTypeNew<?> getContainerTypeNew()
 	{
 		return IEContainerTypes.TOOLBOX;
 	}
@@ -72,8 +71,7 @@ public class ToolboxItem extends InternalStorageItem
 			BlockPos pos = ctx.getClickedPos();
 			Direction side = ctx.getClickedFace();
 			BlockState state = world.getBlockState(pos);
-			Block block = state.getBlock();
-			if(!block.canBeReplaced(state, new BlockPlaceContext(ctx)))
+			if(!state.canBeReplaced(new BlockPlaceContext(ctx)))
 				pos = pos.relative(side);
 
 			if(stack.getCount()!=0&&player.mayUseItemAt(pos, side, stack))//TODO &&world.mayPlace(IEContent.blockToolbox, pos, false, side, null))

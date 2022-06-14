@@ -30,7 +30,7 @@ public class IEBaseContainerOld<T extends BlockEntity> extends IEBaseContainer
 
 	public IEBaseContainerOld(MenuType<?> type, T tile, int id)
 	{
-		super(type, id);
+		super(blockCtx(type, id, tile));
 		this.tile = tile;
 		if(tile instanceof IIEInventory)
 			this.inv = new BlockEntityInventory(tile, this);
@@ -43,7 +43,7 @@ public class IEBaseContainerOld<T extends BlockEntity> extends IEBaseContainer
 	}
 
 	@Override
-	public void removed(Player playerIn)
+	public void removed(@Nonnull Player playerIn)
 	{
 		super.removed(playerIn);
 		if(inv!=null)

@@ -10,60 +10,71 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.tool.ToolboxHandler;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
+import blusunrize.immersiveengineering.common.blocks.metal.ToolboxBlockEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot.ICallbackContainer;
+import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
+import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.function.Consumer;
-
-public class ToolboxContainer extends InternalStorageItemContainer implements ICallbackContainer
+public class ToolboxContainer extends IEBaseContainer implements ICallbackContainer
 {
-	public ToolboxContainer(MenuType<?> type, int id, Inventory inventoryPlayer, Level world, EquipmentSlot slot, ItemStack toolbox)
-	{
-		super(type, id, inventoryPlayer, world, slot, toolbox);
-	}
-
-	@Override
-	int addSlots()
-	{
-		return addSlots(this::addSlot, this, this.inv, this.inventoryPlayer);
-	}
-
-	public static int addSlots(
-			Consumer<Slot> addSlot, AbstractContainerMenu menu, IItemHandler inv, Inventory playerInv
+	public static ToolboxContainer makeFromBE(
+			MenuType<?> type, int id, Inventory invPlayer, ToolboxBlockEntity be
 	)
 	{
-		int numOwnSlots = 0;
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 48, 24));
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 30, 42));
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 48, 42));
+		return new ToolboxContainer(blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()));
+	}
 
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 75, 24));
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 93, 24));
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 111, 24));
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 75, 42));
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 93, 42));
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 111, 42));
-		addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 129, 42));
+	public static ToolboxContainer makeFromItem(
+			MenuType<?> type, int id, Inventory invPlayer, EquipmentSlot slot, ItemStack stack
+	)
+	{
+		return new ToolboxContainer(
+				itemCtx(type, id, invPlayer, slot, stack),
+				invPlayer,
+				CapabilityUtils.getPresentCapability(stack, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+		);
+	}
+
+	public static ToolboxContainer makeClient(MenuType<?> type, int id, Inventory invPlayer)
+	{
+		return new ToolboxContainer(clientCtx(type, id), invPlayer, new ItemStackHandler(ToolboxItem.SLOT_COUNT));
+	}
+
+	public ToolboxContainer(ContainerContext ctx, Inventory inventoryPlayer, IItemHandler inv)
+	{
+		super(ctx);
+		ownSlotCount = 0;
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 48, 24));
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 30, 42));
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 48, 42));
+
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 75, 24));
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 93, 24));
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 111, 24));
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 75, 42));
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 93, 42));
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 111, 42));
+		addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 129, 42));
 
 		for(int j = 0; j < 6; j++)
-			addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 35+j*18, 77));
+			addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 35+j*18, 77));
 		for(int j = 0; j < 7; j++)
-			addSlot.accept(new IESlot.ContainerCallback(menu, inv, numOwnSlots++, 26+j*18, 112));
+			addSlot(new IESlot.ContainerCallback(this, inv, ownSlotCount++, 26+j*18, 112));
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
-				addSlot.accept(new Slot(playerInv, j+i*9+9, 8+j*18, 157+i*18));
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 157+i*18));
 
 		for(int i = 0; i < 9; i++)
-			addSlot.accept(new Slot(playerInv, i, 8+i*18, 215));
-		return numOwnSlots;
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 215));
 	}
 
 	@Override
