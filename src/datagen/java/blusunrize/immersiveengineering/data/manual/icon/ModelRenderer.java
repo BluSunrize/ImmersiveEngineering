@@ -50,7 +50,7 @@ public class ModelRenderer implements AutoCloseable
     private final int depthBuffer;
     private final File outputDirectory;
     private final ItemRenderer itemRenderer;
-    private final RenderBuffers RENDER_BUFFERS = new RenderBuffers();
+    private final RenderBuffers renderBuffers = new RenderBuffers();
 
     public ModelRenderer(int width, int height, final File outputDirectory)
     {
@@ -72,6 +72,8 @@ public class ModelRenderer implements AutoCloseable
         glBindRenderbuffer(GL_RENDERBUFFER, depthBuffer);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthBuffer);
+
+        glViewport(0, 0, width, height);
 
         Minecraft.getInstance().textureManager.getTexture(TextureAtlas.LOCATION_BLOCKS).setFilter(false, false);
         RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
@@ -108,19 +110,21 @@ public class ModelRenderer implements AutoCloseable
         model = model.getOverrides().resolve(model, stack, null, null, 0);
 
         // Set up GL
+
         glBindFramebuffer(GL_FRAMEBUFFER, framebufferID);
         RenderSystem.bindTexture(renderedTexture);
-        glViewport(0, 0, width, height);
+
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
         glClearDepth(1);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
+        glEnable(GL_CULL_FACE);
 
         if(model.usesBlockLight())
             Lighting.setupFor3DItems();
         else
             Lighting.setupForFlatItems();
         BufferBuilder builder = Tesselator.getInstance().getBuilder();
-        MultiBufferSource.BufferSource bufferSources = RENDER_BUFFERS.bufferSource();
+        MultiBufferSource.BufferSource bufferSources = renderBuffers.bufferSource();
         // Do not render foil/enchantment glint: This depends on the current time, and we do not want the output to vary
         // randomly. Additionally, glint isn't really visible in the output anyway, I assume this is technically a bug.
         MultiBufferSource noFoilSource = type -> {
@@ -141,6 +145,7 @@ public class ModelRenderer implements AutoCloseable
         bufferSources.endBatch();
         if(builder.building())
             builder.end();
+        renderBuffers.fixedBufferPack().clearAll();
 
         final TextureCutter cutter = new TextureCutter(width, height);
         exportTo(filename, () -> RenderSystem.bindTexture(renderedTexture), cutter::cutTexture);
