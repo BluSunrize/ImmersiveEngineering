@@ -10,12 +10,13 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import com.google.common.collect.ImmutableSet;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
 
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -25,16 +26,7 @@ public class RockcutterItem extends SawbladeItem
 			Material.PLANT, Material.REPLACEABLE_PLANT, Material.GRASS,
 			Material.STONE, Material.GLASS, Material.ICE, Material.ICE_SOLID
 	);
-	private static final ListTag ENCHANTS = new ListTag();
 	public static final ResourceLocation TEXTURE = ImmersiveEngineering.rl("item/rockcutter_blade");
-
-	static
-	{
-		CompoundTag tag = new CompoundTag();
-		tag.putString("id", "silk_touch");
-		tag.putInt("lvl", 1);
-		ENCHANTS.add(tag);
-	}
 
 	public RockcutterItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage)
 	{
@@ -48,9 +40,9 @@ public class RockcutterItem extends SawbladeItem
 	}
 
 	@Override
-	public ListTag getSawbladeEnchants()
+	public void modifyEnchants(Map<Enchantment, Integer> baseEnchants)
 	{
-		return ENCHANTS.copy();
+		baseEnchants.put(Enchantments.SILK_TOUCH, 1);
 	}
 
 	@Override

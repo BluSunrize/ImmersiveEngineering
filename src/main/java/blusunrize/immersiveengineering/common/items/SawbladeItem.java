@@ -9,12 +9,13 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
 
+import java.util.Map;
 import java.util.function.Predicate;
 
 public class SawbladeItem extends IEBaseItem
@@ -75,9 +76,8 @@ public class SawbladeItem extends IEBaseItem
 		return true;
 	}
 
-	public ListTag getSawbladeEnchants()
+	public void modifyEnchants(Map<Enchantment, Integer> baseEnchants)
 	{
-		return null;
 	}
 
 	public Predicate<BlockState> getSawbladeMaterials()

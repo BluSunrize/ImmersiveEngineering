@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
@@ -24,7 +25,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
@@ -36,6 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -187,19 +188,26 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	public void setSawblade(ItemStack buzzsaw, ItemStack sawblade, int spare)
 	{
 		int slot = spare==0?0: 2+spare;
-		IItemHandler inv = buzzsaw.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null).orElseThrow(RuntimeException::new);
+		IItemHandler inv = CapabilityUtils.getPresentCapability(buzzsaw, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 		((IItemHandlerModifiable)inv).setStackInSlot(slot, sawblade);
+	}
 
-		if(spare==0)
-		{
-			ListTag enchants = null;
-			if(sawblade.getItem() instanceof SawbladeItem)
-				enchants = ((SawbladeItem)sawblade.getItem()).getSawbladeEnchants();
-			if(enchants!=null)
-				buzzsaw.getOrCreateTag().put("Enchantments", enchants);
-			else
-				buzzsaw.getOrCreateTag().remove("Enchantments");
-		}
+	@Override
+	public int getEnchantmentLevel(ItemStack stack, Enchantment enchantment)
+	{
+		// Not ideal, but anything faster has a lot of code duplication. And getting the sawblade isn't the fastest
+		// thing in the world anyway.
+		return getAllEnchantments(stack).getOrDefault(enchantment, 0);
+	}
+
+	@Override
+	public Map<Enchantment, Integer> getAllEnchantments(ItemStack stack)
+	{
+		ItemStack sawblade = getSawblade(stack, 0);
+		var superEnchants = super.getAllEnchantments(stack);
+		if(sawblade.getItem() instanceof SawbladeItem blade)
+			blade.modifyEnchants(superEnchants);
+		return superEnchants;
 	}
 
 	@Nullable
