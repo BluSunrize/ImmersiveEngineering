@@ -21,7 +21,7 @@ import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.*;
 import java.util.function.Function;
@@ -78,8 +78,8 @@ public class PotionRecipeGenerators
 			List<MixerRecipe> existing = all.computeIfAbsent(output, p -> new ArrayList<>());
 			ResourceLocation name = new ResourceLocation(outputID.getNamespace(), outputID.getPath()+"_"+existing.size());
 
-			MixerRecipe recipe = new MixerRecipe(name, getFluidStackForType(output, FluidAttributes.BUCKET_VOLUME),
-					getFluidTagForType(input, FluidAttributes.BUCKET_VOLUME), new IngredientWithSize[]{reagent}, 6400);
+			MixerRecipe recipe = new MixerRecipe(name, getFluidStackForType(output, FluidType.BUCKET_VOLUME),
+					getFluidTagForType(input, FluidType.BUCKET_VOLUME), new IngredientWithSize[]{reagent}, 6400);
 			existing.add(recipe);
 		}
 	}

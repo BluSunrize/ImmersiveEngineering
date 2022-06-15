@@ -38,8 +38,8 @@ import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -54,7 +54,7 @@ import java.util.UUID;
 
 public abstract class DieselToolItem extends UpgradeableToolItem implements IAdvancedFluidItem
 {
-	protected static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
+	protected static final int CAPACITY = 2*FluidType.BUCKET_VOLUME;
 
 	public DieselToolItem(Item.Properties props, String upgradeType)
 	{

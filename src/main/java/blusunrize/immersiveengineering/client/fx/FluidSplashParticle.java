@@ -20,8 +20,10 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -46,7 +48,7 @@ public class FluidSplashParticle extends TextureSheetParticle
 		this.gravity = 0.06F;
 		this.lifetime = (int)(8.0D/(Math.random()*0.8D+0.2D));
 		this.quadSize *= .375f;
-		this.setFluidTexture(new FluidStack(fluid, FluidAttributes.BUCKET_VOLUME));
+		this.setFluidTexture(new FluidStack(fluid, FluidType.BUCKET_VOLUME));
 	}
 
 	@Override
@@ -91,11 +93,12 @@ public class FluidSplashParticle extends TextureSheetParticle
 
 	public void setFluidTexture(FluidStack fluid)
 	{
-		setSprite(ClientUtils.getSprite(fluid.getFluid().getAttributes().getStillTexture(fluid)));
-		int argb = fluid.getFluid().getAttributes().getColor(fluid);
-		this.alpha = ((argb >> 24)&255)/255f;
-		this.rCol = ((argb >> 16)&255)/255f;
-		this.gCol = ((argb >> 8&255))/255f;
+		IFluidTypeRenderProperties fluidProperties = RenderProperties.get(fluid.getFluid());
+		setSprite(ClientUtils.getSprite(fluidProperties.getStillTexture(fluid)));
+		int argb = fluidProperties.getColorTint(fluid);
+		this.alpha = ((argb>>24)&255)/255f;
+		this.rCol = ((argb>>16)&255)/255f;
+		this.gCol = ((argb>>8&255))/255f;
 		this.bCol = (argb&255)/255f;
 	}
 

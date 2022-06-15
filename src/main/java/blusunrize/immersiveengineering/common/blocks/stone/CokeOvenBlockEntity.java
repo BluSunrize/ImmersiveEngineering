@@ -40,8 +40,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -62,7 +62,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	public static final int EMPTY_CONTAINER_SLOT = 2;
 	public static final int FULL_CONTAINER_SLOT = 3;
 
-	public FluidTank tank = new FluidTank(12*FluidAttributes.BUCKET_VOLUME);
+	public FluidTank tank = new FluidTank(12*FluidType.BUCKET_VOLUME);
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
 	private final Supplier<CokeOvenRecipe> cachedRecipe = CachedRecipe.cached(
 			CokeOvenRecipe::findRecipe, () -> level, () -> inventory.get(INPUT_SLOT)

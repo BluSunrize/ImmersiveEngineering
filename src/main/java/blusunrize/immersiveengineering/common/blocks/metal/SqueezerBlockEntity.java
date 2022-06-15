@@ -50,8 +50,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -68,7 +68,7 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 		ISelectionBounds, ICollisionBounds, IInteractionObjectIE<SqueezerBlockEntity>, IBlockBounds,
 		IEClientTickableBE
 {
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
+	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidType.BUCKET_VOLUME)};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 	public float animation_piston = 0;
 	public boolean animation_down = true;

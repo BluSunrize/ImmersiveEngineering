@@ -31,6 +31,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.EntityTeleportEvent;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -119,7 +120,7 @@ public class ChemthrowerHandler
 				{
 					target.invulnerableTime = (int)(target.invulnerableTime*.75);
 					if(source.isFire()&&!target.fireImmune())
-						target.setSecondsOnFire(fluid.getAttributes().isGaseous()?2: 5);
+						target.setSecondsOnFire(fluid.is(Tags.Fluids.GASEOUS)?2: 5);
 				}
 			}
 		}

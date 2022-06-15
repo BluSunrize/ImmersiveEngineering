@@ -25,8 +25,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -131,7 +131,7 @@ public class PotionBucketItem extends IEBaseItem
 			if(empty)
 				return FluidStack.EMPTY;
 			else
-				return PotionFluid.getFluidStackForType(getPotion(stack), FluidAttributes.BUCKET_VOLUME);
+				return PotionFluid.getFluidStackForType(getPotion(stack), FluidType.BUCKET_VOLUME);
 		}
 
 		@Nonnull
@@ -160,7 +160,7 @@ public class PotionBucketItem extends IEBaseItem
 		@Override
 		public int getTankCapacity(int tank)
 		{
-			return tank==0?FluidAttributes.BUCKET_VOLUME: 0;
+			return tank==0?FluidType.BUCKET_VOLUME: 0;
 		}
 
 		@Override
@@ -189,7 +189,7 @@ public class PotionBucketItem extends IEBaseItem
 		@Override
 		public FluidStack drain(int maxDrain, FluidAction action)
 		{
-			if(empty||stack.getCount() > 1||maxDrain < FluidAttributes.BUCKET_VOLUME)
+			if(empty||stack.getCount() > 1||maxDrain < FluidType.BUCKET_VOLUME)
 				return FluidStack.EMPTY;
 
 			FluidStack potion = getFluid();

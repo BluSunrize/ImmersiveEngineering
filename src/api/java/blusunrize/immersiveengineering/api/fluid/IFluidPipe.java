@@ -8,8 +8,7 @@
 
 package blusunrize.immersiveengineering.api.fluid;
 
-import net.minecraft.core.Direction;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 public interface IFluidPipe
 {
@@ -17,13 +16,13 @@ public interface IFluidPipe
 	 * Amount to be transferred through pipes per tick,
 	 * if the fluid has been pressurized by a machine (such as a pump)
 	 */
-	int AMOUNT_PRESSURIZED = FluidAttributes.BUCKET_VOLUME;
+	int AMOUNT_PRESSURIZED = FluidType.BUCKET_VOLUME;
 
 	/**
 	 * Amount to be transferred through pipes per tick,
 	 * if the fluid is not pressurized
 	 */
-	int AMOUNT_UNPRESSURIZED = FluidAttributes.BUCKET_VOLUME/20;
+	int AMOUNT_UNPRESSURIZED = FluidType.BUCKET_VOLUME/20;
 
 	/**
 	 * NBT Key to indicate a pressurized fluid, increasing its transfer rate in IFluidPipes

@@ -24,8 +24,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
@@ -106,15 +105,10 @@ public class ThermoelectricGenBlockEntity extends IEBaseBlockEntity implements I
 	{
 		BlockPos pos = worldPosition.relative(offset);
 		BlockState state = level.getBlockState(pos);
-		Fluid f = getFluid(state);
-		if(f!=Fluids.EMPTY)
-			return f.getAttributes().getTemperature(level, pos);
+		FluidState f = state.getFluidState();
+		if(!f.isEmpty())
+			return f.getFluidType().getTemperature(f, level, pos);
 		return temperatureGetters.get(offset).apply(level, state.getBlock());
-	}
-
-	Fluid getFluid(BlockState state)
-	{
-		return state.getFluidState().getType();
 	}
 
 	@Override

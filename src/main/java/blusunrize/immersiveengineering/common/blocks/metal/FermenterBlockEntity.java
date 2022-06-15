@@ -45,8 +45,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -65,7 +65,7 @@ import java.util.Set;
 public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<FermenterBlockEntity, FermenterRecipe> implements
 		IBlockBounds, IInteractionObjectIE<FermenterBlockEntity>
 {
-	public final FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
+	public final FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidType.BUCKET_VOLUME)};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
 
 	public FermenterBlockEntity(BlockEntityType<FermenterBlockEntity> type, BlockPos pos, BlockState state)

@@ -31,7 +31,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.fluids.FluidAttributes.Builder;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -101,7 +101,7 @@ public class IEFluids
 		private FluidEntry(
 				String name, int burnTime,
 				ResourceLocation stillTex, ResourceLocation flowingTex,
-				@Nullable Consumer<Builder> buildAttributes
+				@Nullable Consumer<FluidType.Properties> buildAttributes
 		)
 		{
 			this(
@@ -113,7 +113,7 @@ public class IEFluids
 		private FluidEntry(
 				String name, ResourceLocation stillTex, ResourceLocation flowingTex,
 				IEFluid.FluidConstructor makeStill, IEFluid.FluidConstructor makeFlowing,
-				@Nullable Consumer<Builder> buildAttributes, ImmutableList<Property<?>> properties
+				@Nullable Consumer<FluidType.Properties> buildAttributes, ImmutableList<Property<?>> properties
 		)
 		{
 			this(name, 0, stillTex, flowingTex, makeStill, makeFlowing, buildAttributes, properties);
@@ -123,7 +123,7 @@ public class IEFluids
 				String name, int burnTime,
 				ResourceLocation stillTex, ResourceLocation flowingTex,
 				FluidConstructor makeStill, FluidConstructor makeFlowing,
-				@Nullable Consumer<Builder> buildAttributes, List<Property<?>> properties)
+				@Nullable Consumer<FluidType.Properties> buildAttributes, List<Property<?>> properties)
 		{
 			this.properties = properties;
 			Mutable<FluidEntry> thisMutable = new MutableObject<>();

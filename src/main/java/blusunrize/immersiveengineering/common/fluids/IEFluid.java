@@ -38,8 +38,9 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -54,14 +55,11 @@ public class IEFluid extends FlowingFluid
 {
 	private static FluidEntry entryStatic;
 	protected final FluidEntry entry;
-	protected final ResourceLocation stillTex;
-	protected final ResourceLocation flowingTex;
-	@Nullable
-	protected final Consumer<FluidAttributes.Builder> buildAttributes;
+	private final FluidType type;
 
 	public static IEFluid makeFluid(
 			FluidConstructor make,
-			IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes
+			IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidType.Properties> buildAttributes
 	)
 	{
 		entryStatic = entry;
@@ -75,12 +73,33 @@ public class IEFluid extends FlowingFluid
 		this(entry, stillTex, flowingTex, null);
 	}
 
-	public IEFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidAttributes.Builder> buildAttributes)
+	public IEFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidType.Properties> buildAttributes)
 	{
 		this.entry = entry;
-		this.stillTex = stillTex;
-		this.flowingTex = flowingTex;
-		this.buildAttributes = buildAttributes;
+		FluidType.Properties builder = FluidType.Properties.create();
+		if(buildAttributes!=null)
+			buildAttributes.accept(builder);
+		this.type = new FluidType(builder)
+		{
+			@Override
+			public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer)
+			{
+				consumer.accept(new IFluidTypeRenderProperties()
+				{
+					@Override
+					public ResourceLocation getStillTexture()
+					{
+						return stillTex;
+					}
+
+					@Override
+					public ResourceLocation getFlowingTexture()
+					{
+						return flowingTex;
+					}
+				});
+			}
+		};
 	}
 
 	public void addTooltipInfo(FluidStack fluidStack, @Nullable Player player, List<Component> tooltip)
@@ -151,14 +170,10 @@ public class IEFluid extends FlowingFluid
 			return state.getValue(LEVEL);
 	}
 
-	@Nonnull
 	@Override
-	protected FluidAttributes createAttributes()
+	public FluidType getFluidType()
 	{
-		FluidAttributes.Builder builder = FluidAttributes.builder(stillTex, flowingTex);
-		if(buildAttributes!=null)
-			buildAttributes.accept(builder);
-		return builder.build(this);
+		return type;
 	}
 
 	@Nonnull
@@ -199,7 +214,7 @@ public class IEFluid extends FlowingFluid
 		return 1;
 	}
 
-	public static Consumer<FluidAttributes.Builder> createBuilder(int density, int viscosity)
+	public static Consumer<FluidType.Properties> createBuilder(int density, int viscosity)
 	{
 		return builder -> builder.viscosity(viscosity).density(density);
 	}
@@ -209,7 +224,7 @@ public class IEFluid extends FlowingFluid
 		public Flowing(
 				IEFluids.FluidEntry entry,
 				ResourceLocation stillTex, ResourceLocation flowingTex,
-				@Nullable Consumer<FluidAttributes.Builder> buildAttributes
+				@Nullable Consumer<FluidType.Properties> buildAttributes
 		)
 		{
 			super(entry, stillTex, flowingTex, buildAttributes);
@@ -228,7 +243,7 @@ public class IEFluid extends FlowingFluid
 		IEFluid create(
 				IEFluids.FluidEntry entry,
 				ResourceLocation stillTex, ResourceLocation flowingTex,
-				@Nullable Consumer<FluidAttributes.Builder> buildAttributes
+				@Nullable Consumer<FluidType.Properties> buildAttributes
 		);
 	}
 

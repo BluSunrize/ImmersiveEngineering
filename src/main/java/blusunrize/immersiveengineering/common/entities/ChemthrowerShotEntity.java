@@ -29,6 +29,7 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.Optional;
@@ -88,8 +89,8 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		if(getFluid()!=null)
 		{
 			FluidStack fluidStack = getFluid();
-			boolean isGas = fluidStack.getFluid().getAttributes().isGaseous(fluidStack);
-			return (isGas?.025f: .05F)*(fluidStack.getFluid().getAttributes().getDensity(fluidStack) < 0?-1: 1);
+			boolean isGas = fluidStack.getFluid().is(Tags.Fluids.GASEOUS);
+			return (isGas?.025f: .05F)*(fluidStack.getFluid().getFluidType().getDensity(fluidStack) < 0?-1: 1);
 		}
 		return super.getGravity();
 	}
@@ -128,7 +129,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 			FluidStack fluidStack = getFluid();
 			Fluid fluid = fluidStack.getFluid();
 			ChemthrowerEffect effect = ChemthrowerHandler.getEffect(fluid);
-			boolean fire = fluid.getAttributes().getTemperature(fluidStack) > 1000;
+			boolean fire = fluid.getFluidType().getTemperature(fluidStack) > 1000;
 			if(effect!=null)
 			{
 				ItemStack thrower = ItemStack.EMPTY;
@@ -141,9 +142,9 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 				else if(mop.getType()==Type.BLOCK)
 					effect.applyToBlock(level, mop, shooter, thrower, fluidStack);
 			}
-			else if(mop.getType()==Type.ENTITY&&fluid.getAttributes().getTemperature(fluidStack) > 500)
+			else if(mop.getType()==Type.ENTITY&&fluid.getFluidType().getTemperature(fluidStack) > 500)
 			{
-				int tempDiff = fluid.getAttributes().getTemperature(fluidStack)-300;
+				int tempDiff = fluid.getFluidType().getTemperature(fluidStack)-300;
 				int damage = Math.abs(tempDiff)/500;
 				Entity hit = ((EntityHitResult)mop).getEntity();
 				if(hit.hurt(DamageSource.LAVA, damage))
@@ -168,7 +169,7 @@ public class ChemthrowerShotEntity extends IEProjectileEntity
 		FluidStack fluidStack = getFluid();
 		if(fluidStack!=null)
 		{
-			int light = this.isOnFire()?15: fluidStack.getFluid().getAttributes().getLuminosity(fluidStack);
+			int light = this.isOnFire()?15: fluidStack.getFluid().getFluidType().getLightLevel(fluidStack);
 			int superBrightness = 0;
 			light = (superBrightness&(0xff<<20))|(light<<4);
 			if(light > 0)

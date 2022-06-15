@@ -77,8 +77,8 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -500,7 +500,7 @@ public class Utils
 		{
 			if(action.execute())
 				bucketPickup.pickupBlock(world, pos, b);
-			return new FluidStack(f.getType(), FluidAttributes.BUCKET_VOLUME);
+			return new FluidStack(f.getType(), FluidType.BUCKET_VOLUME);
 		}
 		return FluidStack.EMPTY;
 	}
@@ -514,7 +514,7 @@ public class Utils
 	public static boolean placeFluidBlock(Level worldIn, BlockPos posIn, FluidStack fluidStack)
 	{
 		Fluid fluid = fluidStack.getFluid();
-		if(!(fluid instanceof FlowingFluid)||fluidStack.getAmount() < FluidAttributes.BUCKET_VOLUME)
+		if(!(fluid instanceof FlowingFluid)||fluidStack.getAmount() < FluidType.BUCKET_VOLUME)
 			return false;
 		else
 		{
@@ -543,7 +543,7 @@ public class Utils
 
 					worldIn.setBlock(posIn, fluid.defaultFluidState().createLegacyBlock(), 11);
 				}
-				fluidStack.shrink(FluidAttributes.BUCKET_VOLUME);
+				fluidStack.shrink(FluidType.BUCKET_VOLUME);
 				return true;
 			}
 			else

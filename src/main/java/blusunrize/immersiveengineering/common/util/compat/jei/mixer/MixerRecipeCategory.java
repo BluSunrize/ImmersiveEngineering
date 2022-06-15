@@ -24,7 +24,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.Arrays;
 
@@ -50,12 +50,12 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	public void setRecipe(IRecipeLayoutBuilder builder, MixerRecipe recipe, IFocusGroup focuses)
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 48, 3)
-				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 58, 47)
+				.setFluidRenderer(4*FluidType.BUCKET_VOLUME, false, 58, 47)
 				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 139, 3)
-				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 47)
+				.setFluidRenderer(4*FluidType.BUCKET_VOLUME, false, 16, 47)
 				.setOverlay(tankOverlay, 0, 0)
 				.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);

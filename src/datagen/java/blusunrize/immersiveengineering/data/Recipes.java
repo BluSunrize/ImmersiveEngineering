@@ -46,9 +46,9 @@ import blusunrize.immersiveengineering.data.resources.RecipeWoods;
 import blusunrize.immersiveengineering.data.resources.SecondaryOutput;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.core.Registry;
 import net.minecraft.data.CachedOutput;
-import net.minecraft.advancements.CriterionTriggerInstance;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
@@ -77,7 +77,7 @@ import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
 import net.minecraftforge.common.crafting.conditions.TagEmptyCondition;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
@@ -261,17 +261,17 @@ public class Recipes extends RecipeProvider
 	{
 		CokeOvenRecipeBuilder.builder(IETags.coalCoke, 1)
 				.addInput(Items.COAL)
-				.setOil(FluidAttributes.BUCKET_VOLUME/2)
+				.setOil(FluidType.BUCKET_VOLUME/2)
 				.setTime(1800)
 				.build(out, toRL("cokeoven/coke"));
 		CokeOvenRecipeBuilder.builder(IETags.getItemTag(IETags.coalCokeBlock), 1)
 				.addInput(Blocks.COAL_BLOCK)
-				.setOil(FluidAttributes.BUCKET_VOLUME*5)
+				.setOil(FluidType.BUCKET_VOLUME*5)
 				.setTime(9*1800)
 				.build(out, toRL("cokeoven/coke_block"));
 		CokeOvenRecipeBuilder.builder(Items.CHARCOAL)
 				.addInput(ItemTags.LOGS)
-				.setOil(FluidAttributes.BUCKET_VOLUME/4)
+				.setOil(FluidType.BUCKET_VOLUME/4)
 				.setTime(900)
 				.build(out, toRL("cokeoven/charcoal"));
 	}
@@ -750,14 +750,14 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("arcfurnace/netherite_scrap"));
 
 		// partial bucket values for bottling & mixing
-		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
-		int quarter_bucket = FluidAttributes.BUCKET_VOLUME/4;
-		int eighth_bucket = FluidAttributes.BUCKET_VOLUME/8;
+		int half_bucket = FluidType.BUCKET_VOLUME/2;
+		int quarter_bucket = FluidType.BUCKET_VOLUME/4;
+		int eighth_bucket = FluidType.BUCKET_VOLUME/8;
 
 		/* BOTTLING */
 		BottlingMachineRecipeBuilder.builder(Items.WET_SPONGE)
 				.addInput(Items.SPONGE)
-				.addFluidTag(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME)
+				.addFluidTag(FluidTags.WATER, FluidType.BUCKET_VOLUME)
 				.build(out, toRL("bottling/sponge"));
 		BottlingMachineRecipeBuilder.builder(Items.EXPOSED_COPPER)
 				.addInput(Items.COPPER_BLOCK)
@@ -1252,7 +1252,7 @@ public class Recipes extends RecipeProvider
 				.define('s', Tags.Items.SAND)
 				.define('c', IETags.clay)
 				.define('g', Tags.Items.GRAVEL)
-				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
+				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_clay", has(IETags.clay))
 				.save(out, toRL("concrete"));
 		TurnAndCopyRecipeBuilder.builder(StoneDecoration.CONCRETE, 12)
@@ -1264,7 +1264,7 @@ public class Recipes extends RecipeProvider
 				.define('s', IEItems.Ingredients.SLAG)
 				.define('c', IETags.clay)
 				.define('g', Tags.Items.GRAVEL)
-				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
+				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_slag", has(IEItems.Ingredients.SLAG))
 				.save(out, toRL("concrete"));
 		ShapedRecipeBuilder.shaped(StoneDecoration.CONCRETE_TILE, 4)
@@ -1339,7 +1339,7 @@ public class Recipes extends RecipeProvider
 				.pattern("wbw")
 				.pattern("www")
 				.define('w', ItemTags.PLANKS)
-				.define('b', new IngredientFluidStack(IETags.fluidCreosote, FluidAttributes.BUCKET_VOLUME))
+				.define('b', new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_creosote", has(IEFluids.CREOSOTE.getBucket()))
 				.save(out, toRL(toPath(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL))));
 
@@ -1667,7 +1667,7 @@ public class Recipes extends RecipeProvider
 				.pattern("ici")
 				.define('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
 				.define('c', IETags.getTagsFor(EnumMetals.COPPER).plate)
-				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
+				.define('b', new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_steel_sheetmetal", has(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.unlockedBy("has_water_bucket", has(Items.WATER_BUCKET))
 				.unlockedBy("has_copper_ingot", has(IETags.getTagsFor(EnumMetals.COPPER).ingot))
@@ -1745,7 +1745,7 @@ public class Recipes extends RecipeProvider
 				.define('w', IETags.getItemTag(IETags.treatedWood))
 				.define('f', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('a', IETags.getTagsFor(EnumMetals.LEAD).plate)
-				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidAttributes.BUCKET_VOLUME))
+				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_lead_ingot", has(IETags.getTagsFor(EnumMetals.LEAD).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
 				.save(out, toRL(toPath(MetalDevices.CAPACITOR_LV)));
@@ -1757,7 +1757,7 @@ public class Recipes extends RecipeProvider
 				.define('f', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.define('a', IETags.getTagsFor(EnumMetals.NICKEL).plate)
 				.define('c', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidAttributes.BUCKET_VOLUME))
+				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_nickel_ingot", has(IETags.getTagsFor(EnumMetals.NICKEL).ingot))
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
@@ -1770,7 +1770,7 @@ public class Recipes extends RecipeProvider
 				.define('f', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.define('a', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
 				.define('c', IETags.hopGraphiteIngot)
-				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidAttributes.BUCKET_VOLUME))
+				.define('e', new IngredientFluidStack(IETags.fluidRedstoneAcid, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_nickel_ingot", has(IETags.getTagsFor(EnumMetals.NICKEL).ingot))
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.unlockedBy("has_treated_planks", has(IETags.getItemTag(IETags.treatedWood)))
@@ -2466,7 +2466,7 @@ public class Recipes extends RecipeProvider
 				.pattern(" ic")
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('c', Ingredients.COMPONENT_IRON)
-				.define('b', new IngredientFluidStack(IETags.fluidPlantoil, FluidAttributes.BUCKET_VOLUME))
+				.define('b', new IngredientFluidStack(IETags.fluidPlantoil, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_drill", has(Tools.DRILL))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_LUBE))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_DAMAGE))
@@ -2682,7 +2682,7 @@ public class Recipes extends RecipeProvider
 				.pattern("wc ")
 				.pattern("sss")
 				.define('w', ItemTags.WOOL)
-				.define('c', new IngredientFluidStack(IETags.fluidCreosote, FluidAttributes.BUCKET_VOLUME))
+				.define('c', new IngredientFluidStack(IETags.fluidCreosote, FluidType.BUCKET_VOLUME))
 				.define('s', Tags.Items.RODS_WOODEN)
 				.unlockedBy("has_wool", has(ItemTags.WOOL))
 				.unlockedBy("has_stick", has(Tags.Items.RODS_WOODEN))
@@ -2700,7 +2700,7 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL("gunpowder_from_dusts"));
 		FluidAwareShapelessRecipeBuilder.builder(Items.PAPER, 2)
 				.requires(Ingredient.of(IETags.sawdust), 4)
-				.requires(new IngredientFluidStack(FluidTags.WATER, FluidAttributes.BUCKET_VOLUME))
+				.requires(new IngredientFluidStack(FluidTags.WATER, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_sawdust", has(IETags.sawdust))
 				.save(out, toRL("paper_from_sawdust"));
 	}

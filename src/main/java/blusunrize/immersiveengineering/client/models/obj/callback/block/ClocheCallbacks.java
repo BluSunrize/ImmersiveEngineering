@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
@@ -99,8 +100,9 @@ public class ClocheCallbacks implements BlockCallback<ClocheCallbacks.Key>
 			}
 		}
 		if(rl==null&&!soil.isEmpty()&&Utils.isFluidRelatedItemStack(soil))
-			//TODO color
-			rl = FluidUtil.getFluidContained(soil).map(fs -> fs.getFluid().getAttributes().getStillTexture(fs)).orElse(rl);
+			rl = FluidUtil.getFluidContained(soil)
+					.map(fs -> RenderProperties.get(fs.getFluid()).getStillTexture(fs))
+					.orElse(null);
 		return rl;
 	}
 
@@ -111,7 +113,7 @@ public class ClocheCallbacks implements BlockCallback<ClocheCallbacks.Key>
 		if(!soil.isEmpty()&&"farmland".equals(material)&&Utils.isFluidRelatedItemStack(soil))
 			return Utils.vec4fFromInt(
 					FluidUtil.getFluidContained(soil)
-							.map(fs -> fs.getFluid().getAttributes().getColor(fs))
+							.map(fs -> RenderProperties.get(fs.getFluid()).getColorTint(fs))
 							.orElse(0xffffffff)
 			);
 		return original;

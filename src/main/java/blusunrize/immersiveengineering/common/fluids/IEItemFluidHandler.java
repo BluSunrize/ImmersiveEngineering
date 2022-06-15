@@ -15,8 +15,8 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 
 import javax.annotation.Nonnull;
@@ -31,7 +31,7 @@ public class IEItemFluidHandler extends FluidHandlerItemStack
 	{
 		if(fluid!=null&&fluid.getAmount() > 0)
 		{
-			FluidAttributes attr = fluid.getFluid().getAttributes();
+			FluidType attr = fluid.getFluid().getFluidType();
 			ChatFormatting rarity = attr.getRarity()==Rarity.COMMON?ChatFormatting.GRAY: attr.getRarity().color;
 			return TextUtils.applyFormat(
 					Component.translatable(Lib.DESC_FLAVOUR+"fluidStack", fluid.getDisplayName(), fluid.getAmount(), fluidCapacity),

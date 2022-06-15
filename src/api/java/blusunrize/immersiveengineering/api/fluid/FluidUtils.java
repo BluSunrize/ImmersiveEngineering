@@ -8,8 +8,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidActionResult;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -90,7 +90,7 @@ public class FluidUtils
 				updateTile = fillFluidContainer(tank, slotIn, slotOut, invGet, invSet);
 
 			// Then try to output into pipes or similar
-			FluidStack out = copyFluidStackWithAmount(tank.getFluid(), Math.min(tank.getFluidAmount(), FluidAttributes.BUCKET_VOLUME), false);
+			FluidStack out = copyFluidStackWithAmount(tank.getFluid(), Math.min(tank.getFluidAmount(), FluidType.BUCKET_VOLUME), false);
 			updateTile |= FluidUtil.getFluidHandler(level, targetPos, dir.getOpposite()).map(output -> {
 				int accepted = output.fill(out, FluidAction.SIMULATE);
 				if(accepted > 0)

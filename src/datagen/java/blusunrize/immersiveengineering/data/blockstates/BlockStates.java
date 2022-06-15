@@ -47,6 +47,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
@@ -54,6 +55,8 @@ import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
 import net.minecraftforge.client.model.generators.loaders.MultiLayerModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.apache.commons.lang3.mutable.Mutable;
+import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
@@ -415,7 +418,10 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(IEFluids.FluidEntry entry : IEFluids.ALL_ENTRIES)
 		{
 			Fluid still = entry.getStill();
-			ResourceLocation stillTexture = still.getAttributes().getStillTexture();
+			// Hack, but after all this is datagen
+			Mutable<IFluidTypeRenderProperties> box = new MutableObject<>();
+			still.getFluidType().initializeClient(box::setValue);
+			ResourceLocation stillTexture = box.getValue().getStillTexture();
 			ModelFile model = models().getBuilder("block/fluid/"+Registry.FLUID.getKey(still).getPath())
 					.texture("particle", stillTexture);
 			getVariantBuilder(entry.getBlock()).partialState().setModels(new ConfiguredModel(model));

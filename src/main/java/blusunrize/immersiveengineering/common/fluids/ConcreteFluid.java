@@ -32,7 +32,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.fluids.FluidAttributes.Builder;
+import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,7 +40,7 @@ import java.util.function.Consumer;
 
 public class ConcreteFluid extends IEFluid
 {
-	public ConcreteFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<Builder> buildAttributes)
+	public ConcreteFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidType.Properties> buildAttributes)
 	{
 		super(entry, stillTex, flowingTex, buildAttributes);
 	}
@@ -95,7 +95,7 @@ public class ConcreteFluid extends IEFluid
 
 	public static class Flowing extends ConcreteFluid
 	{
-		public Flowing(FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<Builder> buildAttributes)
+		public Flowing(FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidType.Properties> buildAttributes)
 		{
 			super(entry, stillTex, flowingTex, buildAttributes);
 			registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));

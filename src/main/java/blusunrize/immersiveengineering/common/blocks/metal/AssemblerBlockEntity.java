@@ -53,8 +53,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -85,9 +85,9 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 	}
 
 	public FluidTank[] tanks = {
-			new FluidTank(8*FluidAttributes.BUCKET_VOLUME),
-			new FluidTank(8*FluidAttributes.BUCKET_VOLUME),
-			new FluidTank(8*FluidAttributes.BUCKET_VOLUME)
+			new FluidTank(8*FluidType.BUCKET_VOLUME),
+			new FluidTank(8*FluidType.BUCKET_VOLUME),
+			new FluidTank(8*FluidType.BUCKET_VOLUME)
 	};
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(18+3, ItemStack.EMPTY);
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this), new CrafterPatternInventory(this), new CrafterPatternInventory(this)};

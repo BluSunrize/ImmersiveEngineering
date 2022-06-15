@@ -78,8 +78,8 @@ import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.lifecycle.ParallelDispatchEvent;
@@ -213,14 +213,14 @@ public class IEContent
 			if(!potentialBucket.hasCraftingRemainingItem()||potentialBucket.getCraftingRemainingItem()!=Items.BUCKET)
 				return null;
 			final Fluid contained = ((BucketItem)potentialBucket).getFluid();
-			return new FluidStackRecipeQuery(new FluidStack(contained, FluidAttributes.BUCKET_VOLUME));
+			return new FluidStackRecipeQuery(new FluidStack(contained, FluidType.BUCKET_VOLUME));
 		});
 		// Milk is a weird special case
 		AssemblerHandler.registerSpecialIngredientConverter(o -> {
 			final ItemStack[] matching = o.getItems();
 			if(!o.isVanilla()||matching.length!=1||matching[0].getItem()!=Items.MILK_BUCKET||!ForgeMod.MILK.isPresent())
 				return null;
-			return new FluidStackRecipeQuery(new FluidStack(ForgeMod.MILK.get(), FluidAttributes.BUCKET_VOLUME));
+			return new FluidStackRecipeQuery(new FluidStack(ForgeMod.MILK.get(), FluidType.BUCKET_VOLUME));
 		});
 
 		// TODO move to IEFluids/constructors?

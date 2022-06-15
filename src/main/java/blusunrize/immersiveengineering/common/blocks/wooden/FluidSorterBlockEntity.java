@@ -33,8 +33,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 
@@ -317,7 +317,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		@Override
 		public int getTankCapacity(int tank)
 		{
-			return FluidAttributes.BUCKET_VOLUME;
+			return FluidType.BUCKET_VOLUME;
 		}
 
 		@Override

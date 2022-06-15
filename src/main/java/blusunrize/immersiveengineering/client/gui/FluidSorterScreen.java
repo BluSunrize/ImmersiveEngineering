@@ -30,6 +30,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -90,23 +92,27 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		VertexConsumer builder = buffers.getBuffer(IERenderTypes.getGui(InventoryMenu.BLOCK_ATLAS));
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < 8; i++)
-				if(!tile.filters[side][i].isEmpty())
+			{
+				FluidStack filter = tile.filters[side][i];
+				if(!filter.isEmpty())
 				{
-					TextureAtlasSprite sprite = ClientUtils.getSprite(tile.filters[side][i].getFluid().getAttributes().getStillTexture(tile.filters[side][i]));
+					IFluidTypeRenderProperties props = RenderProperties.get(filter.getFluid());
+					TextureAtlasSprite sprite = ClientUtils.getSprite(props.getStillTexture(filter));
 					Rect2i slotArea = getSlotArea(side, i);
-					int col = tile.filters[side][i].getFluid().getAttributes().getColor(tile.filters[side][i]);
+					int col = props.getColorTint(filter);
 					GuiHelper.drawTexturedColoredRect(
 							builder, transform,
 							slotArea.getX(), slotArea.getY(), slotArea.getWidth(), slotArea.getHeight(),
-							(col >> 16&255)/255.0f, (col >> 8&255)/255.0f, (col&255)/255.0f, 1,
+							(col>>16&255)/255.0f, (col>>8&255)/255.0f, (col&255)/255.0f, 1,
 							sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1());
 				}
+			}
 		buffers.endBatch();
 		for(int side = 0; side < 6; side++)
 		{
 			int x = leftPos+30+(side/2)*58;
 			int y = topPos+44+(side%2)*76;
-			String s = I18n.get("desc.immersiveengineering.info.blockSide."+Direction.from3DDataValue(side).toString()).substring(0, 1);
+			String s = I18n.get("desc.immersiveengineering.info.blockSide."+Direction.from3DDataValue(side)).substring(0, 1);
 			ClientUtils.font().drawShadow(transform, s, x-(ClientUtils.font().width(s)/2), y, 0xaacccccc);
 		}
 	}

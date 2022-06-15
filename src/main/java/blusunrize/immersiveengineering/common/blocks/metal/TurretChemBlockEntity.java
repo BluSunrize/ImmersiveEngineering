@@ -24,10 +24,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -38,7 +39,7 @@ import javax.annotation.Nullable;
 
 public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEntity>
 {
-	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
+	public FluidTank tank = new FluidTank(4*FluidType.BUCKET_VOLUME);
 	public boolean ignite = false;
 
 	public TurretChemBlockEntity(BlockEntityType<TurretChemBlockEntity> type, BlockPos pos, BlockState state)
@@ -91,7 +92,7 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 				Vec3 v = getGunToTargetVec(target).normalize();
 
 				int split = 8;
-				boolean isGas = fs.getFluid().getAttributes().isGaseous();
+				boolean isGas = fs.getFluid().is(Tags.Fluids.GASEOUS);
 
 				float scatter = isGas?.15f: .05f;
 				float range = isGas?.5f: 1f;

@@ -26,8 +26,8 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.Arrays;
 
@@ -59,7 +59,7 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 
 		if(recipe.creosoteOutput > 0)
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 4)
-					.setFluidRenderer(5*FluidAttributes.BUCKET_VOLUME, false, 16, 47)
+					.setFluidRenderer(5*FluidType.BUCKET_VOLUME, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredient(VanillaTypes.FLUID, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput))
 					.addTooltipCallback(JEIHelper.fluidTooltipCallback);

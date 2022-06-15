@@ -40,19 +40,22 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.fluids.FluidAttributes;
-import net.minecraftforge.fluids.FluidAttributes.Builder;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class PotionFluid extends Fluid
 {
+	private final FluidType type = new PotionFluidAttributes();
+
 	public static FluidStack getFluidStackForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
@@ -149,11 +152,11 @@ public class PotionFluid extends Fluid
 		return Shapes.empty();
 	}
 
+	@Nonnull
 	@Override
-	protected FluidAttributes createAttributes()
+	public FluidType getFluidType()
 	{
-		Builder builder = FluidAttributes.builder(rl("block/fluid/potion_still"), rl("block/fluid/potion_flow"));
-		return new PotionFluidAttributes(builder, this);
+		return type;
 	}
 
 	public void addInformation(FluidStack fluidStack, List<Component> tooltip)
@@ -186,27 +189,49 @@ public class PotionFluid extends Fluid
 		}
 	}
 
-	public static class PotionFluidAttributes extends FluidAttributes
+	public static class PotionFluidAttributes extends FluidType
 	{
-		protected PotionFluidAttributes(Builder builder, Fluid fluid)
+		private static final ResourceLocation TEXTURE_STILL = rl("block/fluid/potion_still");
+		private static final ResourceLocation TEXTURE_FLOW = rl("block/fluid/potion_flow");
+
+		protected PotionFluidAttributes()
 		{
-			super(builder, fluid);
+			super(Properties.create());
 		}
 
 		@Override
-		public Component getDisplayName(FluidStack stack)
+		public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer)
+		{
+			consumer.accept(new IFluidTypeRenderProperties()
+			{
+				@Override
+				public ResourceLocation getStillTexture()
+				{
+					return TEXTURE_STILL;
+				}
+
+				@Override
+				public ResourceLocation getFlowingTexture()
+				{
+					return TEXTURE_FLOW;
+				}
+
+				@Override
+				public int getColorTint(FluidStack stack)
+				{
+					if(stack==null||!stack.hasTag())
+						return 0xff0000ff;
+					return 0xff000000|PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag()));
+				}
+			});
+		}
+
+		@Override
+		public Component getDescription(FluidStack stack)
 		{
 			if(stack==null||!stack.hasTag())
-				return super.getDisplayName(stack);
+				return super.getDescription(stack);
 			return Component.translatable(PotionUtils.getPotion(stack.getTag()).getName("item.minecraft.potion.effect."));
-		}
-
-		@Override
-		public int getColor(FluidStack stack)
-		{
-			if(stack==null||!stack.hasTag())
-				return 0xff0000ff;
-			return 0xff000000|PotionUtils.getColor(PotionUtils.getAllEffects(stack.getTag()));
 		}
 
 		@Override

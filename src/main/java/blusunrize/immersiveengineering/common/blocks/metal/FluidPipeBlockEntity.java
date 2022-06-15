@@ -58,8 +58,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
@@ -356,7 +356,7 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 		@Override
 		public int getTankCapacity(int tank)
 		{
-			return FluidAttributes.BUCKET_VOLUME;
+			return FluidType.BUCKET_VOLUME;
 		}
 
 		@Override

@@ -24,7 +24,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.Arrays;
 
@@ -52,7 +52,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 76, 1)
-				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 48)
+				.setFluidRenderer(4*FluidType.BUCKET_VOLUME, false, 16, 48)
 				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}

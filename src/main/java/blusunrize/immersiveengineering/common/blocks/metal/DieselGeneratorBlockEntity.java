@@ -42,7 +42,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -60,7 +60,7 @@ import java.util.stream.Collectors;
 public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<DieselGeneratorBlockEntity>
 		implements IBlockBounds, ISoundBE, IEClientTickableBE
 {
-	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidAttributes.BUCKET_VOLUME)};
+	public FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidType.BUCKET_VOLUME)};
 	public boolean active = false;
 
 	public float animation_fanRotationStep = 0;
@@ -162,7 +162,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 			if(recipe!=null)
 			{
 				int burnTime = recipe.getBurnTime();
-				int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
+				int fluidConsumed = FluidType.BUCKET_VOLUME/burnTime;
 				int output = IEServerConfig.MACHINES.dieselGen_output.get();
 				List<IEnergyStorage> presentOutputs = outputs.stream()
 						.map(CapabilityReference::getNullable)

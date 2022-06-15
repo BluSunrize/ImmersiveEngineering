@@ -51,8 +51,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -69,7 +69,7 @@ import java.util.function.BiFunction;
 public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEntity, MixerRecipe> implements
 		IInteractionObjectIE<MixerBlockEntity>, IBlockBounds, IEClientTickableBE
 {
-	public final MultiFluidTank tank = new MultiFluidTank(8*FluidAttributes.BUCKET_VOLUME);
+	public final MultiFluidTank tank = new MultiFluidTank(8*FluidType.BUCKET_VOLUME);
 	public final NonNullList<ItemStack> inventory = NonNullList.withSize(8, ItemStack.EMPTY);
 	public float animation_agitator = 0;
 	public boolean outputAll;
@@ -184,7 +184,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 				if(!outputAll)
 				{
 					FluidStack inTank = this.tank.getFluid();
-					FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), FluidAttributes.BUCKET_VOLUME), false);
+					FluidStack out = Utils.copyFluidStackWithAmount(inTank, Math.min(inTank.getAmount(), FluidType.BUCKET_VOLUME), false);
 					int accepted = output.fill(out, FluidAction.SIMULATE);
 					if(accepted > 0)
 					{
@@ -203,7 +203,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 						FluidStack fs = it.next();
 						if(fs!=null)
 						{
-							FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), FluidAttributes.BUCKET_VOLUME-totalOut), false);
+							FluidStack out = Utils.copyFluidStackWithAmount(fs, Math.min(fs.getAmount(), FluidType.BUCKET_VOLUME-totalOut), false);
 							int accepted = output.fill(out, FluidAction.SIMULATE);
 							if(accepted > 0)
 							{
@@ -212,7 +212,7 @@ public class MixerBlockEntity extends PoweredMultiblockBlockEntity<MixerBlockEnt
 								totalOut += drained;
 								ret = true;
 							}
-							if(totalOut >= FluidAttributes.BUCKET_VOLUME)
+							if(totalOut >= FluidType.BUCKET_VOLUME)
 								break;
 						}
 					}

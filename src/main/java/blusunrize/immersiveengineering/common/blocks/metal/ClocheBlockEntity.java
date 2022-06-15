@@ -63,8 +63,8 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -89,7 +89,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 
 	public int dummy = 0;
 	private final NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
-	public final FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME)
+	public final FluidTank tank = new FluidTank(4*FluidType.BUCKET_VOLUME)
 	{
 		@Override
 		public boolean isFluidValid(FluidStack fluid)

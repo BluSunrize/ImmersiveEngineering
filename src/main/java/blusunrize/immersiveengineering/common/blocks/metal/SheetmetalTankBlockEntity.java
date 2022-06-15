@@ -37,8 +37,8 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -52,7 +52,7 @@ import java.util.Set;
 public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<SheetmetalTankBlockEntity>
 		implements IBlockOverlayText, IPlayerInteraction, IComparatorOverride, IBlockBounds
 {
-	public FluidTank tank = new FluidTank(512*FluidAttributes.BUCKET_VOLUME);
+	public FluidTank tank = new FluidTank(512*FluidType.BUCKET_VOLUME);
 	private final LayeredComparatorOutput comparatorHelper = new LayeredComparatorOutput(
 			tank.getCapacity(),
 			4,
@@ -104,7 +104,7 @@ public class SheetmetalTankBlockEntity extends MultiblockPartBlockEntity<Sheetme
 			for(CapabilityReference<IFluidHandler> outputRef : fluidNeighbors.values())
 				if(tank.getFluidAmount() > 0)
 				{
-					int outSize = Math.min(FluidAttributes.BUCKET_VOLUME, tank.getFluidAmount());
+					int outSize = Math.min(FluidType.BUCKET_VOLUME, tank.getFluidAmount());
 					FluidStack out = Utils.copyFluidStackWithAmount(tank.getFluid(), outSize, false);
 					IFluidHandler output = outputRef.getNullable();
 					if(output!=null)

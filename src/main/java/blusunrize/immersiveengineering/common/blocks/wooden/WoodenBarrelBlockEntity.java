@@ -39,10 +39,11 @@ import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -64,7 +65,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 			Direction.DOWN, OUTPUT,
 			Direction.UP, IOSideConfig.INPUT
 	));
-	public FluidTank tank = new FluidTank(12*FluidAttributes.BUCKET_VOLUME, this::isFluidValid);
+	public FluidTank tank = new FluidTank(12*FluidType.BUCKET_VOLUME, this::isFluidValid);
 
 	public WoodenBarrelBlockEntity(BlockEntityType<? extends WoodenBarrelBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -88,7 +89,7 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		for(Direction side : neighbors.keySet())
 			if(tank.getFluidAmount() > 0&&sideConfig.get(side)==OUTPUT)
 			{
-				int out = Math.min(FluidAttributes.BUCKET_VOLUME, tank.getFluidAmount());
+				int out = Math.min(FluidType.BUCKET_VOLUME, tank.getFluidAmount());
 				CapabilityReference<IFluidHandler> capRef = neighbors.get(side);
 				IFluidHandler handler = capRef.getNullable();
 				if(handler!=null)
@@ -265,8 +266,8 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 
 	public boolean isFluidValid(FluidStack fluid)
 	{
-		return !fluid.isEmpty()&&fluid.getFluid().getAttributes().getTemperature(fluid) < IGNITION_TEMPERATURE
-				&&!fluid.getFluid().getAttributes().isGaseous(fluid);
+		return !fluid.isEmpty()&&fluid.getFluid().getFluidType().getTemperature(fluid) < IGNITION_TEMPERATURE
+				&&!fluid.getFluid().is(Tags.Fluids.GASEOUS);
 	}
 
 	@Override
@@ -306,12 +307,12 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 		if(!metal)
 		{
 			Optional<Boolean> ret = fOptional.map((f) -> {
-				if(f.getFluid().getAttributes().isGaseous(f))
+				if(f.getFluid().is(Tags.Fluids.GASEOUS))
 				{
 					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"noGasAllowed"));
 					return true;
 				}
-				else if(f.getFluid().getAttributes().getTemperature(f) >= WoodenBarrelBlockEntity.IGNITION_TEMPERATURE)
+				else if(f.getFluid().getFluidType().getTemperature(f) >= WoodenBarrelBlockEntity.IGNITION_TEMPERATURE)
 				{
 					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"tooHot"));
 					return true;

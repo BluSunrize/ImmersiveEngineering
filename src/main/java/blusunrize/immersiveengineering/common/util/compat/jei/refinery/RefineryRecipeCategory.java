@@ -21,7 +21,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.Arrays;
 
@@ -44,12 +44,12 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 	{
 		if(recipe.input0!=null)
 			builder.addSlot(RecipeIngredientRole.INPUT, 7, 10)
-					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/20, false, 16, 47)
+					.setFluidRenderer(FluidType.BUCKET_VOLUME/20, false, 16, 47)
 					.addIngredients(VanillaTypes.FLUID, recipe.input0.getMatchingFluidStacks())
 					.setOverlay(tankOverlay, 0, 0);
 		if(recipe.input1!=null)
 			builder.addSlot(RecipeIngredientRole.INPUT, 34, 10)
-					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/20, false, 16, 47)
+					.setFluidRenderer(FluidType.BUCKET_VOLUME/20, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredients(VanillaTypes.FLUID, recipe.input1.getMatchingFluidStacks());
 		if(!recipe.catalyst.isEmpty())
@@ -58,7 +58,7 @@ public class RefineryRecipeCategory extends IERecipeCategory<RefineryRecipe>
 					.addItemStacks(Arrays.asList(recipe.catalyst.getItems()));
 		}
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 10)
-				.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/20, false, 16, 47)
+				.setFluidRenderer(FluidType.BUCKET_VOLUME/20, false, 16, 47)
 				.setOverlay(tankOverlay, 0, 0)
 				.addIngredient(VanillaTypes.FLUID, recipe.output)
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);

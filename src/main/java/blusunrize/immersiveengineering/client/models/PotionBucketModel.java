@@ -22,6 +22,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.client.model.*;
 import net.minecraftforge.client.model.data.EmptyModelData;
 import net.minecraftforge.client.model.geometry.IModelGeometry;
@@ -61,7 +62,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 		ItemMultiLayerBakedModel.Builder builder = ItemMultiLayerBakedModel.builder(
 				owner, baseModel.getParticleIcon(EmptyModelData.INSTANCE), new OverrideHandler(overrides, bakery, owner), transformMap
 		);
-		ResourceLocation fluidMaskLocation = IEFluids.POTION.get().getAttributes().getStillTexture();
+		ResourceLocation fluidMaskLocation = RenderProperties.get(IEFluids.POTION.get()).getStillTexture();
 		for(Pair<BakedModel, RenderType> layer : baseModel.getLayerModels(ItemStack.EMPTY, false))
 		{
 			List<BakedQuad> baseQuads = layer.getFirst().getQuads(null, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
@@ -129,7 +130,7 @@ public final class PotionBucketModel implements IModelGeometry<PotionBucketModel
 			final FluidStack fluid = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
 			if(fluid.isEmpty())
 				return nested.resolve(model, stack, world, livingEntity, unused);
-			final int color = fluid.getFluid().getAttributes().getColor(fluid);
+			final int color = RenderProperties.get(fluid.getFluid()).getColorTint(fluid);
 			return coloredModels.computeIfAbsent(color, i -> new PotionBucketModel(i).bake(
 					owner, bakery, ForgeModelBakery.defaultTextureGetter(), BlockModelRotation.X0_Y0, this, ImmersiveEngineering.rl("potion_bucket_override")
 			));

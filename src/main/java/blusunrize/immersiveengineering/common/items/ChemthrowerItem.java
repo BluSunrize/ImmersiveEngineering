@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
@@ -40,17 +39,17 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -64,7 +63,7 @@ import java.util.function.Supplier;
 
 public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFluidItem, IScrollwheel
 {
-	private static final int CAPACITY = 2*FluidAttributes.BUCKET_VOLUME;
+	private static final int CAPACITY = 2*FluidType.BUCKET_VOLUME;
 
 	public ChemthrowerItem()
 	{
@@ -95,21 +94,6 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 				);
 			list.add(add);
 		}
-	}
-
-	private Component formatFluidStack(FluidStack fs, int capacity)
-	{
-		if(fs!=null)
-		{
-			FluidAttributes attr = fs.getFluid().getAttributes();
-			ChatFormatting rarity = attr.getRarity()==Rarity.COMMON?ChatFormatting.GRAY:
-					attr.getRarity().color;
-			return TextUtils.applyFormat(Component.translatable(Lib.DESC_FLAVOUR+"fluidStack", attr.getDisplayName(fs),
-					fs.getAmount(), capacity), rarity);
-		}
-		else
-			return Component.translatable(Lib.DESC_FLAVOUR+"drill.empty");
-
 	}
 
 	@Nonnull
@@ -153,7 +137,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 			{
 				Vec3 v = player.getLookAngle();
 				int split = 8;
-				boolean isGas = fs.getFluid().getAttributes().isGaseous();
+				boolean isGas = fs.getFluid().is(Tags.Fluids.GASEOUS);
 
 				float scatter = isGas?.15f: .05f;
 				float range = isGas?.5f: 1f;

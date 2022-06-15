@@ -22,7 +22,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
+import net.minecraftforge.fluids.FluidType;
 
 import java.util.Arrays;
 
@@ -50,7 +50,7 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 			outputBuilder.addItemStack(recipe.itemOutput.get());
 		if(recipe.fluidOutput!=null&&!recipe.fluidOutput.isEmpty())
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 106, 9)
-					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)
+					.setFluidRenderer(FluidType.BUCKET_VOLUME/2, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)
 					.addTooltipCallback(JEIHelper.fluidTooltipCallback);

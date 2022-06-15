@@ -52,8 +52,8 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.CapabilityEnergy;
 import net.minecraftforge.energy.IEnergyStorage;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -78,7 +78,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 		}
 	}
 
-	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
+	public FluidTank tank = new FluidTank(4*FluidType.BUCKET_VOLUME);
 	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(8000);
 	public boolean placeCobble = true;
 	private final MultiblockCapability<IEnergyStorage> energyCap = MultiblockCapability.make(
@@ -137,7 +137,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					else if(level.getGameTime()%20==((getBlockPos().getX()^getBlockPos().getZ())&19)
 							&&level.getFluidState(getBlockPos().relative(f)).getType().is(FluidTags.WATER)
 							&&IEServerConfig.MACHINES.pump_infiniteWater.get()
-							&&tank.fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), FluidAction.SIMULATE)==FluidAttributes.BUCKET_VOLUME
+							&&tank.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), FluidAction.SIMULATE)==FluidType.BUCKET_VOLUME
 							&&this.energyStorage.extractEnergy(consumption, true) >= consumption)
 					{
 						int connectedSources = 0;
@@ -150,7 +150,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 						if(connectedSources > 1)
 						{
 							this.energyStorage.extractEnergy(consumption, false);
-							this.tank.fill(new FluidStack(Fluids.WATER, FluidAttributes.BUCKET_VOLUME), FluidAction.EXECUTE);
+							this.tank.fill(new FluidStack(Fluids.WATER, FluidType.BUCKET_VOLUME), FluidAction.EXECUTE);
 						}
 					}
 				}

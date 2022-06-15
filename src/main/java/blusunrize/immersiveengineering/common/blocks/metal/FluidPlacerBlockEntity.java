@@ -40,8 +40,8 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
@@ -62,7 +62,7 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 		sideConfig.put(Direction.UP, IOSideConfig.INPUT);
 	}
 
-	public FluidTank tank = new FluidTank(4*FluidAttributes.BUCKET_VOLUME);
+	public FluidTank tank = new FluidTank(4*FluidType.BUCKET_VOLUME);
 	public boolean redstoneControlInverted = false;
 
 	private int tickCount = 0;
@@ -86,7 +86,7 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 		{
 			if(tickCount%512==0)//Initial placement
 				prepareAreaCheck();
-			if(tank.getFluidAmount() >= FluidAttributes.BUCKET_VOLUME&&
+			if(tank.getFluidAmount() >= FluidType.BUCKET_VOLUME&&
 					!layeredPlacementQueue.isEmpty())
 			{
 				Queue<BlockPos> lowestLayer = layeredPlacementQueue.firstEntry().getValue();
@@ -95,7 +95,7 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 				else
 				{
 					BlockPos targetPos = lowestLayer.poll();
-					if(canFill(targetPos)&&tank.getFluid().getFluid().getAttributes().canBePlacedInWorld(level, targetPos, tank.getFluid()))
+					if(canFill(targetPos)&&tank.getFluid().getFluid().getFluidType().canBePlacedInLevel(level, targetPos, tank.getFluid()))
 						if(place(targetPos, tank, level))
 						{
 							addConnectedSpaces(targetPos);
@@ -109,7 +109,7 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 
 	private static boolean place(BlockPos pos, FluidTank tank, Level world)
 	{
-		if(tank.getFluidAmount() < FluidAttributes.BUCKET_VOLUME)
+		if(tank.getFluidAmount() < FluidType.BUCKET_VOLUME)
 			return false;
 		FluidStack stack = tank.getFluid();
 		BucketItem bucketitem;
@@ -124,7 +124,7 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 		ItemStack bucketStack = new ItemStack(bucketitem);
 		if(bucketitem.emptyContents(null, world, pos, null))
 		{
-			tank.drain(FluidAttributes.BUCKET_VOLUME, FluidAction.EXECUTE);
+			tank.drain(FluidType.BUCKET_VOLUME, FluidAction.EXECUTE);
 			bucketitem.checkExtraContent(null, world, bucketStack, pos);
 			return true;
 		}
