@@ -20,7 +20,7 @@ public class ClocheFertilizer extends IESerializableRecipe
 {
 	public static RegistryObject<IERecipeSerializer<ClocheFertilizer>> SERIALIZER;
 
-	public static final CachedRecipeList<ClocheFertilizer> RECIPES = new CachedRecipeList<>(IERecipeTypes.FERTILIZER, ClocheFertilizer.class);
+	public static final CachedRecipeList<ClocheFertilizer> RECIPES = new CachedRecipeList<>(IERecipeTypes.FERTILIZER);
 
 	public final Ingredient input;
 	public final float growthModifier;

@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 public class CokeOvenRecipe extends IESerializableRecipe
 {
 	public static RegistryObject<IERecipeSerializer<CokeOvenRecipe>> SERIALIZER;
-	public static final CachedRecipeList<CokeOvenRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.COKE_OVEN, CokeOvenRecipe.class);
+	public static final CachedRecipeList<CokeOvenRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.COKE_OVEN);
 
 	public final IngredientWithSize input;
 	public final Lazy<ItemStack> output;

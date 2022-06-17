@@ -14,8 +14,10 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -30,15 +32,16 @@ import java.util.Arrays;
 
 public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMachineRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "bottlingmachine");
 	private final IDrawableStatic tankOverlay;
 
 	public BottlingMachineRecipeCategory(IGuiHelper helper)
 	{
-		super(BottlingMachineRecipe.class, helper, UID, "block.immersiveengineering.bottling_machine");
+		super(helper, JEIRecipeTypes.BOTTLING_MACHINE, "block.immersiveengineering.bottling_machine");
 		setBackground(helper.createBlankDrawable(120, 50));
-		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(IEBlocks.Multiblocks.BOTTLING_MACHINE)));
-		tankOverlay = helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/fermenter.png"), 177, 31, 20, 51).addPadding(-2, 2, -2, 2).build();
+		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(IEBlocks.Multiblocks.BOTTLING_MACHINE)));
+		tankOverlay = helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/fermenter.png"), 177, 31, 20, 51)
+				.addPadding(-2, 2, -2, 2)
+				.build();
 	}
 
 	@Override
@@ -53,8 +56,9 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 76, 1)
 				.setFluidRenderer(4*FluidType.BUCKET_VOLUME, false, 16, 48)
-				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
-				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+				.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInput.getMatchingFluidStacks())
+				.addTooltipCallback(JEIHelper.fluidTooltipCallback)
+				.setOverlay(tankOverlay, 0, 0);
 	}
 
 	@Override

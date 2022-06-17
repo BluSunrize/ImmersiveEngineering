@@ -8,29 +8,26 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei.metalpress;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.MetalPressRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 
 public class MetalPressRecipeCategory extends IERecipeCategory<MetalPressRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "metalpress");
-
 	public MetalPressRecipeCategory(IGuiHelper helper)
 	{
-		super(MetalPressRecipe.class, helper, UID, "block.immersiveengineering.metal_press");
+		super(helper, JEIRecipeTypes.METAL_PRESS, "block.immersiveengineering.metal_press");
 		setBackground(helper.createBlankDrawable(100, 50));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.METAL_PRESS));
 	}

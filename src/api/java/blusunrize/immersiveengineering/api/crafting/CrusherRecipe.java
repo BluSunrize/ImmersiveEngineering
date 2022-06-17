@@ -32,7 +32,7 @@ import java.util.List;
 public class CrusherRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<CrusherRecipe>> SERIALIZER;
-	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CRUSHER, CrusherRecipe.class);
+	public static final CachedRecipeList<CrusherRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CRUSHER);
 
 	public final Ingredient input;
 	public final Lazy<ItemStack> output;

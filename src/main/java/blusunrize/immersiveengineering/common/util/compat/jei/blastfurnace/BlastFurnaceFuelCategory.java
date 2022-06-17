@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -28,12 +29,11 @@ import java.util.Arrays;
 
 public class BlastFurnaceFuelCategory extends IERecipeCategory<BlastFurnaceFuel>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "blastfurnace_fuel");
 	private final IDrawableAnimated flame;
 
 	public BlastFurnaceFuelCategory(IGuiHelper helper)
 	{
-		super(BlastFurnaceFuel.class, helper, UID, "gui.immersiveengineering.blastFurnace.fuel");
+		super(helper, JEIRecipeTypes.BLAST_FUEL, "gui.immersiveengineering.blastFurnace.fuel");
 		ResourceLocation furnaceBackgroundLocation = new ResourceLocation("minecraft", "textures/gui/container/furnace.png");
 		setBackground(helper.drawableBuilder(furnaceBackgroundLocation, 55, 36, 18, 36).addPadding(0, 0, 0, 68).build());
 		setIcon(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/blast_furnace.png"), 176, 0, 14, 14));

@@ -15,7 +15,6 @@ import com.google.common.base.Preconditions;
 import com.mojang.datafixers.util.Unit;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -124,12 +123,12 @@ public class GeneratedListRecipe<R extends IESerializableRecipe, E> extends IESe
 			Supplier<EarlyResult> makeEarlyResult,
 			Function<EarlyResult, List<? extends T>> generator,
 			ResourceLocation serialized,
-			Supplier<RecipeType<T>> recipeType
+			IERecipeTypes.TypeWithClass<T> recipeType
 	)
 	{
 		public static <R extends IESerializableRecipe>
 		RecipeListGenerator<R, ?> simple(
-				Supplier<List<? extends R>> generator, ResourceLocation serialized, Supplier<RecipeType<R>> recipeType
+				Supplier<List<? extends R>> generator, ResourceLocation serialized, IERecipeTypes.TypeWithClass<R> recipeType
 		)
 		{
 			return new RecipeListGenerator<>(() -> Unit.INSTANCE, $ -> generator.get(), serialized, recipeType);

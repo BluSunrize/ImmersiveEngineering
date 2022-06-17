@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.google.common.collect.Lists;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
@@ -25,11 +26,9 @@ import java.util.Arrays;
 
 public class WorkbenchRecipeCategory extends IERecipeCategory<BlueprintCraftingRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "workbench");
-
 	public WorkbenchRecipeCategory(IGuiHelper helper)
 	{
-		super(BlueprintCraftingRecipe.class, helper, UID, "block.immersiveengineering.workbench");
+		super(helper, JEIRecipeTypes.BLUEPRINT, "block.immersiveengineering.workbench");
 		setBackground(helper.createDrawable(new ResourceLocation(Lib.MODID, "textures/gui/workbench.png"), 0, 11, 176, 54));
 		setIcon(new ItemStack(IEBlocks.WoodenDevices.WORKBENCH));
 	}

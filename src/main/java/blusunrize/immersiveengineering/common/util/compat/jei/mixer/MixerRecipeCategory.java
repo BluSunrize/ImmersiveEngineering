@@ -14,8 +14,9 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
-import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
@@ -30,14 +31,13 @@ import java.util.Arrays;
 
 public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "mixer");
 	private final IDrawableStatic tankTexture;
 	private final IDrawableStatic tankOverlay;
 	private final IDrawableStatic arrowDrawable;
 
 	public MixerRecipeCategory(IGuiHelper helper)
 	{
-		super(MixerRecipe.class, helper, UID, "block.immersiveengineering.mixer");
+		super(helper, JEIRecipeTypes.MIXER, "block.immersiveengineering.mixer");
 		setBackground(helper.createBlankDrawable(155, 60));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.MIXER));
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/mixer.png");
@@ -51,13 +51,13 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	{
 		builder.addSlot(RecipeIngredientRole.INPUT, 48, 3)
 				.setFluidRenderer(4*FluidType.BUCKET_VOLUME, false, 58, 47)
-				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
+				.addIngredients(ForgeTypes.FLUID_STACK, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 139, 3)
 				.setFluidRenderer(4*FluidType.BUCKET_VOLUME, false, 16, 47)
 				.setOverlay(tankOverlay, 0, 0)
-				.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)
+				.addIngredient(ForgeTypes.FLUID_STACK, recipe.fluidOutput)
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		for(int i = 0; i < recipe.itemInputs.length; i++)

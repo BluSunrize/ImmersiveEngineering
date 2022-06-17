@@ -25,7 +25,7 @@ import javax.annotation.Nullable;
 public class AlloyRecipe extends IESerializableRecipe
 {
 	public static RegistryObject<IERecipeSerializer<AlloyRecipe>> SERIALIZER;
-	public static final CachedRecipeList<AlloyRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ALLOY, AlloyRecipe.class);
+	public static final CachedRecipeList<AlloyRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ALLOY);
 
 	public final IngredientWithSize input0;
 	public final IngredientWithSize input1;

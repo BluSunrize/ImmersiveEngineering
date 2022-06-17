@@ -20,7 +20,7 @@ public class BlastFurnaceFuel extends IESerializableRecipe
 {
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceFuel>> SERIALIZER;
 
-	public static final CachedRecipeList<BlastFurnaceFuel> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FUEL, BlastFurnaceFuel.class);
+	public static final CachedRecipeList<BlastFurnaceFuel> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FUEL);
 
 	public final Ingredient input;
 	public final int burnTime;

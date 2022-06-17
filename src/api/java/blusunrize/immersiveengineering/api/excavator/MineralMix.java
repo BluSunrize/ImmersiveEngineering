@@ -30,7 +30,7 @@ public class MineralMix extends IESerializableRecipe
 {
 	public static RegistryObject<IERecipeSerializer<MineralMix>> SERIALIZER;
 
-	public static final CachedRecipeList<MineralMix> RECIPES = new CachedRecipeList<>(IERecipeTypes.MINERAL_MIX, MineralMix.class);
+	public static final CachedRecipeList<MineralMix> RECIPES = new CachedRecipeList<>(IERecipeTypes.MINERAL_MIX);
 
 	public final StackWithChance[] outputs;
 	public final int weight;

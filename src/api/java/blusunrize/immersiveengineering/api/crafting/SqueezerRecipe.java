@@ -34,7 +34,7 @@ import java.util.function.Function;
 public class SqueezerRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<SqueezerRecipe>> SERIALIZER;
-	public static final CachedRecipeList<SqueezerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SQUEEZER, SqueezerRecipe.class);
+	public static final CachedRecipeList<SqueezerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SQUEEZER);
 
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;

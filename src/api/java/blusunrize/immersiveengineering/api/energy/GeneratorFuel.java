@@ -32,7 +32,7 @@ public class GeneratorFuel extends IESerializableRecipe
 {
 	public static RegistryObject<IERecipeSerializer<GeneratorFuel>> SERIALIZER;
 
-	public static final CachedRecipeList<GeneratorFuel> RECIPES = new CachedRecipeList<>(IERecipeTypes.GENERATOR_FUEL, GeneratorFuel.class);
+	public static final CachedRecipeList<GeneratorFuel> RECIPES = new CachedRecipeList<>(IERecipeTypes.GENERATOR_FUEL);
 
 	private final FastEither<TagKey<Fluid>, List<Fluid>> fluids;
 	private final int burnTime;

@@ -30,7 +30,7 @@ import java.util.Set;
 public class MixerRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<MixerRecipe>> SERIALIZER;
-	public static final CachedRecipeList<MixerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.MIXER, MixerRecipe.class);
+	public static final CachedRecipeList<MixerRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.MIXER);
 
 	public final IngredientWithSize[] itemInputs;
 	public final FluidTagInput fluidInput;

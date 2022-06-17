@@ -23,7 +23,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class SawmillRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<SawmillRecipe>> SERIALIZER;
-	public static final CachedRecipeList<SawmillRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SAWMILL, SawmillRecipe.class);
+	public static final CachedRecipeList<SawmillRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.SAWMILL);
 
 	public final Ingredient input;
 	public final Lazy<ItemStack> stripped;

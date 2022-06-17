@@ -34,7 +34,7 @@ import java.util.function.Function;
 public class FermenterRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<FermenterRecipe>> SERIALIZER;
-	public static final CachedRecipeList<FermenterRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.FERMENTER, FermenterRecipe.class);
+	public static final CachedRecipeList<FermenterRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.FERMENTER);
 
 	public IngredientWithSize input;
 	public final FluidStack fluidOutput;

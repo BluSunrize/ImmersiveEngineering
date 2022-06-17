@@ -39,7 +39,7 @@ public class ThermoelectricSource extends IESerializableRecipe
 {
 	public static RegistryObject<IERecipeSerializer<ThermoelectricSource>> SERIALIZER;
 
-	public static final CachedRecipeList<ThermoelectricSource> ALL_SOURCES = new CachedRecipeList<>(IERecipeTypes.THERMOELECTRIC_SOURCE, ThermoelectricSource.class);
+	public static final CachedRecipeList<ThermoelectricSource> ALL_SOURCES = new CachedRecipeList<>(IERecipeTypes.THERMOELECTRIC_SOURCE);
 
 	public final FastEither<TagKey<Block>, List<Block>> blocks;
 	public final int temperature;

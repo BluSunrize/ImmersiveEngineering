@@ -27,7 +27,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class BottlingMachineRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<BottlingMachineRecipe>> SERIALIZER;
-	public static final CachedRecipeList<BottlingMachineRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BOTTLING_MACHINE, BottlingMachineRecipe.class);
+	public static final CachedRecipeList<BottlingMachineRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BOTTLING_MACHINE);
 
 	public final Ingredient input;
 	public final FluidTagInput fluidInput;

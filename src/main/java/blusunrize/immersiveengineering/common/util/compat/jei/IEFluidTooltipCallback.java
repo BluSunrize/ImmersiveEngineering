@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
-import mezz.jei.api.constants.VanillaTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotTooltipCallback;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import net.minecraft.network.chat.Component;
@@ -27,7 +27,7 @@ public class IEFluidTooltipCallback implements IRecipeSlotTooltipCallback
 	@Override
 	public void onTooltip(IRecipeSlotView recipeSlotView, List<Component> tooltip)
 	{
-		Optional<FluidStack> maybeFluid = recipeSlotView.getDisplayedIngredient(VanillaTypes.FLUID);
+		Optional<FluidStack> maybeFluid = recipeSlotView.getDisplayedIngredient(ForgeTypes.FLUID_STACK);
 		if(maybeFluid.isEmpty())
 			return;
 		FluidStack ingredient = maybeFluid.get();

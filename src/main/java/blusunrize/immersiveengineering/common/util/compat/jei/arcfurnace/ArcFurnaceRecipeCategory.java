@@ -11,11 +11,11 @@ package blusunrize.immersiveengineering.common.util.compat.jei.arcfurnace;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
 import blusunrize.immersiveengineering.client.ClientUtils;
-import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
@@ -24,6 +24,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import mezz.jei.api.recipe.RecipeType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -34,26 +35,24 @@ import java.util.List;
 
 public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "arcfurnace");
-	public static final ResourceLocation UID_RECYCLING = new ResourceLocation(Lib.MODID, "arcfurnace_recycling");
 	private final IDrawableStatic arrow;
 
-	public ArcFurnaceRecipeCategory(IGuiHelper helper, Class<? extends ArcFurnaceRecipe> recipeClass, ResourceLocation uid)
+	public ArcFurnaceRecipeCategory(IGuiHelper helper, RecipeType<ArcFurnaceRecipe> type)
 	{
-		super(recipeClass, helper, uid, "block.immersiveengineering.arc_furnace");
+		super(helper, type, "block.immersiveengineering.arc_furnace");
 		setBackground(helper.createBlankDrawable(148, 54));
-		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(IEBlocks.Multiblocks.ARC_FURNACE)));
+		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM_STACK, new ItemStack(IEBlocks.Multiblocks.ARC_FURNACE)));
 		arrow = helper.drawableBuilder(JEIHelper.JEI_GUI, 19, 4, 24, 18).setTextureSize(128, 128).build();
 	}
 
 	public static ArcFurnaceRecipeCategory getDefault(IGuiHelper helper)
 	{
-		return new ArcFurnaceRecipeCategory(helper, ArcFurnaceRecipe.class, UID);
+		return new ArcFurnaceRecipeCategory(helper, JEIRecipeTypes.ARC_FURNACE);
 	}
 
 	public static ArcFurnaceRecipeCategory getRecycling(IGuiHelper helper)
 	{
-		ArcFurnaceRecipeCategory cat = new ArcFurnaceRecipeCategory(helper, ArcRecyclingRecipe.class, UID_RECYCLING);
+		ArcFurnaceRecipeCategory cat = new ArcFurnaceRecipeCategory(helper, JEIRecipeTypes.ARC_FURNACE_RECYCLING);
 		cat.title.append(" - Recycling");
 		cat.setIcon(helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/recycle.png"), 0, 0, 16, 16).setTextureSize(16, 16).build());
 		return cat;
@@ -62,7 +61,6 @@ public class ArcFurnaceRecipeCategory extends IERecipeCategory<ArcFurnaceRecipe>
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, ArcFurnaceRecipe recipe, IFocusGroup focuses)
 	{
-		super.setRecipe(builder, recipe, focuses);
 		int x = (148-getWidth(recipe))/2+1;
 
 		builder.addSlot(RecipeIngredientRole.INPUT, x+8, 1)

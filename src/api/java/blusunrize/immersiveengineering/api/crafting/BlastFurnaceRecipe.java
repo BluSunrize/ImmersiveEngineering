@@ -26,7 +26,7 @@ import javax.annotation.Nullable;
 public class BlastFurnaceRecipe extends IESerializableRecipe
 {
 	public static RegistryObject<IERecipeSerializer<BlastFurnaceRecipe>> SERIALIZER;
-	public static final CachedRecipeList<BlastFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FURNACE, BlastFurnaceRecipe.class);
+	public static final CachedRecipeList<BlastFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.BLAST_FURNACE);
 
 	public final IngredientWithSize input;
 	public final Lazy<ItemStack> output;

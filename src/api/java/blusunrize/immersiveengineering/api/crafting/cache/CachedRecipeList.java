@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.api.crafting.cache;
 
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.crafting.IERecipeTypes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -44,6 +45,11 @@ public class CachedRecipeList<R extends Recipe<?>>
 	{
 		this.type = type;
 		this.recipeClass = recipeClass;
+	}
+
+	public CachedRecipeList(IERecipeTypes.TypeWithClass<R> type)
+	{
+		this(type.type(), type.recipeClass());
 	}
 
 	@SubscribeEvent

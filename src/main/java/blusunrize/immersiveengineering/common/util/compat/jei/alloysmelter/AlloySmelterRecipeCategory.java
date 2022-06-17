@@ -12,6 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.AlloyRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -24,13 +25,12 @@ import net.minecraft.world.item.ItemStack;
 
 public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "alloysmelter");
 	private final IDrawableAnimated flame;
 	private final IDrawableAnimated arrow;
 
 	public AlloySmelterRecipeCategory(IGuiHelper helper)
 	{
-		super(AlloyRecipe.class, helper, UID, "block.immersiveengineering.alloy_smelter");
+		super(helper, JEIRecipeTypes.ALLOY, "block.immersiveengineering.alloy_smelter");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/alloy_smelter.png");
 		setBackground(helper.createDrawable(background, 36, 15, 106, 56));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.ALLOY_SMELTER));
@@ -41,7 +41,6 @@ public class AlloySmelterRecipeCategory extends IERecipeCategory<AlloyRecipe>
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, AlloyRecipe recipe, IFocusGroup focuses)
 	{
-		super.setRecipe(builder, recipe, focuses);
 		builder.addSlot(RecipeIngredientRole.INPUT, 2, 2)
 				.addItemStacks(recipe.input0.getMatchingStackList());
 		builder.addSlot(RecipeIngredientRole.INPUT, 30, 2)

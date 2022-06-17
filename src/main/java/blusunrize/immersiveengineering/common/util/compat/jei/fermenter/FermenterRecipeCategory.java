@@ -13,7 +13,8 @@ import blusunrize.immersiveengineering.api.crafting.FermenterRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
-import mezz.jei.api.constants.VanillaTypes;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
+import mezz.jei.api.forge.ForgeTypes;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.builder.IRecipeSlotBuilder;
 import mezz.jei.api.gui.drawable.IDrawableStatic;
@@ -28,12 +29,11 @@ import java.util.Arrays;
 
 public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "fermenter");
 	private final IDrawableStatic tankOverlay;
 
 	public FermenterRecipeCategory(IGuiHelper helper)
 	{
-		super(FermenterRecipe.class, helper, UID, "block.immersiveengineering.fermenter");
+		super(helper, JEIRecipeTypes.FERMENTER, "block.immersiveengineering.fermenter");
 		ResourceLocation background = new ResourceLocation(Lib.MODID, "textures/gui/fermenter.png");
 		setBackground(helper.createDrawable(background, 6, 12, 126, 59));
 		setIcon(new ItemStack(IEBlocks.Multiblocks.FERMENTER.get()));
@@ -52,7 +52,7 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 106, 9)
 					.setFluidRenderer(FluidType.BUCKET_VOLUME/2, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
-					.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)
+					.addIngredient(ForgeTypes.FLUID_STACK, recipe.fluidOutput)
 					.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
 }

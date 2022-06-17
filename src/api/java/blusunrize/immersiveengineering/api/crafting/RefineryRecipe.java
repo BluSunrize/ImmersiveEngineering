@@ -28,7 +28,7 @@ import java.util.Optional;
 public class RefineryRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<RefineryRecipe>> SERIALIZER;
-	public static final CachedRecipeList<RefineryRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.REFINERY, RefineryRecipe.class);
+	public static final CachedRecipeList<RefineryRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.REFINERY);
 
 	public final FluidStack output;
 	public final FluidTagInput input0;

@@ -43,7 +43,7 @@ public class ArcFurnaceRecipe extends MultiblockRecipe
 
 	public String specialRecipeType;
 	public static List<String> specialRecipeTypes = new ArrayList<>();
-	public static final CachedRecipeList<ArcFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ARC_FURNACE, ArcFurnaceRecipe.class);
+	public static final CachedRecipeList<ArcFurnaceRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.ARC_FURNACE);
 
 	public ArcFurnaceRecipe(
 			ResourceLocation id,

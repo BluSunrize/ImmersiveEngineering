@@ -8,11 +8,11 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jei.sawmill;
 
-import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.SawmillRecipe;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.util.compat.jei.IERecipeCategory;
 import blusunrize.immersiveengineering.common.util.compat.jei.JEIHelper;
+import blusunrize.immersiveengineering.common.util.compat.jei.JEIRecipeTypes;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.gui.drawable.IDrawableAnimated;
@@ -21,7 +21,6 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
 
@@ -29,14 +28,13 @@ import java.util.Arrays;
 
 public class SawmillRecipeCategory extends IERecipeCategory<SawmillRecipe>
 {
-	public static final ResourceLocation UID = new ResourceLocation(Lib.MODID, "sawmill");
 	private final IDrawableStatic middle;
 	private final IDrawableAnimated arrowNormal;
 	private final IDrawableAnimated arrowSplit;
 
 	public SawmillRecipeCategory(IGuiHelper helper)
 	{
-		super(SawmillRecipe.class, helper, UID, "block.immersiveengineering.sawmill");
+		super(helper, JEIRecipeTypes.SAWMILL, "block.immersiveengineering.sawmill");
 		setBackground(helper.drawableBuilder(
 				JEIHelper.JEI_GUI, 0, 0, 114, 26).setTextureSize(128, 128).addPadding(2, 36, 2, 12).build()
 		);

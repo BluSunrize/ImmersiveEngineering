@@ -12,17 +12,21 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
+import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.constants.VanillaTypes;
 import mezz.jei.api.gui.ingredient.IRecipeSlotView;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandler;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 
@@ -49,9 +53,15 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 	}
 
 	@Override
-	public Class<CraftingRecipe> getRecipeClass()
+	public Optional<MenuType<AssemblerContainer>> getMenuType()
 	{
-		return CraftingRecipe.class;
+		return Optional.of(IEContainerTypes.ASSEMBLER.getType());
+	}
+
+	@Override
+	public RecipeType<CraftingRecipe> getRecipeType()
+	{
+		return RecipeTypes.CRAFTING;
 	}
 
 	@Override
@@ -71,7 +81,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 						if(j > 0)
 						{
 							Optional<ItemStack> stackToUse = ingr.getAllIngredients()
-									.filter(t -> t.getType()==VanillaTypes.ITEM)
+									.filter(t -> t.getType()==VanillaTypes.ITEM_STACK)
 									.map(t -> (ItemStack)t.getIngredient())
 									.findFirst();
 							if(stackToUse.isPresent())

@@ -35,7 +35,7 @@ public class ClocheRecipe extends IESerializableRecipe
 	public final ClocheRenderReference renderReference;
 	public final ClocheRenderFunction renderFunction;
 
-	public static final CachedRecipeList<ClocheRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CLOCHE, ClocheRecipe.class);
+	public static final CachedRecipeList<ClocheRecipe> RECIPES = new CachedRecipeList<>(IERecipeTypes.CLOCHE);
 	private static final List<Pair<Ingredient, ResourceLocation>> soilTextureList = new ArrayList<>();
 
 	public ClocheRecipe(ResourceLocation id, List<Lazy<ItemStack>> outputs, Ingredient seed, Ingredient soil, int time, ClocheRenderReference renderReference)

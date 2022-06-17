@@ -31,7 +31,7 @@ import java.util.function.Consumer;
 public class MetalPressRecipe extends MultiblockRecipe
 {
 	public static RegistryObject<IERecipeSerializer<MetalPressRecipe>> SERIALIZER;
-	public static final CachedRecipeList<MetalPressRecipe> STANDARD_RECIPES = new CachedRecipeList<>(IERecipeTypes.METAL_PRESS, MetalPressRecipe.class);
+	public static final CachedRecipeList<MetalPressRecipe> STANDARD_RECIPES = new CachedRecipeList<>(IERecipeTypes.METAL_PRESS);
 	private static final List<MetalPressRecipe> SPECIAL_RECIPES = new ArrayList<>();
 
 	public IngredientWithSize input;
