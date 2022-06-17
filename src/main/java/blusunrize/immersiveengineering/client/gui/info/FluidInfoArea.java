@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.gui.info;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.fluids.IEFluid;
+import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import net.minecraft.ChatFormatting;
@@ -25,7 +25,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidTank;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -71,12 +70,8 @@ public class FluidInfoArea extends InfoArea
 			));
 		else
 			tooltip.accept(Component.translatable("gui.immersiveengineering.empty"));
-		if(fluid.getFluid() instanceof IEFluid)
-		{
-			List<Component> temp = new ArrayList<>();
-			((IEFluid)fluid.getFluid()).addTooltipInfo(fluid, null, temp);
-			temp.forEach(tooltip);
-		}
+		if(fluid.getFluid() instanceof PotionFluid potion)
+			potion.addInformation(fluid, tooltip);
 
 		if(mc().options.advancedItemTooltips&&!fluid.isEmpty())
 		{

@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.fluids.ConcreteFluid;
 import blusunrize.immersiveengineering.common.fluids.IEFluid;
-import blusunrize.immersiveengineering.common.fluids.IEFluid.FluidConstructor;
 import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.fluids.PotionFluid;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
@@ -30,6 +29,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.client.IFluidTypeRenderProperties;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.fluids.IEFluid.createBuilder;
@@ -52,92 +53,134 @@ import static blusunrize.immersiveengineering.common.fluids.IEFluid.createBuilde
 public class IEFluids
 {
 	public static final DeferredRegister<Fluid> REGISTER = DeferredRegister.create(ForgeRegistries.FLUIDS, Lib.MODID);
+	public static final DeferredRegister<FluidType> TYPE_REGISTER = DeferredRegister.create(
+			ForgeRegistries.Keys.FLUID_TYPES, Lib.MODID
+	);
 	public static final List<FluidEntry> ALL_ENTRIES = new ArrayList<>();
 	public static final Set<BlockEntry<? extends LiquidBlock>> ALL_FLUID_BLOCKS = new HashSet<>();
 
-	public static final FluidEntry CREOSOTE = new FluidEntry(
+	public static final FluidEntry CREOSOTE = FluidEntry.make(
 			"creosote", 800, rl("block/fluid/creosote_still"), rl("block/fluid/creosote_flow")
 	);
-	public static final FluidEntry PLANTOIL = new FluidEntry(
+	public static final FluidEntry PLANTOIL = FluidEntry.make(
 			"plantoil", rl("block/fluid/plantoil_still"), rl("block/fluid/plantoil_flow")
 	);
-	public static final FluidEntry ETHANOL = new FluidEntry(
+	public static final FluidEntry ETHANOL = FluidEntry.make(
 			"ethanol", rl("block/fluid/ethanol_still"), rl("block/fluid/ethanol_flow")
 	);
-	public static final FluidEntry BIODIESEL = new FluidEntry(
+	public static final FluidEntry BIODIESEL = FluidEntry.make(
 			"biodiesel", rl("block/fluid/biodiesel_still"), rl("block/fluid/biodiesel_flow")
 	);
-	public static final FluidEntry CONCRETE = new FluidEntry(
+	public static final FluidEntry CONCRETE = FluidEntry.make(
 			"concrete", rl("block/fluid/concrete_still"), rl("block/fluid/concrete_flow"),
 			ConcreteFluid::new, ConcreteFluid.Flowing::new, createBuilder(2400, 4000),
 			ImmutableList.of(IEProperties.INT_32)
 	);
-	public static final FluidEntry HERBICIDE = new FluidEntry(
+	public static final FluidEntry HERBICIDE = FluidEntry.make(
 			"herbicide", rl("block/fluid/herbicide_still"), rl("block/fluid/herbicide_flow")
 	);
-	public static final FluidEntry REDSTONE_ACID = new FluidEntry(
+	public static final FluidEntry REDSTONE_ACID = FluidEntry.make(
 			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow")
 	);
 	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
 
-	public static class FluidEntry
+	public record FluidEntry(
+			RegistryObject<IEFluid> flowing,
+			RegistryObject<IEFluid> still,
+			BlockEntry<IEFluidBlock> block,
+			RegistryObject<BucketItem> bucket,
+			RegistryObject<FluidType> type,
+			List<Property<?>> properties
+	)
 	{
-		private final RegistryObject<IEFluid> flowing;
-		private final RegistryObject<IEFluid> still;
-		private final BlockEntry<IEFluidBlock> block;
-		private final RegistryObject<BucketItem> bucket;
-		private final List<Property<?>> properties;
-
-		private FluidEntry(String name, ResourceLocation stillTex, ResourceLocation flowingTex)
+		private static FluidEntry make(String name, ResourceLocation stillTex, ResourceLocation flowingTex)
 		{
-			this(name, 0, stillTex, flowingTex);
+			return make(name, 0, stillTex, flowingTex);
 		}
 
-		private FluidEntry(String name, int burnTime, ResourceLocation stillTex, ResourceLocation flowingTex)
+		private static FluidEntry make(String name, int burnTime, ResourceLocation stillTex, ResourceLocation flowingTex)
 		{
-			this(name, burnTime, stillTex, flowingTex, null);
+			return make(name, burnTime, stillTex, flowingTex, null);
 		}
 
-		private FluidEntry(
+		private static FluidEntry make(
 				String name, int burnTime,
 				ResourceLocation stillTex, ResourceLocation flowingTex,
 				@Nullable Consumer<FluidType.Properties> buildAttributes
 		)
 		{
-			this(
+			return make(
 					name, burnTime, stillTex, flowingTex, IEFluid::new, IEFluid.Flowing::new, buildAttributes,
 					ImmutableList.of()
 			);
 		}
 
-		private FluidEntry(
+		private static FluidEntry make(
 				String name, ResourceLocation stillTex, ResourceLocation flowingTex,
-				IEFluid.FluidConstructor makeStill, IEFluid.FluidConstructor makeFlowing,
+				Function<FluidEntry, ? extends IEFluid> makeStill, Function<FluidEntry, ? extends IEFluid> makeFlowing,
 				@Nullable Consumer<FluidType.Properties> buildAttributes, ImmutableList<Property<?>> properties
 		)
 		{
-			this(name, 0, stillTex, flowingTex, makeStill, makeFlowing, buildAttributes, properties);
+			return make(name, 0, stillTex, flowingTex, makeStill, makeFlowing, buildAttributes, properties);
 		}
 
-		private FluidEntry(
+		private static FluidEntry make(
 				String name, int burnTime,
 				ResourceLocation stillTex, ResourceLocation flowingTex,
-				FluidConstructor makeStill, FluidConstructor makeFlowing,
+				Function<FluidEntry, ? extends IEFluid> makeStill, Function<FluidEntry, ? extends IEFluid> makeFlowing,
 				@Nullable Consumer<FluidType.Properties> buildAttributes, List<Property<?>> properties)
 		{
-			this.properties = properties;
+			FluidType.Properties builder = FluidType.Properties.create();
+			if(buildAttributes!=null)
+				buildAttributes.accept(builder);
+			RegistryObject<FluidType> type = TYPE_REGISTER.register(
+					name, () -> makeTypeWithTextures(builder, stillTex, flowingTex)
+			);
 			Mutable<FluidEntry> thisMutable = new MutableObject<>();
-			this.still = REGISTER.register(name, () -> IEFluid.makeFluid(
-					makeStill, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
+			RegistryObject<IEFluid> still = REGISTER.register(name, () -> IEFluid.makeFluid(
+					makeStill, thisMutable.getValue()
 			));
-			this.flowing = REGISTER.register(name+"_flowing", () -> IEFluid.makeFluid(
-					makeFlowing, thisMutable.getValue(), stillTex, flowingTex, buildAttributes
+			RegistryObject<IEFluid> flowing = REGISTER.register(name+"_flowing", () -> IEFluid.makeFluid(
+					makeFlowing, thisMutable.getValue()
 			));
-			this.block = new IEBlocks.BlockEntry<>(name+"_fluid_block", () -> Properties.copy(Blocks.WATER), p -> new IEFluidBlock(thisMutable.getValue(), p));
-			this.bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
-			thisMutable.setValue(this);
+			BlockEntry<IEFluidBlock> block = new IEBlocks.BlockEntry<>(
+					name+"_fluid_block",
+					() -> Properties.copy(Blocks.WATER),
+					p -> new IEFluidBlock(thisMutable.getValue(), p)
+			);
+			RegistryObject<BucketItem> bucket = IEItems.REGISTER.register(name+"_bucket", () -> makeBucket(still, burnTime));
+			FluidEntry entry = new FluidEntry(flowing, still, block, bucket, type, properties);
+			thisMutable.setValue(entry);
 			ALL_FLUID_BLOCKS.add(block);
-			ALL_ENTRIES.add(this);
+			ALL_ENTRIES.add(entry);
+			return entry;
+		}
+
+		private static FluidType makeTypeWithTextures(
+				FluidType.Properties builder, ResourceLocation stillTex, ResourceLocation flowingTex
+		)
+		{
+			return new FluidType(builder)
+			{
+				@Override
+				public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer)
+				{
+					consumer.accept(new IFluidTypeRenderProperties()
+					{
+						@Override
+						public ResourceLocation getStillTexture()
+						{
+							return stillTex;
+						}
+
+						@Override
+						public ResourceLocation getFlowingTexture()
+						{
+							return flowingTex;
+						}
+					});
+				}
+			};
 		}
 
 		public IEFluid getFlowing()
@@ -160,14 +203,9 @@ public class IEFluids
 			return bucket.get();
 		}
 
-		public List<Property<?>> getProperties()
-		{
-			return properties;
-		}
-
 		private static BucketItem makeBucket(RegistryObject<IEFluid> still, int burnTime)
 		{
-			BucketItem result = new BucketItem(
+			return new BucketItem(
 					still, new Item.Properties()
 					.stacksTo(1)
 					.tab(ImmersiveEngineering.ITEM_GROUP)
@@ -185,7 +223,6 @@ public class IEFluids
 					return burnTime;
 				}
 			};
-			return result;
 		}
 
 		public RegistryObject<IEFluid> getStillGetter()

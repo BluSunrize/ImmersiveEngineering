@@ -34,7 +34,7 @@ public class IEFluidTooltipCallback implements IRecipeSlotTooltipCallback
 		if(ingredient.getFluid() instanceof PotionFluid potion)
 		{
 			List<Component> fluidInfo = new ArrayList<>();
-			potion.addInformation(ingredient, fluidInfo);
+			potion.addInformation(ingredient, fluidInfo::add);
 
 			if(tooltip.size() > 1)
 				tooltip.addAll(1, fluidInfo);

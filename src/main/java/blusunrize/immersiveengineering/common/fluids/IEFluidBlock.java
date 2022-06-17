@@ -48,7 +48,7 @@ public class IEFluidBlock extends LiquidBlock
 	protected void createBlockStateDefinition(@Nonnull Builder<Block, BlockState> builder)
 	{
 		super.createBlockStateDefinition(builder);
-		for(Property<?> p : (entry==null?entryStatic: entry).getProperties())
+		for(Property<?> p : (entry==null?entryStatic: entry).properties())
 			builder.add(p);
 	}
 

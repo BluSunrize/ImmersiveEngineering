@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.mixin.accessors.FlowingFluidAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -32,17 +31,14 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.function.Consumer;
 
 public class ConcreteFluid extends IEFluid
 {
-	public ConcreteFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidType.Properties> buildAttributes)
+	public ConcreteFluid(IEFluids.FluidEntry entry)
 	{
-		super(entry, stillTex, flowingTex, buildAttributes);
+		super(entry);
 	}
 
 	@Override
@@ -95,9 +91,9 @@ public class ConcreteFluid extends IEFluid
 
 	public static class Flowing extends ConcreteFluid
 	{
-		public Flowing(FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidType.Properties> buildAttributes)
+		public Flowing(FluidEntry entry)
 		{
-			super(entry, stillTex, flowingTex, buildAttributes);
+			super(entry);
 			registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
 		}
 

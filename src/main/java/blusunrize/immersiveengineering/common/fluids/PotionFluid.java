@@ -159,13 +159,13 @@ public class PotionFluid extends Fluid
 		return type;
 	}
 
-	public void addInformation(FluidStack fluidStack, List<Component> tooltip)
+	public void addInformation(FluidStack fluidStack, Consumer<Component> tooltip)
 	{
 		if(fluidStack!=null&&fluidStack.hasTag())
 		{
 			List<MobEffectInstance> effects = PotionUtils.getAllEffects(fluidStack.getTag());
 			if(effects.isEmpty())
-				tooltip.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
+				tooltip.accept(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
 			else
 			{
 				for(MobEffectInstance instance : effects)
@@ -177,14 +177,14 @@ public class PotionFluid extends Fluid
 					if(instance.getDuration() > 20)
 						itextcomponent.append(" (").append(MobEffectUtil.formatDuration(instance, 1)).append(")");
 
-					tooltip.add(itextcomponent.withStyle(effect.getCategory().getTooltipFormatting()));
+					tooltip.accept(itextcomponent.withStyle(effect.getCategory().getTooltipFormatting()));
 				}
 			}
 			Potion potionType = PotionUtils.getPotion(fluidStack.getTag());
 			if(potionType!=Potions.EMPTY)
 			{
 				String modID = Registry.POTION.getKey(potionType).getNamespace();
-				tooltip.add(Component.translatable(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).withStyle(ChatFormatting.DARK_GRAY));
+				tooltip.accept(Component.translatable(Lib.DESC_INFO+"potionMod", Utils.getModName(modID)).withStyle(ChatFormatting.DARK_GRAY));
 			}
 		}
 	}

@@ -123,6 +123,7 @@ public class IEContent
 		ShaderRegistry.rarityWeightMap.put(Lib.RARITY_MASTERWORK, 1);
 
 		IEFluids.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEFluids.TYPE_REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEPotions.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEParticles.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEBlockEntities.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());

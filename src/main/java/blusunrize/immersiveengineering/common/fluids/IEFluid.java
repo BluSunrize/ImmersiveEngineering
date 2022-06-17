@@ -17,11 +17,8 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,15 +35,13 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author BluSunrize - 22.02.2017
@@ -55,55 +50,18 @@ public class IEFluid extends FlowingFluid
 {
 	private static FluidEntry entryStatic;
 	protected final FluidEntry entry;
-	private final FluidType type;
 
-	public static IEFluid makeFluid(
-			FluidConstructor make,
-			IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidType.Properties> buildAttributes
-	)
+	public static IEFluid makeFluid(Function<FluidEntry, ? extends IEFluid> make, IEFluids.FluidEntry entry)
 	{
 		entryStatic = entry;
-		IEFluid result = make.create(entry, stillTex, flowingTex, buildAttributes);
+		IEFluid result = make.apply(entry);
 		entryStatic = null;
 		return result;
 	}
 
-	public IEFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex)
-	{
-		this(entry, stillTex, flowingTex, null);
-	}
-
-	public IEFluid(IEFluids.FluidEntry entry, ResourceLocation stillTex, ResourceLocation flowingTex, @Nullable Consumer<FluidType.Properties> buildAttributes)
+	public IEFluid(IEFluids.FluidEntry entry)
 	{
 		this.entry = entry;
-		FluidType.Properties builder = FluidType.Properties.create();
-		if(buildAttributes!=null)
-			buildAttributes.accept(builder);
-		this.type = new FluidType(builder)
-		{
-			@Override
-			public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer)
-			{
-				consumer.accept(new IFluidTypeRenderProperties()
-				{
-					@Override
-					public ResourceLocation getStillTexture()
-					{
-						return stillTex;
-					}
-
-					@Override
-					public ResourceLocation getFlowingTexture()
-					{
-						return flowingTex;
-					}
-				});
-			}
-		};
-	}
-
-	public void addTooltipInfo(FluidStack fluidStack, @Nullable Player player, List<Component> tooltip)
-	{
 	}
 
 	@Nonnull
@@ -142,7 +100,7 @@ public class IEFluid extends FlowingFluid
 	protected void createFluidStateDefinition(Builder<Fluid, FluidState> builder)
 	{
 		super.createFluidStateDefinition(builder);
-		for(Property<?> p : (entry==null?entryStatic: entry).getProperties())
+		for(Property<?> p : (entry==null?entryStatic: entry).properties())
 			builder.add(p);
 	}
 
@@ -150,7 +108,7 @@ public class IEFluid extends FlowingFluid
 	protected BlockState createLegacyBlock(FluidState state)
 	{
 		BlockState result = entry.getBlock().defaultBlockState().setValue(LiquidBlock.LEVEL, getLegacyLevel(state));
-		for(Property<?> prop : entry.getProperties())
+		for(Property<?> prop : entry.properties())
 			result = IEFluidBlock.withCopiedValue(prop, result, state);
 		return result;
 	}
@@ -173,7 +131,7 @@ public class IEFluid extends FlowingFluid
 	@Override
 	public FluidType getFluidType()
 	{
-		return type;
+		return entry.type().get();
 	}
 
 	@Nonnull
@@ -221,13 +179,9 @@ public class IEFluid extends FlowingFluid
 
 	public static class Flowing extends IEFluid
 	{
-		public Flowing(
-				IEFluids.FluidEntry entry,
-				ResourceLocation stillTex, ResourceLocation flowingTex,
-				@Nullable Consumer<FluidType.Properties> buildAttributes
-		)
+		public Flowing(IEFluids.FluidEntry entry)
 		{
-			super(entry, stillTex, flowingTex, buildAttributes);
+			super(entry);
 		}
 
 		@Override
@@ -238,16 +192,7 @@ public class IEFluid extends FlowingFluid
 		}
 	}
 
-	public interface FluidConstructor
-	{
-		IEFluid create(
-				IEFluids.FluidEntry entry,
-				ResourceLocation stillTex, ResourceLocation flowingTex,
-				@Nullable Consumer<FluidType.Properties> buildAttributes
-		);
-	}
-
-	public static final EntityDataSerializer<Optional<FluidStack>> OPTIONAL_FLUID_STACK = new EntityDataSerializer<Optional<FluidStack>>()
+	public static final EntityDataSerializer<Optional<FluidStack>> OPTIONAL_FLUID_STACK = new EntityDataSerializer<>()
 	{
 		@Override
 		public void write(FriendlyByteBuf buf, Optional<FluidStack> value)
