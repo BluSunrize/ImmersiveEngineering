@@ -153,6 +153,31 @@
         0.0
       ]
     },
+    "none": {
+      "origin": "corner",
+      "post-rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "rotation": [
+        0.16043,
+        -0.37686962,
+        -0.06645229,
+        0.9098437
+      ],
+      "scale": [
+        0.1875,
+        0.1875,
+        0.1875
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
     "thirdperson_lefthand": {
       "origin": "corner",
       "post-rotation": [

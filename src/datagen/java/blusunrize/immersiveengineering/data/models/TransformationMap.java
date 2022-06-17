@@ -8,56 +8,25 @@
 
 package blusunrize.immersiveengineering.data.models;
 
-import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
 import com.google.gson.*;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.block.model.ItemTransform;
-import net.minecraftforge.client.model.generators.ModelBuilder.Perspective;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraftforge.common.model.TransformationHelper;
 
-import java.lang.reflect.Field;
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 
 public class TransformationMap
 {
-	private static Field nameFromPerspective;
-
-	static
-	{
-		try
-		{
-			//Who decided to make the one useful field in that enum private????
-			nameFromPerspective = Perspective.class.getDeclaredField("name");
-			nameFromPerspective.setAccessible(true);
-		} catch(NoSuchFieldException e)
-		{
-			e.printStackTrace();
-			System.exit(1);
-		}
-	}
-
-	private final Map<Perspective, Transformation> transforms = new EnumMap<>(Perspective.class);
-
-	public TransformationMap setTransformations(Perspective t, Matrix4 mat)
-	{
-		transforms.put(t, new Transformation(mat.toMatrix4f()));
-		return this;
-	}
-
-	private static String getName(Perspective p)
-	{
-		try
-		{
-			return (String)nameFromPerspective.get(p);
-		} catch(IllegalAccessException e)
-		{
-			throw new RuntimeException(e);
-		}
-	}
+	private final Map<ItemTransforms.TransformType, Transformation> transforms = new EnumMap<>(ItemTransforms.TransformType.class);
 
 	public void addFromJson(String json)
 	{
@@ -66,12 +35,12 @@ public class TransformationMap
 				.registerTypeAdapter(ItemTransform.class, new ItemTransform.Deserializer())
 				.create();
 		JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-		Map<Perspective, Transformation> transforms = new HashMap<>();
+		Map<ItemTransforms.TransformType, Transformation> transforms = new EnumMap<>(TransformType.class);
 		Optional<String> type = Optional.ofNullable(obj.remove("type")).map(JsonElement::getAsString);
 		boolean vanilla = type.map("vanilla"::equals).orElse(false);
-		for(Perspective perspective : Perspective.values())
+		for(ItemTransforms.TransformType perspective : ItemTransforms.TransformType.values())
 		{
-			String key = getName(perspective);
+			String key = perspective.getSerializeName();
 			JsonObject forType = obj.getAsJsonObject(key);
 			obj.remove(key);
 			if(forType==null)
@@ -104,7 +73,7 @@ public class TransformationMap
 			baseTransform = readMatrix(obj, GSON);
 		else
 			baseTransform = Transformation.identity();
-		for(Entry<Perspective, Transformation> e : transforms.entrySet())
+		for(Entry<ItemTransforms.TransformType, Transformation> e : transforms.entrySet())
 		{
 			Transformation transform = composeForgeLike(e.getValue(), baseTransform);
 			this.transforms.put(e.getKey(), transform);
@@ -132,21 +101,20 @@ public class TransformationMap
 		return GSON.fromJson(json, Transformation.class);
 	}
 
-	private String alternateName(Perspective type)
+	private String alternateName(ItemTransforms.TransformType type)
 	{
-		return type.vanillaType.name()
-				.toLowerCase(Locale.US);
+		return type.name().toLowerCase(Locale.US);
 	}
 
 	public JsonObject toJson()
 	{
 		JsonObject ret = new JsonObject();
-		for(Entry<Perspective, Transformation> entry : transforms.entrySet())
+		for(Entry<ItemTransforms.TransformType, Transformation> entry : transforms.entrySet())
 			add(ret, entry.getKey(), entry.getValue());
 		return ret;
 	}
 
-	private void add(JsonObject main, Perspective type, Transformation trsr)
+	private void add(JsonObject main, ItemTransforms.TransformType type, Transformation trsr)
 	{
 		JsonObject result = new JsonObject();
 		result.add("translation", toJson(trsr.getTranslation()));
@@ -154,7 +122,7 @@ public class TransformationMap
 		result.add("scale", toJson(trsr.getScale()));
 		result.add("post-rotation", toJson(trsr.getRightRotation()));
 		result.addProperty("origin", "corner");
-		main.add(getName(type), result);
+		main.add(type.getSerializeName(), result);
 	}
 
 	private static JsonArray toJson(Quaternion v)
@@ -174,11 +142,5 @@ public class TransformationMap
 		ret.add(v.y());
 		ret.add(v.z());
 		return ret;
-	}
-
-	private static Vector3f fromJson(JsonElement ele)
-	{
-		JsonArray arr = ele.getAsJsonArray();
-		return new Vector3f(arr.get(0).getAsFloat(), arr.get(1).getAsFloat(), arr.get(2).getAsFloat());
 	}
 }
