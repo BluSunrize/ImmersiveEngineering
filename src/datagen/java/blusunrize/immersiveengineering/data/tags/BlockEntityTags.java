@@ -25,6 +25,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.common.data.ForgeRegistryTagsProvider;
+import net.minecraftforge.fml.config.ConfigTracker;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
@@ -54,7 +55,7 @@ public class BlockEntityTags extends ForgeRegistryTagsProvider<BlockEntityType<?
 	protected void addTags()
 	{
 		// Some tiles needs to config to be available in the constructor, so just load the default values
-		IEServerConfig.CONFIG_SPEC.refreshCached();
+		ConfigTracker.INSTANCE.loadDefaultServerConfigs();
 		IEServerConfig.refresh();
 		for(RegistryObject<BlockEntityType<?>> type : IEBlockEntities.REGISTER.getEntries())
 		{

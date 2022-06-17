@@ -48,7 +48,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.Tags;
-import net.minecraftforge.common.Tags.Items;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -66,7 +65,7 @@ public class HammerItem extends IEBaseItem
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
-		return IEServerConfig.TOOLS.hammerDurabiliy.getOrDefault();
+		return IEServerConfig.getOrDefault(IEServerConfig.TOOLS.hammerDurabiliy);
 	}
 
 	@Override

@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.oc2;
 
 import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
-import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.CallbackOwner;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.Callbacks;
 import li.cil.oc2.api.bus.device.Device;

@@ -44,7 +44,7 @@ public class RefineryRecipeSerializer extends IERecipeSerializer<RefineryRecipe>
 			catalyst = Ingredient.fromJson(json.get("catalyst"));
 		int energy = GsonHelper.getAsInt(json, "energy");
 		RefineryRecipe recipe = new RefineryRecipe(recipeId, output, input0, input1, catalyst, energy);
-		recipe.modifyTimeAndEnergy(() -> 1, IEServerConfig.MACHINES.refineryConfig);
+		recipe.modifyTimeAndEnergy(() -> 1, IEServerConfig.MACHINES.refineryConfig::get);
 		return recipe;
 	}
 

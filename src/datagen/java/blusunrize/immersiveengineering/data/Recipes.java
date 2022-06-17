@@ -722,7 +722,7 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("metalpress/bullet_casing"));
 
 		ItemStack electrode = new ItemStack(Misc.GRAPHITE_ELECTRODE);
-		electrode.setDamageValue(IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getOrDefault()/2);
+		electrode.setDamageValue(IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getDefault()/2);
 		MetalPressRecipeBuilder.builder(Molds.MOLD_ROD, electrode)
 				.addInput(new IngredientWithSize(IETags.hopGraphiteIngot, 4))
 				.setEnergy(4800)

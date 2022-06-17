@@ -13,14 +13,14 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.wires.WireLogger;
-import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
-import blusunrize.immersiveengineering.common.config.CachedConfig.ConfigValue;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModules;
 import com.google.common.collect.ImmutableList;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
+import net.minecraftforge.common.ForgeConfigSpec.ConfigValue;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import java.util.HashMap;
@@ -36,11 +36,11 @@ public class IECommonConfig
 	public static final Map<String, BooleanValue> compat = new HashMap<>();
 	public static final ConfigValue<List<? extends String>> preferredOres;
 
-	public static final CachedConfig CONFIG_SPEC;
+	public static final ForgeConfigSpec CONFIG_SPEC;
 
 	static
 	{
-		CachedConfig.Builder builder = new CachedConfig.Builder();
+		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		builder.comment(
 				"IMPORTANT NOTICE:",
 				"THIS IS ONLY THE COMMON CONFIG. It does not contain all the values adjustable for IE.",
@@ -80,7 +80,7 @@ public class IECommonConfig
 	@SubscribeEvent
 	public static void onCommonReload(ModConfigEvent ev)
 	{
-		if(CONFIG_SPEC.reloadIfMatched(ev, Type.COMMON))
+		if(CONFIG_SPEC==ev.getConfig().getSpec())
 		{
 			WireLogger.logger.setEnabled(enableWireLogger.get());
 			IEApi.modPreference = preferredOres.get();

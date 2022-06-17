@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.common.util.compat;
 
-import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.config.IECommonConfig;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.compat.computers.cctweaked.ComputerCraftCompatModule;
@@ -17,6 +16,7 @@ import com.blamejared.crafttweaker.api.CraftTweakerConstants;
 import com.google.common.collect.Sets;
 import dan200.computercraft.api.ComputerCraftAPI;
 import mcjty.theoneprobe.TheOneProbe;
+import net.minecraftforge.common.ForgeConfigSpec.BooleanValue;
 import net.minecraftforge.fml.ModList;
 import top.theillusivec4.curios.api.CuriosApi;
 

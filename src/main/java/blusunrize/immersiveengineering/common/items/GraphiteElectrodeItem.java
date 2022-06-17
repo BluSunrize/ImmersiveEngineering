@@ -54,13 +54,13 @@ public class GraphiteElectrodeItem extends IEBaseItem
 
 	private float getRelativeBarWidth(@Nonnull ItemStack stack)
 	{
-		return 1-ItemNBTHelper.getInt(stack, "graphDmg")/(float)IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getOr(96000);
+		return 1-ItemNBTHelper.getInt(stack, "graphDmg")/(float)IEServerConfig.getOrDefault(IEServerConfig.MACHINES.arcfurnace_electrodeDamage);
 	}
 
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
-		return IEServerConfig.MACHINES.arcfurnace_electrodeDamage.getOrDefault();
+		return IEServerConfig.getOrDefault(IEServerConfig.MACHINES.arcfurnace_electrodeDamage);
 	}
 
 	@Override

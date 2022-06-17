@@ -75,19 +75,19 @@ public class BulletItem extends IEBaseItem
 	{
 		BulletHandler.registerBullet(CASULL, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causeCasullDamage((RevolvershotEntity)projectile, shooter),
-				IEServerConfig.TOOLS.bulletDamage_Casull,
+				IEServerConfig.TOOLS.bulletDamage_Casull::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_casull")));
 
 		BulletHandler.registerBullet(ARMOR_PIERCING, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causePiercingDamage((RevolvershotEntity)projectile, shooter),
-				IEServerConfig.TOOLS.bulletDamage_AP,
+				IEServerConfig.TOOLS.bulletDamage_AP::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_armor_piercing")));
 
 		BulletHandler.registerBullet(BUCKSHOT, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causeBuckshotDamage((RevolvershotEntity)projectile, shooter),
-				IEServerConfig.TOOLS.bulletDamage_Buck,
+				IEServerConfig.TOOLS.bulletDamage_Buck::get,
 				true,
 				false,
 				() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
@@ -131,7 +131,7 @@ public class BulletItem extends IEBaseItem
 
 		BulletHandler.registerBullet(SILVER, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causeSilverDamage((RevolvershotEntity)projectile, shooter),
-				IEServerConfig.TOOLS.bulletDamage_Silver,
+				IEServerConfig.TOOLS.bulletDamage_Silver::get,
 				() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 				new ResourceLocation("immersiveengineering:item/bullet_silver"))
 		{
@@ -147,7 +147,7 @@ public class BulletItem extends IEBaseItem
 
 		BulletHandler.registerBullet(DRAGONS_BREATH, new BulletHandler.DamagingBullet(
 				(projectile, shooter, hit) -> IEDamageSources.causeDragonsbreathDamage((RevolvershotEntity)projectile, shooter),
-				IEServerConfig.TOOLS.bulletDamage_Dragon,
+				IEServerConfig.TOOLS.bulletDamage_Dragon::get,
 				true,
 				true,
 				() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
@@ -174,7 +174,7 @@ public class BulletItem extends IEBaseItem
 
 		BulletHandler.registerBullet(FIREWORK, new FireworkBullet());
 
-		BulletHandler.registerBullet(HOMING, new HomingBullet(IEServerConfig.TOOLS.bulletDamage_Homing,
+		BulletHandler.registerBullet(HOMING, new HomingBullet(IEServerConfig.TOOLS.bulletDamage_Homing::get,
 				new ResourceLocation("immersiveengineering:item/bullet_homing")));
 
 		BulletHandler.registerBullet(WOLFPACK, new WolfpackBullet());
@@ -221,7 +221,7 @@ public class BulletItem extends IEBaseItem
 		public PotionBullet()
 		{
 			super((projectile, shooter, hit) -> IEDamageSources.causePotionDamage((RevolvershotEntity)projectile, shooter),
-					IEServerConfig.TOOLS.bulletDamage_Potion,
+					IEServerConfig.TOOLS.bulletDamage_Potion::get,
 					() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 					new ResourceLocation("immersiveengineering:item/bullet_potion"), new ResourceLocation("immersiveengineering:item/bullet_potion_layer"));
 		}
@@ -490,7 +490,7 @@ public class BulletItem extends IEBaseItem
 		public WolfpackBullet()
 		{
 			super((projectile, shooter, hit) -> IEDamageSources.causeWolfpackDamage((RevolvershotEntity)projectile, shooter),
-					IEServerConfig.TOOLS.bulletDamage_Wolfpack,
+					IEServerConfig.TOOLS.bulletDamage_Wolfpack::get,
 					() -> BulletHandler.emptyShell.asItem().getDefaultInstance(),
 					new ResourceLocation("immersiveengineering:item/bullet_wolfpack"));
 		}
@@ -539,7 +539,7 @@ public class BulletItem extends IEBaseItem
 		public WolfpackPartBullet()
 		{
 			super((projectile, shooter, hit) -> IEDamageSources.causeWolfpackDamage((RevolvershotEntity)projectile, shooter),
-					IEServerConfig.TOOLS.bulletDamage_WolfpackPart,
+					IEServerConfig.TOOLS.bulletDamage_WolfpackPart::get,
 					() -> BulletHandler.emptyCasing.asItem().getDefaultInstance(),
 					new ResourceLocation("immersiveengineering:item/bullet_wolfpack"));
 		}

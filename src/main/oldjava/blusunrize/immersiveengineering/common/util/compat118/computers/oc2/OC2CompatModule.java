@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.util.compat.computers.oc2;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.util.compat.IECompatModules.EarlyIECompatModule;
 import li.cil.oc2.api.API;
 import li.cil.oc2.api.bus.device.provider.BlockDeviceProvider;

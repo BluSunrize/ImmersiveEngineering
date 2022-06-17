@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.excavator.ExcavatorHandler;
 import blusunrize.immersiveengineering.api.tool.ExternalHeaterHandler;
 import blusunrize.immersiveengineering.common.blocks.metal.CapacitorBlockEntity;
-import blusunrize.immersiveengineering.common.config.CachedConfig.*;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
@@ -25,10 +24,11 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
+import net.minecraftforge.common.ForgeConfigSpec;
+import net.minecraftforge.common.ForgeConfigSpec.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
-import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import java.util.EnumMap;
@@ -44,7 +44,7 @@ public class IEServerConfig
 {
 	public static class Wires
 	{
-		Wires(CachedConfig.Builder builder)
+		Wires(ForgeConfigSpec.Builder builder)
 		{
 			builder.comment("Configuration related to Immersive Engineering wires").push("wires");
 			// Server
@@ -106,7 +106,7 @@ public class IEServerConfig
 		{
 			public final IntValue maxLength;
 
-			protected WireConfig(CachedConfig.Builder builder, String name, int defLength, boolean doPop)
+			protected WireConfig(ForgeConfigSpec.Builder builder, String name, int defLength, boolean doPop)
 			{
 				builder.push(name);
 				maxLength = builder.comment("The maximum length of "+name+" wires")
@@ -115,7 +115,7 @@ public class IEServerConfig
 					builder.pop();
 			}
 
-			public WireConfig(CachedConfig.Builder builder, String name, int defLength)
+			public WireConfig(ForgeConfigSpec.Builder builder, String name, int defLength)
 			{
 				this(builder, name, defLength, true);
 			}
@@ -144,7 +144,7 @@ public class IEServerConfig
 
 	public static class Machines
 	{
-		Machines(CachedConfig.Builder builder)
+		Machines(ForgeConfigSpec.Builder builder)
 		{
 			builder.push("machines");
 			{
@@ -447,7 +447,7 @@ public class IEServerConfig
 
 			public T apply(T in)
 			{
-				in.modifyTimeAndEnergy(timeModifier, energyModifier);
+				in.modifyTimeAndEnergy(timeModifier::get, energyModifier::get);
 				return in;
 			}
 		}
@@ -654,7 +654,7 @@ public class IEServerConfig
 				.defineInRange(name, defaultVal, 1, Integer.MAX_VALUE);
 	}
 
-	public static final CachedConfig CONFIG_SPEC;
+	public static final ForgeConfigSpec CONFIG_SPEC;
 	public static final Wires WIRES;
 	public static final Machines MACHINES;
 	public static final Ores ORES;
@@ -662,7 +662,7 @@ public class IEServerConfig
 
 	static
 	{
-		CachedConfig.Builder builder = new CachedConfig.Builder();
+		ForgeConfigSpec.Builder builder = new ForgeConfigSpec.Builder();
 		WIRES = new Wires(builder);
 		MACHINES = new Machines(builder);
 		ORES = new Ores(builder);
@@ -681,11 +681,16 @@ public class IEServerConfig
 	@SubscribeEvent
 	public static void onConfigReload(ModConfigEvent ev)
 	{
-		if(CONFIG_SPEC.reloadIfMatched(ev, Type.SERVER))
+		if(CONFIG_SPEC==ev.getConfig().getSpec())
 		{
 			rawConfig = ev.getConfig().getConfigData();
 			refresh();
 		}
+	}
+
+	public static int getOrDefault(IntValue value)
+	{
+		return CONFIG_SPEC.isLoaded()?value.get(): value.getDefault();
 	}
 
 	public static void refresh()

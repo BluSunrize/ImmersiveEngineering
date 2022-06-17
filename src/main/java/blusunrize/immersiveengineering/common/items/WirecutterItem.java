@@ -49,7 +49,7 @@ public class WirecutterItem extends IEBaseItem
 	@Override
 	public int getMaxDamage(ItemStack stack)
 	{
-		return IEServerConfig.TOOLS.cutterDurabiliy.getOrDefault();
+		return IEServerConfig.getOrDefault(IEServerConfig.TOOLS.cutterDurabiliy);
 	}
 
 	@Nonnull

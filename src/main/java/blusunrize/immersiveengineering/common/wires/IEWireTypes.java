@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.api.wires.localhandlers.EnergyTransferHandler.IEnergyWire;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler;
 import blusunrize.immersiveengineering.api.wires.localhandlers.WireDamageHandler.IShockingWire;
-import blusunrize.immersiveengineering.common.config.CachedConfig.IntValue;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.EnergyWireConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig.Wires.WireConfig;
@@ -25,6 +24,7 @@ import com.google.common.collect.ImmutableList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.ForgeConfigSpec.IntValue;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
