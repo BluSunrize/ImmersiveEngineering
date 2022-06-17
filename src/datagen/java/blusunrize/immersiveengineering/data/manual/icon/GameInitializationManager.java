@@ -13,10 +13,20 @@ import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.*;
 import net.minecraftforge.client.model.ModelLoaderRegistry.VanillaProxy;
 import net.minecraftforge.client.model.obj.OBJLoader;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.IForgeRegistry;
+
+import java.lang.reflect.Field;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 public class GameInitializationManager
 {
@@ -40,11 +50,12 @@ public class GameInitializationManager
 
 		initialized = true;
 
+		initClient(ForgeRegistries.FLUID_TYPES.get(), FluidType::initializeClient, FluidType.class);
+		initClient(ForgeRegistries.ITEMS, Item::initializeClient, Item.class);
+		initClient(ForgeRegistries.BLOCKS, Block::initializeClient, Block.class);
 		GLFWInitializationManager.getInstance().initialize();
 		MinecraftInstanceManager.getInstance().initialize(existingFileHelper, gen);
 		ClientProxy.initWithMC();
-		// TODO can the Forge method be made to work in this context?
-		//  ModelLoaderRegistry.init();
 		ModelLoaderRegistry.registerLoader(new ResourceLocation("minecraft", "elements"), VanillaProxy.Loader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "obj"), OBJLoader.INSTANCE);
 		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "bucket"), DynamicBucketModel.Loader.INSTANCE);
@@ -55,5 +66,25 @@ public class GameInitializationManager
 
 		final ExtendedModelManager extendedModelManager = (ExtendedModelManager)Minecraft.getInstance().getModelManager();
 		extendedModelManager.loadModels();
+	}
+
+	private static <R, P> void initClient(IForgeRegistry<R> reg, BiConsumer<R, Consumer<P>> initialize, Class<R> type)
+	{
+		Field field = ObfuscationReflectionHelper.findField(type, "renderProperties");
+		for(R obj : reg.getValues())
+			initialize.accept(obj, setter(obj, field));
+	}
+
+	private static <T> Consumer<T> setter(Object owner, Field toSet)
+	{
+		return t -> {
+			try
+			{
+				toSet.set(owner, t);
+			} catch(IllegalAccessException e)
+			{
+				throw new RuntimeException(e);
+			}
+		};
 	}
 }

@@ -54,8 +54,6 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 
 public class PotionFluid extends Fluid
 {
-	private final FluidType type = new PotionFluidAttributes();
-
 	public static FluidStack getFluidStackForType(Potion type, int amount)
 	{
 		if(type==Potions.WATER||type==null)
@@ -156,7 +154,7 @@ public class PotionFluid extends Fluid
 	@Override
 	public FluidType getFluidType()
 	{
-		return type;
+		return IEFluids.POTION_TYPE.get();
 	}
 
 	public void addInformation(FluidStack fluidStack, Consumer<Component> tooltip)
@@ -189,12 +187,12 @@ public class PotionFluid extends Fluid
 		}
 	}
 
-	public static class PotionFluidAttributes extends FluidType
+	public static class PotionFluidType extends FluidType
 	{
 		private static final ResourceLocation TEXTURE_STILL = rl("block/fluid/potion_still");
 		private static final ResourceLocation TEXTURE_FLOW = rl("block/fluid/potion_flow");
 
-		protected PotionFluidAttributes()
+		public PotionFluidType()
 		{
 			super(Properties.create());
 		}

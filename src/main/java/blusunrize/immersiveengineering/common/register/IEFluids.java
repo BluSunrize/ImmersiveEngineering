@@ -82,6 +82,7 @@ public class IEFluids
 	public static final FluidEntry REDSTONE_ACID = FluidEntry.make(
 			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow")
 	);
+	public static final RegistryObject<FluidType> POTION_TYPE = TYPE_REGISTER.register("potion", PotionFluid.PotionFluidType::new);
 	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
 
 	public record FluidEntry(

@@ -24,7 +24,6 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nonnull;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.nio.file.Path;
 import java.util.Set;
 
@@ -38,32 +37,14 @@ public record RenderedItemModelDataProvider(
         GameInitializationManager.getInstance().initialize(helper, generator);
         IEWireTypes.setup();
 
-        Field item_renderProperties;
-        try
-        {
-            item_renderProperties = Item.class.getDeclaredField("renderProperties");
-            item_renderProperties.setAccessible(true);
-        } catch(NoSuchFieldException e)
-        {
-            throw new RuntimeException(e);
-        }
         try(ModelRenderer itemRenderer = new ModelRenderer(256, 256, itemOutputDirectory.toFile()))
         {
             Set<String> domainsToRender = Set.of("minecraft", Lib.MODID);
             ForgeRegistries.ITEMS.getEntries().forEach(entry -> {
                 ResourceLocation name = entry.getKey().location();
-                if (!domainsToRender.contains(name.getNamespace()))
+                if(!domainsToRender.contains(name.getNamespace()))
                     return;
                 Item item = entry.getValue();
-                item.initializeClient(properties -> {
-                    try
-                    {
-                        item_renderProperties.set(item, properties);
-                    } catch(IllegalAccessException e)
-                    {
-                        throw new RuntimeException(e);
-                    }
-                });
                 ModelResourceLocation modelLocation = new ModelResourceLocation(name, "inventory");
                 ItemStack stackToRender = item.getDefaultInstance();
 
