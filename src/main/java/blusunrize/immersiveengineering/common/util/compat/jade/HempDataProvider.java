@@ -9,17 +9,21 @@
 
 package blusunrize.immersiveengineering.common.util.compat.jade;
 
+import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.blocks.plant.EnumHempGrowth;
 import blusunrize.immersiveengineering.common.blocks.plant.HempBlock;
-import mcp.mobius.waila.api.BlockAccessor;
-import mcp.mobius.waila.api.IComponentProvider;
-import mcp.mobius.waila.api.ITooltip;
-import mcp.mobius.waila.api.config.IPluginConfig;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
+import snownee.jade.api.BlockAccessor;
+import snownee.jade.api.IBlockComponentProvider;
+import snownee.jade.api.ITooltip;
+import snownee.jade.api.config.IPluginConfig;
 
-public class HempDataProvider implements IComponentProvider
+public class HempDataProvider implements IBlockComponentProvider
 {
+	public static final ResourceLocation ID = ImmersiveEngineering.rl("hemp");
+
 	@Override
 	public void appendTooltip(ITooltip iTooltip, BlockAccessor accessor, IPluginConfig iPluginConfig)
 	{
@@ -38,5 +42,11 @@ public class HempDataProvider implements IComponentProvider
 		else
 			growthText = Component.translatable("tooltip.waila.crop_mature");
 		iTooltip.append(Component.translatable("tooltip.waila.crop_growth").append(growthText));
+	}
+
+	@Override
+	public ResourceLocation getUid()
+	{
+		return ID;
 	}
 }
