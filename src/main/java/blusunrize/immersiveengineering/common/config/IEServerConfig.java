@@ -24,7 +24,6 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -222,12 +221,6 @@ public class IEServerConfig
 				cloche_growth_mod = builder
 						.comment("A modifier to apply to the cloches total growing speed")
 						.defineInRange("growth_modifier", 1, 1e-3, 1e3);
-				cloche_solid_fertilizer_mod = builder
-						.comment("A base-modifier for all solid fertilizers in the cloche")
-						.defineInRange("solid_fertilizer_mod", 1, 1e-3, 1e3);
-				cloche_fluid_fertilizer_mod = builder
-						.comment("A base-modifier for all fluid fertilizers in the cloche")
-						.defineInRange("fluid_fertilizer_mod", 1, 1e-3, 1e3);
 				builder.pop();
 			}
 			{
@@ -301,10 +294,6 @@ public class IEServerConfig
 				excavator_initial_depletion = builder
 						.comment("The maximum depletion a vein can start with, as a decimal value. When a vein generates, a random percentage up to this value is depleted from it")
 						.defineInRange("initial_depletion", .2, 0, 1);
-				excavator_dimBlacklist = builder
-						.comment("List of dimensions that can't contain minerals. Default: The End.")
-						.defineList("dimBlacklist", ImmutableList.of(DimensionType.END_LOCATION.location().toString()),
-								obj -> true);
 				builder.pop();
 			}
 			builder.pop();
@@ -398,8 +387,6 @@ public class IEServerConfig
 		public final IntValue cloche_fertilizer;
 		public final IntValue cloche_fluid;
 		public final DoubleValue cloche_growth_mod;
-		public final DoubleValue cloche_solid_fertilizer_mod;
-		public final DoubleValue cloche_fluid_fertilizer_mod;
 
 		//Lights
 		public final BooleanValue lantern_spawnPrevent;
@@ -432,19 +419,11 @@ public class IEServerConfig
 		public final DoubleValue excavator_theshold;
 		public final IntValue excavator_yield;
 		public final DoubleValue excavator_initial_depletion;
-		public final ConfigValue<List<? extends String>> excavator_dimBlacklist;
 
-		public static class MachineRecipeConfig<T extends MultiblockRecipe>
+		public record MachineRecipeConfig<T extends MultiblockRecipe>(
+				DoubleValue energyModifier, DoubleValue timeModifier
+		)
 		{
-			public final DoubleValue energyModifier;
-			public final DoubleValue timeModifier;
-
-			public MachineRecipeConfig(DoubleValue energyModifier, DoubleValue timeModifier)
-			{
-				this.energyModifier = energyModifier;
-				this.timeModifier = timeModifier;
-			}
-
 			public T apply(T in)
 			{
 				in.modifyTimeAndEnergy(timeModifier, energyModifier);
@@ -570,8 +549,6 @@ public class IEServerConfig
 		Tools(Builder builder)
 		{
 			builder.push("tools");
-			//Server
-			// TODO read too early. Can that be worked around?
 			hammerDurabiliy = addPositive(builder, "hammer_durability", 100, "The maximum durability of the Engineer's Hammer. Used up when hammering ingots into plates.");
 			cutterDurabiliy = addPositive(builder, "cutter_durability", 250, "The maximum durability of the Wirecutter. Used up when cutting plates into wire.");
 			{

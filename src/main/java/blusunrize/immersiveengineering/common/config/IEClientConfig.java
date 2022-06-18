@@ -40,7 +40,6 @@ public class IEClientConfig
 	public final static BooleanValue enableVBOs;
 	public final static BooleanValue disableFancyTESR;
 	public final static BooleanValue showTextOverlay;
-	public final static BooleanValue nixietubeFont;
 	public final static IntValue manualGuiScale;
 	public final static BooleanValue badEyesight;
 	public static boolean lastBadEyesight;
@@ -67,9 +66,6 @@ public class IEClientConfig
 		showTextOverlay = builder
 				.comment("Show the text overlay for various blocks, such as the configuration of capacitors or pumps")
 				.define("showTextOverlay", true);
-		nixietubeFont = builder
-				.comment("Set this to false to disable the super awesome looking nixie tube front for the voltmeter and other things")
-				.define("nixietubeFont", true);
 		manualGuiScale = builder
 				.comment("Set the GUI scale of the Engineer's Manual. This uses the same numbers as Vanilla's GUI Scale and is therefor limited to the maximum value available ingame.")
 				.defineInRange("manualGuiScale", 4, 1, 32);
