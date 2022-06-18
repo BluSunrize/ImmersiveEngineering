@@ -57,7 +57,7 @@ public class PotionHelper
 				IngredientWithSize ingredient = new IngredientWithSize(((BrewingRecipe)recipe).getIngredient());
 				Ingredient input = ((BrewingRecipe)recipe).getInput();
 				ItemStack output = ((BrewingRecipe)recipe).getOutput();
-				if(output.getItem()==Items.POTION)
+				if(output.getItem()==Items.POTION&&input.getItems().length > 0)
 					out.apply(PotionUtils.getPotion(output),
 							PotionUtils.getPotion(input.getItems()[0]), ingredient);
 			}
