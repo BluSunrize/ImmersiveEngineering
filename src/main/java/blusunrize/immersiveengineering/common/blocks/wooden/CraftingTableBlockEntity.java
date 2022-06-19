@@ -42,8 +42,9 @@ public class CraftingTableBlockEntity extends IEBaseBlockEntity
 		implements IStateBasedDirectional, IInteractionObjectIE<CraftingTableBlockEntity>, IDropInventory
 {
 	public static final int GRID_SIZE = 3;
+	public static final int STORAGE_SIZE = 18;
 
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(18, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(STORAGE_SIZE, ItemStack.EMPTY);
 	private final NonNullList<ItemStack> craftingInv = NonNullList.withSize(GRID_SIZE*GRID_SIZE, ItemStack.EMPTY);
 
 	public CraftingTableBlockEntity(BlockPos pos, BlockState state)

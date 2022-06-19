@@ -50,8 +50,9 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 {
 	private final static int SIZE_COLORS = DyeColor.values().length;
 	private final static int SIZE_REGISTERS = LogicCircuitRegister.values().length-SIZE_COLORS;
+	public static final int NUM_SLOTS = 10;
 
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(10, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 
 	private final Map<Direction, boolean[]> inputs = new EnumMap<>(Direction.class);
 	private final boolean[] registers = new boolean[SIZE_REGISTERS];

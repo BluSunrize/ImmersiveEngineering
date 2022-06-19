@@ -46,6 +46,7 @@ public class Lib
 	public static final String GUIID_CokeOven = "cokeoven";
 	public static final String GUIID_AlloySmelter = "alloysmelter";
 	public static final String GUIID_BlastFurnace = "blastfurnace";
+	public static final String GUIID_BlastFurnaceAdv = "blastfurnace_advanced";
 	public static final String GUIID_CraftingTable = "craftingtable";
 	public static final String GUIID_WoodenCrate = "woodencrate";
 	public static final String GUIID_Workbench = "workbench";

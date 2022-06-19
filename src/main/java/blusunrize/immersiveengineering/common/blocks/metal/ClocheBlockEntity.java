@@ -86,10 +86,13 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	public static final int SLOT_SOIL = 0;
 	public static final int SLOT_SEED = 1;
 	public static final int SLOT_FERTILIZER = 2;
+	public static final int NUM_SLOTS = 7;
+	public static final int TANK_CAPACITY = 4*FluidType.BUCKET_VOLUME;
+	public static final int ENERGY_CAPACITY = 16000;
 
 	public int dummy = 0;
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(7, ItemStack.EMPTY);
-	public final FluidTank tank = new FluidTank(4*FluidType.BUCKET_VOLUME)
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
+	public final FluidTank tank = new FluidTank(TANK_CAPACITY)
 	{
 		@Override
 		public boolean isFluidValid(FluidStack fluid)
@@ -97,7 +100,7 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 			return fluid.getFluid().is(FluidTags.WATER);
 		}
 	};
-	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(16000, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
+	public MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY, Math.max(256, IEServerConfig.MACHINES.cloche_consumption.get()));
 	public final DistField<CustomParticleManager> particles = DistField.client(() -> CustomParticleManager::new);
 	public final Supplier<ClocheRecipe> cachedRecipe = CachedRecipe.cached(
 			ClocheRecipe::findRecipe, () -> level, () -> inventory.get(SLOT_SEED), () -> inventory.get(SLOT_SOIL)

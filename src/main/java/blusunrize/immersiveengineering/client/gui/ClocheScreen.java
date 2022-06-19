@@ -12,8 +12,7 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FertilizerInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
-import blusunrize.immersiveengineering.common.gui.ClocheContainer;
+import blusunrize.immersiveengineering.common.gui.ClocheMenu;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.renderer.Rect2i;
@@ -24,16 +23,13 @@ import net.minecraft.world.entity.player.Inventory;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class ClocheScreen extends IEContainerScreen<ClocheContainer>
+public class ClocheScreen extends IEContainerScreen<ClocheMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("cloche");
 
-	private final ClocheBlockEntity tile;
-
-	public ClocheScreen(ClocheContainer container, Inventory inventoryPlayer, Component title)
+	public ClocheScreen(ClocheMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		this.tile = container.tile;
 	}
 
 	@Nonnull
@@ -41,9 +37,9 @@ public class ClocheScreen extends IEContainerScreen<ClocheContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(tile.tank, new Rect2i(leftPos+8, topPos+8, 16, 47), 176, 30, 20, 51, TEXTURE),
-				new EnergyInfoArea(leftPos+158, topPos+22, tile.energyStorage),
-				new FertilizerInfoArea(leftPos+30, topPos+22, tile)
+				new FluidInfoArea(menu.tank, new Rect2i(leftPos+8, topPos+8, 16, 47), 176, 30, 20, 51, TEXTURE),
+				new EnergyInfoArea(leftPos+158, topPos+22, menu.energyStorage),
+				new FertilizerInfoArea(leftPos+30, topPos+22, menu.fertilizerAmount, menu.fertilizerMod)
 		);
 	}
 

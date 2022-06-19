@@ -25,7 +25,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -50,8 +49,8 @@ import static net.minecraftforge.fluids.capability.CapabilityFluidHandler.FLUID_
 public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IInteractionObjectIE<FluidSorterBlockEntity>, IFluidPipe, IBlockEntityDrop
 {
 	public byte[] sortWithNBT = {1, 1, 1, 1, 1, 1};
-	//	public static final int filterSlotsPerSide = 8;
-	public FluidStack[][] filters = new FluidStack[6][8];
+	public static final int FILTER_SLOTS_PER_SIDE = 8;
+	public FluidStack[][] filters = makeFilterArray();
 	/**
 	 * The positions of the routers that have been used in the current "outermost" `routeFluid` call.
 	 * Necessary to stop "blocks" of routers (and similar setups) from causing massive lag (using just a boolean
@@ -145,23 +144,6 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	public BEContainer<FluidSorterBlockEntity, ?> getContainerType()
 	{
 		return IEContainerTypes.FLUID_SORTER;
-	}
-
-	@Override
-	public void receiveMessageFromClient(CompoundTag message)
-	{
-		if(message.contains("sideConfig", Tag.TAG_BYTE_ARRAY))
-			this.sortWithNBT = message.getByteArray("sideConfig");
-		if(message.contains("filter_side", Tag.TAG_INT))
-		{
-			int side = message.getInt("filter_side");
-			int slot = message.getInt("filter_slot");
-			FluidStack newFilter = FluidStack.loadFluidStackFromNBT(message.getCompound("filter"));
-			if (!newFilter.isEmpty())
-				newFilter.setAmount(1); // Not strictly necessary, but also doesn't hurt
-			this.filters[side][slot] = newFilter;
-		}
-		this.setChanged();
 	}
 
 	public Direction[][] getValidOutputs(Direction inputSide, @Nullable FluidStack fluidStack)
@@ -268,6 +250,14 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 		if(capability==FLUID_HANDLER_CAPABILITY&&facing!=null)
 			return insertionHandlers.get(facing).cast();
 		return super.getCapability(capability, facing);
+	}
+
+	public static FluidStack[][] makeFilterArray()
+	{
+		FluidStack[][] filters = new FluidStack[DirectionUtils.VALUES.length][FILTER_SLOTS_PER_SIDE];
+		for(FluidStack[] sideFilter : filters)
+			Arrays.fill(sideFilter, FluidStack.EMPTY);
+		return filters;
 	}
 
 	static class SorterFluidHandler implements IFluidHandler

@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.tool.LogicCircuitHandler.LogicCircuitInstruction;
@@ -22,9 +21,8 @@ import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEntity;
-import blusunrize.immersiveengineering.common.gui.CircuitTableContainer;
+import blusunrize.immersiveengineering.common.gui.CircuitTableMenu;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
-import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
 import blusunrize.immersiveengineering.common.register.IEItems;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -46,11 +44,9 @@ import java.util.function.Consumer;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 import static blusunrize.immersiveengineering.common.blocks.wooden.CircuitTableBlockEntity.SLOT_TYPES;
 
-public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
+public class CircuitTableScreen extends IEContainerScreen<CircuitTableMenu>
 {
 	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("circuit_table");
-
-	private final CircuitTableBlockEntity tile;
 
 	// Buttons
 	private GuiSelectingList operatorList;
@@ -75,10 +71,9 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		return Optional.of(new LogicCircuitInstruction(operator, outputButton.getState(), inputs));
 	});
 
-	public CircuitTableScreen(CircuitTableContainer container, Inventory inventoryPlayer, Component title)
+	public CircuitTableScreen(CircuitTableMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		this.tile = container.tile;
 		this.imageWidth = 234;
 		this.imageHeight = 182;
 		this.copyArea = new Rect2i(52, 7, 48, 63);
@@ -89,7 +84,7 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new EnergyInfoArea(leftPos+217, topPos+16, tile.energyStorage),
+				new EnergyInfoArea(leftPos+217, topPos+16, menu.energyStorage),
 				new TooltipArea(copyArea, l -> {
 					if(this.menu.getCarried().getItem() instanceof LogicCircuitBoardItem)
 						l.add(TextUtils.applyFormat(
@@ -136,11 +131,11 @@ public class CircuitTableScreen extends IEContainerScreen<CircuitTableContainer>
 		this.instruction.reset();
 		this.instruction.get().ifPresentOrElse(instr -> {
 					this.menu.instruction = instr;
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(this.menu.containerId, instr.serialize()));
+					sendUpdateToServer(instr.serialize());
 				},
 				() -> {
 					this.menu.instruction = null;
-					ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(this.menu.containerId, new CompoundTag()));
+					sendUpdateToServer(new CompoundTag());
 				});
 	}
 

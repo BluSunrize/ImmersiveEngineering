@@ -24,11 +24,11 @@ import net.minecraft.world.item.ItemStack;
 import javax.annotation.Nonnull;
 
 @ChestContainer
-public class CrateContainer extends AbstractContainerMenu
+public class CrateMenu extends AbstractContainerMenu
 {
 	private final Container container;
 
-	public CrateContainer(MenuType<?> type, int id, Inventory inventoryPlayer, Container container)
+	public CrateMenu(MenuType<?> type, int id, Inventory inventoryPlayer, Container container)
 	{
 		super(type, id);
 		Preconditions.checkArgument(container.getContainerSize()==WoodenCrateBlockEntity.CONTAINER_SIZE);
@@ -50,7 +50,7 @@ public class CrateContainer extends AbstractContainerMenu
 			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 145));
 	}
 
-	public CrateContainer(MenuType<?> type, int id, Inventory inventoryPlayer)
+	public CrateMenu(MenuType<?> type, int id, Inventory inventoryPlayer)
 	{
 		this(type, id, inventoryPlayer, new SimpleContainer(WoodenCrateBlockEntity.CONTAINER_SIZE));
 	}

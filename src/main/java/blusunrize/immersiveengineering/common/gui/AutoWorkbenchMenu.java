@@ -8,35 +8,71 @@
 
 package blusunrize.immersiveengineering.common.gui;
 
+import blusunrize.immersiveengineering.api.energy.MutableEnergyStorage;
 import blusunrize.immersiveengineering.common.blocks.metal.AutoWorkbenchBlockEntity;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
+import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
+import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
-import net.minecraft.world.Container;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.energy.EnergyStorage;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 
-public class AutoWorkbenchContainer extends IEBaseContainerOld<AutoWorkbenchBlockEntity>
+public class AutoWorkbenchMenu extends IEContainerMenu
 {
-	public Inventory inventoryPlayer;
+	public final EnergyStorage energyStorage;
+	public final GetterAndSetter<Integer> selectedRecipe;
 
-	public AutoWorkbenchContainer(MenuType<?> type, int id, Inventory inventoryPlayer, AutoWorkbenchBlockEntity tile)
+	public static AutoWorkbenchMenu makeServer(
+			MenuType<?> type, int id, Inventory invPlayer, AutoWorkbenchBlockEntity be
+	)
 	{
-		super(type, tile, id);
+		return new AutoWorkbenchMenu(
+				blockCtx(type, id, be), invPlayer,
+				new ItemStackHandler(be.getInventory()), be.energyStorage,
+				new GetterAndSetter<>(() -> be.selectedRecipe, i -> be.selectedRecipe = i)
+		);
+	}
 
-		this.inventoryPlayer = inventoryPlayer;
-		this.addSlot(new IESlot.AutoBlueprint(this, this.inv, 0, 102, 69));
+	public static AutoWorkbenchMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
+	{
+		return new AutoWorkbenchMenu(
+				clientCtx(type, id),
+				invPlayer,
+				new ItemStackHandler(AutoWorkbenchBlockEntity.NUM_SLOTS),
+				new MutableEnergyStorage(AutoWorkbenchBlockEntity.ENERGY_CAPACITY),
+				GetterAndSetter.standalone(0)
+		);
+	}
+
+	private AutoWorkbenchMenu(
+			MenuContext ctx, Inventory inventoryPlayer,
+			IItemHandler inv, MutableEnergyStorage energyStorage, GetterAndSetter<Integer> selectedRecipe
+	)
+	{
+		super(ctx);
+		this.energyStorage = energyStorage;
+		this.selectedRecipe = selectedRecipe;
+
+		this.addSlot(new IESlot.AutoBlueprint(inv, 0, 102, 69));
 
 		for(int i = 0; i < 16; i++)
-			this.addSlot(new Slot(this.inv, 1+i, 7+(i%4)*18, 24+(i/4)*18));
+			this.addSlot(new SlotItemHandler(inv, 1+i, 7+(i%4)*18, 24+(i/4)*18));
 		ownSlotCount = 17;
 
 		bindPlayerInv(inventoryPlayer);
-		addGenericData(GenericContainerData.energy(tile.energyStorage));
+		addGenericData(GenericContainerData.energy(energyStorage));
+		addGenericData(new GenericContainerData<>(GenericDataSerializers.INT32, selectedRecipe));
 	}
 
 	private void bindPlayerInv(Inventory inventoryPlayer)
@@ -111,9 +147,9 @@ public class AutoWorkbenchContainer extends IEBaseContainerOld<AutoWorkbenchBloc
 	}
 
 	@Override
-	public void slotsChanged(Container inventoryIn)
+	public void receiveMessageFromScreen(CompoundTag nbt)
 	{
-		super.slotsChanged(inventoryIn);
-		tile.markContainingBlockForUpdate(null);
+		if(nbt.contains("recipe", Tag.TAG_INT))
+			this.selectedRecipe.set(nbt.getInt("recipe"));
 	}
 }

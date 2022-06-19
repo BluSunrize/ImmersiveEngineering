@@ -22,7 +22,7 @@ import javax.annotation.Nullable;
  * directly (following vanilla standards)
  */
 @Deprecated
-public class IEBaseContainerOld<T extends BlockEntity> extends IEBaseContainer
+public class IEBaseContainerOld<T extends BlockEntity> extends IEContainerMenu
 {
 	public T tile;
 	@Nullable

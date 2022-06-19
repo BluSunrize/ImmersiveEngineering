@@ -8,13 +8,13 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.common.gui.CrateContainer;
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
+import blusunrize.immersiveengineering.common.gui.CrateMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public abstract class CrateScreen<C extends CrateContainer> extends IEContainerScreen<C>
+public abstract class CrateScreen<C extends CrateMenu> extends IEContainerScreen<C>
 {
 	public CrateScreen(C container, Inventory inventoryPlayer, Component title)
 	{
@@ -32,9 +32,9 @@ public abstract class CrateScreen<C extends CrateContainer> extends IEContainerS
 	}
 
 	// Unfortunately necessary to calm down the compiler wrt generics
-	public static class StandardCrate extends CrateScreen<CrateContainer>
+	public static class StandardCrate extends CrateScreen<CrateMenu>
 	{
-		public StandardCrate(CrateContainer container, Inventory inventoryPlayer, Component title)
+		public StandardCrate(CrateMenu container, Inventory inventoryPlayer, Component title)
 		{
 			super(container, inventoryPlayer, title);
 		}

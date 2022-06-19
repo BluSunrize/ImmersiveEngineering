@@ -12,10 +12,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonIE;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.ArcFurnaceBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
-import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
-import blusunrize.immersiveengineering.common.gui.ArcFurnaceContainer;
+import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
@@ -27,16 +24,14 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.Consumer;
 
-public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
+public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("arc_furnace");
-	private final ArcFurnaceBlockEntity tile;
 	private GuiButtonIE distributeButton;
 
-	public ArcFurnaceScreen(ArcFurnaceContainer container, Inventory inventoryPlayer, Component title)
+	public ArcFurnaceScreen(ArcFurnaceMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		this.tile = container.tile;
 		this.imageHeight = 207;
 		this.inventoryLabelY = 116;
 	}
@@ -45,7 +40,7 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	@Override
 	protected List<InfoArea> makeInfoAreas()
 	{
-		return ImmutableList.of(new EnergyInfoArea(leftPos+157, topPos+22, tile.energyStorage));
+		return ImmutableList.of(new EnergyInfoArea(leftPos+157, topPos+22, menu.energy));
 	}
 
 	@Override
@@ -59,14 +54,12 @@ public class ArcFurnaceScreen extends IEContainerScreen<ArcFurnaceContainer>
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		for(MultiblockProcess<?> process : tile.processQueue)
-			if(process instanceof MultiblockProcessInMachine<?> inMachine)
-			{
-				float mod = process.processTick/(float)process.getMaxTicks(tile.getLevel());
-				int slot = inMachine.getInputSlots()[0];
-				int h = (int)Math.max(1, mod*16);
-				this.blit(transform, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 176, 16-h, 2, h);
-			}
+		for(var process : menu.processes.get())
+		{
+			int slot = process.slot();
+			int h = process.processStep();
+			this.blit(transform, leftPos+27+slot%3*21, topPos+34+slot/3*18+(16-h), 176, 16-h, 2, h);
+		}
 	}
 
 	@Override

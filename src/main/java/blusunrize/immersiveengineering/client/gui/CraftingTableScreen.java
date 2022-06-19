@@ -8,14 +8,14 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.common.gui.CraftingTableContainer;
+import blusunrize.immersiveengineering.common.gui.CraftingTableMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-public class CraftingTableScreen extends IEContainerScreen<CraftingTableContainer>
+public class CraftingTableScreen extends IEContainerScreen<CraftingTableMenu>
 {
-	public CraftingTableScreen(CraftingTableContainer container, Inventory inventoryPlayer, Component title)
+	public CraftingTableScreen(CraftingTableMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("craftingtable"));
 		this.imageHeight = 210;
@@ -24,6 +24,6 @@ public class CraftingTableScreen extends IEContainerScreen<CraftingTableContaine
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
-		this.font.draw(transform, menu.tile.getDisplayName().getString(), 8, 6, 0x190b06);
+		this.font.draw(transform, title, 8, 6, 0x190b06);
 	}
 }

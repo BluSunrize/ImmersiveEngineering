@@ -65,12 +65,16 @@ import java.util.Set;
 public class FermenterBlockEntity extends PoweredMultiblockBlockEntity<FermenterBlockEntity, FermenterRecipe> implements
 		IBlockBounds, IInteractionObjectIE<FermenterBlockEntity>
 {
-	public final FluidTank[] tanks = new FluidTank[]{new FluidTank(24*FluidType.BUCKET_VOLUME)};
-	public final NonNullList<ItemStack> inventory = NonNullList.withSize(11, ItemStack.EMPTY);
+	public static final int TANK_CAPACITY = 24*FluidType.BUCKET_VOLUME;
+	public static final int ENERGY_CAPACITY = 16000;
+	public static final int NUM_SLOTS = 11;
+
+	public final FluidTank[] tanks = new FluidTank[]{new FluidTank(TANK_CAPACITY)};
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 
 	public FermenterBlockEntity(BlockEntityType<FermenterBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.FERMENTER, 16000, true, type, pos, state);
+		super(IEMultiblocks.FERMENTER, ENERGY_CAPACITY, true, type, pos, state);
 	}
 
 	@Override

@@ -37,7 +37,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
@@ -75,21 +74,25 @@ import java.util.stream.Stream;
 public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<AssemblerBlockEntity, MultiblockRecipe>
 		implements IInteractionObjectIE<AssemblerBlockEntity>, IConveyorAttachable, IBlockBounds, ComputerControllable
 {
+	public static final int NUM_PATTERNS = 3;
+	public static final int NUM_TANKS = 3;
+	public static final int TANK_CAPACITY = 8*FluidType.BUCKET_VOLUME;
+	public static final int ENERGY_CAPACITY = 32000;
+	public static final int INVENTORY_SIZE = 18+NUM_PATTERNS;
+
 	public ComputerControlState[] computerControlByRecipe = {
 			new ComputerControlState(), new ComputerControlState(), new ComputerControlState(),
 	};
 
 	public AssemblerBlockEntity(BlockEntityType<AssemblerBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.ASSEMBLER, 32000, true, type, pos, state);
+		super(IEMultiblocks.ASSEMBLER, ENERGY_CAPACITY, true, type, pos, state);
 	}
 
 	public FluidTank[] tanks = {
-			new FluidTank(8*FluidType.BUCKET_VOLUME),
-			new FluidTank(8*FluidType.BUCKET_VOLUME),
-			new FluidTank(8*FluidType.BUCKET_VOLUME)
+			new FluidTank(TANK_CAPACITY), new FluidTank(TANK_CAPACITY), new FluidTank(TANK_CAPACITY)
 	};
-	public final NonNullList<ItemStack> inventory = NonNullList.withSize(18+3, ItemStack.EMPTY);
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(INVENTORY_SIZE, ItemStack.EMPTY);
 	public CrafterPatternInventory[] patterns = {new CrafterPatternInventory(this), new CrafterPatternInventory(this), new CrafterPatternInventory(this)};
 	public boolean recursiveIngredients = false;
 
@@ -129,37 +132,6 @@ public class AssemblerBlockEntity extends PoweredMultiblockBlockEntity<Assembler
 				ListTag patternList = new ListTag();
 				patterns[iPattern].writeToNBT(patternList);
 				nbt.put("pattern"+iPattern, patternList);
-			}
-		}
-	}
-
-	@Override
-	public void receiveMessageFromClient(CompoundTag message)
-	{
-		Preconditions.checkState(!level.isClientSide);
-		if(message.contains("buttonID", Tag.TAG_INT))
-		{
-			int id = message.getInt("buttonID");
-			if(id >= 0&&id < patterns.length)
-			{
-				CrafterPatternInventory pattern = patterns[id];
-				for(int i = 0; i < pattern.inv.size(); i++)
-					pattern.inv.set(i, ItemStack.EMPTY);
-			}
-			else if(id==3)
-			{
-				recursiveIngredients = !recursiveIngredients;
-			}
-		}
-		else if(message.contains("patternSync", Tag.TAG_INT))
-		{
-			int r = message.getInt("recipe");
-			ListTag list = message.getList("patternSync", 10);
-			CrafterPatternInventory pattern = patterns[r];
-			for(int i = 0; i < list.size(); i++)
-			{
-				CompoundTag itemTag = list.getCompound(i);
-				pattern.inv.set(itemTag.getInt("slot"), ItemStack.of(itemTag));
 			}
 		}
 	}

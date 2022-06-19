@@ -9,7 +9,9 @@
 
 package blusunrize.immersiveengineering.common.gui.sync;
 
+import blusunrize.immersiveengineering.common.gui.ArcFurnaceMenu.ProcessSlot;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -35,6 +37,13 @@ public class GenericDataSerializers
 	);
 	public static final DataSerializer<Float> FLOAT = register(
 			FriendlyByteBuf::readFloat, FriendlyByteBuf::writeFloat
+	);
+	public static final DataSerializer<List<ProcessSlot>> ARC_PROCESS_SLOTS = register(
+			fbb -> fbb.readList(ProcessSlot::from), (fbb, l) -> fbb.writeCollection(l, ProcessSlot::writeTo)
+	);
+	// Allows items to be synced without requiring a slot
+	public static final DataSerializer<ItemStack> ITEM_STACK = register(
+			FriendlyByteBuf::readItem, FriendlyByteBuf::writeItem, ItemStack::copy, ItemStack::matches
 	);
 
 	private static <T> DataSerializer<T> register(
@@ -74,7 +83,7 @@ public class GenericDataSerializers
 		}
 	}
 
-	public static record DataPair<T>(DataSerializer<T> serializer, T data)
+	public record DataPair<T>(DataSerializer<T> serializer, T data)
 	{
 		public void write(FriendlyByteBuf to)
 		{

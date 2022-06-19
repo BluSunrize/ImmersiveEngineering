@@ -8,7 +8,6 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.elements.GuiButtonBoolean;
@@ -18,8 +17,7 @@ import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
 import blusunrize.immersiveengineering.client.gui.info.TooltipArea;
 import blusunrize.immersiveengineering.common.blocks.metal.AssemblerBlockEntity;
-import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
-import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
+import blusunrize.immersiveengineering.common.gui.AssemblerMenu;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -38,15 +36,14 @@ import javax.annotation.Nonnull;
 import java.util.List;
 import java.util.function.IntConsumer;
 
-public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
+public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("assembler");
-	public AssemblerBlockEntity tile;
+	private GuiButtonBoolean recursiveButton;
 
-	public AssemblerScreen(AssemblerContainer container, Inventory inventoryPlayer, Component title)
+	public AssemblerScreen(AssemblerMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		this.tile = container.tile;
 		this.imageWidth = 230;
 		this.imageHeight = 218;
 		this.inventoryLabelY = 127;
@@ -57,20 +54,20 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		List<InfoArea> areas = Lists.newArrayList(
-				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+204, topPos+13, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new FluidInfoArea(tile.tanks[1], new Rect2i(leftPos+182, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new FluidInfoArea(tile.tanks[2], new Rect2i(leftPos+204, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
-				new EnergyInfoArea(leftPos+187, topPos+13, tile.energyStorage),
+				new FluidInfoArea(menu.tanks[0], new Rect2i(leftPos+204, topPos+13, 16, 46), 230, 0, 20, 50, TEXTURE),
+				new FluidInfoArea(menu.tanks[1], new Rect2i(leftPos+182, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
+				new FluidInfoArea(menu.tanks[2], new Rect2i(leftPos+204, topPos+70, 16, 46), 230, 0, 20, 50, TEXTURE),
+				new EnergyInfoArea(leftPos+187, topPos+13, menu.energy),
 				new TooltipArea(
 						new Rect2i(leftPos+162, topPos+69, 16, 16),
-						() -> Component.translatable(Lib.GUI_CONFIG+"assembler."+(tile.recursiveIngredients?"recursiveIngredients": "nonRecursiveIngredients"))
+						() -> Component.translatable(Lib.GUI_CONFIG+"assembler."+(menu.recursiveIngredients.get()?"recursiveIngredients": "nonRecursiveIngredients"))
 				)
 		);
-		for(int i = 0; i < tile.patterns.length; i++)
+		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; i++)
 		{
-			final int offset = 58 * i;
+			final int offset = 58*i;
 			areas.add(new TooltipArea(
-					new Rect2i(leftPos+11 + offset, topPos+67, 10, 10),
+					new Rect2i(leftPos+11+offset, topPos+67, 10, 10),
 					Component.translatable(Lib.GUI_CONFIG+"assembler.clearRecipe")
 			));
 			int finalI = i;
@@ -83,10 +80,10 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 
 	private void addRecipeOutputTooltip(int i, List<Component> tooltip)
 	{
-		ItemStack recipeOutput = tile.patterns[i].inv.get(9);
-		if(tile.inventory.get(18+i).isEmpty()&&!recipeOutput.isEmpty())
+		ItemStack recipeOutput = menu.patterns.get(i).getItem(9);
+		if(menu.inv.getStackInSlot(18+i).isEmpty()&&!recipeOutput.isEmpty())
 		{
-			tooltip.add(tile.patterns[i].inv.get(9).getHoverName());
+			tooltip.add(menu.patterns.get(i).getItem(9).getHoverName());
 			recipeOutput.getItem().appendHoverText(recipeOutput, ClientUtils.mc().level, tooltip, Default.NORMAL);
 		}
 	}
@@ -98,7 +95,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 		IntConsumer sendButtonClick = id -> {
 			CompoundTag tag = new CompoundTag();
 			tag.putInt("buttonID", id);
-			ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile.master(), tag));
+			sendUpdateToServer(tag);
 		};
 		for(int i = 0; i < 3; ++i)
 		{
@@ -107,21 +104,23 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerContainer>
 					btn -> sendButtonClick.accept(id))
 					.setHoverOffset(0, 10));
 		}
-		this.addRenderableWidget(new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, "", tile.recursiveIngredients, TEXTURE, 240, 66, 3,
+		this.recursiveButton = new GuiButtonBoolean(leftPos+162, topPos+69, 16, 16, "", menu.recursiveIngredients.get(), TEXTURE, 240, 66, 3,
 				btn -> {
 					sendButtonClick.accept(3);
-					tile.recursiveIngredients = !tile.recursiveIngredients;
 					fullInit();
-				}));
+				});
+		this.addRenderableWidget(recursiveButton);
 	}
 
 	@Override
 	protected void drawContainerBackgroundPre(@Nonnull PoseStack transform, float f, int mx, int my)
 	{
-		for(int i = 0; i < tile.patterns.length; i++)
-			if(tile.inventory.get(18+i).isEmpty()&&!tile.patterns[i].inv.get(9).isEmpty())
+		if(menu.recursiveIngredients.get()!=this.recursiveButton.getState())
+			this.recursiveButton.setStateByInt(menu.recursiveIngredients.get()?1: 0);
+		for(int i = 0; i < AssemblerBlockEntity.NUM_PATTERNS; i++)
+			if(menu.inv.getStackInSlot(18+i).isEmpty()&&!menu.patterns.get(i).getItem(9).isEmpty())
 			{
-				ItemStack stack = tile.patterns[i].inv.get(9);
+				ItemStack stack = menu.patterns.get(i).getItem(9);
 				transform.pushPose();
 				Font font = null;
 				if(!stack.isEmpty())

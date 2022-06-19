@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.common.util.compat.jei;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.gui.AssemblerContainer;
+import blusunrize.immersiveengineering.common.gui.AssemblerMenu;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -37,7 +37,7 @@ import java.util.Optional;
 /**
  * @author BluSunrize - 08.09.2016
  */
-public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<AssemblerContainer, CraftingRecipe>
+public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<AssemblerMenu, CraftingRecipe>
 {
 	private final IRecipeTransferHandlerHelper transferHandlerHelper;
 
@@ -47,13 +47,13 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 	}
 
 	@Override
-	public Class<AssemblerContainer> getContainerClass()
+	public Class<AssemblerMenu> getContainerClass()
 	{
-		return AssemblerContainer.class;
+		return AssemblerMenu.class;
 	}
 
 	@Override
-	public Optional<MenuType<AssemblerContainer>> getMenuType()
+	public Optional<MenuType<AssemblerMenu>> getMenuType()
 	{
 		return Optional.of(IEContainerTypes.ASSEMBLER.getType());
 	}
@@ -66,10 +66,10 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 
 	@Override
 	@Nullable
-	public IRecipeTransferError transferRecipe(AssemblerContainer container, CraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer)
+	public IRecipeTransferError transferRecipe(AssemblerMenu container, CraftingRecipe recipe, IRecipeSlotsView recipeSlots, Player player, boolean maxTransfer, boolean doTransfer)
 	{
 		for(int i = 0; i < 3; i++)
-			if(container.tile.patterns[i].recipe==null)
+			if(container.patterns.get(i).getItem(9).isEmpty())
 			{
 				if(doTransfer)
 				{

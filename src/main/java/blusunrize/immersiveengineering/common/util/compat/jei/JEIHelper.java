@@ -16,7 +16,7 @@ import blusunrize.immersiveengineering.api.tool.conveyor.IConveyorType;
 import blusunrize.immersiveengineering.client.gui.*;
 import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.crafting.ArcRecyclingRecipe;
-import blusunrize.immersiveengineering.common.gui.CraftingTableContainer;
+import blusunrize.immersiveengineering.common.gui.CraftingTableMenu;
 import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
@@ -162,7 +162,7 @@ public class JEIHelper implements IModPlugin
 	{
 		registration.addRecipeTransferHandler(new AssemblerRecipeTransferHandler(registration.getTransferHelper()), RecipeTypes.CRAFTING);
 		registration.addRecipeTransferHandler(
-				CraftingTableContainer.class, IEContainerTypes.CRAFTING_TABLE.getType(), RecipeTypes.CRAFTING,
+				CraftingTableMenu.class, IEContainerTypes.CRAFTING_TABLE.getType(), RecipeTypes.CRAFTING,
 				1, 9, 10, 18+36
 		);
 	}

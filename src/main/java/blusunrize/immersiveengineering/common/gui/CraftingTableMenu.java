@@ -22,44 +22,67 @@ import net.minecraft.world.inventory.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.Level;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlockEntity.GRID_SIZE;
+import static blusunrize.immersiveengineering.common.blocks.wooden.CraftingTableBlockEntity.STORAGE_SIZE;
 
 @ChestContainer
-public class CraftingTableContainer extends IEBaseContainerOld<CraftingTableBlockEntity>
+public class CraftingTableMenu extends IEContainerMenu
 {
 	private final CraftingContainer craftingInventory = new CraftingContainer(this, GRID_SIZE, GRID_SIZE);
 	private final ResultContainer craftResultInventory = new ResultContainer();
 	private final Player player;
+	private final ContainerLevelAccess access;
 
-	public CraftingTableContainer(MenuType<?> type, int id, Inventory inventoryPlayer, CraftingTableBlockEntity tile)
+	public static CraftingTableMenu makeServer(
+			MenuType<?> type, int id, Inventory invPlayer, CraftingTableBlockEntity be
+	)
 	{
-		super(type, tile, id);
-		this.player = inventoryPlayer.player;
+		return new CraftingTableMenu(
+				blockCtx(type, id, be), invPlayer,
+				be.getCraftingInventory(),
+				CapabilityUtils.getPresentCapability(be, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY),
+				ContainerLevelAccess.create(be.getLevel(), be.getBlockPos())
+		);
+	}
 
-		NonNullList<ItemStack> craftingItems = tile.getCraftingInventory();
+	public static CraftingTableMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
+	{
+		return new CraftingTableMenu(
+				clientCtx(type, id), invPlayer,
+				NonNullList.withSize(GRID_SIZE*GRID_SIZE, ItemStack.EMPTY), new ItemStackHandler(STORAGE_SIZE),
+				ContainerLevelAccess.NULL
+		);
+	}
+
+	private CraftingTableMenu(
+			MenuContext ctx, Inventory inventoryPlayer,
+			NonNullList<ItemStack> craftingItems, IItemHandler storageInventory,
+			ContainerLevelAccess access)
+	{
+		super(ctx);
+		this.player = inventoryPlayer.player;
+		this.access = access;
+
 		((CraftingContainerAccess)craftingInventory).setItems(craftingItems);
 		this.addSlot(new ResultSlot(player, craftingInventory, craftResultInventory, 0, 124, 35));
 
 		for(int i = 0; i < 9; i++)
 			this.addSlot(new Slot(craftingInventory, i, 30+(i%3)*18, 17+(i/3)*18));
 
-		IItemHandler storageInventory = CapabilityUtils.getPresentCapability(tile, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY);
 		int iSlot = 0;
 		for(int i = 0; i < 18; i++)
 			this.addSlot(new SlotItemHandler(storageInventory, iSlot++, 8+(i%9)*18, 79+(i/9)*18));
 
-		this.ownSlotCount = storageInventory.getSlots()+tile.getCraftingInventory().size();
-		this.tile = tile;
+		this.ownSlotCount = storageInventory.getSlots()+craftingItems.size();
 
 		for(int i = 0; i < 3; i++)
 			for(int j = 0; j < 9; j++)
@@ -86,21 +109,9 @@ public class CraftingTableContainer extends IEBaseContainerOld<CraftingTableBloc
 	}
 
 	@Override
-	public boolean stillValid(@Nonnull Player player)
-	{
-		return BlockEntityInventory.isValidForPlayer(this.tile, player);
-	}
-
-	private void doIfServerWorld(Consumer<Level> consumer)
-	{
-		if(this.tile!=null&&this.tile.getLevel()!=null&&!this.tile.getLevel().isClientSide)
-			consumer.accept(this.tile.getLevel());
-	}
-
-	@Override
 	public void slotsChanged(@Nullable Container inventoryIn)
 	{
-		doIfServerWorld(world -> {
+		access.execute((world, $) -> {
 			ServerPlayer serverplayerentity = (ServerPlayer)this.player;
 			ItemStack itemstack = ItemStack.EMPTY;
 			Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingInventory, world);
@@ -113,7 +124,6 @@ public class CraftingTableContainer extends IEBaseContainerOld<CraftingTableBloc
 
 			craftResultInventory.setItem(0, itemstack);
 			serverplayerentity.connection.send(new ClientboundContainerSetSlotPacket(this.containerId, incrementStateId(), 0, itemstack));
-			this.tile.setChanged();
 		});
 	}
 
@@ -130,9 +140,7 @@ public class CraftingTableContainer extends IEBaseContainerOld<CraftingTableBloc
 		{
 			ItemStack itemstack1 = slot.getItem();
 			itemstack = itemstack1.copy();
-			doIfServerWorld(world -> {
-				itemstack1.getItem().onCraftedBy(itemstack1, world, playerIn);
-			});
+			access.execute((world, $) -> itemstack1.getItem().onCraftedBy(itemstack1, world, playerIn));
 			if(!this.moveItemStackTo(itemstack1, 10, 46, true))
 				return ItemStack.EMPTY;
 			slot.onQuickCraft(itemstack1, itemstack);

@@ -32,6 +32,13 @@ public class GenericContainerData<T>
 		this.set = set;
 	}
 
+	public GenericContainerData(DataSerializer<T> serializer, GetterAndSetter<T> io)
+	{
+		this.serializer = serializer;
+		this.get = io.getter();
+		this.set = io.setter();
+	}
+
 	public static GenericContainerData<Integer> int32(Supplier<Integer> get, Consumer<Integer> set)
 	{
 		return new GenericContainerData<>(GenericDataSerializers.INT32, get, set);

@@ -82,6 +82,8 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	private static final BlockPos SLAG_OUT_POS = new BlockPos(2, 0, 0);
 	private static final BlockPos MAIN_OUT_POS = new BlockPos(2, 0, 4);
 	private static final int[] OUTPUT_SLOTS;
+	public static final int NUM_SLOTS = FIRST_ELECTRODE_SLOT+ELECTRODE_COUNT;
+	public static final int ENERGY_CAPACITY = 64000;
 
 	static
 	{
@@ -90,7 +92,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 			OUTPUT_SLOTS[i] = FIRST_OUT_SLOT+i;
 	}
 
-	public NonNullList<ItemStack> inventory = NonNullList.withSize(26, ItemStack.EMPTY);
+	public NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 	public int pouringMetal = 0;
 	private final CapabilityReference<IItemHandler> output = CapabilityReference.forBlockEntityAt(this,
 			() -> new DirectionalBlockPos(this.getBlockPosForPos(MAIN_OUT_POS).relative(getFacing(), -1), getFacing().getOpposite()),
@@ -101,7 +103,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 
 	public ArcFurnaceBlockEntity(BlockEntityType<ArcFurnaceBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.ARC_FURNACE, 64000, true, type, pos, state);
+		super(IEMultiblocks.ARC_FURNACE, ENERGY_CAPACITY, true, type, pos, state);
 	}
 
 	@Override

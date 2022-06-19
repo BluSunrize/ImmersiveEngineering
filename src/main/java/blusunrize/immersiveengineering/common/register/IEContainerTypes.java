@@ -38,40 +38,67 @@ public class IEContainerTypes
 {
 	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.CONTAINERS, Lib.MODID);
 
-	public static final BEContainer<CokeOvenBlockEntity, CokeOvenContainer> COKE_OVEN = register(Lib.GUIID_CokeOven, CokeOvenContainer::new);
-	public static final BEContainer<AlloySmelterBlockEntity, AlloySmelterContainer> ALLOY_SMELTER = register(Lib.GUIID_AlloySmelter, AlloySmelterContainer::new);
-	public static final BEContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceContainer> BLAST_FURNACE = register(Lib.GUIID_BlastFurnace, BlastFurnaceContainer::new);
-	public static final BEContainer<CraftingTableBlockEntity, CraftingTableContainer> CRAFTING_TABLE = register(Lib.GUIID_CraftingTable, CraftingTableContainer::new);
-	public static final RegistryObject<MenuType<CrateContainer>> WOODEN_CRATE = registerSimple(Lib.GUIID_WoodenCrate, CrateContainer::new);
+	public static final BEContainer<CokeOvenBlockEntity, CokeOvenMenu> COKE_OVEN = registerBENew(
+			Lib.GUIID_CokeOven, CokeOvenMenu::makeServer, CokeOvenMenu::makeClient
+	);
+	public static final BEContainer<AlloySmelterBlockEntity, AlloySmelterMenu> ALLOY_SMELTER = registerBENew(
+			Lib.GUIID_AlloySmelter, AlloySmelterMenu::makeServer, AlloySmelterMenu::makeClient
+	);
+	public static final BEContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE = registerBENew(
+			Lib.GUIID_BlastFurnace, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient
+	);
+	public static final BEContainer<BlastFurnaceBlockEntity<?>, BlastFurnaceMenu> BLAST_FURNACE_ADV = registerBENew(
+			Lib.GUIID_BlastFurnaceAdv, BlastFurnaceMenu::makeServer, BlastFurnaceMenu::makeClient
+	);
+	public static final BEContainer<CraftingTableBlockEntity, CraftingTableMenu> CRAFTING_TABLE = registerBENew(
+			Lib.GUIID_CraftingTable, CraftingTableMenu::makeServer, CraftingTableMenu::makeClient
+	);
+	public static final RegistryObject<MenuType<CrateMenu>> WOODEN_CRATE = registerSimple(Lib.GUIID_WoodenCrate, CrateMenu::new);
 	public static final BEContainer<ModWorkbenchBlockEntity, ModWorkbenchContainer> MOD_WORKBENCH = register(Lib.GUIID_Workbench, ModWorkbenchContainer::new);
-	public static final BEContainer<CircuitTableBlockEntity, CircuitTableContainer> CIRCUIT_TABLE = register(Lib.GUIID_CircuitTable, CircuitTableContainer::new);
-	public static final BEContainer<AssemblerBlockEntity, AssemblerContainer> ASSEMBLER = register(Lib.GUIID_Assembler, AssemblerContainer::new);
+	public static final BEContainer<CircuitTableBlockEntity, CircuitTableMenu> CIRCUIT_TABLE = registerBENew(
+			Lib.GUIID_CircuitTable, CircuitTableMenu::makeServer, CircuitTableMenu::makeClient
+	);
+	public static final BEContainer<AssemblerBlockEntity, AssemblerMenu> ASSEMBLER = registerBENew(
+			Lib.GUIID_Assembler, AssemblerMenu::makeServer, AssemblerMenu::makeClient
+	);
 	public static final BEContainer<SorterBlockEntity, SorterContainer> SORTER = register(Lib.GUIID_Sorter, SorterContainer::new);
 	public static final BEContainer<ItemBatcherBlockEntity, ItemBatcherContainer> ITEM_BATCHER = register(Lib.GUIID_ItemBatcher, ItemBatcherContainer::new);
-	public static final BEContainer<LogicUnitBlockEntity, LogicUnitContainer> LOGIC_UNIT = register(Lib.GUIID_LogicUnit, LogicUnitContainer::new);
+	public static final BEContainer<LogicUnitBlockEntity, LogicUnitMenu> LOGIC_UNIT = registerBENew(
+			Lib.GUIID_LogicUnit, LogicUnitMenu::makeServer, LogicUnitMenu::makeClient
+	);
 	public static final BEContainer<SqueezerBlockEntity, SqueezerContainer> SQUEEZER = register(Lib.GUIID_Squeezer, SqueezerContainer::new);
-	public static final BEContainer<FermenterBlockEntity, FermenterContainer> FERMENTER = register(Lib.GUIID_Fermenter, FermenterContainer::new);
+	public static final BEContainer<FermenterBlockEntity, FermenterMenu> FERMENTER = registerBENew(
+			Lib.GUIID_Fermenter, FermenterMenu::makeServer, FermenterMenu::makeClient
+	);
 	public static final BEContainer<RefineryBlockEntity, RefineryContainer> REFINERY = register(Lib.GUIID_Refinery, RefineryContainer::new);
-	public static final BEContainer<ArcFurnaceBlockEntity, ArcFurnaceContainer> ARC_FURNACE = register(Lib.GUIID_ArcFurnace, ArcFurnaceContainer::new);
-	public static final BEContainer<AutoWorkbenchBlockEntity, AutoWorkbenchContainer> AUTO_WORKBENCH = register(Lib.GUIID_AutoWorkbench, AutoWorkbenchContainer::new);
+	public static final BEContainer<ArcFurnaceBlockEntity, ArcFurnaceMenu> ARC_FURNACE = registerBENew(
+			Lib.GUIID_ArcFurnace, ArcFurnaceMenu::makeServer, ArcFurnaceMenu::makeClient
+	);
+	public static final BEContainer<AutoWorkbenchBlockEntity, AutoWorkbenchMenu> AUTO_WORKBENCH = registerBENew(
+			Lib.GUIID_AutoWorkbench, AutoWorkbenchMenu::makeServer, AutoWorkbenchMenu::makeClient
+	);
 	public static final BEContainer<MixerBlockEntity, MixerContainer> MIXER = register(Lib.GUIID_Mixer, MixerContainer::new);
 	public static final BEContainer<TurretGunBlockEntity, GunTurretContainer> GUN_TURRET = register(Lib.GUIID_Turret_Gun, TurretContainer.GunTurretContainer::new);
 	public static final BEContainer<TurretChemBlockEntity, ChemTurretContainer> CHEM_TURRET = register(Lib.GUIID_Turret_Chem, TurretContainer.ChemTurretContainer::new);
-	public static final BEContainer<FluidSorterBlockEntity, FluidSorterContainer> FLUID_SORTER = register(Lib.GUIID_FluidSorter, FluidSorterContainer::new);
-	public static final BEContainer<ClocheBlockEntity, ClocheContainer> CLOCHE = register(Lib.GUIID_Cloche, ClocheContainer::new);
-	public static final BEContainer<ToolboxBlockEntity, ToolboxContainer> TOOLBOX_BLOCK = registerBENew(
-			Lib.GUIID_ToolboxBlock, ToolboxContainer::makeFromBE, ToolboxContainer::makeClient
+	public static final BEContainer<FluidSorterBlockEntity, FluidSorterMenu> FLUID_SORTER = registerBENew(
+			Lib.GUIID_FluidSorter, FluidSorterMenu::makeServer, FluidSorterMenu::makeClient
+	);
+	public static final BEContainer<ClocheBlockEntity, ClocheMenu> CLOCHE = registerBENew(
+			Lib.GUIID_Cloche, ClocheMenu::makeServer, ClocheMenu::makeClient
+	);
+	public static final BEContainer<ToolboxBlockEntity, ToolboxMenu> TOOLBOX_BLOCK = registerBENew(
+			Lib.GUIID_ToolboxBlock, ToolboxMenu::makeFromBE, ToolboxMenu::makeClient
 	);
 
-	public static final ItemContainerTypeNew<ToolboxContainer> TOOLBOX = registerItemNew(
-			Lib.GUIID_Toolbox, ToolboxContainer::makeFromItem, ToolboxContainer::makeClient
+	public static final ItemContainerTypeNew<ToolboxMenu> TOOLBOX = registerItemNew(
+			Lib.GUIID_Toolbox, ToolboxMenu::makeFromItem, ToolboxMenu::makeClient
 	);
 	public static final ItemContainerType<RevolverContainer> REVOLVER = register(Lib.GUIID_Revolver, RevolverContainer::new);
 	public static final ItemContainerType<MaintenanceKitContainer> MAINTENANCE_KIT = register(Lib.GUIID_MaintenanceKit, MaintenanceKitContainer::new);
 
 	public static final RegistryObject<MenuType<CrateEntityContainer>> CRATE_MINECART = registerSimple(Lib.GUIID_CartCrate, CrateEntityContainer::new);
 
-	public static <T extends BlockEntity, C extends IEBaseContainer>
+	public static <T extends BlockEntity, C extends IEContainerMenu>
 	BEContainer<T, C> registerBENew(
 			String name, BEContainerConstructor<T, C> container, ClientContainerConstructor<C> client
 	)
@@ -80,7 +107,7 @@ public class IEContainerTypes
 		return new BEContainer<>(typeRef, container);
 	}
 
-	public static <C extends IEBaseContainer>
+	public static <C extends IEContainerMenu>
 	ItemContainerTypeNew<C> registerItemNew(
 			String name, NewItemContainerConstructor<C> container, ClientContainerConstructor<C> client
 	)
@@ -89,7 +116,7 @@ public class IEContainerTypes
 		return new ItemContainerTypeNew<>(typeRef, container);
 	}
 
-	private static <C extends IEBaseContainer>
+	private static <C extends IEContainerMenu>
 	RegistryObject<MenuType<C>> registerType(String name, ClientContainerConstructor<C> client)
 	{
 		return REGISTER.register(
@@ -155,7 +182,7 @@ public class IEContainerTypes
 		);
 	}
 
-	public static class BEContainer<T extends BlockEntity, C extends IEBaseContainer>
+	public static class BEContainer<T extends BlockEntity, C extends IEContainerMenu>
 	{
 		private final RegistryObject<MenuType<C>> type;
 		private final BEContainerConstructor<T, C> factory;
@@ -208,12 +235,12 @@ public class IEContainerTypes
 		}
 	}
 
-	public interface BEContainerConstructor<T extends BlockEntity, C extends IEBaseContainer>
+	public interface BEContainerConstructor<T extends BlockEntity, C extends IEContainerMenu>
 	{
 		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer, T te);
 	}
 
-	public interface ClientContainerConstructor<C extends IEBaseContainer>
+	public interface ClientContainerConstructor<C extends IEContainerMenu>
 	{
 		C construct(MenuType<C> type, int windowId, Inventory inventoryPlayer);
 	}

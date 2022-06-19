@@ -17,7 +17,7 @@ import net.minecraft.world.inventory.MenuType;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class CrateEntityContainer extends CrateContainer
+public class CrateEntityContainer extends CrateMenu
 {
 	@Nullable
 	protected final Entity wrappingEntity;

@@ -79,19 +79,34 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class IEFurnaceSFuelSlot extends IESlot
+	public static class NewOutput extends SlotItemHandler
 	{
-
-		public IEFurnaceSFuelSlot(AbstractContainerMenu container, Container inv, int id, int x, int y)
+		public NewOutput(IItemHandler inv, int id, int x, int y)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 		}
 
+		@Override
+		public boolean mayPlace(ItemStack itemStack)
+		{
+			return false;
+		}
+	}
+
+	public static class IEFurnaceSFuelSlot extends SlotItemHandler
+	{
+		public IEFurnaceSFuelSlot(IItemHandler inv, int id, int x, int y)
+		{
+			super(inv, id, x, y);
+		}
+
+		@Override
 		public boolean mayPlace(ItemStack stack)
 		{
 			return AbstractFurnaceBlockEntity.isFuel(stack)||isBucket(stack);
 		}
 
+		@Override
 		public int getMaxStackSize(ItemStack stack)
 		{
 			return isBucket(stack)?1: super.getMaxStackSize(stack);
@@ -101,7 +116,38 @@ public abstract class IESlot extends Slot
 		{
 			return stack.getItem()==Items.BUCKET;
 		}
+	}
 
+	public static class NewFluidContainer extends SlotItemHandler
+	{
+		private final Filter filter;
+
+		public NewFluidContainer(IItemHandler inv, int id, int x, int y, Filter filter)
+		{
+			super(inv, id, x, y);
+			this.filter = filter;
+		}
+
+		@Override
+		public boolean mayPlace(ItemStack itemStack)
+		{
+			LazyOptional<IFluidHandlerItem> handlerCap = FluidUtil.getFluidHandler(itemStack);
+			return handlerCap.map(handler -> {
+				if(handler.getTanks() <= 0)
+					return false;
+				return switch(filter)
+						{
+							case ANY -> true;
+							case EMPTY -> handler.getFluidInTank(0).isEmpty();
+							case FULL -> !handler.getFluidInTank(0).isEmpty();
+						};
+			}).orElse(false);
+		}
+
+		public enum Filter
+		{
+			ANY, EMPTY, FULL;
+		}
 	}
 
 	public static class FluidContainer extends IESlot
@@ -131,13 +177,13 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class BlastFuel extends IESlot
+	public static class BlastFuel extends SlotItemHandler
 	{
 		private final Level level;
 
-		public BlastFuel(AbstractContainerMenu container, Container inv, int id, int x, int y, Level level)
+		public BlastFuel(IItemHandler inv, int id, int x, int y, Level level)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 			this.level = level;
 		}
 
@@ -411,11 +457,11 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class AutoBlueprint extends IESlot
+	public static class AutoBlueprint extends SlotItemHandler
 	{
-		public AutoBlueprint(AbstractContainerMenu container, Container inv, int id, int x, int y)
+		public AutoBlueprint(IItemHandler inv, int id, int x, int y)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 		}
 
 		@Override
@@ -434,8 +480,7 @@ public abstract class IESlot extends Slot
 		public void setChanged()
 		{
 			super.setChanged();
-			if(containerMenu instanceof AutoWorkbenchContainer)
-				ImmersiveEngineering.proxy.reInitGui();
+			ImmersiveEngineering.proxy.reInitGui();
 		}
 	}
 
@@ -525,13 +570,13 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ArcInput extends IESlot
+	public static class ArcInput extends SlotItemHandler
 	{
 		private final Level level;
 
-		public ArcInput(AbstractContainerMenu container, Container inv, int id, int x, int y, Level level)
+		public ArcInput(IItemHandler inv, int id, int x, int y, Level level)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 			this.level = level;
 		}
 
@@ -542,13 +587,13 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ArcAdditive extends IESlot
+	public static class ArcAdditive extends SlotItemHandler
 	{
 		private final Level level;
 
-		public ArcAdditive(AbstractContainerMenu container, Container inv, int id, int x, int y, Level level)
+		public ArcAdditive(IItemHandler inv, int id, int x, int y, Level level)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 			this.level = level;
 		}
 
@@ -559,11 +604,11 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class ArcElectrode extends IESlot
+	public static class ArcElectrode extends SlotItemHandler
 	{
-		public ArcElectrode(AbstractContainerMenu container, Container inv, int id, int x, int y)
+		public ArcElectrode(IItemHandler inv, int id, int x, int y)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 		}
 
 		@Override
@@ -579,14 +624,14 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Cloche extends IESlot
+	public static class Cloche extends SlotItemHandler
 	{
 		private final Level level;
 		int type = 0;
 
-		public Cloche(int type, AbstractContainerMenu container, Container inv, int id, int x, int y, Level level)
+		public Cloche(int type, IItemHandler inv, int id, int x, int y, Level level)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 			this.type = type;
 			this.level = level;
 		}
@@ -608,13 +653,13 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class Tagged extends IESlot
+	public static class Tagged extends SlotItemHandler
 	{
 		private final TagKey<Item> tag;
 
-		public Tagged(AbstractContainerMenu container, Container inv, int id, int x, int y, TagKey<Item> tag)
+		public Tagged(IItemHandler inv, int id, int x, int y, TagKey<Item> tag)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 			this.tag = tag;
 		}
 
@@ -673,11 +718,11 @@ public abstract class IESlot extends Slot
 		}
 	}
 
-	public static class LogicCircuit extends IESlot
+	public static class LogicCircuit extends SlotItemHandler
 	{
-		public LogicCircuit(AbstractContainerMenu container, Container inv, int id, int x, int y)
+		public LogicCircuit(IItemHandler inv, int id, int x, int y)
 		{
-			super(container, inv, id, x, y);
+			super(inv, id, x, y);
 		}
 
 		@Override

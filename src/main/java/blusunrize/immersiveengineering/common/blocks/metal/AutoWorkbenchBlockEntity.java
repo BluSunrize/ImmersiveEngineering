@@ -31,7 +31,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
@@ -59,13 +58,15 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 	public static final int BLUEPRINT_SLOT = 0;
 	private static final int FIRST_INPUT_SLOT = 1;
 	private static final int NUM_INPUT_SLOTS = 16;
+	public static final int NUM_SLOTS = 1+NUM_INPUT_SLOTS;
+	public static final int ENERGY_CAPACITY = 32000;
 
-	public final NonNullList<ItemStack> inventory = NonNullList.withSize(1+NUM_INPUT_SLOTS, ItemStack.EMPTY);
+	public final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 	public int selectedRecipe = -1;
 
 	public AutoWorkbenchBlockEntity(BlockEntityType<AutoWorkbenchBlockEntity> type, BlockPos pos, BlockState state)
 	{
-		super(IEMultiblocks.AUTO_WORKBENCH, 32000, true, type, pos, state);
+		super(IEMultiblocks.AUTO_WORKBENCH, ENERGY_CAPACITY, true, type, pos, state);
 	}
 
 	@Override
@@ -92,13 +93,6 @@ public class AutoWorkbenchBlockEntity extends PoweredMultiblockBlockEntity<AutoW
 			inventory.get(BLUEPRINT_SLOT).save(blueprintNBT);
 			nbt.put("syncedBlueprint", blueprintNBT);
 		}
-	}
-
-	@Override
-	public void receiveMessageFromClient(CompoundTag message)
-	{
-		if(message.contains("recipe", Tag.TAG_INT))
-			this.selectedRecipe = message.getInt("recipe");
 	}
 
 	@Override

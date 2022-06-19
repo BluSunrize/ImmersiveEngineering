@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.client.gui.info;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -17,29 +16,32 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 public class FertilizerInfoArea extends InfoArea
 {
-	private final ClocheBlockEntity tile;
+	private final Supplier<Integer> fertilizerAmount;
+	private final Supplier<Float> fertilizerMod;
 
-	public FertilizerInfoArea(int xMin, int yMin, ClocheBlockEntity tile)
+	public FertilizerInfoArea(int xMin, int yMin, Supplier<Integer> fertilizerAmount, Supplier<Float> fertilizerMod)
 	{
 		super(new Rect2i(xMin, yMin, 7, 47));
-		this.tile = tile;
+		this.fertilizerAmount = fertilizerAmount;
+		this.fertilizerMod = fertilizerMod;
 	}
 
 	@Override
 	protected void fillTooltipOverArea(int mouseX, int mouseY, List<Component> tooltip)
 	{
-		tooltip.add(Component.translatable(Lib.DESC_INFO+"fertFill", Utils.formatDouble(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get(), "0.00")));
-		tooltip.add(Component.translatable(Lib.DESC_INFO+"fertMod", Utils.formatDouble(tile.fertilizerMod, "0.00")));
+		tooltip.add(Component.translatable(Lib.DESC_INFO+"fertFill", Utils.formatDouble(fertilizerAmount.get()/(float)IEServerConfig.MACHINES.cloche_fertilizer.get(), "0.00")));
+		tooltip.add(Component.translatable(Lib.DESC_INFO+"fertMod", Utils.formatDouble(fertilizerMod.get(), "0.00")));
 	}
 
 	@Override
 	public void draw(PoseStack transform)
 	{
 		final int height = area.getHeight();
-		int stored = (int)(height*(tile.fertilizerAmount/(float)IEServerConfig.MACHINES.cloche_fertilizer.get()));
+		int stored = (int)(height*(fertilizerAmount.get()/(float)IEServerConfig.MACHINES.cloche_fertilizer.get()));
 		fillGradient(
 				transform,
 				area.getX(), area.getY()+(height-stored),

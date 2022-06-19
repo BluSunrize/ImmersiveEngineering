@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import blusunrize.immersiveengineering.client.gui.elements.ITooltipWidget;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
+import blusunrize.immersiveengineering.common.network.MessageContainerUpdate;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,6 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
@@ -124,14 +126,23 @@ public abstract class IEContainerScreen<C extends AbstractContainerMenu> extends
 		blit(transform, leftPos, topPos, 0, 0, imageWidth, imageHeight);
 	}
 
-	protected void drawContainerBackgroundPre(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y) {}
+	protected void drawContainerBackgroundPre(@Nonnull PoseStack matrixStack, float partialTicks, int x, int y)
+	{
+	}
 
 	protected void gatherAdditionalTooltips(
 			int mouseX, int mouseY, Consumer<Component> addLine, Consumer<Component> addGray
-	) {}
+	)
+	{
+	}
 
 	public static ResourceLocation makeTextureLocation(String name)
 	{
 		return ImmersiveEngineering.rl("textures/gui/"+name+".png");
+	}
+
+	protected void sendUpdateToServer(CompoundTag message)
+	{
+		ImmersiveEngineering.packetHandler.sendToServer(new MessageContainerUpdate(menu.containerId, message));
 	}
 }

@@ -23,32 +23,32 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class ToolboxContainer extends IEBaseContainer implements ICallbackContainer
+public class ToolboxMenu extends IEContainerMenu implements ICallbackContainer
 {
-	public static ToolboxContainer makeFromBE(
+	public static ToolboxMenu makeFromBE(
 			MenuType<?> type, int id, Inventory invPlayer, ToolboxBlockEntity be
 	)
 	{
-		return new ToolboxContainer(blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()));
+		return new ToolboxMenu(blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()));
 	}
 
-	public static ToolboxContainer makeFromItem(
+	public static ToolboxMenu makeFromItem(
 			MenuType<?> type, int id, Inventory invPlayer, EquipmentSlot slot, ItemStack stack
 	)
 	{
-		return new ToolboxContainer(
+		return new ToolboxMenu(
 				itemCtx(type, id, invPlayer, slot, stack),
 				invPlayer,
 				CapabilityUtils.getPresentCapability(stack, CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
 		);
 	}
 
-	public static ToolboxContainer makeClient(MenuType<?> type, int id, Inventory invPlayer)
+	public static ToolboxMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
 	{
-		return new ToolboxContainer(clientCtx(type, id), invPlayer, new ItemStackHandler(ToolboxItem.SLOT_COUNT));
+		return new ToolboxMenu(clientCtx(type, id), invPlayer, new ItemStackHandler(ToolboxItem.SLOT_COUNT));
 	}
 
-	public ToolboxContainer(ContainerContext ctx, Inventory inventoryPlayer, IItemHandler inv)
+	public ToolboxMenu(MenuContext ctx, Inventory inventoryPlayer, IItemHandler inv)
 	{
 		super(ctx);
 		ownSlotCount = 0;

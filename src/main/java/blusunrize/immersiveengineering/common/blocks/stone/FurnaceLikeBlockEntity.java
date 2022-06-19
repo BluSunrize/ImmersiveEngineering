@@ -41,7 +41,9 @@ import java.util.function.ToIntFunction;
 public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity<R, T>> extends MultiblockPartBlockEntity<T>
 		implements IIEInventory, IActiveState, IInteractionObjectIE<T>, IProcessBE, IBlockBounds
 {
-	protected final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+	public static final int NUM_SLOTS = 4;
+
+	protected final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 	private int process = 0;
 	private int processMax = 0;
 	private int burnTime = 0;
@@ -336,25 +338,26 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 		public static final int BURN_TIME = 1;
 		public static final int PROCESS_MAX = 2;
 		public static final int CURRENT_PROCESS = 3;
+		public static final int NUM_SLOTS = 4;
 
-		public int getLastBurnTime()
+		public static int getLastBurnTime(ContainerData data)
 		{
-			return get(LAST_BURN_TIME);
+			return data.get(LAST_BURN_TIME);
 		}
 
-		public int getBurnTime()
+		public static int getBurnTime(ContainerData data)
 		{
-			return get(BURN_TIME);
+			return data.get(BURN_TIME);
 		}
 
-		public int getMaxProcess()
+		public static int getMaxProcess(ContainerData data)
 		{
-			return get(PROCESS_MAX);
+			return data.get(PROCESS_MAX);
 		}
 
-		public int getProcess()
+		public static int getProcess(ContainerData data)
 		{
-			return get(CURRENT_PROCESS);
+			return data.get(CURRENT_PROCESS);
 		}
 
 		@Override
@@ -400,7 +403,7 @@ public abstract class FurnaceLikeBlockEntity<R, T extends FurnaceLikeBlockEntity
 		@Override
 		public int getCount()
 		{
-			return 4;
+			return NUM_SLOTS;
 		}
 	}
 

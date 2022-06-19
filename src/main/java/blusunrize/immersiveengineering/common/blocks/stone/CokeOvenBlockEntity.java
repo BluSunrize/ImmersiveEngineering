@@ -61,9 +61,11 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	public static final int OUTPUT_SLOT = 1;
 	public static final int EMPTY_CONTAINER_SLOT = 2;
 	public static final int FULL_CONTAINER_SLOT = 3;
+	public static final int NUM_SLOTS = 4;
+	public static final int TANK_CAPACITY = 12*FluidType.BUCKET_VOLUME;
 
-	public FluidTank tank = new FluidTank(12*FluidType.BUCKET_VOLUME);
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(4, ItemStack.EMPTY);
+	public FluidTank tank = new FluidTank(TANK_CAPACITY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 	private final Supplier<CokeOvenRecipe> cachedRecipe = CachedRecipe.cached(
 			CokeOvenRecipe::findRecipe, () -> level, () -> inventory.get(INPUT_SLOT)
 	);
@@ -297,6 +299,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	{
 		public static final int MAX_BURN_TIME = 0;
 		public static final int BURN_TIME = 1;
+		public static final int NUM_SLOTS = 2;
 
 		@Override
 		public int get(int index)
@@ -331,7 +334,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 		@Override
 		public int getCount()
 		{
-			return 2;
+			return NUM_SLOTS;
 		}
 	}
 }

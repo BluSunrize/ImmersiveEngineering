@@ -10,7 +10,7 @@
 package blusunrize.immersiveengineering.common.network;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
+import blusunrize.immersiveengineering.common.gui.IEContainerMenu;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import com.mojang.datafixers.util.Pair;
@@ -48,7 +48,7 @@ public class MessageContainerData implements IMessage
 	public void process(Supplier<Context> context)
 	{
 		AbstractContainerMenu currentContainer = ImmersiveEngineering.proxy.getClientPlayer().containerMenu;
-		if(!(currentContainer instanceof IEBaseContainer ieContainer))
+		if(!(currentContainer instanceof IEContainerMenu ieContainer))
 			return;
 		ieContainer.receiveSync(synced);
 	}

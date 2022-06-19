@@ -8,18 +8,18 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.common.gui.LogicUnitContainer;
+import blusunrize.immersiveengineering.common.gui.LogicUnitMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.DyeColor;
 
-public class LogicUnitScreen extends IEContainerScreen<LogicUnitContainer>
+public class LogicUnitScreen extends IEContainerScreen<LogicUnitMenu>
 {
 	private static final ResourceLocation TEXTURE = IEContainerScreen.makeTextureLocation("logic_unit");
 
-	public LogicUnitScreen(LogicUnitContainer container, Inventory inventoryPlayer, Component title)
+	public LogicUnitScreen(LogicUnitMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
 	}

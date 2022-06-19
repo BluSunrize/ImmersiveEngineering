@@ -54,10 +54,12 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	public static final BlockPos DUMMY_POS = new BlockPos(1, 0, 0);
 	public static final String[] SLOT_TYPES = new String[]{"backplane", "logic", "solder"};
 
-	private static final int ASSEMBLY_ENERGY = 5000;
+	public static final int ASSEMBLY_ENERGY = 5000;
+	public static final int ENERGY_CAPACITY = 32000;
+	public static final int NUM_SLOTS = SLOT_TYPES.length+1;
 
-	public final MutableEnergyStorage energyStorage = new MutableEnergyStorage(32000);
-	private final NonNullList<ItemStack> inventory = NonNullList.withSize(SLOT_TYPES.length+1, ItemStack.EMPTY);
+	public final MutableEnergyStorage energyStorage = new MutableEnergyStorage(ENERGY_CAPACITY);
+	private final NonNullList<ItemStack> inventory = NonNullList.withSize(NUM_SLOTS, ItemStack.EMPTY);
 
 	public CircuitTableBlockEntity(BlockPos pos, BlockState state)
 	{
@@ -97,31 +99,6 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 							(int)Math.ceil((instruction.getOperator().getComplexity()+instruction.getInputs().length+1)/2f);
 					default -> -1;
 				};
-	}
-
-	public boolean canAssemble(LogicCircuitInstruction instruction, boolean editInstruction)
-	{
-		if(energyStorage.getEnergyStored() < ASSEMBLY_ENERGY)
-			return false;
-		if(editInstruction)
-			return !this.inventory.get(getEditSlot()).isEmpty();
-		for(int i = 0; i < SLOT_TYPES.length; i++)
-		{
-			ItemStack input = this.inventory.get(i);
-			if(input.getCount() < getIngredientAmount(instruction, i))
-				return false;
-		}
-		return true;
-	}
-
-	public void consumeInputs(LogicCircuitInstruction instruction, boolean editInstruction)
-	{
-		energyStorage.extractEnergy(ASSEMBLY_ENERGY, false);
-		if(editInstruction)
-			this.inventory.get(getEditSlot()).shrink(1);
-		else
-			for(int i = 0; i < SLOT_TYPES.length; i++)
-				this.inventory.get(i).shrink(getIngredientAmount(instruction, i));
 	}
 
 	private AABB renderAABB;

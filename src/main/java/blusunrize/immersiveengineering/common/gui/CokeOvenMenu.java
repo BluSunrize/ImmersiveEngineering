@@ -1,0 +1,81 @@
+/*
+ * BluSunrize
+ * Copyright (c) 2017
+ *
+ * This code is licensed under "Blu's License of Common Sense"
+ * Details can be found in the license file in the root folder of this project
+ */
+
+package blusunrize.immersiveengineering.common.gui;
+
+import blusunrize.immersiveengineering.api.crafting.CokeOvenRecipe;
+import blusunrize.immersiveengineering.common.blocks.stone.CokeOvenBlockEntity;
+import blusunrize.immersiveengineering.common.blocks.stone.FurnaceLikeBlockEntity.StateView;
+import blusunrize.immersiveengineering.common.gui.IESlot.NewFluidContainer.Filter;
+import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ContainerData;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.SimpleContainerData;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.SlotItemHandler;
+
+public class CokeOvenMenu extends IEContainerMenu
+{
+	public final ContainerData data;
+	public final FluidTank tank;
+
+	public static CokeOvenMenu makeServer(
+			MenuType<?> type, int id, Inventory invPlayer, CokeOvenBlockEntity be
+	)
+	{
+		return new CokeOvenMenu(
+				blockCtx(type, id, be), invPlayer, new ItemStackHandler(be.getInventory()), be.guiData, be.tank
+		);
+	}
+
+	public static CokeOvenMenu makeClient(MenuType<?> type, int id, Inventory invPlayer)
+	{
+		return new CokeOvenMenu(
+				clientCtx(type, id),
+				invPlayer,
+				new ItemStackHandler(CokeOvenBlockEntity.NUM_SLOTS),
+				new SimpleContainerData(StateView.NUM_SLOTS),
+				new FluidTank(CokeOvenBlockEntity.TANK_CAPACITY)
+		);
+	}
+
+	private CokeOvenMenu(
+			MenuContext ctx, Inventory inventoryPlayer, IItemHandler inv, ContainerData data, FluidTank tank
+	)
+	{
+		super(ctx);
+
+		this.addSlot(new SlotItemHandler(inv, 0, 30, 35)
+		{
+			@Override
+			public boolean mayPlace(ItemStack itemStack)
+			{
+				return CokeOvenRecipe.findRecipe(inventoryPlayer.player.level, itemStack)!=null;
+			}
+		});
+		this.addSlot(new IESlot.NewOutput(inv, 1, 85, 35));
+		this.addSlot(new IESlot.NewFluidContainer(inv, 2, 152, 17, Filter.ANY));
+		this.addSlot(new IESlot.NewOutput(inv, 3, 152, 53));
+		ownSlotCount = 4;
+
+		for(int i = 0; i < 3; i++)
+			for(int j = 0; j < 9; j++)
+				addSlot(new Slot(inventoryPlayer, j+i*9+9, 8+j*18, 84+i*18));
+		for(int i = 0; i < 9; i++)
+			addSlot(new Slot(inventoryPlayer, i, 8+i*18, 142));
+		this.data = data;
+		this.tank = tank;
+		addDataSlots(data);
+		addGenericData(GenericContainerData.fluid(tank));
+	}
+}

@@ -11,8 +11,7 @@ package blusunrize.immersiveengineering.client.gui;
 import blusunrize.immersiveengineering.client.gui.info.EnergyInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.gui.info.InfoArea;
-import blusunrize.immersiveengineering.common.blocks.metal.FermenterBlockEntity;
-import blusunrize.immersiveengineering.common.gui.FermenterContainer;
+import blusunrize.immersiveengineering.common.gui.FermenterMenu;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.chat.Component;
@@ -22,16 +21,13 @@ import net.minecraft.world.entity.player.Inventory;
 import javax.annotation.Nonnull;
 import java.util.List;
 
-public class FermenterScreen extends IEContainerScreen<FermenterContainer>
+public class FermenterScreen extends IEContainerScreen<FermenterMenu>
 {
 	private static final ResourceLocation TEXTURE = makeTextureLocation("fermenter");
 
-	private final FermenterBlockEntity tile;
-
-	public FermenterScreen(FermenterContainer container, Inventory inventoryPlayer, Component title)
+	public FermenterScreen(FermenterMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, TEXTURE);
-		this.tile = container.tile;
 	}
 
 	@Nonnull
@@ -39,8 +35,8 @@ public class FermenterScreen extends IEContainerScreen<FermenterContainer>
 	protected List<InfoArea> makeInfoAreas()
 	{
 		return ImmutableList.of(
-				new FluidInfoArea(tile.tanks[0], new Rect2i(leftPos+112, topPos+21, 16, 47), 177, 31, 20, 51, TEXTURE),
-				new EnergyInfoArea(leftPos+158, topPos+22, tile.energyStorage)
+				new FluidInfoArea(menu.tank, new Rect2i(leftPos+112, topPos+21, 16, 47), 177, 31, 20, 51, TEXTURE),
+				new EnergyInfoArea(leftPos+158, topPos+22, menu.energyStorage)
 		);
 	}
 }

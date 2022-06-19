@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.gui;
 
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.gui.ToolboxContainer;
+import blusunrize.immersiveengineering.common.gui.ToolboxMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,9 +17,9 @@ import net.minecraft.world.inventory.Slot;
 
 import java.util.function.Consumer;
 
-public class ToolboxScreen extends IEContainerScreen<ToolboxContainer>
+public class ToolboxScreen extends IEContainerScreen<ToolboxMenu>
 {
-	public ToolboxScreen(ToolboxContainer container, Inventory inventoryPlayer, Component title)
+	public ToolboxScreen(ToolboxMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("toolbox"));
 		this.imageHeight = 238;

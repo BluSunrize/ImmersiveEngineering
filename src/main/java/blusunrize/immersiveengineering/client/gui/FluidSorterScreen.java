@@ -8,15 +8,13 @@
 
 package blusunrize.immersiveengineering.client.gui;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.gui.SorterScreen.ButtonSorter;
 import blusunrize.immersiveengineering.client.gui.info.FluidInfoArea;
 import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
-import blusunrize.immersiveengineering.common.blocks.wooden.FluidSorterBlockEntity;
-import blusunrize.immersiveengineering.common.gui.FluidSorterContainer;
-import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
+import blusunrize.immersiveengineering.common.gui.FluidSorterMenu;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -36,16 +34,17 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
-public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
+public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 {
-	public final FluidSorterBlockEntity tile;
+	private final List<ButtonSorter> sorterButtons = new ArrayList<>(6);
 
-	public FluidSorterScreen(FluidSorterContainer container, Inventory inventoryPlayer, Component title)
+	public FluidSorterScreen(FluidSorterMenu container, Inventory inventoryPlayer, Component title)
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("sorter"));
-		this.tile = container.tile;
 		this.imageHeight = 244;
 	}
 
@@ -55,9 +54,9 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		super.gatherAdditionalTooltips(mouseX, mouseY, addLine, addGray);
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < 8; i++)
-				if(tile.filters[side][i]!=null&&!tile.filters[side][i].isEmpty())
+				if(!menu.getFilter(side, i).isEmpty())
 					if(getSlotArea(side, i).contains(mouseX, mouseY))
-						FluidInfoArea.fillTooltip(tile.filters[side][i], -1, addLine);
+						FluidInfoArea.fillTooltip(menu.getFilter(side, i), -1, addLine);
 	}
 
 	@Override
@@ -93,7 +92,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		for(int side = 0; side < 6; side++)
 			for(int i = 0; i < 8; i++)
 			{
-				FluidStack filter = tile.filters[side][i];
+				FluidStack filter = menu.getFilter(side, i);
 				if(!filter.isEmpty())
 				{
 					IFluidTypeRenderProperties props = RenderProperties.get(filter.getFluid());
@@ -122,6 +121,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 	{
 		super.init();
 		this.clearWidgets();
+		this.sorterButtons.clear();
 		for(int side = 0; side < 6; side++)
 		{
 			int x = leftPos+21+(side/2)*58;
@@ -129,16 +129,23 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 			final int sideFinal = side;
 			ButtonSorter b = new ButtonSorter(x, y, 1, btn ->
 			{
-				tile.sortWithNBT[sideFinal] = (byte)(tile.sortWithNBT[sideFinal]==1?0: 1);
-
 				CompoundTag tag = new CompoundTag();
-				tag.putByteArray("sideConfig", tile.sortWithNBT);
-				ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
+				tag.putInt("useNBT", 1-menu.sortWithNBT.get()[sideFinal]);
+				tag.putInt("side", sideFinal);
+				sendUpdateToServer(tag);
 				fullInit();
 			});
-			b.active = this.tile.doNBT(side);
+			this.sorterButtons.add(b);
 			this.addRenderableWidget(b);
 		}
+	}
+
+	@Override
+	protected void drawBackgroundTexture(PoseStack transform)
+	{
+		for(int i = 0; i < DirectionUtils.VALUES.length; ++i)
+			sorterButtons.get(i).active = menu.sortWithNBT.get()[i] > 0;
+		super.drawBackgroundTexture(transform);
 	}
 
 	public void setFluidInSlot(int side, int slot, FluidStack fluid)
@@ -148,8 +155,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		tag.putInt("filter_slot", slot);
 		if(fluid!=null)
 			tag.put("filter", fluid.writeToNBT(new CompoundTag()));
-		tile.filters[side][slot] = fluid;
-		ImmersiveEngineering.packetHandler.sendToServer(new MessageBlockEntitySync(tile, tag));
+		sendUpdateToServer(tag);
 	}
 
 	protected Rect2i getSlotArea(int side, int i)

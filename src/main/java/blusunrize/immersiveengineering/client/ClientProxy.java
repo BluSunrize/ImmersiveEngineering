@@ -414,27 +414,28 @@ public class ClientProxy extends CommonProxy
 
 	private static void registerContainersAndScreens()
 	{
-		registerTileScreen(IEContainerTypes.COKE_OVEN, CokeOvenScreen::new);
-		registerTileScreen(IEContainerTypes.ALLOY_SMELTER, AlloySmelterScreen::new);
-		registerTileScreen(IEContainerTypes.BLAST_FURNACE, BlastFurnaceScreen::new);
-		registerTileScreen(IEContainerTypes.CRAFTING_TABLE, CraftingTableScreen::new);
+		MenuScreens.register(IEContainerTypes.COKE_OVEN.getType(), CokeOvenScreen::new);
+		MenuScreens.register(IEContainerTypes.ALLOY_SMELTER.getType(), AlloySmelterScreen::new);
+		MenuScreens.register(IEContainerTypes.BLAST_FURNACE.getType(), BlastFurnaceScreen::new);
+		MenuScreens.register(IEContainerTypes.BLAST_FURNACE_ADV.getType(), BlastFurnaceScreen.Advanced::new);
+		MenuScreens.register(IEContainerTypes.CRAFTING_TABLE.getType(), CraftingTableScreen::new);
 		MenuScreens.register(IEContainerTypes.WOODEN_CRATE.get(), CrateScreen.StandardCrate::new);
 		registerTileScreen(IEContainerTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);
-		registerTileScreen(IEContainerTypes.CIRCUIT_TABLE, CircuitTableScreen::new);
-		registerTileScreen(IEContainerTypes.ASSEMBLER, AssemblerScreen::new);
+		MenuScreens.register(IEContainerTypes.CIRCUIT_TABLE.getType(), CircuitTableScreen::new);
+		MenuScreens.register(IEContainerTypes.ASSEMBLER.getType(), AssemblerScreen::new);
 		registerTileScreen(IEContainerTypes.SORTER, SorterScreen::new);
 		registerTileScreen(IEContainerTypes.ITEM_BATCHER, ItemBatcherScreen::new);
-		registerTileScreen(IEContainerTypes.LOGIC_UNIT, LogicUnitScreen::new);
+		MenuScreens.register(IEContainerTypes.LOGIC_UNIT.getType(), LogicUnitScreen::new);
 		registerTileScreen(IEContainerTypes.SQUEEZER, SqueezerScreen::new);
-		registerTileScreen(IEContainerTypes.FERMENTER, FermenterScreen::new);
+		MenuScreens.register(IEContainerTypes.FERMENTER.getType(), FermenterScreen::new);
 		registerTileScreen(IEContainerTypes.REFINERY, RefineryScreen::new);
-		registerTileScreen(IEContainerTypes.ARC_FURNACE, ArcFurnaceScreen::new);
-		registerTileScreen(IEContainerTypes.AUTO_WORKBENCH, AutoWorkbenchScreen::new);
+		MenuScreens.register(IEContainerTypes.ARC_FURNACE.getType(), ArcFurnaceScreen::new);
+		MenuScreens.register(IEContainerTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
 		registerTileScreen(IEContainerTypes.MIXER, MixerScreen::new);
 		registerTileScreen(IEContainerTypes.GUN_TURRET, GunTurretScreen::new);
 		registerTileScreen(IEContainerTypes.CHEM_TURRET, ChemTurretScreen::new);
-		registerTileScreen(IEContainerTypes.FLUID_SORTER, FluidSorterScreen::new);
-		registerTileScreen(IEContainerTypes.CLOCHE, ClocheScreen::new);
+		MenuScreens.register(IEContainerTypes.FLUID_SORTER.getType(), FluidSorterScreen::new);
+		MenuScreens.register(IEContainerTypes.CLOCHE.getType(), ClocheScreen::new);
 		MenuScreens.register(IEContainerTypes.TOOLBOX_BLOCK.getType(), ToolboxScreen::new);
 		MenuScreens.register(IEContainerTypes.TOOLBOX.getType(), ToolboxScreen::new);
 

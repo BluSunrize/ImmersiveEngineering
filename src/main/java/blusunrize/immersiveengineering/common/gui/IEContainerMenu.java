@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.function.Predicate;
 
 @EventBusSubscriber(modid = Lib.MODID, bus = Bus.FORGE)
-public abstract class IEBaseContainer extends AbstractContainerMenu
+public abstract class IEContainerMenu extends AbstractContainerMenu
 {
 	private final List<GenericContainerData<?>> genericData = new ArrayList<>();
 	private final List<ServerPlayer> usingPlayers = new ArrayList<>();
@@ -41,7 +41,7 @@ public abstract class IEBaseContainer extends AbstractContainerMenu
 	private final Predicate<Player> isValid;
 	public int ownSlotCount;
 
-	protected IEBaseContainer(ContainerContext ctx)
+	protected IEContainerMenu(MenuContext ctx)
 	{
 		super(ctx.type, ctx.id);
 		this.setChanged = ctx.setChanged;
@@ -193,7 +193,7 @@ public abstract class IEBaseContainer extends AbstractContainerMenu
 	@SubscribeEvent
 	public static void onContainerOpened(PlayerContainerEvent.Open ev)
 	{
-		if(ev.getContainer() instanceof IEBaseContainer ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
+		if(ev.getContainer() instanceof IEContainerMenu ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
 		{
 			ieContainer.usingPlayers.add(serverPlayer);
 			List<Pair<Integer, DataPair<?>>> list = new ArrayList<>();
@@ -208,13 +208,13 @@ public abstract class IEBaseContainer extends AbstractContainerMenu
 	@SubscribeEvent
 	public static void onContainerClosed(PlayerContainerEvent.Close ev)
 	{
-		if(ev.getContainer() instanceof IEBaseContainer ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
+		if(ev.getContainer() instanceof IEContainerMenu ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
 			ieContainer.usingPlayers.remove(serverPlayer);
 	}
 
-	public static ContainerContext blockCtx(@Nullable MenuType<?> pMenuType, int pContainerId, BlockEntity be)
+	public static MenuContext blockCtx(@Nullable MenuType<?> pMenuType, int pContainerId, BlockEntity be)
 	{
-		return new ContainerContext(pMenuType, pContainerId, be::setChanged, p -> {
+		return new MenuContext(pMenuType, pContainerId, be::setChanged, p -> {
 			BlockPos pos = be.getBlockPos();
 			Level level = be.getLevel();
 			if(level==null||level.getBlockEntity(pos)!=be)
@@ -224,11 +224,11 @@ public abstract class IEBaseContainer extends AbstractContainerMenu
 		});
 	}
 
-	public static ContainerContext itemCtx(
+	public static MenuContext itemCtx(
 			@Nullable MenuType<?> pMenuType, int pContainerId, Inventory playerInv, EquipmentSlot slot, ItemStack stack
 	)
 	{
-		return new ContainerContext(pMenuType, pContainerId, () -> {
+		return new MenuContext(pMenuType, pContainerId, () -> {
 		}, p -> {
 			if(p!=playerInv.player)
 				return false;
@@ -236,13 +236,13 @@ public abstract class IEBaseContainer extends AbstractContainerMenu
 		});
 	}
 
-	public static ContainerContext clientCtx(@Nullable MenuType<?> pMenuType, int pContainerId)
+	public static MenuContext clientCtx(@Nullable MenuType<?> pMenuType, int pContainerId)
 	{
-		return new ContainerContext(pMenuType, pContainerId, () -> {
+		return new MenuContext(pMenuType, pContainerId, () -> {
 		}, $ -> true);
 	}
 
-	protected record ContainerContext(
+	protected record MenuContext(
 			MenuType<?> type, int id, Runnable setChanged, Predicate<Player> isValid
 	)
 	{
