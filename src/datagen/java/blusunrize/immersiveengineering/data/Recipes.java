@@ -397,6 +397,11 @@ public class Recipes extends RecipeProvider
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.build(out, toRL("blueprint/component_steel"));
+		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.LIGHT_BULB, 3))
+				.addInput(Tags.Items.GLASS)
+				.addInput(Ingredient.of(Items.PAPER, Items.BAMBOO))
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).nugget, 3))
+				.build(out, toRL("blueprint/light_bulb"));
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.ELECTRON_TUBE, 3))
 				.addInput(Tags.Items.GLASS)
 				.addInput(IETags.getTagsFor(EnumMetals.NICKEL).plate)
@@ -1849,10 +1854,10 @@ public class Recipes extends RecipeProvider
 				.pattern("pep")
 				.pattern("iri")
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('e', Ingredients.ELECTRON_TUBE)
+				.define('e', Ingredients.LIGHT_BULB)
 				.define('p', Tags.Items.GLASS_PANES)
 				.define('r', Tags.Items.DUSTS_REDSTONE)
-				.unlockedBy("has_"+toPath(Ingredients.ELECTRON_TUBE), has(Ingredients.ELECTRON_TUBE))
+				.unlockedBy("has_"+toPath(Ingredients.LIGHT_BULB), has(Ingredients.LIGHT_BULB))
 				.save(out, toRL(toPath(MetalDevices.ELECTRIC_LANTERN)));
 		ShapedRecipeBuilder.shaped(MetalDevices.CHARGING_STATION)
 				.pattern("ici")
@@ -1898,10 +1903,10 @@ public class Recipes extends RecipeProvider
 				.pattern("ici")
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('l', MetalDecoration.LV_COIL)
-				.define('e', Ingredients.ELECTRON_TUBE)
+				.define('e', Ingredients.LIGHT_BULB)
 				.define('c', Ingredients.COMPONENT_IRON)
 				.define('p', Tags.Items.GLASS_PANES)
-				.unlockedBy("has_"+toPath(Ingredients.ELECTRON_TUBE), has(Ingredients.ELECTRON_TUBE))
+				.unlockedBy("has_"+toPath(Ingredients.LIGHT_BULB), has(Ingredients.LIGHT_BULB))
 				.save(out, toRL(toPath(MetalDevices.FLOODLIGHT)));
 		ShapedRecipeBuilder.shaped(MetalDevices.TURRET_CHEM)
 				.pattern(" s ")
@@ -1933,9 +1938,9 @@ public class Recipes extends RecipeProvider
 				.pattern("wcw")
 				.define('g', Tags.Items.GLASS)
 				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('e', Ingredients.ELECTRON_TUBE)
+				.define('e', Ingredients.LIGHT_BULB)
 				.define('c', Ingredients.COMPONENT_IRON)
-				.unlockedBy("has_"+toPath(Ingredients.ELECTRON_TUBE), has(Ingredients.ELECTRON_TUBE))
+				.unlockedBy("has_"+toPath(Ingredients.LIGHT_BULB), has(Ingredients.LIGHT_BULB))
 				.save(out, toRL(toPath(MetalDevices.CLOCHE)));
 		ShapedRecipeBuilder.shaped(MetalDevices.FLUID_PLACER)
 				.pattern("ibi")
@@ -2571,7 +2576,7 @@ public class Recipes extends RecipeProvider
 				.pattern("pep")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
 				.define('p', Tags.Items.GLASS_PANES)
-				.define('e', Ingredients.ELECTRON_TUBE)
+				.define('e', Ingredients.LIGHT_BULB)
 				.unlockedBy("has_shield", has(Misc.SHIELD))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.SHIELD_FLASH))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.SHIELD_SHOCK))
