@@ -16,7 +16,7 @@
       "tag": "forge:treated_wood"
     },
     "p": {
-      "item": "immersiveengineering:circuit_board"
+      "item": "immersiveengineering:component_electronic"
     },
     "c": {
       "item": "immersiveengineering:component_iron"

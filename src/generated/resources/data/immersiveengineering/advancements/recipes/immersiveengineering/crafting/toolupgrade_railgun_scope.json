@@ -18,6 +18,18 @@
         ]
       }
     },
+    "has_revolver": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:revolver"
+            ]
+          }
+        ]
+      }
+    },
     "has_the_recipe": {
       "trigger": "minecraft:recipe_unlocked",
       "conditions": {
@@ -28,6 +40,7 @@
   "requirements": [
     [
       "has_railgun",
+      "has_revolver",
       "has_the_recipe"
     ]
   ]

@@ -1442,7 +1442,7 @@ public class Recipes extends RecipeProvider
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('r', Tags.Items.DUSTS_REDSTONE)
 				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('p', Ingredients.CIRCUIT_BOARD)
+				.define('p', Ingredients.COMPONENT_ELECTRONIC)
 				.define('c', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_"+toPath(ConveyorHandler.getBlock(BasicConveyor.TYPE)), has(ConveyorHandler.getBlock(BasicConveyor.TYPE)))
 				.save(out, toRL(toPath(WoodenDevices.ITEM_BATCHER)));
@@ -1925,7 +1925,7 @@ public class Recipes extends RecipeProvider
 				.pattern("bte")
 				.define('s', Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_SCOPE))
 				.define('g', Weapons.CHEMTHROWER)
-				.define('c', Ingredients.CIRCUIT_BOARD)
+				.define('c', Ingredients.COMPONENT_ELECTRONIC_ADV)
 				.define('b', MetalDevices.BARREL)
 				.define('t', WoodenDevices.TURNTABLE)
 				.define('e', MetalDecoration.ENGINEERING_RS)
@@ -1937,7 +1937,7 @@ public class Recipes extends RecipeProvider
 				.pattern("bte")
 				.define('s', Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_SCOPE))
 				.define('g', Weapons.REVOLVER)
-				.define('c', Ingredients.CIRCUIT_BOARD)
+				.define('c', Ingredients.COMPONENT_ELECTRONIC_ADV)
 				.define('b', Misc.TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_MAGAZINE))
 				.define('t', WoodenDevices.TURNTABLE)
 				.define('e', MetalDecoration.ENGINEERING_RS)
@@ -2046,7 +2046,7 @@ public class Recipes extends RecipeProvider
 				.pattern(" q ")
 				.define('c', Connectors.CONNECTOR_REDSTONE)
 				.define('g', Tags.Items.GLASS_PANES)
-				.define('p', Ingredients.CIRCUIT_BOARD)
+				.define('p', Ingredients.COMPONENT_ELECTRONIC)
 				.define('q', Tags.Items.GEMS_QUARTZ)
 				.unlockedBy("has_connector", has(Connectors.CONNECTOR_REDSTONE))
 				.save(out, toRL(toPath(Connectors.CONNECTOR_PROBE)));
@@ -2572,6 +2572,7 @@ public class Recipes extends RecipeProvider
 				.define('p', Tags.Items.GLASS_PANES)
 				.define('s', Items.SPYGLASS)
 				.unlockedBy("has_railgun", has(Weapons.RAILGUN))
+				.unlockedBy("has_revolver", has(Weapons.REVOLVER))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_SCOPE))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_CAPACITORS))
 				.pattern("p  ")
@@ -2813,7 +2814,7 @@ public class Recipes extends RecipeProvider
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.define('v', MetalDevices.CAPACITOR_HV)
 				.define('c', MetalDecoration.MV_COIL)
-				.define('p', Ingredients.CIRCUIT_BOARD)
+				.define('p', Ingredients.COMPONENT_ELECTRONIC_ADV)
 				.unlockedBy("has_"+toPath(MetalDevices.CAPACITOR_HV), has(MetalDevices.CAPACITOR_HV))
 				.save(out, toRL(toPath(Weapons.RAILGUN)));
 		ShapedRecipeBuilder.shaped(Misc.SKYHOOK)
