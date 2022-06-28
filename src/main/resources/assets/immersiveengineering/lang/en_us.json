@@ -1007,6 +1007,8 @@
   "item.immersiveengineering.slag": "Slag",
   "item.immersiveengineering.component_iron": "Iron Mechanical Component",
   "item.immersiveengineering.component_steel": "Steel Mechanical Component",
+  "item.immersiveengineering.component_electronic": "Electronic Component",
+  "item.immersiveengineering.component_electronic_adv": "Advanced Electronic Component",
   "item.immersiveengineering.waterwheel_segment": "Waterwheel Segment",
   "item.immersiveengineering.windmill_blade": "Windmill Blade",
   "item.immersiveengineering.windmill_sail": "Windmill Sail",

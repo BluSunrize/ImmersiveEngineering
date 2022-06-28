@@ -75,6 +75,8 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> SLAG = simple("slag");
 		public static final ItemRegObject<IEBaseItem> COMPONENT_IRON = simple("component_iron");
 		public static final ItemRegObject<IEBaseItem> COMPONENT_STEEL = simple("component_steel");
+		public static final ItemRegObject<IEBaseItem> COMPONENT_ELECTRONIC = simple("component_electronic");
+		public static final ItemRegObject<IEBaseItem> COMPONENT_ELECTRONIC_ADV = simple("component_electronic_adv");
 		public static final ItemRegObject<IEBaseItem> WATERWHEEL_SEGMENT = simple("waterwheel_segment");
 		public static final ItemRegObject<IEBaseItem> WINDMILL_BLADE = simple("windmill_blade");
 		public static final ItemRegObject<IEBaseItem> WINDMILL_SAIL = simple("windmill_sail");

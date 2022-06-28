@@ -397,6 +397,17 @@ public class Recipes extends RecipeProvider
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.STEEL).plate, 2))
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.build(out, toRL("blueprint/component_steel"));
+		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.COMPONENT_ELECTRONIC))
+				.addInput(IETags.getItemTag(IETags.treatedWood))
+				.addInput(Tags.Items.GEMS_QUARTZ)
+				.addInput(Tags.Items.DUSTS_REDSTONE)
+				.addInput(IETags.electrumWire)
+				.build(out, toRL("blueprint/component_electronic"));
+		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.COMPONENT_ELECTRONIC_ADV))
+				.addInput(IETags.plasticPlate)
+				.addInput(new IngredientWithSize(Ingredient.of(Ingredients.ELECTRON_TUBE), 2))
+				.addInput(IETags.aluminumWire)
+				.build(out, toRL("blueprint/component_electronic_adv"));
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.LIGHT_BULB, 3))
 				.addInput(Tags.Items.GLASS)
 				.addInput(Ingredient.of(Items.PAPER, Items.BAMBOO))

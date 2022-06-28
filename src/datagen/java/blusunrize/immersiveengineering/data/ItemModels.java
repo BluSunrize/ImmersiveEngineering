@@ -222,7 +222,7 @@ public class ItemModels extends TRSRItemModelProvider
 				Ingredients.WIRE_COPPER, Ingredients.WIRE_ELECTRUM, Ingredients.WIRE_ALUMINUM, Ingredients.WIRE_STEEL, Ingredients.WIRE_LEAD,
 				Ingredients.DUST_SALTPETER, Ingredients.DUST_SULFUR, Ingredients.DUST_WOOD,
 				Ingredients.LIGHT_BULB, Ingredients.ELECTRON_TUBE, Ingredients.CIRCUIT_BOARD,
-				Ingredients.DUROPLAST_PLATE
+				Ingredients.DUROPLAST_PLATE, Ingredients.COMPONENT_ELECTRONIC, Ingredients.COMPONENT_ELECTRONIC_ADV
 		);
 
 		addItemModels(
