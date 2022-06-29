@@ -1383,6 +1383,15 @@ public class Recipes extends RecipeProvider
 				.define('s', IETags.sawdust)
 				.unlockedBy("has_sawdust", has(IETags.sawdust))
 				.save(out, toRL(toPath(WoodenDecoration.SAWDUST)));
+
+		FluidAwareShapedRecipeBuilder.builder(WoodenDecoration.FIBERBOARD, 8)
+				.pattern("www")
+				.pattern("wbw")
+				.pattern("www")
+				.define('w', IETags.sawdust)
+				.define('b', new IngredientFluidStack(IETags.fluidResin, FluidAttributes.BUCKET_VOLUME))
+				.unlockedBy("has_resin", has(IEFluids.PHENOLIC_RESIN.getBucket()))
+				.save(out, toRL(toPath(WoodenDecoration.FIBERBOARD)));
 	}
 
 	private void recipesWoodenDevices(@Nonnull Consumer<FinishedRecipe> out)

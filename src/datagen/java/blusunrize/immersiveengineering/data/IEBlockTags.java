@@ -30,6 +30,7 @@ import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.BlockTagsProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.Tag;
 import net.minecraft.tags.Tag.Builder;
 import net.minecraft.tags.Tag.BuilderEntry;
@@ -67,6 +68,7 @@ class IEBlockTags extends BlockTagsProvider
 				.add(WoodenDecoration.TREATED_FENCE.get());
 		tag(BlockTags.WOODEN_FENCES)
 				.add(WoodenDecoration.TREATED_FENCE.get());
+		tag(BlockTags.PLANKS).add(WoodenDecoration.FIBERBOARD.get());
 		tag(IETags.fencesSteel)
 				.add(MetalDecoration.STEEL_FENCE.get());
 		tag(IETags.fencesAlu)

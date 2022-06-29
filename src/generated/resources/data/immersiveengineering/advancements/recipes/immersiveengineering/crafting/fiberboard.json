@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "immersiveengineering:crafting/fiberboard"
+    ]
+  },
+  "criteria": {
+    "has_resin": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:phenolic_resin_bucket"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "immersiveengineering:crafting/fiberboard"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_resin",
+      "has_the_recipe"
+    ]
+  ]
+}

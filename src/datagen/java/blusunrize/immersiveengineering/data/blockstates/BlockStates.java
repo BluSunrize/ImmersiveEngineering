@@ -160,6 +160,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 
 		for(TreatedWoodStyles style : TreatedWoodStyles.values())
 			cubeAll(WoodenDecoration.TREATED_WOOD.get(style), rl("block/wooden_decoration/treated_wood_"+style.name().toLowerCase(Locale.ENGLISH)));
+		cubeAll(WoodenDecoration.FIBERBOARD, rl("block/wooden_decoration/fiberboard"));
 		cubeSideVertical(MetalDecoration.LV_COIL, rl("block/metal_decoration/coil_lv_side"), rl("block/metal_decoration/coil_lv_top"));
 		cubeSideVertical(MetalDecoration.MV_COIL, rl("block/metal_decoration/coil_mv_side"), rl("block/metal_decoration/coil_mv_top"));
 		cubeSideVertical(MetalDecoration.HV_COIL, rl("block/metal_decoration/coil_hv_side"), rl("block/metal_decoration/coil_hv_top"));
