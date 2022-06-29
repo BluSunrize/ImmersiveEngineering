@@ -1,15 +1,12 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ipi",
+    " p ",
     "pep"
   ],
   "key": {
-    "i": {
-      "tag": "forge:plates/aluminum"
-    },
     "p": {
-      "tag": "forge:glass_panes"
+      "tag": "forge:plates/silver"
     },
     "e": {
       "item": "immersiveengineering:light_bulb"

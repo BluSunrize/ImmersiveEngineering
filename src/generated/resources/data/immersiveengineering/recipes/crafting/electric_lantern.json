@@ -3,7 +3,7 @@
   "pattern": [
     " i ",
     "pep",
-    "iri"
+    " w "
   ],
   "key": {
     "i": {
@@ -15,8 +15,8 @@
     "p": {
       "tag": "forge:glass_panes"
     },
-    "r": {
-      "tag": "forge:dusts/redstone"
+    "w": {
+      "tag": "forge:wires/copper"
     }
   },
   "result": {

@@ -2,8 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " c ",
-    "gpg",
-    " q "
+    "gpg"
   ],
   "key": {
     "c": {
@@ -14,9 +13,6 @@
     },
     "p": {
       "item": "immersiveengineering:component_electronic"
-    },
-    "q": {
-      "tag": "forge:gems/quartz"
     }
   },
   "result": {

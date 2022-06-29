@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "iii",
-    "pel",
-    "ici"
+    "sii",
+    "pes",
+    "sci"
   ],
   "key": {
     "i": {
       "tag": "forge:ingots/iron"
     },
-    "l": {
-      "item": "immersiveengineering:coil_lv"
+    "s": {
+      "tag": "forge:plates/silver"
     },
     "e": {
       "item": "immersiveengineering:light_bulb"

@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ici",
-    "ggg",
+    "gig",
+    "ttt",
     "wlw"
   ],
   "key": {
     "i": {
-      "tag": "forge:ingots/iron"
+      "tag": "forge:plates/iron"
     },
-    "c": {
-      "item": "immersiveengineering:connector_lv"
+    "t": {
+      "item": "immersiveengineering:electron_tube"
     },
     "w": {
       "tag": "forge:treated_wood"
