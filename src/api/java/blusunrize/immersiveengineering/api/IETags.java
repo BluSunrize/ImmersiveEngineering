@@ -105,6 +105,7 @@ public class IETags
 	public static final TagKey<Item> shovels = createItemWrapper(forgeLoc("tools/shovels"));
 	public static final TagKey<Item> axes = createItemWrapper(forgeLoc("tools/axes"));
 	public static final TagKey<Item> hoes = createItemWrapper(forgeLoc("tools/hoes"));
+	public static final TagKey<Item> powerpackForbidAttach = createItemWrapper(rl("powerpack/forbid_attach"));
 
 	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(forgeLoc("recycling/ignored_components"));
 	public static final TagKey<Item> recyclingWhitelist = createItemWrapper(forgeLoc("recycling/whitelist"));

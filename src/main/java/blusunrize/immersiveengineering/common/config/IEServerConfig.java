@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -31,7 +30,6 @@ import net.minecraftforge.fml.config.ModConfig.Type;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.IntSupplier;
@@ -579,19 +577,6 @@ public class IEServerConfig
 				railgun_damage = addNonNegative(builder, "damage_modifier", 1, "A modifier for the damage of all projectiles fired by the Railgun");
 				builder.pop();
 			}
-			{
-				builder.push("powerpack");
-				powerpack_whitelist = builder
-						.comment("A whitelist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]")
-						.defineList("whitelist", ImmutableList.of(), obj -> true);
-				//TODO update list for 1.16.3
-				powerpack_blacklist = builder
-						.comment("A blacklist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]. Whitelist has priority over this")
-						.defineList("blacklist", ImmutableList.of(
-								"embers:ashen_cloak_chest", "ic2:batpack", "ic2:cf_pack", "ic2:energy_pack", "ic2:jetpack", "ic2:jetpack_electric", "ic2:lappack"
-						), obj -> true);
-				builder.pop();
-			}
 			builder.pop();
 		}
 
@@ -619,8 +604,6 @@ public class IEServerConfig
 		public final BooleanValue chemthrower_scroll;
 		public final IntValue railgun_consumption;
 		public final DoubleValue railgun_damage;
-		public final ConfigValue<List<? extends String>> powerpack_whitelist;
-		public final ConfigValue<List<? extends String>> powerpack_blacklist;
 
 	}
 
