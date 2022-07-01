@@ -76,6 +76,7 @@ import net.minecraftforge.network.PacketDistributor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -293,6 +294,8 @@ public class ClocheBlockEntity extends IEBaseBlockEntity implements IEServerTick
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		dummy = nbt.getInt("dummy");
+		// loadAllItems skips empty items, so if a slot was emptied it won't be properly synced without the fill call
+		Collections.fill(inventory, ItemStack.EMPTY);
 		ContainerHelper.loadAllItems(nbt, inventory);
 		if(!descPacket)
 		{

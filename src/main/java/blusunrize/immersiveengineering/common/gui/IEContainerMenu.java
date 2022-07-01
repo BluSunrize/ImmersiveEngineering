@@ -2,6 +2,7 @@ package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers.DataPair;
 import blusunrize.immersiveengineering.common.network.MessageContainerData;
@@ -214,7 +215,11 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 
 	public static MenuContext blockCtx(@Nullable MenuType<?> pMenuType, int pContainerId, BlockEntity be)
 	{
-		return new MenuContext(pMenuType, pContainerId, be::setChanged, p -> {
+		return new MenuContext(pMenuType, pContainerId, () -> {
+			be.setChanged();
+			if(be instanceof IEBaseBlockEntity ieBE)
+				ieBE.markContainingBlockForUpdate(null);
+		}, p -> {
 			BlockPos pos = be.getBlockPos();
 			Level level = be.getLevel();
 			if(level==null||level.getBlockEntity(pos)!=be)
