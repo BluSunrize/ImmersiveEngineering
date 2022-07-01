@@ -90,8 +90,17 @@ public class ClocheRecipe extends IESerializableRecipe
 		return null;
 	}
 
-	public boolean matches(ItemStack seed, ItemStack soil) {
+	public boolean matches(ItemStack seed, ItemStack soil)
+	{
 		return this.seed.test(seed)&&this.soil.test(soil);
+	}
+
+	public static boolean isValidCombinationInMenu(ItemStack seed, ItemStack soil, Level level)
+	{
+		for(ClocheRecipe recipe : RECIPES.getRecipes(level))
+			if((seed.isEmpty()||recipe.seed.test(seed))&&(soil.isEmpty()||recipe.soil.test(soil)))
+				return true;
+		return false;
 	}
 
 	/* ========== SOIL TEXTURE ========== */

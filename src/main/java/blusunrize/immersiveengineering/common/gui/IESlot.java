@@ -9,10 +9,7 @@
 package blusunrize.immersiveengineering.common.gui;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.api.crafting.ArcFurnaceRecipe;
-import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
-import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.api.crafting.ClocheFertilizer;
+import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.IShaderItem;
 import blusunrize.immersiveengineering.api.tool.IConfigurableTool;
@@ -46,7 +43,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity.SLOT_FERTILIZER;
+import static blusunrize.immersiveengineering.common.blocks.metal.ClocheBlockEntity.*;
 
 // TODO test various onTake implementations. May need to move to tryRemove
 public abstract class IESlot extends Slot
@@ -649,6 +646,11 @@ public abstract class IESlot extends Slot
 				return false;
 			if(type==SLOT_FERTILIZER)
 				return ClocheFertilizer.isValidFertilizer(level, itemStack);
+			IItemHandler inv = getItemHandler();
+			if(type==SLOT_SOIL)
+				return ClocheRecipe.isValidCombinationInMenu(inv.getStackInSlot(SLOT_SEED), itemStack, level);
+			if(type==SLOT_SEED)
+				return ClocheRecipe.isValidCombinationInMenu(itemStack, inv.getStackInSlot(SLOT_SOIL), level);
 			return true;
 		}
 	}
