@@ -794,6 +794,11 @@ public class Recipes extends RecipeProvider
 				.addInput(Molds.MOLD_PACKING_4)
 				.addFluidTag(IETags.fluidResin, FluidAttributes.BUCKET_VOLUME*4)
 				.build(out, toRL("bottling/duroplast_block"));
+		BottlingMachineRecipeBuilder.builder(new ItemStack(Ingredients.EMPTY_SHELL, 2))
+				.addResult(Molds.MOLD_BULLET_CASING)
+				.addInput(Molds.MOLD_BULLET_CASING)
+				.addFluidTag(IETags.fluidResin, quarter_bucket)
+				.build(out, toRL("bottling/"+toPath(BulletHandler.emptyShell)));
 
 		/* CRUSHER */
 		CrusherRecipeBuilder.builder(Items.GRAVEL)
