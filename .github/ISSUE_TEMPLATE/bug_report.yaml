@@ -65,7 +65,7 @@ body:
       description: |
         You can generate a debug crashlog ingame by holding down F3 and C for about 10 seconds.
         The log contains a lot of useful information, such as your complete mod list, and certain technical details about your PC.
-        Please upload that log to pastebin.com, gist.github.com or a similar size and enter the link here.
+        Please upload that log to pastebin.com, gist.github.com or a similar site and enter the link here.
       placeholder: <gist or pastebin link>
     validations:
       required: true
