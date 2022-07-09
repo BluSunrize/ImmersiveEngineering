@@ -44,7 +44,7 @@ body:
       label: Crash Log
       description: |
         If your game crashed, it will have created a file in the folder `crash-reports` in your Minecraft instance.
-        Please upload the contents of that file to pastebin.com, gist.github.com or a similar size and enter the link here.
+        Please upload the contents of that file to pastebin.com, gist.github.com or a similar site and enter the link here.
       placeholder: <gist or pastebin link>
     validations:
       required: true
