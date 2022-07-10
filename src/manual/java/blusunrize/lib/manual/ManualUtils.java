@@ -387,6 +387,11 @@ public class ManualUtils
 
 	public static void renderItemStack(PoseStack transform, ItemStack stack, int x, int y, boolean overlay)
 	{
+		renderItemStack(transform, stack, x, y, overlay, null);
+	}
+
+	public static void renderItemStack(PoseStack transform, ItemStack stack, int x, int y, boolean overlay, String count)
+	{
 		if(!stack.isEmpty())
 		{
 			// Include the matrix transformation
@@ -406,7 +411,7 @@ public class ManualUtils
 				// Use the Item's font renderer, if available
 				Font font = RenderProperties.get(stack.getItem()).getFont(stack);
 				font = font!=null?font: Minecraft.getInstance().font;
-				itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
+				itemRenderer.renderGuiItemDecorations(font, stack, x, y, count);
 			}
 			modelViewStack.popPose();
 			RenderSystem.applyModelViewMatrix();
