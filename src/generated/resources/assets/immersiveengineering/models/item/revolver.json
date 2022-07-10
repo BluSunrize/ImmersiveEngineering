@@ -1,22 +1,17 @@
 {
   "callbacks": "immersiveengineering:revolver",
-  "dynamic": true,
-  "loader": "immersiveengineering:ie_obj",
-  "model": "immersiveengineering:models/item/revolver.obj.ie",
-  "transform": {
+  "display": {
     "firstperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
-        0.7071067,
         0.0,
-        0.70710677
+        0.0
       ],
       "scale": [
         0.18749999,
@@ -31,17 +26,15 @@
     },
     "firstperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
-        -0.7071067,
         0.0,
-        0.70710677
+        0.0
       ],
       "scale": [
         0.18749999,
@@ -56,17 +49,15 @@
     },
     "fixed": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        -0.34202015,
-        0.9396928,
-        -2.094269E-17,
-        5.7539564E-17
+        -3.1415927,
+        6.6174425E-24,
+        -2.443461
       ],
       "scale": [
         0.18750012,
@@ -81,17 +72,15 @@
     },
     "ground": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.125,
@@ -106,17 +95,15 @@
     },
     "gui": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.102847464,
-        -0.32619038,
-        -0.28257105,
-        0.8962007
+        0.44856617,
+        2.9802326E-8,
+        -0.74052685
       ],
       "scale": [
         0.2,
@@ -129,69 +116,17 @@
         -0.15625
       ]
     },
-    "head": {
-      "origin": "corner",
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
-    "none": {
-      "origin": "corner",
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
-      ]
-    },
     "thirdperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.061628446,
-        0.7044161,
-        0.061628386,
-        0.704416
+        1.5707972,
+        7.4505806E-8,
+        1.5707971
       ],
       "scale": [
         0.12500004,
@@ -206,17 +141,15 @@
     },
     "thirdperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        -0.061628446,
-        0.7044161,
-        0.061628386,
-        -0.704416
+        1.5707972,
+        7.4505806E-8,
+        -1.5707971
       ],
       "scale": [
         0.12500004,
@@ -229,5 +162,8 @@
         -0.031249985
       ]
     }
-  }
+  },
+  "dynamic": true,
+  "loader": "immersiveengineering:ie_obj",
+  "model": "immersiveengineering:models/item/revolver.obj.ie"
 }

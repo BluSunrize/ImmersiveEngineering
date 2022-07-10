@@ -1,24 +1,16 @@
 {
-  "flip_v": true,
-  "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/metal_device/floodlight.obj.ie",
-  "textures": {
-    "texture": "immersiveengineering:block/metal_device/floodlight"
-  },
-  "transform": {
+  "display": {
     "firstperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.0,
-        1.0,
-        0.0,
-        -4.371139E-8
+        3.1415927,
+        -0.0,
+        3.1415927
       ],
       "scale": [
         0.37499997,
@@ -33,17 +25,15 @@
     },
     "firstperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.0,
-        1.0,
-        0.0,
-        -4.371139E-8
+        3.1415927,
+        -0.0,
+        3.1415927
       ],
       "scale": [
         0.37499997,
@@ -58,17 +48,15 @@
     },
     "fixed": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
-        0.7071067,
         0.0,
-        0.70710677
+        0.0
       ],
       "scale": [
         0.75000006,
@@ -83,17 +71,15 @@
     },
     "ground": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.375,
@@ -108,17 +94,15 @@
     },
     "gui": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.08852132,
-        0.9076733,
-        0.2432104,
-        0.3303661
+        2.495742,
+        -0.39306596,
+        2.7443473
       ],
       "scale": [
         0.70312494,
@@ -133,17 +117,15 @@
     },
     "head": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.375,
@@ -158,17 +140,15 @@
     },
     "none": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.375,
@@ -183,17 +163,15 @@
     },
     "thirdperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.46984637,
-        0.4698464,
-        0.32898998,
-        0.6710101
+        1.4469484,
+        0.3272009,
+        1.2012608
       ],
       "scale": [
         0.3750001,
@@ -208,17 +186,15 @@
     },
     "thirdperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.46984637,
-        0.4698464,
-        0.32898998,
-        0.6710101
+        1.4469484,
+        0.3272009,
+        1.2012608
       ],
       "scale": [
         0.3750001,
@@ -231,5 +207,11 @@
         0.14218172
       ]
     }
+  },
+  "flip_v": true,
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_device/floodlight.obj.ie",
+  "textures": {
+    "texture": "immersiveengineering:block/metal_device/floodlight"
   }
 }

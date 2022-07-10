@@ -43,7 +43,7 @@ public class TRSRModelBuilder extends ModelBuilder<TRSRModelBuilder>
 		JsonObject ret = super.toJson();
 		JsonObject transformJson = transforms.toJson();
 		if(!transformJson.entrySet().isEmpty())
-			ret.add("transform", transformJson);
+			ret.add("display", transformJson);
 		return ret;
 	}
 }

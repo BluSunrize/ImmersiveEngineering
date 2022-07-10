@@ -1,21 +1,16 @@
 {
-  "flip_v": true,
-  "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/metal_multiblock/auto_workbench.obj",
-  "transform": {
+  "display": {
     "firstperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -30,17 +25,15 @@
     },
     "firstperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -55,17 +48,15 @@
     },
     "fixed": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -80,17 +71,15 @@
     },
     "ground": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -105,17 +94,15 @@
     },
     "gui": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -130,17 +117,15 @@
     },
     "head": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -155,17 +140,15 @@
     },
     "none": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -180,17 +163,15 @@
     },
     "thirdperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -205,17 +186,15 @@
     },
     "thirdperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.16043,
-        -0.37686962,
-        -0.06645229,
-        0.9098437
+        0.47536334,
+        0.2442666,
+        -0.32954827
       ],
       "scale": [
         0.25,
@@ -228,5 +207,8 @@
         0.0
       ]
     }
-  }
+  },
+  "flip_v": true,
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_multiblock/auto_workbench.obj"
 }

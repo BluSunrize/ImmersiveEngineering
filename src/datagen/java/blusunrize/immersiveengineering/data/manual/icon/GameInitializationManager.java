@@ -14,6 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.client.NamedRenderTypeManager;
 import net.minecraftforge.client.model.geometry.GeometryLoaderManager;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidType;
@@ -40,6 +41,7 @@ public class GameInitializationManager
 	{
 	}
 
+	@SuppressWarnings("UnstableApiUsage")
 	public void initialize(final ExistingFileHelper existingFileHelper, DataGenerator gen)
 	{
 		if(initialized)
@@ -54,6 +56,7 @@ public class GameInitializationManager
 		MinecraftInstanceManager.getInstance().initialize(existingFileHelper, gen);
 		ClientProxy.initWithMC();
 		GeometryLoaderManager.init();
+		NamedRenderTypeManager.init();
 
 		final ExtendedModelManager extendedModelManager = (ExtendedModelManager)Minecraft.getInstance().getModelManager();
 		extendedModelManager.loadModels();

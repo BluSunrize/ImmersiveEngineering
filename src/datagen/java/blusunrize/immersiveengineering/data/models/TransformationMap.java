@@ -11,7 +11,6 @@ package blusunrize.immersiveengineering.data.models;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import com.google.gson.*;
 import com.mojang.math.Matrix4f;
-import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.block.model.ItemTransform;
@@ -25,9 +24,10 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
+// TODO this is a pile of hacks and should probably just go away
 public class TransformationMap
 {
-	private final Map<ItemTransforms.TransformType, Transformation> transforms = new EnumMap<>(ItemTransforms.TransformType.class);
+	private final Map<ItemTransforms.TransformType, ItemTransform> transforms = new EnumMap<>(ItemTransforms.TransformType.class);
 
 	public void addFromJson(String json)
 	{
@@ -74,10 +74,16 @@ public class TransformationMap
 			baseTransform = readMatrix(obj, GSON);
 		else
 			baseTransform = Transformation.identity();
-		for(Entry<ItemTransforms.TransformType, Transformation> e : transforms.entrySet())
+		for(Entry<TransformType, Transformation> e : transforms.entrySet())
 		{
 			Transformation transform = composeForgeLike(e.getValue(), baseTransform);
-			this.transforms.put(e.getKey(), transform);
+			if(!transform.isIdentity())
+				this.transforms.put(e.getKey(), new ItemTransform(
+						transform.getLeftRotation().toXYZ(),
+						transform.getTranslation(),
+						transform.getScale(),
+						transform.getRightRotation().toXYZ()
+				));
 		}
 	}
 
@@ -110,30 +116,20 @@ public class TransformationMap
 	public JsonObject toJson()
 	{
 		JsonObject ret = new JsonObject();
-		for(Entry<ItemTransforms.TransformType, Transformation> entry : transforms.entrySet())
+		for(Entry<ItemTransforms.TransformType, ItemTransform> entry : transforms.entrySet())
 			add(ret, entry.getKey(), entry.getValue());
 		return ret;
 	}
 
-	private void add(JsonObject main, ItemTransforms.TransformType type, Transformation trsr)
+	private void add(JsonObject main, ItemTransforms.TransformType type, ItemTransform trsr)
 	{
 		JsonObject result = new JsonObject();
-		result.add("translation", toJson(trsr.getTranslation()));
-		result.add("rotation", toJson(trsr.getLeftRotation()));
-		result.add("scale", toJson(trsr.getScale()));
-		result.add("post-rotation", toJson(trsr.getRightRotation()));
+		result.add("translation", toJson(trsr.translation));
+		result.add("rotation", toJson(trsr.rotation));
+		result.add("scale", toJson(trsr.scale));
+		result.add("right_rotation", toJson(trsr.rightRotation));
 		result.addProperty("origin", "corner");
 		main.add(type.getSerializeName(), result);
-	}
-
-	private static JsonArray toJson(Quaternion v)
-	{
-		JsonArray ret = new JsonArray();
-		ret.add(v.i());
-		ret.add(v.j());
-		ret.add(v.k());
-		ret.add(v.r());
-		return ret;
 	}
 
 	private static JsonArray toJson(Vector3f v)

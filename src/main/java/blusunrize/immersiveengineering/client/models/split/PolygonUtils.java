@@ -106,7 +106,7 @@ public class PolygonUtils
 					new Vec3(pos.x(), pos.y(), pos.z()),
 					new Vec3(normal),
 					absoluteUV?v.uv().u(): data.sprite().getU(16*v.uv().u()),
-					absoluteUV?v.uv().v(): data.sprite().getV(16*v.uv().v()),
+					absoluteUV?v.uv().v(): data.sprite().getV(16*(1-v.uv().v())),
 					new float[]{data.color.x(), data.color.y(), data.color.z(), data.color.w()},
 					1
 			);
@@ -124,7 +124,7 @@ public class PolygonUtils
 		return ret;
 	}
 
-	public static record ExtraQuadData(TextureAtlasSprite sprite, Vector4f color)
+	public record ExtraQuadData(TextureAtlasSprite sprite, Vector4f color)
 	{
 	}
 }

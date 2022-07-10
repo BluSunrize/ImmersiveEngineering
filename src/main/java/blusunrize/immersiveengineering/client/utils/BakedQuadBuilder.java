@@ -42,9 +42,8 @@ public class BakedQuadBuilder
 
 		data[next++] = (int)(faceNormal.x*255)|((int)(faceNormal.y*255)<<8)|((int)(faceNormal.z*255)<<16);
 
-
-		Preconditions.checkState(next==FORMAT.getIntegerSize());
 		++nextVertex;
+		Preconditions.checkState(next==nextVertex*FORMAT.getIntegerSize());
 	}
 
 	public BakedQuad bake(int tint, Direction side, TextureAtlasSprite texture, boolean shade)

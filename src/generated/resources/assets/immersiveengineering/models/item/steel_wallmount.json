@@ -1,24 +1,16 @@
 {
-  "flip_v": true,
-  "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/wooden_device/wallmount.obj",
-  "textures": {
-    "texture": "immersiveengineering:block/metal_decoration/steel_wallmount"
-  },
-  "transform": {
+  "display": {
     "firstperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.5,
@@ -33,17 +25,15 @@
     },
     "firstperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.5,
@@ -58,17 +48,15 @@
     },
     "fixed": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
-        -0.70710677,
         0.0,
-        0.7071069
+        0.0
       ],
       "scale": [
         0.9999999,
@@ -83,17 +71,15 @@
     },
     "ground": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.5,
@@ -108,17 +94,15 @@
     },
     "gui": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.099045776,
-        0.8923991,
-        0.2391176,
-        0.36964378
+        2.4568734,
+        -0.3613671,
+        2.6779451
       ],
       "scale": [
         0.99999976,
@@ -133,17 +117,15 @@
     },
     "head": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.5,
@@ -156,44 +138,17 @@
         0.0
       ]
     },
-    "none": {
+    "thirdperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "translation": [
+      "right_rotation": [
         0.0,
         0.0,
         0.0
-      ]
-    },
-    "thirdperson_lefthand": {
-      "origin": "corner",
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
       ],
       "rotation": [
-        0.46984634,
-        0.46984616,
-        0.32898995,
-        0.6710101
+        1.4469482,
+        0.32720116,
+        1.2012604
       ],
       "scale": [
         0.5,
@@ -208,17 +163,15 @@
     },
     "thirdperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.46984634,
-        0.46984616,
-        0.32898995,
-        0.6710101
+        1.4469482,
+        0.32720116,
+        1.2012604
       ],
       "scale": [
         0.5,
@@ -231,5 +184,11 @@
         -0.171875
       ]
     }
+  },
+  "flip_v": true,
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/wooden_device/wallmount.obj",
+  "textures": {
+    "texture": "immersiveengineering:block/metal_decoration/steel_wallmount"
   }
 }

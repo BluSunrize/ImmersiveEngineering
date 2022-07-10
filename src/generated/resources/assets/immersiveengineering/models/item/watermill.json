@@ -1,21 +1,16 @@
 {
-  "flip_v": true,
-  "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/wooden_device/watermill.obj",
-  "transform": {
+  "display": {
     "firstperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
-        0.38268337,
         0.0,
-        0.9238795
+        0.0
       ],
       "scale": [
         0.12499998,
@@ -30,17 +25,15 @@
     },
     "firstperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
-        0.38268337,
         0.0,
-        0.9238795
+        0.0
       ],
       "scale": [
         0.12499998,
@@ -55,17 +48,15 @@
     },
     "fixed": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99999994
+        0.0
       ],
       "scale": [
         0.20000003,
@@ -80,17 +71,15 @@
     },
     "ground": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.125,
@@ -105,17 +94,15 @@
     },
     "gui": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.0,
-        0.953717,
-        0.0,
-        -0.30070567
+        3.1415927,
+        -0.0,
+        3.1415927
       ],
       "scale": [
         0.18750009,
@@ -130,17 +117,15 @@
     },
     "head": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.125,
@@ -153,44 +138,17 @@
         0.0
       ]
     },
-    "none": {
+    "thirdperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0,
-        1.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
-      ],
-      "translation": [
+      "right_rotation": [
         0.0,
         0.0,
         0.0
-      ]
-    },
-    "thirdperson_lefthand": {
-      "origin": "corner",
-      "post-rotation": [
-        0.0,
-        0.0,
-        0.0,
-        0.99830717
       ],
       "rotation": [
-        -0.21263114,
-        -0.32650563,
-        0.62721133,
-        0.67437977
+        -0.7853983,
+        0.123098426,
+        1.5707963
       ],
       "scale": [
         0.125,
@@ -205,17 +163,15 @@
     },
     "thirdperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        -0.21263114,
-        -0.32650563,
-        0.62721133,
-        0.67437977
+        -0.7853983,
+        0.123098426,
+        1.5707963
       ],
       "scale": [
         0.125,
@@ -228,5 +184,8 @@
         -0.17187501
       ]
     }
-  }
+  },
+  "flip_v": true,
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/wooden_device/watermill.obj"
 }

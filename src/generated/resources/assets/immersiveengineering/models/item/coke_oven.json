@@ -1,19 +1,17 @@
 {
   "parent": "immersiveengineering:block/coke_oven_on_split",
-  "transform": {
+  "display": {
     "firstperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.0,
-        0.9238795,
-        0.0,
-        -0.38268334
+        3.1415927,
+        -0.0,
+        3.1415927
       ],
       "scale": [
         0.132,
@@ -28,17 +26,15 @@
     },
     "firstperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
-        0.3826835,
         0.0,
-        0.9238795
+        0.0
       ],
       "scale": [
         0.13200001,
@@ -53,17 +49,15 @@
     },
     "fixed": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.165,
@@ -78,17 +72,15 @@
     },
     "ground": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.0825,
@@ -103,17 +95,15 @@
     },
     "gui": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        -0.099045716,
-        0.89239913,
-        0.23911767,
-        -0.36964366
+        2.4568734,
+        -0.36136734,
+        -2.6779454
       ],
       "scale": [
         0.20625004,
@@ -128,17 +118,15 @@
     },
     "head": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.33,
@@ -153,17 +141,15 @@
     },
     "none": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.33,
@@ -178,17 +164,15 @@
     },
     "thirdperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "scale": [
         0.33,
@@ -203,17 +187,15 @@
     },
     "thirdperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.5624222,
-        0.30360317,
-        0.23296295,
-        0.7329629
+        1.3835472,
+        0.75187933,
+        0.7680676
       ],
       "scale": [
         0.123749994,

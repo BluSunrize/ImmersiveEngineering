@@ -24,7 +24,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import java.util.ArrayList;
 import java.util.List;
 
-@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.FORGE)
+@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.MOD)
 public class DynamicModel
 {
 	private static final List<ResourceLocation> MODELS = new ArrayList<>();

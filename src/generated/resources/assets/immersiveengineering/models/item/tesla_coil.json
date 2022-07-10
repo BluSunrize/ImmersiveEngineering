@@ -1,21 +1,16 @@
 {
-  "flip_v": true,
-  "loader": "forge:obj",
-  "model": "immersiveengineering:models/block/metal_device/teslacoil.obj",
-  "transform": {
+  "display": {
     "firstperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        -3.090862E-8,
-        0.7071068,
-        -0.70710677,
-        -3.0908623E-8
+        -4.712389,
+        1.5707964,
+        0.0
       ],
       "scale": [
         0.28125,
@@ -30,17 +25,15 @@
     },
     "firstperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        -3.090862E-8,
-        0.7071068,
-        -0.70710677,
-        -3.0908623E-8
+        -4.712389,
+        1.5707964,
+        0.0
       ],
       "scale": [
         0.28125,
@@ -55,17 +48,15 @@
     },
     "fixed": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.70710677,
-        0.0,
-        0.0,
-        0.7071068
+        1.5707963,
+        1.5707964,
+        0.0
       ],
       "scale": [
         0.5625,
@@ -80,17 +71,15 @@
     },
     "ground": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.70710677,
-        0.0,
-        0.0,
-        0.70710677
+        1.5707964,
+        1.5707964,
+        0.0
       ],
       "scale": [
         0.28125,
@@ -105,17 +94,15 @@
     },
     "gui": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.3314136,
-        0.8001032,
-        -0.46193975,
-        0.1913417
+        -2.2555156,
+        1.0471975,
+        2.677945
       ],
       "scale": [
         0.42187497,
@@ -130,17 +117,15 @@
     },
     "head": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.70710677,
-        0.0,
-        0.0,
-        0.70710677
+        1.5707964,
+        1.5707964,
+        0.0
       ],
       "scale": [
         0.28125,
@@ -155,17 +140,15 @@
     },
     "none": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        1.0
+        0.0
       ],
       "rotation": [
-        0.70710677,
-        0.0,
-        0.0,
-        0.70710677
+        1.5707964,
+        1.5707964,
+        0.0
       ],
       "scale": [
         0.28125,
@@ -180,17 +163,15 @@
     },
     "thirdperson_lefthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.80670726,
-        0.5648626,
-        -0.09960049,
-        0.14224425
+        3.0177445,
+        0.3490658,
+        1.2012608
       ],
       "scale": [
         0.28125,
@@ -205,17 +186,15 @@
     },
     "thirdperson_righthand": {
       "origin": "corner",
-      "post-rotation": [
+      "right_rotation": [
         0.0,
         0.0,
-        0.0,
-        0.99830717
+        0.0
       ],
       "rotation": [
-        0.80670726,
-        0.5648626,
-        -0.09960049,
-        0.14224425
+        3.0177445,
+        0.3490658,
+        1.2012608
       ],
       "scale": [
         0.28125,
@@ -228,5 +207,8 @@
         -0.171875
       ]
     }
-  }
+  },
+  "flip_v": true,
+  "loader": "forge:obj",
+  "model": "immersiveengineering:models/block/metal_device/teslacoil.obj"
 }
