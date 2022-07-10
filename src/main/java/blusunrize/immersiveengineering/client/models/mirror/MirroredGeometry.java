@@ -17,18 +17,20 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import java.util.*;
 import java.util.function.Function;
 
-public record MirroredGeometry(UnbakedModel inner) implements IModelGeometry<MirroredGeometry>
+import static blusunrize.immersiveengineering.client.utils.ModelUtils.copyTypes;
+
+public record MirroredGeometry(UnbakedModel inner) implements IUnbakedGeometry<MirroredGeometry>
 {
 	@Override
 	public BakedModel bake(
-			IModelConfiguration owner, ModelBakery bakery,
+			IGeometryBakingContext owner, ModelBakery bakery,
 			Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelState,
 			ItemOverrides overrides, ResourceLocation modelLoc
 	)
@@ -43,7 +45,8 @@ public record MirroredGeometry(UnbakedModel inner) implements IModelGeometry<Mir
 			return new SimpleBakedModel(
 					unculledQuads, culledQuads,
 					baseResult.useAmbientOcclusion(), baseResult.usesBlockLight(), baseResult.isGui3d(),
-					baseResult.getParticleIcon(EmptyModelData.INSTANCE), baseResult.getTransforms(), baseResult.getOverrides()
+					baseResult.getParticleIcon(ModelData.EMPTY), baseResult.getTransforms(), baseResult.getOverrides(),
+					copyTypes(simpleModel)
 			);
 		}
 		else if(baseResult instanceof ICacheKeyProvider<?> cachedModel)
@@ -53,8 +56,8 @@ public record MirroredGeometry(UnbakedModel inner) implements IModelGeometry<Mir
 	}
 
 	@Override
-	public Collection<Material> getTextures(
-			IModelConfiguration owner,
+	public Collection<Material> getMaterials(
+			IGeometryBakingContext context,
 			Function<ResourceLocation, UnbakedModel> modelGetter,
 			Set<Pair<String, String>> missingTextureErrors
 	)

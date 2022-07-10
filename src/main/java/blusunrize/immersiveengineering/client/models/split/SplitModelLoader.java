@@ -18,43 +18,28 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry.ExpandedBlockModelDeserializer;
+import net.minecraftforge.client.model.ExtendedBlockModelDeserializer;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SplitModelLoader implements IModelLoader<UnbakedSplitModel>
+public class SplitModelLoader implements IGeometryLoader<UnbakedSplitModel>
 {
 	public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "basic_split");
 	public static final String PARTS = "split_parts";
-	public static final String BASE_MODEL = "base_model";
 	public static final String INNER_MODEL = "inner_model";
 	public static final String DYNAMIC = "dynamic";
 
-	@Override
-	public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
-	{
-	}
-
 	@Nonnull
 	@Override
-	public UnbakedSplitModel read(@Nonnull JsonDeserializationContext deserializationContext, JsonObject modelContents)
+	public UnbakedSplitModel read(JsonObject modelContents, @Nonnull JsonDeserializationContext deserializationContext)
 	{
 		UnbakedModel baseModel;
-		if(modelContents.has(BASE_MODEL))
-			baseModel = ForgeModelBakery.defaultModelGetter().apply(
-					new ResourceLocation(modelContents.get(BASE_MODEL).getAsString())
-			);
-		else
-		{
-			JsonElement innerJson = modelContents.get(INNER_MODEL);
-			baseModel = ExpandedBlockModelDeserializer.INSTANCE.fromJson(innerJson, BlockModel.class);
-		}
+		JsonElement innerJson = modelContents.get(INNER_MODEL);
+		baseModel = ExtendedBlockModelDeserializer.INSTANCE.fromJson(innerJson, BlockModel.class);
 		JsonArray partsJson = modelContents.getAsJsonArray(PARTS);
 		List<Vec3i> parts = new ArrayList<>(partsJson.size());
 		for(JsonElement e : partsJson)

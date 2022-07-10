@@ -42,7 +42,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.LazyOptional;
@@ -53,7 +53,6 @@ import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -71,7 +70,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
-	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	public void initializeClient(Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
 		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);

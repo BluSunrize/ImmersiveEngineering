@@ -40,7 +40,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -198,9 +198,9 @@ public class PotionFluid extends Fluid
 		}
 
 		@Override
-		public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer)
+		public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
 		{
-			consumer.accept(new IFluidTypeRenderProperties()
+			consumer.accept(new IClientFluidTypeExtensions()
 			{
 				@Override
 				public ResourceLocation getStillTexture()
@@ -215,7 +215,7 @@ public class PotionFluid extends Fluid
 				}
 
 				@Override
-				public int getColorTint(FluidStack stack)
+				public int getTintColor(FluidStack stack)
 				{
 					if(stack==null||!stack.hasTag())
 						return 0xff0000ff;

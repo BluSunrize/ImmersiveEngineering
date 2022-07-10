@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.client.utils.TransformingVertexBuilder;
@@ -95,8 +95,11 @@ public class TurretRenderer extends IEBlockEntityRenderer<TurretBlockEntity<?>>
 		VertexConsumer solidBuilder = new TransformingVertexBuilder(buffer, RenderType.solid(), matrix);
 		matrix.pushPose();
 		matrix.translate(-.5, 0, -.5);
-		List<BakedQuad> quads = model.getQuads(state, null, ApiUtils.RANDOM_SOURCE,
-				new SinglePropertyModelData<>(VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty()));
+		List<BakedQuad> quads = model.getQuads(
+				state, null, ApiUtils.RANDOM_SOURCE,
+				ModelDataUtils.single(DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(parts)),
+				RenderType.solid()
+		);
 		RenderUtils.renderModelTESRFancy(quads, solidBuilder, world, pos, !isFirst, -1, light);
 		matrix.popPose();
 	}

@@ -9,6 +9,7 @@
 
 package blusunrize.immersiveengineering.client.models.obj.callback.block;
 
+import blusunrize.immersiveengineering.client.utils.BakedQuadBuilder;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.StructuralArmBlockEntity;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -22,14 +23,12 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static blusunrize.immersiveengineering.client.utils.ModelUtils.putVertexData;
 import static net.minecraft.core.Direction.*;
 
 public class StructuralArmCallbacks implements BlockCallback<StructuralArmCallbacks.Key>
@@ -146,22 +145,21 @@ public class StructuralArmCallbacks implements BlockCallback<StructuralArmCallba
 		if(invert)
 			facing = facing.getOpposite();
 		float[] colour = {1, 1, 1, 1};
-		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
-		builder.setQuadOrientation(facing);
+		BakedQuadBuilder builder = new BakedQuadBuilder();
 		Vec3 faceNormal = Vec3.atLowerCornerOf(facing.getNormal());
 		int vertexId = invert?3: 0;
 		double v = onCeiling?16-leftV: 0;
-		putVertexData(builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
+		builder.putVertexData(vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
 		vertexId = invert?2: 1;
 		v = onCeiling?16: leftV;
-		putVertexData(builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
+		builder.putVertexData(vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
 		vertexId = invert?1: 2;
 		v = onCeiling?16: rightV;
-		putVertexData(builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
+		builder.putVertexData(vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
 		vertexId = invert?0: 3;
 		v = onCeiling?16-rightV: 0;
-		putVertexData(builder, vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
-		return builder.build();
+		builder.putVertexData(vertices[vertexId], faceNormal, vertexId > 1?16: 0, v, sprite, colour, 1);
+		return builder.bake(-1, facing, sprite, true);
 	}
 
 	private Vec3[] getArrayByIndices(Vec3[] in, int... indices)

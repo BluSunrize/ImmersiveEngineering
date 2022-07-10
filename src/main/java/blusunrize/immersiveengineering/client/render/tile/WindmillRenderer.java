@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.wooden.WindmillBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,10 +42,8 @@ public class WindmillRenderer extends IEBlockEntityRenderer<WindmillBlockEntity>
 				parts.add("base");
 				for(int i = 1; i <= sails; i++)
 					parts.add("sail_"+i);
-				IModelData data = new SinglePropertyModelData<>(
-						VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty()
-				);
-				return model.getQuads(null, null, ApiUtils.RANDOM_SOURCE, data);
+				ModelData data = ModelDataUtils.single(DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(parts));
+				return model.getQuads(null, null, ApiUtils.RANDOM_SOURCE, data, RenderType.cutout());
 			});
 		return BUFFERS[sails];
 	}

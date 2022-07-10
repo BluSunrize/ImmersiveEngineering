@@ -21,10 +21,10 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -33,7 +33,6 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -41,11 +40,11 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
-import net.minecraftforge.client.model.pipeline.LightUtil;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import net.minecraftforge.client.model.lighting.QuadLighter;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -77,11 +76,14 @@ public class ModelCoresample extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState coreState, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
+	public List<BakedQuad> getQuads(
+			@Nullable BlockState coreState, @Nullable Direction side, @Nonnull RandomSource rand,
+			@Nonnull ModelData extraData, @Nullable RenderType layer
+	)
 	{
 		MineralMix[] minerals;
-		if(extraData.hasProperty(Model.MINERAL))
-			minerals = extraData.getData(Model.MINERAL);
+		if(extraData.has(Model.MINERAL))
+			minerals = extraData.get(Model.MINERAL);
 		else
 			minerals = this.minerals;
 		if(bakedQuads==null||minerals==null)
@@ -233,12 +235,9 @@ public class ModelCoresample extends BakedIEModel
 
 	protected final void putVertexData(Vec3 normal, Vec3[] vertices, double[] uvs, TextureAtlasSprite sprite, List<BakedQuad> out)
 	{
-		float d = LightUtil.diffuseLight((float)normal.x, (float)normal.y, (float)normal.z);
-		BakedQuad quad = ModelUtils.createBakedQuad(vertices, Direction.getNearest(normal.x, normal.y, normal.z),
-				sprite,
-				uvs,
-				new float[]{d, d, d, 1},
-				false
+		float d = QuadLighter.calculateShade((float)normal.x, (float)normal.y, (float)normal.z, false);
+		BakedQuad quad = ModelUtils.createBakedQuad(
+				vertices, Direction.getNearest(normal.x, normal.y, normal.z), sprite, uvs, new float[]{d, d, d, 1}, false
 		);
 		out.add(quad);
 	}
@@ -318,43 +317,32 @@ public class ModelCoresample extends BakedIEModel
 	}
 
 	@Override
-	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack mat)
-	{
-		return this;
-	}
-
-	@Override
 	public boolean usesBlockLight()
 	{
 		return false;
 	}
 
-	public static class RawCoresampleModel implements IModelGeometry<RawCoresampleModel>
+	public static class RawCoresampleModel implements IUnbakedGeometry<RawCoresampleModel>
 	{
 		@Override
-		public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
 			return new ModelCoresample(null);
 		}
 
 		@Override
-		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors)
+		public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<com.mojang.datafixers.util.Pair<String, String>> missingTextureErrors)
 		{
 			return ImmutableList.of();
 		}
 	}
 
-	public static class CoresampleLoader implements IModelLoader<RawCoresampleModel>
+	public static class CoresampleLoader implements IGeometryLoader<RawCoresampleModel>
 	{
 		public static final ResourceLocation LOCATION = new ResourceLocation(ImmersiveEngineering.MODID, "models/coresample");
 
 		@Override
-		public void onResourceManagerReload(ResourceManager resourceManager)
-		{
-		}
-
-		@Override
-		public RawCoresampleModel read(JsonDeserializationContext deserializationContext, JsonObject modelContents)
+		public RawCoresampleModel read(JsonObject modelContents, JsonDeserializationContext deserializationContext)
 		{
 			return new RawCoresampleModel();
 		}

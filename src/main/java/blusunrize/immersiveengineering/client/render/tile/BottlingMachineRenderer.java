@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.BatchingRenderTypeBuffer;
@@ -31,7 +31,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
@@ -190,7 +190,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 	public static void renderModelPart(PoseStack matrixStack, VertexConsumer builder, Direction facing,
 									   int combinedLightIn, int combinedOverlayIn, String... parts)
 	{
-		IModelData data = new SinglePropertyModelData<>(VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty());
+		ModelData data = ModelDataUtils.single(DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(parts));
 		matrixStack.pushPose();
 		matrixStack.translate(-.5, -.5, -.5);
 		List<BakedQuad> quads = DYNAMIC.getNullQuads(data);

@@ -41,7 +41,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
@@ -67,7 +67,7 @@ public class DrillItem extends DieselToolItem
 	}
 
 	@Override
-	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
 		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);

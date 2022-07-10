@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class DieselGeneratorRenderer extends IEBlockEntityRenderer<DieselGenerat
 				te.animation_fanRotation+(te.animation_fanRotationStep*partialTicks), true));
 		matrixStack.translate(-0.5, 0, -0.5);
 
-		List<BakedQuad> quads = FAN.get().getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
+		List<BakedQuad> quads = FAN.get().getQuads(state, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
 		rotateForFacing(matrixStack, te.getFacing());
 		RenderUtils.renderModelTESRFast(quads, bufferIn.getBuffer(RenderType.solid()), matrixStack, combinedLightIn,
 				combinedOverlayIn);

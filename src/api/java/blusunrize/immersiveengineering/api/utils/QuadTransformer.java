@@ -8,147 +8,50 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement;
 import com.mojang.math.Transformation;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
-import net.minecraft.core.Vec3i;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
-import net.minecraftforge.client.model.pipeline.IVertexConsumer;
+import net.minecraftforge.client.model.IQuadTransformer;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.function.Function;
 
-public class QuadTransformer implements Function<BakedQuad, BakedQuad>
+public class QuadTransformer
 {
-	@Nonnull
-	private final Transformation transform;
-	@Nullable
-	private final Int2IntFunction colorTransform;
-	private BakedQuadBuilder currentQuadBuilder;
-	private final IVertexConsumer transformer = createConsumer();
-
-	public QuadTransformer(Transformation transform, @Nullable Int2IntFunction colorTransform)
+	public static IQuadTransformer color(Int2IntFunction colorTransform)
 	{
-		this.transform = transform;
-		this.colorTransform = colorTransform;
-	}
-
-	@Override
-	public BakedQuad apply(BakedQuad q)
-	{
-		currentQuadBuilder = new BakedQuadBuilder();
-		q.pipe(transformer);
-		return currentQuadBuilder.build();
-	}
-
-	private IVertexConsumer createConsumer()
-	{
-		VertexFormat format = DefaultVertexFormat.BLOCK;
-		int posPos = -1;
-		int normPos = -1;
-		int colorPos = -1;
-		for(int i = 0; i < format.getElements().size(); i++)
-			if(format.getElements().get(i).getUsage()==VertexFormatElement.Usage.POSITION)
-				posPos = i;
-			else if(format.getElements().get(i).getUsage()==VertexFormatElement.Usage.NORMAL)
-				normPos = i;
-			else if(format.getElements().get(i).getUsage()==VertexFormatElement.Usage.COLOR)
-				colorPos = i;
-		if(posPos==-1)
-			return null;
-		final int posPosFinal = posPos;
-		final int normPosFinal = normPos;
-		final int colorPosFinal = colorPos;
-		return new IVertexConsumer()
-		{
-			int tintIndex = -1;
-
-			@Nonnull
-			@Override
-			public VertexFormat getVertexFormat()
+		return quad -> {
+			if(!quad.isTinted())
+				return;
+			int multiplier = colorTransform.apply(quad.getTintIndex());
+			if(multiplier==0)
+				return;
+			int[] data = quad.getVertices();
+			for(int i = 0; i < 4; ++i)
 			{
-				return format;
-			}
-
-			@Override
-			public void setQuadTint(int tint)
-			{
-				currentQuadBuilder.setQuadTint(tint);
-				tintIndex = tint;
-			}
-
-			@Override
-			public void setQuadOrientation(@Nonnull Direction orientation)
-			{
-				Vec3i normal = orientation.getNormal();
-				Vector3f newFront = new Vector3f(normal.getX(), normal.getY(), normal.getZ());
-				transform.transformNormal(newFront);
-				Direction newOrientation = Direction.getNearest(newFront.x(), newFront.y(), newFront.z());
-				currentQuadBuilder.setQuadOrientation(newOrientation);
-			}
-
-			@Override
-			public void setApplyDiffuseLighting(boolean diffuse)
-			{
-				currentQuadBuilder.setApplyDiffuseLighting(diffuse);
-			}
-
-			@Override
-			public void setTexture(@Nonnull TextureAtlasSprite texture)
-			{
-				currentQuadBuilder.setTexture(texture);
-			}
-
-			@Override
-			public void put(int element, @Nonnull float... data)
-			{
-				if(element==posPosFinal&&transform!=null)
-				{
-					Vector4f newPos = new Vector4f(data[0], data[1], data[2], 1);
-					transform.transformPosition(newPos);
-					data = new float[3];
-					data[0] = newPos.x();
-					data[1] = newPos.y();
-					data[2] = newPos.z();
-				}
-				else if(element==normPosFinal)
-				{
-					Vector3f newNormal = new Vector3f(data[0], data[1], data[2]);
-					transform.transformNormal(newNormal);
-					data = new float[3];
-					data[0] = newNormal.x();
-					data[1] = newNormal.y();
-					data[2] = newNormal.z();
-				}
-				else if(element==colorPosFinal)
-				{
-					if(tintIndex!=-1&&colorTransform!=null)
-					{
-						int multiplier = colorTransform.apply(tintIndex);
-						if(multiplier!=0)
-						{
-							float r = (float)(multiplier >> 16&255)/255.0F;
-							float g = (float)(multiplier >> 8&255)/255.0F;
-							float b = (float)(multiplier&255)/255.0F;
-							float[] oldData = data;
-							data = new float[4];
-							data[0] = oldData[0]*r;
-							data[1] = oldData[1]*g;
-							data[2] = oldData[2]*b;
-							data[3] = oldData[3];
-						}
-					}
-				}
-				currentQuadBuilder.put(element, data);
+				int colorId = i*IQuadTransformer.STRIDE+IQuadTransformer.COLOR;
+				data[colorId] = modifyColor(data[colorId], 0, multiplier);
+				data[colorId] = modifyColor(data[colorId], 8, multiplier);
+				data[colorId] = modifyColor(data[colorId], 16, multiplier);
 			}
 		};
+	}
+
+	private static int modifyColor(int oldColor, int offsetBits, int packedMultiplier)
+	{
+		final int mask = 255<<offsetBits;
+		final int oldSubColor = mask&oldColor;
+		final float subMultiplier = ((packedMultiplier>>offsetBits)&255)/255f;
+		final int newSubColor = ((int)(oldSubColor*subMultiplier))&mask;
+		return (oldColor&~mask)|newSubColor;
+	}
+
+	public static IQuadTransformer transformAndColor(
+			Transformation transform, @Nullable Int2IntFunction colorTransform
+	)
+	{
+		IQuadTransformer base = IQuadTransformer.applying(transform);
+		if(colorTransform!=null)
+			return base.andThen(color(colorTransform));
+		else
+			return base;
 	}
 }

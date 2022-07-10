@@ -15,20 +15,33 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 
+import java.util.ArrayList;
 import java.util.List;
 
+@EventBusSubscriber(modid = ImmersiveEngineering.MODID, bus = Bus.FORGE)
 public class DynamicModel
 {
+	private static final List<ResourceLocation> MODELS = new ArrayList<>();
+
+	@SubscribeEvent
+	public static void registerModels(ModelEvent.RegisterAdditional ev)
+	{
+		for(ResourceLocation model : MODELS)
+			ev.register(model);
+	}
+
 	private final ResourceLocation name;
 
 	public DynamicModel(String desc)
 	{
 		this.name = new ResourceLocation(ImmersiveEngineering.MODID, "dynamic/"+desc);
-		ForgeModelBakery.addSpecialModel(this.name);
+		MODELS.add(this.name);
 	}
 
 	public BakedModel get()
@@ -39,12 +52,12 @@ public class DynamicModel
 
 	public List<BakedQuad> getNullQuads()
 	{
-		return getNullQuads(EmptyModelData.INSTANCE);
+		return getNullQuads(ModelData.EMPTY);
 	}
 
-	public List<BakedQuad> getNullQuads(IModelData data)
+	public List<BakedQuad> getNullQuads(ModelData data)
 	{
-		return get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, data);
+		return get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, data, null);
 	}
 
 	public ResourceLocation getName()

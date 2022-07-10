@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.client.IVertexBufferHolder;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import blusunrize.immersiveengineering.client.models.obj.callback.block.BucketWheelCallbacks;
 import blusunrize.immersiveengineering.common.blocks.metal.BucketWheelBlockEntity;
@@ -23,7 +23,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -60,11 +60,11 @@ public class BucketWheelRenderer extends IEBlockEntityRenderer<BucketWheelBlockE
 			BucketWheelCallbacks.Key key = BucketWheelCallbacks.INSTANCE.extractKey(
 					tile.getLevelNonnull(), tile.getBlockPos(), tile.getState(), tile
 			);
-			IModelData extraData = new SinglePropertyModelData<>(key, IEOBJCallbacks.getModelProperty(BucketWheelCallbacks.INSTANCE));
+			ModelData extraData = ModelDataUtils.single(IEOBJCallbacks.getModelProperty(BucketWheelCallbacks.INSTANCE), key);
 
 			CACHED_BUFFERS.get(key, () -> IVertexBufferHolder.create(
-					() -> WHEEL.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, extraData))
-			).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
+					() -> WHEEL.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, extraData, RenderType.solid())
+			)).render(RenderType.solid(), combinedLightIn, combinedOverlayIn, bufferIn, matrixStack, tile.getIsMirrored());
 		} catch(ExecutionException ex)
 		{
 			throw new RuntimeException(ex);

@@ -1,5 +1,5 @@
 {
-  "flip-v": true,
+  "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_multiblock/lightningrod.obj",
   "transform": {

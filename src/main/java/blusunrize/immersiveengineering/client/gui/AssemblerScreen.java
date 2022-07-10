@@ -30,7 +30,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag.Default;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions.FontContext;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -124,7 +125,7 @@ public class AssemblerScreen extends IEContainerScreen<AssemblerMenu>
 				transform.pushPose();
 				Font font = null;
 				if(!stack.isEmpty())
-					font = RenderProperties.get(stack.getItem()).getFont(stack);
+					font = IClientItemExtensions.of(stack.getItem()).getFont(stack, FontContext.ITEM_COUNT);
 				if(font==null)
 					font = this.font;
 				itemRenderer.renderAndDecorateItem(stack, leftPos+27+i*58, topPos+64);

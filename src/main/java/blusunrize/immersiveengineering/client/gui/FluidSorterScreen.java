@@ -28,8 +28,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 
@@ -95,10 +94,10 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterMenu>
 				FluidStack filter = menu.getFilter(side, i);
 				if(!filter.isEmpty())
 				{
-					IFluidTypeRenderProperties props = RenderProperties.get(filter.getFluid());
+					IClientFluidTypeExtensions props = IClientFluidTypeExtensions.of(filter.getFluid());
 					TextureAtlasSprite sprite = ClientUtils.getSprite(props.getStillTexture(filter));
 					Rect2i slotArea = getSlotArea(side, i);
-					int col = props.getColorTint(filter);
+					int col = props.getTintColor(filter);
 					GuiHelper.drawTexturedColoredRect(
 							builder, transform,
 							slotArea.getX(), slotArea.getY(), slotArea.getWidth(), slotArea.getHeight(),

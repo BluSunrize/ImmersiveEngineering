@@ -35,7 +35,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -50,10 +50,10 @@ public class IEOBJItemRenderer extends BlockEntityWithoutLevelRenderer
 					Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()
 			)
 	);
-	public static final IItemRenderProperties USE_IEOBJ_RENDER = new IItemRenderProperties()
+	public static final IClientItemExtensions USE_IEOBJ_RENDER = new IClientItemExtensions()
 	{
 		@Override
-		public BlockEntityWithoutLevelRenderer getItemStackRenderer()
+		public BlockEntityWithoutLevelRenderer getCustomRenderer()
 		{
 			return INSTANCE.get();
 		}

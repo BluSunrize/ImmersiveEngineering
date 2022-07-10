@@ -26,7 +26,7 @@ import net.minecraft.world.level.block.StairBlock;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraftforge.client.model.generators.*;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder.PartialBlockstate;
-import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
+import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import java.lang.reflect.Field;
@@ -191,8 +191,8 @@ public abstract class ExtendedBlockstateProvider extends BlockStateProvider
 	{
 		assertModelExists(model);
 		T ret = base
-				.customLoader(OBJLoaderBuilder::begin)
-				.detectCullableFaces(false)
+				.customLoader(ObjModelBuilder::begin)
+				.automaticCulling(false)
 				.modelLocation(addModelsPrefix(model))
 				.flipV(true)
 				.end();

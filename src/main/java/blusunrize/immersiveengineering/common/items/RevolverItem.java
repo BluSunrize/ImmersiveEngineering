@@ -67,7 +67,7 @@ import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -90,7 +90,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	}
 
 	@Override
-	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
 		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);

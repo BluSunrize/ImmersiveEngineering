@@ -1,6 +1,6 @@
 {
   "parent": "immersiveengineering:block/metal_device/core_drill_split",
-  "flip-v": true,
+  "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_device/core_drill_center.obj"
 }

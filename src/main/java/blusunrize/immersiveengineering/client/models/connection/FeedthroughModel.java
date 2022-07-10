@@ -8,13 +8,10 @@
 
 package blusunrize.immersiveengineering.client.models.connection;
 
-import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties;
 import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
 import blusunrize.immersiveengineering.api.utils.QuadTransformer;
-import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.api.wires.WireApi;
 import blusunrize.immersiveengineering.api.wires.WireApi.FeedthroughModelInfo;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -40,7 +37,6 @@ import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.item.ItemColors;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -61,10 +57,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.ForgeModelBakery;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.IQuadTransformer;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelData.Builder;
 import net.minecraftforge.client.model.data.ModelProperty;
 
 import javax.annotation.Nonnull;
@@ -74,9 +69,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import static blusunrize.immersiveengineering.api.ApiUtils.RANDOM_SOURCE;
 import static blusunrize.immersiveengineering.api.wires.WireApi.INFOS;
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 import static blusunrize.immersiveengineering.common.blocks.metal.FeedthroughBlockEntity.MIDDLE_STATE;
@@ -95,15 +89,14 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	@Override
 	public List<BakedQuad> getQuads(Pair<FeedthroughCacheKey, Direction> key)
 	{
-		return CACHE.getUnchecked(key.getFirst()).getQuads(null, key.getSecond(), ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
+		return CACHE.getUnchecked(key.getFirst()).getQuads(null, key.getSecond(), RANDOM_SOURCE);
 	}
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public ModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull ModelData tileData)
 	{
-		List<IModelData> ret = new ArrayList<>();
-		ret.add(tileData);
+		Builder fullData = tileData.derive();
 		BlockEntity te = world.getBlockEntity(pos);
 		if(te instanceof FeedthroughBlockEntity feedthrough)
 		{
@@ -115,9 +108,9 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 					feedthrough.offset,
 					color
 			);
-			ret.add(new SinglePropertyModelData<>(d, FEEDTHROUGH));
+			fullData.with(FEEDTHROUGH, d);
 		}
-		return CombinedModelData.combine(ret.toArray(new IModelData[0]));
+		return fullData.build();
 	}
 
 	@Override
@@ -142,7 +135,8 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
-		return ForgeModelBakery.White.instance();
+		//TODO where can I get a reasonably accurate TAS from?
+		throw new UnsupportedOperationException();
 	}
 
 	private static final ItemTransforms transform = new ItemTransforms(
@@ -174,7 +168,11 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	@Nullable
 	@Override
 	public Pair<FeedthroughCacheKey, Direction> getKey(
-			@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData
+			@Nullable BlockState state,
+			@Nullable Direction side,
+			@Nonnull RandomSource rand,
+			@Nonnull ModelData extraData,
+			@Nullable RenderType layer
 	)
 	{
 		BlockState baseState = Blocks.STONE.defaultBlockState();
@@ -183,9 +181,9 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 		int offset = 1;
 		int colorMultiplier = 0xffffffff;
 
-		if(extraData.hasProperty(FEEDTHROUGH))
+		if(extraData.has(FEEDTHROUGH))
 		{
-			FeedthroughData data = extraData.getData(FEEDTHROUGH);
+			FeedthroughData data = extraData.get(FEEDTHROUGH);
 			assert (data!=null);
 			baseState = data.baseState();
 			wire = data.wire();
@@ -193,16 +191,20 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			offset = data.offset();
 			colorMultiplier = data.colorMultiplier();
 		}
-		return Pair.of(new FeedthroughCacheKey(
-				wire, baseState, offset, facing, MinecraftForgeClient.getRenderType(), colorMultiplier
-		), side);
+		return Pair.of(new FeedthroughCacheKey(wire, baseState, offset, facing, layer, colorMultiplier), side);
 	}
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
+	public List<BakedQuad> getQuads(
+			@Nullable BlockState state,
+			@Nullable Direction side,
+			@Nonnull RandomSource rand,
+			@Nonnull ModelData extraData,
+			@Nullable RenderType layer
+	)
 	{
-		return ICacheKeyProvider.super.getQuads(state, side, rand, extraData);
+		return ICacheKeyProvider.super.getQuads(state, side, rand, extraData, layer);
 	}
 
 	private static class FeedthroughItemOverride extends ItemOverrides
@@ -322,6 +324,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 				k.specificColorMultipliers.put(i, ret);
 				return ret;
 			};
+			boolean renderBlockInLayer = k.layer==null||model.getRenderTypes(k.baseState, RANDOM_SOURCE, ModelData.EMPTY).contains(k.layer);
 			for(int j = 0; j < 7; j++)
 			{
 				Direction side = j < 6?DirectionUtils.VALUES[j]: null;
@@ -329,33 +332,34 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 				switch(k.offset)
 				{
 					case 0:
-						if(k.layer==null||ItemBlockRenderTypes.canRenderInLayer(k.baseState, k.layer))
+						if(renderBlockInLayer)
 						{
-							Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(Transformation.identity(),
-									colorMultiplier);
-							quads.add(model.getQuads(k.baseState, side, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE)
-									.stream()
-									.map(tintTransformer)
-									.collect(Collectors.toCollection(ArrayList::new)));
+							List<BakedQuad> modelQuads = model.getQuads(
+									k.baseState, side, RANDOM_SOURCE, ModelData.EMPTY, k.layer
+							);
+							quads.add(QuadTransformer.color(colorMultiplier).process(modelQuads));
 						}
 						break;
 					case 1:
 						facing = facing.getOpposite();
 					case -1:
 						if(k.layer==RenderType.solid())
-							quads.add(getConnQuads(facing, side, k.type, new Matrix4()));
+							quads.add(getConnQuads(facing, side, k.type, new Matrix4(), k.layer));
 						break;
 					case Integer.MAX_VALUE:
 						Matrix4 mat = new Matrix4();
 						mat.translate(0, 0, 1);
-						List<BakedQuad> all = new ArrayList<>(getConnQuads(facing, side, k.type, mat));
+						List<BakedQuad> all = new ArrayList<>(getConnQuads(facing, side, k.type, mat, k.layer));
 						mat = new Matrix4();
 						mat.translate(0, 0, -1);
-						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat));
-						Function<BakedQuad, BakedQuad> tintTransformer = new QuadTransformer(Transformation.identity(),
-								colorMultiplier);
-						all.addAll(model.getQuads(k.baseState, side, ApiUtils.RANDOM_SOURCE).stream().map(tintTransformer)
-								.collect(Collectors.toCollection(ArrayList::new)));
+						all.addAll(getConnQuads(facing.getOpposite(), side, k.type, mat, k.layer));
+						if(renderBlockInLayer)
+						{
+							var tintTransformer = QuadTransformer.color(colorMultiplier);
+							all.addAll(tintTransformer.process(
+									model.getQuads(k.baseState, side, RANDOM_SOURCE, ModelData.EMPTY, k.layer)
+							));
+						}
 						quads.add(all);
 						break;
 				}
@@ -364,7 +368,9 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			}
 		}
 
-		private List<BakedQuad> getConnQuads(Direction facing, Direction side, WireType type, Matrix4 mat)
+		private List<BakedQuad> getConnQuads(
+				Direction facing, Direction side, WireType type, Matrix4 mat, RenderType layer
+		)
 		{
 			//connector model+feedthrough border
 			WireApi.FeedthroughModelInfo info = INFOS.get(type);
@@ -383,16 +389,12 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			mat.translate(-.5, -.5, -.5);
 			BakedModel model = mc().getBlockRenderer().getBlockModelShaper()
 					.getBlockModel(info.connector().setValue(IEProperties.FACING_ALL, Direction.DOWN));
-			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
+			List<BakedQuad> conn = new ArrayList<>(model.getQuads(null, side, RANDOM_SOURCE, ModelData.EMPTY, layer));
 			if(side==facing)
 				conn.add(ModelUtils.createBakedQuad(
 						vertices, Direction.UP, getTexture(info), info.uvs(), WHITE, false
 				));
-			Function<BakedQuad, BakedQuad> transf = new QuadTransformer(new Transformation(mat.toMatrix4f()), null);//I hope no one uses tint index for connectors
-			if(transf!=null)
-				return conn.stream().map(transf).collect(Collectors.toList());
-			else
-				return conn;
+			return IQuadTransformer.applying(new Transformation(mat.toMatrix4f())).process(conn);
 		}
 
 		private static TextureAtlasSprite getTexture(FeedthroughModelInfo info)
@@ -404,7 +406,14 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 
 		@Nonnull
 		@Override
-		public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
+		public List<BakedQuad> getQuads(
+				@Nullable BlockState state,
+				@Nullable Direction side,
+				@Nonnull RandomSource rand,
+				@Nonnull ModelData extraData,
+				// TODO restructure, this class needs to be for all render types now
+				@Nullable RenderType layer
+		)
 		{
 			return quads.get(side==null?6: side.get3DDataValue());
 		}

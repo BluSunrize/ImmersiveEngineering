@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.data.models;
 
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import com.google.gson.*;
 import com.mojang.math.Matrix4f;
 import com.mojang.math.Quaternion;
@@ -16,7 +17,7 @@ import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
-import net.minecraftforge.common.model.TransformationHelper;
+import net.minecraftforge.common.util.TransformationHelper;
 
 import java.util.EnumMap;
 import java.util.Locale;
@@ -55,7 +56,7 @@ public class TransformationMap
 				if(vanilla)
 				{
 					ItemTransform vanillaTransform = GSON.fromJson(forType, ItemTransform.class);
-					transform = TransformationHelper.toTransformation(vanillaTransform);
+					transform = ModelUtils.fromItemTransform(vanillaTransform, false);
 				}
 				else
 				{

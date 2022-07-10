@@ -32,7 +32,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -50,7 +50,7 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	}
 
 	@Override
-	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
 		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);

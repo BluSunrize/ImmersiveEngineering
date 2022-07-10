@@ -10,7 +10,7 @@ package blusunrize.immersiveengineering.client.render.entity;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.render.tile.DynamicModel;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
@@ -74,7 +74,8 @@ public class SawbladeRenderer extends EntityRenderer<SawbladeEntity>
 				// Tint color
 				1, 1, 1,
 				packedLightIn, OverlayTexture.NO_OVERLAY,
-				new SinglePropertyModelData<>(DYNAMIC_GROUPS, DynamicSubmodelCallbacks.getProperty())
+				ModelDataUtils.single(DynamicSubmodelCallbacks.getProperty(), DYNAMIC_GROUPS),
+				RenderType.cutout()
 		);
 
 		matrixStackIn.popPose();

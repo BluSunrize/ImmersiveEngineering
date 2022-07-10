@@ -31,7 +31,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -76,9 +76,9 @@ public class ClocheRenderer extends IEBlockEntityRenderer<ClocheBlockEntity>
 				if(plantQuadList==null)
 				{
 					BakedModel plantModel = blockRenderer.getBlockModel(state);
-					plantQuadList = new ArrayList<>(plantModel.getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
+					plantQuadList = new ArrayList<>(plantModel.getQuads(state, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null));
 					for(Direction f : Direction.values())
-						plantQuadList.addAll(plantModel.getQuads(state, f, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
+						plantQuadList.addAll(plantModel.getQuads(state, f, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null));
 					plantQuads.put(state, plantQuadList);
 				}
 				int col = ClientUtils.mc().getBlockColors().getColor(state, null, blockPos, -1);

@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
@@ -63,9 +63,9 @@ public class ArcFurnaceRenderer extends IEBlockEntityRenderer<ArcFurnaceBlockEnt
 			renderedParts.add("active");
 
 		matrixStack.pushPose();
-		List<BakedQuad> quads = ELECTRODES.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, new SinglePropertyModelData<>(
-				VisibilityList.show(renderedParts), DynamicSubmodelCallbacks.getProperty()
-		));
+		List<BakedQuad> quads = ELECTRODES.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, ModelDataUtils.single(
+				DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(renderedParts)
+		), RenderType.cutout());
 		matrixStack.pushPose();
 		rotateForFacing(matrixStack, te.getFacing());
 		RenderUtils.renderModelTESRFast(

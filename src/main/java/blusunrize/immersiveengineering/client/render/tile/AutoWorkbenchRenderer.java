@@ -11,7 +11,7 @@ package blusunrize.immersiveengineering.client.render.tile;
 import blusunrize.immersiveengineering.api.IEProperties.VisibilityList;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
 import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.client.ModelDataUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.client.models.obj.callback.DynamicSubmodelCallbacks;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
@@ -45,8 +45,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -302,11 +301,13 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 	{
 		matrix.pushPose();
 		matrix.translate(-0.5, -0.5, -0.5);
-		IModelData data = new SinglePropertyModelData<>(VisibilityList.show(parts), DynamicSubmodelCallbacks.getProperty());
+		ModelData data = ModelDataUtils.single(DynamicSubmodelCallbacks.getProperty(), VisibilityList.show(parts));
 
-		blockRenderer.getModelRenderer().renderModel(matrix.last(), buffers.getBuffer(RenderType.solid()), state, model,
+		blockRenderer.getModelRenderer().renderModel(
+				matrix.last(), buffers.getBuffer(RenderType.solid()), state, model,
 				1, 1, 1,
-				light, overlay, data);
+				light, overlay, data, RenderType.solid()
+		);
 		matrix.popPose();
 	}
 
@@ -335,7 +336,7 @@ public class AutoWorkbenchRenderer extends IEBlockEntityRenderer<AutoWorkbenchBl
 		{
 			BakedModel ibakedmodel = ClientUtils.mc().getItemRenderer().getModel(stack, world, player, 0);
 			HashSet<String> textures = new HashSet<>();
-			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, EmptyModelData.INSTANCE);
+			Collection<BakedQuad> quads = ibakedmodel.getQuads(null, null, world.random, ModelData.EMPTY, null);
 			for(BakedQuad quad : quads)
 				if(quad!=null)
 					textures.add(quad.getSprite().getName().toString());

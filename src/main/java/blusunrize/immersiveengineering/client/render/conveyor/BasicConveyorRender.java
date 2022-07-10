@@ -19,7 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.EnumMap;
 import java.util.List;
@@ -100,14 +100,14 @@ public class BasicConveyorRender<T extends ConveyorBase> implements IConveyorMod
 	{
 		BlockState state = b.defaultBlockState();
 		BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
-		TextureAtlasSprite sprite = model.getParticleIcon(EmptyModelData.INSTANCE);
+		TextureAtlasSprite sprite = model.getParticleIcon(ModelData.EMPTY);
 		Map<Direction, TextureAtlasSprite> sprites = new EnumMap<>(Direction.class);
 
 		for(Direction f : DirectionUtils.VALUES)
-			for(BakedQuad q : model.getQuads(state, f, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE))
+			for(BakedQuad q : model.getQuads(state, f, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null))
 				if(q!=null&&q.getSprite()!=null)
 					sprites.put(f, q.getSprite());
-		for(BakedQuad q : model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE))
+		for(BakedQuad q : model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null))
 			if(q!=null&&q.getSprite()!=null&&q.getDirection()!=null)
 				sprites.put(q.getDirection(), q.getSprite());
 		return d -> sprites.getOrDefault(d, sprite);

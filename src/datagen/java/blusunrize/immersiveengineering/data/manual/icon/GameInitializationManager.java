@@ -12,12 +12,9 @@ package blusunrize.immersiveengineering.data.manual.icon;
 import blusunrize.immersiveengineering.client.ClientProxy;
 import net.minecraft.client.Minecraft;
 import net.minecraft.data.DataGenerator;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.client.model.*;
-import net.minecraftforge.client.model.ModelLoaderRegistry.VanillaProxy;
-import net.minecraftforge.client.model.obj.OBJLoader;
+import net.minecraftforge.client.model.geometry.GeometryLoaderManager;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
@@ -56,13 +53,7 @@ public class GameInitializationManager
 		GLFWInitializationManager.getInstance().initialize();
 		MinecraftInstanceManager.getInstance().initialize(existingFileHelper, gen);
 		ClientProxy.initWithMC();
-		ModelLoaderRegistry.registerLoader(new ResourceLocation("minecraft", "elements"), VanillaProxy.Loader.INSTANCE);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "obj"), OBJLoader.INSTANCE);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "bucket"), DynamicBucketModel.Loader.INSTANCE);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "composite"), CompositeModel.Loader.INSTANCE);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "multi-layer"), MultiLayerModel.Loader.INSTANCE);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "item-layers"), ItemLayerModel.Loader.INSTANCE);
-		ModelLoaderRegistry.registerLoader(new ResourceLocation("forge", "separate-perspective"), SeparatePerspectiveModel.Loader.INSTANCE);
+		GeometryLoaderManager.init();
 
 		final ExtendedModelManager extendedModelManager = (ExtendedModelManager)Minecraft.getInstance().getModelManager();
 		extendedModelManager.loadModels();

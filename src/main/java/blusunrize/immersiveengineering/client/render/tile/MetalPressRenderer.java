@@ -27,7 +27,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.List;
 
@@ -93,7 +93,7 @@ public class MetalPressRenderer extends IEBlockEntityRenderer<MetalPressBlockEnt
 		blockRenderer.getModelRenderer().renderModel(
 				matrixStack.last(), bufferIn.getBuffer(RenderType.solid()), state, model,
 				1, 1, 1,
-				combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE
+				combinedLightIn, combinedOverlayIn, ModelData.EMPTY, RenderType.solid()
 		);
 		matrixStack.popPose();
 

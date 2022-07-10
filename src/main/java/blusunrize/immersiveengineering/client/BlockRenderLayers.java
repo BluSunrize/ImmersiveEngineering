@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Supplier;
 
+// TODO replace by new data-driven system, maybe. Not trivial in some cases, at least without a lot of duplicate code
 @EventBusSubscriber(modid = ImmersiveEngineering.MODID, value = Dist.CLIENT, bus = Bus.MOD)
 public class BlockRenderLayers
 {
@@ -77,7 +78,7 @@ public class BlockRenderLayers
 				Supplier<Block> baseBlock = Suppliers.memoize(() -> ForgeRegistries.BLOCKS.getValue(slab.getKey()));
 				ItemBlockRenderTypes.setRenderLayer(
 						slab.getValue().get(),
-						rt -> ItemBlockRenderTypes.canRenderInLayer(baseBlock.get().defaultBlockState(), rt)
+						rt -> ItemBlockRenderTypes.getRenderLayers(baseBlock.get().defaultBlockState()).contains(rt)
 				);
 			}
 		setRenderLayer(Cloth.BALLOON, RenderType.translucent());

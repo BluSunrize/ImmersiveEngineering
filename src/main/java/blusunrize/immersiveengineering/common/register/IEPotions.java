@@ -14,9 +14,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.StoneDecoration;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableSet;
-import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.gui.GuiComponent;
-import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
 import net.minecraft.core.Registry;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
@@ -30,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.EffectRenderer;
+import net.minecraftforge.client.extensions.common.IClientMobEffectExtensions;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
@@ -100,32 +97,18 @@ public class IEPotions
 		}
 
 		@Override
-		public void initializeClient(Consumer<EffectRenderer> consumer)
+		public void initializeClient(Consumer<IClientMobEffectExtensions> consumer)
 		{
-			consumer.accept(new EffectRenderer()
+			consumer.accept(new IClientMobEffectExtensions()
 			{
 				@Override
-				public void renderInventoryEffect(MobEffectInstance effect, EffectRenderingInventoryScreen<?> gui, PoseStack mStack, int x, int y, float z)
-				{}
-
-				@Override
-				public void renderHUDEffect(MobEffectInstance effect, GuiComponent gui, PoseStack mStack, int x, int y, float z, float alpha)
-				{}
-
-				@Override
-				public boolean shouldRender(MobEffectInstance effect)
+				public boolean isVisibleInGui(MobEffectInstance instance)
 				{
-					return showInInventory;
+					return showInHud;
 				}
 
 				@Override
-				public boolean shouldRenderInvText(MobEffectInstance effect)
-				{
-					return showInInventory;
-				}
-
-				@Override
-				public boolean shouldRenderHUD(MobEffectInstance effect)
+				public boolean isVisibleInInventory(MobEffectInstance instance)
 				{
 					return showInInventory;
 				}

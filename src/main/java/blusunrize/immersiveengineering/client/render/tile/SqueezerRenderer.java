@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerBlockEntity>
 {
@@ -55,7 +55,7 @@ public class SqueezerRenderer extends IEBlockEntityRenderer<SqueezerBlockEntity>
 		blockRenderer.getModelRenderer().renderModel(
 				matrixStack.last(), buffer, state, model,
 				1, 1, 1,
-				combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE
+				combinedLightIn, combinedOverlayIn, ModelData.EMPTY, RenderType.solid()
 		);
 
 		matrixStack.popPose();

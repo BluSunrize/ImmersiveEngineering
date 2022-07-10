@@ -39,11 +39,6 @@ public class MirroredModelState implements ModelState
 		return inner.isUvLocked();
 	}
 
-	public Transformation getPartTransformation(Object part)
-	{
-		return mirror(inner.getPartTransformation(part));
-	}
-
 	private static Transformation mirror(Transformation in)
 	{
 		return in.compose(MIRRORED_IDENTITY);

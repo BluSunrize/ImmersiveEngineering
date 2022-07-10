@@ -43,7 +43,7 @@ public class ExtendedModelManager extends ModelManager
 
 		this.apply(modelBakery, Minecraft.getInstance().getResourceManager(), InactiveProfiler.INSTANCE);
 
-		this.spriteMap = modelBakery.getSpriteMap();
+		this.spriteMap = modelBakery.getAtlasSet();
 
 		Minecraft.getInstance().getItemRenderer().getItemModelShaper().rebuildCache();
 	}

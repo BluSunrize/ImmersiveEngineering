@@ -23,8 +23,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 
 import javax.annotation.Nonnull;
@@ -52,11 +51,11 @@ public class ChemthrowerShotRenderer extends EntityRenderer<ChemthrowerShotEntit
 		matrixStackIn.mulPose(new Quaternion(new Vector3f(0.0F, 1.0F, 0.0F), 180.0F-this.entityRenderDispatcher.camera.getYRot(), true));
 		matrixStackIn.mulPose(new Quaternion(new Vector3f(1.0F, 0.0F, 0.0F), -this.entityRenderDispatcher.camera.getXRot(), true));
 
-		IFluidTypeRenderProperties props = RenderProperties.get(f.getFluid());
+		IClientFluidTypeExtensions props = IClientFluidTypeExtensions.of(f.getFluid());
 		TextureAtlasSprite sprite = ClientUtils.mc().getModelManager()
 				.getAtlas(InventoryMenu.BLOCK_ATLAS)
 				.getSprite(props.getStillTexture(f));
-		int colour = props.getColorTint(f);
+		int colour = props.getTintColor(f);
 		float a = (colour>>24&255)/255f;
 		float r = (colour>>16&255)/255f;
 		float g = (colour>>8&255)/255f;

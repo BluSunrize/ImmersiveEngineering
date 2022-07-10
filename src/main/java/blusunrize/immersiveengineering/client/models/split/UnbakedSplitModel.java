@@ -15,8 +15,8 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
 
-public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
+public class UnbakedSplitModel implements IUnbakedGeometry<UnbakedSplitModel>
 {
 	private final UnbakedModel baseModel;
 	private final Set<Vec3i> parts;
@@ -40,8 +40,14 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 	}
 
 	@Override
-	public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-							ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+	public BakedModel bake(
+			IGeometryBakingContext owner,
+			ModelBakery bakery,
+			Function<Material, TextureAtlasSprite> spriteGetter,
+			ModelState modelTransform,
+			ItemOverrides overrides,
+			ResourceLocation modelLocation
+	)
 	{
 		BakedModel bakedBase = baseModel.bake(bakery, spriteGetter, BlockModelRotation.X0_Y0, modelLocation);
 		if(dynamic)
@@ -53,8 +59,11 @@ public class UnbakedSplitModel implements IModelGeometry<UnbakedSplitModel>
 	}
 
 	@Override
-	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter,
-												  Set<Pair<String, String>> missingTextureErrors)
+	public Collection<Material> getMaterials(
+			IGeometryBakingContext owner,
+			Function<ResourceLocation, UnbakedModel> modelGetter,
+			Set<Pair<String, String>> missingTextureErrors
+	)
 	{
 		return baseModel.getMaterials(modelGetter, missingTextureErrors);
 	}

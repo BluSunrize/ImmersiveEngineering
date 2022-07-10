@@ -25,8 +25,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.getSprite;
@@ -100,9 +99,9 @@ public class GuiHelper
 
 	public static void drawRepeatedFluidSprite(VertexConsumer builder, PoseStack transform, FluidStack fluid, float x, float y, float w, float h)
 	{
-		IFluidTypeRenderProperties props = RenderProperties.get(fluid.getFluid());
+		IClientFluidTypeExtensions props = IClientFluidTypeExtensions.of(fluid.getFluid());
 		TextureAtlasSprite sprite = getSprite(props.getStillTexture(fluid));
-		int col = props.getColorTint(fluid);
+		int col = props.getTintColor(fluid);
 		int iW = sprite.getWidth();
 		int iH = sprite.getHeight();
 		if(iW > 0&&iH > 0)

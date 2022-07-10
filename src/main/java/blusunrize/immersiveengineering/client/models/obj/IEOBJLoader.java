@@ -14,21 +14,20 @@ import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallbacks;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import malte0811.modelsplitter.model.MaterialLibrary.OBJMaterial;
 import malte0811.modelsplitter.model.OBJModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraftforge.client.model.IModelLoader;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.io.IOException;
 import java.io.InputStream;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
-public class IEOBJLoader implements IModelLoader<IEOBJModel>
+public class IEOBJLoader implements IGeometryLoader<IEOBJModel>
 {
 	public static final ResourceLocation LOADER_NAME = new ResourceLocation(MODID, "ie_obj");
 	public static final String MODEL_KEY = "model";
@@ -36,13 +35,10 @@ public class IEOBJLoader implements IModelLoader<IEOBJModel>
 	public static final String DYNAMIC_KEY = "dynamic";
 	public static final IEOBJLoader instance = new IEOBJLoader();
 
-	private ResourceManager manager;
-
-	@Nonnull
 	@Override
 	public IEOBJModel read(
-			@Nonnull JsonDeserializationContext deserializationContext, @Nonnull JsonObject modelContents
-	)
+			JsonObject modelContents, JsonDeserializationContext deserializationContext
+	) throws JsonParseException
 	{
 		ResourceLocation modelLoc = toRL(modelContents.get(MODEL_KEY).getAsString(), null);
 		try(InputStream input = getStream(modelLoc))
@@ -84,18 +80,10 @@ public class IEOBJLoader implements IModelLoader<IEOBJModel>
 	{
 		try
 		{
-			if(manager==null)
-				manager = Minecraft.getInstance().getResourceManager();
-			return manager.getResource(path).orElseThrow().open();
+			return Minecraft.getInstance().getResourceManager().getResource(path).orElseThrow().open();
 		} catch(IOException e)
 		{
 			throw new RuntimeException(e);
 		}
-	}
-
-	@Override
-	public void onResourceManagerReload(@Nonnull ResourceManager pResourceManager)
-	{
-		manager = pResourceManager;
 	}
 }

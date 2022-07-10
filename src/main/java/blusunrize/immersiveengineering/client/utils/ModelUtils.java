@@ -12,24 +12,25 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.client.ClientUtils;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
+import blusunrize.immersiveengineering.mixin.accessors.client.SimpleModelAccess;
+import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
-import net.minecraft.client.Minecraft;
+import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
+import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.RenderTypeGroup;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -42,6 +43,43 @@ import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
 public class ModelUtils
 {
+	public static RenderTypeGroup copyTypes(SimpleBakedModel simpleModel)
+	{
+		SimpleModelAccess access = (SimpleModelAccess)simpleModel;
+		ChunkRenderTypeSet blockTypes = access.getBlockRenderTypes();
+		if(blockTypes==null||blockTypes.isEmpty())
+			return RenderTypeGroup.EMPTY;
+		List<RenderType> itemTypes = access.getItemRenderTypes();
+		List<RenderType> fabulousItemTypes = access.getFabulousItemRenderTypes();
+		return new RenderTypeGroup(blockTypes.iterator().next(), itemTypes.get(0), fabulousItemTypes.get(0));
+	}
+
+	public static Transformation fromItemTransform(ItemTransform transform, boolean leftHand)
+	{
+		Vector3f translate = transform.translation;
+		if(leftHand)
+		{
+			translate = translate.copy();
+			translate.setX(-translate.x());
+		}
+
+		float leftRX = transform.rotation.x();
+		float leftRY = transform.rotation.y();
+		float leftRZ = transform.rotation.z();
+		if(leftHand)
+		{
+			leftRY = -leftRY;
+			leftRZ = -leftRZ;
+		}
+		Quaternion leftRotation = new Quaternion(leftRX, leftRY, leftRZ, true);
+
+		float rightRX = transform.rightRotation.x();
+		float rightRY = transform.rightRotation.y()*(leftHand?-1: 1);
+		float rightRZ = transform.rightRotation.z()*(leftHand?-1: 1);
+		Quaternion rightRotation = new Quaternion(rightRX, rightRY, rightRZ, true);
+
+		return new Transformation(translate, leftRotation, transform.scale, rightRotation);
+	}
 
 	public static Set<BakedQuad> createBakedBox(Vec3 from, Vec3 to, Matrix4 matrix, Direction facing, Function<Direction, TextureAtlasSprite> textureGetter, float[] colour)
 	{
@@ -118,62 +156,22 @@ public class ModelUtils
 
 	public static BakedQuad createBakedQuad(Vec3[] vertices, Direction facing, TextureAtlasSprite sprite, double[] uvs, float[] colour, boolean invert)
 	{
-		BakedQuadBuilder builder = new BakedQuadBuilder(sprite);
-		builder.setQuadOrientation(facing);
-		builder.setApplyDiffuseLighting(true);
+		BakedQuadBuilder builder = new BakedQuadBuilder();
 		Vec3i normalInt = facing.getNormal();
 		Vec3 faceNormal = new Vec3(normalInt.getX(), normalInt.getY(), normalInt.getZ());
 		int vId = invert?3: 0;
 		int u = vId > 1?2: 0;
-		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, 1);
+		builder.putVertexData(vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, 1);
 		vId = invert?2: 1;
 		u = vId > 1?2: 0;
-		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, 1);
+		builder.putVertexData(vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, 1);
 		vId = invert?1: 2;
 		u = vId > 1?2: 0;
-		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, 1);
+		builder.putVertexData(vertices[vId], faceNormal, uvs[u], uvs[3], sprite, colour, 1);
 		vId = invert?0: 3;
 		u = vId > 1?2: 0;
-		putVertexData(builder, vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, 1);
-		return builder.build();
-	}
-
-	public static void putVertexData(BakedQuadBuilder builder, Vec3 pos, Vec3 faceNormal, double u, double v, TextureAtlasSprite sprite, float[] colour, float alpha)
-	{
-		VertexFormat format = DefaultVertexFormat.BLOCK;
-		for(int e = 0; e < format.getElements().size(); e++)
-			switch(format.getElements().get(e).getUsage())
-			{
-				case POSITION:
-					builder.put(e, (float)pos.x, (float)pos.y, (float)pos.z);
-					break;
-				case COLOR:
-					float d = 1;//LightUtil.diffuseLight(faceNormal.x, faceNormal.y, faceNormal.z);
-					builder.put(e, d*colour[0], d*colour[1], d*colour[2], 1*colour[3]*alpha);
-					break;
-				case UV:
-					if(format.getElements().get(e).getType()==Type.FLOAT)
-					{
-						// Actual UVs
-						if(sprite==null)//Double Safety. I have no idea how it even happens, but it somehow did .-.
-							sprite = getMissingSprite();
-						builder.put(e, sprite.getU(u), sprite.getV(v));
-					}
-					else
-						//Lightmap UVs (0, 0 is "automatic")
-						builder.put(e, 0, 0);
-					break;
-				case NORMAL:
-					builder.put(e, (float)faceNormal.x(), (float)faceNormal.y(), (float)faceNormal.z());
-					break;
-				default:
-					builder.put(e);
-			}
-	}
-
-	private static TextureAtlasSprite getMissingSprite()
-	{
-		return Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
+		builder.putVertexData(vertices[vId], faceNormal, uvs[u], uvs[1], sprite, colour, 1);
+		return builder.bake(-1, facing, sprite, true);
 	}
 
 	public static ResourceLocation getSideTexture(@Nonnull ItemStack stack, Direction side)
@@ -190,9 +188,9 @@ public class ModelUtils
 
 	public static ResourceLocation getSideTexture(@Nonnull BakedModel model, Direction side, @Nullable BlockState state)
 	{
-		List<BakedQuad> quads = model.getQuads(state, side, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
+		List<BakedQuad> quads = model.getQuads(state, side, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
 		if(quads.isEmpty())//no quads for the specified side D:
-			quads = model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
+			quads = model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
 		if(quads.isEmpty())//no quads at all D:
 			return null;
 		return quads.get(0).getSprite().getName();

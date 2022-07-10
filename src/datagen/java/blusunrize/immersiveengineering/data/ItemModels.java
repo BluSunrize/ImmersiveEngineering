@@ -36,8 +36,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
-import net.minecraftforge.client.model.generators.loaders.DynamicBucketModelBuilder;
-import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
+import net.minecraftforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
+import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
@@ -306,7 +306,7 @@ public class ItemModels extends TRSRItemModelProvider
 	private void createBucket(IEFluids.FluidEntry entry)
 	{
 		withExistingParent(name(entry.getBucket()), forgeLoc("item/bucket"))
-				.customLoader(DynamicBucketModelBuilder::begin)
+				.customLoader(DynamicFluidContainerModelBuilder::begin)
 				.fluid(entry.getStill());
 	}
 
@@ -383,7 +383,7 @@ public class ItemModels extends TRSRItemModelProvider
 	{
 		Preconditions.checkArgument(existingFileHelper.exists(model, PackType.CLIENT_RESOURCES, "", "models"));
 		return getBuilder(item)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.flipV(true)
 				.modelLocation(new ResourceLocation(model.getNamespace(), "models/"+model.getPath()))
 				.end();

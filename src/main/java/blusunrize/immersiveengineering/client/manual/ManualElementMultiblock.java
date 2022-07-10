@@ -28,6 +28,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -39,8 +40,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate.StructureBlockInfo;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -239,14 +239,15 @@ public class ManualElementMultiblock extends SpecialManualElements
 									else
 										overlay = OverlayTexture.NO_OVERLAY;
 									translucentFullbright.setOverlay(overlay);
-									IModelData modelData = EmptyModelData.INSTANCE;
+									ModelData modelData = ModelData.EMPTY;
 									BlockEntity te = structureWorld.getBlockEntity(pos);
 									if(te!=null)
 										modelData = te.getModelData();
 									blockRender.getModelRenderer().tesselateBlock(
 											structureWorld, blockRender.getBlockModel(state), state, pos, transform,
 											translucentFullbright, false, structureWorld.random, state.getSeed(pos),
-											overlay, modelData
+											// TODO do all models we care about return quads independent of RT?
+											overlay, modelData, RenderType.translucent()
 									);
 									transform.popPose();
 								}

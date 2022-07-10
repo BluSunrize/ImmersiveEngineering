@@ -14,8 +14,7 @@ import blusunrize.immersiveengineering.api.client.ICacheKeyProvider;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper;
 import blusunrize.immersiveengineering.api.shader.ShaderCase;
-import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
+import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
 import blusunrize.immersiveengineering.client.models.obj.GeneralIEOBJModel.ModelKey;
 import blusunrize.immersiveengineering.client.models.obj.SpecificIEOBJModel.ShadedQuads;
 import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
@@ -47,16 +46,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelProperty;
-import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -72,18 +67,25 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 	private final IEOBJCallback<T> callback;
 	private final OBJModel<OBJMaterial> baseModel;
 	private final TextureAtlasSprite particles;
-	private final IModelConfiguration owner;
+	private final IGeometryBakingContext owner;
 	private final Function<Material, TextureAtlasSprite> spriteGetter;
 	private final ModelState sprite;
 	private final boolean isDynamic;
 	private final ItemOverrides overrides;
 	private final ModelProperty<T> keyProperty;
 
-	public GeneralIEOBJModel(IEOBJCallback<T> callback, OBJModel<OBJMaterial> baseModel, IModelConfiguration owner, Function<Material, TextureAtlasSprite> spriteGetter, ModelState sprite, boolean isDynamic)
+	public GeneralIEOBJModel(
+			IEOBJCallback<T> callback,
+			OBJModel<OBJMaterial> baseModel,
+			IGeometryBakingContext owner,
+			Function<Material, TextureAtlasSprite> spriteGetter,
+			ModelState sprite,
+			boolean isDynamic
+	)
 	{
 		this.callback = callback;
 		this.baseModel = baseModel;
-		this.particles = spriteGetter.apply(owner.resolveTexture("particle"));
+		this.particles = spriteGetter.apply(owner.getMaterial("particle"));
 		this.owner = owner;
 		this.spriteGetter = spriteGetter;
 		this.sprite = sprite;
@@ -109,50 +111,52 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 	{
 		if(key==null)
 			return ImmutableList.of();
-		return modelCache.getUnchecked(key).getQuads(null, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
+		return modelCache.getUnchecked(key).getQuads(
+				null, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null
+		);
 	}
 
 	@Nullable
 	@Override
-	public ModelKey<T> getKey(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
+	public ModelKey<T> getKey(
+			@Nullable BlockState state,
+			@Nullable Direction side,
+			@Nonnull RandomSource rand,
+			@Nonnull ModelData extraData,
+			@Nullable RenderType layer
+	)
 	{
 		if(side!=null)
 			return null;
 		T key;
-		if(extraData.hasProperty(keyProperty))
-			key = extraData.getData(keyProperty);
+		if(extraData.has(keyProperty))
+			key = extraData.get(keyProperty);
 		else
 			key = BlockCallback.castOrDefault(callback).getDefaultKey();
 		RenderType layerToCheck;
-		if(BlockCallback.castOrDefault(callback).dependsOnLayer())
-			layerToCheck = MinecraftForgeClient.getRenderType();
-		else
-			layerToCheck = null;
-		ShaderCase shader = extraData.getData(CapabilityShader.MODEL_PROPERTY);
-		return new ModelKey<>(key, shader, layerToCheck);
+		boolean includeLayer = BlockCallback.castOrDefault(callback).dependsOnLayer();
+		ShaderCase shader = extraData.get(CapabilityShader.MODEL_PROPERTY);
+		return new ModelKey<>(key, shader, includeLayer?layer: null);
 	}
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(
-			@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData
+	public ModelData getModelData(
+			@Nonnull BlockAndTintGetter level, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull ModelData tileData
 	)
 	{
 		BlockCallback<T> blockCB = BlockCallback.castOrDefault(callback);
 		BlockEntity blockEntity = level.getBlockEntity(pos);
 		T key = blockCB.extractKey(level, pos, state, blockEntity);
-		List<IModelData> toCombine = new ArrayList<>(3);
-		toCombine.add(tileData);
-		toCombine.add(new SinglePropertyModelData<>(key, keyProperty));
+		ModelData.Builder modelData = tileData.derive();
+		modelData.with(keyProperty, key);
 		if(blockEntity!=null)
 		{
-			LazyOptional<ShaderWrapper> shaderCap = blockEntity.getCapability(CapabilityShader.SHADER_CAPABILITY);
-			if(shaderCap.isPresent())
-				toCombine.add(new SinglePropertyModelData<>(
-						shaderCap.orElseThrow(RuntimeException::new).getCase(), CapabilityShader.MODEL_PROPERTY
-				));
+			ShaderWrapper shaderCap = CapabilityUtils.getCapability(blockEntity, CapabilityShader.SHADER_CAPABILITY);
+			if(shaderCap!=null)
+				modelData.with(CapabilityShader.MODEL_PROPERTY, shaderCap.getCase());
 		}
-		return CombinedModelData.combine(toCombine.toArray(new IModelData[0]));
+		return modelData.build();
 	}
 
 	@Override
@@ -183,11 +187,11 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
-		return getParticleIcon(EmptyModelData.INSTANCE);
+		return getParticleIcon(ModelData.EMPTY);
 	}
 
 	@Override
-	public TextureAtlasSprite getParticleIcon(@Nonnull IModelData data)
+	public TextureAtlasSprite getParticleIcon(@Nonnull ModelData data)
 	{
 		return particles;
 	}
@@ -197,13 +201,6 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 	public ItemOverrides getOverrides()
 	{
 		return overrides;
-	}
-
-	@Override
-	public boolean doesHandlePerspectives()
-	{
-		// Done in SpecificIEOBJModel
-		return true;
 	}
 
 	public Cache<GroupKey<T>, List<ShadedQuads>> getGroupCache()
@@ -231,7 +228,7 @@ public class GeneralIEOBJModel<T> implements ICacheKeyProvider<ModelKey<T>>
 		return spriteGetter;
 	}
 
-	public IModelConfiguration getOwner()
+	public IGeometryBakingContext getOwner()
 	{
 		return owner;
 	}

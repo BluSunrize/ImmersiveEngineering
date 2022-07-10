@@ -18,7 +18,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class CrusherRenderer extends IEBlockEntityRenderer<CrusherBlockEntity>
 	{
 		matrix.pushPose();
 		matrix.translate(-.5, -.5, -.5);
-		List<BakedQuad> quads = BARREL.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
+		List<BakedQuad> quads = BARREL.get().getQuads(null, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
 		rotateForFacing(matrix, facing);
 		RenderUtils.renderModelTESRFast(quads, buffer.getBuffer(RenderType.solid()), matrix, light, overlay);
 		matrix.popPose();

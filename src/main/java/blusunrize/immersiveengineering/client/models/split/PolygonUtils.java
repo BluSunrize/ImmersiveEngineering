@@ -9,10 +9,10 @@
 
 package blusunrize.immersiveengineering.client.models.split;
 
+import blusunrize.immersiveengineering.client.utils.BakedQuadBuilder;
 import com.google.common.base.Preconditions;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
-import com.mojang.blaze3d.vertex.VertexFormatElement.Type;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import com.mojang.math.Vector4f;
@@ -24,7 +24,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
-import net.minecraftforge.client.model.pipeline.BakedQuadBuilder;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -85,11 +85,10 @@ public class PolygonUtils
 	public static BakedQuad toBakedQuad(List<Vertex> points, ExtraQuadData data, Transformation rotation, boolean absoluteUV)
 	{
 		Preconditions.checkArgument(points.size()==4);
-		BakedQuadBuilder quadBuilder = new BakedQuadBuilder(data.sprite());
+		BakedQuadBuilder quadBuilder = new BakedQuadBuilder();
 		Vector3f normal = new Vector3f();
 		for(Vertex v : points)
 		{
-			List<VertexFormatElement> elements = DefaultVertexFormat.BLOCK.getElements();
 			Vector4f pos = new Vector4f();
 			pos.set(toArray(v.position(), 4));
 			normal.set(toArray(v.normal(), 3));
@@ -103,41 +102,16 @@ public class PolygonUtils
 				if(Math.abs(i-pos.y()) < epsilon) pos.setY(i);
 				if(Math.abs(i-pos.z()) < epsilon) pos.setZ(i);
 			}
-			for(int i = 0, elementsSize = elements.size(); i < elementsSize; i++)
-			{
-				VertexFormatElement element = elements.get(i);
-				switch(element.getUsage())
-				{
-					case POSITION:
-						quadBuilder.put(i, pos.x(), pos.y(), pos.z());
-						break;
-					case NORMAL:
-						quadBuilder.put(i, normal.x(), normal.y(), normal.z());
-						break;
-					case COLOR:
-						quadBuilder.put(i, data.color().x(), data.color().y(), data.color().z(), data.color().w());
-						break;
-					case UV:
-						if(element.getType()==Type.FLOAT)
-						{
-							if(absoluteUV)
-								quadBuilder.put(i, (float)v.uv().u(), (float)v.uv().v());
-							else
-								quadBuilder.put(
-										i, data.sprite().getU(16*v.uv().u()), data.sprite().getV(16*(1-v.uv().v()))
-								);
-						}
-						else
-							quadBuilder.put(i, 0, 0);
-						break;
-					case PADDING:
-						quadBuilder.put(i, 0);
-						break;
-				}
-			}
+			quadBuilder.putVertexData(
+					new Vec3(pos.x(), pos.y(), pos.z()),
+					new Vec3(normal),
+					absoluteUV?v.uv().u(): data.sprite().getU(16*v.uv().u()),
+					absoluteUV?v.uv().v(): data.sprite().getV(16*v.uv().v()),
+					new float[]{data.color.x(), data.color.y(), data.color.z(), data.color.w()},
+					1
+			);
 		}
-		quadBuilder.setQuadOrientation(Direction.getNearest(normal.x(), normal.y(), normal.z()));
-		return quadBuilder.build();
+		return quadBuilder.bake(-1, Direction.getNearest(normal.x(), normal.y(), normal.z()), data.sprite(), true);
 	}
 
 	private static float[] toArray(Vec3d vec, int length)

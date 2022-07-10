@@ -32,9 +32,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.client.MinecraftForgeClient;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -325,20 +323,12 @@ public class PipeCallbacks implements BlockCallback<PipeCallbacks.Key>
 		{
 			BlockState state = key.cover().defaultBlockState();
 			BakedModel model = Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getBlockModel(state);
-			RenderType curL = MinecraftForgeClient.getRenderType();
-			for(RenderType layer : new RenderType[]{
-					RenderType.solid(),
-					RenderType.translucent(),
-					RenderType.cutout(),
-					RenderType.cutoutMipped(),
-			})
+			for(RenderType layer : RenderType.chunkBufferLayers())
 			{
-				ForgeHooksClient.setRenderType(layer);
 				for(Direction direction : Direction.values())
-					quads.addAll(model.getQuads(state, direction, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
-				quads.addAll(model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE));
+					quads.addAll(model.getQuads(state, direction, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, layer));
+				quads.addAll(model.getQuads(state, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, layer));
 			}
-			ForgeHooksClient.setRenderType(curL);
 		}
 		return quads;
 	}

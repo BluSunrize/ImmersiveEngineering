@@ -11,8 +11,6 @@ package blusunrize.immersiveengineering.client.models.split;
 
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.client.IModelOffsetProvider;
-import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.models.CompositeBakedModel;
 import blusunrize.immersiveengineering.client.models.split.PolygonUtils.ExtraQuadData;
 import malte0811.modelsplitter.ClumpedModel;
@@ -28,7 +26,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -47,14 +45,14 @@ public abstract class AbstractSplitModel<T extends BakedModel> extends Composite
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(
+	public ModelData getModelData(
 			@Nonnull BlockAndTintGetter world,
 			@Nonnull BlockPos pos,
 			@Nonnull BlockState state,
-			@Nonnull IModelData tileData
+			@Nonnull ModelData tileData
 	)
 	{
-		IModelData baseData = super.getModelData(world, pos, state, tileData);
+		ModelData baseData = super.getModelData(world, pos, state, tileData);
 		BlockEntity te = world.getBlockEntity(pos);
 		BlockPos offset = null;
 		if(te instanceof IModelOffsetProvider)
@@ -62,7 +60,9 @@ public abstract class AbstractSplitModel<T extends BakedModel> extends Composite
 		else if(state.getBlock() instanceof IModelOffsetProvider)
 			offset = ((IModelOffsetProvider)state.getBlock()).getModelOffset(state, size);
 		if(offset!=null)
-			return CombinedModelData.combine(new SinglePropertyModelData<>(offset, Model.SUBMODEL_OFFSET), baseData);
+			return baseData.derive()
+					.with(Model.SUBMODEL_OFFSET, offset)
+					.build();
 		else
 			return baseData;
 	}

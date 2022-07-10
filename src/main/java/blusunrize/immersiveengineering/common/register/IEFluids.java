@@ -29,7 +29,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
@@ -164,9 +164,9 @@ public class IEFluids
 			return new FluidType(builder)
 			{
 				@Override
-				public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer)
+				public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
 				{
-					consumer.accept(new IFluidTypeRenderProperties()
+					consumer.accept(new IClientFluidTypeExtensions()
 					{
 						@Override
 						public ResourceLocation getStillTexture()

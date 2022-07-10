@@ -8,23 +8,29 @@
 
 package blusunrize.immersiveengineering.client;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.ZoomHandler.IZoomTool;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
-import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.settings.IKeyConflictContext;
 import net.minecraftforge.client.settings.KeyConflictContext;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import org.lwjgl.glfw.GLFW;
 
 import static blusunrize.immersiveengineering.client.ClientUtils.mc;
 
+@EventBusSubscriber(modid = Lib.MODID, bus = Bus.MOD)
 public class IEKeybinds
 {
 	public static KeyMapping keybind_magnetEquip = new KeyMapping("key.immersiveengineering.magnetEquip", GLFW.GLFW_KEY_S, "key.categories.immersiveengineering");
 	public static KeyMapping keybind_chemthrowerSwitch = new KeyMapping("key.immersiveengineering.chemthrowerSwitch", -1, "key.categories.immersiveengineering");
 	public static KeyMapping keybind_railgunZoom = new KeyMapping("key.immersiveengineering.railgunZoom", InputConstants.Type.MOUSE, 2, "key.categories.immersiveengineering");
 
-	public static void register()
+	@SubscribeEvent
+	public static void registerKeybinds(RegisterKeyMappingsEvent ev)
 	{
 		IKeyConflictContext noKeyConflict = new IKeyConflictContext()
 		{
@@ -41,14 +47,14 @@ public class IEKeybinds
 			}
 		};
 		keybind_magnetEquip.setKeyConflictContext(noKeyConflict);
-		ClientRegistry.registerKeyBinding(keybind_magnetEquip);
+		ev.register(keybind_magnetEquip);
 
 		keybind_railgunZoom.setKeyConflictContext(new ItemKeybindConflictContext(
 				(stack, player) -> stack.getItem() instanceof IZoomTool&&((IZoomTool)stack.getItem()).canZoom(stack, player))
 		);
-		ClientRegistry.registerKeyBinding(keybind_railgunZoom);
+		ev.register(keybind_railgunZoom);
 
 		keybind_chemthrowerSwitch.setKeyConflictContext(KeyConflictContext.IN_GAME);
-		ClientRegistry.registerKeyBinding(keybind_chemthrowerSwitch);
+		ev.register(keybind_chemthrowerSwitch);
 	}
 }

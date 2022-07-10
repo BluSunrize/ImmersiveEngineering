@@ -11,12 +11,10 @@ package blusunrize.immersiveengineering.common.register;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.client.fx.*;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
@@ -47,13 +45,12 @@ public class IEParticles
 	private static class Client
 	{
 		@SubscribeEvent
-		public static void registerParticleFactories(ParticleFactoryRegisterEvent event)
+		public static void registerParticleFactories(RegisterParticleProvidersEvent event)
 		{
-			ParticleEngine manager = Minecraft.getInstance().particleEngine;
-			manager.register(IEParticles.FLUID_SPLASH.get(), new FluidSplashParticle.Factory());
-			manager.register(IEParticles.FRACTAL.get(), new FractalParticle.Factory());
-			manager.register(IEParticles.SPARKS.get(), SparksParticle.Factory::new);
-			manager.register(IEParticles.IE_BUBBLE.get(), IEBubbleParticle.Factory::new);
+			event.register(IEParticles.FLUID_SPLASH.get(), new FluidSplashParticle.Factory());
+			event.register(IEParticles.FRACTAL.get(), new FractalParticle.Factory());
+			event.register(IEParticles.SPARKS.get(), SparksParticle.Factory::new);
+			event.register(IEParticles.IE_BUBBLE.get(), IEBubbleParticle.Factory::new);
 		}
 	}
 }

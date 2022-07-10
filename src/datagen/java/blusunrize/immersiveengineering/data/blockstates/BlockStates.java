@@ -29,6 +29,7 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.data.DataGenUtils;
 import blusunrize.immersiveengineering.data.models.ConveyorModelBuilder;
+import blusunrize.immersiveengineering.data.models.ModelProviderUtils;
 import blusunrize.immersiveengineering.data.models.NongeneratedModels.NongeneratedModel;
 import blusunrize.immersiveengineering.data.models.SideConfigBuilder;
 import com.google.common.base.Preconditions;
@@ -47,13 +48,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.FenceBlock;
 import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.client.model.generators.BlockModelBuilder;
 import net.minecraftforge.client.model.generators.ConfiguredModel;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelFile.ExistingModelFile;
 import net.minecraftforge.client.model.generators.VariantBlockStateBuilder;
-import net.minecraftforge.client.model.generators.loaders.MultiLayerModelBuilder;
+import net.minecraftforge.client.model.generators.loaders.CompositeModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
@@ -419,7 +420,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		{
 			Fluid still = entry.getStill();
 			// Hack, but after all this is datagen
-			Mutable<IFluidTypeRenderProperties> box = new MutableObject<>();
+			Mutable<IClientFluidTypeExtensions> box = new MutableObject<>();
 			still.getFluidType().initializeClient(box::setValue);
 			ResourceLocation stillTexture = box.getValue().getStillTexture();
 			ModelFile model = models().getBuilder("block/fluid/"+Registry.FLUID.getKey(still).getPath())
@@ -542,13 +543,17 @@ public class BlockStates extends ExtendedBlockstateProvider
 
 	protected ModelFile createMultiLayer(String path, Map<RenderType, ResourceLocation> modelGetter, ResourceLocation particle)
 	{
-		MultiLayerModelBuilder<BlockModelBuilder> modelBuilder = models().getBuilder(path)
-				.customLoader(MultiLayerModelBuilder::begin);
+		CompositeModelBuilder<BlockModelBuilder> modelBuilder = models().getBuilder(path)
+				.customLoader(CompositeModelBuilder::begin);
 
 		for(Entry<RenderType, ResourceLocation> entry : modelGetter.entrySet())
 		{
 			ResourceLocation rl = entry.getValue();
-			modelBuilder.submodel(entry.getKey(), obj(new BlockModelBuilder(rl("temp"), existingFileHelper), rl, ImmutableMap.of()));
+			String layer = ModelProviderUtils.getName(entry.getKey());
+			modelBuilder.child(
+					layer,
+					obj(new BlockModelBuilder(rl("temp"), existingFileHelper), rl, ImmutableMap.of()).renderType(layer)
+			);
 		}
 		return modelBuilder.end()
 				.parent(new ExistingModelFile(mcLoc("block/block"), existingFileHelper))

@@ -9,13 +9,13 @@
 
 package blusunrize.immersiveengineering.api.client;
 
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,16 +31,22 @@ public interface ICacheKeyProvider<K> extends BakedModel
 
 	@Nonnull
 	@Override
-	default List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pSide, @Nonnull RandomSource pRand, @Nonnull IModelData extraData)
+	default List<BakedQuad> getQuads(
+			@Nullable BlockState pState,
+			@Nullable Direction pSide,
+			@Nonnull RandomSource pRand,
+			@Nonnull ModelData extraData,
+			@Nullable RenderType layer
+	)
 	{
-		return getQuads(getKey(pState, pSide, pRand, extraData));
+		return getQuads(getKey(pState, pSide, pRand, extraData, layer));
 	}
 
 	@Nonnull
 	@Override
 	default List<BakedQuad> getQuads(@Nullable BlockState pState, @Nullable Direction pSide, @Nonnull RandomSource pRand)
 	{
-		return getQuads(pState, pSide, pRand, EmptyModelData.INSTANCE);
+		return getQuads(pState, pSide, pRand, ModelData.EMPTY, null);
 	}
 
 	@Nullable
@@ -48,6 +54,7 @@ public interface ICacheKeyProvider<K> extends BakedModel
 			@Nullable BlockState state,
 			@Nullable Direction side,
 			@Nonnull RandomSource rand,
-			@Nonnull IModelData extraData
+			@Nonnull ModelData extraData,
+			@Nullable RenderType layer
 	);
 }

@@ -92,12 +92,11 @@ import net.minecraft.world.level.block.entity.BannerPattern;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.EntityRenderersEvent.RegisterRenderers;
-import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.event.ModelEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -165,20 +164,25 @@ public class ClientProxy extends CommonProxy
 		reloadableManager.registerReloadListener(new ConnectionRenderer());
 
 		IEModelLayers.registerDefinitions();
-		MinecraftForgeClient.registerTooltipComponentFactory(RevolverServerTooltip.class, RevolverClientTooltip::new);
 	}
 
 	@SubscribeEvent
-	public static void registerModelLoaders(ModelRegistryEvent ev)
+	public static void registerTooltips(RegisterClientTooltipComponentFactoriesEvent ev)
 	{
-		ModelLoaderRegistry.registerLoader(IEOBJLoader.LOADER_NAME, IEOBJLoader.instance);
-		ModelLoaderRegistry.registerLoader(ModelConfigurableSides.Loader.NAME, new ModelConfigurableSides.Loader());
-		ModelLoaderRegistry.registerLoader(ConveyorLoader.LOCATION, new ConveyorLoader());
-		ModelLoaderRegistry.registerLoader(CoresampleLoader.LOCATION, new CoresampleLoader());
-		ModelLoaderRegistry.registerLoader(FeedthroughLoader.LOCATION, new FeedthroughLoader());
-		ModelLoaderRegistry.registerLoader(SplitModelLoader.LOCATION, new SplitModelLoader());
-		ModelLoaderRegistry.registerLoader(Loader.LOADER_NAME, new PotionBucketModel.Loader());
-		ModelLoaderRegistry.registerLoader(MirroredModelLoader.ID, new MirroredModelLoader());
+		ev.register(RevolverServerTooltip.class, RevolverClientTooltip::new);
+	}
+
+	@SubscribeEvent
+	public static void registerModelLoaders(ModelEvent.RegisterGeometryLoaders ev)
+	{
+		ev.register(IEOBJLoader.LOADER_NAME.getPath(), IEOBJLoader.instance);
+		ev.register(ModelConfigurableSides.Loader.NAME.getPath(), new ModelConfigurableSides.Loader());
+		ev.register(ConveyorLoader.LOCATION.getPath(), new ConveyorLoader());
+		ev.register(CoresampleLoader.LOCATION.getPath(), new CoresampleLoader());
+		ev.register(FeedthroughLoader.LOCATION.getPath(), new FeedthroughLoader());
+		ev.register(SplitModelLoader.LOCATION.getPath(), new SplitModelLoader());
+		ev.register(Loader.LOADER_NAME.getPath(), new PotionBucketModel.Loader());
+		ev.register(MirroredModelLoader.ID.getPath(), new MirroredModelLoader());
 
 		ArcFurnaceRenderer.ELECTRODES = new DynamicModel(ArcFurnaceRenderer.NAME);
 		AutoWorkbenchRenderer.DYNAMIC = new DynamicModel(AutoWorkbenchRenderer.NAME);
@@ -206,7 +210,6 @@ public class ClientProxy extends CommonProxy
 		if(IEClientConfig.stencilBufferEnabled.get())
 			ev.enqueueWork(() -> Minecraft.getInstance().getMainRenderTarget().enableStencil());
 		registerContainersAndScreens();
-		IEKeybinds.register();
 		ShaderHelper.initShaders();
 		IEDefaultColourHandlers.register();
 

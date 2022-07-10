@@ -21,7 +21,7 @@ import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
+import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.fluids.FluidStack;
 
 public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
@@ -54,7 +54,7 @@ public class MixerRenderer extends IEBlockEntityRenderer<MixerBlockEntity>
 		blockRenderer.getModelRenderer().renderModel(
 				matrixStack.last(), bufferIn.getBuffer(RenderType.solid()), state, AGITATOR.get(),
 				1, 1, 1,
-				combinedLightIn, combinedOverlayIn, EmptyModelData.INSTANCE
+				combinedLightIn, combinedOverlayIn, ModelData.EMPTY, RenderType.solid()
 		);
 
 		matrixStack.popPose();

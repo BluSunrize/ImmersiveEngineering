@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraftforge.client.model.generators.ModelBuilder;
 import net.minecraftforge.client.model.generators.ModelFile;
 import net.minecraftforge.client.model.generators.ModelProvider;
-import net.minecraftforge.client.model.generators.loaders.OBJLoaderBuilder;
+import net.minecraftforge.client.model.generators.loaders.ObjModelBuilder;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nonnull;
@@ -58,42 +58,42 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 				.callback(BucketWheelCallbacks.INSTANCE)
 				.end();
 		getBuilder(CrusherRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/crusher_drum.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(SawmillRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/sawmill_animated.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(DieselGeneratorRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/diesel_generator_fan.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(MetalPressRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/metal_press_piston.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(MixerRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/mixer_agitator.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(SampleDrillRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/metal_device/core_drill_center.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(SqueezerRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/metal_multiblock/squeezer_piston.obj"))
 				.flipV(true)
 				.end();
 		getBuilder(WatermillRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/wooden_device/watermill.obj"))
 				.flipV(true)
 				.end();
@@ -120,7 +120,7 @@ public class DynamicModels extends ModelProvider<SimpleModelBuilder>
 					.end();
 		});
 		getBuilder(BlastFurnacePreheaterRenderer.NAME)
-				.customLoader(OBJLoaderBuilder::begin)
+				.customLoader(ObjModelBuilder::begin)
 				.modelLocation(rl("models/block/metal_device/blastfurnace_fan.obj"))
 				.flipV(true)
 				.end();

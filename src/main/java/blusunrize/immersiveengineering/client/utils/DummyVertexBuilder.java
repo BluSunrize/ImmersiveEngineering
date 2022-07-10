@@ -73,11 +73,4 @@ public record DummyVertexBuilder(VertexFormat format) implements VertexConsumer
 	{
 
 	}
-
-	@Override
-	@Nonnull
-	public VertexFormat getVertexFormat()
-	{
-		return format;
-	}
 }

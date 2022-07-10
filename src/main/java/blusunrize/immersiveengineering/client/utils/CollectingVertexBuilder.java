@@ -9,10 +9,8 @@
 
 package blusunrize.immersiveengineering.client.utils;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.DefaultedVertexConsumer;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexFormat;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -87,12 +85,5 @@ public class CollectingVertexBuilder extends DefaultedVertexConsumer
 			for(Consumer<VertexConsumer> c : l)
 				c.accept(out);
 		vertices.clear();
-	}
-
-	@Nonnull
-	@Override
-	public VertexFormat getVertexFormat()
-	{
-		return DefaultVertexFormat.BLOCK;
 	}
 }

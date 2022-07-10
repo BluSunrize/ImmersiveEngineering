@@ -12,8 +12,6 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IEEnums.IOSideConfig;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.DirectionUtils;
-import blusunrize.immersiveengineering.api.utils.client.CombinedModelData;
-import blusunrize.immersiveengineering.api.utils.client.SinglePropertyModelData;
 import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IConfigurableSides;
 import com.google.common.cache.CacheBuilder;
@@ -25,6 +23,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Vector3f;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransform;
@@ -34,17 +33,16 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.data.IModelData;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -137,13 +135,19 @@ public class ModelConfigurableSides extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData)
+	public List<BakedQuad> getQuads(
+			@Nullable BlockState state,
+			@Nullable Direction side,
+			@Nonnull RandomSource rand,
+			@Nonnull ModelData extraData,
+			@Nullable RenderType layer
+	)
 	{
 		if(side==null)
 			return ImmutableList.of();
 		Map<Direction, IOSideConfig> config;
-		if(extraData.hasProperty(Model.SIDECONFIG))
-			config = extraData.getData(Model.SIDECONFIG);
+		if(extraData.has(Model.SIDECONFIG))
+			config = extraData.get(Model.SIDECONFIG);
 		else
 		{
 			config = new EnumMap<>(Direction.class);
@@ -156,20 +160,18 @@ public class ModelConfigurableSides extends BakedIEModel
 
 	@Nonnull
 	@Override
-	public IModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull IModelData tileData)
+	public ModelData getModelData(@Nonnull BlockAndTintGetter world, @Nonnull BlockPos pos, @Nonnull BlockState state, @Nonnull ModelData tileData)
 	{
-		List<IModelData> data = new ArrayList<>();
-		data.add(tileData);
-		data.add(super.getModelData(world, pos, state, tileData));
+		ModelData.Builder data = super.getModelData(world, pos, state, tileData).derive();
 		BlockEntity te = world.getBlockEntity(pos);
 		if(te instanceof IConfigurableSides confTE)
 		{
 			Map<Direction, IOSideConfig> conf = new EnumMap<>(Direction.class);
 			for(Direction d : DirectionUtils.VALUES)
 				conf.put(d, confTE.getSideConfig(d));
-			data.add(new SinglePropertyModelData<>(conf, Model.SIDECONFIG));
+			data.with(Model.SIDECONFIG, conf);
 		}
-		return CombinedModelData.combine(data.toArray(new IModelData[0]));
+		return data.build();
 	}
 
 	private static Map<Direction, BakedQuad> bakeQuads(Map<Direction, TextureAtlasSprite> sprites)
@@ -253,18 +255,13 @@ public class ModelConfigurableSides extends BakedIEModel
 		return ItemOverrides.EMPTY;
 	}
 
-	public static class Loader implements IModelLoader<ConfigSidesModelBase>
+	public static class Loader implements IGeometryLoader<ConfigSidesModelBase>
 	{
 		public static ResourceLocation NAME = new ResourceLocation(ImmersiveEngineering.MODID, "conf_sides");
 
-		@Override
-		public void onResourceManagerReload(@Nonnull ResourceManager resourceManager)
-		{
-		}
-
 		@Nonnull
 		@Override
-		public ConfigSidesModelBase read(@Nonnull JsonDeserializationContext deserializationContext, JsonObject modelContents)
+		public ConfigSidesModelBase read(JsonObject modelContents, @Nonnull JsonDeserializationContext deserializationContext)
 		{
 			final String name = modelContents.get("base_name").getAsString();
 			final String type = modelContents.get("type").getAsString();
@@ -283,11 +280,11 @@ public class ModelConfigurableSides extends BakedIEModel
 
 	private record ConfigSidesModelBase(
 			String name, String type, Map<String, Material> textures
-	) implements IModelGeometry<ConfigSidesModelBase>
+	) implements IUnbakedGeometry<ConfigSidesModelBase>
 	{
 
 		@Override
-		public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+		public BakedModel bake(IGeometryBakingContext owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
 		{
 			Map<Direction, Map<IOSideConfig, TextureAtlasSprite>> tex = new EnumMap<>(Direction.class);
 			for(Direction f : DirectionUtils.VALUES)
@@ -305,7 +302,7 @@ public class ModelConfigurableSides extends BakedIEModel
 		}
 
 		@Override
-		public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+		public Collection<Material> getMaterials(IGeometryBakingContext owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
 		{
 			return textures.values();
 		}

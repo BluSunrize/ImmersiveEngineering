@@ -1,5 +1,5 @@
 {
-  "flip-v": true,
+  "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/connector/connector_bundled.obj",
   "transform": {

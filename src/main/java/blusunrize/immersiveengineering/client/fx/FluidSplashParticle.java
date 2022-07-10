@@ -20,8 +20,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Material;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
@@ -93,9 +92,9 @@ public class FluidSplashParticle extends TextureSheetParticle
 
 	public void setFluidTexture(FluidStack fluid)
 	{
-		IFluidTypeRenderProperties fluidProperties = RenderProperties.get(fluid.getFluid());
+		IClientFluidTypeExtensions fluidProperties = IClientFluidTypeExtensions.of(fluid.getFluid());
 		setSprite(ClientUtils.getSprite(fluidProperties.getStillTexture(fluid)));
-		int argb = fluidProperties.getColorTint(fluid);
+		int argb = fluidProperties.getTintColor(fluid);
 		this.alpha = ((argb>>24)&255)/255f;
 		this.rCol = ((argb>>16)&255)/255f;
 		this.gCol = ((argb>>8&255))/255f;

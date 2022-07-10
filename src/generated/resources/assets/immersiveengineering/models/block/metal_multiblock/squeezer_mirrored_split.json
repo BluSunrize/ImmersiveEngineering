@@ -4,8 +4,8 @@
   "inner_model": {
     "inner_model": {
       "parent": "minecraft:block/block",
-      "detectCullableFaces": false,
-      "flip-v": true,
+      "automatic_culling": false,
+      "flip_v": true,
       "loader": "forge:obj",
       "model": "immersiveengineering:models/block/metal_multiblock/squeezer.obj",
       "textures": {

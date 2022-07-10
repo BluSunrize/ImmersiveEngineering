@@ -40,7 +40,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.event.DrawSelectionEvent;
+import net.minecraftforge.client.event.RenderHighlightEvent;
 
 import java.util.Collection;
 
@@ -256,7 +256,7 @@ public class BlockOverlayUtils
 	/**
 	 * Draw additional block breaking texture at targeted positions
 	 */
-	public static void drawAdditionalBlockbreak(DrawSelectionEvent.HighlightBlock ev, Player player, Collection<BlockPos> blocks)
+	public static void drawAdditionalBlockbreak(RenderHighlightEvent.Block ev, Player player, Collection<BlockPos> blocks)
 	{
 		Vec3 renderView = ev.getCamera().getPosition();
 		for(BlockPos pos : blocks)

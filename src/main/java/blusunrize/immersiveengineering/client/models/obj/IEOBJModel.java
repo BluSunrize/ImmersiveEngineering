@@ -17,9 +17,9 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.geometry.IModelGeometry;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
+import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 
 import java.util.Collection;
 import java.util.Set;
@@ -27,23 +27,33 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public record IEOBJModel(OBJModel<OBJMaterial> base, boolean dynamic, IEOBJCallback<?> callback)
-		implements IModelGeometry<IEOBJModel>
+		implements IUnbakedGeometry<IEOBJModel>
 {
 
 	@Override
-	public BakedModel bake(IModelConfiguration owner, ModelBakery bakery, Function<Material, TextureAtlasSprite> spriteGetter,
-						   ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation)
+	public BakedModel bake(
+			IGeometryBakingContext context,
+			ModelBakery bakery,
+			Function<Material, TextureAtlasSprite> spriteGetter,
+			ModelState modelState,
+			ItemOverrides overrides,
+			ResourceLocation modelLocation
+	)
 	{
-		return new GeneralIEOBJModel<>(callback, base, owner, spriteGetter, modelTransform, dynamic);
+		return new GeneralIEOBJModel<>(callback, base, context, spriteGetter, modelState, dynamic);
 	}
 
 	@Override
-	public Collection<Material> getTextures(IModelConfiguration owner, Function<ResourceLocation, UnbakedModel> modelGetter, Set<Pair<String, String>> missingTextureErrors)
+	public Collection<Material> getMaterials(
+			IGeometryBakingContext context,
+			Function<ResourceLocation, UnbakedModel> modelGetter,
+			Set<Pair<String, String>> missingTextureErrors
+	)
 	{
 		return base.getFaces().stream()
 				.map(Polygon::getTexture)
 				.distinct()
-				.map(mat -> ModelLoaderRegistry.resolveTexture(mat.map_Kd(), owner))
+				.map(mat -> UnbakedGeometryHelper.resolveDirtyMaterial(mat.map_Kd(), context))
 				.collect(Collectors.toList());
 	}
 }

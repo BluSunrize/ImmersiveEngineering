@@ -99,11 +99,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.event.DrawSelectionEvent.HighlightBlock;
+import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
 import net.minecraftforge.client.event.*;
-import net.minecraftforge.client.event.InputEvent.MouseScrollEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
+import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -369,11 +369,11 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent
-	public void onRenderOverlayPre(RenderGameOverlayEvent.PreLayer event)
+	public void onRenderOverlayPre(RenderGuiOverlayEvent.Pre event)
 	{
-		if(event.getOverlay()==ForgeIngameGui.SUBTITLES_ELEMENT)
+		if(event.getOverlay().id().equals(VanillaGuiOverlay.SUBTITLES.id()))
 			handleSubtitleOffset(true);
-		if(ZoomHandler.isZooming&&event.getOverlay()==ForgeIngameGui.CROSSHAIR_ELEMENT)
+		if(ZoomHandler.isZooming&&event.getOverlay().id().equals(VanillaGuiOverlay.CROSSHAIR.id()))
 		{
 			event.setCanceled(true);
 			if(ZoomHandler.isZooming)
@@ -451,19 +451,19 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent()
-	public void onRenderOverlayPost(RenderGameOverlayEvent.PostLayer event)
+	public void onRenderOverlayPost(RenderGuiOverlayEvent.Post event)
 	{
 		int scaledWidth = ClientUtils.mc().getWindow().getGuiScaledWidth();
 		int scaledHeight = ClientUtils.mc().getWindow().getGuiScaledHeight();
 
-		if(event.getOverlay()==ForgeIngameGui.SUBTITLES_ELEMENT)
+		if(event.getOverlay().id().equals(VanillaGuiOverlay.SUBTITLES.id()))
 			handleSubtitleOffset(false);
 		int leftHeight;
-		if(Minecraft.getInstance().gui instanceof ForgeIngameGui forgeUI)
-			leftHeight = forgeUI.left_height;
+		if(Minecraft.getInstance().gui instanceof ForgeGui forgeUI)
+			leftHeight = forgeUI.leftHeight;
 		else
 			leftHeight = 0;
-		if(ClientUtils.mc().player!=null&&event.getOverlay()==ForgeIngameGui.HUD_TEXT_ELEMENT)
+		if(ClientUtils.mc().player!=null&&event.getOverlay().id().equals(VanillaGuiOverlay.ITEM_NAME.id()))
 		{
 			Player player = ClientUtils.mc().player;
 			PoseStack transform = new PoseStack();
@@ -629,7 +629,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent()
-	public void onFogUpdate(EntityViewRenderEvent.RenderFogEvent event)
+	public void onFogUpdate(ViewportEvent.RenderFog event)
 	{
 		if(event.getCamera().getEntity() instanceof LivingEntity living&&living.hasEffect(IEPotions.FLASHED.get()))
 		{
@@ -647,7 +647,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent()
-	public void onFogColourUpdate(EntityViewRenderEvent.FogColors event)
+	public void onFogColourUpdate(ViewportEvent.ComputeFogColor event)
 	{
 		Entity e = event.getCamera().getEntity();
 		if(e instanceof LivingEntity&&((LivingEntity)e).hasEffect(IEPotions.FLASHED.get()))
@@ -659,7 +659,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent()
-	public void onFOVUpdate(FOVModifierEvent event)
+	public void onFOVUpdate(ViewportEvent.ComputeFov event)
 	{
 		Player player = ClientUtils.mc().player;
 
@@ -670,18 +670,18 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		if(ZoomHandler.isZooming)
 		{
 			if(mayZoom)
-				event.setNewFov(ZoomHandler.fovZoom);
+				event.setFOV(ZoomHandler.fovZoom);
 			else
 				ZoomHandler.isZooming = false;
 		}
 
 		// Concrete feet slow you, but shouldn't break FoV
 		if(player.getEffect(IEPotions.CONCRETE_FEET.get())!=null)
-			event.setNewFov(1);
+			event.setFOV(1);
 	}
 
 	@SubscribeEvent
-	public void onMouseEvent(MouseScrollEvent event)
+	public void onMouseEvent(MouseScrollingEvent event)
 	{
 		Player player = ClientUtils.mc().player;
 		if(event.getScrollDelta()!=0&&ClientUtils.mc().screen==null&&player!=null)
@@ -719,7 +719,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent()
-	public void renderAdditionalBlockBounds(HighlightBlock event)
+	public void renderAdditionalBlockBounds(RenderHighlightEvent.Block event)
 	{
 		if(event.getTarget().getType()==Type.BLOCK&&event.getCamera().getEntity() instanceof LivingEntity player)
 		{

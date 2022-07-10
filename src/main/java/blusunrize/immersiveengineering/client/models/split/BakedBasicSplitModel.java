@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.IEApi;
 import blusunrize.immersiveengineering.api.IEProperties.Model;
 import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import com.google.common.collect.ImmutableList;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
@@ -21,8 +22,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.data.ModelData;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,7 +31,9 @@ import java.util.*;
 public class BakedBasicSplitModel extends AbstractSplitModel<BakedModel>
 {
 	private static final Set<BakedBasicSplitModel> WEAK_INSTANCES = Collections.newSetFromMap(new WeakHashMap<>());
-	static {
+
+	static
+	{
 		IEApi.renderCacheClearers.add(() -> WEAK_INSTANCES.forEach(b -> b.splitModels.reset()));
 	}
 
@@ -41,7 +43,7 @@ public class BakedBasicSplitModel extends AbstractSplitModel<BakedModel>
 	{
 		super(base, size);
 		this.splitModels = new ResettableLazy<>(() -> {
-			List<BakedQuad> quads = base.getQuads(null, null, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
+			List<BakedQuad> quads = base.getQuads(null, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
 			return split(quads, parts, transform);
 		});
 		WEAK_INSTANCES.add(this);
@@ -49,13 +51,15 @@ public class BakedBasicSplitModel extends AbstractSplitModel<BakedModel>
 
 	@Nonnull
 	@Override
-	public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand,
-									@Nonnull IModelData extraData)
+	public List<BakedQuad> getQuads(
+			@Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand,
+			@Nonnull ModelData extraData, @Nullable RenderType layer
+	)
 	{
-		BlockPos offset = extraData.getData(Model.SUBMODEL_OFFSET);
+		BlockPos offset = extraData.get(Model.SUBMODEL_OFFSET);
 		if(offset!=null)
 			return splitModels.get().getOrDefault(offset, ImmutableList.of());
 		else
-			return base.getQuads(state, side, rand, extraData);
+			return base.getQuads(state, side, rand, extraData, layer);
 	}
 }

@@ -1,5 +1,5 @@
 {
   "parent": "forge:item/bucket",
   "fluid": "immersiveengineering:redstone_acid",
-  "loader": "forge:bucket"
+  "loader": "forge:fluid_container"
 }

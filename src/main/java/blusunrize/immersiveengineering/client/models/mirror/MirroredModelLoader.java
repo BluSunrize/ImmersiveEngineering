@@ -14,41 +14,37 @@ import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.SimpleBakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.IModelLoader;
-import net.minecraftforge.client.model.ModelLoaderRegistry.ExpandedBlockModelDeserializer;
-import net.minecraftforge.client.model.data.EmptyModelData;
-import net.minecraftforge.client.model.data.IModelData;
+import net.minecraftforge.client.model.ExtendedBlockModelDeserializer;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.geometry.IGeometryLoader;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 
-public class MirroredModelLoader implements IModelLoader<MirroredGeometry>
+public class MirroredModelLoader implements IGeometryLoader<MirroredGeometry>
 {
 	public static final String INNER_MODEL = "inner_model";
 	public static final ResourceLocation ID = ImmersiveEngineering.rl("mirror");
 
-	@Nonnull
 	@Override
-	public MirroredGeometry read(@Nonnull JsonDeserializationContext deserializationContext, @Nonnull JsonObject modelContents)
+	public MirroredGeometry read(
+			JsonObject modelContents, JsonDeserializationContext deserializationContext
+	) throws JsonParseException
 	{
 		JsonElement innerJson = modelContents.get(INNER_MODEL);
-		BlockModel baseModel = ExpandedBlockModelDeserializer.INSTANCE.fromJson(innerJson, BlockModel.class);
+		BlockModel baseModel = ExtendedBlockModelDeserializer.INSTANCE.fromJson(innerJson, BlockModel.class);
 		return new MirroredGeometry(baseModel);
-	}
-
-	@Override
-	public void onResourceManagerReload(@Nonnull ResourceManager pResourceManager)
-	{
 	}
 
 	public static List<BakedQuad> reversedQuads(List<BakedQuad> quads)
@@ -59,14 +55,19 @@ public class MirroredModelLoader implements IModelLoader<MirroredGeometry>
 	}
 
 	public static List<BakedQuad> getReversedQuads(
-			BakedModel model, @Nullable BlockState state, @Nullable Direction side, @Nonnull RandomSource rand, @Nonnull IModelData extraData
+			BakedModel model,
+			@Nullable BlockState state,
+			@Nullable Direction side,
+			@Nonnull RandomSource rand,
+			@Nonnull ModelData extraData,
+			@Nullable RenderType layer
 	)
 	{
-		return reversedQuads(model.getQuads(state, side, rand, extraData));
+		return reversedQuads(model.getQuads(state, side, rand, extraData, layer));
 	}
 
 	public static List<BakedQuad> getReversedQuads(SimpleBakedModel model, @Nullable Direction face)
 	{
-		return getReversedQuads(model, null, face, ApiUtils.RANDOM_SOURCE, EmptyModelData.INSTANCE);
+		return getReversedQuads(model, null, face, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
 	}
 }

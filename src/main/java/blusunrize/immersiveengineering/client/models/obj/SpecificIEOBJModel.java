@@ -17,6 +17,7 @@ import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.client.models.split.PolygonUtils;
 import blusunrize.immersiveengineering.client.models.split.PolygonUtils.ExtraQuadData;
+import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -34,9 +35,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.client.model.IModelConfiguration;
-import net.minecraftforge.client.model.ModelLoaderRegistry;
-import net.minecraftforge.client.model.PerspectiveMapWrapper;
+import net.minecraftforge.client.model.geometry.IGeometryBakingContext;
+import net.minecraftforge.client.model.geometry.UnbakedGeometryHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -122,20 +122,17 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		return baseModel.getOverrides();
 	}
 
-	@Override
-	public boolean doesHandlePerspectives()
-	{
-		return true;
-	}
-
 	private static final Matrix4f INVERT = Matrix4f.createScaleMatrix(-1, -1, -1);
 	private static final Matrix3f INVERT_NORMAL = new Matrix3f(INVERT);
 
+	@Nonnull
 	@Override
-	public BakedModel handlePerspective(TransformType cameraTransformType, PoseStack transforms)
+	public BakedModel applyTransform(
+			@Nonnull TransformType transformType, @Nonnull PoseStack transforms, boolean applyLeftHandTransform
+	)
 	{
-		Transformation matrix = PerspectiveMapWrapper.getTransforms(baseModel.getOwner().getCombinedTransform())
-				.getOrDefault(cameraTransformType, Transformation.identity());
+		var baseItemTransform = baseModel.getOwner().getTransforms().getTransform(transformType);
+		Transformation matrix = ModelUtils.fromItemTransform(baseItemTransform, applyLeftHandTransform);
 
 		Vector3f scale = matrix.getScale();
 		if(scale.x()*scale.y()*scale.z() < 0)
@@ -155,7 +152,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 		else
 			matrix.push(transforms);
 		ItemCallback.castOrDefault(callback).handlePerspective(
-				key, GlobalTempData.getActiveHolder(), cameraTransformType, transforms
+				key, GlobalTempData.getActiveHolder(), transformType, transforms
 		);
 		return this;
 	}
@@ -234,7 +231,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 	/**
 	 * Yep, this is 90% a copy of ModelObject.addQuads. We need custom hooks in there, so we copy the rest around it.
 	 */
-	private void addGroupQuads(Group<OBJMaterial> group, IModelConfiguration owner, Consumer<BakedQuad> out,
+	private void addGroupQuads(Group<OBJMaterial> group, IGeometryBakingContext owner, Consumer<BakedQuad> out,
 							   MaterialSpriteGetter<?> spriteGetter, MaterialColorGetter<?> colorGetter,
 							   TextureCoordinateRemapper coordinateRemapper,
 							   Transformation transform)
@@ -245,7 +242,7 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			if(mat==null)
 				continue;
 			TextureAtlasSprite texture = spriteGetter.apply(
-					mat.name(), ModelLoaderRegistry.resolveTexture(mat.map_Kd(), owner)
+					mat.name(), UnbakedGeometryHelper.resolveDirtyMaterial(mat.map_Kd(), owner)
 			);
 			Vector4f colorTint = colorGetter.apply(mat.name(), new Vector4f(1, 1, 1, 1));
 

@@ -43,7 +43,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.IItemRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -71,7 +71,7 @@ public class ChemthrowerItem extends UpgradeableToolItem implements IAdvancedFlu
 	}
 
 	@Override
-	public void initializeClient(@Nonnull Consumer<IItemRenderProperties> consumer)
+	public void initializeClient(@Nonnull Consumer<IClientItemExtensions> consumer)
 	{
 		super.initializeClient(consumer);
 		consumer.accept(IEOBJItemRenderer.USE_IEOBJ_RENDER);

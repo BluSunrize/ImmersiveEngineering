@@ -34,7 +34,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions.FontContext;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.mutable.Mutable;
@@ -403,7 +404,7 @@ public class ManualUtils
 			if(overlay)
 			{
 				// Use the Item's font renderer, if available
-				Font font = RenderProperties.get(stack.getItem()).getFont(stack);
+				Font font = IClientItemExtensions.of(stack.getItem()).getFont(stack, FontContext.ITEM_COUNT);
 				font = font!=null?font: Minecraft.getInstance().font;
 				itemRenderer.renderGuiItemDecorations(font, stack, x, y, null);
 			}

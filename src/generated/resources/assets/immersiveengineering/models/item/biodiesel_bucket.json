@@ -1,5 +1,5 @@
 {
   "parent": "forge:item/bucket",
   "fluid": "immersiveengineering:biodiesel",
-  "loader": "forge:bucket"
+  "loader": "forge:fluid_container"
 }
