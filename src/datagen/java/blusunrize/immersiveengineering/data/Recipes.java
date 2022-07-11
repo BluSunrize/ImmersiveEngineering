@@ -410,8 +410,8 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("blueprint/component_electronic_adv"));
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.LIGHT_BULB, 3))
 				.addInput(Tags.Items.GLASS)
-				.addInput(Ingredient.of(Items.PAPER, Items.BAMBOO))
-				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).nugget, 3))
+				.addInput(new IngredientWithSize(Ingredient.of(Items.PAPER, Items.BAMBOO), 3))
+				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
 				.build(out, toRL("blueprint/light_bulb"));
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.ELECTRON_TUBE, 3))
 				.addInput(Tags.Items.GLASS)

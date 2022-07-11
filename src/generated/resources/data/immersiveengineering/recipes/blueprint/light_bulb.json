@@ -4,19 +4,19 @@
     {
       "tag": "forge:glass"
     },
-    [
-      {
-        "item": "minecraft:paper"
-      },
-      {
-        "item": "minecraft:bamboo"
-      }
-    ],
     {
       "count": 3,
-      "base_ingredient": {
-        "tag": "forge:nuggets/copper"
-      }
+      "base_ingredient": [
+        {
+          "item": "minecraft:paper"
+        },
+        {
+          "item": "minecraft:bamboo"
+        }
+      ]
+    },
+    {
+      "tag": "forge:ingots/copper"
     }
   ],
   "category": "components",
