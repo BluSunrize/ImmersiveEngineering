@@ -41,11 +41,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.VersionChecker.CheckResult;
 import net.minecraftforge.fml.VersionChecker.Status;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import java.io.IOException;
@@ -97,6 +99,8 @@ public class IEManual
 				s -> new ManualElementBlueprint(ieMan, collectRecipeStacksFromJSON(s)));
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "bottling"),
 				s -> new ManualElementBottling(ieMan, collectRecipeStacksFromJSON(s)));
+		ieMan.registerSpecialElement(new ResourceLocation(MODID, "mixer"),
+				s -> new ManualElementMixer(ieMan, collectRecipeFluidsFromJSON(s)));
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
 				s -> {
 					ResourceLocation name = ManualUtils.getLocationForManual(
@@ -314,6 +318,29 @@ public class IEManual
 			stacks = new ItemStack[]{
 					CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
 			};
+		}
+		return stacks;
+	}
+
+	static Fluid[] collectRecipeFluidsFromJSON(JsonObject json)
+	{
+		Fluid[] stacks;
+		if(GsonHelper.isArrayNode(json, "recipes"))
+		{
+			JsonArray arr = json.get("recipes").getAsJsonArray();
+			stacks = new Fluid[arr.size()];
+			for(int i = 0; i < stacks.length; ++i)
+				stacks[i] = ForgeRegistries.FLUIDS.getValue(
+						new ResourceLocation(GsonHelper.getAsString(arr.get(i).getAsJsonObject(), "fluid"))
+				);
+		}
+		else
+		{
+			JsonElement recipe = json.get("recipe");
+			Preconditions.checkArgument(recipe.isJsonObject());
+			stacks = new Fluid[]{ForgeRegistries.FLUIDS.getValue(
+					new ResourceLocation(GsonHelper.getAsString(recipe.getAsJsonObject(), "fluid"))
+			)};
 		}
 		return stacks;
 	}
