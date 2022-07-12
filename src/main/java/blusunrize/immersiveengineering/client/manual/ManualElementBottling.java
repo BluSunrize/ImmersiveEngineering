@@ -32,7 +32,6 @@ public class ManualElementBottling extends SpecialManualElements
 {
 	private final ItemStack[] stacks;
 	private final List<PositionedItemStack[]> recipes = new ArrayList<>();
-	private final String[] fluidAmounts;
 	private int recipePage;
 	private int yOff;
 
@@ -40,7 +39,6 @@ public class ManualElementBottling extends SpecialManualElements
 	{
 		super(manual);
 		this.stacks = stacks;
-		this.fluidAmounts = new String[stacks.length];
 		recalculateCraftingRecipes();
 	}
 
