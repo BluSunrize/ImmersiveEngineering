@@ -16,12 +16,16 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemHandlerHelper;
+import org.apache.commons.lang3.math.Fraction;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.apache.commons.lang3.mutable.MutableObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.IntFunction;
@@ -254,5 +258,54 @@ public class FluidUtils
 		{
 			return handler.isFluidValid(tank, stack);
 		}
+	}
+
+	private static final Map<Fraction, String> FRACTION_STRINGS = new HashMap<>();
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
+	static
+	{
+		// this is not all the existing fraction symbols, but the most commonly used
+		FRACTION_STRINGS.put(Fraction.ONE_HALF, "½");
+		FRACTION_STRINGS.put(Fraction.ONE_QUARTER, "¼");
+		FRACTION_STRINGS.put(Fraction.THREE_QUARTERS, "¾");
+		FRACTION_STRINGS.put(Fraction.ONE_THIRD, "⅓");
+		FRACTION_STRINGS.put(Fraction.TWO_THIRDS, "⅔");
+		FRACTION_STRINGS.put(Fraction.ONE_FIFTH, "⅕");
+		FRACTION_STRINGS.put(Fraction.TWO_FIFTHS, "⅖");
+		FRACTION_STRINGS.put(Fraction.THREE_FIFTHS, "⅗");
+		FRACTION_STRINGS.put(Fraction.FOUR_FIFTHS, "⅘");
+		FRACTION_STRINGS.put(Fraction.getFraction(1,8),"⅛");
+		FRACTION_STRINGS.put(Fraction.getFraction(3,8),"⅜");
+		FRACTION_STRINGS.put(Fraction.getFraction(1,9), "⅑");
+		FRACTION_STRINGS.put(Fraction.getFraction(1,10), "⅒");
+	}
+
+	public static String getBucketFraction(int amount)
+	{
+		String ret = "";
+		// if amount is bigger than bucket, consider those as full numbers
+		if(amount > FluidAttributes.BUCKET_VOLUME)
+		{
+			ret += amount/FluidAttributes.BUCKET_VOLUME;
+			amount = amount%FluidAttributes.BUCKET_VOLUME;
+		}
+		// remaining amount
+		if(amount > 0)
+		{
+			Fraction key = Fraction.getReducedFraction(amount, FluidAttributes.BUCKET_VOLUME);
+			// use fraction symbols where possible
+			if(FRACTION_STRINGS.containsKey(key))
+				ret += (ret.isEmpty()?"": " ")+FRACTION_STRINGS.get(key);
+			else // fall back on decimals otherwise
+			{
+				double decimal = amount/(double)FluidAttributes.BUCKET_VOLUME;
+				String decimalString = DECIMAL_FORMAT.format(decimal);
+				if(!ret.isEmpty())
+					ret += decimalString.substring(1);
+				else
+					ret = decimalString;
+			}
+		}
+		return ret;
 	}
 }

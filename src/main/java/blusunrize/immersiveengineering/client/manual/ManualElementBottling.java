@@ -9,7 +9,7 @@
 package blusunrize.immersiveengineering.client.manual;
 
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.common.util.Utils;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.PositionedItemStack;
@@ -21,12 +21,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ManualElementBottling extends SpecialManualElements
 {
@@ -57,7 +54,7 @@ public class ManualElementBottling extends SpecialManualElements
 					int middle = (int)(h/2f*18);
 
 					ItemStack bucket = recipe.fluidInput.getRandomizedExampleStack(0).getFluid().getBucket().getDefaultInstance();
-					String bucketFraction = getBucketFraction(recipe.fluidInput.getAmount());
+					String bucketFraction = FluidUtils.getBucketFraction(recipe.fluidInput.getAmount());
 
 					PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.output.get().size()+2];
 					pIngredients[0] = new PositionedItemStack(recipe.input.getItems(), 20, middle);
@@ -152,49 +149,5 @@ public class ManualElementBottling extends SpecialManualElements
 			for(PositionedItemStack pstack : recipe)
 				maxY = Math.max(maxY, pstack.y());
 		return maxY+18;
-	}
-
-	static Map<Integer, String> fractionStrings = new HashMap<>();
-
-	static
-	{
-		// this is not all the existing fraction symbols, but the most commonly used
-		// ToDo: Maybe use org.apache.commons.lang3.math.Fraction here?
-		fractionStrings.put(FluidAttributes.BUCKET_VOLUME/2, "½");
-		fractionStrings.put(FluidAttributes.BUCKET_VOLUME/4, "¼");
-		fractionStrings.put(FluidAttributes.BUCKET_VOLUME/4*3, "¾");
-		fractionStrings.put(FluidAttributes.BUCKET_VOLUME/9, "⅑");
-		fractionStrings.put(FluidAttributes.BUCKET_VOLUME/3, "⅓");
-		fractionStrings.put(FluidAttributes.BUCKET_VOLUME/3*2, "⅔");
-		fractionStrings.put(FluidAttributes.BUCKET_VOLUME/8, "⅛");
-		fractionStrings.put(FluidAttributes.BUCKET_VOLUME/8*3, "⅜");
-	}
-
-	private String getBucketFraction(int amount)
-	{
-		String ret = "";
-		// if amount is bigger than bucket, consider those as full numbers
-		if(amount > FluidAttributes.BUCKET_VOLUME)
-		{
-			ret += amount/FluidAttributes.BUCKET_VOLUME;
-			amount = amount%FluidAttributes.BUCKET_VOLUME;
-		}
-		// remaining amount
-		if(amount > 0)
-		{
-			// use fraction symbols where possible
-			if(fractionStrings.containsKey(amount))
-				ret += (ret.isEmpty()?"": " ")+fractionStrings.get(amount);
-			else // fall back on decimals otherwise
-			{
-				double decimal = amount/(double)FluidAttributes.BUCKET_VOLUME;
-				String decimalString = Utils.formatDouble(decimal, "0.00");
-				if(!ret.isEmpty())
-					ret += decimalString.substring(1);
-				else
-					ret = decimalString;
-			}
-		}
-		return ret;
 	}
 }
