@@ -3,6 +3,13 @@
     "type": "crafting",
     "recipe": "crafting/blastbrick"
   },
+  "outputs": {
+    "type": "item_display",
+    "items": [
+      "immersiveengineering:ingot_steel",
+      "immersiveengineering:slag"
+    ]
+  },
   "multiblock": {
     "type": "multiblock",
     "name": "multiblocks/blast_furnace"
