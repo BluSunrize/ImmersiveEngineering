@@ -94,45 +94,9 @@ public class IEManual
 		));
 
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),
-				s -> {
-					ItemStack[] stacks;
-					if(GsonHelper.isArrayNode(s, "recipes"))
-					{
-						JsonArray arr = s.get("recipes").getAsJsonArray();
-						stacks = new ItemStack[arr.size()];
-						for(int i = 0; i < stacks.length; ++i)
-							stacks[i] = CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true);
-					}
-					else
-					{
-						JsonElement recipe = s.get("recipe");
-						Preconditions.checkArgument(recipe.isJsonObject());
-						stacks = new ItemStack[]{
-								CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
-						};
-					}
-					return new ManualElementBlueprint(ieMan, stacks);
-				});
+				s -> new ManualElementBlueprint(ieMan, collectRecipeStacksFromJSON(s)));
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "bottling"),
-				s -> {
-					ItemStack[] stacks;
-					if(GsonHelper.isArrayNode(s, "recipes"))
-					{
-						JsonArray arr = s.get("recipes").getAsJsonArray();
-						stacks = new ItemStack[arr.size()];
-						for(int i = 0; i < stacks.length; ++i)
-							stacks[i] = CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true);
-					}
-					else
-					{
-						JsonElement recipe = s.get("recipe");
-						Preconditions.checkArgument(recipe.isJsonObject());
-						stacks = new ItemStack[]{
-								CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
-						};
-					}
-					return new ManualElementBottling(ieMan, stacks);
-				});
+				s -> new ManualElementBottling(ieMan, collectRecipeStacksFromJSON(s)));
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
 				s -> {
 					ResourceLocation name = ManualUtils.getLocationForManual(
@@ -331,5 +295,26 @@ public class IEManual
 		{
 		}
 		return list.toArray(new Component[0][]);
+	}
+
+	static ItemStack[] collectRecipeStacksFromJSON(JsonObject json)
+	{
+		ItemStack[] stacks;
+		if(GsonHelper.isArrayNode(json, "recipes"))
+		{
+			JsonArray arr = json.get("recipes").getAsJsonArray();
+			stacks = new ItemStack[arr.size()];
+			for(int i = 0; i < stacks.length; ++i)
+				stacks[i] = CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true);
+		}
+		else
+		{
+			JsonElement recipe = json.get("recipe");
+			Preconditions.checkArgument(recipe.isJsonObject());
+			stacks = new ItemStack[]{
+					CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
+			};
+		}
+		return stacks;
 	}
 }
