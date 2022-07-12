@@ -54,6 +54,7 @@
       "current_transformer",
       "redstone_wire",
       "logic_circuits",
+      "thermoelectric",
       "diesel_generator",
       "lightning_rod"
     ]
@@ -102,6 +103,8 @@
       "sawmill",
       "assembler",
       "automated_workbench",
+      "squeezer",
+      "fermenter",
       "mixer",
       "refinery",
       "bottling_machine",

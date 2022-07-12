@@ -61,6 +61,8 @@ import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
 public class IEManual
 {
+	private static final Map<String, Supplier<Component[][]>> DYNAMIC_TABLES = new HashMap<>();
+
 	public static void initManual()
 	{
 		IEManualInstance ieMan = new IEManualInstance();
@@ -71,6 +73,25 @@ public class IEManual
 				ieMan.configGetters.add(e);
 			}
 		});
+
+		DYNAMIC_TABLES.put("squeezer", () -> formatToTable_ItemIntMap(
+				SqueezerRecipe.getFluidValuesSorted(
+						Minecraft.getInstance().level,
+						IEFluids.PLANTOIL.getStill(),
+						true
+				), "mB"
+		));
+		DYNAMIC_TABLES.put("fermenter", () -> formatToTable_ItemIntMap(
+				FermenterRecipe.getFluidValuesSorted(
+						Minecraft.getInstance().level,
+						IEFluids.ETHANOL.getStill(),
+						true
+				), "mB"
+		));
+		DYNAMIC_TABLES.put("thermoelectric", () -> formatToTable_ItemIntMap(
+				ThermoelectricSource.getThermalValuesSorted(Minecraft.getInstance().level, true),
+				"K"
+		));
 
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),
 				s -> {
@@ -123,6 +144,12 @@ public class IEManual
 						throw new NullPointerException("Multiblock "+name+" does not exist");
 					return new ManualElementMultiblock(ieMan, mb);
 				});
+		ieMan.registerSpecialElement(new ResourceLocation(MODID, "dynamic_table"),
+				s -> new ManualElementTable(
+						ManualHelper.getManual(),
+						DYNAMIC_TABLES.get(GsonHelper.getAsString(s, "table")).get(),
+						false
+				));
 	}
 
 	public static void addIEManualEntries()
@@ -130,19 +157,7 @@ public class IEManual
 		IEManualInstance ieMan = (IEManualInstance)ManualHelper.getManual();
 		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), 0);
-		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_ENERGY), 20);
-		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_HEAVYMACHINES), 50);
 
-		{
-			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement(new SpecialElementData("values", 0, addDynamicTable(
-					() -> ThermoelectricSource.getThermalValuesSorted(Minecraft.getInstance().level, true), "K"
-			)));
-			builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
-			ieMan.addEntry(energyCat, builder.create(), ieMan.atOffsetFrom(energyCat, "diesel_generator", -0.5));
-		}
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.readFromFile(new ResourceLocation(MODID, "minerals"));
@@ -152,22 +167,6 @@ public class IEManual
 		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
 		ieMan.addEntry(generalCat, blueprints);
 		ieMan.hideEntry(blueprints);
-		{
-			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
-					() -> FermenterRecipe.getFluidValuesSorted(Minecraft.getInstance().level, IEFluids.ETHANOL.getStill(), true), "mB"
-			)));
-			builder.readFromFile(new ResourceLocation(MODID, "fermenter"));
-			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "mixer", -1/3d));
-		}
-		{
-			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
-					() -> SqueezerRecipe.getFluidValuesSorted(Minecraft.getInstance().level, IEFluids.PLANTOIL.getStill(), true), "mB"
-			)));
-			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
-			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "mixer", -2/3d));
-		}
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ieMan);
 			builder.setContent(
@@ -198,17 +197,6 @@ public class IEManual
 		}
 
 		addChangelogToManual();
-	}
-
-	private static Supplier<ManualElementTable> addDynamicTable(
-			Supplier<SortedMap<Component, Integer>> getContents,
-			String valueType
-	)
-	{
-		return () -> {
-			Component[][] table = formatToTable_ItemIntMap(getContents.get(), valueType);
-			return new ManualElementTable(ManualHelper.getManual(), table, false);
-		};
 	}
 
 	private static Pair<String, List<SpecialElementData>> getMineralVeinTexts()
