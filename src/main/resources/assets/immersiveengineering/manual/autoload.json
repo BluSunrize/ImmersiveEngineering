@@ -4,42 +4,48 @@
     "category_weight": 0,
     "entry_list": [
       "introduction",
-      "hemp",
       "ores",
-      "alloys",
-      "chemicals",
       "plates",
-      "components",
-      "craftingtable",
-      "workbench",
+      "alloys",
+      "hemp",
+      "treated_wood",
+      "chemicals",
       "redstone_acid",
+      "components",
       "villagers",
-      "alloykiln",
-      "cokeoven",
-      "crude_blast_furnace",
-      "improved_blast_furnace",
       "graphite",
       "plastic",
       "shader"
     ]
   },
-  "construction": {
+  "early_machines": {
     "category_weight": 10,
     "entry_list": [
-      "treated_wood",
-      "multiblocks",
-      "balloon",
+      "craftingtable",
+      "workbench",
+      "cokeoven",
+      "alloykiln",
+      "crude_blast_furnace",
+      "improved_blast_furnace"
+    ]
+  },
+  "construction": {
+    "category_weight": 20,
+    "entry_list": [
       "crate",
       "barrel",
+      "balloon",
       "metalconstruction",
       "metal_barrel",
       "concrete",
       "lighting",
+      "multiblocks",
       "silo",
       "tank"
     ]
   },
   "energy": {
+    "category_weight": 30,
     "entry_list": [
       "wiring",
       "accumulators",
@@ -53,26 +59,26 @@
     ]
   },
   "tools": {
-    "category_weight": 30,
+    "category_weight": 40,
     "entry_list": [
       "toolbox",
       "jerrycan",
       "ear_defenders",
-      "buzzsaw",
-      "mining_drill",
       "maintenance_kit",
+      "mining_drill",
+      "buzzsaw",
       "shield",
+      "powerpack",
       "revolver",
       "bullets",
       "chemthrower",
       "herbicide",
-      "skyhook",
-      "powerpack",
-      "railgun"
+      "railgun",
+      "skyhook"
     ]
   },
   "machines": {
-    "category_weight": 40,
+    "category_weight": 50,
     "entry_list": [
       "conveyors",
       "item_router",
@@ -81,23 +87,24 @@
       "fluid_transport",
       "fluid_router",
       "external_heater",
-      "charging_station",
       "garden_cloche",
-      "tesla_coil",
+      "charging_station",
       "razor_wire",
+      "tesla_coil",
       "turrets"
     ]
   },
   "heavymachines": {
+    "category_weight": 60,
     "entry_list": [
       "metal_press",
       "crusher",
       "sawmill",
       "assembler",
-      "refinery",
-      "mixer",
-      "bottling_machine",
       "automated_workbench",
+      "mixer",
+      "refinery",
+      "bottling_machine",
       "arc_furnace",
       "excavator"
     ]

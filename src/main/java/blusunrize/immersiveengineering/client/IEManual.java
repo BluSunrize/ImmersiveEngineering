@@ -141,13 +141,13 @@ public class IEManual
 					() -> ThermoelectricSource.getThermalValuesSorted(Minecraft.getInstance().level, true), "K"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
-			ieMan.addEntry(energyCat, builder.create(), ieMan.atOffsetFrom(energyCat, "redstone_wire", 0.5));
+			ieMan.addEntry(energyCat, builder.create(), ieMan.atOffsetFrom(energyCat, "diesel_generator", -0.5));
 		}
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.readFromFile(new ResourceLocation(MODID, "minerals"));
 			builder.appendText(IEManual::getMineralVeinTexts);
-			ieMan.addEntry(generalCat, builder.create(), ieMan.atOffsetFrom(generalCat, "ores", 0.5));
+			ieMan.addEntry(generalCat, builder.create(), ieMan.atOffsetFrom(generalCat, "graphite", -0.5));
 		}
 		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
 		ieMan.addEntry(generalCat, blueprints);
@@ -158,7 +158,7 @@ public class IEManual
 					() -> FermenterRecipe.getFluidValuesSorted(Minecraft.getInstance().level, IEFluids.ETHANOL.getStill(), true), "mB"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "fermenter"));
-			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 1/3d));
+			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "mixer", -1/3d));
 		}
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
@@ -166,7 +166,7 @@ public class IEManual
 					() -> SqueezerRecipe.getFluidValuesSorted(Minecraft.getInstance().level, IEFluids.PLANTOIL.getStill(), true), "mB"
 			)));
 			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
-			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 2/3d));
+			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "mixer", -2/3d));
 		}
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ieMan);
