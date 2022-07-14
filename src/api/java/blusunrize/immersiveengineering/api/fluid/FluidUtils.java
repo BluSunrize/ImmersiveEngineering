@@ -260,6 +260,8 @@ public class FluidUtils
 		}
 	}
 
+	/** Set by IE's client config. If set to false, factions will be displayed as decimals instead. */
+	public static boolean enableFractionDisplay = true;
 	private static final Map<Fraction, String> FRACTION_STRINGS = new HashMap<>();
 	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("0.00");
 	static
@@ -294,7 +296,7 @@ public class FluidUtils
 		{
 			Fraction key = Fraction.getReducedFraction(amount, FluidAttributes.BUCKET_VOLUME);
 			// use fraction symbols where possible
-			if(FRACTION_STRINGS.containsKey(key))
+			if(enableFractionDisplay && FRACTION_STRINGS.containsKey(key))
 				ret += (ret.isEmpty()?"": " ")+FRACTION_STRINGS.get(key);
 			else // fall back on decimals otherwise
 			{
