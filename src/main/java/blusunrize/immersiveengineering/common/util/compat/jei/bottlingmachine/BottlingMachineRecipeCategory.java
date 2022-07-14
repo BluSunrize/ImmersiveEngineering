@@ -27,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMachineRecipe>
 {
@@ -47,10 +48,11 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 		builder.addSlot(RecipeIngredientRole.INPUT, 1, 13)
 				.addItemStacks(Arrays.asList(recipe.input.getItems()))
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
-		int i = 0;
-		for(ItemStack out : recipe.output.get())
-			builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 13+(i++)*18)
-					.addItemStack(out)
+
+		List<ItemStack> outputs = recipe.output.get();
+		for(int i=0; i<outputs.size(); i++)
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 13+i*18)
+					.addItemStack(outputs.get(i))
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		builder.addSlot(RecipeIngredientRole.INPUT, 76, 1)
