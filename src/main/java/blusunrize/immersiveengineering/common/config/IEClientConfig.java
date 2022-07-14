@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.config;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
+import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.common.config.CachedConfig.BooleanValue;
 import blusunrize.immersiveengineering.common.config.CachedConfig.ConfigValue;
 import blusunrize.immersiveengineering.common.config.CachedConfig.DoubleValue;
@@ -43,6 +44,7 @@ public class IEClientConfig
 	public final static IntValue manualGuiScale;
 	public final static BooleanValue badEyesight;
 	public static boolean lastBadEyesight;
+	public final static BooleanValue fractionDisplay;
 	public final static BooleanValue tagTooltips;
 	public final static DoubleValue increasedTileRenderdistance;
 	public final static Map<IEWireType, IntValue> wireColors = new EnumMap<>(IEWireType.class);
@@ -74,6 +76,9 @@ public class IEClientConfig
 		badEyesight = builder
 				.comment("Set this to true if you suffer from bad eyesight. The Engineer's manual will be switched to a bold and darker text to improve readability.")
 				.define("badEyesight", false);
+		fractionDisplay = builder
+				.comment("Set this to false to change fluid recipes in the manual to use decimals on buckets instead of fractions")
+				.define("fluidFractions", true);
 		tagTooltips = builder
 				.comment("Controls if item tooltips should contain the tags names of items. These tooltips are only visible in advanced tooltip mode (F3+H)")
 				.define("tagTooltips", true);
@@ -113,10 +118,14 @@ public class IEClientConfig
 	@SubscribeEvent
 	public static void onConfigChange(ModConfigEvent ev)
 	{
-		if(CONFIG_SPEC.reloadIfMatched(ev, Type.CLIENT)&&lastBadEyesight!=badEyesight.get())
+		if(CONFIG_SPEC.reloadIfMatched(ev, Type.CLIENT))
 		{
-			lastBadEyesight = badEyesight.get();
-			ImmersiveEngineering.proxy.resetManual();
+			if(lastBadEyesight!=badEyesight.get())
+			{
+				lastBadEyesight = badEyesight.get();
+				ImmersiveEngineering.proxy.resetManual();
+			}
+			FluidUtils.enableFractionDisplay = fractionDisplay.get();
 		}
 	}
 }

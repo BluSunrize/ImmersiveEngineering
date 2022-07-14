@@ -2,8 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " c ",
-    "gpg",
-    " q "
+    "gpg"
   ],
   "key": {
     "c": {
@@ -13,10 +12,7 @@
       "tag": "forge:glass_panes"
     },
     "p": {
-      "item": "immersiveengineering:circuit_board"
-    },
-    "q": {
-      "tag": "forge:gems/quartz"
+      "item": "immersiveengineering:component_electronic"
     }
   },
   "result": {

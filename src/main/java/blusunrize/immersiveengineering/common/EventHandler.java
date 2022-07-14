@@ -288,7 +288,7 @@ public class EventHandler
 	{
 		Vec3 motion = event.getEntity().getDeltaMovement();
 		if(event.getEntityLiving().getEffect(IEPotions.STICKY.get())!=null)
-			motion = motion.subtract(0, (event.getEntityLiving().getEffect(IEPotions.STICKY.get()).getAmplifier()+1)*0.3F, 0);
+			motion = motion.subtract(0, (event.getEntityLiving().getEffect(IEPotions.STICKY.get()).getAmplifier()+1)*0.2F, 0);
 		else if(event.getEntityLiving().getEffect(IEPotions.CONCRETE_FEET.get())!=null)
 			motion = Vec3.ZERO;
 		event.getEntity().setDeltaMovement(motion);

@@ -10,7 +10,7 @@
       "item": "immersiveengineering:voltmeter"
     },
     "b": {
-      "item": "minecraft:terracotta"
+      "tag": "immersiveengineering:connector_insulator"
     },
     "i": {
       "tag": "forge:ingots/iron"

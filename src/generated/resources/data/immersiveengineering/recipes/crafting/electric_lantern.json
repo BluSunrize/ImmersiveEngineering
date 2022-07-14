@@ -3,20 +3,20 @@
   "pattern": [
     " i ",
     "pep",
-    "iri"
+    " w "
   ],
   "key": {
     "i": {
       "tag": "forge:plates/iron"
     },
     "e": {
-      "item": "immersiveengineering:electron_tube"
+      "item": "immersiveengineering:light_bulb"
     },
     "p": {
       "tag": "forge:glass_panes"
     },
-    "r": {
-      "tag": "forge:dusts/redstone"
+    "w": {
+      "tag": "forge:wires/copper"
     }
   },
   "result": {

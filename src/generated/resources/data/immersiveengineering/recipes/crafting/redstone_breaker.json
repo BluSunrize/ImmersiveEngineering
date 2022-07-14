@@ -1,22 +1,21 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "h h",
-    "ici",
-    "iri"
+    "hrh",
+    "ici"
   ],
   "key": {
     "h": {
       "item": "immersiveengineering:connector_hv"
     },
     "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "c": {
-      "item": "minecraft:repeater"
+      "tag": "forge:plates/iron"
     },
     "r": {
-      "tag": "forge:dusts/redstone"
+      "item": "minecraft:repeater"
+    },
+    "c": {
+      "item": "immersiveengineering:component_electronic"
     }
   },
   "result": {

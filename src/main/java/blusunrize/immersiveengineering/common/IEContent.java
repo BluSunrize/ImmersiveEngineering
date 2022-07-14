@@ -228,6 +228,8 @@ public class IEContent
 		IEFluids.BIODIESEL.getBlock().setEffect(IEPotions.FLAMMABLE.get(), 100, 1);
 		IEFluids.CONCRETE.getBlock().setEffect(MobEffects.MOVEMENT_SLOWDOWN, 20, 3);
 		IEFluids.REDSTONE_ACID.getBlock().setEffect(IEPotions.CONDUCTIVE.get(), 100, 1);
+		IEFluids.ACETALDEHYDE.getBlock().setEffect(MobEffects.CONFUSION, 70, 0);
+		IEFluids.PHENOLIC_RESIN.getBlock().setEffect(IEPotions.STICKY.get(), 40, 1);
 
 		ChemthrowerEffects.register();
 

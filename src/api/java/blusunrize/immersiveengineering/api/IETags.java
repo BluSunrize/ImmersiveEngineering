@@ -10,6 +10,8 @@ package blusunrize.immersiveengineering.api;
 
 import com.google.common.base.Preconditions;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -39,6 +41,7 @@ public class IETags
 		toItemTag.put(Blocks.ORES_IN_GROUND_STONE, Items.ORES_IN_GROUND_STONE);
 		toItemTag.put(Blocks.ORES_IN_GROUND_DEEPSLATE, Items.ORES_IN_GROUND_DEEPSLATE);
 		toItemTag.put(Blocks.ORE_RATES_SINGULAR, Items.ORE_RATES_SINGULAR);
+		toItemTag.put(BlockTags.PLANKS, ItemTags.PLANKS);
 	}
 
 	//Vanilla
@@ -80,6 +83,7 @@ public class IETags
 	public static final TagKey<Item> sulfurDust = createItemWrapper(getDust("sulfur"));
 	public static final TagKey<Item> sawdust = createItemWrapper(getDust("wood"));
 	public static final TagKey<Item> plates = createItemWrapper(forgeLoc("plates"));
+	public static final TagKey<Item> plasticPlate = createItemWrapper(getPlate("plastic"));
 	public static final TagKey<Item> sawblades = createItemWrapper(forgeLoc("sawblades"));
 	//Utility tags
 	public static final TagKey<Item> forbiddenInCrates = createItemWrapper(rl("forbidden_in_crates"));
@@ -92,6 +96,7 @@ public class IETags
 	public static final TagKey<Item> toolboxTools = createItemWrapper(rl("toolbox/tools"));
 	public static final TagKey<Item> toolboxFood = createItemWrapper(rl("toolbox/food"));
 	public static final TagKey<Item> toolboxWiring = createItemWrapper(rl("toolbox/wiring"));
+	public static final TagKey<Item> connectorInsulator = createItemWrapper(rl("connector_insulator"));
 	public static final TagKey<Block> hammerHarvestable = createBlockWrapper(rl("mineable/hammer"));
 	public static final TagKey<Block> wirecutterHarvestable = createBlockWrapper(rl("mineable/wirecutter"));
 	public static final TagKey<Block> drillHarvestable = createBlockWrapper(rl("mineable/drill"));
@@ -113,6 +118,8 @@ public class IETags
 	public static final TagKey<Fluid> fluidHerbicide = createFluidWrapper(forgeLoc("herbicide"));
 	public static final TagKey<Fluid> fluidRedstoneAcid = createFluidWrapper(forgeLoc("redstone_acid"));
 	public static final TagKey<Fluid> fluidPotion = createFluidWrapper(forgeLoc("potion"));
+	public static final TagKey<Fluid> fluidAcetaldehyde = createFluidWrapper(forgeLoc("acetaldehyde"));
+	public static final TagKey<Fluid> fluidResin = createFluidWrapper(forgeLoc("phenolic_resin"));
 	public static final TagKey<Fluid> drillFuel = createFluidWrapper(rl("drill_fuel"));
 
 	static

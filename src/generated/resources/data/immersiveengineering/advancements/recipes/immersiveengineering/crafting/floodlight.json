@@ -6,13 +6,13 @@
     ]
   },
   "criteria": {
-    "has_electron_tube": {
+    "has_light_bulb": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:electron_tube"
+              "immersiveengineering:light_bulb"
             ]
           }
         ]
@@ -27,7 +27,7 @@
   },
   "requirements": [
     [
-      "has_electron_tube",
+      "has_light_bulb",
       "has_the_recipe"
     ]
   ]

@@ -48,6 +48,7 @@ import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
 import static blusunrize.immersiveengineering.common.fluids.IEFluid.createBuilder;
+import static blusunrize.immersiveengineering.common.fluids.IEFluid.createGasBuilder;
 
 public class IEFluids
 {
@@ -79,6 +80,14 @@ public class IEFluids
 			"redstone_acid", rl("block/fluid/redstone_acid_still"), rl("block/fluid/redstone_acid_flow")
 	);
 	public static final RegistryObject<PotionFluid> POTION = REGISTER.register("potion", PotionFluid::new);
+	public static final FluidEntry ACETALDEHYDE = new FluidEntry(
+			"acetaldehyde", rl("block/fluid/acetaldehyde_still"), rl("block/fluid/acetaldehyde_flow"),
+			createGasBuilder(788, 210)
+	);
+	public static final FluidEntry PHENOLIC_RESIN = new FluidEntry(
+			"phenolic_resin", rl("block/fluid/resin_still"), rl("block/fluid/resin_flow"),
+			createBuilder(1100, 2800)
+	);
 
 	public static class FluidEntry
 	{
@@ -91,6 +100,11 @@ public class IEFluids
 		private FluidEntry(String name, ResourceLocation stillTex, ResourceLocation flowingTex)
 		{
 			this(name, 0, stillTex, flowingTex);
+		}
+
+		private FluidEntry(String name, ResourceLocation stillTex, ResourceLocation flowingTex, Consumer<Builder> buildAttributes)
+		{
+			this(name, 0, stillTex, flowingTex, buildAttributes);
 		}
 
 		private FluidEntry(String name, int burnTime, ResourceLocation stillTex, ResourceLocation flowingTex)

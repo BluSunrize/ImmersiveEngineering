@@ -1,8 +1,10 @@
 {
   "type": "immersiveengineering:bottling_machine",
-  "result": {
-    "item": "minecraft:oxidized_copper"
-  },
+  "results": [
+    {
+      "item": "minecraft:oxidized_copper"
+    }
+  ],
   "input": {
     "item": "minecraft:weathered_copper"
   },

@@ -62,6 +62,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 @JeiPlugin
@@ -244,7 +245,7 @@ public class JEIHelper implements IModPlugin
 				if(!bucket.isEmpty()&&tag.isPresent())
 					recipes.add(new BottlingMachineRecipe(
 							new ResourceLocation(Lib.MODID, "jei_bucket_"+f.getRegistryName().getPath()),
-							Lazy.of(() -> bucket),
+							List.of(Lazy.of(() -> bucket)),
 							Ingredient.of(Items.BUCKET),
 							new FluidTagInput(tag.get(), 1000)
 					));

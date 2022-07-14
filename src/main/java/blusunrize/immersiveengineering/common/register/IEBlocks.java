@@ -137,6 +137,10 @@ public final class IEBlocks
 				"coresample", STONE_DECO_PROPS_NOT_SOLID, p -> new HorizontalFacingBlock<>(IEBlockEntities.CORE_SAMPLE, p)
 		);
 
+		public static final BlockEntry<IEBaseBlock> DUROPLAST = BlockEntry.simple(
+				"duroplast", STONE_DECO_PROPS_NOT_SOLID
+		);
+
 		private static void init()
 		{
 		}
@@ -308,6 +312,10 @@ public final class IEBlocks
 						.strength(0.5F)
 						.noCollission().noOcclusion(),
 				SawdustBlock::new
+		);
+		public static final BlockEntry<IEBaseBlock> FIBERBOARD = BlockEntry.simple("fiberboard",
+				() -> Block.Properties.of(Material.WOOD, MaterialColor.WOOD)
+						.strength(1.25f, 1)
 		);
 
 		private static void init()
@@ -669,7 +677,8 @@ public final class IEBlocks
 
 		public static BlockEntry<IEBaseBlock> simple(String name, Supplier<Properties> properties)
 		{
-			return simple(name, properties, $ -> {});
+			return simple(name, properties, $ -> {
+			});
 		}
 
 		public static BlockEntry<IEEntityBlock<?>> barrel(String name, boolean metal)
@@ -677,7 +686,8 @@ public final class IEBlocks
 			return new BlockEntry<>(name, () -> BarrelBlock.getProperties(metal), p -> BarrelBlock.make(p, metal));
 		}
 
-		public static BlockEntry<ScaffoldingBlock> scaffolding(String name, Supplier<Properties> props) {
+		public static BlockEntry<ScaffoldingBlock> scaffolding(String name, Supplier<Properties> props)
+		{
 			return new BlockEntry<>(name, props, ScaffoldingBlock::new);
 		}
 
@@ -686,11 +696,13 @@ public final class IEBlocks
 			return new BlockEntry<>(name, props, FenceBlock::new);
 		}
 
-		public static BlockEntry<PostBlock> post(String name, Supplier<Properties> props) {
+		public static BlockEntry<PostBlock> post(String name, Supplier<Properties> props)
+		{
 			return new BlockEntry<>(name, props, PostBlock::new);
 		}
 
-		public static BlockEntry<WallmountBlock> wallmount(String name, Supplier<Properties> props) {
+		public static BlockEntry<WallmountBlock> wallmount(String name, Supplier<Properties> props)
+		{
 			return new BlockEntry<>(name, props, WallmountBlock::new);
 		}
 
@@ -711,7 +723,7 @@ public final class IEBlocks
 		public BlockEntry(BlockEntry<? extends T> toCopy)
 		{
 			this.properties = toCopy.properties;
-			this.regObject = (RegistryObject<T>) toCopy.regObject;
+			this.regObject = (RegistryObject<T>)toCopy.regObject;
 		}
 
 		@Override
@@ -720,11 +732,13 @@ public final class IEBlocks
 			return regObject.get();
 		}
 
-		public BlockState defaultBlockState() {
+		public BlockState defaultBlockState()
+		{
 			return get().defaultBlockState();
 		}
 
-		public ResourceLocation getId() {
+		public ResourceLocation getId()
+		{
 			return regObject.getId();
 		}
 

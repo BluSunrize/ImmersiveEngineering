@@ -12,7 +12,9 @@ import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IERecipeSerializer;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
+import blusunrize.immersiveengineering.common.network.PacketUtils;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +25,8 @@ import net.minecraftforge.common.crafting.conditions.ICondition.IContext;
 import net.minecraftforge.common.util.Lazy;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BottlingMachineRecipeSerializer extends IERecipeSerializer<BottlingMachineRecipe>
 {
@@ -35,11 +39,15 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	@Override
 	public BottlingMachineRecipe readFromJson(ResourceLocation recipeId, JsonObject json, IContext context)
 	{
-		Lazy<ItemStack> output = readOutput(json.get("result"));
+		JsonArray results = json.getAsJsonArray("results");
+		List<Lazy<ItemStack>> outputs = new ArrayList<>();
+		for(int i = 0; i < results.size(); i++)
+			outputs.add(readOutput(results.get(i)));
+
 		Ingredient input = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "input"));
 		FluidTagInput fluidInput = FluidTagInput.deserialize(GsonHelper.getAsJsonObject(json, "fluid"));
 		return IEServerConfig.MACHINES.bottlingMachineConfig.apply(
-				new BottlingMachineRecipe(recipeId, output, input, fluidInput)
+				new BottlingMachineRecipe(recipeId, outputs, input, fluidInput)
 		);
 	}
 
@@ -47,16 +55,16 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 	@Override
 	public BottlingMachineRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
 	{
-		Lazy<ItemStack> output = readLazyStack(buffer);
+		List<Lazy<ItemStack>> outputs = PacketUtils.readList(buffer, IERecipeSerializer::readLazyStack);
 		Ingredient input = Ingredient.fromNetwork(buffer);
 		FluidTagInput fluidInput = FluidTagInput.read(buffer);
-		return new BottlingMachineRecipe(recipeId, output, input, fluidInput);
+		return new BottlingMachineRecipe(recipeId, outputs, input, fluidInput);
 	}
 
 	@Override
 	public void toNetwork(FriendlyByteBuf buffer, BottlingMachineRecipe recipe)
 	{
-		writeLazyStack(buffer, recipe.output);
+		PacketUtils.writeListReverse(buffer, recipe.output.get(), FriendlyByteBuf::writeItem);
 		recipe.input.toNetwork(buffer);
 		recipe.fluidInput.write(buffer);
 	}

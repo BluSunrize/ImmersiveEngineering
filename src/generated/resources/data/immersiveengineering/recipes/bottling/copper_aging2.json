@@ -1,8 +1,10 @@
 {
   "type": "immersiveengineering:bottling_machine",
-  "result": {
-    "item": "minecraft:weathered_copper"
-  },
+  "results": [
+    {
+      "item": "minecraft:weathered_copper"
+    }
+  ],
   "input": {
     "item": "minecraft:exposed_copper"
   },

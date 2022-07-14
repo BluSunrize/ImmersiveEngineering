@@ -10,7 +10,7 @@
       "tag": "forge:ingots/electrum"
     },
     "c": {
-      "item": "minecraft:terracotta"
+      "tag": "immersiveengineering:connector_insulator"
     }
   },
   "result": {

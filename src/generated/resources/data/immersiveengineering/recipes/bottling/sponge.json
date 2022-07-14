@@ -1,8 +1,10 @@
 {
   "type": "immersiveengineering:bottling_machine",
-  "result": {
-    "item": "minecraft:wet_sponge"
-  },
+  "results": [
+    {
+      "item": "minecraft:wet_sponge"
+    }
+  ],
   "input": {
     "item": "minecraft:sponge"
   },
