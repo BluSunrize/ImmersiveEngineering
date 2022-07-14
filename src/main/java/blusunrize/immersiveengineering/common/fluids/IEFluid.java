@@ -38,6 +38,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
 
@@ -110,7 +111,7 @@ public class IEFluid extends FlowingFluid
 	public int getTickDelay(LevelReader p_205569_1_)
 	{
 		// viscosity delta to water (1000)
-		int dW = this.getFlowing().getAttributes().getViscosity()-1000;
+		int dW = this.getFlowing().getAttributes().getViscosity()-Fluids.WATER.getAttributes().getViscosity();
 		// dW for water & lava is 5000, difference in tick delay is 25 -> 0.005 as a modifier
 		double v = Math.round(5 + dW*0.005);
 		return Math.max(2, (int)v);
