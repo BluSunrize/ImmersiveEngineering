@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2017
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -62,10 +62,13 @@ public class ManualElementBottling extends SpecialManualElements
 					PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.output.get().size()+2];
 					pIngredients[0] = new PositionedItemStack(recipe.input.getItems(), 20, middle);
 					pIngredients[1] = new PositionedItemStack(bucket, 46, middle-8, bucketFraction);
-					final int[] i = {1};
-					recipe.output.get().forEach(
-							itemStack -> pIngredients[++i[0]] = new PositionedItemStack(itemStack, 70+i[0]%2*18, -10+i[0]/2*18)
-					);
+
+					List<ItemStack> outputs = recipe.output.get();
+					for(int i = 0; i < outputs.size(); i++)
+					{
+						int j = i+2;
+						pIngredients[j] = new PositionedItemStack(outputs.get(i), 70+j%2*18, -10+j/2*18);
+					}
 
 					if(iStack < this.recipes.size())
 						this.recipes.add(iStack, pIngredients);
