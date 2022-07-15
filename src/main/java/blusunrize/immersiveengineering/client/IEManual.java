@@ -132,9 +132,8 @@ public class IEManual
 			builder.appendText(IEManual::getMineralVeinTexts);
 			ieMan.addEntry(generalCat, builder.create(), ieMan.atOffsetFrom(generalCat, "graphite", -0.5));
 		}
-		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
-		ieMan.addEntry(generalCat, blueprints);
-		ieMan.hideEntry(blueprints);
+		// hide entry on blueprints
+		ieMan.hideEntry(new ResourceLocation(MODID, "blueprints"));
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ieMan);
 			builder.setContent(

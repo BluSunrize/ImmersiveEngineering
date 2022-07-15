@@ -23,6 +23,7 @@
     "entry_list": [
       "craftingtable",
       "workbench",
+      "blueprints",
       "cokeoven",
       "alloykiln",
       "crude_blast_furnace",
