@@ -25,7 +25,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
@@ -43,6 +42,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.entity.player.PlayerEvent.HarvestCheck;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -185,12 +185,10 @@ public class DrillItem extends DieselToolItem
 	@SubscribeEvent
 	public static void handleUnderwaterDrill(HarvestCheck ev)
 	{
-		if(!(ev.getEntityLiving() instanceof Player player))
-			return;
-		ItemStack drill = player.getInventory().getSelected();
+		ItemStack drill = ev.getEntity().getInventory().getSelected();
 		if(!(drill.getItem() instanceof DrillItem drillItem))
 			return;
-		if(player.isEyeInFluid(FluidTags.WATER)&&!drillItem.getUpgrades(drill).getBoolean("waterproof"))
+		if(ev.getEntity().isEyeInFluidType(ForgeMod.WATER_TYPE.get())&&!drillItem.getUpgrades(drill).getBoolean("waterproof"))
 			ev.setCanHarvest(false);
 	}
 

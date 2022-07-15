@@ -34,9 +34,9 @@ import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.mutable.Mutable;
 import org.apache.commons.lang3.mutable.MutableObject;
 
-public class IEContainerTypes
+public class IEMenuTypes
 {
-	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.CONTAINERS, Lib.MODID);
+	public static final DeferredRegister<MenuType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Lib.MODID);
 
 	public static final BEContainer<CokeOvenBlockEntity, CokeOvenMenu> COKE_OVEN = registerBENew(
 			Lib.GUIID_CokeOven, CokeOvenMenu::makeServer, CokeOvenMenu::makeClient

@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 public class GrassDropModifier extends LootModifier
 {
 	private static final DeferredRegister<Codec<? extends IGlobalLootModifier>> REGISTER = DeferredRegister.create(
-			Keys.LOOT_MODIFIER_SERIALIZERS, ImmersiveEngineering.MODID
+			Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, ImmersiveEngineering.MODID
 	);
 	private static final RegistryObject<Codec<GrassDropModifier>> GRASS_DROPS = REGISTER.register(
 			"hemp_seed_drops", () -> RecordCodecBuilder.create(inst -> codecStart(inst).apply(inst, GrassDropModifier::new))

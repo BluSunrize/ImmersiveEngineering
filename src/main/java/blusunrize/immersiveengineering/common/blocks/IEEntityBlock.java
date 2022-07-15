@@ -300,13 +300,13 @@ public class IEEntityBlock<T extends BlockEntity> extends IEBaseBlock implements
 						// This can be removed once IEBaseContainerOld is gone
 						var tempMenu = interaction.createMenu(0, player.getInventory(), player);
 						if(tempMenu instanceof IEBaseContainerOld<?>)
-							NetworkHooks.openGui(serverPlayer, interaction, ((BlockEntity)interaction).getBlockPos());
+							NetworkHooks.openScreen(serverPlayer, interaction, ((BlockEntity)interaction).getBlockPos());
 						else
-							NetworkHooks.openGui(serverPlayer, interaction);
+							NetworkHooks.openScreen(serverPlayer, interaction);
 					}
 				}
 				else
-					NetworkHooks.openGui(serverPlayer, menuProvider);
+					NetworkHooks.openScreen(serverPlayer, menuProvider);
 			}
 			return InteractionResult.SUCCESS;
 		}

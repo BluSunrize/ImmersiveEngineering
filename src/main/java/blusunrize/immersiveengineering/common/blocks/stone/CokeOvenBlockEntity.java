@@ -16,9 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IProcessBE;
 import blusunrize.immersiveengineering.common.blocks.generic.MultiblockPartBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -93,7 +93,7 @@ public class CokeOvenBlockEntity extends MultiblockPartBlockEntity<CokeOvenBlock
 	@Override
 	public BEContainer<CokeOvenBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.COKE_OVEN;
+		return IEMenuTypes.COKE_OVEN;
 	}
 
 	@Override

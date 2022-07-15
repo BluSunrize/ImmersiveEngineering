@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.ApiUtils;
 import blusunrize.immersiveengineering.api.tool.ChemthrowerHandler;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.ChemthrowerShotEntity;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
@@ -169,6 +169,6 @@ public class TurretChemBlockEntity extends TurretBlockEntity<TurretChemBlockEnti
 	@Override
 	public BEContainer<TurretChemBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.CHEM_TURRET;
+		return IEMenuTypes.CHEM_TURRET;
 	}
 }

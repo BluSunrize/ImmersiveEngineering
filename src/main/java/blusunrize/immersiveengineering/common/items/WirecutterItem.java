@@ -54,7 +54,7 @@ public class WirecutterItem extends IEBaseItem
 
 	@Nonnull
 	@Override
-	public ItemStack getContainerItem(@Nonnull ItemStack stack)
+	public ItemStack getCraftingRemainingItem(@Nonnull ItemStack stack)
 	{
 		ItemStack container = stack.copy();
 		if(container.hurt(1, ApiUtils.RANDOM_SOURCE, null))
@@ -64,7 +64,7 @@ public class WirecutterItem extends IEBaseItem
 	}
 
 	@Override
-	public boolean hasContainerItem(@Nonnull ItemStack stack)
+	public boolean hasCraftingRemainingItem(@Nonnull ItemStack stack)
 	{
 		return true;
 	}

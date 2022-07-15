@@ -14,7 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -71,7 +71,7 @@ public class NetworkSanitizer
 	{
 		synchronized(toSanitize)
 		{
-			toSanitize.computeIfAbsent(ev.getWorld(), w -> new HashSet<>())
+			toSanitize.computeIfAbsent(ev.getLevel(), w -> new HashSet<>())
 					.add(ev.getChunk().getPos());
 		}
 	}
@@ -81,7 +81,7 @@ public class NetworkSanitizer
 	{
 		synchronized(toSanitize)
 		{
-			Set<ChunkPos> forWorld = toSanitize.get(ev.getWorld());
+			Set<ChunkPos> forWorld = toSanitize.get(ev.getLevel());
 			if(forWorld!=null)
 				forWorld.remove(ev.getChunk().getPos());
 		}

@@ -15,8 +15,8 @@ import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.items.BulletItem;
 import blusunrize.immersiveengineering.common.network.MessageBlockEntitySync;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -246,6 +246,6 @@ public class TurretGunBlockEntity extends TurretBlockEntity<TurretGunBlockEntity
 	@Override
 	public BEContainer<TurretGunBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.GUN_TURRET;
+		return IEMenuTypes.GUN_TURRET;
 	}
 }

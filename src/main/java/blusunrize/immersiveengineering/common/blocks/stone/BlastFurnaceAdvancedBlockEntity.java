@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.metal.BlastFurnacePreheaterBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -60,7 +60,7 @@ public class BlastFurnaceAdvancedBlockEntity extends BlastFurnaceBlockEntity<Bla
 	@Override
 	public BEContainer<BlastFurnaceBlockEntity<?>, ?> getContainerType()
 	{
-		return IEContainerTypes.BLAST_FURNACE_ADV;
+		return IEMenuTypes.BLAST_FURNACE_ADV;
 	}
 
 	@Override

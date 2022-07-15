@@ -194,7 +194,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 	@SubscribeEvent
 	public static void onContainerOpened(PlayerContainerEvent.Open ev)
 	{
-		if(ev.getContainer() instanceof IEContainerMenu ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
+		if(ev.getContainer() instanceof IEContainerMenu ieContainer&&ev.getEntity() instanceof ServerPlayer serverPlayer)
 		{
 			ieContainer.usingPlayers.add(serverPlayer);
 			List<Pair<Integer, DataPair<?>>> list = new ArrayList<>();
@@ -209,7 +209,7 @@ public abstract class IEContainerMenu extends AbstractContainerMenu
 	@SubscribeEvent
 	public static void onContainerClosed(PlayerContainerEvent.Close ev)
 	{
-		if(ev.getContainer() instanceof IEContainerMenu ieContainer&&ev.getPlayer() instanceof ServerPlayer serverPlayer)
+		if(ev.getContainer() instanceof IEContainerMenu ieContainer&&ev.getEntity() instanceof ServerPlayer serverPlayer)
 			ieContainer.usingPlayers.remove(serverPlayer);
 	}
 

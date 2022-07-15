@@ -12,7 +12,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.gui.AssemblerMenu;
 import blusunrize.immersiveengineering.common.network.MessageSetGhostSlots;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import mezz.jei.api.constants.RecipeTypes;
@@ -55,7 +55,7 @@ public class AssemblerRecipeTransferHandler implements IRecipeTransferHandler<As
 	@Override
 	public Optional<MenuType<AssemblerMenu>> getMenuType()
 	{
-		return Optional.of(IEContainerTypes.ASSEMBLER.getType());
+		return Optional.of(IEMenuTypes.ASSEMBLER.getType());
 	}
 
 	@Override

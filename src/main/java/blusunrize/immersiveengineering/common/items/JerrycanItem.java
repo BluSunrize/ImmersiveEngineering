@@ -74,13 +74,13 @@ public class JerrycanItem extends IEBaseItem
 	}
 
 	@Override
-	public boolean hasContainerItem(ItemStack stack)
+	public boolean hasCraftingRemainingItem(ItemStack stack)
 	{
 		return ItemNBTHelper.hasKey(stack, "jerrycanDrain")||FluidUtil.getFluidContained(stack).isPresent();
 	}
 
 	@Override
-	public ItemStack getContainerItem(ItemStack stack)
+	public ItemStack getCraftingRemainingItem(ItemStack stack)
 	{
 		if(ItemNBTHelper.hasKey(stack, "jerrycanDrain"))
 		{

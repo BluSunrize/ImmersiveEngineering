@@ -22,8 +22,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBas
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.items.LogicCircuitBoardItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
@@ -127,7 +127,7 @@ public class LogicUnitBlockEntity extends IEBaseBlockEntity implements IIEInvent
 	@Override
 	public BEContainer<LogicUnitBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.LOGIC_UNIT;
+		return IEMenuTypes.LOGIC_UNIT;
 	}
 
 	@Override

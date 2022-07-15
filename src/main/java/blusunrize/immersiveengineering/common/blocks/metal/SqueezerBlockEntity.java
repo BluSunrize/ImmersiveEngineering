@@ -22,8 +22,8 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IEInventoryHandler;
@@ -431,6 +431,6 @@ public class SqueezerBlockEntity extends PoweredMultiblockBlockEntity<SqueezerBl
 	@Override
 	public BEContainer<SqueezerBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.SQUEEZER;
+		return IEMenuTypes.SQUEEZER;
 	}
 }

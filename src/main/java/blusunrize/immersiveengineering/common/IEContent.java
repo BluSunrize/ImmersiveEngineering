@@ -128,7 +128,7 @@ public class IEContent
 		IEParticles.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEBlockEntities.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEEntityTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
-		IEContainerTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
+		IEMenuTypes.REGISTER.register(FMLJavaModLoadingContext.get().getModEventBus());
 		IEStats.modConstruction();
 		IEItems.init();
 		IESounds.init();

@@ -153,7 +153,9 @@ public class Villages
 	public static class Registers
 	{
 		public static final DeferredRegister<PoiType> POINTS_OF_INTEREST = DeferredRegister.create(ForgeRegistries.POI_TYPES, ImmersiveEngineering.MODID);
-		public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(ForgeRegistries.PROFESSIONS, ImmersiveEngineering.MODID);
+		public static final DeferredRegister<VillagerProfession> PROFESSIONS = DeferredRegister.create(
+				ForgeRegistries.VILLAGER_PROFESSIONS, ImmersiveEngineering.MODID
+		);
 
 		// TODO: Add more workstations. We need a different one for each profession
 		public static final RegistryObject<PoiType> POI_CRAFTINGTABLE = POINTS_OF_INTEREST.register(

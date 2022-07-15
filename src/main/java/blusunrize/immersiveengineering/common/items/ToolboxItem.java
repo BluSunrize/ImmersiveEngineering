@@ -9,8 +9,8 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerTypeNew;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerTypeNew;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -57,7 +57,7 @@ public class ToolboxItem extends InternalStorageItem
 	@Override
 	protected ItemContainerTypeNew<?> getContainerTypeNew()
 	{
-		return IEContainerTypes.TOOLBOX;
+		return IEMenuTypes.TOOLBOX;
 	}
 
 	@Override

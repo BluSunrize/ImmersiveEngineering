@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import net.minecraft.core.BlockPos;
@@ -187,7 +187,7 @@ public class ModWorkbenchBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public BEContainer<ModWorkbenchBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.MOD_WORKBENCH;
+		return IEMenuTypes.MOD_WORKBENCH;
 	}
 
 	@Override

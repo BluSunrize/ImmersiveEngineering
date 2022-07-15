@@ -56,7 +56,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -779,9 +779,9 @@ public class FluidPipeBlockEntity extends IEBaseBlockEntity implements IFluidPip
 	}
 
 	@SubscribeEvent
-	public static void onWorldUnload(WorldEvent.Unload ev)
+	public static void onWorldUnload(LevelEvent.Unload ev)
 	{
-		if(!ev.getWorld().isClientSide()&&ev.getWorld() instanceof Level level)
+		if(!ev.getLevel().isClientSide()&&ev.getLevel() instanceof Level level)
 			indirectConnections.clearDimension(level);
 	}
 

@@ -8,23 +8,20 @@
 
 package blusunrize.immersiveengineering.data.models;
 
-import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import com.google.gson.*;
-import com.mojang.math.Matrix4f;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
-import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraftforge.common.util.TransformationHelper;
 
 import java.util.EnumMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
-// TODO this is a pile of hacks and should probably just go away
+// TODO Remove and replace by a simple JSON passthrough
+// TODO or use parent models to set transforms?
 public class TransformationMap
 {
 	private final Map<ItemTransforms.TransformType, ItemTransform> transforms = new EnumMap<>(ItemTransforms.TransformType.class);
@@ -34,83 +31,36 @@ public class TransformationMap
 		Gson GSON = new GsonBuilder()
 				.registerTypeAdapter(Transformation.class, new TransformationHelper.Deserializer())
 				.registerTypeAdapter(ItemTransform.class, new ItemTransform.Deserializer())
+				.registerTypeAdapter(ItemTransforms.class, new ItemTransforms.Deserializer())
 				.create();
-		JsonObject obj = new JsonParser().parse(json).getAsJsonObject();
-		Map<ItemTransforms.TransformType, Transformation> transforms = new EnumMap<>(TransformType.class);
+		JsonObject obj = JsonParser.parseString(json).getAsJsonObject();
 		Optional<String> type = Optional.ofNullable(obj.remove("type")).map(JsonElement::getAsString);
-		boolean vanilla = type.map("vanilla"::equals).orElse(false);
+		if(!type.map("vanilla"::equals).orElse(false))
+			return;
+		ItemTransforms vanillaTransforms = GSON.fromJson(obj, ItemTransforms.class);
+		Vector3f extraScale;
+		// TODO also support extra rotation, not sure how to compose. See alloysmelter.json
+		if(obj.has("scale"))
+		{
+			JsonArray scaleArr = obj.remove("scale").getAsJsonArray();
+			extraScale = new Vector3f(
+					scaleArr.get(0).getAsFloat(), scaleArr.get(1).getAsFloat(), scaleArr.get(2).getAsFloat()
+			);
+		}
+		else
+			extraScale = new Vector3f(1, 1, 1);
 		for(ItemTransforms.TransformType perspective : ItemTransforms.TransformType.values())
 		{
-			String key = perspective.getSerializeName();
-			JsonObject forType = obj.getAsJsonObject(key);
-			obj.remove(key);
-			if(forType==null)
-			{
-				key = alternateName(perspective);
-				forType = obj.getAsJsonObject(key);
-				obj.remove(key);
-			}
-			Transformation transform;
-			if(forType!=null)
-			{
-				if(vanilla)
-				{
-					ItemTransform vanillaTransform = GSON.fromJson(forType, ItemTransform.class);
-					transform = ModelUtils.fromItemTransform(vanillaTransform, false);
-				}
-				else
-				{
-					transform = readMatrix(forType, GSON);
-					if(type.map("no_corner_offset"::equals).orElse(false))
-						transform = transform.blockCornerToCenter();
-				}
-			}
-			else
-				transform = Transformation.identity();
-			transforms.put(perspective, transform);
+			ItemTransform vanillaValue = vanillaTransforms.getTransform(perspective);
+			Vector3f newScale = vanillaValue.scale.copy();
+			newScale.mul(extraScale.x(), extraScale.y(), extraScale.z());
+			this.transforms.put(perspective, new ItemTransform(
+					vanillaValue.rotation,
+					vanillaValue.translation,
+					newScale,
+					vanillaValue.rightRotation
+			));
 		}
-		Transformation baseTransform;
-		if(obj.size() > 0)
-			baseTransform = readMatrix(obj, GSON);
-		else
-			baseTransform = Transformation.identity();
-		for(Entry<TransformType, Transformation> e : transforms.entrySet())
-		{
-			Transformation transform = composeForgeLike(e.getValue(), baseTransform);
-			if(!transform.isIdentity())
-				this.transforms.put(e.getKey(), new ItemTransform(
-						transform.getLeftRotation().toXYZ(),
-						transform.getTranslation(),
-						transform.getScale(),
-						transform.getRightRotation().toXYZ()
-				));
-		}
-	}
-
-	/**
-	 * Composes two matrices, with special cases for one being the identity. There's a method for that in Forge in
-	 * principle, but calling it is rather inconsistent due to a naming conflict with official names and Forge making
-	 * an absolute mess of mappings and patches.
-	 */
-	private static Transformation composeForgeLike(Transformation a, Transformation b)
-	{
-		if(a.isIdentity()) return b;
-		if(b.isIdentity()) return a;
-		Matrix4f m = a.getMatrix();
-		m.multiply(b.getMatrix());
-		return new Transformation(m);
-	}
-
-	private Transformation readMatrix(JsonObject json, Gson GSON)
-	{
-		if(!json.has("origin"))
-			json.addProperty("origin", "center");
-		return GSON.fromJson(json, Transformation.class);
-	}
-
-	private String alternateName(ItemTransforms.TransformType type)
-	{
-		return type.name().toLowerCase(Locale.US);
 	}
 
 	public JsonObject toJson()
@@ -124,12 +74,16 @@ public class TransformationMap
 	private void add(JsonObject main, ItemTransforms.TransformType type, ItemTransform trsr)
 	{
 		JsonObject result = new JsonObject();
-		result.add("translation", toJson(trsr.translation));
-		result.add("rotation", toJson(trsr.rotation));
-		result.add("scale", toJson(trsr.scale));
-		result.add("right_rotation", toJson(trsr.rightRotation));
-		result.addProperty("origin", "corner");
-		main.add(type.getSerializeName(), result);
+		if(!trsr.translation.equals(ItemTransform.NO_TRANSFORM.translation))
+			result.add("translation", toJson(trsr.translation));
+		if(!trsr.rotation.equals(ItemTransform.NO_TRANSFORM.rotation))
+			result.add("rotation", toJson(trsr.rotation));
+		if(!trsr.scale.equals(ItemTransform.NO_TRANSFORM.scale))
+			result.add("scale", toJson(trsr.scale));
+		if(!trsr.rightRotation.equals(ItemTransform.NO_TRANSFORM.rightRotation))
+			result.add("right_rotation", toJson(trsr.rightRotation));
+		if(!result.keySet().isEmpty())
+			main.add(type.getSerializeName(), result);
 	}
 
 	private static JsonArray toJson(Vector3f v)

@@ -1,86 +1,37 @@
 {
   "display": {
     "firstperson_lefthand": {
-      "origin": "corner",
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
-        3.1415927,
-        -0.0,
-        3.1415927
+        0.0,
+        225.0,
+        0.0
       ],
       "scale": [
         0.4,
         0.4,
         0.4
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "firstperson_righthand": {
-      "origin": "corner",
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         0.0,
-        0.0,
+        45.0,
         0.0
       ],
       "scale": [
         0.4,
         0.4,
         0.4
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "fixed": {
-      "origin": "corner",
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.5,
         0.5,
         0.5
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "ground": {
-      "origin": "corner",
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.25,
         0.25,
@@ -93,39 +44,39 @@
       ]
     },
     "gui": {
-      "origin": "corner",
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
-        2.4568734,
-        -0.36136714,
-        -2.6779451
+        30.0,
+        225.0,
+        0.0
       ],
       "scale": [
         0.625,
         0.625,
         0.625
+      ]
+    },
+    "thirdperson_lefthand": {
+      "rotation": [
+        75.0,
+        45.0,
+        0.0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
       ],
       "translation": [
         0.0,
-        0.0,
+        0.15625,
         0.0
       ]
     },
     "thirdperson_righthand": {
-      "origin": "corner",
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
-        1.3835473,
-        0.75187933,
-        0.7680676
+        75.0,
+        45.0,
+        0.0
       ],
       "scale": [
         0.375,

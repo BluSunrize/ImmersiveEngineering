@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.common.util.FakePlayerFactory;
-import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -39,9 +39,9 @@ public class FakePlayerUtil
 	}
 
 	@SubscribeEvent
-	public static void onUnload(WorldEvent.Unload ev)
+	public static void onUnload(LevelEvent.Unload ev)
 	{
-		LevelAccessor world = ev.getWorld();
+		LevelAccessor world = ev.getLevel();
 		if(world instanceof ServerLevel)
 			fakePlayerInstances.remove(world);
 	}

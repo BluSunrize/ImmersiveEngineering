@@ -14,7 +14,7 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IComparat
 import blusunrize.immersiveengineering.common.gui.CrateMenu;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
@@ -102,7 +102,7 @@ public class WoodenCrateBlockEntity extends RandomizableContainerBlockEntity
 	@Override
 	protected AbstractContainerMenu createMenu(int pContainerId, Inventory pInventory)
 	{
-		return new CrateMenu(IEContainerTypes.WOODEN_CRATE.get(), pContainerId, pInventory, this);
+		return new CrateMenu(IEMenuTypes.WOODEN_CRATE.get(), pContainerId, pInventory, this);
 	}
 
 	@Override

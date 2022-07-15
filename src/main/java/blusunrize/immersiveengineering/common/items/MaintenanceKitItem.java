@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.items;
 
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -41,6 +41,6 @@ public class MaintenanceKitItem extends IEBaseItem
 	@Override
 	protected ItemContainerType<?> getContainerType()
 	{
-		return IEContainerTypes.MAINTENANCE_KIT;
+		return IEMenuTypes.MAINTENANCE_KIT;
 	}
 }

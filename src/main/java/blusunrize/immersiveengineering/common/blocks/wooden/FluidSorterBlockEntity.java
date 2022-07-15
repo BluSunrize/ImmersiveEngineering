@@ -17,8 +17,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBaseBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockEntityDrop;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteractionObjectIE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -143,7 +143,7 @@ public class FluidSorterBlockEntity extends IEBaseBlockEntity implements IIntera
 	@Override
 	public BEContainer<FluidSorterBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.FLUID_SORTER;
+		return IEMenuTypes.FLUID_SORTER;
 	}
 
 	public Direction[][] getValidOutputs(Direction inputSide, @Nullable FluidStack fluidStack)

@@ -118,9 +118,9 @@ public abstract class IEMinecartEntity<T extends BlockEntity> extends AbstractMi
 		if(player instanceof ServerPlayer serverPlayer&&this.containedBlockEntity instanceof MenuProvider menuProvider)
 		{
 			if(menuProvider instanceof IInteractionObjectIE<?>)
-				NetworkHooks.openGui(serverPlayer, this, buffer -> buffer.writeInt(this.getId()));
+				NetworkHooks.openScreen(serverPlayer, this, buffer -> buffer.writeInt(this.getId()));
 			else
-				NetworkHooks.openGui(serverPlayer, this);
+				NetworkHooks.openScreen(serverPlayer, this);
 			return InteractionResult.SUCCESS;
 		}
 		return InteractionResult.PASS;

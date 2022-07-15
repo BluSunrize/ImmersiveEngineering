@@ -23,7 +23,9 @@ import java.util.function.Supplier;
 
 public class IEEntityTypes
 {
-	public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(ForgeRegistries.ENTITIES, Lib.MODID);
+	public static final DeferredRegister<EntityType<?>> REGISTER = DeferredRegister.create(
+			ForgeRegistries.ENTITY_TYPES, Lib.MODID
+	);
 	public static final RegistryObject<EntityType<ChemthrowerShotEntity>> CHEMTHROWER_SHOT = register(
 			"chemthrower_shot",
 			() -> Builder.<ChemthrowerShotEntity>of(ChemthrowerShotEntity::new, MobCategory.MISC)

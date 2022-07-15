@@ -10,9 +10,9 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerTypeNew;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerTypeNew;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -78,7 +78,7 @@ public class IEBaseItem extends Item implements IColouredItem
 		ItemStack stack = player.getItemBySlot(slot);
 		ItemContainerTypeNew<?> typeNew = getContainerTypeNew();
 		if(typeNew!=null)
-			NetworkHooks.openGui(
+			NetworkHooks.openScreen(
 					(ServerPlayer)player,
 					new SimpleMenuProvider((id, inv, p) -> typeNew.create(id, inv, slot, stack), Component.empty())
 			);
@@ -86,7 +86,7 @@ public class IEBaseItem extends Item implements IColouredItem
 		{
 			ItemContainerType<?> typeOld = getContainerType();
 			if(typeOld!=null)
-				NetworkHooks.openGui((ServerPlayer)player, new SimpleMenuProvider(
+				NetworkHooks.openScreen((ServerPlayer)player, new SimpleMenuProvider(
 						(id, inv, p) -> typeOld.create(id, inv, player.level, slot, stack),
 						Component.empty()
 				), buffer -> buffer.writeInt(slot.ordinal()));
@@ -111,13 +111,13 @@ public class IEBaseItem extends Item implements IColouredItem
 	}
 
 	@Nullable
-	protected IEContainerTypes.ItemContainerType<?> getContainerType()
+	protected IEMenuTypes.ItemContainerType<?> getContainerType()
 	{
 		return null;
 	}
 
 	@Nullable
-	protected IEContainerTypes.ItemContainerTypeNew<?> getContainerTypeNew()
+	protected IEMenuTypes.ItemContainerTypeNew<?> getContainerTypeNew()
 	{
 		return null;
 	}

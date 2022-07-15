@@ -45,7 +45,7 @@ public class ToolUpgradeItem extends IEBaseItem implements IUpgrade
 	}
 
 	@Override
-	public int getItemStackLimit(ItemStack stack)
+	public int getMaxStackSize(ItemStack stack)
 	{
 		return type.stackSize;
 	}

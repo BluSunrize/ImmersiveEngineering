@@ -16,8 +16,8 @@ import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBl
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -394,6 +394,6 @@ public class RefineryBlockEntity extends PoweredMultiblockBlockEntity<RefineryBl
 	@Override
 	public BEContainer<RefineryBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.REFINERY;
+		return IEMenuTypes.REFINERY;
 	}
 }

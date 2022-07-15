@@ -106,7 +106,7 @@ import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -986,7 +986,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent
-	public void onEntityJoiningWorld(EntityJoinWorldEvent event)
+	public void onEntityJoiningWorld(EntityJoinLevelEvent event)
 	{
 		if(event.getEntity().level.isClientSide&&event.getEntity() instanceof AbstractMinecart&&
 				event.getEntity().getCapability(CapabilityShader.SHADER_CAPABILITY).isPresent())

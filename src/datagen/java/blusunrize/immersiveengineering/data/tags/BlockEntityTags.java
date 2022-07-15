@@ -38,7 +38,7 @@ public class BlockEntityTags extends ForgeRegistryTagsProvider<BlockEntityType<?
 
 	public BlockEntityTags(DataGenerator generatorIn, @Nullable ExistingFileHelper existingFileHelper)
 	{
-		super(generatorIn, ForgeRegistries.BLOCK_ENTITIES, Lib.MODID, existingFileHelper);
+		super(generatorIn, ForgeRegistries.BLOCK_ENTITY_TYPES, Lib.MODID, existingFileHelper);
 	}
 
 	private static final List<TagKey<BlockEntityType<?>>> IMMOVABLE_TAGS = ImmutableList.of(

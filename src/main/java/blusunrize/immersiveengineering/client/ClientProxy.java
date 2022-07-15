@@ -58,9 +58,9 @@ import blusunrize.immersiveengineering.common.gui.IEBaseContainerOld;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.register.IEBannerPatterns;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.sound.IEBlockEntitySound;
 import blusunrize.immersiveengineering.common.util.sound.SkyhookSound;
@@ -417,35 +417,35 @@ public class ClientProxy extends CommonProxy
 
 	private static void registerContainersAndScreens()
 	{
-		MenuScreens.register(IEContainerTypes.COKE_OVEN.getType(), CokeOvenScreen::new);
-		MenuScreens.register(IEContainerTypes.ALLOY_SMELTER.getType(), AlloySmelterScreen::new);
-		MenuScreens.register(IEContainerTypes.BLAST_FURNACE.getType(), BlastFurnaceScreen::new);
-		MenuScreens.register(IEContainerTypes.BLAST_FURNACE_ADV.getType(), BlastFurnaceScreen.Advanced::new);
-		MenuScreens.register(IEContainerTypes.CRAFTING_TABLE.getType(), CraftingTableScreen::new);
-		MenuScreens.register(IEContainerTypes.WOODEN_CRATE.get(), CrateScreen.StandardCrate::new);
-		registerTileScreen(IEContainerTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);
-		MenuScreens.register(IEContainerTypes.CIRCUIT_TABLE.getType(), CircuitTableScreen::new);
-		MenuScreens.register(IEContainerTypes.ASSEMBLER.getType(), AssemblerScreen::new);
-		registerTileScreen(IEContainerTypes.SORTER, SorterScreen::new);
-		registerTileScreen(IEContainerTypes.ITEM_BATCHER, ItemBatcherScreen::new);
-		MenuScreens.register(IEContainerTypes.LOGIC_UNIT.getType(), LogicUnitScreen::new);
-		registerTileScreen(IEContainerTypes.SQUEEZER, SqueezerScreen::new);
-		MenuScreens.register(IEContainerTypes.FERMENTER.getType(), FermenterScreen::new);
-		registerTileScreen(IEContainerTypes.REFINERY, RefineryScreen::new);
-		MenuScreens.register(IEContainerTypes.ARC_FURNACE.getType(), ArcFurnaceScreen::new);
-		MenuScreens.register(IEContainerTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
-		registerTileScreen(IEContainerTypes.MIXER, MixerScreen::new);
-		registerTileScreen(IEContainerTypes.GUN_TURRET, GunTurretScreen::new);
-		registerTileScreen(IEContainerTypes.CHEM_TURRET, ChemTurretScreen::new);
-		MenuScreens.register(IEContainerTypes.FLUID_SORTER.getType(), FluidSorterScreen::new);
-		MenuScreens.register(IEContainerTypes.CLOCHE.getType(), ClocheScreen::new);
-		MenuScreens.register(IEContainerTypes.TOOLBOX_BLOCK.getType(), ToolboxScreen::new);
-		MenuScreens.register(IEContainerTypes.TOOLBOX.getType(), ToolboxScreen::new);
+		MenuScreens.register(IEMenuTypes.COKE_OVEN.getType(), CokeOvenScreen::new);
+		MenuScreens.register(IEMenuTypes.ALLOY_SMELTER.getType(), AlloySmelterScreen::new);
+		MenuScreens.register(IEMenuTypes.BLAST_FURNACE.getType(), BlastFurnaceScreen::new);
+		MenuScreens.register(IEMenuTypes.BLAST_FURNACE_ADV.getType(), BlastFurnaceScreen.Advanced::new);
+		MenuScreens.register(IEMenuTypes.CRAFTING_TABLE.getType(), CraftingTableScreen::new);
+		MenuScreens.register(IEMenuTypes.WOODEN_CRATE.get(), CrateScreen.StandardCrate::new);
+		registerTileScreen(IEMenuTypes.MOD_WORKBENCH, ModWorkbenchScreen::new);
+		MenuScreens.register(IEMenuTypes.CIRCUIT_TABLE.getType(), CircuitTableScreen::new);
+		MenuScreens.register(IEMenuTypes.ASSEMBLER.getType(), AssemblerScreen::new);
+		registerTileScreen(IEMenuTypes.SORTER, SorterScreen::new);
+		registerTileScreen(IEMenuTypes.ITEM_BATCHER, ItemBatcherScreen::new);
+		MenuScreens.register(IEMenuTypes.LOGIC_UNIT.getType(), LogicUnitScreen::new);
+		registerTileScreen(IEMenuTypes.SQUEEZER, SqueezerScreen::new);
+		MenuScreens.register(IEMenuTypes.FERMENTER.getType(), FermenterScreen::new);
+		registerTileScreen(IEMenuTypes.REFINERY, RefineryScreen::new);
+		MenuScreens.register(IEMenuTypes.ARC_FURNACE.getType(), ArcFurnaceScreen::new);
+		MenuScreens.register(IEMenuTypes.AUTO_WORKBENCH.getType(), AutoWorkbenchScreen::new);
+		registerTileScreen(IEMenuTypes.MIXER, MixerScreen::new);
+		registerTileScreen(IEMenuTypes.GUN_TURRET, GunTurretScreen::new);
+		registerTileScreen(IEMenuTypes.CHEM_TURRET, ChemTurretScreen::new);
+		MenuScreens.register(IEMenuTypes.FLUID_SORTER.getType(), FluidSorterScreen::new);
+		MenuScreens.register(IEMenuTypes.CLOCHE.getType(), ClocheScreen::new);
+		MenuScreens.register(IEMenuTypes.TOOLBOX_BLOCK.getType(), ToolboxScreen::new);
+		MenuScreens.register(IEMenuTypes.TOOLBOX.getType(), ToolboxScreen::new);
 
-		registerScreen(IEContainerTypes.REVOLVER, RevolverScreen::new);
-		registerScreen(IEContainerTypes.MAINTENANCE_KIT, MaintenanceKitScreen::new);
+		registerScreen(IEMenuTypes.REVOLVER, RevolverScreen::new);
+		registerScreen(IEMenuTypes.MAINTENANCE_KIT, MaintenanceKitScreen::new);
 
-		MenuScreens.register(IEContainerTypes.CRATE_MINECART.get(), CrateScreen.EntityCrate::new);
+		MenuScreens.register(IEMenuTypes.CRATE_MINECART.get(), CrateScreen.EntityCrate::new);
 	}
 
 	private static <T extends BlockEntity>
@@ -489,7 +489,7 @@ public class ClientProxy extends CommonProxy
 	}
 
 	public static <C extends AbstractContainerMenu, S extends Screen & MenuAccess<C>>
-	void registerScreen(IEContainerTypes.ItemContainerType<C> type, ScreenConstructor<C, S> factory)
+	void registerScreen(IEMenuTypes.ItemContainerType<C> type, ScreenConstructor<C, S> factory)
 	{
 		MenuScreens.register(type.getType(), factory);
 	}

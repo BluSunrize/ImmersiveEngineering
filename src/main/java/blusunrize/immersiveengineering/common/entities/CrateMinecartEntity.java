@@ -13,9 +13,9 @@ import blusunrize.immersiveengineering.common.blocks.wooden.WoodenCrateBlockEnti
 import blusunrize.immersiveengineering.common.gui.CrateEntityContainer;
 import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEItems;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.ContainerHelper;
@@ -96,6 +96,6 @@ public class CrateMinecartEntity extends IEMinecartEntity<WoodenCrateBlockEntity
 	@Override
 	public AbstractContainerMenu createMenu(int id, @Nonnull Inventory inv, @Nonnull Player player)
 	{
-		return new CrateEntityContainer(IEContainerTypes.WOODEN_CRATE.get(), id, inv, this);
+		return new CrateEntityContainer(IEMenuTypes.WOODEN_CRATE.get(), id, inv, this);
 	}
 }

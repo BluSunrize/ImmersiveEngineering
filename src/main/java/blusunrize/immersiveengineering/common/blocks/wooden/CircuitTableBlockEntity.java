@@ -18,8 +18,8 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IInteract
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IStateBasedDirectional;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -126,7 +126,7 @@ public class CircuitTableBlockEntity extends IEBaseBlockEntity implements IIEInv
 	@Override
 	public BEContainer<CircuitTableBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.CIRCUIT_TABLE;
+		return IEMenuTypes.CIRCUIT_TABLE;
 	}
 
 	@Override

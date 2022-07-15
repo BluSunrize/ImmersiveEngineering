@@ -42,7 +42,8 @@ import java.util.stream.Collectors;
 public class IEBlockEntities
 {
 	public static final DeferredRegister<BlockEntityType<?>> REGISTER = DeferredRegister.create(
-			ForgeRegistries.BLOCK_ENTITIES, ImmersiveEngineering.MODID);
+			ForgeRegistries.BLOCK_ENTITY_TYPES, ImmersiveEngineering.MODID
+	);
 
 	public static final RegistryObject<BlockEntityType<BalloonBlockEntity>> BALLOON = REGISTER.register(
 			"balloon", makeType(BalloonBlockEntity::new, Cloth.BALLOON)

@@ -16,9 +16,9 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.items.InternalStorageItem;
 import blusunrize.immersiveengineering.common.items.ToolboxItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.inventory.IIEInventory;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -123,7 +123,7 @@ public class ToolboxBlockEntity extends IEBaseBlockEntity implements IStateBased
 	@Override
 	public BEContainer<ToolboxBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.TOOLBOX_BLOCK;
+		return IEMenuTypes.TOOLBOX_BLOCK;
 	}
 
 	@Override

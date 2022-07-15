@@ -22,9 +22,9 @@ import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInMachine;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.register.IEParticles;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -758,7 +758,7 @@ public class ArcFurnaceBlockEntity extends PoweredMultiblockBlockEntity<ArcFurna
 	@Override
 	public BEContainer<ArcFurnaceBlockEntity, ?> getContainerType()
 	{
-		return IEContainerTypes.ARC_FURNACE;
+		return IEMenuTypes.ARC_FURNACE;
 	}
 
 	@Override

@@ -44,7 +44,7 @@ import net.minecraft.world.level.levelgen.heightproviders.HeightProviderType;
 import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraftforge.common.world.BiomeGenerationSettingsBuilder;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.world.ChunkDataEvent;
+import net.minecraftforge.event.level.ChunkDataEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
@@ -142,7 +142,7 @@ public class IEWorldGen
 	@SubscribeEvent
 	public void chunkDataLoad(ChunkDataEvent.Load event)
 	{
-		LevelAccessor world = event.getWorld();
+		LevelAccessor world = event.getLevel();
 		if(event.getChunk().getStatus()==ChunkStatus.FULL&&world instanceof Level)
 		{
 			if(!event.getData().getCompound("ImmersiveEngineering").contains(IEServerConfig.ORES.retrogen_key.get())&&
@@ -164,11 +164,11 @@ public class IEWorldGen
 	int indexToRemove = 0;
 
 	@SubscribeEvent
-	public void serverWorldTick(TickEvent.WorldTickEvent event)
+	public void serverWorldTick(TickEvent.LevelTickEvent event)
 	{
-		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START||!(event.world instanceof ServerLevel))
+		if(event.side==LogicalSide.CLIENT||event.phase==TickEvent.Phase.START||!(event.level instanceof ServerLevel))
 			return;
-		ResourceKey<Level> dimension = event.world.dimension();
+		ResourceKey<Level> dimension = event.level.dimension();
 		int counter = 0;
 		int remaining;
 		synchronized(retrogenChunks)
@@ -184,14 +184,14 @@ public class IEWorldGen
 					if(chunks.size() <= 0)
 						break;
 					ChunkPos loc = chunks.get(indexToRemove);
-					if(event.world.hasChunk(loc.x, loc.z))
+					if(event.level.hasChunk(loc.x, loc.z))
 					{
-						long worldSeed = ((WorldGenLevel)event.world).getSeed();
+						long worldSeed = ((WorldGenLevel)event.level).getSeed();
 						RandomSource fmlRandom = RandomSource.create(worldSeed);
-						long xSeed = (fmlRandom.nextLong() >> 3);
-						long zSeed = (fmlRandom.nextLong() >> 3);
+						long xSeed = (fmlRandom.nextLong()>>3);
+						long zSeed = (fmlRandom.nextLong()>>3);
 						fmlRandom.setSeed(xSeed*loc.x+zSeed*loc.z^worldSeed);
-						this.generateOres(fmlRandom, loc.x, loc.z, (ServerLevel)event.world);
+						this.generateOres(fmlRandom, loc.x, loc.z, (ServerLevel)event.level);
 						counter++;
 						chunks.remove(indexToRemove);
 					}

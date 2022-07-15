@@ -19,7 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.event.world.ChunkWatchEvent;
+import net.minecraftforge.event.level.ChunkWatchEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.network.PacketDistributor;
@@ -84,20 +84,20 @@ public class WireSyncManager implements IWireSyncManager
 	@SubscribeEvent
 	public static void onChunkWatch(ChunkWatchEvent.Watch ev)
 	{
-		ApiUtils.addFutureServerTask(ev.getWorld(),
+		ApiUtils.addFutureServerTask(ev.getLevel(),
 				() -> {
 					if(wireWatchedChunksByPlayer.put(ev.getPlayer().getUUID(), ev.getPos()))
-						sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), true);
+						sendMessagesForChunk(ev.getLevel(), ev.getPos(), ev.getPlayer(), true);
 				}, true);
 	}
 
 	@SubscribeEvent
 	public static void onChunkUnWatch(ChunkWatchEvent.UnWatch ev)
 	{
-		ApiUtils.addFutureServerTask(ev.getWorld(),
+		ApiUtils.addFutureServerTask(ev.getLevel(),
 				() -> {
 					if(wireWatchedChunksByPlayer.remove(ev.getPlayer().getUUID(), ev.getPos()))
-						sendMessagesForChunk(ev.getWorld(), ev.getPos(), ev.getPlayer(), false);
+						sendMessagesForChunk(ev.getLevel(), ev.getPos(), ev.getPlayer(), false);
 				}, true);
 	}
 

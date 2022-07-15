@@ -31,7 +31,7 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.forgespi.language.IModInfo;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.network.PacketDistributor.PacketTarget;
-import net.minecraftforge.resource.PathResourcePack;
+import net.minecraftforge.resource.PathPackResources;
 import net.minecraftforge.resource.ResourcePackLoader;
 import net.minecraftforge.server.ServerLifecycleHooks;
 
@@ -92,7 +92,7 @@ public class StaticTemplateManager
 		}
 	}
 
-	private static InputStream getInputStreamOrThrow(PackType type, ResourceLocation name, PathResourcePack source)
+	private static InputStream getInputStreamOrThrow(PackType type, ResourceLocation name, PathPackResources source)
 	{
 		try
 		{
@@ -146,6 +146,6 @@ public class StaticTemplateManager
 	@SubscribeEvent
 	public static void onLogin(PlayerLoggedInEvent ev)
 	{
-		syncMultiblockTemplates(PacketDistributor.PLAYER.with(() -> (ServerPlayer)ev.getEntityLiving()), false);
+		syncMultiblockTemplates(PacketDistributor.PLAYER.with(() -> (ServerPlayer)ev.getEntity()), false);
 	}
 }

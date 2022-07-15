@@ -148,8 +148,8 @@ public class BlueprintCraftingRecipe extends MultiblockRecipe
 					{
 						int taken = Math.min(queryStack.getCount(), inputSize);
 						consumed.add(ItemHandlerHelper.copyStackWithSize(queryStack, taken));
-						if(taken >= queryStack.getCount()&&queryStack.getItem().hasContainerItem(queryStack))
-							query.set(i, queryStack.getItem().getContainerItem(queryStack));
+						if(taken >= queryStack.getCount()&&queryStack.getItem().hasCraftingRemainingItem(queryStack))
+							query.set(i, queryStack.getItem().getCraftingRemainingItem(queryStack));
 						else
 							queryStack.shrink(taken);
 						inputSize -= taken;

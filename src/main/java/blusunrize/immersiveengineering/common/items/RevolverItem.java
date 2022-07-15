@@ -25,8 +25,8 @@ import blusunrize.immersiveengineering.common.entities.RevolvershotEntity;
 import blusunrize.immersiveengineering.common.gui.IESlot;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
 import blusunrize.immersiveengineering.common.network.MessageSpeedloaderSync;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.ListUtils;
@@ -637,7 +637,7 @@ public class RevolverItem extends UpgradeableToolItem implements IBulletContaine
 	@Override
 	protected ItemContainerType<?> getContainerType()
 	{
-		return IEContainerTypes.REVOLVER;
+		return IEMenuTypes.REVOLVER;
 	}
 
 	/* ------------- INNER CLASSES ------------- */

@@ -12,8 +12,8 @@ import blusunrize.immersiveengineering.api.crafting.BlastFurnaceFuel;
 import blusunrize.immersiveengineering.api.crafting.BlastFurnaceRecipe;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.BEContainer;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.BEContainer;
 import blusunrize.immersiveengineering.common.util.CachedRecipe;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -44,7 +44,7 @@ public class BlastFurnaceBlockEntity<T extends BlastFurnaceBlockEntity<T>> exten
 	@Override
 	public BEContainer<? super T, ?> getContainerType()
 	{
-		return IEContainerTypes.BLAST_FURNACE;
+		return IEMenuTypes.BLAST_FURNACE;
 	}
 
 	@Nullable

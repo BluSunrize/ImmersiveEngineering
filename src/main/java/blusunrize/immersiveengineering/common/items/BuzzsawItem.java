@@ -495,9 +495,9 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		MinecraftForge.EVENT_BUS.register(new Object()
 		{
 			@SubscribeEvent
-			public void onTick(TickEvent.WorldTickEvent event)
+			public void onTick(TickEvent.LevelTickEvent event)
 			{
-				if(event.phase==Phase.START&&event.world==world)
+				if(event.phase==Phase.START&&event.level==world)
 				{
 					breakFromList(closedList, 5, world, player, stack);
 					if(closedList.isEmpty())

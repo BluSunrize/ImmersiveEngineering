@@ -10,8 +10,8 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.client.render.tooltip.RevolverServerTooltip;
 import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IBulletContainer;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.util.ListUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -55,7 +55,7 @@ public class SpeedloaderItem extends InternalStorageItem implements IBulletConta
 	@Override
 	protected ItemContainerType<?> getContainerType()
 	{
-		return IEContainerTypes.REVOLVER;
+		return IEMenuTypes.REVOLVER;
 	}
 
 	public boolean isEmpty(ItemStack stack)

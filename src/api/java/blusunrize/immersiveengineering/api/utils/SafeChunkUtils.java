@@ -20,9 +20,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraftforge.event.TickEvent.LevelTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
-import net.minecraftforge.event.TickEvent.WorldTickEvent;
-import net.minecraftforge.event.world.ChunkEvent;
+import net.minecraftforge.event.level.ChunkEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
 import javax.annotation.Nonnull;
@@ -94,12 +94,12 @@ public class SafeChunkUtils
 
 	public static void onChunkUnload(ChunkEvent.Unload ev)
 	{
-		unloadingChunks.computeIfAbsent(ev.getWorld(), w -> new HashSet<>()).add(ev.getChunk().getPos());
+		unloadingChunks.computeIfAbsent(ev.getLevel(), w -> new HashSet<>()).add(ev.getChunk().getPos());
 	}
 
-	public static void onTick(WorldTickEvent ev)
+	public static void onTick(LevelTickEvent ev)
 	{
 		if(ev.phase==Phase.START)
-			unloadingChunks.remove(ev.world);
+			unloadingChunks.remove(ev.level);
 	}
 }

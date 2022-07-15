@@ -21,8 +21,8 @@ import blusunrize.immersiveengineering.common.items.EngineersBlueprintItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
+import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.compat.jei.alloysmelter.AlloySmelterRecipeCategory;
@@ -162,7 +162,7 @@ public class JEIHelper implements IModPlugin
 	{
 		registration.addRecipeTransferHandler(new AssemblerRecipeTransferHandler(registration.getTransferHelper()), RecipeTypes.CRAFTING);
 		registration.addRecipeTransferHandler(
-				CraftingTableMenu.class, IEContainerTypes.CRAFTING_TABLE.getType(), RecipeTypes.CRAFTING,
+				CraftingTableMenu.class, IEMenuTypes.CRAFTING_TABLE.getType(), RecipeTypes.CRAFTING,
 				1, 9, 10, 18+36
 		);
 	}

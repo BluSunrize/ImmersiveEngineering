@@ -45,7 +45,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.Lazy;
-import net.minecraftforge.resource.DelegatingResourcePack;
+import net.minecraftforge.resource.DelegatingPackResources;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -476,7 +476,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 	private static final Lazy<Field> CLIENT_RESOURCES = Lazy.of(() -> {
 		try
 		{
-			Field clientResources = DelegatingResourcePack.class.getDeclaredField("namespacesAssets");
+			Field clientResources = DelegatingPackResources.class.getDeclaredField("namespacesAssets");
 			clientResources.setAccessible(true);
 			return clientResources;
 		} catch(Exception x)
@@ -487,7 +487,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 
 	/**
 	 * ResourceManager#getResources fails to get all resources when multiple mods contain the same file since (at least
-	 * in dev?) all mods are bunched up into a single DelegatingResourcePack, which can only return one resource. This
+	 * in dev?) all mods are bunched up into a single DelegatingPackResources, which can only return one resource. This
 	 * "breaks open" DelegatingResourcePacks and actually gets *all* resources.
 	 */
 	private void getActuallyAllResources(ResourceLocation path, PackResources resources, List<Resource> out)
@@ -495,7 +495,7 @@ public abstract class ManualInstance implements ResourceManagerReloadListener
 		final PackType type = PackType.CLIENT_RESOURCES;
 		try
 		{
-			if(resources instanceof DelegatingResourcePack)
+			if(resources instanceof DelegatingPackResources)
 			{
 				Object rawValue = CLIENT_RESOURCES.get().get(resources);
 				Map<String, List<PackResources>> subResources = (Map<String, List<PackResources>>)rawValue;
