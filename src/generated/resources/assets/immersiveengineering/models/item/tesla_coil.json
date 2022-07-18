@@ -1,4 +1,204 @@
 {
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        90.00001,
+        -4.0711098E-13,
+        179.99998
+      ],
+      "scale": [
+        0.28125,
+        0.28124997,
+        0.28124997
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        90.00001,
+        -4.0711098E-13,
+        179.99998
+      ],
+      "scale": [
+        0.28125,
+        0.28124997,
+        0.28124997
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        89.99999,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5625,
+        0.56249994,
+        0.56249994
+      ],
+      "translation": [
+        0.0,
+        -4.0,
+        0.0
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        89.99999,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.28125,
+        0.28125,
+        0.28125
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        120.0,
+        -1.7075472E-6,
+        -135.0
+      ],
+      "scale": [
+        0.42187497,
+        0.42187494,
+        0.42187494
+      ],
+      "translation": [
+        0.0,
+        -2.5,
+        0.0
+      ]
+    },
+    "head": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        89.99999,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.28125,
+        0.28125,
+        0.28125
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "none": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        89.99999,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.28125,
+        0.28125,
+        0.28125
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        160.0,
+        1.7075472E-6,
+        -70.00001
+      ],
+      "scale": [
+        0.28125,
+        0.28125,
+        0.28125
+      ],
+      "translation": [
+        0.0,
+        1.5,
+        -2.75
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        160.0,
+        1.7075472E-6,
+        -70.00001
+      ],
+      "scale": [
+        0.28125,
+        0.28125,
+        0.28125
+      ],
+      "translation": [
+        0.0,
+        1.5,
+        -2.75
+      ]
+    }
+  },
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_device/teslacoil.obj"

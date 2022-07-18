@@ -1,37 +1,82 @@
 {
   "display": {
     "firstperson_lefthand": {
-      "rotation": [
+      "right_rotation": [
         0.0,
-        225.0,
+        0.0,
         0.0
+      ],
+      "rotation": [
+        -180.0,
+        -44.999992,
+        -180.0
       ],
       "scale": [
         0.4,
         0.4,
         0.4
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
       ]
     },
     "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "rotation": [
         0.0,
-        45.0,
+        45.000004,
         0.0
       ],
       "scale": [
         0.4,
         0.4,
         0.4
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
       ]
     },
     "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "scale": [
         0.5,
         0.5,
         0.5
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
       ]
     },
     "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
       "scale": [
         0.25,
         0.25,
@@ -39,44 +84,42 @@
       ],
       "translation": [
         0.0,
-        0.1875,
+        3.0,
         0.0
       ]
     },
     "gui": {
-      "rotation": [
-        30.0,
-        225.0,
+      "right_rotation": [
+        0.0,
+        0.0,
         0.0
+      ],
+      "rotation": [
+        -150.0,
+        -44.999992,
+        180.0
       ],
       "scale": [
         0.625,
         0.625,
         0.625
-      ]
-    },
-    "thirdperson_lefthand": {
-      "rotation": [
-        75.0,
-        45.0,
-        0.0
-      ],
-      "scale": [
-        0.375,
-        0.375,
-        0.375
       ],
       "translation": [
         0.0,
-        0.15625,
+        0.0,
         0.0
       ]
     },
     "thirdperson_righthand": {
-      "rotation": [
-        75.0,
-        45.0,
+      "right_rotation": [
+        0.0,
+        0.0,
         0.0
+      ],
+      "rotation": [
+        74.99999,
+        45.000004,
+        -2.4148367E-6
       ],
       "scale": [
         0.375,
@@ -85,7 +128,7 @@
       ],
       "translation": [
         0.0,
-        0.15625,
+        2.5,
         0.0
       ]
     }

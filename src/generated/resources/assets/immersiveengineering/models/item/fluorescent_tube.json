@@ -1,5 +1,139 @@
 {
   "callbacks": "immersiveengineering:fluorescent_tube",
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -60.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0000001,
+        1.0000001
+      ],
+      "translation": [
+        3.2,
+        1.6,
+        0.0
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -60.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0000001,
+        1.0000001
+      ],
+      "translation": [
+        3.2,
+        1.6,
+        0.0
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        0.0,
+        4.0,
+        0.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        16.324947,
+        15.699857,
+        -47.265793
+      ],
+      "scale": [
+        0.99999994,
+        1.0,
+        0.99999994
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        8.0,
+        1.6
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        0.0,
+        8.0,
+        1.6
+      ]
+    }
+  },
   "dynamic": true,
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/fluorescent_tube.obj.ie"

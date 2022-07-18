@@ -1,4 +1,182 @@
 {
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        44.99999,
+        0.0
+      ],
+      "scale": [
+        0.12499998,
+        0.12499999,
+        0.12499998
+      ],
+      "translation": [
+        -2.3841858E-7,
+        0.0,
+        5.9604645E-8
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        44.99999,
+        0.0
+      ],
+      "scale": [
+        0.12499998,
+        0.12499999,
+        0.12499998
+      ],
+      "translation": [
+        -2.3841858E-7,
+        0.0,
+        5.9604645E-8
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.20000003,
+        0.20000003,
+        0.20000003
+      ],
+      "translation": [
+        2.3841858E-7,
+        2.3841858E-7,
+        2.3841858E-7
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.125,
+        0.125,
+        0.125
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -180.0,
+        -34.99998,
+        -180.0
+      ],
+      "scale": [
+        0.18750009,
+        0.1875,
+        0.18750009
+      ],
+      "translation": [
+        -1.1920929E-6,
+        0.0,
+        -7.1525574E-7
+      ]
+    },
+    "head": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.125,
+        0.125,
+        0.125
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        9.999998,
+        -45.00001,
+        89.99999
+      ],
+      "scale": [
+        0.125,
+        0.12500001,
+        0.12500003
+      ],
+      "translation": [
+        -4.7683716E-7,
+        1.4999999,
+        -2.7500002
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        9.999998,
+        -45.00001,
+        89.99999
+      ],
+      "scale": [
+        0.125,
+        0.12500001,
+        0.12500003
+      ],
+      "translation": [
+        -4.7683716E-7,
+        1.4999999,
+        -2.7500002
+      ]
+    }
+  },
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/wooden_device/watermill.obj"

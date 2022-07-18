@@ -1,4 +1,182 @@
 {
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        0.0,
+        -2.0,
+        -2.0
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        0.0,
+        -2.0,
+        -2.0
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -90.0,
+        0.0
+      ],
+      "scale": [
+        0.9999999,
+        1.0,
+        0.9999999
+      ],
+      "translation": [
+        2.0000029,
+        -3.0,
+        0.0
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -149.99998,
+        44.999992,
+        -179.99998
+      ],
+      "scale": [
+        0.99999976,
+        0.9999999,
+        0.99999964
+      ],
+      "translation": [
+        -4.7683716E-7,
+        -4.000002,
+        -1.999999
+      ]
+    },
+    "head": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        69.99996,
+        69.99997,
+        2.4962652E-5
+      ],
+      "scale": [
+        0.5,
+        0.49999985,
+        0.49999988
+      ],
+      "translation": [
+        -3.0000005,
+        1.5000005,
+        -2.75
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        69.99996,
+        69.99997,
+        2.4962652E-5
+      ],
+      "scale": [
+        0.5,
+        0.49999985,
+        0.49999988
+      ],
+      "translation": [
+        -3.0000005,
+        1.5000005,
+        -2.75
+      ]
+    }
+  },
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/wooden_device/wallmount.obj",

@@ -1,5 +1,161 @@
 {
   "callbacks": "immersiveengineering:buzzsaw",
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -90.0,
+        0.0
+      ],
+      "scale": [
+        0.37499988,
+        0.43749997,
+        -0.37499988
+      ],
+      "translation": [
+        -1.5,
+        5.8999996,
+        -9.536743E-7
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        90.0,
+        0.0
+      ],
+      "scale": [
+        0.37499988,
+        0.43749997,
+        0.37499988
+      ],
+      "translation": [
+        -1.5,
+        5.8999996,
+        9.536743E-7
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -44.99999
+      ],
+      "scale": [
+        0.43749997,
+        0.43749997,
+        0.43749997
+      ],
+      "translation": [
+        2.9999995,
+        1.0000005,
+        2.4999998
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        2.0,
+        4.0,
+        4.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -179.99998,
+        -56.249996,
+        157.5
+      ],
+      "scale": [
+        0.7500002,
+        0.74999994,
+        0.75000006
+      ],
+      "translation": [
+        -8.000002,
+        0.7999983,
+        -9.536743E-7
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        81.99373,
+        -74.14158,
+        8.006234
+      ],
+      "scale": [
+        0.74999994,
+        0.75000006,
+        -0.75
+      ],
+      "translation": [
+        1.000001,
+        15.000001,
+        -4.7683716E-7
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -98.00627,
+        74.14153,
+        171.99376
+      ],
+      "scale": [
+        0.75,
+        0.75,
+        0.75
+      ],
+      "translation": [
+        1.0000002,
+        15.0,
+        -4.7683716E-7
+      ]
+    }
+  },
   "dynamic": true,
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/buzzsaw_diesel.obj.ie"

@@ -1,4 +1,204 @@
 {
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -180.0,
+        -5.0089557E-6,
+        -180.0
+      ],
+      "scale": [
+        0.37499997,
+        0.37499997,
+        0.37499997
+      ],
+      "translation": [
+        -3.0000002,
+        6.0,
+        -2.9999998
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -180.0,
+        -5.0089557E-6,
+        -180.0
+      ],
+      "scale": [
+        0.37499997,
+        0.37499997,
+        0.37499997
+      ],
+      "translation": [
+        -3.0000002,
+        6.0,
+        -2.9999998
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        90.0,
+        0.0
+      ],
+      "scale": [
+        0.75000006,
+        0.7500001,
+        0.75000006
+      ],
+      "translation": [
+        6.0,
+        8.0,
+        -5.999999
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ],
+      "translation": [
+        3.0,
+        6.0,
+        3.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -149.99997,
+        40.0,
+        179.99998
+      ],
+      "scale": [
+        0.70312494,
+        0.703125,
+        0.7031249
+      ],
+      "translation": [
+        -0.69331884,
+        10.705127,
+        4.7620263
+      ]
+    },
+    "head": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ],
+      "translation": [
+        3.0,
+        6.0,
+        3.0
+      ]
+    },
+    "none": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ],
+      "translation": [
+        3.0,
+        6.0,
+        3.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        70.00004,
+        70.00004,
+        -9.985075E-6
+      ],
+      "scale": [
+        0.3750001,
+        0.37500006,
+        0.37500006
+      ],
+      "translation": [
+        3.845138,
+        5.2370057,
+        2.2749076
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        70.00004,
+        70.00004,
+        -9.985075E-6
+      ],
+      "scale": [
+        0.3750001,
+        0.37500006,
+        0.37500006
+      ],
+      "translation": [
+        3.845138,
+        5.2370057,
+        2.2749076
+      ]
+    }
+  },
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/metal_device/floodlight.obj.ie",

@@ -6,7 +6,7 @@
       "flip_v": true,
       "loader": "forge:obj",
       "model": "immersiveengineering:models/block/metal_device/charging_station.obj",
-      "render_type": "immersiveengineering:solid",
+      "render_type": "minecraft:solid",
       "textures": {
         "particle": "immersiveengineering:block/metal_device/charging_station"
       }
@@ -16,7 +16,7 @@
       "flip_v": true,
       "loader": "forge:obj",
       "model": "immersiveengineering:models/block/metal_device/charging_station_glass.obj",
-      "render_type": "immersiveengineering:translucent",
+      "render_type": "minecraft:translucent",
       "textures": {
         "particle": "immersiveengineering:block/metal_device/charging_station"
       }

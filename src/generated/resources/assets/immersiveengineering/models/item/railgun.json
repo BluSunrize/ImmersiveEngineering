@@ -1,5 +1,161 @@
 {
   "callbacks": "immersiveengineering:railgun",
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -84.37506,
+        0.0
+      ],
+      "scale": [
+        0.125,
+        0.124999985,
+        0.125
+      ],
+      "translation": [
+        -3.5,
+        3.25,
+        1.7500002
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        84.37506,
+        0.0
+      ],
+      "scale": [
+        0.125,
+        0.124999985,
+        0.125
+      ],
+      "translation": [
+        -0.99999976,
+        3.0,
+        0.9999995
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        -45.000004
+      ],
+      "scale": [
+        0.125,
+        0.125,
+        0.125
+      ],
+      "translation": [
+        3.0000005,
+        0.9999999,
+        1.0
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.125,
+        0.125,
+        0.125
+      ],
+      "translation": [
+        2.0,
+        2.0,
+        1.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        179.99998,
+        -56.250004,
+        146.24998
+      ],
+      "scale": [
+        0.18749997,
+        0.18749999,
+        0.18749999
+      ],
+      "translation": [
+        -2.9999995,
+        1.4901161E-7,
+        1.7881393E-7
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -6.968373E-5,
+        -84.37502,
+        -45.000095
+      ],
+      "scale": [
+        0.18750006,
+        0.18750003,
+        0.18750004
+      ],
+      "translation": [
+        -3.000001,
+        8.0,
+        -5.0
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -179.99992,
+        84.37506,
+        -135.0001
+      ],
+      "scale": [
+        0.18750006,
+        0.18750004,
+        0.18750006
+      ],
+      "translation": [
+        1.0000002,
+        8.0,
+        -5.0000005
+      ]
+    }
+  },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/railgun.obj.ie"
 }

@@ -1,5 +1,161 @@
 {
   "callbacks": "immersiveengineering:chemthrower",
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -90.0,
+        0.0
+      ],
+      "scale": [
+        0.37499997,
+        0.375,
+        -0.37499997
+      ],
+      "translation": [
+        1.5,
+        6.0,
+        2.9999995
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        90.0,
+        0.0
+      ],
+      "scale": [
+        0.37499997,
+        0.375,
+        0.37499997
+      ],
+      "translation": [
+        -1.5,
+        6.0,
+        3.0000005
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -180.0,
+        7.016708E-15,
+        -135.00002
+      ],
+      "scale": [
+        0.3125002,
+        0.3125001,
+        0.3125002
+      ],
+      "translation": [
+        1.9999992,
+        2.0000005,
+        -4.000002
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "translation": [
+        0.0,
+        4.0,
+        2.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -179.99998,
+        -56.24999,
+        157.49998
+      ],
+      "scale": [
+        0.43750006,
+        0.43750006,
+        0.43750006
+      ],
+      "translation": [
+        -2.999999,
+        5.000001,
+        -2.3841858E-7
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        81.993706,
+        -74.14155,
+        8.006238
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        -0.50000006
+      ],
+      "translation": [
+        4.7683716E-7,
+        11.999999,
+        3.000001
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -98.00624,
+        74.14153,
+        171.99371
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.50000006
+      ],
+      "translation": [
+        4.7683716E-7,
+        12.000001,
+        3.0000007
+      ]
+    }
+  },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/chemthrower.obj.ie"
 }

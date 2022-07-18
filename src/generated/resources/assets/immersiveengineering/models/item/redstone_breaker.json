@@ -1,4 +1,204 @@
 {
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -180.0,
+        -5.0089557E-6,
+        -180.0
+      ],
+      "scale": [
+        0.28124997,
+        0.28124997,
+        0.28124997
+      ],
+      "translation": [
+        0.0,
+        2.0,
+        0.0
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -180.0,
+        -5.0089557E-6,
+        -180.0
+      ],
+      "scale": [
+        0.28124997,
+        0.28124997,
+        0.28124997
+      ],
+      "translation": [
+        0.0,
+        2.0,
+        0.0
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.74999994,
+        0.74999994,
+        0.74999994
+      ],
+      "translation": [
+        0.0,
+        -4.0,
+        0.0
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -150.0,
+        44.999992,
+        -179.99998
+      ],
+      "scale": [
+        0.5625,
+        0.5625,
+        0.56249994
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "head": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "none": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.375,
+        0.375,
+        0.375
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        70.00004,
+        70.00004,
+        -9.985075E-6
+      ],
+      "scale": [
+        0.3750001,
+        0.37500006,
+        0.37500006
+      ],
+      "translation": [
+        0.0,
+        1.5,
+        2.0
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        70.00004,
+        70.00004,
+        -9.985075E-6
+      ],
+      "scale": [
+        0.3750001,
+        0.37500006,
+        0.37500006
+      ],
+      "translation": [
+        0.0,
+        1.5,
+        2.0
+      ]
+    }
+  },
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/block/connector/redstone_breaker.obj.ie"

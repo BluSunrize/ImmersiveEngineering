@@ -1,4 +1,160 @@
 {
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        180.0,
+        -90.0,
+        180.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        -4.0,
+        6.0,
+        -10.0
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        180.0,
+        -90.0,
+        180.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        -4.0,
+        6.0,
+        5.0
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        180.0,
+        7.016709E-15,
+        180.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        -8.0,
+        8.0,
+        -8.0
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        4.0,
+        4.0,
+        4.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -44.999992,
+        0.0
+      ],
+      "scale": [
+        1.1250001,
+        1.1250001,
+        1.1250001
+      ],
+      "translation": [
+        0.0,
+        8.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -67.50001,
+        0.0
+      ],
+      "scale": [
+        0.62500006,
+        0.625,
+        0.62500006
+      ],
+      "translation": [
+        -8.0,
+        2.0,
+        -5.0
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        -67.50001,
+        0.0
+      ],
+      "scale": [
+        0.62500006,
+        0.625,
+        0.62500006
+      ],
+      "translation": [
+        -4.0,
+        2.0,
+        4.0
+      ]
+    }
+  },
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/item/voltmeter.obj"

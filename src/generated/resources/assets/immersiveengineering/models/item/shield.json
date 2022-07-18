@@ -1,5 +1,161 @@
 {
   "callbacks": "immersiveengineering:shield",
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -90.00007,
+        -84.27049,
+        -90.00007
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        -7.7603664,
+        2.7886755,
+        -8.0
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        90.00007,
+        84.27049,
+        -90.00007
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        8.1597,
+        1.191341,
+        -8.0
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        90.0,
+        0.0
+      ],
+      "scale": [
+        0.74999994,
+        0.74999994,
+        0.74999994
+      ],
+      "translation": [
+        6.0000286,
+        6.0,
+        -4.499962
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.25,
+        0.25,
+        0.25
+      ],
+      "translation": [
+        2.0,
+        2.0,
+        2.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        -7.664138
+      ],
+      "rotation": [
+        180.0,
+        -45.000263,
+        179.86275
+      ],
+      "scale": [
+        0.74999905,
+        0.62500083,
+        0.75
+      ],
+      "translation": [
+        -6.0,
+        6.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        180.0,
+        1.5203949E-4,
+        180.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        9.5000105,
+        6.0,
+        -3.9999747
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        9.5,
+        6.0,
+        12.0
+      ]
+    }
+  },
   "loader": "immersiveengineering:ie_obj",
   "model": "immersiveengineering:models/item/shield.obj.ie"
 }

@@ -1,4 +1,160 @@
 {
+  "display": {
+    "firstperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        45.000004,
+        0.0
+      ],
+      "scale": [
+        0.37500003,
+        0.375,
+        0.37500003
+      ],
+      "translation": [
+        -0.75,
+        7.5,
+        5.625
+      ]
+    },
+    "firstperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -180.0,
+        -45.000004,
+        -180.0
+      ],
+      "scale": [
+        0.37500003,
+        0.375,
+        0.37500003
+      ],
+      "translation": [
+        -4.5,
+        7.5,
+        1.875
+      ]
+    },
+    "fixed": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        180.0,
+        90.0,
+        180.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation": [
+        8.0,
+        14.0,
+        -8.0
+      ]
+    },
+    "ground": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.5,
+        0.5,
+        0.5
+      ],
+      "translation": [
+        4.0,
+        8.0,
+        4.0
+      ]
+    },
+    "gui": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -180.0,
+        -56.24999,
+        -180.0
+      ],
+      "scale": [
+        0.875,
+        0.875,
+        0.875
+      ],
+      "translation": [
+        -10.0,
+        12.0,
+        0.0
+      ]
+    },
+    "thirdperson_lefthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        90.00001,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        0.62500006,
+        0.62500006,
+        0.62500006
+      ],
+      "translation": [
+        -4.0,
+        -7.0,
+        5.0
+      ]
+    },
+    "thirdperson_righthand": {
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation": [
+        -90.00001,
+        0.0,
+        180.0
+      ],
+      "scale": [
+        0.62500006,
+        0.62500006,
+        0.62500006
+      ],
+      "translation": [
+        -4.0,
+        3.0,
+        5.0
+      ]
+    }
+  },
   "flip_v": true,
   "loader": "forge:obj",
   "model": "immersiveengineering:models/item/toolbox.obj"
