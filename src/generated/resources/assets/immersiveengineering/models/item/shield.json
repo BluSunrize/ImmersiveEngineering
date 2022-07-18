@@ -2,20 +2,10 @@
   "callbacks": "immersiveengineering:shield",
   "display": {
     "firstperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -90.00007,
         -84.27049,
         -90.00007
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
       ],
       "translation": [
         -7.7603664,
@@ -24,20 +14,10 @@
       ]
     },
     "firstperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         90.00007,
         84.27049,
         -90.00007
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
       ],
       "translation": [
         8.1597,
@@ -46,11 +26,6 @@
       ]
     },
     "fixed": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         0.0,
         90.0,
@@ -68,16 +43,6 @@
       ]
     },
     "ground": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.25,
         0.25,
@@ -112,20 +77,10 @@
       ]
     },
     "thirdperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         180.0,
         1.5203949E-4,
         180.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
       ],
       "translation": [
         9.5000105,
@@ -134,21 +89,6 @@
       ]
     },
     "thirdperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "scale": [
-        1.0,
-        1.0,
-        1.0
-      ],
       "translation": [
         9.5,
         6.0,

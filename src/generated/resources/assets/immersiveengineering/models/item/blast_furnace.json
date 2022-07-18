@@ -2,11 +2,6 @@
   "parent": "immersiveengineering:block/blast_furnace_on_split",
   "display": {
     "firstperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -180.0,
         -44.99998,
@@ -16,19 +11,9 @@
         0.132,
         0.13200001,
         0.132
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "firstperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         0.0,
         45.000004,
@@ -38,46 +23,16 @@
         0.13200001,
         0.13200001,
         0.13200001
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "fixed": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.165,
         0.165,
         0.165
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "ground": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.0825,
         0.0825,
@@ -90,11 +45,6 @@
       ]
     },
     "gui": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -149.99998,
         -44.999977,
@@ -104,85 +54,30 @@
         0.20625004,
         0.20625,
         0.20625003
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "head": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.33,
         0.33,
         0.33
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "none": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.33,
         0.33,
         0.33
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "thirdperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.33,
         0.33,
         0.33
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "thirdperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         74.99999,
         45.000004,

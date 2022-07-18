@@ -1,11 +1,6 @@
 {
   "display": {
     "firstperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -180.0,
         -5.0089557E-6,
@@ -15,19 +10,9 @@
         0.14062499,
         0.14062499,
         0.14062499
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "firstperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -180.0,
         -5.0089557E-6,
@@ -37,24 +22,9 @@
         0.14062499,
         0.14062499,
         0.14062499
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "fixed": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.37499997,
         0.37499997,
@@ -67,33 +37,13 @@
       ]
     },
     "ground": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.1875,
         0.1875,
         0.1875
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "gui": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -150.0,
         44.999992,
@@ -111,55 +61,20 @@
       ]
     },
     "head": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.1875,
         0.1875,
         0.1875
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "none": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.1875,
         0.1875,
         0.1875
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "thirdperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         70.00004,
         70.00004,
@@ -177,11 +92,6 @@
       ]
     },
     "thirdperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         70.00004,
         70.00004,

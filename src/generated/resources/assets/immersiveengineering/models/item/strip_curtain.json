@@ -2,11 +2,6 @@
   "parent": "immersiveengineering:block/stripcurtain",
   "display": {
     "firstperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -180.0,
         -44.999992,
@@ -24,11 +19,6 @@
       ]
     },
     "firstperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         0.0,
         45.000004,
@@ -46,38 +36,13 @@
       ]
     },
     "fixed": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.5,
         0.5,
         0.5
-      ],
-      "translation": [
-        0.0,
-        0.0,
-        0.0
       ]
     },
     "ground": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
-      "rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "scale": [
         0.25,
         0.25,
@@ -90,11 +55,6 @@
       ]
     },
     "gui": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -149.99998,
         44.999992,
@@ -112,11 +72,6 @@
       ]
     },
     "thirdperson_lefthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         -104.999985,
         -44.999992,
@@ -134,11 +89,6 @@
       ]
     },
     "thirdperson_righthand": {
-      "right_rotation": [
-        0.0,
-        0.0,
-        0.0
-      ],
       "rotation": [
         74.99999,
         45.000004,

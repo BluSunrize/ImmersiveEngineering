@@ -16,6 +16,7 @@ import com.mojang.math.Quaternion;
 import com.mojang.math.Transformation;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.client.renderer.block.model.ItemTransform.Deserializer;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.util.Mth;
@@ -161,12 +162,15 @@ public class TransformationMap
 
 	private void add(JsonObject main, ItemTransforms.TransformType type, ItemTransform trsr)
 	{
-		// TODO skip default values
 		JsonObject result = new JsonObject();
-		result.add("translation", toJson(trsr.translation));
-		result.add("rotation", toJson(trsr.rotation));
-		result.add("scale", toJson(trsr.scale));
-		result.add("right_rotation", toJson(trsr.rightRotation));
+		if(!trsr.translation.equals(Deserializer.DEFAULT_TRANSLATION))
+			result.add("translation", toJson(trsr.translation));
+		if(!trsr.rotation.equals(Deserializer.DEFAULT_ROTATION))
+			result.add("rotation", toJson(trsr.rotation));
+		if(!trsr.scale.equals(Deserializer.DEFAULT_SCALE))
+			result.add("scale", toJson(trsr.scale));
+		if(!trsr.rightRotation.equals(Deserializer.DEFAULT_ROTATION))
+			result.add("right_rotation", toJson(trsr.rightRotation));
 		main.add(type.getSerializeName(), result);
 	}
 
