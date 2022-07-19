@@ -1,16 +1,11 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    " i ",
-    "pep",
-    " w "
-  ],
   "key": {
-    "i": {
-      "tag": "forge:plates/iron"
-    },
     "e": {
       "item": "immersiveengineering:light_bulb"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
     },
     "p": {
       "tag": "forge:glass_panes"
@@ -19,6 +14,11 @@
       "tag": "forge:wires/copper"
     }
   },
+  "pattern": [
+    " i ",
+    "pep",
+    " w "
+  ],
   "result": {
     "item": "immersiveengineering:electric_lantern"
   }

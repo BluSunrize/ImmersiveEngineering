@@ -1,5 +1,6 @@
 {
   "type": "immersiveengineering:blueprint",
+  "category": "components",
   "inputs": [
     {
       "tag": "forge:treated_wood"
@@ -14,7 +15,6 @@
       "tag": "forge:wires/electrum"
     }
   ],
-  "category": "components",
   "result": {
     "item": "immersiveengineering:component_electronic"
   }

@@ -1,10 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "hrh",
-    "ici"
-  ],
   "key": {
+    "c": {
+      "item": "immersiveengineering:component_electronic"
+    },
     "h": {
       "item": "immersiveengineering:connector_hv"
     },
@@ -13,11 +12,12 @@
     },
     "r": {
       "item": "minecraft:repeater"
-    },
-    "c": {
-      "item": "immersiveengineering:component_electronic"
     }
   },
+  "pattern": [
+    "hrh",
+    "ici"
+  ],
   "result": {
     "item": "immersiveengineering:redstone_breaker"
   }

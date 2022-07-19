@@ -795,7 +795,7 @@ public class Recipes extends RecipeProvider
 		BottlingMachineRecipeBuilder.builder(new ItemStack(StoneDecoration.DUROPLAST, 4))
 				.addResult(Molds.MOLD_PACKING_4)
 				.addInput(Molds.MOLD_PACKING_4)
-				.addFluidTag(IETags.fluidResin, FluidAttributes.BUCKET_VOLUME*4)
+				.addFluidTag(IETags.fluidResin, FluidType.BUCKET_VOLUME*4)
 				.build(out, toRL("bottling/duroplast_block"));
 		BottlingMachineRecipeBuilder.builder(new ItemStack(Ingredients.EMPTY_SHELL, 2))
 				.addResult(Molds.MOLD_BULLET_CASING)
@@ -1397,7 +1397,7 @@ public class Recipes extends RecipeProvider
 				.pattern("wbw")
 				.pattern("www")
 				.define('w', IETags.sawdust)
-				.define('b', new IngredientFluidStack(IETags.fluidResin, FluidAttributes.BUCKET_VOLUME))
+				.define('b', new IngredientFluidStack(IETags.fluidResin, FluidType.BUCKET_VOLUME))
 				.unlockedBy("has_resin", has(IEFluids.PHENOLIC_RESIN.getBucket()))
 				.save(out, toRL(toPath(WoodenDecoration.FIBERBOARD)));
 	}

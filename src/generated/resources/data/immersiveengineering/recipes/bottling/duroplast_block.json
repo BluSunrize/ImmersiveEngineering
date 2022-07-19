@@ -1,19 +1,19 @@
 {
   "type": "immersiveengineering:bottling_machine",
+  "fluid": {
+    "amount": 4000,
+    "tag": "forge:phenolic_resin"
+  },
+  "input": {
+    "item": "immersiveengineering:mold_packing_4"
+  },
   "results": [
     {
-      "item": "immersiveengineering:duroplast",
-      "count": 4
+      "count": 4,
+      "item": "immersiveengineering:duroplast"
     },
     {
       "item": "immersiveengineering:mold_packing_4"
     }
-  ],
-  "input": {
-    "item": "immersiveengineering:mold_packing_4"
-  },
-  "fluid": {
-    "tag": "forge:phenolic_resin",
-    "amount": 4000
-  }
+  ]
 }

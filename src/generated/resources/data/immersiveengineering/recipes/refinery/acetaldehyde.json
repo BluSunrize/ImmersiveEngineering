@@ -1,15 +1,15 @@
 {
   "type": "immersiveengineering:refinery",
-  "result": {
-    "fluid": "immersiveengineering:acetaldehyde",
-    "amount": 8
-  },
   "catalyst": {
     "tag": "forge:plates/silver"
   },
+  "energy": 120,
   "input0": {
-    "tag": "forge:ethanol",
-    "amount": 8
+    "amount": 8,
+    "tag": "forge:ethanol"
   },
-  "energy": 120
+  "result": {
+    "amount": 8,
+    "fluid": "immersiveengineering:acetaldehyde"
+  }
 }

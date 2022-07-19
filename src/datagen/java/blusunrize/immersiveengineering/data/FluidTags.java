@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.tags.FluidTagsProvider;
+import net.minecraftforge.common.Tags.Fluids;
 import net.minecraftforge.common.data.ExistingFileHelper;
 
 class FluidTags extends FluidTagsProvider
@@ -34,8 +35,9 @@ class FluidTags extends FluidTagsProvider
 		tag(IETags.fluidRedstoneAcid).add(IEFluids.REDSTONE_ACID.getStill());
 		tag(IETags.fluidAcetaldehyde).add(IEFluids.ACETALDEHYDE.getStill());
 		tag(IETags.fluidResin).add(IEFluids.PHENOLIC_RESIN.getStill());
-
 		tag(IETags.fluidPotion).add(IEFluids.POTION.get());
+
 		tag(IETags.drillFuel).addTag(IETags.fluidBiodiesel);
+		tag(Fluids.GASEOUS).add(IEFluids.ACETALDEHYDE.getStill());
 	}
 }

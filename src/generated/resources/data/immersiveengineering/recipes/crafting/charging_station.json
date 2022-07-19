@@ -1,27 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
-  "pattern": [
-    "gig",
-    "ttt",
-    "wlw"
-  ],
   "key": {
+    "g": {
+      "tag": "forge:glass"
+    },
     "i": {
       "tag": "forge:plates/iron"
+    },
+    "l": {
+      "item": "immersiveengineering:coil_lv"
     },
     "t": {
       "item": "immersiveengineering:electron_tube"
     },
     "w": {
       "tag": "forge:treated_wood"
-    },
-    "l": {
-      "item": "immersiveengineering:coil_lv"
-    },
-    "g": {
-      "tag": "forge:glass"
     }
   },
+  "pattern": [
+    "gig",
+    "ttt",
+    "wlw"
+  ],
   "result": {
     "item": "immersiveengineering:charging_station"
   }

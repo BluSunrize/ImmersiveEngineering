@@ -1,19 +1,19 @@
 {
   "type": "immersiveengineering:bottling_machine",
+  "fluid": {
+    "amount": 250,
+    "tag": "forge:phenolic_resin"
+  },
+  "input": {
+    "item": "immersiveengineering:mold_bullet_casing"
+  },
   "results": [
     {
-      "item": "immersiveengineering:empty_shell",
-      "count": 2
+      "count": 2,
+      "item": "immersiveengineering:empty_shell"
     },
     {
       "item": "immersiveengineering:mold_bullet_casing"
     }
-  ],
-  "input": {
-    "item": "immersiveengineering:mold_bullet_casing"
-  },
-  "fluid": {
-    "tag": "forge:phenolic_resin",
-    "amount": 250
-  }
+  ]
 }

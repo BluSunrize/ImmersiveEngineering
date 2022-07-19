@@ -1,5 +1,5 @@
 {
   "parent": "forge:item/bucket",
-  "loader": "forge:bucket",
-  "fluid": "immersiveengineering:phenolic_resin"
+  "fluid": "immersiveengineering:phenolic_resin",
+  "loader": "forge:fluid_container"
 }

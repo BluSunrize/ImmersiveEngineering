@@ -1,27 +1,27 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "e": {
+      "item": "immersiveengineering:light_bulb"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
+    },
+    "p": {
+      "tag": "forge:glass_panes"
+    },
+    "s": {
+      "tag": "forge:plates/silver"
+    }
+  },
   "pattern": [
     "sii",
     "pes",
     "sci"
   ],
-  "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "s": {
-      "tag": "forge:plates/silver"
-    },
-    "e": {
-      "item": "immersiveengineering:light_bulb"
-    },
-    "c": {
-      "item": "immersiveengineering:component_iron"
-    },
-    "p": {
-      "tag": "forge:glass_panes"
-    }
-  },
   "result": {
     "item": "immersiveengineering:floodlight"
   }

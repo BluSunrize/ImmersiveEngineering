@@ -1,4 +1,4 @@
-// 1.19	2022-06-10T12:22:51.815351855	Tags for minecraft:block
+// 1.19	2022-07-19T09:13:54.321879245	Tags for minecraft:block
 23e0570e60d941c629a243d8c02fbf74523eee75 data/chiselsandbits/tags/blocks/chiselable/forced.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/blocks/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/blocks/fences/steel.json
@@ -52,11 +52,12 @@ f7dc293929a2176bc6e428c765f6bf49fbeccdb5 data/immersiveengineering/tags/blocks/m
 3cd6a3f387dbdf003ef362dd1a6c26b1d8322e17 data/minecraft/tags/blocks/climbable.json
 0511dcf97836e0d1cc478ba194d697cc75d7c5fc data/minecraft/tags/blocks/fences.json
 1e227ef3a7c211db28ed17222728fdae19bba054 data/minecraft/tags/blocks/flower_pots.json
-042444ae233dcfec47db32f40ab314528f556ab6 data/minecraft/tags/blocks/mineable/axe.json
-c97f64b624c254fabd776505f9c52d822bda7924 data/minecraft/tags/blocks/mineable/pickaxe.json
+a8c0f2ea0d8eb4b1bafe89c57c00bd173c8ddab6 data/minecraft/tags/blocks/mineable/axe.json
+ea0aa99fb1c2ba37bfefe0a9bceb859f50ef5189 data/minecraft/tags/blocks/mineable/pickaxe.json
 a06fa3de12faa6da031a80f1ce5b70304cc80eb2 data/minecraft/tags/blocks/mineable/shovel.json
 7664fa2d24e4cac313d34871e35bfc4550d30dd8 data/minecraft/tags/blocks/needs_iron_tool.json
 0b44260a4bbb8be99039b3054c7e1faa8813d4a8 data/minecraft/tags/blocks/needs_stone_tool.json
+da83d2c4f2c93e3c8b94aaa7391d094b109192f9 data/minecraft/tags/blocks/planks.json
 b4376e7568b7c6c18f67e2fc641bc28325b89eee data/minecraft/tags/blocks/slabs.json
 40719c6ecf37707e678b35570ce70495afe17af1 data/minecraft/tags/blocks/stairs.json
 31aec3619b657eb55bc44a76ed1dba40e168472b data/minecraft/tags/blocks/wooden_fences.json

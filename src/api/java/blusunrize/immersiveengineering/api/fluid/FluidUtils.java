@@ -286,21 +286,21 @@ public class FluidUtils
 	{
 		String ret = "";
 		// if amount is bigger than bucket, consider those as full numbers
-		if(amount > FluidAttributes.BUCKET_VOLUME)
+		if(amount > FluidType.BUCKET_VOLUME)
 		{
-			ret += amount/FluidAttributes.BUCKET_VOLUME;
-			amount = amount%FluidAttributes.BUCKET_VOLUME;
+			ret += amount/FluidType.BUCKET_VOLUME;
+			amount = amount%FluidType.BUCKET_VOLUME;
 		}
 		// remaining amount
 		if(amount > 0)
 		{
-			Fraction key = Fraction.getReducedFraction(amount, FluidAttributes.BUCKET_VOLUME);
+			Fraction key = Fraction.getReducedFraction(amount, FluidType.BUCKET_VOLUME);
 			// use fraction symbols where possible
 			if(enableFractionDisplay && FRACTION_STRINGS.containsKey(key))
 				ret += (ret.isEmpty()?"": " ")+FRACTION_STRINGS.get(key);
 			else // fall back on decimals otherwise
 			{
-				double decimal = amount/(double)FluidAttributes.BUCKET_VOLUME;
+				double decimal = amount/(double)FluidType.BUCKET_VOLUME;
 				String decimalString = DECIMAL_FORMAT.format(decimal);
 				if(!ret.isEmpty())
 					ret += decimalString.substring(1);

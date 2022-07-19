@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "tag": "immersiveengineering:connector_insulator"
+    },
+    "i": {
+      "tag": "forge:ingots/aluminum"
+    }
+  },
   "pattern": [
     " i ",
     "cic",
     "cic"
   ],
-  "key": {
-    "i": {
-      "tag": "forge:ingots/aluminum"
-    },
-    "c": {
-      "tag": "immersiveengineering:connector_insulator"
-    }
-  },
   "result": {
-    "item": "immersiveengineering:connector_hv",
-    "count": 4
+    "count": 4,
+    "item": "immersiveengineering:connector_hv"
   }
 }
