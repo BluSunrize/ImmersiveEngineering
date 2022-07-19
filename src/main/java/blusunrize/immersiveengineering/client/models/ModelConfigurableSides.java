@@ -54,7 +54,7 @@ import static net.minecraft.core.Direction.*;
 
 public class ModelConfigurableSides extends BakedIEModel
 {
-	private static HashMap<String, ITextureNamer> TYPES = new HashMap<>();
+	private static final HashMap<String, ITextureNamer> TYPES = new HashMap<>();
 
 	public enum Type
 	{

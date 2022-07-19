@@ -40,7 +40,10 @@ public class BakedQuadBuilder
 
 		data[next++] = 0;
 
-		data[next++] = (int)(faceNormal.x*255)|((int)(faceNormal.y*255)<<8)|((int)(faceNormal.z*255)<<16);
+		data[next] |= (int)(faceNormal.x*127)&255;
+		data[next] |= ((int)(faceNormal.y*127)&255)<<8;
+		data[next] |= ((int)(faceNormal.z*127)&255)<<16;
+		++next;
 
 		++nextVertex;
 		Preconditions.checkState(next==nextVertex*FORMAT.getIntegerSize());
