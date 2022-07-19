@@ -20,7 +20,6 @@
     "accessors.SingleJigsawAccess",
     "accessors.TemplateAccess",
     "accessors.TNTEntityAccess",
-    "accessors.client.SimpleModelAccess",
     "coremods.AbstractBlockStateMixin",
     "coremods.ServerWorldMixin",
     "coremods.TemplateMixin"
@@ -35,6 +34,7 @@
     "accessors.client.PlayerControllerAccess",
     "accessors.client.RenderChunkAccess",
     "accessors.client.RenderTypeAccess",
+    "accessors.client.SimpleModelAccess",
     "accessors.client.WorldRendererAccess",
     "coremods.client.BipedModelMixin",
     "coremods.client.RebuildTaskMixin",
