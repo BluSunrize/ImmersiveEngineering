@@ -1,0 +1,21 @@
+{
+  "type": "immersiveengineering:blueprint",
+  "inputs": [
+    {
+      "tag": "forge:treated_wood"
+    },
+    {
+      "tag": "forge:gems/quartz"
+    },
+    {
+      "tag": "forge:dusts/redstone"
+    },
+    {
+      "tag": "forge:wires/electrum"
+    }
+  ],
+  "category": "components",
+  "result": {
+    "item": "immersiveengineering:component_electronic"
+  }
+}

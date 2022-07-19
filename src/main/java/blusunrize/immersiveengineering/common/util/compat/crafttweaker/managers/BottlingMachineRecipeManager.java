@@ -27,6 +27,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.openzen.zencode.java.ZenCodeType;
 
+import java.util.List;
+
 /**
  * Allows you to add or remove Bottling Machine recipes.
  * <p>
@@ -53,7 +55,7 @@ public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMach
 	 * @param recipePath The recipe name, without the resource location
 	 * @param itemInput  The item input (the item to be filled)
 	 * @param fluidTag   The fluid tag of the fluid
-	 * @param output     The resulting "filled" item.
+	 * @param outputs     The resulting "filled" items.
 	 * @docParam recipePath "grow_a_pick"
 	 * @docParam itemInput <item:minecraft:stick>
 	 * @docParam fluidTag <tag:minecraft:water>
@@ -61,17 +63,17 @@ public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMach
 	 * @docParam output <item:minecraft:wooden_pickaxe>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient itemInput, Many<MCTag> fluidTag, IItemStack output)
+	public void addRecipe(String recipePath, IIngredient itemInput, Many<MCTag> fluidTag, IItemStack[] outputs)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 
 		final FluidTagInput fluidTagInput = CrTIngredientUtil.getFluidTagInput(fluidTag);
 
-		final ItemStack itemOutput = output.getInternal();
+		final List<Lazy<ItemStack>> outputList = CrTIngredientUtil.getNonNullList(outputs);
 		final Ingredient input = itemInput.asVanillaIngredient();
 
 		final BottlingMachineRecipe recipe = new BottlingMachineRecipe(
-				resourceLocation, IESerializableRecipe.of(itemOutput), input, fluidTagInput
+				resourceLocation, outputList, input, fluidTagInput
 		);
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));

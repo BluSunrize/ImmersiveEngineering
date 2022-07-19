@@ -20,10 +20,7 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry.ShaderRegistryEntry;
-import blusunrize.immersiveengineering.client.manual.IEManualInstance;
-import blusunrize.immersiveengineering.client.manual.ManualElementBlueprint;
-import blusunrize.immersiveengineering.client.manual.ManualElementMultiblock;
-import blusunrize.immersiveengineering.client.manual.ShaderManualElement;
+import blusunrize.immersiveengineering.client.manual.*;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.lib.manual.*;
 import blusunrize.lib.manual.ManualEntry.ManualEntryBuilder;
@@ -94,6 +91,26 @@ public class IEManual
 						};
 					}
 					return new ManualElementBlueprint(ieMan, stacks);
+				});
+		ieMan.registerSpecialElement(new ResourceLocation(MODID, "bottling"),
+				s -> {
+					ItemStack[] stacks;
+					if(GsonHelper.isArrayNode(s, "recipes"))
+					{
+						JsonArray arr = s.get("recipes").getAsJsonArray();
+						stacks = new ItemStack[arr.size()];
+						for(int i = 0; i < stacks.length; ++i)
+							stacks[i] = CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true);
+					}
+					else
+					{
+						JsonElement recipe = s.get("recipe");
+						Preconditions.checkArgument(recipe.isJsonObject());
+						stacks = new ItemStack[]{
+								CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
+						};
+					}
+					return new ManualElementBottling(ieMan, stacks);
 				});
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
 				s -> {

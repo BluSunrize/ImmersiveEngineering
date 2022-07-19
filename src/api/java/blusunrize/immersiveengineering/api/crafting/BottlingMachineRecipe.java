@@ -19,6 +19,9 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 /**
  * @author BluSunrize - 14.01.2016
  * <br>
@@ -31,18 +34,21 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 
 	public final Ingredient input;
 	public final FluidTagInput fluidInput;
-	public final Lazy<ItemStack> output;
+	public final Lazy<NonNullList<ItemStack>> output;
 
-	public BottlingMachineRecipe(ResourceLocation id, Lazy<ItemStack> output, Ingredient input, FluidTagInput fluidInput)
+	public BottlingMachineRecipe(ResourceLocation id, List<Lazy<ItemStack>> output, Ingredient input, FluidTagInput fluidInput)
 	{
-		super(output, IERecipeTypes.BOTTLING_MACHINE, id);
-		this.output = output;
+		super(output.get(0), IERecipeTypes.BOTTLING_MACHINE, id);
+		this.output = Lazy.of(() -> output.stream()
+				.map(Lazy::get)
+				.collect(Collectors.toCollection(NonNullList::create))
+		);
 		this.input = input;
 		this.fluidInput = fluidInput;
 
 		setInputList(Lists.newArrayList(this.input));
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);
-		this.outputList = Lazy.of(() -> NonNullList.of(ItemStack.EMPTY, this.output.get()));
+		this.outputList = this.output;
 	}
 
 	@Override

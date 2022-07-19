@@ -14,11 +14,21 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.Arrays;
 import java.util.List;
 
-public record PositionedItemStack(List<ItemStack> displayList, int x, int y)
+public record PositionedItemStack(List<ItemStack> displayList, int x, int y, String amount)
 {
+	public PositionedItemStack(List<ItemStack> displayList, int x, int y)
+	{
+		this(displayList, x, y, null);
+	}
+
 	public PositionedItemStack(ItemStack stack, int x, int y)
 	{
 		this(List.of(stack), x, y);
+	}
+
+	public PositionedItemStack(ItemStack stack, int x, int y, String amount)
+	{
+		this(List.of(stack), x, y, amount);
 	}
 
 	public PositionedItemStack(ItemStack[] stacks, int x, int y)

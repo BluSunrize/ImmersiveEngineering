@@ -27,13 +27,28 @@
             }
         ]
     },
-    "tubes": {
+    "elec_components": {
         "type": "blueprint",
         "recipes": [
             {
-                "item": "immersiveengineering:electron_tube"
+                "item": "immersiveengineering:component_electronic"
+            },
+            {
+                "item": "immersiveengineering:component_electronic_adv"
             }
         ]
+    },
+    "light_bulbs": {
+        "type": "blueprint",
+        "recipe": {
+            "item": "immersiveengineering:light_bulb"
+        }
+    },
+    "tubes": {
+        "type": "blueprint",
+        "recipe": {
+            "item": "immersiveengineering:electron_tube"
+        }
     },
     "pcb": {
         "type": "blueprint",

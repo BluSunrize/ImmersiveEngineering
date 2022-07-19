@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "c": {
-      "item": "minecraft:terracotta"
-    },
-    "i": {
-      "tag": "forge:ingots/electrum"
-    }
-  },
   "pattern": [
     " i ",
     "cic"
   ],
+  "key": {
+    "i": {
+      "tag": "forge:ingots/electrum"
+    },
+    "c": {
+      "tag": "immersiveengineering:connector_insulator"
+    }
+  },
   "result": {
-    "count": 8,
-    "item": "immersiveengineering:connector_mv_relay"
+    "item": "immersiveengineering:connector_mv_relay",
+    "count": 8
   }
 }

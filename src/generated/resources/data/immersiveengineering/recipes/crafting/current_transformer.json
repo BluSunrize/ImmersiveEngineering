@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "key": {
     "b": {
-      "item": "minecraft:terracotta"
+      "tag": "immersiveengineering:connector_insulator"
     },
     "c": {
       "item": "immersiveengineering:coil_lv"

@@ -1,20 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "e": {
-      "item": "immersiveengineering:electron_tube"
-    },
-    "i": {
-      "tag": "forge:plates/aluminum"
-    },
-    "p": {
-      "tag": "forge:glass_panes"
-    }
-  },
   "pattern": [
-    "ipi",
+    " p ",
     "pep"
   ],
+  "key": {
+    "p": {
+      "tag": "forge:plates/silver"
+    },
+    "e": {
+      "item": "immersiveengineering:light_bulb"
+    }
+  },
   "result": {
     "item": "immersiveengineering:toolupgrade_shield_flash"
   }

@@ -1,5 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " c ",
+    "gpg"
+  ],
   "key": {
     "c": {
       "item": "immersiveengineering:connector_redstone"
@@ -8,17 +12,9 @@
       "tag": "forge:glass_panes"
     },
     "p": {
-      "item": "immersiveengineering:circuit_board"
-    },
-    "q": {
-      "tag": "forge:gems/quartz"
+      "item": "immersiveengineering:component_electronic"
     }
   },
-  "pattern": [
-    " c ",
-    "gpg",
-    " q "
-  ],
   "result": {
     "item": "immersiveengineering:connector_probe"
   }

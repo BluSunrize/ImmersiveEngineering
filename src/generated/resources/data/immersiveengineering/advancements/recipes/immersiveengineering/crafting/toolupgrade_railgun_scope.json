@@ -13,6 +13,18 @@
       },
       "trigger": "minecraft:inventory_changed"
     },
+    "has_revolver": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:revolver"
+            ]
+          }
+        ]
+      }
+    },
     "has_the_recipe": {
       "conditions": {
         "recipe": "immersiveengineering:crafting/toolupgrade_railgun_scope"
@@ -23,6 +35,7 @@
   "requirements": [
     [
       "has_railgun",
+      "has_revolver",
       "has_the_recipe"
     ]
   ],

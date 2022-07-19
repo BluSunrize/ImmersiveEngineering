@@ -92,7 +92,7 @@ public class GuiHelper
 
 	public static void drawRepeatedFluidSpriteGui(MultiBufferSource buffer, PoseStack transform, FluidStack fluid, float x, float y, float w, float h)
 	{
-		RenderType renderType = IERenderTypes.getGui(InventoryMenu.BLOCK_ATLAS);
+		RenderType renderType = IERenderTypes.getGuiTranslucent(InventoryMenu.BLOCK_ATLAS);
 		VertexConsumer builder = buffer.getBuffer(renderType);
 		drawRepeatedFluidSprite(builder, transform, fluid, x, y, w, h);
 	}

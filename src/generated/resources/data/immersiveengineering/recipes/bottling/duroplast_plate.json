@@ -1,0 +1,18 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "results": [
+    {
+      "item": "immersiveengineering:plate_duroplast"
+    },
+    {
+      "item": "immersiveengineering:mold_plate"
+    }
+  ],
+  "input": {
+    "item": "immersiveengineering:mold_plate"
+  },
+  "fluid": {
+    "tag": "forge:phenolic_resin",
+    "amount": 250
+  }
+}

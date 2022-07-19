@@ -73,6 +73,8 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> SLAG = simple("slag");
 		public static final ItemRegObject<IEBaseItem> COMPONENT_IRON = simple("component_iron");
 		public static final ItemRegObject<IEBaseItem> COMPONENT_STEEL = simple("component_steel");
+		public static final ItemRegObject<IEBaseItem> COMPONENT_ELECTRONIC = simple("component_electronic");
+		public static final ItemRegObject<IEBaseItem> COMPONENT_ELECTRONIC_ADV = simple("component_electronic_adv");
 		public static final ItemRegObject<IEBaseItem> WATERWHEEL_SEGMENT = simple("waterwheel_segment");
 		public static final ItemRegObject<IEBaseItem> WINDMILL_BLADE = simple("windmill_blade");
 		public static final ItemRegObject<IEBaseItem> WINDMILL_SAIL = simple("windmill_sail");
@@ -91,8 +93,10 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> DUST_SALTPETER = simple("dust_saltpeter");
 		public static final ItemRegObject<IEBaseItem> DUST_SULFUR = simple("dust_sulfur");
 		public static final ItemRegObject<IEBaseItem> DUST_WOOD = simple("dust_wood", nothing(), i -> i.setBurnTime(100));
+		public static final ItemRegObject<IEBaseItem> LIGHT_BULB = simple("light_bulb");
 		public static final ItemRegObject<IEBaseItem> ELECTRON_TUBE = simple("electron_tube");
 		public static final ItemRegObject<IEBaseItem> CIRCUIT_BOARD = simple("circuit_board");
+		public static final ItemRegObject<IEBaseItem> DUROPLAST_PLATE = simple("plate_duroplast");
 		public static final ItemRegObject<IEBaseItem> EMPTY_CASING = simple("empty_casing");
 		public static final ItemRegObject<IEBaseItem> EMPTY_SHELL = simple("empty_shell");
 

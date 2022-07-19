@@ -1,3 +1,16 @@
+##### Version 1.18.2-8.1.0-pre
+- The Plastics update! (BluSunrize)
+    - New fluids:
+        - Acetaldehyde, made from ethanol in the refinery with a silver plate catalyst
+        - Phenolic Resin, made from ethanol and creosote in the refinery
+    - New material: Duroplast, made from filling molds with resin in the bottling machine!
+    - New crating components: Electronic components
+        - Replaces circuit boards in a bunch of recipes, made some things cheaper, some more expensive
+        - Shifts the tech tree a bit, places turrets and railgun behind the creation of duroplast
+        - Textures courtesy of SteelBlue8!
+    - Fiberboard blocks
+        - Made from sawdust and resin, they can be used like wooden planks in all recipes!
+
 ##### Version 1.18.2-8.0.2-149
 - Re-add compat for Craftweaker (Malte)
 - Add coal coke to the "minecraft:coals" tag, allowing it to be used in crafting campfires (BluSunrize)

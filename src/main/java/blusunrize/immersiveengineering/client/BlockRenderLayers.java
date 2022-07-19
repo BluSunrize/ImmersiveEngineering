@@ -46,6 +46,7 @@ public class BlockRenderLayers
 	{
 		setRenderLayer(StoneDecoration.INSULATING_GLASS, RenderType.translucent());
 		setRenderLayer(StoneDecoration.CONCRETE_SPRAYED, RenderType.cutout());
+		setRenderLayer(StoneDecoration.DUROPLAST, RenderType.translucent());
 		setRenderLayer(MetalDevices.FLOODLIGHT, RenderType.solid(), RenderType.translucent());
 
 		for(MetalScaffoldingType type : MetalScaffoldingType.values())

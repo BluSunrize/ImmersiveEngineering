@@ -51,7 +51,7 @@ public class IEPotions
 	);
 	public static final RegistryObject<MobEffect> STICKY = REGISTER.register(
 			"sticky", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x9c6800, 0, false, 3, true, true)
-					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.5, Operation.MULTIPLY_TOTAL)
+					.addAttributeModifier(Attributes.MOVEMENT_SPEED, Utils.generateNewUUID().toString(), -0.2, Operation.MULTIPLY_TOTAL)
 	);
 	public static final RegistryObject<MobEffect> STUNNED = REGISTER.register(
 			"stunned", () -> new IEPotion(MobEffectCategory.HARMFUL, 0x624a98, 0, false, 4, true, true)

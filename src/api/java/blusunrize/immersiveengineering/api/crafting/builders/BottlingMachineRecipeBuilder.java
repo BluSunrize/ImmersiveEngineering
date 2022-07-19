@@ -20,6 +20,7 @@ public class BottlingMachineRecipeBuilder extends IEFinishedRecipe<BottlingMachi
 	private BottlingMachineRecipeBuilder()
 	{
 		super(BottlingMachineRecipe.SERIALIZER.get());
+		this.setMultipleResults(3);
 	}
 
 	public static BottlingMachineRecipeBuilder builder(Item result)

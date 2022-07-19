@@ -3,7 +3,7 @@
   "category": "components",
   "inputs": [
     {
-      "item": "immersiveengineering:insulating_glass"
+      "tag": "forge:plates/plastic"
     },
     {
       "tag": "forge:plates/copper"

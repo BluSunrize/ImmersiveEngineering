@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "c": {
-      "item": "minecraft:terracotta"
-    },
-    "i": {
-      "tag": "forge:ingots/copper"
-    },
-    "l": {
-      "item": "minecraft:lever"
-    }
-  },
   "pattern": [
     " l ",
     "cic"
   ],
+  "key": {
+    "l": {
+      "item": "minecraft:lever"
+    },
+    "i": {
+      "tag": "forge:ingots/copper"
+    },
+    "c": {
+      "tag": "immersiveengineering:connector_insulator"
+    }
+  },
   "result": {
     "item": "immersiveengineering:breaker_switch"
   }

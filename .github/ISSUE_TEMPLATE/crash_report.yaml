@@ -1,0 +1,50 @@
+name: Crash Report
+description: If your game crashed while playing with Immersive Engineering
+labels: ["crash :boom:"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Before reporting, please use the search function to make sure an issue hasn't been reported already.
+        This avoids duplicates.
+
+  - type: dropdown
+    attributes:
+      label: Minecraft Version
+      description: |
+        Select the Minecraft version.
+
+        *If your version does not show up here, support for it has been ended.*
+      options:
+        - '1.18'
+        - '1.19'
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Immersive Engineering Version
+      description: The version of Immersive Engineering you are using.
+      placeholder: "MAJOR.MINOR.PATCH-BUILDNUMBER"
+    validations:
+      required: true
+
+  - type: textarea
+    id: how-it-happened
+    attributes:
+      label: How did it happen?
+      description: |
+        Did you crash on starting the game, loading your world?
+        Were you using a specific block or item? Be as precise as possible please!
+    validations:
+      required: true
+
+  - type: input
+    attributes:
+      label: Crash Log
+      description: |
+        If your game crashed, it will have created a file in the folder `crash-reports` in your Minecraft instance.
+        Please upload the contents of that file to pastebin.com, gist.github.com or a similar site and enter the link here.
+      placeholder: <gist or pastebin link>
+    validations:
+      required: true

@@ -1,24 +1,24 @@
 {
   "type": "minecraft:crafting_shaped",
-  "key": {
-    "c": {
-      "item": "immersiveengineering:component_iron"
-    },
-    "e": {
-      "item": "immersiveengineering:electron_tube"
-    },
-    "g": {
-      "tag": "forge:glass"
-    },
-    "w": {
-      "tag": "forge:treated_wood"
-    }
-  },
   "pattern": [
     "geg",
     "g g",
     "wcw"
   ],
+  "key": {
+    "g": {
+      "tag": "forge:glass"
+    },
+    "w": {
+      "tag": "forge:treated_wood"
+    },
+    "e": {
+      "item": "immersiveengineering:light_bulb"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    }
+  },
   "result": {
     "item": "immersiveengineering:cloche"
   }
