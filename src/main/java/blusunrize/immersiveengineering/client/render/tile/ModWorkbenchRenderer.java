@@ -94,14 +94,8 @@ public class ModWorkbenchRenderer extends IEBlockEntityRenderer<ModWorkbenchBloc
 				matrixStack.mulPose(new Quaternion(new Vector3f(1, 0, 0), 90, true));
 				matrixStack.translate(-.875, 0, 0);
 				matrixStack.scale(.75f, .75f, .75f);
-				try
-				{
-					ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
-							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
-				} catch(Exception e)
-				{
-					e.printStackTrace();
-				}
+				ClientUtils.mc().getItemRenderer().renderStatic(stack, ItemTransforms.TransformType.FIXED,
+						combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
 				matrixStack.popPose();
 			}
 		}
