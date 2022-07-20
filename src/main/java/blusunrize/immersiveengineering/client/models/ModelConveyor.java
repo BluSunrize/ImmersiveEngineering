@@ -31,6 +31,7 @@ import com.google.gson.JsonObject;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.math.Transformation;
+import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.RenderType;
@@ -64,6 +65,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("deprecation")
 public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
@@ -452,25 +454,39 @@ public class ModelConveyor<T extends IConveyorBelt> extends BakedIEModel
 		}
 	};
 
-	private static final Map<TransformType, Matrix4> TRANSFORMATION_MAP = new EnumMap<>(TransformType.class);
+	// TODO this needs to move to JSON at some points, like all other transforms
+	private static final Map<TransformType, Transformation> TRANSFORMATION_MAP;
 
 	static
 	{
-		TRANSFORMATION_MAP.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
-		TRANSFORMATION_MAP.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
-		TRANSFORMATION_MAP.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
-		TRANSFORMATION_MAP.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
-		TRANSFORMATION_MAP.put(TransformType.GUI, new Matrix4().scale(.625, .625, .625).rotate(Math.toRadians(-45), 0, 1, 0).rotate(Math.toRadians(-20), 0, 0, 1).rotate(Math.toRadians(20), 1, 0, 0));
-		TRANSFORMATION_MAP.put(TransformType.FIXED, new Matrix4().scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).translate(0, 0, .3125));
-		TRANSFORMATION_MAP.put(TransformType.GROUND, new Matrix4().scale(.25, .25, .25));
+		Map<TransformType, Matrix4> matrixMap = new EnumMap<>(TransformType.class);
+		matrixMap.put(TransformType.FIRST_PERSON_LEFT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
+		matrixMap.put(TransformType.FIRST_PERSON_RIGHT_HAND, new Matrix4().scale(.5, .5, .5).translate(0, .25, 0).rotate(Math.toRadians(-45), 0, 1, 0));
+		matrixMap.put(TransformType.THIRD_PERSON_LEFT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
+		matrixMap.put(TransformType.THIRD_PERSON_RIGHT_HAND, new Matrix4().translate(0, .0625, -.125).scale(.3125, .3125, .3125).rotate(Math.toRadians(30), 1, 0, 0).rotate(Math.toRadians(130), 0, 1, 0));
+		matrixMap.put(TransformType.GUI, new Matrix4().scale(.625, .625, .625).rotate(Math.toRadians(-45), 0, 1, 0).rotate(Math.toRadians(-20), 0, 0, 1).rotate(Math.toRadians(20), 1, 0, 0));
+		matrixMap.put(TransformType.FIXED, new Matrix4().scale(.625, .625, .625).rotate(Math.PI, 0, 1, 0).translate(0, 0, .3125));
+		matrixMap.put(TransformType.GROUND, new Matrix4().scale(.25, .25, .25));
+		TRANSFORMATION_MAP = matrixMap.entrySet()
+				.stream()
+				.map(e -> Pair.of(e.getKey(), e.getValue().toTransformationMatrix()))
+				.collect(Collectors.toMap(Pair::getFirst, Pair::getSecond));
 	}
 
 	@Nonnull
 	@Override
-	public BakedModel applyTransform(TransformType transformType, PoseStack mat, boolean applyLeftHandTransform)
+	public BakedModel applyTransform(TransformType transformType, PoseStack stack, boolean applyLeftHandTransform)
 	{
-		Matrix4 matrix = TRANSFORMATION_MAP.containsKey(transformType)?TRANSFORMATION_MAP.get(transformType): new Matrix4();
-		matrix.toTransformationMatrix().push(mat);
+		Transformation transform = TRANSFORMATION_MAP.get(transformType);
+		if(transform!=null)
+		{
+			Vector3f translate = transform.getTranslation();
+			stack.translate(translate.x(), translate.y(), translate.z());
+			stack.mulPose(transform.getLeftRotation());
+			Vector3f scale = transform.getScale();
+			stack.scale(scale.x(), scale.y(), scale.z());
+			stack.mulPose(transform.getRightRotation());
+		}
 		return this;
 	}
 

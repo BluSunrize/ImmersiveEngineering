@@ -17,7 +17,6 @@ import blusunrize.immersiveengineering.client.models.obj.callback.IEOBJCallback;
 import blusunrize.immersiveengineering.client.models.obj.callback.item.ItemCallback;
 import blusunrize.immersiveengineering.client.models.split.PolygonUtils;
 import blusunrize.immersiveengineering.client.models.split.PolygonUtils.ExtraQuadData;
-import blusunrize.immersiveengineering.client.utils.ModelUtils;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -28,6 +27,7 @@ import malte0811.modelsplitter.model.Polygon;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
+import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms.TransformType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
@@ -131,26 +131,20 @@ public class SpecificIEOBJModel<T> implements BakedModel
 			@Nonnull TransformType transformType, @Nonnull PoseStack transforms, boolean applyLeftHandTransform
 	)
 	{
-		var baseItemTransform = baseModel.getOwner().getTransforms().getTransform(transformType);
-		Transformation matrix = ModelUtils.fromItemTransform(baseItemTransform, applyLeftHandTransform);
-
-		Vector3f scale = matrix.getScale();
+		ItemTransform baseItemTransform = baseModel.getOwner().getTransforms().getTransform(transformType);
+		Vector3f scale = baseItemTransform.scale;
 		if(scale.x()*scale.y()*scale.z() < 0)
 		{
-			// If we "invert" the model, calling Transformation#push would produce a very broken normal matrix with
-			// entries on the order of 1e25. So we need to apply the positive part of the transformation and then invert
-			// manually.
 			Vector3f newScale = scale.copy();
 			newScale.mul(-1);
-			matrix = new Transformation(
-					matrix.getTranslation(), matrix.getLeftRotation(), newScale, matrix.getRightRotation()
-			);
-			matrix.push(transforms);
+			new ItemTransform(
+					baseItemTransform.rotation, baseItemTransform.translation, newScale, baseItemTransform.rightRotation
+			).apply(applyLeftHandTransform, transforms);
 			transforms.last().pose().multiply(INVERT);
 			transforms.last().normal().mul(INVERT_NORMAL);
 		}
 		else
-			matrix.push(transforms);
+			baseItemTransform.apply(applyLeftHandTransform, transforms);
 		ItemCallback.castOrDefault(callback).handlePerspective(
 				key, GlobalTempData.getActiveHolder(), transformType, transforms
 		);
