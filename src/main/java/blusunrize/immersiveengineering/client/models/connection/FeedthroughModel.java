@@ -42,8 +42,11 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.NbtUtils;
@@ -61,6 +64,7 @@ import net.minecraftforge.client.model.IQuadTransformer;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelData.Builder;
 import net.minecraftforge.client.model.data.ModelProperty;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -84,6 +88,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 			.maximumSize(100)
 			.build(CacheLoader.from(key -> new SpecificFeedthroughModel(key, s -> key.defaultColorMultipliers)));
 	private static final ModelProperty<FeedthroughData> FEEDTHROUGH = new ModelProperty<>();
+	private static final Material MISSING_TEXTURE = new Material(TextureAtlas.LOCATION_BLOCKS, MissingTextureAtlasSprite.getLocation());
 
 	@Nonnull
 	@Override
@@ -135,10 +140,21 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 	@Override
 	public TextureAtlasSprite getParticleIcon()
 	{
-		//TODO where can I get a reasonably accurate TAS from?
-		throw new UnsupportedOperationException();
+		return getParticleIcon(ModelData.EMPTY);
 	}
 
+	@Nonnull
+	@Override
+	public TextureAtlasSprite getParticleIcon(@NotNull ModelData data)
+	{
+		FeedthroughData feedthroughInfo = data.get(FEEDTHROUGH);
+		if(feedthroughInfo==null)
+			return MISSING_TEXTURE.sprite();
+		BakedModel centerModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(feedthroughInfo.baseState());
+		return centerModel.getParticleIcon(ModelData.EMPTY);
+	}
+
+	// TODO move to JSON
 	private static final ItemTransforms transform = new ItemTransforms(
 			new ItemTransform(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Left
 			new ItemTransform(new Vector3f(75, 45, 0), new Vector3f(0, 0, 0), new Vector3f(.375F, .375F, .375F)),//3Right
