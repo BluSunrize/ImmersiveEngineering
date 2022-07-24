@@ -21,7 +21,8 @@
 - Fix crashes as a result of empty potion recipes (Malte)
 - Fix crashes triggered by wires burning (Malte)
 - Reduce size of share tag for wooden crates (Malte)
-- Fix arc recycling tags accidentally using "forge" namespace instead of "immersiveengineering" (BluSunrize) 
+- Fix arc recycling tags accidentally using "forge" namespace instead of "immersiveengineering" (BluSunrize)
+- Fix stackable fluid containers duplicating when crafting treated wood (BluSunrize)
 - Translations Added/Updated: ru_ru (Smollet777)
 
 ##### Version 1.18.2-8.0.2-149
