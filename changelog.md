@@ -23,6 +23,7 @@
 - Reduce size of share tag for wooden crates (Malte)
 - Fix arc recycling tags accidentally using "forge" namespace instead of "immersiveengineering" (BluSunrize)
 - Fix stackable fluid containers duplicating when crafting treated wood (BluSunrize)
+- Fix dupe bug when repairing hammers or wirecutters (BluSunrize)
 - Translations Added/Updated: ru_ru (Smollet777)
 
 ##### Version 1.18.2-8.0.2-149
