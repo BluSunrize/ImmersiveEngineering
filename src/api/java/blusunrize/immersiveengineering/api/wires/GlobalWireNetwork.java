@@ -431,7 +431,9 @@ public class GlobalWireNetwork implements IWorldTickable
 		processQueuedLoads();
 		if(world.isClientSide())
 			return;
-		for(LocalWireNetwork net : localNetSet)
+		// Copy local nets before looping. If wires burn localNetSet will be modified, causing crashes (not CME because
+		// FastUtil doesn't check for those, but random NPEs like in #5374 instead)
+		for(LocalWireNetwork net : localNetSet.toArray(LocalWireNetwork[]::new))
 			net.update(world);
 		if(SANITIZE_CONNECTIONS.getValue().getAsBoolean())
 			NetworkSanitizer.tick(world, this);
