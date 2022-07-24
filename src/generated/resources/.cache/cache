@@ -1336,7 +1336,6 @@ de7f1a11d160f7058ca369af1d6aeac649297b63 data/forge/tags/items/raw_materials/lea
 04b8f9946c20526919ec35c54875e344fcebed93 data/forge/tags/items/raw_materials/nickel.json
 12e5caba90c8e742f1f154462211caecf40c14c2 data/forge/tags/items/raw_materials/silver.json
 0e129bf83740594628e09b329a02c99c5ea9c40a data/forge/tags/items/raw_materials/uranium.json
-a7ad3929fe511ba21774a18653e68b24e0a04130 data/forge/tags/items/recycling/ignored_components.json
 9f7eeb4080c9ff0803942a9669bacc9e491446ea data/forge/tags/items/rods/all_metal.json
 aa708708071f7bad45e073eee78d80fd4922ef36 data/forge/tags/items/rods/aluminum.json
 7d5ca138da9b91ba26a42dc5c8f09cd2cb31128b data/forge/tags/items/rods/iron.json
@@ -3190,6 +3189,7 @@ d98f761646df2a0942d85e7d195872e167b2c816 data/immersiveengineering/tags/fluids/d
 44a0bb9cb09b1e3909dd4ffe4a7a25fb542cfd42 data/immersiveengineering/tags/items/circuits/pcb.json
 e3e79d1030444814733b557c838369fc422cd116 data/immersiveengineering/tags/items/circuits/solder.json
 710fb43de06b74e555c804f50d222a302f408ce6 data/immersiveengineering/tags/items/connector_insulator.json
+a7ad3929fe511ba21774a18653e68b24e0a04130 data/immersiveengineering/tags/items/recycling/ignored_components.json
 56a5f6af09c2bec221496f1b331e74c464f178ba data/immersiveengineering/tags/items/scaffoldings/aluminum.json
 259503a9bdf89229d8dfa704f1812c6033518dec data/immersiveengineering/tags/items/scaffoldings/steel.json
 9390a8f6f32064dcb127311ea09a6225478eab71 data/immersiveengineering/tags/items/toolbox/tools.json

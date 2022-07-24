@@ -107,9 +107,9 @@ public class IETags
 	public static final TagKey<Item> hoes = createItemWrapper(forgeLoc("tools/hoes"));
 	public static final TagKey<Item> powerpackForbidAttach = createItemWrapper(rl("powerpack/forbid_attach"));
 
-	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(forgeLoc("recycling/ignored_components"));
-	public static final TagKey<Item> recyclingWhitelist = createItemWrapper(forgeLoc("recycling/whitelist"));
-	public static final TagKey<Item> recyclingBlacklist = createItemWrapper(forgeLoc("recycling/blacklist"));
+	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(rl("recycling/ignored_components"));
+	public static final TagKey<Item> recyclingWhitelist = createItemWrapper(rl("recycling/whitelist"));
+	public static final TagKey<Item> recyclingBlacklist = createItemWrapper(rl("recycling/blacklist"));
 
 	public static final TagKey<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
 	public static final TagKey<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));
