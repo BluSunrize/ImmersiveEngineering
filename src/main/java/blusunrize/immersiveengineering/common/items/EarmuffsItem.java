@@ -59,12 +59,6 @@ public class EarmuffsItem extends IEBaseItem implements DyeableLeatherItem, ICon
 	}
 
 	@Override
-	public boolean hasCustomItemColours()
-	{
-		return true;
-	}
-
-	@Override
 	public int getColourForIEItem(ItemStack stack, int renderPass)
 	{
 		if(renderPass==1)

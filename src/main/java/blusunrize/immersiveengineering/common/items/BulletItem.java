@@ -48,7 +48,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.DoubleSupplier;
 
-public class BulletItem extends IEBaseItem
+public class BulletItem extends IEBaseItem implements IColouredItem
 {
 	public static final ResourceLocation CASULL = new ResourceLocation(ImmersiveEngineering.MODID, "casull");
 	public static final ResourceLocation ARMOR_PIERCING = new ResourceLocation(ImmersiveEngineering.MODID, "armor_piercing");
@@ -197,12 +197,6 @@ public class BulletItem extends IEBaseItem
 		s += key;
 		s = type.getTranslationKey(stack, s);
 		return new TranslatableComponent(s);
-	}
-
-	@Override
-	public boolean hasCustomItemColours()
-	{
-		return true;
 	}
 
 	@Override

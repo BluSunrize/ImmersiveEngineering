@@ -16,6 +16,7 @@ import blusunrize.immersiveengineering.api.tool.IElectricEquipment;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.client.utils.FontUtils;
 import blusunrize.immersiveengineering.common.entities.FluorescentTubeEntity;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool, IElectricEquipment
+public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool, IElectricEquipment, IColouredItem
 {
 
 	public FluorescentTubeItem()
@@ -155,17 +156,12 @@ public class FluorescentTubeItem extends IEBaseItem implements IConfigurableTool
 	}
 
 	@Override
-	public boolean hasCustomItemColours()
-	{
-		return true;
-	}
-
-	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		if(pass==0)
 			return getRGBInt(stack, 1);
-		return super.getColourForIEItem(stack, pass);
+		else
+			return -1;
 	}
 
 	public static float[] getRGBFloat(ItemStack stack, float factor)

@@ -39,13 +39,13 @@ public class IEDefaultColourHandlers implements ItemColor, BlockColor
 		for(RegistryObject<Item> itemRO : IEItems.REGISTER.getEntries())
 		{
 			Item item = itemRO.get();
-			if(item instanceof IColouredItem&&((IColouredItem)item).hasCustomItemColours())
+			if(item instanceof IColouredItem)
 				mc().getItemColors().register(INSTANCE, item);
 		}
 		for(BlockEntry<?> blockEntry : BlockEntry.ALL_ENTRIES)
 		{
 			Block block = blockEntry.get();
-			if(block instanceof IColouredBlock&&((IColouredBlock)block).hasCustomBlockColours())
+			if(block instanceof IColouredBlock colouredBlock&&colouredBlock.hasCustomBlockColours())
 				mc().getBlockColors().register(INSTANCE, block);
 		}
 	}
@@ -53,16 +53,16 @@ public class IEDefaultColourHandlers implements ItemColor, BlockColor
 	@Override
 	public int getColor(BlockState state, @Nullable BlockAndTintGetter worldIn, @Nullable BlockPos pos, int tintIndex)
 	{
-		if(state.getBlock() instanceof IColouredBlock)
-			return ((IColouredBlock)state.getBlock()).getRenderColour(state, worldIn, pos, tintIndex);
+		if(state.getBlock() instanceof IColouredBlock colouredBlock)
+			return colouredBlock.getRenderColour(state, worldIn, pos, tintIndex);
 		return 0xffffff;
 	}
 
 	@Override
 	public int getColor(ItemStack stack, int tintIndex)
 	{
-		if(stack.getItem() instanceof IColouredItem)
-			return ((IColouredItem)stack.getItem()).getColourForIEItem(stack, tintIndex);
+		if(stack.getItem() instanceof IColouredItem colouredItem)
+			return colouredItem.getColourForIEItem(stack, tintIndex);
 		return 0xffffff;
 	}
 }

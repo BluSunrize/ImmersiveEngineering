@@ -20,15 +20,7 @@ public class IEItemInterfaces
 {
 	public interface IColouredItem
 	{
-		default boolean hasCustomItemColours()
-		{
-			return false;
-		}
-
-		default int getColourForIEItem(ItemStack stack, int pass)
-		{
-			return 16777215;
-		}
+		int getColourForIEItem(ItemStack stack, int pass);
 	}
 
 	public interface IAdvancedFluidItem

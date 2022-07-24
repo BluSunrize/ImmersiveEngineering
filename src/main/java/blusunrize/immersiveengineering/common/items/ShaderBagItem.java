@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.items;
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.ShaderRegistry;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -28,7 +29,7 @@ import net.minecraft.world.level.Level;
 import javax.annotation.Nonnull;
 import java.util.Locale;
 
-public class ShaderBagItem extends IEBaseItem
+public class ShaderBagItem extends IEBaseItem implements IColouredItem
 {
 	@Nonnull
 	private final Rarity rarity;
@@ -37,12 +38,6 @@ public class ShaderBagItem extends IEBaseItem
 	{
 		super(new Properties());
 		this.rarity = rarity;
-	}
-
-	@Override
-	public boolean hasCustomItemColours()
-	{
-		return true;
 	}
 
 	@Override
