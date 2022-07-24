@@ -431,9 +431,9 @@ public class ClientProxy extends CommonProxy
 		registerTileScreen(IEContainerTypes.CHEM_TURRET, ChemTurretScreen::new);
 		registerTileScreen(IEContainerTypes.FLUID_SORTER, FluidSorterScreen::new);
 		registerTileScreen(IEContainerTypes.CLOCHE, ClocheScreen::new);
-		registerTileScreen(IEContainerTypes.TOOLBOX_BLOCK, ToolboxBlockScreen::new);
+		registerTileScreen(IEContainerTypes.TOOLBOX_BLOCK, ToolboxScreen.CONSTRUCTOR_BLOCK);
 
-		registerScreen(IEContainerTypes.TOOLBOX, ToolboxScreen::new);
+		registerScreen(IEContainerTypes.TOOLBOX, ToolboxScreen.CONSTRUCTOR_ITEM);
 		registerScreen(IEContainerTypes.REVOLVER, RevolverScreen::new);
 		registerScreen(IEContainerTypes.MAINTENANCE_KIT, MaintenanceKitScreen::new);
 
