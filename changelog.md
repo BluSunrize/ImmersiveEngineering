@@ -15,6 +15,9 @@
     - Some entries got re-written / clarified
     - Bottling and Mixing recipes now display in the manual
 - Add IMPLY and NIMPLY logic circuits (sashafiesta)
+- Add a bunch of extra tools to the toolbox (BluSunrize & Silfryi)
+    - Spyglass, Clock, Compass, Fishing Rod
+    - Engineer's Manual, various wrenches from other mods
 - Remove unused config options (Malte)
 - Add a new tag to blacklist certain armor for attaching the Accumulator Backpack (Malte)
     - "immersiveengineering:powerpack/forbid_attach"
