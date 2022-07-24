@@ -8,17 +8,22 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.tool.ToolboxHandler.ToolboxCategory;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes.ItemContainerType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.BundleTooltip;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
@@ -28,11 +33,15 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.CapabilityItemHandler;
+import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.AbstractCollection;
 import java.util.AbstractList;
+import java.util.Arrays;
 import java.util.Optional;
 
 public class ToolboxItem extends InternalStorageItem
@@ -52,6 +61,45 @@ public class ToolboxItem extends InternalStorageItem
 		if(!world.isClientSide)
 			openGui(player, hand);
 		return new InteractionResultHolder<>(InteractionResult.SUCCESS, stack);
+	}
+
+	@Override
+	public boolean overrideOtherStackedOnMe(ItemStack toolbox, ItemStack otherStack, Slot slot, ClickAction action, Player player, SlotAccess slotAccess)
+	{
+		if(action==ClickAction.SECONDARY&&slot.allowModification(player)&&!otherStack.isEmpty())
+		{
+			int i = addItem(toolbox, otherStack);
+			if(i > 0)
+			{
+				player.playSound(SoundEvents.BUNDLE_INSERT, 0.8F, 0.8F+player.getLevel().getRandom().nextFloat()*0.4F);
+				otherStack.shrink(i);
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private int addItem(ItemStack toolbox, ItemStack other)
+	{
+		int[] slots = Arrays.stream(ToolboxCategory.values())
+				.filter(cat -> cat.accepts(other))
+				.map(ToolboxCategory::getSlots)
+				.findFirst()
+				.orElse(new int[0]);
+		if(slots.length < 1)
+			return 0;
+
+		LazyOptional<IItemHandler> lazyHandler = toolbox.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
+		return lazyHandler.map(handler -> {
+			ItemStack remain = other.copy();
+			for(int iSlot : slots)
+			{
+				remain = handler.insertItem(iSlot, remain, false);
+				if(remain.isEmpty())
+					break;
+			}
+			return other.getCount()-remain.getCount();
+		}).orElse(0);
 	}
 
 	@Nullable

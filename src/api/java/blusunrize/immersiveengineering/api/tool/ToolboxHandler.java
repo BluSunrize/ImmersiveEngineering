@@ -16,9 +16,37 @@ import net.minecraft.world.item.ShearsItem;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 
 public class ToolboxHandler
 {
+	public enum ToolboxCategory
+	{
+		FOOD(0, 2, ToolboxHandler::isFood),
+		TOOL(3, 9, ToolboxHandler::isTool),
+		WIRING(10, 15, ToolboxHandler::isWiring),
+		ANY(16, 22, s -> true);
+
+		final int[] slots;
+		final Predicate<ItemStack> accepts;
+
+		ToolboxCategory(int from, int to, Predicate<ItemStack> accepts)
+		{
+			this.slots = IntStream.rangeClosed(from, to).toArray();
+			this.accepts = accepts;
+		}
+
+		public int[] getSlots()
+		{
+			return slots;
+		}
+
+		public boolean accepts(ItemStack stack)
+		{
+			return accepts.test(stack);
+		}
+	}
+
 	private static final List<Predicate<ItemStack>> tools = new ArrayList<>();
 	private static final List<Predicate<ItemStack>> foods = new ArrayList<>();
 	private static final List<Predicate<ItemStack>> wiring = new ArrayList<>();

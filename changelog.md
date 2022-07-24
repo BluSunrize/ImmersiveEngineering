@@ -21,6 +21,7 @@
 - Remove unused config options (Malte)
 - Add a new tag to blacklist certain armor for attaching the Accumulator Backpack (Malte)
     - "immersiveengineering:powerpack/forbid_attach"
+- Allow items to be added to the toolbox by right-clicking, just like vanilla bundles (BluSunrize)
 - Fix crashes as a result of empty potion recipes (Malte)
 - Fix crashes triggered by wires burning (Malte)
 - Reduce size of share tag for wooden crates (Malte)
