@@ -492,7 +492,7 @@ public class Villages
 		{
 			int part = random.nextInt(3);
 
-			ItemStack stack = new ItemStack(part==0?Ingredients.GUNPART_BARREL: part==1?Ingredients.GUNPART_DRUM: Ingredients.GUNPART_DRUM);
+			ItemStack stack = new ItemStack(part==0?Ingredients.GUNPART_BARREL: part==1?Ingredients.GUNPART_DRUM: Ingredients.GUNPART_HAMMER);
 
 			float luck = 1;
 			if(trader instanceof AbstractVillager&&((AbstractVillager)trader).isTrading())

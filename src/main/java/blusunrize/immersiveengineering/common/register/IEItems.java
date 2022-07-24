@@ -81,9 +81,9 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> WINDMILL_BLADE = simple("windmill_blade");
 		public static final ItemRegObject<IEBaseItem> WINDMILL_SAIL = simple("windmill_sail");
 		public static final ItemRegObject<IEBaseItem> WOODEN_GRIP = simple("wooden_grip");
-		public static final ItemRegObject<IEBaseItem> GUNPART_BARREL = simple("gunpart_barrel");
-		public static final ItemRegObject<IEBaseItem> GUNPART_DRUM = simple("gunpart_drum");
-		public static final ItemRegObject<IEBaseItem> GUNPART_HAMMER = simple("gunpart_hammer");
+		public static final ItemRegObject<IEBaseItem> GUNPART_BARREL = register("gunpart_barrel", RevolverpartItem::new);
+		public static final ItemRegObject<IEBaseItem> GUNPART_DRUM = register("gunpart_drum", RevolverpartItem::new);
+		public static final ItemRegObject<IEBaseItem> GUNPART_HAMMER = register("gunpart_hammer", RevolverpartItem::new);
 		public static final ItemRegObject<IEBaseItem> DUST_COKE = simple("dust_coke");
 		public static final ItemRegObject<IEBaseItem> DUST_HOP_GRAPHITE = simple("dust_hop_graphite");
 		public static final ItemRegObject<IEBaseItem> INGOT_HOP_GRAPHITE = simple("ingot_hop_graphite");
