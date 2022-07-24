@@ -10,6 +10,19 @@
         - Textures courtesy of SteelBlue8!
     - Fiberboard blocks
         - Made from sawdust and resin, they can be used like wooden planks in all recipes!
+- The Manual got an update! (BluSunrize)
+    - Early furnaces and workbenches have their own category
+    - Some entries got re-written / clarified
+    - Bottling and Mixing recipes now display in the manual
+- Add IMPLY and NIMPLY logic circuits (sashafiesta)
+- Remove unused config options (Malte)
+- Add a new tag to blacklist certain armor for attaching the Accumulator Backpack (Malte)
+    - "immersiveengineering:powerpack/forbid_attach"
+- Fix crashes as a result of empty potion recipes (Malte)
+- Fix crashes triggered by wires burning (Malte)
+- Reduce size of share tag for wooden crates (Malte)
+- Fix arc recycling tags accidentally using "forge" namespace instead of "immersiveengineering" (BluSunrize) 
+- Translations Added/Updated: ru_ru (Smollet777)
 
 ##### Version 1.18.2-8.0.2-149
 - Re-add compat for Craftweaker (Malte)
