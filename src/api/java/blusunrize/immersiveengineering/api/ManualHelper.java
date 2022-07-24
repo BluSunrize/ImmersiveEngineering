@@ -12,10 +12,14 @@ import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultib
 import blusunrize.immersiveengineering.api.utils.SetRestrictedField;
 import blusunrize.lib.manual.ManualInstance;
 import blusunrize.lib.manual.SpecialManualElement;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author BluSunrize - 04.07.2015
@@ -29,6 +33,12 @@ public class ManualHelper
 	public static String CAT_TOOLS = "tools";
 	public static String CAT_HEAVYMACHINES = "heavymachines";
 	public static String CAT_UPDATE = "update";
+
+	/**
+	 * A map of keys (manual anchors) to suppliers that generate a table.
+	 * Example implementations include the Thermoelectric generator and Fermenter / Squeezer
+	 */
+	public static final Map<String, Supplier<Component[][]>> DYNAMIC_TABLES = new HashMap<>();
 
 	public static final SetRestrictedField<ManualInstance> IE_MANUAL_INSTANCE = SetRestrictedField.client();
 	public static final SetRestrictedField<Consumer<Function<String, Object>>> ADD_CONFIG_GETTER = SetRestrictedField.client();

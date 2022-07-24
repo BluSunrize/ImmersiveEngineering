@@ -57,14 +57,11 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
 public class IEManual
 {
-	private static final Map<String, Supplier<Component[][]>> DYNAMIC_TABLES = new HashMap<>();
-
 	public static void initManual()
 	{
 		IEManualInstance ieMan = new IEManualInstance();
@@ -76,21 +73,21 @@ public class IEManual
 			}
 		});
 
-		DYNAMIC_TABLES.put("squeezer", () -> formatToTable_ItemIntMap(
+		ManualHelper.DYNAMIC_TABLES.put("squeezer", () -> formatToTable_ItemIntMap(
 				SqueezerRecipe.getFluidValuesSorted(
 						Minecraft.getInstance().level,
 						IEFluids.PLANTOIL.getStill(),
 						true
 				), "mB"
 		));
-		DYNAMIC_TABLES.put("fermenter", () -> formatToTable_ItemIntMap(
+		ManualHelper.DYNAMIC_TABLES.put("fermenter", () -> formatToTable_ItemIntMap(
 				FermenterRecipe.getFluidValuesSorted(
 						Minecraft.getInstance().level,
 						IEFluids.ETHANOL.getStill(),
 						true
 				), "mB"
 		));
-		DYNAMIC_TABLES.put("thermoelectric", () -> formatToTable_ItemIntMap(
+		ManualHelper.DYNAMIC_TABLES.put("thermoelectric", () -> formatToTable_ItemIntMap(
 				ThermoelectricSource.getThermalValuesSorted(Minecraft.getInstance().level, true),
 				"K"
 		));
@@ -115,7 +112,7 @@ public class IEManual
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "dynamic_table"),
 				s -> new ManualElementTable(
 						ManualHelper.getManual(),
-						DYNAMIC_TABLES.get(GsonHelper.getAsString(s, "table")).get(),
+						ManualHelper.DYNAMIC_TABLES.get(GsonHelper.getAsString(s, "table")).get(),
 						false
 				));
 	}
