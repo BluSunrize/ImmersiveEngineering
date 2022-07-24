@@ -2,5 +2,25 @@
   "start": {
     "type": "crafting",
     "recipe": "crafting/redstone_acid"
+  },
+  "mixer": {
+    "type": "mixer",
+    "recipe": {
+      "fluid": "immersiveengineering:redstone_acid"
+    }
+  },
+  "copper": {
+    "type": "bottling",
+    "recipes": [
+      {
+        "item": "minecraft:exposed_copper"
+      },
+      {
+        "item": "minecraft:weathered_copper"
+      },
+      {
+        "item": "minecraft:oxidized_copper"
+      }
+    ]
   }
 }
