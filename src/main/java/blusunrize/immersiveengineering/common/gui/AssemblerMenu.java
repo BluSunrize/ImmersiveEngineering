@@ -61,7 +61,7 @@ public class AssemblerMenu extends IEContainerMenu
 			patterns.add(new SimpleContainer(10));
 		FluidTank[] tanks = new FluidTank[AssemblerBlockEntity.NUM_TANKS];
 		for(int i = 0; i < tanks.length; ++i)
-			tanks[i] = new FluidTank(10);
+			tanks[i] = new FluidTank(AssemblerBlockEntity.TANK_CAPACITY);
 		return new AssemblerMenu(
 				clientCtx(type, id), invPlayer,
 				patterns, new ItemStackHandler(AssemblerBlockEntity.INVENTORY_SIZE), tanks,
