@@ -832,6 +832,10 @@ public class Recipes extends RecipeProvider
 				.addInput(IETags.getItemTag(IETags.clayBlock))
 				.setEnergy(1600)
 				.build(out, toRL("crusher/clay"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.AMETHYST_SHARD, 4))
+				.addInput(Tags.Items.STORAGE_BLOCKS_AMETHYST)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/amethyst"));
 		CrusherRecipeBuilder.builder(new ItemStack(Items.QUARTZ, 4))
 				.addInput(Tags.Items.STORAGE_BLOCKS_QUARTZ)
 				.setEnergy(3200)

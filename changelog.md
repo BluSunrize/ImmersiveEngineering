@@ -23,6 +23,7 @@
     - "immersiveengineering:powerpack/forbid_attach"
 - Allow items to be added to the toolbox by right-clicking, just like vanilla bundles (BluSunrize)
 - Use ToolActions to identify tools for the toolbox, adding support for TConstruct items (BluSunrize)
+- Add a recipe to crush amethyst blocks into crystals (BluSunrize)
 - Fix crashes as a result of empty potion recipes (Malte)
 - Fix crashes triggered by wires burning (Malte)
 - Reduce size of share tag for wooden crates (Malte)
