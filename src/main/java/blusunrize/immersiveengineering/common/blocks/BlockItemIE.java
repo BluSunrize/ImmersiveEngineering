@@ -152,9 +152,9 @@ public class BlockItemIE extends BlockItem
 
 	public static class BlockItemIENoInventory extends BlockItemIE
 	{
-		public BlockItemIENoInventory(Block b, Properties props)
+		public BlockItemIENoInventory(Block b)
 		{
-			super(b, props);
+			super(b);
 		}
 
 		@Nullable
@@ -165,7 +165,7 @@ public class BlockItemIE extends BlockItem
 			if(ret!=null)
 			{
 				ret = ret.copy();
-				ret.remove("inventory");
+				ret.remove("Items");
 			}
 			return ret;
 		}

@@ -3,6 +3,14 @@
     "type": "crafting",
     "recipe": "crafting/cokebrick"
   },
+  "outputs": {
+    "type": "item_display",
+    "items": [
+      "immersiveengineering:coal_coke",
+      "immersiveengineering:creosote_bucket",
+      "minecraft:charcoal"
+    ]
+  },
   "multiblock": {
     "type": "multiblock",
     "name": "multiblocks/coke_oven"

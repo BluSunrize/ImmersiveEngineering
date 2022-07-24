@@ -19,6 +19,7 @@ import blusunrize.immersiveengineering.api.shader.impl.ShaderCaseItem;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerStandingBlock;
 import blusunrize.immersiveengineering.common.blocks.cloth.ShaderBannerWallBlock;
+import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -48,7 +49,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Locale;
 
-public class ShaderItem extends IEBaseItem implements IShaderItem
+public class ShaderItem extends IEBaseItem implements IShaderItem, IColouredItem
 {
 	public ShaderItem()
 	{
@@ -176,12 +177,6 @@ public class ShaderItem extends IEBaseItem implements IShaderItem
 	}
 
 	@Override
-	public boolean hasCustomItemColours()
-	{
-		return true;
-	}
-
-	@Override
 	public int getColourForIEItem(ItemStack stack, int pass)
 	{
 		ResourceLocation name = getShaderName(stack);
@@ -196,6 +191,6 @@ public class ShaderItem extends IEBaseItem implements IShaderItem
 				return 0xffffffff;
 			}
 		}
-		return super.getColourForIEItem(stack, pass);
+		return -1;
 	}
 }

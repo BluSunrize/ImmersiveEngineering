@@ -20,10 +20,8 @@ import blusunrize.immersiveengineering.common.wires.IEWireTypes.IEWireType;
 import blusunrize.immersiveengineering.common.world.IEWorldGen;
 import com.electronwill.nightconfig.core.Config;
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.mojang.serialization.Codec;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeConfigSpec.*;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -32,7 +30,6 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.function.IntSupplier;
@@ -222,12 +219,6 @@ public class IEServerConfig
 				cloche_growth_mod = builder
 						.comment("A modifier to apply to the cloches total growing speed")
 						.defineInRange("growth_modifier", 1, 1e-3, 1e3);
-				cloche_solid_fertilizer_mod = builder
-						.comment("A base-modifier for all solid fertilizers in the cloche")
-						.defineInRange("solid_fertilizer_mod", 1, 1e-3, 1e3);
-				cloche_fluid_fertilizer_mod = builder
-						.comment("A base-modifier for all fluid fertilizers in the cloche")
-						.defineInRange("fluid_fertilizer_mod", 1, 1e-3, 1e3);
 				builder.pop();
 			}
 			{
@@ -301,10 +292,6 @@ public class IEServerConfig
 				excavator_initial_depletion = builder
 						.comment("The maximum depletion a vein can start with, as a decimal value. When a vein generates, a random percentage up to this value is depleted from it")
 						.defineInRange("initial_depletion", .2, 0, 1);
-				excavator_dimBlacklist = builder
-						.comment("List of dimensions that can't contain minerals. Default: The End.")
-						.defineList("dimBlacklist", ImmutableList.of(BuiltinDimensionTypes.END.location().toString()),
-								obj -> true);
 				builder.pop();
 			}
 			builder.pop();
@@ -398,8 +385,6 @@ public class IEServerConfig
 		public final IntValue cloche_fertilizer;
 		public final IntValue cloche_fluid;
 		public final DoubleValue cloche_growth_mod;
-		public final DoubleValue cloche_solid_fertilizer_mod;
-		public final DoubleValue cloche_fluid_fertilizer_mod;
 
 		//Lights
 		public final BooleanValue lantern_spawnPrevent;
@@ -432,19 +417,11 @@ public class IEServerConfig
 		public final DoubleValue excavator_theshold;
 		public final IntValue excavator_yield;
 		public final DoubleValue excavator_initial_depletion;
-		public final ConfigValue<List<? extends String>> excavator_dimBlacklist;
 
-		public static class MachineRecipeConfig<T extends MultiblockRecipe>
+		public record MachineRecipeConfig<T extends MultiblockRecipe>(
+				DoubleValue energyModifier, DoubleValue timeModifier
+		)
 		{
-			public final DoubleValue energyModifier;
-			public final DoubleValue timeModifier;
-
-			public MachineRecipeConfig(DoubleValue energyModifier, DoubleValue timeModifier)
-			{
-				this.energyModifier = energyModifier;
-				this.timeModifier = timeModifier;
-			}
-
 			public T apply(T in)
 			{
 				in.modifyTimeAndEnergy(timeModifier::get, energyModifier::get);
@@ -570,8 +547,6 @@ public class IEServerConfig
 		Tools(Builder builder)
 		{
 			builder.push("tools");
-			//Server
-			// TODO read too early. Can that be worked around?
 			hammerDurabiliy = addPositive(builder, "hammer_durability", 100, "The maximum durability of the Engineer's Hammer. Used up when hammering ingots into plates.");
 			cutterDurabiliy = addPositive(builder, "cutter_durability", 250, "The maximum durability of the Wirecutter. Used up when cutting plates into wire.");
 			{
@@ -602,19 +577,6 @@ public class IEServerConfig
 				railgun_damage = addNonNegative(builder, "damage_modifier", 1, "A modifier for the damage of all projectiles fired by the Railgun");
 				builder.pop();
 			}
-			{
-				builder.push("powerpack");
-				powerpack_whitelist = builder
-						.comment("A whitelist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]")
-						.defineList("whitelist", ImmutableList.of(), obj -> true);
-				//TODO update list for 1.16.3
-				powerpack_blacklist = builder
-						.comment("A blacklist of armor pieces to allow attaching the capacitor backpack, formatting: [mod id]:[item name]. Whitelist has priority over this")
-						.defineList("blacklist", ImmutableList.of(
-								"embers:ashen_cloak_chest", "ic2:batpack", "ic2:cf_pack", "ic2:energy_pack", "ic2:jetpack", "ic2:jetpack_electric", "ic2:lappack"
-						), obj -> true);
-				builder.pop();
-			}
 			builder.pop();
 		}
 
@@ -642,8 +604,6 @@ public class IEServerConfig
 		public final BooleanValue chemthrower_scroll;
 		public final IntValue railgun_consumption;
 		public final DoubleValue railgun_damage;
-		public final ConfigValue<List<? extends String>> powerpack_whitelist;
-		public final ConfigValue<List<? extends String>> powerpack_blacklist;
 
 	}
 

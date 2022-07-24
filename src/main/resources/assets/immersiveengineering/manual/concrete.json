@@ -37,7 +37,9 @@
     "recipe": "crafting/concrete_leaded"
   },
   "liquid": {
-    "type": "item_display",
-    "item": "immersiveengineering:concrete_bucket"
+    "type": "mixer",
+    "recipe": {
+      "fluid": "immersiveengineering:concrete"
+    }
   }
 }

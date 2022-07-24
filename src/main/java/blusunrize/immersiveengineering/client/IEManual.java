@@ -41,11 +41,13 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.VersionChecker;
 import net.minecraftforge.fml.VersionChecker.CheckResult;
 import net.minecraftforge.fml.VersionChecker.Status;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 import java.io.IOException;
@@ -55,7 +57,6 @@ import java.text.DecimalFormat;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.MODID;
 
@@ -72,46 +73,31 @@ public class IEManual
 			}
 		});
 
+		ManualHelper.DYNAMIC_TABLES.put("squeezer", () -> formatToTable_ItemIntMap(
+				SqueezerRecipe.getFluidValuesSorted(
+						Minecraft.getInstance().level,
+						IEFluids.PLANTOIL.getStill(),
+						true
+				), "mB"
+		));
+		ManualHelper.DYNAMIC_TABLES.put("fermenter", () -> formatToTable_ItemIntMap(
+				FermenterRecipe.getFluidValuesSorted(
+						Minecraft.getInstance().level,
+						IEFluids.ETHANOL.getStill(),
+						true
+				), "mB"
+		));
+		ManualHelper.DYNAMIC_TABLES.put("thermoelectric", () -> formatToTable_ItemIntMap(
+				ThermoelectricSource.getThermalValuesSorted(Minecraft.getInstance().level, true),
+				"K"
+		));
+
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "blueprint"),
-				s -> {
-					ItemStack[] stacks;
-					if(GsonHelper.isArrayNode(s, "recipes"))
-					{
-						JsonArray arr = s.get("recipes").getAsJsonArray();
-						stacks = new ItemStack[arr.size()];
-						for(int i = 0; i < stacks.length; ++i)
-							stacks[i] = CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true);
-					}
-					else
-					{
-						JsonElement recipe = s.get("recipe");
-						Preconditions.checkArgument(recipe.isJsonObject());
-						stacks = new ItemStack[]{
-								CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
-						};
-					}
-					return new ManualElementBlueprint(ieMan, stacks);
-				});
+				s -> new ManualElementBlueprint(ieMan, collectRecipeStacksFromJSON(s)));
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "bottling"),
-				s -> {
-					ItemStack[] stacks;
-					if(GsonHelper.isArrayNode(s, "recipes"))
-					{
-						JsonArray arr = s.get("recipes").getAsJsonArray();
-						stacks = new ItemStack[arr.size()];
-						for(int i = 0; i < stacks.length; ++i)
-							stacks[i] = CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true);
-					}
-					else
-					{
-						JsonElement recipe = s.get("recipe");
-						Preconditions.checkArgument(recipe.isJsonObject());
-						stacks = new ItemStack[]{
-								CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
-						};
-					}
-					return new ManualElementBottling(ieMan, stacks);
-				});
+				s -> new ManualElementBottling(ieMan, collectRecipeStacksFromJSON(s)));
+		ieMan.registerSpecialElement(new ResourceLocation(MODID, "mixer"),
+				s -> new ManualElementMixer(ieMan, collectRecipeFluidsFromJSON(s)));
 		ieMan.registerSpecialElement(new ResourceLocation(MODID, "multiblock"),
 				s -> {
 					ResourceLocation name = ManualUtils.getLocationForManual(
@@ -123,6 +109,12 @@ public class IEManual
 						throw new NullPointerException("Multiblock "+name+" does not exist");
 					return new ManualElementMultiblock(ieMan, mb);
 				});
+		ieMan.registerSpecialElement(new ResourceLocation(MODID, "dynamic_table"),
+				s -> new ManualElementTable(
+						ManualHelper.getManual(),
+						ManualHelper.DYNAMIC_TABLES.get(GsonHelper.getAsString(s, "table")).get(),
+						false
+				));
 	}
 
 	public static void addIEManualEntries()
@@ -130,44 +122,15 @@ public class IEManual
 		IEManualInstance ieMan = (IEManualInstance)ManualHelper.getManual();
 		InnerNode<ResourceLocation, ManualEntry> generalCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
 				ManualHelper.CAT_GENERAL), 0);
-		InnerNode<ResourceLocation, ManualEntry> energyCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_ENERGY), 20);
-		InnerNode<ResourceLocation, ManualEntry> heavyMachinesCat = ieMan.getRoot().getOrCreateSubnode(new ResourceLocation(MODID,
-				ManualHelper.CAT_HEAVYMACHINES), 50);
 
-		{
-			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement(new SpecialElementData("values", 0, addDynamicTable(
-					() -> ThermoelectricSource.getThermalValuesSorted(Minecraft.getInstance().level, true), "K"
-			)));
-			builder.readFromFile(new ResourceLocation(MODID, "thermoelectric"));
-			ieMan.addEntry(energyCat, builder.create(), ieMan.atOffsetFrom(energyCat, "redstone_wire", 0.5));
-		}
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
 			builder.readFromFile(new ResourceLocation(MODID, "minerals"));
 			builder.appendText(IEManual::getMineralVeinTexts);
-			ieMan.addEntry(generalCat, builder.create(), ieMan.atOffsetFrom(generalCat, "ores", 0.5));
+			ieMan.addEntry(generalCat, builder.create(), ieMan.atOffsetFrom(generalCat, "graphite", -0.5));
 		}
-		ResourceLocation blueprints = new ResourceLocation(MODID, "blueprints");
-		ieMan.addEntry(generalCat, blueprints);
-		ieMan.hideEntry(blueprints);
-		{
-			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
-					() -> FermenterRecipe.getFluidValuesSorted(Minecraft.getInstance().level, IEFluids.ETHANOL.getStill(), true), "mB"
-			)));
-			builder.readFromFile(new ResourceLocation(MODID, "fermenter"));
-			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 1/3d));
-		}
-		{
-			ManualEntry.ManualEntryBuilder builder = new ManualEntry.ManualEntryBuilder(ManualHelper.getManual());
-			builder.addSpecialElement(new SpecialElementData("list", 0, addDynamicTable(
-					() -> SqueezerRecipe.getFluidValuesSorted(Minecraft.getInstance().level, IEFluids.PLANTOIL.getStill(), true), "mB"
-			)));
-			builder.readFromFile(new ResourceLocation(MODID, "squeezer"));
-			ieMan.addEntry(heavyMachinesCat, builder.create(), ieMan.atOffsetFrom(heavyMachinesCat, "assembler", 2/3d));
-		}
+		// hide entry on blueprints
+		ieMan.hideEntry(new ResourceLocation(MODID, "blueprints"));
 		{
 			ManualEntry.ManualEntryBuilder builder = new ManualEntryBuilder(ieMan);
 			builder.setContent(
@@ -198,17 +161,6 @@ public class IEManual
 		}
 
 		addChangelogToManual();
-	}
-
-	private static Supplier<ManualElementTable> addDynamicTable(
-			Supplier<SortedMap<Component, Integer>> getContents,
-			String valueType
-	)
-	{
-		return () -> {
-			Component[][] table = formatToTable_ItemIntMap(getContents.get(), valueType);
-			return new ManualElementTable(ManualHelper.getManual(), table, false);
-		};
 	}
 
 	private static Pair<String, List<SpecialElementData>> getMineralVeinTexts()
@@ -343,5 +295,49 @@ public class IEManual
 		{
 		}
 		return list.toArray(new Component[0][]);
+	}
+
+	static ItemStack[] collectRecipeStacksFromJSON(JsonObject json)
+	{
+		ItemStack[] stacks;
+		if(GsonHelper.isArrayNode(json, "recipes"))
+		{
+			JsonArray arr = json.get("recipes").getAsJsonArray();
+			stacks = new ItemStack[arr.size()];
+			for(int i = 0; i < stacks.length; ++i)
+				stacks[i] = CraftingHelper.getItemStack(arr.get(i).getAsJsonObject(), true);
+		}
+		else
+		{
+			JsonElement recipe = json.get("recipe");
+			Preconditions.checkArgument(recipe.isJsonObject());
+			stacks = new ItemStack[]{
+					CraftingHelper.getItemStack(recipe.getAsJsonObject(), true)
+			};
+		}
+		return stacks;
+	}
+
+	static Fluid[] collectRecipeFluidsFromJSON(JsonObject json)
+	{
+		Fluid[] stacks;
+		if(GsonHelper.isArrayNode(json, "recipes"))
+		{
+			JsonArray arr = json.get("recipes").getAsJsonArray();
+			stacks = new Fluid[arr.size()];
+			for(int i = 0; i < stacks.length; ++i)
+				stacks[i] = ForgeRegistries.FLUIDS.getValue(
+						new ResourceLocation(GsonHelper.getAsString(arr.get(i).getAsJsonObject(), "fluid"))
+				);
+		}
+		else
+		{
+			JsonElement recipe = json.get("recipe");
+			Preconditions.checkArgument(recipe.isJsonObject());
+			stacks = new Fluid[]{ForgeRegistries.FLUIDS.getValue(
+					new ResourceLocation(GsonHelper.getAsString(recipe.getAsJsonObject(), "fluid"))
+			)};
+		}
+		return stacks;
 	}
 }

@@ -655,6 +655,8 @@ public final class IEBlocks
 				toItem = BlockItemBalloon::new;
 			else if(entry==Connectors.TRANSFORMER)
 				toItem = TransformerBlockItem::new;
+			else if(entry==WoodenDevices.CRATE||entry==WoodenDevices.REINFORCED_CRATE)
+				toItem = BlockItemIE.BlockItemIENoInventory::new;
 			else
 				toItem = BlockItemIE::new;
 			if(entry==StoneDecoration.COKE)

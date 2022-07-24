@@ -2,5 +2,9 @@
   "start": {
     "type": "multiblock",
     "name": "multiblocks/fermenter"
+  },
+  "list": {
+    "type": "dynamic_table",
+    "table": "fermenter"
   }
 }

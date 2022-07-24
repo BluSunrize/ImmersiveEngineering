@@ -9,7 +9,6 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
-import blusunrize.immersiveengineering.common.items.IEItemInterfaces.IColouredItem;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerType;
 import blusunrize.immersiveengineering.common.register.IEMenuTypes.ItemContainerTypeNew;
@@ -31,7 +30,7 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class IEBaseItem extends Item implements IColouredItem
+public class IEBaseItem extends Item
 {
 	private int burnTime = -1;
 	private boolean isHidden = false;

@@ -419,7 +419,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 
 		public boolean processStep(BottlingMachineBlockEntity tile)
 		{
-			int energyExtracted = (int)(8*IEServerConfig.MACHINES.bottlingMachineConfig.energyModifier.get());
+			int energyExtracted = (int)(8*IEServerConfig.MACHINES.bottlingMachineConfig.energyModifier().get());
 			if(tile.energyStorage.extractEnergy(energyExtracted, true) >= energyExtracted)
 			{
 				tile.energyStorage.extractEnergy(energyExtracted, false);
@@ -459,7 +459,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 
 		public static int getMaxProcessTick()
 		{
-			return (int)(60*IEServerConfig.MACHINES.bottlingMachineConfig.timeModifier.get());
+			return (int)(60*IEServerConfig.MACHINES.bottlingMachineConfig.timeModifier().get());
 		}
 
 		public CompoundTag writeToNBT()

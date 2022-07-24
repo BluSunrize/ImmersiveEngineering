@@ -56,8 +56,7 @@ import java.util.function.Function;
 @SuppressWarnings("deprecation")
 public class ModelCoresample extends BakedIEModel
 {
-	// TODO proper cache keys!
-	private static final Cache<String, ModelCoresample> modelCache = CacheBuilder.newBuilder()
+	private static final Cache<List<ResourceLocation>, ModelCoresample> modelCache = CacheBuilder.newBuilder()
 			.expireAfterAccess(60, TimeUnit.SECONDS)
 			.build();
 	@Nullable
@@ -290,10 +289,10 @@ public class ModelCoresample extends BakedIEModel
 			{
 				try
 				{
-					StringBuilder cacheKey = new StringBuilder();
-					for(int i = 0; i < minerals.length; i++)
-						cacheKey.append(i > 0?"_": "").append(minerals[i].getId().toString());
-					return modelCache.get(cacheKey.toString(), () -> new ModelCoresample(minerals));
+					List<ResourceLocation> cacheKey = Arrays.stream(minerals)
+							.map(MineralMix::getId)
+							.toList();
+					return modelCache.get(cacheKey, () -> new ModelCoresample(minerals));
 				} catch(ExecutionException e)
 				{
 					throw new RuntimeException(e);

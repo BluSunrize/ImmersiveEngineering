@@ -34,7 +34,9 @@ public class LogicCircuitHandler
 		XOR(2, args -> args[0]^args[1], 4),
 		NOR(2, args -> !(args[0]|args[1]), 4),
 		NAND(2, args -> !(args[0]&args[1]), 1),
-		XNOR(2, args -> args[0]==args[1], 5);
+		XNOR(2, args -> args[0]==args[1], 5),
+		IMPLY(2, args -> (!args[0])|args[1], 2),
+		NIMPLY(2, args -> args[0]&!args[1], 3);
 
 		private final int argumentCount;
 		private final Predicate<boolean[]> operator;

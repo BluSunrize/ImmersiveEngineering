@@ -8,8 +8,8 @@
 
 package blusunrize.immersiveengineering.common.crafting;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.RecipeSerializers;
@@ -126,18 +126,11 @@ public class PowerpackRecipe implements CraftingRecipe
 
 	private boolean isValidArmor(ItemStack stack)
 	{
-		if(!(stack.getItem() instanceof ArmorItem)||((ArmorItem)stack.getItem()).getSlot()!=EquipmentSlot.CHEST)
+		if(!(stack.getItem() instanceof ArmorItem armor)||armor.getSlot()!=EquipmentSlot.CHEST)
 			return false;
 		if(stack.getItem()==Misc.POWERPACK.asItem())
 			return false;
-		String regName = Registry.ITEM.getKey(stack.getItem()).toString();
-		for(String s : IEServerConfig.TOOLS.powerpack_whitelist.get())
-			if(regName.equals(s))
-				return true;
-		for(String s : IEServerConfig.TOOLS.powerpack_blacklist.get())
-			if(regName.equals(s))
-				return false;
-		return true;
+		return !stack.is(IETags.powerpackForbidAttach);
 	}
 
 	@Nonnull

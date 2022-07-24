@@ -32,7 +32,6 @@ public class IECommonConfig
 {
 	public static final BooleanValue enableWireLogger;
 	public static final BooleanValue validateNet;
-	public static final BooleanValue enableDebug;
 	public static final Map<String, BooleanValue> compat = new HashMap<>();
 	public static final ConfigValue<List<? extends String>> preferredOres;
 
@@ -64,11 +63,7 @@ public class IECommonConfig
 						"amount of lag and a lot of log spam if the wire network isn't fully intact. Only enable "+
 						"when asked to by an IE developer.")
 				.define("validateNets", false);
-		builder.pop(1);
-		enableDebug = builder
-				.comment("A config setting to enable debug features. These features may vary between releases, may cause crashes, and are unsupported. Do not enable unless asked to by a developer of IE.")
-				.define("enableDebug", false);
-		builder.pop();
+		builder.pop(2);
 		builder.comment("A list of all mods that IE has integrated compatability for", "Setting any of these to false disables the respective compat")
 				.push("compat");
 		for(String mod : IECompatModules.getAvailableModules())

@@ -25,6 +25,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidType;
 import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
@@ -127,6 +131,12 @@ public class ThermoelectricSource extends IESerializableRecipe
 			Block example = ingr.getExample();
 			if(example!=Blocks.AIR)
 				existingMap.put(new ItemStack(example).getHoverName(), ingr.temperature);
+		}
+		Fluid[] fluidsToShow = {Fluids.WATER, Fluids.LAVA};
+		for(Fluid f : fluidsToShow)
+		{
+			FluidStack fs = new FluidStack(f, FluidType.BUCKET_VOLUME);
+			existingMap.put(fs.getDisplayName(), f.getFluidType().getTemperature(fs));
 		}
 		return existingMap;
 	}
