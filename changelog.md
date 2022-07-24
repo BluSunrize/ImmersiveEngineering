@@ -28,6 +28,7 @@
 - Fix stackable fluid containers duplicating when crafting treated wood (BluSunrize)
 - Fix dupe bug when repairing hammers or wirecutters (BluSunrize)
 - Fix revolver pieces from villager trades not showing their perks (BluSunrize)
+- Fix "inventory" label being poorly positioned in various GUIs (BluSunrize)
 - Translations Added/Updated: ru_ru (Smollet777)
 
 ##### Version 1.18.2-8.0.2-149

@@ -19,11 +19,13 @@ public class CraftingTableScreen extends IEContainerScreen<CraftingTableContaine
 	{
 		super(container, inventoryPlayer, title, makeTextureLocation("craftingtable"));
 		this.imageHeight = 210;
+		this.inventoryLabelY = this.imageHeight-91;
 	}
 
 	@Override
 	protected void renderLabels(PoseStack transform, int mouseX, int mouseY)
 	{
+		super.renderLabels(transform, mouseX, mouseY);
 		this.font.draw(transform, menu.tile.getDisplayName().getString(), 8, 6, 0x190b06);
 	}
 }

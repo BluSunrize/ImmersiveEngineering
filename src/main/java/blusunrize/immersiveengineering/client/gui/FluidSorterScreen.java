@@ -45,6 +45,7 @@ public class FluidSorterScreen extends IEContainerScreen<FluidSorterContainer>
 		super(container, inventoryPlayer, title, makeTextureLocation("sorter"));
 		this.tile = container.tile;
 		this.imageHeight = 244;
+		this.inventoryLabelY = this.imageHeight-91;
 	}
 
 	@Override
