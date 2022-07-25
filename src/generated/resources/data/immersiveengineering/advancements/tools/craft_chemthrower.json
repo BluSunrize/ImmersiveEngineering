@@ -1,14 +1,14 @@
 {
-  "parent": "immersiveengineering:main/craft_workbench",
+  "parent": "immersiveengineering:tools/tools_root",
   "display": {
     "icon": {
-      "item": "immersiveengineering:revolver"
+      "item": "immersiveengineering:chemthrower"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.craft_revolver"
+      "translate": "advancement.immersiveengineering.craft_chemthrower"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.craft_revolver.desc"
+      "translate": "advancement.immersiveengineering.craft_chemthrower.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:revolver"
+              "immersiveengineering:chemthrower"
             ]
           }
         ]

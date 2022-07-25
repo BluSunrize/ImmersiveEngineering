@@ -1,14 +1,14 @@
 {
-  "parent": "immersiveengineering:main/craft_workbench",
+  "parent": "immersiveengineering:tools/tools_root",
   "display": {
     "icon": {
-      "item": "immersiveengineering:skyhook"
+      "item": "immersiveengineering:railgun"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.craft_skyhook"
+      "translate": "advancement.immersiveengineering.craft_railgun"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.craft_skyhook.desc"
+      "translate": "advancement.immersiveengineering.craft_railgun.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:skyhook"
+              "immersiveengineering:railgun"
             ]
           }
         ]

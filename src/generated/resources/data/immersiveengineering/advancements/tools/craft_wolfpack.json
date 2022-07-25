@@ -1,19 +1,19 @@
 {
-  "parent": "immersiveengineering:main/craft_workbench",
+  "parent": "immersiveengineering:tools/craft_revolver",
   "display": {
     "icon": {
-      "item": "immersiveengineering:chemthrower"
+      "item": "immersiveengineering:wolfpack"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.craft_chemthrower"
+      "translate": "advancement.immersiveengineering.craft_wolfpack"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.craft_chemthrower.desc"
+      "translate": "advancement.immersiveengineering.craft_wolfpack.desc"
     },
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": false
+    "hidden": true
   },
   "criteria": {
     "has_item": {
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:chemthrower"
+              "immersiveengineering:wolfpack"
             ]
           }
         ]

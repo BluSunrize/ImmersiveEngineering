@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/root",
+  "parent": "immersiveengineering:main/main_root",
   "display": {
     "icon": {
       "item": "immersiveengineering:conveyor_basic"

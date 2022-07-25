@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/craft_buzzsaw",
+  "parent": "immersiveengineering:tools/craft_buzzsaw",
   "display": {
     "icon": {
       "item": "immersiveengineering:buzzsaw",

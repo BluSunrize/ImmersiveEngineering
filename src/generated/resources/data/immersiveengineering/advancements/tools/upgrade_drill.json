@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/craft_drill",
+  "parent": "immersiveengineering:tools/craft_drill",
   "display": {
     "icon": {
       "item": "immersiveengineering:drill",

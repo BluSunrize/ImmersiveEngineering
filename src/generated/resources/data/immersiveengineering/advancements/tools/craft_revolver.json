@@ -1,19 +1,19 @@
 {
+  "parent": "immersiveengineering:tools/tools_root",
   "display": {
     "icon": {
-      "item": "immersiveengineering:manual"
+      "item": "immersiveengineering:revolver"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.root"
+      "translate": "advancement.immersiveengineering.craft_revolver"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.root.desc"
+      "translate": "advancement.immersiveengineering.craft_revolver.desc"
     },
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": false,
-    "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png"
+    "hidden": false
   },
   "criteria": {
     "has_item": {
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:manual"
+              "immersiveengineering:revolver"
             ]
           }
         ]

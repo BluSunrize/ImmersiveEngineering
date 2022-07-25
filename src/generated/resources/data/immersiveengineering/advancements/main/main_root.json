@@ -1,19 +1,19 @@
 {
-  "parent": "immersiveengineering:main/craft_revolver",
   "display": {
     "icon": {
-      "item": "immersiveengineering:wolfpack"
+      "item": "immersiveengineering:manual"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.craft_wolfpack"
+      "translate": "advancement.immersiveengineering.main_root"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.craft_wolfpack.desc"
+      "translate": "advancement.immersiveengineering.main_root.desc"
     },
     "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
-    "hidden": true
+    "hidden": false,
+    "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png"
   },
   "criteria": {
     "has_item": {
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:wolfpack"
+              "immersiveengineering:manual"
             ]
           }
         ]

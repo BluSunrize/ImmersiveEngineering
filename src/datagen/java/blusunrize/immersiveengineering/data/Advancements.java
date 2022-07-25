@@ -95,6 +95,7 @@ public class Advancements extends AdvancementProvider
 	{
 		public void accept(Consumer<Advancement> consumer)
 		{
+			/* MAIN */
 			AdvBuilder.setPage("main");
 
 			Advancement rtfm = AdvBuilder.root("block/wooden_decoration/treated_wood").getItem(Tools.MANUAL).save(consumer);
@@ -130,61 +131,6 @@ public class Advancements extends AdvancementProvider
 
 			Advancement workbench = AdvBuilder.child("craft_workbench", rtfm).getItem(WoodenDevices.WORKBENCH).save(consumer);
 
-			Advancement revolver = AdvBuilder.child("craft_revolver", workbench).getItem(Weapons.REVOLVER).save(consumer);
-
-			ItemStack upgradedRevolver = new ItemStack(Weapons.REVOLVER);
-			CompoundTag upgrades = new CompoundTag();
-			upgrades.putInt("bullets", 6);
-			upgrades.putBoolean("electro", true);
-			ItemNBTHelper.setTagCompound(upgradedRevolver, "upgrades", upgrades);
-			Advancement upgradeRevolver = AdvBuilder.child("upgrade_revolver", revolver).challenge()
-					.icon(upgradedRevolver).codeTriggered().loot("shader_rare").save(consumer);
-
-			Advancement wolfpack = AdvBuilder.child("craft_wolfpack", revolver).hidden()
-					.getItem(BulletHandler.getBulletItem(BulletItem.WOLFPACK)).save(consumer);
-
-			Advancement drill = AdvBuilder.child("craft_drill", workbench).getItem(Tools.DRILL).save(consumer);
-
-			ItemStack upgradedDrill = new ItemStack(Tools.DRILL);
-			upgrades = new CompoundTag();
-			upgrades.putInt("damage", 3);
-			upgrades.putBoolean("waterproof", true);
-			upgrades.putBoolean("oiled", true);
-			upgrades.putFloat("speed", 6.0f);
-			ItemNBTHelper.setTagCompound(upgradedDrill, "upgrades", upgrades);
-			ItemNBTHelper.setItemStack(upgradedDrill, "head", new ItemStack(Tools.DRILLHEAD_STEEL));
-			Advancement upgradeDrill = AdvBuilder.child("upgrade_drill", drill).challenge()
-					.icon(upgradedDrill).codeTriggered().loot("shader_rare").save(consumer);
-
-			Advancement buzzsaw = AdvBuilder.child("craft_buzzsaw", workbench).getItem(Tools.BUZZSAW).save(consumer);
-
-			ItemStack upgradedBuzzsaw = new ItemStack(Tools.BUZZSAW);
-			upgrades = new CompoundTag();
-			upgrades.putBoolean("oiled", true);
-			upgrades.putBoolean("spareblades", true);
-			ItemNBTHelper.setTagCompound(upgradedBuzzsaw, "upgrades", upgrades);
-			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade", new ItemStack(Tools.SAWBLADE));
-			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare1", new ItemStack(Tools.SAWBLADE));
-			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare2", new ItemStack(Tools.SAWBLADE));
-			Advancement upgradeBuzzsaw = AdvBuilder.child("upgrade_buzzsaw", buzzsaw).challenge()
-					.icon(upgradedBuzzsaw).codeTriggered().loot("shader_rare").save(consumer);
-
-			Advancement skyhook = AdvBuilder.child("craft_skyhook", workbench).getItem(Misc.SKYHOOK).save(consumer);
-
-			//Todo: Advancement for traveling 1km by skyhook
-
-			Advancement chemthrower = AdvBuilder.child("craft_chemthrower", workbench).getItem(Weapons.CHEMTHROWER).save(consumer);
-
-			Advancement railgun = AdvBuilder.child("craft_railgun", workbench).getItem(Weapons.RAILGUN).save(consumer);
-
-			ItemStack upgradedRailgun = new ItemStack(Weapons.RAILGUN);
-			upgrades = new CompoundTag();
-			upgrades.putBoolean("scope", true);
-			upgrades.putFloat("speed", 1f);
-			ItemNBTHelper.setTagCompound(upgradedRailgun, "upgrades", upgrades);
-			Advancement upgradeRailgun = AdvBuilder.child("upgrade_railgun", railgun).challenge()
-					.icon(upgradedRailgun).codeTriggered().loot("shader_rare").save(consumer);
-
 			Advancement improvedblastfurnace = AdvBuilder.child("mb_improvedblastfurnace", steel)
 					.multiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE).save(consumer);
 
@@ -206,16 +152,78 @@ public class Advancements extends AdvancementProvider
 			Advancement arcfurnace = AdvBuilder.child("mb_arcfurnace", steel).challenge()
 					.multiblock(IEMultiblocks.ARC_FURNACE).save(consumer);
 
-			Advancement birthdayparty = AdvBuilder.child("secret_birthdayparty", revolver).challenge().hidden()
-					.icon(Misc.ICON_BIRTHDAY).codeTriggered().loot("shader_masterwork").save(consumer);
-
 			Advancement luckofthedraw = AdvBuilder.child("secret_luckofthedraw", rtfm).challenge().hidden()
 					.icon(Misc.ICON_LUCKY).codeTriggered().loot("shader_masterwork").save(consumer);
 
-			Advancement drillbreak = AdvBuilder.child("secret_drillbreak", drill).challenge().hidden()
+
+			/* TOOLS */
+			AdvBuilder.setPage("tools");
+
+			Advancement toolsRoot = AdvBuilder.root("block/wooden_decoration/treated_wood").quiet()
+					.getItem(WoodenDevices.WORKBENCH).save(consumer);
+
+			Advancement revolver = AdvBuilder.child("craft_revolver", toolsRoot).getItem(Weapons.REVOLVER).save(consumer);
+
+			ItemStack upgradedRevolver = new ItemStack(Weapons.REVOLVER);
+			CompoundTag upgrades = new CompoundTag();
+			upgrades.putInt("bullets", 6);
+			upgrades.putBoolean("electro", true);
+			ItemNBTHelper.setTagCompound(upgradedRevolver, "upgrades", upgrades);
+			Advancement upgradeRevolver = AdvBuilder.child("upgrade_revolver", revolver).challenge()
+					.icon(upgradedRevolver).codeTriggered().loot("shader_rare").save(consumer);
+
+			Advancement wolfpack = AdvBuilder.child("craft_wolfpack", revolver).hidden()
+					.getItem(BulletHandler.getBulletItem(BulletItem.WOLFPACK)).save(consumer);
+
+			Advancement drill = AdvBuilder.child("craft_drill", toolsRoot).getItem(Tools.DRILL).save(consumer);
+
+			ItemStack upgradedDrill = new ItemStack(Tools.DRILL);
+			upgrades = new CompoundTag();
+			upgrades.putInt("damage", 3);
+			upgrades.putBoolean("waterproof", true);
+			upgrades.putBoolean("oiled", true);
+			upgrades.putFloat("speed", 6.0f);
+			ItemNBTHelper.setTagCompound(upgradedDrill, "upgrades", upgrades);
+			ItemNBTHelper.setItemStack(upgradedDrill, "head", new ItemStack(Tools.DRILLHEAD_STEEL));
+			Advancement upgradeDrill = AdvBuilder.child("upgrade_drill", drill).challenge()
+					.icon(upgradedDrill).codeTriggered().loot("shader_rare").save(consumer);
+
+			Advancement buzzsaw = AdvBuilder.child("craft_buzzsaw", toolsRoot).getItem(Tools.BUZZSAW).save(consumer);
+
+			ItemStack upgradedBuzzsaw = new ItemStack(Tools.BUZZSAW);
+			upgrades = new CompoundTag();
+			upgrades.putBoolean("oiled", true);
+			upgrades.putBoolean("spareblades", true);
+			ItemNBTHelper.setTagCompound(upgradedBuzzsaw, "upgrades", upgrades);
+			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade", new ItemStack(Tools.SAWBLADE));
+			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare1", new ItemStack(Tools.SAWBLADE));
+			ItemNBTHelper.setItemStack(upgradedBuzzsaw, "sawblade_spare2", new ItemStack(Tools.SAWBLADE));
+			Advancement upgradeBuzzsaw = AdvBuilder.child("upgrade_buzzsaw", buzzsaw).challenge()
+					.icon(upgradedBuzzsaw).codeTriggered().loot("shader_rare").save(consumer);
+
+			Advancement skyhook = AdvBuilder.child("craft_skyhook", toolsRoot).getItem(Misc.SKYHOOK).save(consumer);
+
+			//Todo: Advancement for traveling 1km by skyhook
+
+			Advancement chemthrower = AdvBuilder.child("craft_chemthrower", toolsRoot).getItem(Weapons.CHEMTHROWER).save(consumer);
+
+			Advancement railgun = AdvBuilder.child("craft_railgun", toolsRoot).getItem(Weapons.RAILGUN).save(consumer);
+
+			ItemStack upgradedRailgun = new ItemStack(Weapons.RAILGUN);
+			upgrades = new CompoundTag();
+			upgrades.putBoolean("scope", true);
+			upgrades.putFloat("speed", 1f);
+			ItemNBTHelper.setTagCompound(upgradedRailgun, "upgrades", upgrades);
+			Advancement upgradeRailgun = AdvBuilder.child("upgrade_railgun", railgun).challenge()
+					.icon(upgradedRailgun).codeTriggered().loot("shader_rare").save(consumer);
+
+			Advancement birthdayparty = AdvBuilder.child("secret_birthdayparty", upgradeRevolver).challenge().hidden()
+					.icon(Misc.ICON_BIRTHDAY).codeTriggered().loot("shader_masterwork").save(consumer);
+
+			Advancement drillbreak = AdvBuilder.child("secret_drillbreak", upgradeDrill).challenge().hidden()
 					.icon(Misc.ICON_DRILLBREAK).codeTriggered().loot("shader_masterwork").save(consumer);
 
-			Advancement ravenholm = AdvBuilder.child("secret_ravenholm", railgun).challenge().hidden()
+			Advancement ravenholm = AdvBuilder.child("secret_ravenholm", upgradeRailgun).challenge().hidden()
 					.icon(Misc.ICON_RAVENHOLM).codeTriggered().loot("shader_masterwork").save(consumer);
 		}
 	}
@@ -237,6 +245,8 @@ public class Advancements extends AdvancementProvider
 		private FrameType frame = FrameType.TASK;
 		private boolean hidden = false;
 
+		private boolean quiet = false;
+
 		private AdvBuilder(String name)
 		{
 			assert page!=null;
@@ -250,7 +260,7 @@ public class Advancements extends AdvancementProvider
 
 		public static AdvBuilder root(String bg)
 		{
-			return new AdvBuilder("root").background(new ResourceLocation(Lib.MODID, "textures/"+bg+".png"));
+			return new AdvBuilder(page+"_root").background(new ResourceLocation(Lib.MODID, "textures/"+bg+".png"));
 		}
 
 		public static AdvBuilder child(String name, Advancement parent)
@@ -318,6 +328,12 @@ public class Advancements extends AdvancementProvider
 			return this;
 		}
 
+		public AdvBuilder quiet()
+		{
+			this.quiet = true;
+			return this;
+		}
+
 		public AdvBuilder loot(String lootPath)
 		{
 			this.builder.rewards(new AdvancementRewards(
@@ -359,8 +375,8 @@ public class Advancements extends AdvancementProvider
 					new TranslatableComponent("advancement.immersiveengineering."+this.name+".desc"),
 					this.background,
 					this.frame,
-					true,
-					true,
+					!this.quiet,
+					!this.quiet,
 					this.hidden
 			));
 		}
