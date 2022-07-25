@@ -40,7 +40,7 @@ public class GameInitializationManager
 		GLFWInitializationManager.getInstance().initialize();
 		MinecraftInstanceManager.getInstance().initialize(existingFileHelper, gen);
 		ClientProxy.initWithMC();
-		ModelLoaderRegistry.init();
+		ModelLoaderRegistry.onModelLoadingStart();
 
 		final ExtendedModelManager extendedModelManager = (ExtendedModelManager)Minecraft.getInstance().getModelManager();
 		extendedModelManager.loadModels();
