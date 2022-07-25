@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/craft_heater",
+  "parent": "immersiveengineering:main/craft_router",
   "display": {
     "icon": {
-      "item": "immersiveengineering:fluid_pump"
+      "item": "immersiveengineering:item_batcher"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.craft_pump"
+      "translate": "advancement.immersiveengineering.craft_batcher"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.craft_pump.desc"
+      "translate": "advancement.immersiveengineering.craft_batcher.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:fluid_pump"
+              "immersiveengineering:item_batcher"
             ]
           }
         ]

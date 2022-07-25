@@ -2,13 +2,13 @@
   "parent": "immersiveengineering:main/connect_wire",
   "display": {
     "icon": {
-      "item": "immersiveengineering:floodlight"
+      "item": "immersiveengineering:dynamo"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.place_floodlight"
+      "translate": "advancement.immersiveengineering.place_dynamo"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.place_floodlight.desc"
+      "translate": "advancement.immersiveengineering.place_dynamo.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -19,7 +19,7 @@
     "place_block": {
       "trigger": "minecraft:placed_block",
       "conditions": {
-        "block": "immersiveengineering:floodlight"
+        "block": "immersiveengineering:dynamo"
       }
     }
   },

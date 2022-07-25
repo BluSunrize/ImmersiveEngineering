@@ -16,37 +16,37 @@
     "hidden": false
   },
   "criteria": {
-    "basic": {
+    "conveyor_basic": {
       "trigger": "minecraft:placed_block",
       "conditions": {
         "block": "immersiveengineering:conveyor_basic"
       }
     },
-    "dropper": {
+    "conveyor_dropper": {
       "trigger": "minecraft:placed_block",
       "conditions": {
         "block": "immersiveengineering:conveyor_dropper"
       }
     },
-    "extract": {
+    "conveyor_extract": {
       "trigger": "minecraft:placed_block",
       "conditions": {
         "block": "immersiveengineering:conveyor_extract"
       }
     },
-    "redstone": {
+    "conveyor_redstone": {
       "trigger": "minecraft:placed_block",
       "conditions": {
         "block": "immersiveengineering:conveyor_redstone"
       }
     },
-    "splitter": {
+    "conveyor_splitter": {
       "trigger": "minecraft:placed_block",
       "conditions": {
         "block": "immersiveengineering:conveyor_splitter"
       }
     },
-    "vertical": {
+    "conveyor_vertical": {
       "trigger": "minecraft:placed_block",
       "conditions": {
         "block": "immersiveengineering:conveyor_vertical"
@@ -55,12 +55,12 @@
   },
   "requirements": [
     [
-      "basic",
-      "dropper",
-      "extract",
-      "redstone",
-      "splitter",
-      "vertical"
+      "conveyor_basic",
+      "conveyor_dropper",
+      "conveyor_extract",
+      "conveyor_redstone",
+      "conveyor_splitter",
+      "conveyor_vertical"
     ]
   ]
 }
