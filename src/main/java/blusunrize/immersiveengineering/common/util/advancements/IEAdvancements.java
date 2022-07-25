@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.util.advancements;
 
+import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrigger;
 import net.minecraft.advancements.CriteriaTriggers;
 
 /**
@@ -15,7 +16,7 @@ import net.minecraft.advancements.CriteriaTriggers;
  */
 public class IEAdvancements
 {
-	public static MultiblockTrigger TRIGGER_MULTIBLOCK = new MultiblockTrigger();
+	public static MultiblockAdvancementTrigger TRIGGER_MULTIBLOCK = new MultiblockAdvancementTrigger();
 
 	public static void preInit()
 	{
