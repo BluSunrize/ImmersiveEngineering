@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -122,6 +123,9 @@ public class IETags
 	public static final TagKey<Fluid> fluidAcetaldehyde = createFluidWrapper(forgeLoc("acetaldehyde"));
 	public static final TagKey<Fluid> fluidResin = createFluidWrapper(forgeLoc("phenolic_resin"));
 	public static final TagKey<Fluid> drillFuel = createFluidWrapper(rl("drill_fuel"));
+
+	public static final TagKey<EntityType<?>> shaderbagWhitelist = createEntityWrapper(rl("shaderbag/whitelist"));
+	public static final TagKey<EntityType<?>> shaderbagBlacklist = createEntityWrapper(rl("shaderbag/blacklist"));
 
 	static
 	{

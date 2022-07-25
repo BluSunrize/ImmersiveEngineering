@@ -21,6 +21,12 @@
 - Remove unused config options (Malte)
 - Add a new tag to blacklist certain armor for attaching the Accumulator Backpack (Malte)
     - "immersiveengineering:powerpack/forbid_attach"
+- Add new tags to control which mods drop shader grabbags (BluSunrize)
+    - By default, any mob with 100 or more HP (Wither, Ender Dragon, Warden) will drop a bag
+    - "immersiveengineering:shaderbag/blacklist" is for EntityTypes that shouldn't drop a bag despite having so much health
+        - The Wither is on that blacklist by default, but it can be removed from it with a datapack
+    - "immersiveengineering:shaderbag/whitelist" is for EntityTypes that should drop a bag even if their health is lower than 100
+        - This list is empty by default, can be added to with a datapack
 - Allow items to be added to the toolbox by right-clicking, just like vanilla bundles (BluSunrize)
 - Use ToolActions to identify tools for the toolbox, adding support for TConstruct items (BluSunrize)
 - Add a recipe to crush amethyst blocks into crystals (BluSunrize)

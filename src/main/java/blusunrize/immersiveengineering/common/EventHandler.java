@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -40,6 +41,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -209,12 +211,6 @@ public class EventHandler
 	}
 
 	public static Map<UUID, CrusherBlockEntity> crusherMap = new HashMap<>();
-	public static Set<Class<? extends Mob>> listOfBoringBosses = new HashSet<>();
-
-	static
-	{
-		listOfBoringBosses.add(WitherBoss.class);
-	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingDropsLowest(LivingDropsEvent event)
@@ -236,12 +232,12 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingDrops(LivingDropsEvent event)
 	{
-		if(!event.isCanceled()&&!event.getEntityLiving().canChangeDimensions())
+		if(!event.isCanceled())
 		{
+			boolean isBoss = event.getEntityLiving().getMaxHealth() >= 100||event.getEntityLiving().getType().is(IETags.shaderbagWhitelist);
+			if(!isBoss || event.getEntityLiving().getType().is(IETags.shaderbagBlacklist))
+				return;
 			Rarity r = Rarity.EPIC;
-			for(Class<? extends Mob> boring : listOfBoringBosses)
-				if(boring.isAssignableFrom(event.getEntityLiving().getClass()))
-					return;
 			ItemStack bag = new ItemStack(Misc.SHADER_BAG.get(r));
 			event.getDrops().add(new ItemEntity(event.getEntityLiving().level, event.getEntityLiving().getX(), event.getEntityLiving().getY(), event.getEntityLiving().getZ(), bag));
 		}

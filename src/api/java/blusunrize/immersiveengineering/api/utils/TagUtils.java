@@ -15,6 +15,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -111,5 +112,10 @@ public class TagUtils
 	public static TagKey<Fluid> createFluidWrapper(ResourceLocation name)
 	{
 		return TagKey.create(Registry.FLUID_REGISTRY, name);
+	}
+
+	public static TagKey<EntityType<?>> createEntityWrapper(ResourceLocation name)
+	{
+		return TagKey.create(Registry.ENTITY_TYPE_REGISTRY, name);
 	}
 }
