@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/craft_hammer",
+  "parent": "immersiveengineering:main/mb_cokeoven",
   "display": {
     "icon": {
       "item": "immersiveengineering:blast_furnace"
@@ -10,7 +10,7 @@
     "description": {
       "translate": "advancement.immersiveengineering.mb_blastfurnace.desc"
     },
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

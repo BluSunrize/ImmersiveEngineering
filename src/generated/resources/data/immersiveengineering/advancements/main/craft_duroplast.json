@@ -1,14 +1,14 @@
 {
-  "parent": "immersiveengineering:main/mb_blastfurnace",
+  "parent": "immersiveengineering:main/mb_refinery",
   "display": {
     "icon": {
-      "item": "immersiveengineering:ingot_steel"
+      "item": "immersiveengineering:plate_duroplast"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.make_steel"
+      "translate": "advancement.immersiveengineering.craft_duroplast"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.make_steel.desc"
+      "translate": "advancement.immersiveengineering.craft_duroplast.desc"
     },
     "frame": "goal",
     "show_toast": true,
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:ingot_steel"
+              "immersiveengineering:plate_duroplast"
             ]
           }
         ]

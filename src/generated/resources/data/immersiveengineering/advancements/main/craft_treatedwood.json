@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/mb_blastfurnace",
+  "parent": "immersiveengineering:main/creosote",
   "display": {
     "icon": {
-      "item": "immersiveengineering:ingot_steel"
+      "item": "immersiveengineering:treated_wood_horizontal"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.make_steel"
+      "translate": "advancement.immersiveengineering.craft_treatedwood"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.make_steel.desc"
+      "translate": "advancement.immersiveengineering.craft_treatedwood.desc"
     },
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:ingot_steel"
+              "immersiveengineering:treated_wood_horizontal"
             ]
           }
         ]

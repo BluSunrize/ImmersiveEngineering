@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/make_steel",
+  "parent": "immersiveengineering:main/mb_refinery",
   "display": {
     "icon": {
       "item": "immersiveengineering:diesel_generator"
@@ -10,7 +10,7 @@
     "description": {
       "translate": "advancement.immersiveengineering.mb_dieselgen.desc"
     },
-    "frame": "goal",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

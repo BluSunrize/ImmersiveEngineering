@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/make_steel",
+  "parent": "immersiveengineering:main/mb_improvedblastfurnace",
   "display": {
     "icon": {
       "item": "immersiveengineering:arc_furnace"

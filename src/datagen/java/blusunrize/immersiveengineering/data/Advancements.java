@@ -17,14 +17,16 @@ import blusunrize.immersiveengineering.api.wires.WireType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
+import blusunrize.immersiveengineering.common.blocks.wooden.TreatedWoodStyles;
+import blusunrize.immersiveengineering.common.fluids.IEFluidBlock;
 import blusunrize.immersiveengineering.common.items.BulletItem;
+import blusunrize.immersiveengineering.common.register.IEBlocks;
 import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
+import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
-import blusunrize.immersiveengineering.common.register.IEItems.Metals;
-import blusunrize.immersiveengineering.common.register.IEItems.Misc;
-import blusunrize.immersiveengineering.common.register.IEItems.Tools;
-import blusunrize.immersiveengineering.common.register.IEItems.Weapons;
+import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
@@ -104,11 +106,6 @@ public class Advancements extends AdvancementProvider
 
 			Advancement wire = AdvBuilder.child("connect_wire", rtfm).icon(Misc.WIRE_COILS.get(WireType.COPPER)).codeTriggered().save(consumer);
 
-			Advancement blastfurnace = AdvBuilder.child("mb_blastfurnace", hammer).goal()
-					.multiblock(IEMultiblocks.BLAST_FURNACE).save(consumer);
-
-			Advancement steel = AdvBuilder.child("make_steel", blastfurnace).getItem(Metals.INGOTS.get(EnumMetals.STEEL)).save(consumer);
-
 			AdvBuilder b_conveyor = AdvBuilder.child("place_conveyor", rtfm).icon(MetalDevices.CONVEYORS.get(BasicConveyor.TYPE))
 					.orRequirements();
 			MetalDevices.CONVEYORS.entrySet().stream()
@@ -131,26 +128,37 @@ public class Advancements extends AdvancementProvider
 
 			Advancement workbench = AdvBuilder.child("craft_workbench", rtfm).getItem(WoodenDevices.WORKBENCH).save(consumer);
 
-			Advancement improvedblastfurnace = AdvBuilder.child("mb_improvedblastfurnace", steel)
-					.multiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE).save(consumer);
+			// Multiblock start
+			Advancement cokeoven = AdvBuilder.child("mb_cokeoven", hammer).multiblock(IEMultiblocks.COKE_OVEN).save(consumer);
+			Advancement blastfurnace = AdvBuilder.child("mb_blastfurnace", cokeoven).multiblock(IEMultiblocks.BLAST_FURNACE).save(consumer);
+			Advancement steel = AdvBuilder.child("make_steel", blastfurnace).goal().getItem(Metals.INGOTS.get(EnumMetals.STEEL)).save(consumer);
 
-			Advancement metalpress = AdvBuilder.child("mb_metalpress", steel)
-					.multiblock(IEMultiblocks.METAL_PRESS).save(consumer);
+			// Treated Wood
+			Advancement creosote = AdvBuilder.child("creosote", cokeoven).getItem(IEFluids.CREOSOTE.getBucket()).save(consumer);
+			Advancement treatedWood = AdvBuilder.child("craft_treatedwood", creosote).getItem(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL)).save(consumer);
 
-			Advancement silo = AdvBuilder.child("mb_silo", steel)
-					.multiblock(IEMultiblocks.SILO).save(consumer);
+			// Furnace upgrades
+			Advancement improvedblastfurnace = AdvBuilder.child("mb_improvedblastfurnace", steel).multiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE).save(consumer);
+			Advancement arcfurnace = AdvBuilder.child("mb_arcfurnace", improvedblastfurnace).challenge().multiblock(IEMultiblocks.ARC_FURNACE).save(consumer);
 
-			Advancement crusher = AdvBuilder.child("mb_crusher", steel).goal()
-					.multiblock(IEMultiblocks.CRUSHER).save(consumer);
+			// Sheetmetal
+			Advancement metalpress = AdvBuilder.child("mb_metalpress", steel).multiblock(IEMultiblocks.METAL_PRESS).save(consumer);
+			Advancement sheetmetal = AdvBuilder.child("craft_sheetmetal", metalpress).getItem(IEBlocks.Metals.SHEETMETAL.get(EnumMetals.IRON)).save(consumer);
+			Advancement silo = AdvBuilder.child("mb_silo", sheetmetal).multiblock(IEMultiblocks.SILO).save(consumer);
+			Advancement tank = AdvBuilder.child("mb_tank", sheetmetal).multiblock(IEMultiblocks.SHEETMETAL_TANK).save(consumer);
 
-			Advancement dieselgen = AdvBuilder.child("mb_dieselgen", steel).goal()
-					.multiblock(IEMultiblocks.DIESEL_GENERATOR).save(consumer);
+			// Fluid machines
+			Advancement squeezer = AdvBuilder.child("mb_squeezer", steel).multiblock(IEMultiblocks.SQUEEZER).save(consumer);
+			Advancement fermenter = AdvBuilder.child("mb_fermenter", squeezer).multiblock(IEMultiblocks.FERMENTER).save(consumer);
+			Advancement mixer = AdvBuilder.child("mb_mixer", fermenter).multiblock(IEMultiblocks.MIXER).save(consumer);
+			Advancement concrete = AdvBuilder.child("liquid_concrete", mixer).getItem(IEFluids.CONCRETE.getBucket()).save(consumer);
+			Advancement refinery = AdvBuilder.child("mb_refinery", fermenter).multiblock(IEMultiblocks.REFINERY).save(consumer);
+			Advancement plastic = AdvBuilder.child("craft_duroplast", refinery).goal().getItem(Ingredients.DUROPLAST_PLATE).save(consumer);
+			Advancement dieselgen = AdvBuilder.child("mb_dieselgen", refinery).challenge().multiblock(IEMultiblocks.DIESEL_GENERATOR).save(consumer);
 
-			Advancement excavator = AdvBuilder.child("mb_excavator", steel).challenge()
-					.multiblock(IEMultiblocks.EXCAVATOR).save(consumer);
-
-			Advancement arcfurnace = AdvBuilder.child("mb_arcfurnace", steel).challenge()
-					.multiblock(IEMultiblocks.ARC_FURNACE).save(consumer);
+			// Ores
+			Advancement crusher = AdvBuilder.child("mb_crusher", steel).goal().multiblock(IEMultiblocks.CRUSHER).save(consumer);
+			Advancement excavator = AdvBuilder.child("mb_excavator", crusher).challenge().multiblock(IEMultiblocks.EXCAVATOR).save(consumer);
 
 			Advancement luckofthedraw = AdvBuilder.child("secret_luckofthedraw", rtfm).challenge().hidden()
 					.icon(Misc.ICON_LUCKY).codeTriggered().loot("shader_masterwork").save(consumer);

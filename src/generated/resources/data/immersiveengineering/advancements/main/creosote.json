@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/mb_blastfurnace",
+  "parent": "immersiveengineering:main/mb_cokeoven",
   "display": {
     "icon": {
-      "item": "immersiveengineering:ingot_steel"
+      "item": "immersiveengineering:creosote_bucket"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.make_steel"
+      "translate": "advancement.immersiveengineering.creosote"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.make_steel.desc"
+      "translate": "advancement.immersiveengineering.creosote.desc"
     },
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:ingot_steel"
+              "immersiveengineering:creosote_bucket"
             ]
           }
         ]
