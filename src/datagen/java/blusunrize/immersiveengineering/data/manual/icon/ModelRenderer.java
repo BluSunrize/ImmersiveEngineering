@@ -88,6 +88,7 @@ public class ModelRenderer implements AutoCloseable
         PoseStack modelViewStack = RenderSystem.getModelViewStack();
         modelViewStack.pushPose();
         modelViewStack.translate(viewSize/2, viewSize/2, 100);
+        modelViewStack.scale(-1, 1, 1);
         modelViewStack.mulPose(new Quaternion(0, 0, Mth.PI, false));
         modelViewStack.scale(1, -1, 1);
         modelViewStack.scale(16, 16, 16);
@@ -117,6 +118,7 @@ public class ModelRenderer implements AutoCloseable
         glClearDepth(1);
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
         glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
 
         if(model.usesBlockLight())
             Lighting.setupFor3DItems();
