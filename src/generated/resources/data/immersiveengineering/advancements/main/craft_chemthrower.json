@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "chemthrower": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "chemthrower"
+      "has_item"
     ]
   ]
 }

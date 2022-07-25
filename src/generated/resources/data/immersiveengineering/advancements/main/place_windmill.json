@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "windmill": {
+    "place_block": {
       "trigger": "minecraft:placed_block",
       "conditions": {
         "block": "immersiveengineering:windmill"
@@ -25,7 +25,7 @@
   },
   "requirements": [
     [
-      "windmill"
+      "place_block"
     ]
   ]
 }

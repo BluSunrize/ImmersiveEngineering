@@ -16,7 +16,7 @@
     "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png"
   },
   "criteria": {
-    "manual": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "manual"
+      "has_item"
     ]
   ]
 }

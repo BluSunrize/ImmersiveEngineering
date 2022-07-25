@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "arcfurnace": {
+    "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
         "multiblock": "immersiveengineering:multiblocks/arcfurnace",
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "arcfurnace"
+      "form_multiblock"
     ]
   ]
 }

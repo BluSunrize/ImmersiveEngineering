@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "railgun": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "railgun"
+      "has_item"
     ]
   ]
 }

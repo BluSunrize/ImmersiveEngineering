@@ -17,7 +17,7 @@
     "hidden": false
   },
   "criteria": {
-    "hammer": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "hammer"
+      "has_item"
     ]
   ]
 }

@@ -16,7 +16,7 @@
     "hidden": true
   },
   "criteria": {
-    "wolfpack": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "wolfpack"
+      "has_item"
     ]
   ]
 }

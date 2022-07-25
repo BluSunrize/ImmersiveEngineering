@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "metalpress": {
+    "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
         "multiblock": "immersiveengineering:multiblocks/metal_press",
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "metalpress"
+      "form_multiblock"
     ]
   ]
 }

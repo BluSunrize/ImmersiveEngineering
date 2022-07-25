@@ -16,7 +16,7 @@
     "hidden": false
   },
   "criteria": {
-    "skyhook": {
+    "has_item": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "skyhook"
+      "has_item"
     ]
   ]
 }
