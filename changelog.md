@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.1.0-pre
+##### Version 1.18.2-8.1.0-150
 - The Plastics update! (BluSunrize)
     - New fluids:
         - Acetaldehyde, made from ethanol in the refinery with a silver plate catalyst
