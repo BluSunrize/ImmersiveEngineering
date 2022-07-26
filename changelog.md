@@ -30,9 +30,9 @@
 - Add new tags to control which mods drop shader grabbags (BluSunrize)
     - By default, any mob with 100 or more HP (Wither, Ender Dragon, Warden) will drop a bag
     - "immersiveengineering:shaderbag/blacklist" is for EntityTypes that shouldn't drop a bag despite having so much health
-        - The Wither is on that blacklist by default, but it can be removed from it with a datapack
+        - The Wither is on that blacklist by default, but it can be removed from it with a data pack
     - "immersiveengineering:shaderbag/whitelist" is for EntityTypes that should drop a bag even if their health is lower than 100
-        - This list is empty by default, can be added to with a datapack
+        - This list is empty by default, can be added to with a data pack
 - Allow items to be added to the toolbox by right-clicking, just like vanilla bundles (BluSunrize)
 - Use ToolActions to identify tools for the toolbox, adding support for TConstruct items (BluSunrize)
 - Add a recipe to crush amethyst blocks into crystals (BluSunrize)
@@ -47,6 +47,7 @@
 - Fix dupe bug when repairing hammers or wirecutters (BluSunrize)
 - Fix revolver pieces from villager trades not showing their perks (BluSunrize)
 - Fix "inventory" label being poorly positioned in various GUIs (BluSunrize)
+- Fix OC2 compat using an old name (leedagee)
 - Translations Added/Updated: ru_ru (Smollet777)
 
 ##### Version 1.18.2-8.0.2-149
