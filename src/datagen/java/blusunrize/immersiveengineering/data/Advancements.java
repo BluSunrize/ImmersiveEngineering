@@ -27,16 +27,19 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import blusunrize.immersiveengineering.common.register.IEPotions;
 import blusunrize.immersiveengineering.common.register.IEPotions.IEPotion;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
+import blusunrize.immersiveengineering.common.world.Villages;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.EntityPredicate.Composite;
 import net.minecraft.advancements.critereon.PlacedBlockTrigger.TriggerInstance;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.data.DataGenerator;
@@ -46,14 +49,16 @@ import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.ItemLike;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Advancements extends AdvancementProvider
@@ -135,9 +140,19 @@ public class Advancements extends AdvancementProvider
 			Advancement treatedWood = AdvBuilder.child("craft_treatedwood", creosote).getItem(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL)).save(consumer);
 			Advancement workbench = AdvBuilder.child("craft_workbench", treatedWood).getItem(WoodenDevices.WORKBENCH).save(consumer);
 
+			// Villagers
+			Advancement villagers = AdvBuilder.child("villager", rtfm).icon(Items.EMERALD).orRequirements()
+					.talkToVillagers(Villages.ENGINEER, Villages.MACHINIST, Villages.ELECTRICIAN, Villages.OUTFITTER, Villages.GUNSMITH)
+					.save(consumer);
+			Advancement shaderbag = AdvBuilder.child("buy_shaderbag", villagers).icon(Misc.SHADER_BAG.get(Rarity.COMMON))
+					.addCriterion("buy_shaderbag", new TradeTrigger.TriggerInstance(
+							EntityPredicate.Composite.ANY, EntityPredicate.Composite.ANY,
+							ItemPredicate.Builder.item().of(Misc.SHADER_BAG.get(Rarity.COMMON), Misc.SHADER_BAG.get(Rarity.UNCOMMON), Misc.SHADER_BAG.get(Rarity.RARE)).build())
+					).save(consumer);
+
 			Advancement friedbird = AdvBuilder.child("secret_friedbird", wire).challenge().hidden()
 					.icon(Misc.ICON_FRIED).codeTriggered().loot("shader_masterwork").save(consumer);
-			Advancement luckofthedraw = AdvBuilder.child("secret_luckofthedraw", rtfm).challenge().hidden()
+			Advancement luckofthedraw = AdvBuilder.child("secret_luckofthedraw", shaderbag).challenge().hidden()
 					.icon(Misc.ICON_LUCKY).codeTriggered().loot("shader_masterwork").save(consumer);
 
 			/* MULTIBLOCKS */
@@ -378,6 +393,23 @@ public class Advancements extends AdvancementProvider
 		{
 			blocks.stream().sorted(Comparator.comparing(BlockEntry::getId))
 					.forEachOrdered(block -> addCriterion(block.getId().getPath(), TriggerInstance.placedBlock(block.get())));
+			return this;
+		}
+
+		public AdvBuilder talkToVillagers(ResourceLocation... professions)
+		{
+			Arrays.stream(professions).sorted(Comparator.comparing(ResourceLocation::getPath))
+					.forEachOrdered(prof -> {
+						CompoundTag villagerData = new CompoundTag();
+						villagerData.putString("profession", prof.toString());
+						CompoundTag entityNBT = new CompoundTag();
+						entityNBT.put("VillagerData", villagerData);
+						addCriterion("meet_"+prof.getPath(), PlayerInteractTrigger.TriggerInstance.itemUsedOnEntity(
+								Composite.ANY,
+								ItemPredicate.Builder.item(),
+								EntityPredicate.Composite.wrap(EntityPredicate.Builder.entity().of(EntityType.VILLAGER).nbt(new NbtPredicate(entityNBT)).build())
+						));
+					});
 			return this;
 		}
 

@@ -1,0 +1,109 @@
+{
+  "parent": "immersiveengineering:main/main_root",
+  "display": {
+    "icon": {
+      "item": "minecraft:emerald"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.villager"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.villager.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "meet_electrician": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {},
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:villager",
+              "nbt": "{VillagerData:{profession:\"immersiveengineering:electrician\"}}"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "meet_engineer": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {},
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:villager",
+              "nbt": "{VillagerData:{profession:\"immersiveengineering:engineer\"}}"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "meet_gunsmith": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {},
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:villager",
+              "nbt": "{VillagerData:{profession:\"immersiveengineering:gunsmith\"}}"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "meet_machinist": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {},
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:villager",
+              "nbt": "{VillagerData:{profession:\"immersiveengineering:machinist\"}}"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    },
+    "meet_outfitter": {
+      "trigger": "minecraft:player_interacted_with_entity",
+      "conditions": {
+        "item": {},
+        "entity": [
+          {
+            "condition": "minecraft:entity_properties",
+            "predicate": {
+              "type": "minecraft:villager",
+              "nbt": "{VillagerData:{profession:\"immersiveengineering:outfitter\"}}"
+            },
+            "entity": "this"
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "meet_electrician",
+      "meet_engineer",
+      "meet_gunsmith",
+      "meet_machinist",
+      "meet_outfitter"
+    ]
+  ]
+}
