@@ -301,9 +301,9 @@ public class Villages
 				ItemLike bag_uncommon = IEItems.Misc.SHADER_BAG.get(Rarity.UNCOMMON);
 				ItemLike bag_rare = IEItems.Misc.SHADER_BAG.get(Rarity.RARE);
 
-				trades.get(1).add(new ItemsForEmerald(bag_common, new PriceInterval(8, 16), 24, 1, 0.2f));
-				trades.get(2).add(new ItemsForEmerald(bag_uncommon, new PriceInterval(12, 20), 24, 5, 0.2f));
-				trades.get(3).add(new ItemsForEmerald(bag_rare, new PriceInterval(16, 24), 24, 10, 0.2f));
+				trades.get(1).add(new ItemsForEmerald(bag_common, new PriceInterval(2, 8), 24, 1, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(bag_uncommon, new PriceInterval(8, 14), 24, 5, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(bag_rare, new PriceInterval(14, 20), 24, 10, 0.2f));
 			}
 			else if(GUNSMITH.equals(ev.getType().getRegistryName()))
 			{
