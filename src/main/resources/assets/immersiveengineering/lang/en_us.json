@@ -550,6 +550,8 @@
   "advancement.immersiveengineering.place_conveyor.desc": "Place a Conveyor Belt",
   "advancement.immersiveengineering.craft_drop_conveyor": "Going Down",
   "advancement.immersiveengineering.craft_drop_conveyor.desc": "Craft a Dropping Conveyor Belt",
+  "advancement.immersiveengineering.chute_bonk": "Uncomfortable Shortcut",
+  "advancement.immersiveengineering.chute_bonk.desc": "Bounce around the Sheetmetal Chutes",
   "advancement.immersiveengineering.craft_extract_conveyor": "Moving Out",
   "advancement.immersiveengineering.craft_extract_conveyor.desc": "Craft an Extracting Conveyor Belt",
   "advancement.immersiveengineering.craft_router": "Colour-coded!",

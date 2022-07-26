@@ -1,0 +1,28 @@
+{
+  "parent": "immersiveengineering:main/craft_drop_conveyor",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:chute_iron"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.chute_bonk"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.chute_bonk.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
+  "requirements": [
+    [
+      "code_trigger"
+    ]
+  ]
+}

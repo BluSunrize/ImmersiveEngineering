@@ -113,6 +113,8 @@ public class Advancements extends AdvancementProvider
 					.orRequirements().placeBlocks(MetalDevices.CONVEYORS.values()).save(consumer);
 			Advancement dropConveyor = AdvBuilder.child("craft_drop_conveyor", conveyor)
 					.getItem(MetalDevices.CONVEYORS.get(DropConveyor.TYPE)).save(consumer);
+			Advancement chute = AdvBuilder.child("chute_bonk", dropConveyor).icon(MetalDevices.CHUTES.get(EnumMetals.IRON))
+					.codeTriggered().save(consumer);
 			Advancement extractConveyor = AdvBuilder.child("craft_extract_conveyor", conveyor)
 					.getItem(MetalDevices.CONVEYORS.get(ExtractConveyor.TYPE)).save(consumer);
 			Advancement router = AdvBuilder.child("craft_router", extractConveyor)
