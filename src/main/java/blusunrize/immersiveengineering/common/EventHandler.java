@@ -276,7 +276,7 @@ public class EventHandler
 			event.setAmount(event.getAmount()*mod);
 		}
 		if(!event.isCanceled()&&!event.getEntityLiving().canChangeDimensions()&&event.getAmount() >= event.getEntityLiving().getHealth()&&event.getSource().getEntity() instanceof Player&&((Player)event.getSource().getEntity()).getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof DrillItem)
-			Utils.unlockIEAdvancement((Player)event.getSource().getEntity(), "main/secret_drillbreak");
+			Utils.unlockIEAdvancement((Player)event.getSource().getEntity(), "tools/secret_drillbreak");
 	}
 
 	@SubscribeEvent
@@ -417,5 +417,7 @@ public class EventHandler
 		if(!(event.getEntityLiving() instanceof ServerPlayer serverPlayer))
 			return;
 		serverPlayer.awardStat(IEStats.WIRE_DEATHS);
+		if(serverPlayer.getAbilities().flying || serverPlayer.isFallFlying())
+			Utils.unlockIEAdvancement(serverPlayer, "main/secret_friedbird");
 	}
 }

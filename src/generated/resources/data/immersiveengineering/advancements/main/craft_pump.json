@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/connect_wire",
+  "parent": "immersiveengineering:main/craft_heater",
   "display": {
     "icon": {
       "item": "immersiveengineering:fluid_pump"

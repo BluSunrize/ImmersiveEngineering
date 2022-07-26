@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/root",
+  "parent": "immersiveengineering:main/place_dynamo",
   "display": {
     "icon": {
       "item": "immersiveengineering:windmill"

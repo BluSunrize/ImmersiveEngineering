@@ -1,0 +1,37 @@
+{
+  "parent": "immersiveengineering:tools/tools_root",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:railgun"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_railgun"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_railgun.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:railgun"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

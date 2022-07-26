@@ -1,0 +1,37 @@
+{
+  "parent": "immersiveengineering:main/villager",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:shader_bag_common"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.buy_shaderbag"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.buy_shaderbag.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "buy_shaderbag": {
+      "trigger": "minecraft:villager_trade",
+      "conditions": {
+        "item": {
+          "items": [
+            "immersiveengineering:shader_bag_common",
+            "immersiveengineering:shader_bag_uncommon",
+            "immersiveengineering:shader_bag_rare"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "buy_shaderbag"
+    ]
+  ]
+}

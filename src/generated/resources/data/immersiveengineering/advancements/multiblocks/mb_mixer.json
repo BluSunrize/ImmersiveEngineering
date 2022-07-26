@@ -1,0 +1,36 @@
+{
+  "parent": "immersiveengineering:multiblocks/mb_fermenter",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:mixer"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_mixer"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_mixer.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "form_multiblock": {
+      "trigger": "immersiveengineering:multiblock_formed",
+      "conditions": {
+        "multiblock": "immersiveengineering:multiblocks/mixer",
+        "item": {
+          "items": [
+            "immersiveengineering:hammer"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "form_multiblock"
+    ]
+  ]
+}

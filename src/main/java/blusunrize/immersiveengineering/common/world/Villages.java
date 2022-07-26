@@ -241,9 +241,9 @@ public class Villages
 				trades.get(4).add(new ItemsForEmerald(WoodenDecoration.TREATED_POST, new PriceInterval(-3, -2), 4, 10));
 				trades.get(4).add(new EmeraldForItems(MetalDecoration.STEEL_POST, new PriceInterval(1, 2), 4, 20));
 				trades.get(4).add(new EmeraldForItems(MetalDecoration.ALU_POST, new PriceInterval(1, 3), 6, 15));
+				trades.get(4).add(new EmeraldForItems(StoneDecoration.CONCRETE_LEADED, new PriceInterval(2, 4), 10, 10));
 
 				trades.get(5).add(new OreveinMapForEmeralds());
-				trades.get(5).add(new EmeraldForItems(StoneDecoration.CONCRETE_LEADED, new PriceInterval(2, 6), 10, 10));
 			}
 			else if(MACHINIST.equals(ev.getType().getRegistryName()))
 			{
@@ -301,9 +301,9 @@ public class Villages
 				ItemLike bag_uncommon = IEItems.Misc.SHADER_BAG.get(Rarity.UNCOMMON);
 				ItemLike bag_rare = IEItems.Misc.SHADER_BAG.get(Rarity.RARE);
 
-				trades.get(1).add(new ItemsForEmerald(bag_common, new PriceInterval(8, 16), 24, 1, 0.2f));
-				trades.get(2).add(new ItemsForEmerald(bag_uncommon, new PriceInterval(12, 20), 24, 5, 0.2f));
-				trades.get(3).add(new ItemsForEmerald(bag_rare, new PriceInterval(16, 24), 24, 10, 0.2f));
+				trades.get(1).add(new ItemsForEmerald(bag_common, new PriceInterval(2, 8), 24, 1, 0.2f));
+				trades.get(2).add(new ItemsForEmerald(bag_uncommon, new PriceInterval(8, 14), 24, 5, 0.2f));
+				trades.get(3).add(new ItemsForEmerald(bag_rare, new PriceInterval(14, 20), 24, 10, 0.2f));
 			}
 			else if(GUNSMITH.equals(ev.getType().getRegistryName()))
 			{

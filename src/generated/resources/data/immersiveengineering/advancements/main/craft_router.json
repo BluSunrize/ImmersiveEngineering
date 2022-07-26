@@ -1,0 +1,37 @@
+{
+  "parent": "immersiveengineering:main/craft_extract_conveyor",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:sorter"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_router"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_router.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:sorter"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

@@ -18,12 +18,14 @@ import blusunrize.immersiveengineering.common.register.IEEntityTypes;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEStats;
 import blusunrize.immersiveengineering.common.util.SkylineHelper;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.Packet;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
@@ -276,10 +278,9 @@ public class SkylineHookEntity extends Entity
 		if(distTrvl > 0)
 			player.awardStat(IEStats.SKYHOOK_DISTANCE, distTrvl);
 
-		//TODO
-//			if(player instanceof EntityPlayerMP)
-//				if(((EntityPlayerMP)player).getStatFile().func_150870_b(IEAchievements.statDistanceSkyhook)>100000)
-//					player.triggerAchievement(IEAchievements.skyhookPro);
+		if(player instanceof ServerPlayer serverPlayer)
+			if(serverPlayer.getStats().getValue(Stats.CUSTOM, IEStats.SKYHOOK_DISTANCE) > 100000)
+				Utils.unlockIEAdvancement(player, "tools/skyhook_distance");
 
 		this.setPos(this.getX(), this.getY(), this.getZ());
 		if(switchingAtPos!=null)
@@ -310,7 +311,7 @@ public class SkylineHookEntity extends Entity
 						return c.getCatenaryData().delta().normalize().dot(look)*factor;
 					}));//Maximum dot product=>Minimum angle=>Player goes in as close to a straight line as possible
 		}
-		if (line.isPresent())
+		if(line.isPresent())
 		{
 			Connection newCon = line.get();
 

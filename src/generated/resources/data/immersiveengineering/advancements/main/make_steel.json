@@ -10,7 +10,7 @@
     "description": {
       "translate": "advancement.immersiveengineering.make_steel.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false

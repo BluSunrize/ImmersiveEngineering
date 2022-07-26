@@ -362,8 +362,9 @@ public class ClientProxy extends CommonProxy
 	@Override
 	public void startSkyhookSound(SkylineHookEntity hook)
 	{
-		Minecraft.getInstance().getSoundManager().play(new SkyhookSound(hook,
-				new ResourceLocation(MODID, "skyhook")));
+		// ToDo: This crashes the game
+//		Minecraft.getInstance().getSoundManager().play(new SkyhookSound(hook,
+//				new ResourceLocation(MODID, "skyhook")));
 	}
 
 	@Override
