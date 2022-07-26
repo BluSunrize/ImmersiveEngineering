@@ -210,9 +210,7 @@ public class Advancements extends AdvancementProvider
 			Advancement upgradeBuzzsaw = AdvBuilder.child("upgrade_buzzsaw", buzzsaw).challenge()
 					.icon(upgradedBuzzsaw).codeTriggered().loot("shader_rare").save(consumer);
 
-			Advancement skyhook = AdvBuilder.child("craft_skyhook", toolsRoot).getItem(Misc.SKYHOOK).save(consumer);
-
-			//Todo: Advancement for traveling 1km by skyhook
+			Advancement skyhook = AdvBuilder.child("skyhook_distance", toolsRoot).icon(Misc.SKYHOOK).codeTriggered().save(consumer);
 
 			Advancement chemthrower = AdvBuilder.child("craft_chemthrower", toolsRoot).getItem(Weapons.CHEMTHROWER).save(consumer);
 
