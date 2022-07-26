@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
+import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.common.crafting.*;
 import blusunrize.immersiveengineering.common.crafting.fluidaware.BasicShapedRecipe;
@@ -149,6 +150,9 @@ public class RecipeSerializers
 		);
 		ThermoelectricSource.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"thermoelectric_source", ThermoelectricSourceSerializer::new
+		);
+		WindmillBiome.SERIALIZER = RECIPE_SERIALIZERS.register(
+				"windmill_biome", WindmillBiomeSerializer::new
 		);
 		GeneratedListRecipe.SERIALIZER = RECIPE_SERIALIZERS.register(
 				"generated_list", GeneratedListSerializer::new

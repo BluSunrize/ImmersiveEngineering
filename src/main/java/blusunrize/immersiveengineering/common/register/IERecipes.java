@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.*;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
+import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import blusunrize.immersiveengineering.common.crafting.GeneratedListRecipe;
 import net.minecraft.core.Registry;
@@ -51,6 +52,7 @@ public class IERecipes
 		MineralMix.TYPE = register("mineral_mix");
 		GeneratorFuel.TYPE = register("generator_fuel");
 		ThermoelectricSource.TYPE = register("thermoelectric_source");
+		WindmillBiome.TYPE = register("windmill_biome");
 		GeneratedListRecipe.init();
 	}
 

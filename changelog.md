@@ -36,6 +36,9 @@
 - Allow items to be added to the toolbox by right-clicking, just like vanilla bundles (BluSunrize)
 - Use ToolActions to identify tools for the toolbox, adding support for TConstruct items (BluSunrize)
 - Add a recipe to crush amethyst blocks into crystals (BluSunrize)
+- Add a new recipe type for adding biome-based modifiers to the windmill (BluSunrize)
+    - By default, windmills now spin 15% faster in ocean biomes, as an example implementation
+    - The rest is up to data pack makers!
 - Fix crashes as a result of empty potion recipes (Malte)
 - Fix crashes triggered by wires burning (Malte)
 - Reduce size of share tag for wooden crates (Malte)

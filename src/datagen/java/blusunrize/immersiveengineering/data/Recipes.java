@@ -14,6 +14,7 @@ import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.crafting.ClocheRenderFunction.ClocheRenderReference;
 import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.crafting.builders.*;
+import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
@@ -51,10 +52,8 @@ import net.minecraft.data.HashCache;
 import net.minecraft.data.recipes.*;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.*;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.item.DyeColor;
@@ -70,6 +69,7 @@ import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.Tags;
+import net.minecraftforge.common.Tags.Biomes;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.crafting.conditions.ICondition;
 import net.minecraftforge.common.crafting.conditions.NotCondition;
@@ -221,6 +221,7 @@ public class Recipes extends RecipeProvider
 		GeneratorFuelBuilder.builder(IETags.fluidBiodiesel, 250).build(out, toRL("generator_fuel/biodiesel"));
 		GeneratorFuelBuilder.builder(IETags.fluidCreosote, 20).build(out, toRL("generator_fuel/creosote"));
 		thermoelectricFuels(out);
+		WindmillBiomeBuilder.builder(BiomeTags.IS_OCEAN).modifier(1.15f).build(out, toRL("windmill/ocean"));
 	}
 
 	private void recipesBlast(@Nonnull Consumer<FinishedRecipe> out)
@@ -1931,7 +1932,7 @@ public class Recipes extends RecipeProvider
 				.pattern("pes")
 				.pattern("sci")
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('s',  IETags.getTagsFor(EnumMetals.SILVER).plate)
+				.define('s', IETags.getTagsFor(EnumMetals.SILVER).plate)
 				.define('e', Ingredients.LIGHT_BULB)
 				.define('c', Ingredients.COMPONENT_IRON)
 				.define('p', Tags.Items.GLASS_PANES)
