@@ -37,6 +37,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.advancements.*;
 import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.PlacedBlockTrigger.TriggerInstance;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
@@ -52,6 +53,7 @@ import net.minecraft.world.level.block.Block;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -122,7 +124,7 @@ public class Advancements extends AdvancementProvider
 			// Machines
 			Advancement heater = AdvBuilder.child("craft_heater", wire).getItem(MetalDevices.FURNACE_HEATER).save(consumer);
 			Advancement pump = AdvBuilder.child("craft_pump", heater).getItem(MetalDevices.FLUID_PUMP).save(consumer);
-			Advancement cloche = AdvBuilder.child("craft_cloche", pump).getItem(MetalDevices.CLOCHE).save(consumer);
+			Advancement cloche = AdvBuilder.child("chorus_cloche", pump).icon(MetalDevices.CLOCHE).codeTriggered().save(consumer);
 
 			// Multiblock start
 			Advancement hammer = AdvBuilder.child("craft_hammer", rtfm).getItem(Tools.HAMMER).save(consumer);
@@ -373,8 +375,8 @@ public class Advancements extends AdvancementProvider
 
 		public AdvBuilder placeBlocks(Collection<? extends BlockEntry<?>> blocks)
 		{
-			for(BlockEntry<?> block : blocks)
-				this.addCriterion(block.getId().getPath(), PlacedBlockTrigger.TriggerInstance.placedBlock(block.get()));
+			blocks.stream().sorted(Comparator.comparing(BlockEntry::getId))
+					.forEachOrdered(block -> addCriterion(block.getId().getPath(), TriggerInstance.placedBlock(block.get())));
 			return this;
 		}
 
