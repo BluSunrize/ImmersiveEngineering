@@ -14,6 +14,12 @@
     - Early furnaces and workbenches have their own category
     - Some entries got re-written / clarified
     - Bottling and Mixing recipes now display in the manual
+- The Advancements got overhauled! (BluSunrize)
+    - IE now has 54 different advancements
+    - Some boring ones were removed
+    - Some cool new ones were added
+    - A new *secret* advancement got added too
+    - Advancements have been split into 3 different tabs to make them more readable
 - Add IMPLY and NIMPLY logic circuits (sashafiesta)
 - Add a bunch of extra tools to the toolbox (BluSunrize & Silfryi)
     - Spyglass, Clock, Compass, Fishing Rod
