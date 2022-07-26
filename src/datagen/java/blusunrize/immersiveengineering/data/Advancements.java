@@ -13,7 +13,6 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrigger;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
-import blusunrize.immersiveengineering.common.blocks.metal.ConveyorBlock;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyor;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ExtractConveyor;
@@ -28,15 +27,16 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
-import blusunrize.immersiveengineering.common.util.IEDamageSources;
-import blusunrize.immersiveengineering.common.util.IEDamageSources.IEDamageSource;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.*;
+import net.minecraft.advancements.critereon.ImpossibleTrigger;
+import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.critereon.ItemPredicate;
+import net.minecraft.advancements.critereon.PlacedBlockTrigger;
 import net.minecraft.advancements.critereon.PlacedBlockTrigger.TriggerInstance;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.data.DataGenerator;
@@ -47,9 +47,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.Block;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -229,10 +227,8 @@ public class Advancements extends AdvancementProvider
 
 			Advancement birthdayparty = AdvBuilder.child("secret_birthdayparty", upgradeRevolver).challenge().hidden()
 					.icon(Misc.ICON_BIRTHDAY).codeTriggered().loot("shader_masterwork").save(consumer);
-
 			Advancement drillbreak = AdvBuilder.child("secret_drillbreak", upgradeDrill).challenge().hidden()
 					.icon(Misc.ICON_DRILLBREAK).codeTriggered().loot("shader_masterwork").save(consumer);
-
 			Advancement ravenholm = AdvBuilder.child("secret_ravenholm", upgradeRailgun).challenge().hidden()
 					.icon(Misc.ICON_RAVENHOLM).codeTriggered().loot("shader_masterwork").save(consumer);
 		}

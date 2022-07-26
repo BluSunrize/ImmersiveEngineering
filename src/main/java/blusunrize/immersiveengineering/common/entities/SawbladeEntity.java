@@ -127,7 +127,7 @@ public class SawbladeEntity extends IEProjectileEntity
 		{
 			Player shooter = level.getPlayerByUUID(this.getShooterUUID());
 			if(shooter!=null)
-				Utils.unlockIEAdvancement(shooter, "main/secret_ravenholm");
+				Utils.unlockIEAdvancement(shooter, "tools/secret_ravenholm");
 		}
 	}
 
