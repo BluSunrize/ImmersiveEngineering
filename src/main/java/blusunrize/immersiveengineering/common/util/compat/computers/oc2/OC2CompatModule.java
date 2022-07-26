@@ -22,7 +22,7 @@ public class OC2CompatModule extends EarlyIECompatModule
 	public OC2CompatModule(BooleanValue enabled)
 	{
 		DeferredRegister<BlockDeviceProvider> register = DeferredRegister.create(
-				new ResourceLocation(API.MOD_ID, "block_device_providers"), Lib.MODID
+				new ResourceLocation(API.MOD_ID, "block_device_provider"), Lib.MODID
 		);
 		register.register("generic", () -> new DeviceProvider(enabled));
 		register.register(FMLJavaModLoadingContext.get().getModEventBus());
