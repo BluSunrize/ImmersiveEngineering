@@ -326,6 +326,7 @@ public final class IEItems
 		public static final ItemRegObject<FakeIconItem> ICON_LUCKY = icon("lucky");
 		public static final ItemRegObject<FakeIconItem> ICON_DRILLBREAK = icon("drillbreak");
 		public static final ItemRegObject<FakeIconItem> ICON_RAVENHOLM = icon("ravenholm");
+		public static final ItemRegObject<FakeIconItem> ICON_FRIED = icon("fried");
 
 		public static final ItemRegObject<PotionBucketItem> POTION_BUCKET = IEItems.register("potion_bucket", PotionBucketItem::new);
 

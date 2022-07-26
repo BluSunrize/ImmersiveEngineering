@@ -47,6 +47,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
@@ -159,6 +160,8 @@ public class Advancements extends AdvancementProvider
 			Advancement crusher = AdvBuilder.child("mb_crusher", steel).goal().multiblock(IEMultiblocks.CRUSHER).save(consumer);
 			Advancement excavator = AdvBuilder.child("mb_excavator", crusher).challenge().multiblock(IEMultiblocks.EXCAVATOR).save(consumer);
 
+			Advancement friedbird = AdvBuilder.child("secret_friedbird", wire).challenge().hidden()
+					.icon(Misc.ICON_FRIED).codeTriggered().loot("shader_masterwork").save(consumer);
 			Advancement luckofthedraw = AdvBuilder.child("secret_luckofthedraw", rtfm).challenge().hidden()
 					.icon(Misc.ICON_LUCKY).codeTriggered().loot("shader_masterwork").save(consumer);
 

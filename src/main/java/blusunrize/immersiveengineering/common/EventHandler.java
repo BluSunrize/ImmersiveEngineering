@@ -417,5 +417,7 @@ public class EventHandler
 		if(!(event.getEntityLiving() instanceof ServerPlayer serverPlayer))
 			return;
 		serverPlayer.awardStat(IEStats.WIRE_DEATHS);
+		if(serverPlayer.getAbilities().flying || serverPlayer.isFallFlying())
+			Utils.unlockIEAdvancement(serverPlayer, "main/secret_friedbird");
 	}
 }
