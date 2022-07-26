@@ -16,22 +16,18 @@
     "hidden": false
   },
   "criteria": {
-    "has_item": {
-      "trigger": "minecraft:inventory_changed",
+    "concrete_feet": {
+      "trigger": "minecraft:effects_changed",
       "conditions": {
-        "items": [
-          {
-            "items": [
-              "immersiveengineering:concrete_bucket"
-            ]
-          }
-        ]
+        "effects": {
+          "immersiveengineering:concrete_feet": {}
+        }
       }
     }
   },
   "requirements": [
     [
-      "has_item"
+      "concrete_feet"
     ]
   ]
 }

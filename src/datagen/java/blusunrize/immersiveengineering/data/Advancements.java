@@ -28,16 +28,15 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration
 import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDevices;
 import blusunrize.immersiveengineering.common.register.IEFluids;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
+import blusunrize.immersiveengineering.common.register.IEPotions;
+import blusunrize.immersiveengineering.common.register.IEPotions.IEPotion;
 import blusunrize.immersiveengineering.common.util.IELogger;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.Sets;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.advancements.*;
-import net.minecraft.advancements.critereon.ImpossibleTrigger;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.PlacedBlockTrigger;
+import net.minecraft.advancements.critereon.*;
 import net.minecraft.advancements.critereon.PlacedBlockTrigger.TriggerInstance;
 import net.minecraft.commands.CommandFunction;
 import net.minecraft.data.DataGenerator;
@@ -160,7 +159,10 @@ public class Advancements extends AdvancementProvider
 			Advancement squeezer = AdvBuilder.child("mb_squeezer", multiblocks).multiblock(IEMultiblocks.SQUEEZER).save(consumer);
 			Advancement fermenter = AdvBuilder.child("mb_fermenter", squeezer).multiblock(IEMultiblocks.FERMENTER).save(consumer);
 			Advancement mixer = AdvBuilder.child("mb_mixer", fermenter).multiblock(IEMultiblocks.MIXER).save(consumer);
-			Advancement concrete = AdvBuilder.child("liquid_concrete", mixer).getItem(IEFluids.CONCRETE.getBucket()).save(consumer);
+			Advancement concrete = AdvBuilder.child("liquid_concrete", mixer).icon(IEFluids.CONCRETE.getBucket())
+					.addCriterion("concrete_feet", EffectsChangedTrigger.TriggerInstance.hasEffects(
+							MobEffectsPredicate.effects().and(IEPotions.CONCRETE_FEET.get()))
+					).save(consumer);
 			Advancement refinery = AdvBuilder.child("mb_refinery", fermenter).multiblock(IEMultiblocks.REFINERY).save(consumer);
 			Advancement plastic = AdvBuilder.child("craft_duroplast", refinery).goal().getItem(Ingredients.DUROPLAST_PLATE).save(consumer);
 			Advancement dieselgen = AdvBuilder.child("mb_dieselgen", refinery).challenge().multiblock(IEMultiblocks.DIESEL_GENERATOR).save(consumer);
