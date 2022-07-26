@@ -47,6 +47,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.HashCache;
 import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -149,6 +150,16 @@ public class Advancements extends AdvancementProvider
 							EntityPredicate.Composite.ANY, EntityPredicate.Composite.ANY,
 							ItemPredicate.Builder.item().of(Misc.SHADER_BAG.get(Rarity.COMMON), Misc.SHADER_BAG.get(Rarity.UNCOMMON), Misc.SHADER_BAG.get(Rarity.RARE)).build())
 					).save(consumer);
+
+			CompoundTag displayTag = new CompoundTag();
+			displayTag.putString("Name", Component.Serializer.toJson(new TranslatableComponent("item.immersiveengineering.map_orevein")));
+			CompoundTag mapNBT = new CompoundTag();
+			mapNBT.put("display",displayTag);
+			Advancement oremap = AdvBuilder.child("buy_oremap", villagers).icon(Items.FILLED_MAP)
+				.addCriterion("buy_oremap", new TradeTrigger.TriggerInstance(
+						EntityPredicate.Composite.ANY, EntityPredicate.Composite.ANY,
+						ItemPredicate.Builder.item().of(Items.FILLED_MAP).hasNbt(mapNBT).build())
+				).save(consumer);
 
 			Advancement friedbird = AdvBuilder.child("secret_friedbird", wire).challenge().hidden()
 					.icon(Misc.ICON_FRIED).codeTriggered().loot("shader_masterwork").save(consumer);

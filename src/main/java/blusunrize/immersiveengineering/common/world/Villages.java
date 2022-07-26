@@ -241,9 +241,9 @@ public class Villages
 				trades.get(4).add(new ItemsForEmerald(WoodenDecoration.TREATED_POST, new PriceInterval(-3, -2), 4, 10));
 				trades.get(4).add(new EmeraldForItems(MetalDecoration.STEEL_POST, new PriceInterval(1, 2), 4, 20));
 				trades.get(4).add(new EmeraldForItems(MetalDecoration.ALU_POST, new PriceInterval(1, 3), 6, 15));
+				trades.get(4).add(new EmeraldForItems(StoneDecoration.CONCRETE_LEADED, new PriceInterval(2, 4), 10, 10));
 
 				trades.get(5).add(new OreveinMapForEmeralds());
-				trades.get(5).add(new EmeraldForItems(StoneDecoration.CONCRETE_LEADED, new PriceInterval(2, 6), 10, 10));
 			}
 			else if(MACHINIST.equals(ev.getType().getRegistryName()))
 			{

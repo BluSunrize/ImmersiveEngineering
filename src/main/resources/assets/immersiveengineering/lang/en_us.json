@@ -586,6 +586,8 @@
   "advancement.immersiveengineering.villager.desc": "Meet an Engineer Villager",
   "advancement.immersiveengineering.buy_shaderbag": "Fashion Spree",
   "advancement.immersiveengineering.buy_shaderbag.desc": "Buy a Shader Grabbag from the Outfitter",
+  "advancement.immersiveengineering.buy_oremap": "X Marks the Spot",
+  "advancement.immersiveengineering.buy_oremap.desc": "Buy a Mineral Deposit Map from the Structural Engineer",
   "advancement.immersiveengineering.multiblocks_root": "Multiblocks",
   "advancement.immersiveengineering.multiblocks_root.desc": "Large machines for large factories",
   "advancement.immersiveengineering.mb_improvedblastfurnace": "Next Level Blasting",
