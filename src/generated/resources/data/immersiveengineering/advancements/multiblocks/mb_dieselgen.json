@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/craft_sheetmetal",
+  "parent": "immersiveengineering:multiblocks/mb_refinery",
   "display": {
     "icon": {
-      "item": "immersiveengineering:tank"
+      "item": "immersiveengineering:diesel_generator"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.mb_tank"
+      "translate": "advancement.immersiveengineering.mb_dieselgen"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.mb_tank.desc"
+      "translate": "advancement.immersiveengineering.mb_dieselgen.desc"
     },
-    "frame": "task",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -19,7 +19,7 @@
     "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/sheetmetal_tank",
+        "multiblock": "immersiveengineering:multiblocks/diesel_generator",
         "item": {
           "items": [
             "immersiveengineering:hammer"

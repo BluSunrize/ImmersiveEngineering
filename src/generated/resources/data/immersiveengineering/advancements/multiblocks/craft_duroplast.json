@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/mb_mixer",
+  "parent": "immersiveengineering:multiblocks/mb_refinery",
   "display": {
     "icon": {
-      "item": "immersiveengineering:concrete_bucket"
+      "item": "immersiveengineering:plate_duroplast"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.liquid_concrete"
+      "translate": "advancement.immersiveengineering.craft_duroplast"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.liquid_concrete.desc"
+      "translate": "advancement.immersiveengineering.craft_duroplast.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:concrete_bucket"
+              "immersiveengineering:plate_duroplast"
             ]
           }
         ]

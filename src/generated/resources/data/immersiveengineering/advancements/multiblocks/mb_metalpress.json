@@ -1,14 +1,14 @@
 {
-  "parent": "immersiveengineering:main/make_steel",
+  "parent": "immersiveengineering:multiblocks/multiblocks_root",
   "display": {
     "icon": {
-      "item": "immersiveengineering:squeezer"
+      "item": "immersiveengineering:metal_press"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.mb_squeezer"
+      "translate": "advancement.immersiveengineering.mb_metalpress"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.mb_squeezer.desc"
+      "translate": "advancement.immersiveengineering.mb_metalpress.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -19,7 +19,7 @@
     "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/squeezer",
+        "multiblock": "immersiveengineering:multiblocks/metal_press",
         "item": {
           "items": [
             "immersiveengineering:hammer"

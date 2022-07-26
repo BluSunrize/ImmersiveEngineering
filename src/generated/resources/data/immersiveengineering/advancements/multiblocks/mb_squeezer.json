@@ -1,14 +1,14 @@
 {
-  "parent": "immersiveengineering:main/mb_fermenter",
+  "parent": "immersiveengineering:multiblocks/multiblocks_root",
   "display": {
     "icon": {
-      "item": "immersiveengineering:mixer"
+      "item": "immersiveengineering:squeezer"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.mb_mixer"
+      "translate": "advancement.immersiveengineering.mb_squeezer"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.mb_mixer.desc"
+      "translate": "advancement.immersiveengineering.mb_squeezer.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -19,7 +19,7 @@
     "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/mixer",
+        "multiblock": "immersiveengineering:multiblocks/squeezer",
         "item": {
           "items": [
             "immersiveengineering:hammer"

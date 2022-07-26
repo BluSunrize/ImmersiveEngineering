@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/mb_squeezer",
+  "parent": "immersiveengineering:multiblocks/multiblocks_root",
   "display": {
     "icon": {
-      "item": "immersiveengineering:fermenter"
+      "item": "immersiveengineering:crusher"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.mb_fermenter"
+      "translate": "advancement.immersiveengineering.mb_crusher"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.mb_fermenter.desc"
+      "translate": "advancement.immersiveengineering.mb_crusher.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -19,7 +19,7 @@
     "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/fermenter",
+        "multiblock": "immersiveengineering:multiblocks/crusher",
         "item": {
           "items": [
             "immersiveengineering:hammer"

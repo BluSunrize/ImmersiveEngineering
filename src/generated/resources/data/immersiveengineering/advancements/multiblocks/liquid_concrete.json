@@ -1,14 +1,14 @@
 {
-  "parent": "immersiveengineering:main/mb_metalpress",
+  "parent": "immersiveengineering:multiblocks/mb_mixer",
   "display": {
     "icon": {
-      "item": "immersiveengineering:sheetmetal_iron"
+      "item": "immersiveengineering:concrete_bucket"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.craft_sheetmetal"
+      "translate": "advancement.immersiveengineering.liquid_concrete"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.craft_sheetmetal.desc"
+      "translate": "advancement.immersiveengineering.liquid_concrete.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:sheetmetal_iron"
+              "immersiveengineering:concrete_bucket"
             ]
           }
         ]

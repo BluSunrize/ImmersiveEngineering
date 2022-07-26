@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/mb_refinery",
+  "parent": "immersiveengineering:multiblocks/mb_metalpress",
   "display": {
     "icon": {
-      "item": "immersiveengineering:plate_duroplast"
+      "item": "immersiveengineering:sheetmetal_iron"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.craft_duroplast"
+      "translate": "advancement.immersiveengineering.craft_sheetmetal"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.craft_duroplast.desc"
+      "translate": "advancement.immersiveengineering.craft_sheetmetal.desc"
     },
-    "frame": "goal",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -22,7 +22,7 @@
         "items": [
           {
             "items": [
-              "immersiveengineering:plate_duroplast"
+              "immersiveengineering:sheetmetal_iron"
             ]
           }
         ]

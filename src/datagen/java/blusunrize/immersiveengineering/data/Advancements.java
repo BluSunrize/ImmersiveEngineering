@@ -13,6 +13,7 @@ import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockAdvancementTrigger;
 import blusunrize.immersiveengineering.api.tool.BulletHandler;
 import blusunrize.immersiveengineering.api.wires.WireType;
+import blusunrize.immersiveengineering.common.blocks.metal.MetalScaffoldingType;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.BasicConveyor;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.DropConveyor;
 import blusunrize.immersiveengineering.common.blocks.metal.conveyors.ExtractConveyor;
@@ -100,7 +101,6 @@ public class Advancements extends AdvancementProvider
 		{
 			/* MAIN */
 			AdvBuilder.setPage("main");
-
 			Advancement rtfm = AdvBuilder.root("block/wooden_decoration/treated_wood").getItem(Tools.MANUAL).save(consumer);
 
 			// Conveyors
@@ -134,19 +134,30 @@ public class Advancements extends AdvancementProvider
 			// Treated Wood
 			Advancement creosote = AdvBuilder.child("creosote", cokeoven).getItem(IEFluids.CREOSOTE.getBucket()).save(consumer);
 			Advancement treatedWood = AdvBuilder.child("craft_treatedwood", creosote).getItem(WoodenDecoration.TREATED_WOOD.get(TreatedWoodStyles.HORIZONTAL)).save(consumer);
+			Advancement workbench = AdvBuilder.child("craft_workbench", treatedWood).getItem(WoodenDevices.WORKBENCH).save(consumer);
+
+			Advancement friedbird = AdvBuilder.child("secret_friedbird", wire).challenge().hidden()
+					.icon(Misc.ICON_FRIED).codeTriggered().loot("shader_masterwork").save(consumer);
+			Advancement luckofthedraw = AdvBuilder.child("secret_luckofthedraw", rtfm).challenge().hidden()
+					.icon(Misc.ICON_LUCKY).codeTriggered().loot("shader_masterwork").save(consumer);
+
+			/* MULTIBLOCKS */
+			AdvBuilder.setPage("multiblocks");
+			Advancement multiblocks = AdvBuilder.root("block/wooden_decoration/treated_wood").quiet().hasItems(Metals.INGOTS.get(EnumMetals.STEEL))
+					.icon(IEBlocks.MetalDecoration.STEEL_SCAFFOLDING.get(MetalScaffoldingType.STANDARD)).save(consumer);
 
 			// Furnace upgrades
-			Advancement improvedblastfurnace = AdvBuilder.child("mb_improvedblastfurnace", steel).multiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE).save(consumer);
+			Advancement improvedblastfurnace = AdvBuilder.child("mb_improvedblastfurnace", multiblocks).multiblock(IEMultiblocks.ADVANCED_BLAST_FURNACE).save(consumer);
 			Advancement arcfurnace = AdvBuilder.child("mb_arcfurnace", improvedblastfurnace).challenge().multiblock(IEMultiblocks.ARC_FURNACE).save(consumer);
 
 			// Sheetmetal
-			Advancement metalpress = AdvBuilder.child("mb_metalpress", steel).multiblock(IEMultiblocks.METAL_PRESS).save(consumer);
+			Advancement metalpress = AdvBuilder.child("mb_metalpress", multiblocks).multiblock(IEMultiblocks.METAL_PRESS).save(consumer);
 			Advancement sheetmetal = AdvBuilder.child("craft_sheetmetal", metalpress).getItem(IEBlocks.Metals.SHEETMETAL.get(EnumMetals.IRON)).save(consumer);
 			Advancement silo = AdvBuilder.child("mb_silo", sheetmetal).multiblock(IEMultiblocks.SILO).save(consumer);
 			Advancement tank = AdvBuilder.child("mb_tank", sheetmetal).multiblock(IEMultiblocks.SHEETMETAL_TANK).save(consumer);
 
 			// Fluid machines
-			Advancement squeezer = AdvBuilder.child("mb_squeezer", steel).multiblock(IEMultiblocks.SQUEEZER).save(consumer);
+			Advancement squeezer = AdvBuilder.child("mb_squeezer", multiblocks).multiblock(IEMultiblocks.SQUEEZER).save(consumer);
 			Advancement fermenter = AdvBuilder.child("mb_fermenter", squeezer).multiblock(IEMultiblocks.FERMENTER).save(consumer);
 			Advancement mixer = AdvBuilder.child("mb_mixer", fermenter).multiblock(IEMultiblocks.MIXER).save(consumer);
 			Advancement concrete = AdvBuilder.child("liquid_concrete", mixer).getItem(IEFluids.CONCRETE.getBucket()).save(consumer);
@@ -155,24 +166,15 @@ public class Advancements extends AdvancementProvider
 			Advancement dieselgen = AdvBuilder.child("mb_dieselgen", refinery).challenge().multiblock(IEMultiblocks.DIESEL_GENERATOR).save(consumer);
 
 			// Ores
-			Advancement crusher = AdvBuilder.child("mb_crusher", steel).goal().multiblock(IEMultiblocks.CRUSHER).save(consumer);
+			Advancement crusher = AdvBuilder.child("mb_crusher", multiblocks).goal().multiblock(IEMultiblocks.CRUSHER).save(consumer);
 			Advancement excavator = AdvBuilder.child("mb_excavator", crusher).challenge().multiblock(IEMultiblocks.EXCAVATOR).save(consumer);
-
-			Advancement friedbird = AdvBuilder.child("secret_friedbird", wire).challenge().hidden()
-					.icon(Misc.ICON_FRIED).codeTriggered().loot("shader_masterwork").save(consumer);
-			Advancement luckofthedraw = AdvBuilder.child("secret_luckofthedraw", rtfm).challenge().hidden()
-					.icon(Misc.ICON_LUCKY).codeTriggered().loot("shader_masterwork").save(consumer);
-
-			Advancement workbench = AdvBuilder.child("craft_workbench", rtfm).getItem(WoodenDevices.WORKBENCH).save(consumer);
-
 
 			/* TOOLS */
 			AdvBuilder.setPage("tools");
-
-			Advancement toolsRoot = AdvBuilder.root("block/wooden_decoration/treated_wood").quiet()
+			Advancement tools = AdvBuilder.root("block/wooden_decoration/treated_wood").quiet()
 					.getItem(WoodenDevices.WORKBENCH).save(consumer);
 
-			Advancement revolver = AdvBuilder.child("craft_revolver", toolsRoot).getItem(Weapons.REVOLVER).save(consumer);
+			Advancement revolver = AdvBuilder.child("craft_revolver", tools).getItem(Weapons.REVOLVER).save(consumer);
 
 			ItemStack upgradedRevolver = new ItemStack(Weapons.REVOLVER);
 			CompoundTag upgrades = new CompoundTag();
@@ -185,7 +187,7 @@ public class Advancements extends AdvancementProvider
 			Advancement wolfpack = AdvBuilder.child("craft_wolfpack", revolver).hidden()
 					.getItem(BulletHandler.getBulletItem(BulletItem.WOLFPACK)).save(consumer);
 
-			Advancement drill = AdvBuilder.child("craft_drill", toolsRoot).getItem(Tools.DRILL).save(consumer);
+			Advancement drill = AdvBuilder.child("craft_drill", tools).getItem(Tools.DRILL).save(consumer);
 
 			ItemStack upgradedDrill = new ItemStack(Tools.DRILL);
 			upgrades = new CompoundTag();
@@ -198,7 +200,7 @@ public class Advancements extends AdvancementProvider
 			Advancement upgradeDrill = AdvBuilder.child("upgrade_drill", drill).challenge()
 					.icon(upgradedDrill).codeTriggered().loot("shader_rare").save(consumer);
 
-			Advancement buzzsaw = AdvBuilder.child("craft_buzzsaw", toolsRoot).getItem(Tools.BUZZSAW).save(consumer);
+			Advancement buzzsaw = AdvBuilder.child("craft_buzzsaw", tools).getItem(Tools.BUZZSAW).save(consumer);
 
 			ItemStack upgradedBuzzsaw = new ItemStack(Tools.BUZZSAW);
 			upgrades = new CompoundTag();
@@ -211,11 +213,11 @@ public class Advancements extends AdvancementProvider
 			Advancement upgradeBuzzsaw = AdvBuilder.child("upgrade_buzzsaw", buzzsaw).challenge()
 					.icon(upgradedBuzzsaw).codeTriggered().loot("shader_rare").save(consumer);
 
-			Advancement skyhook = AdvBuilder.child("skyhook_distance", toolsRoot).icon(Misc.SKYHOOK).codeTriggered().save(consumer);
+			Advancement skyhook = AdvBuilder.child("skyhook_distance", tools).icon(Misc.SKYHOOK).codeTriggered().save(consumer);
 
-			Advancement chemthrower = AdvBuilder.child("craft_chemthrower", toolsRoot).getItem(Weapons.CHEMTHROWER).save(consumer);
+			Advancement chemthrower = AdvBuilder.child("craft_chemthrower", tools).getItem(Weapons.CHEMTHROWER).save(consumer);
 
-			Advancement railgun = AdvBuilder.child("craft_railgun", toolsRoot).getItem(Weapons.RAILGUN).save(consumer);
+			Advancement railgun = AdvBuilder.child("craft_railgun", tools).getItem(Weapons.RAILGUN).save(consumer);
 
 			ItemStack upgradedRailgun = new ItemStack(Weapons.RAILGUN);
 			upgrades = new CompoundTag();

@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/mb_improvedblastfurnace",
+  "parent": "immersiveengineering:multiblocks/craft_sheetmetal",
   "display": {
     "icon": {
-      "item": "immersiveengineering:arc_furnace"
+      "item": "immersiveengineering:silo"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.mb_arcfurnace"
+      "translate": "advancement.immersiveengineering.mb_silo"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.mb_arcfurnace.desc"
+      "translate": "advancement.immersiveengineering.mb_silo.desc"
     },
-    "frame": "challenge",
+    "frame": "task",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -19,7 +19,7 @@
     "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/arcfurnace",
+        "multiblock": "immersiveengineering:multiblocks/silo",
         "item": {
           "items": [
             "immersiveengineering:hammer"

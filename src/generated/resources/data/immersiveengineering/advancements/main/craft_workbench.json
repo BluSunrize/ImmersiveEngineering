@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/main_root",
+  "parent": "immersiveengineering:main/craft_treatedwood",
   "display": {
     "icon": {
       "item": "immersiveengineering:workbench"

@@ -1,14 +1,14 @@
 {
-  "parent": "immersiveengineering:main/mb_fermenter",
+  "parent": "immersiveengineering:multiblocks/multiblocks_root",
   "display": {
     "icon": {
-      "item": "immersiveengineering:refinery"
+      "item": "immersiveengineering:advanced_blast_furnace"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.mb_refinery"
+      "translate": "advancement.immersiveengineering.mb_improvedblastfurnace"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.mb_refinery.desc"
+      "translate": "advancement.immersiveengineering.mb_improvedblastfurnace.desc"
     },
     "frame": "task",
     "show_toast": true,
@@ -19,7 +19,7 @@
     "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/refinery",
+        "multiblock": "immersiveengineering:multiblocks/improved_blast_furnace",
         "item": {
           "items": [
             "immersiveengineering:hammer"

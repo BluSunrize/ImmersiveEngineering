@@ -1,16 +1,16 @@
 {
-  "parent": "immersiveengineering:main/make_steel",
+  "parent": "immersiveengineering:multiblocks/mb_improvedblastfurnace",
   "display": {
     "icon": {
-      "item": "immersiveengineering:metal_press"
+      "item": "immersiveengineering:arc_furnace"
     },
     "title": {
-      "translate": "advancement.immersiveengineering.mb_metalpress"
+      "translate": "advancement.immersiveengineering.mb_arcfurnace"
     },
     "description": {
-      "translate": "advancement.immersiveengineering.mb_metalpress.desc"
+      "translate": "advancement.immersiveengineering.mb_arcfurnace.desc"
     },
-    "frame": "task",
+    "frame": "challenge",
     "show_toast": true,
     "announce_to_chat": true,
     "hidden": false
@@ -19,7 +19,7 @@
     "form_multiblock": {
       "trigger": "immersiveengineering:multiblock_formed",
       "conditions": {
-        "multiblock": "immersiveengineering:multiblocks/metal_press",
+        "multiblock": "immersiveengineering:multiblocks/arcfurnace",
         "item": {
           "items": [
             "immersiveengineering:hammer"
