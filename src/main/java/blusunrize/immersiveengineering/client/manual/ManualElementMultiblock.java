@@ -28,7 +28,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
@@ -246,8 +245,7 @@ public class ManualElementMultiblock extends SpecialManualElements
 									blockRender.getModelRenderer().tesselateBlock(
 											structureWorld, blockRender.getBlockModel(state), state, pos, transform,
 											translucentFullbright, false, structureWorld.random, state.getSeed(pos),
-											// TODO do all models we care about return quads independent of RT?
-											overlay, modelData, RenderType.translucent()
+											overlay, modelData, null
 									);
 									transform.popPose();
 								}
