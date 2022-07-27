@@ -16,11 +16,13 @@ import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConvey
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
+import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
@@ -29,16 +31,20 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -62,13 +68,14 @@ import java.util.Set;
 import java.util.function.BiFunction;
 
 public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<BottlingMachineBlockEntity, BottlingMachineRecipe>
-		implements IConveyorAttachable, IBlockBounds, IEClientTickableBE
+		implements IConveyorAttachable, IBlockBounds, IEClientTickableBE, IHammerInteraction
 {
 	public static final float TRANSLATION_DISTANCE = 2.5f;
 	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
 	private static final float STANDARD_LIFT_TIME = 3.75f;
 	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_LIFT_TIME+STANDARD_TRANSPORT_TIME)
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8*FluidAttributes.BUCKET_VOLUME)};
+	private boolean allowPartialFill = false;
 
 	public BottlingMachineBlockEntity(BlockEntityType<BottlingMachineBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -80,6 +87,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	{
 		super.readCustomNBT(nbt, descPacket);
 		tanks[0].readFromNBT(nbt.getCompound("tank"));
+		allowPartialFill = nbt.getBoolean("allowPartialFill");
 	}
 
 	@Override
@@ -87,6 +95,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	{
 		super.writeCustomNBT(nbt, descPacket);
 		nbt.put("tank", tanks[0].writeToNBT(new CompoundTag()));
+		nbt.putBoolean("allowPartialFill", allowPartialFill);
 	}
 
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(this, () -> {
@@ -358,6 +367,27 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		return new Direction[0];
 	}
 
+	@Override
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
+	{
+		if(player.isCrouching())
+		{
+			if(!level.isClientSide)
+			{
+				BottlingMachineBlockEntity master = master();
+				if(master!=null)
+				{
+					master.allowPartialFill = !master.allowPartialFill;
+					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO
+							+"bottling_machine."+(master.allowPartialFill?"partialFill": "completeFill")));
+					this.updateMasterBlock(null, true);
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
 	public static class MultiblockProcessBottling extends MultiblockProcessInWorld<BottlingMachineRecipe>
 	{
 		private boolean isFilling = false;
@@ -399,6 +429,9 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 						ItemStack ret = FluidUtils.fillFluidContainer(bottlingMachine.tanks[0], filledContainer.get(0), ItemStack.EMPTY, null);
 						if(!ret.isEmpty())
 							filledContainer.set(0, ret);
+						// reduce process tick, if the item should be held in place
+						if(!bottlingMachine.allowPartialFill&&!FluidUtils.isFluidContainerFull(ret))
+							processTick--;
 					}
 					// normal recipes just consume the fluid at this point
 					else
