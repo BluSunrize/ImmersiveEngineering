@@ -1,7 +1,7 @@
 {
   "parent": "immersiveengineering:main/connect_wire",
   "criteria": {
-    "heater": {
+    "has_item": {
       "conditions": {
         "items": [
           {
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "heater"
+      "has_item"
     ]
   ]
 }

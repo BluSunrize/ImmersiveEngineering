@@ -1,7 +1,7 @@
 {
-  "parent": "immersiveengineering:main/make_steel",
+  "parent": "immersiveengineering:multiblocks/craft_sheetmetal",
   "criteria": {
-    "silo": {
+    "form_multiblock": {
       "conditions": {
         "item": {
           "items": [
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "silo"
+      "form_multiblock"
     ]
   ]
 }

@@ -1,23 +1,23 @@
 {
   "parent": "immersiveengineering:tools/tools_root",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "immersiveengineering:skyhook"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.skyhook_distance"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.skyhook_distance.desc"
     },
     "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:skyhook"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "code_trigger": {
-      "trigger": "minecraft:impossible"
+    "title": {
+      "translate": "advancement.immersiveengineering.skyhook_distance"
     }
   },
   "requirements": [

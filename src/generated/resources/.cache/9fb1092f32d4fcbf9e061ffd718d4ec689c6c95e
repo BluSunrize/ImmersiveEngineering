@@ -1,4 +1,4 @@
-// 1.19	2022-07-19T09:13:54.327887248	Recipes
+// 1.19	2022-07-27T09:47:45.749281532	Recipes
 7ccf8b2f4f413f7667689450565e5430a943d23a data/immersiveengineering/advancements/recipes/decorations/crafting/torch.json
 b79e3d9e28de7d73e18625fac2456b738b168fc9 data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick.json
 d518ed26bb86cca14c1400daadb64610c935cafc data/immersiveengineering/advancements/recipes/immersiveengineering/crafting/alloybrick_from_slab.json
@@ -1109,6 +1109,7 @@ a5a6d88e12c53bc1f3c23273b445db37316f9c22 data/immersiveengineering/recipes/craft
 88cc51486b9863b98b05be1ece4d70d8ee2da432 data/immersiveengineering/recipes/crafting/wooden_barrel.json
 755036a592dcaec99335002ecb53929c67a0b326 data/immersiveengineering/recipes/crafting/wooden_grip.json
 3c63b7ba85e6a5c4ef1c2a38e0daf9984fe04666 data/immersiveengineering/recipes/crafting/workbench.json
+00234f47ad747f806ebfdc829521f79c8ca55a74 data/immersiveengineering/recipes/crusher/amethyst.json
 5d28e9735620bdf1b061efa775dcda77aa3ae55e data/immersiveengineering/recipes/crusher/blaze_powder.json
 4a3a43193c5be9f7c9cf0497508c27faaeb14358 data/immersiveengineering/recipes/crusher/bone_meal.json
 85415cb90873b33063037841697177d1cb820682 data/immersiveengineering/recipes/crusher/clay.json
@@ -1478,3 +1479,4 @@ d727ccdb107534010e9474316812cd17fdc0a857 data/immersiveengineering/recipes/therm
 d81e807a108d066d24e8df12928087c9ac4b93b4 data/immersiveengineering/recipes/thermoelectric/packed_ice.json
 a007757b43068604124a1f985bb49900ca49afe6 data/immersiveengineering/recipes/thermoelectric/snow.json
 475deeba24502895e3794bb6445f2f716c528453 data/immersiveengineering/recipes/thermoelectric/uranium.json
+bcc538283f8093c283736eb41be655d458a85565 data/immersiveengineering/recipes/windmill/ocean.json

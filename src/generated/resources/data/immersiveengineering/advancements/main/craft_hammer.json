@@ -1,7 +1,7 @@
 {
-  "parent": "immersiveengineering:main/root",
+  "parent": "immersiveengineering:main/main_root",
   "criteria": {
-    "hammer": {
+    "has_item": {
       "conditions": {
         "items": [
           {
@@ -32,7 +32,7 @@
   },
   "requirements": [
     [
-      "hammer"
+      "has_item"
     ]
   ]
 }

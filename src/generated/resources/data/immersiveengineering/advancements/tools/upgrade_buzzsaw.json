@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/craft_buzzsaw",
+  "parent": "immersiveengineering:tools/craft_buzzsaw",
   "criteria": {
     "code_trigger": {
       "trigger": "minecraft:impossible"

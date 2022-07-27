@@ -1,7 +1,7 @@
 {
-  "parent": "immersiveengineering:main/make_steel",
+  "parent": "immersiveengineering:multiblocks/multiblocks_root",
   "criteria": {
-    "metalpress": {
+    "form_multiblock": {
       "conditions": {
         "item": {
           "items": [
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "metalpress"
+      "form_multiblock"
     ]
   ]
 }

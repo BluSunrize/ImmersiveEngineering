@@ -1,7 +1,7 @@
 {
-  "parent": "immersiveengineering:main/make_steel",
+  "parent": "immersiveengineering:multiblocks/mb_refinery",
   "criteria": {
-    "dieselgenerator": {
+    "form_multiblock": {
       "conditions": {
         "item": {
           "items": [
@@ -18,7 +18,7 @@
     "description": {
       "translate": "advancement.immersiveengineering.mb_dieselgen.desc"
     },
-    "frame": "goal",
+    "frame": "challenge",
     "hidden": false,
     "icon": {
       "item": "immersiveengineering:diesel_generator"
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "dieselgenerator"
+      "form_multiblock"
     ]
   ]
 }

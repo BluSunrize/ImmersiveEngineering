@@ -1,28 +1,28 @@
 {
   "parent": "immersiveengineering:multiblocks/mb_mixer",
-  "display": {
-    "icon": {
-      "item": "immersiveengineering:concrete_bucket"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.liquid_concrete"
-    },
-    "description": {
-      "translate": "advancement.immersiveengineering.liquid_concrete.desc"
-    },
-    "frame": "task",
-    "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
   "criteria": {
     "concrete_feet": {
-      "trigger": "minecraft:effects_changed",
       "conditions": {
         "effects": {
           "immersiveengineering:concrete_feet": {}
         }
-      }
+      },
+      "trigger": "minecraft:effects_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": true,
+    "description": {
+      "translate": "advancement.immersiveengineering.liquid_concrete.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:concrete_bucket"
+    },
+    "show_toast": true,
+    "title": {
+      "translate": "advancement.immersiveengineering.liquid_concrete"
     }
   },
   "requirements": [

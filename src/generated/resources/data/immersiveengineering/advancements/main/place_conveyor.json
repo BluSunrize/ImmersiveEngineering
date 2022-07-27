@@ -1,37 +1,37 @@
 {
-  "parent": "immersiveengineering:main/root",
+  "parent": "immersiveengineering:main/main_root",
   "criteria": {
-    "basic": {
+    "conveyor_basic": {
       "conditions": {
         "block": "immersiveengineering:conveyor_basic"
       },
       "trigger": "minecraft:placed_block"
     },
-    "dropper": {
+    "conveyor_dropper": {
       "conditions": {
         "block": "immersiveengineering:conveyor_dropper"
       },
       "trigger": "minecraft:placed_block"
     },
-    "extract": {
+    "conveyor_extract": {
       "conditions": {
         "block": "immersiveengineering:conveyor_extract"
       },
       "trigger": "minecraft:placed_block"
     },
-    "redstone": {
+    "conveyor_redstone": {
       "conditions": {
         "block": "immersiveengineering:conveyor_redstone"
       },
       "trigger": "minecraft:placed_block"
     },
-    "splitter": {
+    "conveyor_splitter": {
       "conditions": {
         "block": "immersiveengineering:conveyor_splitter"
       },
       "trigger": "minecraft:placed_block"
     },
-    "vertical": {
+    "conveyor_vertical": {
       "conditions": {
         "block": "immersiveengineering:conveyor_vertical"
       },
@@ -55,12 +55,12 @@
   },
   "requirements": [
     [
-      "basic",
-      "dropper",
-      "extract",
-      "redstone",
-      "splitter",
-      "vertical"
+      "conveyor_basic",
+      "conveyor_dropper",
+      "conveyor_extract",
+      "conveyor_redstone",
+      "conveyor_splitter",
+      "conveyor_vertical"
     ]
   ]
 }

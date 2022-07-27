@@ -1,12 +1,12 @@
 {
-  "parent": "immersiveengineering:main/craft_workbench",
+  "parent": "immersiveengineering:main/mb_cokeoven",
   "criteria": {
-    "skyhook": {
+    "has_item": {
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:skyhook"
+              "immersiveengineering:creosote_bucket"
             ]
           }
         ]
@@ -17,21 +17,21 @@
   "display": {
     "announce_to_chat": true,
     "description": {
-      "translate": "advancement.immersiveengineering.craft_skyhook.desc"
+      "translate": "advancement.immersiveengineering.creosote.desc"
     },
     "frame": "task",
     "hidden": false,
     "icon": {
-      "item": "immersiveengineering:skyhook"
+      "item": "immersiveengineering:creosote_bucket"
     },
     "show_toast": true,
     "title": {
-      "translate": "advancement.immersiveengineering.craft_skyhook"
+      "translate": "advancement.immersiveengineering.creosote"
     }
   },
   "requirements": [
     [
-      "skyhook"
+      "has_item"
     ]
   ]
 }

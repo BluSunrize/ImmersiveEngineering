@@ -1,7 +1,7 @@
 {
-  "parent": "immersiveengineering:main/craft_workbench",
+  "parent": "immersiveengineering:tools/tools_root",
   "criteria": {
-    "railgun": {
+    "has_item": {
       "conditions": {
         "items": [
           {
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "railgun"
+      "has_item"
     ]
   ]
 }

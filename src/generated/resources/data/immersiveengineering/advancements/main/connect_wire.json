@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/root",
+  "parent": "immersiveengineering:main/main_root",
   "criteria": {
     "code_trigger": {
       "trigger": "minecraft:impossible"

@@ -1,4 +1,4 @@
-// 1.19	2022-07-19T09:13:54.319188105	Item models
+// 1.19	2022-07-27T09:47:45.740281459	Item models
 88d3c4ffa914af5a3f1ace93ca44a7a9de73bd8f assets/immersiveengineering/models/item/acetaldehyde_bucket.json
 9ccc4d7a0d7b18dbb71d95f07395ccc9db5454d5 assets/immersiveengineering/models/item/advanced_blast_furnace.json
 52c332b23e9b84d62d49c7b4e70bfd1193037cc7 assets/immersiveengineering/models/item/alloy_smelter.json
@@ -107,6 +107,7 @@ ab68adcd0f2c58faf70e125d531b13f967f93a16 assets/immersiveengineering/models/item
 6d3a615a4834c49bf8f45f0b797f01942719fd7b assets/immersiveengineering/models/item/excavator.json
 36122171fd402be67faf1a954fbb4eb8ee105b47 assets/immersiveengineering/models/item/fake_icon_birthday.json
 25e70f5d553e763485122846ae3086352a97662c assets/immersiveengineering/models/item/fake_icon_drillbreak.json
+b5397bc01238660585f19cd8389ec50dbb2ae8b8 assets/immersiveengineering/models/item/fake_icon_fried.json
 d13a73268908a3861b58462bcc2c05bda2f881b2 assets/immersiveengineering/models/item/fake_icon_lucky.json
 dd889c9ab5db8e4ba89b76aee0a3d7f4d6dc6307 assets/immersiveengineering/models/item/fake_icon_ravenholm.json
 65ffa1a0c258ffbdd4bc86514a1634865bce09f3 assets/immersiveengineering/models/item/feedthrough.json

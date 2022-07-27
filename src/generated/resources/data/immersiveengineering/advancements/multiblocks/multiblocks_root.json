@@ -1,23 +1,6 @@
 {
-  "display": {
-    "icon": {
-      "item": "immersiveengineering:steel_scaffolding_standard"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.multiblocks_root"
-    },
-    "description": {
-      "translate": "advancement.immersiveengineering.multiblocks_root.desc"
-    },
-    "frame": "task",
-    "show_toast": false,
-    "announce_to_chat": false,
-    "hidden": false,
-    "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png"
-  },
   "criteria": {
     "has_item": {
-      "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
@@ -26,7 +9,24 @@
             ]
           }
         ]
-      }
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "display": {
+    "announce_to_chat": false,
+    "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png",
+    "description": {
+      "translate": "advancement.immersiveengineering.multiblocks_root.desc"
+    },
+    "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:steel_scaffolding_standard"
+    },
+    "show_toast": false,
+    "title": {
+      "translate": "advancement.immersiveengineering.multiblocks_root"
     }
   },
   "requirements": [

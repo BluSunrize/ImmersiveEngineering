@@ -1,7 +1,7 @@
 {
   "parent": "immersiveengineering:main/mb_blastfurnace",
   "criteria": {
-    "steel": {
+    "has_item": {
       "conditions": {
         "items": [
           {
@@ -19,7 +19,7 @@
     "description": {
       "translate": "advancement.immersiveengineering.make_steel.desc"
     },
-    "frame": "task",
+    "frame": "goal",
     "hidden": false,
     "icon": {
       "item": "immersiveengineering:ingot_steel"
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "steel"
+      "has_item"
     ]
   ]
 }

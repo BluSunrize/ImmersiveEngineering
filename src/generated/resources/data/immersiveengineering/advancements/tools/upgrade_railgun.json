@@ -1,5 +1,5 @@
 {
-  "parent": "immersiveengineering:main/craft_railgun",
+  "parent": "immersiveengineering:tools/craft_railgun",
   "criteria": {
     "code_trigger": {
       "trigger": "minecraft:impossible"

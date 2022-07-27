@@ -1,23 +1,23 @@
 {
   "parent": "immersiveengineering:main/craft_pump",
+  "criteria": {
+    "code_trigger": {
+      "trigger": "minecraft:impossible"
+    }
+  },
   "display": {
-    "icon": {
-      "item": "immersiveengineering:cloche"
-    },
-    "title": {
-      "translate": "advancement.immersiveengineering.chorus_cloche"
-    },
+    "announce_to_chat": true,
     "description": {
       "translate": "advancement.immersiveengineering.chorus_cloche.desc"
     },
     "frame": "task",
+    "hidden": false,
+    "icon": {
+      "item": "immersiveengineering:cloche"
+    },
     "show_toast": true,
-    "announce_to_chat": true,
-    "hidden": false
-  },
-  "criteria": {
-    "code_trigger": {
-      "trigger": "minecraft:impossible"
+    "title": {
+      "translate": "advancement.immersiveengineering.chorus_cloche"
     }
   },
   "requirements": [

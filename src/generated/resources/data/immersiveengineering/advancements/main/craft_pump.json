@@ -1,7 +1,7 @@
 {
-  "parent": "immersiveengineering:main/connect_wire",
+  "parent": "immersiveengineering:main/craft_heater",
   "criteria": {
-    "pump": {
+    "has_item": {
       "conditions": {
         "items": [
           {
@@ -31,7 +31,7 @@
   },
   "requirements": [
     [
-      "pump"
+      "has_item"
     ]
   ]
 }

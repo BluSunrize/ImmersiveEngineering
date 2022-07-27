@@ -1,7 +1,7 @@
 {
-  "parent": "immersiveengineering:main/make_steel",
+  "parent": "immersiveengineering:multiblocks/mb_improvedblastfurnace",
   "criteria": {
-    "arcfurnace": {
+    "form_multiblock": {
       "conditions": {
         "item": {
           "items": [
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "arcfurnace"
+      "form_multiblock"
     ]
   ]
 }

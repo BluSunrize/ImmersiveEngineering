@@ -1,7 +1,7 @@
 {
-  "parent": "immersiveengineering:main/craft_hammer",
+  "parent": "immersiveengineering:main/mb_cokeoven",
   "criteria": {
-    "blastfurnace": {
+    "form_multiblock": {
       "conditions": {
         "item": {
           "items": [
@@ -18,7 +18,7 @@
     "description": {
       "translate": "advancement.immersiveengineering.mb_blastfurnace.desc"
     },
-    "frame": "goal",
+    "frame": "task",
     "hidden": false,
     "icon": {
       "item": "immersiveengineering:blast_furnace"
@@ -30,7 +30,7 @@
   },
   "requirements": [
     [
-      "blastfurnace"
+      "form_multiblock"
     ]
   ]
 }

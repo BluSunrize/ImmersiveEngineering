@@ -1,6 +1,6 @@
 {
   "criteria": {
-    "manual": {
+    "has_item": {
       "conditions": {
         "items": [
           {
@@ -17,7 +17,7 @@
     "announce_to_chat": true,
     "background": "immersiveengineering:textures/block/wooden_decoration/treated_wood.png",
     "description": {
-      "translate": "advancement.immersiveengineering.root.desc"
+      "translate": "advancement.immersiveengineering.main_root.desc"
     },
     "frame": "task",
     "hidden": false,
@@ -26,12 +26,12 @@
     },
     "show_toast": true,
     "title": {
-      "translate": "advancement.immersiveengineering.root"
+      "translate": "advancement.immersiveengineering.main_root"
     }
   },
   "requirements": [
     [
-      "manual"
+      "has_item"
     ]
   ]
 }
