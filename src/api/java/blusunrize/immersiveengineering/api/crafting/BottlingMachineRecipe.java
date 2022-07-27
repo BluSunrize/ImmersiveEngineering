@@ -47,6 +47,7 @@ public class BottlingMachineRecipe extends MultiblockRecipe
 		);
 		this.input = input;
 		this.fluidInput = fluidInput;
+		setTimeAndEnergy(60, 480);
 
 		setInputList(Lists.newArrayList(this.input));
 		this.fluidInputList = Lists.newArrayList(this.fluidInput);

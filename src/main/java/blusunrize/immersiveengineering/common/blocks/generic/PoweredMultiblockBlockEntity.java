@@ -382,7 +382,7 @@ public abstract class PoweredMultiblockBlockEntity<T extends PoweredMultiblockBl
 			<T extends PoweredMultiblockBlockEntity<T, R>, R extends MultiblockRecipe>
 			implements IItemHandlerModifiable
 	{
-		T multiblock;
+		protected T multiblock;
 		float transformationPoint = .5f;
 		boolean doProcessStacking = false;
 

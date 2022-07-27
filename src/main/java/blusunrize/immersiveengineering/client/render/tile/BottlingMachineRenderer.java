@@ -17,7 +17,7 @@ import blusunrize.immersiveengineering.client.utils.GuiHelper;
 import blusunrize.immersiveengineering.client.utils.IERenderTypes;
 import blusunrize.immersiveengineering.client.utils.RenderUtils;
 import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity;
-import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.BottlingProcess;
+import blusunrize.immersiveengineering.common.blocks.metal.BottlingMachineBlockEntity.MultiblockProcessBottling;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Multiblocks;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -63,20 +63,20 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		bufferIn = BERenderUtils.mirror(te, matrixStack, bufferIn);
 
 		//Item Displacement
-		float[][] itemDisplays = new float[te.bottlingProcessQueue.size()][];
+		float[][] itemDisplays = new float[te.processQueue.size()][];
 		//Animations
 		float lift = 0;
 
 		VertexConsumer solidBuilder = bufferIn.getBuffer(RenderType.solid());
 		for(int i = 0; i < itemDisplays.length; i++)
 		{
-			BottlingProcess process = te.bottlingProcessQueue.get(i);
+			MultiblockProcessBottling process = (MultiblockProcessBottling)te.processQueue.get(i);
 			if(process==null)
 				continue;
-			float processMaxTicks = process.maxProcessTick;
+			float processMaxTicks = process.getMaxTicks(te.getLevel());
 			float transportTime = BottlingMachineBlockEntity.getTransportTime(processMaxTicks);
 			float liftTime = BottlingMachineBlockEntity.getLiftTime(processMaxTicks);
-			float fProcess = process.processTick+(te.shouldRenderAsActive()?partialTicks: 0);
+			float fProcess = process.processTick;
 
 			float itemX;
 			float itemY = 0;
@@ -157,21 +157,17 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 		for(int i = 0; i < itemDisplays.length; i++)
 			if(itemDisplays[i]!=null)
 			{
-				BottlingProcess process = te.bottlingProcessQueue.get(i);
+				MultiblockProcessBottling process = (MultiblockProcessBottling)te.processQueue.get(i);
 				if(process==null)
 					continue;
 
-				int s = process.items.size();
-				List<ItemStack> display = itemDisplays[i][4]==0||s<=1?process.items.subList(0, 1): process.items.subList(1,s);
+				List<ItemStack> display = process.getDisplayItem(te.getLevel());
 				scale = .4375f;
 
 				matrixStack.translate(itemDisplays[i][1], itemDisplays[i][2], itemDisplays[i][3]);
 				matrixStack.scale(scale, scale, scale);
 
-				if(itemDisplays[i][4]==0)
-					ClientUtils.mc().getItemRenderer().renderStatic(process.items.get(0), TransformType.FIXED,
-							combinedLightIn, combinedOverlayIn, matrixStack, bufferIn, 0);
-				else if(itemDisplays[i][4]==1||!ClientUtils.mc().getMainRenderTarget().isStencilEnabled())
+				if(!ClientUtils.mc().getMainRenderTarget().isStencilEnabled())
 				{
 					for(ItemStack displayS : display)
 						ClientUtils.mc().getItemRenderer().renderStatic(displayS, TransformType.FIXED,
@@ -181,7 +177,7 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 				{
 					float h0 = -.5f;
 					float h1 = h0+itemDisplays[i][4];
-					renderItemPart(bufferIn, matrixStack, process.items.get(0), h0, h1, combinedLightIn, combinedOverlayIn, 0);
+					renderItemPart(bufferIn, matrixStack, process.inputItems.get(0), h0, h1, combinedLightIn, combinedOverlayIn, 0);
 					for(ItemStack displayS : display)
 						renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1);
 				}
