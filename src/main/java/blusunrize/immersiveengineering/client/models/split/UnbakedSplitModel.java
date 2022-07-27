@@ -55,7 +55,7 @@ public class UnbakedSplitModel implements IUnbakedGeometry<UnbakedSplitModel>
 					(ICacheKeyProvider<?>)bakedBase, parts, modelTransform, size
 			);
 		else
-			return new BakedBasicSplitModel(bakedBase, parts, modelTransform, size);
+			return new BakedBasicSplitModel(bakedBase, parts, modelTransform, size, owner.getTransforms());
 	}
 
 	@Override

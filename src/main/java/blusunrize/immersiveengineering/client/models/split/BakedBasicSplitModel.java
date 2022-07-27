@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.api.utils.ResettableLazy;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
@@ -38,10 +39,14 @@ public class BakedBasicSplitModel extends AbstractSplitModel<BakedModel>
 	}
 
 	private final ResettableLazy<Map<Vec3i, List<BakedQuad>>> splitModels;
+	private final ItemTransforms itemTransforms;
 
-	public BakedBasicSplitModel(BakedModel base, Set<Vec3i> parts, ModelState transform, Vec3i size)
+	public BakedBasicSplitModel(
+			BakedModel base, Set<Vec3i> parts, ModelState transform, Vec3i size, ItemTransforms itemTransforms
+	)
 	{
 		super(base, size);
+		this.itemTransforms = itemTransforms;
 		this.splitModels = new ResettableLazy<>(() -> {
 			List<BakedQuad> quads = base.getQuads(null, null, ApiUtils.RANDOM_SOURCE, ModelData.EMPTY, null);
 			return split(quads, parts, transform);
@@ -61,5 +66,12 @@ public class BakedBasicSplitModel extends AbstractSplitModel<BakedModel>
 			return splitModels.get().getOrDefault(offset, ImmutableList.of());
 		else
 			return base.getQuads(state, side, rand, extraData, layer);
+	}
+
+	@Nonnull
+	@Override
+	public ItemTransforms getTransforms()
+	{
+		return itemTransforms;
 	}
 }
