@@ -21,7 +21,7 @@ import java.util.List;
 
 public class RevolverpartItem extends IEBaseItem
 {
-	public RevolverpartItem(String name)
+	public RevolverpartItem()
 	{
 		super(new Properties().stacksTo(1));
 	}

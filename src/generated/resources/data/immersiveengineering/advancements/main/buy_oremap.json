@@ -1,0 +1,36 @@
+{
+  "parent": "immersiveengineering:main/villager",
+  "display": {
+    "icon": {
+      "item": "minecraft:filled_map"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.buy_oremap"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.buy_oremap.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "buy_oremap": {
+      "trigger": "minecraft:villager_trade",
+      "conditions": {
+        "item": {
+          "items": [
+            "minecraft:filled_map"
+          ],
+          "nbt": "{display:{Name:\u0027{\"translate\":\"item.immersiveengineering.map_orevein\"}\u0027}}"
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "buy_oremap"
+    ]
+  ]
+}

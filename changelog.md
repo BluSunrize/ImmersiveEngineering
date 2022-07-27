@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.1.0-pre
+##### Version 1.18.2-8.1.0-150
 - The Plastics update! (BluSunrize)
     - New fluids:
         - Acetaldehyde, made from ethanol in the refinery with a silver plate catalyst
@@ -10,6 +10,45 @@
         - Textures courtesy of SteelBlue8!
     - Fiberboard blocks
         - Made from sawdust and resin, they can be used like wooden planks in all recipes!
+- The Manual got an update! (BluSunrize)
+    - Early furnaces and workbenches have their own category
+    - Some entries got re-written / clarified
+    - Bottling and Mixing recipes now display in the manual
+- The Advancements got overhauled! (BluSunrize)
+    - IE now has 54 different advancements
+    - Some boring ones were removed
+    - Some cool new ones were added
+    - A new *secret* advancement got added too
+    - Advancements have been split into 3 different tabs to make them more readable
+- Add IMPLY and NIMPLY logic circuits (sashafiesta)
+- Add a bunch of extra tools to the toolbox (BluSunrize & Silfryi)
+    - Spyglass, Clock, Compass, Fishing Rod
+    - Engineer's Manual, various wrenches from other mods
+- Remove unused config options (Malte)
+- Add a new tag to blacklist certain armor for attaching the Accumulator Backpack (Malte)
+    - "immersiveengineering:powerpack/forbid_attach"
+- Add new tags to control which mods drop shader grabbags (BluSunrize)
+    - By default, any mob with 100 or more HP (Wither, Ender Dragon, Warden) will drop a bag
+    - "immersiveengineering:shaderbag/blacklist" is for EntityTypes that shouldn't drop a bag despite having so much health
+        - The Wither is on that blacklist by default, but it can be removed from it with a data pack
+    - "immersiveengineering:shaderbag/whitelist" is for EntityTypes that should drop a bag even if their health is lower than 100
+        - This list is empty by default, can be added to with a data pack
+- Allow items to be added to the toolbox by right-clicking, just like vanilla bundles (BluSunrize)
+- Use ToolActions to identify tools for the toolbox, adding support for TConstruct items (BluSunrize)
+- Add a recipe to crush amethyst blocks into crystals (BluSunrize)
+- Add a new recipe type for adding biome-based modifiers to the windmill (BluSunrize)
+    - By default, windmills now spin 15% faster in ocean biomes, as an example implementation
+    - The rest is up to data pack makers!
+- Fix crashes as a result of empty potion recipes (Malte)
+- Fix crashes triggered by wires burning (Malte)
+- Reduce size of share tag for wooden crates (Malte)
+- Fix arc recycling tags accidentally using "forge" namespace instead of "immersiveengineering" (BluSunrize)
+- Fix stackable fluid containers duplicating when crafting treated wood (BluSunrize)
+- Fix dupe bug when repairing hammers or wirecutters (BluSunrize)
+- Fix revolver pieces from villager trades not showing their perks (BluSunrize)
+- Fix "inventory" label being poorly positioned in various GUIs (BluSunrize)
+- Fix OC2 compat using an old name (leedagee)
+- Translations Added/Updated: ru_ru (Smollet777)
 
 ##### Version 1.18.2-8.0.2-149
 - Re-add compat for Craftweaker (Malte)

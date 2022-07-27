@@ -45,6 +45,7 @@ public class MixerScreen extends IEContainerScreen<MixerContainer>
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 		this.imageHeight = 167;
+		this.inventoryLabelY = this.imageHeight-91;
 	}
 
 	@Nonnull

@@ -1,0 +1,36 @@
+{
+  "parent": "immersiveengineering:multiblocks/mb_fermenter",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:refinery"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_refinery"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_refinery.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "form_multiblock": {
+      "trigger": "immersiveengineering:multiblock_formed",
+      "conditions": {
+        "multiblock": "immersiveengineering:multiblocks/refinery",
+        "item": {
+          "items": [
+            "immersiveengineering:hammer"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "form_multiblock"
+    ]
+  ]
+}

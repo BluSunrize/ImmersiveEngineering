@@ -4,6 +4,7 @@
     "immersiveengineering:chemthrower",
     "immersiveengineering:revolver",
     "immersiveengineering:speedloader",
+    "immersiveengineering:manual",
     "immersiveengineering:wirecutter",
     "immersiveengineering:buzzsaw",
     "immersiveengineering:drill",
@@ -12,6 +13,20 @@
     "immersiveengineering:survey_tools",
     "immersiveengineering:voltmeter",
     "immersiveengineering:earmuffs",
-    "immersiveengineering:skyhook"
+    "immersiveengineering:skyhook",
+    "#forge:tools",
+    {
+      "id": "#forge:buckets/empty",
+      "required": false
+    },
+    {
+      "id": "#forge:tools/wrench",
+      "required": false
+    },
+    "minecraft:spyglass",
+    "minecraft:clock",
+    "minecraft:compass",
+    "minecraft:flint_and_steel",
+    "minecraft:fishing_rod"
   ]
 }

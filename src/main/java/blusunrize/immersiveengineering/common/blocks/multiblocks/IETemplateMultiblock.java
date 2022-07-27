@@ -130,6 +130,7 @@ public abstract class IETemplateMultiblock extends TemplateMultiblock
 		return baseState.get().getName();
 	}
 
+	@Override
 	public Block getBlock()
 	{
 		return baseState.get();

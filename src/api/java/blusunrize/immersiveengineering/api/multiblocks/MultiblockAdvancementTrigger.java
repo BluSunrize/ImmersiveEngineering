@@ -6,9 +6,9 @@
  * Details can be found in the license file in the root folder of this project
  */
 
-package blusunrize.immersiveengineering.common.util.advancements;
+package blusunrize.immersiveengineering.api.multiblocks;
 
-import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.multiblocks.MultiblockHandler.IMultiblock;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -30,9 +30,9 @@ import java.util.Set;
 /**
  * @author BluSunrize - 04.07.2017
  */
-public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Instance>
+public class MultiblockAdvancementTrigger implements CriterionTrigger<MultiblockAdvancementTrigger.Instance>
 {
-	private static final ResourceLocation ID = new ResourceLocation(ImmersiveEngineering.MODID, "multiblock_formed");
+	private static final ResourceLocation ID = new ResourceLocation(Lib.MODID, "multiblock_formed");
 	private final Map<PlayerAdvancements, Listeners> listeners = Maps.newHashMap();
 
 	@Override
@@ -42,21 +42,21 @@ public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Ins
 	}
 
 	@Override
-	public void addPlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
+	public void addPlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener)
 	{
-		MultiblockTrigger.Listeners listeners = this.listeners.get(playerAdvancements);
+		MultiblockAdvancementTrigger.Listeners listeners = this.listeners.get(playerAdvancements);
 		if(listeners==null)
 		{
-			listeners = new MultiblockTrigger.Listeners(playerAdvancements);
+			listeners = new MultiblockAdvancementTrigger.Listeners(playerAdvancements);
 			this.listeners.put(playerAdvancements, listeners);
 		}
 		listeners.add(listener);
 	}
 
 	@Override
-	public void removePlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
+	public void removePlayerListener(PlayerAdvancements playerAdvancements, CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener)
 	{
-		MultiblockTrigger.Listeners listeners = this.listeners.get(playerAdvancements);
+		MultiblockAdvancementTrigger.Listeners listeners = this.listeners.get(playerAdvancements);
 
 		if(listeners!=null)
 		{
@@ -76,7 +76,7 @@ public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Ins
 	public Instance createInstance(JsonObject json, DeserializationContext context)
 	{
 		EntityPredicate.Composite and = EntityPredicate.Composite.fromJson(json, "player", context);
-		return new MultiblockTrigger.Instance(
+		return new MultiblockAdvancementTrigger.Instance(
 				new ResourceLocation(GsonHelper.getAsString(json, "multiblock")),
 				ItemPredicate.fromJson(json.get("item")),
 				and
@@ -85,7 +85,7 @@ public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Ins
 
 	public void trigger(ServerPlayer player, IMultiblock multiblock, ItemStack hammer)
 	{
-		MultiblockTrigger.Listeners listeners = this.listeners.get(player.getAdvancements());
+		MultiblockAdvancementTrigger.Listeners listeners = this.listeners.get(player.getAdvancements());
 		if(listeners!=null)
 			listeners.trigger(multiblock, hammer);
 	}
@@ -102,7 +102,7 @@ public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Ins
 
 		public Instance(ResourceLocation multiblock, ItemPredicate hammer, Composite and)
 		{
-			super(MultiblockTrigger.ID, and);
+			super(MultiblockAdvancementTrigger.ID, and);
 			this.multiblock = multiblock;
 			this.hammer = hammer;
 		}
@@ -137,12 +137,12 @@ public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Ins
 			return this.listeners.isEmpty();
 		}
 
-		public void add(CriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
+		public void add(CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener)
 		{
 			this.listeners.add(listener);
 		}
 
-		public void remove(CriterionTrigger.Listener<MultiblockTrigger.Instance> listener)
+		public void remove(CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener)
 		{
 			this.listeners.remove(listener);
 		}
@@ -150,7 +150,7 @@ public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Ins
 		public void trigger(IMultiblock multiblock, ItemStack hammer)
 		{
 			List<Listener<Instance>> list = null;
-			for(CriterionTrigger.Listener<MultiblockTrigger.Instance> listener : this.listeners)
+			for(CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener : this.listeners)
 				if(listener.getTriggerInstance().test(multiblock, hammer))
 				{
 					if(list==null)
@@ -159,7 +159,7 @@ public class MultiblockTrigger implements CriterionTrigger<MultiblockTrigger.Ins
 				}
 
 			if(list!=null)
-				for(CriterionTrigger.Listener<MultiblockTrigger.Instance> listener1 : list)
+				for(CriterionTrigger.Listener<MultiblockAdvancementTrigger.Instance> listener1 : list)
 					listener1.run(this.playerAdvancements);
 		}
 	}

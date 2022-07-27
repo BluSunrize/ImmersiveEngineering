@@ -13,6 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
@@ -107,9 +108,9 @@ public class IETags
 	public static final TagKey<Item> hoes = createItemWrapper(forgeLoc("tools/hoes"));
 	public static final TagKey<Item> powerpackForbidAttach = createItemWrapper(rl("powerpack/forbid_attach"));
 
-	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(forgeLoc("recycling/ignored_components"));
-	public static final TagKey<Item> recyclingWhitelist = createItemWrapper(forgeLoc("recycling/whitelist"));
-	public static final TagKey<Item> recyclingBlacklist = createItemWrapper(forgeLoc("recycling/blacklist"));
+	public static final TagKey<Item> recyclingIgnoredComponents = createItemWrapper(rl("recycling/ignored_components"));
+	public static final TagKey<Item> recyclingWhitelist = createItemWrapper(rl("recycling/whitelist"));
+	public static final TagKey<Item> recyclingBlacklist = createItemWrapper(rl("recycling/blacklist"));
 
 	public static final TagKey<Fluid> fluidCreosote = createFluidWrapper(forgeLoc("creosote"));
 	public static final TagKey<Fluid> fluidPlantoil = createFluidWrapper(forgeLoc("plantoil"));
@@ -122,6 +123,9 @@ public class IETags
 	public static final TagKey<Fluid> fluidAcetaldehyde = createFluidWrapper(forgeLoc("acetaldehyde"));
 	public static final TagKey<Fluid> fluidResin = createFluidWrapper(forgeLoc("phenolic_resin"));
 	public static final TagKey<Fluid> drillFuel = createFluidWrapper(rl("drill_fuel"));
+
+	public static final TagKey<EntityType<?>> shaderbagWhitelist = createEntityWrapper(rl("shaderbag/whitelist"));
+	public static final TagKey<EntityType<?>> shaderbagBlacklist = createEntityWrapper(rl("shaderbag/blacklist"));
 
 	static
 	{

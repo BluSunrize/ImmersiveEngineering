@@ -20,7 +20,6 @@ import blusunrize.immersiveengineering.common.register.IEBlocks.BlockEntry;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Cloth;
 import blusunrize.immersiveengineering.common.register.IEBlocks.Connectors;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.register.IEBlocks.WoodenDecoration;
 import blusunrize.immersiveengineering.common.register.IEItems.*;
 import com.google.common.base.Preconditions;
 import net.minecraft.data.DataGenerator;
@@ -153,6 +152,7 @@ public class IEItemTags extends ItemTagsProvider
 				.add(Weapons.CHEMTHROWER.asItem())
 				.add(Weapons.REVOLVER.asItem())
 				.add(Weapons.SPEEDLOADER.asItem())
+				.add(Tools.MANUAL.asItem())
 				.add(Tools.WIRECUTTER.asItem())
 				.add(Tools.BUZZSAW.asItem())
 				.add(Tools.DRILL.asItem())
@@ -161,7 +161,16 @@ public class IEItemTags extends ItemTagsProvider
 				.add(Tools.SURVEY_TOOLS.asItem())
 				.add(Tools.VOLTMETER.asItem())
 				.add(Misc.EARMUFFS.asItem())
-				.add(Misc.SKYHOOK.asItem());
+				.add(Misc.SKYHOOK.asItem())
+				.addTag(IETags.tools)
+				.addOptionalTag(new ResourceLocation("forge", "buckets/empty"))
+				.addOptionalTag(new ResourceLocation("forge", "tools/wrench"))
+				.add(Items.SPYGLASS)
+				.add(Items.CLOCK)
+				.add(Items.COMPASS)
+				.add(Items.FLINT_AND_STEEL)
+				.add(Items.FISHING_ROD)
+		;
 		for(ItemRegObject<WireCoilItem> wirecoil : Misc.WIRE_COILS.values())
 			tag(IETags.toolboxWiring).add(wirecoil.asItem());
 		for(BlockEntry<BasicConnectorBlock<?>> connector : Connectors.ENERGY_CONNECTORS.values())

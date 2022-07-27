@@ -14,9 +14,13 @@ import blusunrize.immersiveengineering.common.gui.IESlot.Cloche;
 import blusunrize.immersiveengineering.common.gui.sync.GenericContainerData;
 import blusunrize.immersiveengineering.common.gui.sync.GenericDataSerializers;
 import blusunrize.immersiveengineering.common.gui.sync.GetterAndSetter;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.energy.EnergyStorage;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -70,7 +74,16 @@ public class ClocheMenu extends IEContainerMenu
 		this.addSlot(new Cloche(SLOT_FERTILIZER, inv, SLOT_FERTILIZER, 8, 59, level));
 
 		for(int i = 0; i < 4; i++)
-			this.addSlot(new IESlot.NewOutput(inv, 3+i, 116+i%2*18, 34+i/2*18));
+			this.addSlot(new IESlot.NewOutput(inv, 3+i, 116+i%2*18, 34+i/2*18)
+			{
+				@Override
+				public void onTake(Player pPlayer, ItemStack pStack)
+				{
+					super.onTake(pPlayer, pStack);
+					if(pStack.getItem()==Items.CHORUS_FRUIT)
+						Utils.unlockIEAdvancement(pPlayer, "main/chorus_cloche");
+				}
+			});
 
 		this.ownSlotCount = 7;
 

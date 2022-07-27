@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader;
 import blusunrize.immersiveengineering.api.shader.CapabilityShader.ShaderWrapper_Direct;
@@ -40,6 +41,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -209,12 +211,6 @@ public class EventHandler
 	}
 
 	public static Map<UUID, CrusherBlockEntity> crusherMap = new HashMap<>();
-	public static Set<Class<? extends Mob>> listOfBoringBosses = new HashSet<>();
-
-	static
-	{
-		listOfBoringBosses.add(WitherBoss.class);
-	}
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingDropsLowest(LivingDropsEvent event)
@@ -236,12 +232,12 @@ public class EventHandler
 	@SubscribeEvent
 	public void onLivingDrops(LivingDropsEvent event)
 	{
-		if(!event.isCanceled()&&!event.getEntity().canChangeDimensions())
+		if(!event.isCanceled())
 		{
+			boolean isBoss = event.getEntity().getMaxHealth() >= 100||event.getEntity().getType().is(IETags.shaderbagWhitelist);
+			if(!isBoss || event.getEntity().getType().is(IETags.shaderbagBlacklist))
+				return;
 			Rarity r = Rarity.EPIC;
-			for(Class<? extends Mob> boring : listOfBoringBosses)
-				if(boring.isAssignableFrom(event.getEntity().getClass()))
-					return;
 			ItemStack bag = new ItemStack(Misc.SHADER_BAG.get(r));
 			event.getDrops().add(new ItemEntity(event.getEntity().level, event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), bag));
 		}
@@ -280,7 +276,7 @@ public class EventHandler
 			event.setAmount(event.getAmount()*mod);
 		}
 		if(!event.isCanceled()&&!event.getEntity().canChangeDimensions()&&event.getAmount() >= event.getEntity().getHealth()&&event.getSource().getEntity() instanceof Player&&((Player)event.getSource().getEntity()).getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof DrillItem)
-			Utils.unlockIEAdvancement((Player)event.getSource().getEntity(), "main/secret_drillbreak");
+			Utils.unlockIEAdvancement((Player)event.getSource().getEntity(), "tools/secret_drillbreak");
 	}
 
 	@SubscribeEvent
@@ -421,5 +417,7 @@ public class EventHandler
 		if(!(event.getEntity() instanceof ServerPlayer serverPlayer))
 			return;
 		serverPlayer.awardStat(IEStats.WIRE_DEATHS.get());
+		if(serverPlayer.getAbilities().flying || serverPlayer.isFallFlying())
+			Utils.unlockIEAdvancement(serverPlayer, "main/secret_friedbird");
 	}
 }

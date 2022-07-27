@@ -21,6 +21,7 @@ import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -106,13 +107,13 @@ public class IngredientFluidStack extends Ingredient
 
 	public ItemStack getExtractedStack(ItemStack input)
 	{
-		Optional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(input).resolve();
+		Optional<IFluidHandlerItem> handlerOpt = FluidUtil.getFluidHandler(ItemHandlerHelper.copyStackWithSize(input, 1)).resolve();
 		if(handlerOpt.isPresent())
 		{
 			IFluidHandlerItem handler = handlerOpt.get();
 			fluidTagInput.extractFrom(handler, FluidAction.EXECUTE);
 			return handler.getContainer();
 		}
-		return input;
+		return input.getCraftingRemainingItem();
 	}
 }

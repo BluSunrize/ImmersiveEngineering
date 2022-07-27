@@ -38,21 +38,6 @@ public class IEIMCHandler
 			Predicate<Block> func = (Predicate<Block>)imcMessage.messageSupplier().get();
 			FluidPipeBlockEntity.climbablePipeCovers.add(func);
 		});
-
-		MESSAGE_HANDLERS.put("shaderbag_exclude", imcMessage -> {
-			String s = (String)imcMessage.messageSupplier().get();
-			try
-			{
-				Class<?> clazz = Class.forName(s);
-				if(Mob.class.isAssignableFrom(clazz))
-					EventHandler.listOfBoringBosses.add((Class<? extends Mob>)clazz);
-				else
-					IELogger.error("IMC Handling: "+s+" is not an instance of EntityLiving.");
-			} catch(ClassNotFoundException e)
-			{
-				IELogger.error("IMC Handling: "+s+" is not a valid classname.");
-			}
-		});
 	}
 
 	public static void handleIMCMessages(Stream<IMCMessage> messages)

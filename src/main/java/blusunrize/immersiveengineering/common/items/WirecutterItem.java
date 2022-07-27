@@ -94,12 +94,6 @@ public class WirecutterItem extends IEBaseItem
 	}
 
 	@Override
-	public boolean isRepairable(@NotNull ItemStack stack)
-	{
-		return true;
-	}
-
-	@Override
 	public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate)
 	{
 		return repairCandidate.is(Tags.Items.INGOTS_IRON);

@@ -1,0 +1,12 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [],
+  "result": {
+    "item": "minecraft:amethyst_shard",
+    "count": 4
+  },
+  "input": {
+    "tag": "forge:storage_blocks/amethyst"
+  },
+  "energy": 3200
+}

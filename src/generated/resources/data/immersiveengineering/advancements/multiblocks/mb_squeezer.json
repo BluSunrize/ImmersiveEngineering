@@ -1,0 +1,36 @@
+{
+  "parent": "immersiveengineering:multiblocks/multiblocks_root",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:squeezer"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.mb_squeezer"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.mb_squeezer.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "form_multiblock": {
+      "trigger": "immersiveengineering:multiblock_formed",
+      "conditions": {
+        "multiblock": "immersiveengineering:multiblocks/squeezer",
+        "item": {
+          "items": [
+            "immersiveengineering:hammer"
+          ]
+        }
+      }
+    }
+  },
+  "requirements": [
+    [
+      "form_multiblock"
+    ]
+  ]
+}

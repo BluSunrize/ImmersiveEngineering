@@ -258,7 +258,8 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModel("banner_pattern", IEBannerPatterns.WOLF_R.item());
 		addItemModel("banner_pattern", IEBannerPatterns.WOLF_L.item());
 		addItemModel("banner_pattern", IEBannerPatterns.WOLF.item());
-		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY, IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM);
+		addItemModels("", IEItems.Misc.ICON_BIRTHDAY, IEItems.Misc.ICON_LUCKY,
+				IEItems.Misc.ICON_DRILLBREAK, IEItems.Misc.ICON_RAVENHOLM, IEItems.Misc.ICON_FRIED);
 
 		obj(Tools.VOLTMETER, rl("item/voltmeter.obj"))
 				.transforms(rl("item/voltmeter"));

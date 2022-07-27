@@ -46,6 +46,7 @@ public class SorterScreen extends IEContainerScreen<SorterContainer>
 		super(container, inventoryPlayer, title, TEXTURE);
 		this.tile = container.tile;
 		this.imageHeight = 244;
+		this.inventoryLabelY = this.imageHeight-91;
 	}
 
 	@Override

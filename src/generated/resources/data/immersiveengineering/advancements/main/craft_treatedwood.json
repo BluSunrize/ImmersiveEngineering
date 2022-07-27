@@ -1,0 +1,37 @@
+{
+  "parent": "immersiveengineering:main/creosote",
+  "display": {
+    "icon": {
+      "item": "immersiveengineering:treated_wood_horizontal"
+    },
+    "title": {
+      "translate": "advancement.immersiveengineering.craft_treatedwood"
+    },
+    "description": {
+      "translate": "advancement.immersiveengineering.craft_treatedwood.desc"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "has_item": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "immersiveengineering:treated_wood_horizontal"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_item"
+    ]
+  ]
+}

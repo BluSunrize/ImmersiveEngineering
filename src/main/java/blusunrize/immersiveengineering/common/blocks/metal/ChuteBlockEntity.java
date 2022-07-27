@@ -23,6 +23,7 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.mixin.accessors.ItemEntityAccess;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -59,6 +60,7 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 	private static final String NBT_POS = "immersiveengineering:chutePos";
 	private static final String NBT_TIME = "immersiveengineering:chuteTime";
 	private static final String NBT_GLITCH = "immersiveengineering:chuteGlitched";
+	private static final String NBT_COUNT = "immersiveengineering:chuteCount";
 	private boolean diagonal = false;
 
 	public ChuteBlockEntity(BlockPos pos, BlockState state)
@@ -111,10 +113,11 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 
 			long time = world.getGameTime();
 			long nbt_pos = getBlockPos().asLong();
+			long timeSince = time-entity.getPersistentData().getLong(NBT_TIME);
 
 			boolean prevent = entity.getPersistentData().contains(NBT_POS)
 					&&nbt_pos==entity.getPersistentData().getLong(NBT_POS)
-					&&time-entity.getPersistentData().getLong(NBT_TIME) < 20;
+					&&timeSince < 20;
 			// glitch timer resets after 60 seconds
 			boolean glitched = entity.getPersistentData().contains(NBT_GLITCH)&&time-entity.getPersistentData().getLong(NBT_GLITCH) < 1200;
 
@@ -146,8 +149,18 @@ public class ChuteBlockEntity extends IEBaseBlockEntity implements IStateBasedDi
 			if(!contact&&!prevent&&!glitched)
 			{
 				world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), IESounds.chute.get(), SoundSource.BLOCKS, .6f+(.4f*world.random.nextFloat()), .5f+(.5f*world.random.nextFloat()));
-				entity.getPersistentData().putLong(NBT_POS, nbt_pos);
-				entity.getPersistentData().putLong(NBT_TIME, time);
+				CompoundTag entityData = entity.getPersistentData();
+				entityData.putLong(NBT_POS, nbt_pos);
+				entityData.putLong(NBT_TIME, time);
+				if(entity instanceof Player player && !world.isClientSide())
+				{
+					int bonkCount = entityData.getInt(NBT_COUNT)+1;
+					if(timeSince > 200)
+						bonkCount = 1;
+					entity.getPersistentData().putInt(NBT_COUNT, bonkCount);
+					if(bonkCount >= 6)
+						Utils.unlockIEAdvancement(player, "main/chute_bonk");
+				}
 			}
 		}
 

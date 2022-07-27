@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.api.crafting;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.energy.GeneratorFuel;
 import blusunrize.immersiveengineering.api.energy.ThermoelectricSource;
+import blusunrize.immersiveengineering.api.energy.WindmillBiome;
 import blusunrize.immersiveengineering.api.excavator.MineralMix;
 import net.minecraft.core.Registry;
 import net.minecraft.world.item.crafting.Recipe;
@@ -45,6 +46,7 @@ public class IERecipeTypes
 	public static final TypeWithClass<MineralMix> MINERAL_MIX = register("mineral_mix", MineralMix.class);
 	public static final TypeWithClass<GeneratorFuel> GENERATOR_FUEL = register("generator_fuel", GeneratorFuel.class);
 	public static final TypeWithClass<ThermoelectricSource> THERMOELECTRIC_SOURCE = register("thermoelectric_source", ThermoelectricSource.class);
+	public static final TypeWithClass<WindmillBiome> WINDMILL_BIOME = register("windmill_biome", WindmillBiome.class);
 
 	private static <T extends Recipe<?>>
 	TypeWithClass<T> register(String name, Class<T> type)
