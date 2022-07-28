@@ -177,7 +177,9 @@ public class BottlingMachineRenderer extends IEBlockEntityRenderer<BottlingMachi
 				{
 					float h0 = -.5f;
 					float h1 = h0+itemDisplays[i][4];
-					renderItemPart(bufferIn, matrixStack, process.inputItems.get(0), h0, h1, combinedLightIn, combinedOverlayIn, 0);
+
+					for(ItemStack inputS : process.inputItems)
+						renderItemPart(bufferIn, matrixStack, inputS, h0, h1, combinedLightIn, combinedOverlayIn, 0);
 					for(ItemStack displayS : display)
 						renderItemPart(bufferIn, matrixStack, displayS, h0, h1, combinedLightIn, combinedOverlayIn, 1);
 				}
