@@ -2865,7 +2865,7 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.save(out, toRL(toPath(Weapons.SPEEDLOADER)));
 
-		ShapedRecipeBuilder.shaped(BulletHandler.emptyShell, 5)
+		ShapedRecipeBuilder.shaped(BulletHandler.emptyShell, 3)
 				.pattern("prp")
 				.pattern("prp")
 				.pattern(" c ")
