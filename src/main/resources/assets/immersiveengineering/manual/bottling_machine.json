@@ -2,5 +2,28 @@
   "multiblock": {
     "type": "multiblock",
     "name": "multiblocks/bottling_machine"
+  },
+  "potions": {
+    "type": "bottling",
+    "recipes": [
+      {
+        "item": "minecraft:potion",
+        "nbt": {
+          "Potion": "minecraft:healing"
+        }
+      },
+      {
+        "item": "minecraft:potion",
+        "nbt": {
+          "Potion": "minecraft:strength"
+        }
+      },
+      {
+        "item": "minecraft:potion",
+        "nbt": {
+          "Potion": "minecraft:swiftness"
+        }
+      }
+    ]
   }
 }

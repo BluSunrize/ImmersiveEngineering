@@ -30,5 +30,11 @@
   "fiberboard": {
     "type": "crafting",
     "recipe": "crafting/fiberboard"
+  },
+  "empty_shell": {
+    "type": "bottling",
+    "recipe": {
+      "item": "immersiveengineering:empty_shell"
+    }
   }
 }

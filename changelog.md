@@ -1,3 +1,13 @@
+##### Version 1.18.2-8.1.1-pre
+- Overhauled the Bottling Machine (BluSunrize)
+    - Had its internals adjusted to match other multiblocks
+    - Now allows for multiple inputs in its recipes
+    - Allows holding items until full
+    - Improved documentation in the manual!
+- Updated recipe for empty shells for revolver cartridges (BluSunrize)
+    - Can now be made with resin in the bottling machine
+    - In exchange, the normal recipe outputs a little less
+
 ##### Version 1.18.2-8.1.0-150
 - The Plastics update! (BluSunrize)
     - New fluids:
