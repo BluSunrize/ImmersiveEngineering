@@ -28,6 +28,7 @@ import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -35,7 +36,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -179,13 +179,13 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			if(master==null)
 				return;
 
-			List<Tuple<ItemEntity, ItemStack>> itemsOnConveyor = level.getEntitiesOfClass(
+			List<Pair<ItemEntity, ItemStack>> itemsOnConveyor = level.getEntitiesOfClass(
 					ItemEntity.class, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(getBlockPos()))
-			).stream().map(itemEntity1 -> new Tuple<>(itemEntity1, itemEntity1.getItem())).toList();
+			).stream().map(itemEntity1 -> Pair.of(itemEntity1, itemEntity1.getItem())).toList();
 			if(itemsOnConveyor.isEmpty())
 				return;
 
-			ItemStack[] stacks = itemsOnConveyor.stream().map(Tuple::getB).toArray(ItemStack[]::new);
+			ItemStack[] stacks = itemsOnConveyor.stream().map(Pair::getSecond).toArray(ItemStack[]::new);
 			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(
 					master.level,
 					stacks,
@@ -215,13 +215,13 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			{
 				master.addProcessToQueue(process, false);
 				for(ItemStack stack : displayStacks)
-					itemsOnConveyor.stream().filter(t -> ItemStack.isSameItemSameTags(t.getB(), stack))
+					itemsOnConveyor.stream().filter(t -> ItemStack.isSameItemSameTags(t.getSecond(), stack))
 							.findFirst().ifPresent(t -> {
-								ItemStack remaining = t.getB().copy();
+								ItemStack remaining = t.getSecond().copy();
 								remaining.shrink(stack.getCount());
-								t.getA().setItem(remaining);
+								t.getFirst().setItem(remaining);
 								if(remaining.isEmpty())
-									t.getA().discard();
+									t.getFirst().discard();
 							});
 			}
 		}
@@ -403,8 +403,9 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 				if(master!=null)
 				{
 					master.allowPartialFill = !master.allowPartialFill;
-					ChatUtils.sendServerNoSpamMessages(player, new TranslatableComponent(Lib.CHAT_INFO
-							+"bottling_machine."+(master.allowPartialFill?"partialFill": "completeFill")));
+					player.displayClientMessage(new TranslatableComponent(
+							Lib.CHAT_INFO+"bottling_machine."+(master.allowPartialFill?"partialFill": "completeFill")
+					), true);
 					this.updateMasterBlock(null, true);
 				}
 			}
@@ -415,7 +416,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 
 	public static class MultiblockProcessBottling extends MultiblockProcessInWorld<BottlingMachineRecipe>
 	{
-		private boolean isFilling = false;
+		private final boolean isFilling;
 		private final NonNullList<ItemStack> filledContainer = Utils.createNonNullItemStackListFromItemStack(ItemStack.EMPTY);
 		private static final BottlingMachineRecipe DUMMY_RECIPE = new BottlingMachineRecipe(
 				new ResourceLocation(Lib.MODID, "bottling_dummy_recipe"),
@@ -426,11 +427,12 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		public MultiblockProcessBottling(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, BottlingMachineRecipe> getRecipe, NonNullList<ItemStack> inputItem)
 		{
 			super(recipeId, getRecipe, 0.45f, inputItem);
+			this.isFilling = false;
 		}
 
 		public MultiblockProcessBottling(NonNullList<ItemStack> inputItem)
 		{
-			this(DUMMY_RECIPE.getId(), (level, resourceLocation) -> DUMMY_RECIPE, inputItem);
+			super(DUMMY_RECIPE.getId(), (level, resourceLocation) -> DUMMY_RECIPE, 0.45f, inputItem);
 			this.isFilling = true;
 			// copy item into output already, to be filled later
 			this.filledContainer.set(0, inputItem.get(0));

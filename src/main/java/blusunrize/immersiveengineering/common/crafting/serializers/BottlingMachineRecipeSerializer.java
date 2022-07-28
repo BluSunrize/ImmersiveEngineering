@@ -46,11 +46,9 @@ public class BottlingMachineRecipeSerializer extends IERecipeSerializer<Bottling
 
 		IngredientWithSize[] ingredients;
 		if(json.has("input"))
-		{
 			ingredients = new IngredientWithSize[]{
 					IngredientWithSize.deserialize(GsonHelper.getAsJsonObject(json, "input"))
 			};
-		}
 		else
 		{
 			JsonArray inputs = json.getAsJsonArray("inputs");
