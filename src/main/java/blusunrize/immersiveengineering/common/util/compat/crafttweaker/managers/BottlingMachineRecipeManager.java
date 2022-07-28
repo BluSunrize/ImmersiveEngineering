@@ -56,14 +56,14 @@ public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMach
 	 * The bottling Machine only goes via Fluid tag!
 	 *
 	 * @param recipePath The recipe name, without the resource location
-	 * @param itemInput  The item input (the item to be filled)
+	 * @param inputs  The item input (the items to be filled)
 	 * @param fluidTag   The fluid tag of the fluid
 	 * @param outputs     The resulting "filled" items.
 	 * @docParam recipePath "grow_a_pick"
-	 * @docParam itemInput <item:minecraft:stick>
+	 * @docParam itemInput [<item:minecraft:stick> * 3]
 	 * @docParam fluidTag <tag:minecraft:water>
 	 * @docParam amount 250
-	 * @docParam output <item:minecraft:wooden_pickaxe>
+	 * @docParam output [<item:minecraft:wooden_pickaxe>]
 	 */
 	@ZenCodeType.Method
 	public void addRecipe(String recipePath, IIngredientWithAmount[] inputs, Many<MCTag> fluidTag, IItemStack[] outputs)
