@@ -94,7 +94,7 @@ public class ClientUtils
 				FontManager resourceManager = ((MinecraftAccess)Minecraft.getInstance()).getFontManager();
 				Map<ResourceLocation, FontSet> fonts = ((FontResourceManagerAccess)resourceManager).getFontSets();
 				return fonts.get(Minecraft.UNIFORM_FONT);
-			});
+			}, false);
 		return unicodeRenderer;
 	}
 

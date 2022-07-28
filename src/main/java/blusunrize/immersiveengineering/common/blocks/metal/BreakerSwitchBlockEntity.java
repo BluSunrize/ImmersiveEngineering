@@ -21,7 +21,6 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.generic.ConnectorBlock;
 import blusunrize.immersiveengineering.common.blocks.generic.ImmersiveConnectableBlockEntity;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.IESounds;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.chickenbones.Matrix4;
@@ -166,7 +165,9 @@ public class BreakerSwitchBlockEntity extends ImmersiveConnectableBlockEntity im
 		inverted = !inverted;
 		if(!level.isClientSide)
 		{
-			ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")));
+			player.displayClientMessage(
+					Component.translatable(Lib.CHAT_INFO+"rsSignal."+(inverted?"invertedOn": "invertedOff")), true
+			);
 			notifyNeighbours();
 			if(oldPassing!=allowEnergyToPass())
 				updateConductivity();

@@ -18,7 +18,6 @@ import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.EnergyHelper;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
@@ -398,7 +397,10 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 		if(player.isShiftKeyDown()&&!level.isClientSide)
 		{
 			redstoneControlInverted = !redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			player.displayClientMessage(
+					Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")),
+					true
+			);
 			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}
@@ -433,7 +435,7 @@ public abstract class TurretBlockEntity<T extends TurretBlockEntity<T>> extends 
 	{
 		if(hasOwnerRights(player))
 			return true;
-		ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"notOwner", owner));
+		player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"notOwner", owner), true);
 		return false;
 	}
 

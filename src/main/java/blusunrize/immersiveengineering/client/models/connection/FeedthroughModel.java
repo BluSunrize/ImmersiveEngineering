@@ -60,7 +60,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.client.model.IQuadTransformer;
+import net.minecraftforge.client.model.QuadTransformers;
 import net.minecraftforge.client.model.data.ModelData;
 import net.minecraftforge.client.model.data.ModelData.Builder;
 import net.minecraftforge.client.model.data.ModelProperty;
@@ -410,7 +410,7 @@ public class FeedthroughModel extends BakedIEModel implements ICacheKeyProvider<
 				conn.add(ModelUtils.createBakedQuad(
 						vertices, Direction.UP, getTexture(info), info.uvs(), WHITE, false
 				));
-			return IQuadTransformer.applying(new Transformation(mat.toMatrix4f())).process(conn);
+			return QuadTransformers.applying(new Transformation(mat.toMatrix4f())).process(conn);
 		}
 
 		private static TextureAtlasSprite getTexture(FeedthroughModelInfo info)

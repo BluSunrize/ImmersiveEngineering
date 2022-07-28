@@ -8,11 +8,8 @@
 
 package blusunrize.immersiveengineering.api.utils;
 
-import com.mojang.math.Transformation;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraftforge.client.model.IQuadTransformer;
-
-import javax.annotation.Nullable;
 
 public class QuadTransformer
 {
@@ -42,16 +39,5 @@ public class QuadTransformer
 		final float subMultiplier = ((packedMultiplier>>offsetBits)&255)/255f;
 		final int newSubColor = ((int)(oldSubColor*subMultiplier))&mask;
 		return (oldColor&~mask)|newSubColor;
-	}
-
-	public static IQuadTransformer transformAndColor(
-			Transformation transform, @Nullable Int2IntFunction colorTransform
-	)
-	{
-		IQuadTransformer base = IQuadTransformer.applying(transform);
-		if(colorTransform!=null)
-			return base.andThen(color(colorTransform));
-		else
-			return base;
 	}
 }

@@ -29,7 +29,6 @@
     "accessors.client.FontResourceManagerAccess",
     "accessors.client.MinecartRendererAccess",
     "accessors.client.MinecraftAccess",
-    "accessors.client.NewChatGuiAccess",
     "accessors.client.ParticleManagerAccess",
     "accessors.client.PlayerControllerAccess",
     "accessors.client.RenderChunkAccess",

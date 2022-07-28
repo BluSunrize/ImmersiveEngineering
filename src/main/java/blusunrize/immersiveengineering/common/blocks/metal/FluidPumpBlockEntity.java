@@ -27,7 +27,10 @@ import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
-import blusunrize.immersiveengineering.common.util.*;
+import blusunrize.immersiveengineering.common.util.EnergyHelper;
+import blusunrize.immersiveengineering.common.util.MultiblockCapability;
+import blusunrize.immersiveengineering.common.util.ResettableCapability;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -345,7 +348,7 @@ public class FluidPumpBlockEntity extends IEBaseBlockEntity implements IEServerT
 					master = (FluidPumpBlockEntity)tmp;
 			}
 			master.placeCobble = !master.placeCobble;
-			ChatUtils.sendServerNoSpamMessages(p, Component.translatable(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble));
+			p.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"pump.placeCobble."+master.placeCobble), true);
 			return true;
 		}
 		return false;

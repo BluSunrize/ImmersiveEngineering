@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IETemplateMultiblock;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControlState;
 import blusunrize.immersiveengineering.common.util.compat.computers.generic.ComputerControllable;
 import com.mojang.datafixers.util.Pair;
@@ -227,8 +226,8 @@ public abstract class MultiblockPartBlockEntity<T extends MultiblockPartBlockEnt
 				if(master!=null)
 				{
 					master.redstoneControlInverted = !master.redstoneControlInverted;
-					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsControl."
-							+(master.redstoneControlInverted?"invertedOn": "invertedOff")));
+					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"rsControl."
+							+(master.redstoneControlInverted?"invertedOn": "invertedOff")), true);
 					this.updateMasterBlock(null, true);
 				}
 			}

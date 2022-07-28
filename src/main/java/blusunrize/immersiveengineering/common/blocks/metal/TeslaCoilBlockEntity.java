@@ -422,14 +422,19 @@ public class TeslaCoilBlockEntity extends IEBaseBlockEntity implements IEServerT
 				else
 				{
 					lowPower = !lowPower;
-					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower": "highPower")));
+					player.displayClientMessage(
+							Component.translatable(Lib.CHAT_INFO+"tesla."+(lowPower?"lowPower": "highPower")), true
+					);
 					setChanged();
 				}
 			}
 			else
 			{
 				redstoneControlInverted = !redstoneControlInverted;
-				ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+				player.displayClientMessage(
+						Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")),
+						true
+				);
 				setChanged();
 				this.markContainingBlockForUpdate(null);
 			}

@@ -14,7 +14,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.*;
 import blusunrize.immersiveengineering.common.blocks.PlacementLimitation;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import com.google.common.collect.ImmutableList;
 import net.minecraft.core.BlockPos;
@@ -219,7 +218,9 @@ public class StripCurtainBlockEntity extends IEBaseBlockEntity implements IEServ
 		if(!level.isClientSide)
 		{
 			strongSignal = !strongSignal;
-			ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal));
+			player.displayClientMessage(
+					Component.translatable(Lib.CHAT_INFO+"rsControl.strongSignal."+strongSignal), true
+			);
 			sendRSUpdates();
 		}
 		return InteractionResult.SUCCESS;

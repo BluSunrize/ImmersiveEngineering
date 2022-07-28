@@ -15,7 +15,6 @@ import blusunrize.immersiveengineering.api.tool.IDrillHead;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
 import blusunrize.immersiveengineering.common.fluids.IEItemFluidHandler;
 import blusunrize.immersiveengineering.common.gui.IESlot;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ItemNBTHelper;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -171,7 +170,9 @@ public class DrillItem extends DieselToolItem
 		{
 			boolean mode = !isSingleBlockMode(stack);
 			stack.getOrCreateTag().putBoolean("singleBlockMode", mode);
-			ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"drill_mode."+(mode?"single": "multi")));
+			player.displayClientMessage(
+					Component.translatable(Lib.CHAT_INFO+"drill_mode."+(mode?"single": "multi")), true
+			);
 			return InteractionResultHolder.success(stack);
 		}
 		return InteractionResultHolder.pass(stack);

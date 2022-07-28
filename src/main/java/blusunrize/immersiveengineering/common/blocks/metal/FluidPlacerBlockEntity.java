@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IScrewdri
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -248,7 +247,10 @@ public class FluidPlacerBlockEntity extends IEBaseBlockEntity implements IEServe
 		if(!level.isClientSide)
 		{
 			redstoneControlInverted = !redstoneControlInverted;
-			ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")));
+			player.displayClientMessage(
+					Component.translatable(Lib.CHAT_INFO+"rsControl."+(redstoneControlInverted?"invertedOn": "invertedOff")),
+					true
+			);
 			setChanged();
 			this.markContainingBlockForUpdate(null);
 		}

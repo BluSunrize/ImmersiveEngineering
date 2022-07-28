@@ -19,7 +19,6 @@ import blusunrize.immersiveengineering.common.blocks.metal.MetalBarrelBlockEntit
 import blusunrize.immersiveengineering.common.blocks.ticking.IEServerTickableBE;
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
-import blusunrize.immersiveengineering.common.util.ChatUtils;
 import blusunrize.immersiveengineering.common.util.ResettableCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import com.google.common.collect.ImmutableList;
@@ -309,12 +308,12 @@ public class WoodenBarrelBlockEntity extends IEBaseBlockEntity implements IEServ
 			Optional<Boolean> ret = fOptional.map((f) -> {
 				if(f.getFluid().is(Tags.Fluids.GASEOUS))
 				{
-					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"noGasAllowed"));
+					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"noGasAllowed"), true);
 					return true;
 				}
 				else if(f.getFluid().getFluidType().getTemperature(f) >= WoodenBarrelBlockEntity.IGNITION_TEMPERATURE)
 				{
-					ChatUtils.sendServerNoSpamMessages(player, Component.translatable(Lib.CHAT_INFO+"tooHot"));
+					player.displayClientMessage(Component.translatable(Lib.CHAT_INFO+"tooHot"), true);
 					return true;
 				}
 				else
