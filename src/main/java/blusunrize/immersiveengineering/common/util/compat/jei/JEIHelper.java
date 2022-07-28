@@ -54,7 +54,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.util.Lazy;
@@ -246,7 +245,7 @@ public class JEIHelper implements IModPlugin
 					recipes.add(new BottlingMachineRecipe(
 							new ResourceLocation(Lib.MODID, "jei_bucket_"+f.getRegistryName().getPath()),
 							List.of(Lazy.of(() -> bucket)),
-							Ingredient.of(Items.BUCKET),
+							IngredientWithSize.of(new ItemStack(Items.BUCKET)),
 							new FluidTagInput(tag.get(), 1000)
 					));
 			}

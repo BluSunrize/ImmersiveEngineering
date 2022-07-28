@@ -10,11 +10,13 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker.managers
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
 import blusunrize.immersiveengineering.api.crafting.IESerializableRecipe;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.common.util.compat.crafttweaker.CrTIngredientUtil;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.action.recipe.ActionAddRecipe;
 import com.blamejared.crafttweaker.api.annotation.ZenRegister;
 import com.blamejared.crafttweaker.api.ingredient.IIngredient;
+import com.blamejared.crafttweaker.api.ingredient.IIngredientWithAmount;
 import com.blamejared.crafttweaker.api.item.IItemStack;
 import com.blamejared.crafttweaker.api.recipe.manager.base.IRecipeManager;
 import com.blamejared.crafttweaker.api.tag.MCTag;
@@ -64,17 +66,17 @@ public class BottlingMachineRecipeManager implements IRecipeManager<BottlingMach
 	 * @docParam output <item:minecraft:wooden_pickaxe>
 	 */
 	@ZenCodeType.Method
-	public void addRecipe(String recipePath, IIngredient itemInput, Many<MCTag> fluidTag, IItemStack[] outputs)
+	public void addRecipe(String recipePath, IIngredientWithAmount[] inputs, Many<MCTag> fluidTag, IItemStack[] outputs)
 	{
 		final ResourceLocation resourceLocation = new ResourceLocation("crafttweaker", recipePath);
 
 		final FluidTagInput fluidTagInput = CrTIngredientUtil.getFluidTagInput(fluidTag);
 
 		final List<Lazy<ItemStack>> outputList = CrTIngredientUtil.getNonNullList(outputs);
-		final Ingredient input = itemInput.asVanillaIngredient();
+		final IngredientWithSize[] ingredients = CrTIngredientUtil.getIngredientsWithSize(inputs);
 
 		final BottlingMachineRecipe recipe = new BottlingMachineRecipe(
-				resourceLocation, outputList, input, fluidTagInput
+				resourceLocation, outputList, ingredients, fluidTagInput
 		);
 
 		CraftTweakerAPI.apply(new ActionAddRecipe<>(this, recipe, null));

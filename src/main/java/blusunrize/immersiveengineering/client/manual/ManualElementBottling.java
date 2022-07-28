@@ -43,15 +43,20 @@ public class ManualElementBottling extends ManualElementIECrafting
 					ItemStack bucket = recipe.fluidInput.getRandomizedExampleStack(0).getFluid().getBucket().getDefaultInstance();
 					String bucketFraction = FluidUtils.getBucketFraction(recipe.fluidInput.getAmount());
 
-					PositionedItemStack[] pIngredients = new PositionedItemStack[recipe.output.get().size()+2];
-					pIngredients[0] = new PositionedItemStack(recipe.input.getItems(), 20, middle);
-					pIngredients[1] = new PositionedItemStack(bucket, 46, middle-8, bucketFraction);
+					int inputSize = recipe.inputs.length;
+					int outputSize = recipe.output.get().size();
+
+					PositionedItemStack[] pIngredients = new PositionedItemStack[inputSize+outputSize+1];
+					int idx = 0;
+					for(int i=0; i<inputSize; i++)
+						pIngredients[idx++] = new PositionedItemStack(recipe.inputs[i].getMatchingStacks(), 20-i%2*18, 8+i/2*18);
+					pIngredients[idx++] = new PositionedItemStack(bucket, 46, middle-8, bucketFraction);
 
 					List<ItemStack> outputs = recipe.output.get();
 					for(int i = 0; i < outputs.size(); i++)
 					{
 						int j = i+2;
-						pIngredients[j] = new PositionedItemStack(outputs.get(i), 70+j%2*18, -10+j/2*18);
+						pIngredients[idx++] = new PositionedItemStack(outputs.get(i), 70+j%2*18, -10+j/2*18);
 					}
 
 					this.recipes.add(pIngredients);

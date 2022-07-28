@@ -22,6 +22,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
@@ -45,8 +46,9 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, BottlingMachineRecipe recipe, IFocusGroup focuses)
 	{
-		builder.addSlot(RecipeIngredientRole.INPUT, 1, 13)
-				.addItemStacks(Arrays.asList(recipe.input.getItems()))
+		for(int i=0; i<recipe.inputs.length; i++)
+			builder.addSlot(RecipeIngredientRole.INPUT, 1, 13+i*18)
+				.addItemStacks(recipe.inputs[i].getMatchingStackList())
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		List<ItemStack> outputs = recipe.output.get();

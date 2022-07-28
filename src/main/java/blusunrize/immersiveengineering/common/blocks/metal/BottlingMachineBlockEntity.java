@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.blocks.metal;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
 import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
@@ -34,16 +35,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -53,6 +57,7 @@ import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidAttributes;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.IFluidTank;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -65,7 +70,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiFunction;
+import java.util.function.*;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<BottlingMachineBlockEntity, BottlingMachineRecipe>
 		implements IConveyorAttachable, IBlockBounds, IEClientTickableBE, IHammerInteraction
@@ -170,34 +178,49 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			BottlingMachineBlockEntity master = master();
 			if(master==null)
 				return;
-			ItemStack stack = itemEntity.getItem();
-			if(stack.isEmpty())
+
+			List<Tuple<ItemEntity, ItemStack>> itemsOnConveyor = level.getEntitiesOfClass(
+					ItemEntity.class, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(getBlockPos()))
+			).stream().map(itemEntity1 -> new Tuple<>(itemEntity1, itemEntity1.getItem())).toList();
+			if(itemsOnConveyor.isEmpty())
 				return;
 
-			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(master.level, stack, master.tanks[0].getFluid());
+			ItemStack[] stacks = itemsOnConveyor.stream().map(Tuple::getB).toArray(ItemStack[]::new);
+			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(
+					master.level,
+					stacks,
+					master.tanks[0].getFluid()
+			);
+
 			MultiblockProcess<BottlingMachineRecipe> process;
-			int inputAmount = 1;
+			NonNullList<ItemStack> displayStacks;
 			if(recipe==null)
-				process = new MultiblockProcessBottling(Utils.createNonNullItemStackListFromItemStack(stack));
+			{
+				displayStacks = Utils.createNonNullItemStackListFromItemStack(stacks[0]);
+				process = new MultiblockProcessBottling(displayStacks);
+			}
 			else
 			{
-				ItemStack displayStack = recipe.getDisplayStack(stack);
+				displayStacks = recipe.getDisplayStacks(stacks);
 				process = new MultiblockProcessBottling(
 						recipe.getId(),
 						this::getRecipeForId,
-						Utils.createNonNullItemStackListFromItemStack(displayStack)
+						displayStacks
 				);
-				inputAmount = displayStack.getCount();
 			}
 
 			if(master.addProcessToQueue(process, true))
 			{
 				master.addProcessToQueue(process, false);
-				ItemStack remaining = stack.copy();
-				remaining.shrink(inputAmount);
-				itemEntity.setItem(remaining);
-				if(remaining.isEmpty())
-					entity.discard();
+				for(ItemStack stack : displayStacks)
+					itemsOnConveyor.stream().filter(t -> ItemStack.isSameItemSameTags(t.getB(), stack))
+							.findFirst().ifPresent(t -> {
+								ItemStack remaining = t.getB().copy();
+								remaining.shrink(stack.getCount());
+								t.getA().setItem(remaining);
+								if(remaining.isEmpty())
+									t.getA().discard();
+							});
 			}
 		}
 	}
@@ -394,7 +417,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		private final NonNullList<ItemStack> filledContainer = Utils.createNonNullItemStackListFromItemStack(ItemStack.EMPTY);
 		private static final BottlingMachineRecipe DUMMY_RECIPE = new BottlingMachineRecipe(
 				new ResourceLocation(Lib.MODID, "bottling_dummy_recipe"),
-				List.of(Lazy.of(() -> ItemStack.EMPTY)), Ingredient.EMPTY,
+				List.of(Lazy.of(() -> ItemStack.EMPTY)), IngredientWithSize.of(ItemStack.EMPTY),
 				new FluidTagInput(FluidTags.WATER, 0)
 		);
 
@@ -477,7 +500,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
 			stack = stack.copy();
-			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(multiblock.level, stack, multiblock.tanks[0].getFluid());
+			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(multiblock.level, new ItemStack[]{stack}, multiblock.tanks[0].getFluid());
 			MultiblockProcess<BottlingMachineRecipe> process;
 			int inputAmount = 1;
 			if(recipe==null)
