@@ -191,6 +191,8 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 					stacks,
 					master.tanks[0].getFluid()
 			);
+			if(recipe==null&&!Utils.isFluidRelatedItemStack(stacks[0]))
+				return;
 
 			MultiblockProcess<BottlingMachineRecipe> process;
 			NonNullList<ItemStack> displayStacks;
@@ -501,6 +503,9 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		{
 			stack = stack.copy();
 			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(multiblock.level, new ItemStack[]{stack}, multiblock.tanks[0].getFluid());
+			if(recipe==null&&!Utils.isFluidRelatedItemStack(stack))
+				return stack;
+
 			MultiblockProcess<BottlingMachineRecipe> process;
 			int inputAmount = 1;
 			if(recipe==null)
