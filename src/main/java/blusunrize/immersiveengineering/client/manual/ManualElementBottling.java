@@ -15,6 +15,7 @@ import blusunrize.lib.manual.ManualUtils;
 import blusunrize.lib.manual.PositionedItemStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 
 import java.util.List;
 
@@ -40,7 +41,10 @@ public class ManualElementBottling extends ManualElementIECrafting
 					int h = (int)Math.ceil(recipe.output.get().size()/2f);
 					int middle = (int)(h/2f*18);
 
-					ItemStack bucket = recipe.fluidInput.getRandomizedExampleStack(0).getFluid().getBucket().getDefaultInstance();
+					FluidStack fs = recipe.fluidInput.getRandomizedExampleStack(0);
+					ItemStack bucket = fs.getFluid().getBucket().getDefaultInstance();
+					if(fs.hasTag())
+						bucket.setTag(fs.getTag());
 					String bucketFraction = FluidUtils.getBucketFraction(recipe.fluidInput.getAmount());
 
 					int inputSize = recipe.inputs.length;
