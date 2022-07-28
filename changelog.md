@@ -7,6 +7,7 @@
 - Updated recipe for empty shells for revolver cartridges (BluSunrize)
     - Can now be made with resin in the bottling machine
     - In exchange, the normal recipe outputs a little less
+- Change mineral survey tools to send positive messages to chat, makes it easier to look back on them (BluSunrize)
 
 ##### Version 1.18.2-8.1.0-150
 - The Plastics update! (BluSunrize)

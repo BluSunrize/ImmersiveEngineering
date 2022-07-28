@@ -170,7 +170,7 @@ public class SurveyToolsItem extends IEBaseItem
 			}
 		}
 		// Send message to player
-		player.displayClientMessage(response, true);
+		player.displayClientMessage(response, false);
 
 		// Add entry for current position
 		CompoundTag tag = new CompoundTag();
