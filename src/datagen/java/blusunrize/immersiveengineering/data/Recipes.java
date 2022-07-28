@@ -88,6 +88,7 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+import static blusunrize.immersiveengineering.api.IETags.getNugget;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
@@ -797,7 +798,9 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("bottling/duroplast_block"));
 		BottlingMachineRecipeBuilder.builder(new ItemStack(Ingredients.EMPTY_SHELL, 2))
 				.addResult(Molds.MOLD_BULLET_CASING)
+				.setUseInputArray(2)
 				.addInput(Molds.MOLD_BULLET_CASING)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).nugget, 3))
 				.addFluidTag(IETags.fluidResin, quarter_bucket)
 				.build(out, toRL("bottling/"+toPath(BulletHandler.emptyShell)));
 

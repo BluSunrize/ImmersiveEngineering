@@ -9,9 +9,17 @@
       "item": "immersiveengineering:mold_bullet_casing"
     }
   ],
-  "input": {
-    "item": "immersiveengineering:mold_bullet_casing"
-  },
+  "inputs": [
+    {
+      "item": "immersiveengineering:mold_bullet_casing"
+    },
+    {
+      "count": 3,
+      "base_ingredient": {
+        "tag": "forge:nuggets/copper"
+      }
+    }
+  ],
   "fluid": {
     "tag": "forge:phenolic_resin",
     "amount": 250
