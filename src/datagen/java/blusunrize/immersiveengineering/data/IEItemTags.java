@@ -113,7 +113,7 @@ class IEItemTags extends ItemTagsProvider
 		tag(IETags.screwdrivers).add(Tools.SCREWDRIVER.get());
 		tag(IETags.wirecutters).add(Tools.WIRECUTTER.get());
 		tag(IETags.connectorInsulator)
-				.add(Blocks.TERRACOTTA.asItem())
+				.addTag(ItemTags.TERRACOTTA)
 				.add(IEBlocks.StoneDecoration.DUROPLAST.asItem());
 		tag(ItemTags.CLUSTER_MAX_HARVESTABLES).add(Tools.STEEL_PICK.get());
 
