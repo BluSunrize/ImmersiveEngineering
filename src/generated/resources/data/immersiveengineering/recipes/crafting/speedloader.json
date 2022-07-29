@@ -1,16 +1,17 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "  i",
-    "iis",
-    "  i"
+    "sdc"
   ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
     "s": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:rods/iron"
+    },
+    "d": {
+      "item": "immersiveengineering:gunpart_drum"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
     }
   },
   "result": {

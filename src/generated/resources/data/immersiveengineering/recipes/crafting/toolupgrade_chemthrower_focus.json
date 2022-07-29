@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " ii",
-    "pph",
-    " ii"
+    "p  ",
+    " pi",
+    " ic"
   ],
   "key": {
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:plates/steel"
     },
     "p": {
       "item": "immersiveengineering:fluid_pipe"
     },
-    "h": {
-      "item": "minecraft:hopper"
+    "c": {
+      "item": "immersiveengineering:component_iron"
     }
   },
   "result": {

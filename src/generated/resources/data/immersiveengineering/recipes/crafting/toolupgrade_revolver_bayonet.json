@@ -1,7 +1,7 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "si",
+    "ws",
     "iw"
   ],
   "key": {
@@ -9,10 +9,10 @@
       "tag": "forge:ingots/steel"
     },
     "w": {
-      "tag": "forge:treated_wood"
+      "tag": "forge:wires/copper"
     },
     "s": {
-      "item": "minecraft:iron_sword"
+      "item": "immersiveengineering:sword_steel"
     }
   },
   "result": {

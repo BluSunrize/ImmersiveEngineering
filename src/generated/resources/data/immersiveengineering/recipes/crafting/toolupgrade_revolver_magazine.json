@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " ai",
-    "a a",
-    "ca "
+    " wi",
+    "wiw",
+    "cw "
   ],
   "key": {
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:plates/steel"
     },
-    "a": {
-      "tag": "forge:ingots/copper"
+    "w": {
+      "tag": "forge:wires/copper"
     },
     "c": {
       "item": "immersiveengineering:component_iron"

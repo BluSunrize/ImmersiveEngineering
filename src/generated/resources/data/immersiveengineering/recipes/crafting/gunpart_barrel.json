@@ -1,11 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ss"
+    "  h",
+    " s ",
+    "i  "
   ],
   "key": {
+    "h": {
+      "tag": "immersiveengineering:tools/hammers"
+    },
     "s": {
       "tag": "forge:rods/steel"
+    },
+    "i": {
+      "tag": "forge:ingots/steel"
     }
   },
   "result": {

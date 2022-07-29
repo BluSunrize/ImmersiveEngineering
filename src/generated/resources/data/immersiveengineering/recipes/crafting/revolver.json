@@ -1,9 +1,9 @@
 {
   "type": "immersiveengineering:revolver_assembly",
   "pattern": [
-    " i ",
-    "bdh",
-    "gig"
+    " hg",
+    " dc",
+    "b  "
   ],
   "key": {
     "b": {
@@ -18,8 +18,8 @@
     "g": {
       "item": "immersiveengineering:wooden_grip"
     },
-    "i": {
-      "tag": "forge:ingots/iron"
+    "c": {
+      "item": "immersiveengineering:component_steel"
     }
   },
   "result": {

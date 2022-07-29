@@ -2,15 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     " i ",
-    "ici",
+    "isi",
     " i "
   ],
   "key": {
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:plates/steel"
     },
-    "c": {
-      "item": "immersiveengineering:component_steel"
+    "s": {
+      "tag": "forge:rods/steel"
     }
   },
   "result": {

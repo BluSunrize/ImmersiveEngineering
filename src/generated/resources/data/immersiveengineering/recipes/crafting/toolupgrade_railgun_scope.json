@@ -1,15 +1,13 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "cic",
-    "psp"
+    "  p",
+    " si",
+    "pi "
   ],
   "key": {
     "i": {
-      "tag": "forge:plates/iron"
-    },
-    "c": {
-      "tag": "forge:wires/copper"
+      "tag": "forge:rods/steel"
     },
     "p": {
       "tag": "forge:glass_panes"

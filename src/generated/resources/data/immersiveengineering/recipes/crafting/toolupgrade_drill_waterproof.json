@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "bl ",
-    "lbl",
-    " lc"
+    "di ",
+    "idi",
+    " ip"
   ],
   "key": {
-    "b": {
-      "item": "minecraft:bucket"
-    },
-    "l": {
+    "d": {
       "tag": "forge:dyes/blue"
     },
-    "c": {
-      "item": "immersiveengineering:component_iron"
+    "i": {
+      "tag": "forge:plates/iron"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
     }
   },
   "result": {

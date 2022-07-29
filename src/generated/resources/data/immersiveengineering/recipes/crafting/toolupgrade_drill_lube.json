@@ -1,21 +1,21 @@
 {
   "type": "immersiveengineering:shaped_fluid",
   "pattern": [
-    "bi ",
-    "ibi",
-    " ic"
+    " i ",
+    "ioi",
+    " ip"
   ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
-    },
-    "c": {
-      "item": "immersiveengineering:component_iron"
-    },
-    "b": {
+    "o": {
       "tag": "forge:plantoil",
       "amount": 1000,
       "type": "immersiveengineering:fluid"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
     }
   },
   "result": {

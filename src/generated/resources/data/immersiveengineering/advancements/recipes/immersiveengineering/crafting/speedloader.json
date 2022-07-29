@@ -6,12 +6,14 @@
     ]
   },
   "criteria": {
-    "has_steel_ingot": {
+    "has_drum": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/steel"
+            "items": [
+              "immersiveengineering:gunpart_drum"
+            ]
           }
         ]
       }
@@ -25,7 +27,7 @@
   },
   "requirements": [
     [
-      "has_steel_ingot",
+      "has_drum",
       "has_the_recipe"
     ]
   ]

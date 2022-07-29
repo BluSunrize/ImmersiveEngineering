@@ -1,22 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ci ",
-    "ibr",
-    " rb"
+    "pi ",
+    "idi",
+    " id"
   ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/steel"
-    },
-    "c": {
-      "item": "immersiveengineering:component_iron"
-    },
-    "r": {
+    "d": {
       "tag": "forge:dyes/red"
     },
-    "b": {
-      "item": "minecraft:bucket"
+    "i": {
+      "tag": "forge:plates/steel"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
     }
   },
   "result": {

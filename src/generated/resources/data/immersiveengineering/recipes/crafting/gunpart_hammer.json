@@ -1,13 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "i  ",
-    "ii ",
-    " ii"
+    "iif",
+    " s "
   ],
   "key": {
     "i": {
       "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "tag": "forge:rods/steel"
+    },
+    "f": {
+      "item": "minecraft:flint"
     }
   },
   "result": {

@@ -2,15 +2,15 @@
   "type": "minecraft:crafting_shaped",
   "pattern": [
     "  g",
-    "rcg",
+    "rhg",
     "r  "
   ],
   "key": {
     "g": {
       "item": "immersiveengineering:wooden_grip"
     },
-    "c": {
-      "item": "immersiveengineering:component_steel"
+    "h": {
+      "item": "immersiveengineering:heavy_engineering"
     },
     "r": {
       "tag": "forge:rods/steel"
