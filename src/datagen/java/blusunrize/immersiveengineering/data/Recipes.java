@@ -730,6 +730,12 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("crusher/ore_"+ore.getName()));
 		}
 
+		/* ALLOY SMELTER */
+		AlloyRecipeBuilder.builder(new ItemStack(StoneDecoration.INSULATING_GLASS.asItem(), 2))
+				.addInput(new IngredientWithSize(Tags.Items.GLASS, 2))
+				.addInput(IETags.getTagsFor(EnumMetals.IRON).dust)
+				.build(out, toRL("alloysmelter/"+toPath(StoneDecoration.INSULATING_GLASS)));
+
 		/* METAL PRESS */
 		MetalPressRecipeBuilder.builder(Molds.MOLD_BULLET_CASING, new ItemStack(Ingredients.EMPTY_CASING, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
@@ -763,6 +769,13 @@ public class Recipes extends RecipeProvider
 				.setTime(100)
 				.setEnergy(512000)
 				.build(out, toRL("arcfurnace/netherite_scrap"));
+
+		ArcFurnaceRecipeBuilder.builder(new ItemStack(StoneDecoration.INSULATING_GLASS.asItem(), 2))
+				.addIngredient("input", new IngredientWithSize(Tags.Items.GLASS, 2))
+				.addInput(IETags.getTagsFor(EnumMetals.IRON).dust)
+				.setTime(100)
+				.setEnergy(51200)
+				.build(out, toRL("arcfurnace/"+toPath(StoneDecoration.INSULATING_GLASS)));
 
 		// partial bucket values for bottling & mixing
 		int half_bucket = FluidAttributes.BUCKET_VOLUME/2;
@@ -1326,16 +1339,6 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
 				.save(out, toRL(toPath(StoneDecoration.CONCRETE_LEADED)));
 
-		TurnAndCopyRecipeBuilder.builder(StoneDecoration.INSULATING_GLASS, 2)
-				.allowQuarterTurn()
-				.pattern(" g ")
-				.pattern("idi")
-				.pattern(" g ")
-				.define('g', Tags.Items.GLASS)
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).dust)
-				.define('d', Tags.Items.DYES_GREEN)
-				.unlockedBy("has_glass", has(Tags.Items.GLASS))
-				.save(out, toRL(toPath(StoneDecoration.INSULATING_GLASS)));
 	}
 
 	private void recipesWoodenDecorations(@Nonnull Consumer<FinishedRecipe> out)
