@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "ici",
-    "clc",
-    "iri"
+    "pwp",
+    "wsw",
+    "prp"
   ],
   "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
+    "w": {
+      "item": "immersiveengineering:wirecoil_copper"
     },
-    "c": {
-      "tag": "forge:ingots/copper"
+    "p": {
+      "tag": "forge:plates/copper"
     },
-    "l": {
-      "item": "immersiveengineering:coil_lv"
+    "s": {
+      "tag": "forge:sheetmetals/iron"
     },
     "r": {
       "tag": "forge:dusts/redstone"

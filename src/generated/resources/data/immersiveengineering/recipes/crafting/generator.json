@@ -1,19 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "iei",
-    "ede",
-    "iei"
+    "ici",
+    "cgc",
+    "ici"
   ],
   "key": {
     "i": {
       "tag": "forge:sheetmetals/steel"
     },
-    "e": {
-      "tag": "forge:plates/electrum"
+    "c": {
+      "item": "immersiveengineering:coil_mv"
     },
-    "d": {
-      "item": "immersiveengineering:dynamo"
+    "g": {
+      "item": "immersiveengineering:component_iron"
     }
   },
   "result": {

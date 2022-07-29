@@ -26,13 +26,13 @@
         ]
       }
     },
-    "has_dynamo": {
+    "has_component_iron": {
       "trigger": "minecraft:inventory_changed",
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:dynamo"
+              "immersiveengineering:component_iron"
             ]
           }
         ]
@@ -49,7 +49,7 @@
     [
       "has_steel_sheetmetal",
       "has_electrum_ingot",
-      "has_dynamo",
+      "has_component_iron",
       "has_the_recipe"
     ]
   ]

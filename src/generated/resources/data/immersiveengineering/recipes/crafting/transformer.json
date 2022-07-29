@@ -1,9 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "l m",
-    "ibi",
-    "iii"
+    "lm",
+    "eb",
+    "ii"
   ],
   "key": {
     "l": {
@@ -12,11 +12,14 @@
     "m": {
       "item": "immersiveengineering:connector_mv"
     },
-    "i": {
-      "tag": "forge:ingots/iron"
+    "e": {
+      "item": "immersiveengineering:component_electronic"
     },
     "b": {
       "item": "immersiveengineering:coil_mv"
+    },
+    "i": {
+      "tag": "forge:ingots/iron"
     }
   },
   "result": {

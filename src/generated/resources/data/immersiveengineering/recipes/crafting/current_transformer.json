@@ -1,13 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " m ",
-    "bcb",
-    "ici"
+    "wmw",
+    " b ",
+    "iei"
   ],
   "key": {
     "m": {
       "item": "immersiveengineering:voltmeter"
+    },
+    "w": {
+      "tag": "forge:wires/copper"
     },
     "b": {
       "tag": "immersiveengineering:connector_insulator"
@@ -15,8 +18,8 @@
     "i": {
       "tag": "forge:ingots/iron"
     },
-    "c": {
-      "item": "immersiveengineering:coil_lv"
+    "e": {
+      "item": "immersiveengineering:component_electronic"
     }
   },
   "result": {

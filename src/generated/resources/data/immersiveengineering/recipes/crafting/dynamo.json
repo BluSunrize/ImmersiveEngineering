@@ -1,8 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "rlr",
-    "iii"
+    "rcr",
+    "ili"
   ],
   "key": {
     "i": {
@@ -13,6 +13,9 @@
     },
     "r": {
       "tag": "forge:dusts/redstone"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
     }
   },
   "result": {

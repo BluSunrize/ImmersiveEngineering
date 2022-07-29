@@ -1,13 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "sss",
-    "s s",
-    "shs"
+    "ss",
+    "ss",
+    "ph"
   ],
   "key": {
     "s": {
-      "item": "immersiveengineering:sheetmetal_iron"
+      "tag": "forge:sheetmetals/iron"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
     },
     "h": {
       "item": "immersiveengineering:furnace_heater"

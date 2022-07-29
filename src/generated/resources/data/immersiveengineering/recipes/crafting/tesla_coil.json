@@ -3,17 +3,23 @@
   "pattern": [
     "iii",
     " l ",
-    "hlh"
+    "ehc"
   ],
   "key": {
     "i": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "forge:plates/aluminum"
     },
     "l": {
-      "item": "immersiveengineering:coil_lv"
+      "item": "immersiveengineering:coil_mv"
     },
     "h": {
       "item": "immersiveengineering:capacitor_hv"
+    },
+    "e": {
+      "item": "immersiveengineering:component_electronic_adv"
+    },
+    "c": {
+      "item": "immersiveengineering:component_iron"
     }
   },
   "result": {

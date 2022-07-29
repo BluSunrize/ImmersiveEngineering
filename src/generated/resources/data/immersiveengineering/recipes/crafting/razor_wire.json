@@ -1,9 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    "psp",
-    "sss",
-    "psp"
+    "sps",
+    "fsf"
   ],
   "key": {
     "s": {
@@ -11,6 +10,9 @@
     },
     "p": {
       "tag": "forge:plates/steel"
+    },
+    "f": {
+      "item": "immersiveengineering:treated_fence"
     }
   },
   "result": {

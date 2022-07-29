@@ -1,9 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "pattern": [
-    " f ",
-    "gbg",
-    "ggg"
+    "gfg",
+    "gbg"
   ],
   "key": {
     "f": {
