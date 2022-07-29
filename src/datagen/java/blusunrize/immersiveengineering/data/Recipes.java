@@ -400,7 +400,7 @@ public class Recipes extends RecipeProvider
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.build(out, toRL("blueprint/component_steel"));
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.COMPONENT_ELECTRONIC))
-				.addInput(IETags.getItemTag(IETags.treatedWood))
+				.addInput(IETags.getItemTag(IETags.treatedWoodSlab))
 				.addInput(Tags.Items.GEMS_QUARTZ)
 				.addInput(Tags.Items.DUSTS_REDSTONE)
 				.addInput(IETags.electrumWire)

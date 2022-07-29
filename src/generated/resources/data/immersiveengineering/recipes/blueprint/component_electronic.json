@@ -2,7 +2,7 @@
   "type": "immersiveengineering:blueprint",
   "inputs": [
     {
-      "tag": "forge:treated_wood"
+      "tag": "forge:treated_wood_slab"
     },
     {
       "tag": "forge:gems/quartz"
