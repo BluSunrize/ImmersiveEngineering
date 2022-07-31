@@ -2020,11 +2020,10 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Connectors.REDSTONE_BREAKER)));
 
 		ShapedRecipeBuilder.shaped(IEBlocks.Connectors.CURRENT_TRANSFORMER)
-				.pattern("wmw")
+				.pattern(" m ")
 				.pattern(" b ")
 				.pattern("iei")
 				.define('m', IEItems.Tools.VOLTMETER)
-				.define('w', IETags.copperWire)
 				.define('b', IETags.connectorInsulator)
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('e', Ingredients.COMPONENT_ELECTRONIC)
