@@ -6,5 +6,31 @@
   "multiblock": {
     "type": "multiblock",
     "name": "multiblocks/alloy_smelter"
+  },
+  "insulating_glass": {
+    "type": "crafting",
+    "recipes": [
+      [
+        [
+          {
+            "x": 24,
+            "y": 0,
+            "item": "minecraft:glass",
+            "count": 2
+          },
+          {
+            "x": 42,
+            "y": 0,
+            "item": "immersiveengineering:dust_iron"
+          },
+          {
+            "x": 78,
+            "y": 0,
+            "item": "immersiveengineering:insulating_glass",
+            "count": 2
+          }
+        ]
+      ]
+    ]
   }
 }
