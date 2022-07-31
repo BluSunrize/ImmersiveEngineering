@@ -8,6 +8,12 @@
     - Can now be made with resin in the bottling machine
     - In exchange, the normal recipe outputs a little less
 - Change mineral survey tools to send positive messages to chat, makes it easier to look back on them (BluSunrize)
+- Change a bunch of recipes! (BluSunrize & Silfryi)
+    - Various tool upgrades got cheaper
+    - Revolver recipe more closes matches the pattern of other tools
+    - Many electrical blocks (transformers, tesla coils, external heaters) had their recipes changed
+    - Connectors and relays now accept all colours of terracotta
+    - Insulating glass is now made in the alloy kiln
 
 ##### Version 1.18.2-8.1.0-150
 - The Plastics update! (BluSunrize)
