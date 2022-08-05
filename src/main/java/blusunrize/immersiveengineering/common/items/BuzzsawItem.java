@@ -44,6 +44,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolAction;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -365,6 +366,15 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 				return ((SawbladeItem)sawblade.getItem()).getSawbladeSpeed();
 		}
 		return super.getDestroySpeed(stack, state);
+	}
+
+	@Override
+	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
+	{
+		ItemStack sawblade = getHead(stack);
+		if(sawblade.getItem() instanceof SawbladeItem)
+			return ((SawbladeItem)sawblade.getItem()).canPerformAction(toolAction);
+		return false;
 	}
 
 	/**

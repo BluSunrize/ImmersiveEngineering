@@ -15,6 +15,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Material;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
 import java.util.Set;
 import java.util.function.Predicate;
@@ -57,5 +59,11 @@ public class RockcutterItem extends SawbladeItem
 	public Predicate<BlockState> getSawbladeMaterials()
 	{
 		return s -> silktouchMaterials.contains(s.getMaterial());
+	}
+
+	@Override
+	public boolean canPerformAction(ToolAction toolAction)
+	{
+		return toolAction==ToolActions.PICKAXE_DIG;
 	}
 }
