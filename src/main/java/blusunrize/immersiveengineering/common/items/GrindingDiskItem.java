@@ -10,6 +10,7 @@ package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -28,7 +29,7 @@ public class GrindingDiskItem extends SawbladeItem
 			Material.METAL, Material.HEAVY_METAL
 	);
 	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
-			ToolActions.PICKAXE_DIG, ToolActions.AXE_STRIP, ToolActions.AXE_SCRAPE, ToolActions.AXE_WAX_OFF
+			ToolActions.PICKAXE_DIG, ToolActions.AXE_STRIP, ToolActions.AXE_SCRAPE, ToolActions.AXE_WAX_OFF, Lib.WIRECUTTER_DIG
 	);
 	private static final ListTag ENCHANTS = new ListTag();
 	public static final ResourceLocation TEXTURE = ImmersiveEngineering.rl("item/grindingdisk_blade");

@@ -235,7 +235,7 @@ public class EventHandler
 		if(!event.isCanceled())
 		{
 			boolean isBoss = event.getEntityLiving().getMaxHealth() >= 100||event.getEntityLiving().getType().is(IETags.shaderbagWhitelist);
-			if(!isBoss || event.getEntityLiving().getType().is(IETags.shaderbagBlacklist))
+			if(!isBoss||event.getEntityLiving().getType().is(IETags.shaderbagBlacklist))
 				return;
 			Rarity r = Rarity.EPIC;
 			ItemStack bag = new ItemStack(Misc.SHADER_BAG.get(r));
@@ -311,12 +311,13 @@ public class EventHandler
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);
-		if(event.getState().getBlock()==MetalDevices.RAZOR_WIRE.get())
-			if(current.getItem()!=Tools.WIRECUTTER.get())
-			{
-				event.setCanceled(true);
+		// Certain blocks require a wirecutter to break or else they hurt
+		if(event.getState().is(IETags.wirecutterHarvestable) && !current.canPerformAction(Lib.WIRECUTTER_DIG))
+		{
+			event.setCanceled(true);
+			if(event.getPlayer().getRandom().nextInt(4)==0)
 				RazorWireBlockEntity.applyDamage(event.getEntityLiving());
-			}
+		}
 		if(event.getPos()!=null) // Avoid a potential NPE for invalid positions passed
 		{
 			BlockEntity te = event.getPlayer().getCommandSenderWorld().getBlockEntity(event.getPos());
@@ -417,7 +418,7 @@ public class EventHandler
 		if(!(event.getEntityLiving() instanceof ServerPlayer serverPlayer))
 			return;
 		serverPlayer.awardStat(IEStats.WIRE_DEATHS);
-		if(serverPlayer.getAbilities().flying || serverPlayer.isFallFlying())
+		if(serverPlayer.getAbilities().flying||serverPlayer.isFallFlying())
 			Utils.unlockIEAdvancement(serverPlayer, "main/secret_friedbird");
 	}
 }
