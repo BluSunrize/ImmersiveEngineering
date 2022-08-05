@@ -92,8 +92,8 @@ public class SawbladeItem extends IEBaseItem
 		return s -> s.is(BlockTags.MINEABLE_WITH_AXE);
 	}
 
-	public boolean canPerformAction(ToolAction toolAction)
+	public Set<ToolAction> getToolActions()
 	{
-		return TOOL_ACTIONS.contains(toolAction);
+		return TOOL_ACTIONS;
 	}
 }

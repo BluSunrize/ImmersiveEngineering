@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -26,6 +27,9 @@ public class RockcutterItem extends SawbladeItem
 	private static final Set<Material> silktouchMaterials = ImmutableSet.of(
 			Material.PLANT, Material.REPLACEABLE_PLANT, Material.GRASS,
 			Material.STONE, Material.GLASS, Material.ICE, Material.ICE_SOLID
+	);
+	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
+			ToolActions.PICKAXE_DIG
 	);
 	private static final ListTag ENCHANTS = new ListTag();
 	public static final ResourceLocation TEXTURE = ImmersiveEngineering.rl("item/rockcutter_blade");
@@ -62,8 +66,8 @@ public class RockcutterItem extends SawbladeItem
 	}
 
 	@Override
-	public boolean canPerformAction(ToolAction toolAction)
+	public Set<ToolAction> getToolActions()
 	{
-		return toolAction==ToolActions.PICKAXE_DIG;
+		return TOOL_ACTIONS;
 	}
 }

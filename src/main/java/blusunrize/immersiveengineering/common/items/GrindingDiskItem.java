@@ -66,8 +66,8 @@ public class GrindingDiskItem extends SawbladeItem
 	}
 
 	@Override
-	public boolean canPerformAction(ToolAction toolAction)
+	public Set<ToolAction> getToolActions()
 	{
-		return TOOL_ACTIONS.contains(toolAction);
+		return TOOL_ACTIONS;
 	}
 }

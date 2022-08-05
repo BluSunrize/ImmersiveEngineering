@@ -368,12 +368,14 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		return super.getDestroySpeed(stack, state);
 	}
 
+	/* ------------- Tool Actions ------------- */
+
 	@Override
 	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
 	{
 		ItemStack sawblade = getHead(stack);
 		if(sawblade.getItem() instanceof SawbladeItem)
-			return ((SawbladeItem)sawblade.getItem()).canPerformAction(toolAction);
+			return ((SawbladeItem)sawblade.getItem()).getToolActions().contains(toolAction);
 		return false;
 	}
 
