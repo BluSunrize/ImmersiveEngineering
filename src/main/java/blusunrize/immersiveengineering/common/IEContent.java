@@ -208,7 +208,7 @@ public class IEContent
 			if(!(potentialBucket instanceof BucketItem))
 				return null;
 			// bucket was consumed in recipe
-			if(remain.isEmpty())
+			if(remain.getItem()!=Items.BUCKET)
 				return null;
 			//Explicitly check for vanilla-style non-dynamic container items
 			//noinspection deprecation
@@ -225,7 +225,7 @@ public class IEContent
 			if(matching[0].getItem()!=Items.MILK_BUCKET||!ForgeMod.MILK.isPresent())
 				return null;
 			// bucket was consumed in recipe
-			if(remain.isEmpty())
+			if(remain.getItem()!=Items.BUCKET)
 				return null;
 			return new FluidStackRecipeQuery(new FluidStack(ForgeMod.MILK.get(), FluidAttributes.BUCKET_VOLUME));
 		});
