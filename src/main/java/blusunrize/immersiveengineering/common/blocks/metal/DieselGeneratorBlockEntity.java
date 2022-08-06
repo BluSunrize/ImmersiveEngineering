@@ -170,7 +170,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 			{
 				consumeTick--;
 			}
-			if (consumeTick == 0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
+			if(consumeTick==0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
 			{
 				GeneratorFuel recipe = recipeGetter.apply(level, tanks[0].getFluid().getFluid());
 				if(recipe!=null)
