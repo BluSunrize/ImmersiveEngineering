@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 /**
@@ -31,9 +32,8 @@ import java.util.function.Function;
 public class AssemblerHandler
 {
 	private static final HashMap<Class<? extends Recipe>, IRecipeAdapter> registry = new LinkedHashMap<>();
-	private static final List<Function<Object, RecipeQuery>> specialQueryConverters = new ArrayList<>();
-	private static final List<Function<Ingredient, RecipeQuery>> specialIngredientConverters = new ArrayList<>();
-	private static final List<Function<ItemStack, RecipeQuery>> specialItemStackConverters = new ArrayList<>();
+	private static final List<BiFunction<Ingredient, ItemStack, RecipeQuery>> specialIngredientConverters = new ArrayList<>();
+	private static final List<BiFunction<ItemStack, ItemStack, RecipeQuery>> specialItemStackConverters = new ArrayList<>();
 	public static IRecipeAdapter<Recipe<CraftingContainer>> defaultAdapter;
 
 	public static void registerRecipeAdapter(Class<? extends Recipe> recipeClass, IRecipeAdapter adapter)
@@ -60,12 +60,24 @@ public class AssemblerHandler
 		return findAdapterForClass(recipe.getClass());
 	}
 
+	@Deprecated
 	public static void registerSpecialIngredientConverter(Function<Ingredient, RecipeQuery> func)
+	{
+		registerSpecialIngredientConverter((ingr, rem) -> func.apply(ingr));
+	}
+
+	public static void registerSpecialIngredientConverter(BiFunction<Ingredient, ItemStack, RecipeQuery> func)
 	{
 		specialIngredientConverters.add(func);
 	}
 
+	@Deprecated
 	public static void registerSpecialItemStackConverter(Function<ItemStack, RecipeQuery> func)
+	{
+		registerSpecialItemStackConverter((stack, rem) -> func.apply(stack));
+	}
+
+	public static void registerSpecialItemStackConverter(BiFunction<ItemStack, ItemStack, RecipeQuery> func)
 	{
 		specialItemStackConverters.add(func);
 	}
@@ -76,11 +88,11 @@ public class AssemblerHandler
 		RecipeQuery[] getQueriedInputs(R recipe, NonNullList<ItemStack> input, Level world);
 	}
 
-	private static <T> RecipeQuery fromFunctions(T in, List<Function<T, RecipeQuery>> converters)
+	private static <T> RecipeQuery fromFunctions(T in, ItemStack remaining, List<BiFunction<T, ItemStack, RecipeQuery>> converters)
 	{
-		for(Function<T, RecipeQuery> func : converters)
+		for(BiFunction<T, ItemStack, RecipeQuery> func : converters)
 		{
-			RecipeQuery q = func.apply(in);
+			RecipeQuery q = func.apply(in, remaining);
 			if(q!=null)
 				return q;
 		}
@@ -88,11 +100,9 @@ public class AssemblerHandler
 	}
 
 	@Nullable
-	public static RecipeQuery createQueryFromIngredient(Ingredient ingr)
+	public static RecipeQuery createQueryFromIngredient(Ingredient ingr, ItemStack remaining)
 	{
-		RecipeQuery special = fromFunctions(ingr, specialIngredientConverters);
-		if(special==null)
-			special = fromFunctions(ingr, specialQueryConverters);
+		RecipeQuery special = fromFunctions(ingr, remaining, specialIngredientConverters);
 		if(special!=null)
 			return special;
 		if(ingr.isEmpty())
@@ -102,13 +112,11 @@ public class AssemblerHandler
 	}
 
 	@Nullable
-	public static RecipeQuery createQueryFromItemStack(ItemStack stack)
+	public static RecipeQuery createQueryFromItemStack(ItemStack stack, ItemStack remaining)
 	{
 		if(stack.isEmpty())
 			return null;
-		RecipeQuery special = fromFunctions(stack, specialItemStackConverters);
-		if(special==null)
-			special = fromFunctions(stack, specialQueryConverters);
+		RecipeQuery special = fromFunctions(stack, remaining, specialItemStackConverters);
 		if(special!=null)
 			return special;
 		FluidStack fluidStack = FluidUtil.getFluidContained(stack).orElse(FluidStack.EMPTY);
