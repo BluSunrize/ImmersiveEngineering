@@ -67,6 +67,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 	public float animation_fanRotation = 0;
 	public int animation_fanFadeIn = 0;
 	public int animation_fanFadeOut = 0;
+	public int consumeTick = 0;
 
 	public DieselGeneratorBlockEntity(BlockEntityType<DieselGeneratorBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -83,6 +84,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 		animation_fanRotation = nbt.getFloat("animation_fanRotation");
 		animation_fanFadeIn = nbt.getInt("animation_fanFadeIn");
 		animation_fanFadeOut = nbt.getInt("animation_fanFadeOut");
+		consumeTick = nbt.getInt("consumeTick");
 	}
 
 	@Override
@@ -94,6 +96,7 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 		nbt.putFloat("animation_fanRotation", animation_fanRotation);
 		nbt.putInt("animation_fanFadeIn", animation_fanFadeIn);
 		nbt.putInt("animation_fanFadeOut", animation_fanFadeOut);
+		nbt.putInt("consumeTick", consumeTick);
 	}
 
 
@@ -158,32 +161,37 @@ public class DieselGeneratorBlockEntity extends MultiblockPartBlockEntity<Diesel
 
 		if(!isRSDisabled()&&!tanks[0].getFluid().isEmpty())
 		{
-			GeneratorFuel recipe = recipeGetter.apply(level, tanks[0].getFluid().getFluid());
-			if(recipe!=null)
+			int output = IEServerConfig.MACHINES.dieselGen_output.get();
+			List<IEnergyStorage> presentOutputs = outputs.stream()
+					.map(CapabilityReference::getNullable)
+					.filter(Objects::nonNull)
+					.collect(Collectors.toList());
+			if(!presentOutputs.isEmpty()&&EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
 			{
-				int burnTime = recipe.getBurnTime();
-				int fluidConsumed = FluidAttributes.BUCKET_VOLUME/burnTime;
-				int output = IEServerConfig.MACHINES.dieselGen_output.get();
-				List<IEnergyStorage> presentOutputs = outputs.stream()
-						.map(CapabilityReference::getNullable)
-						.filter(Objects::nonNull)
-						.collect(Collectors.toList());
-				if(!presentOutputs.isEmpty()&&
-						tanks[0].getFluidAmount() >= fluidConsumed&&
-						// Sort receivers by lowest input
-						EnergyHelper.distributeFlux(presentOutputs, output, false) < output)
+				consumeTick--;
+			}
+			if(consumeTick==0) //Consume 10*tick-amount every 10ticks to allow for 1/10th mB amounts
+			{
+				GeneratorFuel recipe = recipeGetter.apply(level, tanks[0].getFluid().getFluid());
+				if(recipe!=null)
 				{
-					if(!active)
+					int burnTime = recipe.getBurnTime();
+					int fluidConsumed = (10*FluidAttributes.BUCKET_VOLUME)/burnTime;
+					if(tanks[0].getFluidAmount() >= fluidConsumed)
 					{
-						active = true;
-						animation_fanFadeIn = 80;
+						if(!active)
+						{
+							active = true;
+							animation_fanFadeIn = 80;
+						}
+						tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
+						consumeTick = 10;
 					}
-					tanks[0].drain(fluidConsumed, FluidAction.EXECUTE);
-				}
-				else if(active)
-				{
-					active = false;
-					animation_fanFadeOut = 80;
+					else if(active)
+					{
+						active = false;
+						animation_fanFadeOut = 80;
+					}
 				}
 			}
 		}
