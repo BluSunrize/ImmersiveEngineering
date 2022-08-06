@@ -19,6 +19,12 @@
     "type": "crafting",
     "recipe": "crafting/rockcutter"
   },
+  "grinding_recipe": {
+    "type": "bottling",
+    "recipe": {
+      "item": "immersiveengineering:grindingdisk"
+    }
+  },
   "tank_recipe": {
     "type": "crafting",
     "recipe": "crafting/toolupgrade_drill_capacity"

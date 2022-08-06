@@ -201,6 +201,9 @@ public final class IEItems
 		public static final ItemRegObject<RockcutterItem> ROCKCUTTER = register(
 				"rockcutter", () -> new RockcutterItem(5000, 5f, 9f)
 		);
+		public static final ItemRegObject<GrindingDiskItem> GRINDINGDISK = register(
+				"grindingdisk", () -> new GrindingDiskItem(4000, 12f, 9f)
+		);
 
 		public static final ItemRegObject<SurveyToolsItem> SURVEY_TOOLS = register("survey_tools", SurveyToolsItem::new);
 

@@ -22,12 +22,10 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidAttributes;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMachineRecipe>
@@ -38,7 +36,7 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	public BottlingMachineRecipeCategory(IGuiHelper helper)
 	{
 		super(BottlingMachineRecipe.class, helper, UID, "block.immersiveengineering.bottling_machine");
-		setBackground(helper.createBlankDrawable(120, 50));
+		setBackground(helper.createBlankDrawable(120, 56));
 		setIcon(helper.createDrawableIngredient(VanillaTypes.ITEM, new ItemStack(IEBlocks.Multiblocks.BOTTLING_MACHINE)));
 		tankOverlay = helper.drawableBuilder(new ResourceLocation(Lib.MODID, "textures/gui/fermenter.png"), 177, 31, 20, 51).addPadding(-2, 2, -2, 2).build();
 	}
@@ -46,19 +44,22 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, BottlingMachineRecipe recipe, IFocusGroup focuses)
 	{
-		for(int i=0; i<recipe.inputs.length; i++)
-			builder.addSlot(RecipeIngredientRole.INPUT, 1, 13+i*18)
+		int inLength = recipe.inputs.length;
+		int yStart = 29-Math.min(inLength, 3)*9;
+		for(int i=0; i<inLength; i++)
+			builder.addSlot(RecipeIngredientRole.INPUT, 1, yStart+i*18)
 				.addItemStacks(recipe.inputs[i].getMatchingStackList())
 				.setBackground(JEIHelper.slotDrawable, -1, -1);
 
 		List<ItemStack> outputs = recipe.output.get();
+		yStart = 29-Math.min(outputs.size(), 3)*9;
 		for(int i=0; i<outputs.size(); i++)
-			builder.addSlot(RecipeIngredientRole.OUTPUT, 101, 13+i*18)
+			builder.addSlot(RecipeIngredientRole.OUTPUT, 101, yStart+i*18)
 					.addItemStack(outputs.get(i))
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 
-		builder.addSlot(RecipeIngredientRole.INPUT, 76, 1)
-				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 48)
+		builder.addSlot(RecipeIngredientRole.INPUT, 24, 2)
+				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 52)
 				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}
@@ -66,11 +67,11 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 	@Override
 	public void draw(BottlingMachineRecipe recipe, IRecipeSlotsView recipeSlotsView, PoseStack transform, double mouseX, double mouseY)
 	{
-		GuiHelper.drawSlot(76, 17, 16, 48, transform);
+		GuiHelper.drawSlot(24, 20, 16, 52, transform);
 
 		transform.pushPose();
 		transform.scale(3, 3, 1);
-		this.getIcon().draw(transform, 8, 0);
+		this.getIcon().draw(transform, 14, 0);
 		transform.popPose();
 	}
 }

@@ -1,6 +1,6 @@
 /*
  * BluSunrize
- * Copyright (c) 2020
+ * Copyright (c) 2022
  *
  * This code is licensed under "Blu's License of Common Sense"
  * Details can be found in the license file in the root folder of this project
@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import com.google.common.collect.ImmutableSet;
 import net.minecraft.nbt.CompoundTag;
@@ -22,17 +23,16 @@ import net.minecraftforge.common.ToolActions;
 import java.util.Set;
 import java.util.function.Predicate;
 
-public class RockcutterItem extends SawbladeItem
+public class GrindingDiskItem extends SawbladeItem
 {
-	private static final Set<Material> silktouchMaterials = ImmutableSet.of(
-			Material.PLANT, Material.REPLACEABLE_PLANT, Material.GRASS,
-			Material.STONE, Material.GLASS, Material.ICE, Material.ICE_SOLID
+	private static final Set<Material> materials = ImmutableSet.of(
+			Material.METAL, Material.HEAVY_METAL
 	);
 	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
-			ToolActions.PICKAXE_DIG
+			ToolActions.PICKAXE_DIG, ToolActions.AXE_STRIP, ToolActions.AXE_SCRAPE, ToolActions.AXE_WAX_OFF, Lib.WIRECUTTER_DIG
 	);
 	private static final ListTag ENCHANTS = new ListTag();
-	public static final ResourceLocation TEXTURE = ImmersiveEngineering.rl("item/rockcutter_blade");
+	public static final ResourceLocation TEXTURE = ImmersiveEngineering.rl("item/grindingdisk_blade");
 
 	static
 	{
@@ -42,7 +42,7 @@ public class RockcutterItem extends SawbladeItem
 		ENCHANTS.add(tag);
 	}
 
-	public RockcutterItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage)
+	public GrindingDiskItem(int maxDamage, float sawbladeSpeed, float sawbladeDamage)
 	{
 		super(maxDamage, sawbladeSpeed, sawbladeDamage, TEXTURE);
 	}
@@ -62,7 +62,7 @@ public class RockcutterItem extends SawbladeItem
 	@Override
 	public Predicate<BlockState> getSawbladeMaterials()
 	{
-		return s -> silktouchMaterials.contains(s.getMaterial());
+		return s -> materials.contains(s.getMaterial())||s.is(IETags.wirecutterHarvestable);
 	}
 
 	@Override

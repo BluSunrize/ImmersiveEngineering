@@ -13,6 +13,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.ToolAction;
 
 public class Lib
 {
@@ -140,4 +141,6 @@ public class Lib
 		}
 	};
 	public static final Rarity RARITY_MASTERWORK = Rarity.create("IE_MASTERWORK", ChatFormatting.GOLD);
+
+	public static final ToolAction WIRECUTTER_DIG = ToolAction.get("wirecutter_dig");
 }

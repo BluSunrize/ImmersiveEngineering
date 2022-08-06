@@ -55,6 +55,7 @@ import blusunrize.immersiveengineering.common.blocks.metal.conveyors.VerticalCon
 import blusunrize.immersiveengineering.common.config.IEClientConfig;
 import blusunrize.immersiveengineering.common.entities.SkylineHookEntity;
 import blusunrize.immersiveengineering.common.gui.IEBaseContainer;
+import blusunrize.immersiveengineering.common.items.GrindingDiskItem;
 import blusunrize.immersiveengineering.common.items.RockcutterItem;
 import blusunrize.immersiveengineering.common.register.IEBlockEntities;
 import blusunrize.immersiveengineering.common.register.IEContainerTypes;
@@ -499,6 +500,7 @@ public class ClientProxy extends CommonProxy
 		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_FLOW);
 		DynamicModelLoader.requestTexture(ArcFurnaceRenderer.HOT_METLA_STILL);
 		DynamicModelLoader.requestTexture(RockcutterItem.TEXTURE);
+		DynamicModelLoader.requestTexture(GrindingDiskItem.TEXTURE);
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/wire"));
 		DynamicModelLoader.requestTexture(new ResourceLocation(MODID, "block/shaders/greyscale_fire"));
 
