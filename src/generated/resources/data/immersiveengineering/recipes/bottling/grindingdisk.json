@@ -20,7 +20,10 @@
       }
     },
     {
-      "tag": "forge:ingots/steel"
+      "count": 8,
+      "base_ingredient": {
+        "tag": "forge:fiber_hemp"
+      }
     }
   ],
   "fluid": {

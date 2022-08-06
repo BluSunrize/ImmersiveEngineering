@@ -821,7 +821,7 @@ public class Recipes extends RecipeProvider
 				.setUseInputArray(3)
 				.addInput(Molds.MOLD_GEAR)
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 6))
-				.addInput(IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.addInput(new IngredientWithSize(IETags.fiberHemp, 8))
 				.addFluidTag(IETags.fluidResin, half_bucket)
 				.build(out, toRL("bottling/"+toPath(Tools.GRINDINGDISK)));
 
