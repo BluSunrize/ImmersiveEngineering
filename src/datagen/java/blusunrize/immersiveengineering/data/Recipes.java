@@ -816,6 +816,14 @@ public class Recipes extends RecipeProvider
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).nugget, 3))
 				.addFluidTag(IETags.fluidResin, quarter_bucket)
 				.build(out, toRL("bottling/"+toPath(BulletHandler.emptyShell)));
+		BottlingMachineRecipeBuilder.builder(Tools.GRINDINGDISK.get())
+				.addResult(Molds.MOLD_GEAR)
+				.setUseInputArray(3)
+				.addInput(Molds.MOLD_GEAR)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 6))
+				.addInput(IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.addFluidTag(IETags.fluidResin, half_bucket)
+				.build(out, toRL("bottling/"+toPath(Tools.GRINDINGDISK)));
 
 		/* CRUSHER */
 		CrusherRecipeBuilder.builder(Items.GRAVEL)
