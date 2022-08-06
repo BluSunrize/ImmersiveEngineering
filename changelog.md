@@ -14,6 +14,7 @@
     - Many electrical blocks (transformers, tesla coils, external heaters) had their recipes changed
     - Connectors and relays now accept all colours of terracotta
     - Insulating glass is now made in the alloy kiln
+    - Metal wallmounts are now crafted in larger amounts
 - Add the Grinding Disk for the Buzzsaw, allowing it to quickly cut through metal (BluSunrize)
     - Also behaves like an axe when rightclicking, so it can strip woods and clean copper
 - Change assembler to only use a single tank for a fluid, to allow better "filtering"

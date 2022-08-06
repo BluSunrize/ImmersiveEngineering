@@ -1755,14 +1755,14 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(MetalDecoration.STEEL_FENCE), has(MetalDecoration.STEEL_FENCE))
 				.save(out, toRL(toPath(MetalDecoration.STEEL_POST)));
 
-		ShapedRecipeBuilder.shaped(MetalDecoration.ALU_WALLMOUNT)
+		ShapedRecipeBuilder.shaped(MetalDecoration.ALU_WALLMOUNT, 4)
 				.pattern("ii")
 				.pattern("is")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
 				.define('s', IETags.aluminumRod)
 				.unlockedBy("has_aluminum_ingot", has(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
 				.save(out, toRL(toPath(MetalDecoration.ALU_WALLMOUNT)));
-		ShapedRecipeBuilder.shaped(MetalDecoration.STEEL_WALLMOUNT)
+		ShapedRecipeBuilder.shaped(MetalDecoration.STEEL_WALLMOUNT, 4)
 				.pattern("ii")
 				.pattern("is")
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
