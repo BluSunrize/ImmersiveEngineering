@@ -1,0 +1,13 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "#dynamictrees:branches",
+      "required": false
+    },
+    {
+      "id": "#dynamictrees:leaves",
+      "required": false
+    }
+  ]
+}

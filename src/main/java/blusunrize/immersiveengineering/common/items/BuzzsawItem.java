@@ -8,6 +8,7 @@
 
 package blusunrize.immersiveengineering.common.items;
 
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.client.render.IEOBJItemRenderer;
@@ -324,7 +325,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		consumeDurability(stack, world, state, pos, living);
 		if(!world.isClientSide&&!living.isShiftKeyDown()&&living instanceof ServerPlayer)
-			if(canFellTree(stack)&&canToolBeUsed(stack)&&isTree(world, pos))
+			if(canFellTree(stack)&&canToolBeUsed(stack)&&isTree(world, pos)&&!state.is(IETags.buzzsawTreeBlacklist))
 				fellTree(world, pos, (ServerPlayer)living, stack);
 		return true;
 	}

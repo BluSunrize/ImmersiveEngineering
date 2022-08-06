@@ -142,6 +142,9 @@ class IEBlockTags extends BlockTagsProvider
 		tag(IETags.drillHarvestable)
 				.addTag(BlockTags.MINEABLE_WITH_SHOVEL)
 				.addTag(BlockTags.MINEABLE_WITH_PICKAXE);
+		tag(IETags.buzzsawTreeBlacklist)
+				.addOptionalTag(new ResourceLocation("dynamictrees","branches"))
+				.addOptionalTag(new ResourceLocation("dynamictrees","leaves"));
 		checkAllRegisteredForBreaking();
 
 		for(BlockEntry<SlabBlock> slab : IEBlocks.TO_SLAB.values())

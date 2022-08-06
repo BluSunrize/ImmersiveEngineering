@@ -17,6 +17,9 @@
     - Metal wallmounts are now crafted in larger amounts
 - Add the Grinding Disk for the Buzzsaw, allowing it to quickly cut through metal (BluSunrize)
     - Also behaves like an axe when rightclicking, so it can strip woods and clean copper
+- Add a blacklist for buzzsaw treecapitation (BluSunrize)
+    - This is done with the block tag "immersiveengineering:buzzsaw/tree_blacklist"
+    - By default, this blacklists Dynamic Trees, because they have their own mechanic for felling
 - Change assembler to only use a single tank for a fluid, to allow better "filtering" (BluSunrize)
 - Change Diesel Generator consume fuel every 10 ticks, allowing for more granular burntime configurations (Silfryi)
 - Fix assembler creating buckets from nowhere for recipes that would consume them (BluSunrize)
