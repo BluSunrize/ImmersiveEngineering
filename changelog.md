@@ -17,7 +17,10 @@
     - Metal wallmounts are now crafted in larger amounts
 - Add the Grinding Disk for the Buzzsaw, allowing it to quickly cut through metal (BluSunrize)
     - Also behaves like an axe when rightclicking, so it can strip woods and clean copper
-- Change assembler to only use a single tank for a fluid, to allow better "filtering"
+- Change assembler to only use a single tank for a fluid, to allow better "filtering" (BluSunrize)
+- Change Diesel Generator consume fuel every 10 ticks, allowing for more granular burntime configurations (Silfryi)
+- Fix assembler creating buckets from nowhere for recipes that would consume them (BluSunrize)
+- Translations Added/Updated: ja_jp (karakufire)
 
 ##### Version 1.18.2-8.1.0-150
 - The Plastics update! (BluSunrize)
