@@ -799,6 +799,13 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.WEATHERED_COPPER)
 				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
 				.build(out, toRL("bottling/copper_aging"));
+		BottlingMachineRecipeBuilder.builder(Ingredients.ERSATZ_LEATHER.get())
+				.addResult(Molds.MOLD_PLATE)
+				.setUseInputArray(2)
+				.addInput(Molds.MOLD_PLATE)
+				.addInput(IETags.fabricHemp)
+				.addFluidTag(IETags.fluidPlantoil, eighth_bucket)
+				.build(out, toRL("bottling/"+toPath(Ingredients.ERSATZ_LEATHER)));
 		BottlingMachineRecipeBuilder.builder(Ingredients.DUROPLAST_PLATE.get())
 				.addResult(Molds.MOLD_PLATE)
 				.addInput(Molds.MOLD_PLATE)
@@ -2449,6 +2456,14 @@ public class Recipes extends RecipeProvider
 				.define('s', Tags.Items.RODS_WOODEN)
 				.unlockedBy("has_hemp_fiber", has(IETags.fiberHemp))
 				.save(out, toRL(toPath(Ingredients.HEMP_FABRIC)));
+		ShapedRecipeBuilder.shaped(Ingredients.ERSATZ_LEATHER, 8)
+				.pattern("fff")
+				.pattern("fcf")
+				.pattern("fff")
+				.define('f', IETags.fabricHemp)
+				.define('c', Items.HONEYCOMB)
+				.unlockedBy("has_hemp_fabric", has(IETags.fabricHemp))
+				.save(out, toRL(toPath(Ingredients.ERSATZ_LEATHER)));
 
 		ShapedRecipeBuilder.shaped(Ingredients.COMPONENT_IRON)
 				.pattern("i i")

@@ -76,6 +76,7 @@ class IEItemTags extends ItemTagsProvider
 		tag(Tags.Items.SEEDS).add(Misc.HEMP_SEEDS.get());
 		tag(Tags.Items.RODS_WOODEN).add(Ingredients.STICK_TREATED.get());
 		tag(ItemTags.COALS).add(Ingredients.COAL_COKE.get());
+		tag(Tags.Items.LEATHER).add(Ingredients.ERSATZ_LEATHER.get());
 		tag(IETags.treatedStick).add(Ingredients.STICK_TREATED.get());
 		tag(IETags.slag).add(Ingredients.SLAG.get());
 		tag(IETags.ironRod).add(Ingredients.STICK_IRON.get());

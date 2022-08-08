@@ -71,6 +71,7 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> STICK_ALUMINUM = simple("stick_aluminum");
 		public static final ItemRegObject<IEBaseItem> HEMP_FIBER = simple("hemp_fiber");
 		public static final ItemRegObject<IEBaseItem> HEMP_FABRIC = simple("hemp_fabric");
+		public static final ItemRegObject<IEBaseItem> ERSATZ_LEATHER = simple("ersatz_leather");
 		public static final ItemRegObject<IEBaseItem> COAL_COKE = simple("coal_coke", nothing(), i -> i.setBurnTime(COKE_BURN_TIME));
 		public static final ItemRegObject<IEBaseItem> SLAG = simple("slag");
 		public static final ItemRegObject<IEBaseItem> COMPONENT_IRON = simple("component_iron");
