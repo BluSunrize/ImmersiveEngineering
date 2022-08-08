@@ -4,9 +4,17 @@
     "amount": 250,
     "tag": "forge:phenolic_resin"
   },
-  "input": {
-    "item": "immersiveengineering:mold_bullet_casing"
-  },
+  "inputs": [
+    {
+      "item": "immersiveengineering:mold_bullet_casing"
+    },
+    {
+      "base_ingredient": {
+        "tag": "forge:nuggets/copper"
+      },
+      "count": 3
+    }
+  ],
   "results": [
     {
       "count": 2,

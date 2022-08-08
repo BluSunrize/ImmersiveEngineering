@@ -1,11 +1,13 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_steel_ingot": {
+    "has_drum": {
       "conditions": {
         "items": [
           {
-            "tag": "forge:ingots/steel"
+            "items": [
+              "immersiveengineering:gunpart_drum"
+            ]
           }
         ]
       },
@@ -20,7 +22,7 @@
   },
   "requirements": [
     [
-      "has_steel_ingot",
+      "has_drum",
       "has_the_recipe"
     ]
   ],

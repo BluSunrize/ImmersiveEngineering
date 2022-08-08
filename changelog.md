@@ -1,3 +1,32 @@
+##### Version 1.18.2-8.1.1-pre
+- Overhauled the Bottling Machine (BluSunrize)
+    - Had its internals adjusted to match other multiblocks
+    - Now allows for multiple inputs in its recipes
+    - Allows holding items until full
+    - Improved documentation in the manual!
+- Updated recipe for empty shells for revolver cartridges (BluSunrize)
+    - Can now be made with resin in the bottling machine
+    - In exchange, the normal recipe outputs a little less
+- Change mineral survey tools to send positive messages to chat, makes it easier to look back on them (BluSunrize)
+- Change a bunch of recipes! (BluSunrize & Silfryi)
+    - Various tool upgrades got cheaper
+    - Revolver recipe more closes matches the pattern of other tools
+    - Many electrical blocks (transformers, tesla coils, external heaters) had their recipes changed
+    - Connectors and relays now accept all colours of terracotta
+    - Insulating glass is now made in the alloy kiln
+    - Metal wallmounts are now crafted in larger amounts
+- Add the Grinding Disk for the Buzzsaw, allowing it to quickly cut through metal (BluSunrize)
+    - Also behaves like an axe when rightclicking, so it can strip woods and clean copper
+- Add a blacklist for buzzsaw treecapitation (BluSunrize)
+    - This is done with the block tag "immersiveengineering:buzzsaw/tree_blacklist"
+    - By default, this blacklists Dynamic Trees, because they have their own mechanic for felling
+- Add Ersatz Leather, a leather alternative crafted with hemp fabric and beeswax or plant oil (BluSunrize)
+- Add recipes to break down prismarine blocks and press blaze powder into rods (BluSunrize)
+- Change assembler to only use a single tank for a fluid, to allow better "filtering" (BluSunrize)
+- Change Diesel Generator consume fuel every 10 ticks, allowing for more granular burntime configurations (Silfryi)
+- Fix assembler creating buckets from nowhere for recipes that would consume them (BluSunrize)
+- Translations Added/Updated: ja_jp (karakufire)
+
 ##### Version 1.18.2-8.1.0-150
 - The Plastics update! (BluSunrize)
     - New fluids:

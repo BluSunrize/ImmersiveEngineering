@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "key": {
+    "c": {
+      "item": "minecraft:honeycomb"
+    },
+    "f": {
+      "tag": "forge:fabric_hemp"
+    }
+  },
+  "pattern": [
+    "fff",
+    "fcf",
+    "fff"
+  ],
+  "result": {
+    "count": 8,
+    "item": "immersiveengineering:ersatz_leather"
+  }
+}

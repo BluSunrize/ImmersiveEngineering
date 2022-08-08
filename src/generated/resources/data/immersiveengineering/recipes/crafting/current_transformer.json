@@ -4,8 +4,8 @@
     "b": {
       "tag": "immersiveengineering:connector_insulator"
     },
-    "c": {
-      "item": "immersiveengineering:coil_lv"
+    "e": {
+      "item": "immersiveengineering:component_electronic"
     },
     "i": {
       "tag": "forge:ingots/iron"
@@ -16,8 +16,8 @@
   },
   "pattern": [
     " m ",
-    "bcb",
-    "ici"
+    " b ",
+    "iei"
   ],
   "result": {
     "item": "immersiveengineering:current_transformer"

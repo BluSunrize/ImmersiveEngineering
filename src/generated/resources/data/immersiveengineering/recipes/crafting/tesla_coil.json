@@ -1,20 +1,26 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "e": {
+      "item": "immersiveengineering:component_electronic_adv"
+    },
     "h": {
       "item": "immersiveengineering:capacitor_hv"
     },
     "i": {
-      "tag": "forge:ingots/aluminum"
+      "tag": "forge:plates/aluminum"
     },
     "l": {
-      "item": "immersiveengineering:coil_lv"
+      "item": "immersiveengineering:coil_mv"
     }
   },
   "pattern": [
     "iii",
     " l ",
-    "hlh"
+    "ehc"
   ],
   "result": {
     "item": "immersiveengineering:tesla_coil"

@@ -4,6 +4,7 @@ import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler;
 import blusunrize.immersiveengineering.api.tool.assembler.AssemblerHandler.IRecipeAdapter;
 import blusunrize.immersiveengineering.api.tool.assembler.RecipeQuery;
 import blusunrize.immersiveengineering.common.util.FakePlayerUtil;
+import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -37,6 +38,11 @@ public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingCo
 		int[] ingredientAssignment = RecipeMatcher.findMatches(inputList, ingredientsForMatching);
 		ForgeHooks.setCraftingPlayer(null);
 
+		// Collect remaining items
+		NonNullList<ItemStack> remains = recipe.getRemainingItems(
+				Utils.InventoryCraftingFalse.createFilledCraftingInventory(3, 3, input)
+		);
+
 		// - 1: Input list contains the output slot
 		RecipeQuery[] query = new RecipeQuery[input.size()-1];
 		if(ingredientAssignment!=null)
@@ -48,14 +54,15 @@ public class DefaultAssemblerAdapter implements IRecipeAdapter<Recipe<CraftingCo
 				int ingredIndex = ingredientAssignment[stackIndex];
 				if(ingredIndex < numNonEmpty)
 					query[stackIndex] = AssemblerHandler.createQueryFromIngredient(
-							(Ingredient)ingredientsForMatching.get(ingredIndex)
+							(Ingredient)ingredientsForMatching.get(ingredIndex),
+							remains.get(stackIndex)
 					);
 			}
 		else
 			// Otherwise request the exact stacks used in the input
 			for(int i = 0; i < query.length; i++)
 				if(!input.get(i).isEmpty())
-					query[i] = AssemblerHandler.createQueryFromItemStack(input.get(i));
+					query[i] = AssemblerHandler.createQueryFromItemStack(input.get(i), remains.get(i));
 		return query;
 	}
 }

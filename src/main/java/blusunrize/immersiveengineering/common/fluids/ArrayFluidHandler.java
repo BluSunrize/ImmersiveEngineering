@@ -50,13 +50,24 @@ public record ArrayFluidHandler(
 		if(!allowFill||resource.isEmpty())
 			return 0;
 		FluidStack remaining = resource.copy();
+		// iterating twice is actually faster than streams
+		IFluidTank existing = null;
 		for(IFluidTank tank : internal)
-		{
-			int filledHere = tank.fill(remaining, action);
-			remaining.shrink(filledHere);
-			if(remaining.isEmpty())
+			if(tank.getFluid().isFluidEqual(remaining))
+			{
+				existing = tank;
 				break;
-		}
+			}
+		if(existing!=null)
+			remaining.shrink(existing.fill(remaining, action));
+		else
+			for(IFluidTank tank : internal)
+			{
+				int filledHere = tank.fill(remaining, action);
+				remaining.shrink(filledHere);
+				if(filledHere > 0)
+					break;
+			}
 		if(resource.getAmount()!=remaining.getAmount())
 			afterTransfer.run();
 		return resource.getAmount()-remaining.getAmount();

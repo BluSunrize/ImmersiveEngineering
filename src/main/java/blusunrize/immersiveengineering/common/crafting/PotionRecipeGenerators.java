@@ -15,6 +15,7 @@ import blusunrize.immersiveengineering.common.util.IELogger;
 import net.minecraft.core.Registry;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -53,7 +54,7 @@ public class PotionRecipeGenerators
 		Function<Potion, BottlingMachineRecipe> toRecipe = potion -> new BottlingMachineRecipe(
 				Registry.POTION.getKey(potion),
 				List.of(Lazy.of(() -> PotionUtils.setPotion(new ItemStack(Items.POTION), potion))),
-				Ingredient.of(Items.GLASS_BOTTLE),
+				IngredientWithSize.of(new ItemStack(Items.GLASS_BOTTLE)),
 				getFluidTagForType(potion, 250)
 		);
 		PotionHelper.applyToAllPotionRecipes((out, in, reagent) -> {

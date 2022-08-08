@@ -1,17 +1,18 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "i": {
-      "tag": "forge:ingots/iron"
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
+    "d": {
+      "item": "immersiveengineering:gunpart_drum"
     },
     "s": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:rods/iron"
     }
   },
   "pattern": [
-    "  i",
-    "iis",
-    "  i"
+    "sdc"
   ],
   "result": {
     "item": "immersiveengineering:speedloader"

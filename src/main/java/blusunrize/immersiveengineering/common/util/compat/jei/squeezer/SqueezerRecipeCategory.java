@@ -49,10 +49,13 @@ public class SqueezerRecipeCategory extends IERecipeCategory<SqueezerRecipe>
 		if(!recipe.itemOutput.get().isEmpty())
 			outputBuilder.addItemStack(recipe.itemOutput.get());
 		if(recipe.fluidOutput!=null&&!recipe.fluidOutput.isEmpty())
+		{
+			int tankSize = Math.max(FluidType.BUCKET_VOLUME/4, recipe.fluidOutput.getAmount());
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 106, 9)
-					.setFluidRenderer(FluidType.BUCKET_VOLUME/2, false, 16, 47)
+					.setFluidRenderer(tankSize, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredient(ForgeTypes.FLUID_STACK, recipe.fluidOutput)
 					.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+		}
 	}
 }

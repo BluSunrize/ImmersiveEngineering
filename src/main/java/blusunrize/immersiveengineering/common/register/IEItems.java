@@ -69,6 +69,7 @@ public final class IEItems
 		public static final ItemRegObject<IEBaseItem> STICK_ALUMINUM = simple("stick_aluminum");
 		public static final ItemRegObject<IEBaseItem> HEMP_FIBER = simple("hemp_fiber");
 		public static final ItemRegObject<IEBaseItem> HEMP_FABRIC = simple("hemp_fabric");
+		public static final ItemRegObject<IEBaseItem> ERSATZ_LEATHER = simple("ersatz_leather");
 		public static final ItemRegObject<IEBaseItem> COAL_COKE = simple("coal_coke", nothing(), i -> i.setBurnTime(COKE_BURN_TIME));
 		public static final ItemRegObject<IEBaseItem> SLAG = simple("slag");
 		public static final ItemRegObject<IEBaseItem> COMPONENT_IRON = simple("component_iron");
@@ -198,6 +199,9 @@ public final class IEItems
 		);
 		public static final ItemRegObject<RockcutterItem> ROCKCUTTER = register(
 				"rockcutter", () -> new RockcutterItem(5000, 5f, 9f)
+		);
+		public static final ItemRegObject<GrindingDiskItem> GRINDINGDISK = register(
+				"grindingdisk", () -> new GrindingDiskItem(4000, 12f, 9f)
 		);
 
 		public static final ItemRegObject<SurveyToolsItem> SURVEY_TOOLS = register("survey_tools", SurveyToolsItem::new);

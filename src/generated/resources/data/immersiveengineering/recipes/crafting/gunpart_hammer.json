@@ -1,14 +1,19 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
+    "f": {
+      "item": "minecraft:flint"
+    },
     "i": {
       "tag": "forge:ingots/steel"
+    },
+    "s": {
+      "tag": "forge:rods/steel"
     }
   },
   "pattern": [
-    "i  ",
-    "ii ",
-    " ii"
+    "iif",
+    " s "
   ],
   "result": {
     "item": "immersiveengineering:gunpart_hammer"

@@ -1,23 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "b": {
-      "item": "minecraft:bucket"
-    },
-    "c": {
-      "item": "immersiveengineering:component_iron"
+    "d": {
+      "tag": "forge:dyes/red"
     },
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:plates/steel"
     },
-    "r": {
-      "tag": "forge:dyes/red"
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
     }
   },
   "pattern": [
-    "ci ",
-    "ibr",
-    " rb"
+    "pi ",
+    "idi",
+    " id"
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_drill_capacity"

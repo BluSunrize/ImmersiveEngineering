@@ -4,14 +4,17 @@
     "h": {
       "item": "immersiveengineering:furnace_heater"
     },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
+    },
     "s": {
-      "item": "immersiveengineering:sheetmetal_iron"
+      "tag": "forge:sheetmetals/iron"
     }
   },
   "pattern": [
-    "sss",
-    "s s",
-    "shs"
+    "ss",
+    "ss",
+    "ph"
   ],
   "result": {
     "item": "immersiveengineering:blastfurnace_preheater"

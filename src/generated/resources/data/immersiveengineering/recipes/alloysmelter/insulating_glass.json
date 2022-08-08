@@ -1,0 +1,17 @@
+{
+  "type": "immersiveengineering:alloy",
+  "input0": {
+    "base_ingredient": {
+      "tag": "forge:glass"
+    },
+    "count": 2
+  },
+  "input1": {
+    "tag": "forge:dusts/iron"
+  },
+  "result": {
+    "count": 2,
+    "item": "immersiveengineering:insulating_glass"
+  },
+  "time": 200
+}

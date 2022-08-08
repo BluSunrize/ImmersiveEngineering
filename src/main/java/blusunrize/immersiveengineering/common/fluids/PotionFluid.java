@@ -11,6 +11,7 @@ package blusunrize.immersiveengineering.common.fluids;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.common.items.PotionBucketItem;
 import blusunrize.immersiveengineering.common.register.IEFluids;
+import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.util.Utils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
@@ -26,7 +27,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.item.alchemy.Potions;
@@ -83,7 +83,7 @@ public class PotionFluid extends Fluid
 	@Override
 	public Item getBucket()
 	{
-		return Items.AIR;
+		return Misc.POTION_BUCKET.get();
 	}
 
 	@Override

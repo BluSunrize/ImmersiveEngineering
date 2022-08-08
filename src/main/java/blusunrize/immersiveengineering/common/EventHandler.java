@@ -28,7 +28,6 @@ import blusunrize.immersiveengineering.common.items.DrillItem;
 import blusunrize.immersiveengineering.common.items.IEShieldItem;
 import blusunrize.immersiveengineering.common.items.ManualItem;
 import blusunrize.immersiveengineering.common.network.MessageMinecartShaderSync;
-import blusunrize.immersiveengineering.common.register.IEBlocks.MetalDevices;
 import blusunrize.immersiveengineering.common.register.IEItems.Misc;
 import blusunrize.immersiveengineering.common.register.IEItems.Tools;
 import blusunrize.immersiveengineering.common.register.IEPotions;
@@ -41,14 +40,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.AbstractMinecart;
@@ -235,7 +231,7 @@ public class EventHandler
 		if(!event.isCanceled())
 		{
 			boolean isBoss = event.getEntity().getMaxHealth() >= 100||event.getEntity().getType().is(IETags.shaderbagWhitelist);
-			if(!isBoss || event.getEntity().getType().is(IETags.shaderbagBlacklist))
+			if(!isBoss||event.getEntity().getType().is(IETags.shaderbagBlacklist))
 				return;
 			Rarity r = Rarity.EPIC;
 			ItemStack bag = new ItemStack(Misc.SHADER_BAG.get(r));
@@ -311,15 +307,16 @@ public class EventHandler
 				event.setNewSpeed(event.getOriginalSpeed()*5);
 			else
 				event.setCanceled(true);
-		if(event.getState().getBlock()==MetalDevices.RAZOR_WIRE.get())
-			if(current.getItem()!=Tools.WIRECUTTER.get())
-			{
-				event.setCanceled(true);
-				RazorWireBlockEntity.applyDamage(event.getEntity());
-			}
-		if(event.getPos()!=null) // Avoid a potential NPE for invalid positions passed
+		// Certain blocks require a wirecutter to break or else they hurt
+		if(event.getState().is(IETags.wirecutterHarvestable)&&!current.canPerformAction(Lib.WIRECUTTER_DIG))
 		{
-			BlockEntity te = event.getEntity().getCommandSenderWorld().getBlockEntity(event.getPos());
+			event.setCanceled(true);
+			if(event.getEntity().getRandom().nextInt(4)==0)
+				RazorWireBlockEntity.applyDamage(event.getEntity());
+		}
+		if(event.getPosition().isPresent())
+		{
+			BlockEntity te = event.getEntity().getCommandSenderWorld().getBlockEntity(event.getPosition().get());
 			if(te instanceof IEntityProof&&!((IEntityProof)te).canEntityDestroy(event.getEntity()))
 				event.setCanceled(true);
 		}
@@ -417,7 +414,7 @@ public class EventHandler
 		if(!(event.getEntity() instanceof ServerPlayer serverPlayer))
 			return;
 		serverPlayer.awardStat(IEStats.WIRE_DEATHS.get());
-		if(serverPlayer.getAbilities().flying || serverPlayer.isFallFlying())
+		if(serverPlayer.getAbilities().flying||serverPlayer.isFallFlying())
 			Utils.unlockIEAdvancement(serverPlayer, "main/secret_friedbird");
 	}
 }

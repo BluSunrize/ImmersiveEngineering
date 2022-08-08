@@ -1,6 +1,6 @@
 {
   "values": [
-    "minecraft:terracotta",
+    "#minecraft:terracotta",
     "immersiveengineering:duroplast"
   ]
 }

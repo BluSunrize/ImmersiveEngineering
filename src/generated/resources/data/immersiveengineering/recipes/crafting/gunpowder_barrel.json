@@ -12,9 +12,8 @@
     }
   },
   "pattern": [
-    " f ",
-    "gbg",
-    "ggg"
+    "gfg",
+    "gbg"
   ],
   "result": {
     "item": "immersiveengineering:gunpowder_barrel"

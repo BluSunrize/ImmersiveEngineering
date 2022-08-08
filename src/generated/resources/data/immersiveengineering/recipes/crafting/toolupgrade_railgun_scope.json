@@ -1,11 +1,8 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "c": {
-      "tag": "forge:wires/copper"
-    },
     "i": {
-      "tag": "forge:plates/iron"
+      "tag": "forge:rods/steel"
     },
     "p": {
       "tag": "forge:glass_panes"
@@ -15,8 +12,9 @@
     }
   },
   "pattern": [
-    "cic",
-    "psp"
+    "  p",
+    " si",
+    "pi "
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_railgun_scope"

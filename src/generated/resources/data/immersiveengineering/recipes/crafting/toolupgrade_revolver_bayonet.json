@@ -5,14 +5,14 @@
       "tag": "forge:ingots/steel"
     },
     "s": {
-      "item": "minecraft:iron_sword"
+      "item": "immersiveengineering:sword_steel"
     },
     "w": {
-      "tag": "forge:treated_wood"
+      "tag": "forge:wires/copper"
     }
   },
   "pattern": [
-    "si",
+    "ws",
     "iw"
   ],
   "result": {

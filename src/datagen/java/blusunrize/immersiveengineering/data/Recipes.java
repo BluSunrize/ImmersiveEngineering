@@ -91,6 +91,7 @@ import java.util.Map.Entry;
 import java.util.function.Consumer;
 
 import static blusunrize.immersiveengineering.ImmersiveEngineering.rl;
+import static blusunrize.immersiveengineering.api.IETags.getNugget;
 import static blusunrize.immersiveengineering.api.IETags.getStorageBlock;
 import static blusunrize.immersiveengineering.api.utils.TagUtils.createItemWrapper;
 
@@ -402,7 +403,7 @@ public class Recipes extends RecipeProvider
 				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).ingot))
 				.build(out, toRL("blueprint/component_steel"));
 		BlueprintCraftingRecipeBuilder.builder("components", new ItemStack(Ingredients.COMPONENT_ELECTRONIC))
-				.addInput(IETags.getItemTag(IETags.treatedWood))
+				.addInput(IETags.getItemTag(IETags.treatedWoodSlab))
 				.addInput(Tags.Items.GEMS_QUARTZ)
 				.addInput(Tags.Items.DUSTS_REDSTONE)
 				.addInput(IETags.electrumWire)
@@ -732,6 +733,12 @@ public class Recipes extends RecipeProvider
 					.build(out, toRL("crusher/ore_"+ore.getName()));
 		}
 
+		/* ALLOY SMELTER */
+		AlloyRecipeBuilder.builder(new ItemStack(StoneDecoration.INSULATING_GLASS.asItem(), 2))
+				.addInput(new IngredientWithSize(Tags.Items.GLASS, 2))
+				.addInput(IETags.getTagsFor(EnumMetals.IRON).dust)
+				.build(out, toRL("alloysmelter/"+toPath(StoneDecoration.INSULATING_GLASS)));
+
 		/* METAL PRESS */
 		MetalPressRecipeBuilder.builder(Molds.MOLD_BULLET_CASING, new ItemStack(Ingredients.EMPTY_CASING, 2))
 				.addInput(IETags.getTagsFor(EnumMetals.COPPER).ingot)
@@ -750,6 +757,11 @@ public class Recipes extends RecipeProvider
 				.setEnergy(3200)
 				.build(out, toRL("metalpress/melon"));
 
+		MetalPressRecipeBuilder.builder(Molds.MOLD_ROD, Items.BLAZE_ROD)
+				.addInput(new IngredientWithSize(Ingredient.of(Items.BLAZE_POWDER), 4))
+				.setEnergy(3200)
+				.build(out, toRL("metalpress/blaze_rod"));
+
 		/* ARC FURNACE */
 		ArcFurnaceRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.STEEL).ingot, 1)
 				.addIngredient("input", Tags.Items.INGOTS_IRON)
@@ -765,6 +777,13 @@ public class Recipes extends RecipeProvider
 				.setTime(100)
 				.setEnergy(512000)
 				.build(out, toRL("arcfurnace/netherite_scrap"));
+
+		ArcFurnaceRecipeBuilder.builder(new ItemStack(StoneDecoration.INSULATING_GLASS.asItem(), 2))
+				.addIngredient("input", new IngredientWithSize(Tags.Items.GLASS, 2))
+				.addInput(IETags.getTagsFor(EnumMetals.IRON).dust)
+				.setTime(100)
+				.setEnergy(51200)
+				.build(out, toRL("arcfurnace/"+toPath(StoneDecoration.INSULATING_GLASS)));
 
 		// partial bucket values for bottling & mixing
 		int half_bucket = FluidType.BUCKET_VOLUME/2;
@@ -788,6 +807,13 @@ public class Recipes extends RecipeProvider
 				.addInput(Items.WEATHERED_COPPER)
 				.addFluidTag(IETags.fluidRedstoneAcid, eighth_bucket)
 				.build(out, toRL("bottling/copper_aging"));
+		BottlingMachineRecipeBuilder.builder(Ingredients.ERSATZ_LEATHER.get())
+				.addResult(Molds.MOLD_PLATE)
+				.setUseInputArray(2)
+				.addInput(Molds.MOLD_PLATE)
+				.addInput(IETags.fabricHemp)
+				.addFluidTag(IETags.fluidPlantoil, eighth_bucket)
+				.build(out, toRL("bottling/"+toPath(Ingredients.ERSATZ_LEATHER)));
 		BottlingMachineRecipeBuilder.builder(Ingredients.DUROPLAST_PLATE.get())
 				.addResult(Molds.MOLD_PLATE)
 				.addInput(Molds.MOLD_PLATE)
@@ -800,9 +826,19 @@ public class Recipes extends RecipeProvider
 				.build(out, toRL("bottling/duroplast_block"));
 		BottlingMachineRecipeBuilder.builder(new ItemStack(Ingredients.EMPTY_SHELL, 2))
 				.addResult(Molds.MOLD_BULLET_CASING)
+				.setUseInputArray(2)
 				.addInput(Molds.MOLD_BULLET_CASING)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.COPPER).nugget, 3))
 				.addFluidTag(IETags.fluidResin, quarter_bucket)
 				.build(out, toRL("bottling/"+toPath(BulletHandler.emptyShell)));
+		BottlingMachineRecipeBuilder.builder(Tools.GRINDINGDISK.get())
+				.addResult(Molds.MOLD_GEAR)
+				.setUseInputArray(3)
+				.addInput(Molds.MOLD_GEAR)
+				.addInput(new IngredientWithSize(IETags.getTagsFor(EnumMetals.ALUMINUM).dust, 6))
+				.addInput(new IngredientWithSize(IETags.fiberHemp, 8))
+				.addFluidTag(IETags.fluidResin, half_bucket)
+				.build(out, toRL("bottling/"+toPath(Tools.GRINDINGDISK)));
 
 		/* CRUSHER */
 		CrusherRecipeBuilder.builder(Items.GRAVEL)
@@ -848,6 +884,18 @@ public class Recipes extends RecipeProvider
 				.addInput(Blocks.GLOWSTONE)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/glowstone"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.PRISMARINE_SHARD, 4))
+				.addInput(Blocks.PRISMARINE)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/prismarine"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.PRISMARINE_SHARD, 8))
+				.addInput(Blocks.DARK_PRISMARINE)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/dark_prismarine"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.PRISMARINE_SHARD, 9))
+				.addInput(Blocks.PRISMARINE_BRICKS)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/prismarine_brick"));
 		CrusherRecipeBuilder.builder(new ItemStack(Items.BLAZE_POWDER, 4))
 				.addSecondary(IETags.sulfurDust, .5f)
 				.addInput(Tags.Items.RODS_BLAZE)
@@ -1326,16 +1374,6 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_concrete", has(StoneDecoration.CONCRETE))
 				.save(out, toRL(toPath(StoneDecoration.CONCRETE_LEADED)));
 
-		TurnAndCopyRecipeBuilder.builder(StoneDecoration.INSULATING_GLASS, 2)
-				.allowQuarterTurn()
-				.pattern(" g ")
-				.pattern("idi")
-				.pattern(" g ")
-				.define('g', Tags.Items.GLASS)
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).dust)
-				.define('d', Tags.Items.DYES_GREEN)
-				.unlockedBy("has_glass", has(Tags.Items.GLASS))
-				.save(out, toRL(toPath(StoneDecoration.INSULATING_GLASS)));
 	}
 
 	private void recipesWoodenDecorations(@Nonnull Consumer<FinishedRecipe> out)
@@ -1517,9 +1555,8 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(WoodenDevices.WATERMILL)));
 
 		ShapedRecipeBuilder.shaped(WoodenDevices.GUNPOWDER_BARREL)
-				.pattern(" f ")
+				.pattern("gfg")
 				.pattern("gbg")
-				.pattern("ggg")
 				.define('f', Ingredients.HEMP_FIBER)
 				.define('g', Tags.Items.GUNPOWDER)
 				.define('b', WoodenDevices.WOODEN_BARREL)
@@ -1705,15 +1742,15 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_component_steel", has(Ingredients.COMPONENT_STEEL))
 				.save(out, toRL(toPath(MetalDecoration.ENGINEERING_HEAVY)));
 		ShapedRecipeBuilder.shaped(MetalDecoration.GENERATOR, 4)
-				.pattern("iei")
-				.pattern("ede")
-				.pattern("iei")
+				.pattern("ici")
+				.pattern("cgc")
+				.pattern("ici")
 				.define('i', IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal))
-				.define('e', IETags.getTagsFor(EnumMetals.ELECTRUM).plate)
-				.define('d', MetalDevices.DYNAMO)
+				.define('c', MetalDecoration.MV_COIL)
+				.define('g', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_steel_sheetmetal", has(IETags.getItemTag(IETags.getTagsFor(EnumMetals.STEEL).sheetmetal)))
 				.unlockedBy("has_electrum_ingot", has(IETags.getTagsFor(EnumMetals.ELECTRUM).ingot))
-				.unlockedBy("has_"+toPath(MetalDevices.DYNAMO), has(MetalDevices.DYNAMO))
+				.unlockedBy("has_component_iron", has(Ingredients.COMPONENT_IRON))
 				.save(out, toRL(toPath(MetalDecoration.GENERATOR)));
 		TurnAndCopyRecipeBuilder.builder(MetalDecoration.RADIATOR, 4)
 				.allowQuarterTurn()
@@ -1745,14 +1782,14 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(MetalDecoration.STEEL_FENCE), has(MetalDecoration.STEEL_FENCE))
 				.save(out, toRL(toPath(MetalDecoration.STEEL_POST)));
 
-		ShapedRecipeBuilder.shaped(MetalDecoration.ALU_WALLMOUNT)
+		ShapedRecipeBuilder.shaped(MetalDecoration.ALU_WALLMOUNT, 4)
 				.pattern("ii")
 				.pattern("is")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
 				.define('s', IETags.aluminumRod)
 				.unlockedBy("has_aluminum_ingot", has(IETags.getTagsFor(EnumMetals.ALUMINUM).ingot))
 				.save(out, toRL(toPath(MetalDecoration.ALU_WALLMOUNT)));
-		ShapedRecipeBuilder.shaped(MetalDecoration.STEEL_WALLMOUNT)
+		ShapedRecipeBuilder.shaped(MetalDecoration.STEEL_WALLMOUNT, 4)
 				.pattern("ii")
 				.pattern("is")
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
@@ -1786,11 +1823,11 @@ public class Recipes extends RecipeProvider
 	private void recipesMetalDevices(@Nonnull Consumer<FinishedRecipe> out)
 	{
 		ShapedRecipeBuilder.shaped(MetalDevices.RAZOR_WIRE, 3)
-				.pattern("psp")
-				.pattern("sss")
-				.pattern("psp")
+				.pattern("sps")
+				.pattern("fsf")
 				.define('s', Ingredients.WIRE_STEEL)
 				.define('p', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('f', WoodenDecoration.TREATED_FENCE)
 				.unlockedBy("has_"+toPath(Ingredients.WIRE_STEEL), has(Ingredients.WIRE_STEEL))
 				.save(out, toRL(toPath(MetalDevices.RAZOR_WIRE)));
 		ShapedRecipeBuilder.shaped(MetalDevices.CAPACITOR_LV)
@@ -1848,29 +1885,31 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_"+toPath(IEBlocks.MetalDevices.FLUID_PIPE), has(IEBlocks.MetalDevices.FLUID_PIPE))
 				.save(out, toRL(toPath(MetalDevices.FLUID_PUMP)));
 		ShapedRecipeBuilder.shaped(MetalDevices.BLAST_FURNACE_PREHEATER)
-				.pattern("sss")
-				.pattern("s s")
-				.pattern("shs")
-				.define('s', IEBlocks.Metals.SHEETMETAL.get(EnumMetals.IRON))
+				.pattern("ss")
+				.pattern("ss")
+				.pattern("ph")
+				.define('s', IETags.getItemTag(IETags.getTagsFor(EnumMetals.IRON).sheetmetal))
+				.define('p', MetalDevices.FLUID_PIPE)
 				.define('h', MetalDevices.FURNACE_HEATER)
 				.unlockedBy("has_"+toPath(MetalDevices.FURNACE_HEATER), has(MetalDevices.FURNACE_HEATER))
 				.save(out, toRL(toPath(MetalDevices.BLAST_FURNACE_PREHEATER)));
 		ShapedRecipeBuilder.shaped(MetalDevices.FURNACE_HEATER)
-				.pattern("ici")
-				.pattern("clc")
-				.pattern("iri")
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('c', IETags.getTagsFor(EnumMetals.COPPER).ingot)
-				.define('l', MetalDecoration.LV_COIL)
+				.pattern("pwp")
+				.pattern("wsw")
+				.pattern("prp")
+				.define('w', Misc.WIRE_COILS.get(WireType.COPPER))
+				.define('p', IETags.getTagsFor(EnumMetals.COPPER).plate)
+				.define('s', IETags.getItemTag(IETags.getTagsFor(EnumMetals.IRON).sheetmetal))
 				.define('r', Tags.Items.DUSTS_REDSTONE)
 				.unlockedBy("has_"+toPath(MetalDecoration.LV_COIL), has(MetalDecoration.LV_COIL))
 				.save(out, toRL(toPath(MetalDevices.FURNACE_HEATER)));
 		ShapedRecipeBuilder.shaped(MetalDevices.DYNAMO)
-				.pattern("rlr")
-				.pattern("iii")
+				.pattern("rcr")
+				.pattern("ili")
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.define('l', MetalDecoration.LV_COIL)
 				.define('r', Tags.Items.DUSTS_REDSTONE)
+				.define('c', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_"+toPath(MetalDecoration.LV_COIL), has(MetalDecoration.LV_COIL))
 				.save(out, toRL(toPath(MetalDevices.DYNAMO)));
 		ShapedRecipeBuilder.shaped(MetalDevices.THERMOELECTRIC_GEN)
@@ -1924,10 +1963,12 @@ public class Recipes extends RecipeProvider
 		ShapedRecipeBuilder.shaped(MetalDevices.TESLA_COIL)
 				.pattern("iii")
 				.pattern(" l ")
-				.pattern("hlh")
-				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
-				.define('l', MetalDecoration.LV_COIL)
+				.pattern("ehc")
+				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).plate)
+				.define('l', MetalDecoration.MV_COIL)
 				.define('h', MetalDevices.CAPACITOR_HV)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC_ADV)
+				.define('c', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_"+toPath(MetalDevices.CAPACITOR_HV), has(MetalDevices.CAPACITOR_HV))
 				.save(out, toRL(toPath(MetalDevices.TESLA_COIL)));
 		ShapedRecipeBuilder.shaped(MetalDevices.FLOODLIGHT)
@@ -2015,33 +2056,35 @@ public class Recipes extends RecipeProvider
 
 		ShapedRecipeBuilder.shaped(IEBlocks.Connectors.CURRENT_TRANSFORMER)
 				.pattern(" m ")
-				.pattern("bcb")
-				.pattern("ici")
+				.pattern(" b ")
+				.pattern("iei")
 				.define('m', IEItems.Tools.VOLTMETER)
 				.define('b', IETags.connectorInsulator)
 				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('c', MetalDecoration.LV_COIL)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
 				.unlockedBy("has_voltmeter", has(IEItems.Tools.VOLTMETER))
 				.save(out, toRL(toPath(Connectors.CURRENT_TRANSFORMER)));
 
 		ShapedRecipeBuilder.shaped(IEBlocks.Connectors.TRANSFORMER)
-				.pattern("l m")
-				.pattern("ibi")
-				.pattern("iii")
+				.pattern("lm")
+				.pattern("eb")
+				.pattern("ii")
 				.define('l', IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false))
 				.define('m', IEBlocks.Connectors.getEnergyConnector(WireType.MV_CATEGORY, false))
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
 				.define('b', MetalDecoration.MV_COIL)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.unlockedBy("has_mv_connector", has(IEBlocks.Connectors.getEnergyConnector(WireType.MV_CATEGORY, false)))
 				.save(out, toRL(toPath(Connectors.TRANSFORMER)));
 		ShapedRecipeBuilder.shaped(IEBlocks.Connectors.TRANSFORMER_HV)
-				.pattern("m h")
-				.pattern("ibi")
-				.pattern("iii")
+				.pattern("mh")
+				.pattern("eb")
+				.pattern("ii")
 				.define('m', IEBlocks.Connectors.getEnergyConnector(WireType.MV_CATEGORY, false))
 				.define('h', IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, false))
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.define('e', Ingredients.COMPONENT_ELECTRONIC)
 				.define('b', MetalDecoration.HV_COIL)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
 				.unlockedBy("has_hv_connector", has(IEBlocks.Connectors.getEnergyConnector(WireType.HV_CATEGORY, false)))
 				.save(out, toRL(toPath(Connectors.TRANSFORMER_HV)));
 
@@ -2359,10 +2402,10 @@ public class Recipes extends RecipeProvider
 
 		ShapedRecipeBuilder.shaped(Tools.BUZZSAW)
 				.pattern("  g")
-				.pattern("rcg")
+				.pattern("rhg")
 				.pattern("r  ")
 				.define('g', Ingredients.WOODEN_GRIP)
-				.define('c', Ingredients.COMPONENT_STEEL)
+				.define('h', MetalDecoration.ENGINEERING_HEAVY)
 				.define('r', IETags.steelRod)
 				.unlockedBy("has_"+toPath(Ingredients.COMPONENT_STEEL), has(Ingredients.COMPONENT_STEEL))
 				.save(out, toRL(toPath(Tools.BUZZSAW)));
@@ -2433,6 +2476,14 @@ public class Recipes extends RecipeProvider
 				.define('s', Tags.Items.RODS_WOODEN)
 				.unlockedBy("has_hemp_fiber", has(IETags.fiberHemp))
 				.save(out, toRL(toPath(Ingredients.HEMP_FABRIC)));
+		ShapedRecipeBuilder.shaped(Ingredients.ERSATZ_LEATHER, 8)
+				.pattern("fff")
+				.pattern("fcf")
+				.pattern("fff")
+				.define('f', IETags.fabricHemp)
+				.define('c', Items.HONEYCOMB)
+				.unlockedBy("has_hemp_fabric", has(IETags.fabricHemp))
+				.save(out, toRL(toPath(Ingredients.ERSATZ_LEATHER)));
 
 		ShapedRecipeBuilder.shaped(Ingredients.COMPONENT_IRON)
 				.pattern("i i")
@@ -2483,76 +2534,80 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_treated_sticks", has(IETags.treatedStick))
 				.save(out, toRL(toPath(Ingredients.WOODEN_GRIP)));
 		ShapedRecipeBuilder.shaped(Ingredients.GUNPART_BARREL)
-				.pattern("ss")
+				.pattern("  h")
+				.pattern(" s ")
+				.pattern("i  ")
+				.define('h', IETags.hammers)
 				.define('s', IETags.steelRod)
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.unlockedBy("has_"+toPath(Ingredients.STICK_STEEL), has(IETags.steelRod))
 				.save(out, toRL(toPath(Ingredients.GUNPART_BARREL)));
 		ShapedRecipeBuilder.shaped(Ingredients.GUNPART_DRUM)
 				.pattern(" i ")
-				.pattern("ici")
+				.pattern("isi")
 				.pattern(" i ")
-				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-				.define('c', Ingredients.COMPONENT_STEEL)
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('s', IETags.steelRod)
 				.unlockedBy("has_ingot_steel", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.save(out, toRL(toPath(Ingredients.GUNPART_DRUM)));
 		ShapedRecipeBuilder.shaped(Ingredients.GUNPART_HAMMER)
-				.pattern("i  ")
-				.pattern("ii ")
-				.pattern(" ii")
+				.pattern("iif")
+				.pattern(" s ")
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.define('s', IETags.steelRod)
+				.define('f', Items.FLINT)
 				.unlockedBy("has_ingot_steel", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
 				.save(out, toRL(toPath(Ingredients.GUNPART_HAMMER)));
 
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_WATERPROOF))
-				.pattern("bl ")
-				.pattern("lbl")
-				.pattern(" lc")
-				.define('b', Items.BUCKET)
-				.define('l', Tags.Items.DYES_BLUE)
-				.define('c', Ingredients.COMPONENT_IRON)
+				.pattern("di ")
+				.pattern("idi")
+				.pattern(" ip")
+				.define('d', Tags.Items.DYES_BLUE)
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.define('p', MetalDevices.FLUID_PIPE)
 				.unlockedBy("has_drill", has(Tools.DRILL))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_WATERPROOF))));
 		FluidAwareShapedRecipeBuilder.builder(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_LUBE))
-				.pattern("bi ")
-				.pattern("ibi")
-				.pattern(" ic")
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('c', Ingredients.COMPONENT_IRON)
-				.define('b', new IngredientFluidStack(IETags.fluidPlantoil, FluidType.BUCKET_VOLUME))
+				.pattern(" i ")
+				.pattern("ioi")
+				.pattern(" ip")
+				.define('o', new IngredientFluidStack(IETags.fluidPlantoil, FluidType.BUCKET_VOLUME))
+				.define('i', IETags.getTagsFor(EnumMetals.IRON).plate)
+				.define('p', MetalDevices.FLUID_PIPE)
 				.unlockedBy("has_drill", has(Tools.DRILL))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_LUBE))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_DAMAGE))
-				.pattern("iii")
-				.pattern(" c ")
+				.pattern(" i")
+				.pattern("ic")
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
 				.define('c', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_drill", has(Tools.DRILL))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_DAMAGE))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_CAPACITY))
-				.pattern("ci ")
-				.pattern("ibr")
-				.pattern(" rb")
-				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-				.define('c', Ingredients.COMPONENT_IRON)
-				.define('r', Tags.Items.DYES_RED)
-				.define('b', Items.BUCKET)
+				.pattern("pi ")
+				.pattern("idi")
+				.pattern(" id")
+				.define('d', Tags.Items.DYES_RED)
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('p', MetalDevices.FLUID_PIPE)
 				.unlockedBy("has_drill", has(Tools.DRILL))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.DRILL_CAPACITY))));
 
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_BAYONET))
-				.pattern("si")
+				.pattern("ws")
 				.pattern("iw")
 				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-				.define('w', IETags.getItemTag(IETags.treatedWood))
-				.define('s', Items.IRON_SWORD)
+				.define('w', IETags.copperWire)
+				.define('s', Tools.STEEL_SWORD)
 				.unlockedBy("has_revolver", has(Weapons.REVOLVER))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_BAYONET))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_MAGAZINE))
-				.pattern(" ai")
-				.pattern("a a")
-				.pattern("ca ")
-				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-				.define('a', IETags.getTagsFor(EnumMetals.COPPER).ingot)
+				.pattern(" wi")
+				.pattern("wiw")
+				.pattern("cw ")
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).plate)
+				.define('w', IETags.copperWire)
 				.define('c', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_revolver", has(Weapons.REVOLVER))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_MAGAZINE))));
@@ -2566,12 +2621,12 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.REVOLVER_ELECTRO))));
 
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.CHEMTHROWER_FOCUS))
-				.pattern(" ii")
-				.pattern("pph")
-				.pattern(" ii")
-				.define('i', IETags.getTagsFor(EnumMetals.STEEL).ingot)
+				.pattern("p  ")
+				.pattern(" pi")
+				.pattern(" ic")
+				.define('i', IETags.getTagsFor(EnumMetals.STEEL).plate)
 				.define('p', MetalDevices.FLUID_PIPE)
-				.define('h', Items.HOPPER)
+				.define('c', Ingredients.COMPONENT_IRON)
 				.unlockedBy("has_chemthrower", has(Weapons.CHEMTHROWER))
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.CHEMTHROWER_FOCUS))));
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.CHEMTHROWER_MULTITANK))
@@ -2584,10 +2639,10 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Misc.TOOL_UPGRADES.get(ToolUpgrade.CHEMTHROWER_MULTITANK))));
 
 		ShapedRecipeBuilder.shaped(Misc.TOOL_UPGRADES.get(ToolUpgrade.RAILGUN_SCOPE))
-				.pattern("cic")
-				.pattern("psp")
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).plate)
-				.define('c', IETags.copperWire)
+				.pattern("  p")
+				.pattern(" si")
+				.pattern("pi ")
+				.define('i', IETags.steelRod)
 				.define('p', Tags.Items.GLASS_PANES)
 				.define('s', Items.SPYGLASS)
 				.unlockedBy("has_railgun", has(Weapons.RAILGUN))
@@ -2846,26 +2901,25 @@ public class Recipes extends RecipeProvider
 				.save(out, toRL(toPath(Misc.SKYHOOK)));
 		RevolverAssemblyRecipeBuilder.builder(Weapons.REVOLVER)
 				.setNBTCopyTargetRecipe(3, 4, 5)
-				.pattern(" i ")
-				.pattern("bdh")
-				.pattern("gig")
+				.pattern(" hg")
+				.pattern(" dc")
+				.pattern("b  ")
 				.define('b', Ingredients.GUNPART_BARREL)
 				.define('d', Ingredients.GUNPART_DRUM)
 				.define('h', Ingredients.GUNPART_HAMMER)
 				.define('g', Ingredients.WOODEN_GRIP)
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
+				.define('c', Ingredients.COMPONENT_STEEL)
 				.unlockedBy("has_"+toPath(Ingredients.WOODEN_GRIP), has(Ingredients.WOODEN_GRIP))
 				.save(out, toRL(toPath(Weapons.REVOLVER)));
 		ShapedRecipeBuilder.shaped(Weapons.SPEEDLOADER)
-				.pattern("  i")
-				.pattern("iis")
-				.pattern("  i")
-				.define('i', IETags.getTagsFor(EnumMetals.IRON).ingot)
-				.define('s', IETags.getTagsFor(EnumMetals.STEEL).ingot)
-				.unlockedBy("has_steel_ingot", has(IETags.getTagsFor(EnumMetals.STEEL).ingot))
+				.pattern("sdc")
+				.define('s', IETags.ironRod)
+				.define('d', Ingredients.GUNPART_DRUM)
+				.define('c', Ingredients.COMPONENT_IRON)
+				.unlockedBy("has_drum", has(Ingredients.GUNPART_DRUM))
 				.save(out, toRL(toPath(Weapons.SPEEDLOADER)));
 
-		ShapedRecipeBuilder.shaped(BulletHandler.emptyShell, 5)
+		ShapedRecipeBuilder.shaped(BulletHandler.emptyShell, 3)
 				.pattern("prp")
 				.pattern("prp")
 				.pattern(" c ")
@@ -2975,10 +3029,10 @@ public class Recipes extends RecipeProvider
 				.unlockedBy("has_bucket", has(Items.BUCKET))
 				.save(out, toRL("jerrycan"));
 		ShapedRecipeBuilder.shaped(Misc.POWERPACK)
-				.pattern("lbl")
-				.pattern("wcw")
+				.pattern("cbc")
+				.pattern("wlw")
 				.define('l', Tags.Items.LEATHER)
-				.define('w', Misc.WIRE_COILS.get(WireType.COPPER))
+				.define('w', Misc.WIRE_COILS.get(WireType.COPPER_INSULATED))
 				.define('b', MetalDevices.CAPACITOR_LV)
 				.define('c', IEBlocks.Connectors.getEnergyConnector(WireType.LV_CATEGORY, false))
 				.unlockedBy("has_leather", has(Items.LEATHER))

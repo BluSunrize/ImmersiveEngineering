@@ -217,7 +217,7 @@ public class ItemModels extends TRSRItemModelProvider
 			addItemModel("shader_bag", bag);
 
 		addItemModels("material_", Ingredients.STICK_TREATED, Ingredients.STICK_IRON, Ingredients.STICK_STEEL, Ingredients.STICK_ALUMINUM,
-				Ingredients.HEMP_FIBER, Ingredients.HEMP_FABRIC, Ingredients.COAL_COKE, Ingredients.SLAG,
+				Ingredients.HEMP_FIBER, Ingredients.HEMP_FABRIC, Ingredients.ERSATZ_LEATHER, Ingredients.COAL_COKE, Ingredients.SLAG,
 				Ingredients.COMPONENT_IRON, Ingredients.COMPONENT_STEEL, Ingredients.WATERWHEEL_SEGMENT, Ingredients.WINDMILL_BLADE, Ingredients.WINDMILL_SAIL,
 				Ingredients.WOODEN_GRIP, Ingredients.GUNPART_BARREL, Ingredients.GUNPART_DRUM, Ingredients.GUNPART_HAMMER,
 				Ingredients.DUST_COKE, Ingredients.DUST_HOP_GRAPHITE, Ingredients.INGOT_HOP_GRAPHITE,
@@ -245,7 +245,7 @@ public class ItemModels extends TRSRItemModelProvider
 		addItemModel("seed_hemp", IEItems.Misc.HEMP_SEEDS);
 		addItemModel("drillhead_iron", Tools.DRILLHEAD_IRON);
 		addItemModel("drillhead_steel", Tools.DRILLHEAD_STEEL);
-		addItemModels("", Tools.SAWBLADE, Tools.ROCKCUTTER);
+		addItemModels("", Tools.SAWBLADE, Tools.ROCKCUTTER, Tools.GRINDINGDISK);
 		addItemModels("", IEItems.Misc.MAINTENANCE_KIT);
 		addItemModels("", IEItems.Minecarts.CART_WOODEN_CRATE, IEItems.Minecarts.CART_REINFORCED_CRATE, IEItems.Minecarts.CART_WOODEN_BARREL, IEItems.Minecarts.CART_METAL_BARREL);
 		addItemModels("", IEItems.Misc.LOGIC_CIRCUIT_BOARD);

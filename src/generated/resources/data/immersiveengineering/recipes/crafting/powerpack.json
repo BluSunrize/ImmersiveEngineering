@@ -11,12 +11,12 @@
       "tag": "forge:leather"
     },
     "w": {
-      "item": "immersiveengineering:wirecoil_copper"
+      "item": "immersiveengineering:wirecoil_copper_ins"
     }
   },
   "pattern": [
-    "lbl",
-    "wcw"
+    "cbc",
+    "wlw"
   ],
   "result": {
     "item": "immersiveengineering:powerpack"

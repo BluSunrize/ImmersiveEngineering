@@ -1,20 +1,20 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "b": {
-      "item": "minecraft:bucket"
-    },
-    "c": {
-      "item": "immersiveengineering:component_iron"
-    },
-    "l": {
+    "d": {
       "tag": "forge:dyes/blue"
+    },
+    "i": {
+      "tag": "forge:plates/iron"
+    },
+    "p": {
+      "item": "immersiveengineering:fluid_pipe"
     }
   },
   "pattern": [
-    "bl ",
-    "lbl",
-    " lc"
+    "di ",
+    "idi",
+    " ip"
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_drill_waterproof"

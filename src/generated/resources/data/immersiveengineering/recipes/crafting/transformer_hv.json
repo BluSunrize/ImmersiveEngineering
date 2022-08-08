@@ -4,6 +4,9 @@
     "b": {
       "item": "immersiveengineering:coil_hv"
     },
+    "e": {
+      "item": "immersiveengineering:component_electronic"
+    },
     "h": {
       "item": "immersiveengineering:connector_hv"
     },
@@ -15,9 +18,9 @@
     }
   },
   "pattern": [
-    "m h",
-    "ibi",
-    "iii"
+    "mh",
+    "eb",
+    "ii"
   ],
   "result": {
     "item": "immersiveengineering:transformer_hv"

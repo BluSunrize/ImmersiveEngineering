@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_dynamo": {
+    "has_component_iron": {
       "conditions": {
         "items": [
           {
             "items": [
-              "immersiveengineering:dynamo"
+              "immersiveengineering:component_iron"
             ]
           }
         ]
@@ -44,7 +44,7 @@
     [
       "has_steel_sheetmetal",
       "has_electrum_ingot",
-      "has_dynamo",
+      "has_component_iron",
       "has_the_recipe"
     ]
   ],

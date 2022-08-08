@@ -1,4 +1,4 @@
-// 1.19.2	2022-08-08T14:16:26.406493216	Tags for minecraft:block
+// 1.19.2	2022-08-08T17:17:00.526317081	Tags for minecraft:block
 23e0570e60d941c629a243d8c02fbf74523eee75 data/chiselsandbits/tags/blocks/chiselable/forced.json
 bb2e9cd3d85c96526d774c4c6023d900f99a15bc data/forge/tags/blocks/fences/aluminum.json
 c9ee95be2edb84e91278b0fef1cbc9dea336b664 data/forge/tags/blocks/fences/steel.json
@@ -44,6 +44,7 @@ b55e74dc34f8adea30d4dc91d50f91f426aa114b data/forge/tags/blocks/storage_blocks/r
 e563b87b316084581f07d20d80466bc0014fce68 data/forge/tags/blocks/storage_blocks/uranium.json
 1ecedf0824d3b4f49aec34b67416c1243d1d23a0 data/forge/tags/blocks/treated_wood.json
 485ca26048e0c430a7ab442ed9e5b1a1ea596bb5 data/forge/tags/blocks/treated_wood_slab.json
+fb960fb69ed7f923b8ddb20685e869b6cfeb1a55 data/immersiveengineering/tags/blocks/buzzsaw/tree_blacklist.json
 f7dc293929a2176bc6e428c765f6bf49fbeccdb5 data/immersiveengineering/tags/blocks/mineable/drill.json
 7204f37efe73e4ab8e5d05aef0e7c1fc973a8771 data/immersiveengineering/tags/blocks/mineable/hammer.json
 22c291dd8a303b2f6629a7430880a0678e679ac4 data/immersiveengineering/tags/blocks/mineable/wirecutter.json

@@ -34,7 +34,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.Tags;
-import org.jetbrains.annotations.NotNull;
+import net.minecraftforge.common.ToolAction;
 
 import javax.annotation.Nonnull;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -120,6 +120,12 @@ public class WirecutterItem extends IEBaseItem
 	public boolean isCorrectToolForDrops(ItemStack stack, BlockState state)
 	{
 		return state.is(IETags.wirecutterHarvestable);
+	}
+
+	@Override
+	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
+	{
+		return toolAction==Lib.WIRECUTTER_DIG;
 	}
 
 	// Wire breaking

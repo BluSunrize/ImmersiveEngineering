@@ -9,8 +9,8 @@
     }
   },
   "pattern": [
-    "iii",
-    " c "
+    " i",
+    "ic"
   ],
   "result": {
     "item": "immersiveengineering:toolupgrade_drill_damage"

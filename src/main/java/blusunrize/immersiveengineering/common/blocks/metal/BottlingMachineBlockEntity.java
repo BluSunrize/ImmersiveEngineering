@@ -8,39 +8,49 @@
 
 package blusunrize.immersiveengineering.common.blocks.metal;
 
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BottlingMachineRecipe;
-import blusunrize.immersiveengineering.api.crafting.MultiblockRecipe;
+import blusunrize.immersiveengineering.api.crafting.FluidTagInput;
+import blusunrize.immersiveengineering.api.crafting.IngredientWithSize;
 import blusunrize.immersiveengineering.api.fluid.FluidUtils;
 import blusunrize.immersiveengineering.api.tool.conveyor.ConveyorHandler.IConveyorAttachable;
 import blusunrize.immersiveengineering.api.utils.CapabilityReference;
 import blusunrize.immersiveengineering.api.utils.DirectionalBlockPos;
 import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IBlockBounds;
+import blusunrize.immersiveengineering.common.blocks.IEBlockInterfaces.IHammerInteraction;
 import blusunrize.immersiveengineering.common.blocks.generic.PoweredMultiblockBlockEntity;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.IEMultiblocks;
 import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcess;
+import blusunrize.immersiveengineering.common.blocks.multiblocks.process.MultiblockProcessInWorld;
 import blusunrize.immersiveengineering.common.blocks.ticking.IEClientTickableBE;
-import blusunrize.immersiveengineering.common.config.IEServerConfig;
 import blusunrize.immersiveengineering.common.util.MultiblockCapability;
 import blusunrize.immersiveengineering.common.util.Utils;
 import blusunrize.immersiveengineering.common.util.orientation.RelativeBlockFace;
 import com.google.common.collect.ImmutableSet;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Lazy;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
@@ -51,30 +61,22 @@ import net.minecraftforge.fluids.capability.IFluidHandler.FluidAction;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemHandlerHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiFunction;
 
-/**
- * WARNING: This inherits from PoweredMultiblockBlockEntity, but does not actually use the process queue system provided
- * by that class! This needs to be fixed at some point, but is far from trivial since we can't actually precompute the
- * recipe output even if we use a hacky recipe class to represent dynamic filling (due to endertank-style items)
- */
-public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<BottlingMachineBlockEntity, MultiblockRecipe>
-		implements IConveyorAttachable, IBlockBounds, IEClientTickableBE
+public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<BottlingMachineBlockEntity, BottlingMachineRecipe>
+		implements IConveyorAttachable, IBlockBounds, IEClientTickableBE, IHammerInteraction
 {
 	public static final float TRANSLATION_DISTANCE = 2.5f;
 	private static final float STANDARD_TRANSPORT_TIME = 16f*(TRANSLATION_DISTANCE/2); //16 frames in conveyor animation, 1 frame/tick, 2.5 blocks of total translation distance, halved because transport time just affects half the distance
 	private static final float STANDARD_LIFT_TIME = 3.75f;
 	private static final float MIN_CYCLE_TIME = 60f; //set >= 2*(STANDARD_LIFT_TIME+STANDARD_TRANSPORT_TIME)
 	public FluidTank[] tanks = new FluidTank[]{new FluidTank(8*FluidType.BUCKET_VOLUME)};
-	public List<BottlingProcess> bottlingProcessQueue = new ArrayList<>();
+	private boolean allowPartialFill = false;
 
 	public BottlingMachineBlockEntity(BlockEntityType<BottlingMachineBlockEntity> type, BlockPos pos, BlockState state)
 	{
@@ -85,32 +87,16 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	public void readCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.readCustomNBT(nbt, descPacket);
-
-		ListTag processNBT = nbt.getList("bottlingQueue", 10);
-		bottlingProcessQueue.clear();
-		for(int i = 0; i < processNBT.size(); i++)
-		{
-			CompoundTag tag = processNBT.getCompound(i);
-			BottlingProcess process = BottlingProcess.readFromNBT(tag);
-			bottlingProcessQueue.add(process);
-		}
 		tanks[0].readFromNBT(nbt.getCompound("tank"));
+		allowPartialFill = nbt.getBoolean("allowPartialFill");
 	}
 
 	@Override
 	public void writeCustomNBT(CompoundTag nbt, boolean descPacket)
 	{
 		super.writeCustomNBT(nbt, descPacket);
-		ListTag processNBT = new ListTag();
-		for(BottlingProcess process : this.bottlingProcessQueue)
-			processNBT.add(process.writeToNBT());
-		nbt.put("bottlingQueue", processNBT);
 		nbt.put("tank", tanks[0].writeToNBT(new CompoundTag()));
-	}
-
-	@Override
-	public void receiveMessageFromClient(CompoundTag message)
-	{
+		nbt.putBoolean("allowPartialFill", allowPartialFill);
 	}
 
 	private final CapabilityReference<IItemHandler> outputCap = CapabilityReference.forBlockEntityAt(this, () -> {
@@ -123,34 +109,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	{
 		if(!shouldRenderAsActive())
 			return;
-		for(BottlingProcess process : bottlingProcessQueue)
-			++process.processTick;
-	}
-
-	@Override
-	public void tickServer()
-	{
-		super.tickServer();
-		if(isRSDisabled())
-			return;
-
-		int max = getMaxProcessPerTick();
-		int i = 0;
-		Iterator<BottlingProcess> processIterator = bottlingProcessQueue.iterator();
-		tickedProcesses = 0;
-		while(processIterator.hasNext()&&i++ < max)
-		{
-			BottlingProcess process = processIterator.next();
-			if(process.processStep(this))
-				tickedProcesses++;
-			if(process.processFinished)
-			{
-				int s = process.items.size();
-				for(ItemStack output : s > 1?process.items.subList(1, s): process.items.subList(0, 1))
-					doProcessOutput(output);
-				processIterator.remove();
-			}
-		}
+		// Todo: Maybe do sounds here?
 	}
 
 	@Override
@@ -205,13 +164,6 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	}
 
 	@Override
-	protected boolean shouldRenderAsActiveImpl()
-	{
-		// Use bottlingProcessQueue instead of the "real" processQueue
-		return energyStorage.getEnergyStored() > 0&&!isRSDisabled()&&!bottlingProcessQueue.isEmpty();
-	}
-
-	@Override
 	public void onEntityCollision(Level world, Entity entity)
 	{
 		if(new BlockPos(0, 1, 1).equals(posInMultiblock)&&!world.isClientSide&&entity instanceof ItemEntity itemEntity&&entity.isAlive())
@@ -219,33 +171,51 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 			BottlingMachineBlockEntity master = master();
 			if(master==null)
 				return;
-			ItemStack stack = itemEntity.getItem();
-			if(stack.isEmpty())
+
+			List<Pair<ItemEntity, ItemStack>> itemsOnConveyor = level.getEntitiesOfClass(
+					ItemEntity.class, AABB.unitCubeFromLowerCorner(Vec3.atLowerCornerOf(getBlockPos()))
+			).stream().map(itemEntity1 -> Pair.of(itemEntity1, itemEntity1.getItem())).toList();
+			if(itemsOnConveyor.isEmpty())
 				return;
 
-			if(master.bottlingProcessQueue.size() < master.getProcessQueueMaxLength())
-			{
-				float dist = 1;
-				BottlingProcess p = null;
-				if(master.bottlingProcessQueue.size() > 0)
-				{
-					p = master.bottlingProcessQueue.get(master.bottlingProcessQueue.size()-1);
-					if(p!=null)
-						dist = p.processTick/(float)p.maxProcessTick;
-				}
-				if(p!=null&&dist < master.getMinProcessDistance(null))
-					return;
+			ItemStack[] stacks = itemsOnConveyor.stream().map(Pair::getSecond).toArray(ItemStack[]::new);
+			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(
+					master.level,
+					stacks,
+					master.tanks[0].getFluid()
+			);
+			if(recipe==null&&!Utils.isFluidRelatedItemStack(stacks[0]))
+				return;
 
-				p = new BottlingProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
-				master.bottlingProcessQueue.add(p);
-				master.setChanged();
-				master.markContainingBlockForUpdate(null);
-				stack = stack.copy();
-				stack.shrink(1);
-				if(stack.getCount() <= 0)
-					entity.discard();
-				else
-					itemEntity.setItem(stack);
+			MultiblockProcess<BottlingMachineRecipe> process;
+			NonNullList<ItemStack> displayStacks;
+			if(recipe==null)
+			{
+				displayStacks = Utils.createNonNullItemStackListFromItemStack(stacks[0]);
+				process = new MultiblockProcessBottling(displayStacks);
+			}
+			else
+			{
+				displayStacks = recipe.getDisplayStacks(stacks);
+				process = new MultiblockProcessBottling(
+						recipe.getId(),
+						this::getRecipeForId,
+						displayStacks
+				);
+			}
+
+			if(master.addProcessToQueue(process, true))
+			{
+				master.addProcessToQueue(process, false);
+				for(ItemStack stack : displayStacks)
+					itemsOnConveyor.stream().filter(t -> ItemStack.isSameItemSameTags(t.getSecond(), stack))
+							.findFirst().ifPresent(t -> {
+								ItemStack remaining = t.getSecond().copy();
+								remaining.shrink(stack.getCount());
+								t.getFirst().setItem(remaining);
+								if(remaining.isEmpty())
+									t.getFirst().discard();
+							});
 			}
 		}
 	}
@@ -257,7 +227,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	}
 
 	@Override
-	public boolean additionalCanProcessCheck(MultiblockProcess<MultiblockRecipe> process)
+	public boolean additionalCanProcessCheck(MultiblockProcess<BottlingMachineRecipe> process)
 	{
 		return true;
 	}
@@ -280,7 +250,7 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	}
 
 	@Override
-	public void onProcessFinish(MultiblockProcess<MultiblockRecipe> process)
+	public void onProcessFinish(MultiblockProcess<BottlingMachineRecipe> process)
 	{
 	}
 
@@ -313,9 +283,9 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 	}
 
 	@Override
-	public float getMinProcessDistance(MultiblockProcess<MultiblockRecipe> process)
+	public float getMinProcessDistance(MultiblockProcess<BottlingMachineRecipe> process)
 	{
-		float maxTicks = BottlingProcess.getMaxProcessTick();
+		float maxTicks = process.getMaxTicks(level);
 		return 1f-(getTransportTime(maxTicks)+getLiftTime(maxTicks))/maxTicks;
 	}
 
@@ -364,15 +334,26 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 
 
 	@Override
-	public MultiblockRecipe findRecipeForInsertion(ItemStack inserting)
+	public BottlingMachineRecipe findRecipeForInsertion(ItemStack inserting)
 	{
 		return null;
 	}
 
 	@Override
-	protected MultiblockRecipe getRecipeForId(Level level, ResourceLocation id)
+	protected BottlingMachineRecipe getRecipeForId(Level level, ResourceLocation id)
 	{
-		return null;
+		return BottlingMachineRecipe.RECIPES.getById(level, id);
+	}
+
+	@Nullable
+	protected MultiblockProcess<BottlingMachineRecipe> loadProcessFromNBT(CompoundTag tag)
+	{
+		NonNullList<ItemStack> inputs = NonNullList.withSize(tag.getInt("numInputs"), ItemStack.EMPTY);
+		ContainerHelper.loadAllItems(tag, inputs);
+		if(tag.getBoolean("isFilling"))
+			return new MultiblockProcessBottling(inputs);
+		ResourceLocation id = new ResourceLocation(tag.getString("recipe"));
+		return new MultiblockProcessBottling(id, this::getRecipeForId, inputs);
 	}
 
 	private final MultiblockCapability<IItemHandler> insertionHandler = MultiblockCapability.make(
@@ -404,168 +385,146 @@ public class BottlingMachineBlockEntity extends PoweredMultiblockBlockEntity<Bot
 		return new Direction[0];
 	}
 
-	public static class BottlingProcess
+	@Override
+	public boolean hammerUseSide(Direction side, Player player, InteractionHand hand, Vec3 hitVec)
 	{
-		public List<ItemStack> items;
-		public int processTick;
-		public int maxProcessTick = getMaxProcessTick();
-		boolean processFinished = false;
-
-		public BottlingProcess(ItemStack input)
+		if(player.isCrouching())
 		{
-			this.items = new ArrayList<>(2);
-			this.items.add(input);
-		}
-
-		public boolean processStep(BottlingMachineBlockEntity tile)
-		{
-			int energyExtracted = (int)(8*IEServerConfig.MACHINES.bottlingMachineConfig.energyModifier().get());
-			if(tile.energyStorage.extractEnergy(energyExtracted, true) >= energyExtracted)
+			if(!level.isClientSide)
 			{
-				tile.energyStorage.extractEnergy(energyExtracted, false);
-				processTick++;
-				float transformationPoint = getTransportTime(maxProcessTick)+getLiftTime(maxProcessTick);
-				if(processTick >= transformationPoint&&processTick < 1+transformationPoint)
+				BottlingMachineBlockEntity master = master();
+				if(master!=null)
 				{
-					FluidStack fs = tile.tanks[0].getFluid();
-					if(!fs.isEmpty())
-					{
-						BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(tile.level, items.get(0), fs);
-						if(recipe!=null)
-						{
-							if(recipe.fluidInput.test(tile.tanks[0].getFluid()))
-							{
-								items.addAll(recipe.getActualItemOutputs(tile));
-								tile.tanks[0].drain(recipe.fluidInput.getAmount(), FluidAction.EXECUTE);
-							}
-						}
-						else
-						{
-							ItemStack ret = FluidUtils.fillFluidContainer(tile.tanks[0], items.get(0), ItemStack.EMPTY, null);
-							if(!ret.isEmpty())
-								items.add(ret);
-						}
-						if(items.size() <= 1)
-							items.add(items.get(0));
-						tile.markContainingBlockForUpdate(null);
-					}
+					master.allowPartialFill = !master.allowPartialFill;
+					player.displayClientMessage(Component.translatable(
+							Lib.CHAT_INFO+"bottling_machine."+(master.allowPartialFill?"partialFill": "completeFill")
+					), true);
+					this.updateMasterBlock(null, true);
 				}
-				if(processTick >= maxProcessTick)
-					processFinished = true;
-				return true;
 			}
-			return false;
+			return true;
+		}
+		return false;
+	}
+
+	public static class MultiblockProcessBottling extends MultiblockProcessInWorld<BottlingMachineRecipe>
+	{
+		private final boolean isFilling;
+		private final NonNullList<ItemStack> filledContainer = Utils.createNonNullItemStackListFromItemStack(ItemStack.EMPTY);
+		private static final BottlingMachineRecipe DUMMY_RECIPE = new BottlingMachineRecipe(
+				new ResourceLocation(Lib.MODID, "bottling_dummy_recipe"),
+				List.of(Lazy.of(() -> ItemStack.EMPTY)), IngredientWithSize.of(ItemStack.EMPTY),
+				new FluidTagInput(FluidTags.WATER, 0)
+		);
+
+		public MultiblockProcessBottling(ResourceLocation recipeId, BiFunction<Level, ResourceLocation, BottlingMachineRecipe> getRecipe, NonNullList<ItemStack> inputItem)
+		{
+			super(recipeId, getRecipe, 0.45f, inputItem);
+			this.isFilling = false;
 		}
 
-		public static int getMaxProcessTick()
+		public MultiblockProcessBottling(NonNullList<ItemStack> inputItem)
 		{
-			return (int)(60*IEServerConfig.MACHINES.bottlingMachineConfig.timeModifier().get());
+			super(DUMMY_RECIPE.getId(), (level, resourceLocation) -> DUMMY_RECIPE, 0.45f, inputItem);
+			this.isFilling = true;
+			// copy item into output already, to be filled later
+			this.filledContainer.set(0, inputItem.get(0));
 		}
 
-		public CompoundTag writeToNBT()
+		@Override
+		public void doProcessTick(PoweredMultiblockBlockEntity<?, BottlingMachineRecipe> multiblock)
 		{
-			CompoundTag nbt = new CompoundTag();
-			ListTag listtag = new ListTag();
-			for(ItemStack s : items)
-				listtag.add(s.save(new CompoundTag()));
-			nbt.put("items", listtag);
-			nbt.putInt("processTick", processTick);
-			return nbt;
-		}
+			super.doProcessTick(multiblock);
+			BottlingMachineBlockEntity bottlingMachine = (BottlingMachineBlockEntity)multiblock;
 
-		public static BottlingProcess readFromNBT(CompoundTag nbt)
-		{
-			BottlingProcess process;
-			if(nbt.contains("input")) //legacy
+			float transPoint = getMaxTicks(multiblock.getLevel())*transformationPoint;
+			if(processTick >= transPoint&&processTick < 1+transPoint)
 			{
-				process = new BottlingProcess(ItemStack.of(nbt.getCompound("input")));
-				if(nbt.contains("output", Tag.TAG_COMPOUND))
-					process.items.set(1, ItemStack.of(nbt.getCompound("output")));
+				FluidStack fs = bottlingMachine.tanks[0].getFluid();
+				if(!fs.isEmpty())
+				{
+					// filling recipes use custom logic
+					if(isFilling)
+					{
+						ItemStack ret = FluidUtils.fillFluidContainer(bottlingMachine.tanks[0], filledContainer.get(0), ItemStack.EMPTY, null);
+						if(!ret.isEmpty())
+							filledContainer.set(0, ret);
+						// reduce process tick, if the item should be held in place
+						if(!bottlingMachine.allowPartialFill&&!FluidUtils.isFluidContainerFull(ret))
+							processTick--;
+					}
+					// normal recipes just consume the fluid at this point
+					else
+						bottlingMachine.tanks[0].drain(getRecipe(multiblock.getLevel()).fluidInput.getAmount(), FluidAction.EXECUTE);
+				}
+				multiblock.markContainingBlockForUpdate(null);
 			}
-			else
-			{
-				ListTag listtag = nbt.getList("items", 10);
-				process = new BottlingProcess(ItemStack.of(listtag.getCompound(0)));
-				for(int i = 1; i < listtag.size(); i++)
-					process.items.add(ItemStack.of(listtag.getCompound(i)));
-			}
-			process.processTick = nbt.getInt("processTick");
-			return process;
+		}
+
+		@Override
+		public List<ItemStack> getDisplayItem(Level level)
+		{
+			if(isFilling)
+				return filledContainer;
+			return super.getDisplayItem(level);
+		}
+
+		@Override
+		protected List<ItemStack> getRecipeItemOutputs(PoweredMultiblockBlockEntity<?, BottlingMachineRecipe> multiblock)
+		{
+			if(isFilling)
+				return filledContainer;
+			return super.getRecipeItemOutputs(multiblock);
+		}
+
+		@Override
+		public void writeExtraDataToNBT(CompoundTag nbt)
+		{
+			super.writeExtraDataToNBT(nbt);
+			nbt.putBoolean("isFilling", isFilling);
 		}
 	}
 
-	public static class BottlingMachineInventoryHandler implements IItemHandlerModifiable
+	public static class BottlingMachineInventoryHandler
+			extends MultiblockInventoryHandler_DirectProcessing<BottlingMachineBlockEntity, BottlingMachineRecipe>
 	{
-		BottlingMachineBlockEntity multiblock;
-
 		public BottlingMachineInventoryHandler(BottlingMachineBlockEntity multiblock)
 		{
-			this.multiblock = multiblock;
-		}
-
-		@Override
-		public int getSlots()
-		{
-			return 1;
-		}
-
-		@Override
-		public ItemStack getStackInSlot(int slot)
-		{
-			return ItemStack.EMPTY;
+			super(multiblock);
 		}
 
 		@Override
 		public ItemStack insertItem(int slot, ItemStack stack, boolean simulate)
 		{
-			if(multiblock.bottlingProcessQueue.size() < multiblock.getProcessQueueMaxLength())
+			stack = stack.copy();
+			BottlingMachineRecipe recipe = BottlingMachineRecipe.findRecipe(multiblock.level, new ItemStack[]{stack}, multiblock.tanks[0].getFluid());
+			if(recipe==null&&!Utils.isFluidRelatedItemStack(stack))
+				return stack;
+
+			MultiblockProcess<BottlingMachineRecipe> process;
+			int inputAmount = 1;
+			if(recipe==null)
+				process = new MultiblockProcessBottling(Utils.createNonNullItemStackListFromItemStack(stack.copy()));
+			else
 			{
-				stack = stack.copy();
-				float dist = 1;
-				BottlingProcess p = null;
-				if(multiblock.bottlingProcessQueue.size() > 0)
-				{
-					p = multiblock.bottlingProcessQueue.get(multiblock.bottlingProcessQueue.size()-1);
-					if(p!=null)
-						dist = p.processTick/(float)p.maxProcessTick;
-				}
-				if(p!=null&&dist < multiblock.getMinProcessDistance(null))
-					return stack;
-				if(!simulate)
-				{
-					p = new BottlingProcess(ItemHandlerHelper.copyStackWithSize(stack, 1));
-					multiblock.bottlingProcessQueue.add(p);
-					multiblock.setChanged();
-					multiblock.markContainingBlockForUpdate(null);
-				}
-				stack.shrink(1);
+				ItemStack displayStack = recipe.getDisplayStack(stack);
+				process = new MultiblockProcessBottling(
+						recipe.getId(),
+						multiblock::getRecipeForId,
+						Utils.createNonNullItemStackListFromItemStack(displayStack)
+				);
+				inputAmount = displayStack.getCount();
+			}
+
+			if(multiblock.addProcessToQueue(process, simulate))
+			{
+				multiblock.setChanged();
+				multiblock.markContainingBlockForUpdate(null);
+				stack.shrink(inputAmount);
 				if(stack.getCount() <= 0)
 					stack = ItemStack.EMPTY;
 			}
 			return stack;
-		}
-
-		@Override
-		public ItemStack extractItem(int slot, int amount, boolean simulate)
-		{
-			return ItemStack.EMPTY;
-		}
-
-		@Override
-		public int getSlotLimit(int slot)
-		{
-			return 64;
-		}
-
-		@Override
-		public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-		{
-			return true;
-		}
-
-		@Override
-		public void setStackInSlot(int slot, ItemStack stack)
-		{
 		}
 	}
 }

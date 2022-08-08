@@ -1,0 +1,33 @@
+{
+  "type": "immersiveengineering:bottling_machine",
+  "fluid": {
+    "amount": 500,
+    "tag": "forge:phenolic_resin"
+  },
+  "inputs": [
+    {
+      "item": "immersiveengineering:mold_gear"
+    },
+    {
+      "base_ingredient": {
+        "tag": "forge:dusts/aluminum"
+      },
+      "count": 6
+    },
+    {
+      "base_ingredient": {
+        "tag": "forge:fiber_hemp"
+      },
+      "count": 8
+    }
+  ],
+  "results": [
+    {
+      "item": "immersiveengineering:grindingdisk",
+      "nbt": "{Damage:0}"
+    },
+    {
+      "item": "immersiveengineering:mold_gear"
+    }
+  ]
+}

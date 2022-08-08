@@ -1,16 +1,16 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
-    "c": {
-      "item": "immersiveengineering:component_steel"
-    },
     "i": {
-      "tag": "forge:ingots/steel"
+      "tag": "forge:plates/steel"
+    },
+    "s": {
+      "tag": "forge:rods/steel"
     }
   },
   "pattern": [
     " i ",
-    "ici",
+    "isi",
     " i "
   ],
   "result": {

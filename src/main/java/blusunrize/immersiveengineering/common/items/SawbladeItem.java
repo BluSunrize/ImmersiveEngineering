@@ -9,17 +9,24 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.ImmersiveEngineering;
+import com.google.common.collect.ImmutableSet;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 
+import java.util.Set;
 import java.util.Map;
 import java.util.function.Predicate;
 
 public class SawbladeItem extends IEBaseItem
 {
+	private static final Set<ToolAction> TOOL_ACTIONS = ImmutableSet.of(
+			ToolActions.AXE_DIG, ToolActions.SWORD_DIG, ToolActions.SHEARS_DIG, ToolActions.SHEARS_CARVE
+	);
 	private final float sawbladeSpeed;
 	private final float sawbladeDamage;
 	private final ResourceLocation texture;
@@ -83,5 +90,10 @@ public class SawbladeItem extends IEBaseItem
 	public Predicate<BlockState> getSawbladeMaterials()
 	{
 		return s -> s.is(BlockTags.MINEABLE_WITH_AXE);
+	}
+
+	public Set<ToolAction> getToolActions()
+	{
+		return TOOL_ACTIONS;
 	}
 }

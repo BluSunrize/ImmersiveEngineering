@@ -1,6 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
+    "c": {
+      "item": "immersiveengineering:component_iron"
+    },
     "i": {
       "tag": "forge:ingots/iron"
     },
@@ -12,8 +15,8 @@
     }
   },
   "pattern": [
-    "rlr",
-    "iii"
+    "rcr",
+    "ili"
   ],
   "result": {
     "item": "immersiveengineering:dynamo"

@@ -4,6 +4,9 @@
     "b": {
       "item": "immersiveengineering:coil_mv"
     },
+    "e": {
+      "item": "immersiveengineering:component_electronic"
+    },
     "i": {
       "tag": "forge:ingots/iron"
     },
@@ -15,9 +18,9 @@
     }
   },
   "pattern": [
-    "l m",
-    "ibi",
-    "iii"
+    "lm",
+    "eb",
+    "ii"
   ],
   "result": {
     "item": "immersiveengineering:transformer"

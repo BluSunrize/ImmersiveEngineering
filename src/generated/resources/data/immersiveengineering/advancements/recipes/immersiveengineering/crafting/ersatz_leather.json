@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_glass": {
+    "has_hemp_fabric": {
       "conditions": {
         "items": [
           {
-            "tag": "forge:glass"
+            "tag": "forge:fabric_hemp"
           }
         ]
       },
@@ -13,20 +13,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "immersiveengineering:crafting/insulating_glass"
+        "recipe": "immersiveengineering:crafting/ersatz_leather"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_glass",
+      "has_hemp_fabric",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "immersiveengineering:crafting/insulating_glass"
+      "immersiveengineering:crafting/ersatz_leather"
     ]
   }
 }

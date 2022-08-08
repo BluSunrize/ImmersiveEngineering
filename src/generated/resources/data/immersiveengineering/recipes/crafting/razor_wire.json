@@ -1,6 +1,9 @@
 {
   "type": "minecraft:crafting_shaped",
   "key": {
+    "f": {
+      "item": "immersiveengineering:treated_fence"
+    },
     "p": {
       "tag": "forge:plates/steel"
     },
@@ -9,9 +12,8 @@
     }
   },
   "pattern": [
-    "psp",
-    "sss",
-    "psp"
+    "sps",
+    "fsf"
   ],
   "result": {
     "count": 3,

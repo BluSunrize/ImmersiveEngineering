@@ -9,6 +9,7 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.ApiUtils;
+import blusunrize.immersiveengineering.api.IETags;
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.client.TextUtils;
 import blusunrize.immersiveengineering.api.utils.CapabilityUtils;
@@ -29,14 +30,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundBlockUpdatePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LeavesBlock;
@@ -45,6 +51,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.ToolAction;
+import net.minecraftforge.common.ToolActions;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
@@ -324,7 +332,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	{
 		consumeDurability(stack, world, state, pos, living);
 		if(!world.isClientSide&&!living.isShiftKeyDown()&&living instanceof ServerPlayer)
-			if(canFellTree(stack)&&canToolBeUsed(stack)&&isTree(world, pos))
+			if(canFellTree(stack)&&canToolBeUsed(stack)&&isTree(world, pos)&&!state.is(IETags.buzzsawTreeBlacklist))
 				fellTree(world, pos, (ServerPlayer)living, stack);
 		return true;
 	}
@@ -372,6 +380,59 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 				return ((SawbladeItem)sawblade.getItem()).getSawbladeSpeed();
 		}
 		return super.getDestroySpeed(stack, state);
+	}
+
+	/* ------------- Tool Actions ------------- */
+
+	@Override
+	public boolean canPerformAction(ItemStack stack, ToolAction toolAction)
+	{
+		ItemStack sawblade = getHead(stack);
+		if(sawblade.getItem() instanceof SawbladeItem)
+			return ((SawbladeItem)sawblade.getItem()).getToolActions().contains(toolAction);
+		return false;
+	}
+
+	private static final Map<ToolAction, SoundEvent> ACTION_SOUNDS = new HashMap<>();
+
+	static
+	{
+		ACTION_SOUNDS.put(ToolActions.AXE_STRIP, SoundEvents.AXE_STRIP);
+		ACTION_SOUNDS.put(ToolActions.AXE_SCRAPE, SoundEvents.AXE_SCRAPE);
+		ACTION_SOUNDS.put(ToolActions.AXE_WAX_OFF, SoundEvents.AXE_WAX_OFF);
+		ACTION_SOUNDS.put(ToolActions.SHEARS_CARVE, SoundEvents.PUMPKIN_CARVE);
+	}
+
+	@Override
+	public InteractionResult useOn(UseOnContext context)
+	{
+		ItemStack head = getHead(context.getItemInHand());
+		if(!(head.getItem() instanceof SawbladeItem sawblade))
+			return InteractionResult.PASS;
+
+		Level level = context.getLevel();
+		BlockPos pos = context.getClickedPos();
+		BlockState state = level.getBlockState(pos);
+
+		Set<ToolAction> toolActions = sawblade.getToolActions();
+		for(ToolAction action : toolActions)
+		{
+			BlockState transformed = state.getToolModifiedState(context, action, false);
+			if(transformed!=null)
+			{
+				SoundEvent sound = ACTION_SOUNDS.get(action);
+				if(sound!=null)
+					level.playSound(context.getPlayer(), pos, sound, SoundSource.BLOCKS, 1.0F, 1.0F);
+				if(!level.isClientSide)
+				{
+					level.setBlock(pos, transformed, 11);
+					if(context.getPlayer()!=null)
+						this.damageHead(head, 1, context.getPlayer());
+				}
+				return InteractionResult.sidedSuccess(level.isClientSide);
+			}
+		}
+		return InteractionResult.PASS;
 	}
 
 	/**

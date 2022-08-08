@@ -191,7 +191,7 @@ public class IEContent
 
 		/*ASSEMBLER RECIPE ADAPTERS*/
 		//Fluid Ingredients
-		AssemblerHandler.registerSpecialIngredientConverter((o) ->
+		AssemblerHandler.registerSpecialIngredientConverter((o, remain) ->
 		{
 			if(o instanceof IngredientFluidStack)
 				return new FluidTagRecipeQuery(((IngredientFluidStack)o).getFluidTagInput());
@@ -201,13 +201,16 @@ public class IEContent
 		// Buckets
 		// TODO add "duplicates" of the fluid-aware recipes that only use buckets, so that other mods using similar
 		//  code don't need explicit compat?
-		AssemblerHandler.registerSpecialIngredientConverter((o) ->
+		AssemblerHandler.registerSpecialIngredientConverter((o, remain) ->
 		{
 			final ItemStack[] matching = o.getItems();
 			if(!o.isVanilla()||matching.length!=1)
 				return null;
 			final Item potentialBucket = matching[0].getItem();
 			if(!(potentialBucket instanceof BucketItem))
+				return null;
+			// bucket was consumed in recipe
+			if(remain.getItem()!=Items.BUCKET)
 				return null;
 			//Explicitly check for vanilla-style non-dynamic container items
 			//noinspection deprecation
@@ -217,9 +220,14 @@ public class IEContent
 			return new FluidStackRecipeQuery(new FluidStack(contained, FluidType.BUCKET_VOLUME));
 		});
 		// Milk is a weird special case
-		AssemblerHandler.registerSpecialIngredientConverter(o -> {
+		AssemblerHandler.registerSpecialIngredientConverter((o, remain) -> {
 			final ItemStack[] matching = o.getItems();
-			if(!o.isVanilla()||matching.length!=1||matching[0].getItem()!=Items.MILK_BUCKET||!ForgeMod.MILK.isPresent())
+			if(!o.isVanilla()||matching.length!=1)
+				return null;
+			if(matching[0].getItem()!=Items.MILK_BUCKET||!ForgeMod.MILK.isPresent())
+				return null;
+			// bucket was consumed in recipe
+			if(remain.getItem()!=Items.BUCKET)
 				return null;
 			return new FluidStackRecipeQuery(new FluidStack(ForgeMod.MILK.get(), FluidType.BUCKET_VOLUME));
 		});

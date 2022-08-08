@@ -9,6 +9,9 @@
     "b": {
       "item": "immersiveengineering:gunpart_barrel"
     },
+    "c": {
+      "item": "immersiveengineering:component_steel"
+    },
     "d": {
       "item": "immersiveengineering:gunpart_drum"
     },
@@ -17,15 +20,12 @@
     },
     "h": {
       "item": "immersiveengineering:gunpart_hammer"
-    },
-    "i": {
-      "tag": "forge:ingots/iron"
     }
   },
   "pattern": [
-    " i ",
-    "bdh",
-    "gig"
+    " hg",
+    " dc",
+    "b  "
   ],
   "result": {
     "item": "immersiveengineering:revolver"
