@@ -1,0 +1,12 @@
+{
+  "type": "immersiveengineering:crusher",
+  "secondaries": [],
+  "result": {
+    "item": "minecraft:prismarine_shard",
+    "count": 8
+  },
+  "input": {
+    "item": "minecraft:dark_prismarine"
+  },
+  "energy": 3200
+}

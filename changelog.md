@@ -21,6 +21,7 @@
     - This is done with the block tag "immersiveengineering:buzzsaw/tree_blacklist"
     - By default, this blacklists Dynamic Trees, because they have their own mechanic for felling
 - Add Ersatz Leather, a leather alternative crafted with hemp fabric and beeswax or plant oil (BluSunrize)
+- Add recipes to break down prismarine blocks and press blaze powder into rods (BluSunrize)
 - Change assembler to only use a single tank for a fluid, to allow better "filtering" (BluSunrize)
 - Change Diesel Generator consume fuel every 10 ticks, allowing for more granular burntime configurations (Silfryi)
 - Fix assembler creating buckets from nowhere for recipes that would consume them (BluSunrize)

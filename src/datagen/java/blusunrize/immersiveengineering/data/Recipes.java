@@ -754,6 +754,11 @@ public class Recipes extends RecipeProvider
 				.setEnergy(3200)
 				.build(out, toRL("metalpress/melon"));
 
+		MetalPressRecipeBuilder.builder(Molds.MOLD_ROD, Items.BLAZE_ROD)
+				.addInput(new IngredientWithSize(Ingredient.of(Items.BLAZE_POWDER), 4))
+				.setEnergy(3200)
+				.build(out, toRL("metalpress/blaze_rod"));
+
 		/* ARC FURNACE */
 		ArcFurnaceRecipeBuilder.builder(IETags.getTagsFor(EnumMetals.STEEL).ingot, 1)
 				.addIngredient("input", Tags.Items.INGOTS_IRON)
@@ -876,6 +881,18 @@ public class Recipes extends RecipeProvider
 				.addInput(Blocks.GLOWSTONE)
 				.setEnergy(3200)
 				.build(out, toRL("crusher/glowstone"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.PRISMARINE_SHARD, 4))
+				.addInput(Blocks.PRISMARINE)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/prismarine"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.PRISMARINE_SHARD, 8))
+				.addInput(Blocks.DARK_PRISMARINE)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/dark_prismarine"));
+		CrusherRecipeBuilder.builder(new ItemStack(Items.PRISMARINE_SHARD, 9))
+				.addInput(Blocks.PRISMARINE_BRICKS)
+				.setEnergy(3200)
+				.build(out, toRL("crusher/prismarine_brick"));
 		CrusherRecipeBuilder.builder(new ItemStack(Items.BLAZE_POWDER, 4))
 				.addSecondary(IETags.sulfurDust, .5f)
 				.addInput(Tags.Items.RODS_BLAZE)
