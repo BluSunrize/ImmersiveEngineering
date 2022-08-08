@@ -18,6 +18,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -122,10 +123,10 @@ public class RailgunShotEntity extends IEProjectileEntity
 				{
 					Entity hit = ((EntityHitResult)mop).getEntity();
 					double damage = projectileProperties.getDamage(this.level, hit, shooterUuid, this);
-					hit.hurt(
-							IEDamageSources.causeRailgunDamage(this, shooter),
-							(float)(damage*IEServerConfig.TOOLS.railgun_damage.get())
-					);
+					DamageSource source = projectileProperties.getDamageSource(this.level, hit, shooterUuid, this);
+					if(source==null)
+						source = IEDamageSources.causeRailgunDamage(this, shooter);
+					hit.hurt(source, (float)(damage*IEServerConfig.TOOLS.railgun_damage.get()));
 				}
 				else if(mop instanceof BlockHitResult)
 				{

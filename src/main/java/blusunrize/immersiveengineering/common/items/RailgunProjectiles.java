@@ -9,11 +9,17 @@
 package blusunrize.immersiveengineering.common.items;
 
 import blusunrize.immersiveengineering.api.IETags;
+import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler;
 import blusunrize.immersiveengineering.api.tool.RailgunHandler.RailgunRenderColors;
 import blusunrize.immersiveengineering.common.entities.SawbladeEntity;
 import blusunrize.immersiveengineering.common.register.IEItems;
+import blusunrize.immersiveengineering.common.register.IEPotions;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.EntityDamageSource;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.entity.projectile.ThrownEnderpearl;
@@ -70,6 +76,33 @@ public class RailgunProjectiles
 				return 1;
 			}
 		}.setColorMap(new RailgunRenderColors(0xfff32d, 0xffc100, 0xb36b19, 0xbf5a00, 0xbf5a00, 0x953300)));
+
+		// End Rod
+		RailgunHandler.registerProjectile(() -> Ingredient.of(Items.END_ROD), new RailgunHandler.StandardRailgunProjectile(10, 1.05)
+		{
+			@Override
+			public double getDamage(Level world, Entity target, @Nullable UUID shooter, Entity projectile)
+			{
+				double d = super.getDamage(world, target, shooter, projectile);
+				if(target instanceof EnderMan)
+					d *= 2;
+				return d;
+			}
+
+			@Override
+			public DamageSource getDamageSource(Level world, Entity target, @Nullable UUID shooter, Entity projectile)
+			{
+				if(target instanceof EnderMan enderMan)
+				{
+					enderMan.addEffect(new MobEffectInstance(IEPotions.STUNNED.get(), 200));
+					Player p;
+					if(shooter!=null&&(p = world.getPlayerByUUID(shooter))!=null)
+						return new EntityDamageSource(Lib.DMG_Railgun, p);
+					return new DamageSource(Lib.DMG_Railgun);
+				}
+				return null;
+			}
+		}.setColorMap(new RailgunRenderColors(0xf6e2cd, 0xfff6e6, 0xffffff, 0xfff6f6, 0xf6e2cd, 0x736565)));
 
 		// Sawblade
 		RailgunHandler.registerProjectile(() -> Ingredient.of(IEItems.Tools.SAWBLADE), new RailgunHandler.IRailgunProjectile()
