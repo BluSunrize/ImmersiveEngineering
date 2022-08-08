@@ -57,12 +57,14 @@ public class CokeOvenRecipeCategory extends IERecipeCategory<CokeOvenRecipe>
 		if(!recipe.output.get().isEmpty())
 			outputSlotBuilder.addItemStack(recipe.output.get());
 
-		if(recipe.creosoteOutput > 0)
+		if(recipe.creosoteOutput > 0){
+			int tankSize = Math.max(FluidAttributes.BUCKET_VOLUME,  recipe.creosoteOutput);
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 103, 4)
-					.setFluidRenderer(5*FluidAttributes.BUCKET_VOLUME, false, 16, 47)
+					.setFluidRenderer(tankSize, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredient(VanillaTypes.FLUID, new FluidStack(IEFluids.CREOSOTE.getStill(), recipe.creosoteOutput))
 					.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+		}
 	}
 
 	@Override

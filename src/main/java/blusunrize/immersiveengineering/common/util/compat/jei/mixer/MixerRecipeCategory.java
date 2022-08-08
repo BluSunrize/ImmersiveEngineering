@@ -49,13 +49,14 @@ public class MixerRecipeCategory extends IERecipeCategory<MixerRecipe>
 	@Override
 	public void setRecipe(IRecipeLayoutBuilder builder, MixerRecipe recipe, IFocusGroup focuses)
 	{
+		int tankSize = Math.max(2*FluidAttributes.BUCKET_VOLUME,  Math.max(recipe.fluidInput.getAmount(),recipe.fluidOutput.getAmount()));
 		builder.addSlot(RecipeIngredientRole.INPUT, 48, 3)
-				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 58, 47)
+				.setFluidRenderer(tankSize, false, 58, 47)
 				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 
 		builder.addSlot(RecipeIngredientRole.OUTPUT, 139, 3)
-				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 47)
+				.setFluidRenderer(tankSize, false, 16, 47)
 				.setOverlay(tankOverlay, 0, 0)
 				.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);

@@ -58,8 +58,9 @@ public class BottlingMachineRecipeCategory extends IERecipeCategory<BottlingMach
 					.addItemStack(outputs.get(i))
 					.setBackground(JEIHelper.slotDrawable, -1, -1);
 
+		int tankSize = Math.max(FluidAttributes.BUCKET_VOLUME, recipe.fluidInput.getAmount());
 		builder.addSlot(RecipeIngredientRole.INPUT, 24, 2)
-				.setFluidRenderer(4*FluidAttributes.BUCKET_VOLUME, false, 16, 52)
+				.setFluidRenderer(tankSize, false, 16, 52)
 				.addIngredients(VanillaTypes.FLUID, recipe.fluidInput.getMatchingFluidStacks())
 				.addTooltipCallback(JEIHelper.fluidTooltipCallback);
 	}

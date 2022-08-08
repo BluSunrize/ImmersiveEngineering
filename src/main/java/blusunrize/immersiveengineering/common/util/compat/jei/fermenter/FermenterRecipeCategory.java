@@ -49,10 +49,13 @@ public class FermenterRecipeCategory extends IERecipeCategory<FermenterRecipe>
 		if(!recipe.itemOutput.get().isEmpty())
 			outputSlotBuilder.addItemStack(recipe.itemOutput.get());
 		if(recipe.fluidOutput!=null&&!recipe.fluidOutput.isEmpty())
+		{
+			int tankSize = Math.max(FluidAttributes.BUCKET_VOLUME/4,  recipe.fluidOutput.getAmount());
 			builder.addSlot(RecipeIngredientRole.OUTPUT, 106, 9)
-					.setFluidRenderer(FluidAttributes.BUCKET_VOLUME/2, false, 16, 47)
+					.setFluidRenderer(tankSize, false, 16, 47)
 					.setOverlay(tankOverlay, 0, 0)
 					.addIngredient(VanillaTypes.FLUID, recipe.fluidOutput)
 					.addTooltipCallback(JEIHelper.fluidTooltipCallback);
+		}
 	}
 }
