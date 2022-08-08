@@ -331,6 +331,15 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 	}
 
 	@Override
+	protected int getToolDamageFromBlock(ItemStack stack, @Nullable BlockState state)
+	{
+		ItemStack sawblade = getHead(stack);
+		if(sawblade.getItem() instanceof SawbladeItem sawbladeItem)
+			return sawbladeItem.getSawbladeDamageFromBlock(state==null||isEffective(stack, state));
+		return 0;
+	}
+
+	@Override
 	protected void damageHead(ItemStack head, int amount, LivingEntity living)
 	{
 		head.hurtAndBreak(amount, living, entity -> entity.broadcastBreakEvent(InteractionHand.MAIN_HAND));
