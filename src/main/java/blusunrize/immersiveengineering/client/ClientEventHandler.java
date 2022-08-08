@@ -99,8 +99,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
 import net.minecraftforge.client.event.*;
+import net.minecraftforge.client.event.InputEvent.MouseScrollingEvent;
 import net.minecraftforge.client.event.sound.PlaySoundEvent;
 import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -659,7 +659,7 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 	}
 
 	@SubscribeEvent()
-	public void onFOVUpdate(ViewportEvent.ComputeFov event)
+	public void onFOVUpdate(ComputeFovModifierEvent event)
 	{
 		Player player = ClientUtils.mc().player;
 
@@ -670,14 +670,14 @@ public class ClientEventHandler implements ResourceManagerReloadListener
 		if(ZoomHandler.isZooming)
 		{
 			if(mayZoom)
-				event.setFOV(ZoomHandler.fovZoom);
+				event.setNewFovModifier(ZoomHandler.fovZoom);
 			else
 				ZoomHandler.isZooming = false;
 		}
 
 		// Concrete feet slow you, but shouldn't break FoV
 		if(player.getEffect(IEPotions.CONCRETE_FEET.get())!=null)
-			event.setFOV(1);
+			event.setNewFovModifier(1);
 	}
 
 	@SubscribeEvent

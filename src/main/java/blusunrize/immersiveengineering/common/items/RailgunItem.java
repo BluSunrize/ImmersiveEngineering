@@ -60,7 +60,6 @@ import net.minecraftforge.items.IItemHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -367,23 +366,6 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		return 8000;
 	}
 
-
-	public String[] compileRender(ItemStack stack)
-	{
-		HashSet<String> render = new HashSet<String>();
-		render.add("frame");
-		render.add("barrel");
-		render.add("grip");
-		render.add("capacitors");
-		render.add("sled");
-		render.add("wires");
-		CompoundTag upgrades = this.getUpgrades(stack);
-		if(upgrades.getDouble("speed") > 0)
-			render.add("upgrade_speed");
-		if(upgrades.getBoolean("scope"))
-			render.add("upgrade_scope");
-		return render.toArray(new String[render.size()]);
-	}
 
 	@Override
 	public boolean canZoom(ItemStack stack, Player player)
