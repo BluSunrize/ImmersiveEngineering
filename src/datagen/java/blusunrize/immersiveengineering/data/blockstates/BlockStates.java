@@ -155,6 +155,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		cubeAll(StoneDecoration.CONCRETE_TILE, rl("block/stone_decoration/concrete_tile"));
 		cubeAll(StoneDecoration.HEMPCRETE, rl("block/stone_decoration/hempcrete"));
 		cubeAll(StoneDecoration.INSULATING_GLASS, rl("block/stone_decoration/insulating_glass"));
+		cubeAll(StoneDecoration.SLAG_GLASS, rl("block/stone_decoration/slag_glass"));
 		cubeAll(StoneDecoration.ALLOYBRICK, rl("block/stone_decoration/alloybrick"));
 		cubeAll(StoneDecoration.DUROPLAST, rl("block/stone_decoration/duroplast"));
 
@@ -568,7 +569,7 @@ public class BlockStates extends ExtendedBlockstateProvider
 		for(EnumHempGrowth g : EnumHempGrowth.values())
 		{
 			ModelFile model = models().withExistingParent("block/hemp/"+g.getSerializedName(),
-					new ResourceLocation("block/crop"))
+							new ResourceLocation("block/crop"))
 					.texture("crop", g.getTextureName());
 			builder.partialState()
 					.with(HempBlock.GROWTH, g)

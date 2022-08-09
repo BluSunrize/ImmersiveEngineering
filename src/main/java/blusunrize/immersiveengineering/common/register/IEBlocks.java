@@ -115,6 +115,9 @@ public final class IEBlocks
 		public static final BlockEntry<IEBaseBlock> INSULATING_GLASS = BlockEntry.simple(
 				"insulating_glass", STONE_DECO_PROPS_NOT_SOLID
 		);
+		public static final BlockEntry<IEBaseBlock> SLAG_GLASS = BlockEntry.simple(
+				"slag_glass", STONE_DECO_PROPS_NOT_SOLID, shouldHave -> shouldHave.setLightOpacity(8)
+		);
 		public static final BlockEntry<IEBaseBlock> CONCRETE_SPRAYED = BlockEntry.simple(
 				"concrete_sprayed", () -> Block.Properties.of(Material.STONE)
 						.strength(.2F, 1)

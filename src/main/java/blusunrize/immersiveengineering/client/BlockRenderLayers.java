@@ -44,6 +44,7 @@ public class BlockRenderLayers
 	public static void clientSetup(FMLClientSetupEvent ev)
 	{
 		setRenderLayer(StoneDecoration.INSULATING_GLASS, RenderType.translucent());
+		setRenderLayer(StoneDecoration.SLAG_GLASS, RenderType.translucent());
 		setRenderLayer(StoneDecoration.CONCRETE_SPRAYED, RenderType.cutout());
 		setRenderLayer(StoneDecoration.DUROPLAST, RenderType.translucent());
 		setRenderLayer(MetalDevices.FLOODLIGHT, RenderType.solid(), RenderType.translucent());
