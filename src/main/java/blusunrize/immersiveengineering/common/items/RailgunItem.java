@@ -359,7 +359,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty())
-				Utils.unlockIEAdvancement(player, "main/upgrade_railgun");
+				Utils.unlockIEAdvancement(player, "tools/upgrade_railgun");
 		});
 	}
 

@@ -26,6 +26,7 @@
 - Change assembler to only use a single tank for a fluid, to allow better "filtering" (BluSunrize)
 - Change Diesel Generator consume fuel every 10 ticks, allowing for more granular burntime configurations (Silfryi)
 - Fix assembler creating buckets from nowhere for recipes that would consume them (BluSunrize)
+- Fix advancements for upgrading drill, railgun, buzzsaw and revolver to being triggered (BluSunrize)
 - Translations Added/Updated: ja_jp (karakufire)
 
 ##### Version 1.18.2-8.1.0-150

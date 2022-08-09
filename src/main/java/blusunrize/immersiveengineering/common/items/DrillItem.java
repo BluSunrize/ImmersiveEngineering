@@ -98,7 +98,7 @@ public class DrillItem extends DieselToolItem
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty()&&!inv.getStackInSlot(3).isEmpty())
-				Utils.unlockIEAdvancement(player, "main/upgrade_drill");
+				Utils.unlockIEAdvancement(player, "tools/upgrade_drill");
 		});
 	}
 

@@ -144,7 +144,7 @@ public class BuzzsawItem extends DieselToolItem implements IScrollwheel
 		LazyOptional<IItemHandler> invCap = stack.getCapability(CapabilityItemHandler.ITEM_HANDLER_CAPABILITY, null);
 		invCap.ifPresent(inv -> {
 			if(!inv.getStackInSlot(0).isEmpty()&&!inv.getStackInSlot(1).isEmpty()&&!inv.getStackInSlot(2).isEmpty())
-				Utils.unlockIEAdvancement(player, "main/upgrade_buzzsaw");
+				Utils.unlockIEAdvancement(player, "tools/upgrade_buzzsaw");
 		});
 	}
 
