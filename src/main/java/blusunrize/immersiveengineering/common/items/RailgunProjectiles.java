@@ -131,7 +131,7 @@ public class RailgunProjectiles
 				{
 					ammo.hurtAndBreak(1, shooter, (player) -> player.broadcastBreakEvent(shooter.getUsedItemHand()));
 					ThrownTrident trident = new ThrownTrident(shooter.level, shooter, ammo);
-					trident.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 2.5F, 1.0F);
+					trident.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 5F, 0F);
 					if(shooter.getAbilities().instabuild)
 						trident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;
 					return trident;
@@ -156,7 +156,7 @@ public class RailgunProjectiles
 				{
 					ThrownEnderpearl pearl = new ThrownEnderpearl(shooter.level, shooter);
 					pearl.setItem(ammo);
-					pearl.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 2.5F, 1.0F);
+					pearl.shootFromRotation(shooter, shooter.getXRot(), shooter.getYRot(), 0.0F, 2.5F, 0);
 					return pearl;
 				}
 				return defaultProjectile;
