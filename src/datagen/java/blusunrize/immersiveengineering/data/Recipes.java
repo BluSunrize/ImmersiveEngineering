@@ -1321,6 +1321,10 @@ public class Recipes extends RecipeProvider
 		addStonecuttingRecipe(StoneDecoration.CONCRETE_LEADED, IEBlocks.TO_STAIRS.get(StoneDecoration.CONCRETE_LEADED.getId()), out);
 		addStonecuttingRecipe(StoneDecoration.CONCRETE, StoneDecoration.CONCRETE_TILE, out);
 
+		SimpleCookingRecipeBuilder.smelting(Ingredient.of(IETags.slag), StoneDecoration.SLAG_GLASS, 0.1f, standardSmeltingTime)
+				.unlockedBy("has_slag", has(IETags.slag))
+				.save(out, toRL("smelting/"+toPath(StoneDecoration.SLAG_GLASS)));
+
 		ShapedRecipeBuilder.shaped(StoneDecoration.ALLOYBRICK, 2)
 				.pattern("sb")
 				.pattern("bs")
