@@ -22,7 +22,11 @@
     - By default, this blacklists Dynamic Trees, because they have their own mechanic for felling
 - Add Ersatz Leather, a leather alternative crafted with hemp fabric and beeswax or plant oil (BluSunrize)
 - Add recipes to break down prismarine blocks and press blaze powder into rods (BluSunrize)
-- Add end rods as railgun projectiles (BluSunrize)
+- Improve the railgun (BluSunrize)
+    - End rods are now valid projectiles, they are super effective against Endermen
+    - All railgun projectiles have perfect accuracy now (but are still affected by gravity)
+    - Tridents now have greatly increased speed (and thus range) when fired from a railgun
+    - The manual now documents the various types of ammunition in more detail
 - Change assembler to only use a single tank for a fluid, to allow better "filtering" (BluSunrize)
 - Change Diesel Generator consume fuel every 10 ticks, allowing for more granular burntime configurations (Silfryi)
 - Fix assembler creating buckets from nowhere for recipes that would consume them (BluSunrize)

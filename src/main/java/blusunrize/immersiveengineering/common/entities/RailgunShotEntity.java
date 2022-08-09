@@ -44,9 +44,9 @@ public class RailgunShotEntity extends IEProjectileEntity
 		this.pickup = Pickup.ALLOWED;
 	}
 
-	public RailgunShotEntity(Level world, LivingEntity living, double ax, double ay, double az, ItemStack ammo)
+	public RailgunShotEntity(Level world, @Nonnull LivingEntity living, float velocity, float accuracy, ItemStack ammo)
 	{
-		super(IEEntityTypes.RAILGUN_SHOT.get(), world, living, ax, ay, az);
+		super(IEEntityTypes.RAILGUN_SHOT.get(), world, living, velocity, accuracy);
 		this.ammo = ammo;
 		this.setAmmoSynced();
 		this.pickup = Pickup.ALLOWED;

@@ -110,8 +110,7 @@ public class RailgunProjectiles
 			@Override
 			public Entity getProjectile(@Nullable Player shooter, ItemStack ammo, Entity defaultProjectile)
 			{
-				Vec3 look = shooter.getLookAngle();
-				return new SawbladeEntity(shooter.getCommandSenderWorld(), shooter, look.x*20, look.y*20, look.z*20, ammo);
+				return new SawbladeEntity(defaultProjectile.getLevel(), shooter, 20, 0, ammo);
 			}
 		});
 

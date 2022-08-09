@@ -234,7 +234,7 @@ public class RailgunItem extends UpgradeableToolItem implements IZoomTool, IScro
 					IRailgunProjectile projectileProperties = RailgunHandler.getProjectile(ammoConsumed);
 					Vec3 vec = user.getLookAngle();
 					float speed = 20;
-					Entity shot = new RailgunShotEntity(user.level, user, vec.x*speed, vec.y*speed, vec.z*speed, ammoConsumed);
+					Entity shot = new RailgunShotEntity(user.level, user, speed, 0, ammoConsumed);
 					shot = projectileProperties.getProjectile((Player)user, ammoConsumed, shot);
 					user.level.playSound(null, user.getX(), user.getY(), user.getZ(), IESounds.railgunFire, SoundSource.PLAYERS, 1, .5f+(.5f*user.getRandom().nextFloat()));
 					energy.extractEnergy(consumption, false);
