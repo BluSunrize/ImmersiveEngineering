@@ -9,9 +9,14 @@
     "i": {
       "tag": "forge:ingots/aluminum"
     },
-    "c": {
-      "item": "immersiveengineering:insulating_glass"
-    }
+    "c": [
+      {
+        "item": "immersiveengineering:insulating_glass"
+      },
+      {
+        "item": "immersiveengineering:slag_glass"
+      }
+    ]
   },
   "result": {
     "item": "immersiveengineering:connector_hv_relay",

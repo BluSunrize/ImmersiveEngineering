@@ -2166,7 +2166,7 @@ public class Recipes extends RecipeProvider
 				.pattern("cic")
 				.pattern("cic")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
-				.define('c', StoneDecoration.INSULATING_GLASS)
+				.define('c', Ingredient.of(StoneDecoration.INSULATING_GLASS,StoneDecoration.SLAG_GLASS))
 				.unlockedBy("has_aluminum_ingot", has(IETags.getTagsFor(EnumMetals.IRON).ingot))
 				.save(out, toRL("connector_hv_relay"));
 	}
