@@ -27,7 +27,8 @@
       "cokeoven",
       "alloykiln",
       "crude_blast_furnace",
-      "improved_blast_furnace"
+      "improved_blast_furnace",
+      "slag"
     ]
   },
   "construction": {
