@@ -254,6 +254,12 @@ public class Recipes extends RecipeProvider
 				.addSlag(IETags.slag, 9)
 				.setTime(9*1200)
 				.build(out, toRL("blastfurnace/steel_block"));
+
+		BlastFurnaceRecipeBuilder.builder(Blocks.CALCITE.asItem())
+				.addInput(StoneDecoration.SLAG_GRAVEL)
+				.addSlag(Blocks.SAND)
+				.setTime(200)
+				.build(out, toRL("blastfurnace/calcite"));
 	}
 
 	private void recipesCoke(@Nonnull Consumer<FinishedRecipe> out)
@@ -2166,7 +2172,7 @@ public class Recipes extends RecipeProvider
 				.pattern("cic")
 				.pattern("cic")
 				.define('i', IETags.getTagsFor(EnumMetals.ALUMINUM).ingot)
-				.define('c', Ingredient.of(StoneDecoration.INSULATING_GLASS,StoneDecoration.SLAG_GLASS))
+				.define('c', Ingredient.of(StoneDecoration.INSULATING_GLASS, StoneDecoration.SLAG_GLASS))
 				.unlockedBy("has_aluminum_ingot", has(IETags.getTagsFor(EnumMetals.IRON).ingot))
 				.save(out, toRL("connector_hv_relay"));
 	}
