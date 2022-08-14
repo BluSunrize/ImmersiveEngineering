@@ -22,6 +22,9 @@
     - By default, this blacklists Dynamic Trees, because they have their own mechanic for felling
 - Add Ersatz Leather, a leather alternative crafted with hemp fabric and beeswax or plant oil (BluSunrize)
 - Add recipes to break down prismarine blocks and press blaze powder into rods (BluSunrize)
+- Add slag glass and slag gravel as additional uses for slag (BluSunrize, Silfryi)
+    - Slag glass blocks 50% of light passing through it and works as an insulator for HV relays
+    - Slag gravel behaves like nmormal gravel and be crushed into sand 
 - Improve the railgun (BluSunrize)
     - End rods are now valid projectiles, they are super effective against Endermen
     - All railgun projectiles have perfect accuracy now (but are still affected by gravity)

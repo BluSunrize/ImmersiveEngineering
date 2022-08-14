@@ -847,7 +847,7 @@ public class Recipes extends RecipeProvider
 				.addInput(Tags.Items.GRAVEL)
 				.setEnergy(1600)
 				.build(out, toRL("crusher/gravel"));
-		CrusherRecipeBuilder.builder(Items.SAND)
+		CrusherRecipeBuilder.builder(StoneDecoration.SLAG_GRAVEL.asItem())
 				.addInput(IETags.slag)
 				.setEnergy(1600)
 				.build(out, toRL("crusher/slag"));

@@ -2,7 +2,7 @@
   "type": "immersiveengineering:crusher",
   "secondaries": [],
   "result": {
-    "item": "minecraft:sand"
+    "item": "immersiveengineering:slag_gravel"
   },
   "input": {
     "tag": "forge:slag"
