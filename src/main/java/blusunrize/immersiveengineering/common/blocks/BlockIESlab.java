@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.SlabType;
 
+import javax.annotation.Nullable;
 import java.util.function.Supplier;
 
 public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implements IIEBlock
@@ -31,8 +32,10 @@ public class BlockIESlab<T extends Block & IIEBlock> extends SlabBlock implement
 	}
 
 	@Override
-	public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity)
+	public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, @Nullable LivingEntity entity)
 	{
+		if(entity == null)
+			return true;
 		double relativeEntityPosition = entity.position().y()-pos.getY();
 		switch(state.getValue(SlabBlock.TYPE))
 		{

@@ -330,7 +330,7 @@ public class IEBaseBlock extends Block implements IIEBlock, SimpleWaterloggedBlo
 		}
 
 		@Override
-		public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, LivingEntity entity)
+		public boolean isLadder(BlockState state, LevelReader world, BlockPos pos, @Nullable LivingEntity entity)
 		{
 			return true;
 		}
