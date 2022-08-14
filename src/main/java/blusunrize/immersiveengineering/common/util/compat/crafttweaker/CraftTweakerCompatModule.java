@@ -9,7 +9,6 @@ package blusunrize.immersiveengineering.common.util.compat.crafttweaker;
 
 import blusunrize.immersiveengineering.api.Lib;
 import blusunrize.immersiveengineering.api.crafting.BlueprintCraftingRecipe;
-import blusunrize.immersiveengineering.common.util.compat.IECompatModules.StandardIECompatModule;
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import com.blamejared.crafttweaker.api.plugin.CraftTweakerPlugin;
 import com.blamejared.crafttweaker.api.plugin.ICommandRegistrationHandler;
@@ -21,7 +20,7 @@ import net.minecraft.network.chat.TextComponent;
 
 
 @CraftTweakerPlugin(Lib.MODID+":ct_module")
-public class CraftTweakerCompatModule extends StandardIECompatModule implements ICraftTweakerPlugin
+public class CraftTweakerCompatModule implements ICraftTweakerPlugin
 {
 	@Override
 	public void registerCommands(ICommandRegistrationHandler handler)
