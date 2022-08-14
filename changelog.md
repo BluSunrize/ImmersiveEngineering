@@ -22,9 +22,11 @@
     - By default, this blacklists Dynamic Trees, because they have their own mechanic for felling
 - Add Ersatz Leather, a leather alternative crafted with hemp fabric and beeswax or plant oil (BluSunrize)
 - Add recipes to break down prismarine blocks and press blaze powder into rods (BluSunrize)
-- Add slag glass and slag gravel as additional uses for slag (BluSunrize, Silfryi)
+- Add additional uses for slag (BluSunrize, Silfryi)
     - Slag glass blocks 50% of light passing through it and works as an insulator for HV relays
     - Slag gravel speeds up water plants growing on it (kelp) and can be crushed into sand
+    - Slag gravel can also be smelted into calcite in the blast furnace
+    - Slag recycling is now documented in the manual
 - Improve the railgun (BluSunrize)
     - End rods are now valid projectiles, they are super effective against Endermen
     - All railgun projectiles have perfect accuracy now (but are still affected by gravity)
@@ -36,6 +38,7 @@
 - Fix advancements for upgrading drill, railgun, buzzsaw and revolver to being triggered (BluSunrize)
 - Fix windmill sails not being saved properly (BluSunrize)
 - Fix crash with CraftTweaker (BluSunrize)
+- Fix crash with Minecolonies pathfinding (BluSunrize, Raycoms)
 - Translations Added/Updated: ja_jp (karakufire)
 
 ##### Version 1.18.2-8.1.0-150
