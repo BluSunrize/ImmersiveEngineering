@@ -106,10 +106,10 @@ public final class IEBlocks
 				"blastbrick_reinforced", STONE_DECO_PROPS
 		);
 		public static final BlockEntry<IEBaseBlock> COKE = BlockEntry.simple("coke", STONE_DECO_PROPS);
-		public static final BlockEntry<GravelBlock> SLAG_GRAVEL = new BlockEntry<>(
+		public static final BlockEntry<SlagGravelBlock> SLAG_GRAVEL = new BlockEntry<>(
 				"slag_gravel",
 				() -> Block.Properties.of(Material.SAND, MaterialColor.STONE).strength(0.6F).sound(SoundType.GRAVEL),
-				GravelBlock::new
+				SlagGravelBlock::new
 		);
 
 		public static final BlockEntry<IEBaseBlock> HEMPCRETE = BlockEntry.simple("hempcrete", STONE_DECO_PROPS);
