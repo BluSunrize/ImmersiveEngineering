@@ -1,4 +1,4 @@
-##### Version 1.18.2-8.1.1-pre
+##### Version 1.18.2-8.2.0-151
 - Overhauled the Bottling Machine (BluSunrize)
     - Had its internals adjusted to match other multiblocks
     - Now allows for multiple inputs in its recipes
@@ -25,7 +25,6 @@
 - Add additional uses for slag (BluSunrize, Silfryi)
     - Slag glass blocks 50% of light passing through it and works as an insulator for HV relays
     - Slag gravel speeds up water plants growing on it (kelp) and can be crushed into sand
-    - Slag gravel can also be smelted into calcite in the blast furnace
     - Slag recycling is now documented in the manual
 - Improve the railgun (BluSunrize)
     - End rods are now valid projectiles, they are super effective against Endermen
