@@ -35,6 +35,7 @@
 - Fix assembler creating buckets from nowhere for recipes that would consume them (BluSunrize)
 - Fix advancements for upgrading drill, railgun, buzzsaw and revolver to being triggered (BluSunrize)
 - Fix windmill sails not being saved properly (BluSunrize)
+- Fix crash with CraftTweaker (BluSunrize)
 - Translations Added/Updated: ja_jp (karakufire)
 
 ##### Version 1.18.2-8.1.0-150
