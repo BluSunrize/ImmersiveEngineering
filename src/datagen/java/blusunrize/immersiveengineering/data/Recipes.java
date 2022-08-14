@@ -254,12 +254,6 @@ public class Recipes extends RecipeProvider
 				.addSlag(IETags.slag, 9)
 				.setTime(9*1200)
 				.build(out, toRL("blastfurnace/steel_block"));
-
-		BlastFurnaceRecipeBuilder.builder(Blocks.CALCITE.asItem())
-				.addInput(StoneDecoration.SLAG_GRAVEL)
-				.addSlag(Blocks.SAND)
-				.setTime(200)
-				.build(out, toRL("blastfurnace/calcite"));
 	}
 
 	private void recipesCoke(@Nonnull Consumer<FinishedRecipe> out)

@@ -7,14 +7,6 @@
       }
     ]
   },
-  "calcite": {
-    "type": "item_display",
-    "items": [
-      {
-        "item": "minecraft:calcite"
-      }
-    ]
-  },
   "slag_glass": {
     "type": "item_display",
     "items": [
