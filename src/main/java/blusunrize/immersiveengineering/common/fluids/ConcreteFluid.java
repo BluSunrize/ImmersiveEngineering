@@ -130,6 +130,7 @@ public class ConcreteFluid extends IEFluid
 				correspondingTimer = Math.max(correspondingTimer, fluidAtNeighbor.getValue(IEProperties.INT_32));
 			}
 		}
+		correspondingTimer = Math.min(correspondingTimer+1, 31);
 
 		BlockPos abovePos = pos.above();
 		BlockState aboveState = worldIn.getBlockState(abovePos);
