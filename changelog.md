@@ -1,3 +1,6 @@
+##### Version 1.18.2-8.2.1-pre
+- Fix fluid pump showing as 2x in the required materials of the bottling machine (BluSunrize)
+
 ##### Version 1.18.2-8.2.0-151
 - Overhauled the Bottling Machine (BluSunrize)
     - Had its internals adjusted to match other multiblocks
